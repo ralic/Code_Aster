@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C
       CALL WKVECT(TRAV,'V V K8',NDIM,JJJ)
 C
       NBPAR = 1
-      NOMPAR(1) = 'X'
+      NOMPAR(1) = 'ABSC'
 C
 C     CALCUL DES ABSCISSES CURVILIGNES LE LONG DU FOND DE FISSURE
 C

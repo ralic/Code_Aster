@@ -1,0 +1,1063 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR a3bhhae H.ANDRIAMBOLOLONA   DATE  le 29/08/2005 a 18:38:19
+
+------------------------------------------------------------------------------------
+REALISATION EL 2005-171
+   NB_JOURS_TRAV : 20
+   INTERET_UTILISATEUR : OUI
+   TITRE : derivation des elements plaque/coque par rapport aux parametres materiau
+   FONCTIONNALITE
+     Possibilite d'effectuer des calculs de derivee de la matrice de raideur
+     des elements plaques/coques : DKT, DST, DKQ, QSQ, Q4G, COQUE_3D
+     par rapport aux parametres materiau E et NU.
+     On pourra ainsi realiser un calcul de sensibilte de modes propres,
+     de reponse statique ou de reponse dynamique par rapport a ces
+     deux parametres avec un modele compose de ces elements.
+     On se limite aux cas des materiaux homogenes isotropes avec un
+     comportement ELAS.
+   DETAILS
+     Les derivees des matrices elementaires ont ete recalculees
+     de facon analytique.
+     Deux options (RIGI_MECA_SENSI et RIGI_MECA_SENS_C) ont ete rajoutees
+     dans le catalogue des elements plaque/coque.
+     Ces options calculent le produit de la derivee de la matrice de raideur
+     elementaire par un vecteur deplacement.
+     Routines modifiees :
+         te0031.f, te0401.f : calcul du produit de la derivee de la matrice
+                    de rigidite elementaire par un vecteur deplacement si option
+                    RIGI_MECA_SENSI ou RIGI_MECA_SENS_C (resp. DKT, DST, Q4G et COQUE_3D).
+         dxmate.f : calcul des termes de la derivee de la matrice de rigidite (DKT, DST, Q4G)
+         matrc.f : calcul des termes de la derivee de la matrice de rigidite (COQUE_3D)
+         dktrig.f, dkqrig.f, dstrig.f, dsqrig.f, q4grig.f : prise en compte
+                    des options RIGI_MECA_SENS* pour l'assemblage des termes de rigidite.
+     Catalogues modifies :
+         gener_medkt2.cata, gener_mecq32.cata : rajout des options
+                    RIGI_MECA_SENSI et RIGI_MECA_SENS_C
+     Nouveau cas test :
+         sensd10 : voir rubrique VALIDATION ci-dessous
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V1.01.211
+       EXPL_ : nouveau cas test (sensd10) : Sensibilite de modes propres
+               d'une plaque simplement appuyee par rapport aux parametres materiau.
+     DOC_U : U4.50.02 Mot cle SENSIBILITE
+       EXPL_ : mise a jour de la liste des types d'element derivables.
+     DOC_U : U2.02.01 Utilisation des elements plaques et coques
+       EXPL_ : rajouter la possibilite de calcul de derivee pour
+               certains types d'element de plaque
+   VALIDATION :
+     Nouveau cas test (sensd10) : Sensibilite de modes propres
+     d'une plaque simplement appuyee par rapport aux parametres materiau.
+     Pour cette configuration, la solution peut se calculer analytiquement.
+     Modelisation A : calcul de derivees des modes propres de la plaque
+       modelisee en elements DKT.
+     Modelisation B : calcul de derivees des modes propres de la plaque
+       modelisee en elements DSQ.
+     Modelisation C : calcul de derivees des modes propres de la plaque
+       modelisee en elements Q4G (QUAD4).
+     Modelisation D : calcul de derivees des modes propres de la plaque
+       modelisee en elements COQUE_3D (QUAD9).
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 30/08/2005 a 14:25:36
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-280
+   NB_JOURS_TRAV  : 5.
+   INTERET_UTILISATEUR : OUI
+   TITRE Les tests feti003c et feti007a s'arretent en ERREUR
+   FONCTIONNALITE
+     Le probleme ne venait pas d'Aster mais des options de compilation
+     utilisées pour construire la librairie Scotch.
+   DETAILS
+     Nouvelles options retenues pour la compilation de Scotch  (les memes que
+     pour Aster) :
+     CCFOPT='-v -omp -ansi_alias -ansi_args'
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     feti003c et feti007a.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-218
+   NB_JOURS_TRAV  : 5.
+   INTERET_UTILISATEUR : OUI
+   TITRE Amelioration du partitionneur Scotch dans Aster
+   FONCTIONNALITE
+     On ajoute un petit traitement dans le cas ou les sous-domaines générés
+     sont non-connexes.
+     On profite pour faire un peu de nettoyage dans la routine fetskp.f
+   DETAILS
+     Actions effectuées dans le cas ou un (ou plusieurs) sous-domaine généré par
+     le partitionneur est non connexe :
+     - Si l'utilisateur a mis CORRECTION_CONNEX = NON, on ne fait rien (ca peut
+       creer des sous-domaines non-connexes).
+     - Si l'utilisateur a mis CORRECTION_CONNEX = OUI, alors on verifie que les
+       sous-domaines sont tous connexes.
+     Si au moins un sous-domaine n'est pas connexe on fait les actions suivantes:
+     . on affiche une ALARME
+     . on affiche, pour chaque sous-domaine, la liste des sous-domaines voisins.
+     . on creer des sous-domaines supplementaires pour chacune des parties non-
+       connexes : l'utilisateur se retrouve avec plus de sous-domaines mais qui
+       sont tous connexes.
+     L'ALARME doit alerter l'utilisateur que la commande lui a généré plus de
+     sous-domaines que prevus.
+
+     On profite pour diviser le fichier fetskp.f en 4 fichiers :
+       - fetskp.f : Reste le fichier principal
+       - creaco.f : Effectue la connectivité des mailles
+       - verico.f : Vérifie la connexité des sous-domaines
+       - creagm.f : Ajoute les sous-domaines comme groupes de mailles dans la
+                    structure maillage
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.23.05
+       EXPL_ : documentation de DEFI_PART_FETI
+   VALIDATION
+   feti003b, feti003c, feti007a, feti007b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 30/08/2005 a 15:09:40
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-259
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE :  MODE_ITER_SIMULT forma11c VERIFICATION DES MODES
+   FONCTIONNALITE
+     Avec la version NEW8.1.7 compilée sous Linux (Rocks et Calibre 3)
+     le test forma11c s'arrete en erreur fatale :
+     <F> <MODE_ITER_SIMULT> <OP0045>  ERREUR DE VERIFICATION
+          VERIFICATION A POSTERIORI DES MODES
+     <E> <MODE_ITER_SIMULT> <VERIFICATION DES MODES> POUR LE CONCEPT >.9000039<
+      LE MODE NUMERO  60  DE FREQUENCE   3.1856E+00 A UNE NORME D'ERREUR DE
+       9.7716E-01 SUPERIEURE AU SEUIL ADMIS   1.0000E-05
+   DETAIL
+     recherche de frequences dans l'intervalle 3.0 4.0
+       LES FREQUENCES CALCULEES INF. ET SUP. SONT:
+          FREQ_INF :  3.00744E+00
+          FREQ_SUP :  3.97469E+00
+
+   Sous Linux, le code emet des messages d'alarme qui ne sont pas emis sous clayastr :
+ <A> <MODE_ITER_SIMULT> <VPBOST.01> IL Y A DES VALEURS PROPRES TRES PROCHES
+ <A> <MODE_ITER_SIMULT> <VPBOST.01> LA VAL. PRO. EST:   3.0074E+00
+
+   Sous Linux, la frequence 3.00744 n'est pas double et le code trouve un
+   mode parasite a 3.18560 avec une norme d'erreur 9.77157E-01 d'ou le
+   message d'erreur :
+
+     sous Linux :
+    NUMERO    FREQUENCE (HZ)    NORME D'ERREUR    ITER_QR
+        51      3.00744E+00       5.38156E-12          7
+        52      3.03155E+00       9.91140E-12          7
+        53      3.03155E+00       1.47805E-11          7
+        54      3.07272E+00       9.31933E-12          7
+        55      3.07272E+00       8.55913E-12          7
+        56      3.11812E+00       4.76435E-12          7
+        57      3.11812E+00       1.19404E-11          7
+        58      3.18439E+00       1.60130E-11          7
+        59      3.18439E+00       1.59250E-11          7
+        60      3.18560E+00       9.77157E-01          7
+        61      3.19805E+00       8.62120E-12          7
+     sous Clayastr :
+    NUMERO    FREQUENCE (HZ)    NORME D'ERREUR    ITER_QR
+        51      3.00744E+00       1.19654E-11          7
+        52      3.00744E+00       1.16002E-11          7
+        53      3.03155E+00       3.03321E-11          7
+        54      3.03155E+00       4.88994E-11          7
+        55      3.07272E+00       2.11605E-11          7
+        56      3.07272E+00       1.67961E-11          7
+        57      3.11812E+00       1.40279E-11          7
+        58      3.11812E+00       8.21351E-12          7
+        59      3.18439E+00       1.40728E-11          7
+        60      3.18439E+00       1.30005E-11          7
+        61      3.19805E+00       1.54588E-11          7
+
+     En augmentant la dimension du sous espace a 5*nb_de_modes
+     au lieu de 4*nb_de_modes (valeur par defaut), le test est OK
+     Ajout de
+         DIM_SOUS_ESPACE = 180 ,
+     pour le calcul de MODEL4 par la methode de LANCZOS
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-261
+   NB_JOURS_TRAV  : 1
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE :  MODE_ITER_SIMULT
+   FONCTIONNALITE
+     NEW8.1.7, le test sensd08a s'arrete en ERRE_NUMERIQUE
+     <F> <MODE_ITER_SIMULT> <"FLOATING POINT EXCEPTION">
+         IL Y A PROBABLEMENT UNE ERREUR DANS LA PROGRAMMATION
+   DETAIL
+     Le probleme se pose lors du calcul des modes complexes
+     apres le calcul des modes reels en mode nodebug.
+     En mode debug, le cas test est OK.
+     Si le cas test ne calcule que les modes complexes, le
+     cas test termine OK.
+     Si le cas test ne calcule que les modes reels le
+     cas test termine OK.
+     On propose d'inverser les calculs modaux: calcul des
+     modes complexes puis calcul des modes reels.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-166
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : M.ABBAS
+   INTERET_UTILISATEUR : NON
+   TITRE : ARLEQUIN - points d'intégration
+   FONCTIONNALITE
+     ARLEQUIN a introduit des routines spécialisées pour donner les points
+     et les poids de Gauss pour les mailles.
+     Or ces routines existent ailleurs dans le code.
+     On propose donc la résorption des routines PGAUS1, PGAUS2, PGAUS3 au
+     profit de ELRACA et ELRAGA.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-167
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : M.ABBAS
+   INTERET_UTILISATEUR : NON
+   TITRE : ARLEQUIN - fonctions de forme
+   FONCTIONNALITE
+     La méthode ARLEQUIN a introduit des routines spécialisées pour le
+     calcul des fonctions de forme en un point.
+     Or ces routines existent déja ailleurs dans le code.
+     On propose l'intégration des routines ELRFVF, ELRFDF, ELRFD2 en
+     remplacement des routines FORME0, FORME1 et FORME2.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : S.GENIAUT
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+     Permettre l'utilisation de 'FPG7' pour les TR3
+   DETAILS
+   La famille FPG7 etait bien définie pour les TR3 dans elraga.f
+   Cependant, elle ne figurait pas dans type_maille__.cata et elraca.f
+
+   fichiers modifiés : type_maille__.cata
+                       elraca.f
+                       sdconx.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION :
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 29/08/2005 a 14:30:03
+
+------------------------------------------------------------------------------------
+CORRECTION AL 2005-205
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_G_LOCAL_T : operandes R_INF_FO et R_SUP_FO
+   FONCTIONNALITE
+   Dans CALC_G_LOCAL_T et CALC_THETA, on peut faire varier le rayon des couronnes theta le
+   long du fond de fissure, en fonction donc de l'abscisse curviligne 'ABSC'.
+   Cependant la variable des fonctions RINF_FO, RSUP_FO et MODULE_FO devait être nommée 'X',
+   alors qu'elle désignait bien l'abscisse curviligne !
+   On remplace donc 'X' par 'ABSC' dans les routines gveri2, gveri3 et gverig
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+   VALIDATION
+      sslv110a->e : remplacement des fonctions en 'X' par des fonctions en 'ABSC'
+      (résultat identique puisque, à part le nom de la variable, rien n'est modifié)
+
+------------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-206
+   NB_JOURS_TRAV  : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_FONCTION / NOM_PARA
+   FONCTIONNALITE
+   Cette fiche souligne la différence du nom des paramètres entre l'opérateur DEFI_FONCTION
+   ('ABSC','X', 'Y','Z') et les tableaux résultats ('ABSC_CURV','COOR_X', 'COOR_Y',
+   'COOR_Z').
+   Cependant, considérant que le nom des variables est bien documenté, que le nombre de
+   routines et de cas test impactés est important (+ le travail engendré pour les
+   utilisateurs lors du changement de version), il ne me semble pas indispensable de
+   réaliser cette correction de syntaxe.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------------
+REALISATION EL 2005-206
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST_K1_K2_K3 / précision
+   FONCTIONNALITE
+   Dans l'opérateur POST_K1_K2_K3, la cohérence entre les maillages des deux lèvres est
+   vérifiée (position et nombre de noeuds).
+   Pour certains noeuds du fond de fissure de l'étude de cette fiche, le nombre de noeuds
+   est différent entre les 2 lèvres et le calcul de K n'est donc pas effectué. On modifie
+   la routine pkfond pour que le calcul soit quand même effectué dans ce cas (s'il y a
+   suffisament de noeuds), une alarme signalant le problème à l'utilisateur.
+   Cependant l'anomalie dans cette étude est liée à un problème de précision. On en profite
+   donc pour tout remettre à plat : l'utilisateur fourni une précision (PREC_VIS_A_VIS),
+   égale par défaut à 0.1.
+   Pour un noeud donné du fond de fissure, un noeud des lèvres est retenu s'il vérifie
+   les 3 conditions suivantes :
+      * distance par rapport au plan normal à la fissure < prec * d1, où d1 est la distance
+   entre 2 noeuds successifs du fond de fissure
+      * distance par rapport au fond de fissure < ABSC_CURV_MAXI*(1+prec/10)
+      * distance par rapport à son vis à vis sur l'autre lèvre < prec*Rmax, où Rmax est
+   la distance du noeud retenu le plus éloigné du fond de fissure (sensiblement égal à
+   ABSC_CURV_MAXI en général).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.82.05  (POST_K1_K2_K3)
+         EXPL_ : Critères de précision à expliciter
+   VALIDATION
+      sslv134a/b, ssnv166a/b
+
+------------------------------------------------------------------------------------
+REALISATION EL 2005-128
+   NB_JOURS_TRAV  : 7
+   INTERET_UTILISATEUR : OUI
+   TITRE : AOM : MACR_ASPIC_MAIL / Problème de génération de maillage
+   FONCTIONNALITE
+   Cette fiche a été émise à cause d'un plantage dans gibi en voulant modéliser une
+   fissure 'COURTE', droite et débouchante dans un piquage de type 1.
+
+   L'anomalie est située dans la procédure de correction de la profondeur de la fissure
+   (pour prendre en compte transformation plaque-tube). On fait plusieurs modifications :
+
+   * incohérence entre la doc et la macro sur la convention de signe de la position
+   azimutale theta (cas fissure droite, type 1 ou 2)
+
+   * pour améliorer l'ergonomie de la macro (et débugger plus facilement), on ajoute en
+    fin de macro un calcul pour identification la profondeur de la fissure dans le
+    maillage généré (fissure courte débouchante uniquement !). La profondeur apparait dans
+    le FICHIER MESS, à la fin des commandes de la macro.
+    Principe : à partir du groupe de noeuds (ordonnés) du fond de fissure, on détermine
+    les 2 noeuds extrémités puis le noeud le plus profond. La plus grande distance entre
+    ce noeud et les noeuds médians des lèvres définie la profondeur de la fissure.
+
+   * cette petite évolution permet de vérifier que la correction de profondeur de fissure
+   est efficace dans la plupart des cas (droit ou incliné, type 1 ou 2, interne ou
+   externe   : écart inférieur à 5% avec la donnée utilisateur)... SAUF si l'angle
+   azimutal theta et l'angle de soudure alpha sont grands (theta > 60° ; 30<alpha<50°)
+   pour les fissures courtes, droites et débouchantes en peau externe, piquage de type 1.
+
+   --> Dans ces cas-là, on "corrige la correction" de profondeur en prenant en compte la
+   variation azimutale de la longueur de la soudure. Cette correction n'est activée que si
+   on détecte que la précision "risque" d'être médiocre.
+   Avec ces différentes corrections, l'erreur de la profondeur de la fissure est
+   inférieure à 5% dans la majorité des cas. Le maillage ayant posé problème est généré
+   sans difficulté.
+   Remarque : il est normal que dans le cas d'une fissure de type 'LONGUE', la fissure ne
+   soit pas débouchante : la procédure de maillage n'a pas été construite pour le faire !
+
+   DETAILS
+      Fichier modifié : macr_aspic_mail_ops.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+    DOC_U : U4.PC.10  (MACR_ASPIC_MAIL)
+         EXPL_ : indiquer que la profondeur de fissure du maillage généré apparait dans le
+           fichier MESS.
+   VALIDATION
+      aspic02a +  cas test de la fiche
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 29/08/2005 a 13:57:59
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-273
+   NB_JOURS_TRAV  : 1.0
+   POUR_LE_COMPTE_DE : J. PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : PRE_GMSH et tpla07a
+   FONCTIONNALITE
+   DETAILS :
+     Avec la version NEW8.1.8 compilée sous linux (Calibre3 et Rocks) le test
+     tpla07a (TITRE CYLINDRE CREUX ORTHOTROPE) s'arrête brutalement dans la
+     commande PRE_GMSH :
+     fmt: read unexpected character
+     apparent state: unit 19 named fort.19
+     last format: (I10)
+     lately reading sequential formatted external IO
+       ECRITURE DU TITRE
+
+     L'analyse du fichier tpla07a.msh présent dans astest montre que ce fichier
+     est au format DOS, il a été généré sous windows.
+     Si on génère ce fichier sous CLAYASTR, on obtient un fichier au format UNIX.
+     La taille des deux fichiers diffère:
+        tpla07s.msh (astest, format DOS) : 25917o
+        tpla07a.msh (clayastr, format unix) :25013o
+     L'écart est due au fait que le retour chariot prend 2o sous DOS contre 1o
+     sous UNIX. L'écart de 904o correspond au nombre de lignes présent dans les
+     fichiers.
+     Le fait que le fichier tpla07a.msh (astest) passe sous CLAYASTR est sans
+     doute du aux capacités de l'unix sous CLAYASTR.
+     Fichier restitué: tpla07a
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : tpla07a sous linux (clp50a8) et sous CLAYASTR
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 29/08/2005 a 13:02:50
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-046
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  CONTACT - HEXA20/QUAD8
+   FONCTIONNALITE:
+    La réalisation du contact avec une maille de peau de type QUAD8 et
+     avec les fonctions de formes modifiées (PROJECTION='QUADRATIQUE')
+     donnent manifestement des résultats faux.
+    On devrait, dans ce cas-test simple, obtenir les memes déplacements
+     qu'avec un QUAD8 et des fonctions de forme non modifiées
+     (PROJECTION='LINEAIRE').
+         Il y a un gros doute sur les fonctions de forme utilisées.
+   DETAILS:
+    La correction apportee en Hors Arex dans la V8.1.10 corrige le
+    probleme.
+    La projection quadratique des mailles de peau QUAD8
+    consiste a utiliser des fonctions de forme modifiees pour que
+    les forces de reactions nodales soient bien toutes dans le bon sens.
+    (EL 2002-167).
+    Une projection quadratique "exacte" (avec des fonctions de forme
+     quadratiques "classiques") donnent des oscillations sur les
+     forces nodales de contact.
+    En mode "lineaire", Aster utilise des fonctions de forme lineaire
+    et fait une liaison cinematique entre noeuds milieux et noeuds
+    sommets.
+    C'est cette liaison (routine cacoeq) qui n'avait pas ete
+    correctement supprimee lors du passage en projection "quadratique".
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI  DEPUIS : 7.2.6
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI  DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+     ssnv167b
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-223
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE   Bug dans nmvpir
+   FONCTIONNALITE:
+     En sortie de nmvpir, certaines variables
+     SIGDV, X, ... sont fausses en mode "no debug".
+     Il y a  une "glute" dans NMVPIR : on recopie en fin
+     de routine, deux variables X et FLUPHI dans un COMMON bidon.
+     Cela masque l'anomalie.
+   DETAILS:
+     Bug dans l'utilisation de RCVALA  :
+      CHARACTER*2 K2B
+      CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
+     &         7,NOMLEM,COELEM,K2B, 'FM' )
+    Au lieu de:
+      CHARACTER*2 CODLEM(7)
+      CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
+     &         7,NOMLEM,COELEM,CODLEM, 'FM' )
+    Ce qui provoquait des ecrasements memoires intempestifs
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+     ssnl121
+
+
+-----------------------------------------------------------------------
+--- AUTEUR thomasso D.THOMASSON   DATE  le 29/08/2005 a 16:55:09
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-099
+   NB_JOURS_TRAV  : 12.0
+   INTERET_UTILISATEUR : OUI
+   TITRE : lissage enveloppe dans calc_fonction
+   FONCTIONNALITE : CALC_FONCTION
+   DETAILS : Prise en compte des prescriptions techniques décrites dans le
+    document E-N-ES-MS/02-00767 :"Prescriptions techniques pour l'intégration
+    d'un outil de lissage enveloppe des spectres de plancher (SRO) dans Code_Aster".
+    La fonction, écrite en PYTHON, manipule et restitue directement une nappe de
+    spectres (précédemment manipulation spectre par spectre sans test de
+    recouvrements entre spectres).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.32.04
+     EXPL_: doc. liss_enveloppe : nouvelle fonctionnalité et nouveaux motclés
+   VALIDATION : nouvelle modélisation zzzz100e
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 30/08/2005 a 09:36:13
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-207
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE STAT_NON_LINE / ETAT_INIT / VARI avec un champ créé par CREA_CHAMP
+   FONCTIONNALITE
+   Lorsque l'on crée "à la main" (CREA_CHAMP) un champ de variables internes
+   initial pour un calcul STAT_NON_LINE, il faut lui affecter pour chaque
+   maille le bon nombre de variables internes (celles exigées par le comportement
+   choisi).
+   La routine VRCOMP vérifie ce nombre et émet un message d'erreur fatale en cas
+   d'incohérence. L'utilisateur ne comprenait pas ce message obscur d'autant plus
+   qu'il avait bien affecté les 8 composantes nécessaires à son comportement.
+   Actions correctrices :
+   -----------------------
+   1) Je modifie le message d'erreur de VRCOMP pour que les 2 nombres incohérents
+      soient imprimés (=> on a plus de chance de comprendre son erreur).
+   2) Je modifie CREA_CHAMP/AFFE/ELxx pour que cette commande émette une alarme
+      lorsque l'utilisateur affecte des composantes lorsque ces composantes ne
+      peuvent pas être stockées dans le cham_elem résultat.
+
+     <A> <CREA_CHAMP> <CHPCHD> PB LORS DE L'AFFECTATION DU CHAMP: SIG1
+         DES VALEURS N'ONT PAS ETE RECOPIEES DANS LE CHAM_ELEM FINAL (PERTE
+         D'INFORMATION ?)
+         CE PROBLEME PEUT ETRE DU A L'UTILISATION DU MOT CLE TOUT='OUI'.
+         ON PEUT VERIFIER LE CHAMP PRODUIT AVEC INFO=2
+
+     Remarque : pour éviter d'ajouter des alarmes dans le code, je supprime
+     AFFE/TOUT='OUI' dans 3 tests : hplp100b, ssla103d, ssla103e
+   3) Je modifie les catalogues des éléments pour que TOU_INI_ELGA / NEUT_R
+      crée un champ de 30 CMPS (au lieu de 6 jusqu'à présent) ce qui permet de créer
+      des champs de variables internes initiaux pour toutes les lois de comportement
+      qui ont moins de 30 variables internes.
+      Remarques :
+      1) Si on a plus de 30 variables internes, on peut quand même s'en sortir
+      en créant plusieurs champs (de moins de 30 CMPS). Il faut alors fusionner ces
+      champs avec CREA_CHAMP / ASSE.
+      2) Pour traiter la fiche EL04-267, j'ai été obligé d'ajouter également les
+      CMPS X7, ..., X30 pour TOU_INI_ELGA / NEUT_F
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   Liste des fichiers modifiés:
+    celcel.f  cescel.f  chligr.f  chpass.f  chpchd.f  chpeva.f
+    chrpel.f  crperm.f  lrceme.f  mecalm.f  ntdoet.f  paqmai.f
+    pjefch.f  pmfd01.f  ssingu.f  stock.f   vrcins.f  vrcom2.f
+    vrcomp.f  xconli.f
+    gener_me2dg_1.cata  gener_me2dg_2.cata  gener_me3d_3.cata   gener_me3dg_1.cata  gener_me3dg_3.cata
+    gener_me3h13.cata   gener_me3h23.cata   gener_me3h43.cata   gener_me3h53.cata   gener_me_x.cata
+    gener_me_xh.cata    gener_me_xht.cata   gener_me_xt.cata    gener_meaa22.cata   gener_meaa32.cata
+    gener_meafo2.cata   gener_meah12.cata   gener_meah22.cata   gener_meah42.cata   gener_meah52.cata
+    gener_meax_2.cata   gener_meaxs2.cata   gener_mecpg2.cata   gener_mecpl2.cata   gener_meda22.cata
+    gener_meda32.cata   gener_medh12.cata   gener_medh22.cata   gener_medh42.cata   gener_medh52.cata
+    gener_medpg2.cata   gener_medpl2.cata   gener_meshb3.cata   gener_mv2d_2.cata   gener_mv3d_3.cata
+    gener_th3d_3.cata   gener_th3dd3.cata   gener_thax_2.cata   gener_thaxd2.cata   gener_thaxf2.cata
+    gener_thcq_2.cata   gener_thpl_2.cata   gener_thpld2.cata   mecpqs4.cata        mecptr3.cata
+    mecptr6.cata        medpqs4.cata        medpqs8.cata        medptr6.cata        thaxtr6.cata
+    thpltr6.cata
+    remarque : suite à un conflit de notation avec Samuel, c'est lui qui restitue les 5 catalogues suivants :
+    gener_me3d_3.cata
+    gener_me_x.cata   gener_me_xh.cata    gener_me_xht.cata   gener_me_xt.cata
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-267
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE "Test sdnx300b cassé en 8.1.8 sur clpaster"
+   FONCTIONNALITE
+   Dans sa réponse préliminaire, JPL disait qu'il avait du augmenter le temps CPU
+   de ce test sur clayastr.
+   J'ai constaté que ce test était OK sur clpaster:
+     - aujourd'hui (23/8/05) en interactif.
+     - lors du dernier passage des tests par JPL  (21/7/05) en batch.
+   Je propose donc de classer cette fiche sans suite en suspectant un problème
+   de temps CPU à la date de l'émission de la fiche.
+
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-274
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE  MECA_STATIQUE / plantage dans l'impression d'un message d'erreur
+   FONCTIONNALITE
+   Dans l'étude de l'utilisateur, la factorisation de la matrice échoue
+   sur un pivot nul sur un ddl de lagrange lié à une relation linéaire
+   (sans doute sur-abondante).
+   Malheureusement, la routine d'impression du message présentait un petit
+   bug provoquant un message supplémentaire :
+   "OBJET DE COLLECTION CONTIG DE LONGUEUR NULLE"
+   Je corrige ce petit bug ... mais cela n'empechera pas pas le code
+   de s'arreter en erreur fatale du fait du pivot nul.
+   DETAILS
+     Liste des fichiers modifiés:
+       imppiv.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : je n'ai pas fait passer cette étude annoncée comme "grosse".
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-281
+   NB_JOURS_TRAV : 0.7
+   INTERET_UTILISATEUR : OUI
+   TITRE "CREA_MAILLAGE gourmand en CPU"
+   FONCTIONNALITE
+   Le mot clé QUAD_LINE de CREA_MAILLAGE était effectivement très gourmand en temps CPU
+   comme l'a bien montré Roméo.
+   J'ai amélioré ce qui était facilement améliorable :
+      - utilisation de JEXATR pour éviter des appels JEVEUX au fin fond des boucles
+      - utilisation de la connectivité inverse pour éviter de passer toutes les mailles
+        en revue.
+   Gains observés : le temps CPU semble divisé par 200 environ.
+      maillage 100X100
+         avant :  1180s
+         après :     5.6s
+      maillage 250X250
+         avant : 46800s
+         après :   214s
+   Je pense que l'on pourrait faire mieux car il ne me semble pas normal
+   que CREA_MAILLAGE soit plus couteux que LIRE_MAILLAGE.
+   De plus, les chiffres observés montrent que le cout CPU varie plus que linéairement
+   avec le nombre de mailles. J'ai observé dans la routine cmqlnm.f des boucles imbriquées
+   mais je n'ai pas envie de reprogrammer entièrement cette routine.
+   DETAILS
+     Liste des fichiers modifiés:
+       cmqlnm.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-286
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE "RECU_FONCTION UTCH19 STOP"
+   FONCTIONNALITE
+     Jean-Michel a très bien analysé ce bug. Il faut effectivement utiliser
+     DISMOI('TYPE_SCA','GRANDEUR',..) pour déterminer le type de la grandeur
+     R/C/... et non pas regarder NOGD(6:6) (qui ne vaut pas "R" pour DOMMAG !!).
+   DETAILS
+     Ce bug existait dans 3 autres routines. Je les corrige.
+     Liste des fichiers modifiés:
+       cnoaff.f  focrr0.f  focrr2.f  op0090.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-255
+   NB_JOURS_TRAV : 4 (JP:1 + TMA:3)
+   INTERET_UTILISATEUR : NON
+   TITRE  "Résorption des routines LAPACK et ARPACK introduites dans Aster"
+   FONCTIONNALITE
+   Suite à la décision d'appuyer Code_Aster sur la bibliothèque Lapack, j'ai émis cette
+   fiche demandant la résorption des "doublons" Lapack et Arpack que l'on avait introduit
+   dans Code_Aster.
+   Un premier ménage (31/1/05) a été fait (29 routines supprimées).
+   Cette fiche demandait la résorption de :
+      - 18 autres routines Lapack
+      - 17 routines Arpack
+
+   Concernant les routines Arpack, cette demande était injustifiée puisque l'on n'a
+   jamais dit que la bibliothèque Arpack était un pré-requis de Code_Aster.
+   (D'ailleurs je me demande si cette bibliothèque est encore "vivante" ?)
+
+   Concernant les routines Lapack, j'ai essayé de les résorber mais je suis vite tombé
+   sur des problèmes numériques inextricables pour moi (voir la rubrique DETAILS).
+
+   Seul Olivier Boiteau pourrait faire quelque chose ... mais il a sans doute mieux à faire
+   que de vouloir supprimer des routines qu'il a introduites en 1996 !
+   Je propose donc de classer cette fiche SANS SUITE.
+
+   IMPACT_DOCUMENTAIRE : NON
+
+   FONCTIONNALITE
+   Concernant les routines Lapack doublonnées, j'ai essayé de détruire les 18 doublons
+   répertoriés et de modifier leurs appelants pour utiliser les vraies routines Lapack :
+   routines supprimées :
+     fgeqr2.f  flahqr.f  flarfg.f  flrsyl.f  ftrsen.f  gtrexc.f
+     flacon.f  flaln2.f  flartg.f  ftrevc.f  glartg.f  gtrsen.f
+     flaexc.f  flanv2.f  flasy2.f  ftrexc.f  gtrevc.f  gtrsyl.f
+
+   routines modifiées :
+     dlaqrb.f    dneigh.f                zneigh.f
+     dnapps.f    dneupd.f    znapps.f    zneupd.f
+
+   J'ai fait passé une liste de tests utilisant tous les mots clés de MODE_ITER_SIMULT :
+      hsns100b sdld27b sdld313d sdld400a sdld400b sdll02a sdll06a sdll132a sdls01c
+      sdls04a sdls04b sdls112a sdls300a sdls501a sdls503a sdlv302d sdlx201a sensd09a
+      sensd09b ssll105b ssll404a ssls110a
+
+  Sur Clayastr    : 2 tests se sont plantés : sensd09d et sdls300a
+  Sur Linux/Rocks : 3 tests se sont plantés : sdls300a, sdls01c et sdld400a
+
+  On ne peut donc pas résorber brutalement les doublons lapack !
+
+  Je me suis alors concentré sur le test sdls300a sur Linux/Rocks :
+
+    - Quand on résorbe toutes les routines Lapack doublonnées, le test se plante
+      dans la vérification des modes de MODES_L3= ...
+
+      Le code ne trouve pas le mode trouvé actuellemment à la fréquence 2972.78s
+    - Si on modifie la seule routine dlaqrb (Arpack) pour qu'elle appelle
+      dlanv2 (Lapack) ou lieu de flanv2 (doublon Aster), le test se plante
+      Il est donc prouvé que la routine flanv2 d'Aster est "meilleure" que l'original.
+      Il faut donc garder (au moins !) la routine flanv2 et son appel dans dlaqrb.
+
+    - Malheureusement, cela ne suffit pas. Si on supprime tous les doublons Lapack
+      sauf flanv2 et que l'on garde l'appel à flanv2 dans dlaqrb, le test se plante
+      (plus tôt !!!) dans la vérification des modes MODES_L2= ...
+      Il faut donc peut-etre garder toutes les routines appelant flanv2 ??
+      mais alors, de fil en aiguille, il faut garder tous nos doublons !
+
+    - La routine Lapack dlanv2 est a priori une routine "simple" : elle a pour
+      fonction de faire la factorisation de Schur d'une matrice 2X2 réelle !
+      Et pourtant, la version Aster de cette routine fait 20 instructions de moins
+      que la version de la bibliothèque CXML trouvée sur le Net (80 vs. 100).
+      J'ai regardé le source et je n'y ai rien compris ... sauf qu'il y a des subtilités
+      à propos de nombres "epsilonesques".
+      Curieusement, la routine Aster est moins sofistiquée et elle semble mieux fonctionner!
+
+      Par ailleurs, je n'ai aucun moyen de savoir quel est le code source réellement
+      utilisé dans la bibliothèque CXML fournie par Compaq. De la même façon,
+      Sur Linux/Rocks, je ne sais pas comment a été fabriquée la bibliothèque Lapack.
+
+    - Donc, je propose de ne rien faire et de garder nos doublons jusqu'à ce qu'un
+      "spécialiste" de MODE_ITER_SIMULT puisse juger des différences entre nos
+      doublons et les routines originales (lesquelles ?).
+      Le mieux serait qu'Olivier Boiteau (qui a introduit ces doublons) retrouve
+      les routines dont il est parti et qu'il justifie (ou invalide) les modifs qu'il y
+      a apporté.
+
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-267
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : OUI
+   TITRE
+   FONCTIONNALITE
+     Cette anomalie est la même que AL 2005-207 : le champ ELGA/NEUT_F
+     produit par CREA_CHAMP ne pouvait pas avoir de composante X7, ...
+     Et il n'y avait pas de message d'alarme !
+     C'est maintenant corrigé
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : passage de l'étude associée
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2005-195
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE  Vérif de cohérence RIGI /GANO
+   FONCTIONNALITE
+   Je propose de classer cette fiche sans suite avec l'accord de l'émetteur (JMP).
+
+   La suggestion de vérifier que RIGI et GANO sont cohérentes dans les catalogues
+   n'a pas de sens. 2 familles a priori différentes (si elles ont des noms différents)
+   ne doivent pas avoir le même nom de PG.
+
+   En revanche, cette fiche met en lumière le fait que l'on NE PEUT PAS TOUJOURS
+   "essayer" une nouvelle famille de points de Gauss  en changeant simplement
+   le nom de la famille utilisée dans le catalogue :
+    RIGI=FPG4 -> RIGI=FPG9 (par exemple)
+   Si pour l'option calculée, l'un des champs "IN" était ELGA/FPG4, le fait de changer
+   de famille conduit à une incohérence entre le fortran et le catalogue.
+   Cette incohérence n'est pas détectable simplement.
+
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D0.04.02 (doc à écrire !)
+     EXPL_: expliquer le problème possible si on change de famille de PG
+            dans une routine te00ij si l'on a un champ "in" ELGA.
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+
+   FONCTIONNALITE
+   Correction de 2 petites anomalies
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON (les routines n'existent pas)
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+Correction d'une AL dans la routine NOCAR2 :
+--------------------------------------------
+Quand on agrandissait la carte, on doublait systématiquement la dimension
+de l'objet .LIMA  ... mais parfois, il faut "plus que doubler"
+=> la nouvelle formule :
+<         CALL COCOPG(TRAV, CLIMA, NGDMX, 2*LONTAV,BASE)
+---
+>         CALL COCOPG(TRAV, CLIMA, NGDMX, MAX(2*LONTAV,LONTAP),BASE)
+
+Correction d'une AL dans la routine RCMMFC :
+--------------------------------------------
+On bouclait sur l'objet .VALE de la carte du champ de matériau, sans prendre garde
+au fait que l'objet .VALE pouvait être sur-dimensionné. On tombait alors sur
+NBMAT=0, ce qui posait problème pour allouer des objets jeveux dans RCMACO.
+
+On se protège maintenant de ce "NBMAT=0" en "sautant à l'itération suivante.
+137a138
+>          IF (NBMAT.EQ.0) GO TO 10
+
+   Liste des fichiers modifiés:
+  nocar2.f  rcmfmc.f
+
+/////////////////////////////////////////////////////////////////////////////////////////
+Dernière minute :
+=================
+Pour faire mon asrest, je suis obligé d'augmenter la mémoire du test ssla200b : 16Mo -> 32Mo
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sensd10a                      a3bhhae H.ANDRIAMBOLOLONA    155    155      0
+ CASTEST AJOUT sensd10b                      a3bhhae H.ANDRIAMBOLOLONA    155    155      0
+ CASTEST AJOUT sensd10c                      a3bhhae H.ANDRIAMBOLOLONA    155    155      0
+ CASTEST AJOUT sensd10d                      a3bhhae H.ANDRIAMBOLOLONA    144    144      0
+ CASTEST AJOUT zzzz100e                     thomasso D.THOMASSON         76     76      0
+ CASTEST MODIF feti003b                       assire A.ASSIRE           243      1      1
+ CASTEST MODIF feti003c                       assire A.ASSIRE           248      3      3
+ CASTEST MODIF feti007a                       assire A.ASSIRE           179      5      5
+ CASTEST MODIF feti007b                       assire A.ASSIRE           176      5      6
+ CASTEST MODIF forma11c                      cibhhlv L.VIVAN            187      2      1
+ CASTEST MODIF hplp100b                      vabhhts J.PELLET           417      6     10
+ CASTEST MODIF sensd08a                      cibhhlv L.VIVAN            219     37     37
+ CASTEST MODIF ssla103d                      vabhhts J.PELLET           221      3      3
+ CASTEST MODIF ssla103e                      vabhhts J.PELLET           191      4      5
+ CASTEST MODIF ssla200b                      vabhhts J.PELLET          1337      1      1
+ CASTEST MODIF sslp104a                      cibhhlv L.VIVAN            229      1      1
+ CASTEST MODIF sslp104b                      cibhhlv L.VIVAN            129      1      1
+ CASTEST MODIF sslp313c                      cibhhlv L.VIVAN            261      2      3
+ CASTEST MODIF sslv110a                      galenne E.GALENNE          509     10     10
+ CASTEST MODIF sslv110b                      galenne E.GALENNE          273     10     10
+ CASTEST MODIF sslv110c                      galenne E.GALENNE          376     10     10
+ CASTEST MODIF sslv110d                      galenne E.GALENNE          286     10     10
+ CASTEST MODIF sslv110e                      galenne E.GALENNE          364      8      8
+ CASTEST MODIF sslv134a                      galenne E.GALENNE          322      2      1
+ CASTEST MODIF sslv134b                      galenne E.GALENNE          622      2      1
+ CASTEST MODIF ssnp116b                      cibhhlv L.VIVAN            592      1      1
+ CASTEST MODIF tpla07a                      lebouvie F.LEBOUVIER        346      1      1
+CATALOGU MODIF compelem/type_maille__        cibhhlv L.VIVAN            359      2      1
+CATALOGU MODIF typelem/gener_me2dg_1         vabhhts J.PELLET           363      7      3
+CATALOGU MODIF typelem/gener_me2dg_2         vabhhts J.PELLET           379      7      3
+CATALOGU MODIF typelem/gener_me3dg_1         vabhhts J.PELLET           338      7      3
+CATALOGU MODIF typelem/gener_me3dg_3         vabhhts J.PELLET           362      7      3
+CATALOGU MODIF typelem/gener_me3h13          vabhhts J.PELLET           200      7      3
+CATALOGU MODIF typelem/gener_me3h23          vabhhts J.PELLET           196      7      3
+CATALOGU MODIF typelem/gener_me3h43          vabhhts J.PELLET           202      7      3
+CATALOGU MODIF typelem/gener_me3h53          vabhhts J.PELLET           198      7      3
+CATALOGU MODIF typelem/gener_meaa22          vabhhts J.PELLET           171      7      3
+CATALOGU MODIF typelem/gener_meaa32          vabhhts J.PELLET           169      7      3
+CATALOGU MODIF typelem/gener_meafo2          vabhhts J.PELLET           164      7      3
+CATALOGU MODIF typelem/gener_meah12          vabhhts J.PELLET           180      7      3
+CATALOGU MODIF typelem/gener_meah22          vabhhts J.PELLET           178      7      3
+CATALOGU MODIF typelem/gener_meah42          vabhhts J.PELLET           182      7      3
+CATALOGU MODIF typelem/gener_meah52          vabhhts J.PELLET           180      7      3
+CATALOGU MODIF typelem/gener_meax_2          vabhhts J.PELLET           567      7      3
+CATALOGU MODIF typelem/gener_meaxs2          vabhhts J.PELLET           532      7      3
+CATALOGU MODIF typelem/gener_mecpg2          vabhhts J.PELLET           358      7      3
+CATALOGU MODIF typelem/gener_mecpl2          vabhhts J.PELLET           554      7      3
+CATALOGU MODIF typelem/gener_mecq32          a3bhhae H.ANDRIAMBOLOLONA    257     13      2
+CATALOGU MODIF typelem/gener_meda22          vabhhts J.PELLET           171      7      3
+CATALOGU MODIF typelem/gener_meda32          vabhhts J.PELLET           169      7      3
+CATALOGU MODIF typelem/gener_medh12          vabhhts J.PELLET           180      7      3
+CATALOGU MODIF typelem/gener_medh22          vabhhts J.PELLET           178      7      3
+CATALOGU MODIF typelem/gener_medh42          vabhhts J.PELLET           182      7      3
+CATALOGU MODIF typelem/gener_medh52          vabhhts J.PELLET           180      7      3
+CATALOGU MODIF typelem/gener_medkt2          a3bhhae H.ANDRIAMBOLOLONA    314     10      1
+CATALOGU MODIF typelem/gener_medpg2          vabhhts J.PELLET           360      7      3
+CATALOGU MODIF typelem/gener_medpl2          vabhhts J.PELLET           575      7      3
+CATALOGU MODIF typelem/gener_meshb3          vabhhts J.PELLET           318      7      3
+CATALOGU MODIF typelem/gener_mv2d_2          vabhhts J.PELLET           319      7      3
+CATALOGU MODIF typelem/gener_mv3d_3          vabhhts J.PELLET           419      7      3
+CATALOGU MODIF typelem/gener_th3d_3          vabhhts J.PELLET           241      7      3
+CATALOGU MODIF typelem/gener_th3dd3          vabhhts J.PELLET           212      7      3
+CATALOGU MODIF typelem/gener_thax_2          vabhhts J.PELLET           205      7      3
+CATALOGU MODIF typelem/gener_thaxd2          vabhhts J.PELLET           232      7      3
+CATALOGU MODIF typelem/gener_thaxf2          vabhhts J.PELLET           130      7      3
+CATALOGU MODIF typelem/gener_thcq_2          vabhhts J.PELLET           131      7      3
+CATALOGU MODIF typelem/gener_thpl_2          vabhhts J.PELLET           214      7      3
+CATALOGU MODIF typelem/gener_thpld2          vabhhts J.PELLET           233      7      3
+CATALOGU MODIF typelem/mecpqs4               vabhhts J.PELLET           509      7      3
+CATALOGU MODIF typelem/mecptr3               vabhhts J.PELLET           543      7      3
+CATALOGU MODIF typelem/mecptr6               vabhhts J.PELLET           539      7      3
+CATALOGU MODIF typelem/medpqs4               vabhhts J.PELLET           520      7      3
+CATALOGU MODIF typelem/medpqs8               vabhhts J.PELLET           520      7      3
+CATALOGU MODIF typelem/medptr6               vabhhts J.PELLET           554      7      3
+CATALOGU MODIF typelem/thaxtr6               vabhhts J.PELLET           197      7      3
+CATALOGU MODIF typelem/thpltr6               vabhhts J.PELLET           206      7      3
+CATALOPY MODIF commande/calc_fonction       thomasso D.THOMASSON        151      7     25
+CATALOPY MODIF commande/defi_part_feti        assire A.ASSIRE            63      4      5
+CATALOPY MODIF commande/defi_part_pa_ops      assire A.ASSIRE            60      4      5
+ FORTRAN AJOUT utilitai/creaco                assire A.ASSIRE           525    525      0
+ FORTRAN AJOUT utilitai/creagm                assire A.ASSIRE           181    181      0
+ FORTRAN AJOUT utilitai/verico                assire A.ASSIRE           153    153      0
+ FORTRAN MODIF algorith/chrpel               vabhhts J.PELLET           548      3      3
+ FORTRAN MODIF algorith/gveri3               galenne E.GALENNE          168      3      3
+ FORTRAN MODIF algorith/nmvpir                mabbas M.ABBAS            565      5     16
+ FORTRAN MODIF algorith/ntdoet               vabhhts J.PELLET           250      4      4
+ FORTRAN MODIF algorith/rcmfmc               vabhhts J.PELLET           153      2      1
+ FORTRAN MODIF algorith/xconli               vabhhts J.PELLET           237      8      5
+ FORTRAN MODIF calculel/celcel               vabhhts J.PELLET           207      3      3
+ FORTRAN MODIF calculel/cescel               vabhhts J.PELLET           492     21      3
+ FORTRAN MODIF calculel/chligr               vabhhts J.PELLET           145      3      3
+ FORTRAN MODIF calculel/chpchd               vabhhts J.PELLET           222     28     11
+ FORTRAN MODIF calculel/crperm               vabhhts J.PELLET           240      3      3
+ FORTRAN MODIF calculel/forme0               cibhhlv L.VIVAN            153    106    523
+ FORTRAN MODIF calculel/forme1               cibhhlv L.VIVAN            170    120   1036
+ FORTRAN MODIF calculel/forme2               cibhhlv L.VIVAN             90     42    170
+ FORTRAN MODIF calculel/mecalm               vabhhts J.PELLET          2547      3      3
+ FORTRAN MODIF calculel/nocar2               vabhhts J.PELLET           183      2      2
+ FORTRAN MODIF calculel/pgauss               cibhhlv L.VIVAN            182    147     24
+ FORTRAN MODIF calculel/pjefch               vabhhts J.PELLET           106      3      3
+ FORTRAN MODIF calculel/vrcins               vabhhts J.PELLET           155      4      3
+ FORTRAN MODIF calculel/vrcom2               vabhhts J.PELLET           203      4      3
+ FORTRAN MODIF calculel/vrcomp               vabhhts J.PELLET           245      9      3
+ FORTRAN MODIF elements/dkqrig               a3bhhae H.ANDRIAMBOLOLONA    145      5      3
+ FORTRAN MODIF elements/dktrig               a3bhhae H.ANDRIAMBOLOLONA    164      5      3
+ FORTRAN MODIF elements/dsqrig               a3bhhae H.ANDRIAMBOLOLONA    453      5      3
+ FORTRAN MODIF elements/dstrig               a3bhhae H.ANDRIAMBOLOLONA    358      5      3
+ FORTRAN MODIF elements/dxmate               a3bhhae H.ANDRIAMBOLOLONA    634     75      7
+ FORTRAN MODIF elements/elraca               cibhhlv L.VIVAN            906     87     68
+ FORTRAN MODIF elements/elraga               cibhhlv L.VIVAN           1079    226    199
+ FORTRAN MODIF elements/elrfd2               cibhhlv L.VIVAN            396     80      8
+ FORTRAN MODIF elements/elrfdf               cibhhlv L.VIVAN           1201    456     68
+ FORTRAN MODIF elements/gveri2               galenne E.GALENNE          186      3      3
+ FORTRAN MODIF elements/gverig               galenne E.GALENNE          294      2      2
+ FORTRAN MODIF elements/matrc                a3bhhae H.ANDRIAMBOLOLONA    269     62      4
+ FORTRAN MODIF elements/q4grig               a3bhhae H.ANDRIAMBOLOLONA    195      5      3
+ FORTRAN MODIF elements/te0031               a3bhhae H.ANDRIAMBOLOLONA    377     49      5
+ FORTRAN MODIF elements/te0401               a3bhhae H.ANDRIAMBOLOLONA    221     38      3
+ FORTRAN MODIF modelisa/chpeva               vabhhts J.PELLET           142      3      3
+ FORTRAN MODIF modelisa/pmfd01               vabhhts J.PELLET           158      5      5
+ FORTRAN MODIF prepost/cmqlnm                vabhhts J.PELLET           231     58     35
+ FORTRAN MODIF prepost/lrceme                vabhhts J.PELLET           195      3      3
+ FORTRAN MODIF prepost/paqmai                vabhhts J.PELLET           598      3      3
+ FORTRAN MODIF prepost/pkfond                galenne E.GALENNE          799     11     10
+ FORTRAN MODIF prepost/pkrecu                galenne E.GALENNE          187      9      7
+ FORTRAN MODIF prepost/ssingu                vabhhts J.PELLET           121      3      3
+ FORTRAN MODIF prepost/stock                 vabhhts J.PELLET           133      3      3
+ FORTRAN MODIF utilitai/chpass               vabhhts J.PELLET           301      3      3
+ FORTRAN MODIF utilitai/cnoaff               vabhhts J.PELLET           488      6      4
+ FORTRAN MODIF utilitai/fetskp                assire A.ASSIRE           495    181    713
+ FORTRAN MODIF utilitai/focrr0               vabhhts J.PELLET           213      2      2
+ FORTRAN MODIF utilitai/focrr2               vabhhts J.PELLET           416      2      2
+ FORTRAN MODIF utilitai/imppiv               vabhhts J.PELLET           134      3      6
+ FORTRAN MODIF utilitai/op0090               vabhhts J.PELLET           286      2      2
+ FORTRAN SUPPR calculel/pgaus1               cibhhlv L.VIVAN             74      0     74
+ FORTRAN SUPPR calculel/pgaus2               cibhhlv L.VIVAN            271      0    271
+ FORTRAN SUPPR calculel/pgaus3               cibhhlv L.VIVAN            453      0    453
+ FORTRAN SUPPR calculel/pgausn               cibhhlv L.VIVAN             68      0     68
+  PYTHON AJOUT Utilitai/liss_enveloppe      thomasso D.THOMASSON        931    931      0
+  PYTHON MODIF Macro/calc_fonction_ops      thomasso D.THOMASSON        320     11      2
+  PYTHON MODIF Macro/defi_part_feti_ops       assire A.ASSIRE           194      3      3
+  PYTHON MODIF Macro/macr_aspic_mail_ops     galenne E.GALENNE          927     85      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    9        2475      2475             +2475
+ MODIF :  129       43118      2509    3325      -816
+ SUPPR :    4         866               866      -866
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  142       46459      4984    4191      +793 

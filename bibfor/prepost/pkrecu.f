@@ -5,14 +5,14 @@
      +                    NBVAL , NDIM  , PRECV , RMAX  )
       IMPLICIT   NONE
       INTEGER             NBVAL, NDIM
-      REAL*8              PRECV, RMAX
+      REAL*8              PRECV, RMAX, RMPREC
       CHARACTER*(*)       DEPSUP, ABSSUP, DXSUP, DYSUP, DZSUP,
      +                    DEPINF, ABSINF, DXINF, DYINF, DZINF,
      +                    COORXS, COORYS, COORZS,
      +                    COORXI, COORYI, COORZI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,9 +132,10 @@ C
       ELSE
          RMAXN = RMAX
       ENDIF
+      RMPREC = RMAXN*(1+PRECV/10)
       NBRS = NBS
       DO 40 I = 1 , NBS
-         IF ( ZR(JABSCS+I-1) .GT. RMAXN ) THEN
+         IF ( ZR(JABSCS+I-1) .GT. RMPREC ) THEN
             NBRS = I - 1
             GOTO 42
          ENDIF
@@ -150,9 +151,10 @@ C
       ELSE
          RMAXN = RMAX
       ENDIF
+      RMPREC = RMAXN*(1+PRECV/10)
       NBRI = NBI
       DO 44 I = 1 , NBI
-         IF ( ZR(JABSCI+I-1) .GT. RMAXN ) THEN
+         IF ( ZR(JABSCI+I-1) .GT. RMPREC ) THEN
             NBRI = I - 1
             GOTO 46
          ENDIF
@@ -163,14 +165,14 @@ C
      +             'IL FAUT AU MOINS 3 NOEUDS SUR LA LEVRE INFERIEURE')
       ENDIF
       IF ( NBRS .NE. NBRI ) THEN
-         CALL UTMESS('F',NOMCMD,'PAS LE MEME NOMBRE DE NOEUDS '//
+         CALL UTMESS('A',NOMCMD,'PAS LE MEME NOMBRE DE NOEUDS '//
      +              'ENTRE LA LEVRE SUPERIEURE ET LA LEVRE INFERIEURE')
       ENDIF
-      NBVAL = NBRS
+      NBVAL = MIN(NBRS,NBRI)
 C
 C     --- ON VERIFIE QUE LES NOEUDS SONT EN VIS_A_VIS ---
 C
-      PRECN = PRECV / RMAXN
+      PRECN = PRECV * RMAXN
       DO 50 I = 2 , NBVAL
          D = SQRT(   ( ZR(JCOXS+I-1) - ZR(JCOXI+I-1) ) ** 2
      +             + ( ZR(JCOYS+I-1) - ZR(JCOYI+I-1) ) ** 2

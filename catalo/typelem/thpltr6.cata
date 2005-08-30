@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,9 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     EGINST_R = INST_R   ELGA__ MASS    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ MASS    (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ MASS    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
+                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
+                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CDECENT  = NEUT_K24 ELEM__         (Z1       )
     CREFER1  = NEUT_K24 ELEM__         (Z1       Z2       Z3       Z4       Z5       Z6
@@ -65,7 +67,9 @@ MODE_LOCAL__
     ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       )
     EGNEUT1R = NEUT_R   ELGA__ MASS    (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ MASS    (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ MASS    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
+                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
+                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ MASS    (SOUR     )
@@ -165,9 +169,9 @@ OPTION__
                               OUT__  MMATTTR  PMATTTR
     META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
-                              OUT__  EPHASNO_ PPHASNOU 
+                              OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
-                              OUT__  EPHASNO_ PPHASNOU 
+                              OUT__  EPHASNO_ PPHASNOU
     MTAN_RIGI_MASS      134   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI
                                      CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
                               OUT__  MMATTTR  PMATTTR

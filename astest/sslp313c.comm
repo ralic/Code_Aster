@@ -1,6 +1,6 @@
-
-# MODIF  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE . METHODE ARLEQUIN
+# SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,6 @@
 #                                                                       
 #                                                                       
 # ======================================================================
-# SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
 #
 
 

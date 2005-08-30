@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ C        LINEAIRE          KIRCHOFF  (MINCE)        DKT       DST
 C                 AVEC CISAILLEMENT  (EPAISSE)      DKQ    DSQ ET Q4G
 C
 C        RIGI_MECA       MASS_MECA
+C        RIGI_MECA_SENSI RIGI_MECA_SENS_C
 C        EPOT_ELEM_DEPL  ECIN_ELEM_DEPL
 C        MASS_INER
 C          -----------------------------------------------------------
@@ -58,7 +59,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,IND
-      INTEGER      MULTIC,JTAB(7),CODRET,JDEPM,JDEPR
+      INTEGER      MULTIC,JTAB(7),CODRET,JDEPM,JDEPR,JVAPR
       INTEGER      ICOMPO,I1,I2,J,LT2EV,JVECT
       INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
       INTEGER      JMATE,LZR,JGEOM,JMATR,JENER,I
@@ -119,6 +120,8 @@ C
       END IF
 C
       IF ( OPTION.EQ.'RIGI_MECA'      .OR. 
+     +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENS_C' .OR.
      +     OPTION.EQ.'EPOT_ELEM_DEPL' ) THEN
 C     --------------------------------------
 C
@@ -133,14 +136,53 @@ C
         ELSE IF (NOMTE.EQ.'MEQ4QU4') THEN
           CALL Q4GRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         END IF
-        IF (OPTION.EQ.'RIGI_MECA') THEN
+
+        IF (OPTION(11:14).EQ.'SENS') THEN
+          NDDL = 6*NNO
+          IF (OPTION(15:16).EQ.'_C') THEN
+            CALL JEVECH('PVECTUC','E',JVECT)
+          ELSE
+            CALL JEVECH('PVECTUR','E',JVECT)
+          END IF
+          CALL JEVECH('PVAPRIN','L',JVAPR)
+          CALL UTPSLG(NNO,6,PGL,MATLOC,MATV)
+C PASSAGE VECTEUR - MATRICE
+          I1 = 0
+          DO 120 I = 1 , NDDL
+            DO 130 J = 1 , NDDL
+              I1 = I1 + 1
+              MATP(I,J) = MATV(I1)
+              MATP(J,I) = MATV(I1)
+              IF(J.EQ.I)GOTO 120
+130         CONTINUE
+120       CONTINUE
+          DO 100 I = 1,NDDL
+            IF (OPTION(15:16).EQ.'_C') THEN
+              ZC(JVECT-1+I) = DCMPLX(0.D0,0.D0)
+            ELSE
+              ZR(JVECT-1+I) = 0.D0
+            END IF
+            DO 110 J = 1,NDDL
+              IF (OPTION(15:16).EQ.'_C') THEN
+                ZC(JVECT-1+I) = ZC(JVECT-1+I)
+     &             - MATP(I,J)*ZC(JVAPR-1+J)
+              ELSE
+                ZR(JVECT-1+I) = ZR(JVECT-1+I)
+     &             - MATP(I,J)*ZR(JVAPR-1+J)
+              END IF
+110         CONTINUE
+100       CONTINUE
+
+        ELSE IF (OPTION.EQ.'RIGI_MECA') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
+
         ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
           CALL JEVECH('PENERDR','E',JENER)
           DO 10 I = 1,3
             ZR(JENER-1+I) = ENER(I)
    10     CONTINUE
+
         END IF
 C
 C
@@ -196,9 +238,11 @@ C     ------------------------------------
 C
 C     -- OPTIONS NON-LINEAIRES :
 C     --------------------------
-      ELSEIF ( OPTION(1:9).EQ.'FULL_MECA'.OR.
-     +         OPTION.EQ.'RAPH_MECA'     .OR.
-     +         OPTION(1:10).EQ.'RIGI_MECA_' ) THEN
+      ELSEIF ( ( OPTION(1:9).EQ.'FULL_MECA'.OR.
+     +           OPTION.EQ.'RAPH_MECA'     .OR.
+     +           OPTION(1:10).EQ.'RIGI_MECA_' )
+     +   .AND. ( OPTION.NE.'RIGI_MECA_SENSI' .OR.
+     +           OPTION.NE.'RIGI_MECA_SENS_C' ) ) THEN
 C
         CALL JEVECH('PDEPLMR','L',JDEPM)
         CALL JEVECH('PDEPLPR','L',JDEPR)

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER        N1, NBCHAM, IORD1,IORD2, NBPERM, JORDR, NBTROU, IP,
-     +               IBID, IC, IRET, JLIM1, JLIM2, NBMA, JLINO, NBNO2
+     +      IBID, IC, IRET, JLIM1, JLIM2, NBMA, JLINO, NBNO2,NNCP
       REAL*8         INST1, TRAN(3), PREC
       COMPLEX*16     CBID
       CHARACTER*8    K8B, CRIT, RESU1, RESU2, RESU3, MA1, MA2,
@@ -230,7 +230,7 @@ C
      +                                             IBID, LIGREL, IBID )
             CALL DISMOI ( 'F', 'NOM_OPTION', CH2, 'CHAM_ELEM',
      +                                             IBID, OPTION, IBID )
-            CALL CESCEL ( CHS2, LIGREL, OPTION, ' ', 'OUI', 'G', CH2 )
+            CALL CESCEL(CHS2,LIGREL,OPTION,' ','OUI',NNCP,'G',CH2)
             CALL DETRSD ( 'CHAM_ELEM_S', CHS1 )
             CALL DETRSD ( 'CHAM_ELEM_S', CHS2 )
          ENDIF

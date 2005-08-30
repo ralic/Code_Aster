@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,10 +172,10 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
         EPSIL = STHETA * tan(ALPHA*pi/180.0) 
         PHI = (EPSIL * ZA) - YA
         DELTA = pow(PHI,2) - ((1 + pow(EPSIL,2))*(pow(PHI,2) - (pow((DEC/2.0),2)*pow(EPSIL,2))))
-        if (THETA > 0) :          
+        if (STHETA > 0) :          
            YD = ( sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
         else :
-          YD = ( -1.0*sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
+           YD = ( -1.0*sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
 
         ZD = sqrt(pow((DEC/2.0),2) - pow(YD,2))  
 
@@ -193,6 +193,14 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
            ZN0 = ZD0 - A*CALPHA 
            XN = XN0 * CTHETA 
            YN = XN0 * STHETA
+           DNXY = sqrt(pow(XD,2) + pow(YD,2)) - sqrt(pow(XN,2) + pow(YN,2))
+           DNXY0 = XD0 - XN0
+           RAPP = DNXY/DNXY0
+           # Correction necessaire dans le cas theta et/ou alpha grand
+           if (RAPP < 0.5) :
+              DXY = sqrt(pow(XD,2) + pow(YD,2) ) 
+              XN = XN * DXY/XD0
+              YN = YN * DXY/XD0
            SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
            D0N0 = sqrt( pow((XD0 - XN0),2) + pow((ZD0 - ZN0),2) )
@@ -234,7 +242,7 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
         EPSIL =  STHETA * TGALP
         PHI = (EPSIL * ZA) - YA
         DELTA = pow(PHI,2) - (1.0 + pow(EPSIL,2))*(pow(PHI,2) - pow((DEC/2.0),2)*pow(EPSIL,2)) 
-        if (THETA > 0) :          
+        if (STHETA > 0) :          
            YD = (sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
         else :
            YD = (-1.0*sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
@@ -841,5 +849,79 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
          IMPR_RESU( RESU = impr_resu, 
                     FORMAT = impr['FORMAT'],**motscles )
 #
+#
+#     --- Verification profondeur fissure (courte débouchante) ---
+#
+  if FISCOU  and not (TFISS=='NON_DEB')    :
+      nomres=DEFI_GROUP( reuse=nomres,
+                         MAILLAGE=nomres,
+                         CREA_GROUP_NO=(_F( GROUP_MA = 'LEVRTUBU',),
+                                        _F( NOM = 'FONDORDO',
+                                            GROUP_MA = 'FONDFISS',
+                                            OPTION = 'NOEUD_ORDO',),),);
+
+      nommail=nomres.nom
+      coord   =aster.getvectjev(nommail.ljust(8)+'.COORDO    .VALE')
+      collgrno=aster.getcolljev(nommail.ljust(8)+'.GROUPENO')
+
+      grfo=collgrno['FONDORDO']
+      Nbno = len(grfo)  
+      listx = [None]*Nbno
+      listy = [None]*Nbno
+      listz = [None]*Nbno
+      k = 0
+      for node in grfo:
+         listx[k] = coord[3*(node-1)]
+         listy[k] = coord[3*(node-1)+1]
+         listz[k] = coord[3*(node-1)+2]
+         k = k+1
+
+      XAB = listx[Nbno-1] - listx[0]
+      YAB = listy[Nbno-1] - listy[0]
+      ZAB = listz[Nbno-1] - listz[0]
+      AB = sqrt(XAB*XAB + YAB*YAB +ZAB*ZAB)
+      d = 0
+      for k in range(0,Nbno) :
+         XAM = listx[k] - listx[0]
+         YAM = listy[k] - listy[0]
+         ZAM = listz[k] - listz[0]
+         Xvect = YAB*ZAM-ZAB*YAM
+         Yvect = ZAB*XAM-XAB*ZAM
+         Zvect = XAB*YAM-YAB*XAM
+         AM = sqrt(Xvect*Xvect+ Yvect*Yvect +Zvect*Zvect)
+         dk = AM/AB
+         if dk > d :
+            XC = listx[k]
+            YC = listy[k]
+            ZC = listz[k]
+         d = max(dk, d)
+   
+      grlev=collgrno['LEVRTUBU']
+      Nbnol = len(grlev)  
+      listxl = [None]*Nbnol
+      listyl = [None]*Nbnol
+      listzl = [None]*Nbnol
+      k = 0
+      for node in grlev:
+         listxl[k] = coord[3*(node-1)]
+         listyl[k] = coord[3*(node-1)+1]
+         listzl[k] = coord[3*(node-1)+2]
+         k = k+1
+      dist = 0
+      for k in range(0,Nbnol) :
+         XAM = listxl[k] - listx[0]
+         YAM = listyl[k] - listy[0]
+         ZAM = listzl[k] - listz[0]
+         Scal = (XAB*XAM + YAB*YAM + ZAB*ZAM)/(AB*AB)
+         if (abs(Scal) < 0.51) and (abs(Scal) > 0.49) :
+            Xk = listxl[k] -XC
+            Yk = listyl[k] -YC
+            Zk = listzl[k] -ZC
+            dk = sqrt(Xk**2+ Yk**2 +Zk**2)
+            dist = max(dk, dist)
+      
+      print '\n<MACR_ASPIC_MAIL> PROFONDEUR DE LA FISSURE DANS LE MAILLAGE : ', dist
+      print ' \n'
+#      
   return ier
 

@@ -20,12 +20,12 @@ C ======================================================================
       REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES QUATRE NOEUDS
-C     IN  OPTION : OPTION RIGI_MECA OU EPOT_ELEM_DEPL
+C     IN  OPTION : OPTION RIGI_MECA, RIGI_MECA_SENS* OU EPOT_ELEM_DEPL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
 C     OUT RIG    : MATRICE DE RIGIDITE
 C     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM_DEPL)
@@ -125,7 +125,9 @@ C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
         END IF
    10 CONTINUE
 
-      IF (OPTION.EQ.'RIGI_MECA') THEN
+      IF ( OPTION.EQ.'RIGI_MECA'      .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
         CALL DXQLOC(FLEX,MEMB,MEFL,CTOR,RIG)
       ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)

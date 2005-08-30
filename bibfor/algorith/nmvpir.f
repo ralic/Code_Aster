@@ -8,7 +8,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,9 +80,6 @@ C     ZIRC_EPRI    : FLUPHI VALDRP TTAMAX
 C     ZIRC_CYRA2   : FLUPHI EPSFAB TPREC
 C     VISC_IRRA_LOG: FLUPHI A      B      CTPS    ENER
 C -------------------------------------------------------------
-      REAL*8            AJACO1,AJACO2
-      COMMON / AJACOC / AJACO1,AJACO2
-C -------------------------------------------------------------
       COMMON / NMPAIR / FLUPHI,
      *                  EPSFAB,TPREC,
      *                  VALDRP,TTAMAX,
@@ -105,7 +102,7 @@ C AUTRES
       REAL*8     COECYR(NBCCYR), COEEPR(NBCEPR), COEINT(NBCINT)
       CHARACTER*8  NOMLEM(NBCLEM),NOMVIL(NBCVIL)
       CHARACTER*8  NOMINT(NBCINT)
-      CHARACTER*2  K2B,CODVIL(NBCVIL)
+      CHARACTER*2  CODVIL(NBCVIL),CODLEM(NBCLEM),CODINT(NBCINT)
 C GRANDISSEMENT
       INTEGER    NBCLGR
       PARAMETER (NBCLGR=3)
@@ -216,10 +213,10 @@ C ----------------------------------------------------------------------
 C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 
          CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
-     &                 7,NOMLEM,COELEM,K2B, 'FM' )
+     &                 7,NOMLEM,COELEM,CODLEM, 'FM' )
 
          CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
-     &                 3,NOMGRD,COEFGR,K2B, 'FM' )
+     &                 3,NOMGRD,COEFGR,CODGRA, 'FM' )
 C          FLUX NEUTRONIQUE
          FLUPHI = (IRRAP-IRRAM)/DELTAT
 
@@ -290,7 +287,7 @@ C        PARAMETRES DE LA LOI DE FLUAGE
 
       ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
          CALL RCVALA(IMATE,' ','LEMA_SEUIL',1,'TEMP',TSCHEM,
-     &              2,NOMINT(1),COEINT(1),K2B, 'FM' )
+     &              2,NOMINT(1),COEINT(1),CODINT, 'FM' )
          UNSURM=0.D0
          VALDEN=1.D0
          UNSURK = (COEINT(1)*FLUPHI*2.D0)/SQRT(3.D0)
@@ -563,14 +560,6 @@ C
  200  CONTINUE
  299  CONTINUE
 
-
-
-C     -- GLUTE INTRODUITE PAR J. PELLET LE 12/5/2005 :
-C        SI L'ON SUPPRIME LES 2 LIGNES SUIVANTES, LE CODE PRODUIT DES
-C        RESULTATS FAUX POUR LE TEST SSNL121B SUR LA MACHINE CLAYASTR
-C        EN MODE "NO DEBUG". EST-CE UN BUG DE L'OPTIMISEUR ?
-      AJACO1=X
-      AJACO2=FLUPHI
 
 
       END

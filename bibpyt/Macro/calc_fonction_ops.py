@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 31/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_fonction_ops Macro  DATE 29/08/2005   AUTEUR THOMASSO D.THOMASSON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
   import copy
   from math import pi
   from Utilitai.t_fonction import t_fonction,t_fonction_c,t_nappe
+  from Utilitai import liss_enveloppe
   from Accas import _F
   from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
   from Utilitai.Utmess import UTMESS
@@ -274,7 +275,15 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
        l_fonc.append(t_fonction(l_freq,spectr[iamor,ideb,:]/SPEC_OSCI['NORME'],para_fonc))
      __ex=t_nappe(vale_para,l_fonc,para)
   ###
-  if (LISS_ENVELOP!= None): return
+  if (LISS_ENVELOP!= None):
+     __ff=LISS_ENVELOP['NAPPE'].convert()
+     sp_nappe=liss_enveloppe.nappe(listFreq=__ff.l_fonc[0].vale_x, listeTable=[f.vale_y for f in __ff.l_fonc], listAmor=__ff.vale_para, entete="")
+     sp_lisse=liss_enveloppe.lissage(nappe=sp_nappe,fmin=LISS_ENVELOP['FREQ_MIN'],fmax=LISS_ENVELOP['FREQ_MAX'],elarg=LISS_ENVELOP['ELARG'],tole_liss=LISS_ENVELOP['TOLE_LISS'])
+     para_fonc=__ff.l_fonc[0].para
+     l_fonc=[]
+     for val in sp_lisse.listTable : 
+       l_fonc.append(t_fonction(sp_lisse.listFreq,val,para_fonc))
+     __ex=t_nappe(vale_para=sp_lisse.listAmor,l_fonc=l_fonc,para=__ff.para)
 
   ### creation de la fonction produite par appel à DEFI_FONCTION
   ### on récupère les paramètres issus du calcul de __ex

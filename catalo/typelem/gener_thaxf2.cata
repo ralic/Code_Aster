@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,9 +51,13 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
+                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
+                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
+                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
+                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
@@ -116,9 +120,9 @@ OPTION__
                               OUT__  MMATTTR  PMATTTR
     META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
-                              OUT__  EPHASNO_ PPHASNOU 
+                              OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
-                              OUT__  EPHASNO_ PPHASNOU 
+                              OUT__  EPHASNO_ PPHASNOU
     RIGI_THER           260   IN__   NGEOMER  PGEOMER  CHARMON  PHARMON  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 30/08/2005   AUTEUR ASSIRE A.ASSIRE 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT METIS ET CALCUL FETI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ MODI_MAILLAGE(reuse =MAIL1,
               MAILLAGE=MAIL1,
               ORIE_PEAU_3D=(_F(GROUP_MA='PRESS',),),
               MODELE=MODM,);
-                   
+
 CH1=AFFE_CHAR_MECA(MODELE=MODM,
                    PRES_REP=(_F(GROUP_MA=('PRESS'),PRES = -20000.,),),)
 
@@ -44,7 +44,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MODM,
                    DDL_IMPO=(_F( GROUP_NO=('DDLIMP'),DX=0.0,DY=0.0,DZ=0.0),),)                   
 
 
-# Partitionnement avec gestion des mailles de bords
+# Partitionnement avec verification de la connexite
 SDFETI2 = DEFI_PART_FETI(
                 MODELE=MODM,
                 NB_PART=16,
@@ -53,10 +53,10 @@ SDFETI2 = DEFI_PART_FETI(
                 METHODE='PMETIS',
                 NOM_GROUP_MA='TOTO',
                 TRAITER_BORDS='NON',
-                VERI_CONNEX='OUI',
+                CORRECTION_CONNEX='OUI',
                 INFO=1,);
 
-# Partitionnement avec verification de la connexite
+# Partitionnement avec gestion des mailles de bords
 SDFETI = DEFI_PART_FETI(
                 MODELE=MODM,
                 NB_PART=16,
@@ -65,7 +65,7 @@ SDFETI = DEFI_PART_FETI(
                 METHODE='KMETIS',
                 NOM_GROUP_MA='SD',
                 TRAITER_BORDS='OUI',
-                VERI_CONNEX='NON',
+                CORRECTION_CONNEX='NON',
                 INFO=1,);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL1,
@@ -74,7 +74,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL1,
                            TOUT='OUI',
                            ),
                     )       
-
 
 RESU=MECA_STATIQUE(MODELE=MODM,
                    CHAM_MATER=CHMAT,
@@ -98,7 +97,7 @@ RESU=MECA_STATIQUE(MODELE=MODM,
                           _F(CHARGE=CH2),),
                    INFO=2,
                         )
-                        
+
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'TEST1',

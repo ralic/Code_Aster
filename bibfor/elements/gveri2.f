@@ -1,7 +1,7 @@
       SUBROUTINE GVERI2(CHFOND,LOBJ2,NOMNO,COORN,
      &       TRAV1,TRAV2,TRAV3,THLAGR,NDEG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,7 +141,7 @@ C
                 ZR(IADRT2 + J - 1) = RSUP
               ELSE IF (NRF.NE.0) THEN
                  NBPAR = 1
-                 NOMPAR(1) = 'X'
+                 NOMPAR(1) = 'ABSC'
                  VALPAR(1) = ZR(IADABS + J - 1)
                  CALL FOINTE('FM',RINFF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                  ZR(IADRT1 + J - 1) = VALRES
@@ -166,7 +166,7 @@ C
                 ZR(IADRT2 + J - 1) = RSUP
               ELSE IF (NRF.NE.0) THEN
                  NBPAR = 1
-                 NOMPAR(1) = 'X'
+                 NOMPAR(1) = 'ABSC'
                  VALPAR(1) = ZR(IADABS + J - 1)
                  CALL FOINTE('FM',RINFF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                  ZR(IADRT1 + J - 1) = VALRES

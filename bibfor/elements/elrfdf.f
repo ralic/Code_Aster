@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,25 +45,26 @@ C   -------------------------------------------------------------------
       REAL*8 PFACE1,PFACE2,PFACE3,PFACE4,Z01,Z02,Z04
       REAL*8 PMILI1,PMILI2,PMILI3,PMILI4
       REAL*8 U,AL31,AL32,AL33,DAL31,DAL32,DAL33
+      REAL*8 R,R1,R2,A,B,C,D,E,F,G,H,O,P,Q,S,T
 
 C -----  FONCTIONS FORMULES
-      AL31(U) = 0.5D0*U* (U-1.0D0)
-      AL32(U) = - (U+1.0D0)* (U-1.0D0)
-      AL33(U) = 0.5D0*U* (U+1.0D0)
-      DAL31(U) = 0.5D0* (2.0D0*U-1.0D0)
+      AL31(U)  = 0.5D0*U*(U-1.0D0)
+      AL32(U)  = -(U+1.0D0)*(U-1.0D0)
+      AL33(U)  = 0.5D0*U*(U+1.0D0)
+      DAL31(U) = 0.5D0*(2.0D0*U-1.0D0)
       DAL32(U) = -2.0D0*U
-      DAL33(U) = 0.5D0* (2.0D0*U+1.0D0)
+      DAL33(U) = 0.5D0*(2.0D0*U+1.0D0)
 C DEB ------------------------------------------------------------------
       ELREFE = ELREFZ
 
-      ZERO = 0.0D0
+      ZERO   = 0.0D0
       UNDEMI = 0.5D0
-      UN = 1.0D0
-      DEUX = 2.0D0
-      TROIS = 3.0D0
+      UN     = 1.0D0
+      DEUX   = 2.0D0
+      TROIS  = 3.0D0
       QUATRE = 4.0D0
-      UNS4 = UN/QUATRE
-      UNS8 = UN/8.0D0
+      UNS4   = UN/QUATRE
+      UNS8   = UN/8.0D0
 
 C     ------------------------------------------------------------------
       IF (ELREFE.EQ.'HE8'.OR.ELREFE.EQ.'X20') THEN
@@ -77,34 +78,225 @@ C     ------------------------------------------------------------------
         DFF(1,1) = - (UN-Y0)* (UN-Z0)*UNS8
         DFF(2,1) = - (UN-X0)* (UN-Z0)*UNS8
         DFF(3,1) = - (UN-X0)* (UN-Y0)*UNS8
-
         DFF(1,2) = (UN-Y0)* (UN-Z0)*UNS8
         DFF(2,2) = - (UN+X0)* (UN-Z0)*UNS8
         DFF(3,2) = - (UN+X0)* (UN-Y0)*UNS8
-
         DFF(1,3) = (UN+Y0)* (UN-Z0)*UNS8
         DFF(2,3) = (UN+X0)* (UN-Z0)*UNS8
         DFF(3,3) = - (UN+X0)* (UN+Y0)*UNS8
-
         DFF(1,4) = - (UN+Y0)* (UN-Z0)*UNS8
         DFF(2,4) = (UN-X0)* (UN-Z0)*UNS8
         DFF(3,4) = - (UN-X0)* (UN+Y0)*UNS8
-
         DFF(1,5) = - (UN-Y0)* (UN+Z0)*UNS8
         DFF(2,5) = - (UN-X0)* (UN+Z0)*UNS8
         DFF(3,5) = (UN-X0)* (UN-Y0)*UNS8
-
         DFF(1,6) = (UN-Y0)* (UN+Z0)*UNS8
         DFF(2,6) = - (UN+X0)* (UN+Z0)*UNS8
         DFF(3,6) = (UN+X0)* (UN-Y0)*UNS8
-
         DFF(1,7) = (UN+Y0)* (UN+Z0)*UNS8
         DFF(2,7) = (UN+X0)* (UN+Z0)*UNS8
         DFF(3,7) = (UN+X0)* (UN+Y0)*UNS8
-
         DFF(1,8) = - (UN+Y0)* (UN+Z0)*UNS8
         DFF(2,8) = (UN-X0)* (UN+Z0)*UNS8
         DFF(3,8) = (UN-X0)* (UN+Y0)*UNS8
+
+C     ------------------------------------------------------------------
+      ELSEIF (ELREFE.EQ.'HH8') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 8
+        NDIM = 3
+        R1 = 0.2165063509461097D0
+        A = R1 - 0.375D0*X0
+        B = R1 - 0.375D0*Y0
+        C = R1 - 0.375D0*Z0
+        D = R1 + 0.375D0*X0
+        E = R1 + 0.375D0*Y0
+        F = R1 + 0.375D0*Z0
+        R2 = 1.7320508075688773D0
+        X0 = X0 * R2
+        Y0 = Y0 * R2
+        Z0 = Z0 * R2
+
+        DFF(1,1) =  B*(Z0 - UN)
+        DFF(2,1) =  A*(Z0 - UN)
+        DFF(3,1) =  A*(Y0 - UN)
+        DFF(1,2) = -B*(Z0 - UN)
+        DFF(2,2) =  D*(Z0 - UN)
+        DFF(3,2) =  D*(Y0 - UN)
+        DFF(1,3) =  E*(UN - Z0)
+        DFF(2,3) = -D*(Z0 - UN)
+        DFF(3,3) = -D*(UN + Y0)
+        DFF(1,4) = -E*(UN - Z0)
+        DFF(2,4) = -A*(Z0 - UN)
+        DFF(3,4) = -A*(UN + Y0)
+        DFF(1,5) = -B*(UN + Z0)
+        DFF(2,5) = -A*(UN + Z0)
+        DFF(3,5) = -A*(Y0 - UN)
+        DFF(1,6) =  B*(UN + Z0)
+        DFF(2,6) = -D*(UN + Z0)
+        DFF(3,6) = -D*(Y0 - UN)
+        DFF(1,7) =  E*(UN + Z0)
+        DFF(2,7) =  D*(UN + Z0)
+        DFF(3,7) =  D*(UN + Y0)
+        DFF(1,8) = -E*(UN + Z0)
+        DFF(2,8) =  A*(UN + Z0)
+        DFF(3,8) =  A*(UN + Y0)
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'H16') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 16
+        NDIM = 3
+
+        A = UNDEMI*(UN - X0)
+        B = UNDEMI*(UN - Y0)
+        C = UNDEMI*(UN - Z0)
+        D = A + X0
+        E = B + Y0
+        F = C + Z0
+        G = UNDEMI*(UN - Y0*Y0)
+        H = UNDEMI*(UN - Z0*Z0)
+        O = UNDEMI*Y0
+        P = UNDEMI*Z0
+
+        DFF(1,1) =  B*C*( E + P )
+        DFF(2,1) =  A*C*( Y0 + P )
+        DFF(3,1) =  A*B*( Z0 + O )
+        DFF(1,2) = -B*C*( E + P )
+        DFF(2,2) =  D*C*( Y0 + P )
+        DFF(3,2) =  D*B*( Z0 + O )
+        DFF(1,3) =  E*C*(-B - P )
+        DFF(2,3) =  D*C*( Y0 - P )
+        DFF(3,3) =  D*E*( Z0 - O )
+        DFF(1,4) = -E*C*( -B - P )
+        DFF(2,4) =  A*C*( Y0 - P ) 
+        DFF(3,4) =  A*E*( Z0 - O )
+        DFF(1,5) =  B*F*(  E - P )
+        DFF(2,5) =  A*F*( Y0 - P )
+        DFF(3,5) =  A*B*( Z0 - O )
+        DFF(1,6) = -B*F*(  E - P )
+        DFF(2,6) =  D*F*( Y0 - P )
+        DFF(3,6) =  D*B*( Z0 - O )
+        DFF(1,7) =  E*F*( -B + P )
+        DFF(2,7) =  D*F*( Y0 + P )
+        DFF(3,7) =  D*E*( Z0 + O )
+        DFF(1,8) = -E*F*(-B + P )
+        DFF(2,8) =  A*F*( Y0 + P ) 
+        DFF(3,8) =  A*E*( Z0 + O )
+
+        Y0 = -DEUX*Y0
+        Z0 = -DEUX*Z0
+
+        DFF(1,9)  =  G*C
+        DFF(2,9)  =  D*Y0*C
+        DFF(3,9)  = -D*G
+        DFF(1,10) = -G*C
+        DFF(2,10) =  A*Y0*C
+        DFF(3,10) = -A*G
+        DFF(1,11) = -B*H
+        DFF(2,11) = -A*H
+        DFF(3,11) =  A*B*Z0
+        DFF(1,12) =  B*H
+        DFF(2,12) = -D*H
+        DFF(3,12) =  D*B*Z0
+        DFF(1,13) =  E*H
+        DFF(2,13) =  D*H
+        DFF(3,13) =  D*E*Z0
+        DFF(1,14) = -E*H
+        DFF(2,14) =  A*H
+        DFF(3,14) =  A*E*Z0
+        DFF(1,15) =  G*F
+        DFF(2,15) =  D*Y0*F
+        DFF(3,15) =  D*G
+        DFF(1,16) = -G*F
+        DFF(2,16) =  A*Y0*F
+        DFF(3,16) =  A*G
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'H18') THEN
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 18
+        NDIM = 3
+
+        A = UNDEMI*(UN - X0)
+        B = UNDEMI*Y0*(Y0 - UN)
+        C = UNDEMI*Z0*(Z0 - UN)
+        D = A + X0
+        E = B + Y0
+        F = C + Z0
+        G = UNDEMI*(UN - Y0*Y0)
+        H = UNDEMI*(UN - Z0*Z0)
+
+        DFF(1,1) = -UNDEMI*B*C
+        DFF(2,1) = A*C*(Y0-UNDEMI)
+        DFF(3,1) = A*B*(Z0-UNDEMI)
+        DFF(1,2) = UNDEMI*B*C
+        DFF(2,2) = D*C*(Y0-UNDEMI)
+        DFF(3,2) = D*B*(Z0-UNDEMI)
+        DFF(1,3) = UNDEMI*E*C
+        DFF(2,3) = D*C*(Y0+UNDEMI)
+        DFF(3,3) = D*E*(Z0-UNDEMI)
+        DFF(1,4) = -UNDEMI*E*C
+        DFF(2,4) = A*C*(Y0+UNDEMI)
+        DFF(3,4) = A*E*(Z0-UNDEMI)
+        DFF(1,5) = -UNDEMI*B*F
+        DFF(2,5) = A*F*(Y0-UNDEMI)
+        DFF(3,5) = A*B*(Z0+UNDEMI)
+        DFF(1,6) = UNDEMI*B*F
+        DFF(2,6) = D*F*(Y0-UNDEMI)
+        DFF(3,6) = D*B*(Z0+UNDEMI)
+        DFF(1,7) = UNDEMI*E*F
+        DFF(2,7) = D*F*(Y0+UNDEMI)
+        DFF(3,7) = D*E*(Z0+UNDEMI)
+        DFF(1,8) = -UNDEMI*E*F 
+        DFF(2,8) = A*F*(Y0+UNDEMI)
+        DFF(3,8) = A*E*(Z0+UNDEMI)
+
+        Y0 = DEUX*Y0
+        Z0 = DEUX*Z0
+
+        DFF(1,9) = G*C
+        DFF(2,9) = -D*Y0*C 
+        DFF(3,9) = D*G*(Z0-UN)
+        DFF(1,10) = -G*C
+        DFF(2,10) = -A*Y0*C
+        DFF(3,10) = A*G*(Z0-UN)
+        DFF(1,11) = -B*H
+        DFF(2,11) = A*H*(Y0-UN)
+        DFF(3,11) = -A*B*Z0
+        DFF(1,12) = B*H
+        DFF(2,12) = D*H*(Y0-UN)
+        DFF(3,12) = -D*B*Z0
+        DFF(1,13) = E*H
+        DFF(2,13) = D*H*(Y0+UN)
+        DFF(3,13) = -D*E*Z0
+        DFF(1,14) = -E*H
+        DFF(2,14) = A*H*(Y0+UN)
+        DFF(3,14) = -A*E*Z0
+        DFF(1,15) = G*F
+        DFF(2,15) = -D*Y0*F
+        DFF(3,15) = D*G*(Z0+UN)
+        DFF(1,16) = -G*F
+        DFF(2,16) = -A*Y0*F
+        DFF(3,16) = A*G*(Z0+UN)
+
+        Y0 = DEUX*Y0
+        Z0 = DEUX*Z0
+
+        DFF(1,17) = DEUX*G*H
+        DFF(2,17) = -D*Y0*H
+        DFF(3,17) = -D*G*Z0
+        DFF(1,18) = -DEUX*G*H
+        DFF(2,18) = -A*Y0*H
+        DFF(3,18) = -A*G*Z0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'H20') THEN
@@ -117,79 +309,60 @@ C     ------------------------------------------------------------------
         DFF(1,1) = - (UN-Y0)* (UN-Z0)* (-DEUX*X0-Y0-Z0-UN)*UNS8
         DFF(2,1) = - (UN-X0)* (UN-Z0)* (-X0-DEUX*Y0-Z0-UN)*UNS8
         DFF(3,1) = - (UN-X0)* (UN-Y0)* (-X0-Y0-DEUX*Z0-UN)*UNS8
-
         DFF(1,2) = (UN-Y0)* (UN-Z0)* (DEUX*X0-Y0-Z0-UN)*UNS8
         DFF(2,2) = - (UN+X0)* (UN-Z0)* (X0-DEUX*Y0-Z0-UN)*UNS8
         DFF(3,2) = - (UN+X0)* (UN-Y0)* (X0-Y0-DEUX*Z0-UN)*UNS8
-
         DFF(1,3) = (UN+Y0)* (UN-Z0)* (DEUX*X0+Y0-Z0-UN)*UNS8
         DFF(2,3) = (UN+X0)* (UN-Z0)* (X0+DEUX*Y0-Z0-UN)*UNS8
         DFF(3,3) = - (UN+X0)* (UN+Y0)* (X0+Y0-DEUX*Z0-UN)*UNS8
-
         DFF(1,4) = - (UN+Y0)* (UN-Z0)* (-DEUX*X0+Y0-Z0-UN)*UNS8
         DFF(2,4) = (UN-X0)* (UN-Z0)* (-X0+DEUX*Y0-Z0-UN)*UNS8
         DFF(3,4) = - (UN-X0)* (UN+Y0)* (-X0+Y0-DEUX*Z0-UN)*UNS8
-
         DFF(1,5) = - (UN-Y0)* (UN+Z0)* (-DEUX*X0-Y0+Z0-UN)*UNS8
         DFF(2,5) = - (UN-X0)* (UN+Z0)* (-X0-DEUX*Y0+Z0-UN)*UNS8
         DFF(3,5) = (UN-X0)* (UN-Y0)* (-X0-Y0+DEUX*Z0-UN)*UNS8
-
         DFF(1,6) = (UN-Y0)* (UN+Z0)* (DEUX*X0-Y0+Z0-UN)*UNS8
         DFF(2,6) = - (UN+X0)* (UN+Z0)* (X0-DEUX*Y0+Z0-UN)*UNS8
         DFF(3,6) = (UN+X0)* (UN-Y0)* (X0-Y0+DEUX*Z0-UN)*UNS8
-
         DFF(1,7) = (UN+Y0)* (UN+Z0)* (DEUX*X0+Y0+Z0-UN)*UNS8
         DFF(2,7) = (UN+X0)* (UN+Z0)* (X0+DEUX*Y0+Z0-UN)*UNS8
         DFF(3,7) = (UN+X0)* (UN+Y0)* (X0+Y0+DEUX*Z0-UN)*UNS8
-
         DFF(1,8) = - (UN+Y0)* (UN+Z0)* (-DEUX*X0+Y0+Z0-UN)*UNS8
         DFF(2,8) = (UN-X0)* (UN+Z0)* (-X0+DEUX*Y0+Z0-UN)*UNS8
         DFF(3,8) = (UN-X0)* (UN+Y0)* (-X0+Y0+DEUX*Z0-UN)*UNS8
-
         DFF(1,9) = -DEUX*X0* (UN-Y0)* (UN-Z0)*UNS4
         DFF(2,9) = - (UN-X0*X0)* (UN-Z0)*UNS4
         DFF(3,9) = - (UN-X0*X0)* (UN-Y0)*UNS4
-
         DFF(1,10) = (UN-Y0*Y0)* (UN-Z0)*UNS4
         DFF(2,10) = -DEUX*Y0* (UN+X0)* (UN-Z0)*UNS4
         DFF(3,10) = - (UN+X0)* (UN-Y0*Y0)*UNS4
-
         DFF(1,11) = -DEUX*X0* (UN+Y0)* (UN-Z0)*UNS4
         DFF(2,11) = (UN-X0*X0)* (UN-Z0)*UNS4
         DFF(3,11) = - (UN-X0*X0)* (UN+Y0)*UNS4
-
         DFF(1,12) = - (UN-Y0*Y0)* (UN-Z0)*UNS4
         DFF(2,12) = -DEUX*Y0* (UN-X0)* (UN-Z0)*UNS4
         DFF(3,12) = - (UN-X0)* (UN-Y0*Y0)*UNS4
-
         DFF(1,13) = - (UN-Z0*Z0)* (UN-Y0)*UNS4
         DFF(2,13) = - (UN-X0)* (UN-Z0*Z0)*UNS4
         DFF(3,13) = -DEUX*Z0* (UN-Y0)* (UN-X0)*UNS4
-
         DFF(1,14) = (UN-Z0*Z0)* (UN-Y0)*UNS4
         DFF(2,14) = - (UN+X0)* (UN-Z0*Z0)*UNS4
         DFF(3,14) = -DEUX*Z0* (UN-Y0)* (UN+X0)*UNS4
-
         DFF(1,15) = (UN-Z0*Z0)* (UN+Y0)*UNS4
         DFF(2,15) = (UN+X0)* (UN-Z0*Z0)*UNS4
         DFF(3,15) = -DEUX*Z0* (UN+Y0)* (UN+X0)*UNS4
-
         DFF(1,16) = - (UN-Z0*Z0)* (UN+Y0)*UNS4
         DFF(2,16) = (UN-X0)* (UN-Z0*Z0)*UNS4
         DFF(3,16) = -DEUX*Z0* (UN+Y0)* (UN-X0)*UNS4
-
         DFF(1,17) = -DEUX*X0* (UN-Y0)* (UN+Z0)*UNS4
         DFF(2,17) = - (UN-X0*X0)* (UN+Z0)*UNS4
         DFF(3,17) = (UN-X0*X0)* (UN-Y0)*UNS4
-
         DFF(1,18) = (UN-Y0*Y0)* (UN+Z0)*UNS4
         DFF(2,18) = -DEUX*Y0* (UN+X0)* (UN+Z0)*UNS4
         DFF(3,18) = (UN+X0)* (UN-Y0*Y0)*UNS4
-
         DFF(1,19) = -DEUX*X0* (UN+Y0)* (UN+Z0)*UNS4
         DFF(2,19) = (UN-X0*X0)* (UN+Z0)*UNS4
         DFF(3,19) = (UN-X0*X0)* (UN+Y0)*UNS4
-
         DFF(1,20) = - (UN-Y0*Y0)* (UN+Z0)*UNS4
         DFF(2,20) = -DEUX*Y0* (UN-X0)* (UN+Z0)*UNS4
         DFF(3,20) = (UN-X0)* (UN-Y0*Y0)*UNS4
@@ -298,26 +471,184 @@ C     ------------------------------------------------------------------
         DFF(1,1) = -Y0*UNDEMI
         DFF(2,1) = (UN-X0)*UNDEMI
         DFF(3,1) = ZERO
-
         DFF(1,2) = -Z0*UNDEMI
         DFF(2,2) = ZERO
         DFF(3,2) = (UN-X0)*UNDEMI
-
         DFF(1,3) = -AL*UNDEMI
         DFF(2,3) = - (UN-X0)*UNDEMI
         DFF(3,3) = - (UN-X0)*UNDEMI
-
         DFF(1,4) = Y0*UNDEMI
         DFF(2,4) = (UN+X0)*UNDEMI
         DFF(3,4) = ZERO
-
         DFF(1,5) = Z0*UNDEMI
         DFF(2,5) = ZERO
         DFF(3,5) = (UN+X0)*UNDEMI
-
         DFF(1,6) = AL*UNDEMI
         DFF(2,6) = - (UN+X0)*UNDEMI
         DFF(3,6) = - (UN+X0)*UNDEMI
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'PH6') THEN
+
+        R  = 1.7320508075688773D0
+        X0 = X(1) * R
+        Y0 = X(2) * R
+        Z0 = X(3) * R
+        R1  = 0.2886751345948129D0
+        R2  = 0.86602540378443865D0
+        NNO = 6
+        NDIM = 3
+
+        DFF(1,1) = -(UN - Z0)
+        DFF(2,1) = -(UN - Z0)
+        DFF(3,1) = -(R2 - (X0 - R1) - (Y0 - R1))
+        DFF(1,2) = UN - Z0
+        DFF(2,2) = ZERO
+        DFF(3,2) = -(X0 - R1)
+        DFF(1,3) = ZERO
+        DFF(2,3) = UN - Z0
+        DFF(3,3) = -(Y0 - R1)
+        DFF(1,4) = -(UN + Z0)
+        DFF(2,4) = -(UN + Z0)
+        DFF(3,4) = R2 - (X0 - R1) - (Y0 - R1)
+        DFF(1,5) = UN + Z0
+        DFF(2,5) = ZERO
+        DFF(3,5) = X0 - R1
+        DFF(1,6) = ZERO
+        DFF(2,6) = UN + Z0
+        DFF(3,6) = Y0 - R1
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'P12') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 12
+        NDIM = 3
+
+        A = UN - Y0 - Z0
+        B = UNDEMI*(UN - X0)
+        C = B + X0
+        D = QUATRE*A*B
+        E = QUATRE*Y0*B
+        F = QUATRE*Z0*B
+        G = QUATRE*A*C
+        H = QUATRE*Y0*C
+        O = QUATRE*Z0*C 
+
+        DFF(1,1) = Y0*(UNDEMI - Y0)
+        DFF(2,1) = E - B
+        DFF(3,1) = ZERO
+        DFF(1,2) = Z0*(UNDEMI - Z0)
+        DFF(2,2) = ZERO
+        DFF(3,2) = F - B
+        DFF(1,3) = A*(UNDEMI - A)
+        DFF(2,3) = B - D
+        DFF(3,3) = B - D
+        DFF(1,4) = -Y0*(UNDEMI - Y0)
+        DFF(2,4) = H - C
+        DFF(3,4) = ZERO
+        DFF(1,5) = -Z0*(UNDEMI - Z0)
+        DFF(2,5) = ZERO
+        DFF(3,5) = O - C
+        DFF(1,6) = -A*(UNDEMI - A)
+        DFF(2,6) = C - G
+        DFF(3,6) = C - G
+        DFF(1,7) = -DEUX*Y0*Z0
+        DFF(2,7) = F
+        DFF(3,7) = E
+        DFF(1,8) = -DEUX*Z0*A
+        DFF(2,8) = -F
+        DFF(3,8) = D - F
+        DFF(1,9) = -DEUX*A*Y0
+        DFF(2,9) = D - E
+        DFF(3,9) = -E
+        DFF(1,10) = DEUX*Y0*Z0
+        DFF(2,10) = O
+        DFF(3,10) = H
+        DFF(1,11) = DEUX*Z0*A
+        DFF(2,11) = -O
+        DFF(3,11) = G - O
+        DFF(1,12) = DEUX*A*Y0
+        DFF(2,12) = G - H
+        DFF(3,12) = -H
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'P14') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 14
+        NDIM = 3
+
+        A = UN - Y0 - Z0
+        B = UNDEMI*(UN - X0)
+        C = B + X0
+        D = QUATRE*A*B
+        E = QUATRE*Y0*B
+        F = QUATRE*Z0*B
+        G = QUATRE*A*C
+        H = QUATRE*Y0*C
+        O = QUATRE*Z0*C 
+        P = 1.5D0*A*Y0*Z0
+        Q = TROIS*Z0*(A - Y0)
+        O = TROIS*Y0*(A - Z0)
+        S = Q*B
+        T = O*B
+        Q = Q*C
+        O = O*C
+
+        DFF(1,1) = Y0*(UNDEMI - Y0) - P
+        DFF(2,1) = S + E - B
+        DFF(3,1) = T
+        DFF(1,2) = Z0*(UNDEMI - Z0) - P
+        DFF(2,2) = S
+        DFF(3,2) = T + F - B
+        DFF(1,3) = A*(UNDEMI - A) - P
+        DFF(2,3) = S + B - D
+        DFF(3,3) = T + B - D
+        DFF(1,4) = -(Y0*(UNDEMI - Y0) - P)
+        DFF(2,4) =  Q + H - C
+        DFF(3,4) =  O
+        DFF(1,5) = -(Z0*(UNDEMI - Z0) - P)
+        DFF(2,5) =  Q
+        DFF(3,5) = O + O - C
+        DFF(1,6) = -(A*(UNDEMI - A) - P)
+        DFF(2,6) = Q + C - G
+        DFF(3,6) = O + C - G
+
+        P = QUATRE * P
+        S =-QUATRE * S
+        T =-QUATRE * T
+        Q =-QUATRE * Q
+        O =-QUATRE * O
+
+        DFF(1,7) = -DEUX*Y0*Z0 + P
+        DFF(2,7) = S + F 
+        DFF(3,7) = T + E
+        DFF(1,8) = -DEUX*Z0*A + P
+        DFF(2,8) = S - F
+        DFF(3,8) = T + D - F
+        DFF(1,9) = -DEUX*A*Y0 + P
+        DFF(2,9) = S + D - E
+        DFF(3,9) = T - E
+        DFF(1,10) = -(-DEUX*Y0*Z0 + P)
+        DFF(2,10) = Q + O
+        DFF(3,10) = O + H
+        DFF(1,11) = -(-DEUX*Z0*A + P)
+        DFF(2,11) = Q - O
+        DFF(3,11) = O + G - O
+        DFF(1,12) = -(-DEUX*A*Y0 + P)
+        DFF(2,12) = Q + G - H
+        DFF(3,12) = O - H
+        DFF(1,13) = -2.25D0*P 
+        DFF(2,13) = -2.25D0*S
+        DFF(3,13) = -2.25D0*T
+        DFF(1,14) =  2.25D0*P 
+        DFF(2,14) = -2.25D0*Q
+        DFF(3,14) = -2.25D0*O
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'P15') THEN
@@ -332,59 +663,45 @@ C     ------------------------------------------------------------------
         DFF(1,1) = (-Y0* (DEUX*Y0-DEUX-X0)-Y0* (UN-X0))/DEUX
         DFF(2,1) = (UN-X0)* (QUATRE*Y0-DEUX-X0)/DEUX
         DFF(3,1) = ZERO
-
         DFF(1,2) = -Z0* (DEUX*Z0-UN-DEUX*X0)/DEUX
         DFF(2,2) = ZERO
         DFF(3,2) = (UN-X0)* (QUATRE*Z0-DEUX-X0)/DEUX
-
         DFF(1,3) = AL* (DEUX*X0+DEUX*Y0+DEUX*Z0-UN)/DEUX
         DFF(2,3) = (X0-UN)* (-X0-QUATRE*Y0-QUATRE*Z0+DEUX)/DEUX
         DFF(3,3) = (X0-UN)* (-X0-QUATRE*Y0-QUATRE*Z0+DEUX)/DEUX
-
         DFF(1,4) = Y0* (DEUX*Y0-UN+DEUX*X0)/DEUX
         DFF(2,4) = (UN+X0)* (QUATRE*Y0-DEUX+X0)/DEUX
         DFF(3,4) = ZERO
-
         DFF(1,5) = Z0* (DEUX*Z0-UN+DEUX*X0)/DEUX
         DFF(2,5) = ZERO
         DFF(3,5) = (UN+X0)* (QUATRE*Z0-DEUX+X0)/DEUX
-
         DFF(1,6) = AL* (DEUX*X0-DEUX*Y0-DEUX*Z0+UN)/DEUX
         DFF(2,6) = (X0+UN)* (-X0+QUATRE*Y0+QUATRE*Z0-DEUX)/DEUX
         DFF(3,6) = (X0+UN)* (-X0+QUATRE*Y0+QUATRE*Z0-DEUX)/DEUX
-
         DFF(1,7) = -DEUX*Y0*Z0
         DFF(2,7) = DEUX*Z0* (UN-X0)
         DFF(3,7) = DEUX*Y0* (UN-X0)
-
         DFF(1,8) = -DEUX*AL*Z0
         DFF(2,8) = -DEUX*Z0* (UN-X0)
         DFF(3,8) = (DEUX*AL-DEUX*Z0)* (UN-X0)
-
         DFF(1,9) = -DEUX*Y0*AL
         DFF(2,9) = (DEUX*AL-DEUX*Y0)* (UN-X0)
         DFF(3,9) = -DEUX*Y0* (UN-X0)
-
         DFF(1,10) = -DEUX*Y0*X0
         DFF(2,10) = (UN-X0*X0)
         DFF(3,10) = ZERO
-
         DFF(1,11) = -DEUX*Z0*X0
         DFF(2,11) = ZERO
         DFF(3,11) = (UN-X0*X0)
-
         DFF(1,12) = -DEUX*AL*X0
         DFF(2,12) = - (UN-X0*X0)
         DFF(3,12) = - (UN-X0*X0)
-
         DFF(1,13) = DEUX*Y0*Z0
         DFF(2,13) = DEUX*Z0* (UN+X0)
         DFF(3,13) = DEUX*Y0* (UN+X0)
-
         DFF(1,14) = DEUX*AL*Z0
         DFF(2,14) = -DEUX*Z0* (UN+X0)
         DFF(3,14) = (DEUX*AL-DEUX*Z0)* (UN+X0)
-
         DFF(1,15) = DEUX*Y0*AL
         DFF(2,15) = (DEUX*AL-DEUX*Y0)* (UN+X0)
         DFF(3,15) = -DEUX*Y0* (UN+X0)
@@ -403,11 +720,11 @@ C     ------------------------------------------------------------------
         DFF(3,1) = ZERO
         DFF(1,2) = ZERO
         DFF(2,2) = ZERO
-        DFF(3,2) = UN
+        DFF(3,2) =  UN
         DFF(1,3) = -UN
         DFF(2,3) = -UN
         DFF(3,3) = -UN
-        DFF(1,4) = UN
+        DFF(1,4) =  UN
         DFF(2,4) = ZERO
         DFF(3,4) = ZERO
 
@@ -617,11 +934,24 @@ C     ------------------------------------------------------------------
         NDIM = 2
 
         DFF(1,1) = -UN
-        DFF(1,2) = +UN
-        DFF(1,3) = ZERO
         DFF(2,1) = -UN
+        DFF(1,2) = +UN
         DFF(2,2) = ZERO
+        DFF(1,3) = ZERO
         DFF(2,3) = +UN
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'TH3') THEN
+
+        NNO = 3
+        NDIM = 2
+
+        DFF(1,1) = -DEUX
+        DFF(2,1) = -DEUX
+        DFF(1,2) =  DEUX
+        DFF(2,2) =  ZERO
+        DFF(1,3) =  ZERO
+        DFF(2,3) =  DEUX
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'TR6') THEN
@@ -644,6 +974,32 @@ C     ------------------------------------------------------------------
         DFF(2,4) = -QUATRE*X0
         DFF(2,5) = QUATRE*X0
         DFF(2,6) = QUATRE* (AL-Y0)
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'TW6') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        NNO = 6
+        NDIM = 2
+
+        R = 2.8284271247461901D0
+        AL = UNDEMI - X0 - Y0
+        X0 = DEUX * X0
+        Y0 = DEUX * Y0
+
+        DFF(1,1) = AL
+        DFF(2,1) = AL + Y0
+        DFF(1,2) = Y0 - UN
+        DFF(2,2) = X0 - UN
+        DFF(1,3) = AL + X0
+        DFF(2,3) = AL
+        DFF(1,4) = DEUX*(X0 - UN)
+        DFF(2,4) = ZERO
+        DFF(1,5) = ZERO
+        DFF(2,5) = DEUX*(Y0 - UN)
+        DFF(1,6) = -R*AL
+        DFF(2,6) = -R*AL
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'TR7') THEN
@@ -684,13 +1040,52 @@ C     ------------------------------------------------------------------
         NDIM = 2
 
         DFF(1,1) = -(UN-Y0)*UNS4
-        DFF(1,2) =  (UN-Y0)*UNS4
-        DFF(1,3) =  (UN+Y0)*UNS4
-        DFF(1,4) = -(UN+Y0)*UNS4
         DFF(2,1) = -(UN-X0)*UNS4
+        DFF(1,2) =  (UN-Y0)*UNS4
         DFF(2,2) = -(UN+X0)*UNS4
+        DFF(1,3) =  (UN+Y0)*UNS4
         DFF(2,3) =  (UN+X0)*UNS4
+        DFF(1,4) = -(UN+Y0)*UNS4
         DFF(2,4) =  (UN-X0)*UNS4
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'QH4') THEN
+
+        R  = 0.4330127018922193D0
+        X0 = X(1) * 0.75D0
+        Y0 = X(2) * 0.75D0
+        NNO = 4
+        NDIM = 2
+
+        DFF(1,1) = -(R - Y0)
+        DFF(2,1) = -(R - X0)
+        DFF(1,2) =   R - Y0
+        DFF(2,2) = -(R + X0)
+        DFF(1,3) =   R + Y0
+        DFF(2,3) =   R + X0
+        DFF(1,4) = -(R + Y0)
+        DFF(2,4) =   R - X0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'QU6') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        NNO = 6
+        NDIM = 2
+
+        DFF(1,1) = UNDEMI*(UN-Y0)*(X0-UNDEMI)
+        DFF(2,1) =  -UNS4*X0*(X0-UN)
+        DFF(1,2) = UNDEMI*(UN-Y0)*(X0+UNDEMI)
+        DFF(2,2) = -(UNS4*X0*(X0-UN) + UNDEMI*X0)
+        DFF(1,3) = (UNDEMI*(UN-Y0) + Y0)*(X0+UNDEMI)
+        DFF(2,3) =   UNS4*X0*(X0-UN) + UNDEMI*X0
+        DFF(1,4) = (UNDEMI*(UN-Y0) + Y0)*(X0-UNDEMI)
+        DFF(2,4) = UNS4*X0*(X0-UN)
+        DFF(1,5) = X0*(Y0 - UN)
+        DFF(2,5) = -UNDEMI*(UN-X0*X0)
+        DFF(1,6) = -X0*(UN + Y0)
+        DFF(2,6) = UNDEMI*(UN-X0*X0)
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'QU8') THEN
@@ -702,25 +1097,18 @@ C     ------------------------------------------------------------------
 
         DFF(1,1) = -UNS4* (UN-Y0)* (-DEUX*X0-Y0)
         DFF(2,1) = -UNS4* (UN-X0)* (-DEUX*Y0-X0)
-
         DFF(1,2) =  UNS4* (UN-Y0)* ( DEUX*X0-Y0)
         DFF(2,2) = -UNS4* (UN+X0)* (-DEUX*Y0+X0)
-
         DFF(1,3) = UNS4* (UN+Y0)* (DEUX*X0+Y0)
         DFF(2,3) = UNS4* (UN+X0)* (DEUX*Y0+X0)
-
         DFF(1,4) = -UNS4* (UN+Y0)* (-DEUX*X0+Y0)
         DFF(2,4) =  UNS4* (UN-X0)* ( DEUX*Y0-X0)
-
         DFF(1,5) = -DEUX*X0* (UN-Y0)*UNDEMI
         DFF(2,5) = - (UN-X0*X0)*UNDEMI
-
         DFF(1,6) = (UN-Y0*Y0)*UNDEMI
         DFF(2,6) = -DEUX*Y0* (UN+X0)*UNDEMI
-
         DFF(1,7) = -DEUX*X0* (UN+Y0)*UNDEMI
         DFF(2,7) = (UN-X0*X0)*UNDEMI
-
         DFF(1,8) = - (UN-Y0*Y0)*UNDEMI
         DFF(2,8) = -DEUX*Y0* (UN-X0)*UNDEMI
 
@@ -762,7 +1150,7 @@ C     ------------------------------------------------------------------
         NDIM = 1
 
         DFF(1,1) = -UNDEMI
-        DFF(1,2) = UNDEMI
+        DFF(1,2) =  UNDEMI
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'SE3') THEN
@@ -779,10 +1167,10 @@ C     ------------------------------------------------------------------
         NNO = 4
         NDIM = 1
 
-        X1 = -1.D0
-        X2 = 1.D0
-        X3 = -1.D0/3.D0
-        X4 = 1.D0/3.D0
+        X1 = -UN
+        X2 =  UN
+        X3 = -UN/TROIS
+        X4 =  UN/TROIS
         D1 = (X1-X2)* (X1-X3)* (X1-X4)
         DFF(1,1) = ((X0-X2)* (X0-X3)+ (X0-X2)* (X0-X4)+
      &             (X0-X3)* (X0-X4))/D1

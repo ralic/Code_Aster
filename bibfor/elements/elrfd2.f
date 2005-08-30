@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -115,6 +115,41 @@ C     ------------------------------------------------------------------
         DFF2(2,2,6) = -HUIT
 
 C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'TW6') THEN
+        NNO = 6
+        NDIM = 2
+
+        DFF2(1,1,1) = -UN
+        DFF2(2,1,1) = -UN
+        DFF2(1,2,1) = -UN
+        DFF2(2,2,1) =  UN
+
+        DFF2(1,1,2) = ZERO
+        DFF2(2,1,2) = DEUX
+        DFF2(1,2,2) = DEUX
+        DFF2(2,2,2) = ZERO
+
+        DFF2(1,1,3) = +UN
+        DFF2(2,1,3) = -UN
+        DFF2(1,2,3) = -UN
+        DFF2(2,2,3) = -UN
+
+        DFF2(1,1,4) = QUATRE
+        DFF2(2,1,4) = ZERO
+        DFF2(1,2,4) = ZERO
+        DFF2(2,2,4) = ZERO
+
+        DFF2(1,1,5) = ZERO
+        DFF2(2,1,5) = ZERO
+        DFF2(1,2,5) = ZERO
+        DFF2(2,2,5) = QUATRE
+
+        DFF2(1,1,6) = 2.8284271247461901D0
+        DFF2(2,1,6) = 2.8284271247461901D0
+        DFF2(1,2,6) = 2.8284271247461901D0
+        DFF2(2,2,6) = 2.8284271247461901D0
+
+C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'TR7') THEN
         X0 = X(1)
         Y0 = X(2)
@@ -182,6 +217,43 @@ C     ------------------------------------------------------------------
         DFF2(2,1,4) = -UNS4
         DFF2(1,2,4) = -UNS4
         DFF2(2,2,4) = ZERO
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'QU6') THEN
+        X0 = X(1)
+        Y0 = X(2)
+        NNO = 6
+        NDIM = 2
+
+        DFF2(1,1,1) = UNDEMI*(UN - Y0)
+        DFF2(2,1,1) = ZERO
+        DFF2(1,2,1) = ZERO
+        DFF2(2,2,1) = UNDEMI*(UN - X0) - 0.25D0
+
+        DFF2(1,1,2) = UNDEMI*(UN - Y0)
+        DFF2(2,1,2) = ZERO
+        DFF2(1,2,2) = ZERO
+        DFF2(2,2,2) = 0.25D0 - UNDEMI*(UN + X0)
+
+        DFF2(1,1,3) = UNDEMI*(UN + Y0)
+        DFF2(2,1,3) = ZERO
+        DFF2(1,2,3) = ZERO
+        DFF2(2,2,3) = UNDEMI*(UN + X0) - 0.25D0
+
+        DFF2(1,1,4) = UNDEMI*(UN + Y0)
+        DFF2(2,1,4) = ZERO
+        DFF2(1,2,4) = ZERO
+        DFF2(2,2,4) = 0.25D0 - UNDEMI*(UN - X0)
+
+        DFF2(1,1,5) = Y0 - UN
+        DFF2(2,1,5) = ZERO
+        DFF2(1,2,5) = ZERO
+        DFF2(2,2,5) = X0
+
+        DFF2(1,1,6) = -Y0 - UN 
+        DFF2(2,1,6) = ZERO
+        DFF2(1,2,6) = ZERO
+        DFF2(2,2,6) = -X0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'QU8') THEN
@@ -285,19 +357,19 @@ C     ------------------------------------------------------------------
         NNO = 3
         NDIM = 1
 
-        DFF2(1,1,1) = 1.D0
-        DFF2(1,1,2) = 1.D0
-        DFF2(1,1,3) = -2.D0
+        DFF2(1,1,1) = UN
+        DFF2(1,1,2) = UN
+        DFF2(1,1,3) = -DEUX
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'SE4') THEN
         NNO = 4
         NDIM = 1
 
-        X1 = -1.D0
-        X2 = 1.D0
-        X3 = -1.D0/3.D0
-        X4 = 1.D0/3.D0
+        X1 = -UN
+        X2 =  UN
+        X3 = -UN/3.D0
+        X4 =  UN/3.D0
 
         D1 = (X1-X2)* (X1-X3)* (X1-X4)
         D2 = (X2-X3)* (X2-X4)* (X2-X1)

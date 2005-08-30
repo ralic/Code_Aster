@@ -1,7 +1,11 @@
-      SUBROUTINE PGAUSS(TYPEMA,FG,PG,G,NG,DIME)
+      SUBROUTINE PGAUSS ( TYPEMA, FG, PG, G, NG, NDIM )
+      IMPLICIT NONE
+      INTEGER       FG, NG, NDIM
+      REAL*8        PG(*), G(*)
+      CHARACTER*8   TYPEMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,42 +22,161 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
-      IMPLICIT NONE
-
 C ----------------------------------------------------------------------
 C     POIDS ET COORDONNEES DES POINTS DE GAUSS
 C ----------------------------------------------------------------------
 C     VARIABLES D'ENTREE
-C     CHARACTER*8    TYPEMA     : TYPE DE LA MAILLE
-C     INTEGER        FG         : FAMILLE D'INTEGRATION
+C IN  : TYPEMA     : TYPE DE LA MAILLE
+C       FG         : FAMILLE D'INTEGRATION
 C
-C     VARIABLES DE SORTIE
-C     REAL*8         PG(NG)     : POIDS DE GAUSS (P1,P2,...)
-C     REAL*8         G(DIME,NG) : POINTS DE GAUSS (X1,[Y1],[Z1],X2,...)
-C     INTEGER        NG         : NOMBRE DE POINTS DE GAUSS
-C     INTEGER        DIME       : DIMENSION DE LA MAILLE
+C OUT : PG(NG)     : POIDS DE GAUSS (P1,P2,...)
+C       G(DIME,NG) : POINTS DE GAUSS (X1,[Y1],[Z1],X2,...)
+C       NG         : NOMBRE DE POINTS DE GAUSS
+C       DIME       : DIMENSION DE LA MAILLE
 C
-C --- VARIABLES
-      CHARACTER*8  TYPEMA
-      REAL*8       PG(*),G(*)
-      INTEGER      FG,DIME,NG
- 
+C ----------------------------------------------------------------------
+C
       IF (TYPEMA(1:3).EQ.'SEG') THEN
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'SE2', 'FPG1', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'SE2', 'FPG2', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'SE2', 'FPG3', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.4) THEN
+            CALL ELRAGA ( 'SE2', 'FPG4', NDIM, NG, G, PG )
+         ELSE
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF
 
-        DIME = 1
-        CALL PGAUS1(FG,PG,G,NG)
+      ELSEIF ( TYPEMA(1:3) .EQ. 'TRI' ) THEN
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'TR3', 'FPG1', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'TR3', 'NOEU', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'TR3', 'COT3', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.4) THEN
+            CALL ELRAGA ( 'TR3', 'FPG3', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.5) THEN
+            CALL ELRAGA ( 'TR3', 'FPG4', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.6) THEN
+            CALL ELRAGA ( 'TR3', 'FPG6', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.7) THEN
+            CALL ELRAGA ( 'TR3', 'FPG7', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.8) THEN
+            CALL ELRAGA ( 'TR3', 'FPG12', NDIM, NG, G, PG )
+         ELSE
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF
 
-      ELSEIF ((TYPEMA(1:3).EQ.'TRI').OR.(TYPEMA(1:3).EQ.'QUA'))THEN
+      ELSEIF ( TYPEMA(1:3) .EQ. 'QUA' ) THEN
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'QU4', 'FPG1', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'QU4', 'NOEU', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'QU4', 'FPG4', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.4) THEN
+            CALL ELRAGA ( 'QU8', 'NOEU', NDIM, NG, G, PG )
+            PG(1)  =  -1.D0/3.D0
+            PG(2)  =  PG(1)           
+            PG(3)  =  PG(1)           
+            PG(4)  =  PG(1) 
+            PG(5)  =  4.D0/3.D0
+            PG(6)  =  PG(5)           
+            PG(7)  =  PG(5)           
+            PG(8)  =  PG(5)
+         ELSEIF (FG.EQ.5) THEN
+            CALL ELRAGA ( 'QU9', 'NOEU', NDIM, NG, G, PG )
+            PG(1)  =  1.D0/9.D0
+            PG(2)  =  PG(1)           
+            PG(3)  =  PG(1)           
+            PG(4)  =  PG(1) 
+            PG(5)  =  4.D0/9.D0
+            PG(6)  =  PG(5)           
+            PG(7)  =  PG(5)           
+            PG(8)  =  PG(5)
+            PG(9)  =  16.D0/9.D0
+         ELSEIF (FG.EQ.6) THEN
+            CALL ELRAGA ( 'QU4', 'FPG9', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.7) THEN
+            CALL ELRAGA ( 'QU4', 'FPG16', NDIM, NG, G, PG )
+         ELSE
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF
 
-        DIME = 2
-        CALL PGAUS2(TYPEMA,FG,PG,G,NG)
+      ELSEIF ( TYPEMA(1:3) .EQ.  'TET') THEN        
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'TE4', 'FPG4', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'TE4', 'FPG5', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'TE4', 'FPG15', NDIM, NG, G, PG )
+         ELSE 
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF 
+
+      ELSEIF ( TYPEMA(1:3) .EQ. 'PEN' ) THEN
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'PE6', 'FPG6' , NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'PE6', 'FPG6B', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'PE6', 'FPG8' , NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.4) THEN
+            CALL ELRAGA ( 'PE6', 'FPG21', NDIM, NG, G, PG )
+         ELSE
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF
+
+      ELSEIF ( TYPEMA(1:3) .EQ. 'HEX' ) THEN 
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'HE8', 'FPG8', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'HE8', 'FPG27', NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'HE8', 'FPG64', NDIM, NG, G, PG )
+         ELSE
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF
+
+      ELSEIF ( TYPEMA(1:3) .EQ. 'PYR' ) THEN 
+         IF (FG.EQ.1) THEN
+            CALL ELRAGA ( 'PY5', 'FPG5' , NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.2) THEN
+            CALL ELRAGA ( 'PY5', 'FPG6' , NDIM, NG, G, PG )
+         ELSEIF (FG.EQ.3) THEN
+            CALL ELRAGA ( 'PY5', 'FPG27', NDIM, NG, G, PG )
+         ELSE
+            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
+            CALL UTFINM
+         ENDIF
 
       ELSE
-   
-        DIME = 3
-        CALL PGAUS3(TYPEMA,FG,PG,G,NG)
-
+         CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
+         CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
+         CALL UTFINM
       ENDIF
 
       END

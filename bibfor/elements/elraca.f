@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,15 +77,15 @@ C     ------------------------------------------------------------------
           YIN(I) = -1.D0
           ZIN(I) = -1.D0
    10   CONTINUE
-        DO 20 I = 1,4
+        DO 12 I = 1,4
           ZIN(I+4) = +1.D0
-   20   CONTINUE
-        DO 30 I = 1,2
+   12   CONTINUE
+        DO 14 I = 1,2
           XIN(I+1) = +1.D0
           XIN(I+5) = +1.D0
           YIN(I+2) = +1.D0
           YIN(I+6) = +1.D0
-   30   CONTINUE
+   14   CONTINUE
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'H20') THEN
@@ -110,11 +110,11 @@ C     ------------------------------------------------------------------
         FAPG(5) = 'FPG27'
         FAPG(6) = 'FPG8NOS'
 
-        DO 40 I = 1,20
+        DO 20 I = 1,20
           XIN(I) = -1.D0
           YIN(I) = -1.D0
           ZIN(I) = -1.D0
-   40   CONTINUE
+   20   CONTINUE
 
         XIN(2) = +1.D0
         XIN(3) = +1.D0
@@ -130,31 +130,31 @@ C     ------------------------------------------------------------------
         YIN(8) = +1.D0
         ZIN(8) = +1.D0
 
-        XIN(9) = 0.D0
+        XIN(9)  =  0.D0
         XIN(10) = +1.D0
-        YIN(10) = 0.D0
-        XIN(11) = 0.D0
+        YIN(10) =  0.D0
+        XIN(11) =  0.D0
         YIN(11) = +1.D0
-        YIN(12) = 0.D0
+        YIN(12) =  0.D0
 
-        ZIN(13) = 0.D0
+        ZIN(13) =  0.D0
         XIN(14) = +1.D0
-        ZIN(14) = 0.D0
+        ZIN(14) =  0.D0
         XIN(15) = +1.D0
         YIN(15) = +1.D0
-        ZIN(15) = 0.D0
+        ZIN(15) =  0.D0
         YIN(16) = +1.D0
-        ZIN(16) = 0.D0
+        ZIN(16) =  0.D0
 
-        XIN(17) = 0.D0
+        XIN(17) =  0.D0
         ZIN(17) = +1.D0
         XIN(18) = +1.D0
-        YIN(18) = 0.D0
+        YIN(18) =  0.D0
         ZIN(18) = +1.D0
-        XIN(19) = 0.D0
+        XIN(19) =  0.D0
         YIN(19) = +1.D0
         ZIN(19) = +1.D0
-        YIN(20) = 0.D0
+        YIN(20) =  0.D0
         ZIN(20) = +1.D0
 
 C     ------------------------------------------------------------------
@@ -170,17 +170,18 @@ C     ------------------------------------------------------------------
         NBPG(3) = 1
         NBPG(4) = 8
         NBPG(5) = 27
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG8'
         FAPG(5) = 'FPG27'
 
-        DO 50 I = 1,20
+        DO 30 I = 1,20
           XIN(I) = -1.D0
           YIN(I) = -1.D0
           ZIN(I) = -1.D0
-   50   CONTINUE
+   30   CONTINUE
 
 C   NOEUDS SOMMETS
 
@@ -200,40 +201,40 @@ C   NOEUDS SOMMETS
 
 C   NOEUDS MILIEUX DES ARETES
 
-        XIN(9) = 0.D0
+        XIN(9)  =  0.D0
         XIN(10) = +1.D0
-        YIN(10) = 0.D0
-        XIN(11) = 0.D0
+        YIN(10) =  0.D0
+        XIN(11) =  0.D0
         YIN(11) = +1.D0
-        YIN(12) = 0.D0
+        YIN(12) =  0.D0
 
-        ZIN(13) = 0.D0
+        ZIN(13) =  0.D0
         XIN(14) = +1.D0
-        ZIN(14) = 0.D0
+        ZIN(14) =  0.D0
         XIN(15) = +1.D0
         YIN(15) = +1.D0
-        ZIN(15) = 0.D0
+        ZIN(15) =  0.D0
         YIN(16) = +1.D0
-        ZIN(16) = 0.D0
+        ZIN(16) =  0.D0
 
-        XIN(17) = 0.D0
+        XIN(17) =  0.D0
         ZIN(17) = +1.D0
         XIN(18) = +1.D0
-        YIN(18) = 0.D0
+        YIN(18) =  0.D0
         ZIN(18) = +1.D0
-        XIN(19) = 0.D0
+        XIN(19) =  0.D0
         YIN(19) = +1.D0
         ZIN(19) = +1.D0
-        YIN(20) = 0.D0
+        YIN(20) =  0.D0
         ZIN(20) = +1.D0
 
 C    NOEUDS MILIEUX DES FACES ET BARYCENTRE
 
-        DO 60 I = 21,27
+        DO 32 I = 21,27
           XIN(I) = 0.D0
           YIN(I) = 0.D0
           ZIN(I) = 0.D0
-   60   CONTINUE
+   32   CONTINUE
         ZIN(21) = -1.D0
         YIN(22) = -1.D0
         XIN(23) = +1.D0
@@ -266,11 +267,11 @@ C     ------------------------------------------------------------------
         FAPG(6) = 'FPG15'
         FAPG(7) = 'FPG4NOS'
 
-        DO 70 I = 1,4
+        DO 40 I = 1,4
           XIN(I) = 0.D0
           YIN(I) = 0.D0
           ZIN(I) = 0.D0
-   70   CONTINUE
+   40   CONTINUE
         YIN(1) = +1.D0
         ZIN(2) = +1.D0
         XIN(4) = +1.D0
@@ -300,23 +301,23 @@ C     ------------------------------------------------------------------
         FAPG(6) = 'FPG15'
         FAPG(7) = 'FPG4NOS'
 
-        DO 80 I = 1,10
+        DO 50 I = 1,10
           XIN(I) = 0.D0
           YIN(I) = 0.D0
           ZIN(I) = 0.D0
-   80   CONTINUE
-        XIN(4) = +1.D0
-        YIN(1) = +1.D0
-        ZIN(2) = +1.D0
-        XIN(8) = +0.5D0
-        XIN(9) = +0.5D0
+   50   CONTINUE
+        XIN(4)  = +1.D0
+        YIN(1)  = +1.D0
+        ZIN(2)  = +1.D0
+        XIN(8)  = +0.5D0
+        XIN(9)  = +0.5D0
         XIN(10) = +0.5D0
-        YIN(5) = +0.5D0
-        YIN(7) = +0.5D0
-        YIN(8) = +0.5D0
-        ZIN(5) = +0.5D0
-        ZIN(6) = +0.5D0
-        ZIN(9) = +0.5D0
+        YIN(5)  = +0.5D0
+        YIN(7)  = +0.5D0
+        YIN(8)  = +0.5D0
+        ZIN(5)  = +0.5D0
+        ZIN(6)  = +0.5D0
+        ZIN(9)  = +0.5D0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PE6'.OR.ELREFA.EQ.'X15') THEN
@@ -325,32 +326,34 @@ C     ------------------------------------------------------------------
         NNOS = 6
         VOL = 1.D0
 
-        NBFPG = 7
+        NBFPG = 8
         
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 6
-        NBPG(5) = 8
-        NBPG(6) = 21
-        NBPG(7) = 12
+        NBPG(5) = 6
+        NBPG(6) = 8
+        NBPG(7) = 21
+        NBPG(8) = 12
         
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG6'
-        FAPG(5) = 'FPG8'
-        FAPG(6) = 'FPG21'
-        FAPG(7) = 'FPG6NOS'
+        FAPG(5) = 'FPG6B'
+        FAPG(6) = 'FPG8'
+        FAPG(7) = 'FPG21'
+        FAPG(8) = 'FPG6NOS'
 
-        DO 90 I = 1,6
+        DO 60 I = 1,6
           YIN(I) = 0.D0
           ZIN(I) = 0.D0
-   90   CONTINUE
-        DO 100 I = 1,3
-          XIN(I) = -1.D0
-          XIN(I+3) = 1.D0
-  100   CONTINUE
+   60   CONTINUE
+        DO 62 I = 1,3
+          XIN(I  ) = -1.D0
+          XIN(I+3) =  1.D0
+   62   CONTINUE
         YIN(1) = +1.D0
         YIN(4) = +1.D0
         ZIN(2) = +1.D0
@@ -381,29 +384,29 @@ C     ------------------------------------------------------------------
         FAPG(6) = 'FPG21'
         FAPG(7) = 'FPG6NOS'
 
-        DO 110 I = 1,15
+        DO 80 I = 1,15
           XIN(I) = 0.D0
           YIN(I) = 0.D0
           ZIN(I) = 0.D0
-  110   CONTINUE
-        DO 120 I = 1,3
-          XIN(I) = -1.D0
-          XIN(I+6) = -1.D0
-          XIN(I+3) = 1.D0
-          XIN(I+12) = 1.D0
-  120   CONTINUE
-        YIN(1) = 1.D0
-        YIN(4) = 1.D0
-        YIN(10) = 1.D0
-        ZIN(2) = 1.D0
-        ZIN(5) = 1.D0
-        ZIN(11) = 1.D0
-        DO 140 I = 1,2
-          DO 130 J = 1,2
+   80   CONTINUE
+        DO 82 I = 1,3
+          XIN(I)    = -1.D0
+          XIN(I+6)  = -1.D0
+          XIN(I+3)  = +1.D0
+          XIN(I+12) = +1.D0
+   82   CONTINUE
+        YIN(1)  = +1.D0
+        YIN(4)  = +1.D0
+        YIN(10) = +1.D0
+        ZIN(2)  = +1.D0
+        ZIN(5)  = +1.D0
+        ZIN(11) = +1.D0
+        DO 84 I = 1,2
+          DO 86 J = 1,2
             YIN(6*I+2*J-1) = +0.5D0
-            ZIN(6*I+J) = +0.5D0
-  130     CONTINUE
-  140   CONTINUE
+            ZIN(6*I+J)     = +0.5D0
+   86     CONTINUE
+   84   CONTINUE
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PY5') THEN
@@ -431,23 +434,23 @@ C     ------------------------------------------------------------------
         FAPG(7) = 'FPG5NOS'
 
         XIN(1) = +1.D0
-        YIN(1) = 0.D0
-        ZIN(1) = 0.D0
+        YIN(1) =  0.D0
+        ZIN(1) =  0.D0
 
-        XIN(2) = 0.D0
+        XIN(2) =  0.D0
         YIN(2) = +1.D0
-        ZIN(2) = 0.D0
+        ZIN(2) =  0.D0
 
         XIN(3) = -1.D0
-        YIN(3) = 0.D0
-        ZIN(3) = 0.D0
+        YIN(3) =  0.D0
+        ZIN(3) =  0.D0
 
-        XIN(4) = 0.D0
+        XIN(4) =  0.D0
         YIN(4) = -1.D0
-        ZIN(4) = 0.D0
+        ZIN(4) =  0.D0
 
-        XIN(5) = 0.D0
-        YIN(5) = 0.D0
+        XIN(5) =  0.D0
+        YIN(5) =  0.D0
         ZIN(5) = +1.D0
 
 C     ------------------------------------------------------------------
@@ -476,54 +479,54 @@ C     ------------------------------------------------------------------
         FAPG(7) = 'FPG5NOS'
 
         XIN(1) = +1.D0
-        YIN(1) = 0.D0
-        ZIN(1) = 0.D0
+        YIN(1) =  0.D0
+        ZIN(1) =  0.D0
 
-        XIN(2) = 0.D0
+        XIN(2) =  0.D0
         YIN(2) = +1.D0
-        ZIN(2) = 0.D0
+        ZIN(2) =  0.D0
 
         XIN(3) = -1.D0
-        YIN(3) = 0.D0
-        ZIN(3) = 0.D0
+        YIN(3) =  0.D0
+        ZIN(3) =  0.D0
 
-        XIN(4) = 0.D0
+        XIN(4) =  0.D0
         YIN(4) = -1.D0
-        ZIN(4) = 0.D0
+        ZIN(4) =  0.D0
 
-        XIN(5) = 0.D0
-        YIN(5) = 0.D0
+        XIN(5) =  0.D0
+        YIN(5) =  0.D0
         ZIN(5) = +1.D0
 
         XIN(6) = +0.5D0
         YIN(6) = +0.5D0
-        ZIN(6) = 0.D0
+        ZIN(6) =  0.D0
 
         XIN(7) = -0.5D0
         YIN(7) = +0.5D0
-        ZIN(7) = 0.D0
+        ZIN(7) =  0.D0
 
         XIN(8) = -0.5D0
         YIN(8) = -0.5D0
-        ZIN(8) = 0.D0
+        ZIN(8) =  0.D0
 
         XIN(9) = +0.5D0
         YIN(9) = -0.5D0
-        ZIN(9) = 0.D0
+        ZIN(9) =  0.D0
 
         XIN(10) = +0.5D0
-        YIN(10) = 0.D0
+        YIN(10) =  0.D0
         ZIN(10) = +0.5D0
 
-        XIN(11) = 0.D0
+        XIN(11) =  0.D0
         YIN(11) = +0.5D0
         ZIN(11) = +0.5D0
 
         XIN(12) = -0.5D0
-        YIN(12) = 0.D0
+        YIN(12) =  0.D0
         ZIN(12) = +0.5D0
 
-        XIN(13) = 0.D0
+        XIN(13) =  0.D0
         YIN(13) = -0.5D0
         ZIN(13) = +0.5D0
 
@@ -534,26 +537,28 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 9
+        NBFPG = 10
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
-        NBPG(5) = 3
-        NBPG(6) = 4        
-        NBPG(7) = 6 
+        NBPG(5) = 4        
+        NBPG(6) = 6 
+        NBPG(7) = 7
         NBPG(8) = 12 
-        NBPG(9) = 6
+        NBPG(9) = 3
+        NBPG(10) = 6
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG3'
-        FAPG(5) = 'COT3'
-        FAPG(6) = 'FPG4'
-        FAPG(7) = 'FPG6'
+        FAPG(5) = 'FPG4'
+        FAPG(6) = 'FPG6'
+        FAPG(7) = 'FPG7'
         FAPG(8) = 'FPG12'
-        FAPG(9) = 'FPG3NOS'
+        FAPG(9) = 'COT3'
+        FAPG(10) = 'FPG3NOS'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -571,14 +576,16 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 7
+        NBFPG = 9
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
         NBPG(5) = 4
         NBPG(6) = 6
-        NBPG(7) = 6
+        NBPG(7) = 7
+        NBPG(8) = 12
+        NBPG(9) = 6
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -586,7 +593,9 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG3'
         FAPG(5) = 'FPG4'
         FAPG(6) = 'FPG6'
-        FAPG(7) = 'FPG3NOS'
+        FAPG(7) = 'FPG7'
+        FAPG(8) = 'FPG12'
+        FAPG(9) = 'FPG3NOS'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -613,20 +622,24 @@ C     -------------------------------------------------------
         NNOS = 3
         VOL  = 1.D0/2.D0
 
-        NBFPG = 6
+        NBFPG = 8
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
-        NBPG(5) = 6
-        NBPG(6) = 7
+        NBPG(5) = 4
+        NBPG(6) = 6
+        NBPG(7) = 7
+        NBPG(8) = 12
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG3'
-        FAPG(5) = 'FPG6'
-        FAPG(6) = 'FPG7'
+        FAPG(5) = 'FPG4'
+        FAPG(6) = 'FPG6'
+        FAPG(7) = 'FPG7'
+        FAPG(8) = 'FPG12'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -656,22 +669,24 @@ C     ------------------------------------------------------------------
         NNOS = 4
         VOL = 4.D0
 
-        NBFPG = 7
+        NBFPG = 8
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 9
-        NBPG(6) = 2
-        NBPG(7) = 8
+        NBPG(6) = 16
+        NBPG(7) = 2
+        NBPG(8) = 8
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG9'
-        FAPG(6) = 'FIS2'
-        FAPG(7) = 'FPG4NOS'
+        FAPG(6) = 'FPG16'
+        FAPG(7) = 'FIS2'
+        FAPG(8) = 'FPG4NOS'
 
         XIN(1) = -1.D0
         YIN(1) = -1.D0
@@ -719,17 +734,17 @@ C     ------------------------------------------------------------------
         XIN(4) = -1.D0
         YIN(4) = +1.D0
 
-        XIN(5) = 0.D0
+        XIN(5) =  0.D0
         YIN(5) = -1.D0
 
         XIN(6) = +1.D0
         YIN(6) = +0.D0
 
-        XIN(7) = 0.D0
+        XIN(7) =  0.D0
         YIN(7) = +1.D0
 
         XIN(8) = -1.D0
-        YIN(8) = +0.D0
+        YIN(8) =  0.D0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'QU9') THEN
@@ -789,6 +804,7 @@ C     ------------------------------------------------------------------
         NBPG(1) = 1
         NBPG(2) = 1
         NBPG(3) = 1
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -807,6 +823,7 @@ C     ------------------------------------------------------------------
         NBPG(4) = 2
         NBPG(5) = 3
         NBPG(6) = 4
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -831,6 +848,7 @@ C     ------------------------------------------------------------------
         NBPG(4) = 2
         NBPG(5) = 3
         NBPG(6) = 4
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -840,7 +858,7 @@ C     ------------------------------------------------------------------
 
         XIN(1) = -1.D0
         XIN(2) = +1.D0
-        XIN(3) = 0.D0
+        XIN(3) =  0.D0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'SE4') THEN
@@ -856,6 +874,7 @@ C     ------------------------------------------------------------------
         NBPG(4) = 2
         NBPG(5) = 3
         NBPG(6) = 4
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -874,7 +893,7 @@ C     ------------------------------------------------------------------
          CALL UTMESS('F','ELRACA','ELREFA INCONNU: '//ELREFA)
       END IF
 
-      DO 150 I = 0,NNO - 1
+      DO 200 I = 0,NNO - 1
         X(NDIM*I+1) = XIN(I+1)
         IF (NDIM.EQ.2) THEN
           X(NDIM*I+2) = YIN(I+1)
@@ -882,6 +901,6 @@ C     ------------------------------------------------------------------
           X(NDIM*I+2) = YIN(I+1)
           X(NDIM*I+3) = ZIN(I+1)
         END IF
-  150 CONTINUE
+  200 CONTINUE
 
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/08/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 29/08/2005   AUTEUR THOMASSO D.THOMASSON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
       if (AsType(vale) == fonction_sdaster )  : return fonction_c
       if (AsType(vale) == fonction_c) : return fonction_sdaster
    if (CORR_ACCE   != None): return fonction_sdaster
-   if (LISS_ENVELOP!= None): return AsType(LISS_ENVELOP[0]['FONCTION'])
+   if (LISS_ENVELOP!= None): return nappe_sdaster
    if (PUISSANCE   != None): return AsType(PUISSANCE[0]['FONCTION'])
    if (ABS         != None): return fonction_sdaster
    raise AsException("type de concept resultat non prevu")
@@ -82,29 +82,11 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
            COEF            =SIMP(statut='f',typ='R',defaut= 0.E+0,fr="Valeur de la constante d intégration" ),
          ),
          LISS_ENVELOP    = FACT(statut='f',fr="Lissage d une enveloppe",
-           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster) ),
-           AMOR            =SIMP(statut='f',typ='R',max='**'),
-           FREQ_MIN        =SIMP(statut='f',typ='R'),
-           FREQ_MAX        =SIMP(statut='f',typ='R'),
-           FREQ_CREUX      =SIMP(statut='f',typ='R',max='**'),
-           ELARG           =SIMP(statut='f',typ='TXM',defaut="GLOBAL",into=("GLOBAL","LOCAL") ),
-              b_elarg_glob = BLOC ( condition = " (ELARG=='GLOBAL') ",
-                   GAUCHE       =SIMP(statut='f',typ='R',defaut =10.0E0 ),  
-                   DROITE       =SIMP(statut='f',typ='R',defaut =10.0E0 ),  
-                ),
-              b_elarg_loc = BLOC ( condition = " (ELARG=='LOCAL') ",
-                   FREQ_1       =SIMP(statut='o',typ='R'),  
-                   FREQ_2       =SIMP(statut='o',typ='R' ),  
-                   GAUCHE       =SIMP(statut='f',typ='R',defaut =10.0E0 ),  
-                   DROITE       =SIMP(statut='f',typ='R',defaut =10.0E0 ),  
-                ),
-           TOLE_LISS      =SIMP(statut='f',typ='R',defaut=25.0E0),
-           ECH_FREQ_REF = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-               b_oui    =BLOC ( condition = "(ECH_FREQ_REF=='OUI') ",
-                    regles=(UN_PARMI("LIST_FREQ", "AMOR_ECH"),),
-                       LIST_FREQ   =SIMP(statut='f',typ=listr8_sdaster ),
-                       AMOR_ECH    =SIMP(statut='f',typ='R',max='**'),
-                              ),
+           NAPPE           =SIMP(statut='o',typ=nappe_sdaster ),
+           FREQ_MIN        =SIMP(statut='f',typ='R',defaut =0.2),
+           FREQ_MAX        =SIMP(statut='f',typ='R',defaut =35.5),
+           ELARG           =SIMP(statut='f',typ='R',defaut =0.1 ),
+           TOLE_LISS       =SIMP(statut='f',typ='R',defaut =0.25 ),
          ),
          SPEC_OSCI       =FACT(statut='f',fr="Spectre d'oscillateur",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="NIGAM",into=("NIGAM",) ),

@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF defi_part_feti_ops Macro  DATE 30/08/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@
 # script PYTHON : lancement de DEFI_PART_PA_OPS et de DEFI_PART_OPS
 
 
-def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,VERI_CONNEX,INFO,**args):
+def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTION_CONNEX,INFO,**args):
 
   import aster, string, sys
 
@@ -141,7 +141,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,VERI_CONN
                    INFO=INFO,
                    METHODE=METHODE,
                    NB_PART=NB_PART, 
-                   VERI_CONNEX=VERI_CONNEX,
+                   CORRECTION_CONNEX=CORRECTION_CONNEX,
                    TRAITER_BORDS=TRAITER_BORDS,
                    NOM_GROUP_MA=NOM_GROUP_MA, 
                    **motscle1

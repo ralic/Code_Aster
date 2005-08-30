@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,7 +172,7 @@ C        -------------------------------------------------------------
         END IF
         CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CHAM19,'CHAM_ELEM',IBID,NOGD,IE)
-        TYPE = NOGD(6:6)
+        CALL DISMOI('F','TYPE_SCA',NOGD,'GRANDEUR',IBID,TYPE,IE)
         II = 0
         DO 20 IORDR = 1,NBORDR
           CALL JEMARQ()

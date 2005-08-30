@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,6 +331,7 @@ TABL_KTO=POST_K1_K2_K3(  MODELISATION='3D',
               TABL_DEPL_SUP  = DEPTS,
               TABL_DEPL_INF  = DEPTI,
               ABSC_CURV_MAXI = 0.35,
+              PREC_VIS_A_VIS = 0.05,
               VECT_K1        = ( 0., 0., 1., ),
            )
 

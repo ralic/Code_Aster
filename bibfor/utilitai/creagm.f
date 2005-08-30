@@ -1,0 +1,181 @@
+      SUBROUTINE CREAGM(NBMATO,NBPART,SDB,RENUM,NBMASD,IDMASD,MA,
+     &                                        NUMSDM,SDBORD,MASD,NOMSDM)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 30/08/2005   AUTEUR ASSIRE A.ASSIRE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE: 
+C       - CREATION DE NOUVEAUX GROUPES DE MAILLES
+C              DANS LA STRUCTURE MAILLAGE
+C
+C    - IN :     NBMATO : NOMBRE DE MAILLES 
+C               NBPART : NOMBRE DE PARTITION
+C               SDB    : VAUT 1 SI GROUP_MA POUR LES BORDS
+C               RENUM  : RENUMEROTATION 
+C               NBMASD : NOMBRE DE MAILLES PAR SOUS DOMAINE
+C               MA     : NOM DU MAILLAGE
+C               NUMSDM : SOUS DOMAINES DE CHAQUES MAILLE
+C
+C    - OUT :    MASD   : DONNE LES MAILLES PAR SD
+C               IDMASD : INDEX DE MASD
+C               NOMSDM : NOM DES GROUP_MA
+C               SDBORD : NOM DES GROUP_MA POUR LES BORDS
+C
+C----------------------------------------------------------------------
+C RESPONSABLE ASSIRE A.ASSIRE
+
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
+
+C DECLARATION VARIABLES D'APPEL
+      INTEGER       NBMATO,NBPART,RENUM,NBMASD,SDB,NOMSDM,MASD,
+     &              IDMASD,NUMSDM
+      CHARACTER*8   SDBORD,MA
+         
+C DECLARATION VARIABLES LOCALES
+      INTEGER       ID1,I,MAXI,ERR,ISD,NBMA,IMA,NBRE,IDMA,
+     &              JVG,JGG,IFM,NIV,NBGMA
+      REAL*8        TMPS(6),T0
+      CHARACTER*8   NOM,KTMP,GRPEMA,K8BID
+      CHARACTER*24  GRPMAV,GRPMA
+      CHARACTER*32  JEXNOM,JEXNUM
+      
+C CORPS DU PROGRAMME
+      CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
+
+      CALL JEVEUO('RENUM ','L',RENUM)
+      CALL JEVEUO('NBMASD','L',NBMASD)
+      CALL JEVEUO('NUMSDM','E',NUMSDM)
+
+      IF (NIV.GE.2) THEN
+        CALL UTTCPU(18,'INIT',6,TMPS)
+        CALL UTTCPU(18,'DEBUT',6,TMPS)
+      ENDIF
+
+      CALL WKVECT('ID1   ','V V I',NBPART,ID1)
+      CALL WKVECT('IDMASD','V V I',NBPART+1,IDMASD)
+      CALL WKVECT('NOMSDM','V V K8',NBPART,NOMSDM)
+      CALL WKVECT('MASD  ','V V I',NBMATO,MASD)
+ 
+C ------- On RECUPERE LE NOM DES SOUS DOMAINES 
+
+      CALL GETVTX(' ','NOM_GROUP_MA' ,0,1,1,NOM,ERR)
+      MAXI=0
+      DO 50 I = 1,LEN(NOM)
+        IF ( NOM(I:I) .NE. ' ' ) MAXI=MAXI+1
+ 50   CONTINUE
+
+      DO 51 ISD = 1, NBPART
+        WRITE(KTMP,'(I4)')ISD-1
+        CALL LXCADR(KTMP)
+        ZK8(NOMSDM-1+ISD) = NOM(1:MAXI)//KTMP
+ 51   CONTINUE
+
+      IF ( SDB .EQ. 1) THEN
+            MAXI=0
+            DO 47 I = 1,LEN(SDBORD)
+               IF ( SDBORD(I:I) .NE. ' ' ) MAXI=MAXI+1
+ 47         CONTINUE
+            DO 66 ISD = NBPART/2+1, NBPART
+               WRITE(KTMP,'(I4)')ISD-NBPART/2-1
+               CALL LXCADR(KTMP)
+               ZK8(NOMSDM-1+ISD) = SDBORD(1:MAXI)//KTMP
+ 66         CONTINUE            
+      ENDIF
+
+C ------- CREATION DU TABLEAU DES PLACES DES GRPMA 
+
+      ZI(IDMASD)=1
+      DO 32 ISD=2,NBPART+1
+       ZI(IDMASD-1+ISD)=ZI(IDMASD-1+ISD-1)+ZI(NBMASD-1+ISD-1)
+ 32   CONTINUE
+
+C ------- CREATION DU TABLEAU DONNANT LES MAILLES POUR CHAQUE GRMPA 
+
+      DO 36 IMA=1,NBMATO
+        NBRE=ZI(NUMSDM-1+IMA)+1
+        ZI(MASD-1+ZI(IDMASD-1+NBRE)+ZI(ID1-1+NBRE))=ZI(RENUM-1+IMA)
+        ZI(ID1-1+NBRE)=ZI(ID1-1+NBRE)+1
+ 36   CONTINUE
+
+C ------- ON AGRANDIT LA COLLECTION GROUPE-MAILLE 
+
+      GRPMA  = MA//'.GROUPEMA       '
+      GRPMAV = '&&OP0029'//'.GROUPEMA       '
+      CALL JEEXIN(GRPMA,ERR)
+      IF ( ERR .EQ. 0 ) THEN
+        CALL JECREC(GRPMA,'G V I','NOM','DISPERSE','VARIABLE',NBPART)
+      ELSE
+         CALL JELIRA(MA//'.GROUPEMA','NMAXOC',NBRE,K8BID)
+         CALL JELIRA(GRPMA,'NOMUTI',NBGMA,K8BID)
+         NBRE = NBGMA + NBPART
+         CALL JEDUPO( GRPMA, 'V', GRPMAV, .FALSE. )
+         CALL JEDETR ( GRPMA )
+         CALL JECREC(GRPMA,'G V I','NOM','DISPERSE','VARIABLE',NBRE)
+         DO 100 I = 1 , NBGMA
+            CALL JENUNO(JEXNUM(GRPMAV,I),NOM)
+            CALL JECROC(JEXNOM(GRPMA,NOM))
+            CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
+            CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,K8BID)
+            CALL JEECRA(JEXNOM(GRPMA,NOM),'LONMAX',NBMA,' ')
+            CALL JEVEUO(JEXNOM(GRPMA,NOM),'E',JGG)
+            DO 102 IMA=0,NBMA-1
+               ZI(JGG+IMA) = ZI(JVG+IMA)
+ 102        CONTINUE
+ 100     CONTINUE
+      ENDIF
+
+C ------- ON RAJOUTE LES SD DANS LES GROUPES DE MAILLES 
+
+      DO 38 ISD=1,NBPART
+        GRPEMA=ZK8(NOMSDM-1+ISD)
+        NBMA=ZI(NBMASD-1+ISD)
+        IF ( NBMA .NE. 0 )THEN
+          CALL JECROC(JEXNOM(MA//'.GROUPEMA',GRPEMA))
+          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',GRPEMA),'LONMAX',
+     &                                                  NBMA,K8BID)
+          CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',GRPEMA),'E',IDMA)
+          DO 41 IMA = 0,NBMA - 1
+            ZI(IDMA+IMA) = ZI(MASD+ZI(IDMASD-1+ISD)-1+IMA) 
+ 41       CONTINUE
+        ENDIF   
+ 38   CONTINUE
+ 
+      CALL JEDETR('ID1   ')
+      
+      IF ( NIV .GE. 2 ) THEN
+        CALL UTTCPU(18,'FIN',6,TMPS)
+        WRITE(IFM,*)'--- CREATION DES GRPMA :',TMPS(3)
+        WRITE(IFM,*)'  '
+      ENDIF
+      
+      CALL JEDEMA()
+      END

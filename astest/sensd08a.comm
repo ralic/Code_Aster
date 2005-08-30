@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SENSIBILITE DES MODES PROPRES CALCULES PAR MODE_ITER_SIMULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,58 +108,6 @@ f2 = 4*f1
 df1 = pi*sqrt(h*h/(12.*rho*sensible[0]))/(4.*l*l)
 df2 = 4*df1
 
-# MODES REELS
-
-MODE=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
-#         MATR_C=MATASSC,
-         SENSIBILITE=(PS[0],),CHAM_MATER=CHMAT,
-         CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=2)
-         )
-
-TEST_RESU(RESU=(
-          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = f1),
-          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 2,  VALE = f2),
-          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                SENSIBILITE=PS[0],
-                NUME_ORDRE = 1,  VALE = df1),
-          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                SENSIBILITE=PS[0],
-                NUME_ORDRE = 2,  VALE = df2),
-          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
-                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
-                SENSIBILITE=PS[0],
-                NUME_ORDRE = 1,  VALE = 0.E0),
-          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
-                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
-                SENSIBILITE=PS[0],
-                NUME_ORDRE = 2,  VALE = 0.E0),
-          ),)
-
-MODE=NORM_MODE(reuse=MODE,MODE=MODE,
-                  SENSIBILITE=(PS[0],),
-                  NORME=('MASS_GENE',),)
-
-TEST_RESU(RESU=(
-          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
-                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
-                SENSIBILITE=PS[0],
-                NUME_ORDRE = 1,  VALE = 0.E0),
-          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
-                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
-                SENSIBILITE=PS[0],
-                NUME_ORDRE = 2,  VALE = 0.E0),
-          ),)
-
 # MODES COMPLEXES
 
 MODEC=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
@@ -214,6 +162,58 @@ TEST_RESU(RESU=(
                 SENSIBILITE=PS[0],
                 VALE_C=('RI',0.0,0.0,),
                 NUME_ORDRE = 2, ),
+          ),)
+
+# MODES REELS
+
+MODE=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
+#         MATR_C=MATASSC,
+         SENSIBILITE=(PS[0],),CHAM_MATER=CHMAT,
+         CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=2)
+         )
+
+TEST_RESU(RESU=(
+          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = f1),
+          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 2,  VALE = f2),
+          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 1,  VALE = df1),
+          _F( RESULTAT = MODE, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 2,  VALE = df2),
+          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 1,  VALE = 0.E0),
+          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 2,  VALE = 0.E0),
+          ),)
+
+MODE=NORM_MODE(reuse=MODE,MODE=MODE,
+                  SENSIBILITE=(PS[0],),
+                  NORME=('MASS_GENE',),)
+
+TEST_RESU(RESU=(
+          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 1,  VALE = 0.E0),
+          _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-20,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 2,  VALE = 0.E0),
           ),)
 
 FIN()

@@ -1,21 +1,21 @@
-# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #        ET D'HYDRATATION - LOI ENDO_ISOT_BETON
 
@@ -46,7 +46,7 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                TEMP_DEF_ALPHA=20),
                     BETON_ECRO_LINE=_F( SYT = 4.E6,
                                         D_SIGM_EPSI = -10.E9,
-                                        SYC = 53.4E6),   )          
+                                        SYC = 53.4E6),   )
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -101,19 +101,18 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                    INST=3600.0,),   ),);
 
 HYDRI=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
-                OPERATION='AFFE',
-                MODELE = MO,
-                AFFE=_F(TOUT='OUI',
+                OPERATION='AFFE',INFO=2, MODELE = MO,
+                AFFE=_F(MAILLE=('M1','M2','M3','M4',),
                         NOM_CMP='HYDR',
                         VALE=0.0,),);
 
 HYDRF=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
-                AFFE=_F(TOUT='OUI',
+                AFFE=_F(MAILLE=('M1','M2','M3','M4',),
                         NOM_CMP='HYDR',
                         VALE=1.0,),);
-                        
+
 HYDR1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='HYDR_ELNO_ELGA',
@@ -127,7 +126,7 @@ HYDR1=CREA_RESU(OPERATION='AFFE',
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=_F(GROUP_MA='D1',
                                 DY=0.0,),);
-                                
+
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                    TEMP_CALCULEE=TEMP1,
                    SECH_CALCULEE=SECH1,
@@ -186,7 +185,7 @@ TEST_RESU(RESU=(
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0., CRITERE = 'ABSOLU'),
                   ));
-                
-                    
+
+
 FIN();
 

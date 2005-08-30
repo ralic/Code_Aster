@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      +             D, RMAX, EPSI, VECNOR(3), X1, X2, Y1, Y2, Z1, Z2,
      +             KG2(10),KG1(10),KG3(10),VECTY(3),VO(3),VE(3),
      +             RMAXEM,DMAX, ABSC, VP(3), TGOR(3), TGEX(3), DINST,
-     +             PRECI, PREC, PRECV, PRECN
+     +             PRECI, PREC, PRECV, PRECN, RMPREC
       COMPLEX*16   CBID
       LOGICAL      EXTGOR, EXTGEX, EXIST, TYPLIN, TYPQUA
       CHARACTER*2  TYPPA1(NBPAR1)
@@ -433,10 +433,12 @@ C        DEFINISSANT LA LEVRE INFERIEURE
  220       CONTINUE
          ENDIF
 
-         PREC = 10.D0 * PREC
+         PREC = 10 * PREC
 
 C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
 
+         RMPREC = RMAX*(1+PRECV/10)
+         
          IF ( NBTRLS .LT. 3 ) THEN
             CALL UTDEBM('A',NOMCMD,'IL MANQUE DES POINTS DANS LE PLAN'//
      +    ' DEFINI PAR LA LEVRE SUPERIEURE ET PERPENDICULAIRE AU NOEUD')
@@ -459,7 +461,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
                Y2 = ZR(IDCOOR-1+3*(ZI(JINTS+IN-1)-1)+2)
                Z2 = ZR(IDCOOR-1+3*(ZI(JINTS+IN-1)-1)+3)
                D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-               IF ( D .LE. RMAX ) THEN
+               IF ( D .LE. RMPREC ) THEN
                   DO 112 II = 1 , NBVAS
                      IF ( ZI(KNULS+II-1) .EQ. ZI(JINTS+IN-1) ) GOTO 110
  112              CONTINUE
@@ -493,9 +495,10 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
             IF ( NIV .EQ. 2 ) THEN
                WRITE(IFM,1010) ZK8(KNOLS+IN-1), ZR(JABSCS+IN-1)
             ENDIF
-
  114     CONTINUE
-
+         
+         NBVAL = NBVAS
+         
          IF (SYMECH .NE. 'SYME' ) THEN
            IF ( NBTRLI .LT. 3 ) THEN
               CALL UTDEBM('A',NOMCMD,'IL MANQUE DES POINTS DANS LE '//
@@ -520,7 +523,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
                  Y2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+2)
                  Z2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+3)
                  D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-                 IF ( D .LE. RMAX ) THEN
+                 IF ( D .LE. RMPREC ) THEN
                     DO 122 II = 1 , NBVAI
                       IF (ZI(KNULI+II-1) .EQ. ZI(JINTI+IN-1)) GOTO 120
  122                CONTINUE
@@ -564,13 +567,11 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
               CALL UTIMPI('L',' NOMBRE DE POINTS SUPERIEURE ',1,NBVAS)
               CALL UTIMPI('L',' NOMBRE DE POINTS INFERIEURE ',1,NBVAI)
               CALL UTFINM
-              GOTO 202
            ENDIF
-
+           
+           NBVAL = MIN(NBVAS,NBVAI)
          ENDIF
-
-         NBVAL = NBVAS
-
+         
          IF ( NBVAL .LT. 3 ) THEN
             CALL UTDEBM('A',NOMCMD,'IL FAUT AU MOINS TROIS NOEUDS '//
      +    'DANS LE PLAN DEFINI PAR LES LEVRES ET PERPENDICULAIRE '//
@@ -665,7 +666,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
 
 C        --- ON VERIFIE QUE LES NOEUDS SONT EN VIS_A_VIS ---
 
-           PRECN = PRECV / DMAX
+           PRECN = PRECV * DMAX
            DO 50 IN = 2 , NBVAL
              D = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) -
      +            ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1) ) ** 2

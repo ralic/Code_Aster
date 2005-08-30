@@ -20,12 +20,12 @@ C ======================================================================
       REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DST (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
-C     IN  OPTION : OPTION RIGI_MECA OU EPOT_ELEM_DEPL
+C     IN  OPTION : OPTION RIGI_MECA, RIGI_MECA_SENS* OU EPOT_ELEM_DEPL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
 C     OUT RIG    : MATRICE DE RIGIDITE
 C     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM_DEPL)
@@ -338,7 +338,9 @@ C         --------------------------------------
 
   170 CONTINUE
 
-      IF (OPTION.EQ.'RIGI_MECA') THEN
+      IF ( OPTION.EQ.'RIGI_MECA'      .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,RIG)
       ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)

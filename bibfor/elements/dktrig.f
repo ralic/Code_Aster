@@ -21,12 +21,12 @@ C ======================================================================
       LOGICAL       GRILLE
       CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
-C     IN  OPTION : OPTION RIGI_MECA OU EPOT_ELEM_DEPL
+C     IN  OPTION : OPTION RIGI_MECA, RIGI_MECA_SENS* OU EPOT_ELEM_DEPL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
 C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
 C     OUT RIG    : MATRICE DE RIGIDITE
@@ -144,7 +144,9 @@ C
         END IF
    10 CONTINUE
 C
-      IF ( OPTION .EQ. 'RIGI_MECA' ) THEN
+      IF ( OPTION.EQ.'RIGI_MECA'      .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
+     +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
          CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,RIG)
       ELSEIF ( OPTION .EQ. 'EPOT_ELEM_DEPL' ) THEN
          CALL JEVECH('PDEPLAR','L',JDEPG)

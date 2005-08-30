@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 30/08/2005   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,11 @@ DEFI_PART_PA_OPS=OPER(nom="DEFI_PART_PA_OPS",op=29,sd_prod=sd_feti_sdaster,
 
          # Methode de partitionnement
          METHODE         =SIMP(statut='f',typ='TXM',into=("PMETIS","SCOTCH","KMETIS",), defaut="SCOTCH" ),
-         b_methode =BLOC(condition="METHODE != 'SCOTCH'", fr="Utilisation d'un logiciel externe",
-           LOGICIEL      =SIMP(statut='f',typ='TXM'),
-             ),
+         
+         LOGICIEL      =SIMP(statut='f',typ='TXM'),
 
-         # Verification de la connexite des sous-domaines
-         VERI_CONNEX    =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
+         # Corrige les problemes possibles de non-connexite des sous-domaines
+         CORRECTION_CONNEX    =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
 
          # Permet de grouper des mailles dans un meme sous-doamine
          GROUPAGE        =FACT(statut='f',max='**',

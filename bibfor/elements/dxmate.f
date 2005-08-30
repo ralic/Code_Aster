@@ -23,7 +23,7 @@ C ======================================================================
       REAL*8 PGL(3,3),R(*)
       LOGICAL GRILLE,ELASCQ
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -56,18 +56,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      JCOQU,JMATE,LT1VE,LT2VE,LT2EV,NBV,I,J,K,NBPAR,ELASCO
-      INTEGER      ICACOQ
+      INTEGER      ICACOQ,IAZI,IAZK24
       REAL*8       KCIS,CDF,CDM,CDC,GCIS,VALRES(33)
       REAL*8       YOUNG,NU,EPAIS,VALPAR,EXCENT,CTOR
       REAL*8       XAB1(3,3),XAB2(2,2),XAB3(3,2),DH(3,3),ROT(3,3)
       REAL*8       DX,DY,DZ,S,C,NORM,PS,PJDX,PJDY,PJDZ
       REAL*8       ALPHA,BETA,R8DGRD,R8PREM,DET
       REAL*8       YOUNG1,YOUNG2,ZERO,DEUX
-      CHARACTER*2  CODRET(33)
+      CHARACTER*2  CODRET(33),DERIVE
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES(33),NOMPAR
       CHARACTER*8  ELREFE
       CHARACTER*10 PHENOM
+      CHARACTER*24 OPTION
 
 C     ------------------------------------------------------------------
 
@@ -75,11 +76,15 @@ C     ------------------------------------------------------------------
       DEUX   = 2.0D0
       ELASCO = 0
       ELASCQ = .FALSE.
+      DERIVE = '  '
       CALL R8INIR(9,ZERO,DMF,1)
       CALL R8INIR(6,ZERO,DMC,1)
       CALL R8INIR(6,ZERO,DFC,1)
 C
       CALL ELREF1(ELREFE)
+
+      CALL TECAEL(IAZI,IAZK24)
+      OPTION = ZK24(IAZK24-1+3+NNO+2)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
       EPAIS = ZR(JCOQU)
@@ -267,14 +272,58 @@ C
 C
 
       IF (PHENOM.EQ.'ELAS') THEN
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     +             NOMRES, VALRES,CODRET,'FM')
-
-        MULTIC = 0
 
 C        ------ MATERIAU ISOTROPE --------------------------------------
-        YOUNG = VALRES(1)
-        NU = VALRES(2)
+
+        IF (OPTION(11:14).EQ.'SENS') THEN
+
+          CALL JEVECH('PMATSEN','L',JMATE)
+          CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     &            NOMRES,VALRES,CODRET,'FM')
+          YOUNG = VALRES(1)
+          NU = VALRES(2)
+
+C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
+C   SI : DERIVATION PAR RAPPORT A YOUNG ALORS : YOUNG = 1 ET NU = 0
+C   SI : DERIVATION PAR RAPPORT A NU ALORS : YOUNG = 0 ET NU = 1
+C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
+
+          CALL JEVECH('PMATERC','L',JMATE)
+          CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     &            NOMRES,VALRES,CODRET,'FM')
+          IF(ABS(NU).LT.R8PREM()) THEN
+            DERIVE = 'E'
+            NU = VALRES(2)
+          ELSE IF(ABS(YOUNG).LT.R8PREM()) THEN
+            DERIVE = 'NU'
+            YOUNG = VALRES(1)
+            NU = VALRES(2)
+C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
+          END IF
+        ELSE
+
+          CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     +             NOMRES, VALRES,CODRET,'FM')
+
+          YOUNG = VALRES(1)
+          NU = VALRES(2)
+
+C POUR LES MATRICES ELEMENTAIRES SENSIBILITE SANS PASSAGE PAR VECHDE
+C AFFECTATION FICTIVE DE YOUNG ET NU
+C LE CALCUL EFFECTIF DU SECOND MEMBRE FERA PAR APPEL A VECHDE
+          IF(ABS(NU).LT.R8PREM() .AND. ABS(YOUNG-1).LT.R8PREM())THEN
+            DERIVE = 'E'
+            YOUNG = 1.D0
+            NU = 1.D-1
+          ELSEIF(ABS(YOUNG).LT.R8PREM().AND.ABS(NU-1).LT.R8PREM())THEN
+            DERIVE = 'NU'
+            YOUNG = 1.D0
+            NU = 1.D-1
+          END IF
+
+        END IF
+
+        MULTIC = 0
 
         IF (GRILLE) THEN
           CALL JEVECH('PCACOQU','L',ICACOQ)
@@ -312,6 +361,7 @@ C              SUPPRESION DE LA RIGIDITE DE FLEXION PROPRE
         ELSE
 
           KCIS = 5.D0/6.D0
+
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
           CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
           DO 50 K = 1,9
@@ -323,6 +373,13 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
           DF(2,1) = DF(1,2)
           DF(2,2) = DF(1,1)
           DF(3,3) = CDF* (1.D0-NU)/2.D0
+          IF(DERIVE(1:2).EQ.'NU') THEN
+            DF(1,1) = DF(1,1)*2.D0*NU/(1.D0-NU*NU)
+            DF(1,2) = DF(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
+            DF(2,1) = DF(1,2)
+            DF(2,2) = DF(1,1)
+            DF(3,3) = -DF(3,3)/(1.D0+NU)
+          ENDIF
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
           DO 60 K = 1,9
@@ -333,6 +390,13 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           DM(2,1) = DM(1,2)
           DM(2,2) = DM(1,1)
           DM(3,3) = CDM* (1.D0-NU)/2.D0
+          IF(DERIVE(1:2).EQ.'NU') THEN
+            DM(1,1) = DM(1,1)*2.D0*NU/(1.D0-NU*NU)
+            DM(1,2) = DM(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
+            DM(2,1) = DM(1,2)
+            DM(2,2) = DM(1,1)
+            DM(3,3) = -DM(3,3)/(1.D0+NU)
+          ENDIF
 C        --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
           GCIS = YOUNG/2.D0/ (1.D0+NU)
           CDC = GCIS*KCIS*EPAIS
@@ -340,8 +404,12 @@ C        --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
           DC(2,2) = DC(1,1)
           DC(1,2) = 0.D0
           DC(2,1) = 0.D0
+          IF(DERIVE(1:2).EQ.'NU') THEN
+            DC(1,1) = -DC(1,1)/(1.D0+NU)
+            DC(2,2) = DC(1,1)
+          ENDIF
 C        --- CALCUL DE SON INVERSE ------------------------------------
-          DCI(1,1) = 1/CDC
+          DCI(1,1) = 1.D0/DC(1,1)
           DCI(2,2) = DCI(1,1)
           DCI(1,2) = 0.D0
           DCI(2,1) = 0.D0
