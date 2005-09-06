@@ -1,4 +1,4 @@
-#@ MODIF macro_proj_base_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_proj_base_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,7 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
      Ecriture de la macro MACRO_PROJ_BASE
   """
   ier=0
+  from Utilitai.Utmess     import UTMESS
   # On importe les definitions des commandes a utiliser dans la macro
   NUME_DDL_GENE  =self.get_cmd('NUME_DDL_GENE')
   PROJ_MATR_BASE =self.get_cmd('PROJ_MATR_BASE')
@@ -39,9 +40,7 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
       if   m['MATR_ASSE']     :  motscles['MATR_ASSE']     =m['MATR_ASSE']
       elif m['MATR_ASSE_GENE']:  motscles['MATR_ASSE_GENE']=m['MATR_ASSE_GENE']
       else:
-          ier=ier+1
-          self.cr.fatal("<F> <MACRO_PROJ_BASE> MATR_ASSE et MATR_ASSE_GENE absents")
-          return ier
+          UTMESS('F', "MACRO_PROJ_BASE", "MATR_ASSE et MATR_ASSE_GENE absents")
       self.DeclareOut('mm',m['MATRICE'])
       mm=PROJ_MATR_BASE(BASE=BASE,NUME_DDL_GENE=_num,**motscles)
 
@@ -52,9 +51,7 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
       if   v['VECT_ASSE']     :  motscles['VECT_ASSE']     =v['VECT_ASSE']
       elif v['VECT_ASSE_GENE']:  motscles['VECT_ASSE_GENE']=v['VECT_ASSE_GENE']
       else:
-          ier=ier+1
-          self.cr.fatal("<F> <MACRO_PROJ_BASE>MATR_ASSE et MATR_ASSE_GENE absents")
-          return ier
+          UTMESS('F', "MACRO_PROJ_BASE", "MATR_ASSE et MATR_ASSE_GENE absents")
       motscles['TYPE_VECT']=v['TYPE_VECT']
       self.DeclareOut('vv',v['VECTEUR'])
       vv=PROJ_VECT_BASE(BASE=BASE,NUME_DDL_GENE=_num,**motscles)

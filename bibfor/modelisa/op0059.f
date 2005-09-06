@@ -3,7 +3,7 @@
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,6 +73,9 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
          TYPPAR(5)='K16'
          NBELAS=0
          NVI=6
+C       DEFORMATION PLASTIQUE CUMULEE MACROSCOPIQUE EQUIVALENTE
+         NVI=NVI+1
+C
          CALL TBAJPA(COMDES, 5,NOMPAR,TYPPAR)
          CALL GETFAC('MONOCRISTAL',NBOCCM)
          CALL WKVECT(COMPOR//'.CPRK', 'G V K16',5*NBOCCM+1,IMK)
@@ -232,7 +235,8 @@ C           RECOPIE DU VECTEUR K16 DU MONOCRISTAL DANS CELUI DU POLY
             ZI(IPI-1+JCPRI+3)=ZI(IMI-1+7)
 C           NOMBRE DE VAR INT MONO + 6 (TENSEUR BETA OU EPSG)
 C           On enlève 1 = indicateur pour chaque monocristal
-            NVIT=NVIT-1+ZI(IMI-1+7)
+C           ainsi que la déf. plas. cumulee de chaque monocristal
+            NVIT=NVIT-2+ZI(IMI-1+7)
             JCPRI=JCPRI+3   
             CALL GETVR8('POLYCRISTAL','FRAC_VOL',IOCC,1,1,FVOL,
      &                   IFVOL)

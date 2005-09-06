@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ C DEB ------------------------------------------------------------------
       UNS8 = UN/8.0D0
 
 C     ------------------------------------------------------------------
-      IF (ELREFE.EQ.'HE8'.OR.ELREFE.EQ.'X20') THEN
+      IF (ELREFE.EQ.'HE8') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -142,7 +142,7 @@ C     ------------------------------------------------------------------
         FF(27) = AL32(X0)*AL32(Y0)*AL32(Z0)
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PE6'.OR.ELREFE.EQ.'X15') THEN
+      ELSE IF (ELREFE.EQ.'PE6') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -185,7 +185,7 @@ C     ------------------------------------------------------------------
         FF(15) = DEUX*Y0*AL* (UN+X0)
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'TE4'.OR.ELREFE.EQ.'X10') THEN
+      ELSE IF (ELREFE.EQ.'TE4') THEN
 
         X0 = X(1)
         Y0 = X(2)

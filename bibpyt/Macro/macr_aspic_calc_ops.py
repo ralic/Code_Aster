@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   """
   from Accas import _F
   import types
+  from Utilitai.Utmess     import UTMESS
   ier=0
 #------------------------------------------------------------------
   # On recopie le mot cle affe_materiau pour le proteger
@@ -77,63 +78,40 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         i=i+1
         MRCCM=mate['MATER']
   if i>1 :
-     ier=ier+1
-     self.cr.fatal("""<E> <MACR_ASPIC_CALC> vous affectez plus d un materiau contenant l option rccm""")
-     return ier
+     UTMESS('E', "MACR_ASPIC_CALC", "vous affectez plus d un materiau contenant l option rccm")
 #
   if (TYPE_MAILLAGE[:4]=='SAIN') and (TUBULURE==None) :
-     ier=ier+1
-     self.cr.fatal("""<E> <MACR_ASPIC_CALC> pour les piquages sains, TUBULURE doit etre renseigne""")
-     return ier
+     UTMESS('E', "MACR_ASPIC_CALC", "pour les piquages sains, TUBULURE doit etre renseigne")
 #
   if EQUILIBRE['NOEUD'] not in ('P1_CORP','P2_CORP') :
-     ier=ier+1
-     self.cr.fatal("""<E> <MACR_ASPIC_CALC> EQUILIBRE[NOEUD] : on attend 'P1_CORP ' ou 'P2_CORP'""")
-     return ier
+     UTMESS('E', "MACR_ASPIC_CALC", "EQUILIBRE[NOEUD] : on attend P1_CORP ou P2_CORP")
 #
   if PRES_REP['EFFE_FOND']=='OUI' :
      if PRES_REP['NOEUD']==None :
-       ier=ier+1
-       self.cr.fatal("""<E> <MACR_ASPIC_CALC> il faut preciser un noeud pour EFFE_FOND""")
-       return ier
+       UTMESS('E', "MACR_ASPIC_CALC", "il faut preciser un noeud pour EFFE_FOND")
      if PRES_REP['NOEUD'] not in ('P1_CORP','P2_CORP') :
-       ier=ier+1
-       self.cr.fatal("""<E> <MACR_ASPIC_CALC> PRES_REP[NOEUD] : on attend 'P1_CORP' ou 'P2_CORP'""")
-       return ier
+       UTMESS('E', "MACR_ASPIC_CALC", "PRES_REP[NOEUD] : on attend P1_CORP ou P2_CORP")
      if PRES_REP['NOEUD']==EQUILIBRE['NOEUD'] :
-       ier=ier+1
-       self.cr.fatal("""<E> <MACR_ASPIC_CALC> on ne peut appliquer un EFFE_FOND sur PRES_REP[NOEUD] car ce noeud est bloque""")
-       return ier
+       UTMESS('E', "MACR_ASPIC_CALC", "on ne peut appliquer un EFFE_FOND sur PRES_REP[NOEUD] car ce noeud est bloque")
 #
   if TORS_CORP!=None :
      for tors in TORS_CORP :
          if tors['NOEUD'] not in ('P1_CORP','P2_CORP') :
-            ier=ier+1
-            self.cr.fatal("""<E> <MACR_ASPIC_CALC> TORS_CORP[NOEUD] : on attend 'P1_CORP' ou 'P2_CORP'""")
-            return ier
+            UTMESS('E', "MACR_ASPIC_CALC", "TORS_CORP[NOEUD] : on attend P1_CORP ou P2_CORP")
          if tors['NOEUD']==EQUILIBRE['NOEUD'] :
-           ier=ier+1
-           self.cr.fatal("""<E> <MACR_ASPIC_CALC> on ne peut appliquer un torseur sur TORS_CORP[NOEUD] car ce noeud est bloque""")
-           return ier
+            UTMESS('E', "MACR_ASPIC_CALC", "on ne peut appliquer un torseur sur TORS_CORP[NOEUD] car ce noeud est bloque")
 #
   if (TYPE_MAILLAGE[:4]=='SAIN') and (THETA_3D!=None) :
-     ier=ier+1
-     self.cr.fatal("""<E> <MACR_ASPIC_CALC> si TYPE_MAILLAGE SAIN : mecanique de la rupture impossible""")
-     return ier
+     UTMESS('E', "MACR_ASPIC_CALC", "si TYPE_MAILLAGE SAIN : mecanique de la rupture impossible")
 #
   if OPTION in ('CALC_G_MAX','CALC_G_MAX_LOCAL') :
     if BORNES==None :
-       ier=ier+1
-       self.cr.fatal("""<E> <MACR_ASPIC_CALC> mot-clef <BORNES> obligatoire avec cette option""")
-       return ier
+       UTMESS('E', "MACR_ASPIC_CALC", "mot-clef <BORNES> obligatoire avec cette option")
 #
   if IMPRESSION!=None :
     if IMPRESSION['FORMAT'] in ('IDEAS','CASTEM') :
       if IMPRESSION['NOM_CHAM']==None :
-        ier=ier+1
-        self.cr.fatal("""<E> <MACR_ASPIC_CALC> impression de resultats demandée sans preciser le nom des champs
-                                               cf. la documentation utilisateur : U4.PC.20.""")
-        return ier
+       UTMESS('E', "MACR_ASPIC_CALC", "impression de resultats demandée sans preciser le nom des champs cf. la documentation utilisateur : U4.PC.20.")
 #
 #------------------------------------------------------------------
 #
@@ -693,7 +671,6 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
                                                           RELATION = COMP_ELAS['RELATION'],)
           if COMP_INCR!=None:  motscles['COMP_INCR']=  _F(RELATION = COMP_INCR['RELATION'],)
-          print motscles
           __gtheta = CALC_G_THETA_T( MODELE     = modele,
                                      CHAM_MATER = affmat,
                                      THETA      = __theta,

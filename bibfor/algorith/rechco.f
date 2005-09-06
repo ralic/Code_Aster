@@ -1,8 +1,8 @@
-      SUBROUTINE RECHCO(PREMIE,LREAC,NZOCO,NSYME,INST,
-     &                  NOMA,NEWGEO,DEFICO,RESOCO)
+      subroutine RECHCO(PREMIE,LREAC,NZOCO,NSYME,INST,NOMA,NEWGEO,
+     &                  DEFICO,RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,16 +20,16 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      IMPLICIT     NONE
-      LOGICAL      PREMIE
-      LOGICAL      LREAC
-      INTEGER      NZOCO
-      INTEGER      NSYME
-      REAL*8       INST
-      CHARACTER*8  NOMA
-      CHARACTER*24 NEWGEO
-      CHARACTER*24 DEFICO
-      CHARACTER*24 RESOCO
+      implicit none
+      logical PREMIE
+      logical LREAC
+      integer NZOCO
+      integer NSYME
+      real*8 INST
+      character*8 NOMA
+      character*24 NEWGEO
+      character*24 DEFICO
+      character*24 RESOCO
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : CFGEOM
@@ -79,56 +79,56 @@ C
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      integer ZI
+      common /IVARJE/ ZI(1)
+      real*8 ZR
+      common /RVARJE/ ZR(1)
+      complex*16 ZC
+      common /CVARJE/ ZC(1)
+      logical ZL
+      common /LVARJE/ ZL(1)
+      character*8 ZK8
+      character*16 ZK16
+      character*24 ZK24
+      character*32 ZK32
+      character*80 ZK80
+      common /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      ZMETH
-      PARAMETER    (ZMETH=8)
-      INTEGER      ZREAC
-      PARAMETER    (ZREAC=4)
-      INTEGER      ZAPPAR
-      PARAMETER    (ZAPPAR=3)
-      INTEGER      NESOLD(NZOCO),IOLD(NZOCO)
-      INTEGER      NDIM,NESMAX,NESCL,NNOCO
-      INTEGER      IBID,K,IZONE,IESCL,IESCL0
-      INTEGER      REAAPP,REACTU,APPAR
-      REAL*8       R8BID
-      INTEGER      POSNOE,TYPALF
-      INTEGER      JOLDAP,JOLDPT
-      INTEGER      JCOOR
-      CHARACTER*24 APDDL,APJEU,APMEMO,APPARI,APPOIN,COMAFO,CONTNO
-      INTEGER      JAPDDL,JAPJEU,JAPMEM,JAPPAR,JAPPTR,JCOMA,JNOCO
-      CHARACTER*24 APREAC,CARACF,FROTE,JEUFO1,JEUFO2,JEUFO3
-      INTEGER      JREAC,JCMCF,JFRO,JJFO1,JJFO2,JJFO3
-      CHARACTER*24 JEUSUP,METHCO,JEUINI,PENAL
-      INTEGER      JJSUP,JMETH,JDIM,JPENA
-      CHARACTER*24 NDIMCO,APJEFX,APJEFY,APCOEF
-      CHARACTER*8  K8BID
-      INTEGER      IFM,NIV
-
+      integer ZMETH
+      parameter (ZMETH = 8)
+      integer ZREAC
+      parameter (ZREAC = 4)
+      integer ZAPPAR
+      parameter (ZAPPAR = 3)
+      integer NESOLD(NZOCO),IOLD(NZOCO)
+      integer NDIM,NESMAX,NESCL,NNOCO
+      integer IBID,K,IZONE,IESCL,IESCL0
+      integer REAAPP,REACTU,APPAR
+      real*8 R8BID
+      integer POSNOE,TYPALF
+      integer JOLDAP,JOLDPT
+      integer JCOOR
+      character*24 APDDL,APJEU,APMEMO,APPARI,APPOIN,COMAFO,CONTNO
+      integer JAPDDL,JAPJEU,JAPMEM,JAPPAR,JAPPTR,JCOMA,JNOCO
+      character*24 APREAC,CARACF,FROTE,JEUFO1,JEUFO2,JEUFO3
+      integer JREAC,JCMCF,JFRO,JJFO1,JJFO2,JJFO3
+      character*24 JEUSUP,METHCO,JEUINI,PENAL
+      integer JJSUP,JMETH,JDIM,JPENA
+      character*24 NDIMCO,APJEFX,APJEFY,APCOEF
+      character*8 K8BID
+      integer IFM,NIV
+C
 C
 C ----------------------------------------------------------------------
 C
-      CALL INFNIV(IFM,NIV)
-      CALL JEMARQ ()
+      call INFNIV(IFM,NIV)
+      call JEMARQ
 C
 C --- INFOS SUR LA CHARGE DE CONTACT
 C
-      CALL CFDISC(DEFICO,'              ',IBID,TYPALF,IBID,IBID)
+      call CFDISC(DEFICO,'              ',IBID,TYPALF,IBID,IBID)
 C
 C ======================================================================
 C                      RECUPERATION D'ADRESSES
@@ -136,136 +136,136 @@ C ======================================================================
 C
 C --- LECTURE DES SD POUR LE CONTACT POTENTIEL
 C
-      APCOEF = RESOCO(1:14)//'.APCOEF' 
-      APDDL  = RESOCO(1:14)//'.APDDL'
-      APJEFX = RESOCO(1:14)//'.APJEFX'
-      APJEFY = RESOCO(1:14)//'.APJEFY'
-      APJEU  = RESOCO(1:14)//'.APJEU'
-      APMEMO = RESOCO(1:14)//'.APMEMO'
-      APPARI = RESOCO(1:14)//'.APPARI'
-      APPOIN = RESOCO(1:14)//'.APPOIN'
-      APREAC = RESOCO(1:14)//'.APREAC'
-      CARACF = DEFICO(1:16)//'.CARACF'
-      COMAFO = DEFICO(1:16)//'.COMAFO'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      FROTE  = DEFICO(1:16)//'.FROTE'
-      JEUFO1 = DEFICO(1:16)//'.JFO1CO'
-      JEUFO2 = DEFICO(1:16)//'.JFO2CO'
-      JEUFO3 = DEFICO(1:16)//'.JFO3CO'
-      JEUINI = RESOCO(1:14)//'.JEUINI'
-      JEUSUP = DEFICO(1:16)//'.JSUPCO'
-      METHCO = DEFICO(1:16)//'.METHCO'
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      PENAL  = DEFICO(1:16)//'.PENAL'
-
-      CALL JEVEUO(APDDL, 'E',JAPDDL)
-      CALL JEVEUO(APJEU ,'E',JAPJEU)
-      CALL JEVEUO(APMEMO,'L',JAPMEM)
-      CALL JEVEUO(APPARI,'E',JAPPAR)
-      CALL JEVEUO(APPOIN,'E',JAPPTR)
-      CALL JEVEUO(APREAC,'E',JREAC )
-      CALL JEVEUO(CARACF,'L',JCMCF)
-      CALL JEVEUO(COMAFO,'E',JCOMA)
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(FROTE, 'E',JFRO)
-      CALL JEVEUO(JEUFO1,'L',JJFO1)
-      CALL JEVEUO(JEUFO2,'L',JJFO2)
-      CALL JEVEUO(JEUFO3,'L',JJFO3)
-      CALL JEVEUO(JEUSUP,'E',JJSUP)
-      CALL JEVEUO(METHCO,'L',JMETH)
-      CALL JEVEUO(NDIMCO,'E',JDIM)
-      CALL JEVEUO(PENAL, 'E',JPENA)
-
-
-
-      IF (TYPALF.NE.0) THEN
-
-      ENDIF
-
-      NDIM   = ZI(JDIM)
-      NNOCO  = ZI(JDIM+4)
+      APCOEF = RESOCO(1:14) // '.APCOEF'
+      APDDL = RESOCO(1:14) // '.APDDL'
+      APJEFX = RESOCO(1:14) // '.APJEFX'
+      APJEFY = RESOCO(1:14) // '.APJEFY'
+      APJEU = RESOCO(1:14) // '.APJEU'
+      APMEMO = RESOCO(1:14) // '.APMEMO'
+      APPARI = RESOCO(1:14) // '.APPARI'
+      APPOIN = RESOCO(1:14) // '.APPOIN'
+      APREAC = RESOCO(1:14) // '.APREAC'
+      CARACF = DEFICO(1:16) // '.CARACF'
+      COMAFO = DEFICO(1:16) // '.COMAFO'
+      CONTNO = DEFICO(1:16) // '.NOEUCO'
+      FROTE = DEFICO(1:16) // '.FROTE'
+      JEUFO1 = DEFICO(1:16) // '.JFO1CO'
+      JEUFO2 = DEFICO(1:16) // '.JFO2CO'
+      JEUFO3 = DEFICO(1:16) // '.JFO3CO'
+      JEUINI = RESOCO(1:14) // '.JEUINI'
+      JEUSUP = DEFICO(1:16) // '.JSUPCO'
+      METHCO = DEFICO(1:16) // '.METHCO'
+      NDIMCO = DEFICO(1:16) // '.NDIMCO'
+      PENAL = DEFICO(1:16) // '.PENAL'
+C
+      call JEVEUO(APDDL,'E',JAPDDL)
+      call JEVEUO(APJEU,'E',JAPJEU)
+      call JEVEUO(APMEMO,'L',JAPMEM)
+      call JEVEUO(APPARI,'E',JAPPAR)
+      call JEVEUO(APPOIN,'E',JAPPTR)
+      call JEVEUO(APREAC,'E',JREAC)
+      call JEVEUO(CARACF,'L',JCMCF)
+      call JEVEUO(COMAFO,'E',JCOMA)
+      call JEVEUO(CONTNO,'L',JNOCO)
+      call JEVEUO(FROTE,'E',JFRO)
+      call JEVEUO(JEUFO1,'L',JJFO1)
+      call JEVEUO(JEUFO2,'L',JJFO2)
+      call JEVEUO(JEUFO3,'L',JJFO3)
+      call JEVEUO(JEUSUP,'E',JJSUP)
+      call JEVEUO(METHCO,'L',JMETH)
+      call JEVEUO(NDIMCO,'E',JDIM)
+      call JEVEUO(PENAL,'E',JPENA)
+C
+C
+C
+      if (TYPALF .ne. 0) then
+C
+        
+      end if
+C
+      NDIM = ZI(JDIM)
+      NNOCO = ZI(JDIM+4)
       NESMAX = ZI(JDIM+8)
 C
 C --- COORDONNEES DES NOEUDS DU MAILLAGE
 C
-      CALL JEVEUO (NEWGEO(1:19)//'.VALE','L',JCOOR)
+      call JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
 C
 C --- ACTUALISATION DES NORMALES POUR LES NOEUDS POTENTIELS DE CONTACT
 C
-      CALL CFNORM (NDIM,NNOCO,NOMA,NEWGEO,RESOCO,DEFICO)
-
+      call CFNORM(NDIM,NNOCO,NOMA,NEWGEO,RESOCO,DEFICO)
+C
 C ----------------------------------------------------------------------
 C --- SAUVEGARDE DE RESULTATS DU PASSE SI ON N'EST PAS AU 1ER CALCUL
 C ----------------------------------------------------------------------
-
-
-
-      IF (.NOT.PREMIE) THEN
-        IF (NIV.GE.2) THEN
-          WRITE (IFM,*) 
-     &        ' <CONTACT> <> APPARIEMENT - SAUVEGARDE DONNEES'
-        ENDIF
+C
+C
+C
+      if (.not. PREMIE) then
+        if (NIV .ge. 2) then
+          write (IFM,*) ' <CONTACT> <> APPARIEMENT - SAUVEGARDE DONNEES'
+        end if
 C
         NESCL = ZI(JAPPAR)
 C
 C - RECOPIE DANS DES TABLEAUX DE TRAVAIL DE APPARI ET APPOIN
 C
-        CALL WKVECT ('&&RECHCO.APPARI','V V I',3*NESCL+1,JOLDAP)
-        CALL WKVECT ('&&RECHCO.APPOIN','V V I',NESCL+1,JOLDPT)
+        call WKVECT('&&RECHCO.APPARI','V V I',3*NESCL+1,JOLDAP)
+        call WKVECT('&&RECHCO.APPOIN','V V I',NESCL+1,JOLDPT)
 C
-        DO 5 K = 1,3*NESCL+1
+        do 5 K = 1,3*NESCL+1
           ZI(JOLDAP+K-1) = ZI(JAPPAR+K-1)
- 5      CONTINUE
-        DO 6 K = 0,NESCL
+ 5      continue
+        do 6 K = 0,NESCL
           ZI(JOLDPT+K) = ZI(JAPPTR+K)
- 6      CONTINUE
+ 6      continue
 C
 C --- STOCKAGE DU NOMBRE DE NOEUDS ESCLAVES ET DU DECALAGE DES ADRESSES
 C --- DE DEBUT DANS L'ANCIENNE CONFIGURATION
 C
-          IOLD(1) = 0
-          DO 7 IZONE = 1,NZOCO
-            NESOLD(IZONE) = ZI(JDIM+8+IZONE)
-            IF (IZONE.GE.2) THEN 
-              IOLD(IZONE) = IOLD(IZONE-1) + ZI(JDIM+8+IZONE-1)
-            ENDIF                                
- 7        CONTINUE
+        IOLD(1) = 0
+        do 7 IZONE = 1,NZOCO
+          NESOLD(IZONE) = ZI(JDIM+8+IZONE)
+          if (IZONE .ge. 2) then
+            IOLD(IZONE) = IOLD(IZONE-1) + ZI(JDIM+8+IZONE-1)
+          end if
+ 7      continue
 C
-        ENDIF
-
+       end if
+C
 C
 C ======================================================================
 C                           APPARIEMENT
 C ======================================================================
 C
-      IESCL      = 0
+      IESCL = 0
       ZI(JAPPTR) = 0
 C
 C --- MISE A ZERO DU JEU
 C
-      DO 8 K = 1,NESMAX
-        ZR(JAPJEU+K-1) = 0.D0
- 8    CONTINUE
+      do 8 K = 1,NESMAX
+        ZR(JAPJEU+K-1) = 0.d0
+ 8    continue
 C
-      DO 10 IZONE = 1,NZOCO
+      do 10 IZONE = 1,NZOCO
 C
 C --- REACTUALISATIONS A FAIRE
 C
-        IF (.NOT.LREAC) THEN 
+        if (.not. LREAC) then
           REAAPP = 0
-        ELSE
+        else
           REAAPP = ZI(JREAC+ZREAC*(IZONE-1))
-        ENDIF
+        end if
 C
 C ----------------------------------------------------------------------
 C     SI PAS DE REACTUALISATION DE L'APPARIEMENT POUR CETTE ZONE
 C ----------------------------------------------------------------------
 C
-        IF (REAAPP.EQ.0) THEN
-
-          IF (NIV.GE.2) THEN
-            WRITE (IFM,1000) IZONE,' - PAS DE REACTUALISATION '
-          ENDIF
+        if (REAAPP .eq. 0) then
+C
+          if (NIV .ge. 2) then
+            write (IFM,1000) IZONE, ' - PAS DE REACTUALISATION '
+          end if
 C
 C --- INCREMENTATION DU COMPTEUR D'APPARIEMENT FIXE POUR LA ZONE
 C
@@ -273,12 +273,14 @@ C
 C
 C --- RECOPIE DES MORCEAUX ENCORE VALABLES DES TABLEAUX 
 C
-          DO 40 K = 1,NESOLD(IZONE)
-           ZI(JAPPAR+3*(IESCL+K-1)+1) = ZI(JOLDAP+3*(IOLD(IZONE)+K-1)+1)
-           ZI(JAPPAR+3*(IESCL+K-1)+2) = ZI(JOLDAP+3*(IOLD(IZONE)+K-1)+2)
-           ZI(JAPPAR+3*(IESCL+K-1)+3) = ZI(JREAC+4*(IZONE-1)+2)
-           ZI(JAPPTR+IESCL+K)         = ZI(JOLDPT+IOLD(IZONE)+K)
- 40       CONTINUE
+          do 40 K = 1,NESOLD(IZONE)
+            ZI(JAPPAR+3*(IESCL+K-1)+1) =
+     &        ZI(JOLDAP+3*(IOLD(IZONE)+K-1)+1)
+            ZI(JAPPAR+3*(IESCL+K-1)+2) =
+     &        ZI(JOLDAP+3*(IOLD(IZONE)+K-1)+2)
+            ZI(JAPPAR+3*(IESCL+K-1)+3) = ZI(JREAC+4*(IZONE-1)+2)
+            ZI(JAPPTR+IESCL+K) = ZI(JOLDPT+IOLD(IZONE)+K)
+ 40       continue
 C
 C --- INCREMENTATION DU NOMBRE DE NOEUDS ESCLAVES
 C
@@ -286,9 +288,9 @@ C
 C
 C --- PASSAGE A LA ZONE SUIVANTE
 C
-          GOTO 10
+          goto 10
 C
-        END IF
+         end if
 C
 C ----------------------------------------------------------------------
 C         SI REACTUALISATION DE L'APPARIEMENT POUR CETTE ZONE
@@ -311,45 +313,46 @@ C
 C
 C --- TYPE D'APPARIEMENT
 C
-        APPAR  = ZI(JMETH+ZMETH*(IZONE-1)+1)
+        APPAR = ZI(JMETH+ZMETH*(IZONE-1)+1)
 C
 C --- APPEL DE LA METHODE D'APPARIEMENT
 C
-
-        IF (APPAR.EQ.-1) THEN
 C
-          CALL RECHPA(IZONE,REACTU,NEWGEO,DEFICO,RESOCO,IESCL)
+        if (APPAR .eq. -1) then
 C
-        ELSE IF ((APPAR.EQ.0).OR.(APPAR.EQ.4)) THEN
+          call RECHPA(IZONE,REACTU,NEWGEO,DEFICO,RESOCO,IESCL)
 C
-          CALL RECHNO(IZONE,REAAPP,REACTU,NEWGEO,DEFICO,
-     &                RESOCO,IESCL)
+        elseif ((APPAR.eq.0) .or. (APPAR.eq.4)) then
 C
-        ELSE IF (APPAR.EQ.1) THEN
-
+          call RECHNO(IZONE,REAAPP,REACTU,NEWGEO,DEFICO,RESOCO,IESCL)
 C
-          CALL RECHME(IZONE,REAAPP,REACTU,NZOCO,NSYME,
-     &                NOMA,NEWGEO,DEFICO,RESOCO,IESCL)
+        elseif (APPAR .eq. 1) then
 C
-        ELSE IF (APPAR.EQ.2) THEN
 C
-          CALL UTMESS ('F','RECHCO','L''APPARIEMENT PAR LA METHODE'
-     &               //' DES TERRITOIRES N''EST PAS OPERATIONNEL')
+          call RECHME(IZONE,REAAPP,REACTU,NZOCO,NSYME,NOMA,NEWGEO,
+     &                DEFICO,RESOCO,IESCL)
 C
-        ELSE IF (APPAR.EQ.3) THEN
+        elseif (APPAR .eq. 2) then
 C
-          CALL UTMESS ('F','RECHCO','L''APPARIEMENT PAR LA METHODE'
-     &                 //' HIERARCHIQUE N''EST PAS OPERATIONNEL')
+          call UTMESS('F','RECHCO',
+     &               'L''APPARIEMENT PAR LA METHODE'//
+     &               ' DES TERRITOIRES N''EST PAS OPERATIONNEL')
 C
-        END IF
-
-        DO 60 K = IESCL0+1,IESCL
+        elseif (APPAR .eq. 3) then
+C
+          call UTMESS('F','RECHCO',
+     &               'L''APPARIEMENT PAR LA METHODE'//
+     &               ' HIERARCHIQUE N''EST PAS OPERATIONNEL')
+C
+         end if
+C
+        do 60 K = IESCL0+1,IESCL
 C
 C --- CALCUL DU JEU FICTIF DE LA ZONE
 C
           POSNOE = ZI(JAPPAR+ZAPPAR*(K-1)+1)
-          CALL CFDIST(IZONE,POSNOE,INST,
-     &                JNOCO,JCOOR,JJFO1,JJFO2,JJFO3,JJSUP,R8BID)
+          call CFDIST(IZONE,POSNOE,INST,JNOCO,JCOOR,JJFO1,JJFO2,JJFO3,
+     &                JJSUP,R8BID)
 C
 C --- ADDITION DU JEU FICTIF DE LA ZONE DANS APJEU
 C
@@ -358,49 +361,51 @@ C
 C --- CARACTERISTIQUES DU FROTTEMENT POUR METHODES
 C --- "PENALISATION" ET "LAGRANGIEN"
 C
-          ZR(JFRO -1+  K  ) = ZR(JCMCF+6* (IZONE-1)+4)
-          ZR(JPENA-1+2*K-1) = ZR(JCMCF+6* (IZONE-1)+2)
-          ZR(JPENA-1+2*K  ) = ZR(JCMCF+6* (IZONE-1)+3)
-          ZR(JCOMA-1+  K  ) = ZR(JCMCF+6* (IZONE-1)+6)
- 60     CONTINUE
+          ZR(JFRO-1+K) = ZR(JCMCF+10*(IZONE-1)+4)
+          ZR(JPENA-1+2*K-1) = ZR(JCMCF+10*(IZONE-1)+2)
+          ZR(JPENA-1+2*K) = ZR(JCMCF+10*(IZONE-1)+3)
+          ZR(JCOMA-1+K) = ZR(JCMCF+10*(IZONE-1)+6)
+ 60     continue
 C
 C --- NOMBRE DE NOEUDS ESCLAVES DANS LA ZONE
 C
         ZI(JDIM+8+IZONE) = IESCL - IESCL0
 C
- 10   CONTINUE
+ 10   continue
 C
 C --- STOCKAGE DES LONGUEURS EFFECTIVES
 C
-      NESCL      = IESCL
+      NESCL = IESCL
       ZI(JAPPAR) = NESCL
-      IF (NESCL.GT.NESMAX) THEN
-        CALL UTMESS ('F','RECHCO_04','ERREUR DE DIMENSIONNEMENT : '
-     &               //'NOMBRE MAXIMAL DE NOEUDS ESCLAVES')
-      END IF
-      IF (ZI(JAPPTR+NESCL).GT.30*NESMAX) THEN
-        CALL UTMESS ('F','RECHCO_05','ERREUR DE DIMENSIONNEMENT '
-     &               //'DES TABLEAUX APCOEF ET APDDL')
-      END IF
-      CALL JEECRA (APPARI,'LONUTI',3*NESCL+1,K8BID)
-      CALL JEECRA (APPOIN,'LONUTI',NESCL+1,K8BID)
-      CALL JEECRA (APJEU ,'LONUTI',NESCL,  K8BID)
-      CALL JEECRA (JEUINI,'LONUTI',NESCL,  K8BID)
-      CALL JEECRA (APCOEF,'LONUTI',ZI(JAPPTR+NESCL),K8BID)
-      CALL JEECRA (APDDL ,'LONUTI',ZI(JAPPTR+NESCL),K8BID)
-      IF (TYPALF.NE.0) THEN
-        CALL JEECRA (APJEFX,'LONUTI',NESCL,  K8BID)
-        CALL JEECRA (APJEFY,'LONUTI',NESCL,  K8BID)
-      ENDIF
+      if (NESCL .gt. NESMAX) then
+        call UTMESS('F','RECHCO_04',
+     &             'ERREUR DE DIMENSIONNEMENT : '//
+     &             'NOMBRE MAXIMAL DE NOEUDS ESCLAVES')
+      end if
+      if (ZI(JAPPTR+NESCL) .gt. 30*NESMAX) then
+        call UTMESS('F','RECHCO_05',
+     &             'ERREUR DE DIMENSIONNEMENT '//
+     &             'DES TABLEAUX APCOEF ET APDDL')
+      end if
+      call JEECRA(APPARI,'LONUTI',3*NESCL+1,K8BID)
+      call JEECRA(APPOIN,'LONUTI',NESCL+1,K8BID)
+      call JEECRA(APJEU,'LONUTI',NESCL,K8BID)
+      call JEECRA(JEUINI,'LONUTI',NESCL,K8BID)
+      call JEECRA(APCOEF,'LONUTI',ZI(JAPPTR+NESCL),K8BID)
+      call JEECRA(APDDL,'LONUTI',ZI(JAPPTR+NESCL),K8BID)
+      if (TYPALF .ne. 0) then
+        call JEECRA(APJEFX,'LONUTI',NESCL,K8BID)
+        call JEECRA(APJEFY,'LONUTI',NESCL,K8BID)
+      end if
 C
 C --- NETTOYAGE DES VECTEURS DE TRAVAIL
 C
-      CALL JEDETR ('&&RECHCO.APPARI')
-      CALL JEDETR ('&&RECHCO.APPOIN')
+      call JEDETR('&&RECHCO.APPARI')
+      call JEDETR('&&RECHCO.APPOIN')
 C
 C ----------------------------------------------------------------------
 C
- 1000 FORMAT (' <CONTACT> <> APPARIEMENT - ZONE: ',I6,A16)
+ 1000 format (' <CONTACT> <> APPARIEMENT - ZONE: ',i6,a16)
 C
-      CALL JEDEMA ()
-      END
+      call JEDEMA
+      end

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
-                    CONTACT=_F(INTEGRATION='NOEUD',
+                    CONTACT=_F(INTEGRATION='FPG4',
                                COEF_REGU_CONT=100., 
                                ITER_CONT_MAXI=4,   
                                CONTACT_INIT='OUI',    

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR,DDOT
+      REAL*8 ZR 
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -55,21 +55,20 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      JINDCO,JDONCO,JLSN,IPOIDS,IVF,IDFDE,JGANO,IGEOM
       INTEGER      IDEPM,IDEPD,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JBASEC,JSEUIL
-      INTEGER      NDIM,DDLH,DDLC,DDLE,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
+      INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
       INTEGER      NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
-      INTEGER      INTEG
+      INTEGER      INTEG,NFE
       CHARACTER*8  ELREF,TYPMA,FPG
       REAL*8       LSN(27),HE,SIGN,XG,FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
-      REAL*8       MMAT(27*7,27*7),JAC,AL,RHON,MU,RHOTK,PADIST,MULT
+      REAL*8       MMAT(204,204),JAC,AL,RHON,MU,RHOTK,PADIST,MULT
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
-      REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60)
+      REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
 
 C......................................................................
 
       CALL JEMARQ()
-C      WRITE(6,*)'TE0533',OPTION
 C
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
@@ -78,21 +77,30 @@ C-----------------------------------------------------------------------
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
-C     DDL PAR NOEUD SOMMET : HEAVISIDE, ENRICHIS (FOND), CONTACT
-      DDLH=3
-      DDLE=0
-      DDLC=3
+C     DDLS PAR NOEUD SOMMET : HEAVYSIDE, ENRICHIS (FOND), CONTACT
+      IF (NOMTE(1:8).EQ.'MECA_XH_') THEN
+        DDLH=NDIM
+        NFE=0
+        DDLC=NDIM
+      ELSEIF (NOMTE(1:8).EQ.'MECA_XHT') THEN
+        DDLH=NDIM
+        NFE=4
+        DDLC=NDIM
+      ELSE 
+        CALL UTMESS('F','TE533','NOM D''ELEMENT FINI INCOMPATIBLE')
+      ENDIF
+
 C     NB DE 'NOEUDS MILIEU' SERVANT À PORTER DES DDL DE CONTACT
       NNOM=3*(NNO/2)
 
 C     NOMBRE DE DDL À CHAQUE NOEUD SOMMET 
-      DDLS=NDIM+DDLH+DDLE+DDLC
+      DDLS=NDIM+DDLH+NFE*NDIM+DDLC
 C
 C     NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
       NDDL=(NNO*DDLS)+(NNOM*DDLC)
 
 C     INITIALISATION DE LA MATRICE
-      CALL MATINI(27*7,27*7,0.D0,MMAT)
+      CALL MATINI(204,204,0.D0,MMAT)
 C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
@@ -132,17 +140,14 @@ C     SUR LA TOPOLOGIE DES FACETTES
       RHOTK = ZR(JDONCO-1+3)
 
       INTEG = NINT(ZR(JDONCO-1+4))
-      IF (INTEG.EQ.1) THEN
-        FPG='XCON'
-      ELSEIF (INTEG.EQ.2) THEN
-        FPG='NOEU_S'
-      ELSE
-        CALL UTMESS('F','TE0533','PB CHOIX DU SCHEMA D''INTEGRATION')
-      ENDIF
-      
+C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
+      IF (INTEG.EQ.1) FPG='XCON'
+      IF (INTEG.EQ.4) FPG='FPG4'
+      IF (INTEG.EQ.6) FPG='FPG6'
+      IF (INTEG.EQ.7) FPG='FPG7'
+
       NINTER=ZI(JLONCH-1+1)
       IF (NINTER.LT.3) GOTO 9999 
-
       NFACE=ZI(JLONCH-1+2)
       DO 11 I=1,NFACE
         DO 12 J=1,3
@@ -159,16 +164,6 @@ C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
  14     CONTINUE
  13   CONTINUE
 C    
-C     REACTUALISATION DE LA GEOMETRIE AVEC DEPMOI
-      DO 20 I = 1,NNO       
-        HE=SIGN(1.D0,ZR(JLSN-1+I))
-        DO 30 J = 1,NDIM
-          ZR(IGEOM-1+(I-1)*NDIM+J) = ZR(IGEOM-1+(I-1)*NDIM+J) +
-     &    ZR(IDEPM-1+(I-1)*DDLS+J) + HE * ZR(IDEPM-1+(I-1)*DDLS+J+3)
- 30     CONTINUE
- 20   CONTINUE
-
-C
 C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
@@ -197,7 +192,6 @@ C              WRITE(6,*)'MULTIPLICATION PAR 1/2'
         ENDIF
  104    CONTINUE
 
-C       LA FAMILLE 'XCON' A 12 PG INTEGRE ORDRE I+J=6 (ou bien NOEU_S)
         CALL ELREF4('TR3',FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
      &                                                     IDFDEF,IBID)
 C
@@ -212,7 +206,7 @@ C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
      &                                                    JAC,FFP,ND)
-         
+                                      
 C         NORMALE AU CENTRE DE LA FACETTE
           CALL LCINVN(NDIM,0.D0,NBARY)
           DO 122 I=1,NNOF
@@ -228,9 +222,6 @@ C         I) CALCUL DES MATRICES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'RIGI_CONT') THEN
-
-C               write(6,*)'statut cont ',INDCO(ISSPG)
-
 C
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C 
             IF (INDCO(ISSPG).EQ.0) THEN
@@ -240,13 +231,13 @@ C
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
 C               XOULA  : RENVOIE LE NUMÉRO DU NOEUD PORTANT CE LAMBDA
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
 
                 DO 121 J = 1,NNOF
 
                   FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
                   NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
-                  CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NJ,PLJ)
+                  CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 C
                   MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
      &                     - FFJ * FFI * JAC * MULT / RHON
@@ -262,7 +253,7 @@ C             I.1. CALCUL DE A ET DE At
 
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
 
                 DO 131 J = 1,NNO
                   DO 132 L = 1,DDLH
@@ -313,18 +304,18 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
                 DO 151 J = 1,NNOF
                   FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
                   NLJ=CFACE(IFA,J)
                   NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
-                  CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NJ,PLJ)
+                  CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 
-C             METR : MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
-              METR(1,1)=DDOT(3,TAU1(1,NLI),1,TAU1(1,NLJ),1)
-              METR(1,2)=DDOT(3,TAU1(1,NLI),1,TAU2(1,NLJ),1)
-              METR(2,1)=DDOT(3,TAU2(1,NLI),1,TAU1(1,NLJ),1)
-              METR(2,2)=DDOT(3,TAU2(1,NLI),1,TAU2(1,NLJ),1)
+C                 MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
+                  METR(1,1)=DDOT(3,TAU1(1,NLI),1,TAU1(1,NLJ),1)
+                  METR(1,2)=DDOT(3,TAU1(1,NLI),1,TAU2(1,NLJ),1)
+                  METR(2,1)=DDOT(3,TAU2(1,NLI),1,TAU1(1,NLJ),1)
+                  METR(2,2)=DDOT(3,TAU2(1,NLI),1,TAU2(1,NLJ),1)
 
                   DO 152 K = 1,2
                     DO 153 L = 1,2
@@ -355,7 +346,7 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)       
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)       
                 DO 159 J=1,NDIM
                   LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPD-1+PLI+1)*TAU1(J,NLI)
      &                                  +ZR(IDEPD-1+PLI+2)*TAU2(J,NLI))
@@ -370,7 +361,7 @@ C             II.1. CALCUL DE B ET DE Bt
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
 
 C               CALCUL DE TAU.KN.P
                 DO 161 J = 1,NDIM
@@ -422,12 +413,12 @@ C             II.3. CALCUL DE F
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
                 DO 181 J = 1,NNOF
                   FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
                   NLJ=CFACE(IFA,J)
                   NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
-                  CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NJ,PLJ)
+                  CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 
 C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
                   CALL XMAFR2(NLI,NLJ,TAU1,TAU2,IK,TAIKTA)
@@ -465,16 +456,6 @@ C     FIN DE CHANGEMENT ET COPIE
         DO 210 I = 1,J
           IJ = (J-1)*J/2 + I
           ZR(IMATT+IJ-1) = MMAT(I,J)
-
-          IF (ZI(IADZI).EQ.42.AND.ABS(MMAT(I,J)).GT.1.D-12) THEN
-            IF (OPTION.EQ.'RIGI_CONT') THEN
-C              WRITE(6,*)'K2(',I,',',J,')=',MMAT(I,J),';'
-               WRITE(6,*)' ',I,J,MMAT(I,J)           
-            ELSE
-C              WRITE(6,*)'K3(',I,',',J,')=',MMAT(I,J),';'     
-            ENDIF 
-          ENDIF          
-
  210    CONTINUE
  200  CONTINUE
 C

@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C ***************** FIN COMMUNS NORMALISES JEVEUX **********************
 
 C *************** DECLARATION DES VARIABLES LOCALES ********************
 
-      REAL*8 ANG(3),PGL(3,3),KLV(78),KLV2(78),XD(3)
+      REAL*8 ANG(3),PGL(3,3),KLV(78),KLV2(78),KLV3(144),XD(3)
       REAL*8 UGM(12),UGP(12),DUG(12),COORG(12)
       REAL*8 ULM(12),ULP(12),DUL(12),KTY2,DVL(12),DPE(12),DVE(12)
       REAL*8 VARMO(7),VARPL(7),IRRAP
@@ -246,7 +246,8 @@ C ======================================================================
 C                      COMPORTEMENT ELASTIQUE
 C ======================================================================
 
-      IF ((ZK16(ICOMPO).NE.'ELAS').AND.(OPTION(11:14).EQ.'ELAS')) THEN
+      IF ((ZK16(ICOMPO).NE.'ELAS').AND.(OPTION(11:14).EQ.'ELAS')
+     &     .AND.(ZK16(ICOMPO).NE.'DIS_GRICRA')) THEN
         CALL UTMESS('F','ELEMENTS DISCRET (TE0047)',
      &              '"'//NOMTE//'" MATRICE DE DECHARGE NON DEVELOPPEE')
       ENDIF
@@ -481,6 +482,70 @@ C ======================================================================
 C                 FIN DU COMPORTEMENT DIS_CONTACT
 C ======================================================================
 
+C ======================================================================
+C  COMPORTEMENT DIS_GRICRA : APPLICATION : LIAISON GRILLE-CRAYON COMBU
+C ======================================================================
+
+      IF (ZK16(ICOMPO).EQ.'DIS_GRICRA') THEN
+
+        IF (NOMTE.NE.'MECA_DIS_TR_L') THEN
+          CALL UTMESS('F','ELEMENTS DISCRET (TE0047)',
+     &              'LA LOI DIS_GRICRA DOIT ETRE UTILISEE AVEC DES'//
+     &              'ELEMENTS DU TYPE MECA_DIS_TR_L: '//
+     &              'ELEMENT SEG2 + MODELISATION DIS_TR')
+        ENDIF
+
+        CALL R8INIR(144,0.D0,KLV3,1)
+C
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL JEVECH('PVARIMR','L',IVARIM)
+        CALL JEVECH('PINSTPR','L',JTP)
+C
+        CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRETM)
+        CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRETP)
+        IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
+          ITEMP = 1
+          TEMPM = 0.5D0 * ( ZR(ITEMPM) + ZR(ITEMPM+1) )
+          TEMPP = 0.5D0 * ( ZR(ITEMPP) + ZR(ITEMPP+1) )
+        ELSE
+          ITEMP = 0
+          TEMPM = 0.D0
+          TEMPP = 0.D0
+        ENDIF
+C
+C         -- ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
+        CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+        IF (IRET2.GT.0) IRRAP=0.D0
+
+        IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
+     &    OPTION(1:9).EQ.'FULL_MECA') THEN
+          CALL JEVECH('PMATUNS','E',IMAT)
+        ENDIF
+
+        IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
+     &      OPTION(1:9).EQ.'FULL_MECA') THEN
+          CALL JEVECH('PVECTUR','E',IFONO)
+          CALL JEVECH('PCONTPR','E',ICONTP)
+          CALL JEVECH('PVARIPR','E',IVARIP)
+        END IF
+
+
+        CALL DICRGR(OPTION,NEQ,NC,ZI(IMATE),
+     &              ULM,DUL,ZR(ICONTM),ZR(IVARIM),
+     &              PGL,KLV3,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
+     &              ITEMP, TEMPM, TEMPP,IRRAP)
+
+
+        IF (OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA')
+     &            THEN
+          CALL DCOPY(144,KLV3,1,ZR(IMAT),1)
+        END IF
+
+      END IF
+
+C ======================================================================
+C                 FIN DU COMPORTEMENT DIS_GRICRA
+C ======================================================================
 
 
 C ======================================================================

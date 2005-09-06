@@ -4,7 +4,7 @@
       INTEGER                 IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,6 @@ C     DEFINITION DES UNITES DE LECTURE/ECRITURE COMMANDE UTILISATEUR
 C     ------------------------------------------------------------------
       CHARACTER*8 CMDUSR,CBID
       CHARACTER*16 NOMCMD
-      REAL*8      XTT,TEMPS(6)
       INTEGER     ISUI
 C
       IER    = 0
@@ -60,10 +59,6 @@ C     --- BUFFERISATION EN CAS DE SUIVI INTERACTIF
       IF ( ISSUIV(ISUI) .GT. 0) THEN
           CALL FASTER()
       ENDIF
-C
-C     --- INITIALISATION TEMPS CPU TOTAL  ---
-      CALL UTTCPU(-10,'INIT',6,TEMPS)
-      CALL UTTCPU(-10,'DEBUT',6,TEMPS)
 C
 C     --- INITIALISATION DES ROUTINES DE MESSAGE ---
       CALL PRDEFC( 132 )

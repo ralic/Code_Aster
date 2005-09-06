@@ -1,6 +1,6 @@
       SUBROUTINE UTFINM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,6 @@ C     ------------------------------------------------------------------
       INTEGER        ICMD,IRET,L,LSPVR,NBL
       INTEGER        INIVO,IUTIL,IVERS
       INTEGER        LC,LXLGUT
-      INTEGER        ICOND,ISTAT
       LOGICAL        LEXP
       REAL*8         XTT
 C     ------------------------------------------------------------------
@@ -103,10 +102,7 @@ CCAR: UNE EXCEPTION FATALE MAIS SANS PROVOQUER D'ABORT
          CALL GCUOPR(2, ICMD)
 CCAR: ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
 CCAR:    CALL JEDEMA()
-         ISTAT = 2
-         ICOND = 0
          LC = LXLGUT(NOMCMD)
-         IF (LC.NE.0) CALL EXSTAT( ISTAT , ICOND , XTT )
          CALL UEXCEP(NEXCEP,K132B)
 CCAR:    CALL JEFINI('NORMAL')
       ENDIF

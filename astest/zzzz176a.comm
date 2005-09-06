@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+# MODIF  DATE 05/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE VALIDATION DE PRE_IDEAS POUR DATASET 82
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,6 +116,22 @@ PRE_IDEAS(UNITE_IDEAS=56,UNITE_MAILLAGE=23,)
 
 MA23=LIRE_MAILLAGE(UNITE=23)
 
+# FORMAT IDEAS POUR TESTER LE RETOUR DE DEFI_FICHIER
+# --------------------------------------------------
+uniideas=DEFI_FICHIER(FICHIER='./REPE_OUT/fic_ideas');
+
+IMPR_RESU(FORMAT='IDEAS', UNITE=uniideas, RESU=_F(MAILLAGE=MAYA,),);
+
+DEFI_FICHIER (ACTION='LIBERER',UNITE=uniideas)
+
+TEST_FICHIER(FICHIER='./REPE_OUT/fic_ideas',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='eaa3ecb20519059b36b4e76bd9e2c701',
+             EXPR_IGNORE=('ASTER V',),
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.13',
+             INFO=1)
 
 # FORMAT CASTEM 
 # -------------

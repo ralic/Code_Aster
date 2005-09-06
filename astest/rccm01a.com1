@@ -86,7 +86,8 @@ PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                      TYPE_RESU='DETAILS',
                          MATER=MAT,
                          TITRE='PM_PB, RESULTAT: RESU2',
-                   TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU2,)
+                   TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU2,
+                                    TABL_SIGM_THER = T_RESUTH,)
                  )
 
 IMPR_TABLE(    TABLE=PMPB2 ) 
@@ -118,7 +119,7 @@ TEST_TABLE(    TABLE=PMPB2,
                              VALE     = 2.    ),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='PB',
-                      VALE=100.                 )
+                      VALE=0.                 )
 
 TEST_TABLE(    TABLE=PMPB2,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
@@ -127,7 +128,7 @@ TEST_TABLE(    TABLE=PMPB2,
                              VALE     = 2.    ),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='PB',
-                      VALE=100.                 )
+                      VALE=0.                 )
 
 # le PMB
 TEST_TABLE(    TABLE=PMPB2,
@@ -137,7 +138,7 @@ TEST_TABLE(    TABLE=PMPB2,
                              VALE     = 2.    ),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='PMB',
-                      VALE=300.                 )
+                      VALE=200.                 )
 TEST_TABLE(    TABLE=PMPB2,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),

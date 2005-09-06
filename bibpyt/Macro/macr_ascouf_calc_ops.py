@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   import math
   import aster
   from math import pi,sin,cos,sqrt,atan2
+  from Utilitai.Utmess     import UTMESS
   ier=0
 # On recopie les mots cles affe_materiau et impr_table pour les proteger
   mc_AFFE_MATERIAU=AFFE_MATERIAU
@@ -63,18 +64,16 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #  
   if CL_BOL_P2_GV!=None :
     if TYPE_MAILLAGE=='SOUS_EPAIS_COUDE' :
-       print '<A> <MACR_ASCOUF_CALC> la condition aux limites sur bol a section conique'
-       print '                       est ignoree pour un coude avec sous-epaisseurs'
+       message=        ' la condition aux limites sur bol a section conique \n'
+       message=message+' est ignoree pour un coude avec sous-epaisseurs \n'
+       UTMESS('A', "MACR_ASCOUF_CALC", message)
     elif (TYPE_MAILLAGE[:4]!='FISS') and (CL_BOL_P2_GV['AZIMUT']!=None) :
-       ier=ier+1
-       self.cr.fatal("""<E> <MACR_ASCOUF_CALC> mot-cle AZIMUT non autorise dans le cas d''un coude sain""")
-       return ier
+       UTMESS('E', "MACR_ASCOUF_CALC", "mot-cle AZIMUT non autorise dans le cas d un coude sain")
 #
   if mc_IMPR_TABLE!=None :
     FLAG = 0
     if (mc_IMPR_TABLE['NOM_PARA']==None) and (mc_IMPR_TABLE['POSI_ANGUL']==None) and (mc_IMPR_TABLE['POSI_CURV_LONGI']==None) :
-       ier=ier+1
-       self.cr.fatal("""<E> <MACR_ASCOUF_CALC> POSI_ANGUL POSI_CURV_LONGI est obligatoire""")
+       UTMESS('E', "MACR_ASCOUF_CALC", "POSI_ANGUL POSI_CURV_LONGI est obligatoire")
        return ier
     if (mc_IMPR_TABLE['NOM_PARA']!=None) :
        impr_table_nom_para= mc_IMPR_TABLE['NOM_PARA']
@@ -83,11 +82,9 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
            FLAG = 1
            if (((impt['ANGLE']==None) and (impt['POSI_ANGUL']==None) and (impt['R_CINTR'        ]==None)) or
                ((impt['ANGLE']==None) and (impt['R_CINTR'   ]==None) and (impt['POSI_CURV_LONGI']==None))   )  :
-             ier=ier+1
-             self.cr.fatal("""<E> <MACR_ASCOUF_CALC> il faut renseigner : ANGLE, R_CINTR et POSI_ANGUL ou ANGLE, R_CINTR et POSI_CURV_LONGI""")
-             return ier
+             UTMESS('E', "MACR_ASCOUF_CALC", "il faut renseigner : ANGLE, R_CINTR et POSI_ANGUL ou ANGLE, R_CINTR et POSI_CURV_LONGI")
     if (mc_IMPR_TABLE['NOM_PARA']==None) : FLAG = 1
-    if not FLAG : print '<A> <MACR_ASCOUF_CALC> ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas'
+    if not FLAG : UTMESS('A', "MACR_ASCOUF_CALC","ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas")
 #
 #------------------------------------------------------------------
 #

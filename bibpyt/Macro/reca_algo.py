@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF reca_algo Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,7 @@ import LinearAlgebra
 from Cata.cata import INFO_EXEC_ASTER
 from Cata.cata import DETRUIRE
 from Accas import _F
+from Utilitai.Utmess     import UTMESS
 
 
 def calcul_gradient(A,erreur):
@@ -132,7 +133,7 @@ def temps_CPU(self,restant_old,temps_iter_old):
             temps_iter=(temps_iter_old + (restant_old-restant))/2.
          if ((temps_iter>0.96*restant)or(restant<0.)):
             err=1
-            self.cr.fatal("<F> <MACR_RECAL> Arret de MACR_RECAL par manque de temps CPU")
+            UTMESS('F', "MACR_RECAL", 'Arret de MACR_RECAL par manque de temps CPU')
    return restant,temps_iter,err
 
 
@@ -203,7 +204,7 @@ def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out
              res.write('\n\nval_ini= '+Numeric.array2string(val_init,array_output=1,separator=','))
              res.write('\n\nborne_inf= '+Numeric.array2string(borne_inf,array_output=1,separator=','))
              res.write('\n\nborne_sup= '+Numeric.array2string(borne_sup,array_output=1,separator=','))
-             self.cr.fatal("<F> <MACR_RECAL> Erreur dans l'algorithme de bornes de MACR_RECAL")
+             UTMESS('F', "MACR_RECAL", "Erreur dans l'algorithme de bornes de MACR_RECAL")
              return 
    newval=copy.copy(val+dval)
    return newval,s,l,Act

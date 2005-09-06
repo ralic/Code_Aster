@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS */
+/* MODIF astermodule supervis  DATE 05/09/2005   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3172,25 +3172,75 @@ PyObject *self; /* Not used */
         return Py_None;
 }
 
-void DEFS(AFFICH,affich,char *,int);
-#define CALL_AFFICH(a) CALLS(AFFICH,affich,a)
+void DEFSS(AFFICH,affich,char *,int,char *,int);
+#define CALL_AFFICH(a,b) CALLSS(AFFICH,affich,a,b)
 
 static PyObject * aster_affich(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
         char *texte;
+        char *nomfic;
 
         _DEBUT(aster_affich) ;
-        if (!PyArg_ParseTuple(args, "s:affiche",&texte)) return NULL;
+        if (!PyArg_ParseTuple(args, "ss:affiche",&nomfic,&texte)) return NULL;
+                                                       SSCRUTE(nomfic);
                                                        SSCRUTE(texte);
 /*jpl        fprintf( stderr , "%s" , texte ) ; */
-        CALL_AFFICH (texte);
+        CALL_AFFICH (nomfic,texte);
 
         Py_INCREF( Py_None ) ;
         _FIN(aster_affich) ;
         return Py_None;
 }
+
+void DEFSSSSP(ULOPEN,ulopen,char *,int,char *,int,char *,int,char *,int,INTEGER *);
+#define CALL_ULOPEN(a,b,c,d,e) CALLSSSSP(ULOPEN,ulopen,a,b,c,d,e)
+
+static PyObject * aster_ulopen(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        char *fichie;
+        char *name;
+        char *acces;
+        char *autor;
+        INTEGER unit=0 ;
+
+        _DEBUT(aster_affich) ;
+        if (!PyArg_ParseTuple(args, "ssssl:ulopen",&fichie,&name,&acces,&autor,&unit)) return NULL;
+                                                       SSCRUTE(fichie);
+                                                       SSCRUTE(name);
+                                                       SSCRUTE(acces);
+                                                       SSCRUTE(autor);
+                                                       ISCRUTE(unit);
+        CALL_ULOPEN (&unit,fichie,name,acces,autor);
+
+        Py_INCREF( Py_None ) ;
+        _FIN(aster_ulopen) ;
+        return Py_None;
+}
+
+
+void DEFP(FCLOSE,fclose,INTEGER *);
+#define CALL_FCLOSE(a) CALLP(FCLOSE,fclose,a)
+
+static PyObject * aster_fclose(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        INTEGER unit=0 ;
+
+        _DEBUT(aster_affich) ;
+        if (!PyArg_ParseTuple(args, "l:fclose",&unit)) return NULL;
+                                                       ISCRUTE(unit);
+        CALL_FCLOSE (&unit);
+
+        Py_INCREF( Py_None ) ;
+        _FIN(aster_fclose) ;
+        return Py_None;
+}
+
 
 void DEFPPS(REPOUT,repout,INTEGER *,INTEGER *,char *,int);
 #define CALL_REPOUT(a,b,c) CALLPPS(REPOUT,repout,a,b,c)
@@ -3660,6 +3710,8 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 /* List of functions defined in the module */
 
 static PyMethodDef aster_methods[] = {
+                {"fclose",      aster_fclose ,            METH_VARARGS},
+                {"ulopen",      aster_ulopen ,            METH_VARARGS},
                 {"affiche",     aster_affich ,            METH_VARARGS},
                 {"init",        aster_init ,              METH_VARARGS},
                 {"debut",       aster_debut ,             METH_VARARGS},

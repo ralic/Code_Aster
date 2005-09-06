@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,42 +23,23 @@ import aster
 
 def UTMESS(code, sprg, texte):
    """Utilitaire analogue à la routine fortran UTMESS.
-      code  : 'A', 'E', 'S', 'F'
+      code  : 'A', 'E', 'S', 'F', 'I'
       sprg  : nom du module, classe ou fonction python où l'on se trouve
       texte : contenu du message
    """
    fmt='\n <%s> <%s> %s\n\n'
-   UL={
-      'MESSAGE' : 6,
-      'RESULTAT' : 8,
-      #'ERREUR' : 9,
-   }
-   # On importe la définition des commandes à utiliser dans la macro
-#    if jdc:
-#       DEFI_FICHIER     = jdc.get_cmd('DEFI_FICHIER')
-#    else:
-#       # on se limite au print !
-#       UL={ 'MESSAGE' : 6, }
-   try:
-      from Cata.cata import DEFI_FICHIER
-   except ImportError:
-      # on se limite au print !
-      UL={ 'MESSAGE' : 6, }
+   UL=[
+      'MESSAGE',
+      'RESULTAT',
+      #'ERREUR',
+   ]
+#
 
    reason=fmt % (code, sprg, texte)
    
-   for nom,ul in UL.items():
-      if ul<>6:
-         DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, )
-         f=open('fort.'+str(ul),'a')
-      else:
-         f=sys.stdout
+   for nom in UL:
       # écriture du message
-      f.write(reason)
-
-      if ul<>6:
-         f.close()
-         DEFI_FICHIER(ACTION='ASSOCIER', UNITE=ul, TYPE='ASCII', ACCES='APPEND')
+      aster.affiche(nom,reason)
 
    if code=='S':
       raise aster.error, reason

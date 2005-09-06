@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,6 +299,11 @@ class SENSIBILITE_JDC :
           context_ini = None
 #
         new_jdc = self.jdc.definition(cata=self.jdc.cata,appli=self.jdc.appli,procedure="#\n",context_ini=context_ini)
+#
+#### CD : Je suis oblige de reaffecter les attributs cpu au new_jdc. Ca ne me plait pas trop.
+#### CD : il y aurait sans doute moyen de faire mieux (via __init__ du N_JDC)
+        new_jdc.cpu_user=self.jdc.cpu_user
+        new_jdc.cpu_syst=self.jdc.cpu_syst
 #
         new_jdc.compile()
         if not new_jdc.cr.estvide(): 

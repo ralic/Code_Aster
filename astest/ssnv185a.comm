@@ -1,0 +1,244 @@
+# MODIF  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+# TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV185A',NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
+
+#----------------------------------------------
+#             MAILLAGE : hexa_cla_5_30_50.mgib
+#----------------------------------------------
+
+PRE_GIBI();
+
+MAILLE=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(GROUP_MA='LEVSUP',),
+                                   _F(GROUP_MA='LEVINF',),
+                                   _F(GROUP_MA='FONFIS',),
+                                   _F(GROUP_MA='VOL',),
+                                   _F(DIFFE=('LEVSUP','FONFIS'),NOM='LEVS',),
+                                   _F(DIFFE=('LEVINF','FONFIS'),NOM='LEVI',),
+                                   _F(DIFFE=('VOL','LEVSUP','LEVINF'),NOM='VOLB',),                    
+                                    ),);
+
+#----------------------------------------------
+#                   MODELE 
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),),
+                       MODELE=MODELEIN,);
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=205000.E6
+nu=0.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0,),);
+
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       MODELE=MODELEIN,
+                       AFFE=(_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
+                                MATER=ACIER,
+                                TEMP_REF=0.0,),
+                             ),);
+
+#----------------------------------------------
+#                   CHARGEMENTS 
+#----------------------------------------------
+
+#                   1) TRACTION
+
+PRES=-1.E6 
+CHARBL1=AFFE_CHAR_MECA(MODELE=MODELEIN,
+                   DDL_IMPO=(_F(NOEUD='N4265',DX=0.0,DY=0.0,DZ=0.0,),
+                             _F(NOEUD='N3751',DZ=0.0,),
+                             _F(NOEUD='N4256',DX=0.0,DZ=0.0,),),);
+                             
+CHF1=AFFE_CHAR_MECA(MODELE=MODELEIN,PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+
+
+
+#                   2) CHAMP AUXILAIRE MODE I
+
+R = FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt((Y-5.)**2+(Z-15.)**2)');
+T = FORMULE(NOM_PARA=('X','Y','Z'),VALE='atan2(Z-15.,-Y+5.)');
+   
+coef=(1+nu)/(E*sqrt(2.*pi))
+
+# FORMULES GENERALES DU MODE I
+OUAUX1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef*sqrt(R(X,Y,Z))*cos(T(X,Y,Z)/2.)*(3.-4.*nu-cos(T(X,Y,Z)))');
+UAUX2 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' coef*sqrt(R(X,Y,Z))*sin(T(X,Y,Z)/2.)*(3.-4.*nu-cos(T(X,Y,Z)))');
+UAUX3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.');
+
+# FORMULES POUR LES NOEUDS DE LA LEVRE SUP (MOINS LE FOND DE FISSURE) : THETA=PI 
+OUAUX1S = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef*sqrt(R(X,Y,Z))*cos(pi/2.)*(3.-4.*nu-cos(pi))');
+UAUX2S = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' coef*sqrt(R(X,Y,Z))*sin(pi/2.)*(3.-4.*nu-cos(pi))');
+UAUX3S = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.');
+
+# FORMULES POUR LES NOEUDS DE LA LEVRE INF (MOINS LE FOND DE FISSURE) : THETA=-PI 
+OUAUX1I = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef*sqrt(R(X,Y,Z))*cos(-pi/2.)*(3.-4.*nu-cos(-pi))');
+UAUX2I = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' coef*sqrt(R(X,Y,Z))*sin(-pi/2.)*(3.-4.*nu-cos(-pi))');
+UAUX3I = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.');
+
+CHARBL2=AFFE_CHAR_MECA(MODELE=MODELEIN,DDL_IMPO=_F(GROUP_MA='FONFIS',DX=0.0,DY=0.0,DZ=0.0,),);
+                             
+CHF2=AFFE_CHAR_MECA_F(MODELE=MODELEIN,DDL_IMPO=(_F(GROUP_NO='VOLB',DX=UAUX3,DY=OUAUX1,DZ=UAUX2,),
+                                               _F(GROUP_NO='LEVS',DX=UAUX3S,DY=OUAUX1S,DZ=UAUX2S,),
+                                               _F(GROUP_NO='LEVI',DX=UAUX3I,DY=OUAUX1I,DZ=UAUX2I,),
+                                               ),);              
+              
+              
+#----------------------------------------------
+#                   RESOLUTIONS
+#----------------------------------------------
+                     
+L_INS=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEIN,
+                   CHAM_MATER=CHAMPMA,              
+                   EXCIT=(_F(CHARGE=CHARBL1,),
+                          _F(CHARGE=CHF1,),),
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA=('VOLSUP','VOLINF',),),
+                   INCREMENT=_F(LIST_INST=L_INS,INST_FIN=1.0,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+UTOT2=STAT_NON_LINE(MODELE=MODELEIN,
+                   CHAM_MATER=CHAMPMA,              
+                   EXCIT=(_F(CHARGE=CHARBL2,),
+                          _F(CHARGE=CHF2,),),
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA=('VOLSUP','VOLINF',),),
+                   INCREMENT=_F(LIST_INST=L_INS,INST_FIN=1.0,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
+#------------------------------------------------------------------------
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 PT_ORIGIN=(0. ,20. ,15. ),),
+                    CONTACT=_F(),);
+
+# TEST AVEC PLUSIEURS COURONNES
+RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
+RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
+
+nbc=len(RI)
+SIF1 = [None]*nbc
+SIF2 = [None]*nbc
+
+for i in range(0,nbc) :
+   
+   SIF1[i]=CALC_G_LOCAL_T(MODELE=MODELEIN,
+                         CHAM_MATER=CHAMPMA,                      
+                         RESULTAT=UTOT1,
+                         SYME_CHAR='SANS',
+                         COMP_ELAS=_F(RELATION='ELAS',),
+                         OPTION='CALC_K_G',
+                         FISSURE=FISS,
+                         LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',
+                         R_INF=RI[i],
+                         R_SUP=RS[i],
+                         INFO=1,);
+
+   SIF2[i]=CALC_G_LOCAL_T(MODELE=MODELEIN,
+                         CHAM_MATER=CHAMPMA,                      
+                         RESULTAT=UTOT2,
+                         SYME_CHAR='SANS',
+                         COMP_ELAS=_F(RELATION='ELAS',),
+                         OPTION='CALC_K_G',
+                         FISSURE=FISS,
+                         LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',
+                         R_INF=RI[i],
+                         R_SUP=RS[i],
+                         INFO=1,);
+
+
+   IMPR_TABLE(TABLE=SIF1[i],);
+   IMPR_TABLE(TABLE=SIF2[i],);
+   
+#                   SOLUTIONS ANALYTIQUES DE K1 :
+# POUR LE CHARGEMENT 1 : VOIR CHABOCHE P.53
+a=5
+b=10
+coef=(pi*a)/(2.*b)
+fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
+K1REF1=-PRES*sqrt(pi*a)*fab
+
+# POUR LE CHARGEMENT 2
+K1REF2=1.
+
+for i in range(0,nbc) :
+   TEST_TABLE(TABLE=SIF1[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MAX',               
+              VALE=K1REF1,
+              CRITERE='RELATIF',
+              PRECISION=0.065,
+              REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=SIF1[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MIN',               
+              VALE=K1REF1,
+              CRITERE='RELATIF',
+              PRECISION=0.065,
+              REFERENCE='ANALYTIQUE',);
+              
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MAX',               
+              VALE=K1REF2,
+              CRITERE='RELATIF',
+              PRECISION=0.002,
+              REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MIN',               
+              VALE=K1REF2,
+              CRITERE='RELATIF',
+              PRECISION=0.002,
+              REFERENCE='ANALYTIQUE',);           
+
+FIN();
+

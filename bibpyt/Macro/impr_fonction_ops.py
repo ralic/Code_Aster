@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,6 +30,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    Erreurs<S> dans IMPR_FONCTION pour ne pas perdre la base.
    """
    macro='IMPR_FONCTION'
+   import pprint
    import aster
    from Accas               import _F
    from Utilitai            import Graph
@@ -56,7 +57,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    if args['UNITE'] and args['UNITE']<>6:
       nomfich=UL.Nom(args['UNITE'])
       if INFO==2:
-         print ' Nom du fichier :',nomfich
+         aster.affiche('MESSAGE', ' Nom du fichier :'+nomfich+'\n')
    if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size<>0:
       if FORMAT=='XMGRACE':
          niv='A'
@@ -81,7 +82,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          if dC[mc]==None: del dC[mc]
       Courbe.append(dC)
    if INFO==2:
-      print ' Nombre de fonctions à analyser : ',len(Courbe)
+      aster.affiche('MESSAGE',' Nombre de fonctions à analyser : '+str(len(Courbe))+'\n')
 
    # 0.3. Devra-t-on interpoler globalement ?
    #      Dans ce cas, linter__ est le LIST_PARA
@@ -113,7 +114,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             linterp=obj
          linter__=DEFI_LIST_REEL(VALE=linterp)
       if INFO==2:
-         print ' Interpolation globale sur la liste :\n',linter__.Valeurs()
+         aster.affiche('MESSAGE', ' Interpolation globale sur la liste :\n'+pprint.pformat(linter__.Valeurs())+'\n')
 
 
    #----------------------------------------------
@@ -326,9 +327,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 1.3. dbg
    if INFO==2:
-      print '\n'+'-'*70+'\n Contenu du Graph : \n'+'-'*70
-      print graph
-      print '-'*70+'\n'
+      message='\n'+'-'*70+'\n Contenu du Graph : \n'+'-'*70
+      message=message+graph.__repr__()
+      message=message+'-'*70+'\n'
+      aster.affiche('MESSAGE',message)
 
    #----------------------------------------------
    # 2. Impression du 'tableau' de valeurs

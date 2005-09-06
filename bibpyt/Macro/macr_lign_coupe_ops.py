@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,7 @@
 def crea_mail_lig_coup(dimension,lignes,groups):
 
   import os,sys,copy
+  from Utilitai.Utmess     import UTMESS
 
 # construction du maillage au format Aster des segments de lignes de coupe
 
@@ -142,9 +143,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
   n_modele=string.strip(l_modele[0])
   if n_modele=='' :
      if MODELE==None:
-       ier=ier+1
-       self.cr.fatal("<F> <MACR_LIGN_COUPE> nom du modele absent dans le concept resultat "+nomresu)
-       return ier
+       UTMESS('F', "MACR_LIGN_COUPE", "nom du modele absent dans le concept resultat "+nomresu)
      else : n_modele=MODELE.nom
   l_mailla=aster.getvectjev(n_modele.ljust(8)+'.MODELE    .NOMA')
   n_mailla=string.strip(l_mailla[0])
@@ -161,9 +160,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
       elif m['GROUP_NO']!=None :
         ngrno=m['GROUP_NO'].ljust(8).upper()
         if ngrno not in collgrno.keys() :
-          ier=ier+1
-          self.cr.fatal("<F> <MACR_LIGN_COUPE> le group_no "+ngrno+" n est pas dans le maillage "+n_mailla)
-          return ier
+          UTMESS('F', "MACR_LIGN_COUPE", "le group_no "+ngrno+" n est pas dans le maillage "+n_mailla)
         grpn=collgrno[ngrno]
         l_coor_group=[ngrno,]
         for node in grpn:
@@ -171,9 +168,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
         groups.append(l_coor_group)
 
   if minidim!=dime:
-    ier=ier+1
-    self.cr.fatal("<F> <MACR_LIGN_COUPE> dimensions de maillage et de coordonnees incoherentes")
-    return ier
+    UTMESS('F', "MACR_LIGN_COUPE", "dimensions de maillage et de coordonnees incoherentes")
 
 
   # Création du maillage des NB_POINTS segments entre COOR_ORIG et COOR_EXTR
@@ -236,9 +231,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
           cx3=m['COOR_EXTR'][2]-m['COOR_ORIG'][2]
         nvx=math.sqrt(cx1**2+cx2**2+cx3**2)
         if abs(nvx) < epsi:
-            ier=ier+1
-            self.cr.fatal("<F> <MACR_LIGN_COUPE> definition incorrecte de la ligne de coupe")
-            return ier
+            UTMESS('F', "MACR_LIGN_COUPE", "definition incorrecte de la ligne de coupe")
         cx1=cx1/nvx
         cx2=cx2/nvx
         cx3=cx3/nvx
@@ -249,17 +242,13 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
           cy3=m['VECT_Y'][2]
         nvy=math.sqrt(cy1**2+cy2**2+cy3**2)
         if abs(nvy) < epsi:
-            ier=ier+1
-            self.cr.fatal("<F> <MACR_LIGN_COUPE> valeurs incorrectes pour VECT_Y")       
-            return ier
+            UTMESS('F', "MACR_LIGN_COUPE", "valeurs incorrectes pour VECT_Y")
         cy1=cy1/nvy
         cy2=cy2/nvy
         cy3=cy3/nvy
         if ((abs(cx1-cy1)<epsi and abs(cx2-cy2)<epsi and  abs(cx3-cy3)<epsi) or \
            (abs(cx1+cy1)<epsi and abs(cx2+cy2)<epsi and  abs(cx3+cy3)<epsi)):
-            ier=ier+1
-            self.cr.fatal("<F> <MACR_LIGN_COUPE> valeurs incorrectes pour VECT_Y: x colineaire a y")
-            return ier        
+            UTMESS('F', "MACR_LIGN_COUPE", "valeurs incorrectes pour VECT_Y: x colineaire a y")
         if abs(cx1*cy1+cx2*cy2+cx3*cy3) > epsi  :
           cz1=cx2*cy3-cx3*cy2
           cz2=cx3*cy1-cx1*cy3

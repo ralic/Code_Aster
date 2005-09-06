@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,10 +74,12 @@ OPTION__
         PCNSETO  NEUT_I
         PHEAVTO  NEUT_I
         PLONCHA  NEUT_I
+        PBASLOR  NEUT_R
        <<  CADRE X-FEM : PPINTTO : COORDONNEES DES POINTS D INTERSECTION
                          PCNSETO : CONNECTIVITE DES SOUS-ELEMENTS
                          PHEAVTO : VALEURS DE L HEAVISIDE SUR LES SS-ELTS
-                         PLONCHA : LONGUEURS DES CHAMPS UTILISEES   >>
+                         PLONCHA : LONGUEURS DES CHAMPS UTILISEES   
+                         PBASLOR : BASE LOCALE AU FOND DE FISSURE   >>
    OUT__
 PVECTUR VDEP_R RESL__
 

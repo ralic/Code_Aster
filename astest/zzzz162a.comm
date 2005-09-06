@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 05/09/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,6 +179,37 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 TOUT_ORDRE='OUI',);
 
 # ----------------------------------------------------------------------------
+# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 
+# IMPR_RESU AU FORMAT 'MED' (1/2)
+
+DEFI_FICHIER(UNITE=81)
+
+IMPR_RESU(FORMAT='MED', UNITE=81,
+          RESU=_F( RESULTAT=TEMPE1,
+                   NUME_ORDRE=(1,5),
+                   NOEUD='N1',
+                   GROUP_MA='GRMA1',
+                   ),);
+
+TEMPE2=LIRE_RESU(TYPE_RESU='EVOL_THER',
+                FORMAT='MED',
+                MAILLAGE=MAIL,
+                UNITE=81,
+                FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
+                                 NOM_CHAM    ='TEMP',),
+                TOUT_ORDRE='OUI',);
+
+DEFI_FICHIER(UNITE=82)
+
+IMPR_RESU(UNITE=82, FORMAT='GMSH',
+          RESU=_F(RESULTAT=TEMPE2, NOM_CHAM='TEMP',NOM_CMP='TEMP'),)
+
+TEST_FICHIER(FICHIER='./fort.82',
+             VALE_K='10936ae1fa356fbfc0ad4741e1e879c0',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.11')
+
+# ----------------------------------------------------------------------------
 # VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
 # ET/OU NUMEROS D'ORDRE: (1/2)
 
@@ -288,7 +319,49 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               UNITE=71,
               TOUT_ORDRE='OUI',);
 
+# ----------------------------------------------------------------------------
+# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 
+# IMPR_RESU AU FORMAT 'MED' (2/2)
 
+DEFI_FICHIER(UNITE=83)
+
+IMPR_RESU(FORMAT='MED', UNITE=83,
+          RESU=(_F(RESULTAT=U,NOM_CHAM=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),NUME_ORDRE=1,MAILLE='M1',),
+                _F(RESULTAT=U,NOM_CHAM='DEPL',NUME_ORDRE=1,GROUP_NO='GRNO3'),
+                   ),);
+
+UUU2=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+               FORMAT='MED',
+              MODELE=MOMECA,
+              FORMAT_MED=(
+                          _F( NOM_CHAM_MED='U_______DEPL____________________',
+                              NOM_CHAM    ='DEPL' ),
+                          _F( NOM_CHAM_MED='U_______SIEF_ELNO_ELGA__________',
+                              NOM_CHAM    ='SIEF_ELNO'),
+                          _F( NOM_CHAM_MED='U_______VARI_ELNO_ELGA__________',
+                             NOM_CMP=('V1','V2',),
+                              NOM_CMP_MED=('V1','V2',),
+                              NOM_CHAM    ='VARI_ELNO'),
+                         ) ,
+              UNITE=83,
+              TOUT_ORDRE='OUI',);
+
+DEFI_FICHIER(UNITE=84)
+
+IMPR_RESU(UNITE=84, FORMAT='GMSH',
+          RESU=(_F(RESULTAT=UUU2,
+                   NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),),
+                _F(RESULTAT=UUU2,
+                   NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),),
+                _F(RESULTAT=UUU2,
+                   NOM_CHAM='VARI_ELNO',NOM_CMP=('V1','V2'),),),)
+
+TEST_FICHIER(FICHIER='./fort.84',
+             VALE_K='20fc9f4e31f94710db7c216cb5802064',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.11')
+
+# ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
 # VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
 # ET/OU NUMEROS D'ORDRE: (2/2)

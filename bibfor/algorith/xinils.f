@@ -5,7 +5,7 @@
       CHARACTER*19  CNSLT,CNSLN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
       REAL*8        VALPU(3),AB(3),AC(3),AP(3),VN(3),VNT(3),BC(3)
       REAL*8        A(3),P(3),B(3),C(3),M(3),PM(3),VNREF(3)
-      REAL*8        NORME,PS,PS1,PS2,LSNA,LSNB,D,PREREA
+      REAL*8        NORME,PS,PS1,PS2,LSNA,LSNB,D,PREREA,LSTA,LSTB
       CHARACTER*8   K8BID,NOMPU(3),TYPMA 
       CHARACTER*16  K16BID
       CHARACTER*19  MAI
@@ -125,9 +125,7 @@ C-----------------------------------------------------------------------
         CALL JEVEUO(LISSE,'L',JDLISE)
 
 C       BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE  
-C        write(6,*)'nbno ',NBNO
         DO 11 INO=1,NBNO
-C          write(6,*)'ino ',INO
           P(1)=ZR(JCOOR-1+3*(INO-1)+1)
           P(2)=ZR(JCOOR-1+3*(INO-1)+2)
           P(3)=ZR(JCOOR-1+3*(INO-1)+3)
@@ -186,34 +184,33 @@ C             PROJECTION DE P SUR LA MAILLE VOIR R5.03.50-B
               EPS3=1-EPS1-EPS2
              
 C             SI M EST DS LE SECTEUR 1
-              IF (EPS1.LT.0) THEN                
+              IF (EPS1.LT.0.D0) THEN                
                 PS=DDOT(3,AC,1,AC,1)
                 PS1=DDOT(3,AB,1,AC,1)
                 EPS2=EPS2+EPS1*PS1/PS
-                EPS1=0 
+                EPS1=0.D0
               END IF
 C             SI M EST DS LE SECTEUR 2
-              IF (EPS2.LT.0) THEN               
+              IF (EPS2.LT.0.D0) THEN               
                 PS=DDOT(3,AB,1,AB,1)
                 PS1=DDOT(3,AB,1,AC,1)
                 EPS1=EPS1+EPS2*PS1/PS
-                EPS2=0
+                EPS2=0.D0
               END IF
 C             SI M EST DS LE SECTEUR 3
-              IF (EPS3.LT.0) THEN                
-                PS=DDOT(3,AB,1,AB,1)
+              IF (EPS3.LT.0.D0) THEN                
                 PS=DDOT(3,BC,1,BC,1)
                 PS1=DDOT(3,AB,1,BC,1)
                 PS2=DDOT(3,AC,1,BC,1)
-                EPS1=(-1*EPS1*PS1+(1-EPS2)*PS2)/PS
-                EPS2=1-EPS1
+                EPS1=(-1.D0*EPS1*PS1+(1.D0-EPS2)*PS2)/PS
+                EPS2=1.D0-EPS1
               END IF             
              
 C            ON FINIT DE RAMENER LES POINTS ENCORE DEHORS             
-             IF (EPS1.LT.0) EPS1=0
-             IF (EPS2.LT.0) EPS2=0
-             IF (EPS1.GT.1) EPS1=1
-             IF (EPS2.GT.1) EPS2=1
+             IF (EPS1.LT.0.D0) EPS1=0.D0
+             IF (EPS2.LT.0.D0) EPS2=0.D0
+             IF (EPS1.GT.1.D0) EPS1=1.D0
+             IF (EPS2.GT.1.D0) EPS2=1.D0
              
              DO 212 I=1,3
                M(I)=A(I)+EPS1*AB(I)+EPS2*AC(I)
@@ -237,7 +234,7 @@ C            ON GARDE CETTE NORMALE COMME RÉFÉR POUR LA MAILLE SUIVANTE
                VNREF(I)=VN(I) 
  213         CONTINUE                
                                                 
-C            MISE EN MÉMOIRE DE LST POUR LA MAILLE LA PLUS PROCHE
+C            MISE EN MÉMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
              IF (D.LT.DMIN) THEN
                DMIN=D             
                XLN=DDOT(3,VN,1,PM,1)
@@ -284,6 +281,8 @@ C             ON RÉCUPÈRE LES NUMEROS DS NOEUDS DE LA MAILLE ET ON TESTE
                 NUM=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
                 IF (NUNOSE(1).EQ.NUM) N1=1
                 IF (NUNOSE(2).EQ.NUM) N2=1
+C               POUR RÉCUPÉRER UN 3EME POINT DE LA MAILLE QUI NE SOIT 
+C               PAS SUR LE FOND
                 IF ((NUNOSE(1).NE.NUM).AND.(NUNOSE(2).NE.NUM)) NUNOC=NUM
  32           CONTINUE
 
@@ -306,16 +305,16 @@ C               CALCUL DE LA NORMALE à LA MAILLE
 C               CALCUL DE LA NORMALE INTERIEURE AU SEGMENT
                 CALL PROVEC(AB,VN,VNT)
                 CALL NORMEV(VNT,NORME)
-                VN(1)=-1*VNT(1)
-                VN(2)=-1*VNT(2)
-                VN(3)=-1*VNT(3)
+                VN(1)=-1.D0*VNT(1)
+                VN(2)=-1.D0*VNT(2)
+                VN(3)=-1.D0*VNT(3)
 
 C               ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE
 C               COMME LA PRÉCENDENTE (À PART POUR LE 1ER SEG!)
 C               MAIS CA DEVRAIT JAMAIS ARRIVER
                 IF (ISEFIS.NE.1) THEN
                   PS=DDOT(3,VN,1,VNREF,1)
-                  IF (PS.LT.0) THEN
+                  IF (PS.LT.0.D0) THEN
                     CALL UTMESS('F','XINILS','PB DANS ORIENTATION '//
      &                   'DES NORMALES A FOND_FISS. VERIFIER LA '//
      &                   'CONTINUITE DES MAILLES DE FOND_FISS')
@@ -336,8 +335,8 @@ C               PROJECTION SUR LE SEGMENT
                 EPS=PS/PS1
 
 C               ON RAMÈNE M SUR LES BORDS S'IL LE FAUT
-                IF (EPS.GT.1) EPS=1
-                IF (EPS.LT.0) EPS=0
+                IF (EPS.GT.1.D0) EPS=1.D0
+                IF (EPS.LT.0.D0) EPS=0.D0
 
                 DO 34 I=1,3
                   M(I)=A(I)+EPS*AB(I)
@@ -410,6 +409,23 @@ C              RÉAJUSTEMENT DE LSNB
                CLSM=CLSM+1
             ENDIF
           ENDIF 
+          LSTA=ZR(JLTSV-1+(NUNOA-1)+1)
+          LSTB=ZR(JLTSV-1+(NUNOB-1)+1)    
+          IF (LSTA*LSTB.LT.0.D0) THEN
+            D=LSTA/(LSTA-LSTB)
+            IF (D.LE.PREREA) THEN
+C              RÉAJUSTEMENT DE LSTA
+               ZR(JLTSV-1+(NUNOA-1)+1)=0.D0
+               ZL(JLTSL-1+(NUNOA-1)+1)=.TRUE.
+               CLSM=CLSM+1
+            ENDIF
+            IF (D.GE.(1.D0-PREREA)) THEN
+C              RÉAJUSTEMENT DE LSTB
+               ZR(JLTSV-1+(NUNOB-1)+1)=0.D0
+               ZL(JLTSL-1+(NUNOB-1)+1)=.TRUE.
+               CLSM=CLSM+1
+            ENDIF
+          ENDIF
  210    CONTINUE
  200  CONTINUE
 C     CONTROLE ET MIZE A ZERO 

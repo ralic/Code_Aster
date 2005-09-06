@@ -1,11 +1,12 @@
         SUBROUTINE REDECE ( NDIM, TYPMOD, IMAT, COMP, CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,ANGMAS,SIGF,VINF,DSDE)
+     2                      VIND, OPT,ELGEOM,ANGMAS,SIGF,VINF,DSDE,
+     &                      RETCOM)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,6 +135,7 @@ C       ----------------------------------------------------------------
 C
         INTEGER         ICOMP,        NPAL,      IPAL
         INTEGER         NMOD ,        IRTET,     K
+        INTEGER         RETCOM
         REAL*8          EPS(6),       DEPS(6),   SD(6)
         REAL*8          DSDELO(6,6)
         REAL*8          TD,           TF,        DELTAT
@@ -145,6 +147,8 @@ C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
         IPAL  =  INT(CRIT(5))
+        RETCOM=0
+        READ (COMP(2),'(I16)') NVI
 C
 C IPAL = 0  1 OU -1 -> PAS DE REDECOUPAGE DU PAS DE TEMPS
 C
@@ -179,7 +183,7 @@ C
      3                EPSDT, DEPST, SIGD,  VIND,  OPT, ANGMAS,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ENDIF
-        IF ( IRTET.GT.0 ) GOTO (1), IRTET
+        IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C
 C -->   IPAL > 0 --> REDECOUPAGE IMPOSE DU PAS DE TEMPS
 C -->   REDECOUPAGE IMPOSE ==>  RETURN DANS PLASTI APRES RECHERCHE
@@ -201,9 +205,10 @@ C
         ENDIF
 C
         IF ( ICOMP .GT. 3 ) THEN
-            CALL UTEXCP(23,'REDECE','REDECOUPAGE EXCESSIF DU PAS DE'
+            CALL UTMESS('A','REDECE','REDECOUPAGE EXCESSIF DU PAS DE'
      1       //' TEMPS INTERNE : REDUISEZ VOTRE PAS DE TEMPS OU'
      3       //' AUGMENTER ABS(ITER_INTE_PAS)')
+           GOTO 2
         ENDIF
 C
         IF ( ICOMP .GE. 1 ) NPAL = 2 * NPAL
@@ -263,7 +268,7 @@ C
      2                SD,    VIND,     OPT, ANGMAS,   SIGF,   VINF,
      3                    DSDELO,  ICOMP,   NVI,  IRTET)
             ENDIF
-            IF ( IRTET.GT.0 ) GOTO (1), IRTET
+            IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C
             IF ( OPT .EQ. 'RIGI_MECA_TANG'
      1               .OR. OPT .EQ. 'FULL_MECA' ) THEN
@@ -272,7 +277,11 @@ C
             ENDIF
 C
  124    CONTINUE
+        GOTO 9999
 C
+   2    CONTINUE
+        RETCOM = 1
+        GO TO 9999
 C
  9999   CONTINUE
         END

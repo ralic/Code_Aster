@@ -3,7 +3,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
          CALL LCMMCV (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
      &          R,RINI,IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
+         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 C
       ELSE
          CALL LCCTRL ( LOI,  DY,     DDY,   NR, ITMAX,  TOLER, ITER,
@@ -106,9 +106,12 @@ C
       GOTO 9999
 C
  3    CONTINUE
-C       =3 ITMAX ATTEINT : redecoupage si demande.
+C       =3 ITMAX ATTEINT : redecoupage local si demande.
       IRTETI = 3
       GOTO 9999
-C
+ 4    CONTINUE
+C       =4 ITMAX ATTEINT : redecoupage du pas de temps glogal
+      IRTETI = 4
+      GOTO 9999
  9999 CONTINUE
       END

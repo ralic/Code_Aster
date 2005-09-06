@@ -1,22 +1,16 @@
-      SUBROUTINE NMDEPL(MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                  COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
-     &                  MODEDE, NUMEDE, SOLVDE, PARCRI, POUGD ,
-     &                  ITERAT, VALMOI, RESOCO, VALPLU, CNRESI,
-     &                  CNDIRI, REAROT, NURO  , METHOD, NUMINS,
-     &                  OPTION, CONV,   STADYN, DEPENT, VITENT,
-     &                  LAMORT, MEMASS, MASSE,  AMORT,  COEVIT, 
-     &                  COEACC, INDRO , SECMBR, INSTAP, INSTAM,
-     &                  CMD   , ETAN  , PARTPS, PREMIE, 
-     &                  ZFON  , FONACT,  
-     &                  DEPKM1, VITKM1, ACCKM1, VITPLU, ACCPLU,
-     &                  ROMKM1, ROMK,   PILOTE, DEPDEL, DEPPIL,
-     &                  DEPOLD, LIGRCF, CARTCF, MCONEL,
-     &                  SCONEL, MAILLA, DEPPLT, DEFICO, CNCINE,
-     &                  SOLVEU, LREAC,  ETA   , LICCVG, DDEPLA,
-     &                  VITMOI, ACCMOI)
-     
+      subroutine NMDEPL(MODELE,NUMEDD,MATE,CARELE,COMREF,COMPOR,LISCHA,
+     &                 CNFEXT,PARMET,CARCRI,MODEDE,NUMEDE,SOLVDE,
+     &                 PARCRI,POUGD,ITERAT,VALMOI,RESOCO,VALPLU,CNRESI,
+     &                 CNDIRI,REAROT,NURO,METHOD,NUMINS,OPTION,CONV,
+     &                 STADYN,DEPENT,VITENT,LAMORT,MEMASS,MASSE,AMORT,
+     &                 COEVIT,COEACC,INDRO,SECMBR,INSTAP,INSTAM,CMD,
+     &                 ETAN,PARTPS,PREMIE,ZFON,FONACT,DEPKM1,VITKM1,
+     &                 ACCKM1,VITPLU,ACCPLU,ROMKM1,ROMK,PILOTE,DEPDEL,
+     &                 DEPPIL,DEPOLD,LIGRCF,CARTCF,MCONEL,SCONEL,
+     &                 MAILLA,DEPPLT,DEFICO,CNCINE,SOLVEU,LREAC,ETA,
+     &                 LICCVG,DDEPLA,VITMOI,ACCMOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,28 +28,28 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_21
-
-      IMPLICIT NONE
+C
+      implicit none
       INTEGER       ZFON
-      LOGICAL       REAROT, LAMORT, PREMIE, FONACT(ZFON), LREAC(2)
-      INTEGER       ITERAT, LICCVG(2), INDRO, NUMINS
-      REAL*8        PARMET(*), CONV(*), INST(3), ETA, ETAN
-      REAL*8        PARCRI(*), COEVIT, COEACC
-      REAL*8        INSTAP, INSTAM
-      CHARACTER*8   MODEDE,MCONEL, SCONEL, MAILLA
-      CHARACTER*14  PILOTE
-      CHARACTER*16  OPTION, METHOD(*), CMD
-      CHARACTER*19  LISCHA, CNRESI, CNDIRI, CNFEXT, SOLVDE, PARTPS
-      CHARACTER*19  NURO,   LIGRCF, CARTCF, SOLVEU
-      CHARACTER*24  MODELE, NUMEDD, MATE  , CARELE, COMREF, COMPOR
-      CHARACTER*24  CARCRI, VALMOI, POUGD , DDEPLA, VALPLU, DEPDEL
-      CHARACTER*24  RESOCO, SECMBR, DEPOLD, NUMEDE, DEPPIL(2)
-      CHARACTER*24  STADYN, DEPENT, VITENT, MEMASS, MASSE , AMORT
-      CHARACTER*24  DEPKM1, VITKM1, ACCKM1, VITPLU, ACCPLU
-      CHARACTER*24  ROMKM1, ROMK  , DEPPLT, DEFICO, CNCINE
-      CHARACTER*24  VITMOI, ACCMOI
-
-
+      logical REAROT,LAMORT,PREMIE,FONACT(ZFON),LREAC(2)
+      integer ITERAT,LICCVG(2),INDRO,NUMINS
+      real*8 PARMET(*),CONV(*),INST(3),ETA,ETAN
+      real*8 PARCRI(*),COEVIT,COEACC
+      real*8 INSTAP,INSTAM
+      character*8 MODEDE,MCONEL,SCONEL,MAILLA
+      character*14 PILOTE
+      character*16 OPTION,METHOD(*),CMD
+      character*19 LISCHA,CNRESI,CNDIRI,CNFEXT,SOLVDE,PARTPS
+      character*19 NURO,LIGRCF,CARTCF,SOLVEU
+      character*24 MODELE,NUMEDD,MATE,CARELE,COMREF,COMPOR
+      character*24 CARCRI,VALMOI,POUGD,DDEPLA,VALPLU,DEPDEL
+      character*24 RESOCO,SECMBR,DEPOLD,NUMEDE,DEPPIL(2)
+      character*24 STADYN,DEPENT,VITENT,MEMASS,MASSE,AMORT
+      character*24 DEPKM1,VITKM1,ACCKM1,VITPLU,ACCPLU
+      character*24 ROMKM1,ROMK,DEPPLT,DEFICO,CNCINE
+      character*24 VITMOI,ACCMOI
+C
+C
 C ----------------------------------------------------------------------
 C
 C                   CALCUL DE L'INCREMENT DE DEPLACEMENT
@@ -116,148 +110,130 @@ C                       (1) PILOTAGE
 C                       (2) LOI DE COMPORTEMENT
 C                       (3) CONTACT - FROTTEMENT
 C                       (4) CONTACT - FROTTEMENT
-C IN/OUT   LREAC  L    ETAT DU CONTACT 
-C                       (1) = TRUE  SI REACTUALISATION A FAIRE  
-C                       (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
 C OUT      DDEPLA K24  DIRECTION DE DESCENTE REACTUALISEE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      integer ZI
+      common /IVARJE/ ZI(1)
+      real*8 ZR
+      common /RVARJE/ ZR(1)
+      complex*16 ZC
+      common /CVARJE/ ZC(1)
+      logical ZL
+      common /LVARJE/ ZL(1)
+      character*8 ZK8
+      character*16 ZK16
+      character*24 ZK24
+      character*32 ZK32
+      character*80 ZK80
+      common /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-
-      LOGICAL      CFINT
-      INTEGER      NEQ,JDEPM,JDEPDE,JDEPP,JDDEPL,IBID 
-      CHARACTER*8  K8BID
-      CHARACTER*19 K19BLA
-      CHARACTER*24 DEPMOI, SIGMOI,  COMMOI
-      CHARACTER*24 DEPPLU, SIGPLU, VARPLU, COMPLU
-      CHARACTER*24 K24BID, VARDEP, LAGDEP, K24BLA
-
-      INTEGER      IRET,IRE2,JTRA,JRESI,JRSST,NBSS
-      CHARACTER*24 TABTRA
-      TABTRA = '&&NMDEPL.TABTRA'
-          
-C      
-C -- TRAITEMENT EVENTUEL DU CONTACT ET/OU DU FROTTEMENT DISCRET
 C
-      IF (FONACT(4)) THEN
-         CALL NMCOFR(MAILLA, DEPPLT, DEPDEL, DEPPIL,
-     &               DEFICO, RESOCO, CNCINE, ITERAT, INSTAP,
-     &               CONV ,  LICCVG, LREAC)
-      END IF
-
+      logical CFINT
+      integer NEQ,JDEPM,JDEPDE,JDEPP,JDDEPL,IBID
+      character*8 K8BID
+      character*19 K19BLA
+      character*24 DEPMOI,SIGMOI,COMMOI
+      character*24 DEPPLU,SIGPLU,VARPLU,COMPLU
+      character*24 K24BID,VARDEP,LAGDEP,K24BLA
+C
+      integer IRET,IRE2,JTRA,JRESI,JRSST,NBSS
+      character*24 TABTRA
+      TABTRA = '&&NMDEPL.TABTRA'
+C -- TRAITEMENT EVENTUEL DU CONTACT ET/OU DU FROTTEMENT
+C     PROJECTION DE DELTA.U + DU0 = DU SUR CONTACT ADMISSIBLE
+      if (FONACT(4)) then
+        call NMCOFR(MAILLA,DEPPLT,DEPDEL,DEPPIL,DEFICO,RESOCO,CNCINE,
+     &              ITERAT,INSTAP,CONV,LICCVG,LREAC)
+      end if
+C
 C    A-T-ON BESOIN DE REACTUALISER LES RIGI_ELEM OU PAS 
-      CALL NMMATR('FORCES_INT', K24BLA, K24BLA, K24BLA, K24BLA,
-     &                  K24BLA, K24BLA, K19BLA, K24BLA, ' '   ,
-     &                  METHOD, K19BLA, PARMET, K24BLA, PARTPS,
-     &                  NUMINS, ITERAT, K24BLA, K24BLA, K24BLA,
-     &                  K24BLA, K19BLA, OPTION, DEFICO, STADYN,
-     &                  PREMIE, CMD,    DEPENT, VITENT, LAMORT,
-     &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC, 
-     &                  IBID)
-
+      call NMMATR('FORCES_INT',K24BLA,K24BLA,K24BLA,K24BLA,K24BLA,
+     &           K24BLA,K19BLA,K24BLA,' ',METHOD,K19BLA,PARMET,K24BLA,
+     &           PARTPS,NUMINS,ITERAT,K24BLA,K24BLA,K24BLA,K24BLA,
+     &           K19BLA,OPTION,DEFICO,STADYN,PREMIE,CMD,DEPENT,VITENT,
+     &           LAMORT,MEMASS,MASSE,AMORT,COEVIT,COEACC,IBID)
+C
 C    PAS DE RECHERCHE LINEAIRE
 C    EN PARTICULIER SUITE A LA PREDICTION
-      
-      IF (.NOT.FONACT(1) .OR. ITERAT.EQ.0) THEN
-
-        CALL NMPICH (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &               COMPOR, LISCHA, CNFEXT, PARMET, CARCRI, 
-     &               MODEDE, NUMEDE, SOLVDE, PARCRI, POUGD ,
-     &               ITERAT, VALMOI, RESOCO, VALPLU, CNRESI,
-     &               CNDIRI, REAROT, FONACT, CONV  , INDRO ,   
-     &               PILOTE, DEPDEL, DEPPIL, DEPOLD, INSTAP-INSTAM,
-     &               SECMBR, ETA   , LICCVG, DDEPLA)
-        IF (LICCVG(1).EQ.1) GOTO 9999
-        CFINT = .TRUE.
-      ELSE
-
+      if (.not.FONACT(1) .or. ITERAT.eq.0) then
+C
+        call NMPICH(MODELE,NUMEDD,MATE,CARELE,COMREF,COMPOR,LISCHA,
+     &              CNFEXT,PARMET,CARCRI,MODEDE,NUMEDE,SOLVDE,PARCRI,
+     &              POUGD,ITERAT,VALMOI,RESOCO,VALPLU,CNRESI,CNDIRI,
+     &              REAROT,FONACT,CONV,INDRO,PILOTE,DEPDEL,DEPPIL,
+     &              DEPOLD,INSTAP-INSTAM,SECMBR,ETA,LICCVG,DDEPLA)
+        if (LICCVG(1) .eq. 1) goto 9999
+        CFINT = .true.
+      else
+C
 C -- RECHERCHE LINEAIRE
-
-        IF (FONACT(2)) THEN
-
+C
+        if (FONACT(2)) then
+C
 C        AVEC PILOTAGE        
-
-          CALL NMREPL (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                 COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
-     &                 MODEDE, NUMEDE, SOLVDE, PARCRI, DEPPIL,
-     &                 INST,   ITERAT, VALMOI, POUGD , DEPDEL,
-     &                 RESOCO, DDEPLA, VALPLU, CNRESI, CNDIRI,
-     &                 CONV  , LICCVG, REAROT, INDRO, SECMBR,
-     &                 INSTAP-INSTAM , PILOTE, ETAN, ETA, DEPOLD)
-
-
-        ELSE
-
+C
+          call NMREPL(MODELE,NUMEDD,MATE,CARELE,COMREF,COMPOR,LISCHA,
+     &                CNFEXT,PARMET,CARCRI,MODEDE,NUMEDE,SOLVDE,PARCRI,
+     &                DEPPIL,INST,ITERAT,VALMOI,POUGD,DEPDEL,RESOCO,
+     &                DDEPLA,VALPLU,CNRESI,CNDIRI,CONV,LICCVG,REAROT,
+     &                INDRO,SECMBR,INSTAP-INSTAM,PILOTE,ETAN,ETA,DEPOLD)
+C
+C
+          else
+C
 C        SANS PILOTAGE
-          CALL COPISD('CHAMP_GD','V',DEPPIL(1),DDEPLA)
-          
-          CALL NMRECH (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                 COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
-     &                 MODEDE, NUMEDE, SOLVDE, PARCRI,
-     &                 ITERAT, VALMOI, POUGD , DEPDEL,
-     &                 RESOCO, DDEPLA, VALPLU, CNRESI, CNDIRI,
-     &                 CONV  , LICCVG(2), REAROT, INDRO)
-        END IF
+            call COPISD('CHAMP_GD','V',DEPPIL(1),DDEPLA)
+            call NMRECH(MODELE,NUMEDD,MATE,CARELE,COMREF,COMPOR,LISCHA,
+     &                  CNFEXT,PARMET,CARCRI,MODEDE,NUMEDE,SOLVDE,
+     &                  PARCRI,ITERAT,VALMOI,POUGD,DEPDEL,RESOCO,DDEPLA,
+     &                  VALPLU,CNRESI,CNDIRI,CONV,LICCVG(2),REAROT,INDRO
+     &                 )
+        end if
 C      CALCUL DE RIGI_ELEM SI DEMANDE	
-        IF (OPTION.EQ.'FULL_MECA') THEN
-          CFINT = .TRUE.
-        ELSE
-          CFINT = .FALSE.  
-        END IF
-      ENDIF
-
-      IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
+        if (OPTION .eq. 'FULL_MECA') then
+          CFINT = .true.
+        else
+          CFINT = .false.
+        end if
+      end if
+C
+      if (CMD .eq. 'DYNA_TRAN_EXPLI') then
 C ------------> MISE A JOUR DES VITESSES :
 C               {Vn+1}={Vn}+DT/2*({An}+{An+1})
 C                       {Un}={Un+1}
 C                       {An}={An+1}
 C                       {Vn}={Vn+1}
-        CALL JELIRA (ACCMOI(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-        CALL MXMAJD(NEQ, REAROT, NURO, INSTAP-INSTAM, VITMOI, ACCMOI,
-     &            VITPLU, ACCPLU)
-      
-      ELSE
+        call JELIRA(ACCMOI(1:19)//'.VALE','LONMAX',NEQ,K8BID)
+        call MXMAJD(NEQ,REAROT,NURO,INSTAP-INSTAM,VITMOI,ACCMOI,VITPLU,
+     &              ACCPLU)
+      else
 C -- MISE A JOUR DES DEPLACEMENTS
-        CALL DESAGG(VALMOI, DEPMOI, SIGMOI, K24BID, COMMOI,
-     &                    K24BID, K24BID, K24BID, K24BID)
-        CALL DESAGG(VALPLU, DEPPLU, SIGPLU, VARPLU, COMPLU,
-     &                  VARDEP, LAGDEP, K24BID, K24BID)
-        CALL JELIRA (DEPMOI(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-
-        CALL JEVEUO (DEPMOI(1:19)//'.VALE','L',JDEPM )
-        CALL JEVEUO (DEPDEL(1:19)//'.VALE','E',JDEPDE)
-        CALL JEVEUO (DEPPLU(1:19)//'.VALE','E',JDEPP )
-        CALL JEVEUO (DDEPLA(1:19)//'.VALE','L',JDDEPL)
-
-        IF (CMD(1:4).EQ.'STAT') THEN
-          CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDEPDE ),ZR(JDDEPL),1.D0,
-     &             ZR(JDEPDE ))
-          CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDEPP ),ZR(JDDEPL),1.D0,
-     &              ZR(JDEPP ))
-        ELSE
-          CALL MAJDVA(NEQ,    REAROT, NURO,   COEVIT, COEACC,
-     &             DEPMOI, DDEPLA, DEPDEL, DEPKM1, VITKM1, 
-     &             ACCKM1, DEPPLU, VITPLU, ACCPLU, ROMKM1,
-     &             ROMK)
-        ENDIF
-
-        IF (CFINT) THEN
+        call DESAGG(VALMOI,DEPMOI,SIGMOI,K24BID,COMMOI,K24BID,K24BID,
+     &              K24BID,K24BID)
+        call DESAGG(VALPLU,DEPPLU,SIGPLU,VARPLU,COMPLU,VARDEP,LAGDEP,
+     &              K24BID,K24BID)
+        call JELIRA(DEPMOI(1:19)//'.VALE','LONMAX',NEQ,K8BID)
+C
+        call JEVEUO(DEPMOI(1:19)//'.VALE','L',JDEPM)
+        call JEVEUO(DEPDEL(1:19)//'.VALE','E',JDEPDE)
+        call JEVEUO(DEPPLU(1:19)//'.VALE','E',JDEPP)
+        call JEVEUO(DDEPLA(1:19)//'.VALE','L',JDDEPL)
+C
+        if (CMD(1:4) .eq. 'STAT') then
+          call MAJOUR(NEQ,REAROT,ZI(INDRO),ZR(JDEPDE),ZR(JDDEPL),1.d0,
+     &                ZR(JDEPDE))
+          call MAJOUR(NEQ,REAROT,ZI(INDRO),ZR(JDEPP),ZR(JDDEPL),1.d0,
+     &                ZR(JDEPP))
+        else
+          call MAJDVA(NEQ,REAROT,NURO,COEVIT,COEACC,DEPMOI,DDEPLA,
+     &                DEPDEL,DEPKM1,VITKM1,ACCKM1,DEPPLU,VITPLU,ACCPLU,
+     &                ROMKM1,ROMK)
+        end if
+C
+        if (CFINT) then
 C
 C --- CONTACT METHODE CONTINUE AVEC OU SANS XFEM
 C
@@ -266,42 +242,38 @@ C
               CALL XMMCME(MODELE(1:8),DEPMOI,DEPDEL,DEFICO,
      &                    MCONEL,SCONEL)
             ELSE
-              CALL MMCMEM(MODELE,DEPMOI,DEPDEL,LIGRCF,CARTCF,
-     &                    MCONEL,SCONEL)
+              CALL MMCMEM(MODELE,DEPMOI,DEPDEL,VITMOI,ACCMOI,
+     &                    LIGRCF,CARTCF,MCONEL,SCONEL)
             ENDIF
           ENDIF
-
-          CALL NMFINT (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &             COMPOR, LISCHA, CARCRI, POUGD , ITERAT,
-     &             MODEDE, NUMEDE, SOLVDE, PARMET, PARCRI,
-     &             VALMOI, DEPDEL, RESOCO, VALPLU, CNRESI,
-     &             CNDIRI, LICCVG(2), OPTION, CONV, STADYN,
-     &             DEPENT, VITENT)
-
+          call NMFINT(MODELE,NUMEDD,MATE,CARELE,COMREF,COMPOR,LISCHA,
+     &                CARCRI,POUGD,ITERAT,MODEDE,NUMEDE,SOLVDE,PARMET,
+     &                PARCRI,VALMOI,DEPDEL,RESOCO,VALPLU,CNRESI,CNDIRI,
+     &                LICCVG(2),OPTION,CONV,STADYN,DEPENT,VITENT)
+C
 C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
-          CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8BID,IRET)
-          IF (NBSS.GT.0) THEN
-            CALL JEEXIN('&&SSRIGI.REFE_RESU',IRET)
-            IF (IRET.NE.0) THEN
-              CALL JEEXIN(TABTRA,IRE2)
-              IF (IRE2.EQ.0) THEN
-                CALL WKVECT(TABTRA,'V V R',NEQ,JTRA)
-              ELSE
-                CALL JEVEUO(TABTRA,'E',JTRA)
-              ENDIF
-              CALL JEVEUO(CNRESI(1:19) // '.VALE','E',JRESI)
-              CALL JEVEUO('&&ASRSST           .&INT','L',JRSST)
-              CALL MRMULT ('ZERO',JRSST,ZR(JDEPP),'R',ZR(JTRA),1)
-              CALL DAXPY(NEQ, 1.D0, ZR(JTRA), 1, ZR(JRESI), 1)
-            ENDIF
-          ENDIF  
-
+          call DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8BID,IRET)
+          if (NBSS .gt. 0) then
+            call JEEXIN('&&SSRIGI.REFE_RESU',IRET)
+            if (IRET .ne. 0) then
+              call JEEXIN(TABTRA,IRE2)
+              if (IRE2 .eq. 0) then
+                call WKVECT(TABTRA,'V V R',NEQ,JTRA)
+              else
+                call JEVEUO(TABTRA,'E',JTRA)
+              end if
+              call JEVEUO(CNRESI(1:19)//'.VALE','E',JRESI)
+              call JEVEUO('&&ASRSST           .&INT','L',JRSST)
+              call MRMULT('ZERO',JRSST,ZR(JDEPP),'R',ZR(JTRA),1)
+              call DAXPY(NEQ,1.d0,ZR(JTRA),1,ZR(JRESI),1)
+            end if
+          end if
+C
 C   FIN MACRO-ELEMENT STATIQUE
-
-        END IF
-        
-      ENDIF
-
-
- 9999 CONTINUE
-      END
+C
+         end if
+      end if
+C
+C
+ 9999 continue
+      end

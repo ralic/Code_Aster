@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,7 @@
 # Modules Python
 import types,string,repr
 import traceback
+from os import times
 
 # Module Eficas
 import Noyau.N_FONCTION
@@ -46,19 +47,22 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
    def affiche_cmd(self):
       """
       Permet d'afficher une information apres avoir affecte le numero de commande.
-   
-      N'est pas utilisée par défaut.
+      Ne sert que pour afficher le texte des macros (methode surchargee dans E_MACRO_ETAPE)
       """
       pass
 
    def set_icmd(self,icmd):
       """
       Demande au jdc un numero de commande unique.
+      Declenche le top de mesure du temps de la commande en cours (attributs 'cpu_user' et 'cpu_syst').
 
       @param icmd: entier indiquant l'incrément de numero de commande demandé (en général 1)
       """
       if icmd is not None:
           self.icmd=self.jdc.icmd=self.jdc.icmd+icmd
+          #top de mesure du temps pour la commande courante
+          self.cpu_user=times()[0]
+          self.cpu_syst=times()[1]
       else:
           self.icmd=None
       self.affiche_cmd()

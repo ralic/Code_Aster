@@ -1,6 +1,6 @@
-      SUBROUTINE AFFICH (TEXTE)
+      SUBROUTINE AFFICH (NOMFIC,TEXTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 05/07/2005   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,10 +20,15 @@ C ======================================================================
 C 
       IMPLICIT NONE
       CHARACTER*(*) TEXTE
+      CHARACTER*(*) NOMFIC
       INTEGER       IFM, IUNIFI, GTNPRO
 C     ----------------------------------------------------------------
+      IF ((NOMFIC.NE.'MESSAGE').AND.(NOMFIC.NE.'RESULTAT')) THEN
+         CALL UTMESS('F','AFFICH','IMPRESSIONS DEPUIS PYTHON :'
+     &                          //' NOM DE FICHIER INCORRECT ')
+      ENDIF
       IF ( GTNPRO() .EQ. 0 ) THEN
-        IFM = IUNIFI ('MESSAGE')
+        IFM = IUNIFI (NOMFIC)
         WRITE(IFM,'(A)') TEXTE
       ENDIF
       END

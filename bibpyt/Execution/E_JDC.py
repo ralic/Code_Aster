@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,13 +24,15 @@
 """
 """
 # Modules Python
-import sys, types,os
+import sys, types,os, string, fpformat
+from os import times
 import pickle
 
 # Modules Eficas
 from Noyau.N_Exception import AsException
 from Noyau.N_ASSD import ASSD
 from Noyau.N_ENTITE import ENTITE
+import aster
 
 class JDC:
    """
@@ -88,11 +90,85 @@ class JDC:
 
       except EOFError:
          # L'exception EOFError a ete levee par l'operateur FIN
+         self.affiche_fin_exec()
          self.traiter_fin_exec("par_lot",e)
          pass
 
       CONTEXT.unset_current_step()
       return ier
+
+   def affiche_fin_exec(self):
+       """ Cette methode affiche les statistiques de temps finales.
+       """
+
+       ###############################################################
+       #impression des statistiques de temps d'execution des commandes
+       ###############################################################
+
+       #recuperation du temps de la derniere commande :
+       #soit c'est FIN si arret normal, soit la commande courante si levee
+       #d'exception de type <S>
+       #en effet, on est arrive ici par une levee d'exception, et on n'a alors
+       #pas affiche l'echo de la commande FIN dans le fichier de message
+
+       l_etapes=self.get_liste_etapes()
+       l_etapes.reverse()
+       for e in l_etapes :
+           if ((hasattr(e,'executed') and e.executed) or (hasattr(e,'building') and e.building)) :
+              etape_finale=e
+              etape_finale.cpu_user=times()[0]-etape_finale.cpu_user
+              etape_finale.cpu_syst=times()[1]-etape_finale.cpu_syst
+              etape_finale.AfficheFinCommande(etape_finale.cpu_user,etape_finale.cpu_syst)
+              break
+
+       #recuperation du temps total du job
+       #les attributs cpu_user et cpu_syst du jdc avaient ete initialises
+       #par la methode set_icmd de la commande de demarrage (DEBUT ou POURSUITE)
+       cpu_total_user=times()[0]-self.cpu_user
+       cpu_total_syst=times()[1]-self.cpu_syst
+
+       echo_resu=[]
+       echo_resu.append( '\n' )
+       echo_resu.append( '***********************************************************\n')
+       echo_resu.append( '* COMMANDE         *       USER *    SYSTEME *      TOTAL *\n')
+       echo_resu.append( '***********************************************************\n')
+       for e in self.get_liste_etapes() :
+         if hasattr(e,"cpu_user") :
+            texte='* '+e.nom.ljust(17)
+            texte=texte+ ':'+fpformat.fix(e.cpu_user,2).rjust(11)
+            texte=texte+' :'+fpformat.fix(e.cpu_syst,2).rjust(11)
+            texte=texte+' :'+fpformat.fix(e.cpu_user+e.cpu_syst,2).rjust(11)+' *\n'
+            echo_resu.append( texte )
+       echo_resu.append( '***********************************************************\n')
+       texte='* TOTAL_JOB        '
+       texte=texte+ ':'+fpformat.fix(cpu_total_user,2).rjust(11)
+       texte=texte+' :'+fpformat.fix(cpu_total_syst,2).rjust(11)
+       texte=texte+' :'+fpformat.fix(cpu_total_user+cpu_total_syst,2).rjust(11)+' *\n'
+       echo_resu.append( texte )
+       echo_resu.append( '***********************************************************\n')
+       texte_final=string.join(echo_resu)
+       aster.affiche('RESULTAT',texte_final)
+       aster.fclose(8)
+
+       tempsMax=self.args.get("tempsMax")
+       if tempsMax!=None :
+          cpu_restant=tempsMax-cpu_total_syst-cpu_total_user
+       else:
+          cpu_restant=0.
+       echo_mess=[]
+       decalage="  "  # blancs au debut de chaque ligne affichee
+       echo_mess.append( '\n' )
+       echo_mess.append( decalage )
+       echo_mess.append("#  ---------------------------------------------------------------------------\n")
+       echo_mess.append( '\n' )
+       echo_mess.append( ' <I> <INFORMATION TEMPS D\'EXECUTION> (EN SECONDE)\n')
+       echo_mess.append( '     TEMPS CPU TOTAL ..............  '+fpformat.fix(cpu_total_syst+cpu_total_user,2).rjust(12)+'\n')
+       echo_mess.append( '     TEMPS CPU USER TOTAL .........  '+fpformat.fix(cpu_total_user,2).rjust(12)+'\n')
+       echo_mess.append( '     TEMPS CPU SYSTEME TOTAL ......  '+fpformat.fix(cpu_total_syst,2).rjust(12)+'\n')
+       echo_mess.append( '     TEMPS CPU RESTANT ............  '+fpformat.fix(cpu_restant,2).rjust(12)+'\n')
+       texte_final=string.join(echo_mess)
+       aster.affiche('MESSAGE',texte_final)
+       aster.fclose(6)
 
    def traiter_fin_exec(self,mode,etape=None):
        """ Cette methode realise un traitement final lorsque la derniere commande
@@ -104,6 +180,11 @@ class JDC:
            Cette sauvegarde est réalisée par un pickle du dictionnaire python contenant 
            ce contexte.
        """
+
+       ###############################################################
+       #sauvegarde du pickle
+       ###############################################################
+
        if mode == 'commande':
           # En mode commande par commande
           # Le contexte courant est donné par l'attribut g_context
@@ -192,3 +273,9 @@ class JDC:
              fin_cmd()
       except:
              pass
+
+   def get_liste_etapes(self):
+      liste=[]
+      for e in self.etapes : e.get_liste_etapes(liste)
+      return liste
+

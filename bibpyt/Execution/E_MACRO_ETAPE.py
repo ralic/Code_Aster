@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,9 @@
 
 
 import E_ETAPE
+from os import times
+import aster
+import string
 
 class MACRO_ETAPE(E_ETAPE.ETAPE):
    """
@@ -32,6 +35,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       - Exec, pour l'execution en mode par lot
       - Execute, pour l'execution en mode commande par commande (par_lot="NON")
    """
+
    def AfficheCommande(self):
       """
       Affiche l'echo de la macro commande
@@ -43,23 +47,6 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
    def affiche_cmd(self):
       if self.jdc.par_lot=="NON":
           self.AfficheCommande()
-
-   def Exec(self):
-      """ 
-      Cette methode realise la phase d'execution en mode par lot pour une macro-etape.
-
-      L'execution de la macro comprend : 
-               - l'execution de la macro proprement dite (si elle en a une)
-               - l'execution de toutes les sous etapes actives
-               - l'affichage de l'echo de la macro
-      """
-      if self.modexec == 2: self.AfficheCommande()
-
-      E_ETAPE.ETAPE.Exec(self)
-
-      for e in self.etapes:
-        if e.isactif():
-           e.Exec()
 
    def Execute(self):
       """ 
@@ -104,6 +91,14 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          E_ETAPE.ETAPE.Exec(self)
          self.setmode(2)
          E_ETAPE.ETAPE.Exec(self)
+         if self.icmd!=None :
+            self.cpu_user=times()[0]-self.cpu_user
+            self.cpu_syst=times()[1]-self.cpu_syst
+            self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
+         else :
+            self.AfficheFinCommande(None,None)       
+      elif self.nom == 'INCLUDE':
+            self.AfficheFinCommande(None,None)       
 
       if hasattr(self,'postexec'):
          self.postexec(self)
@@ -193,8 +188,22 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
          if hasattr(self,'postexec'):
             self.postexec(self)
+         if self.icmd!=None :
+            self.cpu_user=times()[0]-self.cpu_user
+            self.cpu_syst=times()[1]-self.cpu_syst
+            self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
+         else :
+            self.AfficheFinCommande(None,None)       
       except:
          self.reset_current_step()
          raise
 
       self.reset_current_step()
+
+   def get_liste_etapes(self,liste):
+      if self.nom=='INCLUDE' : 
+         for e in self.etapes:
+             e.get_liste_etapes(liste)
+      else :
+         liste.append(self.etape)
+

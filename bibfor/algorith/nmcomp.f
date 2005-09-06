@@ -13,7 +13,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -502,7 +502,8 @@ C
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &           INSTAM, INSTAP, TM,   TP,    TREF,
      &           HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
-     &           SIGM, VIM,OPTION, TAMPON,ANGMAS, SIGP, VIP, DSIDEP)
+     &           SIGM, VIM,OPTION, TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
+     &           CODRET)
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')
@@ -512,7 +513,8 @@ C
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF, EPSM, DEPS,
-     &            SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP)
+     &            SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
+     &            CODRET)
           ELSE
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
@@ -607,7 +609,8 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
             CALL REDECE ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
      &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
-     &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP)
+     &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP,
+     &            CODRET)
           ENDIF
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'HOEK_BROWN' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
@@ -617,7 +620,8 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
             CALL REDECE ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
      &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
-     &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP)
+     &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP,
+     &             CODRET)
           ENDIF
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'GRANGER_FP' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
@@ -681,7 +685,8 @@ CCC    MONOCRISTAL
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
-     &           SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP)
+     &           SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
+     &           CODRET)
           ELSE
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
@@ -692,10 +697,8 @@ CCC    FIN MONOCRISTAL
 CCC    POLYCRISTAL
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'POLYCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF,
-     &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
-     &           SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP)
+              CALL UTMESS('F','NMCOMP_1',
+     &          'INTEGRATION IMPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,

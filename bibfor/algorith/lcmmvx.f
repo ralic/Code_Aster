@@ -1,8 +1,9 @@
       SUBROUTINE LCMMVX (  SIGF ,VIN, NMAT, MATERF,TEMPF,
-     &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
+     &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL,
+     &                   INDICS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,6 +42,7 @@ C
       REAL*8          PGL(3,3)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16 NOMFAM,NMATER,NECOUL,NECRIS
+      REAL*8          INDICS(*)
 C
       NBFSYS=NBCOMM(NMAT,2)
       
@@ -87,8 +89,12 @@ C
             CALL LCMMFL(TAUS,MATERF(NMAT+1),IFA,NMAT,NBCOMM,
      &         NECOUL,RP,NUMS,VIS,NVI,VIN,DT,DT,DGAMMA,DP,TEMPF)
 
-            IF (DP.GT.0.D0) SEUIL=1.D0
-
+            IF (DP.GT.0.D0) THEN
+            SEUIL=1.D0
+            INDICS(NUMS) = 1.D0
+            ELSE
+            INDICS(NUMS) = 0.D0
+            ENDIF
   7     CONTINUE
   
   6   CONTINUE

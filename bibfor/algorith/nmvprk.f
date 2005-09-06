@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,6 +144,7 @@ C
         REAL*8          SIGI(6),EPSD(6),DETOT(6)
         REAL*8          NU,TPERD,DTPER,TPEREF,DTIME,E,ALPHA,X
         REAL*8          HYDRD , HYDRF , SECHD , SECHF
+        REAL*8          EPSEQ
 C
         COMMON /TDIM/   NDT,    NDI
         COMMON /OPTI/   IOPTIO, IDNR
@@ -287,11 +288,14 @@ C      POUR POLYCRISTAL
       
       NBPHAS=NBCOMM(1,1)
 
+      IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI-2
 
       CALL GERPAS(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,
      &              SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,BZ,X)
+     
+      IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +2
 
 
 C --    DEBUT TRAITEMENT DE VENDOCHAB --
@@ -310,6 +314,19 @@ C
    14 CONTINUE
    
       CALL LCINMA(0.D0,DSDE)
+
+      IF (LOI(1:8).EQ.'MONOCRIS') THEN
+
+        CALL LCDPEC ( VIND , VINF, EPSEQ)
+        VINF (NVI-1) = VIND (NVI-1) + EPSEQ
+
+        IF (EPSEQ.EQ.0.D0) THEN
+        VINF (NVI) = 0.D0
+        ELSE
+        VINF (NVI) = 1.D0
+        ENDIF
+        
+      ENDIF 
       
       IF (LOI(1:9).EQ.'VENDOCHAB') THEN
 C --    DEBUT TRAITEMENT DE VENDOCHAB --

@@ -1,0 +1,157 @@
+# AJOUT
+# TITRE VALIDATION DE L'OPERATEUR POST_RCCM / FATIGUE + UNITAIRE
+
+
+POURSUITE(CODE=_F(  NOM = 'RCCM01B'));
+
+COURFATA = FORMULE(NOM_PARA='SIGM',VALE='2.E6/SIGM ')
+
+L_INST=DEFI_LIST_REEL(  DEBUT=1.,
+                           INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
+                           
+WOHLER2=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,INFO=2,
+                          NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
+                              PROL_GAUCHE='CONSTANT',
+                               NOM_RESU='NADM'       )
+                               
+MAT2=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
+                     FATIGUE=_F(  WOHLER = WOHLER2, E_REFE = 200000.),
+                        RCCM=_F(  M_KE = 1.7,
+                               N_KE = 0.3,
+                               SM = 50.)
+                               )
+
+#--------------------------------------------------------------------------------
+#   option = 'FATIGUE'
+#   chargement unitaire - Validation KE_MECA
+#--------------------------------------------------------------------------------
+
+FAT1=POST_RCCM( MATER=MAT2,
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 CHAR_MECA=(_F(NUME_CHAR=1,
+                               NOM_CHAR='NUL',
+                               FX=0.0,
+                               FY=0.0,
+                               FZ=0.0,
+                               MX=0.0,
+                               MY=0.0,
+                               MZ=0.0,),
+                            _F(NUME_CHAR=2,
+                               NOM_CHAR='UNIT',
+                               FX=2.0,
+                               FY=0.0,
+                               FZ=0.0,
+                               MX=0.0,
+                               MY=0.0,
+                               MZ=0.0,),
+                            ),
+                  RESU_MECA_UNIT=(_F(TABL_FX=TBTHME,
+                                     TABL_FY=TBTHME,
+                                     TABL_FZ=TBTHME,
+                                     TABL_MX=TBTHME,
+                                     TABL_MY=TBTHME,
+                                     TABL_MZ=TBTHME,
+                                     TABL_PRES=TBTHME,),
+                                  ), 
+                 RESU_THER=(_F(NUME_RESU_THER=1,
+                               TABL_RESU_THER=TBTHER, ),
+                  ),
+                  SITUATION=(_F(NB_OCCUR=200,
+                                NUME_SITU=1,
+                                NOM_SITU='FX=100',
+                                NUME_GROUPE=1,
+                                CHAR_ETAT_A=1,
+                                CHAR_ETAT_B=2,
+                                NUME_RESU_THER = 1,
+                                PRES_A=0,
+                                PRES_B=0,
+                                TEMP_REF_A=20.0,
+                                TEMP_REF_B=20.0,),
+                             ),
+                   );
+
+IMPR_TABLE(    TABLE=FAT1 )
+
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE= _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG',),
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='FACT_USAGE_CUMU',
+               VALE=5.0E-2        )
+                      
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE= _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR',),
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='FACT_USAGE_CUMU',
+               VALE=5.0E-3        )
+#--------------------------------------------------------------------------------
+#   option = 'FATIGUE'
+#   chargement unitaire - Validation KE_MIXTE
+#--------------------------------------------------------------------------------
+
+FAT2=POST_RCCM( MATER=MAT2,
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 TYPE_KE = 'KE_MIXTE',
+                 INFO=2,
+                 CHAR_MECA=(_F(NUME_CHAR=1,
+                               NOM_CHAR='NUL',
+                               FX=0.0,
+                               FY=0.0,
+                               FZ=0.0,
+                               MX=0.0,
+                               MY=0.0,
+                               MZ=0.0,),
+                            _F(NUME_CHAR=2,
+                               NOM_CHAR='UNIT',
+                               FX=2.0,
+                               FY=0.0,
+                               FZ=0.0,
+                               MX=0.0,
+                               MY=0.0,
+                               MZ=0.0,),
+                            ),
+                  RESU_MECA_UNIT=(_F(TABL_FX=TBTHME,
+                                     TABL_FY=TBTHME,
+                                     TABL_FZ=TBTHME,
+                                     TABL_MX=TBTHME,
+                                     TABL_MY=TBTHME,
+                                     TABL_MZ=TBTHME,
+                                     TABL_PRES=TBTHME,),
+                                  ), 
+                 RESU_THER=(_F(NUME_RESU_THER=1,
+                               TABL_RESU_THER=TBTHER, ),
+                  ),
+                  SITUATION=(_F(NB_OCCUR=200,
+                                NUME_SITU=1,
+                                NOM_SITU='FX=100',
+                                NUME_GROUPE=1,
+                                CHAR_ETAT_A=1,
+                                CHAR_ETAT_B=2,
+                                NUME_RESU_THER = 1,
+                                PRES_A=0,
+                                PRES_B=0,
+                                TEMP_REF_A=20.0,
+                                TEMP_REF_B=20.0,),
+                             ),
+                   );
+
+IMPR_TABLE(    TABLE=FAT2 )
+
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE= _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG',),
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='FACT_USAGE_CUMU',
+               VALE=4.1419E-2       )
+                      
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE= _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR',),
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='FACT_USAGE_CUMU',
+               VALE=1.6759e-2        )
+FIN();

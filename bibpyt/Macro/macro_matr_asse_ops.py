@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_asse_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
      Ecriture de la macro MACRO_MATR_ASSE
   """
   ier=0
+  from Utilitai.Utmess     import UTMESS
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL
@@ -45,36 +46,28 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
       else:
          renum='RCMK'
       if renum not in ('SANS','RCMK'):
-        ier=ier+1
-        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode LDLT, RENUM doit etre SANS ou RCMK.")
-        return ier
+        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode LDLT, RENUM doit etre SANS ou RCMK")
     elif methode=='MULT_FRONT':
       if SOLVEUR['RENUM']:
          renum=SOLVEUR['RENUM']
       else:
          renum='MDA'
       if renum not in ('MDA','MD','METIS'):
-        ier=ier+1
-        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK.")
-        return ier
+        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK")
     elif methode=='MUMPS':
       if SOLVEUR['RENUM']:
          renum=SOLVEUR['RENUM']
       else:
          renum='SANS'
       if renum not in ('SANS',):
-        ier=ier+1
-        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode MUMPS, RENUM doit etre SANS.")
-        return ier
+        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode MUMPS, RENUM doit etre SANS")
     elif methode=='GCPC':
       if SOLVEUR['RENUM']:
          renum=SOLVEUR['RENUM']
       else:
          renum='SANS'
       if renum not in ('SANS','RCMK'):
-        ier=ier+1
-        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode GCPC, RENUM doit etre SANS ou RCMK.")
-        return ier
+        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode GCPC, RENUM doit etre SANS ou RCMK")
   else:
     methode='MULT_FRONT'
     renum  ='MDA'
@@ -107,18 +100,13 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     option=m['OPTION']
     if iocc == 1 and lnume == 1 and option not in ('RIGI_MECA','RIGI_MECA_LAGR',
                                                    'RIGI_THER','RIGI_ACOU')      :
-      ier=ier+1
-      self.cr.fatal("<F> <MACRO_MATR_ASSE> UNE DES OPTIONS DOIT ETRE RIGI_MECA OU RIGI_THER OU RIGI_ACOU OU RIGI_MECA_LAGR")
-      return ier
+      UTMESS('F', "MACRO_MATR_ASSE", "UNE DES OPTIONS DOIT ETRE RIGI_MECA OU RIGI_THER OU RIGI_ACOU OU RIGI_MECA_LAGR")
 
 
     motscles={'OPTION':option}
     if option == 'AMOR_MECA':
        if (not lrigel or not lmasel):
-          ier=ier+1
-          self.cr.fatal("""<F> <MACRO_MATR_ASSE> POUR CALCULER AMOR_MECA, IL FAUT AVOIR CALCULE
-                           RIGI_MECA ET MASS_MECA AUPARAVANT (DANS LE MEME APPEL)""")
-          return ier
+          UTMESS('F', "MACRO_MATR_ASSE", "POUR CALCULER AMOR_MECA, IL FAUT AVOIR CALCULE RIGI_MECA ET MASS_MECA AUPARAVANT (DANS LE MEME APPEL)")
        if CHAM_MATER != None:
           motscles['RIGI_MECA']   =rigel
           motscles['MASS_MECA']   =masel
@@ -140,7 +128,6 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
 
     try : motscles['PROPAGATION']   =m['PROPAGATION']
     except IndexError : pass
-    print motscles
     __a=CALC_MATR_ELEM(MODELE=MODELE,**motscles)
 
     if option == 'RIGI_MECA':

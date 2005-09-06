@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_JDC Build  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

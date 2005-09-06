@@ -5,7 +5,7 @@
       INTEGER NOC,NDDL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 05/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*19 CHCI,LIGRMO
       CHARACTER*24 CINO,CNUDDL,CVLDDL
       CHARACTER*24 NPROL
+      CHARACTER*8 K8BID
       DATA NPROL/'                   .PROL'/
 C --- DEBUT -----------------------------------------------------------
 C
@@ -67,83 +68,102 @@ C
       IF (NOC.EQ.0.D0) GOTO 9999
       CHCI = CHCINE
       MFAC = MFACT
-      CALL DISMOI('F','NOM_MODELE',CHCI,'CHARGE',IBID,MO,IER)
-      CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IER)
-      CALL DISMOI('F','PHENOMENE',MO,'MODELE',IBID,KBID,IER)
-      CALL DISMOI('F','NUM_GD',KBID,'PHENOMENE',NGD,KBID,IER)
-      CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNOMA,KBID,IER)
+      CALL DISMOI('F','NOM_MODELE',CHCI,'CHARGE',   IBID, MO,  IER)
+      CALL DISMOI('F','NOM_MAILLA',MO,  'MODELE',   IBID, MA,  IER)
+      CALL DISMOI('F','PHENOMENE' ,MO,  'MODELE',   IBID, KBID,IER)
+      CALL DISMOI('F','NUM_GD',    KBID,'PHENOMENE',NGD,  KBID,IER)
+
 C --- NOM DE TABLEAUX DE TRAVAIL GERES PAR JEVEUX
-C
+
       CINO = '&&CHARCI.INO'
       CNUDDL = '&&CHARCI.NUMDDL'
       CVLDDL = '&&CHARCI.VALDDL'
-      DO 1 IOC = 1,NOC
+ 
+      MOTCLE(1) = 'GROUP_MA        '
+      MOTCLE(2) = 'MAILLE          '
+      MOTCLE(3) = 'GROUP_NO        '
+      MOTCLE(4) = 'NOEUD           '
+      MOTCLE(5) = 'TOUT            '
 
+      IF (TYPE.EQ.'F') THEN
+         TYP = 'K8'
+      ELSE IF (TYPE.EQ.'R') THEN
+         TYP = TYPE
+      ELSE IF (TYPE.EQ.'C') THEN
+         TYP = TYPE
+      ELSE
+          CALL UTMESS('F','CHARCI','TYPE INCONNU VERIFIER LE CALL'
+     +               //' A CHARCI')
+      ENDIF
 
-C ---   NOEUDS A CONTRAINDRE :
-        MOTCLE(1) = 'GROUP_MA'
-        MOTCLE(2) = 'MAILLE'
-        MOTCLE(3) = 'GROUP_NO'
-        MOTCLE(4) = 'NOEUD'
-        MOTCLE(5) = 'TOUT'
+      DO 100 IOC = 1,NOC
+
+C ----- NOEUDS A CONTRAINDRE :
         CALL RELIEM(' ',MA,'NU_NOEUD',MFAC,IOC,5,MOTCLE,MOTCLE,
-     &           CINO,NINO)
+     &              CINO,NINO)
         CALL JEVEUO(CINO,'L',IDINO)
 
+C ----- DDL A CONTRAINDRE :
+        CALL GETMJM ( MFAC, IOC-1,0, KBID, KBID, NBOBM )
+        NBOBM = -NBOBM
+        CALL WKVECT ( '&&CHARCI.NOM', 'V V K16', NBOBM, JDDL )
+        CALL WKVECT ( '&&CHARCI.TYP', 'V V K8' , NBOBM, JTYP )
+        CALL GETMJM ( MFAC,IOC-1,NBOBM,ZK16(JDDL),ZK8(JTYP),N)
 
-
-C --- LECTURE DES MOTS CLES RELATIFS AUX VALEURS IMPOSEES
+C ----- LECTURE DES MOTS CLES RELATIFS AUX VALEURS IMPOSEES
 
         CALL WKVECT(CNUDDL,' V V I',NDDL,IDNDDL)
-        IF (TYPE.EQ.'F') THEN
-          TYP = 'K8'
-        ELSE IF (TYPE.EQ.'R') THEN
-          TYP = TYPE
-        ELSE IF (TYPE.EQ.'C') THEN
-          TYP = TYPE
-        ELSE
-          CALL UTMESS('F','CHARCI_1','TYPE INCONNU VERIFIER LE CALL'
-     +               //' A CHARCI')
-        ENDIF
         CALL WKVECT(CVLDDL,' V V '//TYP,NDDL,IDVDDL)
         NBDDL = 0
-        DO 30 IDDL = 1,NDDL
+        DO 110 IDDL = 1,NBOBM
+          KBID = ZK16(JDDL+IDDL-1)
+          DO 112 I = 1,5
+             IF (KBID.EQ.MOTCLE(I)) GOTO 110
+ 112      CONTINUE
           IF (TYPE.EQ.'R')
-     +      CALL GETVR8(MFAC,NOMDDL(IDDL),IOC,1,1,ZR(IDVDDL+NBDDL),ILA)
+     +             CALL GETVR8(MFAC,KBID,IOC,1,1, ZR(IDVDDL+NBDDL),ILA)
           IF (TYPE.EQ.'C')
-     +      CALL GETVC8(MFAC,NOMDDL(IDDL),IOC,1,1,ZC(IDVDDL+NBDDL),ILA)
-          IF (TYPE.EQ.'F')CALL GETVID(MFAC,NOMDDL(IDDL),IOC,1,1,
-     +  ZK8(IDVDDL+NBDDL),ILA)
+     +             CALL GETVC8(MFAC,KBID,IOC,1,1, ZC(IDVDDL+NBDDL),ILA)
+          IF (TYPE.EQ.'F')
+     +             CALL GETVID(MFAC,KBID,IOC,1,1,ZK8(IDVDDL+NBDDL),ILA)
           IF (ILA.NE.0) THEN
-            ZI(IDNDDL+NBDDL)= IDDL
+            ZI(IDNDDL+NBDDL) = INDIK8(NOMDDL,KBID(1:8),1,NDDL)
+            IF (ZI(IDNDDL+NBDDL).EQ.0)
+     +                          CALL UTMESS('F','CHARCI','DDL INCONNU')
             NBDDL = NBDDL+1
           ENDIF
-30      CONTINUE
+ 110    CONTINUE
+
 C --- ON RECHERCHE SI UNE QUAND ON A DES FONCT. IL Y EN A UNE = F(TPS)
 C
         IF (TYPE.EQ.'F') THEN
-          DO 130 I = 1,NBDDL
+          DO 120 I = 1,NBDDL
             NPROL(1:8) = ZK8(IDVDDL-1+I)
             CALL JEVEUO(NPROL,'L',IDPROL)
             IF ( ZK16(IDPROL+2).EQ.'INST') THEN
               CALL JEVEUO(CHCI(1:8)//'.TYPE','E',IDTYPE)
               ZK8(IDTYPE)(5:7) = '_FT'
-              GOTO 131
+              GOTO 122
             ELSE IF (( ZK16(IDPROL).EQ.'NAPPE').AND.
      +               ( ZK16(IDPROL+5).EQ.'INST')) THEN
               CALL JEVEUO(CHCI(1:8)//'.TYPE','E',IDTYPE)
               ZK8(IDTYPE)(5:7) = '_FT'
-              GOTO 131
+              GOTO 122
             ENDIF
-130       CONTINUE
+ 120      CONTINUE
         ENDIF
-131     CONTINUE
+ 122    CONTINUE
+
         CALL CHCSUR(CHCI,MO,NGD,0,NINO,ZI(IDINO),NBDDL,ZI(IDNDDL),
      +              CVLDDL,TYPE)
-        CALL JEDETR(CINO)
-        CALL JEDETR(CNUDDL)
-        CALL JEDETR(CVLDDL)
-1     CONTINUE
+
+        CALL JEDETR ( CINO   )
+        CALL JEDETR ( CNUDDL )
+        CALL JEDETR ( CVLDDL )
+        CALL JEDETR ( '&&CHARCI.NOM' )
+        CALL JEDETR ( '&&CHARCI.TYP' )
+
+ 100  CONTINUE
 
  9999 CONTINUE
       CALL JEDEMA()

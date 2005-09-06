@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF defi_cable_bp_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,6 +55,7 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
   """
   from Accas import _F
   import aster,string
+  from Utilitai.Utmess import UTMESS
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -96,17 +97,15 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
     __MAIL = aster.getvectjev( string.ljust(MODELE.nom,8) + '.MODELE    .NOMA        ' )
     if string.ljust(MAILLAGE.nom,8) != __MAIL[0] :
-      self.DeclareOut(MAILLAGE.nom,maillage)
-      print ' '
-      print '  # ---------------------------------------------------------------------------'
-      print '  # DEFI_CABLE_BP - Erreur : LE CONCEPT MAILLAGE RENSEIGNE NE CORRESPOND'
-      print '  #                            PAS A CELUI UTILISE DANS LE MODELE !'
-      print '  # ',MAILLAGE.nom,' - ',__MAIL[0]
-      print '  # ---------------------------------------------------------------------------'
-      print ' '
-      ier=ier+1
-      self.cr.fatal("""<F> <DEFI_CABLE_BP> Erreur dans la macro""")
-      return ier
+      echo_mess=[]
+      echo_mess.append( ' \n' )
+      echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
+      echo_mess.append( ' # DEFI_CABLE_BP - Erreur : LE CONCEPT MAILLAGE RENSEIGNE NE CORRESPOND       \n' )
+      echo_mess.append( ' #                          PAS A CELUI UTILISE DANS LE MODELE !              \n' )
+      echo_mess.append( ' # '+MAILLAGE.nom+' - '+__MAIL[0]+'\n' )
+      echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
+      message=string.join(echo_mess)
+      UTMESS('F',message)
 
 
   # DEFINITION DU NOM DES GROUP_NO
@@ -153,14 +152,13 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
           __CAB = i['GROUP_MA']
           motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': [ GROUP_MA_BETON, __CAB ], 'GROUP_MA_AXE': __CAB, 'NOM': __NOM1}]}
         if i.has_key('MAILLE') == 1: 
-          print ' '
-          print '  # ---------------------------------------------------------------------------'
-          print '  # DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA'
-          print '  # ---------------------------------------------------------------------------'
-          print ' '
-          ier=ier+1
-          self.cr.fatal("""<F> <DEFI_CABLE_BP> Erreur dans la macro""")
-          return ier
+          echo_mess=[]
+          echo_mess.append( ' \n' )
+          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
+          echo_mess.append( ' # DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA               \n' )
+          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
+          message=string.join(echo_mess)
+          UTMESS('F',message)
         if i.has_key('GROUP_NO_ANCRAGE') == 1: 
           __PC1 = i['GROUP_NO_ANCRAGE'][0]
           motscle2['CREA_GROUP_NO'][0]['GROUP_NO_ORIG'] = __PC1
@@ -189,14 +187,13 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
           __CAB = i['GROUP_MA']
           motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': [ GROUP_MA_BETON, __CAB ], 'GROUP_MA_AXE': __CAB, 'NOM': __NOM2}]}
         if i.has_key('MAILLE') == 1: 
-          print ' '
-          print '  # ---------------------------------------------------------------------------'
-          print '  # DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA'
-          print '  # ---------------------------------------------------------------------------'
-          print ' '
-          ier=ier+1
-          self.cr.fatal("""<F> <DEFI_CABLE_BP> Erreur dans la macro""")
-          return ier
+          echo_mess=[]
+          echo_mess.append( ' \n' )
+          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
+          echo_mess.append( ' # DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA               \n' )
+          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
+          message=string.join(echo_mess)
+          UTMESS('F',message)
         if i.has_key('GROUP_NO_ANCRAGE') == 1: 
           __PC1 = i['GROUP_NO_ANCRAGE'][1]
           motscle2['CREA_GROUP_NO'][0]['GROUP_NO_ORIG'] = __PC1

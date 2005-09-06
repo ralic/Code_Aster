@@ -1,26 +1,29 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
-# TITRE TABLE A CAFE DE NEUBERT ( MODELISATION 24 MASSES )
+# MODIF  DATE 05/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE : Table de Neubert
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE   BBXHHYP Y. PONS
+#         ----------------
+# MAILLAGE : 
+#   28 noeuds
+#   52 mailles : (28 POU_D_T, 24 DIS_T)
 
-
-DEBUT( CODE=_F(  NOM = 'SDLL108B',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F( NOM = 'SDLL108B',
+                NIV_PUB_WEB='INTERNET'),);
 
 MA=LIRE_MAILLAGE( )
 
@@ -101,6 +104,8 @@ MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                                      1022.58,  1041.03,  1057.81, 
                                      1089.93,  1093.98,  1108.82, )) )
 
+IMPR_RESU(RESU=_F(RESULTAT=MODE_MEC))
+
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',
                          MASS_INER=TABL_MAS                          )
 
@@ -152,165 +157,164 @@ SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                                         'REAC_NODA',  'EFGE_ELNO_DEPL', 
                                         'EFGE_ELNO_CART', )
                              )
-
-TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 1,      VALE = 110.8502),
+#
+# FREQUENCES: LES VALEURS DE REFERENCE ONT ETE OBTENUES AVEC LE
+#             CODE HERCULE
+#
+TEST_RESU(RESU=( _F(    RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_ORDRE = 1,      VALE = 110.857,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 2,      VALE = 115.4646),
+                     NUME_ORDRE = 2,      VALE = 115.471,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 3,      VALE = 135.9291),
+                     NUME_ORDRE = 3,      VALE = 135.936,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 4,      VALE = 213.5288),
+                     NUME_ORDRE = 4,      VALE = 213.541,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 5,      VALE = 417.3110, 
-                     PRECISION = 0.02),
+                     NUME_ORDRE = 5,      VALE = 417.332,  REFERENCE='SOURCE_EXTERNE',PRECISION = 0.02),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 6,      VALE = 434.7889),
+                     NUME_ORDRE = 6,      VALE = 434.813,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 7,      VALE = 464.0757),
+                     NUME_ORDRE = 7,      VALE = 464.097,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 8,      VALE = 557.2326,   
-                     PRECISION = 0.02),
+                     NUME_ORDRE = 8,      VALE = 557.262,  REFERENCE='SOURCE_EXTERNE',PRECISION = 0.02),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 9,      VALE = 821.7074,   
-                     PRECISION = 0.02),
+                     NUME_ORDRE = 9,      VALE = 821.746,  REFERENCE='SOURCE_EXTERNE',PRECISION = 0.02),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 10,     VALE = 847.0414),
+                     NUME_ORDRE = 10,     VALE = 847.071,  REFERENCE='SOURCE_EXTERNE',),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 11,     VALE = 978.1238,   
-                     PRECISION = 0.02),
+                     NUME_ORDRE = 11,     VALE = 978.174,  REFERENCE='SOURCE_EXTERNE',PRECISION = 0.02),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 12,     VALE = 991.8127),
+                     NUME_ORDRE = 12,     VALE = 991.842,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 13,     VALE = 1021.6219),
+                     NUME_ORDRE = 13,     VALE = 1021.669, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 14,     VALE = 1040.2033),
+                     NUME_ORDRE = 14,     VALE = 1040.240, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 15,     VALE = 1056.9123),
+                     NUME_ORDRE = 15,     VALE = 1056.948, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 16,     VALE = 1088.8234),
+                     NUME_ORDRE = 16,     VALE = 1088.861, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 17,     VALE = 1093.1281),
+                     NUME_ORDRE = 17,     VALE = 1093.157, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-                     NUME_ORDRE = 18,     VALE = 1107.8311))
+                     NUME_ORDRE = 18,     VALE = 1107.870, REFERENCE='SOURCE_EXTERNE',))
              )
 
 #
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DX',    VALE = 3.4251E-04),
+                     NOEUD = 'N17',   NOM_CMP = 'DX',    VALE = 3.4256E-04, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DY',    VALE = 4.3562E-06),
+                     NOEUD = 'N17',   NOM_CMP = 'DY',    VALE = 4.3562E-06, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DZ',    VALE = 3.0325E-04),
+                     NOEUD = 'N17',   NOM_CMP = 'DZ',    VALE = 3.0321E-04, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DRX',   VALE = 3.7040E-04),
+                     NOEUD = 'N17',   NOM_CMP = 'DRX',   VALE = 3.7031E-04, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DRY',   VALE = 4.7672E-05),
+                     NOEUD = 'N17',   NOM_CMP = 'DRY',   VALE = 4.7665E-05, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DRZ',   VALE = 5.1112E-04))
+                     NOEUD = 'N17',   NOM_CMP = 'DRZ',   VALE = 5.1104E-04, REFERENCE='SOURCE_EXTERNE'),)
              )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DX',    VALE = 1254.0),
+                     NOEUD = 'N25',   NOM_CMP = 'DX',    VALE = 1253.6, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DY',    VALE = 1247.3),
+                     NOEUD = 'N25',   NOM_CMP = 'DY',    VALE = 1247.3, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DZ',    VALE = 1219.7),
+                     NOEUD = 'N25',   NOM_CMP = 'DZ',    VALE = 1219.6, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DRX',   VALE = 324.80),
+                     NOEUD = 'N25',   NOM_CMP = 'DRX',   VALE = 324.74, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DRY',   VALE = 4.131),
+                     NOEUD = 'N25',   NOM_CMP = 'DRY',   VALE = 4.1310, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DRZ',   VALE = 348.48))
+                     NOEUD = 'N25',   NOM_CMP = 'DRZ',   VALE = 348.46, REFERENCE='SOURCE_EXTERNE'),)
              )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 1243.2),
+                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 1243.1, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1131.2),
+                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1131.2, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 1098.2),
+                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 1098.2, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = 4.1309),
+                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = 4.1301, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 228.34),
+                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 228.33, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 220.69),
+                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 220.68, REFERENCE='SOURCE_EXTERNE'),
 
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 131.76),
+                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 131.75, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1041.9),
+                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1041.9, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 188.14),
+                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 188.13, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.14,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .164),
+                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .1641, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 29.166),
+                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 29.165, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 228.34),
+                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 228.33, REFERENCE='SOURCE_EXTERNE'),
 
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 295.9),
+                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 295.87, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 638.8),
+                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 638.79, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 265.4),
+                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 265.39, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .185),
+                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .185, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 32.363),
+                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 32.361, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 220.69))
+                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 220.68, REFERENCE='SOURCE_EXTERNE'),)
              )
 
 #
@@ -333,118 +337,118 @@ SISM_SP1=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DX',    VALE = 3.4271E-04),
+                     NOEUD = 'N17',   NOM_CMP = 'DX',    VALE = 3.4265E-04, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DY',    VALE = 4.8393E-06),
+                     NOEUD = 'N17',   NOM_CMP = 'DY',    VALE = 4.8392E-06, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DZ',    VALE = 3.0329E-04),
+                     NOEUD = 'N17',   NOM_CMP = 'DZ',    VALE = 3.0324E-04, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DRX',   VALE = 3.7618E-04),
+                     NOEUD = 'N17',   NOM_CMP = 'DRX',   VALE = 3.7612E-04, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DRY',   VALE = 5.2609E-05),
+                     NOEUD = 'N17',   NOM_CMP = 'DRY',   VALE = 5.2602E-05, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N17',   NOM_CMP = 'DRZ',   VALE = 5.2318E-04))
+                     NOEUD = 'N17',   NOM_CMP = 'DRZ',   VALE = 5.2310E-04, REFERENCE='SOURCE_EXTERNE'),)
              )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DX',    VALE = 1279.06),
+                     NOEUD = 'N25',   NOM_CMP = 'DX',    VALE = 1279.00, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.03,
-                     NOEUD = 'N25',   NOM_CMP = 'DY',    VALE = 1386.85),
+                     NOEUD = 'N25',   NOM_CMP = 'DY',    VALE = 1386.82, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DZ',    VALE = 1244.16),
+                     NOEUD = 'N25',   NOM_CMP = 'DZ',    VALE = 1244.12, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DRX',   VALE = 327.91),
+                     NOEUD = 'N25',   NOM_CMP = 'DRX',   VALE = 327.89,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DRY',   VALE = 4.559),
+                     NOEUD = 'N25',   NOM_CMP = 'DRY',   VALE = 4.5579,  REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'REAC_NODA',
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ), PRECISION = 0.02,
-                     NOEUD = 'N25',   NOM_CMP = 'DRZ',   VALE = 352.01))
+                     NOEUD = 'N25',   NOM_CMP = 'DRZ',   VALE = 351.99,  REFERENCE='SOURCE_EXTERNE'),),
              )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 1379.37),
+                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 1379.33, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1148.71),
+                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1148.66, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 1114.14),
+                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 1114.10, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = 4.559),
+                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = 4.558, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 229.83),
+                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 229.82, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E3',
-                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 225.38),
+                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 225.37, REFERENCE='SOURCE_EXTERNE'),
 
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 148.33),
+                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 148.33, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1065.05),
+                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 1065.01, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 200.79),
+                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 200.79, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.14,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .164),
+                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .164, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 32.49),
+                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 32.49, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E4',
-                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 229.77),
+                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 229.77, REFERENCE='SOURCE_EXTERNE'),
 
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 335.8),
+                     NOEUD = 'N17',   NOM_CMP = 'N',     VALE = 335.79, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 675.29),
+                     NOEUD = 'N17',   NOM_CMP = 'VY',    VALE = 675.26, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 279.48),
+                     NOEUD = 'N17',   NOM_CMP = 'VZ',    VALE = 279.47, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .185),
+                     NOEUD = 'N17',   NOM_CMP = 'MT',    VALE = .185, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 35.57),
+                     NOEUD = 'N17',   NOM_CMP = 'MFY',   VALE = 35.57, REFERENCE='SOURCE_EXTERNE'),
                    _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO_DEPL',
                      PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'NEWMARK', ),  MAILLE = 'E19',
-                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 225.36))
+                     NOEUD = 'N17',   NOM_CMP = 'MFZ',   VALE = 225.35, REFERENCE='SOURCE_EXTERNE'),)
                    )
 
 FIN( )

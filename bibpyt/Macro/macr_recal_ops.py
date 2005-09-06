@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_recal_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,12 +27,11 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    # Initialisation du compteur d'erreurs
    ier=0
    # On essaie d'importer Numeric -> ERREUR FATALE
+   from Utilitai.Utmess     import UTMESS
    try:
      import Numeric
    except ImportError:
-     ier=ier+1
-     self.cr.fatal("<F> <MACR_RECAL> Le module Numeric de Python n'a pu etre chargé")
-     return ier
+     UTMESS('F', "MACR_RECAL", "Le module Numeric de Python n'a pu etre chargé")
    # On essaie d'importer Gnuplot -> PAS DE GRAPHIQUE
    try:
      import Gnuplot
@@ -67,10 +66,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    #_____________________________________________
    texte_erreur = gestion(UNITE_ESCL,LIST_PARA,RESU_CALC,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU)
    if (texte_erreur != ""):
-      ier=ier+1
-      texte_erreur='<F> <MACR_RECAL>'+texte_erreur
-      self.cr.fatal(texte_erreur)
-      return ier
+      UTMESS('F', "MACR_RECAL", texte_erreur)
 
    #_____________________________________________
    #

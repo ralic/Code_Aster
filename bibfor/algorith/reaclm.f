@@ -1,6 +1,6 @@
-      SUBROUTINE REACLM(NOMA,DEPPLU,NEWGEO,DEFICO)
+      subroutine REACLM(NOMA,DEPPLU,NEWGEO,DEFICO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,48 +17,48 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT NONE
-      CHARACTER*8 NOMA
-      CHARACTER*24 DEPPLU,NEWGEO,DEFICO
-C
+      implicit none
+      character*8 NOMA
+      character*24 DEPPLU,NEWGEO,DEFICO
+C.......................................................................
 C
 C BUT : REACTUALISATION DES SEUILS DE FROTTEMENT PAR LES MULTIPLUCATEURS
 C       DE CONTACT
-C
+C ...............................................................
 C   DECLARATION JEVEUX
+C.......................................................................
 C
+      integer ZI
+      common /IVARJE/ ZI(1)
+      real*8 ZR
+      common /RVARJE/ ZR(1)
+      complex*16 ZC
+      common /CVARJE/ ZC(1)
+      logical ZL
+      common /LVARJE/ ZL(1)
+      character*8 ZK8
+      character*16 ZK16
+      character*24 ZK24
+      character*32 ZK32
+      character*80 ZK80
+      common /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-      INTEGER ZI
-      COMMON /IVARJE/ ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
-C 
+C.......................................................................
 C FIN DECLARATION JEVEUX
-C _________________________________________________________________
-
-      INTEGER JMACO,JMAESC,JTABF,NTMA,NTPC,IMA,POSMA,NBN,INI
+C.......................................................................
+C
+      integer JMACO,JMAESC,JTABF,NTMA,NTPC,IMA,POSMA,NBN,INI
       INTEGER JDEC,JDEC0,POSNOE,NUMNOE,NSANS,NUMSAN
       INTEGER IZONE,INO,JNOMA,JPONO,JPSANS,JSANS,JNOCO
-      REAL*8 LAMBDA,LAMBD1,XPG,YPG
-      CHARACTER*24 CONTMA,MAESCL,TABFIN,CONTNO,PNOMA,NOMACO
+      real*8 LAMBDA,LAMBD1,XPG,YPG
+      character*24 CONTMA,MAESCL,TABFIN,CONTNO,PNOMA,NOMACO
       CHARACTER*24 PSANS,SANSNO
-C ----------------------------------------------------------------------
-
-      CALL JEMARQ
-
+C----------------------------------------------------------------------
+C
+      call JEMARQ
+C
 C --- RECUPERATION DES QCQS DONNEES
-
+C
       CONTMA = DEFICO(1:16) // '.MAILCO'
       MAESCL = DEFICO(1:16) // '.MAESCL'
       TABFIN = DEFICO(1:16) // '.TABFIN'
@@ -67,27 +67,27 @@ C --- RECUPERATION DES QCQS DONNEES
       PSANS  = DEFICO(1:16) // '.PSSNOCO'
       NOMACO = DEFICO(1:16) // '.NOMACO'
       PNOMA  = DEFICO(1:16) // '.PNOMACO'
-
-      CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JEVEUO(MAESCL,'L',JMAESC)
-      CALL JEVEUO(TABFIN,'E',JTABF)
+C
+      call JEVEUO(CONTMA,'L',JMACO)
+      call JEVEUO(MAESCL,'L',JMAESC)
+      call JEVEUO(TABFIN,'E',JTABF)
       CALL JEVEUO(CONTNO,'L',JNOCO)
       CALL JEVEUO(SANSNO,'L',JSANS)
       CALL JEVEUO(PSANS,'L',JPSANS)
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(PNOMA,'L',JPONO)
-
+C
 C   BOUCLE SUR LES POINTS DE CONTACT
-
+C
       NTMA = ZI(JMAESC)
-      NTPC = 0.D0
-      DO 20 IMA = 1,NTMA
+      NTPC = 0.d0
+      do 20 IMA = 1,NTMA
         POSMA = ZI(JMAESC+3*(IMA-1)+1)
         IZONE = ZI(JMAESC+3*(IMA-1)+2)
         NBN = ZI(JMAESC+3*(IMA-1)+3)
-        DO 10 INI = 1,NBN
-          XPG = ZR(JTABF+20*NTPC+20*(INI-1)+3)
-          YPG = ZR(JTABF+20*NTPC+20*(INI-1)+12)
+        do 10 INI = 1,NBN
+          XPG = ZR(JTABF+21*NTPC+21*(INI-1)+3)
+          YPG = ZR(JTABF+21*NTPC+21*(INI-1)+12)
 C ---- MODIF POUR SUPPRIMER DES NOEUDS
           JDEC0  = ZI(JPONO+POSMA-1)
           POSNOE = ZI(JNOMA+JDEC0+INI-1)
@@ -102,11 +102,11 @@ C _____ NUMERO ABSOLU DU NOEUD DANS SANS_GROUP_NO OU SANS_NOEUD
             END IF
  50       CONTINUE 
  40       CONTINUE 
-C --- FIN MODIF
-          CALL CALBET(NOMA,POSMA,DEPPLU,XPG,YPG,LAMBDA,NEWGEO,DEFICO)
-          ZR(JTABF+20*NTPC+20*(INI-1)+14) = LAMBDA
- 10     CONTINUE
+C --- FIN MODIF          
+          call CALBET(NOMA,POSMA,DEPPLU,XPG,YPG,LAMBDA,NEWGEO,DEFICO)
+          ZR(JTABF+21*NTPC+21*(INI-1)+14) = LAMBDA
+ 10     continue
         NTPC = NTPC + NBN
- 20   CONTINUE
-      CALL JEDEMA
-      END
+ 20   continue
+      call JEDEMA
+      end

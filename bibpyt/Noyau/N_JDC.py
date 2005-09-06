@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,6 +171,7 @@ NONE = None
         # de commandes avant la fin
         # Fonctionnement normal, ne doit pas etre considere comme une erreur
         CONTEXT.unset_current_step()
+        self.affiche_fin_exec()
         self.traiter_fin_exec('commande')
 
       except AsException,e:
@@ -207,6 +208,15 @@ NONE = None
                            self.nom+'\n'+ string.join(l))
         del exc_typ,exc_val,exc_fr
         CONTEXT.unset_current_step()
+
+   def affiche_fin_exec(self):
+       """
+          Cette methode realise l'affichage final des statistiques de temps
+          apres l'execution de toutes
+          les commandes en mode commande par commande ou par lot
+          Elle doit etre surchargee pour en introduire un
+       """
+       return
 
    def traiter_fin_exec(self,mode,etape=None):
        """

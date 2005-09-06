@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,12 +59,12 @@ C
       INTEGER       KK1,KK2,KK3,JADR,NBOBJ,NENT,NSOM,MM1,MM2,MM3,NCI
       INTEGER       JJJ,NDIM,NGRO,NBGM,NBEM,IER,DIM1,DIM2,DIM3
       INTEGER       IGR,NGR,INO,IRET,LL1,LL2,LL3,ITYP,DIM
-      INTEGER       I,J,K,L,NA,NB
+      INTEGER       I,J,K,L,NA,NB, JTYPM, IT
       INTEGER       IAA,IAB,IADM,IAGRN,IATYMA,IBID,IGAA,IGAB,K1,K2,K3
       INTEGER       IMA,JEXTR,JNORM,JORIG,JVALE,NCMP,NUMER,J1,J2,J3
       INTEGER       ADRVLC, ACNCIN, NBMA, NBMB, ADRA, ADRB, NUMA, NUMB
       REAL*8        XPFI,XPFO,YPFI,YPFO,ZPFI,ZPFO,ZRBID
-      CHARACTER*4   TYPMA
+      CHARACTER*4   TYPMA, TYPMP, TYPM
       CHARACTER*8   K8B, MOTCLE, GROUPE, NOEUD, MAILLE, TYPE, NOMGRP(2)
       CHARACTER*24  GRPNOE, COOVAL, NCNCIN
       CHARACTER*24  OBJ1, OBJ2, OBJ4, OBJ5, TRAV
@@ -77,6 +77,7 @@ C
 C
       GRPNOE = NOMA//'.GROUPENO       '
       COOVAL = NOMA//'.COORDO    .VALE'
+      TYPMP = '    '
       CALL JEVEUO ( COOVAL, 'E', JVALE )
 C
 C     -----------------------------------------------------------------
@@ -307,6 +308,7 @@ C
 C ------------ VERIFICATION QUE CHAQUE PAIRE DE NOEUDS
 C              CONSECUTIFS APPARTIENT A UNE MAILLE
 C
+               IT = 1
                DO 10 I = 1 , NBOBJ-1
                   NA = ZI(JADR+I-1)
                   NB = ZI(JADR+I)
@@ -315,16 +317,33 @@ C
                   ADRA = ZI(ADRVLC+NA-1)
                   ADRB = ZI(ADRVLC+NB-1)
                   DO 20 J = 1,NBMA
-                     NUMA = ZI(ACNCIN+ADRA-1+J-1)
-                     DO 22 K = 1,NBMB
-                        NUMB = ZI(ACNCIN+ADRB-1+K-1)
-                        IF ( NUMA .EQ. NUMB ) GOTO 24
- 22                  CONTINUE
+                    NUMA = ZI(ACNCIN+ADRA-1+J-1)
+                    DO 22 K = 1,NBMB
+                      NUMB = ZI(ACNCIN+ADRB-1+K-1)
+                      CALL JENUNO(JEXNUM(OBJ2,NUMB),MAILLE)
+                      CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
+                      ITYP = IATYMA-1+IBID
+                      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),
+     +                             TYPE)
+                      IF (TYPE(1:3).EQ.'SEG ') THEN
+                        IF ((IT.GT.1) .AND. 
+     +                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
+                          CALL UTMESS('F','GVERIF',
+     +                     'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                        ENDIF
+                        TYPMP(1:4) = TYPE(1:4)
+                        IT = IT + 1
+                      ENDIF
+                      IF ( NUMA .EQ. NUMB ) GOTO 24
+ 22                 CONTINUE
  20               CONTINUE
                   CALL UTMESS('F','GVERIF','LE GROUPE DE NOEUDS '//
      &                                      ZK8(JJJ+IGR-1)//
      &                    ' DEFINISSANT LA FISSURE N''EST PAS ORDONNE')
  24               CONTINUE
+                  
+
  10            CONTINUE
 C
 C ------------ VERIFICATION DES NOEUDS IDENTIQUES POUR 2 GROUP_NO
@@ -353,6 +372,8 @@ C
 C
             ELSEIF ( NOUM(1:2) .EQ. 'MA' ) THEN
 C
+C --------------- VERIFICATION DU TYPE DE MAILLES
+C
                DO 104 IMA=1,NBOBJ
                   CALL JENUNO(JEXNUM(OBJ2,ZI(JADR+IMA-1)),MAILLE)
                   CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
@@ -362,12 +383,22 @@ C
                   IF(TYPMA.NE.'SEG ')  CALL UTMESS('F','GVERIF',
      +                      'LES MAILLES DU FOND DE FISSURE DOIVENT '//
      +                      'ETRE DU TYPE SEGMENT')
-                  CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
-                  CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IADM)
+                  TYPM = TYPE(1:4)
+                  IF ((IMA.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
+                   CALL UTMESS('F','GVERIF',
+     +                     'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                  ENDIF
+                  TYPMP(1:4) = TYPM(1:4)
+
+
 C
 C --------------- VERIFICATION DES NOEUDS IDENTIQUES POUR 2 MAILLES
 C                 CONSECUTIVES
-C
+C                 
+                  CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
+                  CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IADM)
+
                   ZI(IAA + IMA - 1) = ZI(IADM + 1)
                   ZI(IAB + IMA - 1) = ZI(IADM)
                   IF (IMA.EQ.1)  ZI(IGAB + IGR - 1) = ZI(IADM)
@@ -480,6 +511,7 @@ C
 C --------- VERIFICATION QUE CHAQUE PAIRE DE NOEUDS
 C           CONSECUTIFS APPARTIENT A UNE MAILLE
 C
+            IT = 1
             DO 210 INO = 1 , NBOBJ-1
                CALL JENONU (JEXNOM(OBJ2,ZK8(JJJ+INO-1)),NA)
                CALL JENONU (JEXNOM(OBJ2,ZK8(JJJ+INO  )),NB)
@@ -491,12 +523,28 @@ C
                   NUMA = ZI(ACNCIN+ADRA-1+J-1)
                   DO 214 K = 1,NBMB
                      NUMB = ZI(ACNCIN+ADRB-1+K-1)
+                     CALL JENUNO(JEXNUM(OBJ2,NUMB),MAILLE)
+                     CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
+                     ITYP = IATYMA-1+IBID
+                     CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
+                     IF (TYPE(1:3).EQ.'SEG ') THEN
+                        IF ((IT.GT.1) .AND. 
+     +                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
+                          CALL UTMESS('F','GVERIF',
+     +                     'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                        ENDIF
+                        TYPMP(1:4) = TYPE(1:4)
+                        IT = IT + 1
+                      ENDIF
                      IF ( NUMA .EQ. NUMB ) GOTO 216
  214              CONTINUE
  212           CONTINUE
                CALL UTMESS('F','GVERIF','LA LISTE DE NOEUDS DEFINIS'//
      &                           'SANT LA FISSURE N''EST PAS ORDONNEE')
  216           CONTINUE
+                  
+                  
  210        CONTINUE
             DO 218 INO = 1, NBOBJ
                ZK8(KK1) = ZK8(JJJ + INO - 1)
@@ -512,6 +560,14 @@ C
                IF(TYPMA.NE.'SEG ')  CALL UTMESS('F','GVERIF',
      +                      'LES MAILLES DU FOND DE FISSURE DOIVENT '//
      +                      'ETRE DU TYPE SEGMENT')
+               TYPM = TYPE(1:4)
+               IF ((INO.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
+                CALL UTMESS('F','GVERIF',
+     +                    'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                    'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+               ENDIF
+               TYPMP(1:4) = TYPM(1:4)
+
                CALL JENONU(JEXNOM(OBJ2,ZK8(JJJ+INO-1)),IBID)
                CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IADM)
 C
@@ -632,6 +688,9 @@ C
         ENDIF
 C
         IF (MOTFAC(6:10).EQ.'FERME')  ZK8(MM1+DIM+1-1) = ZK8(MM1+1- 1)
+C
+        CALL WKVECT(RESU//'.FOND      .TYPE','G V K8',1,JTYPM)
+        ZK8(JTYPM) = TYPMP
 C
       ELSEIF ( MOTFAC .EQ. 'LEVRE_SUP' ) THEN
 C              -----------------------

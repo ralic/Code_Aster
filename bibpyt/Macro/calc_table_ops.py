@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 21/06/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 # RESPONSABLE MCOURTOI M.COURTOIS
 from types import *
+import aster
 EnumTypes=(ListType, TupleType)
 
 def calc_table_ops(self,TABLE,FILTRE,EXTR,RENOMME,TRI,COMB,OPER,INFO,**args):
@@ -147,7 +148,7 @@ def calc_table_ops(self,TABLE,FILTRE,EXTR,RENOMME,TRI,COMB,OPER,INFO,**args):
                vectval.append(func(*lpar))
          # ajout de la colonne dans la table
          if INFO==2:
-            print 'Ajout de la colonne %s : %s' % (MCFi['NOM_PARA'], repr(vectval))
+            aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (MCFi['NOM_PARA']+repr(vectval))+'\n')
          tab[MCFi['NOM_PARA']]=vectval
 
    #----------------------------------------------
@@ -158,12 +159,15 @@ def calc_table_ops(self,TABLE,FILTRE,EXTR,RENOMME,TRI,COMB,OPER,INFO,**args):
 
    dprod=tab.dict_CREA_TABLE()
    if INFO==2:
-      print '@-'*30+'\n'
-      print tab
-      from pprint import pprint
-      pprint(dprod)
-      print '@-'*30+'\n'
-   
+      echo_mess=[]
+      echo_mess.append( '@-'*30+'\n' )
+      echo_mess.append( tab )
+      from pprint import pformat
+      echo_mess.append( pformat(dprod) )
+      echo_mess.append( '@-'*30+'\n' )
+      texte_final=string.join(echo_mess)
+      aster.affiche('MESSAGE',texte_final)
+
    # surcharge par le titre fourni
    if args['TITRE']<>None:
       dprod['TITRE']=tuple(['%-80s' % lig for lig in args['TITRE']])

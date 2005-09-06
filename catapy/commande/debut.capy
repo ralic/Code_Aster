@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,8 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
 
          PAR_LOT         =SIMP(fr="mode de traitement des commandes",statut='f',typ='TXM',
                            into=("OUI","NON"),defaut="OUI"),
+         IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
+                           statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
          FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
                                typ='TXM',defaut="NON",into=("OUI","NON",) ), 
          BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",

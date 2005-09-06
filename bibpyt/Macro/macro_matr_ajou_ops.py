@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_ajou_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_matr_ajou_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,8 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
   """
   from Accas import _F
   import types
+  import aster
+  from Utilitai.Utmess     import UTMESS
   ier=0
   
   # On importe les definitions des commandes a utiliser dans la macro
@@ -44,17 +46,17 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
   self.set_icmd(1)
  
   if len(FLUIDE)==1 :
-     print '<I> <MACRO_MATR_AJOU> tout le domaine fluide specifie dans GROUP_MA_INTERF et GROUP_MA_FLUIDE'
-     print '                      sera affecte par la masse volumique RHO = ',FLUIDE['RHO']
+     message=         '<I> <MACRO_MATR_AJOU> tout le domaine fluide specifie dans GROUP_MA_INTERF et GROUP_MA_FLUIDE \n'
+     message=message+ '                      sera affecte par la masse volumique RHO = '+str(FLUIDE['RHO'])+' \n'
+     aster.affiche('MESSAGE',message)
      if FLUIDE['GROUP_MA']!=None :
-       print '<I> <MACRO_MATR_AJOU> cas fluide simple : le group_ma dans lequel vous affectez la masse'
-       print 'volumique RHO doit etre la reunion de GROUP_MA_INTERF et GROUP_MA_FLUIDE.'
+       message=         '<I> <MACRO_MATR_AJOU> cas fluide simple : le group_ma dans lequel vous affectez la masse \n'
+       message=message+ 'volumique RHO doit etre la reunion de GROUP_MA_INTERF et GROUP_MA_FLUIDE. \n'
+       aster.affiche('MESSAGE',message)
   else :
      for flu in FLUIDE :
          if flu['GROUP_MA']==None :
-            self.cr.fatal("<F> <MACRO_MATR_AJOU> cas fluides multiples : precisez le GROUP_MA dans lequel vous affectez  la masse volumique RHO.")
-            ier=ier+1
-            return ier
+            UTMESS('F', "MACRO_MATR_AJOU", "cas fluides multiples : precisez le GROUP_MA dans lequel vous affectez  la masse volumique RHO")
 
   IOCFLU=len(FLUIDE)
 
@@ -109,9 +111,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
         if DDL['GROUP_NO']!=None : mfact=_F(GROUP_NO=DDL['GROUP_NO'],TEMP=DDL['PRES_FLUIDE'])
         affimp.append(mfact)
   if nflui==0:
-     self.cr.fatal("<F> <MACRO_MATR_AJOU> PRES_FLUIDE obligatoire une fois")
-     ier=ier+1
-     return ier
+     UTMESS('F', "MACRO_MATR_AJOU", "PRES_FLUIDE obligatoire une fois")
 
   __CHARGE=AFFE_CHAR_THER( MODELE    = __NOMFLU,
                            TEMP_IMPO = affimp )
@@ -190,9 +190,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
      if   MODE_MECA    !=None : mostcles['MODE_MECA']     =MODE_MECA
      elif DEPL_IMPO    !=None : mostcles['CHAM_NO']       =DEPL_IMPO
      else :
-       self.cr.fatal("<F> <MACRO_MATR_AJOU> amortissement ajoute sur modele generalise non encore implante")
-       ier=ier+1
-       return ier
+       UTMESS('F', "MACRO_MATR_AJOU", "amortissement ajoute sur modele generalise non encore implante")
 
      AMORAJ = CALC_MATR_AJOU(MODELE_FLUIDE    = __NOMFLU,
                              MODELE_INTERFACE = __NOMINT,
@@ -214,9 +212,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
      if   MODE_MECA    !=None : mostcles['MODE_MECA']     =MODE_MECA
      elif DEPL_IMPO    !=None : mostcles['CHAM_NO']       =DEPL_IMPO
      else :
-       self.cr.fatal("<F> <MACRO_MATR_AJOU> rigidite ajoutee sur modele generalise non encore implante")
-       ier=ier+1
-       return ier
+       UTMESS('F', "MACRO_MATR_AJOU", "rigidite ajoute sur modele generalise non encore implante")
 
      RIGIAJ = CALC_MATR_AJOU(MODELE_FLUIDE    = __NOMFLU,
                              MODELE_INTERFACE = __NOMINT,

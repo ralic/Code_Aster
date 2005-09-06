@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -256,11 +256,13 @@ C
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
+        REAL*8          INDICS(NVI)
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
         JFIS1 = 0
         IRTETI = 0
+        IRTET = 0
         ITMAX    = INT(CRIT(1))
         TOLER    =     CRIT(3)
         THETA    =     CRIT(4)
@@ -346,7 +348,7 @@ C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &          COMP, NBCOMM, CPMONO, PGL, NR, NVI,VP,VECP, SEUIL)
+     &     COMP, NBCOMM, CPMONO, PGL, NR, NVI,VP,VECP, SEUIL,INDICS)
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -358,9 +360,10 @@ C
      1                  MATERF, MATCST, NR, NVI, TEMPD, TEMPF, TIMED,
      2                  TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF, VINF,
      3                COMP,NBCOMM, CPMONO, PGL,
-     3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
+     3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,
+     4               INDICS)
 C
-          IF ( IRTET.GT.0 ) GOTO (1), IRTET
+          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
           ELSE
 C
 C --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
@@ -461,6 +464,10 @@ C
         GOTO 9999
  1      CONTINUE
         IRTETI = 1
+        GOTO 9999
+C
+ 2      CONTINUE
+        IRTETI = 2
         GOTO 9999
 C
  9999   CONTINUE

@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -183,7 +183,6 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
         IDDL2 = IDDL1
         DO 20 IORDR = 0,NBINST - 1
           CALL JEMARQ()
-          CALL JERECU('V')
 
           RVAL = ZR(JINST+IORDR)
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
@@ -315,7 +314,6 @@ C        -------------------------------------------------------------
         II = 0
         DO 30 IORDR = 0,NBINST - 1
           CALL JEMARQ()
-          CALL JERECU('V')
 
           RVAL = ZR(JINST+IORDR)
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,

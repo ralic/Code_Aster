@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 24/06/2005   AUTEUR BOYERE E.BOYERE 
+#@ MODIF ops Cata  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ try:
 except:
    pass
 
-def DEBUT(self,PAR_LOT,CODE,**args):
+def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,**args):
    """
        Fonction sdprod de la macro DEBUT
    """
@@ -46,6 +46,7 @@ def DEBUT(self,PAR_LOT,CODE,**args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
 
+   self.jdc.impr_macro=IMPR_MACRO
    self.jdc.set_par_lot(PAR_LOT)
    if CODE!=None :
       self.jdc.fico=CODE['NOM']
@@ -72,7 +73,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self,PAR_LOT,CODE,**args):
+def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,**args):
    """
        Fonction sdprod de la macro POURSUITE
    """
@@ -80,6 +81,7 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
+   self.jdc.impr_macro=IMPR_MACRO
    self.jdc.set_par_lot(PAR_LOT)
    if CODE!=None :
       self.jdc.fico=CODE['NOM']
@@ -102,7 +104,7 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
      self.definition.op=None
      # On demande la numerotation de la commande POURSUITE avec l'incrément
      # lonuti pour qu'elle soit numérotée à la suite des commandes existantes.
-     self.set_icmd(lonuti)
+####CD     self.set_icmd(lonuti)
      pos=0
      d={}
      while pos+80 < len(concepts)+1:
@@ -205,6 +207,7 @@ def build_poursuite(self,**args):
    # Pour POURSUITE on ne modifie pas la valeur initialisee dans ops.POURSUITE
    # Il n y a pas besoin d executer self.codex.poursu (c'est deja fait dans
    # la fonction sdprod de la commande (ops.POURSUITE))
+   self.set_icmd(1)
    self.jdc.UserError=self.codex.error
    return 0
 
@@ -433,7 +436,7 @@ def build_DEFI_FICHIER(self,**args):
     Fonction ops de la macro DEFI_FICHIER
     """
     ier=0
-    self.set_icmd(None)
+    self.set_icmd(1)
     icmd=0
     ier=self.codex.opsexe(self,icmd,-1,26)
     return ier

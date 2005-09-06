@@ -1,4 +1,4 @@
-#@ MODIF macro_rota_globale Outils  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_rota_globale Outils  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,7 @@ def macr_rota_globale_ops(self,RESULTAT,GROUP_NO_ORIG,GROUP_NO_EXTR,**args):
   DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
 
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  self.set_icmd(1)
 
   # Le concept sortant (de type fonction) est nomme ROTGD dans 
   # le contexte de la macro

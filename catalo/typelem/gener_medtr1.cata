@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 05/09/2005   AUTEUR GODARD V.GODARD 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,6 +101,7 @@ VECTEUR__
 MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
@@ -111,6 +112,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_TEMP_R    99    IN__   NGEOMER  PGEOMER
+                              OUT__  MVECTUR  PVECTUR
     ECIN_ELEM_DEPL      44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFREQR   PFREQR
                               OUT__  EENERCR  PENERCR
     EFGE_ELNO_CART      39    IN__   CCAORIE  PCAORIE  EEFGENO  PCONTRR
@@ -128,15 +131,15 @@ OPTION__
                                      NGEOMER  PGEOMER  CINSTPR  PINSTPR  CITERAT  PITERAT  CMATERC  PMATERC
                                      NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU
-                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                     MVECTUR  PVECTUR
+                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
+                                     ZVARIPG  PVARIPR    MVECTUR  PVECTUR
     FULL_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  CINSTPR  PINSTPR  CITERAT  PITERAT  CMATERC  PMATERC
                                      NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU
-                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                     MVECTUR  PVECTUR
+                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR    MMATUNS  PMATUNS
+                                      ZVARIPG  PVARIPR    MVECTUR  PVECTUR
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE
                               OUT__  MMATUUR  PMATUUR
     MASS_INER           45    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER
@@ -170,7 +173,7 @@ OPTION__
                                      NGEOMER  PGEOMER  CINSTPR  PINSTPR  CITERAT  PITERAT  CMATERC  PMATERC
                                      NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR   MMATUNS  PMATUNS
     RIGI_MECA_HYST      41    IN__   CCADISK  PCADISK  MMATUUR  PRIGIEL
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
@@ -180,7 +183,7 @@ OPTION__
                                      NGEOMER  PGEOMER  CINSTPR  PINSTPR  CITERAT  PITERAT  CMATERC  PMATERC
                                      NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR   MMATUNS  PMATUNS
     SIEF_ELGA_DEPL      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                               OUT__  EEFGEGA  PCONTRR
     SIEF_ELGA_ELNO      -1    IN__   XXXXXX   XXXXXX

@@ -1,8 +1,10 @@
       SUBROUTINE LCMMIN ( TYPESS, ESSAI, MOD, NMAT,
-     &                      MATERF, NR, NVI, YD, DEPS, DY  )
+     &                      MATERF, NR, NVI, YD, DEPS, DY,  
+     &                      COMP,NBCOMM, CPMONO, PGL,
+     &                      INDICS  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,11 +51,17 @@ C
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
+      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS
+      REAL*8          EVE(6),EVP(6)
+      REAL*8          PGL(3,3),MS(6)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    NOMFAM
+      REAL*8          INDICS(*)
 C
 C - SOLUTION INITIALE = NUL
 C
       TYPES0=TYPESS
-      TYPESS=0
+      TYPESS=4
       IF ( TYPESS .EQ. 0) THEN
          CALL LCINVN ( NR  , 0.D0 , DY )
          IF(MOD(1:6).EQ.'C_PLAN')THEN
@@ -86,6 +94,66 @@ C
            DEPS(3) = ESSAI
            DY(3)   = 0.D0
         ENDIF
+C      
+      ELSEIF ( TYPESS .EQ. 4 ) THEN
+
+         NBFSYS=NBCOMM(NMAT,2)
+         NUMS=0
+
+      DO 6 IFA=1,NBFSYS
+      
+         NOMFAM=CPMONO(5*(IFA-1)+1)
+C       RECUPERATION DU NOMBRE DE SYSTEME DE GLISSEMENT NBSYS      
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+         
+         IF (NBSYS.EQ.0) CALL UTMESS('F','LCMMJA','NBSYS=0')
+
+         CALL R8INIR(6,0.D0,EVP,1)
+         DO 7 IS=1,NBSYS
+            NUMS=NUMS+1
+            IF ( INDICS(NUMS) .GT. 0.D0) THEN
+               DY (NDT+6+3*IFA*(IS-1)+3) = ESSAI
+               DY (NDT+6+3*IFA*(IS-1)+2) = ABS(ESSAI)
+               DY (NDT+6+3*IFA*(IS-1)+1) = ESSAI
+            ELSE
+               DY (NDT+6+3*IFA*(IS-1)+3) = 0.D0
+               DY (NDT+6+3*IFA*(IS-1)+2) = 0.D0
+               DY (NDT+6+3*IFA*(IS-1)+1) = 0.D0
+            ENDIF
+                  
+C           RECUPERATION DE MS ET CALCUL DE EVP      
+              CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS)
+              DO 8 I = 1,6   
+                 EVP(I) = EVP(I) + MS(I)*ESSAI
+  8           CONTINUE
+  7        CONTINUE
+  6     CONTINUE
+  
+C      
+C      ATTRIBUTIION A DY LA VALEUR DE EVP CALCULEE
+         CALL LCEQVN ( 6    , EVP , DY(NDT+1))
+C
+  
+        CALL LCDIVE ( DEPS ,   EVP , EVE )
+    
+C      DEDUCTION DE SIG = D*(DELTA E-DELTA EVP)         
+        
+         IF (MATERF(NMAT,1).EQ.0) THEN
+            CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
+         ELSEIF (MATERF(NMAT,1).EQ.1) THEN
+            CALL LCOPLI ( 'ORTHOTRO' , MOD , MATERF(1,1) , HOOK )
+         ENDIF
+         
+         CALL LCTRMA (HOOK , HOOK)
+         CALL LCPRMV ( HOOK    , EVE , DSIG  )
+         CALL LCEQVN ( NDT     , DSIG  , DY(1) )
+
+C         
+        IF ( MOD(1:6).EQ.'C_PLAN' )THEN
+           DEPS(3) = ESSAI
+           DY(3)   = 0.D0
+        ENDIF
+C        
       ENDIF
 C
       TYPESS=TYPES0

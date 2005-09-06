@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 09/05/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,9 @@
 
 
 from math import sqrt,cos,sin,pi,tan,log,fabs,ceil,fmod,floor
+import aster
+import string
+from Utilitai.Utmess     import UTMESS
 
 # ------------------------------------------------------------------------------
 def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):
@@ -89,6 +92,7 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
 
   """
   from Utilitai import funct_root
+  echo_mess=['MACR_ASCOUF_MAIL ASCFIS \n',]
   if POS=='DEB_INT':
      if (AZIM>=120.) and (AZIM<=240.0): X = RM-EP/2.0 - SUREP
      else:                              X = RM-EP/2.0
@@ -110,9 +114,9 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
     else:
        SF  = BETAR*RC
        SFP = SF
-  if (GEOM=='COUDE'): print 'COTE AXIALE CENTRE FISSURE SUR COUDE : %.2f'%SF
-  if (GEOM=='TUBE') : print 'COTE AXIALE CENTRE FISSURE SUR TUBE  : %.2f'%SF 
-  print 'COTE AXIALE CENTRE FISSURE SUR PLAQUE : %.2f'%SFP
+  if (GEOM=='COUDE'): echo_mess.append( 'COTE AXIALE CENTRE FISSURE SUR COUDE : %.2f \n'%SF)
+  if (GEOM=='TUBE') : echo_mess.append( 'COTE AXIALE CENTRE FISSURE SUR TUBE  : %.2f \n'%SF )
+  echo_mess.append( 'COTE AXIALE CENTRE FISSURE SUR PLAQUE : %.2f \n'%SFP)
 #
 #   ON ENVISAGE LE CAS OU UNE PARTIE DE L AXE EST DANS LES
 #   DROITES DES EMBOUTS. LA TRANSFORMATION N EST FAITE QUE SUR LA 
@@ -158,8 +162,8 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
        BEMB  = abs(BINF)*sqrt(2.0)
      elif (BINF>=0. and BSUP<=DIST):
        BCOUD = 2.0*AXEC
-  print 'PARTIE DU GRAND AXE DANS LE COUDE  : %.2f'%BCOUD
-  print 'PARTIE DU GRAND AXE DANS L EMBOUT  : %.2f'%BEMB
+  echo_mess.append( 'PARTIE DU GRAND AXE DANS LE COUDE  : %.2f \n'%BCOUD)
+  echo_mess.append( 'PARTIE DU GRAND AXE DANS L EMBOUT  : %.2f \n'%BEMB)
 #
 # -- CALCUL DE LA TAILLE DU GRAND AXE FISSURE SUR LA PLAQUE
 #
@@ -190,21 +194,21 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
        AXECP = BCOUD + BEMB
 #
   if GEOM=='COUDE':
-    print 'TAILLE GRAND AXE COUDE DONNE : %.2f'%(2.*AXEC)
+    echo_mess.append( 'TAILLE GRAND AXE COUDE DONNE : %.2f \n'%(2.*AXEC))
   elif GEOM=='TUBE':
-    print 'TAILLE GRAND AXE TUBE  DONNE : %.2f'%(2.*AXEC)
-  print 'TAILLE GRAND AXE PLAQUE DEDUIT : %.2f'%AXECP
+    echo_mess.append( 'TAILLE GRAND AXE TUBE  DONNE : %.2f \n'%(2.*AXEC))
+  echo_mess.append( 'TAILLE GRAND AXE PLAQUE DEDUIT : %.2f \n'%AXECP)
   if NEWT:
-    print 'METHODE DE NEWTON FISSURE A 45 DEGRES -->'
-    print 'TAILLE GRAND AXE COUDE RECALCULE : %.2f'%AXECC
+    echo_mess.append( 'METHODE DE NEWTON FISSURE A 45 DEGRES --> \n')
+    echo_mess.append( 'TAILLE GRAND AXE COUDE RECALCULE : %.2f \n'%AXECC)
   if GEOM=='COUDE' and BEMB>0. and BSUP>DIST :
     SFP =  ALPHA*2.*pi*RC/360. - AXECP/2. + BEMB
-    print 'CORRECTION CENTRE : FISSURE A CHEVAL SUR EMBOUT'
-    print 'ABSC. CURV. AXIALE CENTRE FISSURE SUR PLAQUE : %.2f'%SFP
+    echo_mess.append( 'CORRECTION CENTRE : FISSURE A CHEVAL SUR EMBOUT \n')
+    echo_mess.append( 'ABSC. CURV. AXIALE CENTRE FISSURE SUR PLAQUE : %.2f \n'%SFP)
   if GEOM=='COUDE' and BEMB>0. and BINF<0. :
     SFP = + AXECP/2. - BEMB
-    print 'CORRECTION CENTRE : FISSURE A CHEVAL SUR EMBOUT'
-    print 'ABSC. CURV. AXIALE CENTRE FISSURE SUR PLAQUE : %.2f'%SFP
+    echo_mess.append( 'CORRECTION CENTRE : FISSURE A CHEVAL SUR EMBOUT \n')
+    echo_mess.append( 'ABSC. CURV. AXIALE CENTRE FISSURE SUR PLAQUE : %.2f \n'%SFP)
 #
 # -- CORRECTION DU PETIT AXE DE LA FISSURE QUAND CELLE-CI SE TROUVE SUR
 #    LA ZONE DE SUREPAISSEUR
@@ -229,10 +233,12 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
 #
   if SUREP!=0.:
      AXEAP = AXEA * EP / ( EP + MU*SUREP )
-     print '--> CORRECTION DUE A LA SUREPAISSEUR'     
-     print '--> TAILLE PETIT AXE PLAQUE : %.2f'%AXEAP
+     echo_mess.append( '--> CORRECTION DUE A LA SUREPAISSEUR \n' )
+     echo_mess.append( '--> TAILLE PETIT AXE PLAQUE : %.2f \n'%AXEAP )
   else: AXEAP = AXEA
 #
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return AXEAP,AXECP,SFP 
 
 
@@ -254,21 +260,22 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
   """
   ier=0
   CG=pi/180.
+  echo_mess=['MACR_ASCOUF_MAIL ASCSEP \n',]
 #
 # --- BOUCLE SUR L ENSEMBLE DES SOUS-EPAISSEURS
 #
   i=0
   for ssep in MCL_SOUS_EPAIS :
       i=i+1
-      print '-------------------------------------'
-      print 'SOUS-EPAISSEUR NUMERO %d'%i
-      print '-------------------------------------'
+      echo_mess.append( '-------------------------------------\n')
+      echo_mess.append( 'SOUS-EPAISSEUR NUMERO %d\n'%i)
+      echo_mess.append( '-------------------------------------\n')
 #
 # --- CAS DES SOUS-EPAISSEURS AXISYMETRIQUES 
 #
       if ssep['TYPE']=='AXIS':
-         print 'SOUS-EPAISSEUR AXISYMETRIQUE : '
-         print 'CALCUL DE LA TAILLE LONGI ENVELOPPE EN INTRADOS (AZIMUT PI)'
+         echo_mess.append( 'SOUS-EPAISSEUR AXISYMETRIQUE : \n')
+         echo_mess.append( 'CALCUL DE LA TAILLE LONGI ENVELOPPE EN INTRADOS (AZIMUT PI)\n')
          ssep.ICIRP = 2.*pi*RM
          ssep.ISCP  =    pi*RM
          ssep.IPHIC = 180.
@@ -284,33 +291,34 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
            ssep.ISCP  = ssep['POSI_CURV_CIRC']*RM/(RM+EP/2.)
            AZIMC      = ssep.ISCP/RM
            ssep.IPHIC = ssep['POSI_CURV_CIRC']/(RM+EP/2.)*180./pi
-           print 'AZIMUT CENTRE SOUS-EPAISSEUR (DEGRES) : %.2f'%ssep.IPHIC
+           echo_mess.append( 'AZIMUT CENTRE SOUS-EPAISSEUR (DEGRES) : %.2f \n'%ssep.IPHIC)
          else:
            ssep.ISCP  = ssep['AZIMUT']*pi*RM/180. 
            AZIMC      = ssep['AZIMUT']*pi/180.
-           print 'ABSC. CURV. CIRCONF. CENTRE SOUS-EPAISSEUR SUR COUDE : %.2f'%(AZIMC*(RM+EP/2.))
+           echo_mess.append( 'ABSC. CURV. CIRCONF. CENTRE SOUS-EPAISSEUR SUR COUDE : %.2f \n'%(AZIMC*(RM+EP/2.)))
 #
 #    PASSAGE DANS LE REPERE PLAQUE (0,2PI) AVEC ORIGINE FLANC DROIT
 #    CAR L ORIGINE DES DONNEES CIRCONF. EST EN EXTRADOS 
 #
          if ssep.ISCP>(3.*pi*RM/2.): ssep.ISCP = ssep.ISCP - 3.*pi*RM/2.
          else:                       ssep.ISCP = ssep.ISCP + pi*RM/2.
-         print 'ABSC. CURV. CIRCONF. CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f'%ssep.ISCP
+         echo_mess.append( 'ABSC. CURV. CIRCONF. CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISCP)
 #
 # -- CALCUL DE LA TAILLE CIRCONFERENTIELLE 
 #    NB : MESURE FAITE EN PEAU EXTERNE SUR LE COUDE
 #
          ssep.ICIRP = ssep['AXE_CIRC']*(RM/(RM+EP/2.))
          if ssep.ICIRP>(2.*pi*RM) :
-            print ' <MACR_ASCOUF_MAIL> ASCSEP valeur hors domaine'
-            print ' <MACR_ASCOUF_MAIL> sous-epaisseur numero : %d'%i
-            print ' <MACR_ASCOUF_MAIL> taille axe circonferentiel : %.2f'%ssep.ICIRP
-            print ' <MACR_ASCOUF_MAIL> bord plaque : %.2f'%2*pi*RM
-            self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-            ier = ier+1
-            return ier
-         print 'TAILLE CIRCONFERENTIELLE SOUS-EPAISSEUR SUR PLAQUE : %.2f'%ssep.ICIRP
-         print '<=> TAILLE EQUIVALENTE SUR LA CIRCONFERENCE (DEGRES) : %.2f'%(ssep.ICIRP*360./(2.*pi*RM))  
+            texte_final=string.join(echo_mess)
+            aster.affiche("MESSAGE",texte_final)
+            message=        ' ASCSEP valeur hors domaine \n'
+            message=message+' sous-epaisseur numero : %d \n'%i
+            message=message+' taille axe circonferentiel : %.2f \n'%ssep.ICIRP
+            message=message+' bord plaque : %.2f \n'%2*pi*RM
+            UTMESS('F', "MACR_ASCOUF_MAIL", message)
+         echo_mess.append( 'TAILLE CIRCONFERENTIELLE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ICIRP)
+         echo_mess.append( '<=> TAILLE EQUIVALENTE SUR LA CIRCONFERENCE (DEGRES) : %.2f \n'%(ssep.ICIRP*360./(2.*pi*RM)))  
+
 #
 # -- CALCUL COTE AXIALE DU CENTRE SOUS-EPAISSEUR SUR LA PLAQUE 
 #    EN FONCTION DE L ABSCISSE CURVILIGNE DONNEE SUR LE COUDE 
@@ -321,29 +329,29 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
          if GEOM=='COUDE':
             ssep.ISLP = ssep['POSI_CURV_LONGI']/(1.+(RM+EP/2.)/RC*cos(AZIMC))
             AZIML     = ssep.ISLP/RC
-            print 'ANGLE COUDE CENTRE SOUS-EPAISSEUR (DEGRES) : %.2f'%(AZIML*180./pi)
+            echo_mess.append( 'ANGLE COUDE CENTRE SOUS-EPAISSEUR (DEGRES) : %.2f \n'%(AZIML*180./pi))
          else :
             ssep.ISLP = ssep['POSI_CURV_LONGI']
          if (SYME in ('QUART','DEMI')) and (ssep.ISLP!=ALPHA*CG*RC/2.) :
-            print ' <MACR_ASCOUF_MAIL> ASCSEP cas de symetrie :'
-            print ' <MACR_ASCOUF_MAIL> la sous-epaisseur doit etre dans la section mediane du coude !'
-            self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-            ier = ier+1
-            return ier
+            texte_final=string.join(echo_mess)
+            aster.affiche("MESSAGE",texte_final)
+            message=         ' ASCSEP cas de symetrie :\n'
+            message=message+ ' la sous-epaisseur doit etre dans la section mediane du coude !\n'
+            UTMESS('F', "MACR_ASCOUF_MAIL", message)
       else :
          if GEOM=='COUDE':
-            print 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR COUDE : %.2f'%((ssep.BETA)*CG*(RC+(RM+EP/2.)*cos(AZIMC)))
+            echo_mess.append( 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR COUDE : %.2f \n'%((ssep.BETA)*CG*(RC+(RM+EP/2.)*cos(AZIMC))))
             AZIML = (ssep.BETA)*CG
          else :
-            print 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR TUBE  : %.2f'%((ssep.BETA)*CG*RC)
+            echo_mess.append( 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR TUBE  : %.2f \n'%((ssep.BETA)*CG*RC) )
          ssep.ISLP =  (ssep.BETA)*CG*RC
          if (SYME in ('QUART','DEMI')) and (ssep.BETA!=ALPHA/2.) :
-            print ' <MACR_ASCOUF_MAIL> ASCSEP cas de symetrie :'
-            print ' <MACR_ASCOUF_MAIL> la sous-epaisseur doit etre dans la section mediane du coude !'
-            self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-            ier = ier+1
-            return ier
-      print 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f'%ssep.ISLP
+            texte_final=string.join(echo_mess)
+            aster.affiche("MESSAGE",texte_final)
+            message=          ' ASCSEP cas de symetrie :\n'
+            message=message+  ' la sous-epaisseur doit etre dans la section mediane du coude !\n'
+            UTMESS('F', "MACR_ASCOUF_MAIL", message)
+      echo_mess.append( 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISLP)
 #
 # -- CALCUL DE LA TAILLE LONGITUDINALE 
 #    NB : MESURE FAITE EN PEAU EXTERNE SUR LE COUDE
@@ -386,12 +394,12 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
       ssep.ILONP = BPLAQ+BEMB
       if BEMB1>0.:
          ssep.ISLP =  ALPHA*CG*RC - ssep.ILONP/2. + BEMB1
-         print 'CORRECTION CENTRE : SOUS-EP. A CHEVAL SUR EMBOUT'
-         print 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f'%ssep.ISLP
+         echo_mess.append(  'CORRECTION CENTRE : SOUS-EP. A CHEVAL SUR EMBOUT \n')
+         echo_mess.append(  'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISLP)
       if BEMB2>0.:
          ssep.ISLP =  ssep.ILONP/2. - BEMB2
-         print 'CORRECTION CENTRE : SOUS-EP. A CHEVAL SUR EMBOUT'
-         print 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f'%ssep.ISLP
+         echo_mess.append(  'CORRECTION CENTRE : SOUS-EP. A CHEVAL SUR EMBOUT \n')
+         echo_mess.append(  'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISLP)
       if ssep.ISLP<0.            : ssep.ISLP = 0.
       if (ssep.ISLP>ALPHA*CG*RC) : ssep.ISLP = ALPHA*CG*RC 
 #
@@ -399,9 +407,11 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
 #     ON CORRIGE SA POSITION EN LE METTANT A L INTERFACE SINON CA PLANTE
 #     DANS LA PROC DE MAILLAGE (A AMELIORER)
 #
-      print 'TAILLE LONGITUDINALE SOUS-EPAISSEUR SUR PLAQUE : %.2f'%ssep.ILONP
-      print '<=> TAILLE EQUIVALENTE PAR RAPPORT A L ANGLE DU COUDE (DEGRES): %.2f'%(ssep.ILONP*360/(2*pi*RC))  
+      echo_mess.append(  'TAILLE LONGITUDINALE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ILONP)
+      echo_mess.append(  '<=> TAILLE EQUIVALENTE PAR RAPPORT A L ANGLE DU COUDE (DEGRES): %.2f \n'%(ssep.ILONP*360/(2*pi*RC)))  
 #
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return ier
 
 # ------------------------------------------------------------------------------
@@ -426,6 +436,7 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
 #
 # --- tri du tableau des abscisses curvilignes circonf. plaque
 #
+  echo_mess=['MACR_ASCOUF_MAIL ASCTCI \n',]
   TAMPON = []
   COORXG = []
   COORYG = []
@@ -433,25 +444,25 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
   for ssep in MCL_SOUS_EPAIS :
       i=i+1
       if (ssep.ISCP>2.*pi*RM) or (ssep.ISCP<0.) : 
-         print ' <MACR_ASCOUF_MAIL> valeur hors domaine'
-         print ' <MACR_ASCOUF_MAIL> SOUS-EPAISSEUR NUMERO :%d'%MCL_SOUS_EPAIS.index(ssep)
-         print ' <MACR_ASCOUF_MAIL> ABSC. CURV. CIRCONF.  :%.2f'%ssep.ISCP
-         print ' <MACR_ASCOUF_MAIL> BORD PLAQUE :%.2f'%(2.*pi*RM)
-         self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-         ier = ier+1
-         return ier
+         texte_final=string.join(echo_mess)
+         aster.affiche("MESSAGE",texte_final)
+         message=         ' valeur hors domaine \n'
+         message=message+ ' SOUS-EPAISSEUR NUMERO :%d'%MCL_SOUS_EPAIS.index(ssep)
+         message=message+ ' ABSC. CURV. CIRCONF.  :%.2f \n'%ssep.ISCP
+         message=message+ ' BORD PLAQUE :%.2f \n'%(2.*pi*RM)
+         UTMESS('F', "MACR_ASCOUF_MAIL", message)
       TAMPON.append((ssep.ISCP,i))
   TAMPON.sort()
   IABSC1=[]
   for j in range(i):
     IABSC1.append(TAMPON[j][1])
-  print
-  print 'TRI DES CENTRES ABSC. CURV. CIRCONF. :'
-  print '------------------------------------'
+  echo_mess.append( ' \n')
+  echo_mess.append( 'TRI DES CENTRES ABSC. CURV. CIRCONF. :\n ')
+  echo_mess.append( '------------------------------------\n')
   i=0
   for ssep in TAMPON :
     i=i+1
-    print '%d) SOUS-EP NO %d <> XC = %.2f'%(i,ssep[1],ssep[0])
+    echo_mess.append( '%d) SOUS-EP NO %d <> XC = %.2f \n'%(i,ssep[1],ssep[0]) )
 #
 # --- calcul des abcisses droites et gauches des sous-epaisseurs
 #
@@ -475,15 +486,17 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
   IABSC2=[]
   for j in range(2*len(MCL_SOUS_EPAIS)):
     IABSC2.append(TAMPON[j][1])
-  print
-  print 'TRI DES INTERVALLES G ET D ABSC. CURV. CIRCONF. :'
-  print '-----------------------------------------------'  
+  echo_mess.append( '\n')
+  echo_mess.append( 'TRI DES INTERVALLES G ET D ABSC. CURV. CIRCONF. :\n')
+  echo_mess.append( '-----------------------------------------------\n' ) 
   for j in range(2*len(MCL_SOUS_EPAIS)):
     if fmod(IABSC2[j],2):
-       print '%d) SOUS-EP NO %d <> XG = %.2f'%(j+1,IABSC1[IABSC2[j]/2],TAMPON[j][0])
+       echo_mess.append( '%d) SOUS-EP NO %d <> XG = %.2f \n'%(j+1,IABSC1[IABSC2[j]/2],TAMPON[j][0]))
     else:
-       print '%d) SOUS-EP NO %d <> XD = %.2f'%(j+1,IABSC1[IABSC2[j]/2-1],TAMPON[j][0])
+       echo_mess.append( '%d) SOUS-EP NO %d <> XD = %.2f \n'%(j+1,IABSC1[IABSC2[j]/2-1],TAMPON[j][0]))
 #    
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return TAMPON,IABSC1,IABSC2,COORXD,COORXG
 
 # ------------------------------------------------------------------------------
@@ -511,31 +524,32 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
 #
 # tri du tableau des abscisses curvilignes axiales plaque
 #
+  echo_mess=['MACR_ASCOUF_MAIL ASCTLO \n',]
   ALPHAR = 2.*ALPHA*pi/360.
   TAMPON = []
   i=0
   for ssep in MCL_SOUS_EPAIS :
       i=i+1
       if (ssep.ISLP>ALPHAR*RC) or (ssep.ISLP<0.) : 
-         print ' <MACR_ASCOUF_MAIL> valeur hors domaine'
-         print ' <MACR_ASCOUF_MAIL> SOUS-EPAISSEUR NUMERO :%d'%MCL_SOUS_EPAIS.index(ssep)
-         print ' <MACR_ASCOUF_MAIL> ABSC. CURV. LONGIT.  :%.2f'%ssep.ISLP
-         print ' <MACR_ASCOUF_MAIL> BORDS PLAQUE :%.2f'%(ALPHAR*RC)
-         self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-         ier = ier+1
-         return ier
+         texte_final=string.join(echo_mess)
+         aster.affiche("MESSAGE",texte_final)
+         message=         ' valeur hors domaine \n'
+         message=message+ ' SOUS-EPAISSEUR NUMERO :%d \n'%MCL_SOUS_EPAIS.index(ssep)
+         message=message+ ' ABSC. CURV. LONGIT.  :%.2f \n'%ssep.ISLP
+         message=message+ ' BORDS PLAQUE :%.2f \n'%(ALPHAR*RC)
+         UTMESS('F', "MACR_ASCOUF_MAIL", message)
       TAMPON.append((ssep.ISLP,i))
   TAMPON.sort()
   IORDO1=[]
   for j in range(i):
     IORDO1.append(TAMPON[j][1])
-  print
-  print 'TRI DES CENTRES ABSC. CURV. LONGIT. :'
-  print '------------------------------------'
+  echo_mess.append( '\n')
+  echo_mess.append( 'TRI DES CENTRES ABSC. CURV. LONGIT. : \n')
+  echo_mess.append( '------------------------------------ \n')
   i=0
   for ssep in TAMPON :
     i=i+1
-    print '%d) SOUS-EP NO %d <> YC = %.2f'%(i,ssep[1],ssep[0])
+    echo_mess.append( '%d) SOUS-EP NO %d <> YC = %.2f \n'%(i,ssep[1],ssep[0]))
 #
 # calcul des abscisses sup. et inf. des sous-ep.
 #
@@ -553,21 +567,21 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
          YI=ALPHAR*RC-(MCL_SOUS_EPAIS[bid[1]-1].ILONP-(MCL_SOUS_EPAIS[bid[1]-1]['AXE_LONGI'])/2.)
          YS=ALPHAR*RC+(MCL_SOUS_EPAIS[bid[1]-1]['AXE_LONGI'])/2.
       if YI<(-LTCHAR):
-         print ' <MACR_ASCOUF_MAIL> valeur hors domaine'
-         print ' <MACR_ASCOUF_MAIL> SOUS-EPAISSEUR NUMERO :',bid[1]
-         print ' <MACR_ASCOUF_MAIL> BORD INFERIEUR  :',YI
-         print ' <MACR_ASCOUF_MAIL> BORD PLAQUE :',-LTCHAR
-         self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-         ier = ier+1
-         return ier
+         texte_final=string.join(echo_mess)
+         aster.affiche("MESSAGE",texte_final)
+         message=         ' valeur hors domaine \n'
+         message=message+ ' SOUS-EPAISSEUR NUMERO :%d \n'%bid[1]
+         message=message+ ' BORD INFERIEUR  :%.2f \n'%YI
+         message=message+ ' BORDS PLAQUE :%.2f \n'%(-1*LTCHAR)
+         UTMESS('F', "MACR_ASCOUF_MAIL", message)
       if YS>(ALPHAR*RC+LTCLIM):
-         print ' <MACR_ASCOUF_MAIL> valeur hors domaine'
-         print ' <MACR_ASCOUF_MAIL> SOUS-EPAISSEUR NUMERO :',bid[1]
-         print ' <MACR_ASCOUF_MAIL> BORD INFERIEUR  :',YS
-         print ' <MACR_ASCOUF_MAIL> BORD PLAQUE :',ALPHAR*RC+LTCLIM
-         self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-         ier = ier+1
-         return ier
+         texte_final=string.join(echo_mess)
+         aster.affiche("MESSAGE",texte_final)
+         message=         ' valeur hors domaine \n'
+         message=message+ ' SOUS-EPAISSEUR NUMERO :%d \n'%bid[1]
+         message=message+ ' BORD INFERIEUR  :%.2f \n'%YI
+         message=message+ ' BORDS PLAQUE :%.2f \n'%(ALPHAR*RC+LTCLIM)
+         UTMESS('F', "MACR_ASCOUF_MAIL", message)
       COORYI.append(YI) 
       COORYS.append(YS)
 #
@@ -581,15 +595,17 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
   IORDO2=[]
   for j in range(2*len(MCL_SOUS_EPAIS)):
     IORDO2.append(TAMPON[j][1])      
-  print
-  print 'TRI DES INTERVALLES I ET S ABSC. CURV. LONGIT. :'
-  print '-----------------------------------------------'
+  echo_mess.append( '\n')
+  echo_mess.append( 'TRI DES INTERVALLES I ET S ABSC. CURV. LONGIT. : \n')
+  echo_mess.append( '----------------------------------------------- \n')
   for j in range(2*len(MCL_SOUS_EPAIS)):
     if fmod(IORDO2[j],2):
-       print '%d) SOUS-EP NO %d <> YI = %.2f'%(j+1,IORDO1[IORDO2[j]/2],TAMPON[j][0])
+       echo_mess.append( '%d) SOUS-EP NO %d <> YI = %.2f \n'%(j+1,IORDO1[IORDO2[j]/2],TAMPON[j][0]))
     else:
-       print '%d) SOUS-EP NO %d <> YS = %.2f'%(j+1,IORDO1[IORDO2[j]/2-1],TAMPON[j][0])
+       echo_mess.append( '%d) SOUS-EP NO %d <> YS = %.2f \n'%(j+1,IORDO1[IORDO2[j]/2-1],TAMPON[j][0]))
 #
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return TAMPON,IORDO1,IORDO2,COORYI,COORYS
 #
 #
@@ -630,9 +646,10 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
 #
 #  calcul du nombre d'elements longi. et circonf. dans les sous-epaisseurs:
 #
-  print
-  print 'DETERMINATION DU NOMBRE D''ELEMENTS DANS LES SOUS-EPAISSEURS :'
-  print '------------------------------------------------------------'
+  echo_mess=['MACR_ASCOUF_MAIL ASCNBE \n',]
+  echo_mess.append( '\n')
+  echo_mess.append( 'DETERMINATION DU NOMBRE D''ELEMENTS DANS LES SOUS-EPAISSEURS :\n')
+  echo_mess.append( '------------------------------------------------------------\n')
   NLX=[0]*len(MCL_SOUS_EPAIS)
   NLY=[0]*len(MCL_SOUS_EPAIS)
   for j in range(len(BD)):
@@ -649,7 +666,7 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
          if ((COORXG[l]<COORXD[l] and BG[j]>=COORXG[l] and BD[j]<=COORXD[l])\
          or (COORXG[l]>=COORXD[l] and (BG[j]<=COORXG[l] or BD[j]>=COORXD[l]))):
             NLX[i]=NLX[i]+NBEL
-            print 'SOUS-EP NO %d ZONE CIRC. NO %d NB ELEM. = %d'%(i+1,j+1,NBEL)
+            echo_mess.append( 'SOUS-EP NO %d ZONE CIRC. NO %d NB ELEM. = %d \n'%(i+1,j+1,NBEL))
 
   for j in range(len(BS)):
     if INDSEY[j]!=0:
@@ -665,13 +682,15 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
          l=IORDO1[i]-1
          if (BI[j]>=COORYI[l] and BS[j]<=COORYS[l]):
             NLY[i]=NLY[i]+NBEL
-            print 'SOUS-EP NO %d ZONE LONGI. NO %d NB ELEM. = %d'%(i+1,j+1,NBEL)
+            echo_mess.append( 'SOUS-EP NO %d ZONE LONGI. NO %d NB ELEM. = %d \n'%(i+1,j+1,NBEL) )
 
   for j in range(len(NLX)):
-    print 'SOUS-EP NO %d NBE TOTAL ELEMENTS CIRCONF. : %d'%(j+1,NLX[j])
-    print 'SOUS-EP NO %d NBE TOTAL ELEMENTS LONGI.   : %d'%(j+1,NLY[j])
+    echo_mess.append( 'SOUS-EP NO %d NBE TOTAL ELEMENTS CIRCONF. : %d \n'%(j+1,NLX[j]))
+    echo_mess.append( 'SOUS-EP NO %d NBE TOTAL ELEMENTS LONGI.   : %d \n'%(j+1,NLY[j]))
 
 #
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return NLX,NLY
 #
 ################################################################################
@@ -702,6 +721,7 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
 # ------------------------------------------------------------------------------
 def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
   ier=0
+  echo_mess=['MACR_ASCOUF_MAIL ASCSYM \n',]
   DERAFC = 18.
   DERAFL =  5.       
   INDSEX = []
@@ -777,18 +797,18 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
      INDSEX.append(1)
 
 
-  print
-  print 'ZONES APRES RECOUVREMENT ABSC. CURV. CIRCONF. :'
-  print '---------------------------------------------'
+  echo_mess.append( '\n')
+  echo_mess.append( 'ZONES APRES RECOUVREMENT ABSC. CURV. CIRCONF. :\n')
+  echo_mess.append( '--------------------------------------------- \n')
   EPS=0.000000000001
   NZONEX=len(BG)
   for j in range(NZONEX) :
     if ( fabs(BG[j]) < EPS ) and ( fabs(BD[j]) < EPS ) :
-      print 'ZONE NO %d BORNE GAUCHE = %.2f'\
-      ' / BORNE DROITE = %.2f * SOUS-EPAISSEUR'%(j+1,BG[j],BD[j])
+      echo_mess.append( 'ZONE NO %d BORNE GAUCHE = %.2f'\
+      ' / BORNE DROITE = %.2f * SOUS-EPAISSEUR \n'%(j+1,BG[j],BD[j]) )
     else:
-      print 'ZONE NO %d BORNE GAUCHE = %.2f'\
-      ' / BORNE DROITE = %.2f'%(j+1,BG[j],BD[j])
+      echo_mess.append( 'ZONE NO %d BORNE GAUCHE = %.2f \n'\
+      ' / BORNE DROITE = %.2f \n'%(j+1,BG[j],BD[j]))
 
     
 # tri des donnees sous-epaisseurs en axial
@@ -816,22 +836,24 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
   DNY.append(0)
   INDSEY.append(0)
   INDSEY.append(1)
-  print
-  print 'ZONES APRES RECOUVREMENT ABSC. CURV. LONGIT. :'
-  print '-----------------------------------------------'
+  echo_mess.append( '\n')
+  echo_mess.append( 'ZONES APRES RECOUVREMENT ABSC. CURV. LONGIT. : \n')
+  echo_mess.append( '----------------------------------------------- \n')
   NZONEY=len(BI)
   for j in range(NZONEY) :
     if ( fabs(BI[j]) < EPS ) and ( fabs(BS[j]) < EPS ) :
-      print 'ZONE NO %d <> BORNE INF. = %.2f'\
-      ' / BORNE SUP. = %.2f * SOUS-EPAISSEUR'%(j+1,BI[j],BS[j])
+      echo_mess.append( 'ZONE NO %d <> BORNE INF. = %.2f \n'\
+      ' / BORNE SUP. = %.2f * SOUS-EPAISSEUR'%(j+1,BI[j],BS[j]))
     else:
-      print 'ZONE NO %d <> BORNE INF. = %.2f'\
-      ' / BORNE SUP. = %.2f'%(j+1,BI[j],BS[j])
+      echo_mess.append( 'ZONE NO %d <> BORNE INF. = %.2f \n'\
+      ' / BORNE SUP. = %.2f'%(j+1,BI[j],BS[j]))
  
 # calcul du nombre d'elements longi. et circonf. dans les soue-ep
   NLX,NLY=ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,
                  DNX,DNY,RM,RC,INDSEX,INDSEY,IABSC1,IORDO1)
 
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return ier,NLX,NLY,NZONEX,NZONEY,BG,BD,BI,BS,INDBG,INDBD,INDBI,INDBS,DNX,DNY
 ################################################################################
 ################################################################################
@@ -861,12 +883,13 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
 # ------------------------------------------------------------------------------
 def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
   ier=0
+  echo_mess=['MACR_ASCOUF_MAIL ASCPRE \n',]
   ALPHAR = 2.*ALPHA*pi/360.
   DERAFC = 18.
   DERAFL =  5.
   EPSI   =  0.001      
   NBSEP  = len(MCL_SOUS_EPAIS)
-  print 'RECHERCHE DES ZONES DE SOUS-EPAISSEURS DANS LE COUDE\n'
+  echo_mess.append( 'RECHERCHE DES ZONES DE SOUS-EPAISSEURS DANS LE COUDE\n' )
   
 # tri des donnees sous-epaisseurs en circonferentiel
   TAMPON,IABSC1,IABSC2,COORXD,COORXG=ASCTCI(MCL_SOUS_EPAIS,RM)
@@ -1112,16 +1135,16 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
 #  un centre de sous-ep.
   if fabs(BG[NZONEX-1]-BD[NZONEX-1])<EPSI: NZONEX = NZONEX-1
 
-  print
-  print 'ZONES APRES RECOUVREMENT ABSC. CURV. CIRCONF. :'
-  print '-----------------------------------------------'
+  echo_mess.append( '\n')
+  echo_mess.append( 'ZONES APRES RECOUVREMENT ABSC. CURV. CIRCONF. : \n')
+  echo_mess.append( '----------------------------------------------- \n')
   for j in range(NZONEX) :
     if INDBG[j]==0 and INDBD[j]==0 :
-      print 'ZONE NO',j+1,'<> BORNE GAUCHE = %.2f'\
-      ' / BORNE DROITE = %.2f * SOUS-EPAISSEUR'%(BG[j],BD[j])
+      echo_mess.append( 'ZONE NO %d <> BORNE GAUCHE = %.2f \n'\
+      ' / BORNE DROITE = %.2f * SOUS-EPAISSEUR'%(j+1,BG[j],BD[j]))
     else:
-      print 'ZONE NO',j+1,'<> BORNE GAUCHE = %.2f'\
-      ' / BORNE DROITE = %.2f'%(BG[j],BD[j])
+      echo_mess.append( 'ZONE NO %d <> BORNE GAUCHE = %.2f \n'\
+      ' / BORNE DROITE = %.2f'%(j+1,BG[j],BD[j]))
 
       
 # --- tri des donnees sous-ep. en axial
@@ -1375,24 +1398,27 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
           INDSEY.append(0)
        else:pass
 
-    print
-    print 'ZONES APRES RECOUVREMENT ABSC. CURV. LONGIT. :'
-    print '-----------------------------------------------'
+    echo_mess.append( '\n')
+    echo_mess.append( 'ZONES APRES RECOUVREMENT ABSC. CURV. LONGIT. :\n')
+    echo_mess.append( '----------------------------------------------- \n')
 
     for j in range(NZONEY) :
       if INDBI[j]==0 and INDBS[j]==0 :
-        print 'ZONE NO',j+1,'<> BORNE INF. = %.2f'\
-        ' / BORNE SUP. = %.2f * SOUS-EPAISSEUR'%(BI[j],BS[j])
+        echo_mess.append( 'ZONE NO %d <> BORNE INF. = %.2f \n'\
+        ' / BORNE SUP. = %.2f * SOUS-EPAISSEUR'%(j+1,BI[j],BS[j]))
       else:
-        print 'ZONE NO',j+1,'<> BORNE INF. = %.2f'\
-        ' / BORNE SUP. = %.2f '%(BI[j],BS[j])
+        echo_mess.append( 'ZONE NO %d <> BORNE INF. = %.2f \n'\
+        ' / BORNE SUP. = %.2f '%(j+1,BI[j],BS[j]))
 
 #   calcul du nombre d'elements longi. et circonf. dans les sous-ep
     NLX,NLY=ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,
                    DNX,DNY,RM,RC,INDSEX,INDSEY,IABSC1,IORDO1)
   
 
+  texte_final=string.join(echo_mess)
+  aster.affiche('MESSAGE',texte_final)
   return ier,NLX,NLY,NZONEX,NZONEY,BG,BD,BI,BS,INDBG,INDBD,INDBI,INDBS,DNX,DNY
+
 ################################################################################
 ################################################################################
 ################################################################################
@@ -2063,13 +2089,11 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   else:
      NBTRAN = 1
      if COUDE['SYME']!='ENTIER':
-        print ' <MACR_ASCOUF_MAIL> les quart et demi structure'
-        print ' <MACR_ASCOUF_MAIL> ne peuvent etre realisees '
-        print ' <MACR_ASCOUF_MAIL> sur un modele comportant une transition '
-        print ' <MACR_ASCOUF_MAIL> d epaisseur '
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' les quart et demi structure \n'
+        message=message+' ne peuvent etre realisees   \n'
+        message=message+' sur un modele comportant une transition \n'
+        message=message+' d epaisseur \n'
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
      DEXT  = COUDE['DEXT_T1']
      EP1   = COUDE['EPAIS_T1']
@@ -2094,31 +2118,29 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   E   = EP1
 #
   if COUDE['SYME']!='ENTIER' and (LTCHAR!=LTCLIM) :
-     print ' <MACR_ASCOUF_MAIL> les deux embouts doivent etre'
-     print ' <MACR_ASCOUF_MAIL> de meme longueur pour les cas de symetrie '
-     self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-     ier = ier+1
-     return ier
+     message=        ' les deux embouts doivent etre \n'
+     message=message+' de meme longueur pour les cas de symetrie \n'
+     UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
   LAMOR = 3.0/2.0 * sqrt( RM*RM*RM / EP1)
   if LTCHAR<LAMOR :
-     print ' <MACR_ASCOUF_MAIL> longueur d embout P1 inferieure'
-     print ' <MACR_ASCOUF_MAIL> a la longueur d amortissement = ',LAMOR
-     print ' <A> <MACR_ASCOUF_MAIL> alarme'
+     message=        ' longueur d embout P1 inferieure \n'
+     message=message+' a la longueur d amortissement = %.2f \n'%LAMOR
+     UTMESS('A', "MACR_ASCOUF_MAIL", message)
 #
   LAMOR = 3.0/2.0 * sqrt( RM2*RM2*RM2 / EP2)
   if LTCLIM<LAMOR :
-     print ' <MACR_ASCOUF_MAIL> longueur d embout P2 inferieure'
-     print ' <MACR_ASCOUF_MAIL> a la longueur d amortissement = ',LAMOR
-     print ' <A> <MACR_ASCOUF_MAIL> alarme'
+     message=        ' longueur d embout P2 inferieure \n'
+     message=message+' a la longueur d amortissement = %.2f \n'%LAMOR
+     UTMESS('A', "MACR_ASCOUF_MAIL", message)
 #
   if TYPBOL!=None:
    if TYPBOL[:1]=='GV' :
-     print ' <MACR_ASCOUF_MAIL> la condition aux limites raccord'
-     print ' <MACR_ASCOUF_MAIL> 3d-poutre appliquee avec la macro de calcul'
-     print ' <MACR_ASCOUF_MAIL> ascouf n est pas licite avec un embout'
-     print ' <MACR_ASCOUF_MAIL> de type conique'
-     print ' <A> <MACR_ASCOUF_MAIL> alarme'
+     message=        ' la condition aux limites raccord \n'
+     message=message+' 3d-poutre appliquee avec la macro de calcul \n '
+     message=message+' ascouf n est pas licite avec un embout \n'
+     message=message+' de type conique \n'
+     UTMESS('A', "MACR_ASCOUF_MAIL", message)
 #
 ################################################################################
 #     --- caracteristiques de la fissure ---
@@ -2126,23 +2148,21 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 #
   if FISS_COUDE!=None:
      if NBEP!=3:
-        print ' <MACR_ASCOUF_MAIL> le nombre d elements dans l epaisseur'
-        print ' <MACR_ASCOUF_MAIL> du coude n est pas parametrable pour'
-        print ' <MACR_ASCOUF_MAIL> un coude avec fissure'
-        print ' <MACR_ASCOUF_MAIL> mot-cle NB_ELEM_EPAIS ignore'
-        print ' <A> <MACR_ASCOUF_MAIL> alarme'
+        message=        ' le nombre d elements dans l epaisseur \n'
+        message=message+' du coude n est pas parametrable pour \n'
+        message=message+' un coude avec fissure \n'
+        message=message+' mot-cle NB_ELEM_EPAIS ignore \n'
+        UTMESS('A', "MACR_ASCOUF_MAIL", message)
      FPROF = FISS_COUDE['PROFONDEUR']
      FAXI  = FISS_COUDE['AXIS']
      if FAXI=='NON' and FISS_COUDE['LONGUEUR']==None :
-        print ' <MACR_ASCOUF_MAIL> pour les fissures non axisymetriques'
-        print ' <MACR_ASCOUF_MAIL> la longueur doit etre specifiee '
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' pour les fissures non axisymetriques \n'
+        message=message+' la longueur doit etre specifiee  \n'
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
      if FAXI=='OUI' and FISS_COUDE['LONGUEUR']!=None :
-        print ' <MACR_ASCOUF_MAIL> la fissure est axisymetrique : on ne'
-        print ' <MACR_ASCOUF_MAIL> tient pas compte de la longueur specifiee'
-        print ' <A> <MACR_ASCOUF_MAIL> alarme'
+        message=        ' la fissure est axisymetrique : on ne \n'
+        message=message+' tient pas compte de la longueur specifiee \n'
+        UTMESS('A', "MACR_ASCOUF_MAIL", message)
      if FISS_COUDE['LONGUEUR']!=None : FLONG = FISS_COUDE['LONGUEUR']
      if FAXI=='OUI' :
 ####    on prend une marge de securite a cause des modifs dans ascfis
@@ -2174,30 +2194,22 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
      DGAXEC = FLONG/2.0
      DC     = DGAXEC
      if ORIEN!=90.0 and NBTRAN!=0 :
-        print ' <MACR_ASCOUF_MAIL> avec une transition d epaisseur'
-        print ' <MACR_ASCOUF_MAIL> la fissure doit obligatoirement etre transverse '
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' avec une transition d epaisseur \n'
+        message=message+' la fissure doit obligatoirement etre transverse  \n'
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
      if ORIEN!=90.0 and NBTRAN!=0 :
-        print ' <MACR_ASCOUF_MAIL> avec une transition d epaisseur'
-        print ' <MACR_ASCOUF_MAIL> la fissure doit obligatoirement etre transverse '
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' avec une transition d epaisseur \n'
+        message=message+' la fissure doit obligatoirement etre transverse  \n'
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
      if ORIEN!=90.0 and COUDE['SYME']!='ENTIER' :
-        print ' <MACR_ASCOUF_MAIL> l orientation de la fissure doit'
-        print ' <MACR_ASCOUF_MAIL> etre transverse (orien : 90.) pour modeliser '
-        print ' <MACR_ASCOUF_MAIL> un quart ou une demi structure '
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' l orientation de la fissure doit \n'
+        message=message+' etre transverse (orien : 90.) pour modeliser  \n'
+        message=message+' un quart ou une demi structure  \n'
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
      if ORIEN!=90.0 and FAXI=='OUI' :
-        print ' <MACR_ASCOUF_MAIL> la fissure est axisymetrique : son'
-        print ' <MACR_ASCOUF_MAIL> orientation doit etre transverse (ORIEN : 90.)'
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' la fissure est axisymetrique : son \n'
+        message=message+' orientation doit etre transverse (ORIEN : 90.) \n'
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
 ################################################################################
 #     --- caracteristiques des sous epaisseurs ---
@@ -2208,92 +2220,72 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   if SOUS_EPAIS_MULTI!=None : MCL_SOUS_EPAIS = SOUS_EPAIS_MULTI
   if SOUS_EPAIS_COUDE!=None : MCL_SOUS_EPAIS = SOUS_EPAIS_COUDE
   if SOUS_EPAIS_MULTI!=None and NBTRAN!=0 :
-     print ' <MACR_ASCOUF_MAIL> il ne peut pas y avoir plusieurs'
-     print ' <MACR_ASCOUF_MAIL> sous-epaisseurs en meme temps qu une'
-     print ' <MACR_ASCOUF_MAIL> transition d epaisseur : si une seule'
-     print ' <MACR_ASCOUF_MAIL> sous-epaisseur utiliser sous_epais_coude'
-     self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-     ier = ier+1
-     return ier
+     message=        ' il ne peut pas y avoir plusieurs \n'
+     message=message+' sous-epaisseurs en meme temps qu une \n'
+     message=message+' transition d epaisseur : si une seule \n'
+     message=message+' sous-epaisseur utiliser sous_epais_coude \n'
+     UTMESS('F', "MACR_ASCOUF_MAIL", message)
   if SOUS_EPAIS_COUDE!=None and FISS_COUDE!=None and NBTRAN!=0 :
-     print ' <MACR_ASCOUF_MAIL> avec une transition d epaisseur'
-     print ' <MACR_ASCOUF_MAIL> il doit obligatoirement y avoir un defaut'
-     print ' <MACR_ASCOUF_MAIL> soit une fissure  soit une sous-epaisseur'
-     self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-     ier = ier+1
-     return ier
+     message=        ' avec une transition d epaisseur'
+     message=message+' il doit obligatoirement y avoir un defaut \n'
+     message=message+' soit une fissure  soit une sous-epaisseur \n'
+     UTMESS('F', "MACR_ASCOUF_MAIL", message)
   if MCL_SOUS_EPAIS!=None :
      AZIM = 90.0
      if MCL_SOUS_EPAIS.__class__.__name__  !='MCList' : MCL_SOUS_EPAIS=[MCL_SOUS_EPAIS,]
      if len(MCL_SOUS_EPAIS)!=1 and COUDE['SYME']!='ENTIER' :
-        print ' <MACR_ASCOUF_MAIL> ne modeliser qu une seule'
-        print ' <MACR_ASCOUF_MAIL> sous-epaisseur pour un quart ou demi-coude'
-        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-        ier = ier+1
-        return ier
+        message=        ' ne modeliser qu une seule \n'
+        message=message+' sous-epaisseur pour un quart ou demi-coude\n '
+        UTMESS('F', "MACR_ASCOUF_MAIL", message)
      for ssep in MCL_SOUS_EPAIS :
         isep=isep+1
         if ssep['AXE_CIRC']!=None and ssep['TYPE']=='AXIS' :
-           print ' <MACR_ASCOUF_MAIL> vous ne pouvez declarer la sous-'
-           print ' <MACR_ASCOUF_MAIL> epaisseur comme axisymetrique et donner'
-           print ' <MACR_ASCOUF_MAIL> une taille d axe circonferentiel'
-           self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-           ier = ier+1
-           return ier
+           message=        ' vous ne pouvez declarer la sous- \n'
+           message=message+' epaisseur comme axisymetrique et donner \n'
+           message=message+' une taille d axe circonferentiel \n'
+           UTMESS('F', "MACR_ASCOUF_MAIL", message)
         if ssep['AXE_CIRC']==None and ssep['TYPE']=='ELLI' :
-           print ' <MACR_ASCOUF_MAIL> vous devez donner une taille d axe'
-           print ' <MACR_ASCOUF_MAIL> circonferentiel pour une sous-epaisseur de'
-           print ' <MACR_ASCOUF_MAIL> type elliptique'
-           self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-           ier = ier+1
-           return ier
+           message=        ' vous devez donner une taille d axe \n'
+           message=message+' circonferentiel pour une sous-epaisseur de \n'
+           message=message+' type elliptique \n'
+           UTMESS('F', "MACR_ASCOUF_MAIL", message)
         if ssep['POSI_CURV_LONGI']!=None:
            if ssep['POSI_CURV_LONGI']>(ALPHA*RC*pi/180.0) :
-              print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-              print ' <MACR_ASCOUF_MAIL> sous-epaisseur numero :',isep
-              print ' <MACR_ASCOUF_MAIL> abscisse curv. longit. :',ssep['POSI_CURV_LONGI']
-              print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',(ALPHA*RC*pi/180.0)
-              self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-              ier = ier+1
-              return ier
+              message=        ' valeur hors domaine de validite \n'
+              message=message+' sous-epaisseur numero : %d \n'%isep
+              message=message+' abscisse curv. longit. : %.2f \n'%ssep['POSI_CURV_LONGI']
+              message=message+' valeur maximale autorisee : %.2f \n'%(ALPHA*RC*pi/180.0)
+              UTMESS('F', "MACR_ASCOUF_MAIL", message)
            LDEFAU = ssep['POSI_CURV_LONGI'] + ssep['AXE_LONGI']/2.0
            BETA = 0.0
         else:
            BETA=ssep['POSI_ANGUL']
            if (BETA<0.) or (BETA>ALPHA) :
-              print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-              print ' <MACR_ASCOUF_MAIL> sous-epaisseur numero :',isep
-              print ' <MACR_ASCOUF_MAIL> position angulaire centre sous-ep :',BETA
-              print ' <MACR_ASCOUF_MAIL> valeur limite autorisee :',ALPHA
-              self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-              ier = ier+1
-              return ier
+              message=        ' valeur hors domaine de validite \n'
+              message=message+' sous-epaisseur numero : %d \n'%isep
+              message=message+' position angulaire centre sous-ep : %.2f \n'%BETA
+              message=message+' valeur limite autorisee : %.2f \n'%ALPHA
+              UTMESS('F', "MACR_ASCOUF_MAIL", message)
            LDEFAU = (BETA*RC*pi/180.0) + ssep['AXE_LONGI']/2.0
 #
         if ssep['POSI_CURV_CIRC']!=None:
            if ssep['POSI_CURV_CIRC']>(2*pi*RM) :
-              print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-              print ' <MACR_ASCOUF_MAIL> sous-epaisseur numero :',isep
-              print ' <MACR_ASCOUF_MAIL> abscisse curv. circonf. :',ssep['POSI_CURV_CIRC']
-              print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',(2*pi*RM)
-              self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-              ier = ier+1
-              return ier
+              message=        ' valeur hors domaine de validite \n'
+              message=message+' sous-epaisseur numero : %d \n'%isep
+              message=message+' abscisse curv. circonf. : %.2f \n'%ssep['POSI_CURV_CIRC']
+              message=message+' valeur limite autorisee : %.2f \n'%(2*pi*RM)
+              UTMESS('F', "MACR_ASCOUF_MAIL", message)
            if ssep['POSI_CURV_CIRC']!=(pi*RM) and ssep['TYPE']=='AXIS':
-              print ' <MACR_ASCOUF_MAIL> le centre d une sous-epaisseur'
-              print ' <MACR_ASCOUF_MAIL> axisymetrique est impose en intrados (pi*RM)'
-              self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-              ier = ier+1
-              return ier
+              message=        ' le centre d une sous-epaisseur \n'
+              message=message+' axisymetrique est impose en intrados (pi*RM) \n'
+              UTMESS('F', "MACR_ASCOUF_MAIL", message)
         else:
            ssep.IPHIC=ssep['AZIMUT']
            if ssep['AZIMUT']!=180. and ssep['TYPE']=='AXIS':
-              print ' <MACR_ASCOUF_MAIL> le centre d une sous-epaisseur'
-              print ' <MACR_ASCOUF_MAIL> axisymetrique est impose en intrados'
-              print ' <MACR_ASCOUF_MAIL> l azimut est fixe a 180 degres'
-              self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-              ier = ier+1
-              return ier
+              message=        ' le centre d une sous-epaisseur \n'
+              message=message+' axisymetrique est impose en intrados \n'
+              message=message+' l azimut est fixe a 180 degres \n'
+              UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #        l_ITYPE.append(ssep['TYPE'           ])
 #        l_ICIRC.append(ssep['AXE_CIRC'       ])
 #        l_ILONC.append(ssep['AXE_LONGI'      ])
@@ -2309,11 +2301,11 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 #        l_IEVID.append(ssep['EMPREINTE'      ])
 
      if SOUS_EPAIS_COUDE!=None and COUDE['NB_ELEM_EPAIS']!=3 :
-        print ' <MACR_ASCOUF_MAIL> le nombre d elements dans l'
-        print ' <MACR_ASCOUF_MAIL> epaisseur du coude n est pas parametrable pour'
-        print ' <MACR_ASCOUF_MAIL> la version 2 de la procedure de plaque avec sous'
-        print ' <MACR_ASCOUF_MAIL> -epaisseur : mot-cle NB_ELEM_EPAIS ignore'
-        print ' <A> <MACR_ASCOUF_MAIL> alarme'
+        message=        ' le nombre d elements dans l \n'
+        message=message+' epaisseur du coude n est pas parametrable pour \n'
+        message=message+' la version 2 de la procedure de plaque avec sous \n'
+        message=message+' -epaisseur : mot-cle NB_ELEM_EPAIS ignore \n'
+        UTMESS('A', "MACR_ASCOUF_MAIL", message)
 #
 ################################################################################
 #     --- verifications de coherences ---
@@ -2322,50 +2314,38 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 # donnees globales
   if COUDE['TRANSFORMEE']=='COUDE' or COUDE['TRAN_EPAIS']=='NON' :
     if SUREP<0. or SUREP>(RM-EP1/2.0):
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-       print ' <MACR_ASCOUF_MAIL> surepaisseur :',SUREP
-       print ' <MACR_ASCOUF_MAIL> valeur limite autorisee (RM-EP1/2) :',(RM-EP1/2.0)
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite \n'
+       message=message+' surepaisseur : \n',SUREP
+       message=message+' valeur limite autorisee (RM-EP1/2) : %.2f \n'%(RM-EP1/2.0)
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
   if RC<=(RM+EP1/2.0):
-     print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-     print ' <MACR_ASCOUF_MAIL> le rayon de cintrage :',RC
-     print ' <MACR_ASCOUF_MAIL> doit etre superieur a (RM+EP1/2) :',(RM+EP1/2.0)
-     self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-     ier = ier+1
-     return ier
+     message=        ' valeur hors domaine de validite \n'
+     message=message+' le rayon de cintrage : %.2f \n',RC
+     message=message+' doit etre superieur a (RM+EP1/2) : %.2f \n'%(RM+EP1/2.0)
+     UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
 # coude fissure
 #
   if FISS_COUDE!=None:
     if (RM/EP1)<5. or (RM/EP1)>50.:
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite (5,50)'
-       print ' <MACR_ASCOUF_MAIL> rapport RM/EP1 :',(RM/EP1)
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite (5,50) \n'
+       message=message+' rapport RM/EP1 : %.2f \n'%(RM/EP1)
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
     if FISS_COUDE['ABSC_CURV']!=None:
      if SF<0. or SF>(ALPHA*RC*pi/180.0) :
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-       print ' <MACR_ASCOUF_MAIL> abscisse curviligne centre fissure :',SF
-       print ' <MACR_ASCOUF_MAIL> valeur limite autorisee :',(ALPHA*RC*pi/180.0)
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite \n'
+       message=message+' abscisse curviligne centre fissure : %.2f \n'%SF
+       message=message+' valeur limite autorisee : %.2f \n'%(ALPHA*RC*pi/180.0)
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
     if (NT-2*(NT/2))!=0:
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-       print ' <MACR_ASCOUF_MAIL> nombre de tranches :',NT
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite \n'
+       message=message+' nombre de tranches : %d \n'%NT
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
     if FISS_COUDE['ABSC_CURV'] and ((BETA<0.) or (BETA>ALPHA)):
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-       print ' <MACR_ASCOUF_MAIL> position angulaire  centre fissure :',BETA
-       print ' <MACR_ASCOUF_MAIL> posi_angul doit etre >= 0 et <= ',ALPHA
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite \n'
+       message=message+' position angulaire  centre fissure : %.2f \n'%BETA
+       message=message+' posi_angul doit etre >= 0 et <=  %.2f \n'%ALPHA
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
 # transition d epaisseur
 #
@@ -2373,131 +2353,101 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
     LCOUDE = ALPHA * RC * pi / 180.0
     DEXT = 2.0*RM + EP1
     if (LTRAN<LDEFAU) and (LTRAN>LCOUDE) :
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-       print ' <MACR_ASCOUF_MAIL> debut transition d epaisseur :',LTRAN
-       print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',LDEFAU
-       print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',LCOUDE
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite \n'
+       message=message+' debut transition d epaisseur : %.2f \n'%LTRAN
+       message=message+' valeur minimale autorisee : %.2f \n'%LDEFAU
+       message=message+' valeur maximale autorisee : %.2f \n'%LCOUDE
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
     if (TETA1<0.) or (TETA1>30.) :
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-       print ' <MACR_ASCOUF_MAIL> angle de transition TETA1 :',TETA1
-       print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',0.
-       print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',30.
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-       ier = ier+1
-       return ier
+       message=        ' valeur hors domaine de validite \n'
+       message=message+' angle de transition TETA1 : %.2f \n'%TETA1
+       message=message+' valeur minimale autorisee : %.2f \n'%0.
+       message=message+' valeur maximale autorisee : %.2f \n'%30.
+       UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
 # transition d epaisseur a une pente
 #
     if NBTRAN==1:
        if (EP1<12.) or (EP1>80.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> epaisseur avant la transition :',EP1
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',12.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',80.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite \n'
+          message=message+' epaisseur avant la transition : %.2f \n'%EP1
+          message=message+' valeur minimale autorisee : %.2f \n'%12.
+          message=message+' valeur maximale autorisee : %.2f \n'%80.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EP2<20.) or (EP2>110.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> epaisseur apres la transition :',EP2
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',20.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',110.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite \n'
+          message=message+' epaisseur apres la transition : %.2f \n'%EP2
+          message=message+' valeur minimale autorisee : %.2f \n'%20.
+          message=message+' valeur maximale autorisee : %.2f \n'%110.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EP1>EP2) :
-          print ' <MACR_ASCOUF_MAIL> l epaisseur avant la transition'
-          print ' <MACR_ASCOUF_MAIL> doit etre inferieure '
-          print ' <MACR_ASCOUF_MAIL> a celle apres la transition'
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' l epaisseur avant la transition \n'
+          message=message+' doit etre inferieure  \n'
+          message=message+' a celle apres la transition \n'
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        LTRANF = LTRAN + ((EP2-EP1)/(tan(TETA1)))
        if (LTRANF>LCOUDE) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> fin transition d epaisseur :',LTRANF
-          print ' <MACR_ASCOUF_MAIL> valeur limite autorisee :',LCOUDE
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite \n'
+          message=message+' fin transition d epaisseur : %.2f \n'%LTRANF
+          message=message+' valeur limite autorisee : %.2f \n'%LCOUDE
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if DEXT<112. or DEXT>880. :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> diam ext du tube avant transition:',DEXT
-          print ' <MACR_ASCOUF_MAIL> valeur minimum autorisee :',112.
-          print ' <MACR_ASCOUF_MAIL> valeur maximum autorisee :',880.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' diam ext du tube avant transition: %.2f \n'%DEXT
+          message=message+' valeur minimum autorisee : %.2f \n'%112.
+          message=message+' valeur maximum autorisee : %.2f \n'%880.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
 # transition d epaisseur a une pente
 #
     else:
        if (TETA2<0.) or (TETA2>45.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> angle de transition TETA2 :',TETA2
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',0.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',45.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' angle de transition TETA2: %.2f \n'%TETA2
+          message=message+' valeur minimum autorisee : %.2f \n'%0.
+          message=message+' valeur maximum autorisee : %.2f \n'%45.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EP1<7.) or (EP1>35.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> epaisseur avant 1ere transition :',EP1
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',7.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',35.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' epaisseur avant 1ere transition: %.2f \n'%EP1
+          message=message+' valeur minimum autorisee : %.2f \n'%7.
+          message=message+' valeur maximum autorisee : %.2f \n'%35.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EP2<15.) or (EP2>40.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> epaisseur avant 2eme transition :',EP2
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',15.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',40.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' epaisseur avant 2eme transition: %.2f \n'%EP2
+          message=message+' valeur minimum autorisee : %.2f \n'%15.
+          message=message+' valeur maximum autorisee : %.2f \n'%40.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EPI<15.) or (EPI>40.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> epaisseur intermediaire :',EPI
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',15.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',40.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' epaisseur intermediaire: %.2f \n'%EPI
+          message=message+' valeur minimum autorisee : %.2f \n'%15.
+          message=message+' valeur maximum autorisee : %.2f \n'%40.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EP1>EPI) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> l epaisseur avant la transition'
-          print ' <MACR_ASCOUF_MAIL> doit etre inferieure a l epaisseur intermediaire'
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' l epaisseur avant la transition \n'
+          message=message+' doit etre inferieure a l epaisseur intermediaire \n'
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (EP2<EPI) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> l epaisseur apres la transition'
-          print ' <MACR_ASCOUF_MAIL> doit etre inferieure a l epaisseur intermediaire'
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' l epaisseur apres la transition \n'
+          message=message+' doit etre inferieure a l epaisseur intermediaire \n'
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        LTRANF = LTRAN  + (EPI-EP1)/(tan(TETA1))
        LTRANF = LTRANF + (EP2-EPI)/(tan(TETA2))
        if (LTRANF>LCOUDE) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> fin transition d epaisseur :',LTRANF
-          print ' <MACR_ASCOUF_MAIL> valeur limite autorisee :',LCOUDE
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' fin transition d epaisseur: %.2f \n'%LTRANF
+          message=message+' valeur limite autorisee : %.2f \n'%LCOUDE
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
        if (DEXT<77.) or (DEXT>355.) :
-          print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite'
-          print ' <MACR_ASCOUF_MAIL> diam ext du tube avant transition:',LTRANF
-          print ' <MACR_ASCOUF_MAIL> valeur minimale autorisee :',77.
-          print ' <MACR_ASCOUF_MAIL> valeur maximale autorisee :',355.
-          self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
-          ier = ier+1
-          return ier
+          message=        ' valeur hors domaine de validite\n'
+          message=message+' diam ext du tube avant transition: %.2f \n'%LTRANF
+          message=message+' valeur minimum autorisee : %.2f \n'%77.
+          message=message+' valeur maximum autorisee : %.2f \n'%355.
+          UTMESS('F', "MACR_ASCOUF_MAIL", message)
 #
 ################################################################################
 #     --- calcul taille initiale des defauts sur la plaque ---
@@ -2530,9 +2480,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   if   logiel=='GIBI98'  : logiel = loc_gibi+'gibi98'
   elif logiel=='GIBI2000': logiel = loc_gibi+'gibi2000'
   else                   :
-       self.cr.fatal("<F> <MACR_ASCOUF_MAIL> seuls gibi98 et gibi2000 sont appelableS")
-       ier = ier+1
-       return ier
+       UTMESS('F', "MACR_ASCOUF_MAIL", "seuls gibi98 et gibi2000 sont appelables")
 #
 #     --- ecriture sur le fichier .datg  de la procedure ---
 #

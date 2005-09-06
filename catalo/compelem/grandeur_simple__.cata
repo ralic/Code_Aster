@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF COMPELEM  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -196,26 +196,26 @@ GRANDEUR_SIMPLE__
        D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2
-                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4
-                    UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
-                    WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
-                    VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
-                    GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
-                    D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y
-                    E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
+                    H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X     
+                    E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z                          
+                    LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
+                    WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
+                    VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
+                    UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
+                    WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
+                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z                    
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2
-                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4
-                    UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
-                    WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
-                    VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
-                    GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
-                    D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y
-                    E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
+                    H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
+                    E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
+                    LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
+                    WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
+                    VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
+                    UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
+                    WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
+                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z                                        
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
@@ -230,16 +230,15 @@ GRANDEUR_SIMPLE__
        E4X,E4Y,E4Z : DDLS ENRICHIS (CRACKTIP4) X-FEM  >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2
-                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4
-                    UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
-                    WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
-                    VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
-                    GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
-                    D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y
-                    E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
-
+                    H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X      
+                    E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z      
+                    LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
+                    WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
+                    VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
+                    UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
+                    WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
+                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z                   
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE

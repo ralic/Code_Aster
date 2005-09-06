@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF E_ETAPE Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,11 +24,13 @@
 """
 """
 # Modules Python
-import string,types,sys,os
+import string,types,sys,os,fpformat
+from os import times
 
 # Modules Eficas
 from Noyau.N_utils import prbanner
 from Noyau.N_Exception import AsException
+from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
 import genpy
 import aster
 
@@ -70,23 +72,31 @@ class ETAPE:
       assert(type(self.definition.op)==types.IntType),"type(self.definition.op)="+`type(self.definition.op)`
 
       ier=0
-### CD pourquoi ne plus imprimer le texte des macros fortrans ?
-### CD if self.definition.op > 0 and self.modexec == 2:
-      if self.modexec == 2:
-           # affichage du texte de la commande
-           self.AfficheTexteCommande()       
 
       # Il ne faut pas executer les commandes non numerotees
+      decalage="  "  # blancs au debut de chaque ligne affichee
+      echo_mess=[]
       if self.icmd is not None:
           # appel de la methode oper dans le module codex
+          if self.modexec == 2:
+             self.AfficheTexteCommande()       
           ier=self.codex.oper(self,0,self.modexec,self.icmd)
+          if self.modexec == 2:
+             self.cpu_user=times()[0]-self.cpu_user
+             self.cpu_syst=times()[1]-self.cpu_syst
+             # affichage du texte de la commande
+             self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
+      else:
+          if self.modexec == 2:
+             # affichage du texte de la commande
+             self.AfficheTexteCommande()       
 
       if CONTEXT.debug : 
            prbanner(" fin d execution de l operateur %s numero %s " % (self.definition.nom,
                                                                        self.definition.op))
       return ier
 
-   def AfficheTexteCommande( self , sortie=sys.stdout ) :
+   def AfficheTexteCommande( self, sortie=sys.stdout ) :
       """ 
       Methode : ETAPE.AfficheTexteCommande
       Intention : afficher sur la sortie standard (par defaut) le cartouche de
@@ -118,47 +128,78 @@ class ETAPE:
                   ficode.write('\n')
         ficode.close()
 
-      echo_mess=[]
-      decalage="  "  # blancs au debut de chaque ligne affichee
-      echo_mess.append( '\n' )
-      echo_mess.append( decalage )
-      echo_mess.append("#  ---------------------------------------------------------------------------")
-      echo_mess.append( '\n' )
+      if (not isinstance(self.parent,MACRO_ETAPE)) or \
+         (self.parent.nom=='INCLUDE'             ) or \
+         (self.jdc.impr_macro=='OUI'             ) :
+         echo_mess=[]
+         decalage="  "  # blancs au debut de chaque ligne affichee
+         echo_mess.append( '\n' )
+         echo_mess.append( decalage )
+         echo_mess.append("#  ---------------------------------------------------------------------------")
+         echo_mess.append( '\n' )
 
-      # Affichage numero de la commande (4 digits)
-      echo_mess.append( decalage+" #  COMMANDE NO : " )
-      chaine=`self.icmd`
-      l=len(chaine)
-      while l < 4  :
-            chaine='0'+chaine
-            l=l+1
-      echo_mess.append( chaine )
-      # Affichage nom du concept resultat
-      echo_mess.append( "          ")
-      echo_mess.append( "CONCEPT DE TYPE : " )
-      if self.sd != None:
-            type_concept=self.sd.__class__.__name__
-            echo_mess.append( type_concept )
+         # Affichage numero de la commande (4 digits)
+         echo_mess.append( decalage+" #  COMMANDE NO : " )
+         chaine=`self.icmd`
+         l=len(chaine)
+         while l < 4  :
+               chaine='0'+chaine
+               l=l+1
+         echo_mess.append( chaine )
+         # Affichage nom du concept resultat
+         echo_mess.append( "          ")
+         echo_mess.append( "CONCEPT DE TYPE : " )
+         if self.sd != None:
+               type_concept=self.sd.__class__.__name__
+               echo_mess.append( type_concept )
 
-      echo_mess.append( '\n' )
-      echo_mess.append( decalage )
-      echo_mess.append( "#  -------------               -----------------")
+         echo_mess.append( '\n' )
+         echo_mess.append( decalage )
+         echo_mess.append( "#  -------------               -----------------")
 
-      # recuperation du texte de la commande courante dans la chaine
-      # commande_formatee
-      v=genpy.genpy(defaut='avec')
-      self.accept(v)
-      echo_mess.append( '\n' )
-      commande_formatee=v.formate_etape()
-      echo_mess.append(commande_formatee)
-      echo_mess.append( '\n' )
+         # recuperation du texte de la commande courante dans la chaine
+         # commande_formatee
+         v=genpy.genpy(defaut='avec')
+         self.accept(v)
+         echo_mess.append( '\n' )
+         commande_formatee=v.formate_etape()
+         echo_mess.append(commande_formatee)
+         texte_final=string.join(echo_mess)
+         aster.affiche('MESSAGE',texte_final)
 
-      echo_mess.append( '\n' ) # saut de ligne final (pour faire beau)
-      texte_final=string.join(echo_mess)
-#jpl      print 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
-#jpl      print texte_final
-#jpl      print 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
-      aster.affiche(texte_final)
+      return
+
+   def AfficheFinCommande( self , cpu_user, cpu_syst, sortie=sys.stdout ) :
+      """ 
+      Methode : ETAPE.AfficheFinCommande
+      Intention : afficher sur la sortie standard (par defaut) la fin du 
+                  cartouche de la commande apres son execution.
+      """
+      if (not isinstance(self.parent,MACRO_ETAPE)) or \
+         (self.parent.nom=='INCLUDE'             ) or \
+         (self.jdc.impr_macro=='OUI'             ) :
+         echo_mess=[]
+         decalage="  "  # blancs au debut de chaque ligne affichee
+         echo_mess.append( decalage )
+         echo_mess.append( '\n' )
+         if cpu_user!=None :
+            chaine=`self.icmd`
+            l=len(chaine)
+            while l < 4  :
+               chaine='0'+chaine
+               l=l+1
+            echo_fin=decalage+" #  FIN COMMANDE NO : "+chaine+"   DUREE TOTALE:"
+            echo_fin=echo_fin+fpformat.fix(cpu_syst+cpu_user,2).rjust(12)
+            echo_fin=echo_fin+"s (SYST:"+fpformat.fix(cpu_syst,2).rjust(12)+"s)"
+         else :
+            echo_fin=decalage+" #  FIN COMMANDE : "+self.nom
+         echo_mess.append(echo_fin)
+         echo_mess.append( '\n' )
+         echo_mess.append( decalage )
+         echo_mess.append("#  ---------------------------------------------------------------------------")
+         echo_mess.append( '\n' )
+         texte_final=string.join(echo_mess)
+         aster.affiche('MESSAGE',texte_final)
 
       return
 
@@ -231,4 +272,7 @@ class ETAPE:
       self.Exec()
       self.setmode(2)
       self.Exec()
+
+   def get_liste_etapes(self,liste):
+      liste.append(self.etape)
 

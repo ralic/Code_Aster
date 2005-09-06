@@ -7,7 +7,7 @@
       INTEGER GD,IIMA,NINO,NUNO(*),NDDL,NUDDL(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 05/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,6 +84,7 @@ C
       CNOCMP = '&&CHCSUR.&NOEUDCMP'
       CNUCMP = '&&CHCSUR.&NUMCMP'
       IF (IIMA.NE.0) NINO = IIMA
+
 C --- ANCIENNES DIMENSION DE CDEFI
 C
       CALL JEEXIN(CDEFI,IERDEF)
@@ -127,12 +128,14 @@ C     LE MEME
             NIEC = ZI(IPRNM-1+NEC*(INO-1)+IEC)
             IF (NIEC.EQ.0) GOTO 10
             JCMP = 0
-            DO 1000 JJ = 1,MXCMP
-              IF (JJ.GT.30) CALL VERI32()
+            NBCOMP = 30
+            NBECRE = MOD(MXCMP,30)
+            IF (IEC.EQ.NEC.AND.NBECRE.GT.0) NBCOMP = NBECRE
+            DO 1000 JJ = 1,NBCOMP
               K = IAND(NIEC,2**JJ)
               IF (K.NE.0) JCMP = JCMP+1
               IF (JJ.EQ.J) THEN
-                IF (K.EQ.0) CALL UTMESS('F','CHCSUR_1','PROBLEME DANS'
+                IF (K.EQ.0) CALL UTMESS('F','CHCSUR','PROBLEME DANS'
      +                      //' LES ENTIERS CODES')
                 ZI(INUCMP-1+I) = JCMP
                 GO TO 10

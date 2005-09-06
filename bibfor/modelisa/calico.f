@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,LIGRMZ,NDIM,FONREE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

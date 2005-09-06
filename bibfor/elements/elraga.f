@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C     -----------------------------------------
 
 C     ------------------------------------------------------------------
       IF (ELREFA.EQ.'HE8' .OR. ELREFA.EQ.'H20' .OR.
-     &    ELREFA.EQ.'H27' .OR. ELREFA.EQ.'X20') THEN
+     &    ELREFA.EQ.'H27') THEN
 
         NPAR = 0
 
@@ -176,7 +176,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.EQ.3) ZPG(INO+8) = XNO(NDIM* (INO-1)+3)
  300      CONTINUE
         ENDIF
-        
+
         NPI = 0
         DO 60 IX = 1,NPAR
           DO 50 IY = 1,NPAR
@@ -214,8 +214,7 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15' .OR.
-     &         ELREFA.EQ.'X15') THEN
+      ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
 
         IF (FAPG.EQ.'FPG6') THEN
           NPX = 2
@@ -339,7 +338,7 @@ C ------- POUR LES POINTS DE GAUSS -------------------------------------
           HT(1) = 0.166666666666667D0
           HT(2) = HT(1)
           HT(3) = HT(1)
-          
+
 C ------- POUR LES SOMMETS ---------------------------------------------
           DO 280,INO = 1,NNOS
              HPG(INO+6) = VOL/NNOS
@@ -363,8 +362,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
  90     CONTINUE
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10' .OR. 
-     &         ELREFA.EQ.'X10') THEN
+      ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10') THEN
 
         IF (FAPG.EQ.'FPG4') THEN
 
@@ -912,7 +910,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF ( ELREFA.EQ.'QU4' .OR. ELREFA.EQ.'QU8' .OR. 
+      ELSE IF ( ELREFA.EQ.'QU4' .OR. ELREFA.EQ.'QU8' .OR.
      &          ELREFA.EQ.'QU9') THEN
 
         IF (FAPG.EQ.'FPG1') THEN

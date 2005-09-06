@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 05/09/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,7 +180,41 @@ ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=ERRERELU, ) ) ;
 #
-# 6. Test de non-regression
+# 6. Validation des mots cles GROUP_NO,GROUP_MA,NOEUD,MAILLE de 
+# l'operateur IMPR_RESU au FORMAT 'MED'
+
+
+DEFI_FICHIER(UNITE=81)
+
+IMPR_RESU(UNITE=81,FORMAT='MED',
+          RESU=(_F( RESULTAT=RESUTRQ2,NOM_CHAM ='DEPL',GROUP_NO='OPPOSE',),
+                _F( RESULTAT=RESUTRQ2,NOM_CHAM ='EPSI_ELNO_DEPL',GROUP_MA='TRIA',MAILLE='MA43'),),)
+
+
+UUU=LIRE_RESU(TYPE_RESU='EVOL_ELAS',
+               FORMAT='MED',
+               MODELE=MODETRQU,
+               FORMAT_MED=(
+                          _F( NOM_CHAM_MED='RESUTRQ2DEPL____________________',
+                              NOM_CHAM    ='DEPL' ),
+                          _F( NOM_CHAM_MED='RESUTRQ2EPSI_ELNO_DEPL__________',
+                              NOM_CHAM    ='EPSI_ELNO_DEPL'),
+                         ) ,
+               UNITE=81,TOUT_ORDRE='OUI');
+
+DEFI_FICHIER(UNITE=82)
+
+IMPR_RESU(UNITE=82, FORMAT='GMSH',
+         RESU=(_F(RESULTAT=UUU,NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),),
+               _F(RESULTAT=UUU,NOM_CHAM='EPSI_ELNO_DEPL',NOM_CMP=('EPXX','EPYY','EPXY'),),),)
+
+TEST_FICHIER(FICHIER='./fort.82',
+             VALE_K='3d171293fef5dcff851868aefe5682b9',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.11')
+
+#
+# 7. Test de non-regression
 #
 TEST_RESU(CHAM_NO=(
                  _F( CHAM_GD=DEPLRELU,

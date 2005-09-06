@@ -1,6 +1,6 @@
       SUBROUTINE UTTCPU ( INDI , PARA , NBV , TEMPS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/10/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF UTILITAI  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C               TEMPS(5) TEMPS CPU USER TOTAL POUR L'INDICE INDI
 C               TEMPS(6) TEMPS CPU SYSTEME TOTAL POUR L'INDICE INDI
 C ----------------------------------------------------------------------
       INTEGER            NB1, NB2, NB
-      PARAMETER        ( NB1 = -10 , NB2 = 100 , NB = NB2-NB1+1)
+      PARAMETER        ( NB1 = 0 , NB2 = 100 , NB = NB2-NB1+1)
       REAL *8            USCPUI(NB1:NB2),SYCPUI(NB1:NB2)
       REAL *8            USCPU(NB1:NB2),SYCPU(NB1:NB2)
       INTEGER            NBAPPE(NB1:NB2)

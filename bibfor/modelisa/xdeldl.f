@@ -1,7 +1,7 @@
       SUBROUTINE XDELDL(MOD,MA,GRMAEN,JSTANO,LISREL,NREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       REAL*8 RBID,BETAR,COEFR(2)
       INTEGER IER,NBNO,JMA,LONG,IMA,NMAABS,NBNOMA,JCONX1,JCONX2
       INTEGER INO,NUNO,ISTATU,K,IRET,NDIM(2),JPRNM,NBEC,NBCMP,INOM
-      INTEGER ICMP,INDIK8,NNOS
+      INTEGER ICMP,INDIK8,NNOS,NFE,ICMP2,ICMP3
       CHARACTER*1 K1BID
       CHARACTER*8 K8BID,NOMNO,DDLM(3),DDLC(3),DDLH(3),DDLE(12),DDL(2)
       CHARACTER*8 NOEUD(2),NOMG
@@ -70,6 +70,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       DATA DDLE/'E1X','E1Y','E1Z','E2X','E2Y','E2Z','E3X','E3Y','E3Z',
      &     'E4X','E4Y','E4Z'/
       DATA BETAR/0.D0/
+      DATA NFE/4/
 C-------------------------------------------------------------
 
       CALL JEMARQ()
@@ -142,7 +143,7 @@ C           --------------------------
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS E
-              DO 20 K = 1,12
+              DO 20 K = 1,3*NFE
                 CALL AFRELA(1.D0,CBID,DDLE(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
@@ -168,7 +169,7 @@ C             ON SUPPRIME LES DDLS H
    30         CONTINUE
             ELSE IF (ISTATU.EQ.1) THEN
 C             ON SUPPRIME LES DDLS E
-              DO 40 K = 1,12
+              DO 40 K = 1,3*NFE
                 CALL AFRELA(1.D0,CBID,DDLE(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
@@ -178,10 +179,9 @@ C             ON SUPPRIME LES DDLS H ET E
               DO 50 K = 1,3
                 CALL AFRELA(1.D0,CBID,DDLH(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
-
                 NREL = NREL + 1
    50         CONTINUE
-              DO 60 K = 1,12
+              DO 60 K = 1,3*NFE
                 CALL AFRELA(1.D0,CBID,DDLE(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
@@ -194,7 +194,7 @@ C             ON SUPPRIME LES DDLS H ET E
 
 C         POUR LES NOEUDS OÙ LE STATUT VAUT 0, IL FAUT IMPOSER
 C         DX = DCX , DY = DCY ET DZ = DCZ SOUS RÉSERVE QUE CES NOEUDS
-C         PORTENT BIEN LES DDLS DX, DY ET DZ (ON VÉRIFIE QUE 'DX')
+C         PORTENT BIEN LES DDLS DX, DY ET DZ (ON NE VÉRIFIE QUE 'DX')
           IF (ISTATU.EQ.0) THEN
             IF (EXISDG(ZI(JPRNM-1+ (NUNO-1)*NBEC+1),ICMP)) THEN
               DO 70 K = 1,3

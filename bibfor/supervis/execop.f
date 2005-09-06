@@ -3,7 +3,7 @@
       INTEGER            ICMD  , ICOND , IERTOT, IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,8 @@ C     COMMON POUR LA DETECTION D'UNE SORTIE EN ERREUR SI PAS PAR_LOT
       COMMON  /CERRLO/ IERLOT
 
       INTEGER     IMPR(3) , NUOPER
-      REAL*8      XTT
       CHARACTER*6  NOMMAR
       CHARACTER*8  CMDUSR
-      INTEGER     ISTAT
 C     ------------------------------------------------------------------
 
 C     --- CHARGEMENT POUR LES FONCTIONS GET ET IMPRESSION EVENTUELLE ---
@@ -61,8 +59,6 @@ C        --- EXECUTION ---
       ENDIF
 
       CALL GCECDU( IMPR , ICMD , NUOPER )
-      ISTAT = 1
-      CALL EXSTAT( ISTAT , ICOND , XTT )
 
       NOMMAR = 'OP'
       CALL CODENT(NUOPER,'D0',NOMMAR )
@@ -128,8 +124,6 @@ C     --LIBERATION DES OBJETS RANENES EN MEMOIRE PAR JEVEUT :
             CALL GCECDU( IMPR , ICMD , NUOPER )
          ENDIF
       ENDIF
-      ISTAT = 2
-      CALL EXSTAT( ISTAT , ICOND , XTT )
       IF (ICOND .EQ. 0) THEN
         CALL JEDETV()
       ENDIF

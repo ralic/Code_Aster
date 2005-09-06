@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -213,7 +213,7 @@ C ======================================================================
      >              TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
-     >              DSDEME)
+     >              DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'HOEK_BROWN') THEN
         COMPLG = 'HOEK_BROWN'
@@ -223,7 +223,7 @@ C ======================================================================
      >              TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
-     >              DSDEME)
+     >              DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'DRUCKER_PRAGER') THEN
          MECTRU = .TRUE.

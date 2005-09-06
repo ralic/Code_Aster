@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 05/09/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,8 @@ C DEB ------------------------------------------------------------------
       ELSEIF ( TYPM(1:4) .EQ. 'SEG4' ) THEN
          IPAS = 3
       ELSE
-         CALL UTMESS('F',NOMCMD,'BUG: TYPE INCONNU '//TYPM )
+         CALL UTMESS('F',NOMCMD,'TYPE DE MAILLE INCONNU : VERIFIER '//
+     &        'LES ARGUMENTS DE L OPERATEUR DEFI_FOND_FISS '//TYPM )
       ENDIF
       CALL GETVTX ( ' ', 'TOUT', 1,1,1, K8B, N1 )
       IF ( N1 .NE. 0 )  IPAS = 1

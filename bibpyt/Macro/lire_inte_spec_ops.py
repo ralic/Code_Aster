@@ -1,4 +1,4 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF lire_inte_spec_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,14 +50,10 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
     entete=entete[entete.index('DIM'):]
     dim=int(entete[entete.index('=')+1:entete.index('\n')])
   except ValueError : 
-    ier=ier+1
-    self.cr.fatal("<F> <LIRE_INTE_SPEC> la dimension DIM n est pas précisée dans le fichier lu")
-    return ier
+    UTMESS('F', nompro, "la dimension DIM n est pas précisée dans le fichier lu")
 
   if len(list_fonc)!=(dim*(dim+1)/2):
-    ier=ier+1
-    self.cr.fatal("<F> <LIRE_INTE_SPEC> nombre de fonctions incorrect")
-    return ier
+    UTMESS('F', nompro, "nombre de fonctions incorrect")
 
   nume_i=[]
   nume_j=[]
@@ -74,9 +70,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
       vale_fonc=vale_fonc.replace('\n',' ')
       vale_fonc=map(float,vale_fonc.split())
     except ValueError : 
-      ier=ier+1
-      self.cr.fatal("<F> <LIRE_INTE_SPEC> erreur dans les données de fonctions")
-      return ier
+      UTMESS('F', nompro, "erreur dans les données de fonctions")
 
     liste=[]
     if   FORMAT=='REEL_IMAG':
@@ -105,9 +99,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
       nume_ib.append(i+1)
       nume_jb.append(j+1)
   if nume_i!=nume_ib or nume_j!=nume_jb : 
-      ier=ier+1
-      self.cr.fatal("<F> <LIRE_INTE_SPEC> erreur dans les indices")
-      return ier
+      UTMESS('F', nompro, "erreur dans les indices")
   mcfact=[]
   mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
   mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))

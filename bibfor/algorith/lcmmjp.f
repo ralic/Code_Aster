@@ -4,7 +4,7 @@
      &                   DSDE )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,9 +48,9 @@ C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 C     ----------------------------------------------------------------
       INTEGER         NDT , NDI , NMAT , NVI,I,J,NR, NVV, IRET
 C DIMENSIONNEMENT DYNAMIQUE
-      REAL*8          DRDY(NR,NR),Y0(6,6),Y1(6,(NVI-7)),DSDE(6,6)
-      REAL*8          MATER(NMAT*2),Y2((NVI-7),6),KYL(6,6),DET,I6(6,6)
-      REAL*8          Y3((NVI-7),(NVI-7)),HOOK(6,6)
+      REAL*8          DRDY(NR,NR),Y0(6,6),Y1(6,(NVI-8)),DSDE(6,6)
+      REAL*8          MATER(NMAT*2),Y2((NVI-8),6),KYL(6,6),DET,I6(6,6)
+      REAL*8          Y3((NVI-8),(NVI-8)),HOOK(6,6)
       REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO,TEMPF
       CHARACTER*8     MOD
 C      PARAMETER       ( UN   =  1.D0   )
@@ -84,7 +84,7 @@ C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
 C     NVV est le nombre de varaibles internes liées aux systemes de
 C     glissement, il y en a 3*Ns
 
-      NVV=NVI-1-6
+      NVV=NVI-2-6
 
       DO 10 I=1,6
       DO 10 J=1,6

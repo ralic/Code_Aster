@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,14 +48,14 @@ C     ------------------------------------------------------------------
 C LES ELEMENTS 3D
 C     ------------------------------------------------------------------
 
-      IF (ELREFA.EQ.'HE8'.OR.ELREFA.EQ.'X20') THEN
+      IF (ELREFA.EQ.'HE8') THEN
         NDIM = 3
         NNO = 8
         NNOS = 8
         VOL = 8.D0
 
         NBFPG = 7
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -63,7 +63,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 27
         NBPG(6) = 5
         NBPG(7) = 16
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -95,14 +95,14 @@ C     ------------------------------------------------------------------
         VOL = 8.D0
 
         NBFPG = 6
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 8
         NBPG(5) = 27
         NBPG(6) = 16
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -243,14 +243,14 @@ C    NOEUDS MILIEUX DES FACES ET BARYCENTRE
         ZIN(26) = +1.D0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'TE4'.OR.ELREFA.EQ.'X10') THEN
+      ELSE IF (ELREFA.EQ.'TE4') THEN
         NDIM = 3
         NNO = 4
         NNOS = 4
         VOL = 1.D0/6.D0
 
         NBFPG = 7
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -258,7 +258,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 5
         NBPG(6) = 15
         NBPG(7) = 8
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -284,7 +284,7 @@ C     ------------------------------------------------------------------
         VOL = 1.D0/6.D0
 
         NBFPG = 7
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -292,7 +292,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 5
         NBPG(6) = 15
         NBPG(7) = 8
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -320,14 +320,14 @@ C     ------------------------------------------------------------------
         ZIN(9)  = +0.5D0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'PE6'.OR.ELREFA.EQ.'X15') THEN
+      ELSE IF (ELREFA.EQ.'PE6') THEN
         NDIM = 3
         NNO = 6
         NNOS = 6
         VOL = 1.D0
 
         NBFPG = 8
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -336,7 +336,7 @@ C     ------------------------------------------------------------------
         NBPG(6) = 8
         NBPG(7) = 21
         NBPG(8) = 12
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -367,7 +367,7 @@ C     ------------------------------------------------------------------
         VOL = 1.D0
 
         NBFPG = 7
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -375,7 +375,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 8
         NBPG(6) = 21
         NBPG(7) = 12
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -416,7 +416,7 @@ C     ------------------------------------------------------------------
         VOL = 2.D0/3.D0
 
         NBFPG = 7
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -424,7 +424,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 6
         NBPG(6) = 27
         NBPG(7) = 10
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -461,7 +461,7 @@ C     ------------------------------------------------------------------
         VOL = 2.D0/3.D0
 
         NBFPG = 7
-        
+
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -469,7 +469,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 6
         NBPG(6) = 27
         NBPG(7) = 10
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -542,10 +542,10 @@ C     ------------------------------------------------------------------
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
-        NBPG(5) = 4        
-        NBPG(6) = 6 
+        NBPG(5) = 4
+        NBPG(6) = 6
         NBPG(7) = 7
-        NBPG(8) = 12 
+        NBPG(8) = 12
         NBPG(9) = 3
         NBPG(10) = 6
 

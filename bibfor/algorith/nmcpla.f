@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3
-        INTEGER         NVI2, NN, I
+        INTEGER         NVI2, NN, I,RETCOM
         CHARACTER*2     FB2, CERR(5)
         CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR(3)
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI
@@ -355,7 +355,7 @@ C
      1                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
      2                     HYDRD, HYDRF,    SECHD,    SECHF, SREF,
      3                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,   
-     4                     ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE)
+     4              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
       ELSE
          CALL UTMESS('F','NMCPLA_6','LOI DE COMPORTEMENT NON '
      &      // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')

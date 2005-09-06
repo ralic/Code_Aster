@@ -1,7 +1,7 @@
       SUBROUTINE ULCLOS 
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,8 @@ C ======================================================================
 C RESPONSABLE D6BHHJP J.P.LEFEBVRE
 C     ------------------------------------------------------------------
 C     FERMETURE DE TOUS LES FICHIERS OUVERTS REFERENCES PAR ULDEFI
+C     SAUF UNITES 6 ET 8 POUR POUVOIR ENCORE LES UTILISER EN PYTHON
+C     ELLES SERONT FERMEES PAR APPEL PYTHON A ULOPEN(-6/-8)
 C
 C     ------------------------------------------------------------------
       INTEGER          MXF
@@ -36,7 +38,7 @@ C     ------------------------------------------------------------------
 C
       DO 10 I = 1 , NBFILE
         UNIT = UNITFI(I)
-        IF ( UNIT.GT.0 ) THEN
+        IF ((UNIT.GT.0).AND.(UNIT.NE.6).AND.(UNIT.NE.8)) THEN
           IF ( ETATFI(I) .EQ. 'O' ) THEN
             CLOSE ( UNIT=UNIT )
           ENDIF

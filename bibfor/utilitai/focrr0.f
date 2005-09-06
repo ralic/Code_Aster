@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,7 +111,6 @@ C     --- REMPLISSAGE DU .PROL ---
         II = 0
         DO 10 IORDR = 1,NBORDR
           CALL JEMARQ()
-          CALL JERECU('V')
 
 C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
           CALL RSEXCH(RESU,NOMCHA,LORDR(IORDR),CHAM19,IE)
@@ -176,7 +175,6 @@ C        -------------------------------------------------------------
         II = 0
         DO 20 IORDR = 1,NBORDR
           CALL JEMARQ()
-          CALL JERECU('V')
 
 C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
           CALL RSEXCH(RESU,NOMCHA,LORDR(IORDR),CHAM19,IE)

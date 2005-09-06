@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION en AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,8 +42,7 @@ LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.6E8,
                                  PAS=1.E6,),);
   
-SL = FORMULE(NOM_PARA='PCAP',VALE='0.99*(1.-PCAP*6.E-9)')
-
+SL = FORMULE(NOM_PARA='PCAP',VALE=' 0.99*(1.-PCAP*4.495E-6)')
 SATU=CALC_FONC_INTERP(FONCTION=SL,  
                       LIST_PARA=LI2,  
                        NOM_PARA='PCAP',  
@@ -51,8 +50,8 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                       PROL_GAUCHE='CONSTANT',  
                       INFO=2,);  
   
-DSL = FORMULE(NOM_PARA='PCAP',VALE='-6.E-9*0.99')
-
+DSL = FORMULE(NOM_PARA='PCAP',VALE=' -4.495E-6*0.99')
+  
 DSATU=CALC_FONC_INTERP(FONCTION=DSL,  
                        LIST_PARA=LI2,  
                        NOM_PARA='PCAP',  
@@ -156,7 +155,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,
                                 PRE2 = 1.E5,  
                                 PORO = 0.14,  
                                 PRES_VAPE = 2269.8,
-                                DEGR_SATU=0.9,  
+                                DEGR_SATU=0.099,  
                                 )
                            )
 

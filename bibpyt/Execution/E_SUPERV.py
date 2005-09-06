@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,7 @@ class SUPERV:
       k=0
       arg_debug=0
       self.rep_mat=None
+      self.tempsMax=0.
       self.verif=0
       self.interact=0
       for arg in sys.argv :
@@ -99,6 +100,8 @@ class SUPERV:
          elif sys.argv[k] == '-commandes' :
             self.nomFichierCommandes=sys.argv[k+1]
             #self.nomFichierCommandes=os.path.abspath(sys.argv[k+1])
+         elif sys.argv[k] == '-tpmax' :
+            self.tempsMax=float(sys.argv[k+1])
          elif sys.argv[k] == '-rep_mat' :
             self.rep_mat=sys.argv[k+1]
             #self.rep_mat=os.path.abspath(sys.argv[k+1])
@@ -163,7 +166,8 @@ class SUPERV:
       print '=========================================='
       f.close()
       args={}
-      if self.rep_mat:args['rep_mat']=self.rep_mat
+      if self.tempsMax:args['tempsMax']=self.tempsMax
+      if self.rep_mat :args['rep_mat'] =self.rep_mat
 
       j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
              **args      
@@ -171,6 +175,11 @@ class SUPERV:
 
       # On compile le texte Python
       j.compile()
+
+      # On initialise les tops de mesure globale de temps d'execution du jdc
+      j.cpu_user=os.times()[0]
+      j.cpu_syst=os.times()[1]
+
       if not j.cr.estvide(): 
          self.MESSAGE("ERREUR DE COMPILATION DANS ACCAS - INTERRUPTION")
          print ">> JDC.py : DEBUT RAPPORT"

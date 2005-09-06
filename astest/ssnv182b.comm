@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,15 +123,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-#                   NEWTON=_F(MATRICE='ELASTIQUE',),
-#                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-#                                  RESI_GLOB_MAXI=1e-11,
-#                                  RESI_GLOB_RELA=1e-06,
-#                                  ),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              RENUM='RCMK',
-                              STOP_SINGULIER='OUI',
-                                  NPREC=8,),
+                   SOLVEUR=_F(METHODE='MUMPS',),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

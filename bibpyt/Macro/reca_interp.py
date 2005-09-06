@@ -1,4 +1,4 @@
-#@ MODIF reca_interp Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF reca_interp Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@ import os
 import Numeric
 import Macro
 from Macro.recal import calcul_F
+from Utilitai.Utmess     import UTMESS
 
 #===========================================================================================
 
@@ -121,12 +122,12 @@ class Sim_exp :
          try:
             L_J[i] = L_J[i]/L_J_init[i]
          except ZeroDivisionError:
+            message=        'Problème de division par zéro dans la normalisation de la fonctionnelle.\n'
+            message=message+'Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %.2f \n'%L_J_init
             fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-            fic.write('\n Problème de division par zéro dans la normalisation de la fonctionnelle.')
-            fic.write('\n Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :'+ str(L_J_init))
+            fic.write(message)
             fic.close()
-            self.cr.fatal("<F> <MACR_RECAL> Problème de division par zéro dans la normalisation de la fonctionnelle.\nUne des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :"+ str(L_J_init))
-            return
+            UTMESS('F', "MACR_RECAL", message)
             
       J = Numeric.sum(L_J)
       J = J/len(L_J)
@@ -155,12 +156,12 @@ class Sim_exp :
                try:
                   L_A[j][i,k] = -1*(F_interp[j][i] - F_perturbe_interp[j][i])/h
                except ZeroDivisionError:
+                  message=        'Probleme de division par zéro dans le calcul de la matrice de sensiblité\n '
+                  message=message+'Le parametre '+para[k]+'est nul ou plus petit que la précision machine \n'
                   fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-                  fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
-                  fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
-                  fic.close() 
-                  self.cr.fatal("<F> <MACR_RECAL> Probleme de division par zéro dans le calcul de la matrice de sensiblité.\n Le parametre "+para[k]+"est nul ou plus petit que la précision machine")
-                  return
+                  fic.write(message)
+                  fic.close()
+                  UTMESS('F', "MACR_RECAL", message)
       #on construit la matrice de sensiblité sous forme d'un tab num
       dim =[]
       for i in range(len(L_A)):

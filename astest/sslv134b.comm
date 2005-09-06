@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 05/09/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -617,6 +617,77 @@ TEST_TABLE(       TABLE=TABL_KTO,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
-                      PRECISION=0.03           )                     
+                      PRECISION=0.03           )         
+
+# TEST INFORMATIQUE : VALIDATION DE DEFI_FOND_FISS
+FISSM=DEFI_FOND_FISS(    MAILLAGE=MA,
+                          FOND_FISS=_F(  GROUP_MA = 'LFF1',),
+                          LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
+                          LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
+                          DTAN_ORIG=(  1.,  0.,  0., ),
+                          DTAN_EXTR=(  0.,  1., 0., )
+                       )      
+
+TABL_KTM=POST_K1_K2_K3(  MODELISATION='3D',
+              MAILLAGE=MA,
+              MATER=MAT,
+              FOND_FISS = FISSM,
+              TABL_DEPL_SUP  = DEPTS,
+              TABL_DEPL_INF  = DEPTI,
+              ABSC_CURV_MAXI = 0.35,
+              PREC_VIS_A_VIS = 0.05,
+              VECT_K1        = ( 0., 0., 1., ),
+           )
+
+IMPR_TABLE(TABLE=TABL_KTM,);
+
+TEST_TABLE(       TABLE=TABL_KTM,
+                        FILTRE=(_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                                _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE=1.606247861E+06,
+                      PRECISION=0.0001           )
+
+MA = DEFI_GROUP (reuse = MA,
+                    MAILLAGE = MA,
+                    CREA_GROUP_NO =_F( NOM = 'NLFF1',
+                                       OPTION = 'NOEUD_ORDO',
+                                       GROUP_MA = 'LFF1')
+                   )   
+
+FISSN=DEFI_FOND_FISS(    MAILLAGE=MA,
+                          FOND_FISS=_F(  GROUP_NO = 'NLFF1',),
+                          LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
+                          LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
+                          DTAN_ORIG=(  1.,  0.,  0., ),
+                          DTAN_EXTR=(  0.,  1., 0., )
+                       )      
+
+TABL_KTN=POST_K1_K2_K3(  MODELISATION='3D',
+              MAILLAGE=MA,
+              MATER=MAT,
+              FOND_FISS = FISSN,
+              TABL_DEPL_SUP  = DEPTS,
+              TABL_DEPL_INF  = DEPTI,
+              ABSC_CURV_MAXI = 0.35,
+              PREC_VIS_A_VIS = 0.05,
+              VECT_K1        = ( 0., 0., 1., ),
+           )
+
+IMPR_TABLE(TABLE=TABL_KTN,);
+
+TEST_TABLE(       TABLE=TABL_KTN,
+                        FILTRE=(_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                                _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE=1.606247861E+06,
+                      PRECISION=0.0001           )
+                                             
 FIN()
 #

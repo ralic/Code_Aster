@@ -2,11 +2,12 @@
      1                      NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                      COMP,NBCOMM, CPMONO, PGL,
-     3                      SIGF, VINF, ICOMP, IRTETI)
+     3                      SIGF, VINF, ICOMP, IRTETI,
+     4                      INDICS)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,6 +102,7 @@ C       ----------------------------------------------------------------
 
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
+        REAL*8          EPSEQ,INDICS(*)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 
 C       ----------------------------------------------------------------
@@ -146,8 +148,8 @@ C --    CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
 C
         CALL LCINIT ( LOI,   TYPESS, ESSAI, MOD, NMAT,
      &                MATERF,TIMED,TIMEF,NR, NVI, YD,
-     &                EPSD,  DEPS,   DY )
-C
+     &                EPSD,  DEPS,   DY ,
+     &                COMP,NBCOMM, CPMONO, PGL,INDICS)
 
         ITER = 0
  1      CONTINUE
@@ -195,7 +197,7 @@ C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C
         CALL LCCONV( LOI,    DY,   DDY, NR, ITMAX, TOLER, ITER, INTG,
      &               R,RINI,TYPESS, ESSAI, ICOMP, IRTET)
-        IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
+        IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 C
 C --    CONVERGENCE > INCREMENTATION DE  YF = YD + DY
 C
@@ -205,6 +207,15 @@ C --    MISE A JOUR DE SIGF , VINF
 C
         CALL LCEQVN ( NDT ,   YF(1)     , SIGF )
         CALL LCEQVN ( NVI-1 , YF(NDT+1) , VINF )
+C
+C --   DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
+C
+        IF (LOI(1:8).EQ.'MONOCRIS') THEN
+        CALL LCDPEC ( VIND   , VINF, EPSEQ)
+        VINF (NVI-1) = VIND (NVI-1) + EPSEQ
+        ENDIF 
+C        
+
         IF ( LOI(1:7) .EQ. 'NADAI_B' ) THEN
            DO 10  I = 3 , NVI-1
               VIND ( I ) = 0.D0
@@ -222,5 +233,8 @@ C
         IRTETI = 1
         GOTO 9999
 C
+ 4      CONTINUE
+        IRTETI = 2
+
  9999   CONTINUE
         END

@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA,DEFICO,OLDGEO,NEWGEO,COMGEO,DEPGEO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,9 +131,9 @@ C   BOUCLE SUR LES POINTS DE CONTACT
         NUMAE = ZI(JMACO+POSMA-1)
         IZONE = ZI(JMAESC+3*(IMA-1)+2)
         NBN = ZI(JMAESC+3*(IMA-1)+3)
-        TYCO = NINT(ZR(JCMCF+6*(IZONE-1)+1))
+        TYCO = NINT(ZR(JCMCF+10*(IZONE-1)+1))
         LISSS = ZI(JNORLI+IZONE-1+1)
-        LAMBDA = -ABS(ZR(JCMCF+6*(IZONE-1)+6))
+        LAMBDA = -ABS(ZR(JCMCF+10*(IZONE-1)+6))
         DIR(1) = ZR(JDIR+3*(IZONE-1))
         DIR(2) = ZR(JDIR+3*(IZONE-1)+1)
         DIR(3) = ZR(JDIR+3*(IZONE-1)+2)
@@ -209,11 +209,11 @@ C ---- NUMERO ABSOLU DU NOEUD DANS SANS_GROUP_NO OU SANS_NOEUD
             CALL COPNOR(NOMA,POSMIN,XIMIN,YIMIN,NEWGEO,DEFICO,T1MIN,
      &                  T2MIN)
           END IF
-          ZR(JTABF+20*NTPC+20*(INI-1)+1) = NUMAE
-          ZR(JTABF+20*NTPC+20*(INI-1)+2) = NUMAM
-          ZR(JTABF+20*NTPC+20*(INI-1)+3) = XPG
-          ZR(JTABF+20*NTPC+20*(INI-1)+4) = XIMIN
-          ZR(JTABF+20*NTPC+20*(INI-1)+5) = YIMIN
+          ZR(JTABF+21*NTPC+21*(INI-1)+1) = NUMAE
+          ZR(JTABF+21*NTPC+21*(INI-1)+2) = NUMAM
+          ZR(JTABF+21*NTPC+21*(INI-1)+3) = XPG
+          ZR(JTABF+21*NTPC+21*(INI-1)+4) = XIMIN
+          ZR(JTABF+21*NTPC+21*(INI-1)+5) = YIMIN
 
           SUPPOK = 0
           JDEC0 = ZI(JPONO+POSMA-1)
@@ -275,19 +275,19 @@ C ---- NUMERO ABSOLU DU NOEUD DANS SANS_GROUP_NO OU SANS_NOEUD
             END IF
           END IF
 
-          ZR(JTABF+20*NTPC+20*(INI-1)+6) = T1MIN(1)
-          ZR(JTABF+20*NTPC+20*(INI-1)+7) = T1MIN(2)
-          ZR(JTABF+20*NTPC+20*(INI-1)+8) = T1MIN(3)
-          ZR(JTABF+20*NTPC+20*(INI-1)+9) = T2MIN(1)
-          ZR(JTABF+20*NTPC+20*(INI-1)+10) = T2MIN(2)
-          ZR(JTABF+20*NTPC+20*(INI-1)+11) = T2MIN(3)
-          ZR(JTABF+20*NTPC+20*(INI-1)+12) = YPG
+          ZR(JTABF+21*NTPC+21*(INI-1)+6) = T1MIN(1)
+          ZR(JTABF+21*NTPC+21*(INI-1)+7) = T1MIN(2)
+          ZR(JTABF+21*NTPC+21*(INI-1)+8) = T1MIN(3)
+          ZR(JTABF+21*NTPC+21*(INI-1)+9) = T2MIN(1)
+          ZR(JTABF+21*NTPC+21*(INI-1)+10) = T2MIN(2)
+          ZR(JTABF+21*NTPC+21*(INI-1)+11) = T2MIN(3)
+          ZR(JTABF+21*NTPC+21*(INI-1)+12) = YPG
           
           IF (PREMIE) THEN
             IF (ZI(JECPD+6*(IZONE-1)+5) .EQ. 1.D0) THEN
-              ZR(JTABF+20*NTPC+20*(INI-1)+13) = 1.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+13) = 1.D0
             ELSE
-              ZR(JTABF+20*NTPC+20*(INI-1)+13) = 0.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+13) = 0.D0
             END IF
           END IF
           
@@ -297,30 +297,33 @@ C      ON FORCE DANS UN PREMIER TEMPS LE CONTACT EN TOUS POINTS
 C          IF(ZI(JMETH+8* (IZONE-1)+6).EQ.8)
 C     &      ZR(JTABF+20*NTPC+20* (INI-1)+13) = 1.D0
           
-          IF (PREMIE) ZR(JTABF+20*NTPC+20*(INI-1)+14) = LAMBDA
-          ZR(JTABF+20*NTPC+20*(INI-1)+15) = IZONE
-          ZR(JTABF+20*NTPC+20*(INI-1)+16) = HPG
-
+          IF (PREMIE) ZR(JTABF+21*NTPC+21*(INI-1)+14) = LAMBDA
+          ZR(JTABF+21*NTPC+21*(INI-1)+15) = IZONE
+          ZR(JTABF+21*NTPC+21*(INI-1)+16) = HPG
+          IF (PREMIE) ZR(JTABF+21*NTPC+21* (INI-1)+21) = 0.D0
+          IF (NINT(ZR(JCMCF+10*(IZONE-1)+7)) .EQ. 0.D0) THEN 
+            ZR(JTABF+21*NTPC+21* (INI-1)+21) = 1.D0
+          END IF       
           IF (SUPPOK.EQ.1 .AND. NPEX.EQ.1) THEN
-              ZR(JTABF+20*NTPC+20*(INI-1)+17) = 1.D0
-              ZR(JTABF+20*NTPC+20*(INI-1)+18) = INI1
-              ZR(JTABF+20*NTPC+20*(INI-1)+19) = 0.D0
-              ZR(JTABF+20*NTPC+20*(INI-1)+20) = 0.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+17) = 1.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+18) = INI1
+              ZR(JTABF+21*NTPC+21*(INI-1)+19) = 0.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+20) = 0.D0
           ELSEIF (SUPPOK.EQ.1 .AND. NPEX.EQ.2) THEN
-              ZR(JTABF+20*NTPC+20*(INI-1)+17) = 2.D0
-              ZR(JTABF+20*NTPC+20*(INI-1)+18) = INI1
-              ZR(JTABF+20*NTPC+20*(INI-1)+19) = INI2
-              ZR(JTABF+20*NTPC+20*(INI-1)+20) = 0.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+17) = 2.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+18) = INI1
+              ZR(JTABF+21*NTPC+21*(INI-1)+19) = INI2
+              ZR(JTABF+21*NTPC+21*(INI-1)+20) = 0.D0
           ELSEIF (SUPPOK.EQ.1 .AND. NPEX.EQ.3) THEN
-              ZR(JTABF+20*NTPC+20*(INI-1)+17) = 3.D0
-              ZR(JTABF+20*NTPC+20*(INI-1)+18) = INI1
-              ZR(JTABF+20*NTPC+20*(INI-1)+19) = INI2
-              ZR(JTABF+20*NTPC+20*(INI-1)+20) = INI3
+              ZR(JTABF+21*NTPC+21*(INI-1)+17) = 3.D0
+              ZR(JTABF+21*NTPC+21*(INI-1)+18) = INI1
+              ZR(JTABF+21*NTPC+21*(INI-1)+19) = INI2
+              ZR(JTABF+21*NTPC+21*(INI-1)+20) = INI3
           ELSE
-             ZR(JTABF+20*NTPC+20*(INI-1)+17) = 0.D0
-             ZR(JTABF+20*NTPC+20*(INI-1)+18) = 0.D0
-             ZR(JTABF+20*NTPC+20*(INI-1)+19) = 0.D0
-             ZR(JTABF+20*NTPC+20*(INI-1)+20) = 0.D0
+             ZR(JTABF+21*NTPC+21*(INI-1)+17) = 0.D0
+             ZR(JTABF+21*NTPC+21*(INI-1)+18) = 0.D0
+             ZR(JTABF+21*NTPC+21*(INI-1)+19) = 0.D0
+             ZR(JTABF+21*NTPC+21*(INI-1)+20) = 0.D0
           END IF
 
  10     CONTINUE

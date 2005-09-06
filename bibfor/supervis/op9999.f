@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF SUPERVIS  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IEND, IVERI, IFM, NOCC
-      REAL*8       XTT, TEMPS(6)
       LOGICAL      ULEXIS
       CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
       CHARACTER*16 FCHIER,FHDF
@@ -77,13 +76,6 @@ C
             WRITE(IFM,1000)
             CALL RSINFO ( ZK8(JCMD+I-1) , IFM )
  10      CONTINUE
-      ENDIF
-C
-C     --- IMPRESSION DES TEMPS PAR COMMANDE
-      CALL GETVTX(' ','PERFORMANCE',1,1,1,OUIPER,L)
-      IF(OUIPER .EQ. 'OUI') THEN
-        IEND = 0
-        CALL WRSTAT('RESULTAT',1,IEND)
       ENDIF
 C
 C     --- ETAT DE LA MEMOIRE ET DES REPERTOIRE JEVEUX ---
@@ -135,35 +127,6 @@ C     --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX ) ---
       ELSE
          IF(IUNERR.GT.0) WRITE(IUNERR,*)
      +        '<I>   ARRET DANS "FIN", DES ERREURS AYANT ETE DETECTEES'
-      ENDIF
-C
-C
-C     --- INFORMATION SUR LE TEMPS GLOBAL ---
-      CALL UTTCPU(-10,'FIN',6,TEMPS)
-      CALL UTDEBM('I','INFORMATION TEMPS D''EXECUTION','(EN SECONDE)')
-
-      CALL UTIMPR('L','     TEMPS CPU TOTAL ..............',1,TEMPS(3))
-
-      CALL UTIMPR('L','     TEMPS CPU USER TOTAL .........',1,TEMPS(5))
-      CALL UTIMPR('L','     TEMPS CPU SYSTEME TOTAL ......',1,TEMPS(6))
-      CALL UTIMPR('L','     TEMPS CPU RESTANT ............',1,TEMPS(1))
-      CALL UTFINM()
-C
-      IF(OUIPER .EQ. 'NON') THEN
-C     --- IMPRESSION DES STATISTIQUES DE L'OPERATEUR ---
-         ISTAT = 2
-         CALL EXSTAT ( ISTAT ,ICOND , XTT )
-      ELSE
-C
-C     --- IMPRESSION DANS LE FICHIER MESSAGE ---
-C     --- DES STATISTIQUES DU JOB ---
-         ISTAT = 3
-         CALL EXSTAT ( ISTAT ,ICOND , XTT )
-         IFR = IUNIFI('RESULTAT')
-         WRITE(IFR,'(1X,''*'',1X,A,3(1X,'':'',1X,F10.2),1X,''*'')')
-     +        'TOTAL_JOB       ',
-     +        TEMPS(5), TEMPS(6), TEMPS(3)
-         WRITE(IFR,'(1X,59(''*''))')
       ENDIF
 C
 C     --- LA CLOTURE DE JEVEUX ---

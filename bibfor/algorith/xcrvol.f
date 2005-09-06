@@ -2,7 +2,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,10 +52,9 @@ C.......................................................................
 C..............................................................
 C----------------------------------------------------------------
       CHARACTER*8   ELREFP
-      REAL*8        HE,CO(4,3),A,B,C,D,E,F,P,Q,R,BDE,ADF,ABC,VOL
-      REAL*8        VOLM,VOLP
+      REAL*8        HE,CO(4,3),VOL,VOLM,VOLP,MAT(3,3)
       INTEGER       CONNEC(6,4),NINTER,NPTS,NSE,CNSE(6,4),NSEMAX,NPG
-      INTEGER       I,IT,ISE,IN,INO,NIT,CPT,NCMP,IDEB,JCOORS,NNOM
+      INTEGER       I,IT,ISE,IN,INO,NIT,CPT,NCMP,IDEB,JCOORS,NNOM,J
       PARAMETER    (NSEMAX=6)
 
 C     RÉCUPÉRATION DE LA SUBDIVISION L'ÉLÉMENT PARENT EN NIT TETRAS 
@@ -93,30 +92,22 @@ C         COORDONNÉES DES SOMMETS DU SOUS-TÉTRA EN QUESTION
 C         FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT
           HE=HEAVT(NSEMAX*(IT-1)+ISE)
 
-C         CALCUL DU VOL DU SS-TET AVEC LA FORMULE D'EULER
-          A=SQRT((CO(2,1)-CO(4,1))**2+(CO(2,2)-CO(4,2))**2+
-     &           (CO(2,3)-CO(4,3))**2)
-          B=SQRT((CO(2,1)-CO(3,1))**2+(CO(2,2)-CO(3,2))**2+
-     &           (CO(2,3)-CO(3,3))**2)
-          C=SQRT((CO(4,1)-CO(3,1))**2+(CO(4,2)-CO(3,2))**2+
-     &           (CO(4,3)-CO(3,3))**2)
-          D=SQRT((CO(2,1)-CO(1,1))**2+(CO(2,2)-CO(1,2))**2+
-     &           (CO(2,3)-CO(1,3))**2)
-          E=SQRT((CO(1,1)-CO(3,1))**2+(CO(1,2)-CO(3,2))**2+
-     &           (CO(1,3)-CO(3,3))**2)
-          F=SQRT((CO(1,1)-CO(4,1))**2+(CO(1,2)-CO(4,2))**2+
-     &           (CO(1,3)-CO(4,3))**2)
+C         CALCUL DU VOLUME DU TETRAEDRE PAR LE DETERMINANT :
+C         VOLUME = |DETERMINANT| / 6
+          DO 113 I=1,3
+            DO 114 J=1,3
+               MAT(I,J)=CO(1,J)-CO(I+1,J)
+ 114        CONTINUE
+ 113      CONTINUE          
 
-          BDE=B*B+D*D-E*E
-          ADF=A*A+D*D-F*F
-          ABC=A*A+B*B-C*C
+C         DETERMINANT CALCULÉ PAR LA RÈGLE DE SARRUS
+          VOL =  ABS( MAT(1,1)*MAT(2,2)*MAT(3,3)
+     +              + MAT(2,1)*MAT(3,2)*MAT(1,3)
+     +              + MAT(3,1)*MAT(1,2)*MAT(2,3)
+     +              - MAT(3,1)*MAT(2,2)*MAT(1,3)
+     +              - MAT(2,1)*MAT(1,2)*MAT(3,3)
+     +              - MAT(1,1)*MAT(3,2)*MAT(2,3) )/6.D0
 
-          P=4*A*A*B*B*D*D          
-          Q=A*A*BDE*BDE-B*B*ADF*ADF-D*D*ABC*ABC
-          R=BDE*ADF*ABC
-          
-          VOL=SQRT(P-Q+R)/12.D0
-          
           IF (HE.EQ.-1) VOLM=VOLM+VOL
           IF (HE.EQ.1)  VOLP=VOLP+VOL
 
