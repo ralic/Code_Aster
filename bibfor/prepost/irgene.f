@@ -8,7 +8,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,14 +118,14 @@ C=======================================================================
             LORDR = .TRUE.
          ENDIF
          CALL JEVEUO(GENE//'.DESC','L',JDESC)
-         NBMODE = ZI(JDESC+2-1)
-         CALL JEVEUO(GENE//'.REFE','L',JREFE)
+         NBMODE = ZI(JDESC+1)
+         CALL JEVEUO(GENE//'.REFD','L',JREFE)
          NOCH19 = '&&IRGENE_VECTEUR'
          CALL WKVECT(NOCH19//'.DESC','V V I'  ,2,KDESC)
          CALL WKVECT(NOCH19//'.REFE','V V K24',2,KREFE)
          CALL WKVECT(NOCH19//'.VALE','V V R'  ,NBMODE,KVALE)
          ZI(KDESC+1) = NBMODE
-         ZK24(KREFE) = ZK24(JREFE)
+         ZK24(KREFE) = ZK24(JREFE+5)
          DO 200 I = 1 , NBINST
            IORD = NUME(I)
            WRITE(IFI,2000)

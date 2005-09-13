@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(KPGVRC,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
+     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,6 +84,10 @@ C               VIND    VARIABLES INTERNES A T    + INDICATEUR ETAT T
 C       OUT     SIGF    CONTRAINTE A T+DT
 C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+C               IRET    CODE RETOUR DE L'INTEGRATION INTEGRATION DU 
+C                       COUPLAGE FLUAGE/FISSURATION
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ABSENCE DE CONVERGENCE 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER  ZI
       COMMON  / IVARJE / ZI(1)
@@ -101,7 +105,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM, KPGVRC
+        INTEGER         IMAT , NDIM, KPGVRC, IRET
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -342,7 +346,7 @@ C
      1                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
      2                 HYDRD, HYDRF,     SECHD,    SECHF, SREF,
      3                 DEPS , SIGD,      VIND(NN), OPT,
-     4                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID)
+     4                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
      &        CMP2(1)(1:8) .EQ. 'CHABOCHE'   .OR.
@@ -444,15 +448,17 @@ C
                ITER = ITER + 1
                GOTO 20
             ELSE
-               CALL TECAEL ( IADZI, IAZK24 )
-               NOMAIL = ZK24(IAZK24-1+3)(1:8)
-               CALL CODREE(ABS(EPSICV),'E',DCV)
-               CALL CODENT(ITER,'G',CITER)
-               CALL UTMESS('F','NMCPLA_7',
-     &           'COUPLAGE FLUAGE/FISSURATION : NOMBRE D ITERATIONS '
-     &           //' MAX (' // CITER // ') DEPASSE - NON CONVERGENCE '
-     &           // 'DU COUPLAGE A LA MAILLE '// NOMAIL
-     &           // ' RESIDU RELATIF : ' // DCV )
+C               CALL TECAEL ( IADZI, IAZK24 )
+C               NOMAIL = ZK24(IAZK24-1+3)(1:8)
+C               CALL CODREE(ABS(EPSICV),'E',DCV)
+C               CALL CODENT(ITER,'G',CITER)
+               IRET = 1
+C               CALL UTMESS('I','NMCPLA_7',
+C     &           'COUPLAGE FLUAGE/FISSURATION : NOMBRE D ITERATIONS '
+C     &           //' MAX (' // CITER // ') DEPASSE - NON CONVERGENCE '
+C     &           // 'DU COUPLAGE A LA MAILLE '// NOMAIL
+C     &           // ' RESIDU RELATIF : ' // DCV )
+               GOTO 9999
             ENDIF
          ENDIF
       ENDIF

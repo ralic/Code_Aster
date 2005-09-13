@@ -6,9 +6,9 @@
      &                  OPTION,
      &                  DEFAM,DEFAP,
      &                  ANGMAS,
-     &                  SIGP,VIP,DSIDEP)
+     &                  SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C TOLE CRP_7
 C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
-      INTEGER            ICDMAT,KPGVRC
+      INTEGER            ICDMAT,KPGVRC,IRET
       REAL*8             CRIT(*)
       REAL*8             INSTAM,INSTAP
       REAL*8             TM,TP,TREF
@@ -64,7 +64,9 @@ C IN  ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 C OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
 C OUT DSIDEP  : MODULE TANGENT
-
+C OUT IRET    : CODE RETOUR DE LA RECHERCHE DE ZERO DE F(X)=0
+C                   IRET=0 => PAS DE PROBLEME
+C                   IRET=1 => ECHEC
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -238,7 +240,7 @@ C
       IF (ABS(A0).LE.PREC) THEN
          X = 0.D0
       ELSE
-         CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X)
+         CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X,IRET)
       ENDIF
 
 C INCREMENT DE DEFORMATION PLASTIQUE

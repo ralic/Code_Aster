@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,12 +49,7 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          EXCIT           =FACT(statut='o',max='**',
            regles=(UN_PARMI('VECT_ASSE','CHARGE'),
                    UN_PARMI('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),
-# Je rajoute ces deux regles car seules les termes complexes peuvent etre pris en 
-# compte lors de l'utilisation d'une charge                   
-                   PRESENT_ABSENT('CHARGE','FONC_MULT'),
-                   PRESENT_ABSENT('CHARGE','COEF_MULT'),
-# a corriger                   
-                 ),
+                  ),
            VECT_ASSE       =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_depl_c,cham_no_pres_c,vect_asse_gene_r,vect_asse_gene_c ) ),
            CHARGE          =SIMP(statut='f',typ=char_meca ),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),

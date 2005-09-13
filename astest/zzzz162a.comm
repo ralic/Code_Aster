@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,10 +204,14 @@ DEFI_FICHIER(UNITE=82)
 IMPR_RESU(UNITE=82, FORMAT='GMSH',
           RESU=_F(RESULTAT=TEMPE2, NOM_CHAM='TEMP',NOM_CMP='TEMP'),)
 
+DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
+
 TEST_FICHIER(FICHIER='./fort.82',
-             VALE_K='10936ae1fa356fbfc0ad4741e1e879c0',
+             VALE_K='157e89a77730c71162cd0d7c2939148f',
              REFERENCE='NON_REGRESSION',
-             VERSION='8.1.11')
+             NB_CHIFFRE=4,
+             EPSILON=1.E-6,
+             VERSION='8.1.13')
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
@@ -356,10 +360,14 @@ IMPR_RESU(UNITE=84, FORMAT='GMSH',
                 _F(RESULTAT=UUU2,
                    NOM_CHAM='VARI_ELNO',NOM_CMP=('V1','V2'),),),)
 
+DEFI_FICHIER(UNITE=84, ACTION='LIBERER')
+
 TEST_FICHIER(FICHIER='./fort.84',
-             VALE_K='20fc9f4e31f94710db7c216cb5802064',
+             VALE_K='406cd1ab023f22254b6c9872bc04fdbb',
              REFERENCE='NON_REGRESSION',
-             VERSION='8.1.11')
+             NB_CHIFFRE=4,
+             EPSILON=1.E-6,
+             VERSION='8.1.13')
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------

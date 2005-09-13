@@ -1,7 +1,7 @@
       SUBROUTINE NZCALC(CRIT,PHASP,NZ,FMEL,SEUIL,DT,TRANS,
-     &                  RPRIM,DEUXMU,ETA,UNSURN,DP)
+     &                  RPRIM,DEUXMU,ETA,UNSURN,DP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT NONE
-      INTEGER      NZ
+      INTEGER      NZ, IRET
       REAL*8       SEUIL,DT,TRANS,RPRIM,DEUXMU,CRIT(3),PHASP(5),FMEL
       REAL*8       ETA(5),UNSURN(5),DP
 C-------------------------------------------------------------
@@ -32,6 +32,9 @@ C IN FPRIM   : FONCTION SEUIL
 C IN DT    :TP-TM
 C
 C OUT DP
+C     IRET   CODE RETOUR DE LA RESOLUTION DE L'EQUATION SCALAIRE
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ECHEC
 C-------------------------------------------------------------
       REAL*8     FPRIM, FPLAS, FDEVI,DPU(5),FP(5),FD(5),EPS,DPNEW,FPNEW
       REAL*8     SPETRA, R0, COEFA(5), DPPLAS,DPMIN,DPMAX ,X(4),Y(4)
@@ -87,8 +90,8 @@ C METHODE DE POINT FIXE COMBINEE AVEC NEWTON
                IF (ABS(FP(I)) / (1+SEUIL) .LT. CRIT(3) ) GOTO 99
                DP = DP - FP(I) / FD(I)
   11        CONTINUE
-            CALL UTMESS ('F','NZCALC 2','FP=0 : PAS CONVERGE')
-
+            IRET = 1
+            GOTO 9999
  99         CONTINUE
             DPU(I)=DP
             IF (DPMIN .EQ. 0.D0) THEN
@@ -156,8 +159,7 @@ C
           Y(4)=FPRIM
           X(4)=DP
  100   CONTINUE
-       CALL UTMESS ('FPRIM','NZCALC','FPRIM=0 : PAS CONVERGE')
-
+       IRET = 1
 
  9999 CONTINUE
       END

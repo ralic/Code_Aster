@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,7 +211,6 @@ C
      >          RELAX,ROTAGD,
      >          EPSD,DEPS,SIGD,VIND)
           ELSE
-           CALL UTMESS('A', 'CJSMID','NON CONVERG.: ESSAI NORMALES')
            NOCONV = .TRUE.
            GOTO 200
           ENDIF
@@ -289,8 +288,6 @@ C          --  NON CONVERVENCE : ITERATION MAXI ATTEINTE  --
      >          ERIMP,
      >          EPSD,DEPS,SIGD,VIND)
           ELSE
-           CALL UTMESS
-     >      ('A', 'CJSMID','NON CONVERG.: NB ITER MAX ATTEINT')
            NOCONV = .TRUE.
           ENDIF
         ENDIF

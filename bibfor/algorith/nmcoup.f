@@ -1,10 +1,10 @@
         SUBROUTINE NMCOUP(KPGVRC,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      2                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
+     3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 C TOLE CRP_21
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM,KPGVRC
+        INTEGER         IMAT , NDIM,KPGVRC, IRET
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -91,6 +91,10 @@ C               VIND    VARIABLES INTERNES A T    + INDICATEUR ETAT T
 C       OUT     SIGF    CONTRAINTE A T+DT
 C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+C               IRET    CODE RETOUR DE L'INTEGRATION INTEGRATION DU 
+C                       COUPLAGE FLUAGE/FISSURATION
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ABSENCE DE CONVERGENCE
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER  ZI
       COMMON  / IVARJE / ZI(1)
@@ -136,7 +140,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
            CALL NMCPLA (KPGVRC,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
+     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+           IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
      &            CMP2(1:6)  .EQ. 'MAZARS') THEN
            OPTION(2)(1:16) = CMP2(1:16)
@@ -182,5 +187,5 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
      &   // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
       ENDIF
         
-       
+9999  CONTINUE       
       END

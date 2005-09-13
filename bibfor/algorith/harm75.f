@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,8 @@ C
       REAL*8        EPSI,RBID
       COMPLEX*16    CBID
       CHARACTER*4   TYPE(3)
-      CHARACTER*8   K8B,K8BID,BASEMO,CRIT,CHAMP,INTERP,NOMRES,NOMIN,MODE
+      CHARACTER*8   K8B,K8BID,BASEMO,CRIT,CHAMP(3),INTERP,NOMRES,
+     &              NOMIN,MODE,TOUCH
       CHARACTER*8   NOMMOT,MATPRO
       CHARACTER*14  NUMDDL
       CHARACTER*16  TYPRES,NOMCMD,TYPBAS
@@ -71,22 +72,24 @@ C
       CALL JEMARQ()
       MODE = BASEMO
       HRANGE = NOMIN
-      CALL GETVTX(' ','TOUT_CHAM',0,1,1,CHAMP,N1)
-      IF (CHAMP(1:3).EQ.'OUI') THEN
+      CALL GETVTX ( ' ', 'TOUT_CHAM', 0,1,1, TOUCH, N1 )
+      IF (TOUCH(1:3).EQ.'OUI') THEN
          NBCHAM = 3
          TYPE(1) = 'DEPL'
          TYPE(2) = 'VITE'
          TYPE(3) = 'ACCE'
       ELSE
-         CALL GETVTX(' ','NOM_CHAM',0,1,1,CHAMP,N1)
-         NBCHAM = 1
-         IF (CHAMP(1:4).EQ.'DEPL') THEN
-            TYPE(1) = 'DEPL'
-         ELSEIF (CHAMP(1:4).EQ.'VITE') THEN
-            TYPE(1) = 'VITE'
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,3, CHAMP, N1 )
+         NBCHAM = N1
+         DO 11 I = 1 , NBCHAM
+         IF (CHAMP(I)(1:4).EQ.'DEPL') THEN
+            TYPE(I) = 'DEPL'
+         ELSEIF (CHAMP(I)(1:4).EQ.'VITE') THEN
+            TYPE(I) = 'VITE'
          ELSE
-            TYPE(1) = 'ACCE'
+            TYPE(I) = 'ACCE'
          ENDIF
+  11     CONTINUE
       ENDIF
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
@@ -114,19 +117,11 @@ C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
          CALL GETTCO(BASEMO,TYPBAS)
          MATRIC = ZK24(IADRIF)
-C         IF (TYPBAS(1:9).EQ.'MODE_MECA') THEN
-C           MATRIC = ZK24(IADRIF)
-C         ELSEIF (TYPBAS(1:9).EQ.'MODE_STAT') THEN
-C           MATRIC = ZK24(IADRIF)
-C           IF (MATRIC(1:8).EQ.K8BID) MATRIC = ZK24(IADRIF+2)
-C         ELSEIF (TYPBAS(1:11).EQ.'BASE_MODALE') THEN
-C         MATRIC = ZK24(IADRIF)
-C         ENDIF
          IF (MATRIC.NE.K8BID) THEN
            CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      +                NUMDDL,IRET)
          ELSE
-           NUMDDL = ZK24(IADRIF+1)(1:14)
+           NUMDDL = ZK24(IADRIF+3)(1:14)
          ENDIF
          CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
       ELSE
@@ -198,7 +193,6 @@ C
                  CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
                ELSEIF ( IRET .EQ. 100 ) THEN
                  IF (MODE.EQ.K8BID) THEN
-C                   CALL VTCREM(CHAMNO,MATRIC,'G','C')
                    CALL VTCREB(CHAMNO,NUMDDL,'G','C',NEQ)
                  ELSE
                    CALL VTCREA(CHAMNO,CREFE,'G','C',NEQ)

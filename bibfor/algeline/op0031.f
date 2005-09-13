@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,15 +65,25 @@ C
          CALL AMOGEN(MATRES)
          GOTO 9999
       ENDIF
-
-C CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
-
+C
       CALL GETFAC('COMB_R',NBOCCR)
       CALL GETFAC('COMB_C',NBOCCC)
-      IF (TYPREP.EQ.'MATR_ASSE_GENE_R') THEN
+      IF (NBOCCR.NE.0) THEN
+         NBOCC = NBOCCR
+         TYPRES = 'R'
+         COMBRC = 'COMB_R'
+      ELSE
+         NBOCC = NBOCCC
+         TYPRES = 'C'
+         COMBRC = 'COMB_C'
+      ENDIF
+C
+C CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
+
+      IF (TYPREP(1:14).EQ.'MATR_ASSE_GENE') THEN
           CALL WKVECT(MATRES//'           .DESC','G V I',3,LDESC)
-          IF(NBOCCR.NE.0) THEN
-            CALL GETVID('COMB_R','MATR_ASSE',1,1,1,MATRI1,L)
+          IF(NBOCC.NE.0) THEN
+            CALL GETVID(COMBRC,'MATR_ASSE',1,1,1,MATRI1,L)
             CALL JEVEUO(MATRI1//'           .REFA','L',IREF1)
             NUMGEN = ZK24(IREF1+1)(1:14)
             CALL JEVEUO(NUMGEN//'.NUME.REFN','L',IREF2)
@@ -86,19 +96,6 @@ C CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
 1             CONTINUE
             ENDIF
           ENDIF
-      ENDIF
-
-
-
-C
-      IF (NBOCCR.NE.0) THEN
-         NBOCC = NBOCCR
-         TYPRES = 'R'
-         COMBRC = 'COMB_R'
-      ELSE
-         NBOCC = NBOCCC
-         TYPRES = 'C'
-         COMBRC = 'COMB_C'
       ENDIF
 C
       CNOM = '&&OP0031.MATRICE_LISTE  '

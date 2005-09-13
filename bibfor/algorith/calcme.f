@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      INTEGER       I,J,NELAS,NRESMA
+      INTEGER       I,J,NELAS,NRESMA,IRET
       REAL*8        DEPS(6),DEPSV,T,DT,TINI,P1,P2
       REAL*8        PHI,YOUNG,NU,ALPHA0,PHI0,CRIT(*),INSTAM,INSTAP,TREF
       PARAMETER (NELAS = 4  )
@@ -89,7 +89,7 @@ C
       REAL*8       VSATSU(NSATM)
       CHARACTER*8  BGCR1(NNELA),NOMPAR,BGCR2(NSURM),BGCR3(NINIG)
       CHARACTER*8  BGCR7(NSATM)
-      CHARACTER*16 COMPLG
+      CHARACTER*16 COMPLG(2)
 C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
       REAL*8  DSIDP1(6),DP1,DP2,SAT,BIOT
@@ -203,10 +203,11 @@ C ======================================================================
      >                      DEFGEM(ADDEME+NDIM),DEPS, 
      >                      CONGEM(ADCOME), VINTM, OPTION, 
      >                      CONGEP(ADCOME), VINTP, 
-     >                      DSDEME)
+     >                      DSDEME,IRET)
       ENDIF
       IF (MECA.EQ.'LAIGLE') THEN
-        COMPLG = 'LAIGLE'
+        COMPLG(1) = 'LAIGLE'
+        WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
@@ -216,7 +217,8 @@ C ======================================================================
      >              DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'HOEK_BROWN') THEN
-        COMPLG = 'HOEK_BROWN'
+        COMPLG(1) = 'HOEK_BROWN'
+        WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 

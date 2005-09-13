@@ -1,0 +1,1164 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 12/09/2005 a 17:48:39
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-093
+   NB_JOURS_TRAV  : 1
+   POUR_LE_COMPTE_DE   : A.ASSIRE
+   INTERET_UTILISATEUR : NON
+   TITRE : MODI_REPERE
+   FONCTIONNALITE
+     Le code s'arrete avec le message d'erreur suivant:
+        <F> <MODI_REPERE> <DISMCP> CHAMP INEXISTANT:RESUCYL .018.000000
+     le champ n'existe pas car il n'a pas été calculé.
+   DETAIL
+     Dans l'op0191, on teste le code retour de RSEXCH.
+     reprise de la programmation.
+     Ajout du mot clé TITRE à la commande.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.74.01  commande MODI_REPERE
+       EXPL_ : ajout du mot clé TITRE
+   VALIDATION
+     passage des 9 cas tests validant MODI_REPERE.
+     passage de l'etude associé.
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-319
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : P.MASSIN
+   INTERET_UTILISATEUR : NON
+   TITRE :  ELSA01D en ERR_NUMERIQUE
+   FONCTIONNALITE
+   DETAIL
+     ce test est OK avec la version 8.1.13 en nodebug et debug
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 13/09/2005 a 08:53:03
+
+------------------------------------------------------------------------------------
+CORRECTION AL 2005-325
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : TEST_FICHIER mal utilisé
+   Les tests zzzz161a, zzzz162a et zzzz176a restitués la semaine dernière contiennent
+   tous un appel à TEST_FICHIER dont les paramètres NB_CHIFFRE et EPSILON sont
+   restés à la valeur par défaut, ce qui pour des fichiers contenant des valeurs
+   réelles pose problème lors de l'exécution sur différentes plates-formes.
+   On fixe fdonc ces valeurs à 4 pour NB_CHIFFRE et 1.E-6 pour EPSILON.
+   De plus l'oubli de la commande DEFI_FICHIER(ACTION='LIBERER',  dans les tests
+   zzzz161a et zzzz162a ... provoque des plantages aléatoires : la commande TEST_FICHIER
+   réclame un fichier fermé. On ajoute donc cet appel.
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+   passage des tests sur AlphaServer et sous linux.
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-219
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : rep_test dans astk
+   FONCTIONNALITE : repertoires de tests multiples dans astk
+   DETAILS :
+     astk n'acceptait pas plusieurs repertoires de tests pour l'astout et
+     pre-eda. Le client a été modifié par Mathieu, j'ai vérifié que le serveur
+     batch fonctionnait pour astout et pre-eda.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-147
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : un fork qui plante avec METIS
+   FONCTIONNALITE : récupérer un message d'erreur lorsque le fork échoue
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   Les modifications proposées par Jean-Luc ont été intégrées en l'état dans la
+   fonction, cela permettra d'obtenir un peu plus d'informations en cas d'erreur
+   lors de l'appel à METIS.
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-159
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : OUI
+   TITRE : ASTK et bases
+   FONCTIONNALITE : bases compressées
+   DETAILS :
+   Corrigé dans les procédures de l'AGLA.
+   On rajoute le paramètre -f aux commandes gzip et gunzip de facon a ne plus
+   avoir de question lors de la présence des fichiers et à les écraser
+   systématiquement.
+   Fichiers modifiés :
+   /aster/agla/v4/tool/copie_bases
+   /aster/agla/v4/tool/rcp_bases_hdf
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f1bhhaj J.ANGLES   DATE  le 12/09/2005 a 13:51:19
+
+-------------------------------------------------------------------------
+CORRECTION AL 2005-231
+   NB_JOURS_TRAV : 3
+   INTERET_UTILISATEUR : NON
+   TITRE : NEW8.1.4, le cas test zzzz183a s'arrete en ERREUR sur clayastr
+   FONCTIONNALITE : Cela concerne la commande CALC_FATIGUE
+   DETAILS : Pour calculer le cercle circonscrit nous effectuons une
+     "correction barrycentrique", c'est à dire que l'on translate l'historique
+     de cisaillement au voisinage de 0. Pour ce faire nous avons modifié la
+     routine raycir.f.
+     Par ailleurs, nous avons fait un peu de nettoyage dans les routines :
+     cer3pt.f, dimax1.f
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : ZZZZ183A SSLV135A, SSLV135B
+
+-------------------------------------------------------------------------
+CORRECTION AL 2005-247
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : sslv135e sous linux
+   FONCTIONNALITE : Cela concerne la commande CALC_FATIGUE
+   DETAILS :
+     Dans le cas test sslv135e nous testons la valeur de la composante x
+     du vecteur normal avant de tester les résultats de fatigue.
+     Ce test a été passé sur les machines clp50a8 (Linux) et clayastr.
+     Modification :
+       sslv135e.comm
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : SSLV135E
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f6bhhbo P.DEBONNIERES   DATE  le 12/09/2005 a 14:43:38
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-032
+   NB_JOURS_TRAV : 1.5
+   INTERET_UTILISATEUR : OUI
+   TITRE Sensibilite et chargement EPSI_INIT
+   FONCTIONNALITE  MECA_STATIQUE  -  Mot-cle SENSIBILITE
+     Detection du chargement du type EPSI_INIT avec calcul de sensibilite
+     et mise en place d'un verrou (emission d'un message d'erreur)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.50.02
+       EXPL_ : non-disponibilite de la derivation avec EPSI_INIT
+   VALIDATION
+     validation sur le fichier fourni avec la fiche
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-163
+   NB_JOURS_TRAV : 0.5 J
+   INTERET_UTILISATEUR : OUI
+   TITRE : sensibilite et option REAC_NODA de CALC_NO
+   FONCTIONNALITE : CALC_NO - REAC_NODA
+     Antoine Brodin n'ayant pas pu aborder ce developpement durant son
+     stage et le probleme ayant pu etre contourne, on classe cette
+     fiche sans suite.
+   RESU_FAUX_VERSION_EXPLOITATION  :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 13/09/2005 a 18:42:57
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-129
+   NB_JOURS_TRAV  : 10.5
+   POUR_LE_COMPTE_DE : JM PROIX
+   INTERET_UTILISATEUR : OUI
+   TITRE : Code Retour des comportements
+   FONCTIONNALITE : STAT_NON_LINE, comportements non-linéaires
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D5.04.01
+       EXPL_ : Ajouter un nouveau comportement
+   VALIDATION
+       liste restreinte plus restitution du cas-test ssnv101c modifié
+   DETAILS :
+
+   1) Objectif
+   ----------
+   Tout est en place dans STAT_NON_LINE pour permettre un redécoupage global
+   du pas de temps lorsque l'intégration locale du comportement se passe mal :
+   un "code retour" sort de la routine NMCOMP, et il est transmis au niveau
+   global. Mais ce code retour n'est rempli actuellement que par peu de
+   comportements seules 9 routines de comportements utilisent cette possibilité,
+   sur les 48 appelées par NMCOMP, (les 39 restantes n'ont même pas CODRET en
+   argument).
+
+   2) Travaux effectués
+   --------------------
+   -> Etat des lieux
+      L'état des lieux des comportements a consisté à recenser parmi les 39
+      comportements ceux qui avaient des UTMESS du type UTMESS('F',.. pour cause
+      de non-convergence, ou autres(exponentielle...), puis de remplacer
+      l'UTMESS('F' par CODRET=1, et de transmettre CODRET à nmcomp (ce qui
+      permet d'activer le redécoupage global).
+      Pour vérifier ce fonctionnement il a fallu trouver un cas-test par comportement
+      permettant de valider le code retour :redécoupage du pas de temps.
+   -> Développements
+      Les comportements pour lesquels le code retour a été implémenté sont les suivants:
+       - VISC_ISOT_**** en contraintes planes
+       - JOINT_BA
+       - VISC_CIN1_CHAB,VISC_CIN2_CHAB
+       - CJS
+       - KIT_DDI
+       - VMIS_ECMI_**** en contraintes planes
+       - VISC_TAHERI
+       - VENDOCHAB
+       - LEMAITRE_IRRA, LEMA_SEUIL,GRAN_IRRA,ZIRC_CYRA2,ZIRC_EPRI,VISC_IRRA
+       - LEMAITRE
+       - META_P_C*, META_P_I*, META_V_C*, META_V_I*
+       - ENDO_ORTH_BETON
+   -> Validation
+      La vérification des développements a consisté à provoquer un redécoupage automatique
+      dans les cas-tests en diminuant le nombre d'itérations locales (ITER_INTE_MAXI) et/ou
+      en diminuant le critère local (RESI_INTE_RELA).
+      Parmi les comportements ci-dessus les comportements suivants
+       - JOINT_BA
+       - LEMAITRE_IRRA, LEMA_SEUIL,GRAN_IRRA,ZIRC_CYRA2,ZIRC_EPRI,VISC_IRRA
+       - LEMAITRE
+       - META_P_C*, META_P_I*, META_V_C*, META_V_I*
+      n'ont pu être testés, malgré plusieurs tentatives, changement de cas-test,
+      il n'a pas été possible de déclencher le redécoupage.
+      on restitue le cas-test ssnv101c dans lequel on a forcé le redécoupage.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-225
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : M. COURTOIS
+   INTERET_UTILISATEUR : OUI
+   TITRE : Validation du couplage Saturne-Aster par fichier MED
+   FONCTIONNALITE :
+   DETAILS :
+     On complète l'étude étude fournie par David Hersant, MMC, ou il lit un
+     fichier MED de champ de pression calculé par SATURNE, par un calcul
+     mécanique simple afin d'exploiter l'EVOL_CHAR relu.
+     Le cas-test restitué zzzz176b est une boite parallélépipédique maillée en
+     coque, soumise à une pression interne. Les conditions aux limites
+     imposées permettent simplement de bloquer les mouvements de corps rigides.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : cas-test restitué zzzz176b
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-308
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_ELEM et concept MODE_MECA
+   FONCTIONNALITE
+   DETAILS :
+   -  L'analyse de la routine mecalm, appelée par l'op0058 (CALC_ELEM), montre
+   qu'aucune condition sur le type de la SD Résultat pour le calcul de l'option
+   EQUI_ELGA_SIGM n'est imposée, ce qui n'est pas le cas pour l'option
+   EQUI_ELNO_SIGM. Le calcul de cette option est possible que si la SD résultat
+   est du type EVOL_ELAS,DYNA_TRANS, MULT_ELAS, FOURIER_ELAS et EVOL_NOLI.
+   - On ajoute dans la condition à la ligne 1084 le type MODE_MECA. Le calcul de
+   l'option EQUI_ELNO_SIGM sera effectué à partir du champ produit par l'option
+   SIEF_ELGA_DEPL.
+   - Aucun calcul de l'option EQUI_ELNO_SIGM, avec MODE_MECA n'est présent dans
+   astest, on modifie le cas-test sdll501a en conséquence.
+   Fichier modifié : mecalm.f, sdll501a
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : exemple fourni avec la fiche et cas-test ssnv501a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-309
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_ELEM et DYNA_LINE_TRAN
+   FONCTIONNALITE
+   DETAILS :
+   Un calcul sur toutes les options linéaires de calc_elem pour un concept
+   dyna_tran. Certaines options mènent a un plantage sale dont un remarquable:
+   <F> <CALC_ELEM> <EXECOP> ERREUR PROGRAMMEUR : JEMARQ/JEDEMA NON APPARIES.
+   Dans le cadre du test fourni, parmi les options citées dans la fiche seules
+   les options menant a ce plantage sont les suivantes :
+     - 'ETOT_ELGA', 'ETOT_ELNO_ELGA', 'ETOT_ELEM',
+   Les autres options s'arrêtent proprement :
+     - 'ENDO_ELGA' il manque le champ VARI_ELGA
+     - 'ENDO_ELNO_ELGA' il manque le champ ENDO_ELGA
+     - 'VNOR_ELEM_DEPL' option incompatible avec DYNA_TRANS
+     - 'PRES_DBEL_DEPL',le calcul de cette option n'est disponible pour aucun
+        élément du LIGREL.
+
+     Pour les options 'ETOT_ELGA', 'ETOT_ELNO_ELGA', 'ETOT_ELEM' on ajoute dans
+     la routine mecalm des appels a JEDEMA. Dans le cas de l'exemple fourni,
+     l'erreur fatale (EXECOP) disparaît, elle est remplacée par une alarme :
+     champ SIEF_ELGA inexistant au NUME_ORDRE=0.
+     Fichier modifié : mecalm.f
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : exemple fourni avec la fiche
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-326
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : Joumana El-Gharib
+   INTERET_UTILISATEUR : OUI
+   TITRE  PLANTAGE DES CAS TEST THM DANS REDECE
+   FONCTIONNALITE STAT_NON_LINE RELATION_KIT
+     Après la restitution concernant le MICRO_MACRO, 3 cas test THM sont plantés
+     c'est à cause de la lecture dans redece de la valeur  COMP(2) qui contient
+     pour les lois mécaniques le nombre des variables internes et qui n'était pas
+     défini pour les lois en KIT_HM ....
+     Roméo et Jean-Michel ont décidé de stocker le nombre des variables internes
+     mécaniques NVIMEC dans la deuxième position de COMPLG(2) qui contenait avant
+     le nom de la loi mécanique. COMPLG() est transmis à redece dans calcme.
+   DETAILS
+     fortran modifié : calcme.f
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     wtnv101a wtnv128a wtnv128b
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-189
+  NB_JOURS_TRAV  : 0.
+  INTERET_UTILISATEUR : NON
+  TITRE : AOM : face impo en 3D
+  FONCTIONNALITE
+  RESTITUTION_VERSION_EXPLOITATION  :   NON
+  RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+Demande : EN 3D la commande face impo permet d'imposer un deplacement normal DNOR, mais pas les DTAN associes.
+Cas d application : disque frette sur un rotor que l'on ne souhaite pas representer.
+
+Régularisation : Cette fiche AOM est soldée (à mon sens) depuis longtemps, mais toujours dans l'état A_VALIDER.
+
+Réponse préliminaire : le calcul est faisable aujourd'hui à condition de faire de l'incremental (STAT_NON_LINE) :
+on applique DTAN=alpha puis tous DLLS de la surface bloqués ensuite.
+Pour plus de convivialité, on pourrait en effet envisager d'étendre l'usage de DTAN au 3D pour un calcul méca_statique.
+On fera le point après l'AOM sur le cout et l'opportunité de ce développement.
+
+Réponse : Dans le cas présent, pouvoir imposer le déplacement dans un direction tangente n'est pas obligatoire.
+Pour appliquer le frettage, on impose effectivementun déplacement normal.
+Puis ensuite, l'accroissement de déplacement (normal et tangentiel) doit être nul.
+Ceci est analogue par exemple aux problèmes de serrage : on peux trouver un exemple
+de l'utilisation de conditions aux limites appliquées sur l'accroissement de déplacement,
+("Dirichlet Différentiel ou  "DIDI" dans STAT_NON_LINE) dans plusieurs tests,
+en partiulier SSNV152A :
+
+Le premier STAT_NON_LINE correspondrait ici à l'application du déplacement normal dû au frettage
+(DNOR=alpha) et le deuxième à la condition : DeltaU=0
+
+CHR_FRET=AFFE_CHAR_MECA(  MODELE=MO,
+FACE_IMPO=_F( GROUP_MA='MA2',  DNOR=alpha))
+
+CHR_LIAI=AFFE_CHAR_MECA( MODELE=MO,
+FACE_IMPO=_F( GROUP_MA='MA2',  DX =0,  DY = 0. DZ=0))
+
+VT=STAT_NON_LINE( MODELE=MO, CARA_ELEM=CARAC, CHAM_MATER=CHP_MATT,
+EXCIT=(  _F(CHARGE = CHR_FRET),),
+COMP_ELAS=_F(   RELATION = 'ELAS',),
+INCREMENT=_F(    LIST_INST = L_INST,   NUME_INST_FIN = 1),...
+)
+
+VT=STAT_NON_LINE( reuse=VT, ETAT_INIT=_F(EVOL_NOLI = VT,),
+MODELE=MO, CHAM_MATER=CHP_MATT, CARA_ELEM=CARAC,
+EXCIT=(_F(..),
+_F(CHARGE = CHR_LIAI,  TYPE_CHARGE = 'DIDI')),
+
+RESU_FAUX_VERSION_EXPLOITATION   :   NON
+RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+IMPACT_DOCUMENTAIRE : NON
+VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2002-041
+  NB_JOURS_TRAV  : 0.
+  INTERET_UTILISATEUR : NON
+  TITRE : SNL recalculer la carte de comportement
+  FONCTIONNALITE
+  Suite à l'EDA du 4/3/2002 et la restitution d'Eric, il avait été décidé d'émettre cette fiche :
+  Actuellement, les TE ont le choix pour acceder au nombre de variables internes :
+  soit TECACH, soit lire dans l'objet COMPOR
+  mais dans certains cas (comme le non local) ces informations diffèrent.
+  On propose donc d'homogeneiser ces deux infos, en recalculant la carte COMPOR (dans NMDORC)
+  après l'appel à l'option NSPG_NBVA, donc en tenant compte des sous-points, des contraintes
+  planes Deborst, du non local...
+  Après en avoir discuté avec Pierre, cette "bonne idée" est sans doute séduisante, mais coûterait
+  un travail assez important pour ne bénéficier in fine qu'aux développeurs. C'est peut être un peu
+  luxueux de nos jours. Cela n'empêche pas de conserver l'idée pour un jour plus faste.
+
+  RESU_FAUX_VERSION_EXPLOITATION   :   NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+  IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-260
+  NB_JOURS_TRAV  : 0.
+  INTERET_UTILISATEUR : NON
+  TITRE : Mazars + Deborst
+  FONCTIONNALITE
+  Pb de convergence rencontré lors du calcul d'une poutre en béton armé avec le modèle de Mazars
+  associé à un algo de type De Borst pour passer en CP.
+  En fait le modèle de Mazars est disponible en contraintes planes sans DEBORST, et cela se passe bien.
+  RESU_FAUX_VERSION_EXPLOITATION   :   NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+  IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 12/09/2005 a 13:01:48
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-295
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   sdnv103c, sdnv104c
+   FONCTIONNALITE:
+     Casse par RESTIT 8.1.11
+   DETAILS:
+    La routine quadco s'occupe des liaisons lineaires lorsque les
+    mailles en contact sont quadratiques.
+    On ne fait pas cette liaison si:
+    - on est en contact continue
+    - on est en contact penalise
+    - on a une liaison glissiere
+    - on est en mode VERIF
+    La modif en 8.1.11 prenait en compte le premier cas.
+    Mais on a introduit un bug en desactivant indument le second cas.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-297
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   sdnv103a, ssnv128b, ssnv128i,ssnv128k, ssnv128o,yyyy106d
+   FONCTIONNALITE:
+     Casse par RESTIT 8.1.11
+   DETAILS:
+     La routine cfconv s'occupe d'evaluer la convergence geometrique du
+     contact.
+     Depuis la 8.1.11, on verifie desormais systematiquement le niveau de
+     deplacement apres le contact, quelque soit le choix de l'utilisateur
+     dans REAC_GEOM. Si on depasse les 5% de correction du contact, on
+     et qu'on ne reactualise pas (choix de l'user), on alarme en
+     prevenant que le choix de reactualisation geometrique est "risque".
+
+     Cette modif ne passait (divsion par 0) pas a cause du test suivant:
+     --------------!
+        IF (TEMP2.LT.RMIN) THEN
+          IF (TEMP2.EQ.0.D0) THEN
+            AUTONO = 10.0D0*GEOTOL
+          ELSE
+            AUTONO = 1.D-1*GEOTOL
+          ENDIF
+        ELSE
+          AUTONO = TEMP1/TEMP2
+        ENDIF
+
+     Que l'on transforme en:
+     --------------!
+        IF (TEMP2.LE.RMIN) THEN
+          IF (TEMP2.EQ.0.D0) THEN
+            AUTONO = 10.0D0*GEOTOL
+          ELSE
+            AUTONO = 1.D-1*GEOTOL
+          ENDIF
+        ELSE
+          AUTONO = TEMP1/TEMP2
+        ENDIF
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-298
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   sdnl111e,sdnl111f,sdnv100C, sdnv100d, sdnv100e
+   FONCTIONNALITE:
+     Cassee par RESTIT 8.1.11
+   DETAILS:
+    Petite erreur dans nmible (boucle externe pour le contact methode
+    continue) qui cassait les cas-tests en dynamique.
+    On avait supprime les lignes
+      IF (CMD(1:4) .EQ. 'DYNA') THEN
+        CALL COPISD('CHAMP_GD','V',VITPLU,VITINI)
+        CALL COPISD('CHAMP_GD','V',ACCPLU,ACCINI)
+      END IF
+    On les remet.
+    //////////////////////////////////////////:
+      sdnl111e et sdnl111f toujours casses. !!!!
+      Il semblerait qu'ils aient ete recasses par la version 8.1.13
+      (les modifs de la fiche fonctionnent en 8.1.12)
+    //////////////////////////////////////////:
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-299
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   ssnv504a
+   FONCTIONNALITE:
+     Cassee par RESTIT 8.1.11
+   DETAILS:
+     Le message d'erreur est clair. L'oubli du vecteur est du au contact
+     en mode "VERIF" qui ne fait aucune iteration de contact et donc
+     qui ne cree pas ce vecteur.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-302
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE   sdll133a
+   FONCTIONNALITE:
+     Memoire insuffisante par RESTIT 8.1.11
+   DETAILS:
+     passage de 100 a 110 Mo
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-301
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   ssnl502a,ssnl502b,ssnl502c
+   FONCTIONNALITE:
+     Cassee par RESTIT 8.1.11
+   DETAILS:
+     Quand le pilotage echoue, le mecanisme de subdivision auto du pas
+     de temps permet de continuer le calcul.
+     Lors de l'EL sur les affichages, le drapeau indiquant l'echec du
+     pilotage a ete change. Auparavant, on utilisait le drapeau
+     d'echec sur la LDC (ECHLDC). Par souci d'uniformisation, on a cree
+     un nouveau drapeau (ECHPIL) en 8.1.11, malencontreusement mal active.
+     On le reactive dans nmconv et op0070
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-303
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE   ssnv157b, ssnv157c
+   FONCTIONNALITE:
+     Cassee par RESTIT 8.1.11
+   DETAILS:
+    Idem AL2005-301
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION:
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX (H1)
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  CONTACT CONTINUE - TESTS
+   FONCTIONNALITE
+     Contact methode continue et glissiere
+   DETAILS
+     On remet les trois cas-tests qu'on n'avait pas restitue en 8.1.9:
+     sdnv103f,ssnv127g et ssnv127h
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX (H2)
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE  Mise en forme
+   FONCTIONNALITE
+     Ajout des cartes responsables sur: calico,caraco, cazoco,surfco,
+     rechco
+     Repassage en majuscules de: cazoco, caraco, nmible, op0070, rechco,
+     nmdepl
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX (H3)
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE  ssnv129c
+   FONCTIONNALITE
+     Ajout du titre
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 12/09/2005 a 15:41:06
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-339
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Interface ZMAT-Aster (il s'agit d'une AO)
+   FONCTIONNALITE
+      Il y avait une erreur dans l'interface Zmat-Aster : inversion des termes
+      de cisaillement XZ et YZ pour DEPS.
+      La correction a été faite dans Zaster.c, routine d'interface entre
+      Code_Aster (nmzmat.f) et la bibliothèque ZMAT.
+
+      PAS DE RESTITUTION DANS ASTER.
+
+   DETAILS
+      Patch :
+
+      --- Zaster.c.orig       Tue Feb 15 17:35:37 2005
+      +++ Zaster.c    Thu Sep  8 12:48:22 2005
+      @@ -215,7 +215,7 @@
+             zbbh.dgrad[4]=deto[5];
+             flux[4]=sig0[5];
+             grad[5]=eto0[4]+deto[4];
+      -      zbbh.dgrad[4]=deto[4];
+      +      zbbh.dgrad[5]=deto[4];
+             flux[5]=sig0[4];
+           }
+           else if(ntens!=4) ERROR("Invalid tensor size:"+itoa(ntens));
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      tous les test zmat existants + ajout de :
+      zmat001b : traction -cisaillement (XY) en 3D
+      zmat001c : traction-cisaillement (XZ) en 3D
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-330
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE
+      zmat004 cassé sur clp50a8
+   FONCTIONNALITE
+      idem AL 2005-339, car la correction n'avait été faite que sur clayastr
+      et clpaster.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR nicolas O.NICOLAS   DATE  le 12/09/2005 a 14:33:38
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-198
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_BASE_MODALE
+   FONCTIONNALITE: DEFI_BASE_MODALE
+   DETAILS
+     Ni le catalogue ni le fortran ne s'assurait que le nombre de mot clé
+     facteur soit superieur ou egal a 1 d'où plantage sale.
+     Du coup, je modifie DEFI_BASE_MODALE pour permettre son utilisation
+     avec un seul mot cle facteur de type MODE_MECA.
+     Ceci revient en fait a transformer un concept mode_meca en concept
+     base_modale.
+     J'en profite pour virer un write(*,6) que j'avais laisse trainer dans
+     refe81.
+     Routine modifiee ritz99.f, refe81.f
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : modif du cas test sdls08a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-196
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_GENE
+   FONCTIONNALITE: IMPR_GENE
+   DETAILS
+     La routine IMPR_GENE manque de cas test, utilisee sur un concept
+     harm_gene, mode_gene ou tran_gene, elle n'imprime que les valeurs
+     sur la premiere composante generalisee.
+     En fait, il s'agit d'une confusion des genres entre la notion de
+     composantes generalisees et de nombre de mode. Du coup, l'impression
+     etait incomplete car on recuperait toujours un nombre de composantes
+     egal a 1.
+     Routine modifiee : irgene.f, irvgen.f, op0159.f
+     Catalogue        : impr_gene.capy
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : sdls08a
+     On integre dans ce cas test la procedure d'impression des concepts
+     harm_gene, mode_gene, vect_asse_gene  que l'on valide
+     par un test_fichier
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-215
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : PROJ_VECT_BASE
+   FONCTIONNALITE: PROJ_VECT_BASE
+   DETAILS
+     Lorsque la base de mode est le resultat d'une restitution en base
+     physique de modes generalises un concept MODE_MECA est cree mais sans
+     que son REFE soit bien rempli. Du coup, la projection d'un vecteur
+     assemble plante salement car il ne trouve pas dans le REFE de quoi
+     recuperer la numerotation.
+     Le travail sur les REFD ainsi que la modification dans la routine
+     op0072.f permet de regler le probleme
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : sdls08a
+     On integre dans ce cas test la projection du vecteur assemble sur
+     le resultat de la resitution sur base physique d'un mode_gene
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-202
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : REST_BASE_PHYS
+   FONCTIONNALITE: REST_BASE_PHYS
+   DETAILS
+     La commande REST_BASE_PHYS ne prends pas en compte le contenu de
+     NOM_CHAM pour un concept dyna_harmo.
+     Il y avait un oubli dans la routine harm75 qui empechait le bon
+     fonctionnement dans le cas de plusieurs type de CHAM a traiter
+     J'en profite pour corriger une coquille dans op0060 de DYNA_LINE_HARM
+     Routine modifiee harm75.f et op0060.f
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : sdls08a
+     On integre dans ce cas test la resitution d'un concept harm_gene avec
+     des NOM_CHAM mulitples
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2005-141
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : DISMOI et MODELE GENERALISE
+   FONCTIONNALITE : CODE
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+     Dans le cadre de la sous-structuration dynamique, nos illustres
+     ancetres dynamiciens ont cree une routine mgutdm qui interroge la
+     structure modele_generalise a l'image de ce qui existe avec dismoi.
+     Je souhaitai resorber les appels directs a cette routine pour inclure
+     le tout dans dismoi par soucis de coherence avec le reste du code.
+     Je classe sans suite car cette routine permet de poser plus qu'une
+     question simple a la structure de donnee. Elle permet notamment de poser
+     une question sur certaines sous-structures decrites dans le modele
+     generalise. Il n'y donc pas de lien evident avec dismoi qui est plus
+     simple et moins dedie.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-143
+   NB_JOURS_TRAV  : 2.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : OPerateur de calcul de MAC
+   FONCTIONNALITE : MAC_MODES
+   DETAILS
+     Dans le cadre du projet ICAS, on souhaite disposer d'outils de
+     correlation sur base modale. L'un des criteres de correlation est
+     le Modal Assurance Criterion (MAC pour les intimes) qui verifie
+     l'orthogonalite de 2 bases modales (en general une numerique et
+     l'autre experimental).
+     Je rajoute donc op0141.f avec le catalogue mac_modes.capy
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.01
+       EXPL_ :
+   VALIDATION
+     Cas test : sdls112a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-282
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_BASE_MODALE test sdlv402a sur Rocks
+   FONCTIONNALITE: DEFI_BASE_MODALE
+   DETAILS
+     Le test sdlv402a s'arrete de maniere aleatoire sur Linux Rocks. En fait, la
+     programmation de la routine ritz99.f est pourrie. On teste un nbre de
+     modes mais on envoie pas toujours le bon en fonction des cas aux routines
+     moco99 et mgco99.
+     Remise en conformite de toute la routine ritz99.f !
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : sdlv402a passe sur Rocks
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-292
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : REST_BASE_PHYS et COMB_MATR_ASSE
+   FONCTIONNALITE: COMB_MATR_ASSE
+   DETAILS
+     On plantait dans REST_BASE_PHYS si la matrice de raideur generalisee
+     complexe etait obtenue par COMB_MATR_ASSE.
+     LE PB NE VENAIT PAS DE LA MISE AU CARRE DES REFD PAR O. NICOLAS EN 8.1.5
+     mais bien d'un oubli de la prise en compte des matrices generalisees
+     complexes dans COMB_MATR_ASSE.
+     Je corrige donc la routine op0031
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : sdlv124a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-265
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DYNA_LINE_HARM et partie imaginaire
+   DETAILS
+     Lorsque on utilise DYNA_LINE_HARM sans amortissement et avec une charge
+     dans le mot cle EXCIT, on obtient une partie imaginaire non nulle egale
+     a la partie reelle.
+     On peut donc parier sur un second membre identique en partie reelle et
+     imaginaire au lieu d'un reel pur.
+     2 coquilles dans les routines nmdomc et nmdome : coefficient reel entre
+     identique en partie imaginaire et reel
+     Mauvaise gestion de fonc_mult par rapport a fonc_mult_c
+     Je corrige donc les routine nmdomc.f et nmdome.f et je supprime la
+     restriction que j'avais mise dans le capy de DYNA_LINE_HARM
+   FONCTIONNALITE: DYNA_LINE_HARM
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 6.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Etude utilisateur du web
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-313
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DYNA_LINE_HARM et AMORTISSEMENT REDUIT
+   DETAILS
+     Lorsque on utilise DYNA_LINE_HARM avec une matrice de rigidite complexe et
+     un amortissement reduit, on obtient un plantage
+     Le calcul de la matrice d'amortissement reposant sur les valeurs de
+     la matrice de rigidite, le cas de valeurs complexes n'a pas ete prevu
+     initialemement.
+     Je corrige la routine dylema.f afin de traiter le cas ou la matrice de
+     raideur est complexe
+   FONCTIONNALITE: DYNA_LINE_HARM
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test : sdlv402a
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-220
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : PRE_IDEAS et IDEAS V11
+   FONCTIONNALITE : PRE_IDEAS
+   DETAILS
+     A l'occasion du passage d'IDEAS en V11, la coutume ancestrale des gens
+     d'Ideas veut que l'on change le numero (dataset) designant les groupes.
+     On passe donc de 2467 en V10 a 2477 en V11
+     Donc ajout de la 11eme version de ce numero dans la routine presup.f
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Etude utilisateur
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-264
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : MACRO_MATR_ASSE et ACOUSTIQUE
+   FONCTIONNALITE : MACRO_MATR_ASSE
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+     L'assemblage des matrices acoustiques semble OK. J'ai emis la fiche suite
+     a un doute sur le type de matrice obtenu si on choisi CELER_C ou CELER
+     dans DEFI_MATERIAU.
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : M.COURTOIS
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      TEST_FICHIER et les DOUBLE fortran
+      TEST_FICHIER arrondit les nombres réels avec de calculer le md5sum.
+      Les DOUBLE fortran (ex.: 1.23D+4) ne sont pas des réels en python, ils
+      sont alors considérés comme des chaines, c'est-à-dire pris tels quels
+      pour le calcul du md5sum.
+      On obtenait donc des différences entre les plates-formes, essentiellement
+      à cause des nombres très petits.
+      Aide aux développeurs en cas de différence du md5 :
+         Le fichier tel qu'il est "arrondi" par TEST_FICHIER peut être récupéré
+         simplement en lançant hors Aster :
+            python test_fichier_ops.py
+         Il suffit de modifier le nom du fichier à tester et le fichier de
+         sortie à la fin de test_fichier_ops.py, puis de comparer les fichiers
+         output obtenues entre les différentes plates-formes.
+      if __name__ == '__main__':
+         iret = md5file('sdls08a.38', 6, 1.e-14, info=2, output='output.txt')
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      test sur le fichier sdls08a.38 avec les valeurs par défaut : 6 décimales,
+      epsilon à 1.e-14.
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF utilitai/aplext               d6bhhjp J.P.LEFEBVRE       217     12      3
+ CASTEST AJOUT sdnv103f                       mabbas M.ABBAS            270    270      0
+ CASTEST AJOUT ssnv127g                       mabbas M.ABBAS            394    394      0
+ CASTEST AJOUT ssnv127h                       mabbas M.ABBAS            428    428      0
+ CASTEST AJOUT zmat001b                     mcourtoi M.COURTOIS         177    177      0
+ CASTEST AJOUT zmat001c                     mcourtoi M.COURTOIS         177    177      0
+ CASTEST AJOUT zzzz176b                     lebouvie F.LEBOUVIER        221    221      0
+ CASTEST MODIF sdll133a                       mabbas M.ABBAS            244      1      1
+ CASTEST MODIF sdls08a                       nicolas O.NICOLAS          285    108      4
+ CASTEST MODIF sdls112a                      nicolas O.NICOLAS          275     24      1
+ CASTEST MODIF sdls501a                     lebouvie F.LEBOUVIER        244      1      1
+ CASTEST MODIF sslp102a                      f6bhhbo P.DEBONNIERES      276      1      1
+ CASTEST MODIF sslv135e                      f1bhhaj J.ANGLES          1057    238     23
+ CASTEST MODIF ssnv101c                     lebouvie F.LEBOUVIER        510     66      4
+ CASTEST MODIF ssnv129c                       mabbas M.ABBAS            293      3      3
+ CASTEST MODIF zzzz161a                      d6bhhjp J.P.LEFEBVRE       266     11      4
+ CASTEST MODIF zzzz162a                      d6bhhjp J.P.LEFEBVRE       473     13      5
+ CASTEST MODIF zzzz176a                      d6bhhjp J.P.LEFEBVRE       168      3      4
+ CASTEST MODIF zzzz183a                      f1bhhaj J.ANGLES           227      1      1
+CATALOPY AJOUT commande/mac_modes            nicolas O.NICOLAS           30     30      0
+CATALOPY MODIF commande/defi_base_modale     nicolas O.NICOLAS           52     10      7
+CATALOPY MODIF commande/dyna_line_harm       nicolas O.NICOLAS           70      1      6
+CATALOPY MODIF commande/impr_gene            nicolas O.NICOLAS           59      3      5
+CATALOPY MODIF commande/modi_repere          cibhhlv L.VIVAN             83      2      1
+ FORTRAN AJOUT algeline/op0141               nicolas O.NICOLAS          213    213      0
+ FORTRAN MODIF algeline/op0031               nicolas O.NICOLAS          217     17     20
+ FORTRAN MODIF algorith/calcdp              lebouvie F.LEBOUVIER        127      8      5
+ FORTRAN MODIF algorith/calcme              lebouvie F.LEBOUVIER        874      8      6
+ FORTRAN MODIF algorith/cfconv                mabbas M.ABBAS            209      6      3
+ FORTRAN MODIF algorith/cjsci1              lebouvie F.LEBOUVIER        200     13      7
+ FORTRAN MODIF algorith/cjsela              lebouvie F.LEBOUVIER        129      8      5
+ FORTRAN MODIF algorith/cjsmde              lebouvie F.LEBOUVIER        304      1      3
+ FORTRAN MODIF algorith/cjsmid              lebouvie F.LEBOUVIER        313      1      4
+ FORTRAN MODIF algorith/cjsmis              lebouvie F.LEBOUVIER        204      1      2
+ FORTRAN MODIF algorith/cjspla              lebouvie F.LEBOUVIER        305     19      4
+ FORTRAN MODIF algorith/dylema               nicolas O.NICOLAS          300     20      2
+ FORTRAN MODIF algorith/harm75               nicolas O.NICOLAS          248     15     21
+ FORTRAN MODIF algorith/lceob1              lebouvie F.LEBOUVIER        372      7      4
+ FORTRAN MODIF algorith/lceob2              lebouvie F.LEBOUVIER        520      9      5
+ FORTRAN MODIF algorith/lceob3              lebouvie F.LEBOUVIER        475      8      5
+ FORTRAN MODIF algorith/lceobb              lebouvie F.LEBOUVIER        505      8      6
+ FORTRAN MODIF algorith/lceobg              lebouvie F.LEBOUVIER       1155     11     10
+ FORTRAN MODIF algorith/lceobl              lebouvie F.LEBOUVIER       1040     11     10
+ FORTRAN MODIF algorith/lcgdpi              lebouvie F.LEBOUVIER        610      7      4
+ FORTRAN MODIF algorith/lcgdpm              lebouvie F.LEBOUVIER        964      5      4
+ FORTRAN MODIF algorith/lcjoba              lebouvie F.LEBOUVIER        381      9      5
+ FORTRAN MODIF algorith/nm1vil              lebouvie F.LEBOUVIER        285      7      5
+ FORTRAN MODIF algorith/nmchab              lebouvie F.LEBOUVIER        695      9      4
+ FORTRAN MODIF algorith/nmchdp              lebouvie F.LEBOUVIER        212     14      9
+ FORTRAN MODIF algorith/nmcjs               lebouvie F.LEBOUVIER        399     12      6
+ FORTRAN MODIF algorith/nmcofr                mabbas M.ABBAS            200     20      5
+ FORTRAN MODIF algorith/nmcomp              lebouvie F.LEBOUVIER        733     23     18
+ FORTRAN MODIF algorith/nmconv                mabbas M.ABBAS            674     30     10
+ FORTRAN MODIF algorith/nmcoup              lebouvie F.LEBOUVIER        191     10      5
+ FORTRAN MODIF algorith/nmcpla              lebouvie F.LEBOUVIER        470     19     13
+ FORTRAN MODIF algorith/nmdepl                mabbas M.ABBAS            279    107    107
+ FORTRAN MODIF algorith/nmdomc               nicolas O.NICOLAS          261      5      4
+ FORTRAN MODIF algorith/nmdome               nicolas O.NICOLAS          845      5      4
+ FORTRAN MODIF algorith/nmecmi              lebouvie F.LEBOUVIER        415     10      4
+ FORTRAN MODIF algorith/nmelnl              lebouvie F.LEBOUVIER        450      3      3
+ FORTRAN MODIF algorith/nmible                mabbas M.ABBAS            175     62     58
+ FORTRAN MODIF algorith/nmisot              lebouvie F.LEBOUVIER        472      8      5
+ FORTRAN MODIF algorith/nmtadp              lebouvie F.LEBOUVIER         94      8      4
+ FORTRAN MODIF algorith/nmtahe              lebouvie F.LEBOUVIER        256     15      9
+ FORTRAN MODIF algorith/nmtasp              lebouvie F.LEBOUVIER         91      8      3
+ FORTRAN MODIF algorith/nmtaxi              lebouvie F.LEBOUVIER         92      9      5
+ FORTRAN MODIF algorith/nmveei              lebouvie F.LEBOUVIER        362     11      7
+ FORTRAN MODIF algorith/nmvpgm              lebouvie F.LEBOUVIER        374     12      5
+ FORTRAN MODIF algorith/nmvpir              lebouvie F.LEBOUVIER        572     19     12
+ FORTRAN MODIF algorith/nmvple              lebouvie F.LEBOUVIER        303      9      4
+ FORTRAN MODIF algorith/nzcalc              lebouvie F.LEBOUVIER        165      9      7
+ FORTRAN MODIF algorith/nzcifw              lebouvie F.LEBOUVIER        726      9      4
+ FORTRAN MODIF algorith/nzcizi              lebouvie F.LEBOUVIER        695      9      4
+ FORTRAN MODIF algorith/nzedga              lebouvie F.LEBOUVIER        706     11      5
+ FORTRAN MODIF algorith/nzgdzi              lebouvie F.LEBOUVIER        941      5      3
+ FORTRAN MODIF algorith/nzisfw              lebouvie F.LEBOUVIER        737     11      6
+ FORTRAN MODIF algorith/op0060               nicolas O.NICOLAS          593      2      2
+ FORTRAN MODIF algorith/op0070                mabbas M.ABBAS            816     13     10
+ FORTRAN MODIF algorith/op0072               nicolas O.NICOLAS          284     20     15
+ FORTRAN MODIF algorith/op0191               cibhhlv L.VIVAN            182     80     42
+ FORTRAN MODIF algorith/rechco                mabbas M.ABBAS            402    138    147
+ FORTRAN MODIF algorith/refe81               nicolas O.NICOLAS          282      1      2
+ FORTRAN MODIF algorith/ritz99               nicolas O.NICOLAS          262     85     43
+ FORTRAN MODIF algorith/vechde               f6bhhbo P.DEBONNIERES      462     27     10
+ FORTRAN MODIF algorith/vpagm1              lebouvie F.LEBOUVIER         86      6      4
+ FORTRAN MODIF algorith/zerofc              lebouvie F.LEBOUVIER         97      3      3
+ FORTRAN MODIF calculel/mecalm              lebouvie F.LEBOUVIER       2550      6      3
+ FORTRAN MODIF elements/pmfcom              lebouvie F.LEBOUVIER        282      2      2
+ FORTRAN MODIF elements/zerof2              lebouvie F.LEBOUVIER        173      8      6
+ FORTRAN MODIF elements/zerofo              lebouvie F.LEBOUVIER        122     11     10
+ FORTRAN MODIF modelisa/calico                mabbas M.ABBAS            419      2      2
+ FORTRAN MODIF modelisa/caraco                mabbas M.ABBAS            169     75     74
+ FORTRAN MODIF modelisa/cazoco                mabbas M.ABBAS            577    286    285
+ FORTRAN MODIF modelisa/quadco                mabbas M.ABBAS            102     10     21
+ FORTRAN MODIF modelisa/surfco                mabbas M.ABBAS            391      3      2
+ FORTRAN MODIF prepost/cer3pt                f1bhhaj J.ANGLES           247     17     19
+ FORTRAN MODIF prepost/dimax1                f1bhhaj J.ANGLES            92      3      3
+ FORTRAN MODIF prepost/irgene                nicolas O.NICOLAS          166      4      4
+ FORTRAN MODIF prepost/irvgen                nicolas O.NICOLAS          248     34      4
+ FORTRAN MODIF prepost/op0157                nicolas O.NICOLAS          194      1      1
+ FORTRAN MODIF prepost/raycir                f1bhhaj J.ANGLES           721    138    127
+ FORTRAN MODIF stbtrias/presup               nicolas O.NICOLAS          196      3      2
+ FORTRAN MODIF stbtrias/slegro               nicolas O.NICOLAS          352      4      4
+ FORTRAN MODIF utilitai/rfrgen               nicolas O.NICOLAS          285      2      2
+  PYTHON MODIF Macro/test_fichier_ops        nicolas O.NICOLAS          226     40      8
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        1910      1910             +1910
+ MODIF :   97       38099      2203    1404      +799
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  105       40009      4113    1404     +2709 

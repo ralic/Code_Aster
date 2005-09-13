@@ -1,6 +1,6 @@
       SUBROUTINE DYLEMA (BASENO, NBMAT, NOMAT, RAIDE, MASSE, AMOR, IMPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,11 +86,13 @@ C
       
       REAL*8 ACRIT
       
+      CHARACTER*1   KTYP 
       CHARACTER*4   ETAMA1
       CHARACTER*8   LISTAM
       CHARACTER*16  TYPOBJ    
       CHARACTER*19  MATIR,MATIM,MATIA,MAT1,MATA,AMORT
       CHARACTER*24  VALER,VALEM,VALEA
+      LOGICAL       CPX
       
 C ----------------------------------------------------------------------
 C
@@ -105,6 +107,7 @@ C====
 C 1.1  ==> INITIALISATIONS DIVERSES
 C====
       BL = ' '
+      CPX=.FALSE.
 
 C====
 C 1.2 ==> DONNEES,  RECUPERATION D OPERANDES
@@ -126,6 +129,11 @@ C===============
       CALL MTDSCR(RAIDE)
       NOMAT(1)=RAIDE(1:19)//'.&INT'
       CALL JEVEUO(NOMAT(1),'L',LMAT(1))
+C On teste si la matrice de raideur est complexe      
+      CALL JELIRA(RAIDE//'.VALE','TYPE',IBID,KTYP)
+      IF (KTYP.EQ.'C') THEN
+        CPX=.TRUE.
+      ENDIF
       CALL MTDSCR(MASSE)
       NOMAT(2)=MASSE(1:19)//'.&INT'
       CALL JEVEUO(NOMAT(2),'L',LMAT(2))
@@ -252,12 +260,22 @@ C
             VALEA=MATIA//'.VALE'
             CALL JEVEUO( JEXNUM(VALEA,IBLOC),'E',IATMAT)
             DO 14 I=1,NBMODE
-              IF (LGBLOC.EQ.NBMODE) THEN 
-               ACRIT = 2.D0*SQRT(ABS(ZR(IATMAR-1+I)*ZR(IATMAM-1+I)))
+              IF (LGBLOC.EQ.NBMODE) THEN
+               IF (CPX) THEN
+                 ACRIT = 2.D0*SQRT(ABS(ZC(IATMAR-1+I)*ZR(IATMAM-1+I)))
+               ELSE
+                 ACRIT = 2.D0*SQRT(ABS(ZR(IATMAR-1+I)*ZR(IATMAM-1+I)))
+               ENDIF
                ZR(IATMAT-1+I) = ZR(JAMOG-1+I)*ACRIT
               ELSEIF (LGBLOC.EQ.NBMOD2) THEN
                I2 = I*(I+1)/2
-               ACRIT = 2.D0*SQRT(ABS(ZR(IATMAR-1+I2)*ZR(IATMAM-1+I2)))
+               IF (CPX) THEN
+                 ACRIT = 2.D0*SQRT(ABS(ZC(IATMAR-1+I2)*
+     &                   ZR(IATMAM-1+I2)))
+               ELSE
+                 ACRIT = 2.D0*SQRT(ABS(ZR(IATMAR-1+I2)*
+     &                   ZR(IATMAM-1+I2)))
+               ENDIF
                ZR(IATMAT-1+I2) = ZR(JAMOG-1+I)*ACRIT              
               ENDIF
  14         CONTINUE

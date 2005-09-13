@@ -1,6 +1,6 @@
       SUBROUTINE SLEGRO(DATSET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 11/05/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C
            READ (IUNV,'(A)')    NOMGRO
            NBRLIG = 4
          ELSE IF ((DATSET.EQ.2435).OR.(DATSET.EQ.2467).
-     &    OR.(DATSET.EQ.2452)) THEN
+     &    OR.(DATSET.EQ.2452).OR.(DATSET.EQ.2477)) THEN
            READ (CBUF,'(I10,60X,I10)') NUMGRO,NBENTI
            READ (IUNV,'(A)')    NOMGRO
            NBRLIG = 2
@@ -180,7 +180,7 @@ C
               READ (IUNV,'(8I10)')
      &         (ENTCOD(J),NUMENT(J),J=1,NBRLIG)
             ELSEIF((DATSET.EQ.2435).OR.(DATSET.EQ.2467).
-     &    OR.(DATSET.EQ.2452)) THEN
+     &    OR.(DATSET.EQ.2452).OR.(DATSET.EQ.2477)) THEN
               READ (IUNV,'(2(I10,I10,20X))')
      &         (ENTCOD(J),NUMENT(J),J=1,NBRLIG)
             ENDIF
@@ -223,7 +223,7 @@ C
               READ (IUNV,'(8I10)')
      &         (ENTCOD(J),NUMENT(J),J=1,NBRLIG)
             ELSEIF ((DATSET.EQ.2435).OR.(DATSET.EQ.2467).
-     &    OR.(DATSET.EQ.2452)) THEN
+     &    OR.(DATSET.EQ.2452).OR.(DATSET.EQ.2477)) THEN
               READ (IUNV,'(2(I10,I10,20X))')
      &         (ENTCOD(J),NUMENT(J),J=1,NBRLIG)
             ENDIF

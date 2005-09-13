@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,6 +99,26 @@ CASS=ASSE_MATRICE(MATR_ELEM=CELEM,
 
 FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
                   NUME_DDL=NUME,);
+
+
+#CALCUL DE LA BASE DE MODES DYNAMIQUES
+#
+MODET=MODE_ITER_SIMULT(MATR_A=KASS,
+                       MATR_B=MASS,
+                       CALC_FREQ=_F(
+                       NMAX_FREQ=6,),
+                       VERI_MODE=_F(STOP_ERREUR='OUI',
+                                    STURM='OUI',),);
+
+# TEST DE CREATION D'UNE BASE MODALE AVEC UNE OCCURENCE
+# DE MODE_MECA
+MODES=DEFI_BASE_MODALE(RITZ=(
+                           _F(MODE_MECA=MODET,
+                              NMAX_MODE=5,),
+                           ),
+                          NUME_REF=NUME,
+                          );
+
 #CALCUL DE LA BASE DE MODES STATIQUES
 #
 
@@ -139,6 +159,20 @@ MODGEN=MODE_ITER_SIMULT(MATR_A=KGEN,
 MODEEXP=REST_BASE_PHYS(RESU_GENE=MODGEN,
                        TOUT_ORDRE='OUI',
                        NOM_CHAM='DEPL',);
+
+
+#######################################################
+# TEST DE LA PROJECTION DU 2nd MEMBRE SUR LE RESULTAT DE
+# LA RESTITUTION EN BASE PHYSIQUE DES MODES GENERALISES
+#######################################################
+NUMDIAG2=NUME_DDL_GENE(BASE=MODEEXP,
+                      STOCKAGE='DIAG',);
+
+FDIAG2=PROJ_VECT_BASE(BASE=MODEEXP,
+                    NUME_DDL_GENE=NUMDIAG2,
+                    VECT_ASSE=FASS,);
+
+
 #CALCUL DE REPONSE HARMONIQUE SUR BASE REDUITE DE MODES STATIQUES
 
 LIFREQ=DEFI_LIST_REEL(DEBUT=3,
@@ -149,15 +183,56 @@ DYNGEN=DYNA_LINE_HARM(MATR_MASS=MGEN,
                       MATR_RIGI=KGEN,
                       MATR_AMOR=CGEN,
                       LIST_FREQ=LIFREQ,
-                      NOM_CHAM='DEPL',
+                      EXCIT=_F(VECT_ASSE=FGEN,
+                               COEF_MULT=1.0,),);
+
+KGENC=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=KGEN,
+                               COEF_C=('RI',1.0,0.01,),),);
+
+DYNGENC=DYNA_LINE_HARM(MATR_MASS=MGEN,
+                      MATR_RIGI=KGENC,
+                      AMOR_REDUIT=(0.01,),
+                      LIST_FREQ=LIFREQ,
                       EXCIT=_F(VECT_ASSE=FGEN,
                                COEF_MULT=1.0,),);
 
 DYNEXP=REST_BASE_PHYS(RESU_GENE=DYNGEN,
+                      NOM_CHAM=('DEPL','VITE'),
                       TOUT_ORDRE='OUI',
-                      LIST_FREQ=LIFREQ,
-                      NOM_CHAM='DEPL',);
+                      LIST_FREQ=LIFREQ,);
+
+DYNEXPC=REST_BASE_PHYS(RESU_GENE=DYNGENC,
+                      NOM_CHAM=('DEPL','VITE'),
+                      TOUT_ORDRE='OUI',
+                      LIST_FREQ=LIFREQ,);
 #
+#########################################################
+# RECUPERATION DES DEPLACEMENTS EN UN POINT DES RESULTATS
+# PHYSIQUES
+#########################################################
+DHZ1=RECU_FONCTION (   RESULTAT = DYNEXP,
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'NO23',
+                      NOM_CHAM = 'DEPL',
+                      TOUT_ORDRE = 'OUI');
+                                            
+DHZ2=RECU_FONCTION (   RESU_GENE = DYNGEN,
+                       NOM_CMP = 'DZ',
+                       NOEUD = 'NO23',
+                       NOM_CHAM = 'DEPL',
+                       TOUT_ORDRE = 'OUI',);
+
+VHZ1=RECU_FONCTION (   RESULTAT = DYNEXP,
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'NO23',
+                      NOM_CHAM = 'VITE',
+                      TOUT_ORDRE = 'OUI');
+                                            
+VHZ2=RECU_FONCTION (   RESU_GENE = DYNGEN,
+                       NOM_CMP = 'DZ',
+                       NOEUD = 'NO23',
+                       NOM_CHAM = 'VITE',
+                       TOUT_ORDRE = 'OUI',);
 
 TEST_RESU(RESU=_F(RESULTAT=MODEEXP,
                   NUME_MODE=1,
@@ -177,5 +252,34 @@ TEST_RESU(RESU=_F(RESULTAT=DYNEXP,
                   PRECISION=0.1,
                   REFERENCE='AUTRE_ASTER',),);
 #
+#######################################################
+# TEST SUR IMPR_GENE
+#######################################################
+# Test de l'impression d'un vecteur generalise
+IMPR_GENE(UNITE=38, 
+          GENE=_F(RESU_GENE=FGEN,
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP_GENE='OUI',
+                  TOUT_CHAM='OUI',),);
+
+# Test de l'impression d'un harm_gene
+IMPR_GENE(UNITE=38, 
+          GENE=_F(RESU_GENE=DYNGEN,
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP_GENE='OUI',
+                  TOUT_CHAM='OUI',),);
+
+
+DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
+
+TEST_FICHIER(UNITE=8,
+             FICHIER='fort.38',
+             NB_CHIFFRE=4,
+             EPSILON=1.E-4,
+             VALE_K='f7cb2ce7362f8771b448230999bc22b0',
+             EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.0.21',
+             INFO=1);
 
 FIN();

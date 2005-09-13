@@ -1,9 +1,9 @@
         SUBROUTINE CJSELA ( MOD, CRIT, MATERF, DEPS, SIGD, SIGF,
-     &                      NVI, VIND, VINF)
+     &                      NVI, VIND, VINF, IRET)
         IMPLICIT NONE
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,11 @@ C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           SIGD   :  CONTRAINTE  A T
 C           DEPS   :  INCREMENT DE DEFORMATION
 C       OUT SIGF   :  CONTRAINTE A T+DT
+C           IRET   : CODE RETOUR DE  L'INTEGRATION DE LA LOI CJS
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ECHEC 
 C       ---------------------------------------------------------------
-        INTEGER       NDT, NDI, NVI
+        INTEGER       NDT, NDI, NVI, IRET
         REAL*8        COEF, E, NU, AL, LA, MU, HOOK(6,6), I1
         REAL*8        DEPS(6), DSIG(6), SIGD(6), SIGF(6)
         REAL*8        VIND(*), VINF(*)
@@ -54,8 +57,8 @@ C       ---------------------------------------------------------------
 C--->   CALCUL DE I1=TR(SIG) A T+DT PAR METHODE DE LA SECANTE
 C       OU EXPLICITEMENT SI NIVEAU CJS1
 
-        CALL CJSCI1 ( CRIT, MATERF, DEPS, SIGD, I1, TRACT )
-
+        CALL CJSCI1 ( CRIT, MATERF, DEPS, SIGD, I1, TRACT, IRET )
+        IF(IRET.EQ.1) GOTO 9999
 C
 C--->   EN CAS D'ENTREE EN TRACTION, LES CONTRAINTES SONT
 C       RAMENEES SUR L'AXE HYDROSTATIQUE A DES VALEURS FAIBLES

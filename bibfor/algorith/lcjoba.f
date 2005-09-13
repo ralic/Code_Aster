@@ -1,7 +1,7 @@
       SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SUM, DSU,
-     &                    VIM,OPTION, SIG, VIP,  DSIDEP)
+     &                    VIM,OPTION, SIG, VIP,  DSIDEP, IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/04/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*8        TYPMOD(2)
       CHARACTER*16       OPTION
-      INTEGER            NDIM, IMATE
+      INTEGER            NDIM, IMATE, IRET
       REAL*8             SUM(2), DSU(2), VIM(6)
       REAL*8             SIG(2), VIP(6), DSIDEP(2,2),CRIT(3)
 C ----------------------------------------------------------------------
@@ -52,6 +52,11 @@ C       5   -> DEFORMATION PAR FROTTEMENT DES FISSURES
 C       6   -> VALEUR DE L'ECROUISSAGE CINEMATIQUE 
 C              PAR FROTTEMENT DES FISSURES
 C     DSIDEP  : MATRICE TANGENTE
+C     IRET    : CODE RETOUR DE  L'INTEGRATION DE LA LDC
+C               IRET=0 => PAS DE PROBLEME
+C               IRET=1 => DJ<0 ET INTEGRATION IMPOSSIBLE
+C                      => ABSENCE DE CONVERGENCE DANS LE CALCUL 
+C                        IMPLICITE, FROTTEMENT DES FISSURES')
 C
 C ON A BESOIN DE 
 C   HPEN   = PENETRATION 
@@ -316,8 +321,7 @@ C --------EVALUATION DE LA CONVERGENCE
 40            CONTINUE
            
               IF (.NOT. CONV) THEN
-                 CALL UTMESS('F','LCJOBA','PAS DE CONVERGENCE DANS LE
-     &                       CALCUL IMPLICITE, FROTTEMENT DES FISSURES')
+                 IRET = 1
               ENDIF
            ENDIF
         ENDIF

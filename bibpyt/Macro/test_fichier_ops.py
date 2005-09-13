@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF test_fichier_ops Macro  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,10 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
    import os.path
    import re
    from types import StringType
+   
+   import aster
    from Macro.test_fichier_ops import md5file
+   from Utilitai.Utmess import UTMESS
 
    # vérifie la syntaxe des expressions régulières fournies
    l_regexp=[]
@@ -54,7 +57,8 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
          try:
             obj=re.compile(exp)
          except re.error, s:
-            print '<F> <TEST_FICHIER> <INVALID_REGEXP> '+str(s)+' pour "'+exp+'"'
+            UTMESS('F', 'TEST_FICHIER',
+                   '<INVALID_REGEXP> %s pour %s' % (str(s), repr(exp)))
          else:
             l_regexp.append(exp)
       if len(l_regexp) < len(lexp):
@@ -67,7 +71,8 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
    tinfo__ = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
    
    if tinfo__['ETAT_UNITE',1].find('OUVERT')>-1:
-      print "<A> <TEST_FICHIER> LE FICHIER N'A PAS ETE FERME :\n",FICHIER
+      UTMESS('A',  'TEST_FICHIER',
+             "LE FICHIER N'A PAS ETE FERME :\n%s" % FICHIER)
 
    # fichier correctement fermé
    else:
@@ -85,8 +90,7 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
 
       # comparaison a la reference
       if INFO > 0 :
-         print ' %-20s : %32s' % ('REFERENCE',VALE_K)
-         print
+         aster.affiche('MESSAGE',' %-20s : %32s\n' % ('REFERENCE',VALE_K))
 
       if mdsum == VALE_K:
          is_ok=1
@@ -125,7 +129,7 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
 
 
 #-------------------------------------------------------------------------------
-def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
+def md5file(fich, nbch, epsi, regexp_ignore=[], info=0, output=None):
    """
    Cette methode retourne le md5sum d'un fichier en arrondissant les nombres
    reels a la valeur significative.
@@ -135,15 +139,28 @@ def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
       epsi          : valeur en deca de laquelle on prend 0
       regexp_ignore : liste d'expressions régulières permettant d'ignorer
          certaines lignes
+      output        : pour rediriger l'interprétation du fichier (INFO=2)
+         dans le fichier de nom `output`.
    OUT :
       code retour : 0 si ok, >0 sinon
       md5sum
+   
+         NE PAS AJOUTER D'IMPORT QUI RENDRAIT CETTE FONCTION
+               INUTILISABLE EN DEHORS DE CODE_ASTER.
    """
+   import sys
    import os.path
    import re
    import string
    import math
    import md5
+   
+   if output<>None:
+      try:
+         sys.stdout=open(output, 'w')
+      except IOError, msg:
+         print "Erreur d'écriture sur %s : %s" % (fout, msg)
+   
    #      1 Mo   10 Mo   100 Mo
    # v0   2.6 s  20.4 s  196.6 s
    # v1   2.0 s  10.3 s  94.9 s (pas de distinction entier/reel)
@@ -166,9 +183,11 @@ def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
                print ' >>>>>>>>>> IGNOREE <<<<<<<<<<',
             break
       if keep:
-         #r=string.split(ligne)
          # découpe des nombres collés : 1.34E-142-1.233D+09
-         r=string.split(re.sub('([0-9]+)\-','\g<1> -',ligne))
+         ligne=re.sub('([0-9]+)\-','\g<1> -',ligne)
+         # conversion des DOUBLE fortran en 'E'
+         ligne=re.sub('([0-9]+)[dD]([\-\+]{0,1}[0-9]+)','\g<1>E\g<2>',ligne)
+         r=string.split(ligne)
          for x in r:
             try:
                if abs(float(x))<epsi:
@@ -184,11 +203,24 @@ def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
          print
    f.close()
    md5sum=m.hexdigest()
+   
+   affich_resu=True
    if info>=1:
-      form=' %-20s : %32s'
-      print form % ('Fichier',fich)
-      print form % ('Nombre de lignes',str(i))
-      print form % ('Format des reels',format_float)
-      print form % ('Epsilon',str(epsi))
-      print form % ('md5sum',md5sum)
+      while affich_resu:
+         form=' %-20s : %32s'
+         print form % ('Fichier',fich)
+         print form % ('Nombre de lignes',str(i))
+         print form % ('Format des reels',format_float)
+         print form % ('Epsilon',str(epsi))
+         print form % ('md5sum',md5sum)
+         if output==None:
+            affich_resu=False
+         else:
+            sys.stdout=sys.__stdout__
+            output=None
    return 0, md5sum
+
+
+#-------------------------------------------------------------------------------
+if __name__ == '__main__':
+   iret = md5file('sdls08a.38', 6, 1.e-14, info=2, output='output.txt')

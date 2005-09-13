@@ -1,10 +1,11 @@
         SUBROUTINE NMCJS(  TYPMOD,  IMAT, COMP, CRIT,
      &                      INSTAM, INSTAP, TEMPM, TEMPF, TREF, EPSD,
-     &                      DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE)
+     &                      DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE,
+     &                      IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +67,9 @@ C                               'RAPH_MECA'     > SIG(T+DT)
 C       OUT     SIGF    CONTRAINTE A T+DT
 C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+C               IRET    CODE RETOUR DE  L'INTEGRATION DE LA LOI CJS
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ECHEC 
 C       ----------------------------------------------------------------
 C       INFO    MATERD        (*,1) = CARACTERISTIQUES ELASTIQUES A T
 C                             (*,2) = CARACTERISTIQUES PLASTIQUES A T
@@ -94,7 +98,7 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT  , NDT   , NDI  , NVI
+        INTEGER         IMAT  , NDT   , NDI  , NVI, IRET
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),    VINF(*)
@@ -263,8 +267,8 @@ C
 
 
         CALL CJSELA ( MOD, CRIT, MATERF, DEPSTH, SIGD, SIGF,
-     &                NVI, VIND, VINF)
-
+     &                NVI, VIND, VINF, IRET)
+        IF (IRET.EQ.1) GOTO 9999
 
 C
 C --    PREDICTION ETAT ELASTIQUE A T+DT :
@@ -286,7 +290,8 @@ C
           CALL  CJSPLA ( MOD, CRIT, MATERF, SEUILI, SEUILD, NVI,
      &                   EPSDTH, DEPSTH, SIGD, VIND, SIGF, VINF, MECANF,
      >                   NIVCJS ,NITER,
-     >                   NDEC,EPSCON)
+     >                   NDEC,EPSCON,IRET)
+          IF (IRET.EQ.1) GOTO 9999
           ELSE
 C
 C --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
@@ -390,4 +395,5 @@ C  VARIABLES INTERNES POUR SORTIES
      >                       NDEC,EPSCON)
         ENDIF
 
+9999    CONTINUE
         END

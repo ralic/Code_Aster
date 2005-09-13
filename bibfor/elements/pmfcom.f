@@ -11,7 +11,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -208,7 +208,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
      &                   OPTION,
      &                   DEFAM(1),DEFAP(1),
      &                   ANGMAS,
-     &                   SIGF(I),VARIP(IVARI),MODF(I))
+     &                   SIGF(I),VARIP(IVARI),MODF(I),CODRET)
 56          CONTINUE
 
         ELSE

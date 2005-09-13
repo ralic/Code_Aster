@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 12/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF APLEXT UTILITAI  DATE 13/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -48,7 +48,7 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
 
 #endif
 {
-   char *args[100];char nomcmd[81];char *ncmd;
+   char *args[100];char nomcmd[81];char *ncmd,*msg;
    long i,k,num,ipid,l;
 #ifndef PPRO_NT
    pid_t pid;
@@ -111,6 +111,9 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
    fflush(stdout);
    if ( (pid=fork()) < 0 ) {
      *ier=1;
+     msg=strerror(errno);
+     fprintf(stdout,"\n%s\n",msg);
+     fprintf(stderr,"\n%s\n",msg);
    }
    else {
      if (pid == 0) {
@@ -130,7 +133,13 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
 */     do {errno = 0; 
           pidr=wait(&errnoSTAT);
        } while (errno==EINTR) ;
-       if (pidr == -1) {perror("wait"); *ier=1;}
+       if (pidr == -1) {
+                perror("wait"); 
+                *ier=1;
+                msg=strerror(errno);
+                fprintf(stdout,"\n%s\n",msg);
+                fprintf(stderr,"\n%s\n",msg);
+		}
        else {
 /*
    Examen du code retour avec détection des signaux

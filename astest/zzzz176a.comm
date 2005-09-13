@@ -1,5 +1,4 @@
-
-# MODIF  DATE 05/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 13/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE VALIDATION DE PRE_IDEAS POUR DATASET 82
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,8 +126,8 @@ DEFI_FICHIER (ACTION='LIBERER',UNITE=uniideas)
 TEST_FICHIER(FICHIER='./REPE_OUT/fic_ideas',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='eaa3ecb20519059b36b4e76bd9e2c701',
-             EXPR_IGNORE=('ASTER V',),
+             VALE_K='b4977cbc77890edaa168cda0aada7aa4',
+             EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4}',),
              REFERENCE='NON_REGRESSION',
              VERSION='8.1.13',
              INFO=1)

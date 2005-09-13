@@ -3,7 +3,7 @@
       LOGICAL             LGRCOU
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C  !          N 2432 (MASTER SERIES 3) --->                    !
 C  !          N 2435 (SUPERTAB 7)      --->                    !
 C  !          N 2452 (MASTER SERIES 3) --->                    !
 C  !          N 2467 (MASTER SERIES 3) --->                    !
+C  !          N 2477 (MASTER SERIES v11) --->                  !
 C  !  DATASET N  735 (SUPERTAB 4 & 6)  ---> DESCRIPTION        !
 C  !              ??                        GEOMETRIQUE        !
 C  =============================================================
@@ -159,7 +160,7 @@ C
      &          OR.DATSET.EQ.2428.OR.DATSET.EQ.2429.
      &          OR.DATSET.EQ.2430.OR.DATSET.EQ.2432.
      &          OR.DATSET.EQ.2435.OR.DATSET.EQ.2452.
-     &          OR.DATSET.EQ.2467) THEN
+     &          OR.DATSET.EQ.2467.OR.DATSET.EQ.2477) THEN
 C
 C  -->   LECTURE ET ECRITURE DES GROUPES DE NOEUDS OU D'MAILLES
          CALL SLEGRO(DATSET)

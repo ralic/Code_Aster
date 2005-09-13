@@ -5,7 +5,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,16 +138,28 @@ C
              NOEU = ' '
              CMP  = ' '
              LBASE = .FALSE.
+             CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
+C             NBMODE = ZI(JDESC+1)
           ELSEIF ( TYPREM .EQ. 'BASE_MODALE' ) THEN
              LBASE = .TRUE.
              BASMOD = MODE
              CALL JEVEUO(BASMOD//'.TYPE','L',JTYPE)
              CALL JEVEUO(BASMOD//'.NOEU','L',JNOEU)
+             CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
+          ELSEIF ( TYPREM(1:9) .EQ. 'MODE_STAT' ) THEN
+             TYPMOD = '  PROPRE  '
+             NOEU = ' '
+             CMP  = ' '
+             LBASE = .FALSE.
+             CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
           ELSE
-           CALL UTMESS('A','IRVGEN','TYPE DE BASE NON TRAITE: '//TYPREM)
-             GOTO 9999
+           CALL UTMESS('A','IRVGEN','TYPE DE BASE INCONNU: '//TYPREM)
+             TYPMOD = '  PROPRE  '
+             NOEU = ' '
+             CMP  = ' '
+             LBASE = .FALSE.
+             CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
           ENDIF
-          NBMODE = ZI(JDESC+1)
           IF ( LHIST ) THEN
             IF ( TYPVAL(1:1).EQ. 'R' ) THEN
               WRITE(IFI,1010)
@@ -170,22 +182,38 @@ C
                 GOTO 20
  24            CONTINUE
              ENDIF
-             CALL RSADPA(MODE,'L',1,'FREQ',I,0,JFREQ,K8B)
+             IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
+               CALL RSADPA(MODE,'L',1,'NOEUD_CMP',I,0,JFREQ,K8B)
+             ELSE
+               CALL RSADPA(MODE,'L',1,'FREQ',I,0,JFREQ,K8B)
+             ENDIF
              IF ( LHIST ) THEN
                IF ( LBASE ) THEN
                  TYPMOD = ZK16(JTYPE+I-1)(1:9)
                  NOEU   = ZK16(JNOEU+I-1)(1:8)
                  CMP    = ZK16(JNOEU+I-1)(9:16)
                ENDIF
-               IF ( TYPVAL(1:1).EQ. 'R' ) THEN
-                 WRITE(IFI,1012) I, ZR(JVALE+I-1), MODE,
+               IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
+                 IF ( TYPVAL(1:1).EQ. 'R' ) THEN
+                   WRITE(IFI,1013) I, ZR(JVALE+I-1), MODE,
+     +                        TYPMOD, ZK16(JFREQ), NOEU, CMP
+                 ELSEIF ( TYPVAL(1:1).EQ. 'C' ) THEN
+                   XREAL =  DBLE( ZC(JVALE+I-1) )
+                   XIMAG = DIMAG( ZC(JVALE+I-1) )
+                   WRITE(IFI,1043) I, XREAL, XIMAG, MODE,
+     +                        TYPMOD, ZK16(JFREQ), NOEU, CMP
+                 ENDIF
+              ELSE
+                IF ( TYPVAL(1:1).EQ. 'R' ) THEN
+                  WRITE(IFI,1012) I, ZR(JVALE+I-1), MODE,
      +                        TYPMOD, ZR(JFREQ), NOEU, CMP
-               ELSEIF ( TYPVAL(1:1).EQ. 'C' ) THEN
-                 XREAL =  DBLE( ZC(JVALE+I-1) )
-                 XIMAG = DIMAG( ZC(JVALE+I-1) )
-                 WRITE(IFI,1042) I, XREAL, XIMAG, MODE,
+                ELSEIF ( TYPVAL(1:1).EQ. 'C' ) THEN
+                  XREAL =  DBLE( ZC(JVALE+I-1) )
+                  XIMAG = DIMAG( ZC(JVALE+I-1) )
+                  WRITE(IFI,1042) I, XREAL, XIMAG, MODE,
      +                        TYPMOD, ZR(JFREQ), NOEU, CMP
-               ENDIF
+                ENDIF
+               ENDIF  
              ELSE
                IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                  WRITE(IFI,1022) I, ZR(JVALE+I-1)
@@ -208,7 +236,9 @@ C
  1040 FORMAT(/,' NUME_CMP          VALEUR              BASE_MODALE  ',
      +         'TYPE_MODE     FREQUENCE    APPLICATION')
  1012 FORMAT(1P,3X,I5,3X,D12.5,4X,A8,4X,A9,3X,D12.5,3X,A8,A8)
+ 1013 FORMAT(1P,3X,I5,3X,D12.5,4X,A8,4X,A9,3X,3X,A8,3X,A8,A8)
  1042 FORMAT(1P,3X,I5,3X,D12.5,1X,D12.5,4X,A8,4X,A9,3X,D12.5,3X,A8,A8)
+ 1043 FORMAT(1P,3X,I5,3X,D12.5,1X,D12.5,4X,A8,4X,A9,3X,A8,3X,A8,A8)
  1020 FORMAT(/,' NUME_CMP   VALEUR')
  1030 FORMAT(/,' NUME_CMP          VALEUR')
  1022 FORMAT(1P,3X,I5,3X,D12.5)

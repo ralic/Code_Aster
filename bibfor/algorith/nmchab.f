@@ -1,8 +1,8 @@
       SUBROUTINE NMCHAB (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      +                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
-     +                   OPTION,SIGP,VIP,DSIDEP)
+     +                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,9 +123,14 @@ C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 C               -----------------------------------------------------
 C
+C    IRET           OUT   I    CODE RETOUR DE  L'INTEGRATION DE LA LDC
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ABSENCE DE CONVERGENCE DANS  
+C                                        LORS DE L'INTEGRATION DE LA 
+C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
-          INTEGER             NDIM,IMATE,NBVAR
+          INTEGER             NDIM,IMATE,NBVAR,IRET
            REAL*8             CRIT(6),INSTAM,INSTAP,TM,TP,TREF
            REAL*8             DEPS(6),DEUXMU,DILATM,DILATP
            REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
@@ -419,7 +424,7 @@ C ---   QUI EST LA SOLUTION D'UNE EQUATION NON LINEAIRE EN UTILISANT
 C ---   UNE METHODE DE SECANTES :
 C       =======================
             CALL NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,DEUXMU,
-     &                  CRIT,SEUIL,ETA,DT,VALDEN,DP)
+     &                  CRIT,SEUIL,ETA,DT,VALDEN,DP,IRET)
             PLAST = UN
          ENDIF
 C

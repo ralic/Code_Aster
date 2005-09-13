@@ -1,9 +1,9 @@
       SUBROUTINE NMVEEI (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
-     &                   OPTION,SIGP,VIP,DSIDEP)
+     &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER            NDIM,IMATE
+      INTEGER            NDIM,IMATE,IRET
       CHARACTER*16       COMPOR(*),OPTION
       CHARACTER*8        TYPMOD(*)
       REAL*8             CRIT(*),INSTAM,INSTAP,TM,TP,TREF
@@ -73,6 +73,11 @@ C IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
 C OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 C OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
 C OUT DSIDEP  : MATRICE TANGENTE
+C OUT IRET    : CODE RETOUR DE  L'INTEGRATION DE LA LDC
+C                  IRET=0 => PAS DE PROBLEME
+C                  IRET=1 => ABSENCE DE CONVERGENCE DANS L'INTEGRATION 
+C                            DE LA LOI VISCO PLASTIQUE DE CHABOCHE
+C                            AVEC ENDOMAGEMENT
 C
 C ----------------------------------------------------------------------
 C INFO    MATM          (*,1) = CARACTERISTIQUES ELASTIQUES A T-
@@ -91,7 +96,7 @@ C         NR             NB EQUATIONS SYSTEME INTEGRE A RESOUDRE
 C     ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C     L'ORDRE :  XX YY ZZ XY XZ YZ         RR ZZ TT RZ
 C ----------------------------------------------------------------------
-      INTEGER      NB, NP, NI, NR, NMAT, UN, NT, IRET
+      INTEGER      NB, NP, NI, NR, NMAT, UN, NT, IRET1
       REAL*8       ZERO, DAMMAX, DET
       PARAMETER  (NB = 6, NP = 2, NI = 9, NR = 8, NT=3*NB)
       PARAMETER  (NMAT = 90)
@@ -199,7 +204,7 @@ C
           DO 00142 K = 1,NB
             A(I,K) = A(I,K)+ (UN-DM)*HOOKM(I,K)
 00142   CONTINUE
-        CALL MGAUSS ( 'NFVP', A , B , NB , NB , 1, DET, IRET )
+        CALL MGAUSS ( 'NFVP', A , B , NB , NB , 1, DET, IRET1 )
 C
         DO 00143 I = 1,NB
           EP(6+I)=0.D0
@@ -344,8 +349,7 @@ C
      &                  'PARAMETRES MATERIAU')
       GOTO 900
  801  CONTINUE
-            CALL UTEXCP(23,'NMVEEI_02',
-     &           ' NOMBRE D''ITERATIONS INTERNES MAXIMAL ATTEINT ')
+      IRET = 1
       GOTO 900
  802  CONTINUE
             CALL UTMESS('F','NMVEEI_03',

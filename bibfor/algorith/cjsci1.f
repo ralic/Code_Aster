@@ -1,8 +1,8 @@
-        SUBROUTINE CJSCI1 ( CRIT, MATER, DEPS, SIGD, I1F, TRACT )
+        SUBROUTINE CJSCI1 ( CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,9 +34,13 @@ C IN  DEPS  : INCREMENT DE DEFORMATION
 C IN  SIGD  : CONTRAINTE A T
 C OUT I1    : TRACE DE SIG A T+DT
 C     TRACT : VARIABLE LOGIQUE INDIQUANT LA TRACTION (I1F > QINIT)
+C OUT IRET  : CODE RETOUR DE LORS DE LA RESOLUTION DE L'EQUATION
+C             SCALAIRE
+C                 IRET=0 => PAS DE PROBLEME
+C                 IRET=1 => ECHEC 
 C ----------------------------------------------------------------------
 
-        INTEGER NDT, NDI, IMAX
+        INTEGER NDT, NDI, IMAX, IRET
         PARAMETER (IMAX = 60)
         REAL*8  MATER(14,2), CRIT(*), DEPS(6), SIGD(6), I1D, I1F
         REAL*8  TRDEPS, COEF, PA, N, MULTI
@@ -116,8 +120,8 @@ C       AVEC Y0>0 ET Y1<0
              Y1 = X1-I1D-COEF*((X1+QINIT)/TROIS/PA)**N
              IF(Y1 .LT. ZERO) GOTO 25
   20       CONTINUE
-           CALL UTMESS('F','CJSCI1','CALCUL I1 : PAS DE CONVERGENCE'//
-     &      ' DANS LA RECHERCHE DE (X1,Y1) CAS N.2 : ')
+           IRET = 1
+           GOTO 9999
   25       CONTINUE
 
 
@@ -142,7 +146,8 @@ C
            ENDIF
 
   30       CONTINUE
-           CALL UTMESS('F','CJSCI1','CALCUL I1 : PAS DE CONVERGENCE')
+           IRET = 1
+           GOTO 9999
   40       CONTINUE
 
            I1F=X2
@@ -182,7 +187,8 @@ C
            ENDIF
 
   60       CONTINUE
-           CALL UTMESS('F','CJSCI1','CALCUL I1 : PAS DE CONVERGENCE')
+           IRET = 1
+           GOTO 9999
   70       CONTINUE
 
            I1F=X2

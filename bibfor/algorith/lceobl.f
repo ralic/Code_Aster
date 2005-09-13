@@ -1,9 +1,9 @@
        SUBROUTINE LCEOBL (NDIM, TYPMOD, IMATE, CRIT, EPSM, DEPS,
-     &                   VIM, OPTION, SIGM, VIP,  DSIDEP)
+     &                   VIM, OPTION, SIGM, VIP,  DSIDEP, IRET)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       OPTION
-      INTEGER            NDIM, IMATE
+      INTEGER            NDIM, IMATE, IRET
       REAL*8             EPSM(6), DEPS(6), VIM(7), CRIT(*)
       REAL*8             SIGM(6), VIP(7), DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -47,13 +47,14 @@ C OUT VIP     : VARIABLES INTERNES
 C                 1 A 6   -> TENSEUR D'ENDOMMAGEMENT DE TRACTION
 C                 7       -> ENDOMMAGEMENT DE COMPRESSION
 C OUT DSIDEP  : MATRICE TANGENTE DEFO
+C OUT         : IRET CODE RETOUR
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 
 
 
 
-      LOGICAL     RIGI, RESI, ELAS,IRET,REINIT
+      LOGICAL     RIGI, RESI, ELAS,REINIT
       LOGICAL     TOTAL,TOT1,TOT2,TOT3,DBLOQ
       INTEGER     NDIMSI,I,J,K,L,P,Q,M,N, COMPTE,T(3,3)
       INTEGER     BDIM,R1(6),R2(6)
@@ -256,7 +257,7 @@ C----------------------------------------------------------------
 
         CALL LCEOB3(INTMAX,TOLER,EPS,BM,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              B,D,MULT,ELAS,DBLOQ)
+     &              B,D,MULT,ELAS,DBLOQ,IRET)
 
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
@@ -300,7 +301,7 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
           CALL LCEOBB (INTMAX,TOLER,EPSM,DEPS,BM,DM,
      &                 LAMBDA,MU,ALPHA,ECROB,ECROD,
      &                 RK,RK1,RK2,
-     &                 B,D,MULT,ELAS,DBLOQ)
+     &                 B,D,MULT,ELAS,DBLOQ,IRET)
         ENDIF
 
 
@@ -354,7 +355,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS 2 DIRECTIONS
 
         CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              BR,D,MULT,ELAS,DBLOQ)
+     &              BR,D,MULT,ELAS,DBLOQ,IRET)
  
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
@@ -425,7 +426,7 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
           CALL LCEOBB (INTMAX,TOLER,EPSM,DEPS,BM,DM,
      &                 LAMBDA,MU,ALPHA,ECROB,ECROD,
      &                 RK,RK1,RK2,
-     &                 B,D,MULT,ELAS,DBLOQ)
+     &                 B,D,MULT,ELAS,DBLOQ,IRET)
         ENDIF
 
 
@@ -476,7 +477,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS UNE DIRECTION
  
         CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              BR,D,MULT,ELAS,DBLOQ)
+     &              BR,D,MULT,ELAS,DBLOQ,IRET)
 
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
@@ -520,7 +521,7 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
           CALL LCEOBB (INTMAX,TOLER,EPSM,DEPS,BM,DM,
      &                 LAMBDA,MU,ALPHA,ECROB,ECROD,
      &                 RK,RK1,RK2,
-     &                 B,D,MULT,ELAS,DBLOQ)
+     &                 B,D,MULT,ELAS,DBLOQ,IRET)
         ENDIF
 
       ENDIF

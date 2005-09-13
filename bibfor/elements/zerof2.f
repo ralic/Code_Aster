@@ -1,6 +1,6 @@
-      SUBROUTINE ZEROF2(F,F0,XAP,EPSI,NITMAX,SOLU)
+      SUBROUTINE ZEROF2(F,F0,XAP,EPSI,NITMAX,SOLU,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C
 C     ARGUMENTS:
 C     ----------
       REAL*8       F,F0,XAP,EPSI,SOLU
-      INTEGER      NITMAX
+      INTEGER      NITMAX, IRET
 C ----------------------------------------------------------------------
 C     BUT:
 C         TROUVER UNE RACINE DE L'EQUATION F(X)=0
@@ -41,7 +41,9 @@ C      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
 C
 C     OUT:
 C         SOLU: VALEUR DE LA RACINE CHERCHEE.
-C
+C         IRET: CODE RETOUR DE LA RECHERCHE DE ZERO DE F(X)=0
+C                   IRET=0 => PAS DE PROBLEME
+C                   IRET=1 => ECHEC
 C ----------------------------------------------------------------------
       REAL*8 FY,FZ,X,Y,Z,A,B,FA,FB,FDBG(20),XDBG(20),ECRESD,FX
       INTEGER N,K,ND
@@ -133,8 +135,8 @@ C
       GO TO 9999
 C
    98 CONTINUE
-      CALL UTMESS('F','ZEROF2','NOMBRE MAXI D''ITERATIONS ATTEINT'
-     &            //' (AUGMENTER ITER_INTE_MAXI)' )
+      IRET = 1
+      GOTO 9999
 C
    99 CONTINUE
       DO 21 K=1,20

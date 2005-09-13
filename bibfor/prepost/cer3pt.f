@@ -1,7 +1,7 @@
       SUBROUTINE CER3PT ( CUPN0, CVPN0, CUPN1, CVPN1, CUPN2, CVPN2,
      &                    CUON, CVON, RAYON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 12/09/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,6 @@ C
       REAL*8     CUON1, CVON1, CUON2, CVON2, CUON3, CVON3
       REAL*8     RAY0, RAY1, RAY2, RAYMIN, EPS1, EPS2
 C     ------------------------------------------------------------------
-C
 C234567                                                              012
 
       CALL JEMARQ()
@@ -84,7 +83,7 @@ C CALCUL DES POINTS MILIEUX DES TROIS SEGMENTS
       DV02 = ABS(CVPN0-CVPN2)/2.0D0
       DU12 = ABS(CUPN1-CUPN2)/2.0D0
       DV12 = ABS(CVPN1-CVPN2)/2.0D0
-C
+
       IF (CUPN0 .LT. CUPN1) THEN
          CUON01 = CUPN0 + DU01
       ELSE
@@ -95,7 +94,7 @@ C
       ELSE
          CVON01 = CVPN1 + DV01
       ENDIF
-C
+
       IF (CUPN0 .LT. CUPN2) THEN
          CUON02 = CUPN0 + DU02
       ELSE
@@ -106,7 +105,7 @@ C
       ELSE
          CVON02 = CVPN2 + DV02
       ENDIF
-C
+
       IF (CUPN1 .LT. CUPN2) THEN
          CUON12 = CUPN1 + DU12
       ELSE
@@ -117,12 +116,12 @@ C
       ELSE
          CVON12 = CVPN2 + DV12
       ENDIF
-C
+
 C CALCUL DES NORMALES AUX TROIS SEGMENTS PASSANT PAR LEURS POINTS
 C MILIEUX.
-C
+
 C 1/ NORMALE AU SEGMENT : PN0 PN1 PASSANT PAR ON01
-C
+
       FLAG = 0
       CUO01P = CUON01 + (CVON01 - CVPN0)
       CVO01P = CVON01 + (CUPN0 - CUON01)
@@ -137,9 +136,8 @@ C
          A01 = (CVO01P - CVON01)/(CUO01P - CUON01)
          B01 = (CUO01P*CVON01 - CUON01*CVO01P)/(CUO01P - CUON01)
       ENDIF
-C
 C 2/ NORMALE AU SEGMENT : PN0 PN2 PASSANT PAR ON02
-C
+
       CUO02P = CUON02 + (CVON02 - CVPN0)
       CVO02P = CVON02 + (CUPN0 - CUON02)
       IF (ABS(CUO02P - CUON02) .LT. EPS1) THEN
@@ -153,9 +151,9 @@ C
          A02 = (CVO02P - CVON02)/(CUO02P - CUON02)
          B02 = (CUO02P*CVON02 - CUON02*CVO02P)/(CUO02P - CUON02)
       ENDIF
-C
+
 C 3/ NORMALE AU SEGMENT : PN1 PN2 PASSANT PAR ON12
-C
+
       CUO12P = CUON12 + (CVON12 - CVPN1)
       CVO12P = CVON12 + (CUPN1 - CUON12)
       IF (ABS(CUO12P - CUON12) .LT. EPS1) THEN
@@ -169,21 +167,21 @@ C
          A12 = (CVO12P - CVON12)/(CUO12P - CUON12)
          B12 = (CUO12P*CVON12 - CUON12*CVO12P)/(CUO12P - CUON12)
       ENDIF
-C
+
 C CALCUL DU CENTRE SITUE A EGALES DISTANCES DES POINTS PN0, PN1 ET PN2.
-C
+
       IF (FLAG .EQ. 0) THEN
          CUON1 = (B02 - B01)/(A01 - A02)
          CVON1 = (A01*B02 - A02*B01)/(A01 - A02)
-C
+
          CUON2 = (B12 - B01)/(A01 - A12)
          CVON2 = (A01*B12 - A12*B01)/(A01 - A12)
-C
+
          CUON3 = (B12 - B02)/(A02 - A12)
          CVON3 = (A02*B12 - A12*B02)/(A02 - A12)
-C
+
 C  FLAG = 1, 2, 3 <=> TROIS CAS PARTICULIERS :
-C
+
 C   ^ v                 ^ v                 ^ v
 C   |                   |                   |
 C   | * P2              | * P1              | * P0
@@ -193,7 +191,7 @@ C --*-------*--->     --*-------*--->     --*-------*--->
 C   P0      P1          P2      P0          P1      P2
 C   CVP0=CVP1           CVP2=CVP0            CVP1=CVP2
 C    FLAG = 1            FLAG = 2            FLAG = 3
-C
+
       ELSEIF (FLAG .EQ. 1) THEN
          CVON2 = (A02*B12 - A12*B02)/(A02 - A12)
          CVON3 = (A02*B12 - A12*B02)/(A02 - A12)

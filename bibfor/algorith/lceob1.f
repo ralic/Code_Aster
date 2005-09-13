@@ -1,9 +1,9 @@
        SUBROUTINE LCEOB1 (INTMAX,TOLE,EPS,BM,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                     SEUIL,B,D,MULT,ELAS,DBLOQ)
+     &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C ======================================================================
       REAL*8             LAMBDA,MU,ALPHA,SEUIL,ECROB,ECROD
       REAL*8             TOLE
 
-      INTEGER            INTMAX
+      INTEGER            INTMAX, IRET
 
       LOGICAL            ELAS,DBLOQ
 C ----------------------------------------------------------------------
@@ -55,9 +55,9 @@ C OUT  B D     : VARIABLES INTERNES EN T+
 C OUT MULT     : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
 C OUT ELAS     : ELASTIQUE OU DISSIPATION?
 C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
+C OUT IRET   : CODE RETOUR
 C ----------------------------------------------------------------------
 
-      LOGICAL     IRET
       INTEGER     I,J,K,COMPTE,T(3,3)
 
       REAL*8      BS,BMS
@@ -360,6 +360,9 @@ C----CALCUL DU CRITERE-------------------------------------
            NORMRB=ABS(RESB)
 
        GOTO 38
+           ELSE
+             IRET = 1
+             GOTO 999
            ENDIF     
            ENDIF
           

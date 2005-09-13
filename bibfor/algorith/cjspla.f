@@ -1,10 +1,10 @@
         SUBROUTINE CJSPLA ( MOD, CRIT, MATER, SEUILI, SEUILD,
      >                NVI, EPSD, DEPS, SIGD, VIND, SIGF, VINF, MECANI,
-     >                NIVCJS ,NITER,NDEC,EPSCON)
+     >                NIVCJS ,NITER,NDEC,EPSCON,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,12 @@ C           NITER  :  NOMBRE D ITERATIONS POUR PLASTICITE
 C                          (CUMUL DECOUPAGE)
 C           NDEC   :  NOMBRE DE DECOUPAGE
 C           EPSCON :  EPSILON A CONVERGENCE
+C           IRET   :  CODE RETOUR DE  L'INTEGRATION DE LA LOI CJS
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ECHEC 
 C       ----------------------------------------------------------------
 
-        INTEGER       NDT, NDI, NVI,NITER,NDEC
+        INTEGER       NDT, NDI, NVI,NITER,NDEC, IRET
         INTEGER       NVIMAX
         PARAMETER(NVIMAX=16)
         REAL*8        EPSD(6), DEPS(6)
@@ -203,6 +206,10 @@ C       -----------------------
      >                  NITER0,EPSCON)
           NITER = NITER + NITER0
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
+          IF(NOCONV) THEN
+            IRET=1
+            GOTO 9999
+          ENDIF
          ENDIF
 
 
@@ -216,6 +223,10 @@ C       -------------------------
      >                  NITER0,EPSCON)
           NITER = NITER + NITER0
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
+          IF(NOCONV) THEN
+            IRET=1
+            GOTO 9999
+          ENDIF
          ENDIF
 C
 C       MECANISMES ISOTROPE ET DEVIATOIRE
@@ -228,6 +239,10 @@ C       ---------------------------------
      >                  NITER0,EPSCON)
           NITER = NITER + NITER0
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
+          IF(NOCONV) THEN
+            IRET=1
+            GOTO 9999
+          ENDIF
          ENDIF
 
 
@@ -286,5 +301,5 @@ C
          IF (MECANI .EQ. 'DEVIAT') VINF(NVI) = 2.D0
          IF (MECANI .EQ. 'ISODEV') VINF(NVI) = 3.D0
 
-
+9999     CONTINUE
          END

@@ -1,13 +1,14 @@
       SUBROUTINE NMCONV (CNRESI, CNDIRI, CNFEXT, CNVCFO, PARCRI,
      &                   ITERAT, ETA   , CONV  , LICCVG, ITEMAX,
-     &                   CONVER, ECHLDC, ECHEQU, ECHCON, FINPAS, 
-     &                   CRITNL, NUMINS, FOINER, PARTPS, PARMET,
-     &                   NEQ,    DEPDEL, AUTOC1, AUTOC2, VECONT,
-     &                   LREAC,  CNVFRE, MAILLA, CNVCF1, NUMEDD,
-     &                   RESOCO, IMPRCO, ZFON  , FONACT, MAXREL)
+     &                   CONVER, ECHLDC, ECHEQU, ECHCON, ECHPIL,
+     &                   FINPAS, CRITNL, NUMINS, FOINER, PARTPS,
+     &                   PARMET, NEQ,    DEPDEL, AUTOC1, AUTOC2,
+     &                   VECONT, LREAC,  CNVFRE, MAILLA, CNVCF1,
+     &                   NUMEDD, DEFICO, RESOCO, IMPRCO, ZFON  ,
+     &                   FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +33,7 @@ C ======================================================================
       INTEGER      ZFON
       LOGICAL      FONACT(ZFON)
       LOGICAL      ITEMAX, CONVER, ECHLDC, FINPAS, ECHCON(2), ECHEQU
-      LOGICAL      LREAC(2),MAXREL
+      LOGICAL      LREAC(2),MAXREL,ECHPIL
 
       INTEGER      ITERAT, LICCVG(*), NUMINS, NEQ, VECONT(2)
       REAL*8       ETA, CONV(*), PARCRI(*), PARMET(*)
@@ -42,6 +43,7 @@ C ======================================================================
       CHARACTER*8  MAILLA
       CHARACTER*24 NUMEDD
       CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO
       CHARACTER*24 IMPRCO
 
 C ----------------------------------------------------------------------
@@ -112,10 +114,12 @@ C OUT  CONVER : .TRUE. SI CONVERGENCE REALISEE
 C OUT  ECHLDC : .TRUE. SI ECHEC INTEGRATION LOI DE COMPORTEMENT
 C OUT  ECHCON : .TRUE. SI ECHEC TRAITEMENT DU CONTACT UNILATERAL
 C OUT  ECHEQU : .TRUE. SI MATASS SINGULIERE
+C OUT  ECHPIL : .TRUE. SI ECHEC PILOTAGE
 C OUT  FINPAS : .TRUE. SI ON NE FAIT PLUS D'AUTRES PAS DE TEMPS
 C OUT  MAXREL : .TRUE. SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0,
 C                             ON UTILISE RESI_GLOB_MAXI
 C IN   MAILLA : NOM DU MAILLAGE
+C IN   DEFICO : SD DE TRAITEMENT DU CONTACT (ISSU D'AFFE_CHAR_MECA)
 C IN   RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN   IMPRCO : SD AFFICHAGE
 C IN   NUMEDD : NUMEROTATION NUME_DDL
@@ -141,11 +145,12 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL      ECHPIL,ERROR
+      LOGICAL      ERROR
       LOGICAL      CREFE,CINIT
       INTEGER      LONCH,NOCC
       INTEGER      JCRR
       INTEGER      IBID
+      INTEGER      TYPALC
       REAL*8       R8VIDE,R8BID
       REAL*8       INSTAM,INSTAP,DIINST,PASMIN
       CHARACTER*8  K8BID
@@ -471,7 +476,12 @@ C ======================================================================
 C --- CONVERGENCE ADAPTEE AU CONTACT DISCRET
 C ======================================================================
 C
-      IF (FONACT(4)) THEN
+C
+C --- TYPE DE CONTACT
+C
+      CALL CFDISC(DEFICO,'              ',TYPALC,IBID,IBID,IBID)
+
+      IF (FONACT(4).AND.(TYPALC.NE.5)) THEN
 C
 C --- NOMBRE ITERATIONS INTERNES DE CONTACT POUR L'ITERATION COURANTE
 C
@@ -514,8 +524,13 @@ C
      &               'CTCD_INFO',' ATT_PT_FIXE    ',R8BID,IBID)
              ELSE
                CTCCVG = .TRUE.
-               CALL IMPSDR(IMPRCO(1:14),
+               IF (ITERAT.EQ.0) THEN
+                 CALL IMPSDR(IMPRCO(1:14),
+     &                   'CTCD_INFO',' INIT_GEOM/ALGO  ',R8BID,IBID)  
+               ELSE
+                 CALL IMPSDR(IMPRCO(1:14),
      &               'CTCD_INFO',' ALGO.          ',R8BID,IBID)
+               ENDIF
              ENDIF
              CALL IMPSDR(IMPRCO(1:14),
      &                   'CTCD_NOEU','                ',R8BID,IBID)
@@ -526,8 +541,13 @@ C
            CTCCVG = .FALSE.
            CTCGEO = .FALSE.
            CTCFIX = .FALSE.
-           CALL IMPSDR(IMPRCO(1:14),
-     &               'CTCD_INFO',' ALGO.          ',R8BID,IBID)
+           IF (ITERAT.EQ.0) THEN
+             CALL IMPSDR(IMPRCO(1:14),
+     &                   'CTCD_INFO',' INIT_GEOM/ALGO  ',R8BID,IBID)   
+           ELSE
+             CALL IMPSDR(IMPRCO(1:14),
+     &                   'CTCD_INFO',' ALGO.          ',R8BID,IBID)
+           ENDIF
          ENDIF
 
          IF (CTCCVG) THEN
@@ -600,7 +620,7 @@ C
 C
 C --- INFOS DE CONVERGENCE CONTACT DISCRET
 C
-           IF (FONACT(4)) THEN
+           IF (FONACT(4).AND.(TYPALC.NE.5)) THEN
 C
 C --- NOMBRE ITERATIONS INTERNES DE CONTACT POUR LE PAS DE TEMPS COURANT
 C

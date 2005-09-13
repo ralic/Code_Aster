@@ -1,9 +1,9 @@
        SUBROUTINE LCEOB2 (INTMAX,TOLE,EPS,BM,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                     SEUIL,B,D,MULT,ELAS,DBLOQ)
+     &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C ======================================================================
       REAL*8             LAMBDA,MU,ALPHA,SEUIL,ECROB,ECROD
       REAL*8             TOLE
 
-      INTEGER            INTMAX
+      INTEGER            INTMAX, IRET
 
       LOGICAL            ELAS,DBLOQ
 C ----------------------------------------------------------------------
@@ -54,11 +54,12 @@ C
 C OUT  B D     : VARIABLES INTERNES EN T+
 C OUT MULT     : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
 C OUT ELAS     : ELASTIQUE OU DISSIPATION?
-C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
+C OUT DBLOQ    : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
+C OUT IRET     : CODE RETOUR
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 
-      INTEGER     I,J,K,COMPTE,T(3,3),R(2,2),IRET
+      INTEGER     I,J,K,COMPTE,T(3,3),R(2,2),IRET1
 
       REAL*8      BS(3),BMS(3),DBS(3)
       REAL*8      FB(6),FD,DD,DDG
@@ -324,7 +325,7 @@ C--------------------------------------------------------
                 TEME(I,J)=IDE(I,J)
  49           CONTINUE
  48         CONTINUE
-            CALL MGAUSS('NFVP',TOTI,TEME,3,3,3,DET,IRET)
+            CALL MGAUSS('NFVP',TOTI,TEME,3,3,3,DET,IRET1)
             CALL R8INIR(9,0.D0,IKSI,1)
             DO 51 I=1,3
               DO 52 J=1,3
@@ -506,6 +507,9 @@ C----CALCUL DU CRITERE-------------------------------------
             NORMRB=SQRT(TATA)
 
             GOTO 38
+           ELSE
+            IRET=1
+            GOTO 999
            ENDIF
            ENDIF
 

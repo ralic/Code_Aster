@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1081,7 +1081,7 @@ C
                   GO TO 440
                 END IF
                 IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
-     &              TYSD.EQ.'MULT_ELAS' .OR.
+     &              TYSD.EQ.'MULT_ELAS' .OR. TYSD.EQ.'MODE_MECA'  .OR.
      &              TYSD.EQ.'FOURIER_ELAS') THEN
 C          champ d'entree pour elements isoparametriques
                   IF (IRET1.LE.0) THEN
@@ -1708,7 +1708,7 @@ C           -------------------------------------------------
                     CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-
+                    CALL JEDEMA()
                     GO TO 330
                  END IF
               ENDIF
@@ -1725,6 +1725,7 @@ C           -----------------------------------------------
                   CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '
      &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
+                  CALL JEDEMA()
                   GO TO 330
                 END IF
               END IF
@@ -1736,6 +1737,7 @@ C           ---------------------------------------------------------
                 CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
+                CALL JEDEMA()
                 GO TO 330
               END IF
 
@@ -1749,6 +1751,7 @@ C           ------------------------------------------------
                   CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '
      &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
+                  CALL JEDEMA()
                   GO TO 330
                 END IF
               END IF

@@ -1,7 +1,7 @@
       SUBROUTINE NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,DEUXMU,
-     &                  CRIT,SEUIL,ETA,DT,VALDEN,DP)
+     &                  CRIT,SEUIL,ETA,DT,VALDEN,DP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,16 +57,21 @@ C                                 SEUIL = F - RP
 C    ETA            IN    R       PARAMETRE ETA DE VISCOSITE
 C    DT             IN    R       VALEUR DE L'INCREMENT DE TEMPS DELTAT
 C    VALDEN         IN    R       PARAMETRE N DE VISCOSITE
+C    IRET           IN    I       CODE RETOUR 
 C    DP             OUT   R       INCREMENT DE DEFORMATION PLASTIQUE
 C                                 CUMULEE
-C
+C    IRET           OUT   I    CODE RETOUR DE  L'INTEGRATION DE LA LDC
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ABSENCE DE CONVERGENCE DANS  
+C                                        LORS DE L'INTEGRATION DE LA 
+C                                        LOI 
 C -----  ARGUMENTS
           INTEGER             NDIMSI,NBVAR
            REAL*8             MAT(*),PM,SIGEDV(6),ALFAM(*),DEUXMU
            REAL*8             CRIT(*),SEUIL,ALFA2M(*)
            REAL*8             DP,ETA,DT,VALDEN
 C -----  VARIABLES LOCALES
-           INTEGER     NITER,I,ITER,IFM,NIV,NBP
+           INTEGER     NITER,I,ITER,IFM,NIV,NBP, IRET
            REAL*8      X(4),Y(4),MU,Z,ZZ
            REAL*8      ZERO,DEUX,TROIS,DIX
            REAL*8      PREC,F0,DPE,DPMAX,FMAX,DDP
@@ -187,9 +192,9 @@ C
        WRITE (IFM,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE',NITER
        WRITE (IFM,*) 'VALEURS DE DP ET F ACTUELLES',DP,Y(4)
        WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
-       WRITE (IFM,*) ' '
-       WRITE (IFM,*) 'ALLURE DE LA FONCTION : '
-       WRITE (IFM,*) ' DP               F(DP) '
+C       WRITE (IFM,*) ' '
+C       WRITE (IFM,*) 'ALLURE DE LA FONCTION : '
+C       WRITE (IFM,*) ' DP               F(DP) '
        Z = 0.D0
 C
        NBP = 1000
@@ -197,10 +202,10 @@ C
        DO 60 I = 1,NBP
         CALL NMCHCR(MAT,Z,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
      &               DEUXMU,ETA,DT,VALDEN,ZZ)
-        WRITE(IFM,*) Z,ZZ
+C        WRITE(IFM,*) Z,ZZ
         Z = Z + DDP
   60   CONTINUE
-      CALL UTMESS('F','NMCHDP',' F = 0 : PAS DE CONVERGENCE ')
+      IRET = 1
 C
   50  CONTINUE
 C

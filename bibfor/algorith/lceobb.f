@@ -1,9 +1,10 @@
        SUBROUTINE LCEOBB (INTMAX,TOLER,EPSM,DEPS,BM,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,
-     &                     ECROD,RK,RK1,RK2,B,D,MULT,ELAS,DBLOQ)
+     &                     ECROD,RK,RK1,RK2,B,D,MULT,ELAS,DBLOQ,
+     &                     IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +27,7 @@ C ======================================================================
       REAL*8             BM(6),DM,B(6),D,MULT
       REAL*8             LAMBDA,MU,ALPHA,RK,RK1,RK2,ECROB,ECROD
       REAL*8             TOLER
-      INTEGER            INTMAX
+      INTEGER            INTMAX,IRET
       LOGICAL            ELAS,DBLOQ
 
 C ----------------------------------------------------------------------
@@ -58,6 +59,7 @@ C OUT  B D     : VARIABLES INTERNES EN T+
 C OUT MULT     : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
 C OUT ELAS     : ELASTIQUE OU DISSIPATION?
 C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
+C OUT IRET     : CODE RETOUR
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 
@@ -141,7 +143,7 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
 
               CALL LCEOB3(INTMAX,TOLER,EPST,BM,DM,
      &                    LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                    SEUIL,B,D,MULT,ELAS,DBLOQ)
+     &                    SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
  
               CALL DIAGO3(B,VECB,VALB)
@@ -273,7 +275,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
 
             CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
      &                 LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                 SEUIL,BR,D,MULT,ELAS,DBLOQ)
+     &                 SEUIL,BR,D,MULT,ELAS,DBLOQ,IRET)
 
             CALL DIAGO3(BR,VECBR,VALBR)
  
@@ -432,7 +434,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
  
                CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                     SEUIL,BR,D,MULT,ELAS,DBLOQ)
+     &                     SEUIL,BR,D,MULT,ELAS,DBLOQ,IRET)
 
                   IF (COMPTE.LT.100) THEN
                   

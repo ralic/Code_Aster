@@ -1,6 +1,6 @@
-      SUBROUTINE NMTAXI(NDIMSI,CRIT,MAT,SIGEL,VIM,EPM,DP,SP,XI,G)
+      SUBROUTINE NMTAXI(NDIMSI,CRIT,MAT,SIGEL,VIM,EPM,DP,SP,XI,G,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/02/97   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER  NDIMSI
+      INTEGER  NDIMSI, IRET
       REAL*8   CRIT(3),MAT(14),SIGEL(*),VIM(9),EPM(*),DP,SP
       REAL*8   XI,G
 C ----------------------------------------------------------------------
@@ -35,6 +35,9 @@ C IN  DP     INCREMENT DE DEFORMATION PLASTIQUE CUMULEE
 C IN  SP     CONTRAINTE DE PIC
 C OUT XI     PILOTAGE DE EPN               TQ    F(P,SP,XI) = 0
 C OUT G      VALEUR DU CRITERE                   G(P,SP,XI)
+C OUT IRET   CODE RETOUR DE LA RESOLUTION DE L'EQUATION SCALAIRE
+C               IRET=0 => PAS DE PROBLEME
+C               IRET=1 => ECHEC
 C ----------------------------------------------------------------------
 
       INTEGER NITER
@@ -59,7 +62,7 @@ C    EXAMEN DE LA SOLUTION XI = 0 (ELASTIQUE)
       CALL NMTACR(1,NDIMSI,MAT,SIGEL,VIM,EPM,DP,SP,XI,
      &                F,G,FDS,GDS,FDP,GDP,FDX,GDX,DPMAX,SIG,TANG)
       IF (F.LE.0.D0)
-     &  CALL UTMESS('F','NMTAXI','MAUUVAISE ESTIMATION DE F')
+     &  CALL UTMESS('F','NMTAXI','MAUVAISE ESTIMATION DE F')
       X(2)  = XI
       Y(2)  = F
       GG(2) = G
@@ -79,7 +82,8 @@ C    CALCUL DE XI : EQUATION SCALAIRE F=0 AVEC  0 < XI < 1
         CALL NMTACR(1,NDIMSI,MAT,SIGEL,VIM,EPM,DP,SP,X(4),
      &                Y(4),GG(4),FDS,GDS,FDP,GDP,FDX,GDX,DPMAX,SIG,TANG)
  100  CONTINUE
-      CALL UTMESS('F','NMTAXI','F=0 : PAS CONVERGE')
+      IRET = 1
+      GOTO 9999
  110  CONTINUE
       XI = X(4)
       G  = GG(4)

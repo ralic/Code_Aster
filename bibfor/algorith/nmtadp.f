@@ -1,6 +1,6 @@
-      SUBROUTINE NMTADP(NDIMSI,CRIT,MAT,SIGEL,VIM,EPM,DP,SP,XI,G)
+      SUBROUTINE NMTADP(NDIMSI,CRIT,MAT,SIGEL,VIM,EPM,DP,SP,XI,G,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/02/97   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER  NDIMSI
+      INTEGER  NDIMSI, IRET
       REAL*8   CRIT(3),MAT(14),SIGEL(*),VIM(9),EPM(*),SP,XI
       REAL*8   DP,G
 C ----------------------------------------------------------------------
@@ -35,6 +35,9 @@ C OUT DP     INCREMENT DEFORMATION PLASTIQUE CUMULEE TQ  F(P,SP,XI) = 0
 C IN  SP     CONTRAINTE DE PIC
 C IN  XI     PILOTAGE DE EPN
 C OUT G      VALEUR DU CRITERE                   G(P,SP,XI)
+C OUT IRET   CODE RETOUR DE L'INTEGRATION DE LA LOI DE TAHERI
+C               IRET=0 => PAS DE PROBLEME
+C               IRET=1 => ABSENCE DE CONVERGENCE 
 C ----------------------------------------------------------------------
 
       INTEGER NITER
@@ -81,7 +84,8 @@ C    CALCUL DE DP : EQUATION SCALAIRE F=0 AVEC  0 < DP < DPMAX
         CALL NMTACR(1,NDIMSI,MAT,SIGEL,VIM,EPM,X(4),SP,XI,
      &                Y(4),GG(4),FDS,GDS,FDP,GDP,FDX,GDX,DPMAX,SIG,TANG)
  100  CONTINUE
-      CALL UTMESS('F','NMTADP','F=0 : PAS CONVERGE')
+      IRET = 1
+      GOTO 9999
  110  CONTINUE
       DP = X(4)
       G  = GG(4)

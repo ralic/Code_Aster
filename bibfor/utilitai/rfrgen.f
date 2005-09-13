@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -277,9 +277,9 @@ C              --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT ---
          ENDIF
 C     ---------------------------------------------------------------
       ENDIF
- 9999 CONTINUE
       CALL JEDETR( KNUME )
       CALL JEDETR( KINST )
+ 9999 CONTINUE
 C
       CALL JEDEMA()
       END

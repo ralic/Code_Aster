@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,15 +34,18 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
            MULT_ELAS       =SIMP(statut='f',typ=mult_elas ),
            BASE_MODALE     =SIMP(statut='f',typ=base_modale ),
          ),
-        DIAG_MASS        =FACT(statut='f',max='**',
-           MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**'  ),
-           MODE_STAT       =SIMP(statut='o',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
-         ),
-#  le bloc conditionnel remplace-t-il PRESENT_PRESENT('RITZ','NUME_REF'),
-#                                     PRESENT_ABSENT('INTERF_DYNA','CLASSIQUE'),        
          b_ritz          =BLOC(condition = "RITZ != None",
            INTERF_DYNA     =SIMP(statut='f',typ=interf_dyna_clas ),
            NUME_REF        =SIMP(statut='o',typ=nume_ddl_sdaster ),
+           ORTHO           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                               fr="Reorthonormalisation de la base de Ritz" ),
+           b_ortho          =BLOC(condition = "ORTHO == 'OUI' ",
+             MATRICE          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
+               ),
+         ),
+        DIAG_MASS        =FACT(statut='f',max='**',
+           MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**'  ),
+           MODE_STAT       =SIMP(statut='o',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
