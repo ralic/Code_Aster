@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,28 +109,28 @@ F1=RECU_FONCTION(  RESULTAT=REPHARM,    NOM_CHAM='DEPL',
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = F1,   VALE_PARA = 0.,   
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',0.0071075,-0.0003536,)),
+                          VALE_REFE_C = 0.0071075-0.0003536j),
                         _F(  FONCTION = F1,   VALE_PARA = 3.3687, 
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',0.009388216,-0.000731196,)),
+                          VALE_REFE_C = 0.009388216-0.000731196j),
                         _F(  FONCTION = F1,   VALE_PARA = 6.4848, 
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',-0.0050269,-0.0707103,)),
+                          VALE_REFE_C = -0.0050269-0.0707103j),
                         _F(  FONCTION = F1,   VALE_PARA = 8.0006,  
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',-0.00954931,-0.0022154,)),
+                          VALE_REFE_C = -0.00954931-0.0022154j),
                         _F(  FONCTION = F1,   VALE_PARA = 11.8746, 
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',-4.23259E-5,-0.000357193,)),
+                          VALE_REFE_C = -4.23259E-5-0.000357193j),
                         _F(  FONCTION = F1,   VALE_PARA = 13.4747, 
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',0.00235524,-0.000501765,)),
+                          VALE_REFE_C = 0.00235524-0.000501765j),
                         _F(  FONCTION = F1,   VALE_PARA = 15.5802, 
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',-0.016395374,-0.06871471,)),
+                          VALE_REFE_C = -0.016395374-0.06871471j),
                         _F(  FONCTION = F1,   VALE_PARA = 21.0543, 
                           PRECISION = 5.E-03,
-                          VALE_REFE_C = ('RI',-0.00188977,-5.53314E-6,)))
+                          VALE_REFE_C = -0.00188977-5.53314E-6j))
                )
 
 FIN( )

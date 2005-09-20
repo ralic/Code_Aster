@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 20/09/2005   AUTEUR BOYERE E.BOYERE 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,6 +188,12 @@ DTYBEL=RECU_FONCTION(RESULTAT=DYNAEL,
                    NOM_CMP='DY',
                    NOEUD='B',);
 
+TEST_FONCTION(VALEUR=_F(FONCTION=DTYBEL,
+                        VALE_PARA=.15,
+                        VALE_REFE=-2.52556E-03,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),);
+
 IMPR_FONCTION(
             TITRE='DIRECT',
             FORMAT='TABLEAU',
@@ -220,7 +226,7 @@ DYNANL=DYNA_NON_LINE(
                      # INCREMENT=_F(LIST_INST=LINST,),
     INCREMENT=_F(LIST_INST=LINST,
                  COEF_SUBD_PAS_1=1.0,
-                 SUBD_PAS=4,
+                 SUBD_PAS=5,
                  SUBD_PAS_MINI=1.E-5,
                  EVOLUTION='CHRONOLOGIQUE',
                  ),
@@ -235,6 +241,12 @@ DTYBNL=RECU_FONCTION(RESULTAT=DYNANL,
                    PRECISION=1.0E-07,
                    NOM_CMP='DY',
                    NOEUD='B',);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DTYBNL,
+                        VALE_PARA=.15,
+                        VALE_REFE=-1.18661E-03,
+                        PRECISION=.05,
+                        REFERENCE='NON_REGRESSION',),);
 
 IMPR_FONCTION(
             TITRE='DIRECT',

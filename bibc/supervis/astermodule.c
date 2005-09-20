@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 05/09/2005   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 19/09/2005   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -712,6 +712,7 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         char *mcs     = (char*)0 ;
         int ok        = 0 ;
         int nval      = 0 ;
+        int ioc       = 0 ;
 
         _DEBUT("getltx_") ;
                                                         FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
@@ -723,8 +724,11 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         mcs=fstr2(motcle,lcle);
                                                         ASSERT(mcs!=(char*)0);
 
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,ioc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -870,7 +874,7 @@ int conv_un_c8( _IN PyObject *tup, _OUT double *val)
         double *rho = &x ;
         double *theta = &y ;
                                                                     OBSCRUTE(tup) ;
-        if(PyComplex_Check(tup)){
+        if(PyComplex_Check(tup)||PyFloat_Check(tup)||PyLong_Check(tup)||PyInt_Check(tup)){
            /* On est dans le cas d'un objet Python complexe */
            /* representation : partie reelle/partie imaginaire */
            *val    =PyComplex_RealAsDouble(tup)  ;
@@ -1220,6 +1224,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN int lfac,_IN INTEGER *iocc,_IN
         PyObject *lty   = (PyObject*)0 ; /* liste python des noms */
         int       nval = 0 ;
         int          k = 0 ;
+        int        ioc = 0 ;
 
 
         _DEBUT(getmjm_) ;
@@ -1228,8 +1233,11 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN int lfac,_IN INTEGER *iocc,_IN
                                                                         FSSCRUTE(nomfac,lfac) ; ISCRUTE(ltyp);
                                                                         ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getmjm","sii",fstr2(nomfac,lfac),*iocc,*nbval);
+        res=PyObject_CallMethod(commande,"getmjm","sii",fstr2(nomfac,lfac),ioc,*nbval);
                                                                         ISCRUTE(*iocc);
                                                                         ISCRUTE(*nbval);
         /*  si le retour est NULL : exception Python a transferer
@@ -1402,6 +1410,7 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
 
@@ -1430,9 +1439,11 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 MYABORT( "erreur d'utilisation detectee") ;
         }
 
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvc8","ssiii",
-            mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvc8","ssiii",mfc,mcs,ioc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1479,6 +1490,7 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
 
@@ -1507,9 +1519,11 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         }
 
 
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvr8","ssiii",
-                                                  mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvr8","ssiii",mfc,mcs,ioc,*iarg,*mxval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
@@ -1598,6 +1612,7 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
 
@@ -1627,9 +1642,11 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 MYABORT( "erreur d'utilisation detectee") ;
         }
 
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvis","ssiii",
-                                mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvis","ssiii",mfc,mcs,ioc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1691,6 +1708,7 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
 
@@ -1720,9 +1738,11 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 MYABORT( "erreur d'utilisation detectee") ;
         }
 
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvls","ssiii",
-            mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvls","ssiii",mfc,mcs,ioc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1767,6 +1787,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int ioc        = 0 ;
         int k          = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
@@ -1796,9 +1817,11 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 printf( "             mot-cle simple  : %s\n",mcs) ;
                 MYABORT( "erreur d'utilisation detectee") ;
         }
-
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvtx","ssiii",mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvtx","ssiii",mfc,mcs,ioc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1853,7 +1876,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         */
         PyObject *res  = (PyObject*)0 ;
         PyObject *tup  = (PyObject*)0 ;
-        int ok,nval;
+        int ok,nval,ioc ;
         char *mfc;
         char *mcs;
 
@@ -1886,9 +1909,11 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         }
 
 
-
+                                                        ISCRUTE(*iocc);
+        ioc=*iocc ;
+        ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvid","ssiii",mfc,mcs,*iocc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvid","ssiii",mfc,mcs,ioc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */

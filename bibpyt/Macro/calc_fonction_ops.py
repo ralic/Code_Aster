@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 29/08/2005   AUTEUR THOMASSO D.THOMASSON 
+#@ MODIF calc_fonction_ops Macro  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,14 +128,22 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
 
      __ex=list_fonc[0]
      if COMB_C[0]['COEF_R']!=None: __ex=__ex*complex(COMB_C[0]['COEF_R'])
-     if COMB_C[0]['COEF_C']!=None: __ex=__ex*tocomplex(COMB_C[0]['COEF_C'])
+     if COMB_C[0]['COEF_C']!=None:
+         if type(COMB_C[0]['COEF_C']) in EnumType        : __ex=__ex*tocomplex(COMB_C[0]['COEF_C'])
+         else                                            : __ex=__ex*COMB_C[0]['COEF_C']
      i=1
      for item in list_fonc[1:] :
         if COMB_C[i]['COEF_R']!=None: coef=complex(COMB_C[i]['COEF_R'])
-        if COMB_C[i]['COEF_C']!=None: coef=tocomplex(COMB_C[i]['COEF_C'])
+        if COMB_C[i]['COEF_C']!=None:
+            if type(COMB_C[i]['COEF_C']) in EnumType        : coef=tocomplex(COMB_C[i]['COEF_C'])
+            else                                            : coef=COMB_C[i]['COEF_C']
         item=item*coef
         __ex=__ex+item
         i=i+1
+  ### mot clé LIST_PARA uniquement présent si COMB ou COMB_C
+  if (COMB != None) or (COMB_C != None) :
+    if (args['LIST_PARA'] != None) :
+        __ex=__ex.evalfonc(args['LIST_PARA'].Valeurs())
   ###
   if (PUISSANCE   != None): 
      __ff=PUISSANCE['FONCTION'].convert()

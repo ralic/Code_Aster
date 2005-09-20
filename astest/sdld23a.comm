@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE  8 MASSES ET 9 RESSORT/AMORTISSEURS SOUS EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,7 +163,7 @@ TEST_FONCTION(
                   NOEUD_J = 'P4',
                   NOM_CMP_J = 'DX', 
                   VALE_PARA = 5.5259, 
-                  VALE_REFE_C = ('RI',0.1059E-5,0.,)) )
+                  VALE_REFE_C = 0.1059E-5+0.j) )
 
 #
 # PAS PAR DEFAUT

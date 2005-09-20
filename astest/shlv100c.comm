@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TETRA4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,115 +110,115 @@ TEST_RESU(RESU=(
    # DEPLACEMENTS
               
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-3, 
-           GROUP_NO = 'A',        NOM_CHAM='DEPL', NOM_CMP = 'DX',           VALE_C = ('RI',7.3398E-3,0.),   ),
+           GROUP_NO = 'A',        NOM_CHAM='DEPL', NOM_CMP = 'DX',           VALE_C = 7.3398E-3+0.j,   ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'ABSOLU',   PRECISION = 1.E-10, 
-           GROUP_NO = 'A',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = ('RI',0.,0.),         ),
+           GROUP_NO = 'A',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = 0.+0.j,         ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'B',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = ('RI',4.6716E-3,0.),  ),
+           GROUP_NO = 'B',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = 4.6716E-3+0.j,  ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'ABSOLU',   PRECISION = 1.E-2, 
-           GROUP_NO = 'B',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = ('RI',0.,0.),         ),
+           GROUP_NO = 'B',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = 0.+0.j,         ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'C',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = ('RI',6.78109E-3,0.), ),
+           GROUP_NO = 'C',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = 6.78109E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'C',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = ('RI',2.80882E-3,0.), ),
+           GROUP_NO = 'C',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = 2.80882E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'D',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = ('RI',4.32523E-3,0.), ),
+           GROUP_NO = 'D',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = 4.32523E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'D',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = ('RI',1.79157E-3,0.), ),
+           GROUP_NO = 'D',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = 1.79157E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'E',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = ('RI',5.19002E-3,0.), ),
+           GROUP_NO = 'E',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = 5.19002E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'E',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = ('RI',5.19002E-3,0.), ),
+           GROUP_NO = 'E',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = 5.19002E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'F',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = ('RI',3.31039E-3,0.), ),
+           GROUP_NO = 'F',        NOM_CHAM='DEPL', NOM_CMP = 'DX',            VALE_C = 3.31039E-3+0.j, ),
            
             _F(  RESULTAT = DYNAH, NUME_ORDRE=1,   CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-           GROUP_NO = 'F',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = ('RI',3.31039E-3,0.), ),
+           GROUP_NO = 'F',        NOM_CHAM='DEPL', NOM_CMP = 'DY',            VALE_C = 3.31039E-3+0.j, ),
 
 
    # CONTRAINTES
               
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 9.E-2, 
-MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL',        NOM_CMP = 'SIXX',VALE_C = ('RI',-1.,0.),),
+MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL',        NOM_CMP = 'SIXX',VALE_C = -1.+0.j,),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = ('RI',1.6685,0.),  ),
+MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = 1.6685+0.j,  ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 12.E-2, 
-MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = ('RI',0.20055,0.), ),
+MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = 0.20055+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'ABSOLU',   PRECISION = 1.E-1, 
-MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = ('RI',0.,0.),      ),
+MAILLE = 'MA305',    GROUP_NO = 'A', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = 0.+0.j,      ),
 #
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'ABSOLU',   PRECISION = 5.E-2, 
-MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = ('RI',0.,0.),      ),
+MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = 0.+0.j,      ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 5.E-2, 
-MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = ('RI',0.66738,0.), ),
+MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = 0.66738+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 5.E-2, 
-MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = ('RI',0.20021,0.), ),
+MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = 0.20021+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'ABSOLU',   PRECISION = 5.E-2, 
-MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = ('RI',0.,0.),      ),
+MAILLE = 'MA311',    GROUP_NO = 'B', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = 0.+0.j,      ),
 #
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.3, 
-MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = ('RI',-0.60921,0.),),
+MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = -0.60921+0.j,),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.03, 
-MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = ('RI',1.27771,0.), ),
+MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = 1.27771+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.22, 
-MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = ('RI',0.20055,0.), ),
+MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = 0.20055+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.05, 
-MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = ('RI',-0.94346,0.),),
+MAILLE = 'MA355',    GROUP_NO = 'C', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = -0.94346+0.j,),
 #
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.04, 
-MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = ('RI',0.09774,0.), ),
+MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = 0.09774+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.05, 
-MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = ('RI',0.56964,0.), ),
+MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = 0.56964+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.04, 
-MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = ('RI',0.20021,0.), ),
+MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = 0.20021+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.06, 
-MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = ('RI',-0.23595,0.),),
+MAILLE = 'MA357',    GROUP_NO = 'D', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = -0.23595+0.j,),
 #
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.17, 
-MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = ('RI',0.33425,0.), ),
+MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = 0.33425+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.41, 
-MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = ('RI',0.33425,0.), ),
+MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = 0.33425+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.12, 
-MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = ('RI',0.20055,0.), ),
+MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = 0.20055+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 0.04, 
-MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = ('RI',-1.33425,0.),),
+MAILLE = 'MA659',    GROUP_NO = 'E', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = -1.33425+0.j,),
 #
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 8.E-2, 
-MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = ('RI',0.33369,0.), ),
+MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXX',VALE_C = 0.33369+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 2.E-2, 
-MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = ('RI',0.33369,0.), ),
+MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIYY',VALE_C = 0.33369+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 4.E-2, 
-MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = ('RI',0.20021,0.), ),
+MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIZZ',VALE_C = 0.20021+0.j, ),
 
             _F(  RESULTAT = DYNAH,   NUME_ORDRE=1,     CRITERE = 'RELATIF',  PRECISION = 1.E-2, 
-MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = ('RI',-0.33369,0.),),
+MAILLE = 'MA665',    GROUP_NO = 'F', NOM_CHAM='SIGM_ELNO_DEPL', NOM_CMP = 'SIXY',VALE_C = -0.33369+0.j,),
            )
 
 )

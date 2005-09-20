@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/1999   AUTEUR A2BHHFS F.STIFKENS 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE REPONSE HARMONIQUE : POUTRE BI-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -455,7 +455,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,
                   PRECISION = 5.E-2,
                   NOEUD = 'N396',
                   NOM_CMP = 'DY',
-                  VALE_C = ('RI',1.95994E-05,8.49179E-06,)))
+                  VALE_C = 1.95994E-05+8.49179E-06j))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,  
@@ -465,7 +465,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,
                   PRECISION = 5.E-2,
                   NOEUD = 'N766',
                   NOM_CMP = 'DY',
-                  VALE_C = ('RI',-6.99938E-06,-1.14501E-05,)))
+                  VALE_C = -6.99938E-06-1.14501E-05j))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,  
@@ -475,7 +475,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   PRECISION = 5.E-2,
                   NOEUD = 'N26', 
                   NOM_CMP = 'DY', 
-                  VALE_C = ('RI',-6.99938E-06,-1.14501E-05,)))
+                  VALE_C = -6.99938E-06-1.14501E-05j))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,  
@@ -485,7 +485,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   PRECISION = 5.E-2,
                   NOEUD = 'N396',
                   NOM_CMP = 'DY',
-                  VALE_C = ('RI',1.95994E-05,8.49179E-06,)))
+                  VALE_C = 1.95994E-05+8.49179E-06j))
 
 #
 FIN()

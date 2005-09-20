@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR()
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C              AU PLUS LES 8 SOMMETS D'UN HEXA8
       INTEGER TYMA(MXNBPG)
 C ---------------------------------------------------------------------
       LOGICAL EXISDG
-      INTEGER NUMA,JOBJ,NUMAIL,IRET1
+      INTEGER NUMA,JNOFPG,NUMAIL,IRET1
       INTEGER K,NBGREL,TE,TYPELE,NPG1,NPOINI,IDECA2
       INTEGER IGR,IAMACO,ILMACO,IALIEL,ILLIEL,NBELEM,JCNSL2
       INTEGER IBID,NBPG,INO,IRET,I,NBGR,INOGL,IAINS1,IAINS2
@@ -73,7 +73,7 @@ C ---------------------------------------------------------------------
       CHARACTER*16 TYPRES,NOMCMD,NOMTE,NOMSY1,NOMSY2,LICHAM(MXSY)
       CHARACTER*16 TYPRE2 ,OPTIO,PARAM
       CHARACTER*19 LIGREL,CH1,CH2S,CH2,PRCHNO
-      CHARACTER*24 NOMOBJ
+      CHARACTER*24 NOMFPG
 C     FONCTIONS FORMULES :
 C     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
       NBNOMA(IMA) = ZI(ILMACO-1+IMA+1) - ZI(ILMACO-1+IMA)
@@ -106,7 +106,7 @@ C      LIGREL = MO1//'.MODELE'
       CALL JEVEUO(LIGREL//'.LIEL','L',IALIEL)
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
 
-      NOMOBJ = '&&ECLPGR.NOMOBJ'
+      NOMFPG = '&&ECLPGR.NOMFPG'
 
 C     -- CREATION DE LA SD RESULTAT : RESU
 C     ------------------------------------
@@ -141,14 +141,6 @@ C         -- DETERMINATION DE NOMSY1,NOMSY2,NOMG1,NOMG2
 C         ---------------------------------------------------
           CALL RSEXCH(EVO1,NOMSY1,IORDR,CH1,IRET)
           IF (IRET.GT.0) GO TO 80
-
-          CALL CELFPG ( CH1, NOMOBJ )
-          CALL JEEXIN ( NOMOBJ, IRET1 )
-          IF (IRET1.GT.0) THEN
-              CALL JEVEUO ( NOMOBJ, 'L', JOBJ )
-          ELSE
-              CALL UTMESS('F','ECLPGR','BUG')
-          ENDIF
 
           CALL DISMOI('F','NOM_GD',CH1,'CHAMP',IBID,NOMG1,IBID)
           IF (NOMG1(5:6).NE.'_R') CALL UTMESS('F','ECLPGR',
@@ -185,8 +177,16 @@ C        PROJECTION SUR LE LIGREL REDUIT
           OPTIO=ZK24(JCELK1-1+2)
           PARAM=ZK24(JCELK1-1+6)
           CALL CHLIGR(CH1,LIGREL,OPTIO,PARAM,'V','&&ECLPGR.CHR1')
-
           CH1 = '&&ECLPGR.CHR1'
+          CALL JEEXIN(CH1//'.CELD',IBID)
+          IF (IBID.EQ.0) THEN
+             CALL UTDEBM('A','ECLPGR','ECLA_PG : CHAMP VIDE')
+             CALL UTIMPK ('S',' NOM_CHAM: ',1,NOMSY2)
+             CALL UTIMPI ('L',' NUME_ORDRE : ',1,IORDR)
+             CALL UTFINM ()
+             GO TO 80
+          ENDIF
+
           CALL JEVEUO(CH1//'.CELV','L',JCELV1)
           CALL JEVEUO(CH1//'.CELD','L',JCELD1)
 
@@ -212,6 +212,14 @@ C         -- LA 1ERE FOIS, ON CREE CH2S :
 
 C       -- REMPLISSAGE DU CHAM_NO :
 C       ---------------------------
+C         -- ON NE CALCULE NOMFPG QUE POUR LE 1ER NUME_ORDRE :
+          IF (I.EQ.1) THEN
+             CALL CELFPG ( CH1, NOMFPG )
+             CALL JEEXIN ( NOMFPG, IRET1 )
+             CALL ASSERT(IRET1.GT.0)
+             CALL JEVEUO ( NOMFPG, 'L', JNOFPG )
+          ENDIF
+
           IPG = 0
           NBGR = NBGREL(LIGREL)
           DO 70,IGR = 1,NBGR
@@ -226,8 +234,8 @@ C       ---------------------------
             NBPG = ZI(IAMOL1-1+4)
 
             NUMA = NUMAIL(IGR,1)
-            ELREFA = ZK16(JOBJ-1+NUMA)(1:8)
-            FAPG   = ZK16(JOBJ-1+NUMA)(9:16)
+            ELREFA = ZK16(JNOFPG-1+NUMA)(1:8)
+            FAPG   = ZK16(JNOFPG-1+NUMA)(9:16)
             IF ( FAPG .EQ. ' ' ) GOTO 70
 
 C           -- ON VERIFIE QUE C'EST UN CHAMP "ELGA/IDEN" :
@@ -315,8 +323,8 @@ C         ----------------------------------------
           CALL JELIBE(CH1//'.CELK')
           CALL DETRSD('CHAMP_GD','&&ECLPGR.CH1')
           CALL DETRSD('CHAMP_GD','&&ECLPGR.CHR1')
-          CALL JEDETR ( NOMOBJ )
    80   CONTINUE
+        CALL JEDETR ( NOMFPG )
         CALL DETRSD('CHAM_NO_S',CH2S)
    90 CONTINUE
 

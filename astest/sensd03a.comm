@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # RESPONSABLE S.CAMBIER
 # TITRE SENSIBILITE AUX MATERIAUX EN DYNAMIQUE HARMON. ISOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,7 +183,7 @@ DYH=DYNA_LINE_HARM( MODELE=MO, CHAM_MATER=CHMAT,
                            LIST_FREQ=LIFREQ,
                            TOUT_CHAM='OUI',
                            SENSIBILITE=tuple(PS),
-                           EXCIT=(_F( COEF_MULT_C = ('RI',1.,1.,), CHARGE = CH),)                                                           
+                           EXCIT=(_F( COEF_MULT_C = 1.+1.j, CHARGE = CH),)                                                           
                      )                              
 
 T_REF_R=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
@@ -243,7 +243,7 @@ for i in range(n):
                            MATR_MASS=MATASSM, MATR_RIGI=MATASSR2,
                            LIST_FREQ=LIFREQ,
                               TOUT_CHAM='OUI',
-                              EXCIT=(_F( COEF_MULT_C = ('RI',1.,1.,), CHARGE = CH2),)
+                              EXCIT=(_F( COEF_MULT_C = 1.+1.j, CHARGE = CH2),)
                               )                                                           
 
   T_DIF_R=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
@@ -275,7 +275,7 @@ for i in range(n):
           NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
           CRITERE = 'RELATIF', PRECISION = 1.E-2,
           NOM_CMP = 'DY',   SENSIBILITE = PS[i],
-          VALE_C = ('RI',diff.real,diff.imag), REFERENCE = 'NON_REGRESSION' )))
+          VALE_C = complex(diff.real,diff.imag), REFERENCE = 'NON_REGRESSION' )))
 
   DETRUIRE( CONCEPT =_F(NOM = MAT2 ))
   DETRUIRE( CONCEPT =_F(NOM = CH2 ))
@@ -294,35 +294,35 @@ TEST_RESU(RESU=(
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DX',   
-        VALE_C = ('RI', 1.301684E-09 , 1.301684E-09 ) , REFERENCE = 'NON_REGRESSION' )))
+        VALE_C = 1.301684E-09+1.301684E-09j , REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = DYH,   NUME_ORDRE = 2,
         NOM_CHAM = 'ACCE',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_0,        
-        VALE_C = ('RI', 2.005754E-15 , 2.005754E-15 ) , REFERENCE = 'NON_REGRESSION' )))
+        VALE_C = 2.005754E-15+2.005754E-15j , REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = DYH,   NUME_ORDRE = 2,
         NOM_CHAM = 'ACCE',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DX',   SENSIBILITE = PS_1,        
-        VALE_C = ('RI', 7.152102E-08 , 7.152102E-08) , REFERENCE = 'NON_REGRESSION' )))
+        VALE_C = 7.152102E-08+7.152102E-08j , REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = DYH,   NUME_ORDRE = 3,
         NOM_CHAM = 'VITE',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DX',   SENSIBILITE = PS_2,        
-        VALE_C = ('RI', -8.211421E-08 , 8.211421E-08) , REFERENCE = 'NON_REGRESSION' )))
+        VALE_C = -8.211421E-08+8.211421E-08j , REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = DYH,   NUME_ORDRE = 3,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DX',   SENSIBILITE = PS_3,        
-        VALE_C = ('RI', -5.619683E-11 , -5.619683E-11) , REFERENCE = 'NON_REGRESSION' )))
+        VALE_C = -5.619683E-11-5.619683E-11j , REFERENCE = 'NON_REGRESSION' )))
 
 FIN()
 

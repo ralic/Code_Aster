@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -543,7 +543,7 @@ TEST_RESU(RESU=(
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DY',
                       NOEUD = 'N21',
-         VALE_C = ('RI', 6.5585378196625E-04, -2.6191922176450E-10 ,),
+         VALE_C = 6.5585378196625E-04-2.6191922176450E-10j,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
                       RESULTAT = MOC2,
@@ -558,7 +558,7 @@ TEST_RESU(RESU=(
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DZ',
                       NOEUD = 'N21',
-         VALE_C = ('RI',-2.6754771724033E-02, 3.0802575767819E-10,),
+         VALE_C = -2.6754771724033E-02+3.0802575767819E-10j,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'))
                        )
 

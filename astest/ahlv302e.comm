@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/97   AUTEUR A2BHHWS A.C.LEGER 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE GUIDE D'ONDE A ENTREE VIBRO-ABSORBANTE E.F. U,P,PHI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,13 +137,13 @@ HARMO=DYNA_LINE_HARM(
 
 TEST_RESU(RESU=(
           _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-           NOEUD = 'NO33', NOM_CMP = 'PRES', VALE_C = ('RI',-289.77,0.0,)), 
+           NOEUD = 'NO33', NOM_CMP = 'PRES', VALE_C = -289.77+0.0j), 
           _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-           NOEUD = 'NO3', NOM_CMP = 'PRES', VALE_C = ('RI',-289.77,0.0,)),
+           NOEUD = 'NO3', NOM_CMP = 'PRES', VALE_C = -289.77+0.0j),
           _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-           NOEUD = 'NO4', NOM_CMP = 'PRES', VALE_C = ('RI',284.84,-53.246,)),
+           NOEUD = 'NO4', NOM_CMP = 'PRES', VALE_C = 284.84-53.246j),
           _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-           NOEUD = 'NO34', NOM_CMP = 'PRES', VALE_C = ('RI',284.84,-53.246,)))
+           NOEUD = 'NO34', NOM_CMP = 'PRES', VALE_C = 284.84-53.246j))
           )
 
 #&HARMO = CALC_ELEM (MODELE: MO 

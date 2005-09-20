@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C -----------------
 C     JE DOUBLE LA TAILLE DE WORK POUR DE MEILLEURS PERFS :
       REAL*8      WORK(2*(7*NM1**2 + 4*NM1))
       INTEGER*4   IWORK(8*NM1)
-      LOGICAL ALLOC
+      LOGICAL ALLOC ,SAFE
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
@@ -105,6 +105,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+
+      SAFE=.TRUE.
+C     LE BOOLEEN "SAFE" PERMET DE BASCULER ENTRE LES 2 ROUTINES LAPACK
+C     SAFE=.TRUE.  => DGESVD
+C     SAFE=.FALSE. => DGESDD
 
 
 C -- REMARQUES DE JP QUI A REMPLACE LE TEXTE DE CETTE ROUTINE PAR
@@ -128,20 +133,22 @@ C     ------------------------------------------------------------
           CALL WKVECT('&&CALSVD.IWORK','V V S',8*NM2,JIWORK)
       END IF
 
-
-
       IF (MATU.OR.MATV) THEN
         CODE='A'
       ELSE
         CODE='N'
       END IF
 
-
 C     -- APPEL A LA ROUTINE LAPACK (DGESDD):
 C     ------------------------------------------------------------
       IF (.NOT.ALLOC) THEN
-         CALL DGESDD(CODE,M,N,A,NM,W,U,NM,VT,LDVT,WORK,LWORK,
+        IF (SAFE) THEN
+          CALL DGESVD(CODE,CODE,M,N,A,NM,W,U,NM,VT,LDVT,WORK,LWORK,
+     &               IERR1)
+        ELSE
+          CALL DGESDD(CODE,M,N,A,NM,W,U,NM,VT,LDVT,WORK,LWORK,
      &               IWORK,IERR1)
+        END IF
         IF (MATV) THEN
           DO 1, I=1,NM
             DO 2, J=1,N
@@ -151,8 +158,13 @@ C     ------------------------------------------------------------
         END IF
 
       ELSE
-         CALL DGESDD(CODE,M,N,A,NM,W,U,NM,ZR(JVT),LDVT,
+        IF (SAFE) THEN
+         CALL DGESVD(CODE,CODE,M,N,A,NM,W,U,NM,ZR(JVT),LDVT,
+     &               ZR(JWORK),LWORK,IERR1)
+        ELSE
+          CALL DGESDD(CODE,M,N,A,NM,W,U,NM,ZR(JVT),LDVT,
      &               ZR(JWORK),LWORK,ZI4(JIWORK),IERR1)
+        END IF
         IF (MATV) THEN
           DO 3, I=1,NM
             DO 4, J=1,N
@@ -161,7 +173,6 @@ C     ------------------------------------------------------------
  3        CONTINUE
         END IF
       END IF
-
 
       IERR=IERR1
 

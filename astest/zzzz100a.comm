@@ -1,4 +1,4 @@
-# MODIF  DATE 22/08/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,9 +35,9 @@ DFC2=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='FREQ',
       VALE_C=(0., 1., 1., 2., 3., 2., 5., 5., 6., ) )
 
 DFC3=CALC_FONCTION( COMB_C=(   _F(   FONCTION = DFC1,
-      COEF_C = ('RI',1.,0.,)),
+      COEF_C = 1.+0.j),
   _F(   FONCTION = DFC2,
-      COEF_C = ('RI',0.,2.,)))
+      COEF_C = 0.+2.j))
                       )
 
 IMPR_FONCTION(
@@ -48,9 +48,9 @@ IMPR_FONCTION(
 IMPR_CO(   CO=DFC3 )
 
 TEST_FONCTION(VALEUR=(  
-  _F(   FONCTION = DFC3, VALE_PARA = 0., VALE_REFE_C = ('RI',-1.,4.,), REFERENCE='ANALYTIQUE',), 
-  _F(   FONCTION = DFC3, VALE_PARA = 1., VALE_REFE_C = ('RI',0.,8.,), REFERENCE='ANALYTIQUE',), 
-  _F(   FONCTION = DFC3, VALE_PARA = 5., VALE_REFE_C = ('RI',-10.,14.,), REFERENCE='ANALYTIQUE',)
+  _F(   FONCTION = DFC3, VALE_PARA = 0., VALE_REFE_C = -1.+4.j, REFERENCE='ANALYTIQUE',),
+  _F(   FONCTION = DFC3, VALE_PARA = 1., VALE_REFE_C = 0.+8.j, REFERENCE='ANALYTIQUE',),
+  _F(   FONCTION = DFC3, VALE_PARA = 5., VALE_REFE_C = -10.+14.j, REFERENCE='ANALYTIQUE',)
   ) )
 
 DFR1=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='FREQ',
@@ -60,19 +60,19 @@ DFR2=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='FREQ',
       VALE=(0., 1., 1., 2., 5., 6., ) )
 
 DFRC3=CALC_FONCTION( COMB_C=(   _F(   FONCTION = DFR1,
-      COEF_C = ('RI',2.,0.,)),
+      COEF_C = 2.+0.j),
   _F(   FONCTION = DFR2,
-      COEF_C = ('RI',0.,3.,))) )
+      COEF_C = 0.+3.j)) )
 
 IMPR_CO(   CO=DFRC3 )
 
 TEST_FONCTION(VALEUR=(   _F(   FONCTION = DFRC3, VALE_PARA = 0., 
-        VALE_REFE_C = ('RI',2.,3.,)), 
+        VALE_REFE_C = 2.+3.j),
   _F(   FONCTION = DFRC3, VALE_PARA = 1., 
-        VALE_REFE_C = ('RI',6.,6.,),
+        VALE_REFE_C = 6.+6.j,
         REFERENCE='ANALYTIQUE',), 
   _F(   FONCTION = DFRC3, VALE_PARA = 5., 
-        VALE_REFE_C = ('RI',4.,18.,),
+        VALE_REFE_C = 4.+18.j,
         REFERENCE='ANALYTIQUE',)) )
 
 DFR4=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = DFC1,
@@ -150,7 +150,7 @@ TEST_FONCTION(ATTRIBUT=(
                                    ATTR_REFE = 'EXCLU')),VALEUR=( 
                   
                 _F(  FONCTION = DFC0, 
-                  VALE_PARA = 1.,    VALE_REFE_C = ('RI',1.,1.,)),
+                  VALE_PARA = 1.,    VALE_REFE_C = 1.+1.j),
                 _F(  FONCTION = DFC0,   VALE_PARA = 2.,  
                   VALE_REFE_C = ('MP',2.82843,45.,)))   )
 
@@ -1665,6 +1665,35 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=F4,
                       _F(FONCTION=F4,
                          VALE_PARA=4.5,
                          VALE_REFE=-1.0,
+                         CRITERE='RELATIF',
+                         REFERENCE='ANALYTIQUE',),)
+               );
+
+FF1=DEFI_FONCTION(NOM_PARA='X',
+                 VALE=(0.0,0.0,1.0,1.0,3.0,0.0,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+FF2=DEFI_FONCTION(NOM_PARA='X',
+                 VALE=(0.0,0.0,2.0,1.0,3.0,0.0,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+LFF=DEFI_LIST_REEL (   VALE = (0.,0.5,2.5,3.) )
+
+FF3=CALC_FONCTION(COMB=(_F(FONCTION=FF1,
+                          COEF=1.0,),
+                       _F(FONCTION=FF2,
+                          COEF=1.0,),),LIST_PARA=LFF);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=FF3,
+                         VALE_PARA=1.,
+                         VALE_REFE=0.75,
+                         CRITERE='RELATIF',
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=FF3,
+                         VALE_PARA=2.,
+                         VALE_REFE=0.75,
                          CRITERE='RELATIF',
                          REFERENCE='ANALYTIQUE',),)
                );

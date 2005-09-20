@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF E_ETAPE Execution  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,14 +74,16 @@ class ETAPE:
       ier=0
 
       # Il ne faut pas executer les commandes non numerotees
-      decalage="  "  # blancs au debut de chaque ligne affichee
+      # Pour les affichages et calculs de cpu, on exclut les commandes
+      # tout de suite executees (op_init) de type FORMULE. Sinon, ca
+      # produit un affichage en double.
       echo_mess=[]
       if self.icmd is not None:
           # appel de la methode oper dans le module codex
-          if self.modexec == 2:
+          if (self.modexec == 2) and (self.definition.op_init==None):
              self.AfficheTexteCommande()       
           ier=self.codex.oper(self,0,self.modexec,self.icmd)
-          if self.modexec == 2:
+          if (self.modexec == 2) and (self.definition.op_init==None):
              self.cpu_user=times()[0]-self.cpu_user
              self.cpu_syst=times()[1]-self.cpu_syst
              # affichage du texte de la commande

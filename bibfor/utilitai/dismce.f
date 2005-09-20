@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID, IRET, GD, JCELD, IACELK, L, LXLGUT
-      CHARACTER*8   K8BID, NOGD
+      CHARACTER*8   K8BID, NOGD,DOCU
       CHARACTER*19  NOMOB
       CHARACTER*24 QUESTL
       CHARACTER*32  REPK
@@ -66,34 +66,23 @@ C
       QUESTL = QUESTI
       CALL JEEXIN ( NOMOB//'.CELD', IRET )
       IF ( IRET .EQ. 0 ) THEN
-          IERD = -1
+          CALL UTMESS(CODMES,'DISMCE','CHAM_ELEM INEXISTANT: '//NOMOB)
+          IERD = 1
           GOTO 9999
       END IF
 C
       CALL JEVEUO ( NOMOB//'.CELD', 'L', JCELD )
+      CALL JELIRA ( NOMOB//'.CELD', 'DOCU', IBID, DOCU)
+      CALL ASSERT( DOCU.EQ. 'CHML' )
       GD = ZI(JCELD)
       CALL JENUNO ( JEXNUM('&CATA.GD.NOMGD',GD), NOGD )
 C
       IF ( QUESTI .EQ. 'TYPE_CHAMP' ) THEN
-         CALL JELIRA ( NOMOB//'.CELD', 'DOCU', IBID, K8BID )
-         IF ( K8BID(1:4) .EQ. 'CHML' ) THEN
-            CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
-            REPK = ZK24(IACELK-1+3)(1:4)
-         ELSE
-            CALL UTMESS ( 'F', 'DISMCE', '1' )
-            IERD = 1
-            GOTO 9999
-         ENDIF
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
+         REPK = ZK24(IACELK-1+3)(1:4)
 C
       ELSEIF ( QUESTI .EQ. 'TYPE_SUPERVIS' ) THEN
-         CALL JELIRA ( NOMOB//'.CELD', 'DOCU', IBID, K8BID )
-         IF ( K8BID(1:4) .EQ. 'CHML' ) THEN
-            REPK = 'CHAM_ELEM_'//NOGD
-         ELSE
-            CALL UTMESS ( 'F', 'DISMCE', '2' )
-            IERD = 1
-            GOTO 9999
-         ENDIF
+         REPK = 'CHAM_ELEM_'//NOGD
 C
       ELSEIF ( QUESTI .EQ. 'NOM_OPTION' ) THEN
          CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )

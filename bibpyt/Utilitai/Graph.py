@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 21/06/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,12 +105,12 @@ class Graph:
       self.Tri       = []
       self.Titre     = ''
       self.SousTitre = ''
-      self.Min_X     =  1.e+99
-      self.Max_X     = -1.e+99
-      self.Min_Y     =  1.e+99
+      self.Min_X     = None
+      self.Max_X     = None
+      self.Min_Y     = None
+      self.Max_Y     = None
       self.MinP_X    =  1.e+99   # minimum > 0 pour les échelles LOG
       self.MinP_Y    =  1.e+99
-      self.Max_Y     = -1.e+99
       self.Legende_X = ''
       self.Legende_Y = ''
       self.Echelle_X = 'LIN'
@@ -119,31 +119,52 @@ class Graph:
       self.Grille_Y  = -1
       # attributs que l'utilisateur ne doit pas modifier
       self.NbCourbe  = len(self.Valeurs)
-      self.BBXmin    = self.Min_X
-      self.BBXmax    = self.Max_X
-      self.BBYmin    = self.Min_Y
-      self.BBYmax    = self.Max_Y
+      self.BBXmin    =  1.e+99
+      self.BBXmax    = -1.e+99
+      self.BBYmin    =  1.e+99
+      self.BBYmax    = -1.e+99
       # pour conserver les paramètres du dernier tracé
       self.LastTraceArgs = {}
       self.LastTraceFormat = ''
       return
 # ------------------------------------------------------------------------------
-   def SetExtrema(self,marge=0., x0=None, x1=None, y0=None, y1=None):
+   def SetExtremaX(self,marge=0., x0=None, x1=None, force=True):
+      """Remplit les limites du tracé (Min/Max_X) avec les valeurs de la
+      bounding box +/- avec une 'marge'*(Max-Min)/2.
+      x0,x1 permettent de modifier la bb.
+      """
+      if x0<>None:   self.BBXmin=min([self.BBXmin, x0])
+      if x1<>None:   self.BBXmax=max([self.BBXmax, x1])
+
+      dx=max(self.BBXmax-self.BBXmin,0.01*self.BBXmax)
+      if force or self.Min_X==None:
+         self.Min_X = self.BBXmin - marge*dx/2.
+      if force or self.Max_X==None:
+         self.Max_X = self.BBXmax + marge*dx/2.
+      return
+
+   def SetExtremaY(self,marge=0., y0=None, y1=None, force=True):
+      """Remplit les limites du tracé (Min/Max_Y) avec les valeurs de la
+      bounding box +/- avec une 'marge'*(Max-Min)/2.
+      y0,y1 permettent de modifier la bb.
+      """
+      if y0<>None:   self.BBYmin=min([self.BBYmin, y0])
+      if y1<>None:   self.BBYmax=max([self.BBYmax, y1])
+
+      dy=max(self.BBYmax-self.BBYmin,0.01*self.BBYmax)
+      if force or self.Min_Y==None:
+         self.Min_Y = self.BBYmin - marge*dy/2.
+      if force or self.Max_Y==None:
+         self.Max_Y = self.BBYmax + marge*dy/2.
+      return
+
+   def SetExtrema(self,marge=0., x0=None, x1=None, y0=None, y1=None, force=True):
       """Remplit les limites du tracé (Min/Max_X/Y) avec les valeurs de la
       bounding box +/- avec une 'marge'*(Max-Min)/2.
       x0,x1,y0,y1 permettent de modifier la bb.
       """
-      if x0<>None:   self.BBXmin=min([self.BBXmin, x0])
-      if x1<>None:   self.BBXmax=max([self.BBXmax, x1])
-      if y0<>None:   self.BBYmin=min([self.BBYmin, y0])
-      if y1<>None:   self.BBYmax=max([self.BBYmax, y1])
-
-      dx=max(self.BBXmax-self.BBXmin,0.01*self.BBXmax)
-      self.Min_X = self.BBXmin - marge*dx/2.
-      self.Max_X = self.BBXmax + marge*dx/2.
-      dy=max(self.BBYmax-self.BBYmin,0.01*self.BBYmax)
-      self.Min_Y = self.BBYmin - marge*dy/2.
-      self.Max_Y = self.BBYmax + marge*dy/2.
+      self.SetExtremaX(marge, x0, x1, force=force)
+      self.SetExtremaY(marge, y0, y1, force=force)
       return
 # ------------------------------------------------------------------------------
    def AutoBB(self,debut=-1):
@@ -270,7 +291,7 @@ class Graph:
          if opts<>{}:
             kargs['opts']=opts
       if not FORMAT in para.keys():
-         print ' <A> <Objet Graph> Format inconnu : %s' % FORMAT
+         UTMESS('A', 'Objet Graph', 'Format inconnu : %s' % FORMAT)
       else:
          kargs['fmod']=para[FORMAT]['mode']
          self.LastTraceArgs   = kargs.copy()
@@ -334,12 +355,21 @@ class TraceGraph:
       # objet Graph sous-jacent
       self.Graph=graph
       # si Min/Max incohérents
-      if graph.Min_X > graph.Max_X or graph.Min_Y > graph.Max_Y:
-         graph.SetExtrema(marge=0.05)
-      if graph.Min_X < 0. and graph.Echelle_X=='LOG':
-         graph.Min_X=graph.MinP_X
-      if graph.Min_Y < 0. and graph.Echelle_Y=='LOG':
-         graph.Min_Y=graph.MinP_Y
+      if graph.Min_X==None or graph.Max_X==None or graph.Min_X > graph.Max_X:
+         graph.SetExtremaX(marge=0.05, force=True)
+      if graph.Min_Y==None or graph.Max_Y==None or graph.Min_Y > graph.Max_Y:
+         graph.SetExtremaY(marge=0.05, force=True)
+
+      if graph.Echelle_X=='LOG':
+         graph.Grille_X=10
+         if graph.Min_X < 0.:
+            UTMESS('A', 'Graph', 'On limite la fenetre aux abscisses positives.')
+            graph.Min_X=graph.MinP_X
+      if graph.Echelle_Y=='LOG':
+         graph.Grille_Y=10
+         if graph.Min_Y < 0.:
+            UTMESS('A', 'Graph', 'On limite la fenetre aux ordonnées positives.')
+            graph.Min_Y=graph.MinP_Y
       
       # formats de base (identiques à ceux du module Table)
       self.DicForm={
@@ -421,12 +451,12 @@ class TraceTableau(TraceGraph):
          max0=max(abs(t0))
          for i in range(1,g.NbCourbe):
             if g.Courbe(i)['NbPts']<>g.Courbe(0)['NbPts']:
-               msg.append(" <A> <TraceTableau> La courbe %d n'a pas le meme " \
+               msg.append("La courbe %d n'a pas le meme " \
                      "nombre de points que la 1ère." % i)
             else:
                ti=Numeric.array(g.Courbe(i)['Abs'])
                if max(abs((ti-t0).flat)) > self.EPSILON*max0:
-                  msg.append(" <A> <TraceTableau> Courbe %d : écart entre les "\
+                  msg.append("Courbe %d : écart entre les "\
                         "abscisses supérieur à %9.2E" % (i+1,self.EPSILON))
                   msg.append("     Utilisez IMPR_FONCTION pour interpoler " \
                         "les valeurs sur la première liste d'abscisses.")
@@ -463,7 +493,7 @@ class TraceTableau(TraceGraph):
          Tab.Impr(FICHIER=self.NomFich[0], FORMAT='TABLEAU')
          # erreurs ?
          if msg:
-            print '\n'.join(msg)
+            UTMESS('A', 'Graph.TraceTableau', '\n'.join(msg))
       return
 
 # ------------------------------------------------------------------------------
@@ -805,12 +835,18 @@ class TraceXmgrace(TraceGraph):
       self._FermFich()
       nbsets, x0, x1, y0, y1 = IniGrace(self.NomFich[0])
       NumSetIni = nbsets+1
-      g.SetExtrema(0.05, x0, x1, y0, y1)
+      g.SetExtrema(0.05, x0, x1, y0, y1, force=False)
       # si Min/Max incohérents
-      if g.Min_X < 0. and g.Echelle_X=='LOG':
-         g.Min_X=g.MinP_X
-      if g.Min_Y < 0. and g.Echelle_Y=='LOG':
-         g.Min_Y=g.MinP_Y
+      if g.Echelle_X=='LOG':
+         g.Grille_X=10
+         if g.Min_X < 0.:
+            UTMESS('A', 'Graph', 'On limite la fenetre aux abscisses positives.')
+            g.Min_X=g.MinP_X
+      if g.Echelle_Y=='LOG':
+         g.Grille_Y=10
+         if g.Min_Y < 0.:
+            UTMESS('A', 'Graph', 'On limite la fenetre aux ordonnées positives.')
+            g.Min_Y=g.MinP_Y
       
       self._OuvrFich()
       fich=self.Fich[0]
@@ -1143,10 +1179,10 @@ def IniGrace(fich):
             fnew.write(line)
       fpre.close()
       fnew.close()
-      print """
+      UTMESS('I',  'Graph.IniGrace', """
    <I> Informations sur le fichier '%s' :
       Nombre de courbes    : %3d
       Bornes des abscisses : [ %13.6G , %13.6G ]
       Bornes des ordonnées : [ %13.6G , %13.6G ]
-""" % (fich, ns, x0, x1, y0, y1)
+""" % (fich, ns, x0, x1, y0, y1))
    return ns, x0, x1, y0, y1

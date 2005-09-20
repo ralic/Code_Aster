@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF E_JDC Execution  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ class JDC:
        l_etapes=self.get_liste_etapes()
        l_etapes.reverse()
        for e in l_etapes :
-           if ((hasattr(e,'executed') and e.executed) or (hasattr(e,'building') and e.building)) :
+           if hasattr(e,'cpu_user') :
               etape_finale=e
               etape_finale.cpu_user=times()[0]-etape_finale.cpu_user
               etape_finale.cpu_syst=times()[1]-etape_finale.cpu_syst

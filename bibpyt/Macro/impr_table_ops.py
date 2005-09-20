@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,8 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    nom_para=ltab[0][0].para
    if args['NOM_PARA']:
       nom_para=args['NOM_PARA']
+   if not type(nom_para) in EnumTypes:
+      nom_para=[nom_para,]
 
    # 0.4.2. Traiter le cas des UL réservées
    if args['UNITE'] and args['UNITE'] in ul_reserve:
@@ -148,7 +150,14 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          tab.sort(CLES=dT['NOM_PARA'], ORDRE=dT['ORDRE'])
 
       # ----- 4. Impression
+      # vérification des paramètres
+      for p in nom_para:
+         if not p in tab.para:
+            UTMESS('A', 'IMPR_TABLE', 'Paramètre absent de la table : %s' % p)
+      
+      # sélection des paramètres
       timp=tab[nom_para]
+      
       # passage des mots-clés de mise en forme à la méthode Impr
       kargs=args.copy()
       kargs.update({
@@ -179,7 +188,14 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
 
       # 4.4. regroupement par paramètre : PAGINATION
       if args['PAGINATION']:
-         kargs['PAGINATION']=args['PAGINATION']
+         l_ppag=args['PAGINATION']
+         if not type(l_ppag) in EnumTypes:
+            l_ppag=[l_ppag,]
+         kargs['PAGINATION'] = [p for p in l_ppag if p in nom_para]
+         l_para_err          = [p for p in l_ppag if not p in nom_para]
+         if len(l_para_err)>0:
+            UTMESS('A', 'IMPR_TABLE', 'Paramètres absents de la table (ou de '\
+                   'NOM_PARA) : %s' % ', '.join(l_para_err))
 
       timp.Impr(**kargs)
 

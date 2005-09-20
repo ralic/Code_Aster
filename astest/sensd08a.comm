@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE SENSIBILITE DES MODES PROPRES CALCULES PAR MODE_ITER_SIMULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,13 +135,13 @@ TEST_RESU(RESU=(
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-20,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.,
                 NUME_ORDRE = 1, ),
           _F( RESULTAT = MODEC, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-20,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.,
                 NUME_ORDRE = 2, ),
           ),)
 
@@ -154,13 +154,13 @@ TEST_RESU(RESU=(
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-20,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.,
                 NUME_ORDRE = 1, ),
           _F( RESULTAT = MODEC, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-20,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.,
                 NUME_ORDRE = 2, ),
           ),)
 

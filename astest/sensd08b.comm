@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE SENSIBILITE DES MODES PROPRES CALCULES PAR MODE_ITER_INV
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,13 +187,13 @@ TEST_RESU(RESU=(
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-14,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 1, ),
           _F( RESULTAT = MODEIC, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-13,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 2, ),
           ),)
 
@@ -206,13 +206,13 @@ TEST_RESU(RESU=(
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-16,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 1, ),
           _F( RESULTAT = MODEIC, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',NOEUD='N6',NOM_CMP='DY',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-15,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 2, ),
           ),)
 

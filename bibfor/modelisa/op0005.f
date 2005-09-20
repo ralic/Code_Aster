@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C
           IND=LXLGUT(NOMRC)+1
           NOMRC(IND:IND+2) = '_FO'
         ENDIF
-        CALL GETMJM(NOMRC,0,0,K16BID,K16BID,NBOBM)
+        CALL GETMJM(NOMRC,1,0,K16BID,K16BID,NBOBM)
         NBOBM = - NBOBM
         CALL WKVECT(NOOBRC//'.VALR','G V R' ,  NBOBM,JVALRM)
         CALL WKVECT(NOOBRC//'.VALC','G V C' ,  NBOBM,JVALCM)

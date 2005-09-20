@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 21/06/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,7 +239,8 @@ class TableBase(object):
       """
       args=kargs.copy()
       if len(self.para)<>2:
-         UTMESS('A','Table','La table doit avoir exactement deux paramètres.')
+         UTMESS('A','Table','La table doit avoir exactement deux paramètres '\
+                'pour une impression au format XMGRACE.')
          return
       lx, ly = [[v for v in getattr(self,p).values() if v<>None] for p in self.para]
       # objet Graph
@@ -445,7 +446,10 @@ class Table(TableBase):
          # nom du paramètre et type si K*
          d={ 'PARA' : self.para[i], }
          typ=self.type[i]
-         if typ[0]=='K':
+         if typ==None:
+            UTMESS('F', 'Table', 'Type du paramètre %s non défini.' %\
+                   self.para[i])
+         elif typ[0]=='K':
             mc='LISTE_K'
             if not typ in ('K8', 'K16', 'K24'):
                UTMESS('A','Table','Type du paramètre %s forcé à %s' % (self.para[i],Kdef))

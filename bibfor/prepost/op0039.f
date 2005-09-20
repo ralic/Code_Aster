@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 20/09/2005   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -62,7 +62,7 @@ C
       INTEGER JLGRM, JNGRM, JLGRN, JNGRN, JLNO, JNNO
       INTEGER NBELE, NBNOE
       INTEGER NINF, NSUP, NMA
-      INTEGER IAUX, JAUX, I, J
+      INTEGER IAUX, JAUX, I, J, JINDNO, JNOFI, II
       INTEGER IBID, IRET
       INTEGER NRPASS, NBPASS, ADRECG
 C
@@ -559,6 +559,10 @@ C                - C'EST UN CHAM_GD: NOM DU MAILLAGE DANS NOMMA
 C              - NOMBRE TOTAL DE NOEUDS DU MAILLAGE NOMMA = NBNOE
                CALL DISMOI('F','NB_NO_MAILLA',NOMMA,'MAILLAGE',
      >                                               NBNOE,K8B,IBID)
+               CALL WKVECT('&&OP0039.IND_NOEU','V V I',NBNOE,JINDNO)
+               DO 70 I=1,NBNOE
+                  ZI(JINDNO+I-1)=0
+ 70            CONTINUE
              ENDIF
 C
 C            ***  SELECTION SUR DES NOEUDS OU GROUPES DE NOEUDS
@@ -569,8 +573,8 @@ C                POUR LA LISTE DES NUMEROS DES NOEUDS A IMPRIMER
 C              - ON RECUPERE A PARTIR DE ZI(JNUNOU) LES NUMEROS DES
 C                NOEUDS DE LA LISTE DE NOEUDS OU DE GROUPES DE NOEUDS
 C                (NBNOU EST LE NBRE TOTAL DE NOEUDS TROUVES A IMPRIMER)
-               CALL IRNONO(NOMMA,NBNO,ZK8(JLNO),NBGRN,ZK8(JLGRN),
-     >                     '&&OP0039.NUMNOE',NBNOU)
+               CALL IRNONO(NOMMA,NBNOE,NBNO,ZK8(JLNO),NBGRN,ZK8(JLGRN),
+     >                    '&&OP0039.NUMNOE',NBNOU,ZI(JINDNO))
 C              - ON RECUPERE DE NOUVEAU L'ADRESSE DE .NUMNOE CAR IRNONO
 C                A PU AGRANDIR CET OBJET :
                CALL JEVEUO('&&OP0039.NUMNOE','L',JNUNOU)
@@ -597,6 +601,15 @@ C              - ON RECUPERE A PARTIR DE ZI(JNUNOS) LA LISTE DES NUMEROS
 C                DES NOEUDS SOMMETS DE CES MAILLES
 C               (NBNOS = NOMBRE DE NOEUDS SOMMETS DE CETTE LISTE)
                CALL IRMANO(NOMMA,NBMAT,ZI(JNUMA),NBNOS,ZI(JNUNOS))
+               CALL WKVECT('&&OP0039.FILTRE_NO','V V I',NBNOS,JNOFI)
+               II=0
+               DO 490 I=1,NBNOS
+                 IF(ZI(JINDNO+ZI(JNUNOS+I-1)-1).EQ.0)THEN
+                    II=II+1
+                    ZI(JNOFI+II-1)=ZI(JNUNOS+I-1)
+                 ENDIF
+ 490           CONTINUE
+               NBNOS=II                      
                NBNOT = NBNOT + NBNOS
              ENDIF
 C
@@ -620,7 +633,7 @@ C              - LISTE DES NUMEROS DE NOEUDS
              IF( NBNOS .GT. 0 ) THEN
 C              - SUIVIE DE LA LISTE DES NUMEROS DE NOEUDS SOMMETS
                DO 501 I=1,NBNOS
-                 ZI(JNUNOT-1+NBNOU+I)= ZI(JNUNOS-1+I)
+                 ZI(JNUNOT-1+NBNOU+I)= ZI(JNOFI-1+I)
   501          CONTINUE
              ENDIF
            ENDIF
@@ -807,6 +820,9 @@ C        --- DESTRUCTION TABLEAUX DE TRAVAIL
          CALL JEDETR ( '&&OP0039.NOM_CMP'     )
          CALL JEDETR ( '&&OP0039.LIST_TOPO'   )
          CALL JEDETR ( '&&OP0039.NOM_PAR'     )
+         CALL JEDETR ( '&&OP0039.FILTRE_NO'   )
+         CALL JEDETR ( '&&OP0039.IND_NOEU'    )
+         
 C===================================
  11   CONTINUE
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,7 +166,7 @@ TEST_RESU( RESU=_F( RESULTAT = HARMDIR,
                   PRECISION = 2.E-3,
                   NOEUD = 'NO11',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,)))
+                  VALE_C = -7.00E-11+5.07E-9j))
 
 #CALCUL HARMONIQUE A UN NIVEAU DE PROJECTION
 # BASE MODALE DIRECTE CALCULEE SANS SOUS STRUCTURATION
@@ -196,7 +196,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARD,
                   PRECISION = 2.E-3,
                   NOEUD = 'NO11',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,)))
+                  VALE_C = -7.00E-11+5.07E-9j))
 
 #----------------------------------------------
 #SOUS STRUCTURATION
@@ -546,7 +546,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   PRECISION = 2.E-3,
                   NOEUD = 'N5',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,)))
+                  VALE_C = -7.00E-11+5.07E-9j))
 
 #
 #
@@ -557,7 +557,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARC,
                   PRECISION = 2.E-3,
                   NOEUD = 'N5',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,)))
+                  VALE_C = -7.00E-11+5.07E-9j))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
@@ -567,7 +567,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   PRECISION = 2.E-3,
                   NOEUD = 'N5',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-3.18E-6,-4.40E-8,)))
+                  VALE_C = -3.18E-6-4.40E-8j))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
@@ -577,7 +577,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   PRECISION = 2.E-3,
                   NOEUD = 'N5',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',2.76E-5,-2.00E-3,)))
+                  VALE_C = 2.76E-5-2.00E-3j))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
@@ -587,7 +587,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
                   PRECISION = 2.E-3,
                   NOEUD = 'NO12',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,)))
+                  VALE_C = -7.00E-11+5.07E-9j))
 
 #
 #----------------------------------------------------------
@@ -640,7 +640,7 @@ TEST_RESU( RESU=_F( RESULTAT = HARM,
                   PRECISION = 2.E-3,
                   NOEUD = 'NO11',
                   NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,),
+                  VALE_C = -7.00E-11+5.07E-9j,
                   REFERENCE = 'AUTRE_ASTER'))
 
 FIN()

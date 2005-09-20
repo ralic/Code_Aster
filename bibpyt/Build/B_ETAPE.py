@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,10 +224,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       nom_motfac=string.strip(nom_motfac)
       nom_motcle=string.strip(nom_motcle)
 
-      # iocc-1 car iocc, numero fortran commencant a 1, est utilise par une méthode python.
-      # en python la numerotation commence a 0
-
-      valeur=self.get_valeur_motcle(nom_motfac,iocc-1,nom_motcle)
+      valeur=self.get_valeur_motcle(nom_motfac,iocc,nom_motcle)
       if valeur == None:
          retval=0,()
       else :
@@ -323,10 +320,10 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
                  # on est en presence d'un complexe isolé
                  list_apres.append( k )
               else:
-                 # on est en presence d'une liste de (R8,IS,TX,LS)
+                 # on est en presence d'une liste de (R8,C8,IS,TX,LS)
                  list_apres.extend( k )
           else:
-              # on est en presence d'un (R8,IS,TX,LS) isolé
+              # on est en presence d'un (R8,C8,IS,TX,LS) isolé
               list_apres.append( k )
       if valeur[0] < 0:
          # la longueur initiale etait superieure a mxval. 
@@ -490,10 +487,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       nom_motfac=string.strip(nom_motfac)
       nom_motcle=string.strip(nom_motcle)
 
-      # iocc-1 car iocc, numero fortran commencant a 1, est utilise par une methode python.
-      # en python la numerotation commence a 0
-
-      valeur=self.get_valeur_motcle_pour_getvid(nom_motfac,iocc-1,nom_motcle)
+      valeur=self.get_valeur_motcle_pour_getvid(nom_motfac,iocc,nom_motcle)
       if valeur == None:
          if CONTEXT.debug : print "\tGETVID : valeur =",None
          return 0,()
@@ -626,6 +620,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
             else                                                           : obj=dico_mcsimp[name]
             if type(obj)==types.InstanceType :
                lty.append(obj.__class__.__name__)
+            if isinstance(obj,complex)           : lty.append('C8')
             if type(obj)==types.FloatType        : lty.append('R8')
             if type(obj)==types.StringType       :
                 if string.strip(obj) in ('RI','MP') : lty.append('C8')
@@ -637,6 +632,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
                                                list_cata=B_utils.Typast(child.type)
                                                if ('IS ' not in list_cata) and  ('R8 ' in list_cata) :
                                                  lty.append('R8')
+                                               elif ('IS ' not in list_cata) and  ('C8 ' in list_cata) :
+                                                 lty.append('C8')
                                                else :
                                                  lty.append('I')
       return (lmc,lty)

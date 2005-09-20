@@ -4,7 +4,7 @@
       CHARACTER*(*)     CODMES,QUESTI,NOMOB,TYPECO,     REPK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,11 @@ C
      +               'LE TYPE DE CONCEPT : "'//REPK1//'" EST INCONNU')
          IERD=1
       END IF
-C
+
  9999 CONTINUE
+
+C     -- ON NE DOIT PAS SORTIR DE DISMOI SI IERD/=0 ET CODMES='F'
+      IF (IERD.NE.0) CALL ASSERT(CODME2.NE.'F')
+
       REPK = REPK1
       END

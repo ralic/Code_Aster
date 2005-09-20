@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 15/09/2005   AUTEUR CAMBIER S.CAMBIER 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,29 +17,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
-# ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
-# ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # CAS_TEST__: SDNL105D
 #
 # MODELE PROBABILISTE NONPARAMETRIQUE DE TROIS POUTRES SOUS-STRUCTURES
 # S'ENTRECHOQUANT ET AYANT DES NIVEAUX D'INCERTITUDES INHOMOGENES
 
+from Numeric import array,shape,zeros,concatenate,repeat,around
+from Numeric import sqrt,cos,sin,pi,asarray
 
 DEBUT(CODE=_F(  NOM = 'SDNL105D', NIV_PUB_WEB ='INTERNET',VISU_EFICAS='NON') ,
       PAR_LOT='NON')
@@ -47,31 +31,45 @@ DEBUT(CODE=_F(  NOM = 'SDNL105D', NIV_PUB_WEB ='INTERNET',VISU_EFICAS='NON') ,
 #
 MAYA=LIRE_MAILLAGE( )
 
-MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
-
 #
 MATERIO1=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E08,  NU = 0.3,  E = 1.E10))
 
 MATERIO2=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E08,  NU = 0.,   E = 1.E15))
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=( 
-                              _F( TOUT = 'OUI',      MATER = MATERIO1),
+                              _F( GROUP_MA = 'SOUPLE', MATER = MATERIO1),
                               _F( GROUP_MA = 'RIGIDE', MATER = MATERIO2),
                               ))
 
 #
 BARRE=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( TOUT = 'OUI', 
+                            AFFE=(_F( GROUP_MA='SOUPLE', 
                                   MODELISATION = 'POU_D_E', 
-                                  PHENOMENE = 'MECANIQUE'))
+                                  PHENOMENE = 'MECANIQUE'),
+                                  _F(GROUP_MA=('RESSO',),
+                                  PHENOMENE='MECANIQUE',
+                                  MODELISATION='DIS_TR',),
+                                  _F( GROUP_MA='RIGIDE', 
+                                  MODELISATION = 'POU_D_E', 
+                                  PHENOMENE = 'MECANIQUE'),
+                                  ),)
 
 #
 CARA=AFFE_CARA_ELEM(  MODELE=BARRE, 
-                           POUTRE=_F( 
-       GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE', 
-                                   CARA = ('R', 'EP',),  VALE = (0.1, 0.01,)))
+                           POUTRE=(_F( 
+                                    GROUP_MA = ('SOUPLE',),
+                                    SECTION = 'CERCLE', 
+                                    CARA = ('R', 'EP',),  VALE = (0.1, 0.01,),),
+                                    _F( 
+                                    GROUP_MA = ('RIGIDE',),
+                                    SECTION = 'CERCLE', 
+                                    CARA = ('R', 'EP',),  VALE = (0.1, 0.01,),),
+                                    ),
+                           DISCRET=(
+                                 _F(GROUP_MA='RESSO',
+                                    CARA='K_TR_D_L',
+                                    VALE=(1.0,1.0,1.0,1.0,1.0,1.0,),),
+                                    ),)
 
 #
 ###
@@ -81,7 +79,7 @@ CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
 GUIDAGE=AFFE_CHAR_MECA(    MODELE=BARRE,DDL_IMPO=(
                            _F( TOUT = 'OUI', 
                                      DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
-                           _F( GROUP_NO = 'L1',  DY = 0., DRZ = 0.),
+                           _F( GROUP_NO = ('L1','RESS'),  DY = 0., DRZ = 0.),
                            ))
 #
 CHARGE=AFFE_CHAR_MECA(    MODELE=BARRE,
@@ -125,10 +123,17 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
+#
+#MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
+#                                 MATR_B=M_ASSE, 
+#                             CALC_FREQ=_F( NMAX_FREQ = 5)
+#                             )
+MODES=MODE_ITER_INV(     MATR_A=K_ASSE, 
                                  MATR_B=M_ASSE, 
-                             CALC_FREQ=_F( NMAX_FREQ = 5)
-                             )
+          CALC_FREQ=_F( NMAX_FREQ = 15, OPTION = 'AJUSTE', FREQ = (2., 40.,),
+                     NMAX_ITER_AJUSTE = 100,PREC_AJUSTE=1.E-14),
+          CALC_MODE=_F( NMAX_ITER = 100, PREC=1.E-14))
+
 
 #
 INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUM, 
@@ -161,29 +166,49 @@ INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM,INTERFACE=(
                                         MASQUE = ('DX', 'DZ', 'DRX', 'DRY',),
                                         GROUP_NO = 'L1')) 
                              )
-
 #
 BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF2,
                                         MODE_MECA = MODES, 
                                         NMAX_MODE = 10) 
                              )
 
-#
 MACRO2M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2, 
                                 OPTION='CLASSIQUE',
                                 AMOR_REDUIT=(0.04,0.04,0.04,0.04,0.04,),
                                 )
+#
+
+INTERF3=DEFI_INTERF_DYNA(   NUME_DDL=NUM, 
+                             INTERFACE=_F( NOM = 'LIAI4', 
+                                        TYPE = 'CRAIGB', 
+                                        MASQUE = ('DX', 'DZ', 'DRX', 'DRY',),
+                                        GROUP_NO = 'L1') 
+                              )
+
+BAMO3=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF3,
+                                        MODE_MECA = MODES, 
+                                        NMAX_MODE = 10) 
+                              )
+
+MACRO3M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO3, 
+                                OPTION='CLASSIQUE',
+                                AMOR_REDUIT=(0.04,0.04,0.04,0.04,0.04,),
+                                )
+#
+
+#IMPR_RESU(MODELE=BARRE,
+#          UNITE=18,
+#          RESU=(_F(MAILLAGE=MAYA,
+#                   RESULTAT=BAMO2,),)
+#                   )
+#
 
 OBSTACLE=DEFI_OBSTACLE( TYPE='BI_PLAN_Y')
 
-LFREQ=DEFI_LIST_REEL(DEBUT=0.5,
-                          INTERVALLE=_F(JUSQU_A=100.,
-                                        PAS=0.5)
-                          )
-
 LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
                            INTERVALLE=_F( JUSQU_A = 1.,
-                                       NOMBRE = 100))
+#                                       NOMBRE = 100))
+                                       NOMBRE = 1000))
 
 ##############################################################################
 #                                                                            #
@@ -195,23 +220,21 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 # PREPARATION POST-TRAITEMENT
 grand_obs=['ACCE','VITE','DEPL']
 n_obs=len(grand_obs)
-SUP_OBS=dict([(grand,0.) for grand in grand_obs])
-INF_OBS=dict([(grand,0.) for grand in grand_obs])
-SUM1_OBS=dict([(grand,0.) for grand in grand_obs])
-SUM2_OBS=dict([(grand,0.) for grand in grand_obs])
+SUP_=dict([(grand,0.) for grand in grand_obs])
+INF_=dict([(grand,0.) for grand in grand_obs])
+SUM1_=dict([(grand,0.) for grand in grand_obs])
+SUM2_=dict([(grand,0.) for grand in grand_obs])
 
 # COEFFICIENTS DE VARIATION DES MATRICES ALEATOIRES
-#DELTA_M1 = 0.1
 DELTA_K1 = 0.1
-#DELTA_D1 = 0.1
 
-#DELTA_M2 = 0.3
-DELTA_K2 = 0.3
-#DELTA_D2 = 0.3
+DELTA_K2 = 0.2
 
-ns=5
+DELTA_K3 = 0.1
 
-# 5 REALISATIONS DES PROCESSUS STOCHASTIQUES ( 5 TIRAGES)
+ns=10
+
+# 10 REALISATIONS DES PROCESSUS STOCHASTIQUES ( 10 TIRAGES)
 
 for k in range(1,ns+1):
 
@@ -228,6 +251,11 @@ for k in range(1,ns+1):
 #                           COEF_VAR_AMOR=DELTA_D2,                          
                           )
 
+   MACRO3=GENE_MATR_ALEA( MATR_MOYEN=MACRO3M,
+                           COEF_VAR_RIGI=DELTA_K3,
+#                           COEF_VAR_MASS=DELTA_M3,
+#                           COEF_VAR_AMOR=DELTA_D3,                          
+                          )
 
 #
 ###
@@ -239,8 +267,8 @@ for k in range(1,ns+1):
                              _F( NOM = 'BARRE2', 
                                          MACR_ELEM_DYNA = MACRO2),
                              _F( NOM = 'BARRE3', 
-                                         MACR_ELEM_DYNA = MACRO1,
-                                         ANGL_NAUT = (0., 0., 180.,))),LIAISON=( 
+                                         MACR_ELEM_DYNA = MACRO3,)),
+                            LIAISON=( 
                                 _F( SOUS_STRUC_1 = 'BARRE1', 
                                          SOUS_STRUC_2 = 'BARRE2', 
                                          INTERFACE_1 = 'LIAI1', 
@@ -248,7 +276,8 @@ for k in range(1,ns+1):
                                 _F( SOUS_STRUC_1 = 'BARRE2', 
                                          SOUS_STRUC_2 = 'BARRE3', 
                                          INTERFACE_1 = 'LIAI2', 
-                                         INTERFACE_2 = 'LIAI1')))
+                                         INTERFACE_2 = 'LIAI4')))
+ 
 
 #
    NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
@@ -257,9 +286,11 @@ for k in range(1,ns+1):
    K_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
                                   OPTION='RIGI_GENE')
 
+
 #
    M_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
                                   OPTION='MASS_GENE')
+
 
 #   A_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
 #                                  OPTION='AMOR_GENE')
@@ -274,9 +305,17 @@ for k in range(1,ns+1):
 ###### CALCUL MODAL :
 ###
 #
-   RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE, 
-                                 MATR_B=M_GENE, 
-                             CALC_FREQ=_F( NMAX_FREQ = 15))
+#   RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE, 
+#                                 MATR_B=M_GENE, 
+#                             CALC_FREQ=_F( NMAX_FREQ = 15))
+#
+   RESGEN=MODE_ITER_INV(     MATR_A=K_GENE,  MATR_B=M_GENE,
+          CALC_FREQ=_F( NMAX_FREQ = 15, OPTION = 'AJUSTE', FREQ = (2., 40.,),
+                     NMAX_ITER_AJUSTE = 100,PREC_AJUSTE=1.E-14),
+          VERI_MODE=(_F(STOP_ERREUR='OUI',
+                                     SEUIL=2.E-2)),
+          CALC_MODE=_F( NMAX_ITER = 100, PREC=1.E-14),
+            )
 
 
    SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
@@ -332,8 +371,8 @@ for k in range(1,ns+1):
                                 EXCIT=_F( VECT_GENE = F_PROJ,
                                        COEF_MULT = 1000.),
                              INCREMENT=_F(  INST_INIT = 0.,
-                                         INST_FIN = 1.,
-                                         PAS = 2.E-4),
+                                          INST_FIN = 4.,
+                                        PAS = 2.E-4),
                             ARCHIVAGE=_F( PAS_ARCH = 5),CHOC=(
                                  _F( INTITULE = 'CHOC1',
                                        SOUS_STRUC_1 = 'BARRE1',
@@ -377,46 +416,50 @@ for k in range(1,ns+1):
                           NOM_CMP='DY',  
                           NOEUD='NO8')
                           
+
       RMS1=INFO_FONCTION( RMS=_F(  FONCTION = DYOBS))
       
       val_rms=RMS1['RMS',1]
 
-      SUM1_OBS[grand]=SUM1_OBS[grand]+val_rms
-      SUM2_OBS[grand]=SUM2_OBS[grand]+val_rms**2
-      if val_rms>SUP_OBS[grand]: SUP_OBS[grand]=val_rms
-      if k==1: INF_OBS[grand]=val_rms
-      if val_rms<INF_OBS[grand]: INF_OBS[grand]=val_rms
+      SUM1_[grand]=SUM1_[grand]+val_rms
+      SUM2_[grand]=SUM2_[grand]+val_rms**2
+      if val_rms>SUP_[grand]:
+         SUP_[grand]=val_rms
+      if k==1: 
+         INF_[grand]=val_rms
+      if val_rms<INF_[grand]:
+         INF_[grand]=val_rms
       
       DETRUIRE(CONCEPT=_F(NOM=(DYOBS,RMS1,)),INFO=1)
 
-      
-   DETRUIRE(CONCEPT=_F(NOM=(MACRO1,MACRO2,MODEGE,K_GENE,TRAN1,
+   DETRUIRE(CONCEPT=_F(NOM=(MACRO1,MACRO2,MACRO3,MODEGE,K_GENE,TRAN1,
                               M_GENE,F_GENE,NUMEGE,RESGEN,K_PROJ,M_PROJ,
                               F_PROJ,TRAN_GE1,NUMEMODE,SQUEL,MODGLO,MODSST)),INFO=1)
 
 # CALCUL DES ESTIMATEURS FINAUX
-MOY_OBS=dict([(grand,0.) for grand in grand_obs])
-VAR_OBS=dict([(grand,0.) for grand in grand_obs])
+      
+MOY_=dict([(grand,0.) for grand in grand_obs])
+VAR_=dict([(grand,0.) for grand in grand_obs])
 
 for grand in grand_obs :
-      MOY_OBS[grand]=SUM1_OBS[grand]/ns
-      VAR_OBS[grand]=(SUM2_OBS[grand]-ns*MOY_OBS[grand]**2)/(ns-1)
+      MOY_[grand]=SUM1_[grand]/ns
+      VAR_[grand]=(SUM2_[grand]-ns*MOY_[grand]**2)/(ns-1)
 
-print 'Moyenne des valeurs RMS des accelerations = ', MOY_OBS['ACCE']
-print 'Max des valeurs RMS des vitesses = ', SUP_OBS['VITE']
+print 'Moyenne des valeurs RMS des accelerations = ', MOY_['ACCE']
+print 'Max des valeurs RMS des vitesses = ', SUP_['VITE']
 
 # EXEMPLE CREATION ET IMPRESSION TABLE AVEC RESULTATS STATISTIQUES
 
 RMS=CREA_TABLE(LISTE=(
                             _F( LISTE_K=tuple(grand_obs),
                            PARA='NOM_CHAM'),
-          _F(LISTE_R=tuple([y for x,y in SUP_OBS.iteritems()]),
+          _F(LISTE_R=tuple([y for x,y in SUP_.iteritems()]),
                             PARA='SUP'),
-          _F(LISTE_R=tuple([y for x,y in INF_OBS.iteritems()]),
+          _F(LISTE_R=tuple([y for x,y in INF_.iteritems()]),
                             PARA='INF'),
-          _F(LISTE_R=tuple([y for x,y in MOY_OBS.iteritems()]),
+          _F(LISTE_R=tuple([y for x,y in MOY_.iteritems()]),
                             PARA='MOY'),
-          _F(LISTE_R=tuple([y for x,y in VAR_OBS.iteritems()]),
+          _F(LISTE_R=tuple([y for x,y in VAR_.iteritems()]),
                             PARA='VAR'),),
                   );
                   
@@ -441,8 +484,9 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='SUP', 
-                   VALE=3.9484548937681E+00, 
-                   PRECISION=1.E-7,)
+                   VALE=6.6669680322774E+00, 
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
@@ -450,8 +494,9 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='INF', 
-                   VALE=3.4378714912401E+00, 
-                   PRECISION=1.E-7,)
+                   VALE=3.4446080622352E+00, 
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
@@ -459,8 +504,9 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='MOY', 
-                   VALE=3.7372636873842E+00, 
-                   PRECISION=1.E-7,)
+                   VALE= 4.8998167855633E+00,
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
@@ -468,8 +514,9 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='VAR', 
-                   VALE=5.7485066280829E-02, 
-                   PRECISION=1.E-7,)
+                   VALE=1.6217291048088E+00, 
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'VITE',),
@@ -477,17 +524,19 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='SUP', 
-                   VALE=1.1621722959238E-02, 
-                   PRECISION=1.E-7,)
+                   VALE= 1.4000658314861E-02,
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'VITE',),
                            ),
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
-                   NOM_PARA='VAR', 
-                   VALE=1.3856537256501E-08, 
-                   PRECISION=1.E-7,)
+                   NOM_PARA='MOY', 
+                   VALE=1.1493164445308E-02 ,
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'DEPL',),
@@ -495,8 +544,9 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='INF', 
-                   VALE= 9.0353636130828E-02,
-                   PRECISION=1.E-7,)
+                   VALE= 8.9854291403646E-02,
+#                   PRECISION=1.E-7,)
+)
 
 TEST_TABLE(      TABLE=RMS,
                    FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'DEPL',),
@@ -504,8 +554,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='MOY', 
-                   VALE=9.2382305836786E-02, 
-                   PRECISION=1.E-7,)
-
-
+                   VALE= 1.1371466967789E-01, 
+#                   PRECISION=1.E-7,),
+)
 FIN();

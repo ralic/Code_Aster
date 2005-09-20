@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IEND, IVERI, IFM, NOCC
+      INTEGER      IUNIFI
+      INTEGER      IEND, IVERI, IFM, NOCC, IUNERR, IUNRES
       LOGICAL      ULEXIS
       CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
       CHARACTER*16 FCHIER,FHDF
@@ -85,6 +86,7 @@ C
 C     --- IER = 0 ==> ON TERMINE NORMALEMENT ( ON L'ESPERE) ---
       IF ( IER .EQ. 0 ) CALL GCUOPR ( 1 , ICMD  )
       IUNERR = IUNIFI('ERREUR')
+      IUNRES = IUNIFI('RESULTAT')
 C
 C     --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
       CALL JEDETC('G','.',1)
@@ -109,6 +111,9 @@ C     --- CLOTURE DES FICHIERS ---
       CALL JELIBF( 'SAUVE' , 'G' )
       IF (IUNERR.GT.0) WRITE(IUNERR,*)
      +        '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
+      IF (IUNRES.GT.0) WRITE(IUNRES,*)
+     +        '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
+
       CALL JELIBF( 'DETRUIT' , 'L' )
       CALL JELIBF( 'DETRUIT' , 'V' )
 C
@@ -118,14 +123,21 @@ C     --- RETASSAGE EFFECTIF ----
          IF (IUNERR.GT.0) WRITE(IUNERR,'(A,I2,A)')
      +   ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE,', NBEXT,
      +   ' FICHIER(S) UTILISE(S).'
+         IF (IUNRES.GT.0) WRITE(IUNRES,'(A,I2,A)')
+     +   ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE,', NBEXT,
+     +   ' FICHIER(S) UTILISE(S).'
       ENDIF
 C
 C     --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX ) ---
       IF ( IER .EQ. 0 ) THEN
          IF (IUNERR.GT.0) WRITE(IUNERR,*)
      +        '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
+         IF (IUNRES.GT.0) WRITE(IUNRES,*)
+     +        '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
       ELSE
          IF(IUNERR.GT.0) WRITE(IUNERR,*)
+     +        '<I>   ARRET DANS "FIN", DES ERREURS AYANT ETE DETECTEES'
+         IF(IUNRES.GT.0) WRITE(IUNRES,*)
      +        '<I>   ARRET DANS "FIN", DES ERREURS AYANT ETE DETECTEES'
       ENDIF
 C

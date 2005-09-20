@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,14 +21,13 @@
 
 
 from math import sqrt,cos,sin,pi,pow,tan
-import aster
-from Utilitai.Utmess     import UTMESS
 
 # Ecriture du fichier GIBI principal (dgib) - ASPID0
 def write_file_dgib_ASPID0(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2, ZMAX, H,
                            ALPHA, JEU, EPC, DEC, XMAX, TYPMAI, THETA, TYPELE,
                            ITYPSO, DPENE, NIVMAG, loc_datg) :
 
+  import aster
 # Ouverture du fichier d'entrée de commandes
   fdgib=open(nomFichierDATG,'w')
   POIVIR = ' ;                                         \n'
@@ -67,6 +66,7 @@ def write_file_dgib_ASPID1(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
                            A,C,EPS, RC0, NS,NC,NT,POSI, NDT,FETIRF,FETIRP,
                            TFISS,ZETA,ITYPSO,DPENE, NIVMAG, loc_datg) :
 
+  import aster
 # Ouverture du fichier d'entrée de commandes
   fdgib=open(nomFichierDATG,'w')
   POIVIR = ' ;                                         \n'
@@ -118,6 +118,7 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
                            ALP,BETA, NS, NC, NT, POSI ,NDT,NSDT,TFISS,
                            ZETA,ITYPSO,DPENE, NIVMAG, loc_datg) :
 # 
+  import aster
   CALPHA = cos(ALPHA*pi/180.)
   SALPHA = sin(ALPHA*pi/180.)
   CTHETA = cos(THETA*pi/180.)
@@ -410,6 +411,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   from Accas import _F
   import types
   import aster 
+  from Utilitai.Utmess import UTMESS
   ier=0
   
 # On importe les definitions des commandes a utiliser dans la macro
@@ -900,7 +902,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
             dk = sqrt(Xk**2+ Yk**2 +Zk**2)
             dist = max(dk, dist)
       
-      texte=texte+"<MACR_ASPIC_MAIL> PROFONDEUR DE LA FISSURE DANS LE MAILLAGE : %.2f \n"%dist
+      texte="<MACR_ASPIC_MAIL> PROFONDEUR DE LA FISSURE DANS LE MAILLAGE : %.2f \n"%dist
       aster.affiche('MESSAGE',texte)
 #      
   return ier

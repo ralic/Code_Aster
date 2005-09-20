@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 19/09/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -734,6 +734,8 @@ class SELECTION :
 
   comb_tracables = {      # Combinaisons (type_champ, type_geom) tracables -> outil de trace
     ('NOEU','MAILLAGE')   : 'GMSH',
+    ('NOEU','VOLUME')     : 'GMSH',
+    ('NOEU','SURFACE')    : 'GMSH',
     ('NOEU','CHEMIN')     : 'GRACE',
     ('NOEU','POINT')      : 'GRACE',
     
@@ -797,6 +799,7 @@ class SELECTION :
         self.compatible = 1
       if self.geom[0] == 'CHEMIN' and len(self.geom[1])>1 :
         self.compatible = 0
+
     
    # le champ est-il tracable
     if self.compatible == 0 or self.statut == 'INACCESSIBLE' or not self.nom_cmp  :

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,19 +222,19 @@ DYNHAR0=DYNA_LINE_HARM(  MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
 
 TEST_RESU(RESU=( 
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = ('RI',-1.65073E-05,-9.22424E-06,)),
+       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j),
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = ('RI',2.52829E-05,1.80184E-05,)),
+       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j),
 
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = ('RI',5.79576E-03,-1.03719E-02,)),
+       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j),
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = ('RI',-1.13213E-02,1.58857E-02,)),
+       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j),
 
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = ('RI',6.51684E+00,3.64158E+00,)),
+       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j),
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = ('RI',-9.98130E+00,-7.11336E+00,)))
+       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j))
            )
 
 #======================================================================
@@ -246,31 +246,31 @@ TEST_RESU(RESU=(
 
 CHARGEC=AFFE_CHAR_MECA_C(    MODELE=MOD,
 
-            FORCE_POUTRE=_F(  MAILLE = 'CD',    FY = ('RI',-9810.,0.,)),DDL_IMPO=(
+            FORCE_POUTRE=_F(  MAILLE = 'CD',    FY = -9810.+0.j),DDL_IMPO=(
 
-            _F(  TOUT = 'OUI', DZ = ('RI',0.,0.,),  DRX = ('RI',0.,0.,),
-                                    DRY = ('RI',0.,0.,)),
-            _F(  NOEUD = ( 'A1', 'B2', 'B4', ),  DX = ('RI',0.,0.,),
-                                               DY = ('RI',0.,0.,))),LIAISON_DDL=(
+            _F(  TOUT = 'OUI', DZ = 0.+0.j,  DRX = 0.+0.j,
+                                    DRY = 0.+0.j),
+            _F(  NOEUD = ( 'A1', 'B2', 'B4', ),  DX = 0.+0.j,
+                                               DY = 0.+0.j)),LIAISON_DDL=(
 
             _F(  NOEUD = ('D3','D4',),   DDL = ('DX','DX',),
                           COEF_MULT = (1.,-1.,),
-                          COEF_IMPO = ('RI',0.,0.,)),
+                          COEF_IMPO = 0.+0.j),
             _F(  NOEUD = ('D3','D4',),  DDL = ('DY','DY',),
                           COEF_MULT = (1.,-1.,),
-                          COEF_IMPO = ('RI',0.,0.,)),
+                          COEF_IMPO = 0.+0.j),
             _F(  NOEUD = ('C3','C2',),  DDL = ('DX','DX',),
                           COEF_MULT = (1.,-1.,),
-                          COEF_IMPO = ('RI',0.,0.,)),
+                          COEF_IMPO = 0.+0.j),
             _F(  NOEUD = ('C3','C2',),  DDL = ('DY','DY',),
                           COEF_MULT = (1.,-1.,),
-                          COEF_IMPO = ('RI',0.,0.,)),
+                          COEF_IMPO = 0.+0.j),
             _F(  NOEUD = ('C3','C1',),  DDL = ('DX','DX',),
                           COEF_MULT = (1.,-1.,),
-                          COEF_IMPO = ('RI',0.,0.,)),
+                          COEF_IMPO = 0.+0.j),
             _F(  NOEUD = ('C3','C1',),  DDL = ('DY','DY',),
                           COEF_MULT = (1.,-1.,),
-                          COEF_IMPO = ('RI',0.,0.,)))
+                          COEF_IMPO = 0.+0.j))
                     )
 
 MATELCR=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='RIGI_MECA',
@@ -299,24 +299,24 @@ DYNHAC0=DYNA_LINE_HARM(  MATR_MASS=MATASCM, MATR_RIGI=MATASCR,
                               TOUT_CHAM='OUI',
                               MODELE=MOD,
                               CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
-                             EXCIT=_F(  COEF_MULT_C = ('RI',1.,0.,),
+                             EXCIT=_F(  COEF_MULT_C = 1.+0.j,
                                      CHARGE = CHARGEC)   )
 
 TEST_RESU(RESU=( 
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = ('RI',-1.65073E-05,-9.22424E-06,)),
+       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j),
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = ('RI',2.52829E-05,1.80184E-05,)),
+       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j),
 
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = ('RI',5.79576E-03,-1.03719E-02,)),
+       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j),
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = ('RI',-1.13213E-02,1.58857E-02,)),
+       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j),
 
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = ('RI',6.51684E+00,3.64158E+00,)),
+       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j),
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = ('RI',-9.98130E+00,-7.11336E+00,)))
+       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j))
            )
 
 # TEST DE L IMPRESSIION DE LA PARTIE REELLE ET IMAGINAIRE AU FORMAT GMSH

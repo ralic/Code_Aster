@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +49,9 @@ C ---------------------------------------------------------
 C     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FACE_IMPO
 C ---------------------------------------------------------
        DO 160 IOCC = 1, NFACI
-        CALL GETMJM('FACE_IMPO',IOCC-1,   0,MOTCLE,TYMOCL,N)
+        CALL GETMJM('FACE_IMPO',IOCC,   0,MOTCLE,TYMOCL,N)
         NMCL = ABS(N)
-        CALL GETMJM('FACE_IMPO',IOCC-1,NMCL,MOTCLE,TYMOCL,N)
+        CALL GETMJM('FACE_IMPO',IOCC,NMCL,MOTCLE,TYMOCL,N)
         I =1
         DO 10 J = 1, NMCL
           IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.

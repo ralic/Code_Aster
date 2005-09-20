@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF inisig utilitai  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -100,7 +100,17 @@ int ier;
    ieee_handler("clear","invalid",hanfpe);
 #elif defined IRIX
    ier=inifpe();
-#elif defined HPUX || P_LINUX || TRU64  || SOLARIS64
+
+#elif defined P_LINUX
+
+#define _GNU_SOURCE 1
+#include <fenv.h>
+   /* Enable some exceptions. At startup all exceptions are masked. */
+   feenableexcept(FE_DIVBYZERO|FE_OVERFLOW);
+
+   signal(SIGFPE,  hanfpe);
+
+#elif defined HPUX || TRU64  || SOLARIS64
    signal(SIGFPE,  hanfpe);
 #elif defined PPRO_NT
 #define _EXC_MASK  _EM_INEXACT + _EM_UNDERFLOW

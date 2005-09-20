@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 20/09/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,6 +177,37 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
                                  NOM_CHAM    ='TEMP',),
                 TOUT_ORDRE='OUI',);
+
+# ----------------------------------------------------------------------------
+# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 
+# IMPR_RESU LORSQU'UN NOEUD EST PRESENT DANS PLUSIEURS FILTRES
+
+DEFI_FICHIER(UNITE=88)
+
+IMPR_RESU(UNITE=88,RESU=_F(RESULTAT=TEMPE1,
+                  MAILLE='M5',NUME_ORDRE=5,
+                  GROUP_MA='GRMA1',),);
+
+IMPR_RESU(UNITE=88,RESU=_F(RESULTAT=TEMPE1,
+                  NOEUD='N1',NUME_ORDRE=5,
+                  GROUP_MA='GRMA1',),);
+
+IMPR_RESU(UNITE=88,RESU=_F(RESULTAT=TEMPE1,NUME_ORDRE=5,
+                  GROUP_NO=('GRNO1','GRNM1',),),);
+
+DEFI_FICHIER(UNITE=88, ACTION='LIBERER')
+
+TEST_FICHIER(FICHIER='./fort.88',
+             VALE_K='0cb14ee04703ddee397ab0cf33556aed',
+             REFERENCE='NON_REGRESSION',
+             # date a ignorer : ...15/09/2005 A 08:48:30
+             # version a ignorer: ASTER  8.01.14
+             EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4} A [0-9]{2}:'\
+             +'[0-9]{2}:[0-9]{2}','ASTER  [0:9].[0:9]{2}.[0:9]{2}',),
+             NB_CHIFFRE=4,
+             EPSILON=1.E-6,
+             VERSION='8.1.13')
+
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 

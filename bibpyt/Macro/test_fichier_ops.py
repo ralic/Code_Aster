@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+#@ MODIF test_fichier_ops Macro  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+import sys
+import os.path
+import re
+import string
+import math
+import md5
 
 #-------------------------------------------------------------------------------
 def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
@@ -147,14 +154,7 @@ def md5file(fich, nbch, epsi, regexp_ignore=[], info=0, output=None):
    
          NE PAS AJOUTER D'IMPORT QUI RENDRAIT CETTE FONCTION
                INUTILISABLE EN DEHORS DE CODE_ASTER.
-   """
-   import sys
-   import os.path
-   import re
-   import string
-   import math
-   import md5
-   
+   """   
    if output<>None:
       try:
          sys.stdout=open(output, 'w')
@@ -223,4 +223,23 @@ def md5file(fich, nbch, epsi, regexp_ignore=[], info=0, output=None):
 
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
-   iret = md5file('sdls08a.38', 6, 1.e-14, info=2, output='output.txt')
+   from optparse import OptionParser, OptionGroup
+
+   p=OptionParser(usage='usage: %s a_tester [options]' % sys.argv[0])
+   p.add_option('-n', '--nbch',
+      action='store', dest='nbch', type='int', default=6,
+      help='nombre de chiffres significatifs')
+   p.add_option('-e', '--epsilon',
+      action='store', dest='epsi', type='float', default=1.e-14,
+      help='epsilon en dessous duquel on considère les nombres nuls')
+   p.add_option('-o', '--output',
+      action='store', dest='output', type='string', default='output.txt',
+      help='fichier de sortie')
+   opts, args = p.parse_args()
+
+   if len(args)<1:
+      p.print_usage()
+      sys.exit(1)
+
+   print 'Lignes retenues dans %s' % opts.output
+   iret = md5file(args[0], opts.nbch, opts.epsi, info=2, output=opts.output)

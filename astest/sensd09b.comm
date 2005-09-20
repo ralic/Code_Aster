@@ -1,4 +1,4 @@
-# MODIF  DATE 14/04/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # TITRE SENSIBILITE DE MODES PROPRES COMPLEXES D'UNE POUTRE POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,25 +166,25 @@ TEST_RESU(RESU=(
                 NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DZ',
                 CRITERE = 'ABSOLU', PRECISION = 2.E-15,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 1, ),
           _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DRX',
                 CRITERE = 'ABSOLU', PRECISION = 2.E-10,
                 SENSIBILITE=PS[0],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 3, ),
           _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DZ',
                 CRITERE = 'ABSOLU', PRECISION = 2.E-15,
                 SENSIBILITE=PS[1],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 1, ),
           _F( RESULTAT = MODE, REFERENCE='ANALYTIQUE',
                 NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DRX',
                 CRITERE = 'ABSOLU', PRECISION = 2.E-10,
                 SENSIBILITE=PS[1],
-                VALE_C=('RI',0.0,0.0,),
+                VALE_C=0.0+0.0j,
                 NUME_ORDRE = 3, ),
 
           ),)

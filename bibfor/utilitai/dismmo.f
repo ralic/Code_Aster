@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/10/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -250,8 +250,8 @@ C     ------------------
 C
 C     -- SORTIE NORMALE :
 C     ------------------
-      IERD=0
  9999 CONTINUE
+      IERD=0
       REPKZ = REPK
 
 C

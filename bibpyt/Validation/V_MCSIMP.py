@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCSIMP Validation  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,9 +231,9 @@ class MCSIMP:
           return self.is_complexe(valeur.valeur)
         else:
           return 0
+      elif type(valeur) in (types.ComplexType,types.IntType,types.FloatType,types.LongType):
       # Pour permettre l'utilisation de complexes Python
-      #elif type(valeur) == types.ComplexType:
-        #return 1
+        return 1
       elif type(valeur) != types.TupleType :
         # On n'autorise pas les listes pour les complexes
         return 0

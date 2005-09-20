@@ -1,6 +1,7 @@
-      SUBROUTINE IRNONO(NOMA,NBNO,NONOE,NBGR,NOGRN,NUMNO,NBNOT)
+      SUBROUTINE IRNONO(NOMA,NBNOE,NBNO,NONOE,NBGR,NOGRN,
+     &                  NUMNO,NBNOT,INDNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/09/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,13 +20,14 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C
+      INTEGER       NBNO,NBGR,NBNOT,NBNOE,INDNO(NBNOE)
       CHARACTER*(*) NOMA,NONOE(*),NOGRN(*),NUMNO
-      INTEGER       NBNO,NBGR,NBNOT
 C ----------------------------------------------------------------------
 C     BUT :   TROUVER LES NUMEROS DES NOEUDS TROUVES DANS
 C             UNE LISTE DE NOEUDS ET DE GROUP_NO
 C     ENTREES:
 C        NOMA   : NOM DU MAILLAGE.
+C        NBNOE  : NOMBRE DE NOEUDS DU MAILLAGE
 C        NBNO   : NOMBRE DE NOEUDS
 C        NBGR   : NOMBRE DE GROUPES DE NOEUDS
 C        NONOE  : NOM DES  NOEUDS
@@ -34,6 +36,10 @@ C     SORTIES:
 C        NBNOT  : NOMBRE TOTAL DE NOEUDS A IMPRIMER
 C        NUMNO  : NOM DE L'OBJET CONTENANT LES NUMEROS
 C                 DES NOEUDS TROUVES.
+C        INDNO  : TABLEAU DIMENSIONNE AU NOMBRE DE NOEUDS DU MAILLAGE,
+C                 NECESSAIRE POUR QUE NUMNO NE CONTIENNE PAS DE DOUBLONS
+C                 INDNO(I)==1 : LE NOEUD I FAIT PARTIE DU FILTRE
+C                 INDNO(I)==0 : SINON
 C ----------------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -51,8 +57,8 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
-      CHARACTER*8  NOMMA ,K8BID
-      INTEGER JTOPO,INOE,INO,IGR,IRET,NBN,IAD,IN,LNUNO,JNUNO
+      CHARACTER*8  NOMMA ,K8BID,K8B
+      INTEGER JTOPO,INOE,INO,IGR,IRET,NBN,IAD,IN,LNUNO,JNUNO,I
 C
 C
       CALL JEMARQ()
@@ -86,6 +92,7 @@ C             CALL JUVECA(NUMNO,LNUNO)
 C             CALL JEVEUO(NUMNO,'E',JNUNO)
             END IF
             ZI(JNUNO-1+NBNOT)=INO
+            INDNO(INO)=1
           ENDIF
   12    CONTINUE
       ENDIF
@@ -123,7 +130,12 @@ C                 LNUNO=2*LNUNO
 C                 CALL JUVECA(NUMNO,LNUNO)
 C                 CALL JEVEUO(NUMNO,'E',JNUNO)
                 END IF
-                ZI(JNUNO-1+NBNOT)= ZI(IAD+IN-1)
+                IF(INDNO(ZI(IAD+IN-1)).EQ.0)THEN
+                    ZI(JNUNO-1+NBNOT)= ZI(IAD+IN-1)
+                    INDNO(ZI(IAD+IN-1))=1
+                ELSE
+                   NBNOT=NBNOT-1
+                ENDIF
   14          CONTINUE
             ENDIF
           ENDIF

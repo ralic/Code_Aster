@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FONCTION Noyau  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,11 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# attention ! cet import permet d'avoir, dans les formules, le comportement
+# de la division réelle pour les entiers, et non la division entière
+# 1/2=0.5 (et non 0)
+from __future__ import division
 
 from N_ASSD import ASSD
 import string
