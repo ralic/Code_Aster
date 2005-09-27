@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,11 @@ C ======================================================================
 C
       REAL*8       VALEE(*),VALEQ(*),VALDIR(*)
       CHARACTER*2  TYPE
-      INTEGER      CODIR
+      INTEGER      CODIR, INDIR1(3), INDIR2(4), INDIR3(3)
+C
+      DATA INDIR1 / 2 , 1 , 3 /
+      DATA INDIR2 / 2 , 1 , 4 , 3 /
+      DATA INDIR3 / 2 , 3 , 1  /
 C
 C**********************************************************************
 C
@@ -55,20 +59,31 @@ C     /* DIRECTION ACTIVE : X */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
-            VALEQ(1) = VALEE(1)*VALDIR(1)
+            IF ( VALEE(1) .EQ. R8VIDE() ) THEN
+               VALEQ(1) = 0.D0
+            ELSE
+               VALEQ(1) = VALEE(1)*VALDIR(1)
+            ENDIF
 C
          ELSE IF ( TYPE .EQ. 'T3' ) THEN
 C
-            VALEQ(1) = VALEE(1)*VALDIR(1)
-            VALEQ(2) = VALEE(2)*VALDIR(1)
-            VALEQ(3) = VALEE(3)*VALDIR(1)
+            DO 10 I = 1 , 3
+               IF ( VALEE(I) .EQ. R8VIDE() ) THEN
+                  VALEQ(I) = 0.D0
+               ELSE
+                  VALEQ(I) = VALEE(I)*VALDIR(1)
+               ENDIF
+ 10         CONTINUE
 C
          ELSE
 C
-            VALEQ(1) = VALEE(1)*VALDIR(1)
-            VALEQ(2) = VALEE(3)*VALDIR(1)
-            VALEQ(3) = VALEE(2)*VALDIR(1)
-            VALEQ(4) = VALEE(4)*VALDIR(1)
+            DO 12 I = 1 , 4
+               IF ( VALEE(I) .EQ. R8VIDE() ) THEN
+                  VALEQ(I) = 0.D0
+               ELSE
+                  VALEQ(I) = VALEE(I)*VALDIR(1)
+               ENDIF
+ 12         CONTINUE
 C
          ENDIF
 C
@@ -78,20 +93,31 @@ C     /* DIRECTION ACTIVE : Y */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
-            VALEQ(1) = VALEE(1)*VALDIR(2)
+            IF ( VALEE(1) .EQ. R8VIDE() ) THEN
+               VALEQ(1) = 0.D0
+            ELSE
+               VALEQ(1) = VALEE(1)*VALDIR(2)
+            ENDIF
 C
          ELSE IF ( TYPE .EQ. 'T3' ) THEN
 C
-            VALEQ(1) = VALEE(2)*VALDIR(2)
-            VALEQ(2) = VALEE(1)*VALDIR(2)
-            VALEQ(3) = VALEE(3)*VALDIR(2)
+            DO 22 I = 1 , 3
+               IF ( VALEE(INDIR1(I)) .EQ. R8VIDE() ) THEN
+                  VALEQ(I) = 0.D0
+               ELSE
+                  VALEQ(I) = VALEE(INDIR1(I))*VALDIR(2)
+               ENDIF
+ 22         CONTINUE
 C
          ELSE
 C
-            VALEQ(1) = VALEE(2)*VALDIR(2)
-            VALEQ(2) = VALEE(1)*VALDIR(2)
-            VALEQ(3) = VALEE(4)*VALDIR(2)
-            VALEQ(4) = VALEE(3)*VALDIR(2)
+            DO 24 I = 1 , 4
+               IF ( VALEE(INDIR2(I)) .EQ. R8VIDE() ) THEN
+                  VALEQ(I) = 0.D0
+               ELSE
+                  VALEQ(I) = VALEE(INDIR2(I))*VALDIR(2)
+               ENDIF
+ 24         CONTINUE
 C
          ENDIF
 C
@@ -101,13 +127,21 @@ C     /* DIRECTION ACTIVE : Z */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
-            VALEQ(1) = VALEE(1)*VALDIR(3)
+            IF ( VALEE(1) .EQ. R8VIDE() ) THEN
+               VALEQ(1) = 0.D0
+            ELSE
+               VALEQ(1) = VALEE(1)*VALDIR(3)
+            ENDIF
 C
          ELSE
 C
-            VALEQ(1) = VALEE(2)*VALDIR(3)
-            VALEQ(2) = VALEE(3)*VALDIR(3)
-            VALEQ(3) = VALEE(1)*VALDIR(3)
+            DO 30 I = 1 , 3
+               IF ( VALEE(INDIR3(I)) .EQ. R8VIDE() ) THEN
+                  VALEQ(I) = 0.D0
+               ELSE
+                  VALEQ(I) = VALEE(INDIR3(I))*VALDIR(3)
+               ENDIF
+ 30         CONTINUE
 C
          ENDIF
 C
@@ -117,16 +151,25 @@ C     /* DIRECTION ACTIVE : X,Y */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
+            DO 40 I = 1 , 2
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 40         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(2)*VALDIR(2)
 C
          ELSE IF (TYPE .EQ. 'T3' ) THEN
 C
+            DO 42 I = 1 , 5
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 42         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(3)*VALDIR(2)
             VALEQ(2) = VALEE(3)*VALDIR(1) + VALEE(2)*VALDIR(2)
             VALEQ(3) = VALEE(4)*VALDIR(1) + VALEE(5)*VALDIR(2)
 C
          ELSE
 C
+            DO 44 I = 1 , 6
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 44         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(3)*VALDIR(2)
             VALEQ(2) = VALEE(3)*VALDIR(1) + VALEE(2)*VALDIR(2)
             VALEQ(3) = VALEE(4)*VALDIR(1) + VALEE(6)*VALDIR(2)
@@ -140,10 +183,16 @@ C     /* DIRECTION ACTIVE : X,Z */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
+            DO 50 I = 1 , 2
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 50         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(2)*VALDIR(3)
 C
          ELSE
 C
+            DO 52 I = 1 , 5
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 52         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(4)*VALDIR(3)
             VALEQ(2) = VALEE(3)*VALDIR(1) + VALEE(5)*VALDIR(3)
             VALEQ(3) = VALEE(4)*VALDIR(1) + VALEE(2)*VALDIR(3)
@@ -156,10 +205,16 @@ C     /* DIRECTION ACTIVE : Y,Z */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
+            DO 60 I = 1 , 2
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 60         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(2) + VALEE(2)*VALDIR(3)
 C
          ELSE
 C
+            DO 62 I = 1 , 5
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 62         CONTINUE
             VALEQ(1) = VALEE(3)*VALDIR(2) + VALEE(4)*VALDIR(3)
             VALEQ(2) = VALEE(1)*VALDIR(2) + VALEE(5)*VALDIR(3)
             VALEQ(3) = VALEE(5)*VALDIR(2) + VALEE(2)*VALDIR(3)
@@ -172,11 +227,17 @@ C     /* DIRECTION ACTIVE : X,Y,Z */
 C
          IF ( TYPE.EQ. 'V3' ) THEN
 C
+            DO 70 I = 1 , 3
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 70         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(2)*VALDIR(2) +
      +                 VALEE(3)*VALDIR(3)
 C
          ELSE
 C
+            DO 72 I = 1 , 6
+               IF ( VALEE(I) .EQ. R8VIDE() )  VALEE(I) = 0.D0
+ 72         CONTINUE
             VALEQ(1) = VALEE(1)*VALDIR(1) + VALEE(4)*VALDIR(2) +
      +                 VALEE(5)*VALDIR(3)
             VALEQ(2) = VALEE(4)*VALDIR(1) + VALEE(2)*VALDIR(2) +

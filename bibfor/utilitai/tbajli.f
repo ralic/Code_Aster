@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*),          VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,8 +52,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
-      INTEGER      IRET, NBPARA, NBLIGN, JTBNP, NBPM, NBPU
+      INTEGER      IRET, NBPARA, NBLIGN, JTBNP, NBPM, NBPU, ISMAEM
       INTEGER      NDIM, JTBLP, I, J, JVALE, JLOGQ, KI, KR, KC, KK
+      REAL*8       R8VIDE
       CHARACTER*3  TYPE
       CHARACTER*8  K8B
       CHARACTER*19 NOMTAB
@@ -126,36 +127,69 @@ C
                   CALL JEVEUO ( NOMJVL, 'E', JLOGQ )
                   IF ( TYPE(1:1) .EQ. 'I' ) THEN
                      KI = KI + 1
-                     ZI(JVALE+NBLIGN-1) = VI(KI)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VI(KI) .EQ. ISMAEM() ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZI(JVALE+NBLIGN-1) = VI(KI)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN
                      KR = KR + 1
-                     ZR(JVALE+NBLIGN-1) = VR(KR)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VR(KR) .EQ. R8VIDE() ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZR(JVALE+NBLIGN-1) = VR(KR)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
                      KC = KC + 1
-                     ZC(JVALE+NBLIGN-1) = VC(KC)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF (  DBLE(VC(KC)) .EQ. R8VIDE() .AND.
+     +                    DIMAG(VC(KC)) .EQ. R8VIDE() ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZC(JVALE+NBLIGN-1) = VC(KC)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K80' ) THEN
                      KK = KK + 1
-                     ZK80(JVALE+NBLIGN-1) = VK(KK)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK80(JVALE+NBLIGN-1) = VK(KK)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
                      KK = KK + 1
-                     ZK32(JVALE+NBLIGN-1) = VK(KK)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK32(JVALE+NBLIGN-1) = VK(KK)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
                      KK = KK + 1
-                     ZK24(JVALE+NBLIGN-1) = VK(KK)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK24(JVALE+NBLIGN-1) = VK(KK)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
                      KK = KK + 1
-                     ZK16(JVALE+NBLIGN-1) = VK(KK)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK16(JVALE+NBLIGN-1) = VK(KK)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
                      KK = KK + 1
-                     ZK8(JVALE+NBLIGN-1) = VK(KK)
-                     ZI(JLOGQ+NBLIGN-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK8(JVALE+NBLIGN-1) = VK(KK)
+                        ZI(JLOGQ+NBLIGN-1) = 1
+                     ENDIF
                   ENDIF
                   GOTO 34
                ENDIF
@@ -183,36 +217,69 @@ C
                   CALL JEVEUO ( NOMJVL, 'E', JLOGQ )
                   IF ( TYPE(1:1) .EQ. 'I' ) THEN
                      KI = KI + 1
-                     ZI(JVALE+NUME-1) = VI(KI)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VI(KI) .EQ. ISMAEM() ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZI(JVALE+NUME-1) = VI(KI)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN
                      KR = KR + 1
-                     ZR(JVALE+NUME-1) = VR(KR)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VR(KR) .EQ. R8VIDE() ) THEN
+                        ZI(JLOGQ+NUME-1) = 0
+                     ELSE
+                        ZR(JVALE+NUME-1) = VR(KR)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
                      KC = KC + 1
-                     ZC(JVALE+NUME-1) = VC(KC)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF (  DBLE(VC(KC)) .EQ. R8VIDE() .AND.
+     +                    DIMAG(VC(KC)) .EQ. R8VIDE() ) THEN
+                        ZI(JLOGQ+NUME-1) = 0
+                     ELSE
+                        ZC(JVALE+NUME-1) = VC(KC)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K80' ) THEN
                      KK = KK + 1
-                     ZK80(JVALE+NUME-1) = VK(KK)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK80(JVALE+NUME-1) = VK(KK)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
                      KK = KK + 1
-                     ZK32(JVALE+NUME-1) = VK(KK)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK32(JVALE+NUME-1) = VK(KK)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
                      KK = KK + 1
-                     ZK24(JVALE+NUME-1) = VK(KK)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK24(JVALE+NUME-1) = VK(KK)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
                      KK = KK + 1
-                     ZK16(JVALE+NUME-1) = VK(KK)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK16(JVALE+NUME-1) = VK(KK)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
                      KK = KK + 1
-                     ZK8(JVALE+NUME-1) = VK(KK)
-                     ZI(JLOGQ+NUME-1) = 1
+                     IF ( VK(KK)(1:7) .EQ. '???????' ) THEN
+                        ZI(JLOGQ+NBLIGN-1) = 0
+                     ELSE
+                        ZK8(JVALE+NUME-1) = VK(KK)
+                        ZI(JLOGQ+NUME-1) = 1
+                     ENDIF
                   ENDIF
                   GOTO 44
                ENDIF

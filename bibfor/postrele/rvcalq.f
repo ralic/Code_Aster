@@ -13,7 +13,7 @@ C
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C     ------------------------------------------------------------------
       REAL*8 TX,TY,TZ,TZZ,VAL,VM,AUX,ZERO,VECTY(3)
       REAL*8 V1X,V2X,V3X,V1Y,V2Y,V3Y,V1Z,V2Z,V3Z,V1N,V2N,V2P
       REAL*8 AR(6),BR(6),VECPRO(3,3),VALPRO(3),V2(2)
-      REAL*8 JACAUX(3),TOL,TOLDYN
+      REAL*8 JACAUX(3),TOL,TOLDYN,R8VIDE
       INTEGER TCOE,TCOQ,TNDE,TNDQ
 
       INTEGER ASGTU
@@ -150,6 +150,7 @@ C======================================================================
       ELSE
         TQ = 'AS'
       END IF
+
       IF (K1.EQ.'I') THEN
         LNE = 6
         IF (TQ.EQ.'T3') THEN
@@ -162,6 +163,7 @@ C======================================================================
         ZK8(ANOCPQ+2-1) = 'TRESCA'
         ZK8(ANOCPQ+3-1) = 'TRACE'
         ZK8(ANOCPQ+4-1) = 'DETER'
+
       ELSE IF (K1.EQ.'E') THEN
         LNE = 6
         IF (TQ.EQ.'T3') THEN
@@ -191,6 +193,7 @@ C======================================================================
           ZK8(ANOCPQ+7-1) = 'VECT_2_X'
           ZK8(ANOCPQ+8-1) = 'VECT_2_Y'
         END IF
+
       ELSE IF (QUANT(1:7).EQ.'TRACE_D') THEN
         IF (TQ.EQ.'T3') THEN
           LNQ = 3
@@ -229,6 +232,7 @@ C======================================================================
             LNE = 3
           END IF
         END IF
+
       ELSE IF (QUANT(1:7).EQ.'TRACE_N') THEN
         IF (TQ.EQ.'T3') THEN
           LNE = 5
@@ -350,9 +354,21 @@ C======================================================================
               ADRQ = (ICO-1)*TCOQ
               DO 90,IND = 1,ZI(APNBNQ+IPADR-1),1
                 DO 80,ISP = 1,NBSP,1
+                IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6).EQ.R8VIDE()) THEN
+                  A = 0.D0
+                ELSE
                   A = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+1).EQ.R8VIDE()) THEN
+                  B = 0.D0
+                ELSE
                   B = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+1)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+2).EQ.R8VIDE()) THEN
+                  C = 0.D0
+                ELSE
                   C = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+2)
+                ENDIF
                   TR = A + B
                   DET = A*B - C*C
                   TX = MAX(ABS(A),ABS(B),ABS(C))
@@ -395,9 +411,21 @@ C======================================================================
                   ZR(AVALEQ+IDECQ-1+ADRQ+ (ISP-1)*8+1) = C
                   ZR(AVALEQ+IDECQ-1+ADRQ+ (ISP-1)*8+2) = TR
                   ZR(AVALEQ+IDECQ-1+ADRQ+ (ISP-1)*8+3) = DET
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+3).EQ.R8VIDE()) THEN
+                  A = 0.D0
+                ELSE
                   A = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+3)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+4).EQ.R8VIDE()) THEN
+                  B = 0.D0
+                ELSE
                   B = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+4)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+5).EQ.R8VIDE()) THEN
+                  C = 0.D0
+                ELSE
                   C = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+5)
+                ENDIF
                   TR = A + B
                   DET = A*B - C*C
                   TX = MAX(ABS(A),ABS(B),ABS(C))
@@ -469,12 +497,36 @@ C======================================================================
               ADRQ = (ICO-1)*TCOQ
               DO 130,IND = 1,ZI(APNBNQ+IPADR-1),1
                 DO 120,ISP = 1,NBSP,1
-                  AR(1) = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6)
-                  AR(2) = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+3)
-                  AR(3) = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+4)
-                  AR(4) = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+1)
-                  AR(5) = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+5)
-                  AR(6) = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+2)
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6).EQ.R8VIDE()) THEN
+                  AR(1) = 0.D0
+                ELSE
+                  AR(1) = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+3).EQ.R8VIDE()) THEN
+                  AR(2) = 0.D0
+                ELSE
+                  AR(2) = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+3)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+4).EQ.R8VIDE()) THEN
+                  AR(3) = 0.D0
+                ELSE
+                  AR(3) = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+4)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+1).EQ.R8VIDE()) THEN
+                  AR(4) = 0.D0
+                ELSE
+                  AR(4) = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+1)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+5).EQ.R8VIDE()) THEN
+                  AR(5) = 0.D0
+                ELSE
+                  AR(5) = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+5)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+2).EQ.R8VIDE()) THEN
+                  AR(6) = 0.D0
+                ELSE
+                  AR(6) = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+2)
+                ENDIF
                   BR(1) = 1.D0
                   BR(2) = 0.D0
                   BR(3) = 0.D0
@@ -518,9 +570,21 @@ C======================================================================
               ADRQ = (ICO-1)*TCOQ
               DO 170,IND = 1,ZI(APNBNQ+IPADR-1),1
                 DO 160,ISP = 1,NBSP
-                  A = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6)
-                  B = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+1)
-                  C = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+2)
+                IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6).EQ.R8VIDE()) THEN
+                  A = 0.D0
+                ELSE
+                  A = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+1).EQ.R8VIDE()) THEN
+                  B = 0.D0
+                ELSE
+                  B = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+1)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+2).EQ.R8VIDE()) THEN
+                  C = 0.D0
+                ELSE
+                  C = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+2)
+                ENDIF
                   TR = MAX(ABS(A),ABS(B),ABS(C))
                   IF (TR.EQ.ZERO) THEN
                     VP1 = ZERO
@@ -542,9 +606,21 @@ C======================================================================
                   ZR(INDICE+1) = VP2
                   ZR(INDICE+2) = 1.D0
                   ZR(INDICE+3) = 0.D0
-                  A = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+3)
-                  B = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+4)
-                  C = ZR(AVALEE+IDECE-1+ADRE+ (ISP-1)*6+5)
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+3).EQ.R8VIDE()) THEN
+                  A = 0.D0
+                ELSE
+                  A = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+3)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+4).EQ.R8VIDE()) THEN
+                  B = 0.D0
+                ELSE
+                  B = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+4)
+                ENDIF
+              IF (ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+5).EQ.R8VIDE()) THEN
+                  C = 0.D0
+                ELSE
+                  C = ZR(AVALEE+IDECE-1+ADRE+(ISP-1)*6+5)
+                ENDIF
                   TR = MAX(ABS(A),ABS(B),ABS(C))
                   IF (TR.EQ.ZERO) THEN
                     VP1 = ZERO
@@ -607,6 +683,7 @@ C======================================================================
      &                  ZR(AVALEQ+IDECQ-1))
   240     CONTINUE
         END IF
+
       ELSE IF (QUANT(1:7).EQ.'TRACE_N') THEN
         CALL JELIRA(SDLIEU(1:19)//'.ABSC','NMAXOC',NBOC,KBID)
         IF (DOCU.EQ.'CHNO') THEN
@@ -756,9 +833,21 @@ C         -- VECTEUR TANGENT
                     KD1 = ZI(APCMPE+IDEC+1-1)
                     KD2 = ZI(APCMPE+IDEC+2-1)
                     KD3 = ZI(APCMPE+IDEC+3-1)
-                    TX = ZR(AVALEE+ADRE+IDECE+KD1-2)
-                    TY = ZR(AVALEE+ADRE+IDECE+KD2-2)
-                    TZ = ZR(AVALEE+ADRE+IDECE+KD3-2)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                      TX = 0.D0
+                    ELSE
+                      TX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                      TY = 0.D0
+                    ELSE
+                      TY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD3-2).EQ.R8VIDE()) THEN
+                      TZ = 0.D0
+                    ELSE
+                      TZ = ZR(AVALEE+ADRE+IDECE+KD3-2)
+                    ENDIF
                     IF (NUM.EQ.1 .OR. NUM.EQ.4) THEN
                       VAL = V1X*TX + V1Y*TY + V1Z*TZ
                     ELSE IF (NUM.EQ.2 .OR. NUM.EQ.5) THEN
@@ -778,12 +867,36 @@ C         -- VECTEUR TANGENT
                     KD4 = ZI(APCMPE+4-1)
                     KD5 = ZI(APCMPE+5-1)
                     KD6 = ZI(APCMPE+6-1)
-                    TXX = ZR(AVALEE+ADRE+IDECE+KD1-2)
-                    TYY = ZR(AVALEE+ADRE+IDECE+KD2-2)
-                    TZZ = ZR(AVALEE+ADRE+IDECE+KD3-2)
-                    TXY = ZR(AVALEE+ADRE+IDECE+KD4-2)
-                    TXZ = ZR(AVALEE+ADRE+IDECE+KD5-2)
-                    TYZ = ZR(AVALEE+ADRE+IDECE+KD6-2)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                      TXX = 0.D0
+                    ELSE
+                      TXX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                      TYY = 0.D0
+                    ELSE
+                      TYY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD3-2).EQ.R8VIDE()) THEN
+                      TZZ = 0.D0
+                    ELSE
+                      TZZ = ZR(AVALEE+ADRE+IDECE+KD3-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD4-2).EQ.R8VIDE()) THEN
+                      TXY = 0.D0
+                    ELSE
+                      TXY = ZR(AVALEE+ADRE+IDECE+KD4-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD5-2).EQ.R8VIDE()) THEN
+                      TXZ = 0.D0
+                    ELSE
+                      TXZ = ZR(AVALEE+ADRE+IDECE+KD5-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD6-2).EQ.R8VIDE()) THEN
+                      TYZ = 0.D0
+                    ELSE
+                      TYZ = ZR(AVALEE+ADRE+IDECE+KD6-2)
+                    ENDIF
                     IF (NUM.EQ.1) THEN
                       VAL = VTV(V1X,V1Y,V1Z,V1X,V1Y,V1Z)
                     ELSE IF (NUM.EQ.2) THEN
@@ -923,14 +1036,30 @@ C         -- VECTEUR TANGENT
                       IF (NUM.EQ.1) THEN
                         KD1 = ZI(APCMPE+1-1)
                         KD2 = ZI(APCMPE+2-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TX = 0.D0
+                    ELSE
                         TX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TY = 0.D0
+                    ELSE
                         TY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
                         VAL = V1X*TX + V1Y*TY
                       ELSE IF (NUM.EQ.2) THEN
                         KD1 = ZI(APCMPE+1-1)
                         KD2 = ZI(APCMPE+2-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TX = 0.D0
+                    ELSE
                         TX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TY = 0.D0
+                    ELSE
                         TY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
                         VAL = V2X*TX + V2Y*TY
                       ELSE IF (NUM.EQ.3) THEN
                         KD1 = ZI(APCMPE+3-1)
@@ -938,14 +1067,30 @@ C         -- VECTEUR TANGENT
                       ELSE IF (NUM.EQ.4) THEN
                         KD1 = ZI(APCMPE+4-1)
                         KD2 = ZI(APCMPE+5-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TX = 0.D0
+                    ELSE
                         TX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TY = 0.D0
+                    ELSE
                         TY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
                         VAL = V1X*TX + V1Y*TY
                       ELSE IF (NUM.EQ.5) THEN
                         KD1 = ZI(APCMPE+4-1)
                         KD2 = ZI(APCMPE+5-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TX = 0.D0
+                    ELSE
                         TX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TY = 0.D0
+                    ELSE
                         TY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
                         VAL = V2X*TX + V2Y*TY
                       ELSE
                         KD1 = ZI(APCMPE+6-1)
@@ -961,18 +1106,42 @@ C         -- VECTEUR TANGENT
                         KD1 = ZI(APCMPE+1-1)
                         KD2 = ZI(APCMPE+2-1)
                         KD3 = ZI(APCMPE+4-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TXX = 0.D0
+                    ELSE
                         TXX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TYY = 0.D0
+                    ELSE
                         TYY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD3-2).EQ.R8VIDE()) THEN
+                        TXY = 0.D0
+                    ELSE
                         TXY = ZR(AVALEE+ADRE+IDECE+KD3-2)
+                    ENDIF
                         VAL = V1X* (V1X*TXX+V1Y*TXY) +
      &                        V1Y* (V1X*TXY+V1Y*TYY)
                       ELSE IF (NUM.EQ.2) THEN
                         KD1 = ZI(APCMPE+1-1)
                         KD2 = ZI(APCMPE+2-1)
                         KD3 = ZI(APCMPE+4-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TXX = 0.D0
+                    ELSE
                         TXX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TYY = 0.D0
+                    ELSE
                         TYY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD3-2).EQ.R8VIDE()) THEN
+                        TXY = 0.D0
+                    ELSE
                         TXY = ZR(AVALEE+ADRE+IDECE+KD3-2)
+                    ENDIF
                         VAL = V2X* (V2X*TXX+V2Y*TXY) +
      &                        V2Y* (V2X*TXY+V2Y*TYY)
                       ELSE IF (NUM.EQ.3) THEN
@@ -982,22 +1151,50 @@ C         -- VECTEUR TANGENT
                         KD1 = ZI(APCMPE+1-1)
                         KD2 = ZI(APCMPE+2-1)
                         KD3 = ZI(APCMPE+4-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TXX = 0.D0
+                    ELSE
                         TXX = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TYY = 0.D0
+                    ELSE
                         TYY = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD3-2).EQ.R8VIDE()) THEN
+                        TXY = 0.D0
+                    ELSE
                         TXY = ZR(AVALEE+ADRE+IDECE+KD3-2)
+                    ENDIF
                         VAL = V1X* (V2X*TXX+V2Y*TXY) +
      &                        V1Y* (V2X*TXY+V2Y*TYY)
                       ELSE IF (NUM.EQ.5) THEN
                         KD1 = ZI(APCMPE+5-1)
                         KD2 = ZI(APCMPE+6-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TXZ = 0.D0
+                    ELSE
                         TXZ = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TYZ = 0.D0
+                    ELSE
                         TYZ = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
                         VAL = V1X*TXZ + V1Y*TYZ
                       ELSE
                         KD1 = ZI(APCMPE+5-1)
                         KD2 = ZI(APCMPE+6-1)
+                    IF (ZR(AVALEE+ADRE+IDECE+KD1-2).EQ.R8VIDE()) THEN
+                        TXZ = 0.D0
+                    ELSE
                         TXZ = ZR(AVALEE+ADRE+IDECE+KD1-2)
+                    ENDIF
+                    IF (ZR(AVALEE+ADRE+IDECE+KD2-2).EQ.R8VIDE()) THEN
+                        TYZ = 0.D0
+                    ELSE
                         TYZ = ZR(AVALEE+ADRE+IDECE+KD2-2)
+                    ENDIF
                         VAL = V2X*TXZ + V2Y*TYZ
                       END IF
                       ZR(AVALEQ+ADRQ+IDECQ+PT-2) = VAL
@@ -1007,15 +1204,39 @@ C         -- VECTEUR TANGENT
                     KD1 = ZI(APCMPE+7-1)
                     KD2 = ZI(APCMPE+8-1)
                     KD3 = ZI(APCMPE+9-1)
-                    TXX = ZR(AVALEE+ADRE+IDECE+ (J-1)*LNE+KD1-2)
-                    TYY = ZR(AVALEE+ADRE+IDECE+ (J-1)*LNE+KD2-2)
-                    TXY = ZR(AVALEE+ADRE+IDECE+ (J-1)*LNE+KD3-2)
+            IF (ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD1-2).EQ.R8VIDE()) THEN
+                      TXX = 0.D0
+                    ELSE
+                      TXX = ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD1-2)
+                    ENDIF
+            IF (ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD2-2).EQ.R8VIDE()) THEN
+                      TYY = 0.D0
+                    ELSE
+                      TYY = ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD2-2)
+                    ENDIF
+            IF (ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD3-2).EQ.R8VIDE()) THEN
+                      TXY = 0.D0
+                    ELSE
+                      TXY = ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD3-2)
+                    ENDIF
                     KD1 = ZI(APCMPE+10-1)
                     KD2 = ZI(APCMPE+11-1)
                     KD3 = ZI(APCMPE+12-1)
-                    SXX = ZR(AVALEE+ADRE+IDECE+ (J-1)*LNE+KD1-2)
-                    SYY = ZR(AVALEE+ADRE+IDECE+ (J-1)*LNE+KD2-2)
-                    SXY = ZR(AVALEE+ADRE+IDECE+ (J-1)*LNE+KD3-2)
+            IF (ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD1-2).EQ.R8VIDE()) THEN
+                      SXX = 0.D0
+                    ELSE
+                      SXX = ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD1-2)
+                    ENDIF
+            IF (ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD2-2).EQ.R8VIDE()) THEN
+                      SYY = 0.D0
+                    ELSE
+                      SYY = ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD2-2)
+                    ENDIF
+            IF (ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD3-2).EQ.R8VIDE()) THEN
+                      SXY = 0.D0
+                    ELSE
+                      SXY = ZR(AVALEE+ADRE+IDECE+(J-1)*LNE+KD3-2)
+                    ENDIF
                     DO 460,K = 1,NBCPCD,1
                       NUM = ZI(ANUMCP+K-1)
                       IF (NUM.EQ.7) THEN

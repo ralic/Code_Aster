@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -305,6 +305,7 @@ C
 C
                DO 310, J = 1, 2*LONG, 1
 C
+                  IF( ZR(ATAB1 + J-1).EQ.R8VIDE() ) GOTO 310
                   ZR(AOVALE+ADRM-1+J-1) = 0.5D0*(ZR(AOVALE+ADRM-1+J-1)+
      +                                           ZR(ATAB1 + J-1))
 
@@ -339,6 +340,7 @@ C
 C
                   DO 320, J = 1, LONG, 1
 C
+                     IF( ZR(ATAB1 + J-1).EQ.R8VIDE() ) GOTO 320
                      ZR(AOVALE+ADRM+LONG-1+J-1) = 0.5D0*
      +                                 (ZR(AOVALE+ADRM+LONG-1+J-1)+
      +                                           ZR(ATAB1 + J-1))

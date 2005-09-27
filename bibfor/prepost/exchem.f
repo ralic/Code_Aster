@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF PREPOST  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,13 +180,13 @@ C
                IF ( POSCMP .GT. 0 ) THEN
 C
                   VALCMP(((I-1)*NBSP + J-1)*NBC+K) =
-     +            TVALE(ADRND + (J-1)*NBRCPA + POSCMP-1)
+     +                            TVALE(ADRND + (J-1)*NBRCPA + POSCMP-1)
 C
-                  TABERR(K) = 0
+                  TABERR(K) = 1
 C
                ELSE
 C
-                  VALCMP(((I-1)*NBSP + J-1)*NBC+K) = 0.0D0
+                  VALCMP(((I-1)*NBSP + J-1)*NBC+K) = R8VIDE()
 C
                   TABERR(K) = 0
 C

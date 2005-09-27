@@ -1,8 +1,8 @@
-      SUBROUTINE RVPSTM ( SDLIEU, SDEVAL, SDMOYE, TOMAX, TEMAX )
+      SUBROUTINE RVPSTM ( SDLIEU, SDEVAL, SDMOYE )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/11/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      REAL*8       TOMAX(*), TEMAX(*)
       CHARACTER*19 SDEVAL
       CHARACTER*24 SDMOYE,SDLIEU
 C
@@ -171,14 +170,12 @@ C
 C
             ELSE
 C
-C*+*               L = 1.0D0/ZR(AABSC + NBSGT + 1-1)
                L = 1.0D0/( ZR(AABSC+NBSGT) - ZR(AABSC) )
 C
             ENDIF
 C
          ELSE
 C
-C*+*            L = 1.0D0/ZR(AABSC + NBSGT + 1-1)
             L = 1.0D0/( ZR(AABSC+NBSGT) - ZR(AABSC) )
 C
          ENDIF
@@ -206,19 +203,19 @@ C
 C
                      T1 = 0.0D0
 C
+                     LLL = 0
                      DO 230, I = 1, N, 1
 C
+              IF(ZR(AVALE-1+ADR1+L5+(I-1)*L2+K-1).EQ.R8VIDE()) GOTO 230
+                        LLL = LLL + 1
                         T1 = T1 + ZR(AVALE-1+ADR1+L5+(I-1)*L2+K-1)
 C
 230                  CONTINUE
 C
-                     T1 = T1/N
-C
-                     IF ( ISGT .EQ. 1  .AND.  ICO .EQ. 1 )THEN
-                        TOMAX(K) = MAX( TOMAX(K), T1 )
-                     ENDIF
-                     IF ( ISGT .EQ. NBSGT+1  .AND.  ICO .EQ. NBCO )THEN
-                        TEMAX(K) = MAX( TEMAX(K), T1 )
+                     IF ( LLL .EQ. 0 ) THEN
+                        T1 = 0.D0
+                     ELSE
+                        T1 = T1/LLL
                      ENDIF
 C
                      ADR2 = (ISGT-1)*L3 + (ICO-1)*L2 + K
@@ -238,18 +235,6 @@ C
 C
                ADR1 = ZI(APADR + DEB + ISGT-2)
 C
-               IF ( ISGT .EQ. 1  )THEN
-                  DO 262, K= 1, L2, 1
-                     TOMAX(K) = MAX( TOMAX(K), ZR(AVALE+ADR1+K-2) )
-262               CONTINUE
-               ENDIF
-               IF ( ISGT .EQ. NBSGT  )THEN
-                  L5 = (NBCO-1)*L2
-                  DO 264, K= 1, L2, 1
-                     TEMAX(K) = MAX(TEMAX(K),ZR(AVALE+ADR1+2*L5+L2+K-2))
-264               CONTINUE
-               ENDIF
-C
                DO 250, ICO = 1, NBCO, 1
 C
                   L5 = (ICO-1)*L2
@@ -258,8 +243,16 @@ C
 C
                      ADR2 = (ISGT-1)*L3 + L5 + L1 + K
 C
-                     ZR(ATAB + ADR2   -1) = ZR(AVALE +ADR1+2*L5+   K-2)
-                     ZR(ATAB + ADR2+L1-1) = ZR(AVALE +ADR1+2*L5+L2+K-2)
+                     IF(ZR(AVALE+ADR1+2*L5+K-2).EQ.R8VIDE()) THEN
+                        ZR(ATAB + ADR2   -1) = 0.D0
+                     ELSE
+                        ZR(ATAB + ADR2   -1) = ZR(AVALE+ADR1+2*L5+K-2)
+                     ENDIF
+                     IF(ZR(AVALE+ADR1+2*L5+L2+K-2).EQ.R8VIDE()) THEN
+                        ZR(ATAB + ADR2+L1-1) = 0.D0
+                     ELSE
+                        ZR(ATAB+ADR2+L1-1) = ZR(AVALE+ADR1+2*L5+L2+K-2)
+                     ENDIF
 C
 260               CONTINUE
 C

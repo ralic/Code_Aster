@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 26/09/2005   AUTEUR G8BHHXD X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ MODE_LOCAL__
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
     EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       )
+    EENECNO  = ENER_R   ELEM__         (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X

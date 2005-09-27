@@ -13,7 +13,7 @@
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,6 @@ C
      +             JDIR, JLSMAC, JLSNAC, JNOMCP, JSDEV, JSDLI, JVEC1,
      +             JVEC2, N, N0, N1, N2, N3, NBCAC, NBCPN, NBCRB,
      +             NBMAC, NBNAC, NBOPER, NBSD, NR, IFM ,IBID
-      REAL*8       TOMAX(6), TEMAX(6)
       CHARACTER*24 LSCPNC, QUANT, SDLIEU, SDEVAL, LSCPCD
       CHARACTER*24 SDEV, SDLI, SDMOYE, SDMAIL
       CHARACTER*19 SDPOST, EVAL, LIEU, SDNEWR, SSCH19
@@ -82,11 +81,6 @@ C
       CALL GETVTX(MCF,'OPERATION',IOCC,1,0,K8B,NBOPER)
       NBOPER = -NBOPER
       CALL GETVTX(MCF,'OPERATION',IOCC,1,NBOPER,OPERAT,N0)
-C
-      DO 722, I = 1, 6
-         TOMAX(I) = 0.0D0
-         TEMAX(I) = 0.0D0
- 722  CONTINUE
 C
       IF ( NCH19(1:1) .EQ. '&' ) THEN
          IF (NIV.GT.1) CALL RVINFO(IFM,IOCC,I1,I2,'E',NCHEFF)
@@ -196,7 +190,7 @@ C
                          IF ( NBOPER .EQ. 2 ) THEN
                             SDMAIL = SDEV(1:19)//'.MAIL'
                             SDMOYE = '&&RVPOST.MOYENNE'
-                            CALL RVPSTM (SDLI,SDPOST,SDMOYE,TOMAX,TEMAX)
+                            CALL RVPSTM (SDLI,SDPOST,SDMOYE)
                             CALL RVAFFE(MCF,IOCC,SDLI,SDPOST,SDMAIL,CA,
      +                                  QUANT,OPTION,REPERE,
      +                                  NOMTAB,XNOVAR,NCHEFF,I1,ISD)
@@ -216,7 +210,7 @@ C
 C
                             ELSE
                               SDMOYE = '&&RVPOST.MOYENNE'
-                             CALL RVPSTM(SDLI,SDPOST,SDMOYE,TOMAX,TEMAX)
+                              CALL RVPSTM(SDLI,SDPOST,SDMOYE)
                               CALL RVAFFM(MCF,IOCC,SDLI,SDPOST,SDMOYE,
      +                                    OPER,QUANT,OPTION,REPERE,
      +                                    NOMTAB,NCHEFF,I1,ISD)

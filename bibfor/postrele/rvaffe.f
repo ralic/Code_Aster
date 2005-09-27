@@ -9,7 +9,7 @@
       CHARACTER*(*)       MCF, REP, OPTION, QUANT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/12/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      APNSP,APNCO,ACOOR,NBCO,NBSP,APNCA,APNSA, I1
       INTEGER      I,DEB,FIN,ADR1,IFM,ANOMND,J,K,ADRI,DECI,NBNI,AVAUX
       INTEGER      L, LCI, LN, LNI, NBSI, NIV
-      REAL*8       XA, XB, YA, YB, ZA, ZB, AX, S1, S2
+      INTEGER      LLL, INDIC, INDI1, INDI2
+      REAL*8       XA, XB, YA, YB, ZA, ZB, AX, S1, S2, R8VIDE
       CHARACTER*1  K1BID
       CHARACTER*4  DOCUL,DOCU
       CHARACTER*16 OPER
@@ -191,11 +192,18 @@ C======================================================================
                      DO 120, J = 1, NBCO, 1
                         DO 130, K = 1, NBSI*NBCP, 1
                            AX = 0.0D0
+                           LLL = 0
                            DO 140, L = 1, NBNI, 1
-                              AX = AX + ZR(AVALE + ADRI-1 +
-     +                                    (J-1)*LCI + (L-1)*LNI + K-1)
+                              INDIC = ADRI-1+(J-1)*LCI+(L-1)*LNI+K-1
+                              IF(ZR(AVALE+INDIC).EQ.R8VIDE()) GOTO 140
+                              LLL = LLL + 1
+                              AX = AX + ZR(AVALE+INDIC)
 140                       CONTINUE
-                          ZR(AVAUX+DECI+(J-1)*LN + K-1) = AX/NBNI
+                          IF ( LLL .EQ. 0 ) THEN
+                             ZR(AVAUX+DECI+(J-1)*LN + K-1) = 0.D0
+                          ELSE
+                             ZR(AVAUX+DECI+(J-1)*LN + K-1) = AX/LLL
+                          ENDIF
 130                     CONTINUE
 120                  CONTINUE
 110               CONTINUE
@@ -205,25 +213,46 @@ C======================================================================
                         ADRI = ZI(APADR+DEB-1)
                         DO 160, K = 1, NBCO, 1
                            DO 161, J = 1, LN, 1
-                              ZR(AVAUX +   LN*(K-1) + J-1) =
-     +                        ZR(AVALE + ADRI - 1 + 2*LN*(K-1) + J-1)
+                              INDIC = ADRI - 1 + 2*LN*(K-1) + J-1
+                              IF(ZR(AVALE+INDIC).EQ.R8VIDE()) THEN
+                                ZR(AVAUX+LN*(K-1)+J-1) = 0.D0
+                              ELSE
+                                ZR(AVAUX+LN*(K-1)+J-1) = ZR(AVALE+INDIC)
+                              ENDIF
 161                        CONTINUE
 160                     CONTINUE
                      ELSE IF ( I .EQ. NBPT ) THEN
                         ADRI = ZI(APADR +DEB-1+ NBPT-2) + LN
                        DO 170, K = 1, NBCO, 1
                            DO 171, J = 1, LN, 1
-                              ZR(AVAUX + ((NBPT-1)*NBCO+K-1)*LN+J-1) =
-     +                        ZR(AVALE + ADRI - 1 + 2*LN*(K-1) + J-1)
+                              INDIC = ADRI - 1 + 2*LN*(K-1) + J-1
+                              IF(ZR(AVALE+INDIC).EQ.R8VIDE()) THEN
+                            ZR(AVAUX+((NBPT-1)*NBCO+K-1)*LN+J-1) = 0.D0
+                              ELSE
+                                ZR(AVAUX+((NBPT-1)*NBCO+K-1)*LN+J-1) =
+     +                                                 ZR(AVALE+INDIC)
+                              ENDIF
 171                        CONTINUE
 170                     CONTINUE
                      ELSE
                         ADRI = ZI(APADR +DEB-1+ I-2)
                         DO 180, K = 1, NBCO, 1
                            DO 181, J = 1, LN, 1
-                              ZR(AVAUX+LN*(NBCO*(I-1)+K-1)+J-1) =
-     +                        0.5D0*(ZR(AVALE+ADRI-1+LN*(2*K-1)+J-1) +
-     +                        ZR(AVALE+ADRI-1+LN*2*(K-1+NBCO)+J-1))
+                              INDI1 = ADRI-1+LN*(2*K-1)+J-1
+                              INDI2 = ADRI-1+LN*2*(K-1+NBCO)+J-1
+                              IF(ZR(AVALE+INDI1).EQ.R8VIDE() .AND.
+     +                           ZR(AVALE+INDI2).EQ.R8VIDE()) THEN
+                                ZR(AVAUX+LN*(NBCO*(I-1)+K-1)+J-1) = 0.D0
+                              ELSEIF(ZR(AVALE+INDI1).EQ.R8VIDE()) THEN
+                                ZR(AVAUX+LN*(NBCO*(I-1)+K-1)+J-1) = 
+     +                                                   ZR(AVALE+INDI2)
+                              ELSEIF(ZR(AVALE+INDI2).EQ.R8VIDE()) THEN
+                                ZR(AVAUX+LN*(NBCO*(I-1)+K-1)+J-1) = 
+     +                                                   ZR(AVALE+INDI1)
+                              ELSE
+                                ZR(AVAUX+LN*(NBCO*(I-1)+K-1)+J-1) =
+     +                           0.5D0*(ZR(AVALE+INDI1)+ZR(AVALE+INDI2))
+                              ENDIF
 181                        CONTINUE
 180                     CONTINUE
                      ENDIF

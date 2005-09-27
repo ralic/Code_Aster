@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &        NBMA,JAD,NBMAIL,JMA,IM,NUME,NDIM,NS1,NS2,IE,NBPARC,NP,IFM,
      &        NIV,IORIG,NRE,NR,I,ICAGE
       PARAMETER (MXVALE=29,NBPARR=44)
-      REAL*8 VALPAR(NBPARR),R8B,XYP(2),ORIG(3),ZERO
+      REAL*8 VALPAR(NBPARR),R8B,XYP(2),ORIG(3),ZERO,R8VIDE
       CHARACTER*3 SYMEX,SYMEY,TYPARR(NBPARR)
       CHARACTER*8 K8B,NOMA,LPAIN(15),LPAOUT(5),NOMLIG,VALEK(2)
       CHARACTER*16 OPTION,NOPARR(NBPARR)
@@ -125,16 +125,21 @@ C     --- CREATION DE LA TABLE ---
      &              )
       END IF
       NBPARC = NBPARR - 1
-      DO 10 I = NBPARR - 21,NBPARR - 7
-        VALPAR(I) = 0.0D0
-   10 CONTINUE
       CALL TBAJLI(RESU,1,NOPARR(NBPARR),IBID,R8B,C16B,NOMA,0)
 
       CALL WKVECT('&&PECAGE.TRAV1','V V R',MXVALE,LVALE)
       DO 40 IOCC = 1,NBOCC
-        CALL GETVTX('CARA_GEOM','TOUT',IOCC,1,0,K8B,NT)
+
+        CALL GETVTX('CARA_GEOM','TOUT'    ,IOCC,1,0,K8B,NT)
         CALL GETVID('CARA_GEOM','GROUP_MA',IOCC,1,0,K8B,NG)
-        CALL GETVID('CARA_GEOM','MAILLE',IOCC,1,0,K8B,NM)
+        CALL GETVID('CARA_GEOM','MAILLE'  ,IOCC,1,0,K8B,NM)
+
+        DO 10 I = 1 , NBPARR
+           VALPAR(I) = R8VIDE()
+ 10     CONTINUE
+        VALEK(1) = '????????'
+        VALEK(2) = '????????'
+
         IF (NT.NE.0) THEN
           CALL PEMICA(CHELEM,MXVALE,ZR(LVALE),0,IBID,ORIG,IORIG,ICAGE)
           CALL PECAG2(NDIM,NSYMX,NSYMY,NP,XYP,ZR(LVALE),VALPAR)
@@ -143,6 +148,7 @@ C     --- CREATION DE LA TABLE ---
           VALEK(2) = 'TOUT'
           CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALEK,0)
         END IF
+
         IF (NG.NE.0) THEN
           NBGRMA = -NG
           CALL WKVECT('&&PECAGE_GROUPM','V V K8',NBGRMA,JGR)
@@ -165,8 +171,6 @@ C     --- CREATION DE LA TABLE ---
             CALL PEMICA(CHELEM,MXVALE,ZR(LVALE),NBMA,ZI(JAD),ORIG,IORIG,
      &                  ICAGE)
             CALL PECAG2(NDIM,NSYMX,NSYMY,NP,XYP,ZR(LVALE),VALPAR)
-C               CALL PECAG3 ( NDIM, NSYMX, NSYMY, NOMA, 'GROUP_MA',
-C     &                                    NBGRMA, ZK8(JGR), VALPAR )
             CALL PECAG3(NDIM,NSYMX,NSYMY,NOMA,'GROUP_MA',1,
      &                  ZK8(JGR+IG-1),VALPAR)
             VALEK(1) = ZK8(JGR+IG-1)
@@ -174,6 +178,7 @@ C     &                                    NBGRMA, ZK8(JGR), VALPAR )
    20     CONTINUE
           CALL JEDETR('&&PECAGE_GROUPM')
         END IF
+
         IF (NM.NE.0) THEN
           NBMAIL = -NM
           CALL WKVECT('&&PECAGE_MAILLE','V V K8',NBMAIL,JMA)
@@ -194,6 +199,7 @@ C     &                                    NBGRMA, ZK8(JGR), VALPAR )
             VALEK(1) = ZK8(JMA+IM-1)
             CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALEK,0)
    30     CONTINUE
+
           CALL JEDETR('&&PECAGE_MAILLE')
         END IF
    40 CONTINUE

@@ -10,7 +10,7 @@
      +             CFAO, CFAE, CSPO, CSPE, CRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -178,6 +178,10 @@ C
          RPB = ZK8(JRESU)
          RPMPBO = ZK8(JRESU)
          RPMPBE = ZK8(JRESU)
+         IPM = ZR(JINST)
+         IPB = ZR(JINST)
+         IPMPBO = ZR(JINST)
+         IPMPBE = ZR(JINST)
          DO 100 I = 1, NBINST
             DO 102 ICMP = 1, NCMP
                L1 =                 NCMP*(I-1) + ICMP
@@ -276,13 +280,15 @@ C
          CALL JEVEUO (CSNE, 'L', JSNE )
          SNO = 0.D0
          SNE = 0.D0
-         SNO = 0.D0
-         SNE = 0.D0
          IND = 0
          R1SNO = ZK8(JRESU)
          R2SNO = ZK8(JRESU)
          R1SNE = ZK8(JRESU)
          R2SNE = ZK8(JRESU)
+         I1SNO = ZR(JINST)
+         I2SNO = ZR(JINST)
+         I1SNE = ZR(JINST)
+         I2SNE = ZR(JINST)
          DO 200 I1 = 1, NBINST
             IND = IND + 1
             IF ( ZR(JSNO+IND-1) .GT. SNO ) THEN
@@ -359,6 +365,10 @@ C
          R2SNO = ZK8(JRESU)
          R1SNE = ZK8(JRESU)
          R2SNE = ZK8(JRESU)
+         I1SNO = ZR(JINST)
+         I2SNO = ZR(JINST)
+         I1SNE = ZR(JINST)
+         I2SNE = ZR(JINST)
          DO 210 I1 = 1, NBINST
             IND = IND + 1
             IF ( ZR(JSNO+IND-1) .GT. SNO ) THEN
@@ -446,6 +456,10 @@ C
          R2SNO = ZK8(JRESU)
          R1SNE = ZK8(JRESU)
          R2SNE = ZK8(JRESU)
+         I1SNO = ZR(JINST)
+         I2SNO = ZR(JINST)
+         I1SNE = ZR(JINST)
+         I2SNE = ZR(JINST)
          DO 300 I = 1, NBORDR
             SPO = MAX ( SPO , ZR(JSPO-1+I) )
             KEO = MAX ( KEO , ZR(JFAO-1+4*(I-1)+1) )

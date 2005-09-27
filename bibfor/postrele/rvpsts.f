@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,13 +184,20 @@ C
 C
                      T1 = 0.0D0
 C
+                     LLL = 0
                      DO 230, L = 1, N, 1
 C
+                IF(ZR(AVALE-1+ADR1+L5+(L-1)*L2+K-1).EQ.R8VIDE())GOTO 230
+                        LLL = LLL + 1
                         T1 = T1 + ZR(AVALE-1+ADR1+L5+(L-1)*L2+K-1)
 C
 230                  CONTINUE
 C
-                     T1 = T1/N
+                     IF(LLL.EQ.0) THEN
+                       T1 = 0.D0
+                     ELSE
+                       T1 = T1/LLL
+                     ENDIF
 C
                      ADR2 = (I-1)*L1 + (J-1)*L2 + K - 1
 C
@@ -208,7 +215,11 @@ C
             DO 241, I = 1, NBCO, 1
                L5 = (I-1)*L2
                DO 242, J = 1, L2, 1
-                  ZR(ATAB + L5 + J-1) = ZR(AVALE + ADR1 + 2*L5 + J-2)
+                 IF(ZR(AVALE+ADR1+2*L5+J-2).EQ.R8VIDE()) THEN
+                   ZR(ATAB + L5 + J-1) = 0.D0
+                 ELSE
+                   ZR(ATAB + L5 + J-1) = ZR(AVALE+ADR1+2*L5+J-2)
+                 ENDIF
 242            CONTINUE
 241         CONTINUE
 C
@@ -223,8 +234,17 @@ C
 C
                   DO 260, K= 1, L2, 1
 C
-                     ZR(ATAB+L5+K-1) = 0.5D0*(ZR(ADR2 + K-1) +
+                    IF (ZR(ADR2+K-1).EQ.R8VIDE() .AND.
+     +                  ZR(ADR2+L2*(NBCO*2-1)+K-1).EQ.R8VIDE() ) THEN
+                      ZR(ATAB+L5+K-1) = 0.D0
+                    ELSEIF (ZR(ADR2+K-1).EQ.R8VIDE() ) THEN
+                      ZR(ATAB+L5+K-1) = ZR(ADR2+L2*(NBCO*2-1)+K-1)
+                    ELSEIF (ZR(ADR2+L2*(NBCO*2-1)+K-1).EQ.R8VIDE()) THEN
+                      ZR(ATAB+L5+K-1) = ZR(ADR2 + K-1)
+                    ELSE
+                      ZR(ATAB+L5+K-1) = 0.5D0*(ZR(ADR2 + K-1) +
      +                                      ZR(ADR2+L2*(NBCO*2-1)+K-1))
+                    ENDIF
 C
 260               CONTINUE
 C
@@ -237,7 +257,11 @@ C
             DO 243, J = 1, NBCO, 1
                L5 = (J-1)*L2
                DO 244, K = 1, L2, 1
-                  ZR(ADR2 + L5 + K-1) = ZR(ADR1 + (I-1)*L3 + K-1)
+                 IF (ZR(ADR1+(I-1)*L3+K-1).EQ.R8VIDE() ) THEN
+                   ZR(ADR2 + L5 + K-1) = 0.D0
+                 ELSE
+                   ZR(ADR2 + L5 + K-1) = ZR(ADR1+(I-1)*L3+K-1)
+                 ENDIF
 244            CONTINUE
 243         CONTINUE
 C

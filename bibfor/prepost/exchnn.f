@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF PREPOST  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,13 +97,13 @@ C
 C
               VALCMP(I) = TVALE(IIAD)
 C
-              TABER(I) = 0
+              TABER(I) = 1
 C
           ELSE
 C
-              VALCMP(I) = 0.0D0
+              VALCMP(I) = R8VIDE()
 C
-              TABER(I) = 1
+              TABER(I) = 0
 C
           END IF
 C

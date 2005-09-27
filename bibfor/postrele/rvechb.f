@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,11 @@ C           /* NOEUD INTERMEDIAIRE : INTERPOLATION DE DEGRE 2 */
 C
                DO 52, I = 1, NBCP*NBSO, 1
 C
-                  VALCP(I) = VALCPM(I + (ND-1)*LNG) +
+                  IF ( VALCPM(I+(NI-1)*LNG) .EQ. R8VIDE() ) THEN
+                     VALCP(I) = (1.0D0 - R1)*VALCPM(I + (ND-1)*LNG) +
+     +                          R1*VALCPM(I + (NF-1)*NBCP*NBSI)
+                  ELSE
+                     VALCP(I) = VALCPM(I + (ND-1)*LNG) +
      +                        R1*( (4.0D0*VALCPM(I + (NI-1)*LNG) -
      +                              3.0D0*VALCPM(I + (ND-1)*LNG) -
      +                                    VALCPM(I + (NF-1)*LNG))+
@@ -147,6 +151,7 @@ C
      +                                         VALCPM(I + (ND-1)*LNG)-
      +                                         2.0D0*
      +                                         VALCPM(I + (NI-1)*LNG)))
+                  ENDIF
 C
 52             CONTINUE
 C

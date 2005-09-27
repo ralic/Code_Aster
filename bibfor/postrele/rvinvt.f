@@ -4,7 +4,7 @@
 C
 C*********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/11/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,22 +51,26 @@ C
 C*********************************************************************
 C
       INTEGER   I, NBVP
-      REAL*8    T(6), EQUI(6), UNSUR3
+      REAL*8    T(6), EQUI(6), UNSUR3, R8VIDE
 C
       VONM = 0.0D0
       TRES = 0.0D0
       DETR = 0.0D0
       TRAC = 0.0D0
 C
+      DO 10, I = 1, 6, 1
+         IF ( TENSOR(I) .EQ. R8VIDE() ) THEN
+            T(I) = 0.D0
+         ELSE
+            T(I) = TENSOR(I)
+         ENDIF
+ 10   CONTINUE
+C
       UNSUR3 = 1.0D0/3.0D0
       NBVP = 3
 C
-      CALL FGEQUI ( TENSOR, 'SIGM', NBVP, EQUI )
+      CALL FGEQUI ( T, 'SIGM', NBVP, EQUI )
       TRES = EQUI(2)
-C
-      DO 10, I = 1, 6, 1
-         T(I) = TENSOR(I)
- 10   CONTINUE
 C
       CALL RVDET3 ( T, DETR )
 C

@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,8 @@ C
       INTEGER AREFE,ADESC,NBCMP,I,IBID,ANUMND,ACMPGD,LPT,AOPNB2
       INTEGER NBMPST,NBNPST,NBOCER,N,M,ADRIN,ADROU,NBM,NUMM
       INTEGER NBTCMP,SDNUND,SDVACP,AINDIR,PT,NSP,NCO,LMC,LCC,LSC,LMS,LCS
+      INTEGER INDI1, INDI2
+      REAL*8  R8VIDE
 C
       LOGICAL TROUVE
       CHARACTER*1 K1BID
@@ -252,11 +254,11 @@ C*+*                  LCC = LMC*NBM
                      DO 223, K = 1, NCO, 1
                         LSC  = (K-1)*LCC
                         DO 224, L = 1, NSP, 1
-                           ZR(AOVALE + LNC-1 + LSC + 
-     +                            (L-1)*NBCMP + PT-1) = 
-     +                     ZR(AOVALE + LNC-1 + LSC + 
-     +                               (L-1)*NBCMP + PT-1) + 
-     +                     ZR(SDVACP + LMS + (K-1)*NSPM + L-1)
+                           INDI1 = LNC-1 + LSC + (L-1)*NBCMP + PT-1
+                           INDI2 = LMS + (K-1)*NSPM + L-1
+                           IF (ZR(SDVACP+INDI2).EQ.R8VIDE()) GOTO 224
+                           ZR(AOVALE+INDI1) = ZR(AOVALE+INDI1) + 
+     +                                        ZR(SDVACP+INDI2)
 224                     CONTINUE
 C
 223                  CONTINUE
@@ -267,10 +269,8 @@ C
                   DO 233, K = 1, NCO, 1
                      LSC  = (K-1)*LCC
                      DO 234, L = 1, NSP, 1
-                        ZR(AOVALE + LNC-1 + LSC + 
-     +                            (L-1)*NBCMP + PT-1) = 
-     +                  ZR(AOVALE + LNC-1 + LSC + 
-     +                               (L-1)*NBCMP + PT-1) / NBM
+                        INDI1 = LNC-1 + LSC + (L-1)*NBCMP + PT-1
+                        ZR(AOVALE+INDI1) = ZR(AOVALE+INDI1) / NBM
 234                  CONTINUE
 233               CONTINUE
                   ENDIF
