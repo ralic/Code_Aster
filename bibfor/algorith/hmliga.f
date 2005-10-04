@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ C ======================================================================
 C ======================================================================
 C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
 C ======================================================================
-      DATA NCRA1/'E','NU','RHO','ALPHA'/
+      DATA NCRA1/'E','NU','ALPHA','RHO'/
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -134,11 +134,16 @@ C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
       IF (YAMEC.EQ.1) THEN
-          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,ELAS,
-     +                                               CODRET,'FM')
+           IF (MECA.EQ.'ELAS_THER')  THEN
+               CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+     +                                 NCRA1(1),ELAS(1),CODRET,'FM')
+           ELSE
+               CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,
+     &           ELAS,CODRET,'FM')
+           ENDIF
           YOUNG  = ELAS(1)
           NU     = ELAS(2)
-          ALPHA0 = ELAS(4)
+          ALPHA0 = ELAS(3)
           K0     = YOUNG/3.D0/ (1.D0-2.D0*NU)
           CS     = (1.D0-BIOT)/K0
       ELSE

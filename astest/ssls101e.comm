@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKQ  169 N - 147 QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,17 +42,17 @@ MATER=DEFI_MATERIAU( ELAS=_F(  E = 1., NU = 0.3,  RHO = 1.) )
 MAILL=LIRE_MAILLAGE()
 
 MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+                  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
-                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+                      AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 
 MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    VERIF='MAILLE',
-                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'DKT',
-                              PHENOMENE = 'MECANIQUE') )
+                    AFFE=_F( TOUT = 'OUI',   MODELISATION = 'DKT',
+                             PHENOMENE = 'MECANIQUE') )
 
-CINE=AFFE_CHAR_MECA(   MODELE=MODEL,DDL_IMPO=(
-              _F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.),
+CINE=AFFE_CHAR_MECA(   MODELE=MODEL,
+             DDL_IMPO=(_F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.),
                        _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
                        _F( NOEUD = 'A',                 DRX = 0.,  DRZ = 0.),
                        _F( GROUP_NO = 'GRNO_OC',  DX = 0.,  DRY = 0.,  DRZ = 0.),
@@ -68,12 +68,11 @@ CHF3=AFFE_CHAR_MECA(   MODELE=MODEL,
                     FORCE_COQUE=_F(  TOUT = 'OUI',  F3 = -1.)   )
 
 CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
-                      PESANTEUR=( 10., 0., 0., -1.,                 )   )
+                      PESANTEUR=( 10., 0., 0., -1.,  )   )
 
-CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
-                               COQUE=_F( 
-       GROUP_MA = 'TOUT',
-  EPAIS = T) )
+CARELEM=AFFE_CARA_ELEM(  MODELE=MODEL,
+                         COQUE=_F( GROUP_MA = 'TOUT',
+                                   EPAIS = T) )
 
 DEPR=MECA_STATIQUE(MODELE=MODEL,
                    CHAM_MATER=CHMAT,
@@ -213,7 +212,7 @@ TEST_TABLE(      TABLE=EPOT_PE,
 
 #--------------------------------------------------------------------
 DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,
-                         OPTION=('EFGE_ELNO_DEPL',),
+                OPTION='EFGE_ELNO_DEPL',
                 )
 #--------------------------------------------------------------------
 RELEVE_1=POST_RELEVE_T( 
@@ -389,6 +388,12 @@ MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,   NU = NU_F,
 CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MAILL,
                   AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
 
+CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+                   MAILLAGE=MAILL,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            VALE=   (    0.0   ,  0.0 ,    0.0   ), ), )
+
 CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
                   MAILLAGE=MAILL,
                       AFFE=_F(  TOUT = 'OUI',
@@ -407,19 +412,19 @@ CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                              NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
                                 VALE = ( T3,     TINF3,      TSUP3, )))
 
-LINST=DEFI_LIST_REEL( VALE=( 1. ,  2. ,  3.  )  )
+LINST=DEFI_LIST_REEL( VALE=( 0.,  1. ,  2. ,  3.  )  )
 
 TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                        NOM_CHAM='TEMP',
-                       AFFE=( _F(  INST = 1.,  CHAM_GD = CHT1),
+                       AFFE=( _F(  INST = 0.,  CHAM_GD = CHT0),
+                              _F(  INST = 1.,  CHAM_GD = CHT1),
                               _F(  INST = 2.,  CHAM_GD = CHT2),
                               _F(  INST = 3.,  CHAM_GD = CHT3))
                   )
 
 CHG1=AFFE_CHAR_MECA(  MODELE = MODEL,
-                     TEMP_CALCULEE = TEMP,
-                DDL_IMPO = (
-                       _F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,   DZ = 0.),
+             TEMP_CALCULEE = TEMP,
+             DDL_IMPO=(_F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,   DZ = 0.),
                        _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
                        _F( NOEUD = 'A',                     DRX = 0.,  DRZ = 0.),
                        _F( GROUP_NO = 'GRNO_OC',  DX = 0.,  DRY = 0.,  DRZ = 0.),
@@ -428,42 +433,27 @@ CHG1=AFFE_CHAR_MECA(  MODELE = MODEL,
                                                   DRX = 0.,  DRY = 0.,  DRZ = 0.)),
                FORCE_COQUE=_F(  TOUT = 'OUI', PRES = P) )
 
-U2=MECA_STATIQUE(      MODELE=MODEL,
-                   CHAM_MATER=CHMAT_F,     CARA_ELEM=CARELEM,
-                    LIST_INST=LINST,
-                        EXCIT=_F(   CHARGE = CHG1)        )
+U2=STAT_NON_LINE(
+                  MODELE=MODEL,
+              CHAM_MATER=CHMAT_F,
+               CARA_ELEM=CARELEM,
+               COMP_INCR=_F(RELATION='ELAS'),
+                   EXCIT=_F( CHARGE = CHG1),
+               INCREMENT=_F(LIST_INST=LINST,),
+                         )
 
-#----------------------------------------------------------------------
-
-D1=E1*T*T*T / ( 12. * ( 1. - NU1*NU1 ) )
-
-D2=E2*T*T*T / ( 12. * ( 1. - NU2*NU2 ) )
-
-D3=E3*T*T*T / ( 12. * ( 1. - NU3*NU3 ) )
-
-V1=( -1. * P * ( R ** 4 ) * ( 5. + NU1 ) ) / ( 64. * D1 * ( 1. + NU1 ) )
-
-V2=( -1. * P * ( R ** 4 ) * ( 5. + NU2 ) ) /( 64. * D2 * ( 1. + NU2 ) )
-
-V3=( -1. * P * ( R ** 4 ) * ( 5. + NU3 ) ) /( 64. * D3 * ( 1. + NU3 ) )
-
-DE1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=1 )
-
-DE2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=2 )
-
-DE3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=3 )
-
-TEST_RESU(CHAM_NO=( 
-            _F(  CHAM_GD = DE1, NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V1,
-              CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 0.1E-2),
-            _F(  CHAM_GD = DE2,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V2,
-              CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 0.1E-2),
-            _F(  CHAM_GD = DE3,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V3,
-              CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 0.1E-2))
+TEST_RESU(RESU=( 
+            _F(  RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=1,
+                 NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = -6.8199666693234E+02,
+                 REFERENCE = 'NON_REGRESSION'),
+            _F(  RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=2,
+                 NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = -5.6345183163436E+02,
+                 REFERENCE = 'NON_REGRESSION'),
+            _F(  RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=3,
+                 NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = -4.6354216713555E+02,
+                 REFERENCE = 'NON_REGRESSION'))
             )
 
+#----------------------------------------------------------------------
 FIN( )
 #

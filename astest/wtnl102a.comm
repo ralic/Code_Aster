@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,11 +86,21 @@ ZERO=DEFI_CONSTANTE(VALE=0.0,);
 BIDON=DEFI_CONSTANTE(VALE=0.0,);
 
 KINT=DEFI_CONSTANTE(VALE=100.0,);
+EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,                        
+             VALE = ( 0.   ,  1.E7,
+                      500.  ,1.E7, ), 
+                        PROL_DROITE  ='CONSTANT' ,
+                        PROL_GAUCHE  ='CONSTANT' , );
 
-MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
-                               NU=0.0,
-                               RHO=1.0,
-                               ALPHA=0.0,),
+NU=DEFI_CONSTANTE(VALE=0.,);
+
+MATERIAU=DEFI_MATERIAU(
+                    ELAS_FO=_F(E=EL,
+                              NU=NU,
+                              RHO=1.,
+                              ALPHA=ZERO,
+                              TEMP_DEF_ALPHA  =0.,
+                              ),
                        COMP_THM = 'LIQU_SATU',
                        THM_LIQU=_F(RHO=1.0,
                                    UN_SUR_K=0.0,
@@ -147,7 +157,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
                     COMP_INCR=_F(RELATION='KIT_THM',
-                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
+                                 RELATION_KIT=('ELAS_THER','LIQU_SATU','HYDR_UTIL'),),
                     ETAT_INIT=_F(DEPL=PINIT,),
                     INCREMENT=_F(LIST_INST=LI,
                                  NUME_INST_FIN=10,),

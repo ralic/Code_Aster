@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -129,7 +129,7 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       NU = NUMDD1(1:14)
       IF (MATR.NE.' ') THEN
         IF (NUMDD1.NE.NUMDDA) THEN
-          CALL UTMESS('I',NOMCOM,'BASE MODALE 1 ET 2 AVEC'//
+          CALL UTMESS('I',NOMCOM,'BASE MODALE ET MATRICE AVEC'//
      +               ' NUMEROTATIONS INCOMPATIBLES')    
         ENDIF
         NU = NUMDDA(1:14)
@@ -190,14 +190,17 @@ C BOUCLE DE CALCUL DES MACS
           CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
         ELSE
           CALL DCOPY(NEQ,ZR(IDBAS2+(J-1)*NEQ),1,ZR(IDVEC2),1)
+          CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
         ENDIF
-           PIJ = DDOT( NEQ, ZR(IDVEC1),1,
-     &           ZR(IDBAS2+(J-1)*NEQ),1)
-           PII = DDOT( NEQ, ZR(IDVEC1),1,
-     &           ZR(IDBAS1+(J-1)*NEQ),1)
-           PJJ = DDOT( NEQ, ZR(IDVEC2),1,
-     &           ZR(IDBAS1+(J-1)*NEQ),1)
-           PIJ = ABS((PIJ**2) / (PII * PJJ))
+           PIJ = ABS(DDOT( NEQ,ZR(IDBAS2+(J-1)*NEQ) ,1,
+     &           ZR(IDVEC1),1))
+           PII = ABS(DDOT( NEQ, ZR(IDBAS1+(I-1)*NEQ),1,
+     &           ZR(IDVEC1),1))
+           PJJ = ABS(DDOT( NEQ, ZR(IDBAS2+(J-1)*NEQ),1,
+     &           ZR(IDVEC2),1))
+           
+           PIJ = (PIJ**2) / (PII * PJJ)
+           
            ZI(IND)=I
            ZI(IND+1)=J
            CALL TBAJLI (TABLE, 3, ZK16(INOM), 

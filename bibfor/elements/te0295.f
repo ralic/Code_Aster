@@ -1,7 +1,7 @@
       SUBROUTINE TE0295(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C      TOLE CRP_20
 
       IMPLICIT NONE
 
@@ -32,17 +33,18 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C.......................................................................
 C
       CHARACTER*2  CODRET(3)
-      CHARACTER*8  NOMRES(3)
+      CHARACTER*8  NOMRES(3),NOMPAR(4)
       CHARACTER*16 NOMTE,OPTION,PHENOM, COMPOR(4)
 C
       REAL*8   EPSI,DEPI,R8DEPI,R8PREM,PREC
-      REAL*8   DFDI(24),F(3,3),EPS(6),FNO(81),E1(3),E2(3),E3(3)
-      REAL*8   DUDM(3,3),DFDM(3,3),DTDM(3,3),DER(4),AG(3),VGL(3)
-      REAL*8   U1L(3),U2L(3),U3L(3)
-      REAL*8   DU1DM(3,3),DU2DM(3,3),DU3DM(3,3)
+      REAL*8   DFDI(60),F(3,3),EPS(6),FNO(81),E1(3),E2(3),E3(3)
+      REAL*8   DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4),AG(3),VGL(3)
+      REAL*8   U1L(3),U2L(3),U3L(3), DFVDM(3,4)
+      REAL*8   U1G(3),U2G(3),U3G(3)
+      REAL*8   DU1DM(3,4),DU2DM(3,4),DU3DM(3,4)
       REAL*8   DU1DPO(3,2),DU2DPO(3,2),DU3DPO(3,2),P(3,3),INVP(3,3)
-      REAL*8   DU1DL(3,3),DU2DL(3,3),DU3DL(3,3),COURB(3,3,3)
-      REAL*8   RHO,OM,OMO,RBID,E,NU,ALPHA
+      REAL*8   DU1DL(3,4),DU2DL(3,4),DU3DL(3,4),COURB(3,3,3)
+      REAL*8   RHO,OM,OMO,RBID,E,NU,ALPHA,TREF
       REAL*8   THET,TG,TGDM(3),TTRG,LA,MU, KA
       REAL*8   XG,YG,ZG,A(3),FF
       REAL*8   PHI,CPHI,C2PHI,CPHI2,SPHI2
@@ -51,8 +53,8 @@ C
       REAL*8   CK,COEFF,COEFF3,CFORM,CR1,CR2
       REAL*8   GUV,GUV1,GUV2,GUV3,K1,K2,K3,G,POIDS
       REAL*8   RPIPO,T1PIPO(6),T2PIPO(2),T3PIPO(6)
-      REAL*8   TCLA,NORME
-      REAL*8   EPSINO(162)
+      REAL*8   TCLA,NORME,K3A,TTRGV,TGVDM(3)
+      REAL*8   EPSINO(162),VALPAR(4)
 C
       INTEGER  IPOIDS,IVF,IDFDE,NNO,KP,NPG,COMPT,IER, NNOS, IDEPI
       INTEGER  JGANO,IRET,IEPSR,IEPSF,ICOMP,ISIGI,IBALO,ICOUR
@@ -122,11 +124,13 @@ C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
       IF (OPTION.EQ.'CALC_K_G_F') THEN
         FONC = .TRUE.
         CALL JEVECH('PFFVOLU','L',IFORF)
-C        CALL JEVECH('PTEMPSR','L',ITEMPS)
-C        NOMPAR(1) = 'X'
-C        NOMPAR(2) = 'Y'
-C        NOMPAR(3) = 'INST'
-C        VALPAR(3) = ZR(ITEMPS)
+        CALL JEVECH('PTEMPSR','L',ITEMPS)
+        NOMPAR(1) = 'X'
+        NOMPAR(2) = 'Y'
+        NOMPAR(3) = 'Z'
+        NOMPAR(4) = 'INST'
+        VALPAR(4) = ZR(ITEMPS)
+        CALL TECACH('ONN','PEPSINF',1,IEPSR,IRET)
       ELSE
         FONC =.FALSE.
         CALL JEVECH('PFRVOLU','L',IFORC)
@@ -159,9 +163,28 @@ C        VALPAR(3) = ZR(ITEMPS)
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
+      NOMRES(3) = 'ALPHA'
+      TREF = ZR(ITREF)
 
 C - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
 C
+      IF (FONC) THEN
+        DO 50 I = 1,NNO
+          DO 30 J = 1,NDIM
+            VALPAR(J) = ZR(IGEOM+NDIM*(I-1)+J-1)
+ 30       CONTINUE
+          DO 40 J = 1,NDIM
+            KK = NDIM*(I-1) + J
+            CALL FOINTE('FM',ZK8(IFORF+J-1),3,NOMPAR,VALPAR,FNO(KK),IER)
+ 40       CONTINUE
+ 50     CONTINUE
+      ELSE
+        DO 8000 I = 1,NNO
+          DO 6000 J = 1,NDIM
+            FNO(NDIM*(I-1)+J) = ZR(IFORC+NDIM*(I-1)+J-1)
+ 6000     CONTINUE
+ 8000   CONTINUE
+      END IF
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
@@ -188,6 +211,7 @@ C
  70       CONTINUE
         ENDIF
       ENDIF
+      
 
 C-----------------------------------------------------------------------
 C     BOUCLE SUR LES POINTS DE GAUSS
@@ -197,8 +221,11 @@ C     BOUCLE SUR LES POINTS DE GAUSS
         XG = 0.D0
         YG = 0.D0
         ZG = 0.D0
+        TG = 0.D0
         DO 110 I=1,3
-          DO 111 J=1,3
+          TGDM(I) = 0.D0
+          TGVDM(I) = 0.D0
+          DO 111 J=1,4
             DUDM(I,J) = 0.D0
             DU1DL(I,J)= 0.D0
             DU2DL(I,J)= 0.D0
@@ -207,6 +234,8 @@ C     BOUCLE SUR LES POINTS DE GAUSS
             DU2DM(I,J)= 0.D0
             DU3DM(I,J)= 0.D0
             DTDM(I,J) = 0.D0
+            DFDM(I,J) = 0.D0
+            DFVDM(I,J) = 0.D0
  111      CONTINUE
  110    CONTINUE
 
@@ -228,17 +257,25 @@ C
           XG = XG + ZR(IGEOM-1+NDIM*(I-1)+1)*DER(4)
           YG = YG + ZR(IGEOM-1+NDIM*(I-1)+2)*DER(4)
           ZG = ZG + ZR(IGEOM-1+NDIM*(I-1)+3)*DER(4)
+          TG = TG + ZR(ITEMP+I-1)*DER(4)
 
           DO 121 J=1,NDIM
+            TGDM(J) = TGDM(J) + ZR(ITEMP+I-1)*DER(J)
             DO 122 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+NDIM*(I-1)+J-1)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(K)
+              DFDM(J,K) = DFDM(J,K) + FNO(NDIM*(I-1)+J)*DER(K)
 122         CONTINUE
+            DUDM(J,4) = DUDM(J,4) + ZR(IDEPL+NDIM*(I-1)+J-1)*DER(4)
+            DTDM(J,4) = DTDM(J,4) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(4)
+            DFDM(J,4) = DFDM(J,4) + FNO(NDIM*(I-1)+J)*DER(4)
 121       CONTINUE
 120     CONTINUE
 
 C       RECUPEATION DES DONNEES MATERIAUX
-        CALL RCVADA (ZI(IMATE),'ELAS',TG,2,NOMRES,VALRES,DEVRES,
+        TTRG = TG - TREF
+        TTRGV = 0.D0
+        CALL RCVADA (ZI(IMATE),'ELAS',TG,3,NOMRES,VALRES,DEVRES,
      &               CODRET)
         IF (CODRET(3).NE.'OK') THEN
           VALRES(3)= 0.D0
@@ -246,6 +283,8 @@ C       RECUPEATION DES DONNEES MATERIAUX
         ENDIF
         E     = VALRES(1)
         NU    = VALRES(2)
+        ALPHA = VALRES(3)
+        K3A = ALPHA * E / (1.D0-2.D0*NU)
 
         LA = NU*E/((1.D0+NU)*(1.D0-2.D0*NU))
         MU = E/(2.D0*(1.D0+NU))
@@ -315,7 +354,7 @@ C       COORDONNÉES DE G DANS LA BASE LOCALE
         XLG=VGL(1)
         YLG=VGL(2)
         IF (ABS(VGL(3)).GT.3.0D-2) THEN          
-          CALL UTMESS('F','TE0295','ZG NON NUL !!')
+          CALL UTMESS('A','TE0295','ZG NON NUL !!')
         ENDIF
 
 C       COORDONNÉES POLAIRES DE G
@@ -356,6 +395,16 @@ C       MATRICE DES DÉRIVÉES DE U1 DANS LA BASE LOCALE (3X3)
           DU1DL(I,2)=SIN(PHIG)*DU1DPO(I,1)+COS(PHIG)/RG*DU1DPO(I,2)
           DU1DL(I,3)=0.D0
  140    CONTINUE
+C
+C       U1 DANS LA BASE GLOBALE
+        DO 1400 I = 1,NDIM
+          U1G(I) = 0.0D0
+          DO 1410 J = 1,NDIM
+            U1G(I) = U1G(I) + P(I,J) * U1L(J)
+ 1410     CONTINUE
+        DU1DM(I,4) = U1G(I)
+ 1400   CONTINUE         
+C
 
 C       MATRICE DES DÉRIVÉES DE U1 DANS LA BASE GLOBALE (3X3)
         DO 141 I=1,NDIM
@@ -394,6 +443,16 @@ C       MATRICE DES DÉRIVÉES DE U2 DANS LA BASE LOCALE (3X3)
           DU2DL(I,2)=SIN(PHIG)*DU2DPO(I,1)+COS(PHIG)/RG*DU2DPO(I,2)
           DU2DL(I,3)=0.D0
  150    CONTINUE
+C
+C       U2 DANS LA BASE GLOBALE
+        DO 1500 I = 1,NDIM
+          U2G(I) = 0.0D0
+          DO 1510 J = 1,NDIM
+            U2G(I) = U2G(I) + P(I,J) * U2L(J)
+ 1510     CONTINUE
+        DU2DM(I,4) = U2G(I)
+ 1500   CONTINUE         
+C
 
 C       MATRICE DES DÉRIVÉES DE U2 DANS LA BASE GLOBALE (3X3)
         DO 151 I=1,NDIM
@@ -430,6 +489,16 @@ C       MATRICE DES DÉRIVÉES DE U3 DANS LA BASE LOCALE (3X3)
           DU3DL(I,2)=SIN(PHIG)*DU3DPO(I,1)+COS(PHIG)/RG*DU3DPO(I,2)
           DU3DL(I,3)=0.D0
  160    CONTINUE
+C
+C       U3 DANS LA BASE GLOBALE
+        DO 1600 I = 1,NDIM
+          U3G(I) = 0.D0
+          DO 1610 J = 1,NDIM
+            U3G(I) = U3G(I) + P(I,J) * U3L(J)
+ 1610     CONTINUE
+        DU3DM(I,4) = U3G(I)
+ 1600   CONTINUE         
+C
 
 C       MATRICE DES DÉRIVÉES DE U3 DANS LA BASE GLOBALE (3X3)
         DO 161 I=1,NDIM
@@ -447,22 +516,25 @@ C-----------------------------------------------------------------------
 C       CALCUL DE G, K1, K2, K2 AU POINT DE GAUSS
 C-----------------------------------------------------------------------
 
-        GUV=0.D0
-        CALL GBIL3D(DUDM,DUDM,DTDM,POIDS,C1,C2,C3,GUV)
-        G=G+GUV
-
-        GUV1=0.D0
-
-        CALL GBIL3D(DUDM,DU1DM,DTDM,POIDS,C1,C2,C3,GUV1)
-        K1=K1+GUV1
-
-        GUV2=0.D0
-        CALL GBIL3D(DUDM,DU2DM,DTDM,POIDS,C1,C2,C3,GUV2)
-        K2=K2+GUV2
-
-        GUV3=0.D0
-        CALL GBIL3D(DUDM,DU3DM,DTDM,POIDS,C1,C2,C3,GUV3)
-        K3=K3+GUV3
+        GUV = 0.D0
+        CALL GBIL3D(DUDM,DUDM,DTDM,DFDM,DFDM,TGDM,TGDM,
+     &              TTRG,TTRG,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV)
+        G = G + GUV
+C
+        GUV1 = 0.D0
+        CALL GBIL3D(DUDM,DU1DM,DTDM,DFDM,DFVDM,TGDM,TGVDM,
+     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV1)
+        K1 = K1 + GUV1
+C
+        GUV2 = 0.D0
+        CALL GBIL3D(DUDM,DU2DM,DTDM,DFDM,DFVDM,TGDM,TGVDM,
+     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV2)
+        K2 = K2 + GUV2
+C
+        GUV3 = 0.D0
+        CALL GBIL3D(DUDM,DU3DM,DTDM,DFDM,DFVDM,TGDM,TGVDM,
+     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV3)
+        K3 = K3 + GUV3
 
 100   CONTINUE
 

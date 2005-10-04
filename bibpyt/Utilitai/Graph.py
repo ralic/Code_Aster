@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 03/10/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -362,13 +362,16 @@ class TraceGraph:
 
       if graph.Echelle_X=='LOG':
          graph.Grille_X=10
+         # verif si Min<0 à cause de la marge
          if graph.Min_X < 0.:
-            UTMESS('A', 'Graph', 'On limite la fenetre aux abscisses positives.')
+            if graph.BBXmin < 0.:
+               UTMESS('A', 'Graph', 'On limite la fenetre aux abscisses positives.')
             graph.Min_X=graph.MinP_X
       if graph.Echelle_Y=='LOG':
          graph.Grille_Y=10
          if graph.Min_Y < 0.:
-            UTMESS('A', 'Graph', 'On limite la fenetre aux ordonnées positives.')
+            if graph.BBYmin < 0.:
+               UTMESS('A', 'Graph', 'On limite la fenetre aux ordonnées positives.')
             graph.Min_Y=graph.MinP_Y
       
       # formats de base (identiques à ceux du module Table)
@@ -840,12 +843,14 @@ class TraceXmgrace(TraceGraph):
       if g.Echelle_X=='LOG':
          g.Grille_X=10
          if g.Min_X < 0.:
-            UTMESS('A', 'Graph', 'On limite la fenetre aux abscisses positives.')
+            if g.BBXmin < 0.:
+               UTMESS('A', 'TraceXmgrace', 'On limite la fenetre aux abscisses positives.')
             g.Min_X=g.MinP_X
       if g.Echelle_Y=='LOG':
          g.Grille_Y=10
          if g.Min_Y < 0.:
-            UTMESS('A', 'Graph', 'On limite la fenetre aux ordonnées positives.')
+            if g.BBYmin < 0.:
+               UTMESS('A', 'TraceXmgrace', 'On limite la fenetre aux ordonnées positives.')
             g.Min_Y=g.MinP_Y
       
       self._OuvrFich()

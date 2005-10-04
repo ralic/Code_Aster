@@ -1,4 +1,4 @@
-# MODIF  DATE 06/11/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PENDULE SIMPLE EN GRANDE OSCILLATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,9 @@ MO=AFFE_MODELE(   MAILLAGE=MA,
                         AFFE=_F( GROUP_MA = 'CABLE', PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'CABLE') )
 
-MAT=DEFI_MATERIAU(   CABLE=_F(  E = 1.E8, EC_SUR_E = 1.E0, RHO = 1.) )
+MAT=DEFI_MATERIAU(   ELAS=_F(  E = 1.E8, NU=0., RHO = 1.),
+                     CABLE=_F(EC_SUR_E = 1.E0),
+                 )
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA, 
                           AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )

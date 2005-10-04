@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 05/07/2005   AUTEUR DURAND C.DURAND 
+#& MODIF ENTETE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ class macr_elem_dyna  (ASSD):
     nommacr=self.get_name()
     ncham=nommacr+(8-len(nommacr))*' '
     ncham=nommacr+(8-len(nommacr))*' '+'.MAEL'
-    nombase=aster.getvectjev(ncham+(19-len(ncham))*' '+'.REFE')[0]
+    nombase=aster.getvectjev(ncham+'_REFE')[0]
     nbmode=Numeric.array(aster.getvectjev(nombase[0:8]+(19-len(nombase[0:8]))*' '+'.UTIL'))
     nbmodtot=nbmode[1]
     nbmoddyn=nbmode[2]
@@ -132,22 +132,23 @@ class macr_elem_dyna  (ASSD):
 
     nommacr=self.get_name()
     if (typmat=='MASS_GENE') :
-       ext='.MAEL.MASS '
+       ext='.MAEL_MASS'
     elif (typmat=='RIGI_GENE') :
-       ext='.MAEL.RAID '
+       ext='.MAEL_RAID'
     elif (typmat=='AMOR_GENE') :
-       ext='.MAEL.AMOR '
+       ext='.MAEL_AMOR'
     else:
        raise Accas.AsException("Le type de la matrice est incorrect")
     ncham=nommacr+(8-len(nommacr))*' '+ext
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
+    print ncham
+    desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
 
 # On teste si le DESC du vecteur existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
        est mal cree par Code Aster")
 
-    tmp=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'))
+    tmp=Numeric.array(aster.getvectjev(ncham+'_VALE'))
     matrice=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
     for j in range(desc[1]+1):
       for i in range(j):
@@ -172,16 +173,16 @@ class macr_elem_dyna  (ASSD):
 
     nommacr=self.get_name()
     if (typmat=='MASS_GENE') :
-       ext='.MAEL.MASS '
+       ext='.MAEL_MASS'
     elif (typmat=='RIGI_GENE') :
-       ext='.MAEL.RAID '
+       ext='.MAEL_RAID'
     elif (typmat=='AMOR_GENE') :
-       ext='.MAEL.AMOR '
+       ext='.MAEL_AMOR'
     else:
        raise Accas.AsException("Le type de la matrice \
                                 est incorrect")
     ncham=nommacr+(8-len(nommacr))*' '+ext
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
+    desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
 
 # On teste si le DESC de la matrice jeveux existe
     if (desc==None):
@@ -204,7 +205,7 @@ class macr_elem_dyna  (ASSD):
       for i in range(j):
         k=j*(j-1)/2+i
         tmp[k]=matrice[j-1,i]
-    aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(tmp),tuple((
+    aster.putvectjev(ncham+'_VALE',len(tmp),tuple((
     range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
     return
 

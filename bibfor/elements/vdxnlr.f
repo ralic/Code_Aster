@@ -1,5 +1,5 @@
       SUBROUTINE VDXNLR(OPTION,NOMTE,XI,RIG,NB1,CODRET)
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,7 +148,7 @@ C        LGPG=(NBVALC+6)*NPGH*NBCOU
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
+      CALL TECACH ('ONN','PTEMPMR',8,ITAB,IRET)
       ITEMP=ITAB(1)
       IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
         TEMPNO = .TRUE.
@@ -159,7 +159,7 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
         TPG1 = 0.D0
         DO 30 I = 1,NB2
           CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-          T = ZR(ITEMP+3* (I-1))
+          T    = ZR(ITEMP+  3* (I-1))
           TINF = ZR(ITEMP+1+3* (I-1))
           TSUP = ZR(ITEMP+2+3* (I-1))
           TPG1 = TPG1 + T + (TSUP+TINF-2*T)/6.D0
@@ -199,22 +199,6 @@ C     CALCULS DES 2 DDL INTERNES
       CALL TRNDGL(NB2,VECTN,VECTPT,ZR(IDEPLM),DEPLM,ROTFCM)
 
       CALL TRNDGL(NB2,VECTN,VECTPT,ZR(IDEPLP),DEPLP,ROTFCP)
-
-C     CALL DDLINT(NB1,VECTN,VECTPT,CISAIL,KAPPA,ZR(ICONTM),ZR(IDEPLP),
-C    &                                                     DPLPIL,DQJ)
-
-C     CONSTITUTION DES VECTEURS DEPLACEMENT ENTIER A NDDLE DDL
-C     (DEPLACEMENT DE L'INSTANT PRECEDANT ET DE DEPLACEMENT INCREMENTAL)
-
-C     DO 15 I=1,NDDLE
-C        IF (I.LE.(NDDLE-2)) THEN
-C           DEPLM(I)=DPLMIL(I)
-C           DEPLP(I)=DPLPIL(I)
-C        ELSE
-C           DEPLM(I)=ZR( )
-C           DEPLP(I)=DQJ(I)
-C        ENDIF
-C15   CONTINUE
 
 C     POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP
 
@@ -279,16 +263,20 @@ C         ---------------------------------------------------
 C             TXPG1 = MOY , TXPG2 = INF , TXPG3 = SUP
 
                 ITEMPM=ITABM(1)
-                CALL DXTPIF(ZR(ITEMPM+3*(I-1)),ZL(ITABM(8)+3*(I-1)))
-                TMPG1 = TMPG1 + ZR(ITEMPM+3*I-3)*ZR(LZR-1+K+I)
-                TMPG2 = TMPG2 + ZR(ITEMPM+3*I-2)*ZR(LZR-1+K+I)
-                TMPG3 = TMPG3 + ZR(ITEMPM+3*I-1)*ZR(LZR-1+K+I)
+                IF ( ITEMPM.NE.0 ) THEN
+                  CALL DXTPIF(ZR(ITEMPM+3*(I-1)),ZL(ITABM(8)+3*(I-1)))
+                  TMPG1 = TMPG1 + ZR(ITEMPM+3*I-3)*ZR(LZR-1+K+I)
+                  TMPG2 = TMPG2 + ZR(ITEMPM+3*I-2)*ZR(LZR-1+K+I)
+                  TMPG3 = TMPG3 + ZR(ITEMPM+3*I-1)*ZR(LZR-1+K+I)
+                ENDIF
 
                 ITEMPP=ITABP(1)
-                CALL DXTPIF(ZR(ITEMPP+3*(I-1)),ZL(ITABP(8)+3*(I-1)))
-                TPPG1 = TPPG1 + ZR(ITEMPP+3*I-3)*ZR(LZR-1+K+I)
-                TPPG2 = TPPG2 + ZR(ITEMPP+3*I-2)*ZR(LZR-1+K+I)
-                TPPG3 = TPPG3 + ZR(ITEMPP+3*I-1)*ZR(LZR-1+K+I)
+                IF ( ITEMPP.NE.0 ) THEN
+                  CALL DXTPIF(ZR(ITEMPP+3*(I-1)),ZL(ITABP(8)+3*(I-1)))
+                  TPPG1 = TPPG1 + ZR(ITEMPP+3*I-3)*ZR(LZR-1+K+I)
+                  TPPG2 = TPPG2 + ZR(ITEMPP+3*I-2)*ZR(LZR-1+K+I)
+                  TPPG3 = TPPG3 + ZR(ITEMPP+3*I-1)*ZR(LZR-1+K+I)
+                ENDIF
    70         CONTINUE
               TMC = 2* (TMPG2+TMPG3-2*TMPG1)* (ZIC/EPAIS)* (ZIC/EPAIS) +
      &              (TMPG3-TMPG2)* (ZIC/EPAIS) + TMPG1

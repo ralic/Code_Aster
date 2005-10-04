@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER LNOFF,NDEP,JINST,ICOMP,ITHETA,IPROPA,IFOND,LONG
       INTEGER I,J,NBINST,NBRE,NBPRUP,IADNUM,NBORN,NBCO
       INTEGER NBVAL,IBOR,N1,N2,N3,IG,LNOEU,LABSCU
-      INTEGER NVITES,NACCE,IRET1
+      INTEGER NVITES,NACCE,IRET1,IPULS
 
-      REAL*8 PREC,ALPHA,TIME,RBID
+      REAL*8 PREC,ALPHA,TIME,RBID,PULS,TIMEU,TIMEV
 
       CHARACTER*1 K1BID
       CHARACTER*4 TYPRUP(8),K4BID
@@ -88,7 +88,7 @@ C      END IF
 C- FOND DE FISSURE : POUR AFFECTATION DE R_INF, R_SUP ET MODULE DE THETA
 C- POUR LE CAS SANS X-FEM
 
-      IF ( OPTION .NE. 'CALC_K_G') THEN
+      IF ((OPTION.NE.'CALC_K_G') .AND. (OPTION.NE.'K_G_MODA')) THEN
         CALL GETVID ( ' ','FOND_FISS', 1,1,1, FOND, IFOND )
         CHFOND = FOND//'.FOND      .NOEU'
         CALL JELIRA(CHFOND,'LONMAX',LNOFF,K1BID)
@@ -96,7 +96,7 @@ C- POUR LE CAS SANS X-FEM
 
 C- POUR LE CAS AVEC X-FEM
 
-      IF ( OPTION .EQ. 'CALC_K_G') THEN
+      IF ((OPTION .EQ. 'CALC_K_G') .OR. (OPTION .EQ. 'K_G_MODA')) THEN
         CALL GETVID ( ' ','FISSURE', 1,1,1, FISS, IFOND )
         CHFOND = FISS//'.FONDFISS'
         CALL JELIRA(CHFOND,'LONMAX',LONG,K1BID)
@@ -167,6 +167,8 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
         IF (NBINST.EQ.0) THEN
           EXTIM = .FALSE.
           TIME = 0.D0
+          TIMEU = 0.D0
+          TIMEV = 0.D0
         ELSE
           NBINST = -NBINST
           IF (NBINST.GT.1) THEN
@@ -175,6 +177,8 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
      +                  )
           END IF
           CALL GETVR8(' ','INST',0,1,NBINST,TIME,IBID)
+          TIMEU = TIME
+          TIMEV = TIME
           EXTIM = .TRUE.
         END IF
         NBPRUP = 3
@@ -203,6 +207,13 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
           CALL UTMESS('F',OPER,'PROBLEME A LA RECUPERATION D''UN CHAMP')
         END IF
         CALL GETTCO(RESU,TYSD)
+C                
+        IF (((OPTION.EQ.'K_G_MODA') .AND. (TYSD.NE.'MODE_MECA')) .OR.
+     +     ((TYSD.EQ.'MODE_MECA') .AND. (OPTION.NE.'K_G_MODA'))) THEN
+           CALL UTMESS('F','OP0053','L''OPTION K_G_MODA DEMANDE UNE'//
+     &                    ' STRUCTURE RESULTAT DE TYPE MODE_MECA')
+        ENDIF
+C
         IF (TYSD.EQ.'DYNA_TRANS') THEN
            CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
            CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
@@ -305,7 +316,7 @@ C --- SYMETRIE DU CHARGEMENT ET IMPRESSION --------------------------
 C - FOND DE FISSURE : AFFECTATION DE R_INF, R_SUP ET MODULE DE THETA
 C   RECUPERATION INFO SUR CONNEXITE DU FOND DE FISSURE
 
-      IF ( OPTION .NE. 'CALC_K_G') THEN
+      IF ((OPTION .NE. 'CALC_K_G') .AND. (OPTION .NE. 'K_G_MODA')) THEN
 
       CALL JEVEUO(CHFOND,'L',IADNUM)
       IF (ZK8(IADNUM+1-1).EQ.ZK8(IADNUM+LNOFF-1)) THEN
@@ -341,7 +352,7 @@ C   RECUPERATION INFO SUR CONNEXITE DU FOND DE FISSURE
 
       ENDIF
 
-      IF ( OPTION .EQ. 'CALC_K_G') THEN
+      IF ((OPTION .EQ. 'CALC_K_G') .OR. (OPTION .EQ. 'K_G_MODA')) THEN
 
 C       ON A TOUJOURS À FAIRE À UN FOND OUVERT AVEC XFEM
         CONNEX = .FALSE.
@@ -408,21 +419,71 @@ C - CREATION DE TABLE -----------------------------------------------
 C          NOPRUP(8) = 'G_IRWIN'
 C          TYPRUP(8) = 'R'
       ENDIF
+      
+      IF ( OPTION.EQ.'K_G_MODA' ) THEN
+          NBPRUP = 7
+          NOPRUP(1) = 'NUME_MODE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'NUM_PT'
+          TYPRUP(2) = 'I'
+          NOPRUP(3) = 'ABS_CURV'
+          TYPRUP(3) = 'R'
+          NOPRUP(4) = 'K1_LOCAL'
+          TYPRUP(4) = 'R'
+          NOPRUP(5) = 'K2_LOCAL'
+          TYPRUP(5) = 'R'
+          NOPRUP(6) = 'K3_LOCAL'
+          TYPRUP(6) = 'R'
+          NOPRUP(7) = 'G_LOCAL'
+          TYPRUP(7) = 'R'
+      ENDIF
 
       CALL TBCRSD(RESULT,'G')
       CALL TBAJPA(RESULT,NBPRUP,NOPRUP,TYPRUP)
 
       IF ( OPTION .EQ. 'G_BILINEAIRE' .OR.
-     +     OPTION .EQ. 'CALC_K_G'     .OR.
-     +     OPTION .EQ. 'CALC_G_MAX' ) THEN
+     +     OPTION .EQ. 'CALC_K_G'    .OR.
+     +     OPTION .EQ. 'CALC_G_MAX'  .OR.
+     &     OPTION .EQ. 'K_G_MODA' ) THEN
+C      
+      IF ( OPTION .EQ. 'K_G_MODA' ) THEN
 
+C=======================================================================
+C  CALCUL DES FACTEURS D'INTENSITES DE CONTRAINTES MODAUX EN DYNAMIQUE
+C=======================================================================
+
+          DO 4444 I = 1,LONVEC
+            IF (NRES.NE.0) THEN
+              IORD = ZI(IVEC-1+I)
+              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
+     &        RESU,IORD)
+              CALL JEVEUO(VCHAR,'L',ICHA)
+              CALL RSEXCH(RESU,'DEPL',IORD,CHDEPL,IRET)
+              IF (IRET.NE.0) THEN
+                CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE AU MODE PROPRE')
+                CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
+                CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
+                CALL UTFINM()
+              ENDIF
+              CALL RSADPA(RESU,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
+              PULS = ZR(IPULS)
+              PULS = SQRT(PULS)
+              EXTIM = .TRUE.
+            ENDIF
+
+            CALL CAKGMO(OPTION,RESULT,MODELE,CHDEPL,THETAI,MATE,COMPOR,
+     &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
+     &              IORD,NDEG,THLAGR,GLAGR,PULS,NBPRUP,NOPRUP)
+ 4444     CONTINUE
+C
+        ENDIF
+C        
         IF ( OPTION .EQ. 'CALC_K_G' ) THEN
 
 C=======================================================================
 C  CALCUL DES FACTEURS D'INTENSITES DE CONTRAINTES ET DU TAUX DE
 C  RESTITUTION LOCAL
 C=======================================================================
-
           DO 40 I = 1,LONVEC
             IF (NRES.NE.0) THEN
               IORD = ZI(IVEC-1+I)
@@ -474,7 +535,9 @@ C=======================================================================
      +                                    'DEPLACEMENTS')
                   ENDIF
                   CALL RSADPA(RESU,'L',1,'INST',IORD1,0,JINST,K8BID)
-                  TIME = ZR(JINST)
+                  TIMEU = ZR(JINST)
+                  CALL RSADPA(RESU,'L',1,'INST',IORD2,0,JINST,K8BID)
+                  TIMEV = ZR(JINST)
                   EXTIM = .TRUE.
                ELSE
                   DEPLA1 = CHDEPL
@@ -484,7 +547,7 @@ C=======================================================================
                CALL MBILGL(OPTIO2,RESULT,MODELE,DEPLA1,DEPLA2,THETAI,
      +                     MATE,NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,
      +                     NDEG,THLAGR,GLAGR,MILIEU,EXTIM,
-     +                     TIME,I,J,NBPRUP,NOPRUP)
+     +                     TIMEU,TIMEV,I,J,NBPRUP,NOPRUP)
                CALL JEDEMA()
   120       CONTINUE
   110    CONTINUE

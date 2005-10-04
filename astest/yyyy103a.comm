@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PORTEE DE CABLES TRI-RENUM / AFFE_CHAR_MECA / DYNOLI(LDLT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,19 +40,26 @@ MO=AFFE_MODELE(   MAILLAGE=MA,AFFE=(
 
 # CONDUCTEUR
 
-MAT1=DEFI_MATERIAU(  CABLE=_F( E = 5.40E10,  ALPHA = 23.E-6,  RHO = 2760.))
+MAT1=DEFI_MATERIAU(  ELAS=_F( E = 5.40E10,  ALPHA = 23.E-6, NU=0.,  RHO = 2760.),
+                     CABLE=_F(),
+                   )
 
 # ISOLATEUR
 
-MAT2=DEFI_MATERIAU(  CABLE=_F(  E = 6.36E10,  ALPHA = 0.,  RHO = 130463.))
+MAT2=DEFI_MATERIAU(  ELAS=_F(  E = 6.36E10,  ALPHA = 0., NU=0.,  RHO = 130463.),
+                     CABLE=_F(),
+                   )
 
 # CABLE AVANT ISOLATEUR
 
-MAT3=DEFI_MATERIAU(  CABLE=_F(  E = 6.36E10,  ALPHA = 0.,  RHO = 39819.))
-
+MAT3=DEFI_MATERIAU(  ELAS=_F(  E = 6.36E10,  ALPHA = 0., NU=0.,  RHO = 39819.),
+                     CABLE=_F(),
+                   )
 # CABLE APRES ISOLATEUR
 
-MAT4=DEFI_MATERIAU(  CABLE=_F(  E = 6.36E10,  ALPHA = 0.,  RHO = 57720.))
+MAT4=DEFI_MATERIAU(  ELAS=_F(  E = 6.36E10,  ALPHA = 0., NU=0., RHO = 57720.),
+                     CABLE=_F(),
+                   )
 
 # CHARPENTE VERTICALE
 

@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -196,7 +196,7 @@ C     -----------------------------------
       ELSE IF (TYP2SD.EQ.'MATR_ASSE') THEN
 C     -----------------------------------
         CH = NOMSD
-        CALL JEEXIN(CH//'.CONL',I1)
+C        CALL JEEXIN(CH//'.CONL',I1)
         CALL JEEXIN(CH//'.REFA',I2)
         CALL JEEXIN(CH//'.VALE',I3)
         IF (I1*I2*I3.NE.0) GO TO 20

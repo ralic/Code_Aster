@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,78 +22,57 @@
 # ET MODELISEE EN DKT- DKQ - DST - DSQ - Q4G
 #====================================================================
 
-
 DEBUT(CODE=_F(  NOM = 'HSLS01A',NIV_PUB_WEB='INTERNET') )
 
 MA=LIRE_MAILLAGE( )
-
-MA=DEFI_GROUP( reuse=MA,  MAILLAGE=MA,CREA_GROUP_NO=(
-                    _F(  GROUP_MA = 'AB'),
-                    _F(  GROUP_MA = 'BC'),
-                    _F(  GROUP_MA = 'CD'),
-                    _F(  GROUP_MA = 'DA'))
-                      )
 
 #====================================================================
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E+11,  NU = 0.3,  ALPHA = 1.E-5) )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
- AFFE=_F(  GROUP_MA = ('STRIA1','STRIA2','SQUA',), MATER = MAT, TEMP_REF = 0.))
+                      AFFE=_F(  TOUT='OUI',
+                                MATER = MAT, TEMP_REF = 0.))
 
 #====================================================================
-#
-MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-                   
-                        _F(  GROUP_MA = 'STRIA1',  PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'DST'),
-                        _F(  GROUP_MA = 'STRIA2',  PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'DKT'),
-                        _F(  GROUP_MA = 'SQUA11',  PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'DST'),
-                        _F(  GROUP_MA = 'SQUA12',  PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'DKT'),
+
+MOD=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=(_F(  GROUP_MA = ('STRIA1','SQUA11'),  PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'DST'),
+                        _F(  GROUP_MA = ('STRIA2','SQUA12'),  PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'DKT'),
                         _F(  GROUP_MA = 'SQUA2',  PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'Q4G'))
+                             MODELISATION = 'Q4G'))
                  )
 
-CARA=AFFE_CARA_ELEM(   MODELE=MOD,
-          COQUE=_F(  GROUP_MA = ('STRIA1','STRIA2','SQUA',), EPAIS = 0.01)
-                     )
-
-TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
-              AFFE=_F(  TOUT = 'OUI',
-                     NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                     VALE = ( 50.,     0.,     100.,)))
-
-CH1=AFFE_CHAR_MECA(  MODELE=MOD,
-                  TEMP_CALCULEE=TEMP,
-                 DDL_IMPO=_F(  GROUP_NO = ('AB', 'BC', 'CD', 'DA',),
-                DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)
-                    )
-
-CH2=AFFE_CHAR_MECA(  MODELE=MOD,
-                  EPSI_INIT=_F( TOUT = 'OUI',
-                EXX = 0.5E-3, EYY = 0.5E-3, KXX = 0.1, KYY = 0.1),
-                 DDL_IMPO=_F(  GROUP_NO = ('AB', 'BC', 'CD', 'DA',),
-                DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)
-                    )
-
-MESTAT=MECA_STATIQUE( 
-                               MODELE=MOD,
-                                EXCIT=_F( CHARGE = CH1),
-                           CHAM_MATER=CHMAT,
-                            CARA_ELEM=CARA,
-                          )
-
-MESTAT=CALC_NO( reuse=MESTAT,        RESULTAT=MESTAT,
-                              
-                            OPTION='FORC_NODA'
+CARA=AFFE_CARA_ELEM(  MODELE=MOD,
+                      COQUE=_F(  GROUP_MA = ('STRIA1','SQUA11','STRIA2','SQUA12','SQUA2'),
+                                 EPAIS = 0.01)
                    )
 
-MESTAT=CALC_ELEM( reuse=MESTAT,         
-                            RESULTAT=MESTAT,
-                              
-                              OPTION='SIGM_ELNO_DEPL'
+TEMP=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                  AFFE=_F( TOUT = 'OUI',
+                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                           VALE =    ( 50.,       0.    ,   100.    ,),))
+
+CH1=AFFE_CHAR_MECA(  MODELE=MOD,
+                     TEMP_CALCULEE=TEMP,
+                     DDL_IMPO=_F( GROUP_NO = ('AB', 'BC', 'CD', 'DA',),
+                                   DX = 0.,  DY = 0.,  DZ = 0.,
+                                  DRX = 0., DRY = 0., DRZ = 0.)
+                    )
+
+MESTAT=MECA_STATIQUE(      MODELE=MOD,
+                            EXCIT=_F( CHARGE = CH1),
+                      CHAM_MATER=CHMAT,
+                       CARA_ELEM=CARA,
+                          )
+
+MESTAT=CALC_NO( reuse=MESTAT, RESULTAT=MESTAT,
+                OPTION='FORC_NODA'
+                   )
+
+MESTAT=CALC_ELEM( reuse=MESTAT, RESULTAT=MESTAT,
+                  OPTION='SIGM_ELNO_DEPL'
                    )
 
 TEST_RESU(RESU=( 

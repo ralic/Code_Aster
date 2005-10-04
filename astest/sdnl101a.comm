@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,14 +41,24 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         PHENOMENE='MECANIQUE',
                         MODELISATION='POU_D_E',),),);
 
-MAT1=DEFI_MATERIAU(CABLE=_F(E=54000000000.0,
-                            RHO=2761.0,),);
+MAT1=DEFI_MATERIAU(ELAS=_F(E=54000000000.0,
+                           RHO=2761.0,
+                           NU=0.),
+                   CABLE=_F()
+                   );
 
-MAT2=DEFI_MATERIAU(CABLE=_F(E=63700000000.0,
-                            RHO=110841.0,),);
+MAT2=DEFI_MATERIAU(ELAS=_F(E=63700000000.0,
+                           NU=0.,
+                           RHO=110841.0,),
+                   CABLE=_F()
+                   );
 
-MAT3=DEFI_MATERIAU(CABLE=_F(E=63700000000.0,
-                            RHO=104173.0,),);
+MAT3=DEFI_MATERIAU(ELAS=_F(E=63700000000.0,
+                           RHO=104173.0,
+                           NU=0.
+                           ),
+                   CABLE=_F()
+                  );
 
 MAT4=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                            NU=0.3,

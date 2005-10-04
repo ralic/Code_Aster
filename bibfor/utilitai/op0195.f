@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ C     -----------------------------------------------------------------
       INTEGER N1,IB,IFM,NIV,IRET,I11,I12
       CHARACTER*3 PROL0
       CHARACTER*4 TYCHR
-      CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,CHIN,NOMGD2,NOMPAR,MA2,NOPAR2
+      CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,CHIN,NOMGD2,NOMPAR,MA2,NOPAR2,TA
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
       CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1
       CHARACTER*8 NU1
@@ -95,7 +95,7 @@ C     -------------------------------------------------------------
 
       IF (TYCHR(1:2).EQ.'EL') THEN
         IF ((OPERA.EQ.'AFFE') .OR. (OPERA.EQ.'ASSE') .OR.
-     &      (OPERA.EQ.'DISC')) THEN
+     &      (OPERA.EQ.'DISC'))THEN
           IF (MO.EQ.' ') CALL UTMESS('F','OP0195',
      &                               'POUR TYPE_RESU:''EL..'''//
      &                          ' IL FAUT RENSEIGNER LE MOT CLE MODELE.'
@@ -109,7 +109,6 @@ C         ---------------------------------------------------
           ELSE
             OPTIO2 = OPTION
           END IF
-
           NOMPAR=NOPAR2(OPTIO2,NOMGD,'OUT')
           CELMOD = '&&OP0195.CELMOD'
           CALL ALCHML(LIGREL,OPTIO2,NOMPAR,'V',CELMOD,IB,' ')
@@ -165,8 +164,12 @@ C     -----------------------------------------
 
       ELSE IF (OPERA.EQ.'EXTR') THEN
 C     -----------------------------------------
-        CALL CHPREC(CHOU)
-
+         CALL GETVID(' ','TABLE',0,1,1,TA,N1)
+         IF (N1.EQ.0)THEN
+            CALL CHPREC(CHOU)
+         ELSE
+            CALL U195TB(CHOU)
+         ENDIF
       END IF
 
 
@@ -219,7 +222,6 @@ C -----------------------------------------------------
       IF (NOMGD.NE.NOMGD2) CALL UTMESS('F','OP0195',
      &                          'GRANDEURS INCOHERENTES:'//NOMGD//
      &                          ' ET '//NOMGD2)
-
 
 C
       CALL JEDEMA()

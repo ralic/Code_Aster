@@ -1,7 +1,7 @@
       SUBROUTINE GBILIN(DUDM,DVDM,DTDM,DFDM,TGDM,TTRG,POIDS,
-     &            C1,C2,C3,CS,TH,K3A,G)
+     &            C1,C2,C3,CS,TH,K3A,RHO,PULS,G)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/07/97   AUTEUR B8BHHEV E.VISSE 
+C MODIF CALCULEL  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,8 @@ C ----------------------------------------------------------------------
 C
       INTEGER I,J
 C
-      REAL*8  VECT(7),S11,S12,S13,S21,S22,S23,S1,S2
-      REAL*8  TCLA,TFOR,TTHE,DIVT,DIVV,S1TH,S2TH,PROD
+      REAL*8  VECT(7),S11,S12,S13,S21,S22,S23,S1,S2,PULS,RHO
+      REAL*8  TCLA,TFOR,TTHE,TDYN,DIVT,DIVV,S1TH,S2TH,PROD
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -107,14 +107,27 @@ C
       TTHE = POIDS*PROD*DIVV*K3A/2.D0
 C
 C - TERME FORCE VOLUMIQUE
-C
+C     
+      TFOR=0.D0
       DO 80 I=1,2
         PROD=0.D0
         DO 70 J=1,2
           PROD = PROD + DFDM(I,J)*DTDM(J,4)
 70      CONTINUE
-        TFOR = CS*DVDM(I,4)*(PROD+DFDM(I,4)*DIVT)*POIDS
+        TFOR = TFOR + CS*DVDM(I,4)*(PROD+DFDM(I,4)*DIVT)*POIDS
 80    CONTINUE
 C
-      G  = TCLA+TTHE+TFOR
+C - TERME DYNAMIQUE
+C
+      PROD=0.D0        
+      DO 200 I=1,2
+        DO 210 J=1,2
+          PROD = PROD + DUDM(I,J)*DTDM(J,4)*DVDM(I,4)+
+     &                  DVDM(I,J)*DTDM(J,4)*DUDM(I,4)
+210     CONTINUE
+200   CONTINUE   
+      TDYN = -0.5D0*RHO*(PULS**2)*PROD*POIDS        
+C
+      G  = TCLA+TTHE+TFOR+TDYN
+C      
       END

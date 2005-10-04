@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,11 +118,23 @@ FICK=DEFI_CONSTANTE(VALE=6.E-10,);
 KINTBO=DEFI_CONSTANTE(VALE=1.E-19,);
 HENRY=DEFI_CONSTANTE(VALE=50000.,);
 
+EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,                        
+             VALE = ( 0.     ,  5.15E8,
+                     500.    ,  5.15E8,  ), 
+                        PROL_DROITE  ='CONSTANT' ,
+                        PROL_GAUCHE  ='CONSTANT' , );
 
-MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
-                              NU=0.2,
-                              RHO=2670.0,
-                              ALPHA=0.,),
+NU=DEFI_CONSTANTE(VALE=0.2,);
+BIDON = 0.,
+
+
+MATERBO=DEFI_MATERIAU(
+                    ELAS_FO=_F(E=EL,
+                              NU=NU,
+                              RHO=2670.,
+                              ALPHA=ZERO,
+                              TEMP_DEF_ALPHA  =BIDON,
+                              ),
                       COMP_THM = 'LIQU_AD_GAZ_VAPE',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=0.,
@@ -230,7 +242,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  EXCIT=(
                  _F(CHARGE=TIMP,), ),
                  COMP_INCR=_F(RELATION='KIT_THHM',
-                              RELATION_KIT=('ELAS','LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
+                              RELATION_KIT=('ELAS_THER','LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,

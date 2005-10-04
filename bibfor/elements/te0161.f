@@ -1,6 +1,6 @@
       SUBROUTINE TE0161(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,13 +87,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C          ------------------------------
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PPESANR','L',IPESA)
+        CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
+     &               CODRET,'FM')
         IF (NOMTE(1:15).EQ.'MECA_POU_D_T_GD') THEN
-          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
-     &                 CODRET,'FM')
           CALL JEVECH('PCAGNPO','L',LSECT)
         ELSE
-          CALL RCVALA(ZI(IMATE),' ','CABLE',0,' ',R8BID,1,'RHO',RHO,
-     &                CODRET,'FM')
           CALL JEVECH('PCACABL','L',LSECT)
         END IF
         A = ZR(LSECT)

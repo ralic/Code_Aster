@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -108,9 +108,13 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
             TSUP = ZR(ITEMP+2+3* (I-1))
 
             IF ((T.NE.TINF) .OR. (T.NE.TSUP) .OR. (TINF.NE.TSUP)) THEN
-              CALL UTMESS('A','TE0221',' LORSQU''IL Y A VARIATION '//
+              CALL UTDEBM('A','TE0221',' LORSQU''IL Y A VARIATION '//
      &      'DE TEMPERATURE DANS L''EPAISSEUR, UTILISER "STAT_NON_LINE"'
      &                    )
+              CALL UTIMPR('L','  TEMPERATURE INF: ', 1, TINF )
+              CALL UTIMPR('L','  TEMPERATURE MOY: ', 1, T    )
+              CALL UTIMPR('L','  TEMPERATURE SUP: ', 1, TSUP )
+              CALL UTFINM()
             END IF
             TPG = TPG + (T+ (TSUP+TINF-2*T)/6.D0)*ZR(IVF+K+I-1)
    20     CONTINUE

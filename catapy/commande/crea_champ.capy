@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,16 +105,25 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
              CHAM_GD         =SIMP(statut='o',typ=(cham_gd_sdaster)),
                              ),
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
-             regles=(UN_PARMI('MAILLAGE','FISSURE','RESULTAT'),),
+             regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
              FISSURE         =SIMP(statut='f',typ=(fiss_xfem) ),
              RESULTAT        =SIMP(statut='f',typ=(resultat_sdaster) ),
-             b_extr_maillage =BLOC(condition = "MAILLAGE != None",
+             TABLE           =SIMP(statut='f',typ=(table_sdaster),min=1,max=1),
+             b_extr_maillage =BLOC(condition = "MAILLAGE != None and TABLE == None",
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
              ),
              b_extr_fissure  =BLOC(condition = "FISSURE != None",
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO",)),
              ),
+             b_extr_table    =BLOC(condition = "TABLE != None",
+                      regles=( EXCLUS('MODELE','MAILLAGE'),
+                               EXCLUS('PROL_ZERO','MAILLAGE'),),
+                      MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster),),
+                      MODELE          =SIMP(statut='f',typ=(modele_sdaster),),
+                      OPTION          =SIMP(statut='f',typ='TXM'),
+                      PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                 ),
              b_extr_resultat =BLOC(condition = "RESULTAT != None",
                  SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                    fr="Paramètre de sensibilité.",

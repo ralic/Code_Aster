@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 05/09/2005   AUTEUR GODARD V.GODARD 
+#& MODIF COMMUN  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,6 +115,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "KIT_THHM",
                                         "VMIS_ASYM_LINE",
                                         "ELAS_THM",
+                                        "ELAS_THER",
                                         "SURF_ETAT_NSAT",
                                         "SURF_ETAT_SATU",
                                         "CAM_CLAY_THM",
@@ -254,6 +255,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "DRUCKER_PRAGER",
                                        "HOEK_BROWN",
                                        "ELAS_THM",
+                                       "ELAS_THER",
                                        "SURF_ETAT_NSAT",
                                        "SURF_ETAT_SATU",
                                        "CAM_CLAY_THM",

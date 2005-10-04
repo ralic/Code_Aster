@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,11 +164,21 @@ DPR21BO=CALC_FONC_INTERP(FONCTION=DPERM2BO,
 DM8=DEFI_CONSTANTE(VALE=1.E-07,);
 
 KINTBO=DEFI_CONSTANTE(VALE=1.E-20,);
+EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,                        
+             VALE = ( 0.     ,  1.9E+20  ,
+                      500.    ,  1.9E+20  , ), 
+                        PROL_DROITE  ='CONSTANT' ,
+                        PROL_GAUCHE  ='CONSTANT' , );
 
-MATERBO=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
-                              NU=0.2,
-                              RHO=2670.0,
-                              ALPHA=0.,),
+NU=DEFI_CONSTANTE(VALE=0.2,);
+BIDON = 0.,
+MATERBO=DEFI_MATERIAU(
+                    ELAS_FO=_F(E=EL,
+                              NU=NU,
+                              RHO=2670.,
+                              ALPHA=ZERO,
+                              TEMP_DEF_ALPHA  =BIDON,
+                              ),
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.E-10,
@@ -231,10 +241,13 @@ LSBG=CALC_FONC_INTERP(FONCTION=LSG,
                         INFO=2,);
 DLSBG=DEFI_CONSTANTE(VALE=0.05,);
 
-MATERBG=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
-                              NU=0.2,
-                              RHO=2670.0,
-                              ALPHA=0.0,),
+MATERBG=DEFI_MATERIAU(
+                    ELAS_FO=_F(E=EL,
+                              NU=NU,
+                              RHO=2670.,
+                              ALPHA=ZERO,
+                              TEMP_DEF_ALPHA  =BIDON,
+                              ),
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.E-10,
@@ -343,7 +356,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=_F(CHARGE=CALEXT,),
                  COMP_INCR=_F(RELATION='KIT_THHM',
-                              RELATION_KIT=('ELAS','LIQU_GAZ','HYDR_UTIL'),),
+                              RELATION_KIT=('ELAS_THER','LIQU_GAZ','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT
                  ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'HPLA100B',NIV_PUB_WEB='INTERNET')
-        )
+DEBUT(CODE=_F( NOM = 'HPLA100B',NIV_PUB_WEB='INTERNET') )
 
 #......................................................................
 #
@@ -42,19 +41,18 @@ DEBUT(CODE=_F( NOM = 'HPLA100B',NIV_PUB_WEB='INTERNET')
 # !-------------->
 #======================================================================
 
-
 MA=LIRE_MAILLAGE(  )
 
 DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+            CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
-         AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
-                           MODELISATION = 'COQUE_AXIS'))
+                 AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'COQUE_AXIS'))
 
 MOTHER=AFFE_MODELE(  MAILLAGE=MA,
-         AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
-                           MODELISATION = 'COQUE_PLAN'))
+                     AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
+                              MODELISATION = 'COQUE_PLAN'))
 
 E_TEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                      VALE=(-1., 2.0E+05,
@@ -75,51 +73,53 @@ MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
 
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.))
+                      AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.))
 
-CHMATH=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MATTH, TEMP_REF = 0.))
+CHMATF=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI', MATER = MATTH, TEMP_REF = 0.))
 
 CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
 
 CARE=AFFE_CARA_ELEM(   MODELE=MO,
-                            COQUE=_F(
-       GROUP_MA = 'TOUT',
-   EPAIS = 1.00,
-                                  A_CIS = 1.E3,    MODI_METRIQUE = 'NON'))
+                       COQUE=_F( GROUP_MA = 'TOUT',
+                                 EPAIS = 1.00,
+                                 A_CIS = 1.E3,    MODI_METRIQUE = 'NON'))
 
 CARETHE=AFFE_CARA_ELEM(   MODELE=MOTHER,
-                           COQUE=_F(
-       GROUP_MA = 'TOUT',
-   EPAIS = 1.00)       )
+                          COQUE=_F( GROUP_MA = 'TOUT',
+                                    EPAIS = 1.00)       )
 
 # ------------------------------------------------------------------
-CHTHE=AFFE_CHAR_THER(
-            MODELE=MOTHER,TEMP_IMPO=(
-        _F( GROUP_NO = ('GRNO6','GRNO13','GRNO14','GRNO15',),TEMP_SUP = 0.5),
-        _F( GROUP_NO = ('GRNO6','GRNO13','GRNO14','GRNO15',),TEMP_INF = -0.5))
-                       )
 
-CHTH2=AFFE_CHAR_THER(
-            MODELE=MOTHER,TEMP_IMPO=(
-        _F( GROUP_NO = ('GRNO6','GRNO13','GRNO14','GRNO15',),TEMP_SUP = 0.1),
-        _F( GROUP_NO = ('GRNO6','GRNO13','GRNO14','GRNO15',),TEMP_INF = 0.1))
-                       )
+T_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            VALE=   (    0.0   ,  0.0 ,    0.0   ), ), )
 
-TEMPLIN=THER_LINEAIRE(
-                  MODELE=MOTHER,
-              CHAM_MATER=CHMATHE,
-               CARA_ELEM=CARETHE,
-                  EXCIT=_F( CHARGE = CHTHE)
-                         )
+T_FIN1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            VALE=   (   -0.5   ,   0. ,    0.5   ), ), )
 
-TEMPLI2=THER_LINEAIRE(
-                  MODELE=MOTHER,
-              CHAM_MATER=CHMATHE,
-               CARA_ELEM=CARETHE,
-                  EXCIT=_F( CHARGE = CHTH2)
-                         )
+T_FIN2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            VALE=   (    0.1   ,  0.1 ,    0.1   ), ), )
+
+TEMPLI1=CREA_RESU( OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F( CHAM_GD=T_INIT,
+                             INST=0.0,      ),
+                         _F( CHAM_GD=T_FIN1,
+                             INST=1.0,      ), ), );
+
+TEMPLI2=CREA_RESU( OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F( CHAM_GD=T_FIN2,
+                             INST=0.0,      ), ), );
 
 # ------------------------------------------------------------------
 
@@ -134,13 +134,13 @@ CHROT=AFFE_CHAR_MECA(  MODELE=MO,
                     _F(  GROUP_NO = 'GRNO13',   DY = 0., DRZ = 0.)) )
 
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLIN,
-           DDL_IMPO=_F(  GROUP_NO = 'GRNO15',   DY = 0., DRZ = 0.) )
+           TEMP_CALCULEE=TEMPLI1,
+           DDL_IMPO= _F(  GROUP_NO = 'GRNO15',   DY = 0., DRZ = 0.) )
 
 CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLI2,DDL_IMPO=(
-           _F(  GROUP_NO = 'GRNO6',    DY = 0., DRZ = 0.),
-                    _F(  GROUP_NO = 'GRNO13',   DY = 0., DRZ = 0.)) )
+           TEMP_CALCULEE=TEMPLI2,
+           DDL_IMPO=(_F(  GROUP_NO = 'GRNO6',    DY = 0., DRZ = 0.),
+                     _F(  GROUP_NO = 'GRNO13',   DY = 0., DRZ = 0.)) )
 
 # ------------------------------------------------------------------
 
@@ -152,11 +152,11 @@ DEPLPES=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-                   
-                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NIVE_COUCHE='INF'
+           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           NIVE_COUCHE='INF'
                          )
 
+# ------------------------------------------------------------------
 
 DEPLROT=MECA_STATIQUE(
                   MODELE=MO,
@@ -166,37 +166,57 @@ DEPLROT=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
-                   
-                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NIVE_COUCHE='INF'
+           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           NIVE_COUCHE='INF'
                          )
 
+# ------------------------------------------------------------------
 
-DEPLDIL=MECA_STATIQUE(
+LISTIME=DEFI_LIST_REEL(VALE=( 0.0, 1.0, ), )
+
+STATNL1=STAT_NON_LINE(
                   MODELE=MO,
               CHAM_MATER=CHMAT,
                CARA_ELEM=CARE,
+               COMP_INCR=_F(RELATION='ELAS'),
                    EXCIT=_F( CHARGE = CHDIL),
+               INCREMENT=_F(LIST_INST=LISTIME,),
                          )
+
+DEP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 RESULTAT=STATNL1, NOM_CHAM='DEPL', INST=1. )
+
+DEPLDIL=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
+                    AFFE=_F(  INST = 1.,  CHAM_GD = DEP1,
+                              MODELE=MO, CHAM_MATER=CHMAT, CARA_ELEM=CARE, )     )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                   
-                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-            NIVE_COUCHE='INF'
-                         )
+           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           EXCIT=_F( CHARGE = CHDIL),
+           NIVE_COUCHE='INF'
+         )
 
 
-DEPLDILT=MECA_STATIQUE(
+STATNL2=STAT_NON_LINE(
                   MODELE=MO,
-              CHAM_MATER=CHMATH,
+              CHAM_MATER=CHMATF,
                CARA_ELEM=CARE,
+               COMP_INCR=_F(RELATION='ELAS'),
                    EXCIT=_F( CHARGE = CHDIL),
+               INCREMENT=_F(LIST_INST=LISTIME,),
                          )
+
+DEP2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 RESULTAT=STATNL2, NOM_CHAM='DEPL', INST=1. )
+
+DEPLDILT=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
+                     AFFE=_F(  INST = 1.,  CHAM_GD = DEP2,
+                               MODELE=MO, CHAM_MATER=CHMATF, CARA_ELEM=CARE, )     )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-                   
-                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-            NIVE_COUCHE='INF'
+           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           EXCIT=_F( CHARGE = CHDIL),
+           NIVE_COUCHE='INF'
                          )
 
 
@@ -208,34 +228,32 @@ DEPLDI2=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-                   
-                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NIVE_COUCHE='INF'
+           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           NIVE_COUCHE='INF'
                          )
 
 
 DEPLDI2T=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMATH,
+              CHAM_MATER=CHMATF,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDI2),
                          )
 
 CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
-                   
-                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NIVE_COUCHE='INF'
+           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           NIVE_COUCHE='INF'
                          )
 
-RELEVE_1=POST_RELEVE_T(   ACTION=_F(  GROUP_NO = 'GRNO14',
+RELEVE_1=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GRNO14',
                                      INTITULE = 'EXT_TEMP',
-                                     RESULTAT = TEMPLIN,
+                                     RESULTAT = TEMPLI1,
                                      NOM_CHAM = 'TEMP',
                                      TOUT_ORDRE = 'OUI',
                                      TOUT_CMP = 'OUI',
                                      OPERATION = 'EXTRACTION') )
 
-RELEVE_2=POST_RELEVE_T(   ACTION=_F(  GROUP_NO = 'GRNO14',
+RELEVE_2=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GRNO14',
                                      INTITULE = 'EXT_TEMP',
                                      RESULTAT = TEMPLI2,
                                      NOM_CHAM = 'TEMP',
@@ -301,7 +319,7 @@ TEST_RESU(RESU=(
             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO_DEPL',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = 0.96000E-3),
             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO_DEPL',
+            NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO_DEPL',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
             _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
              NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO_DEPL',

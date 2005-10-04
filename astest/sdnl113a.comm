@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN 
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,8 +191,8 @@ RESULT=DYNA_NON_LINE(
                   PREDICTION = 'ELASTIQUE'),
        CONVERGENCE=_F( ITER_GLOB_MAXI = 100,
                            RESI_INTE_RELA = 1.E-6,
-                           RESI_GLOB_RELA = 1.E-6,
-                           ITER_INTE_MAXI = 100), 
+                           ITER_INTE_MAXI = 100, 
+                           RESI_GLOB_RELA = 1.E-6),
        ARCHIVAGE=_F( PAS_ARCH = 1)
     )
 
@@ -215,8 +215,15 @@ RESULT = CALC_NO (reuse=RESULT, RESULTAT=RESULT,TOUT_ORDRE ='OUI',
 TEST_RESU(RESU=_F(NOM_CHAM='REAC_NODA',
                   RESULTAT=RESULT,
                   INST=0.01,
-                  VALE=4.03802E+03,REFERENCE='NON_REGRESSION',VERSION='6.2.8',
+                  VALE=4.03802E+03,REFERENCE='NON_REGRESSION',VERSION='8.1.9',
                   NOEUD='N73',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='REAC_NODA',
+                  RESULTAT=RESULT,
+                  INST=0.01,
+                  VALE=-2.4823785719420E-01,REFERENCE='NON_REGRESSION',VERSION='8.1.9',
+                  NOEUD='N1',
                   NOM_CMP='DX',),);
 
 FIN()

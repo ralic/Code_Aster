@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ANALYSE FIABILISTE - EXEMPLE DE COUPLAGE AVEC MEFISTO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,11 +100,6 @@ RESUFIAB = MACR_FIABILITE(
                           POINT_INI=8110.0,
                           POINT_REF=8080.0,),
                        ),
-              MATRICE=(1.,0.,0.,0.,0.,
-                       0.,1.,0.,0.,0.,
-                       0.,0.,1.,0.,0.,
-                       0.,0.,0.,1.,0.,
-                       0.,0.,0.,0.,1.),
               T_SPHERE = 'NON',
            );
 #

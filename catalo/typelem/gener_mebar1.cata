@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,7 @@ MODE_LOCAL__
     EEFGEGA  = SIEF_R   ELGA__ RIGI   (N        )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (N        )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        )
+    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
@@ -113,6 +114,9 @@ OPTION__
     EPOT_ELEM_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  EENEDNO  PENERDR
+    EPSI_ELNO_DEPL      154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC
+                              OUT__  EDEFONO  PDEFORR
     FORC_NODA           156   IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR

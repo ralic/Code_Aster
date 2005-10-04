@@ -5,7 +5,7 @@
       CHARACTER*8                     NOMPAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,10 @@ C
 C
       CALL TECACH ( 'NNN', 'PTEMPER', 8, ITAB ,IRET)
       ITEMPR=ITAB(1)
+      IF ( ITEMPR .EQ. 0 ) THEN
+         CALL TECACH ( 'NNN', 'PTEMPMR', 8, ITAB ,IRET)
+         ITEMPR=ITAB(1)
+      ENDIF
       CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
 C
 C --- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
@@ -76,8 +80,12 @@ C
      &              NOMCMP.NE.'POST_ELEM'     .AND.
      &              NOMCMP.NE.'CALC_NO'       .AND.
      &              NOMCMP.NE.'CALC_ELEM'     ) THEN
-                  CALL UTMESS('A',NOMCMP,'LORSQU''IL Y A VARIATION '//
+                  CALL UTDEBM('A',NOMCMP,'LORSQU''IL Y A VARIATION '//
      &    'DE TEMPERATURE DANS L''EPAISSEUR, UTILISER "STAT_NON_LINE"')
+                  CALL UTIMPR('L','  TEMPERATURE INF: ', 1, TINF )
+                  CALL UTIMPR('L','  TEMPERATURE MOY: ', 1, T    )
+                  CALL UTIMPR('L','  TEMPERATURE SUP: ', 1, TSUP )
+                  CALL UTFINM()
                ENDIF
             ENDIF
             TPG1 = TPG1 + T + ( TSUP + TINF - 2*T ) / 6.D0

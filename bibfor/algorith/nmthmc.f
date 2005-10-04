@@ -1,7 +1,7 @@
       SUBROUTINE NMTHMC(COMP, MODELE, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,7 @@ C =====================================================================
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM
       PARAMETER   ( DMTHMC = 9  )
       PARAMETER   ( DMHYDR = 3  )
-      PARAMETER   ( DMMECA = 13 )
+      PARAMETER   ( DMMECA = 14 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
       CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
@@ -98,6 +98,7 @@ C =====================================================================
      +              'LAIGLE'          ,
      +              'HOEK_BROWN'      ,  
      +              'ELAS_THM'        ,
+     +              'ELAS_THER'       ,
      +              'SURF_ETAT_NSAT'  ,
      +              'SURF_ETAT_SATU'  ,
      +              'CAM_CLAY_THM'    ,
@@ -288,6 +289,7 @@ C =====================================================================
      +                       'COMPORTEMENTS MECANIQUE ET HYDRAULIQUE')
          ENDIF
          IF ( MECA.EQ.'ELAS_THM' .OR.
+     +        MECA.EQ.'ELAS_THER' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
      +        MECA.EQ.'SURF_ETAT_NSAT' ) THEN
@@ -326,6 +328,7 @@ C =====================================================================
      +                       'COMPORTEMENTS MECANIQUE ET HYDRAULIQUE')
          ENDIF
          IF ( MECA.EQ.'ELAS_THM' .OR.
+     +        MECA.EQ.'ELAS_THER' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
      +        MECA.EQ.'SURF_ETAT_NSAT'      ) THEN
@@ -361,6 +364,7 @@ C =====================================================================
      +                         'INCORRECTE POUR UNE MODELISATION THH')
          ENDIF
          IF ( MECA.EQ.'ELAS_THM' .OR.
+     +        MECA.EQ.'ELAS_THER' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
      +        MECA.EQ.'SURF_ETAT_NSAT'  ) THEN
@@ -393,6 +397,7 @@ C =====================================================================
      +                          'INCORRECTE POUR UNE MODELISATION THV')
          ENDIF
          IF ( MECA.EQ.'ELAS_THM' .OR.
+     +        MECA.EQ.'ELAS_THER' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
      +        MECA.EQ.'SURF_ETAT_NSAT'   ) THEN

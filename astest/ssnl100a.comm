@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PROBLEME A DEUX PORTEES AVEC CABLE POULIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,8 @@ MO1=AFFE_MODELE(   MAILLAGE=MA1,
                              MODELISATION = 'CABLE_POULIE'))
                         )
 
-MAT1=DEFI_MATERIAU(   CABLE=_F(  E = 5.E7,  EC_SUR_E = 1.E0,  RHO = 30.)
+MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 5.E7,  NU=0.,  RHO = 30.),
+                      CABLE=_F(EC_SUR_E = 1.E0),
                         )
 
 MAT2=DEFI_MATERIAU(    ELAS=_F(  E = 5.E7,  NU = 0.3,  RHO = 30.)

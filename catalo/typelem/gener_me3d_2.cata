@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,26 @@ MODE_LOCAL__
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
+    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
+                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
+                                        KIT6     KIT7     KIT8     KIT9     )
+    CMATERC  = ADRSJEVE ELEM__         (I1       )
+    CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
+                                        Z        )
+    CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
+    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
+    EKTHETA  = G        ELEM__         (GTHETA   K1     K2     K3    )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
+                                        X7       X8       X9       )
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
+                                        X7       X8       X9       X10      X11      X12      
+                                        X13      X14      X15      X16      X17      X18       
+                                        X19      X20      X21      X22      X23      X24      
+                                        X25      X26      X27       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -65,6 +85,28 @@ OPTION__
     CALC_G_F            280   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
+    CALC_K_G            311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
+                                     CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
+                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   EFORCNO  PFR2D3D
+                                     EPRESNO  PPRESSR
+                              OUT__  EKTHETA  PGTHETA
+    CALC_K_G_F          311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   CFORCEF  PFFVOLU  CPESANR  PPESANR
+                                     CROTATR  PROTATR  CEPSINF  PEPSINF  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR  
+                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D  
+                                     CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
+                              OUT__  EKTHETA  PGTHETA
+    CALC_G_BILI         298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINR  UEPSINR  
+                                     CEPSINR  VEPSINR  EFORCNO  UPFR23D  EFORCNO  VPFR23D  EPRESNO  UPRESSR 
+                                     EPRESNO  VPRESSR  CTEREFE  PTEREF
+                              OUT__  EGTHETA  PGTHETA     
+    CALC_G_BILI_F       298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINF  UEPSINF  
+                                     CEPSINF  VEPSINF  CTEREFE  PTEREF   CFORCEF  UPFF23D  CFORCEF  VPFF23D  
+                                     CPRESSF  UPRESSF  CPRESSF  VPRESSF  CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR 
+                              OUT__  EGTHETA  PGTHETA                                                  
     CALC_DG_E           280   IN__   DDL_MECA PDEPLAR  EFORCNO  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                                      DDL_MECA PTHETAR  DDL_MECA PDEPLSE
                               OUT__  EGTHETA  PGTHETA

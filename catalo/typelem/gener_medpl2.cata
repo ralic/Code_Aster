@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -240,7 +240,12 @@ OPTION__
     CALC_K_G_F          299   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF   DDL_MECA PTHETAR
+                              OUT__  EKTHETA  PGTHETA    
+    K_G_MODA            399   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  NTEMPER  PTEMPER
+                                     CTEREFE  PTEREF   DDL_MECA PTHETAR  CFREQR   PPULPRO   
                               OUT__  EKTHETA  PGTHETA
+
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     CARA_GEOM           285   IN__   NGEOMER  PGEOMER

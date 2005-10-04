@@ -1,4 +1,4 @@
-#@ MODIF fiabilite_mefisto Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF fiabilite_mefisto Macro  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,6 +47,8 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
   from Macro import fiabilite_fichier
   import os
   import string
+  import Numeric
+  from Utilitai.Utmess import UTMESS
 #
 #____________________________________________________________________
 #
@@ -232,11 +234,22 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
       f_stoch.Ecrit_Valeurs ( aux )
 #
     f_stoch.Ecrit_Titre ("Correlation matrix fictive")
-    for m in range(nb_occu_variable) :
-      aux = [ ]
-      for n in range(nb_occu_variable) :
-        aux.append(args["MATRICE"][n + m*nb_occu_variable])
-      f_stoch.Ecrit_Valeurs ( aux )
+#    if args.has_key('MATRICE'):
+    if args["MATRICE"] != None:
+      if len(args["MATRICE"]) != nb_occu_variable**2:
+        UTMESS('F','FIABILITE_MEPHISTO',' LE NOMBRE D ELEMENTS' 
+        +' DU MOT CLE MATRICE DOIT ETRE EGAL A : '
+        +str(nb_occu_variable**2))
+      for m in range(nb_occu_variable) :
+        aux = [ ]
+        for n in range(nb_occu_variable) :
+          aux.append(args["MATRICE"][n + m*nb_occu_variable])
+        f_stoch.Ecrit_Valeurs ( aux )
+    else:
+        aux=Numeric.identity(nb_occu_variable)
+        aux=Numeric.concatenate(aux)
+        aux=aux.tolist()
+        f_stoch.Ecrit_Valeurs ( aux )
 #
     f_stoch.Ecrit_Titre ("Parameter threshold value")
     if SEUIL_TYPE == "MAXIMUM" :

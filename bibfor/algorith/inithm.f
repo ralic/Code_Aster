@@ -1,11 +1,11 @@
-      SUBROUTINE INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,
-     +                                                 EPSV,DEPSV,EPSVM)
+      SUBROUTINE INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
+     +                                    EPSV,DEPSV,EPSVM,MECA)
       IMPLICIT      NONE
       INTEGER       IMATE,YAMEC
       REAL*8        PHI0,EM,ALPHA0,K0,CS,BIOT,EPSVM,EPSV,DEPSV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,22 +29,28 @@ C --- DANS LES FORMULATIONS AVEC MECA. IDEM POUR ALPHA = 0 -------------
 C ======================================================================
       INTEGER      NELAS
       PARAMETER  ( NELAS=4 )
-      REAL*8       ELAS(NELAS),YOUNG,NU
+      REAL*8       ELAS(NELAS),YOUNG,NU,T
       CHARACTER*8  NCRA1(NELAS)
       CHARACTER*2  CODRET(NELAS)
+      CHARACTER*16  MECA
 C ======================================================================
 C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
 C ======================================================================
-      DATA NCRA1/'E','NU','RHO','ALPHA'/
+      DATA NCRA1/'E','NU','ALPHA','RHO'/
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
       IF (YAMEC.EQ.1) THEN
-         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,ELAS,
-     &                                                    CODRET, 'FM')
-         YOUNG  = ELAS(1)
-         NU     = ELAS(2)
-         ALPHA0 = ELAS(4)
+           IF (MECA.EQ.'ELAS_THER')  THEN
+               CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+     +                                 NCRA1(1),ELAS(1),CODRET,'FM')
+           ELSE
+               CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,
+     &           ELAS,CODRET,'FM')
+           ENDIF
+          YOUNG  = ELAS(1)
+          NU     = ELAS(2)
+          ALPHA0 = ELAS(3)
          K0     = YOUNG / 3.D0 / (1.D0-2.D0*NU)
          CS     = (1.0D0-BIOT) / K0
       ELSE

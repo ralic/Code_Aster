@@ -1,6 +1,6 @@
       SUBROUTINE TE0095(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,32 +24,41 @@ C FONCTION REALISEE:
 
 C      CALCUL
 C      DE LA FORME BILINEAIRE SYMETRIQUE G(U,V)
-
 C      POUR LES ELEMENTS ISOPARAMETRIQUES 3D
 
-C      OPTION : 'CALC_G_BILI'
+C      OPTION : 'CALC_G_BILI','CALC_G_BILI_F'
 
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
-      CHARACTER*2 CODRET(2)
-      CHARACTER*8 NOMRES(2)
-      CHARACTER*16 NOMTE,OPTION
+      CHARACTER*2 CODRET(3),CODRTV(3)
+      CHARACTER*8 NOMRES(3),NOMPAR(4)
+      CHARACTER*16 NOMTE,OPTION,PHENOM
 
       REAL*8 EPSI,R8PREM
-      REAL*8 DFDI(81),F(3,3),EPS(6)
-      REAL*8 DUDM(3,3),DVDM(3,3),DTDM(3,3),DER(4)
-      REAL*8 RBID,E,NU
-      REAL*8 THET,TG
+      REAL*8 DFDI(81),F(3,3),EPS(6),FNOU(81),FNOV(81)
+      REAL*8 DUDM(3,4),DVDM(3,4)
+      REAL*8 DFUDM(3,4),DFVDM(3,4),DER(4),DTDM(3,4)
+      REAL*8 RBID,E,NU,ALPHA,TREF,TTRGU,TTRGV,K3A
+      REAL*8 THET,TGU,TGV
       REAL*8 XG,YG
       REAL*8 C1,C2,C3
-      REAL*8 VALRES(2),DEVRES(3)
-      REAL*8 GELEM,GUV3,G,POIDS
+      REAL*8 VALRES(3),DEVRES(3),VALRSV(3),DEVRSV(3)
+      REAL*8 VAPARU(4),VAPARV(4)
+      REAL*8 GELEM,GUV3,G,POIDS, PULS
+      REAL*8 TGUDM(3),TGVDM(3)
+      REAL*8 RHO,OM,OMO
 
       INTEGER JGANO,IPOIDS,IVF,IDFDE,NNO,KP,NPG1,COMPT
-      INTEGER IGEOM,ITHET,IFIC,IDEPU,IDEPV,ITEMP
-      INTEGER IMATE,JVAL,K,I,J,L,NDIM,NNOS
+      INTEGER IGEOM,ITHET,IFIC,IDEPU,IDEPV,ITMPU,ITMPV
+      INTEGER IMATE,JVAL,K,I,J,L,NDIM,NNOS,ITREF
+      INTEGER IFORFU,IFORFV,IFORCU,IFORCV
+      INTEGER IRET,IEPSRU,IEPSRV
+      INTEGER IPESAU,IPESAV,IROTAU,IROTAV,ITMPSU,ITMPSV
+
+      INTEGER KK,IER
+      LOGICAL FONC
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -80,8 +89,39 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CALL JEVECH('PDEPLAU','L',IDEPU)
       CALL JEVECH('PDEPLAV','L',IDEPV)
       CALL JEVECH('PTHETAR','L',ITHET)
-      CALL JEVECH('PTEMPER','L',ITEMP)
+      CALL JEVECH('PTMPERU','L',ITMPU)
+      CALL JEVECH('PTMPERV','L',ITMPV)
       CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PTEREF','L',ITREF)
+C
+      CALL TECACH('ONN','UPESANR',1,IPESAU,IRET)
+      CALL TECACH('ONN','UROTATR',1,IROTAU,IRET)
+      CALL TECACH('ONN','VPESANR',1,IPESAV,IRET)
+      CALL TECACH('ONN','VROTATR',1,IROTAV,IRET)
+C
+      
+      IF (OPTION .EQ. 'CALC_G_BILI_F') THEN
+        FONC = .TRUE.
+        CALL JEVECH('UPFFVOL','L',IFORFU)
+        CALL JEVECH('VPFFVOL','L',IFORFV)
+        
+        CALL JEVECH('UTEMPSR','L',ITMPSU)
+        CALL JEVECH('VTEMPSR','L',ITMPSV)
+        NOMPAR(1) = 'X'
+        NOMPAR(2) = 'Y'
+        NOMPAR(3) = 'Z'
+        NOMPAR(4) = 'INST'
+        VAPARU(4) = ZR(ITMPSU)
+        VAPARV(4) = ZR(ITMPSV)
+        CALL TECACH('ONN','UEPSINF',1,IEPSRU,IRET)
+        CALL TECACH('ONN','VEPSINF',1,IEPSRV,IRET)
+      ELSE
+        FONC = .FALSE.
+        CALL JEVECH('UPFRVOL','L',IFORCU)
+        CALL JEVECH('VPFRVOL','L',IFORCV)
+        CALL TECACH('ONN','UEPSINR',1,IEPSRU,IRET)
+        CALL TECACH('ONN','VEPSINR',1,IEPSRV,IRET)
+      END IF
 
       CALL JEVECH('PGTHETA','E',IFIC)
 
@@ -97,68 +137,190 @@ C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
         IF (THET.LT.EPSI) COMPT = COMPT + 1
    30 CONTINUE
       IF (COMPT.EQ.NNO) GO TO 100
-
+C
+      TREF = ZR(ITREF)
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
-
+      NOMRES(3) = 'ALPHA'
+C
+C - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
+C
+      IF (FONC) THEN
+        DO 150 I = 1,NNO
+          DO 130 J = 1,NDIM
+            VAPARU(J) = ZR(IGEOM+NDIM*(I-1)+J-1)
+            VAPARV(J) = ZR(IGEOM+NDIM*(I-1)+J-1)
+ 130      CONTINUE
+          DO 140 J = 1,NDIM
+            KK = NDIM*(I-1) + J
+            CALL FOINTE('FM',ZK8(IFORFU+J-1),3,
+     &                  NOMPAR,VAPARU,FNOU(KK),IER)
+            CALL FOINTE('FM',ZK8(IFORFV+J-1),3,
+     &                  NOMPAR,VAPARV,FNOV(KK),IER)
+ 140      CONTINUE
+ 150    CONTINUE
+      ELSE
+        DO 8000 I = 1,NNO
+          DO 6000 J = 1,NDIM
+            FNOU(NDIM*(I-1)+J) = ZR(IFORCU+NDIM*(I-1)+J-1)
+            FNOV(NDIM*(I-1)+J) = ZR(IFORCV+NDIM*(I-1)+J-1)
+ 6000     CONTINUE
+ 8000   CONTINUE
+      END IF
+C
+      IF ((IPESAU.NE.0) .OR. (IROTAU.NE.0)) THEN
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',
+     &              RHO,CODRET,'FM')
+        IF (IPESAU .NE. 0) THEN
+          DO 160 I = 1,NNO
+            DO 161 J = 1,NDIM
+              KK = NDIM*(I-1) + J
+              FNOU(KK) = FNOU(KK) + RHO*ZR(IPESAU)*ZR(IPESAU+J)
+ 161        CONTINUE
+ 160      CONTINUE
+        END IF
+        IF (IROTAU .NE. 0) THEN
+          OM = ZR(IROTAU)
+          DO 170 I = 1,NNO
+            OMO = 0.D0
+            DO 171 J = 1,NDIM
+              OMO = OMO + ZR(IROTAU+J)*ZR(IGEOM+NDIM*(I-1)+J-1)
+ 171        CONTINUE
+            DO 172 J = 1,NDIM
+              KK = NDIM*(I-1) + J
+              FNOU(KK) =
+     &          FNOU(KK) + RHO*OM*OM*(ZR(IGEOM+KK-1)-OMO*ZR(IROTAU+J))
+ 172        CONTINUE
+ 170      CONTINUE
+        END IF
+      END IF
+C
+      IF ((IPESAV.NE.0) .OR. (IROTAV.NE.0)) THEN
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',
+     &              RHO,CODRET,'FM')
+        IF (IPESAV .NE. 0) THEN
+          DO 260 I = 1,NNO
+            DO 261 J = 1,NDIM
+              KK = NDIM*(I-1) + J
+              FNOV(KK) = FNOV(KK) + RHO*ZR(IPESAV)*ZR(IPESAV+J)
+ 261        CONTINUE
+ 260      CONTINUE
+        END IF
+        IF (IROTAV .NE. 0) THEN
+          OM = ZR(IROTAV)
+          DO 270 I = 1,NNO
+            OMO = 0.D0
+            DO 271 J = 1,NDIM
+              OMO = OMO + ZR(IROTAV+J)*ZR(IGEOM+NDIM*(I-1)+J-1)
+ 271        CONTINUE
+            DO 272 J = 1,NDIM
+              KK = NDIM*(I-1) + J
+              FNOV(KK) =
+     &          FNOV(KK) + RHO*OM*OM*(ZR(IGEOM+KK-1)-OMO*ZR(IROTAV+J))
+ 272        CONTINUE
+ 270      CONTINUE
+        END IF
+      END IF
+C
 C ======================================================================
-
+C - BOUCLE SUR LES POINTS DE GAUSS
+C
       DO 90 KP = 1,NPG1
         L = (KP-1)*NNO
-        TG = 0.D0
+        TGU = 0.D0
+        TGV = 0.D0
         XG = 0.D0
         YG = 0.D0
-        DO 50 I = 1,NDIM
-          DO 40 J = 1,NDIM
+        DO 50 I = 1,3
+          TGUDM(I) = 0.D0
+          TGVDM(I) = 0.D0
+          DO 40 J = 1,4
             DUDM(I,J) = 0.D0
             DVDM(I,J) = 0.D0
             DTDM(I,J) = 0.D0
+            DFUDM(I,J) = 0.D0
+            DFVDM(I,J) = 0.D0
    40     CONTINUE
    50   CONTINUE
-
+C
 C - CALCUL DES ELEMENTS GEOMETRIQUES
 
         CALL NMGEOM(NDIM,NNO,.FALSE.,.FALSE.,ZR(IGEOM),KP,
      &              IPOIDS,IVF,IDFDE,
      &              ZR(IDEPU),POIDS,DFDI,F,EPS,RBID)
-
-C - CALCULS DES GRADIENTS DE U ET V (DUDM ET DVDM),THETA (DTDM)
-C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG)
-
+C
+C - CALCULS DES GRADIENTS DE U ET V (DUDM ET DVDM),THETA (DTDM),
+C   FU ET FV (DFUDM ET DFVDM) 
+C   CALCUL DES CHAMPS DE TEMPERATURE (TGU ET TGV) ET DE LEURS GRADIENTS 
+C   (TGUDM ET TGVDM)AUX POINTS DE GAUSS 
+C
         DO 80 I = 1,NNO
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(3) = DFDI(I+2*NNO)
           DER(4) = ZR(IVF+L+I-1)
-          TG = TG + ZR(ITEMP+I-1)*DER(4)
+          TGU = TGU + ZR(ITMPU+I-1)*DER(4)
+          TGV = TGV + ZR(ITMPV+I-1)*DER(4)
           XG = XG + ZR(IGEOM+2* (I-1))*DER(4)
           YG = YG + ZR(IGEOM+2* (I-1)+1)*DER(4)
           DO 70 J = 1,NDIM
+            TGUDM(J) = TGUDM(J) + ZR(ITMPU+I-1)*DER(J)
+            TGVDM(J) = TGVDM(J) + ZR(ITMPV+I-1)*DER(J)
             DO 60 K = 1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPU+NDIM* (I-1)+J-1)*DER(K)
               DVDM(J,K) = DVDM(J,K) + ZR(IDEPV+NDIM* (I-1)+J-1)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+NDIM* (I-1)+J-1)*DER(K)
+              DFUDM(J,K) = DFUDM(J,K) + FNOU(NDIM*(I-1)+J)*DER(K)
+              DFVDM(J,K) = DFVDM(J,K) + FNOV(NDIM*(I-1)+J)*DER(K)
    60       CONTINUE
+            DUDM(J,4) = DUDM(J,4) + ZR(IDEPU+NDIM*(I-1)+J-1)*DER(4)
+            DVDM(J,4) = DVDM(J,4) + ZR(IDEPV+NDIM*(I-1)+J-1)*DER(4)
+            DTDM(J,4) = DTDM(J,4) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(4)
+            DFUDM(J,4) = DFUDM(J,4) + FNOU(NDIM*(I-1)+J)*DER(4)
+            DFVDM(J,4) = DFVDM(J,4) + FNOV(NDIM*(I-1)+J)*DER(4)
    70     CONTINUE
    80   CONTINUE
-        CALL RCVADA(ZI(IMATE),'ELAS',TG,2,NOMRES,VALRES,DEVRES,CODRET)
+   
+C - RECUPERATION DES DONNEES MATERIAUX
+        TTRGU = TGU - TREF
+        TTRGV = TGV - TREF
+        CALL RCVADA(ZI(IMATE),'ELAS',TGU,3,NOMRES,VALRES,DEVRES,CODRET)
+        CALL RCVADA(ZI(IMATE),'ELAS',TGV,3,NOMRES,VALRSV,DEVRSV,CODRTV)
+        IF (CODRET(3) .NE. 'OK') THEN
+          VALRES(3) = 0.D0
+          DEVRES(3) = 0.D0
+        END IF
+        IF (CODRTV(3) .NE. 'OK') THEN
+          VALRSV(3) = 0.D0
+          DEVRSV(3) = 0.D0
+        END IF
+        IF ((VALRES(1) .NE. VALRSV(1)).OR.((VALRES(2) .NE. VALRSV(2)))
+     &      .OR.(VALRES(3) .NE. VALRSV(3))) THEN
+          CALL UTMESS('F','CALC_G_BILINEAIRE',
+     &                'E, NU, ALPHA DEPENDENT DE LA TEMPERATURE,       
+     &                 TGU DIFFERENTE DE TGV')
+        END IF  
         E = VALRES(1)
         NU = VALRES(2)
+        ALPHA = VALRES(3)
+        K3A = ALPHA * E / (1.D0-2.D0*NU)
         C3 = E/ (2.D0* (1.D0+NU))
         C1 = E* (1.D0-NU)/ ((1.D0+NU)* (1.D0-2.D0*NU))
         C2 = NU/ (1.D0-NU)*C1
-
-C   INTRODUCTION DE U1S ET U2S DANS G(U,V)
-
+C
         GELEM = 0.D0
-        CALL GBIL3D(DUDM,DVDM,DTDM,POIDS,C1,C2,C3,GELEM)
+        PULS = 0.D0
+        CALL GBIL3D(DUDM,DVDM,DTDM,DFUDM,DFVDM,TGUDM,TGVDM,
+     &              TTRGU,TTRGV,POIDS,C1,C2,C3,K3A,RHO,PULS,GELEM)
         GUV3 = GUV3 + GELEM
    90 CONTINUE
 
       G = GUV3
 
       ZR(IFIC) = G
-
+      
   100 CONTINUE
       CALL JEDEMA()
       END

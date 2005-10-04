@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,22 @@ OPTION__
         PDEPLAV  DEPL_R
         PTHETAR  DEPL_R
         PMATERC  ADRSJEVE
-        PTEMPER  TEMP_R
+        PTMPERU  TEMP_R
+        PTMPERV  TEMP_R
+        PTEREF   TEMP_R
+        UPESANR  PESA_R
+        VPESANR  PESA_R
+        UROTATR  ROTA_R
+        VROTATR  ROTA_R
+        UPFRVOL  FORC_R
+        VPFRVOL  FORC_R
+        UEPSINR  EPSI_R
+        VEPSINR  EPSI_R
+        UPFR23D  FORC_R
+        VPFR23D  FORC_R
+        UPRESSR  PRES_R
+        VPRESSR  PRES_R 
+        
    OUT__
 PGTHETA G ELEM__
 

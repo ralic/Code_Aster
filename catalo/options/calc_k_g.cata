@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,7 @@ OPTION__
          PTEREF   TEMP_R
          PFRVOLU  FORC_R
          PFR1D2D  FORC_R
+         PFR2D3D  FORC_R
          PPRESSR  PRES_R               
          PPESANR  PESA_R
          PROTATR  ROTA_R
@@ -42,4 +43,4 @@ OPTION__
          PHEAVTO  NEUT_I
          PLONCHA  NEUT_I
    OUT__
-         PGTHETA G ELEM__
+PGTHETA G ELEM__

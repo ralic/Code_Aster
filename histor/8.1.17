@@ -1,0 +1,1098 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR acbhhcd G.DEVESA   DATE  le 03/10/2005 a 16:06:13
+
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-354
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE "MISS03A sous linux"
+   FONCTIONNALITE
+   Le cas test MISS03A est NOOK sur linux CLP50A8.
+   DETAILS
+   Une  tolérance avait été mal réajustée en un point : 0.003 au lieu de
+   0.004 pour pouvoir passer sur linux CLP50A8.
+   On réduit également la taille mémoire de 1800 à 1000 Mo pour pouvoir
+   changer de classe de passage.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Le test MISS03A
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 29/09/2005 a 19:59:21
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-371
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   INTERET_UTILISATEUR : NON
+   TITRE :  calcul thermomécanique et COQUE_3D
+   FONCTIONNALITE
+     le calcul thermomécanique avec un matériau fonction de la température
+     le job s'arrete en ERREUR :
+     <E> <STAT_NON_LINE> <FOINTA> ERREUR A L'INTERPOLATION
+         PAS ASSEZ DE PARAMETRES :  0  AU LIEU DE 1
+   DETAIL
+     routine vdxnlr appelé par te0414 :
+     la récupération de la température se faisait avec un
+        CALL TECACH('ONN','PTEMPER',8,ITAB,IRET)
+     au lieu d'un
+        CALL TECACH('ONN','PTEMPMR',8,ITAB,IRET)
+     En effet, pour le linéaire le pointeur est PTEMPER, pour le
+     non linéaire les pointeurs sont PTEMPMR et PTEMPPR.
+     On utilise PTEMPMR pour les valeurs des parametres pour le matériau,
+     puis PTEMPMR et PTEMPPR pour calculer les températures à T- et T+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     cas test hpla100c
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-372
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   INTERET_UTILISATEUR : NON
+   TITRE :  calcul thermomécanique et COQUE_AXIS
+   FONCTIONNALITE
+     le calcul thermomécanique avec un matériau fonction de la température
+     le job s'arrete en ERREUR :
+     <E> <STAT_NON_LINE> <FOINTA> ERREUR A L'INTERPOLATION
+         PAS ASSEZ DE PARAMETRES :  0  AU LIEU DE 1
+   DETAIL
+     routine te0239 :
+     la récupération de la température se faisait avec un
+        CALL TECACH('ONN','PTEMPER',8,ITAB,IRET)
+     au lieu d'un
+        CALL TECACH('ONN','PTEMPMR',8,ITAB,IRET)
+     En effet, pour le linéaire le pointeur est PTEMPER, pour le
+     non linéaire les pointeurs sont PTEMPMR et PTEMPPR.
+     On utilise PTEMPMR pour les valeurs des parametres pour le matériau,
+     puis PTEMPMR et PTEMPPR pour calculer les températures à T- et T+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     cas test hpla100b
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-222
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   INTERET_UTILISATEUR : NON
+   TITRE : Alarmes intempestives et température dans l'épaisseur
+   FONCTIONNALITE
+     les tests suivants :
+       hpla100b, c, d, e, f, g, h, i, j
+       hsls01a, b
+       ssls101a, e, f, g, h
+       ssls200a
+     émettent une alarme du type :
+     <A> <MECA_STATIQUE> LORSQU'IL Y A VARIATION DE TEMPERATURE
+         DANS L'EPAISSEUR, UTILISER "STAT_NON_LINE"
+   DETAIL
+     Dans les TExxxx, le message est émis si les valeurs des Tmoy, Tinf
+     et Tsup aux noeuds sont différentes.
+     Ces cas tests ont un champ de température constante dans l'épaisseur
+     et un champ de température variant dans l'épaisseur.
+     Les alarmes sont émises lors de la variation de la température dans
+     l'épaisseur de la coque.
+     Les MECA_STATIQUE ayant un chargement dont le champ de température
+     varie dans l'épaisseur, ont été changés par un STAT_NON_LINE
+     - Pas de probleme pour les tests
+         hpla100b, c, d, e, f avec correction des AL 2005-371 et 372
+     - Les tests hpla100g, h, i, j s'arretent en ERREUR
+           <F> <STAT_NON_LINE> <RCVALA_02> COMPORTEMENT :ELAS  NON TROUVE
+         tests hpla100g, h: matériau ELAS_ORTH
+         tests hpla100i, h: matériau ELAS_COQUE
+     - Le test hsls01a s'arrete en matrice singuliere
+         modélisation DKT- DKQ - DST - DSQ - Q4G
+     - Pas de probleme pour le test hsls01b
+     - Pas de probleme pour les tests ssls101a, e
+     - Les tests ssls101f, g, h s'arretent en ERREUR
+         <F> <STAT_NON_LINE> <CALCUL> LE CALCUL DE L'OPTION : RIGI_MECA_TANG
+         N'EST  POSSIBLE POUR AUCUN DES TYPES D'ELEMENTS  DU LIGREL.
+         modélisation DST - DSQ - Q4G
+     - Le test ssls200a s'arrete en ERREUR
+         <E> <STAT_NON_LINE> <FOINTA> ERREUR A L'INTERPOLATION
+             PAS ASSEZ DE PARAMETRES :  0  AU LIEU DE 1
+         modélisation DKT - DST - Q4G - COQUE_3D
+   CONCLUSION
+     seules les modélisations DKT (modélisation ELAS) et COQUE_3D peuvent faire
+     du STAT_NON_LINE, les cas tests hpla100b, c, d, e, f, hsls01b, ssls101a, e
+     n'émettent plus le message d'alarme
+     <A> <MECA_STATIQUE> LORSQU'IL Y A VARIATION DE TEMPERATURE
+         DANS L'EPAISSEUR, UTILISER "STAT_NON_LINE"
+     Les autres émettront toujours ce message.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 04/10/2005 a 13:09:35
+
+--------------------------------------------------------------------------------
+REALISATION EL 2005-191
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : G. DEVESA
+   INTERET_UTILISATEUR : NON
+   TITRE  : MATERIAU CABLE
+   FONCTIONNALITE : La plupart des caractéristiques du materiau cable sont
+     commune avec un matériau élastique. L'objectif est transférer toute les
+     définitions commune dans ELAS, à charge pour l'utilisateur de définir
+     conjointement ELAS et CABLE.
+   DETAIL : On modifie le catalogue de DEFI_MATERIAU pour transférer les
+     différents mots clés de CABLE vers ELAS.
+           CABLE           =FACT(statut='f',
+             E                --> passe dans ELAS
+             EC_SUR_E         --> reste dans CABLE
+             RHO              --> passe dans ELAS
+             ALPHA            --> passe dans ELAS
+             AMOR_ALPHA       --> passe dans ELAS
+             AMOR_BETA        --> passe dans ELAS
+	
+     Une conséquence de ce passage est qu'il faut désormais définir un coefficient
+     de Poisson ( puisqu'on doit avoir ELAS) alors qu'il est inutile.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.43.01
+       EXPL_ : suppression des anciens mot clés de la doc et précision quant à
+       la nécessité de définir conjointement ELAS et CABLE
+   VALIDATION : passage de tous les cas tests utilisant le mot clé CABLE (8 en
+     tout)
+
+--------------------------------------------------------------------------------
+REALISATION EL 2005-236
+   NB_JOURS_TRAV  : 2.5
+   POUR_LE_COMPTE_DE : S.MICHEL-PONNELLE
+   INTERET_UTILISATEUR : OUI
+   TITRE : Déformations avec la modélisations BARRE
+   FONCTIONNALITE : On ajoute pour les modélisations BARRE et 2D_BARRE le calcul
+     des déformations EPSI_ELNO_DEPL
+   DETAIL :
+     Pour cela, on modifie le te0154 ou l'on ajoute le calcul des déformations.
+     Les déformations sont calculer dans le repère local de l'élément ou seul EPXX
+     est non nul.
+     On le calcule en utilisant ULR(4)-ULR(1))/XL ou ULR est le déplacement dans
+     le repère local et XL la taille de l'élément de barre.
+     Pour information, le calcul des déformations EPSI_ELNO_DEPL n'existe pas pour
+     tous les éléments pootres mais pour la plupart existe l'option DEGE_ELNO_DEPL
+     Seul les modélisations POU_D_T_GD et POU_C_T ne possèdent ni l'un ni l'autre
+     mais il n'est pas à l'ordre du jour de les développer.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V3.01.110 : cas test ssll110a
+       EXPL_ : ajout des TEST_RESU sur les déformations
+     DOC_V : V3.01.012 : cas test ssll12b
+       EXPL_ : ajout des TEST_RESU sur les déformations
+   VALIDATION : ssll110a (modélisation BARRE) et ssll12b (modélisation 2D_BARRE)
+
+-------------------------------------------------------------------------------
+REALISATION EL 2005-194
+   NB_JOURS_TRAV  : 2.5
+   POUR_LE_COMPTE_DE : X. DESROCHES
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_NO avec des éléments tuyaux
+   FONCTIONNALITE : le calcul de l'option M_GAMMA n'était pas activé pour des
+     éléments tuyaux. Par conséquence le calcul des reactions nodales ne
+     fonctionnaient pour ces memes éléments.
+   DETAIL :
+     Cette option est rajouté dans le te0582 qui calculait la matrice de masse
+     et de rigidité. Le calcul dans le te0582 se fait donc en récupérant la
+     matrice de masse et en la multipliant par le vecteur d'accélération
+     récupérée par ailleurs.
+     A cette occasion, on fait le ménage dans plusieurs routines qui
+     traitent des tuyaux en supprimant des variables entrantes dans plusieurs
+     routines ( celles-ci n'etaient que des objets de travail).
+     De plus, lorsque plusieurs modélisations étaient présentés dont une était
+     TUYAU_XXX, le code faisait le calcul des réactions nodales mais oubliait
+     le terme m*accélération pour les tuyaux. On avait donc des résultats faux
+     dans ce cas la. Dans le cas où seule une modélisation TUYAU_XXX était
+     présente, le code s'arretait en erreur fatale car il ne pouvait calculer
+     l'option M_GAMMA nulle part.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : OUI DEPUIS : 7.0.6
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : OUI DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : sdnl113a
+     Ce cas test faisait deja un test sur des réactions nodales sur un tuyau.
+     Mais il s'agissait d'un cas test de non-régression et de toute facon
+     l'accélération au noeud testé était quasi nulle. D'où une variation quasi
+     inexistante de la solution. Par précaution, on rajoute donc un test sur un
+     noeud où la variation entre la valeur avec correction et sans correction
+     du terme M_GAMMA est significative (mais ca reste de la non régression).
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 03/10/2005 a 16:53:21
+
+------------------------------------------------------------------------------------
+REALISATION EL 2005-073
+   NB_JOURS_TRAV  : 20
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_G_LOCAL_T / Forme bilinéaire de G
+   FONCTIONNALITE
+   Une méthode précise pour calculer K consiste à utiliser la méthode theta et la forme
+   bilinéaire associée au taux de restitution de l'énergie G.
+   En 2D ce calcul est possible dans Aster depuis longtemps (option CALC_K_G de
+   CALC_G_THETA_T).
+   En 3D, la définition récente des bases locales au fond de fissure (DEFI_FISS_XFEM) a
+   permis le développement de la même option CALC_K_G dans CALC_G_LOCAL_T (EL 2004-081)
+   Cependant, seul le "terme classique" (lié à la déformation) de la forme bilinéaire de G
+   était jusqu'à présent implémenté en 3D. Le terme thermqiue, le terme volumique et le
+   terme surfacique (lié aux chargements sur les lèvres de la fissure) ont donc été
+   développés en 3D.
+   Remarque : si un chargement surfacique est présent sur les lèvres de la fissure, il
+   convient d'orienter correctement les mailles de celles-ci (ORIE_PEAU_3D). Cette remarque
+   est valable aussi bien en 2D qu'en 3D.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.82.04  (CALC_G_LOCAL_T)
+         EXPL_ : Orientation des mailles si chargement surfacique
+      DOC_U : U2.05.01  (Domaine d'utilisation)
+         EXPL_ : Calcul de K1,K2,K3 en 3D à partir de G
+      DOC_V : V3.04.311  (SSLV311)
+         EXPL_ : Utilisation de calc_k_g
+      DOC_V : V7.03.103  (HPLV103)
+         EXPL_ : Ajout de la modélisation B
+      DOC_R : R7.02.05  (Calcul des f.i.c)
+         EXPL_ : Extension au calcul 3D
+
+   DETAILS
+   Les termes supplémentaires de la forme bilinéaire de G sont calculés dans CALC_G_LOCAL_T
+   pour les options CALC_K_G et G_BILINEAIRE.
+   Modifications de catalogue :
+   gener_me3d_2.cata   gener_mecpl2.cata  gener_me3d_3.cata   gener_medpl2.cata
+   Modifications de fortran :
+   cakg3d / mbilgl : récupération des champs de température, de force volumique...
+   te0295 / te0095 : calcul des termes classique, volumique et thermique
+   te0298 / te0311 : (création) calcul du terme surfacique
+
+   VALIDATION
+   cas test simple et comparaison 2D/3D puis :
+   * hlpv103 : ajout d'une modélisation pour valider le calcul du terme thermique. Il est
+   indispensable de prendre en compte ce terme pour avoir des K cohérents.
+   * sslv311 : modification du cas test pour valider le calcul du terme volumique. Le
+   poids de ce terme apparait comme négligeable.
+   * sslv310 : validation du terme surfacique. Ce test ne pourra être restitué qu'après la
+   correction de l'AL2005-320.
+   Remarque : ces tests permettent au passage de poursuivre la validation de l'opérateur
+   DEFI_FISS_XFEM et l'option CALC_K_G pour les maillages linéaires.
+
+------------------------------------------------------------------------------------
+REALISATION EL 2005-227
+   NB_JOURS_TRAV  : 15
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_G_* / Calcul de K modal
+   FONCTIONNALITE
+   On peut définir les facteurs d'intensité des contraintes (K) modaux comme étant les K
+   associés aux modes propres de vibration d'une structure. Ces K modaux peuvent alors
+   être utilisés pour étudier de manière très rapide et précise un problème de mécanique
+   de la rupture en dynamique basse fréquence par recombinaison modale.
+   Comme en statique, les K modaux peuvent être calculés soit par interpolation des sauts
+   de déplacement (POST_K1_K2_K3), soit par la méthode théta . Pour cela, il faut cependant
+   légèrement modifier les opérateurs CALC_G_*
+   Travail effectué :
+   * Introduction d'une nouvelle option K_G_MODA dans CALC_G_LOCAL_T (en 3D) et CALC_G_THETA_T (en 2D)
+   qui attend en entrée un RESULTAT de type MODE_MECA
+   * Ajout d'un terme supplémentaire "modal" dans le calcul de la forme bilinéaire de G
+   * En sortie l'opérateur retourne la valeur de K et de G associées à chacun des modes de la
+   structure de données en entrée.
+   L'utilisation des fonctions singulières statique dans la forme bilinéaire de G introduit
+   une approximation dans la méthode mais on peut montrer que l'erreur est limitée tant
+   qu'on reste au voisinage du fond de fissure et à des fréquences modérées.
+   K1 étant une fonction linéaire du champ de déplacement, les facteurs d'intensité modaux
+   peuvent être recombinés comme les déplacements pour reconstruire la solution d'un
+   problème dynamique.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.82.04  (CALC_G_LOCAL_T)
+         EXPL_ : Introduction de l'option K_G_MODA
+      DOC_U : U4.82.03  (CALC_G_THETA_T)
+         EXPL_ : Introduction de l'option K_G_MODA
+      DOC_V : V2.03.114
+         EXPL_ : Nouveau cas test : Calcul des facteurs d'intensité des contraintes en
+                  dynamique par recombinaison modale sur une plaque fissurée
+      DOC_R : R7.02.01
+         EXPL_ : Introduction du terme supplémentaire "modal" dans G
+
+   DETAILS
+   Modifications de catalogue :
+   gener_me3d_2.cata   gener_mecpl2.cata  gener_me3d_3.cata   gener_medpl2.cata
+   Modifications de fortran :
+   memokg / cakgmo : routine principale associée à l'option K_G_MODA en 3D / en 2D
+   te0461 / te0399 : calcul du terme dynamique en 3D / en 2D
+   Syntaxe :
+   G2D = CALC_G_THETA_T(OPTION = 'K_G_MODA',
+                        RESULTAT = MODE,       %mode_meca
+                           / LIST_MODE = ..
+                           / NUME_MODE = ..
+                           / FREQ = ..
+                           / LIST_FREQ = ..
+                           / TOUT_MODE = 'OUI',   (defaut)
+                        FOND_FISS = FF1,       %fond_fiss
+                        THETA = THET1,         %theta_geom
+                    );
+
+   G3D = CALC_G_LOCAL_T(OPTION = 'K_G_MODA',
+                        RESULTAT = MODE,       %mode_meca
+                           / LIST_MODE = ..
+                           / NUME_MODE = ..
+                           / FREQ = ..
+                           / LIST_FREQ =  ..
+                           / TOUT_MODE = 'OUI',   (defaut)
+                        FISSURE = FF1,         %fiss_xfem
+                        RINF = ..
+                        RSUP = ..
+                      );
+
+   VALIDATION
+   * cas test simple et comparaison 2D/3D
+   * création de sdls114 "Calcul des facteurs d'intensité des contraintes en dynamique par
+   recombinaison modale sur une plaque fissurée" .
+   - Modélisation a : 2D. Calcul des modes propres puis des K modaux (test de
+   non-régression) puis calcul de la solution d'un problème transitoire sur base modale
+   (DYNA_TRAN_MODA) et recombinaison pour obtenir K(t) (lignes de commande python).
+   - Modélisation b : même chose en 3D.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-093
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : S. GENIAUT
+   INTERET_UTILISATEUR : OUI
+   TITRE  Mot clé SYME pour l'option calc_k_g de CALC_G_LOCAL_T
+   FONCTIONNALITE
+     Développements nécessaires à l'introduction du mot clé SYME avec l'option CALC_K_G :
+     avec cette option (interdite jusqu'à présent), la fissure passe sur la frontiere de
+     la structure. Normalement lorsque la fissure passe proche d'un noeud, on met la level
+     set normale à 0. Mais ici, le  réajustement de la level set normale sur la frontiere
+     du maillage ne se fait pas, alors qu'elle vaut 1e-23.
+     La conséquense était que l'on a un point de moins pour le fond de fissure.
+     Pour permettre le mot clé 'SYME', il faut donc mettre à zero les level sets qui sont
+     passées au travers de la phase de réajustement.
+   DETAILS
+      Je rajoute un test a la fin de xinils.f sur tous les noeuds du maillage.
+      si ABS(LSN(ino)) < 1.D-16 alors LSN(ino)=0.D0.
+      Ainsi, on trouve bien tous les points du fond de fissure.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : sslv311
+   IMPACT_DOCUMENTAIRE : OUI
+       DOC_U : U4.82.04 CALC_G_LOCAl_T
+         EXPL_ : autoriser SYME pour l'option CALC_K_G
+
+
+-----------------------------------------------------------------------
+--- AUTEUR granet S.GRANET   DATE  le 03/10/2005 a 11:10:56
+
+--------------------------------------------------------------------------------
+REALISATION EL 2005-230
+   NB_JOURS_TRAV  : 2.
+   INTERET_UTILISATEUR : OUI
+   TITRE  Variation de E en fonction de T en élasticité
+   FONCTIONNALITE
+   On prevoit que dans le cadre de la THM, et pour un modele elastique, le module
+   d'Young E puisse varier en fonction de la temperature
+   DETAILS
+   On cree une nouvelle loi de comportement ELAS_THER appelee par RELATION_KIT
+   a la place de ELAS.
+   Dans DEFI_MATERIAU, on appelera ELAS_FO a la place de ELAS. Attention dans la routine
+   mechte.f on remplace une arret en erreur fatale par une alarme : en effet bien que le materiau
+   depende de la thermique, on n'a pas besoin d'imposer une charge thermique (en THM on depend de fait
+   de la thermique). On le specifie dans le message de l'alarme.
+   routines modifiees :
+     calcft calcme hmgazp hmlga hmliga hmlisa hmliva hmlvag hmlvga mechte nmthmc
+   catalogue python modifie :
+     c_comp_incr
+   cas tests modifiés :
+     wtna100a wtna103a wtnl102a wtnv113f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U: U2.04.05
+       EXPL_ :  Manuel d'utilisation THM.
+     DOC_U: U4.51.03
+       EXPL_ :  Doc d'utilisation STAT_NON_LINE.
+   VALIDATION
+     Passage des cas tests modifiés
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 04/10/2005 a 08:25:13
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-350
+   NB_JOURS_TRAV  : 1.0
+   POUR_LE_COMPTE_DE : X. DESROCHE
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST_ELEM et te0012.f
+   FONCTIONNALITE
+   DETAILS :
+   Le cas-test sdnv100f plante sous LINUX et marche sous CLAYASTR lorsque l'on
+   calcule l'énergie cinétique. Nota le calcul sous CLAYASTR est faux ???
+   - te0012:
+   Les tableaux MATP, MATV et MASVIT étaient mal dimensionnés. Ce TE est utilisé
+   par les mailles HEXA8, HEXA20, HEXA27, PENTA6, PENTA15, PYRAM5, PYRAM13,
+   TETRA4 et TETRA10. La dimension max est requise lorsque l'on a des HEXA27
+   soit: MATP(81,81),MATV(3321), MASVIT(81)
+         81 = NDDL; 3321 = NDDL*(NDDL*NNO)/2
+   - Par la même occasion on vérifie les dimensions des autres TE calculant
+   l'énergie cinétique (option ECIN_ELEM_DEPL).
+     - te0031: DKT, DST et Q4G
+     - te0044: DIS_*_*
+     - te0151: POU_D_E, POU-D_T, POU_C_T
+     - te0082: 2D  on modifie MASVIT qui est surdimensionné
+     - te0154: BARRE
+     - te0406: COQUE_3D
+     - te0409: DKTG
+   - Validation:
+   Bien que l'énergie cinétique soit calculée dans les cas-tests
+   sdnv100(a,b,c,d,e,g)(maille HEXA8), aucune vérification n'est effectuée.
+   On ajoute dans sdnv100a et sdnv100f des TEST_TABLE.
+   Fichiers restitués : sdnv100a, sdnv100f, te0012.f, te0082.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : sdnv100a et sdnv100f sur clayastr et clp50a8
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-088
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : X. DESROCHE
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALCUL DE L ENERGIE CINETIQUE AVEC DES HEXA20 SOUS LINUX
+   FONCTIONNALITE
+     La correction de cette AL est liée à celle de l'AL 2005-350, qui corrige
+     le problème (mauvais dimensionnement dans le te0012)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 03/10/2005 a 15:44:10
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-165
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   Evolution DEFI_NAPPE / IMPR_FONCTION
+   FONCTIONNALITE
+      L'utilisateur souhaite imprimer une nappe (issue de
+      CALC_FONCTION/SPEC_OSCI) sous forme d'un tableau pour post-traiter
+      dans son tableau favori.
+      L'impression de la nappe au format TABLEAU répond à cela.
+      J'en profite pour retirer une alarme lors du tracé en échelle LOG quand
+      la valeur minimal est négative à cause de la marge que l'on prend pour
+      enjoliver le tracé.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      Graph.py
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-225
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   LIRE_CHAMP/LIRE_RESU de champ de pression au format MED
+   FONCTIONNALITE
+      La pression est une grandeur définie sur des mailles de bord.
+      Dans l'étude jointe, on lit un champ de pression défini sur les mailles
+      TETRA4 du maillage. On ne conserve donc aucune valeur, on prolonge par
+      zéro où il n'y a rien : zéro partout !
+      J'ajoute une alarme quand certaines valeurs lues ne sont pas affectées
+      dans le champ final. Dans cette étude, on a :
+         <A> <LIRE_RESU> <LRCEME>
+             VALEURS NON AFFECTEES DANS LE CHAMP : 3699
+             VALEURS LUES DANS LE FICHIER        : 3699
+      L'utilisateur ayant 3699 tétraèdres dans son maillage devrait tilter
+      sur cette alarme !
+   DETAILS
+      lrceme.f, cescel.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U7.02.01
+      EXPL_ : Dire pourquoi on peut tomber sur cette alarme.
+      DOC_U : U7.02.02
+      EXPL_ : idem
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-347
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   AFFE_CHAR_MECA_F avec une formule
+   FONCTIONNALITE
+     Dans l'étude jointe, on affecte une pression fonction de l'espace (X,Y,Z)
+     et du temps (INST) soit jet(X,Y,Z,INST) :
+        bb=FORMULE(NOM_PARA=('X','Y','Z','INST'), VALE='''jet(X,Y,Z,INST)''' )
+        PRESSION=AFFE_CHAR_MECA_F(MODELE=MODEL,
+                                  PRES_REP=_F(GROUP_MA='ALL_SUP',
+                                              PRES=bb),)
+     On observe que pour une mémoire jeveux de 256 Mo, l'exécutable consomme
+     de plus en plus de mémoire au fil des pas de temps et atteint 1 Go, puis
+     arrivé en limite de mémoire physique, commence à swapper...
+     Dans astermodule.c/FIINTF, passerelle vers B_ETAPE.fiintf, on crée deux
+     tuples (noms des paramètres et valeurs de ceux-ci) sans les "oublier".
+     Pour cela, il suffit de faire un Py_DECREF() sur ces objets.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-360
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   CALC_FONCTION : Nom de paramètre incorrect dans DEFI_FONCTION
+   FONCTIONNALITE
+      CALC_FONCTION réalise des opérations diverses sur n'importe quel type
+      de fonction ; la macro produit la fonction résultat en appelant
+      DEFI_FONCTION.
+      Dans l'étude jointe, CALC_FONCTION porte sur une fonction dont le nom
+      du paramètre est COOR_X qui n'est pas dans le "into" de NOM_PARA
+      de DEFI_FONCTION : plantage.
+      On décide de supprimer le champ "into" de NOM_PARA dans les commandes
+      qui créer des fonctions : DEFI_FONCTION, DEFI_NAPPE, CALC_FONCTION,
+      RECU_FONCTION, LIRE_FONCTION.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR nicolas O.NICOLAS   DATE  le 03/10/2005 a 17:00:31
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-041
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : OUI
+   TITRE : MODE_ITER_SIMULT Floating point exception
+   FONCTIONNALITE  : MODE_ITER_SIMULT
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+     Le pb de residait dans les valeurs trop importantes de caracteristiques
+     de poutre. Le plantage survenait dans la routine de multiplication de
+     2 reels avec prise en compte de l'overflow.
+     J'avais garde la fiche pour voir s'il etait possible d'ameliorer le message
+     d'erreur :
+     "<F> <MODE_ITER_SIMULT> <"FLOATING POINT EXCEPTION"> IL Y A PROBABLEMENT
+     UNE ERREUR DANS LA PROGRAMMATION""
+     Il s'agit en fait d'un arret sur overflow
+     Il faudrait pour cela detecter les NAN (not a number) mais apres discussion
+     avec JPL et JP il semble trop couteux d'integrer un test type ISNAN dans
+     des routines si bas niveau qui sont appellees tres souvent.
+     Je classe la fiche sans suite.
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-364
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : PROJ_CHAMP sur POUTRE
+   FONCTIONNALITE : PROJ_MESU_MODAL
+   DETAILS
+     En fait, j'avais implique a tort PROJ_CHAMP car la routine buggee est une
+     pj*dco.f mais cette fiche ne concerne que PROJ_MESU_MODAL car PROJ_CHAMP
+     ne sait pas actuellement projete sur maillage 1D.
+     En fait, la routine PJ5DCO etait doublement incorrect : mauvaise
+     initialisation d'un vecteur qui provoquait des resultats differents en debug
+     et nodebug et confusion entre la dimension du maillage (2) et le nombre de
+     coordonnees d'un noeud du maillage (3).
+     Je corrige donc PJ5DCO.F et emet une EL pour integrer la methode dans
+     PROJ_CHAMP (c.f JP)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 6.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test perso (en attente de cas test MEIDEE dans Aster)
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-359
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : MAC_MODES sur Linux
+   FONCTIONNALITE : MAC_MODES
+   DETAILS
+     Je faisais un mauvais produit entre 2 vecteurs dans op0141.f : produit du
+     vecteur 1 par vecteur 2 transpose au lieu du contraire.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 8.1.14
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sdls112a
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-248
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : EXTR_MODES
+   FONCTIONNALITE : EXTR_MODES
+   DETAILS
+     Actuellement, il est possible de selectionner les modes sur un critere de
+     masse effective unitaire. Toutefois, ce critère n'est pas directionnel
+     car il est pris en compte de maniere identique pour toutes les directions
+     (DX, DY et DZ).
+     Je propose donc de mettre en place un critere global (celui present
+     actuellement) ou des critres directionnels :
+           b_crit_extr     =BLOC(condition = "CRIT_EXTR != None",
+             SEUIL           =SIMP(statut='f',typ='R'),
+             SEUIL_X         =SIMP(statut='f',typ='R'),
+             SEUIL_Y         =SIMP(statut='f',typ='R'),
+             SEUIL_Z         =SIMP(statut='f',typ='R'),
+           ),
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.52.11
+       EXPL_ : ajout des mot cles SEUL_X,Y et Z
+   VALIDATION
+     sdls112a
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-247
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : LIRE_RESU format Ideas
+   FONCTIONNALITE : LIRE_RESU
+   DETAILS
+     Lors de la lecture d'un fichier UNV (ideas) de donnees, beaucoup
+     d'information presentes dans ce fichier sont ignorees par LIRE_RESU.
+     Notamment pour des concepts de type MODE_MECA, les termes generalises
+     sont decrits par le format UNV (ou facile a recalculer).
+     Je propose donc d'etendre le niveau de remplissage de la SD par
+     LIRE_RESU.
+     Je rajoute donc le mot clé POSI_AMOR afin de recuperer dans la SD
+     MODE_MECA l'amortissement reduit. J'en profite pour remplir
+     automatiquement (quand c'est possible) les parametres RIGI_GENE, AMOR_GENE
+     de la SD
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U7.02.01
+       EXPL_ : ajout des mot cles POSI_AMOR
+   VALIDATION
+     sdls112a
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-203
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : DEFI_BASE_MODALE et reorthonormalisation
+   FONCTIONNALITE : DEFI_BASE_MODALE
+   DETAILS
+     Lors de la concatenation de plusieurs bases modales, il n'existe pas
+     d'options permettant a l'utilisateur de reorthonormaliser la nouvelle
+     base ainsi creee.
+     Je rajoute donc le mmot cle facteur ORTHO_BASE suivant la syntaxe :
+        ORTHO_BASE        =FACT(statut='f',max='**',
+           BASE       =SIMP(statut='o',typ=(mode_meca,mode_stat_depl,mode_stat_acce,mode_stat_forc,mult_elas,base_modale)),
+           MATRICE    =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
+         ),
+
+     On obtient en sortie une base de meme taille qu'en entree mais dont les
+     modes colineaires sont quasi nulles et donc facilement eliminables par
+     EXTR_MODES
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.64.02
+       EXPL_ : ajout du mot cle facteur ORTHO_BASE
+   VALIDATION
+     sdls112a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rezette C.REZETTE   DATE  le 04/10/2005 a 18:26:18
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-006
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : G.NICOLAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : MACR_FIABILITE matrice de covariance facultative
+   FONCTIONNALITE
+   DETAILS :
+   L'objectif est de rendre le mot clé MATRICE facultatif.
+   En cas d'abscence de ce mot clé, on utilise la matrice identitée,
+   dimensionnée au nombre de variables aléatoires au carré.
+   Catalogue modifiée : macr_fiabilite.capy
+   Sources python modifiée : fiabilite_mephisto.py
+   Cas-test modifié: fiab001a
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U7.03.31 (MACR_FIABILITE)
+       EXPL_ : Rendre facultatif le mot clé MATRICE
+   VALIDATION : fiab001a
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-183
+   NB_JOURS_TRAV  : 12.0
+   POUR_LE_COMPTE_DE : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : CREATION DE CHAMPS A LA MAIN
+   FONCTIONNALITE : CREER UN CHAMP A PARTIR D'UNE TABLE
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.72.04
+       EXPL_ : AJOUT DU MOT-CLE 'TABLE' DANS CREA_CHAMP/EXTR
+   VALIDATION : ZZZZ126A + liste restreinte
+
+   DETAILS :
+   Créer un champ par un CREA_CHAMP/AFFE lorsque le nombre d'affectations
+   est très important prend énormement de temps. Le but est de réduire
+   ce temps.
+   La solution retenue consiste à créer un fichier ASCII contenant les
+   affectations désirées, de lire ensuite ce fichier par un LIRE_TABLE
+   pour créer une table, puis d'introduire cette table dans CREA_CHAMP.
+   1. Objectif:
+   -----------
+   Permettre la création de champs (NOEU/ELNO/ELGA/ELEM) via l'opérateur
+   CREA_CHAMP/EXTR à partir d'un concept table.
+   Un nouveau mot clé est prévu à cet effet, TABLE.
+   2. Syntaxe
+   ----------
+   CH=CREA_CHAMP(
+      o TYPE_CHAMP = / 'NOEU_xxx'
+                     / 'ELNO_xxx'
+                     / 'ELGA_xxx'
+                     / 'ELEM_xxx'
+      / OPERATION = 'EXTR'
+            f  TABLE    = ta ,
+            f  / MAILLAGE = ma,
+               / MODELE   = mo,
+                    o OPTION = opt,
+                    f  PROL_ZERO = / 'OUI'
+                                   / 'NON'  [defaut]
+
+     ... )
+   3. Exemple
+   ----------
+   3.1 But
+   Cet exemple pragmatique illustre la création d'un champ de contraintes
+   aux noeuds par éléments à partir des déplacements.
+   3.2 Fichier d'entrée rempli par l'utilisateur : fich.81
+   #DEBUT_TABLE
+   #TITRE CONTRAINTE `ELNO'
+   #TITRE
+   MAILLE  POINT   SIXX       SIYY      SIZZ
+     K8      I       R          R         R
+     M1      1    -1.632E+03  -2.553E+02  6.788E-01
+     M1      2    -5.302E+03  -9.663E+01  6.018E+01
+     M1      3    -3.638E+03  -1.058E+02  5.669E+01
+     M2      2     5.632E+01   1.553E+02  3.788E-01
+   #FIN_TABLE
+    3.3 Extrait du fichier de commande
+    DEBUT()
+    MA=LIRE_MAILLAGE()
+    MO=AFFE_MODELE(...)
+    # céation de la table
+    TA=LIRE_TABLE(UNITE=81, TYPE_TABLE='TABLE',SEPARATEUR=' ')
+    # création du champ à partir de la table
+    CH=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',TABLE='TA',
+                  MODELE=MO,PROL_ZERO='OUI',OPTION='SIEF_ELNO_DEPL')
+    ...
+    FIN()
+    4. Remarques
+    -------------
+    4.1 Précision sur le fichier d'entrée qui permet de générer la table
+     - si TYPE_CHAMP = NOEU_xxx:
+     Les paramètres admissibles de la table sont : NOEUD et
+     le nom des composantes (DX,DY,DZ,DRX,DRY,DRZ,..)
+     - si TYPE_CHAMP = ELNO_xxx:
+     Les paramètres admissibles de la table sont : MAILLE, POINT et
+     le nom des composantes (SIXX,SIYY,SIZZ,SIXY,SIXZ,SIZZ,..)
+     - si TYPE_CHAMP = ELGA_xxx:
+     Les paramètres admissibles de la table sont : MAILLE, POINT, SOUS_POINT et
+     le nom des composantes (SIXX,SIYY,SIZZ,SIXY,SIXZ,SIZZ,..)
+     - si TYPE_CHAMP = ELEM_xxx:
+     Les paramètres admissibles de la table sont : MAILLE et
+     le nom des composantes (TOTALE,..)
+     4.2 Précision sur les mots clés de CREA_CHAMP/EXTR lorsque TABLE est renseigné:
+      - si TYPE_CHAM=NOEU_xxx: alors MAILLAGE doit etre présent.
+      - si TYPE_CHAM=ELxx_xxx: alors MODELE et OPTION doivent etre présents.
+     5. Performance
+     ---------------
+     Un test de performance a été réalisé sur un maillage de 50000 QUAD4.
+     Nous avons comparé le temps mis pour créer un cham_elno_sief_r avec
+     CREA_CHAMP/AFFE d'une part, et CREA_CHAMP/EXTR/TABLE d'autre part.
+     Résultats:
+     1) CREA_CHAMP / AFFE : 2082.50 s
+                  --> commande CREA_CHAMP :    2085.50 s
+     2) CREA_CHAMP / EXTR / TABLE : 101.95 s
+                  --> macro commande LIRE_TABLE : 95.33s (dont 48.55 pour CREA_TABLE)
+	          --> commande CREA_CHAMP       :  6.62 s
+      Un facteur 20 est observé pour ce test de performance.
+
+   Source modifiée    : op0195.f (CREA_CHAMP)
+   Sources nouvelles  : u195tb.f, tabchs.f
+   Catalogue modifié  : crea_champ.capy
+   Cas-test modifié   : zzzz126a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR smichel S.MICHEL-PONNELLE   DATE  le 04/10/2005 a 14:56:40
+
+--------------------------------------------------------------------------------
+CORRECTION AL 2005-373
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE ENDO_ISOT_BETON en présence de retrait + dépendance au confinement
+   FONCTIONNALITE
+     Dans la loi ENDO_ISOT_BETON, il y a possibilité d'introduire une dépendance au
+     confinement pour améliorer le comportement du béton en compression. Le problème
+     identifié, c'est que le seuil utilisé est fonction de la trace du tenseur des
+     déformations. Or c'est le tenseur des déformations totales qui est utilisé alors
+     qu'il faut utiliser le tenseur élastique qui est celui utilisé pour l'intégration
+     de l'endommagement.
+   DETAILS
+     On ajoute à l'appel de la routine lceib1 les paramètres TM,TREF,SECHM,SREF et HYDRM,
+     afin de pouvoir utiliser dans cette même routine la déformation élastique
+     (cad EPStot-EPSth-EPSret) au lieu de la déformation totale.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 7.3.28
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    étude en cours sur PACE1450
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule         mcourtoi M.COURTOIS        4037      4      2
+ CASTEST AJOUT hplv103b                      galenne E.GALENNE          369    369      0
+ CASTEST AJOUT sdls114a                      galenne E.GALENNE          392    392      0
+ CASTEST AJOUT sdls114b                      galenne E.GALENNE          330    330      0
+ CASTEST AJOUT zzzz208a                      nicolas O.NICOLAS          408    408      0
+ CASTEST AJOUT zzzz208b                      nicolas O.NICOLAS          451    451      0
+ CASTEST MODIF fiab001a                      rezette C.REZETTE          127      1      6
+ CASTEST MODIF hpla100b                      cibhhlv L.VIVAN            345     64     46
+ CASTEST MODIF hpla100c                      cibhhlv L.VIVAN            543    218    212
+ CASTEST MODIF hpla100d                      cibhhlv L.VIVAN            409    123    147
+ CASTEST MODIF hpla100e                      cibhhlv L.VIVAN            406    125    103
+ CASTEST MODIF hpla100f                      cibhhlv L.VIVAN            406    128    104
+ CASTEST MODIF hsls01a                       cibhhlv L.VIVAN            131     13     34
+ CASTEST MODIF hsls01b                       cibhhlv L.VIVAN            164     73     79
+ CASTEST MODIF hsnl100a                      cibhhpd L.SALMONA          297      3      2
+ CASTEST MODIF miss03a                       acbhhcd G.DEVESA           994      3      3
+ CASTEST MODIF sdls112a                      nicolas O.NICOLAS          300     27      2
+ CASTEST MODIF sdnl100a                      cibhhpd L.SALMONA          167      4      2
+ CASTEST MODIF sdnl101a                      cibhhpd L.SALMONA         1032     17      7
+ CASTEST MODIF sdnl113a                      cibhhpd L.SALMONA          231     11      4
+ CASTEST MODIF sdnv100a                     lebouvie F.LEBOUVIER        386     18      1
+ CASTEST MODIF sdnv100f                     lebouvie F.LEBOUVIER        248     23      1
+ CASTEST MODIF ssll110a                      cibhhpd L.SALMONA          127     21      2
+ CASTEST MODIF ssll12b                       cibhhpd L.SALMONA          704     17      2
+ CASTEST MODIF ssls101a                      cibhhlv L.VIVAN            537     61     98
+ CASTEST MODIF ssls101e                      cibhhlv L.VIVAN            459     34     44
+ CASTEST MODIF sslv311a                      galenne E.GALENNE          373    308    134
+ CASTEST MODIF ssnl100a                      cibhhpd L.SALMONA          142      3      2
+ CASTEST MODIF ssnl105a                      cibhhpd L.SALMONA          149      4      2
+ CASTEST MODIF ssnl114a                      cibhhpd L.SALMONA          121      4      3
+ CASTEST MODIF wtna100a                       granet S.GRANET           542     23     10
+ CASTEST MODIF wtna103a                       granet S.GRANET           290     18      6
+ CASTEST MODIF wtnl102a                       granet S.GRANET           215     16      6
+ CASTEST MODIF wtnv113f                       granet S.GRANET           317     17      8
+ CASTEST MODIF yyyy103a                      cibhhpd L.SALMONA          333     13      6
+ CASTEST MODIF yyyy103c                      cibhhpd L.SALMONA          284     13      5
+ CASTEST MODIF zzzz126a                      rezette C.REZETTE          323     64      3
+ CASTEST MODIF zzzz205a                     lebouvie F.LEBOUVIER        137      1      1
+CATALOGU AJOUT options/calc_g_bili_f         galenne E.GALENNE           46     46      0
+CATALOGU AJOUT options/k_g_moda              galenne E.GALENNE           42     42      0
+CATALOGU MODIF options/calc_g_bili           galenne E.GALENNE           45     17      2
+CATALOGU MODIF options/calc_k_g              galenne E.GALENNE           46      3      2
+CATALOGU MODIF options/calc_k_g_f            galenne E.GALENNE           48      7      3
+CATALOGU MODIF options/epsi_elno_depl        cibhhpd L.SALMONA           55      4      1
+CATALOGU MODIF typelem/gener_me2db1          cibhhpd L.SALMONA          201      5      1
+CATALOGU MODIF typelem/gener_me3d_2          galenne E.GALENNE          155     43      1
+CATALOGU MODIF typelem/gener_me3d_3          galenne E.GALENNE          608     23      9
+CATALOGU MODIF typelem/gener_me_x            galenne E.GALENNE          587     10      2
+CATALOGU MODIF typelem/gener_mebar1          cibhhpd L.SALMONA          201      5      1
+CATALOGU MODIF typelem/gener_mecpl2          galenne E.GALENNE          558      5      1
+CATALOGU MODIF typelem/gener_medpl2          galenne E.GALENNE          580      6      1
+CATALOGU MODIF typelem/gener_metu61          cibhhpd L.SALMONA          269      4      3
+CATALOGU MODIF typelem/met3seg3              cibhhpd L.SALMONA          260      4      3
+CATALOGU MODIF typelem/met3seg4              cibhhpd L.SALMONA          262      4      3
+CATALOPY MODIF commande/calc_g_local_t       galenne E.GALENNE          138     16      5
+CATALOPY MODIF commande/calc_g_theta_t       galenne E.GALENNE          114     14      5
+CATALOPY MODIF commande/crea_champ           rezette C.REZETTE          186     12      3
+CATALOPY MODIF commande/defi_base_modale     nicolas O.NICOLAS           56      6      2
+CATALOPY MODIF commande/defi_materiau        cibhhpd L.SALMONA         2870      2      6
+CATALOPY MODIF commande/extr_mode            nicolas O.NICOLAS           54      5      2
+CATALOPY MODIF commande/lire_resu            nicolas O.NICOLAS          173      2      1
+CATALOPY MODIF commande/macr_fiabilite       rezette C.REZETTE          379      2      2
+CATALOPY MODIF commun/c_comp_incr             granet S.GRANET           323      3      1
+CATALOPY MODIF entete/accas                  nicolas O.NICOLAS         1112     13     12
+ FORTRAN AJOUT algorith/cakgmo               galenne E.GALENNE          289    289      0
+ FORTRAN AJOUT algorith/memokg               galenne E.GALENNE          269    269      0
+ FORTRAN AJOUT algorith/orth99               nicolas O.NICOLAS          198    198      0
+ FORTRAN AJOUT elements/te0298               galenne E.GALENNE          299    299      0
+ FORTRAN AJOUT elements/te0311               galenne E.GALENNE          449    449      0
+ FORTRAN AJOUT elements/te0399               galenne E.GALENNE          285    285      0
+ FORTRAN AJOUT elements/te0461               galenne E.GALENNE          479    479      0
+ FORTRAN AJOUT modelisa/tabchs               rezette C.REZETTE          490    490      0
+ FORTRAN AJOUT modelisa/u195tb               rezette C.REZETTE          114    114      0
+ FORTRAN MODIF algeline/op0141               nicolas O.NICOLAS          216     12      9
+ FORTRAN MODIF algeline/op0168               nicolas O.NICOLAS          478     23      2
+ FORTRAN MODIF algorith/cakg3d               galenne E.GALENNE          382     21     10
+ FORTRAN MODIF algorith/calcft                granet S.GRANET           159      8      3
+ FORTRAN MODIF algorith/calcme                granet S.GRANET           884     15      5
+ FORTRAN MODIF algorith/hmgazp                granet S.GRANET           263      3      3
+ FORTRAN MODIF algorith/hmlgat                granet S.GRANET           264      3      3
+ FORTRAN MODIF algorith/hmliga                granet S.GRANET           461     10      5
+ FORTRAN MODIF algorith/hmlisa                granet S.GRANET           264      3      3
+ FORTRAN MODIF algorith/hmliva                granet S.GRANET           368      3      3
+ FORTRAN MODIF algorith/hmlvag                granet S.GRANET           539     10      5
+ FORTRAN MODIF algorith/hmlvga                granet S.GRANET           370      3      3
+ FORTRAN MODIF algorith/inithm                granet S.GRANET            70     14      8
+ FORTRAN MODIF algorith/lcdsbe               smichel S.MICHEL-PONNELLE    371      4      5
+ FORTRAN MODIF algorith/lceib1               smichel S.MICHEL-PONNELLE    171     22      5
+ FORTRAN MODIF algorith/lcldsb               smichel S.MICHEL-PONNELLE    427      4      4
+ FORTRAN MODIF algorith/mdallr               nicolas O.NICOLAS          149      5      5
+ FORTRAN MODIF algorith/mpinvr               nicolas O.NICOLAS          333      7      9
+ FORTRAN MODIF algorith/mptran               nicolas O.NICOLAS          372      1      1
+ FORTRAN MODIF algorith/nmthmc                granet S.GRANET           531      7      2
+ FORTRAN MODIF algorith/op0099               nicolas O.NICOLAS          115      6      1
+ FORTRAN MODIF algorith/pj5dco               nicolas O.NICOLAS          240     22     36
+ FORTRAN MODIF algorith/xinils               galenne E.GALENNE          447      8      8
+ FORTRAN MODIF calculel/cescel              mcourtoi M.COURTOIS         493      4      3
+ FORTRAN MODIF calculel/gbil3d               galenne E.GALENNE          274    222    125
+ FORTRAN MODIF calculel/gbilin               galenne E.GALENNE          133     19      6
+ FORTRAN MODIF calculel/mbilgl               galenne E.GALENNE          392    154     20
+ FORTRAN MODIF calculel/mechte                granet S.GRANET           107      4      3
+ FORTRAN MODIF calculel/op0053               galenne E.GALENNE          789     45      4
+ FORTRAN MODIF calculel/op0077               galenne E.GALENNE          640     74     11
+ FORTRAN MODIF elements/dxtema               cibhhlv L.VIVAN            121     10      2
+ FORTRAN MODIF elements/klg                  cibhhpd L.SALMONA           98      2      2
+ FORTRAN MODIF elements/klgcou               cibhhpd L.SALMONA          128      3      3
+ FORTRAN MODIF elements/te0012              lebouvie F.LEBOUVIER        223      3      3
+ FORTRAN MODIF elements/te0050               cibhhpd L.SALMONA          150      1      6
+ FORTRAN MODIF elements/te0082              lebouvie F.LEBOUVIER        134      2      2
+ FORTRAN MODIF elements/te0095               galenne E.GALENNE          326    194     32
+ FORTRAN MODIF elements/te0154               cibhhpd L.SALMONA          281     12      4
+ FORTRAN MODIF elements/te0160               cibhhpd L.SALMONA          179      5      3
+ FORTRAN MODIF elements/te0161               cibhhpd L.SALMONA          268      2      4
+ FORTRAN MODIF elements/te0168               cibhhpd L.SALMONA          119      2      2
+ FORTRAN MODIF elements/te0221               cibhhlv L.VIVAN            325      6      2
+ FORTRAN MODIF elements/te0239               cibhhlv L.VIVAN            497     14     13
+ FORTRAN MODIF elements/te0295               galenne E.GALENNE          555    106     34
+ FORTRAN MODIF elements/te0299               galenne E.GALENNE          336      4      4
+ FORTRAN MODIF elements/te0300               galenne E.GALENNE          326      5      3
+ FORTRAN MODIF elements/te0582               cibhhpd L.SALMONA          112     22      8
+ FORTRAN MODIF elements/te0586               cibhhpd L.SALMONA          103      3      3
+ FORTRAN MODIF elements/tufull               cibhhpd L.SALMONA          511      5      5
+ FORTRAN MODIF elements/tumass               cibhhpd L.SALMONA          294     10     17
+ FORTRAN MODIF elements/turigi               cibhhpd L.SALMONA          273      4      5
+ FORTRAN MODIF elements/vdxnlr               cibhhlv L.VIVAN            485      7     19
+ FORTRAN MODIF elements/xsif3d               galenne E.GALENNE          342     17      7
+ FORTRAN MODIF prepost/crsdfi                nicolas O.NICOLAS          487      9      2
+ FORTRAN MODIF prepost/lrceme               mcourtoi M.COURTOIS         209     16      2
+ FORTRAN MODIF prepost/lridea                nicolas O.NICOLAS          570     12      9
+ FORTRAN MODIF prepost/stock                 nicolas O.NICOLAS          163     34      4
+ FORTRAN MODIF utilitai/exisd                nicolas O.NICOLAS          227      2      2
+ FORTRAN MODIF utilitai/op0195               rezette C.REZETTE          229      8      6
+  PYTHON MODIF Macro/fiabilite_mefisto       rezette C.REZETTE          461     14      1
+  PYTHON MODIF Utilitai/Graph               mcourtoi M.COURTOIS        1193      8      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   16        4910      4910             +4910
+ MODIF :  118       44983      2965    1681     +1284
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  134       49893      7875    1681     +6194 

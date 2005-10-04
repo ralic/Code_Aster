@@ -1,7 +1,9 @@
-      SUBROUTINE LCEIB1 (IMATE, COMPOR, NDIM, EPSM, T, LAMBDA, DEUXMU,
+      SUBROUTINE LCEIB1 (IMATE, COMPOR, NDIM, EPSM,
+     &                    TM,TREF,SREF,SECHM,HYDRM,
+     &                  T, LAMBDA, DEUXMU,
      &                   ALPHA, KDESS, BENDO,  GAMMA, SEUIL, COUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2005   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 04/10/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,6 +32,11 @@ C
 C IN  COMPOR     : NOM DE LA LOI DE COMPORTEMENT
 C IN  IMATE      : CODE MATERIAU
 C IN  EPSM       : DEFORMATION AU TEMPS MOINS
+C IN  TM         : TEMPERATURE A T-
+C IN  TREF       : TEMPERATURE DE REFERENCE
+C IN  SREF       : SECHAGE DE REFEERNCE
+C IN  SECHM      : SECHAGE AU TEMPS -
+C IN  HYDRM      : HYDRATATION AU TEMPS-
 C OUT T          : TENSEUR DE PLACEMENT (PASSAGE VECT -> MATRICE)
 C OUT LAMBDA
 C OUT DEUXMU
@@ -41,10 +48,13 @@ C OUT SEUIL
 C ----------------------------------------------------------------------
       CHARACTER*2 CODRET(3)
       CHARACTER*8 NOMRES(3)
-      INTEGER     I
+      INTEGER     I,K,NDIMSI
       REAL*8      VALRES(3), E, NU
-      REAL*8      K0, K1, SICR, TREPSM
+      REAL*8      TM,TREF,SREF,SECHM,HYDRM
+      REAL*8      K0, K1, SICR, TREPSM,EPS(6),KRON(6)
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
+      NDIMSI=2*NDIM
       T(1,1)=1
       T(1,2)=4
       T(1,3)=5
@@ -138,9 +148,16 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
           ELSE
             K1=VALRES(3)*(1.D0+GAMMA)*NU**2/(1.D0+NU)/(1.D0-2.D0*NU)
      &        -K0*E/(1.D0-2.D0*NU)/VALRES(3)
+C      PASSAGE AUX DEFORMATIONS ELASTIQUES 
+            CALL R8INIR(6,0.D0,EPS,1)            
+            DO 5 K=1,NDIMSI
+              EPS(K) = EPSM(K) - (  ALPHA * (TM - TREF) 
+     &                       - KDESS * (SREF-SECHM)
+     &                       - BENDO *  HYDRM  )     * KRON(K)
+ 5          CONTINUE     
             TREPSM=0.D0
             DO 1 I=1,NDIM
-              TREPSM=TREPSM+EPSM(I)
+              TREPSM=TREPSM+EPS(I)
  1          CONTINUE
             IF (TREPSM.GT.0.D0) THEN
               TREPSM=0.D0

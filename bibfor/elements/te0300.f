@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,8 @@ C      CALCUL DES COEFFICIENTS DE CONTRAINTES K1 ET K2
 C      BORDS ELEMENTS ISOPARAMETRIQUES 2D AVEC CHARGEMENT DE BORD
 C      PRESSION-CISAILLEMENT ET FORCE REPARTIE
 
-C      OPTION : 'CALC_K_G'    (CHARGES REELLES)
-C               'CALC_K_G_F'  (CHARGES FONCTIONS)
+C      OPTION : 'CALC_K_G'  (CHARGES REELLES)
+C               'CALC_K_G_F' (CHARGES FONCTIONS)
 
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -89,7 +89,7 @@ C.......................................................................
       CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PFISSR','L',IFOND)
-      IF (OPTION.EQ.'CALC_K_G_F') THEN
+      IF ((OPTION.EQ.'CALC_K_G_F') .OR. (OPTION.EQ.'G_MODA_F')) THEN
         FONC = .TRUE.
         CALL JEVECH('PFF1D2D','L',IFORF)
         CALL JEVECH('PPRESSF','L',IPREF)
@@ -240,7 +240,7 @@ C   RPOL,PHI COORDONNEES POLAIRES DU POINT DE GAUSS
         RPOL = SQRT(XG*XG+YG*YG)
         PHI = ATAN2(YG,XG)
         
-        IF ((ABS(YG) .LT. 1.0D-16) .AND.
+        IF ((ABS(YG) .LT. 1.0D-8) .AND.
      &      (XG .LT. 0.0D0)) THEN
 C
 C ON DETERMINE SI ON EST SUR LA LEVRE X2 > 0 OU 
@@ -254,6 +254,8 @@ C
           D2 = ((XNO2-XA) * (XNO2-XA)) + ((YNO2-YA) * (YNO2-YA))
           IF (D2 .GT. D1) THEN
              PHI = -1.0D0 * PHI
+          ELSE
+             PHI = ABS(PHI)
           END IF
         END IF
 

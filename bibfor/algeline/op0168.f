@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -240,7 +240,10 @@ C
             CALL GETVTX('FILTRE_MODE','CRIT_EXTR',I,1,0,K8B,N6)
             IF ( N6 .NE. 0 ) THEN
                CALL GETVTX('FILTRE_MODE','CRIT_EXTR',I,1,1,CRITFI,N6)
-               CALL GETVR8('FILTRE_MODE','SEUIL'  ,I,1,1,SEUIL ,N6)
+               CALL GETVR8('FILTRE_MODE','SEUIL'  ,I,1,1,SEUIL ,N7)
+               CALL GETVR8('FILTRE_MODE','SEUIL_X'  ,I,1,1,SEUIL ,N8)
+               CALL GETVR8('FILTRE_MODE','SEUIL_Y'  ,I,1,1,SEUIL ,N9)
+               CALL GETVR8('FILTRE_MODE','SEUIL_Z'  ,I,1,1,SEUIL ,N10)
                NBMODE = 0
                IF ( CRITFI .EQ. 'MASS_EFFE_UN'.AND.
      +             TYPCON(1:9).EQ.'MODE_MECA' ) THEN
@@ -254,10 +257,28 @@ C
                      CALL UTMESS('F',NOMCMD,'MASSES EFFECTIVES '
      +                //'UNITAIRES NON CALCULEES PAR NORM_MODE')
                    ENDIF
-                   IF (DX.GE.SEUIL.OR.DY.GE.SEUIL.OR.DZ.GE.SEUIL) THEN
-                     NBMODE = NBMODE + 1
-                     ZI(JORDR+NBMODE-1) = IORD
-                   ENDIF
+                   IF (N7.NE.0) THEN
+                     IF (DX.GE.SEUIL.OR.DY.GE.SEUIL.OR.DZ.GE.SEUIL) THEN
+                       NBMODE = NBMODE + 1
+                       ZI(JORDR+NBMODE-1) = IORD
+                     ENDIF
+                   ELSEIF (N8.NE.0) THEN
+                     IF (DX.GE.SEUIL) THEN
+                       NBMODE = NBMODE + 1
+                       ZI(JORDR+NBMODE-1) = IORD
+                     ENDIF
+                   ELSEIF (N9.NE.0) THEN
+                     IF (DY.GE.SEUIL) THEN
+                       NBMODE = NBMODE + 1
+                       ZI(JORDR+NBMODE-1) = IORD
+                     ENDIF
+                   ELSEIF (N10.NE.0) THEN
+                     IF (DZ.GE.SEUIL) THEN
+                       NBMODE = NBMODE + 1
+                       ZI(JORDR+NBMODE-1) = IORD
+                     ENDIF
+                   ENDIF  
+                     
  60              CONTINUE
                ENDIF
                IF ( CRITFI .EQ. 'MASS_GENE' ) THEN

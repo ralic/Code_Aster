@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
                      reentrant='f',
                      fr="Définit la base d'une sous-structuration dynamique ou d'une recombinaison modale",
             UIinfo={"groupes":("Matrices/vecteurs",)},
-         regles=(UN_PARMI('CLASSIQUE','RITZ','DIAG_MASS'),),
+         regles=(UN_PARMI('CLASSIQUE','RITZ','DIAG_MASS','ORTHO_BASE'),),
          CLASSIQUE       =FACT(statut='f',
            INTERF_DYNA     =SIMP(statut='o',typ=interf_dyna_clas ),
            MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**' ),
@@ -46,6 +46,10 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
         DIAG_MASS        =FACT(statut='f',max='**',
            MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**'  ),
            MODE_STAT       =SIMP(statut='o',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
+         ),
+        ORTHO_BASE        =FACT(statut='f',max='**',
+           BASE       =SIMP(statut='o',typ=(mode_meca,mode_stat_depl,mode_stat_acce,mode_stat_forc,mult_elas,base_modale)),
+           MATRICE    =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/09/2005   AUTEUR G8BHHXD X.DESROCHES 
+%& MODIF TYPELEM  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -249,9 +249,17 @@ OPTION__
                                      ECONTNO  PSIGINR  NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR  
                                      ZVARINO  PVARIPR  DDL_MECA PVITESS  
                               OUT__  EGTHETA  PGTHETA  
-    CALC_G_BILI         95    IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                                     NTEMPER  PTEMPER  DDL_MECA PTHETAR  
-                              OUT__  EGTHETA  PGTHETA  
+    CALC_G_BILI         95    IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CPESANR  UPESANR
+                                     CROTATR  UROTATR  CEPSINR  UEPSINR  CPESANR  VPESANR  CROTATR  VROTATR  
+                                     CEPSINR  VEPSINR  NFORCER  UPFRVOL  NFORCER  VPFRVOL  CTEREFE  PTEREF
+                              OUT__  EGTHETA  PGTHETA
+    CALC_G_BILI_F       95    IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CPESANR  UPESANR
+                                     CROTATR  UROTATR  CEPSINF  UEPSINF  CPESANR  VPESANR  CROTATR  VROTATR  
+                                     CEPSINF  VEPSINF  CFORCEF  UPFFVOL  CFORCEF  VPFFVOL  CTEREFE  PTEREF
+                                     CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR 
+                              OUT__  EGTHETA  PGTHETA
     CALC_G_F            27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL  
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  
@@ -273,14 +281,20 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  
                                      CTEREFE  PTEREF   DDL_MECA PTHETA1  DDL_MECA PTHETAR  
                               OUT__  EGTHETA  PGTHETA  
-    CALC_K_G            295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPINR  
-                                     DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER  
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ECONTNO  PSIGINR  
-                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR  
-                              OUT__  EKTHETA  PGTHETA  
-    CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPLAR  
-                                     CFORCEF  PFFVOLU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  
-                                     CROTATR  PROTATR  NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR  
+    CALC_K_G            295   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
+                                     CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
+                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB
+                              OUT__  EKTHETA  PGTHETA
+    CALC_K_G_F          295   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   CFORCEF  PFFVOLU  CPESANR  PPESANR
+                                     CROTATR  PROTATR  CEPSINF  PEPSINF  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
+                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CTEMPSR  PTEMPSR
+                              OUT__  EKTHETA  PGTHETA   
+    K_G_MODA            461   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
+                                     CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
+                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFREQR   PPULPRO 
                               OUT__  EKTHETA  PGTHETA  
     CHAR_ALPH_ZAC       567   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  
                               OUT__  MVECTUR  PVECTUR  

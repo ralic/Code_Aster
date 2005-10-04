@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE 3 BARRES EN U SOUMISES A LA PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,9 +65,10 @@ STATIQU1=MECA_STATIQUE(CHAM_MATER=CH_MATER,
                        CARA_ELEM=CARA_ELE,
                        EXCIT=_F(CHARGE=CHARGE_1,),);
 
+
 STATIQU1=CALC_ELEM(reuse =STATIQU1,
                    RESULTAT=STATIQU1,
-                   OPTION='EFGE_ELNO_DEPL',
+                   OPTION=('EFGE_ELNO_DEPL','EPSI_ELNO_DEPL'),
                    );
 
 TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
@@ -88,6 +89,24 @@ TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
                   NUME_ORDRE=1,
                   NOEUD='N4',),);
                   
+TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO_DEPL',
+                  RESULTAT=STATIQU1,
+                  MAILLE='M1',
+                  REFERENCE='ANALYTIQUE',
+                  VALE=2.E-6,
+                  NOM_CMP='EPXX',
+                  NUME_ORDRE=1,
+                  NOEUD='N1',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO_DEPL',
+                  RESULTAT=STATIQU1,
+                  MAILLE='M3',
+                  REFERENCE='ANALYTIQUE',
+                  VALE=2.E-6,
+                  NOM_CMP='EPXX',
+                  NUME_ORDRE=1,
+                  NOEUD='N4',),);
+
 TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=STATIQU1,
                   REFERENCE='ANALYTIQUE',

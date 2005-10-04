@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,14 +65,14 @@ C
       INTEGER IFM, NIV
       INTEGER IAUX, JAUX, ICHAR, NEXCI, L, IEXC
       INTEGER      I,J,ICHA,IBID,IORD,IRET,IVEC,IPROPA,IFOND,IRET1
-      INTEGER      JINST,LONVEC,NBPRUP,IORD1,IORD2
+      INTEGER      JINST,LONVEC,NBPRUP,IORD1,IORD2, IPULS
       INTEGER      NBINST,NC,NCHA,NDEP,NP,NRES,NBVAL,IG,IBOR,NBORN
       INTEGER      NBCO,N1,N2,N3
       INTEGER NRPASE,NBPASE,NRPASS,NBPASS,TYPESE
       INTEGER ADRECG,ADCHSE
       INTEGER NVITES,NACCE
 
-      REAL*8       TIME,ALPHA,PREC,RBID
+      REAL*8       TIME,ALPHA,PREC,RBID, PULS
 
       CHARACTER*4 K4BID
       CHARACTER*5 SUFFIX
@@ -220,6 +220,15 @@ C
      +                    ' EST OBLIGATOIRE.')
            ENDIF
         ENDIF
+        
+C VERIFICATION DE LA COHERENCE DES MOTS CLE AVEC L'OPTION DE CALCUL
+
+        IF (((OPTION.EQ.'K_G_MODA') .AND. (TYSD.NE.'MODE_MECA')) .OR.
+     +     ((TYSD.EQ.'MODE_MECA') .AND. (OPTION.NE.'K_G_MODA'))) THEN
+          CALL UTMESS('F','OP0053','POUR UN RESULTAT DE TYPE '//
+     +          'MODE_MECA L OPTION DE CALCUL DOIT ETRE K_G_MODA.')
+        ENDIF
+
         CALL JEVEUO ( VECORD, 'L', IVEC )
         IORD = ZI(IVEC)
         CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,RESUCO,IORD)
@@ -514,6 +523,18 @@ C=======================================================================
           NOPRUP(3) = 'G'
           TYPRUP(3) = 'R'
         ENDIF
+      ELSEIF ( OPTION .EQ. 'K_G_MODA' ) THEN
+          NBPRUP = 5
+          NOPRUP(1) = 'NUME_MODE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'G'
+          TYPRUP(2) = 'R'
+          NOPRUP(3) = 'K1'
+          TYPRUP(3) = 'R'
+          NOPRUP(4) = 'K2'
+          TYPRUP(4) = 'R'
+          NOPRUP(5) = 'G_IRWIN'
+          TYPRUP(5) = 'R'
       ELSEIF ( OPTIO1 .EQ. 'CALC_K_G'    ) THEN
         IF ( NDEP .NE. 0 ) THEN
           NBPRUP = 4
@@ -622,17 +643,37 @@ C==============================================================
      &                    ' AVEC CETTE OPTION !')
             ENDIF
           ENDIF
-
+        
 C==============================================================
 C   FIN DU CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
 C==============================================================
 
-      ELSE
+      
+C==============================================================
+C 3.3.1.4. ==>OPTION K_G_MODA
+C==============================================================
+       
+      ELSE IF (OPTIO1 .EQ. 'K_G_MODA') THEN
+          DO 3314 I = 1 , LONVEC
+            IORD1 = ZI(IVEC-1+I) 
+            CALL RSEXCH(RESUCO,'DEPL',IORD1,DEPLA1,IRET)
+            IF(IRET.NE.0) THEN
+              CALL UTMESS('F',NOMPRO,
+     &                    'ACCES IMPOSSIBLE AU MODE PROPRE')
+            ENDIF
+            CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD1,0,IPULS,K8BID) 
+            PULS = ZR(IPULS)
+            PULS = SQRT(PULS)
+            
+            CALL MEMOKG(OPTIO1,LATAB1,MODELE,DEPLA1,THETA,MATE,NCHA,
+     &                  ZK8(ICHA),SYMECH,FOND,IORD1,PULS,NBPRUP,NOPRUP)
+ 3314     CONTINUE  
 
 C==============================================================
 C 3.4. ==> CALCUL DE G, G_LAGR, K_G ET DG
 C==============================================================
 
+      ELSE
         DO 34 , I = 1 , LONVEC
           CALL JEMARQ()
           CALL JERECU('V')

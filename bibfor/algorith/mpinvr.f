@@ -2,8 +2,7 @@
      &                    PHI,RMESU,COEF,XABS, 
      &                    LFONCT,RETA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -114,6 +113,7 @@ C REGULARISATION : NON / NORM_MIN / TIK_RELA
       CALL GETVTX ('RESOLUTION','REGUL',1,1,1,REGUL,IBID)
       IF (IBID .EQ. 0) REGUL = 'NON'
 
+      CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,1,1,NOMCHA,IBID)
 C
 C ===============================
 C CALCUL DE PHI_TRANSPOSEE * PHI 
@@ -197,14 +197,13 @@ C ********************************************************
           ZR(LSECMB-1 +IMOD) = 0.D0
 C
           DO 70 IMES = 1,NBMESU
-            CVAL = RMESU(IMES,IABS)
-            ZR(LSECMB-1 +IMOD) = ZR(LSECMB-1 +IMOD)
-     &                          +PHI(IMES,IMOD)*CVAL
+             ZR(LSECMB-1 +IMOD) = ZR(LSECMB-1 +IMOD) + 
+     &           PHI(IMES,IMOD)*RMESU(IMES,IABS)
  70       CONTINUE
 C
           IF ((REGUL .EQ. 'TIK_RELA') .AND. (IABS .GT. 1)) THEN
-            CVAL = RETA(IMOD,IABS-1)
-            ZR(LSECMB-1 +IMOD) = ZR(LSECMB-1 +IMOD)+ALPHA*CVAL
+             ZR(LSECMB-1 +IMOD) = ZR(LSECMB-1 +IMOD) + 
+     &                       ALPHA*RETA(IMOD,IABS-1)
           ENDIF
 C
 C FIN DE LA BOUCLE SUR LES MODES
@@ -227,11 +226,10 @@ C CALCUL MOINDRE NORME
             CALL UTDEBM('A',NOMROU,'CALCUL MOINDRE NORME ')
             CALL UTFINM
             DO 71 IMES = 1,NBMESU
-              CVAL = RMESU(IMES,IABS)
-              ZR(LSECMB-1 +IMES) =  CVAL
+              ZR(LSECMB-1 +IMES) = RMESU(IMES,IABS)
               DO 77 JMES = 1,NBMESU
                 ZR(LMATSY-1 +IMES+NBMODE*(JMES-1)) = 
-     &                     ZR(LPHIPH-1 +IMES+NBMESU*(JMES-1))
+     &                    ZR(LPHIPH-1 +IMES+NBMESU*(JMES-1))
  77           CONTINUE
  71         CONTINUE
 C

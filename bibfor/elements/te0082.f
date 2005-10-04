@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 04/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       CHARACTER*16       PHENOM
       CHARACTER*2        CODRET
       REAL*8             VALRES, DFDX(9),DFDY(9),POIDS,R,R8B,VFI,VFJ
-      REAL*8             MATP(18,18), MATV(171),MASVIT(27)
+      REAL*8             MATP(18,18), MATV(171),MASVIT(18)
       REAL*8             DDOT
       INTEGER            NNO,KP,NNOS,NPG2,II,JJ,I,J,K,IMATUU,JGANO
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE

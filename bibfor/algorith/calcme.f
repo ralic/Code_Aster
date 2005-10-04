@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ C ======================================================================
       INTEGER NDT,NDI
       COMMON /TDIM/   NDT  , NDI
 C
-      DATA NCRA1 / 'E','NU','RHO','ALPHA' /
+      DATA NCRA1 / 'E','NU','ALPHA','RHO' /
 C BG
       DATA BGCR1 
      > /'RHO_S','UN_SUR_KS','E','KB','D_KB_T','ALPHA_S','ALPHA_D'/
@@ -129,21 +129,31 @@ C ======================================================================
      +                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
          NU     = ELAS(2)
-         ALPHA0 = ELAS(4)
+         ALPHA0 = ELAS(3)
       ENDIF
       IF ( MECA.EQ.'DRUCKER_PRAGER' ) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      +                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
          NU     = ELAS(2)
-         ALPHA0 = ELAS(4)
+         ALPHA0 = ELAS(3)
+      ENDIF
+      IF (MECA.EQ.'ELAS_THER')  THEN
+         IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
+            CALL UTMESS('F','CALCME','OPTION SECANTE NON VALIDE ' )
+         ENDIF
+         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+     +                                 NCRA1(1),ELAS(1),CODRET,'FM')
+         YOUNG  = ELAS(1)
+         NU     = ELAS(2)
+         ALPHA0 = ELAS(3)
       ENDIF
 C ======================================================================
 C --- CALCUL DES CONTRAINTES -------------------------------------------
 C ======================================================================
 C --- LOI ELASTIQUE ----------------------------------------------------
 C ======================================================================
-      IF (MECA.EQ.'ELAS') THEN
+      IF ((MECA.EQ.'ELAS').OR.(MECA.EQ.'ELAS_THER')) THEN
          IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
            DO 101 I=1,3

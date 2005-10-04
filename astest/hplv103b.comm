@@ -1,0 +1,369 @@
+# MODIF  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+# TITRE CALCUL DE G THERMO-ELASTIQUE 3D EN MILIEU INFINI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(   CODE=_F(  NOM = 'HPLV103B',NIV_PUB_WEB='INTERNET') )
+
+MALL=LIRE_MAILLAGE();
+
+MALL=DEFI_GROUP( reuse=MALL,MAILLAGE=MALL,CREA_GROUP_NO=(
+                     _F(  GROUP_MA = 'LFF'),
+                     _F(  GROUP_MA = 'LEVINF'),
+                     _F(  GROUP_MA = 'SSUP'),
+                     _F(  GROUP_MA = 'SAV_I'),
+                     _F(  GROUP_MA = 'SLA2_I'),
+                     _F(  GROUP_MA = 'SINF'),
+                     _F(  GROUP_MA = 'SAR_I'),
+                     _F(  GROUP_MA = 'SLAT'),
+                     _F(  NOM = 'INFINI',
+                          UNION = ( 'SINF','SAR_I','SLAT',)))
+                 );
+
+#--------------------------------------------------------------------
+#               DEBUT DU THERMIQUE                                  #
+#--------------------------------------------------------------------
+
+
+
+MOTH=AFFE_MODELE(            MAILLAGE=MALL,
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         PHENOMENE = 'THERMIQUE',
+                                         MODELISATION = '3D')
+                       )
+
+MATH=DEFI_MATERIAU(      THER=_F(  RHO_CP = 0., LAMBDA = 1.) )
+
+CMTH=AFFE_MATERIAU(     MAILLAGE=MALL,
+                        AFFE=_F(  TOUT = 'OUI',
+                                  MATER = MATH)
+                       )
+
+CHTH=AFFE_CHAR_THER(          MODELE=MOTH,TEMP_IMPO=(
+                             _F(  GROUP_NO = 'INFINI',
+                                         TEMP = 0.0),
+                             _F(  GROUP_NO = 'LEVINF',
+                                         TEMP = -1.))
+                       )
+
+THLI=THER_LINEAIRE(       MODELE=MOTH,
+                          CHAM_MATER=CMTH,
+                               EXCIT=_F(  CHARGE = CHTH)
+                      )
+
+TEMP_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                    NOM_CHAM='TEMP',  RESULTAT=THLI,
+                    INST=0.0
+                 );
+
+
+#--------------------------------------------------------------
+#               FIN DU THERMIQUE                                    
+#--------------------------------------------------------------
+
+###################################################
+# CONVERSION DU MAILLAGE QUADRATIQUE --> LINEAIRE #
+###################################################
+
+M=CREA_MAILLAGE(MAILLAGE=MALL,
+                QUAD_LINE=_F(TOUT='OUI'),);
+
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = '3D')
+              );
+
+
+THLI_2=PROJ_CHAMP(RESULTAT=THLI,
+                    MODELE_1=MOTH,
+                    MODELE_2=MO,
+                 );
+                   
+
+TEMP=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                NOM_CHAM='TEMP',  RESULTAT=THLI_2,
+                INST=0.0
+               );
+                   
+
+MA=DEFI_MATERIAU(ELAS=_F(E = 200000E+6,
+                         NU = 0.3,
+                         ALPHA = 0.000001)
+                       );
+
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT = 'OUI',
+                         MATER = MA,
+                         TEMP_REF = 0.)
+                );
+
+
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  TEMP_CALCULEE=TEMP,
+                  DDL_IMPO=(_F(  GROUP_NO = 'SSUP', DZ = 0.),
+                            _F(  GROUP_NO = 'SLA2_I', DX = 0.),
+                            _F(  GROUP_NO = 'SAV_I', DY = 0.))
+                  );
+
+
+MEST=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(  CHARGE = CH)
+                  );
+
+
+DEPLA=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 NOM_CHAM='DEPL',  RESULTAT=MEST,
+                 INST=0.0
+                );
+
+
+#--------------------------------------------------------------------
+#               CALCUL DE G SUR 3 COURONNES                         #
+#--------------------------------------------------------------------
+
+FF=DEFI_FOND_FISS(MAILLAGE=M,
+                  FOND_FISS=_F(  GROUP_MA = 'LFF',
+                                 NOEUD_ORIG ='NO2345',),
+                  NORMALE=( 0.,  0.,  -1.,),
+                  DTAN_ORIG=( 0.,  1.,  0.,),
+                  DTAN_EXTR=( 1.,  0.,  0.,)
+                  );
+                    
+
+FF2=DEFI_FISS_XFEM(MODELE=MO,  
+                   DEFI_FISS=_F(GROUP_MA_FISS='LEVINF',
+                                GROUP_MA_FOND='LFF',               
+                               ),
+                   GROUP_MA_ENRI='VOL',
+                   ORIE_FOND=_F(PFON_INI=(0.0, 
+                                          1.0, 
+                                          0.0,),
+                                VECT_ORIE=(0.0, 0.0, -1.0),
+                                PT_ORIGIN=(0.0, 
+                                           0.0, 
+                                           0.0),),
+                   INFO=1,
+                   CONTACT=_F(),
+                   );
+
+
+THETA1=CALC_THETA(MODELE=MO,
+                  FOND_FISS=FF,
+                  THETA_3D=_F(TOUT = 'OUI',
+                              MODULE = 1.0,
+                              R_INF = 0.04,
+                              R_SUP = 0.2)
+                 );
+
+
+G1=CALC_G_THETA_T(MODELE=MO,
+                  DEPL=DEPLA,
+                  CHAM_MATER=CM,
+                  THETA=THETA1,
+                  EXCIT=_F(   CHARGE=CH,),
+                  SYME_CHAR='SYME',
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                                DEFORMATION = 'PETIT')
+                 );
+
+
+THETA2=CALC_THETA(MODELE=MO,
+                  FOND_FISS=FF,
+                  THETA_3D=_F(  TOUT = 'OUI',
+                                MODULE = 1.0,
+                                R_INF = 0.08,
+                                R_SUP = 0.28)
+                 );
+
+
+G2=CALC_G_THETA_T(MODELE=MO,
+                  DEPL=DEPLA,
+                  CHAM_MATER=CM,
+                  THETA=THETA2,
+                  SYME_CHAR='SYME',
+                  EXCIT=_F(   CHARGE=CH,),
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                                DEFORMATION = 'PETIT')
+                 );
+
+
+THETA3=CALC_THETA(MODELE=MO,
+                  FOND_FISS=FF,
+                  THETA_3D=_F(  TOUT = 'OUI',
+                                MODULE = 1.0,
+                                R_INF = 0.08,
+                                R_SUP = 0.36)
+                  );
+
+
+G3=CALC_G_THETA_T(MODELE=MO,
+                  DEPL=DEPLA,
+                  CHAM_MATER=CM,
+                  THETA=THETA3,
+                  SYME_CHAR='SYME',
+                  EXCIT=_F( CHARGE=CH,),
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                                DEFORMATION = 'PETIT')
+                  );
+
+
+#--------------------------------------------------------------------
+#               CALCUL DE G, K1, K2, K3 LOCAUX                                   #
+#--------------------------------------------------------------------
+ 
+GKLOC1=CALC_G_LOCAL_T(   MODELE=MO,
+                         DEPL=DEPLA,
+                         CHAM_MATER=CM,
+                         OPTION='CALC_K_G',
+                         FISSURE=FF2,
+                         EXCIT=_F(CHARGE=CH,),
+                         R_INF=0.04,
+                         R_SUP=0.2,
+                         SYME_CHAR='SYME',
+                         LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                      DEFORMATION = 'PETIT'),
+                         INFO=1,
+                     );
+IMPR_TABLE(      TABLE=GKLOC1,);
+
+GKLOC3=CALC_G_LOCAL_T(   MODELE=MO,
+                         DEPL=DEPLA,
+                         CHAM_MATER=CM,
+                         OPTION='CALC_K_G',
+                         FISSURE=FF2,
+                         EXCIT=_F(CHARGE=CH,),
+                         R_INF=0.08,
+                         R_SUP=0.28,
+                         SYME_CHAR='SYME',
+                         LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                       DEFORMATION = 'PETIT'),
+                         INFO=1,
+                     );
+ 
+ 
+GKLOC5=CALC_G_LOCAL_T(   MODELE=MO,
+                         DEPL=DEPLA,
+                         CHAM_MATER=CM,
+                         OPTION='CALC_K_G',
+                         FISSURE=FF2,
+                         EXCIT=_F(   CHARGE=CH,),
+                         R_INF=0.08,
+                         R_SUP=0.36,
+                         SYME_CHAR='SYME',
+                         LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                       DEFORMATION = 'PETIT'),
+                         INFO=1,
+                     );
+ 
+ 
+#----------------------------------------------------------------
+#            TEST DES RESULTATS DE G GLOBAL                        
+#----------------------------------------------------------------
+TEST_TABLE(      TABLE=G1,
+                 NOM_PARA='G',
+                 VALE=1.7781E-1,
+                 PRECISION=6.E-2  ,
+                 REFERENCE = 'ANALYTIQUE'   )
+
+
+TEST_TABLE(      TABLE=G2,
+                 NOM_PARA='G',
+                 VALE=1.7781E-1,
+                 PRECISION=6.E-2  ,
+                 REFERENCE = 'ANALYTIQUE'   )
+
+
+TEST_TABLE(      TABLE=G3,
+                 NOM_PARA='G',
+                 VALE=1.7781E-1,
+                 PRECISION=6.E-2,
+                 REFERENCE = 'ANALYTIQUE'        )
+
+
+#--------------------------------------------------------------
+#            TEST DES RESULTATS DE K1                                
+#--------------------------------------------------------------
+
+TEST_TABLE(       TABLE=GKLOC1,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 1),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=15.77E+4,
+                  PRECISION=4.E-2,
+                  REFERENCE = 'ANALYTIQUE'     )
+
+TEST_TABLE(       TABLE=GKLOC1,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 9),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=15.77E+4,
+                  PRECISION=4.E-2,
+                  REFERENCE = 'ANALYTIQUE'  )
+
+TEST_TABLE(       TABLE=GKLOC1,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 1),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=1.5881571155563E+05,
+                  PRECISION=1.E-5,
+                  REFERENCE = 'NON_REGRESSION'   )
+
+TEST_TABLE(       TABLE=GKLOC3,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 1),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=15.77E+4,
+                  PRECISION=4.E-2,
+                  REFERENCE = 'ANALYTIQUE'     )                  
+
+TEST_TABLE(       TABLE=GKLOC3,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 9),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=15.77E+4,
+                  PRECISION=4.E-2,
+                  REFERENCE = 'ANALYTIQUE'   )                  
+
+TEST_TABLE(       TABLE=GKLOC5,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 1),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=15.77E+4,
+                  PRECISION=4.E-2,
+                  REFERENCE = 'ANALYTIQUE'   )
+                  
+TEST_TABLE(       TABLE=GKLOC5,
+                  FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                              VALE_I = 9),
+                  NOM_PARA='K1_LOCAL',
+                  VALE=15.77E+4,
+                  PRECISION=4.E-2,
+                  REFERENCE = 'ANALYTIQUE'   )            
+                 
+
+FIN();

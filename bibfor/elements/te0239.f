@@ -1,6 +1,5 @@
       SUBROUTINE TE0239(OPTION,NOMTE)
-
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -8,31 +7,25 @@ C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON LINEAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA_TANG ',
 C                                   'FULL_MECA      ','RAPH_MECA      '
 C                          ELEMENT: MECXSE3,METCSE3,METDSE3
-
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
-
       IMPLICIT NONE
-
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -121,9 +114,6 @@ C---- COTE MINIMALE SUR L'EPAISSEUR
       CALL JEVECH('PDEPLPR','L',IDEPLP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
-      CALL TECACH('ONN','PTEMPEF',1,ITEMPF,IRET)
-      TEMPNO = .TRUE.
-      IF (IRET.EQ.0) TEMPNO = .FALSE.
 
       IF (ZK16(ICOMPO+3).EQ.'COMP_ELAS') THEN
         CALL UTMESS('F','TE0239','COMP_ELAS NON VALIDE')
@@ -213,14 +203,15 @@ C-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        CALL TECACH('ONN','PTEMPER',8,ITAB,IRET)
+        CALL TECACH('ONN','PTEMPMR',8,ITAB,IRET)
         ITEMPR = ITAB(1)
         IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
+          TEMPNO = .TRUE.
           NBPAR = 1
           NOMPAR = 'TEMP'
           DO 40 I = 1,NNO
             CALL DXTPIF(ZR(ITEMPR+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
-            T = ZR(ITEMPR+3* (I-1))
+            T    = ZR(ITEMPR+  3* (I-1))
             TINF = ZR(ITEMPR+1+3* (I-1))
             TSUP = ZR(ITEMPR+2+3* (I-1))
             TPG = TPG + (T+ (TSUP+TINF-2*T)/6.D0)*ZR(IVF+K+I-1)
@@ -242,7 +233,10 @@ C                                TXPG3 = SUP
           VALPAR = TPG/NNO
         ELSE
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
+          CALL TECACH('ONN','PTEMPEF',8,ITAB,IRET)
+          ITEMPF = ITAB(1)
           IF (ITEMPF.GT.0) THEN
+            TEMPNO = .FALSE.
             NBPAR = 1
             NOMPAR = 'TEMP'
             NOMPU(1) = 'INST'
@@ -252,9 +246,16 @@ C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
             CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,VALPAR,IER)
 C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
           ELSE
+            TEMPNO = .TRUE.
             NBPAR = 0
             NOMPAR = ' '
             VALPAR = 0.D0
+            TMPG1 = 0.D0
+            TMPG2 = 0.D0
+            TMPG3 = 0.D0
+            TPPG1 = 0.D0
+            TPPG2 = 0.D0
+            TPPG3 = 0.D0
           END IF
         END IF
 

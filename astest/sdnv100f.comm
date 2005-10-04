@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/09/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 04/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,6 +178,10 @@ VI5=RECU_FONCTION(RESULTAT=U,
                   NOM_CMP='DZ',
                   NOEUD='N5',
                   TITRE='VITE',);
+
+tpost=POST_ELEM(ENER_CIN=_F(TOUT='OUI',),
+                RESULTAT=U,);
+IMPR_TABLE(TABLE=tpost)
 #Non Regression
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
@@ -223,4 +227,22 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    PRECISION=0.1,
                    REFERENCE='ANALYTIQUE',),),);
 
+#
+# Test de l energie cinetique
+#
+TEST_TABLE(      TABLE=tpost,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=8.00000E+02, 
+                   PRECISION=0.0001)
+
+TEST_TABLE(      TABLE=tpost,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 70,),),
+                   REFERENCE='NON_REGRESSION',VERSION='8.1.15',  
+                   NOM_PARA='TOTALE', 
+                   VALE=7.94892E+02, 
+                   PRECISION=0.0001)
 FIN();

@@ -8,7 +8,7 @@
       LOGICAL                                    EXITIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,10 +89,11 @@ C
       CALL METEMP(NOMA,TEMPE,EXITIM,TIME,CHTREF,EXITHE,CHTEMP)
       IF ( REPK .EQ. 'OUI' ) THEN
          IF ( .NOT.EXITHE ) THEN
-            CALL UTMESS('F','MECHTE',
+            CALL UTMESS('A','MECHTE',
      +                  'LE MATERIAU DEPEND DE LA TEMPERATURE ET '//
      +                  'IL N''Y A PAS DE CHAMP DE TEMPERATURE,'//
-     +                  'MORALITE LE CALCUL EST IMPOSSIBLE.')
+     +                  'MORALITE LE CALCUL EST IMPOSSIBLE SAUF'//
+     +                  ' POUR LES CAS THM.')
          ENDIF
          IF ( .NOT.EXITRF ) THEN
             CALL UTMESS('A','MECHTE',

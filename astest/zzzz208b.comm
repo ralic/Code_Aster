@@ -1,0 +1,451 @@
+# MODIF  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+# TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+# CAS_TEST__: ZZZZ208B
+#             VALIDATION FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES 
+#             EN SOUS-STRUCTURATION
+
+import Numeric
+import LinearAlgebra
+from Numeric import array,shape,zeros,concatenate,repeat,around
+from Numeric import sqrt,cos,sin,pi,asarray
+
+# DEFINITION DE LA METHODE DE CREATION DE MATRICE BLOC DIAGONALE
+def blkdiag(varargin):
+    """
+#BLKDIAG  Block diagonal concatenation of input arguments.
+    """
+    Nbmat=len(varargin)
+    matrice=asarray(varargin[0])
+    for i in range(1,Nbmat):
+        mati=asarray(varargin[i])
+        matricex,matricey=matrice.shape
+        matix,matiy=mati.shape
+        Atmp=concatenate([matrice,zeros([matricex,matiy])],axis=-1)
+        Btmp=concatenate([zeros([matix,matricey]),mati],axis=-1)
+        matrice=concatenate([Atmp,Btmp],axis=0)
+        del Atmp
+        del Btmp
+    return matrice
+
+
+
+DEBUT(CODE=_F(NOM='ZZZZ208B', NIV_PUB_WEB='INTERNET',),
+      PAR_LOT='NON');
+
+#******************************
+# DEBUT CLASSIQUE D'UNE ETUDE *
+#******************************
+
+# lecture du maillage
+MAYA=LIRE_MAILLAGE();
+
+#definition des groupes de noeuds des interfaces
+MAYA=DEFI_GROUP(reuse =MAYA,
+                MAILLAGE=MAYA,
+                CREA_GROUP_NO=_F(GROUP_MA='GM3',),);
+
+MAYA=DEFI_GROUP(reuse =MAYA,
+                MAILLAGE=MAYA,
+                CREA_GROUP_NO=_F(GROUP_MA='GM2',),);
+
+# affectation du modele mecanique 3D
+MODEL=AFFE_MODELE(MAILLAGE=MAYA,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),);
+
+# definition du materiau
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                            NU=0.3,
+                            RHO=7800.0,
+                            AMOR_HYST=0.01,),);
+
+# affecatation du materiau
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=_F(GROUP_MA='GM1',
+                            MATER=ACIER,),);
+
+# affectation des conditions aux limites : encastrement sur interfaces
+CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
+                      DDL_IMPO=_F(GROUP_MA=('GM2','GM3',),
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),);
+
+# affectation d'une charge ponctuelle
+FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
+                     FORCE_NODALE=_F(NOEUD='N107',
+                                     FZ=1.0,),);
+
+# calcul des matrices & vecteurs elementaires
+KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODEL,
+                     CHAM_MATER=CHMAT,
+                     CHARGE=CHARGE,);
+
+KELEMC=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                      MODELE=MODEL,
+                      CHARGE=CHARGE,
+                      CHAM_MATER=CHMAT,
+                      RIGI_MECA=KELEM,);
+
+MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MODEL,
+                     CHAM_MATER=CHMAT,
+                     CHARGE=CHARGE,);
+
+FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                     CHARGE=FORCE,);
+
+# Nmerotation & Assemblage
+NUME=NUME_DDL(MATR_RIGI=KELEM,
+              METHODE='MULT_FRONT',
+              RENUM='METIS',);
+
+KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
+                  NUME_DDL=NUME,);
+
+KASC=ASSE_MATRICE(MATR_ELEM=KELEMC,
+                  NUME_DDL=NUME,);
+
+MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
+                  NUME_DDL=NUME,);
+
+FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
+                  NUME_DDL=NUME,);
+
+FASC=COMB_CHAM_NO(COMB_C=_F(CHAM_NO=FASS,
+                            COEF_C=('RI',1.0,0.5,),),);
+
+# Calcul des modes dynamiques interfaces encastrees
+MODES=MODE_ITER_SIMULT(MATR_A=KASS,
+                       MATR_B=MASS,
+                       CALC_FREQ=_F(
+                       NMAX_FREQ=20,),
+                       VERI_MODE=_F(STOP_ERREUR='NON',
+                                    STURM='NON',),);
+
+# calcul des modes statiques dis contraints
+MODSTA2=MODE_STATIQUE(MATR_RIGI=KASS,
+                      MATR_MASS=MASS,
+                      MODE_STAT=_F(GROUP_NO='GM2',
+                                   TOUT_CMP='OUI',),);
+
+MODSTA1=MODE_STATIQUE(MATR_RIGI=KASS,
+                      MATR_MASS=MASS,
+                      MODE_STAT=_F(GROUP_NO='GM3',
+                                   TOUT_CMP='OUI',),);
+                                   
+# definition des interfaces dynamiques
+INTERFA1=DEFI_INTERF_DYNA(NUME_DDL=NUME,
+                          INTERFACE=_F(NOM='INTER1',
+                                       TYPE='CRAIGB',
+                                       GROUP_NO='GM3',),);
+
+INTERFA2=DEFI_INTERF_DYNA(NUME_DDL=NUME,
+                          INTERFACE=_F(NOM='INTER2',
+                                       TYPE='CRAIGB',
+                                       GROUP_NO='GM2',),);
+
+# definition des bases de modes statiques pour calculer
+# les modes d'interface
+BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
+                                NMAX_MODE=0,
+                                ),
+                             _F(MODE_STAT=MODSTA1,),),
+                       INTERF_DYNA=INTERFA1,
+                       NUME_REF=NUME,);
+                       
+
+
+BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
+                                NMAX_MODE=0,
+                                ),
+                             _F(MODE_STAT=MODSTA2,),),
+                       INTERF_DYNA=INTERFA2,
+                       NUME_REF=NUME,);
+
+# creation des macro-elements dynamiques qui ne comporte 
+# que des modes statiques
+MACRSTA1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
+                     MATR_RIGI=KASS,
+                     MATR_MASS=MASS,
+                     OPTION='RITZ',);
+
+MACRSTA2=MACR_ELEM_DYNA(BASE_MODALE=BASE2,
+                     MATR_RIGI=KASS,
+                     MATR_MASS=MASS,
+                     OPTION='RITZ',);
+
+MODLGENE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
+                                         MACR_ELEM_DYNA=MACRSTA1,),
+                                      _F(NOM='SS2',
+                                         MACR_ELEM_DYNA=MACRSTA2,
+                                         TRANS=(0.0,-0.25,0.0,),),),
+                          LIAISON=_F(SOUS_STRUC_1='SS1',
+                                     INTERFACE_1='INTER1',
+                                     SOUS_STRUC_2='SS2',
+                                     INTERFACE_2='INTER2',),);
+
+NUMGEN=NUME_DDL_GENE(MODELE_GENE=MODLGENE,);
+
+KGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGEN,
+                    OPTION='RIGI_GENE',);
+
+MGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGEN,
+                    OPTION='MASS_GENE',);
+
+# calcul des modes generalises du complement de Schur 
+# a l'interface
+MODGEN=MODE_ITER_SIMULT(MATR_A=KGEN,
+                        MATR_B=MGEN,
+                        CALC_FREQ=_F(
+                        NMAX_FREQ=5,),
+                        VERI_MODE=_F(STOP_ERREUR='OUI',
+                                     STURM='NON',),
+                        STOP_FREQ_VIDE='NON',);
+
+# expansion des modes generalises d'interface sur chaque sous-structure
+MODPHY1=REST_BASE_PHYS(RESU_GENE=MODGEN,
+                      TOUT_ORDRE='OUI',
+                      SOUS_STRUC='SS1',);
+
+MODPHY2=REST_BASE_PHYS(RESU_GENE=MODGEN,
+                      TOUT_ORDRE='OUI',
+                      SOUS_STRUC='SS2',);
+
+
+# definition des bases modales des macro-elements dynamiques
+# comportant les modes dynamiques interfaces encastrees et modes 
+# d'interface
+BASE11=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,),
+                             _F(MODE_MECA=MODPHY1,),),
+                       INTERF_DYNA=INTERFA1,
+                       NUME_REF=NUME,);
+                       
+BASE22=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,),
+                             _F(MODE_MECA=MODPHY2,),),
+                       INTERF_DYNA=INTERFA2,
+                       NUME_REF=NUME,);
+
+MACR1=MACR_ELEM_DYNA(BASE_MODALE=BASE11,
+                     MATR_RIGI=KASS,
+                     MATR_MASS=MASS,
+                     OPTION='RITZ',);
+
+MACR2=MACR_ELEM_DYNA(BASE_MODALE=BASE22,
+                     MATR_RIGI=KASS,
+                     MATR_MASS=MASS,
+                     OPTION='RITZ',);
+
+# definition du modele generalise avec option REDUIT 
+# pour prise en compte des modes d'interface
+MODLGENR=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
+                                         MACR_ELEM_DYNA=MACR1,),
+                                      _F(NOM='SS2',
+                                         MACR_ELEM_DYNA=MACR2,
+                                         TRANS=(0.0,-0.25,0.0,),
+                                         ),),
+                          LIAISON=_F(SOUS_STRUC_1='SS1',
+                                     INTERFACE_1='INTER1',
+                                     SOUS_STRUC_2='SS2',
+                                     INTERFACE_2='INTER2',
+                                     OPTION ='REDUIT'),);
+
+NUMGENR=NUME_DDL_GENE(MODELE_GENE=MODLGENR,);
+
+KGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGENR,
+                    OPTION='RIGI_GENE',);
+
+MGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGENR,
+                    OPTION='MASS_GENE',);
+
+# calcul des modes generalises
+MODGENR=MODE_ITER_SIMULT(MATR_A=KGENR,
+                        MATR_B=MGENR,
+                        CALC_FREQ=_F(
+                        NMAX_FREQ=5,),
+                        VERI_MODE=_F(STOP_ERREUR='OUI',
+                                     STURM='NON',),
+                        STOP_FREQ_VIDE='NON',);
+
+
+TEST_RESU(RESU=(
+               _F(RESULTAT=MODGENR,
+                  NUME_MODE=1,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='NON_REGRESSION',
+                  VALE=660.43,),
+               _F(RESULTAT=MODGENR,
+                  NUME_MODE=2,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='NON_REGRESSION',
+                  VALE=1030.71,),
+               _F(RESULTAT=MODGENR,
+                  NUME_MODE=3,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='NON_REGRESSION',
+                  VALE=1772.49,),
+               _F(RESULTAT=MODGENR,
+                  NUME_MODE=4,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='NON_REGRESSION',
+                  VALE=2652.54,),
+               _F(RESULTAT=MODGENR,
+                  NUME_MODE=5,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='NON_REGRESSION',
+                  VALE=2746.67,),
+                  ),);
+
+
+###################################################
+# INTERFACAGE AVEC PYTHON
+###################################################
+
+# recuperation des listes de sous-structures et des liaisons
+LSTSSTRUC=MODLGENR.LIST_SOUS_STRUCT()
+LSTSSTRUC=MODLGENR.LIST_LIAIS_STRUCT()
+
+# recuperation du nombre de modes total, dynamique et d'interface
+# pour chauqye macro-element
+
+INFOMACR1=MACR1.NBRE_MODES()
+
+INFOMACR2=MACR2.NBRE_MODES()
+
+# Extraction des matrices generalisees vers python
+MAC1K=MACR1.EXTR_MATR_GENE('RIGI_GENE')
+MAC1M=MACR1.EXTR_MATR_GENE('MASS_GENE')
+MAC2K=MACR2.EXTR_MATR_GENE('RIGI_GENE')
+MAC2M=MACR2.EXTR_MATR_GENE('MASS_GENE')
+
+
+# Creation des blocs des matrices a assembler
+MAC1K11=MAC1K[0:INFOMACR1[1],0:INFOMACR1[1]]
+MAC1M11=MAC1M[0:INFOMACR1[1],0:INFOMACR1[1]]
+MAC1K12=MAC1K[0:INFOMACR1[1],INFOMACR1[1]:INFOMACR1[0]]
+MAC1M12=MAC1M[0:INFOMACR1[1],INFOMACR1[1]:INFOMACR1[0]]
+MAC1K22=MAC1K[INFOMACR1[1]:INFOMACR1[0],INFOMACR1[1]:INFOMACR1[0]]
+MAC1M22=MAC1M[INFOMACR1[1]:INFOMACR1[0],INFOMACR1[1]:INFOMACR1[0]]
+
+MAC2K11=MAC2K[0:INFOMACR1[1],0:INFOMACR1[1]]
+MAC2M11=MAC2M[0:INFOMACR1[1],0:INFOMACR1[1]]
+MAC2K12=MAC2K[0:INFOMACR1[1],INFOMACR1[1]:INFOMACR1[0]]
+MAC2M12=MAC2M[0:INFOMACR1[1],INFOMACR1[1]:INFOMACR1[0]]
+MAC2K22=MAC2K[INFOMACR1[1]:INFOMACR1[0],INFOMACR1[1]:INFOMACR1[0]]
+MAC2M22=MAC2M[INFOMACR1[1]:INFOMACR1[0],INFOMACR1[1]:INFOMACR1[0]]
+
+# assemblage des blocs places sur la diagonale
+MACK=blkdiag([MAC1K11,MAC1K22+MAC2K22,MAC2K11])
+MACM=blkdiag([MAC1M11,MAC1M22+MAC2M22,MAC2M11])
+
+# assemblage des blocs extra-diagonaux
+MACK[0:INFOMACR1[1],INFOMACR1[1]:INFOMACR1[0]]=MAC1K12
+MACM[0:INFOMACR1[1],INFOMACR1[1]:INFOMACR1[0]]=MAC1M12
+MACK[INFOMACR1[1]:INFOMACR1[0],0:INFOMACR1[1]]=Numeric.transpose(MAC1K12)
+MACM[INFOMACR1[1]:INFOMACR1[0],0:INFOMACR1[1]]=Numeric.transpose(MAC1M12)
+
+MACK[INFOMACR1[1]:INFOMACR1[0],INFOMACR1[0]:(INFOMACR1[0]+INFOMACR2[1])]=Numeric.transpose(MAC2K12)
+MACM[INFOMACR1[1]:INFOMACR1[0],INFOMACR1[0]:(INFOMACR1[0]+INFOMACR2[1])]=Numeric.transpose(MAC2M12)
+MACK[INFOMACR1[0]:(INFOMACR1[0]+INFOMACR2[1]),INFOMACR1[1]:INFOMACR1[0]]=MAC2K12
+MACM[INFOMACR1[0]:(INFOMACR1[0]+INFOMACR2[1]),INFOMACR1[1]:INFOMACR1[0]]=MAC2M12
+
+# creation d'une numerotation et de matrice vide de taille adaptee a une procedure
+# d'assemblage par elimination
+NUGER=NUME_DDL_GENE(MODELE_GENE=MODLGENR,
+                    METHODE='INITIAL',
+                    );
+
+KPYR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
+                    METHODE='INITIAL',
+                    );
+
+MPYR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
+                    METHODE='INITIAL',
+                    );
+
+# Recuperation des matrices dans Aster depuis Python
+KPYR.RECU_MATR_GENE(MACK)
+MPYR.RECU_MATR_GENE(MACM)
+
+# calcul des modes generalises avec Numerical Python
+MPYPI=LinearAlgebra.inverse(MACM)
+frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(MACK,MPYPI))
+frequence=Numeric.sort(Numeric.sqrt(frequence)/2/Numeric.pi)
+
+# calcul des modes generalises avec Aster a partir des matrices assemblees dans Python
+MODPYR=MODE_ITER_SIMULT(MATR_A=KPYR,
+                        MATR_B=MPYR,
+                        CALC_FREQ=_F(
+                        NMAX_FREQ=5,),
+                        VERI_MODE=_F(STOP_ERREUR='OUI',
+                                     STURM='NON',),
+                        STOP_FREQ_VIDE='NON',);
+
+
+TEST_RESU(RESU=(
+               _F(RESULTAT=MODPYR,
+                  NUME_MODE=1,
+                  PARA='FREQ',
+                  VALE=frequence[0],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODPYR,
+                  NUME_MODE=2,
+                  PARA='FREQ',
+                  VALE=frequence[1],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODPYR,
+                  NUME_MODE=3,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE=frequence[2],
+                  ),
+               _F(RESULTAT=MODPYR,
+                  NUME_MODE=4,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE=frequence[3],
+                  ),
+               _F(RESULTAT=MODPYR,
+                  NUME_MODE=5,
+                  PARA='FREQ',
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE=frequence[4],
+                  ),
+                  ),);
+
+
+
+FIN();

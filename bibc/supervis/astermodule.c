@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 19/09/2005   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 03/10/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1583,6 +1583,8 @@ void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN 
 
         *resu=PyFloat_AsDouble(res);
 
+        Py_DECREF(tup_par);
+        Py_DECREF(tup_val);
         Py_DECREF(res); 	       /*  decrement sur le refcount du retour */
         _FIN(fiintf) ;
         return ;
@@ -1976,7 +1978,7 @@ long FindLength( _IN char *chaineFortran , _IN INTEGER longueur )
         Fonction  : FindLength
         Intention
                 Retourne la taille exacte de la chaine de caracteres fortran
-                chaineFortran contenant eventuellement des bmancs de fin de ligne..
+                chaineFortran contenant eventuellement des blancs de fin de ligne..
                 La taille exacte est la longueur de la chaine du debut au
                 dernier caractere non blanc.
         */

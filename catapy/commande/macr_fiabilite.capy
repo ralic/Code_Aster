@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,7 +227,7 @@ MACR_FIABILITE = MACRO ( nom="MACR_FIABILITE",op=macr_fiabilite_ops,
 #
 # 6.2.6. ==> Les correlations entre les variables
 #
-     MATRICE = SIMP(statut="o",typ="R",max="**",
+     MATRICE = SIMP(statut="f",typ="R",max="**",
                     fr="Matrice de corrélation entre les variables.",
                     ang="Correlation matrix."), 
 #

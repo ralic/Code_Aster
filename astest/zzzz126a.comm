@@ -1,5 +1,5 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
-# TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/OPTION:'ASSE'
+# MODIF  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
+# TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/ASSE ET CREA_CHAMP/EXTR/TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ CALC_ELEM( reuse=SOLPL,
               )
 
 #================================================================
-#  VALIDATION :
+#  VALIDATION :CREA_CHAMP/ASSE
 #================================================================
 
 
@@ -256,6 +256,67 @@ TEST_RESU(CHAM_ELEM=(
   _F( CHAM_GD = ECH4,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'V1',
    PRECISION = 1.E-12, VALE = 18.E0, REFERENCE = 'ANALYTIQUE'))
 )
+
+
+#================================================================
+#  VALIDATION :CREA_CHAMP/EXTR/TABLE
+#================================================================
+
+# F : CHAM_NO_DEPL_R (NOEU)
+# -------------------------
+
+T1=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=1,SEPARATEUR=' ');
+
+CH1=CREA_CHAMP(OPERATION='EXTR',
+              TYPE_CHAM='NOEU_DEPL_R',TABLE=T1,MAILLAGE=MA)
+
+TEST_RESU(
+  CHAM_NO=_F( CHAM_GD = CH1,  NOEUD = 'A2',  NOM_CMP = 'DX',
+   PRECISION = 1.E-12, VALE = -2.14143E-08,
+   REFERENCE = 'ANALYTIQUE',),)
+
+# G : CHAM_ELEM_SIEF_R (ELNO)
+# ---------------------------
+
+T2=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=2,SEPARATEUR=' ');
+
+CH2=CREA_CHAMP(PROL_ZERO='OUI',OPERATION='EXTR',
+              TYPE_CHAM='ELNO_SIEF_R',TABLE=T2,
+              MODELE=MO,OPTION='SIEF_ELNO_ELGA')
+
+TEST_RESU(
+  CHAM_ELEM=_F( CHAM_GD = CH2,  MAILLE = 'M1',  POINT=2, NOM_CMP = 'SIXX',
+   PRECISION = 1.E-6, VALE = 777., 
+   REFERENCE = 'ANALYTIQUE'),)
+
+# H : CHAM_ELEM_SIEF_R (ELGA)
+# ---------------------------
+
+T3=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=3,SEPARATEUR=' ');
+
+CH3=CREA_CHAMP(PROL_ZERO='OUI',OPERATION='EXTR',
+              TYPE_CHAM='ELGA_SIEF_R',TABLE=T3,
+              MODELE=MO,OPTION='SIEF_ELGA_DEPL')
+
+TEST_RESU(
+  CHAM_ELEM=_F(CHAM_GD = CH3, MAILLE = 'M1', POINT=1, SOUS_POINT=2,
+               NOM_CMP = 'SIYY', PRECISION = 1.E-6, VALE = 30.,
+               REFERENCE = 'ANALYTIQUE',),)
+
+# I : CHAM_ELEM_ENER_R (ELEM)
+# ---------------------------
+
+T4=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=4,SEPARATEUR=' ');
+
+CH4=CREA_CHAMP(PROL_ZERO='OUI',OPERATION='EXTR',
+              TYPE_CHAM='ELEM_ENER_R',TABLE=T4,
+              MODELE=MO,OPTION='EPOT_ELEM_DEPL')
+
+TEST_RESU(
+  CHAM_ELEM=_F( CHAM_GD = CH4,  TYPE_TEST='MIN',
+                VALE=1125., 
+                REFERENCE = 'ANALYTIQUE',),)
+
 
 FIN()
 #
