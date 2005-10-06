@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,15 +152,15 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH2),
                    _F(CHARGE = CH3)
                  ),
-       COMP_INCR=_F(RELATION = 'BETON_UMLV_FP'),
+       COMP_INCR=_F(RELATION = 'BETON_UMLV_FP',
+                    ITER_INTE_MAXI = 1000),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 22),
                  NEWTON=_F(PREDICTION = 'ELASTIQUE',
                  MATRICE = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-8,
-                                ITER_GLOB_MAXI = 25,
-                                ITER_INTE_MAXI = 1000)
+                                ITER_GLOB_MAXI = 25)
               )
 
 U=CALC_ELEM( reuse=U,

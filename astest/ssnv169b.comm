@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE PBADEL P.BADEL
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,15 +159,15 @@ U=STAT_NON_LINE( MODELE=MO,
                  ),
        COMP_INCR=_F(
                  RELATION = 'KIT_DDI',
-                 RELATION_KIT=('BETON_UMLV_FP','ENDO_ISOT_BETON'),),
+                 RELATION_KIT=('BETON_UMLV_FP','ENDO_ISOT_BETON'),
+                                ITER_INTE_MAXI = 1000),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 104),
                  NEWTON=_F(PREDICTION = 'TANGENTE',
                            MATRICE = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-6,
-                                ITER_GLOB_MAXI = 25,
-                                ITER_INTE_MAXI = 1000)
+                                ITER_GLOB_MAXI = 25,)
               )
 
 TEST_RESU(RESU=(

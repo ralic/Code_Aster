@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -212,6 +212,9 @@ COUPLA=STAT_NON_LINE(
                INCREMENT=_F(  LIST_INST = LINST),
               CHAM_MATER=CM,
                COMP_INCR=_F(  RELATION = 'KIT_DDI',
+                           ITER_INTE_MAXI = 20,
+                           ITER_INTE_PAS = 0,
+                           RESI_INTE_RELA = 1.E-6,
                            RELATION_KIT = ('GRANGER_FP', 
                                             'NADAI_B',),
                            DEFORMATION = 'PETIT',
@@ -220,10 +223,7 @@ COUPLA=STAT_NON_LINE(
                            REAC_INCR = 1,
                            REAC_ITER = 5),
              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
-                           ITER_INTE_MAXI = 20,
-                           ITER_INTE_PAS = 0,
-                           RESI_GLOB_RELA = 1.E-6,
-                           RESI_INTE_RELA = 1.E-6)
+                           RESI_GLOB_RELA = 1.E-6)
                             )
 
 COUPLA=CALC_ELEM(    reuse=COUPLA,          
@@ -386,15 +386,15 @@ COUPLA2=STAT_NON_LINE( TITRE='COUPLAGE FLUAGE/FISSURATION',
                        INCREMENT=_F(  LIST_INST = LINST),
                        CHAM_MATER=CM,
                        COMP_INCR=_F( RELATION = 'KIT_DDI',
+                                     ITER_INTE_MAXI = 20,
+                                     ITER_INTE_PAS = 0,
+                                     RESI_INTE_RELA = 1.E-6,
                                      RELATION_KIT = ('GRANGER_FP', 'NADAI_B',),
                                      DEFORMATION = 'PETIT',
                                      TOUT = 'OUI'),
                        NEWTON=_F(  MATRICE = 'ELASTIQUE'),
                        CONVERGENCE=_F(  ITER_GLOB_MAXI = 50,
-                                        ITER_INTE_MAXI = 20,
-                                        ITER_INTE_PAS = 0,
-                                        RESI_GLOB_RELA = 1.E-6,
-                                        RESI_INTE_RELA = 1.E-6)
+                                        RESI_GLOB_RELA = 1.E-6)
                             )
 
 COUPLA2=CALC_ELEM(    reuse=COUPLA2,          
@@ -474,16 +474,16 @@ COUPLA3=STAT_NON_LINE(
                INCREMENT=_F(  LIST_INST = LINST),
               CHAM_MATER=CM,
                COMP_INCR=_F(  RELATION = 'KIT_DDI',
+                           ITER_INTE_MAXI = 20,
+                           ITER_INTE_PAS = 0,
+                           RESI_INTE_RELA = 1.E-6,
                            RELATION_KIT = ('GRANGER_FP', 
                                              'VMIS_ISOT_LINE',),
                            DEFORMATION = 'PETIT',
                            TOUT = 'OUI'),
                   NEWTON=_F(  MATRICE = 'ELASTIQUE'),
              CONVERGENCE=_F(  ITER_GLOB_MAXI = 50,
-                           ITER_INTE_MAXI = 20,
-                           ITER_INTE_PAS = 0,
-                           RESI_GLOB_RELA = 1.E-6,
-                           RESI_INTE_RELA = 1.E-6)
+                           RESI_GLOB_RELA = 1.E-6)
                             )
 
 COUPLA3=CALC_ELEM(    reuse=COUPLA3,          
@@ -563,6 +563,9 @@ COUPLA4=STAT_NON_LINE(
                  INCREMENT=_F(  LIST_INST = LINST),
                  CHAM_MATER=CM,
                  COMP_INCR=_F(  RELATION = 'KIT_DDI',
+                                ITER_INTE_MAXI = 20,
+                                ITER_INTE_PAS = 0,
+                                RESI_INTE_RELA = 1.E-6,
                                 RELATION_KIT = ('GRANGER_FP',
                                                 'CHABOCHE',),
                                 DEFORMATION = 'PETIT',
@@ -570,10 +573,7 @@ COUPLA4=STAT_NON_LINE(
                  NEWTON=_F(     MATRICE = 'ELASTIQUE',
                                 ),
                  CONVERGENCE=_F(ITER_GLOB_MAXI = 50,
-                                ITER_INTE_MAXI = 20,
-                                ITER_INTE_PAS = 0,
-                                RESI_GLOB_RELA = 1.E-6,
-                                RESI_INTE_RELA = 1.E-6),
+                                RESI_GLOB_RELA = 1.E-6),
                  SOLVEUR=_F(NPREC=9),
               )
 

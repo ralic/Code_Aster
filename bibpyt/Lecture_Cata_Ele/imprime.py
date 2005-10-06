@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,7 @@
 # --------------------------------------------------------------------------------
 #       impressions du catalogue à différents formats :   cata /cata_l/ ojb
 # --------------------------------------------------------------------------------
-import string,copy,os
+import string,copy,os ,traceback
 from  Lecture_Cata_Ele import utilit
 ut=utilit
 ERR=ut.ERR
@@ -145,8 +145,9 @@ def imprime_cata(file2,capy,seq,format):
                for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
                    file.write( "\n       MODELISATION__ %-16s   DIM__ %-1s %-1s   CODE__ %s\n" % (mod,d1,d2,codmod) )
                    if (lattrib) :
-                       file.write( "\n    ATTRIBUT__",)
-                       for (x,y) in lattrib :  file.write( "  %s  %s" % (x,y))
+                       file.write( "              ATTRIBUT__",)
+                       for (x,y) in lattrib :  file.write( "  %s=%s" % (x,y))
+                       file.write( "\n",)
                    for (tyma,tyel) in laffe:
                        file.write( "              MAILLE__ %-8s  ELEMENT__ %-16s\n" %(tyma,tyel))
            file.write( "\n")
@@ -187,7 +188,7 @@ def imprime_cata(file2,capy,seq,format):
 
            for entete in l_entete:
                l_elref1=entete[2];lattrib=entete[3];l_decl_en=entete[4];l_decl_opt=entete[5]
-               impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt)
+               impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt,format)
 
            #impression des modes locaux et des options
            impr_moloc_opt(file,modlocs,opts,format)
@@ -204,7 +205,7 @@ def imprime_cata(file2,capy,seq,format):
            imprime_copyright(file)
            file.write( entete[0]+"\n\n")
            file.write( "\nTYPE_ELEM__ ")
-           impr_entete(file,entete,l_elref1,lattrib,l_decl_en,None)
+           impr_entete(file,entete,l_elref1,lattrib,l_decl_en,None,format)
 
            #impression des modes locaux et des options
            impr_moloc_opt(file,modlocs,opts,format)
@@ -334,7 +335,7 @@ def impr_moloc_opt(file,modlocs,opts,format):
     file.write( "\n")
 
 
-def impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt):
+def impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt,format):
      file.write( "\nENTETE__ ")
      file.write( "%s %-16s " %("ELEMENT__",entete[0]))
      file.write( "%s %-8s " %("MAILLE__",entete[1]))
@@ -344,12 +345,17 @@ def impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt):
 
         if elref1[1] :
            file.write( "  GAUSS__")
-           for gauss1 in elref1[1] :
-              file.write("  %s=%s" %(gauss1[0],gauss1[1]))
+           for attr_val in elref1[1][0] :
+              file.write("  %s=%s" %(attr_val[0],attr_val[1]))
+           if elref1[1][1] :  # FPG_LISTE__ ...
+              for (fpgl,l1) in elref1[1][1] :
+                 file.write("  FPG_LISTE__ %s=(" % fpgl )
+                 for x in l1 : file.write("%s " % x )
+                 file.write(")")
 
      if lattrib :
-         file.write( "\n    ATTRIBUT__",)
-         for (x,y) in lattrib :  file.write( "  %s  %s" % (x,y))
+         file.write( "\n   ATTRIBUT__",)
+         for (x,y) in lattrib :  file.write( "  %s=%s" % (x,y))
 
      if l_decl_en :
          for decl in l_decl_en :
@@ -389,31 +395,31 @@ def imprime_ojb(file,capy):
    d={} # dictionnaire des ojb
 
 
-   #  toucomlibr = objet contenant tous les commentaires libres :
+   #  TOUCOMLIBR = objet contenant tous les commentaires libres :
    #-------------------------------------------------------------
-   toucomlibr=ut.cree_co(d,nom='&CATA.CL.COMLIBR',tsca='K80',tsca_pn='K8',contig='CONTIG',acces='NU',longv=1)
+   TOUCOMLIBR=ut.cree_co(d,nom='&CATA.CL.COMLIBR',tsca='K80',tsca_pn='K8',contig='CONTIG',acces='NU',longv=1)
 
-   def split_comlibr(toucomlibr,comlibr):
-      # "splite" la chaine comlibr en plusieurs lignes et stocke ces lignes dans toucomlibr
-      indice=len(toucomlibr.objs)
+   def split_comlibr(TOUCOMLIBR,comlibr):
+      # "splite" la chaine comlibr en plusieurs lignes et stocke ces lignes dans TOUCOMLIBR
+      indice=len(TOUCOMLIBR.objs)
       if comlibr :
          l=string.split(comlibr,'\n'); nblig=len(l); ind1=indice
          for x in l :
            ind1=ind1+1
-           toucomlibr.cree_oc(nom=str(ind1),long=1)
-           toucomlibr.ecri_co(nom=str(ind1),indice=1,valeur=x)
+           TOUCOMLIBR.cree_oc(nom=str(ind1),long=1)
+           TOUCOMLIBR.ecri_co(nom=str(ind1),indice=1,valeur=x)
       else :
          nblig=0
       return (nblig,indice+1)
 
-   def elrefe_npg(cata_tm,nofpg,elrf,f):
+   def elrefe_npg(cata_tm,NOFPG,elrf,f):
      # retourne le nombre de points de la famille f de l'elrefe elrf et le numéro de la famille
      for tm in cata_tm.ltm :
        for elrefe in tm[4] :
           if elrefe[0]==elrf :
              for fam in elrefe[1]:
                 if fam[0]==f :
-                   ifpg=nofpg.jenonu(txtpad(8,elrf)+f)
+                   ifpg=NOFPG.jenonu(txtpad(8,elrf)+f)
                    return (int(fam[1]),ifpg)
      ERR.mess('E'," famille de Points de Gauss inconnue: "+f+" pour ELREFE: "+elrf)
 
@@ -422,42 +428,42 @@ def imprime_ojb(file,capy):
    #-----------------------------------------
    ERR.contexte("Examen du catalogue de TYPE_MAILLE__")
    cata=capy.tm
-   nomtm=ut.cree_pn(d,nom='&CATA.TM.NOMTM',tsca='K8')
-   noelrf=ut.cree_pn(d,nom='&CATA.TM.NOELRF',tsca='K8')
-   nofpg=ut.cree_pn(d,nom='&CATA.TM.NOFPG',tsca='K16')
-   nbno=ut.cree_co(d,nom='&CATA.TM.NBNO',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
-   tmdim=ut.cree_co(d,nom='&CATA.TM.TMDIM',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
+   NOMTM=ut.cree_pn(d,nom='&CATA.TM.NOMTM',tsca='K8')
+   NOELRF=ut.cree_pn(d,nom='&CATA.TM.NOELRF',tsca='K8')
+   NOFPG=ut.cree_pn(d,nom='&CATA.TM.NOFPG',tsca='K16')
+   NBNO=ut.cree_co(d,nom='&CATA.TM.NBNO',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
+   TMDIM=ut.cree_co(d,nom='&CATA.TM.TMDIM',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
    nbtm=len(cata.ltm)
 
    nb_elrf=0; nb_fpg=0
    for k in range(nbtm):
-       nomtm.ajout_nom(cata.ltm[k][0])
-       nbno.cree_oc(nom=cata.ltm[k][0],long=1)
-       nbno.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][1]))
-       tmdim.cree_oc(nom=cata.ltm[k][0],long=1)
-       tmdim.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][2]))
+       NOMTM.ajout_nom(cata.ltm[k][0])
+       NBNO.cree_oc(nom=cata.ltm[k][0],long=1)
+       NBNO.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][1]))
+       TMDIM.cree_oc(nom=cata.ltm[k][0],long=1)
+       TMDIM.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][2]))
        for elrf in cata.ltm[k][4] :
           nom=elrf[0]
-          assert not noelrf.dico.has_key(nom)
+          assert not NOELRF.dico.has_key(nom)
           nb_elrf=nb_elrf+1
-          noelrf.ajout_nom(nom)
+          NOELRF.ajout_nom(nom)
           nom=txtpad(8,nom)
           for fam in elrf[1]:
              nb_fpg=nb_fpg+1
-             nofpg.ajout_nom(nom+fam[0])
+             NOFPG.ajout_nom(nom+fam[0])
 
-   tmelrf=ut.cree_os(d,nom='&CATA.TM.TMELRF',tsca='I',long=nb_elrf)
-   tmfpg=ut.cree_os(d,nom='&CATA.TM.TMFPG',tsca='I',long=nb_fpg)
+   TMELRF=ut.cree_os(d,nom='&CATA.TM.TMELRF',tsca='I',long=nb_elrf)
+   TMFPG=ut.cree_os(d,nom='&CATA.TM.TMFPG',tsca='I',long=nb_fpg)
    ifpg=0;
    for k in range(nbtm):
-       nutyma=nomtm.jenonu(cata.ltm[k][0])
+       nutyma=NOMTM.jenonu(cata.ltm[k][0])
        for elrf in cata.ltm[k][4] :
           nom=elrf[0];
-          ielrf=noelrf.jenonu(nom)
-          tmelrf.ecri_os(indice=ielrf,valeur=nutyma)
+          ielrf=NOELRF.jenonu(nom)
+          TMELRF.ecri_os(indice=ielrf,valeur=nutyma)
           for fam in elrf[1]:
              ifpg=ifpg+1
-             tmfpg.ecri_os(indice=ifpg,valeur=int(fam[1]))
+             TMFPG.ecri_os(indice=ifpg,valeur=int(fam[1]))
 
    del cata
 
@@ -467,10 +473,10 @@ def imprime_ojb(file,capy):
    ERR.contexte("Examen du catalogue de GRANDEUR__")
    cata=capy.gd
    nbgd=len(cata.l_gdsimp)+len(cata.l_gdelem)
-   nomgd=ut.cree_pn(d,nom='&CATA.GD.NOMGD',tsca='K8')
-   typegd=ut.cree_os(d,nom='&CATA.GD.TYPEGD',tsca='K8',long=nbgd)
-   nomcmp=ut.cree_co(d,nom='&CATA.GD.NOMCMP',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NO',longv=0)
-   descrigd=ut.cree_co(d,nom='&CATA.GD.DESCRIGD',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NU',longv=7)
+   NOMGD=ut.cree_pn(d,nom='&CATA.GD.NOMGD',tsca='K8')
+   TYPEGD=ut.cree_os(d,nom='&CATA.GD.TYPEGD',tsca='K8',long=nbgd)
+   NOMCMP=ut.cree_co(d,nom='&CATA.GD.NOMCMP',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NO',longv=0)
+   DESCRIGD=ut.cree_co(d,nom='&CATA.GD.DESCRIGD',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NU',longv=7)
 
    # on réalise les grandeurs "union" :
    x={}
@@ -495,64 +501,64 @@ def imprime_ojb(file,capy):
        k=k+1
        ncmp=len(gd.lcmp)
        nogd=gd.nom
-       nomgd.ajout_nom(nogd)
-       typegd.ecri_os(indice=k,valeur=gd.tscal)
-       nomcmp.cree_oc(nom=nogd,long=ncmp)
-       descrigd.cree_oc(nom=nogd,long=7)
+       NOMGD.ajout_nom(nogd)
+       TYPEGD.ecri_os(indice=k,valeur=gd.tscal)
+       NOMCMP.cree_oc(nom=nogd,long=ncmp)
+       DESCRIGD.cree_oc(nom=nogd,long=7)
 
-       (nblcom,indcom)=split_comlibr(toucomlibr,gd.comlibr)
-       descrigd.ecri_co(nom=nogd,indice=6,valeur=nblcom)
-       descrigd.ecri_co(nom=nogd,indice=7,valeur=indcom)
+       (nblcom,indcom)=split_comlibr(TOUCOMLIBR,gd.comlibr)
+       DESCRIGD.ecri_co(nom=nogd,indice=6,valeur=nblcom)
+       DESCRIGD.ecri_co(nom=nogd,indice=7,valeur=indcom)
 
        for icmp in range(ncmp):
-          nomcmp.ecri_co(nom=nogd,indice=icmp+1,valeur=gd.lcmp[icmp])
+          NOMCMP.ecri_co(nom=nogd,indice=icmp+1,valeur=gd.lcmp[icmp])
 
-       descrigd.ecri_co(nom=nogd,indice=1,valeur=1)
-       descrigd.ecri_co(nom=nogd,indice=3,valeur=(len(gd.lcmp)-1)/30 +1)
+       DESCRIGD.ecri_co(nom=nogd,indice=1,valeur=1)
+       DESCRIGD.ecri_co(nom=nogd,indice=3,valeur=(len(gd.lcmp)-1)/30 +1)
 
 
    for gd in cata.l_gdelem :
        k=k+1
        nogd=gd.nom
-       nomgd.ajout_nom(nogd)
-       nomcmp.cree_oc(nom=nogd,long=0)
-       descrigd.cree_oc(nom=nogd,long=7)
+       NOMGD.ajout_nom(nogd)
+       NOMCMP.cree_oc(nom=nogd,long=0)
+       DESCRIGD.cree_oc(nom=nogd,long=7)
 
        if len(gd.gdelem)==3 :
-           ERR.veri_appartient_liste('F',gd.gdelem[0],nomgd.valeurs)
-           ERR.veri_appartient_liste('F',gd.gdelem[1],nomgd.valeurs)
-           igd1=nomgd.valeurs.index(gd.gdelem[0])
-           igd2=nomgd.valeurs.index(gd.gdelem[1])
+           ERR.veri_appartient_liste('F',gd.gdelem[0],NOMGD.valeurs)
+           ERR.veri_appartient_liste('F',gd.gdelem[1],NOMGD.valeurs)
+           igd1=NOMGD.valeurs.index(gd.gdelem[0])
+           igd2=NOMGD.valeurs.index(gd.gdelem[1])
 
            if gd.gdelem[2]=='MS' :
-              descrigd.ecri_co(nom=nogd,indice=1,valeur=4)
+              DESCRIGD.ecri_co(nom=nogd,indice=1,valeur=4)
            elif gd.gdelem[2]=='MR' :
-              descrigd.ecri_co(nom=nogd,indice=1,valeur=5)
+              DESCRIGD.ecri_co(nom=nogd,indice=1,valeur=5)
 
-           descrigd.ecri_co(nom=nogd,indice=4,valeur=igd1+1)
-           descrigd.ecri_co(nom=nogd,indice=5,valeur=igd2+1)
-           tsca1=typegd.valeurs[igd1]
-           tsca2=typegd.valeurs[igd2]
+           DESCRIGD.ecri_co(nom=nogd,indice=4,valeur=igd1+1)
+           DESCRIGD.ecri_co(nom=nogd,indice=5,valeur=igd2+1)
+           tsca1=TYPEGD.valeurs[igd1]
+           tsca2=TYPEGD.valeurs[igd2]
            if tsca1 != tsca2 : raise "Erreur types incompatibles."
            tscal=tsca1
 
        if len(gd.gdelem)==1 :
-           ERR.veri_appartient_liste('F',gd.gdelem[0],nomgd.valeurs)
-           igd1=nomgd.valeurs.index(gd.gdelem[0])
-           descrigd.ecri_co(nom=nogd,indice=1,valeur=3)
-           descrigd.ecri_co(nom=nogd,indice=4,valeur=igd1+1)
-           tscal=typegd.valeurs[igd1]
+           ERR.veri_appartient_liste('F',gd.gdelem[0],NOMGD.valeurs)
+           igd1=NOMGD.valeurs.index(gd.gdelem[0])
+           DESCRIGD.ecri_co(nom=nogd,indice=1,valeur=3)
+           DESCRIGD.ecri_co(nom=nogd,indice=4,valeur=igd1+1)
+           tscal=TYPEGD.valeurs[igd1]
 
-       typegd.ecri_os(indice=k,valeur=tscal)
+       TYPEGD.ecri_os(indice=k,valeur=tscal)
 
    del cata
 
    #  catalogues des OPTION :
    #-----------------------------------------
    nbop=len(capy.op)
-   nomop=ut.cree_pn(d,nom='&CATA.OP.NOMOPT',tsca='K16')
-   descopt=ut.cree_co(d,nom='&CATA.OP.DESCOPT',tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
-   optpara=ut.cree_co(d,nom='&CATA.OP.OPTPARA',tsca='K8',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
+   NOMOP=ut.cree_pn(d,nom='&CATA.OP.NOMOPT',tsca='K16')
+   DESCOPT=ut.cree_co(d,nom='&CATA.OP.DESCOPT',tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
+   OPTPARA=ut.cree_co(d,nom='&CATA.OP.OPTPARA',tsca='K8',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
 
 
    for cata in capy.op:
@@ -561,36 +567,36 @@ def imprime_ojb(file,capy):
        nbin=len(lchin)
        nbou=len(lchou)
 
-       nomop.ajout_nom(nom)
-       descopt.cree_oc(nom=nom,long=6+3*(nbin+nbou))
-       optpara.cree_oc(nom=nom,long=nbin+2*nbou)
+       NOMOP.ajout_nom(nom)
+       DESCOPT.cree_oc(nom=nom,long=6+3*(nbin+nbou))
+       OPTPARA.cree_oc(nom=nom,long=nbin+2*nbou)
 
-       descopt.ecri_co(nom=nom,indice=2,valeur=nbin)
-       descopt.ecri_co(nom=nom,indice=3,valeur=nbou)
-       (nblcom,indcom)=split_comlibr(toucomlibr,comlibr)
-       descopt.ecri_co(nom=nom,indice=4+nbin+nbou+1,valeur=nblcom)
-       descopt.ecri_co(nom=nom,indice=4+nbin+nbou+2,valeur=indcom)
+       DESCOPT.ecri_co(nom=nom,indice=2,valeur=nbin)
+       DESCOPT.ecri_co(nom=nom,indice=3,valeur=nbou)
+       (nblcom,indcom)=split_comlibr(TOUCOMLIBR,comlibr)
+       DESCOPT.ecri_co(nom=nom,indice=4+nbin+nbou+1,valeur=nblcom)
+       DESCOPT.ecri_co(nom=nom,indice=4+nbin+nbou+2,valeur=indcom)
 
        k=0
        for (para,nogd,comlibr) in lchin :
            k=k+1
-           igd=nomgd.jenonu(nogd)
-           descopt.ecri_co(nom=nom,indice=4+k,valeur=igd)
-           optpara.ecri_co(nom=nom,indice=k,valeur=para)
-           (nblcom,indcom)=split_comlibr(toucomlibr,comlibr)
-           descopt.ecri_co(nom=nom,indice=6+nbin+nbou+2*(k-1)+1,valeur=nblcom)
-           descopt.ecri_co(nom=nom,indice=6+nbin+nbou+2*(k-1)+2,valeur=indcom)
+           igd=NOMGD.jenonu(nogd)
+           DESCOPT.ecri_co(nom=nom,indice=4+k,valeur=igd)
+           OPTPARA.ecri_co(nom=nom,indice=k,valeur=para)
+           (nblcom,indcom)=split_comlibr(TOUCOMLIBR,comlibr)
+           DESCOPT.ecri_co(nom=nom,indice=6+nbin+nbou+2*(k-1)+1,valeur=nblcom)
+           DESCOPT.ecri_co(nom=nom,indice=6+nbin+nbou+2*(k-1)+2,valeur=indcom)
 
        k=0
        for (para,nogd,typout,comlibr) in lchou :
            k=k+1
-           igd=nomgd.jenonu(nogd)
-           descopt.ecri_co(nom=nom,indice=4+nbin+k,valeur=igd)
-           optpara.ecri_co(nom=nom,indice=nbin+k,valeur=para)
-           optpara.ecri_co(nom=nom,indice=nbin+nbou+k,valeur=typout)
-           (nblcom,indcom)=split_comlibr(toucomlibr,comlibr)
-           descopt.ecri_co(nom=nom,indice=6+3*nbin+nbou+2*(k-1)+1,valeur=nblcom)
-           descopt.ecri_co(nom=nom,indice=6+3*nbin+nbou+2*(k-1)+2,valeur=indcom)
+           igd=NOMGD.jenonu(nogd)
+           DESCOPT.ecri_co(nom=nom,indice=4+nbin+k,valeur=igd)
+           OPTPARA.ecri_co(nom=nom,indice=nbin+k,valeur=para)
+           OPTPARA.ecri_co(nom=nom,indice=nbin+nbou+k,valeur=typout)
+           (nblcom,indcom)=split_comlibr(TOUCOMLIBR,comlibr)
+           DESCOPT.ecri_co(nom=nom,indice=6+3*nbin+nbou+2*(k-1)+1,valeur=nblcom)
+           DESCOPT.ecri_co(nom=nom,indice=6+3*nbin+nbou+2*(k-1)+2,valeur=indcom)
 
        del cata
 
@@ -632,7 +638,10 @@ def imprime_ojb(file,capy):
           entete=cata.cata_te[0]
           for elref1 in entete[2] :
             if elref1[1] :
-               nb=nb+len(elref1[1])
+               if elref1[1][0] :
+                  nb=nb+len(elref1[1][0])
+               if elref1[1][1] :
+                  nb=nb+len(elref1[1][1])
       return nb
 
 
@@ -645,20 +654,36 @@ def imprime_ojb(file,capy):
        entete,modlocs,opts=cata.cata_te
        if opts: nbopte=nbopte+len(opts)
 
-   nomte=ut.cree_pn(d,nom='&CATA.TE.NOMTE',tsca='K16')
-   typema=ut.cree_os(d,nom='&CATA.TE.TYPEMA',tsca='K8',long=nbte)
-   nommoloc=ut.cree_pn(d,nom='&CATA.TE.NOMMOLOC',tsca='K24')
-   modeloc=ut.cree_co(d,nom='&CATA.TE.MODELOC',tsca='I',tsca_pn='K24',contig='CONTIG',acces='NU',longv=0)
-   nbelrefe=ut.cree_os(d,nom='&CATA.TE.NBELREFE',tsca='I',long=2*nbte)
-   noelrefe=ut.cree_os(d,nom='&CATA.TE.NOELREFE',tsca='K8',long=nb_elrefe(capy))
-   pnlocfpg=ut.cree_os(d,nom='&CATA.TE.PNLOCFPG',tsca='K32',long=nblocfpg)
-   nolocfpg=ut.cree_os(d,nom='&CATA.TE.NOLOCFPG',tsca='I',long=nblocfpg)
-   optt2=ut.cree_os(d,nom='&CATA.TE.OPTT2',tsca='I',long=2*nbopte)
+   NOMTE=ut.cree_pn(d,nom='&CATA.TE.NOMTE',tsca='K16')
+   TYPEMA=ut.cree_os(d,nom='&CATA.TE.TYPEMA',tsca='K8',long=nbte)
+   NOMMOLOC=ut.cree_pn(d,nom='&CATA.TE.NOMMOLOC',tsca='K24')
+   MODELOC=ut.cree_co(d,nom='&CATA.TE.MODELOC',tsca='I',tsca_pn='K24',contig='CONTIG',acces='NU',longv=0)
+   NBELREFE=ut.cree_os(d,nom='&CATA.TE.NBELREFE',tsca='I',long=2*nbte)
+   NOELREFE=ut.cree_os(d,nom='&CATA.TE.NOELREFE',tsca='K8',long=nb_elrefe(capy))
+   PNLOCFPG=ut.cree_os(d,nom='&CATA.TE.PNLOCFPG',tsca='K32',long=nblocfpg)
+   NOLOCFPG=ut.cree_os(d,nom='&CATA.TE.NOLOCFPG',tsca='I',long=nblocfpg)
+   OPTT2=ut.cree_os(d,nom='&CATA.TE.OPTT2',tsca='I',long=2*nbopte)
 
 
-   optmod=ut.cree_co(d,nom='&CATA.TE.OPTMOD',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
-   optnom=ut.cree_co(d,nom='&CATA.TE.OPTNOM',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
-   cte_attr=ut.cree_co(d,nom='&CATA.TE.CTE_ATTR',tsca='K16',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
+   OPTMOD=ut.cree_co(d,nom='&CATA.TE.OPTMOD',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
+   OPTNOM=ut.cree_co(d,nom='&CATA.TE.OPTNOM',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
+   CTE_ATTR=ut.cree_co(d,nom='&CATA.TE.CTE_ATTR',tsca='K16',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
+
+
+
+   # objets FPG_LISTE et NOFPG_LISTE :
+   # --------------------------------------
+   ERR.contexte("fabrication de l'objet .FPG_LISTE")
+   lifpgl=get_lifpgl(capy)   # lifpgl={NOMTE(1:16)//nofpgl(1:8):[nofpg1,nofpg2,...,ELREFE]}
+   FPG_LISTE=ut.cree_co(d,nom='&CATA.TE.FPG_LISTE',tsca='K8',tsca_pn='K24',contig='CONTIG',acces='NU',longv=0)
+   NOFPG_LISTE=ut.cree_pn(d,nom='&CATA.TE.NOFPG_LISTE',tsca='K24')
+   lnofpgl= lifpgl.keys(); lnofpgl.sort()
+   for nofpgl in lnofpgl:
+      NOFPG_LISTE.ajout_nom(nofpgl)
+      l1=lifpgl[nofpgl] ; n1=len(l1); print l1
+      FPG_LISTE.cree_oc(nom=nofpgl,long=n1)
+      for kk in range(n1):
+         FPG_LISTE.ecri_co(nom=nofpgl,indice=kk+1,valeur=l1[kk])
 
 
    k=0 ; ioptte=0; ielrefe=0; iflpg=0;
@@ -671,47 +696,61 @@ def imprime_ojb(file,capy):
        ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
        ERR.contexte("  rubrique: ENTETE__","AJOUT")
 
-       nomte.ajout_nom(note)
-       nute=nomte.jenonu(nom=note)
+       NOMTE.ajout_nom(note)
+       nute=NOMTE.jenonu(nom=note)
        if nute != k :  ERR.mess('F',"bizarre !")
        note2=txtpad(16,note)
 
        notm=entete[1]
-       nutm=nomtm.jenonu(nom=notm)
+       nutm=NOMTM.jenonu(nom=notm)
        if nutm == 0 : raise 'Erreur: nom de type_maille inconnu: '+ notm
-       nno=nbno.lit_co(nom=notm,indice=1)
+       nno=NBNO.lit_co(nom=notm,indice=1)
 
 
-       typema.ecri_os(indice=nute,valeur=entete[1])
+       TYPEMA.ecri_os(indice=nute,valeur=entete[1])
 
-       # objets noelrefe et nbelrefe :
+       # objets NOELREFE et NBELREFE :
        # ---------------------------------
        kelrefe=0
        for elref1 in entete[2] :
-         kelrefe=kelrefe+1;ielrefe=ielrefe+1
-         noelrefe.ecri_os(indice=ielrefe,valeur=elref1[0])
-       nbelrefe.ecri_os(indice=2*(nute-1)+1,valeur=kelrefe)
-       nbelrefe.ecri_os(indice=2*(nute-1)+2,valeur=ielrefe-kelrefe+1)
+           kelrefe=kelrefe+1;ielrefe=ielrefe+1
+           NOELREFE.ecri_os(indice=ielrefe,valeur=elref1[0])
+       NBELREFE.ecri_os(indice=2*(nute-1)+1,valeur=kelrefe)
+       NBELREFE.ecri_os(indice=2*(nute-1)+2,valeur=ielrefe-kelrefe+1)
 
-       # objets pnlocfpg et nolocfpg :
+       # objets PNLOCFPG et NOLOCFPG :
        # ---------------------------------
+       num_elref1=0
        for elref1 in entete[2] :
+         num_elref1=num_elref1+1
+         if not elref1[1] :  continue
 
-         if elref1[1] :
-            for gauss1 in elref1[1] :
+         if elref1[1][0] :   # famille de PG ordinaire
+            for attr_val in elref1[1][0] :
                iflpg=iflpg+1
-               noflpg=note2+txtpad(8,elref1[0])+txtpad(8,gauss1[0])
-               ifpg=nofpg.jenonu(txtpad(8,elref1[0])+gauss1[1])
-               pnlocfpg.ecri_os(indice=iflpg,valeur=noflpg)
-               nolocfpg.ecri_os(indice=iflpg,valeur=ifpg)
+               noflpg=note2+txtpad(8,elref1[0])+txtpad(8,attr_val[0])
+               ifpg=NOFPG.jenonu(txtpad(8,elref1[0])+attr_val[1])
+               PNLOCFPG.ecri_os(indice=iflpg,valeur=noflpg)
+               NOLOCFPG.ecri_os(indice=iflpg,valeur=ifpg)
 
-       # objet cte_attr:
+         if elref1[1][1] :   # famille de PG "liste"
+            if num_elref1 != 1 :
+               ERR.mess('E',"Utilisation d'une famille de PG 'liste' pour un ELREFE__ non principal: "+elref1[0])
+            for fpgl in elref1[1][1] :
+               iflpg=iflpg+1
+               noflpg=note2+txtpad(8,elref1[0])+txtpad(8,fpgl[0])
+               ifpg=0 # pour les familles de PG "liste" : NOLOCFPG(iflpg)=0
+               PNLOCFPG.ecri_os(indice=iflpg,valeur=noflpg)
+               NOLOCFPG.ecri_os(indice=iflpg,valeur=ifpg)
+
+
+       # objet CTE_ATTR:
        # ---------------------------------
        liattr=get_liattr(capy,cata)
        nbattr=len(liattr)
-       cte_attr.cree_oc(nom=note,long=nbattr)
+       CTE_ATTR.cree_oc(nom=note,long=nbattr)
        for iattr in range(nbattr):
-          cte_attr.ecri_co(nom=note,indice=iattr+1,valeur=liattr[iattr])
+          CTE_ATTR.ecri_co(nom=note,indice=iattr+1,valeur=liattr[iattr])
 
 
        # modes locaux :
@@ -724,21 +763,41 @@ def imprime_ojb(file,capy):
        for moloc in MLOCs:
            nomolo=moloc[0];nogd=moloc[1];typept=moloc[2];diff=moloc[4]
            nomolo2=note2+nomolo
-           nommoloc.ajout_nom(nomolo2)
+           NOMMOLOC.ajout_nom(nomolo2)
 
-           igd=nomgd.jenonu(nogd)
-           nec=descrigd.lit_co(nom=nogd,indice=3)
-           lcmp_gd=nomcmp.objs[igd-1].valeurs
+           igd=NOMGD.jenonu(nogd)
+           nec=DESCRIGD.lit_co(nom=nogd,indice=3)
+           lcmp_gd=NOMCMP.objs[igd-1].valeurs
 
-           # calcul de nbpt, nbpt2 et nbpt3 :
+           # calcul de nbpt, nbpt2, nbpt3 (et ifpg pour les familles ELGA):
            if typept == "ELEM__"  :  nbpt=1
            if typept == "ELNO__"  :  nbpt=nno
            if typept == "ELGA__"  :
               nbpt=-999
-              for decl in l_elref1[0][1] :
-                 if decl[0]== moloc[3] : (nbpt,ifpg)=elrefe_npg(capy.tm,nofpg,entete[2][0][0],decl[1])
+              nofpg1=moloc[3]
+              # on cherche les caractéristiques de la famille nofpg1 : nbpt,ifpg
+
+              # on cherche d'abord dans les familles "simples" définies dans capy.tm :
+              for decl in l_elref1[0][1][0] :
+                 if decl[0]== nofpg1 : (nbpt,ifpg)=elrefe_npg(capy.tm,NOFPG,entete[2][0][0],decl[1])
+
+              # si on n'a pas trouvé, on cherche dans les familles "liste" :
+              if nbpt == -999 :
+                 if l_elref1[0][1][1] :
+                     for decl_l in l_elref1[0][1][1] :
+                        if decl_l[0]== nofpg1 :
+                           # on parcourt les familles "simples" de la liste :
+                           nbpt_l=0
+                           for decl_s in decl_l[1][:-1]:
+                                for decl in l_elref1[0][1][0] :
+                                   if decl[0]== decl_s :
+                                       (nbpt,ifpg)=elrefe_npg(capy.tm,NOFPG,entete[2][0][0],decl[1])
+                                       nbpt_l=nbpt_l+nbpt
+                           nbpt=nbpt_l
+                           ifpg= -(lnofpgl.index(note2+nofpg1)+1)
+
            if nbpt == -999 :
-               ERR.mess('E',"Utilisation d'un nombre de points de Gauss indéfini.")
+               ERR.mess('E',"Utilisation d'un nombre de points de Gauss indéfini pour le mode_local: "+nomolo)
                assert 0
 
            if diff == "IDEN" :
@@ -749,24 +808,24 @@ def imprime_ojb(file,capy):
               nbpt3=nbpt
 
            if typept == "ELGA__"  :
-              modeloc.cree_oc(nom=nomolo2,long=4+nec*nbpt3+1)
+              MODELOC.cree_oc(nom=nomolo2,long=4+nec*nbpt3+1)
            else:
-              modeloc.cree_oc(nom=nomolo2,long=4+nec*nbpt3)
+              MODELOC.cree_oc(nom=nomolo2,long=4+nec*nbpt3)
 
-           if typept == "ELEM__"  :  modeloc.ecri_co(nom=nomolo2,indice=1,valeur=1)
-           if typept == "ELNO__"  :  modeloc.ecri_co(nom=nomolo2,indice=1,valeur=2)
-           if typept == "ELGA__"  :  modeloc.ecri_co(nom=nomolo2,indice=1,valeur=3)
-           modeloc.ecri_co(nom=nomolo2,indice=2,valeur=igd)
-           modeloc.ecri_co(nom=nomolo2,indice=4,valeur=nbpt2)
-           if typept == "ELGA__"  :  modeloc.ecri_co(nom=nomolo2,indice=4+nec*nbpt3+1,valeur=ifpg)
+           if typept == "ELEM__"  :  MODELOC.ecri_co(nom=nomolo2,indice=1,valeur=1)
+           if typept == "ELNO__"  :  MODELOC.ecri_co(nom=nomolo2,indice=1,valeur=2)
+           if typept == "ELGA__"  :  MODELOC.ecri_co(nom=nomolo2,indice=1,valeur=3)
+           MODELOC.ecri_co(nom=nomolo2,indice=2,valeur=igd)
+           MODELOC.ecri_co(nom=nomolo2,indice=4,valeur=nbpt2)
+           if typept == "ELGA__"  :  MODELOC.ecri_co(nom=nomolo2,indice=4+nec*nbpt3+1,valeur=ifpg)
 
            if diff == "IDEN" :
               point = moloc[5]
               liec=entiers_codes(note,point,lcmp_gd)
               for kk in range(len(liec)):
-                 modeloc.ecri_co(nom=nomolo2,indice=4+kk+1,valeur=liec[kk])
+                 MODELOC.ecri_co(nom=nomolo2,indice=4+kk+1,valeur=liec[kk])
               nbscal=len(point)*nbpt
-              modeloc.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
+              MODELOC.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
            else:
               nbscal=0
               for (en,point) in moloc[5]:
@@ -777,35 +836,35 @@ def imprime_ojb(file,capy):
                  if liste :
                     for ino in liste :
                        for kk in range(len(liec)):
-                          modeloc.ecri_co(nom=nomolo2,indice=4+(ino-1)*nec+kk+1,valeur=liec[kk])
+                          MODELOC.ecri_co(nom=nomolo2,indice=4+(ino-1)*nec+kk+1,valeur=liec[kk])
                        nbscal=nbscal+len(point)
-              modeloc.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
+              MODELOC.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
 
 
        for moloc in MLVEs:
            nomolo=moloc[0];nogd=moloc[1];molo1=moloc[2]
            nomolo2=note2+nomolo
-           igd=nomgd.jenonu(nogd)
-           nommoloc.ajout_nom(nomolo2)
-           modeloc.cree_oc(nom=nomolo2,long=5)
-           modeloc.ecri_co(nom=nomolo2,indice=1,valeur=4)   # VECTEUR
-           modeloc.ecri_co(nom=nomolo2,indice=2,valeur=igd)
-           nbscal=modeloc.lit_co(nom=note2+molo1,indice=3)
-           modeloc.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
-           modeloc.ecri_co(nom=nomolo2,indice=4,valeur=nommoloc.jenonu(note2+molo1))
+           igd=NOMGD.jenonu(nogd)
+           NOMMOLOC.ajout_nom(nomolo2)
+           MODELOC.cree_oc(nom=nomolo2,long=5)
+           MODELOC.ecri_co(nom=nomolo2,indice=1,valeur=4)   # VECTEUR
+           MODELOC.ecri_co(nom=nomolo2,indice=2,valeur=igd)
+           nbscal=MODELOC.lit_co(nom=note2+molo1,indice=3)
+           MODELOC.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
+           MODELOC.ecri_co(nom=nomolo2,indice=4,valeur=NOMMOLOC.jenonu(note2+molo1))
 
 
        for moloc in MLMAs:
            nomolo=moloc[0];nogd=moloc[1];molo1=moloc[2];molo2=moloc[3]
            nomolo2=note2+nomolo
-           igd=nomgd.jenonu(nogd)
-           type_matrice=descrigd.lit_co(nom=nogd,indice=1)
-           nommoloc.ajout_nom(nomolo2)
-           modeloc.cree_oc(nom=nomolo2,long=5)
-           modeloc.ecri_co(nom=nomolo2,indice=1,valeur=5)   # MATRICE
-           modeloc.ecri_co(nom=nomolo2,indice=2,valeur=igd)
-           nbsca1=modeloc.lit_co(nom=note2+molo1,indice=3)
-           nbsca2=modeloc.lit_co(nom=note2+molo2,indice=3)
+           igd=NOMGD.jenonu(nogd)
+           type_matrice=DESCRIGD.lit_co(nom=nogd,indice=1)
+           NOMMOLOC.ajout_nom(nomolo2)
+           MODELOC.cree_oc(nom=nomolo2,long=5)
+           MODELOC.ecri_co(nom=nomolo2,indice=1,valeur=5)   # MATRICE
+           MODELOC.ecri_co(nom=nomolo2,indice=2,valeur=igd)
+           nbsca1=MODELOC.lit_co(nom=note2+molo1,indice=3)
+           nbsca2=MODELOC.lit_co(nom=note2+molo2,indice=3)
            if molo2 != molo1 and type_matrice != 5 : raise "Erreur"
            if type_matrice == 4 :
                nbscal=nbsca1*(nbsca1+1)/2
@@ -813,9 +872,9 @@ def imprime_ojb(file,capy):
                nbscal=nbsca1*nbsca2
            else:
                raise "Erreur"
-           modeloc.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
-           modeloc.ecri_co(nom=nomolo2,indice=4,valeur=nommoloc.jenonu(note2+molo1))
-           modeloc.ecri_co(nom=nomolo2,indice=5,valeur=nommoloc.jenonu(note2+molo2))
+           MODELOC.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
+           MODELOC.ecri_co(nom=nomolo2,indice=4,valeur=NOMMOLOC.jenonu(note2+molo1))
+           MODELOC.ecri_co(nom=nomolo2,indice=5,valeur=NOMMOLOC.jenonu(note2+molo2))
 
 
        # options :
@@ -827,26 +886,26 @@ def imprime_ojb(file,capy):
                 ERR.contexte("  rubrique: OPTION__ : "+noop,"AJOUT")
                 if numte > 0 :
                     ioptte=ioptte+1
-                    nuop=nomop.jenonu(nom=noop)
-                    optt2.ecri_os(indice=2*(ioptte-1)+1,valeur=nuop)
-                    optt2.ecri_os(indice=2*(ioptte-1)+2,valeur=nute)
-                    optmod.cree_oc(nom=str(ioptte),long=3+nbin+nbou)
-                    optnom.cree_oc(nom=str(ioptte),long=nbin+nbou)
-                    optmod.ecri_co(nom=str(ioptte),indice=1,valeur=numte)
-                    optmod.ecri_co(nom=str(ioptte),indice=2,valeur=nbin)
-                    optmod.ecri_co(nom=str(ioptte),indice=3,valeur=nbou)
+                    nuop=NOMOP.jenonu(nom=noop)
+                    OPTT2.ecri_os(indice=2*(ioptte-1)+1,valeur=nuop)
+                    OPTT2.ecri_os(indice=2*(ioptte-1)+2,valeur=nute)
+                    OPTMOD.cree_oc(nom=str(ioptte),long=3+nbin+nbou)
+                    OPTNOM.cree_oc(nom=str(ioptte),long=nbin+nbou)
+                    OPTMOD.ecri_co(nom=str(ioptte),indice=1,valeur=numte)
+                    OPTMOD.ecri_co(nom=str(ioptte),indice=2,valeur=nbin)
+                    OPTMOD.ecri_co(nom=str(ioptte),indice=3,valeur=nbou)
 
                     for kk in range(nbin):
                         mode =opt[2][2*kk]
                         param=opt[2][2*kk+1]
-                        optnom.ecri_co(nom=str(ioptte),indice=kk+1,valeur=param)
-                        optmod.ecri_co(nom=str(ioptte),indice=3+kk+1,valeur=nommoloc.jenonu(note2+mode))
+                        OPTNOM.ecri_co(nom=str(ioptte),indice=kk+1,valeur=param)
+                        OPTMOD.ecri_co(nom=str(ioptte),indice=3+kk+1,valeur=NOMMOLOC.jenonu(note2+mode))
 
                     for kk in range(nbou):
                         mode =opt[3][2*kk]
                         param=opt[3][2*kk+1]
-                        optnom.ecri_co(nom=str(ioptte),indice=nbin+kk+1,valeur=param)
-                        optmod.ecri_co(nom=str(ioptte),indice=3+nbin+kk+1,valeur=nommoloc.jenonu(note2+mode))
+                        OPTNOM.ecri_co(nom=str(ioptte),indice=nbin+kk+1,valeur=param)
+                        OPTMOD.ecri_co(nom=str(ioptte),indice=3+nbin+kk+1,valeur=NOMMOLOC.jenonu(note2+mode))
 
        del cata
 
@@ -854,20 +913,20 @@ def imprime_ojb(file,capy):
    #--------------------------------------------------------
    cata=capy.ph
    ERR.contexte("Examen du catalogue de PHENOMENE_MODELISATION__: ")
-   phenomene=ut.cree_pn(d,nom='&CATA.PHENOMENE',tsca='K16')
+   PHENOMENE=ut.cree_pn(d,nom='&CATA.PHENOMENE',tsca='K16')
 
    for (ph,lmod,codph) in cata.l_pheno:
-       phenomene.ajout_nom(ph)
-       modeli=ut.cree_co(d,nom='&CATA.'+ph,tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=(nbtm+2))
-       nommodeli=ut.cree_pn(d,nom='&CATA.'+txtpad(13,ph)+'.MODL',tsca='K16')
+       PHENOMENE.ajout_nom(ph)
+       MODELI=ut.cree_co(d,nom='&CATA.'+ph,tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=(nbtm+2))
+       NOMMODELI=ut.cree_pn(d,nom='&CATA.'+txtpad(13,ph)+'.MODL',tsca='K16')
        for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
            mod=mod[1:len(mod)-1]
-           nommodeli.ajout_nom(mod)
-           modeli.cree_oc(nom=mod,long=(nbtm+2))
-           modeli.ecri_co(nom=mod,indice=nbtm+1,valeur=int(d1))
-           modeli.ecri_co(nom=mod,indice=nbtm+2,valeur=int(d2))
+           NOMMODELI.ajout_nom(mod)
+           MODELI.cree_oc(nom=mod,long=(nbtm+2))
+           MODELI.ecri_co(nom=mod,indice=nbtm+1,valeur=int(d1))
+           MODELI.ecri_co(nom=mod,indice=nbtm+2,valeur=int(d2))
            for (tyma,tyel) in laffe:
-               modeli.ecri_co(nom=mod,indice=nomtm.jenonu(nom=tyma),valeur=nomte.jenonu(nom=tyel))
+               MODELI.ecri_co(nom=mod,indice=NOMTM.jenonu(nom=tyma),valeur=NOMTE.jenonu(nom=tyel))
 
    del cata
 
@@ -905,11 +964,11 @@ def degenerise(capy):
             if l_decl_opt :
                 opts2=copy.deepcopy(opts)
                 for decl in l_decl_opt:
-                    nomop,numte=decl
+                    NOMOP,numte=decl
 
                     for iopt in range(len(opts2)) :
-                        if nomop==opts2[iopt][0] :
-                            opt=(nomop,numte)+ opts2[iopt][2:]
+                        if NOMOP==opts2[iopt][0] :
+                            opt=(NOMOP,numte)+ opts2[iopt][2:]
                             opts2[iopt]=opt
             else:
                 opts2=opts
@@ -1000,3 +1059,22 @@ def get_liattr(capy,cata):
          liattr.append(k)
          liattr.append(dicattr[k])
       return liattr
+
+
+def get_lifpgl(capy):
+#  retourne un dictionnaire contenant toutes les définitions des familles "liste" de PG
+#-------------------------------------------------------------------------------------------
+   lifpgl={}
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       l_elref1=entete[2]
+       note2=txtpad(16,entete[0])
+
+       for elref1 in l_elref1 :
+           if  elref1[1] :
+               if  elref1[1][1] :
+                   for fpgl in elref1[1][1] :
+                       nofpgl=fpgl[0]
+                       lifpgl[note2+nofpgl]=fpgl[1]
+                       lifpgl[note2+nofpgl].append(elref1[0])
+   return lifpgl

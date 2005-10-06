@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TRACTION HOMOGENE LOI ELASTIQUE FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,14 +124,14 @@ EVOL=STAT_NON_LINE(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
                          COMP_INCR=_F( 
-                RELATION = 'ENDO_FRAGILE'),
+                RELATION = 'ENDO_FRAGILE',
+                ITER_INTE_MAXI = 30,),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 PREDICTION = 'TANGENTE',
                 REAC_INCR = 1),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-4,
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 15,
                 ARRET = 'OUI'),
                     LAGR_NON_LOCAL=_F( 
@@ -155,14 +155,14 @@ EVOL=STAT_NON_LINE( reuse=EVOL,
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
                          COMP_INCR=_F( 
-                RELATION = 'ENDO_FRAGILE'),
+                RELATION = 'ENDO_FRAGILE',
+                ITER_INTE_MAXI = 30,),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 PREDICTION = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-4,
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 15,
                 ARRET = 'OUI'),
                     LAGR_NON_LOCAL=_F( 

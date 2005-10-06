@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C     ----------------------------------
         CNS1 = '&&CHPCHD.CNS1'
         CES1 = '&&CHPCHD.CES1'
         MNOGA = '&&CHPCHD.MANOGA'
-        CALL MANOPG(LIGREL,MNOGA)
+        CALL MANOPG(LIGREL,OPTION,PARAM,MNOGA)
 
         CALL CNOCNS(CHIN,'V',CNS1)
         CALL CNSCES(CNS1,'ELGA',CESMOD,MNOGA,'V',CES1)
@@ -133,7 +133,7 @@ C     ----------------------------------
         CES1 = '&&CHPCHD.CES1'
         CES2 = '&&CHPCHD.CES2'
         MNOGA = '&&CHPCHD.MANOGA'
-        CALL MANOPG(LIGREL,MNOGA)
+        CALL MANOPG(LIGREL,OPTION,PARAM,MNOGA)
 
         CALL CELCES(CHIN,'V',CES1)
         CALL CESCES(CES1,'ELGA',CESMOD,MNOGA,'V',CES2)

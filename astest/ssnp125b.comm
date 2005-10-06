@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,7 +144,10 @@ try :
                          _F( CHARGE = DEPL_GA,),
                          _F( CHARGE = DEPL_HA,
                              FONC_MULT = COEF,),),
-                 COMP_INCR=_F( RELATION = 'DRUCKER_PRAGER',),
+                 COMP_INCR=_F( RELATION = 'DRUCKER_PRAGER',
+                                RESI_INTE_RELA = 1.E-6,
+                                ITER_INTE_MAXI = 100,
+                                ITER_INTE_PAS  = -10,),
                  INCREMENT=_F( LIST_INST = TEMPS,
                                SUBD_PAS=10,
                                SUBD_PAS_MINI=0.000001,),
@@ -152,9 +155,6 @@ try :
                             REAC_ITER = 1,),
                  ETAT_INIT   = _F( SIGM  = SIGINIT,),
                  CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                RESI_INTE_RELA = 1.E-6,
-                                ITER_INTE_MAXI = 100,
-                                ITER_INTE_PAS  = -10,
                                 ITER_GLOB_MAXI =  20,),
                            );
 except aster.NonConvergenceError:

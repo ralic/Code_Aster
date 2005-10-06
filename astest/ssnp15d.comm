@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,6 +134,8 @@ U=STAT_NON_LINE(
                 FONC_MULT = TAU_F)),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-6
                ),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
@@ -141,9 +143,7 @@ U=STAT_NON_LINE(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 2),
                        CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-8,
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-6),
+                RESI_GLOB_RELA = 1.E-8),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
                 RESI_LINE_RELA = 1.E-3)

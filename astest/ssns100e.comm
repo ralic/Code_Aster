@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,6 +147,7 @@ LEDEP=STAT_NON_LINE(
                 ),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 30,
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
@@ -158,7 +159,6 @@ LEDEP=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-3,
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 30,
                 ),
                      RECH_LINEAIRE=_F(

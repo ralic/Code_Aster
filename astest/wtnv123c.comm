@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE ESSAI TRIAXIAL A SUCCION FIXEE AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -269,9 +269,8 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
-                RELATION_KIT = (
-                  'BARCELONE',        'LIQU_GAZ',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',), 
+                ITER_INTE_MAXI=100,     
                 ),
                        NEWTON=_F(
                      MATRICE='TANGENTE',
@@ -282,8 +281,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 LIST_INST = TEMPS1,         
                 ),
                        CONVERGENCE=_F(
-                       ITER_GLOB_MAXI=50,
-                       ITER_INTE_MAXI=100, 
+                       ITER_GLOB_MAXI=50, 
                 RESI_REFE_RELA=1.0E-3,
                 SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,  
@@ -333,9 +331,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
-                RELATION_KIT = (
-                  'BARCELONE',        'LIQU_GAZ',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),      
+                ITER_INTE_MAXI=100,      
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -354,8 +351,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
-#               RESI_GLOB_RELA = 1.E-6,     
-                ITER_INTE_MAXI=100, 
+#               RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50,    
                                 )
               )
@@ -395,9 +391,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
-                RELATION_KIT = (
-                  'BARCELONE',        'LIQU_GAZ',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),       
+                ITER_INTE_MAXI=100,     
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -416,8 +411,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
-#               RESI_GLOB_RELA = 1.E-6,     
-                ITER_INTE_MAXI=100, 
+#               RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50,    
                                )
               )
@@ -457,9 +451,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
-                RELATION_KIT = (
-                  'BARCELONE',        'LIQU_GAZ',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),      
+                ITER_INTE_MAXI=100,      
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -478,8 +471,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
-#               RESI_GLOB_RELA = 1.E-6,     
-                ITER_INTE_MAXI=100, 
+#               RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50,    
                           )
               )
@@ -525,9 +517,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
-                RELATION_KIT = (
-                  'BARCELONE',        'LIQU_GAZ',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),      
+                ITER_INTE_MAXI=300,     
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -548,8 +539,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
-#               RESI_GLOB_RELA = 1.E-6,     
-                ITER_INTE_MAXI=300, 
+#               RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50,    
                                )
               )

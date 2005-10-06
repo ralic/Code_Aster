@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 9/05/2000
 # AUTEUR : LEBOUVIER
@@ -177,14 +177,14 @@ RESUL=STAT_NON_LINE(       MODELE=MO,
                               _F( CHARGE = CHAR0),
                                     _F( CHARGE = PRESS,
                                      FONC_MULT = F_PRESS)),
-                          COMP_INCR=_F( RELATION = 'VMIS_ISOT_TRAC', ),
+                          COMP_INCR=_F( RELATION = 'VMIS_ISOT_TRAC',
+                                        ITER_INTE_MAXI = 30, ),
 
                                        NEWTON=_F(
                                         MATRICE = 'TANGENTE',
                                         REAC_ITER = 1),
 
                                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                        ITER_INTE_MAXI = 30,
                                         ITER_GLOB_MAXI = 10),
                           INCREMENT=_F( LIST_INST = LIST_INS,
                                      NUME_INST_FIN = 2)
@@ -201,14 +201,14 @@ RESUL=STAT_NON_LINE( reuse=RESUL,      MODELE=MO,
                                       FONC_MULT = F_PRESS),
                                      _F( CHARGE = MOME,
                                       TYPE_CHARGE = 'FIXE_PILO')),
-                           COMP_INCR=_F( RELATION = 'VMIS_ISOT_TRAC', ),
+                           COMP_INCR=_F( RELATION = 'VMIS_ISOT_TRAC',
+                                        ITER_INTE_MAXI = 30, ),
 
                                        NEWTON=_F(
                                         MATRICE = 'TANGENTE',
                                         REAC_ITER = 1),
 
                                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                        ITER_INTE_MAXI = 30,
                                         ITER_GLOB_MAXI = 10),
                            INCREMENT=_F( LIST_INST = LIST_INS,
                                       NUME_INST_INIT = 2),

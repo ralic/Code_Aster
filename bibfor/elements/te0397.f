@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C              ------------------------------
           VALPAR(1) = ZR(IGEOM+3*I)
           VALPAR(2) = ZR(IGEOM+3*I+1)
           VALPAR(3) = ZR(IGEOM+3*I+2)
-          CALL FOINTE('FM',ZK8(IPRES+I),4,NOMPAR,VALPAR,PR,IER)
+          CALL FOINTE('FM',ZK8(IPRES),4,NOMPAR,VALPAR,PR,IER)
           IF (PR.NE.0.D0) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)

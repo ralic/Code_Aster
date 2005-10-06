@@ -1,4 +1,4 @@
-# MODIF  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,16 +87,16 @@ REST=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),
-                         COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE', ),
+                         COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 50,
+                RESI_INTE_RELA = 1.E-6 ),
                          INCREMENT=_F(
                 LIST_INST = LINST),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
                             NEWTON=_F(
                 MATRICE='ELASTIQUE'),
                        CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 20,
-                ITER_INTE_MAXI = 50,
-                RESI_INTE_RELA = 1.E-6)
+                ITER_GLOB_MAXI = 20,)
               )
 
 REST=CALC_ELEM( reuse=REST,
@@ -164,13 +164,13 @@ LINSR=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
 
 RESM=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
                              EXCIT=_F(  CHARGE = CHARM, FONC_MULT = FONCM),
-                         COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE',),
+                         COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 100,
+                RESI_INTE_RELA = 1.E-6),
                          INCREMENT=_F(
                 LIST_INST = LINSR),
                        CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 1000,
-                ITER_INTE_MAXI = 100,
-                RESI_INTE_RELA = 1.E-6),
+                ITER_GLOB_MAXI = 1000),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
                             NEWTON=_F(
                 MATRICE='ELASTIQUE'),

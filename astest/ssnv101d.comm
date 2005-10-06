@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,15 +188,15 @@ SOLNL1=STAT_NON_LINE(
                                            FONC_MULT = COEF,       
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
                            COMP_INCR=_F(  RELATION = 'CHABOCHE',        
-                                           DEFORMATION = 'PETIT',     
+                                           DEFORMATION = 'PETIT',  
+                                           ITER_INTE_MAXI = 20,       
                                            TOUT = 'OUI',                ),
                                INCREMENT=_F(  
                                            LIST_INST = LINST,           ),
                                   NEWTON=_F(  MATRICE = 'TANGENTE',         
                                            REAC_INCR = 1,       
                                            REAC_ITER = 1,               ),
-                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
-                                           ITER_INTE_MAXI = 20,        ))
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,      ))
 
 SOLNL1=CALC_ELEM( reuse=SOLNL1,              
                                       INST=1.435,
@@ -246,7 +246,8 @@ SOLNL2=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,          
                                            FONC_MULT = COEF,       
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                           COMP_INCR=_F(  RELATION = 'VISC_CIN1_CHAB',        
+                           COMP_INCR=_F(  RELATION = 'VISC_CIN1_CHAB',  
+                                           ITER_INTE_MAXI = 20,       
                                            DEFORMATION = 'PETIT',     
                                            TOUT = 'OUI',                ),
                                INCREMENT=_F(  
@@ -254,8 +255,7 @@ SOLNL2=STAT_NON_LINE(
                                   NEWTON=_F(  MATRICE = 'TANGENTE',         
                                            REAC_INCR = 1,       
                                            REAC_ITER = 1,               ),
-                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 20,  
-                                           ITER_INTE_MAXI = 20,        ))
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 20,         ))
 
 SOLNL2=CALC_ELEM( reuse=SOLNL2,              
                                       INST=1.435,
@@ -305,8 +305,9 @@ SOLNL3=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,          
                                            FONC_MULT = COEF,       
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',       
-                                                   
+                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',  
+                                           RESI_INTE_RELA = 1.E-8,  
+                                           ITER_INTE_MAXI = 30,       
                                            DEFORMATION = 'PETIT',     
                                            TOUT = 'OUI',                 ),
                                INCREMENT=_F(  
@@ -315,9 +316,7 @@ SOLNL3=STAT_NON_LINE(
                                            REAC_INCR = 1,       
                                            REAC_ITER = 1,                ),
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
-                                           RESI_GLOB_RELA = 1.E-8,  
-                                           RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,    
+                                           RESI_GLOB_RELA = 1.E-8,    
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
@@ -371,8 +370,9 @@ SOLNL4=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,          
                                            FONC_MULT = COEF,       
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',       
-                                                   
+                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',   
+                                           RESI_INTE_RELA = 1.E-8,  
+                                           ITER_INTE_MAXI = 30,      
                                            DEFORMATION = 'PETIT',     
                                            TOUT = 'OUI',                 ),
                                INCREMENT=_F(  
@@ -382,8 +382,6 @@ SOLNL4=STAT_NON_LINE(
                                            REAC_ITER = 1,                ),
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
                                            RESI_GLOB_RELA = 1.E-8,  
-                                           RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,  
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
@@ -437,8 +435,9 @@ SOLNL5=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,          
                                            FONC_MULT = COEF,       
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',       
-                                                   
+                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',  
+                                           RESI_INTE_RELA = 1.E-8,  
+                                           ITER_INTE_MAXI = 30,      
                                            DEFORMATION = 'PETIT',     
                                            TOUT = 'OUI',                 ),
                                INCREMENT=_F(  
@@ -447,9 +446,7 @@ SOLNL5=STAT_NON_LINE(
                                            REAC_INCR = 1,       
                                            REAC_ITER = 1,                ),
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
-                                           RESI_GLOB_RELA = 1.E-8,  
-                                           RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,   
+                                           RESI_GLOB_RELA = 1.E-8,    
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )

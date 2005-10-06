@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,15 +102,16 @@ RESU1=STAT_NON_LINE(
                              EXCIT=_F( CHARGE = CHART1,
                                     FONC_MULT = FONCT1),COMP_INCR=(
                          _F( RELATION = 'VMIS_POU_LINE',
-                                    GROUP_MA = 'POU1'),
+                                    GROUP_MA = 'POU1',
+                                    RESO_INTE = 'RUNGE_KUTTA_4',
+                                    ITER_INTE_MAXI = 500),
                          _F( RELATION = 'VMIS_POU_FLEJOU',
-                                    GROUP_MA = 'POU2')),
+                                    GROUP_MA = 'POU2',
+                                    RESO_INTE = 'RUNGE_KUTTA_4',
+                                    ITER_INTE_MAXI = 500)),
                          INCREMENT=_F( LIST_INST = LINST1),
                             NEWTON=_F( MATRICE = 'TANGENTE',
                                     REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESO_INTE = 'RUNGE_KUTTA_4',
-                ITER_INTE_MAXI = 500)
               )
 
 RESU1=CALC_ELEM( reuse=RESU1,
@@ -307,15 +308,16 @@ RESU2=STAT_NON_LINE(
                              EXCIT=_F( CHARGE = CHART2,
                                     FONC_MULT = FONCT2),COMP_INCR=(
                          _F( RELATION = 'VMIS_POU_LINE',
+                                    RESO_INTE = 'RUNGE_KUTTA_4',
+                                    ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU4'),
                          _F( RELATION = 'VMIS_POU_FLEJOU',
+                                    RESO_INTE = 'RUNGE_KUTTA_4',
+                                    ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU3')),
                          INCREMENT=_F( LIST_INST = LINST2),
                             NEWTON=_F( MATRICE = 'ELASTIQUE'),
-                       CONVERGENCE=_F(
-                RESO_INTE = 'RUNGE_KUTTA_4',
-                ITER_INTE_MAXI = 500,
-                ARRET = 'NON')
+                       CONVERGENCE=_F(ARRET = 'NON')
 
               )
 

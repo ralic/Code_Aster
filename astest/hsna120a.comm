@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -403,7 +403,6 @@ for num_calc in range(1,nb_calc_total_plus_1) :
    RESU[num_calc]=STAT_NON_LINE(CHAM_MATER=MATER[num_calc],
                    MODELE=MOD_G[num_calc],
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,
-                                  ITER_INTE_MAXI=5,
                                   RESI_GLOB_RELA=1.E-06,),
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(#NUME_INST_INIT=1,
@@ -732,7 +731,7 @@ TEST_FONCTION(VALEUR=( _F(  FONCTION = KEFF,   VALE_PARA = 1,
     _F(  FONCTION = KEFF,   VALE_PARA = 3,
                     REFERENCE = 'NON_REGRESSION',
                           VALE_REFE = .0613,  
-                    PRECISION = .01), 
+                    PRECISION = .015), 
                ));
 
 NETAP=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='netap',

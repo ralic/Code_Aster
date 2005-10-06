@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/09/2005   AUTEUR G8BHHXD X.DESROCHES 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,26 +20,26 @@ GENER_ME3DG_3
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MGCA_HEXA20      MAILLE__ HEXA20
-   ELREFE__  H20       GAUSS__  RIGI=FPG8  MASS=FPG27
+   ELREFE__  H20       GAUSS__  RIGI=FPG8  MASS=FPG27   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  HE8       GAUSS__  RIGI=FPG8  MASS=FPG27
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ MGCA_TETRA10     MAILLE__ TETRA10
-   ELREFE__  T10       GAUSS__  RIGI=FPG4  MASS=FPG15
+   ELREFE__  T10       GAUSS__  RIGI=FPG4  MASS=FPG15   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TE4       GAUSS__  RIGI=FPG4  MASS=FPG15
    ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6
    ENS_NOEUD__  EN2     =     5  6  7  8  9  10
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MGCA_PENTA15     MAILLE__ PENTA15
-   ELREFE__  P15       GAUSS__  RIGI=FPG6  MASS=FPG21
+   ELREFE__  P15       GAUSS__  RIGI=FPG6  MASS=FPG21   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  PE6       GAUSS__  RIGI=FPG6  MASS=FPG6
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9
    ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6
    ENS_NOEUD__  EN2     =     7  8  9  10  11  12  13  14  15
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ MGCA_PYRAM13     MAILLE__ PYRAM13
-   ELREFE__  P13       GAUSS__  RIGI=FPG5  MASS=FPG27
+   ELREFE__  P13       GAUSS__  RIGI=FPG5  MASS=FPG27   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  PY5       GAUSS__  RIGI=FPG5  MASS=FPG5
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9
    ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6
@@ -47,6 +47,7 @@ ENTETE__ ELEMENT__ MGCA_PYRAM13     MAILLE__ PYRAM13
    ENS_NOEUD__  EN1     =     1  2  3  4  5
 
 MODE_LOCAL__
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
@@ -128,6 +129,8 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     AMOR_MECA           -1    IN__   XXXXXX   XXXXXX
@@ -253,7 +256,7 @@ OPTION__
                                      EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR
                                      NTEMPER  PSECHPR  CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
@@ -262,7 +265,7 @@ OPTION__
                                      EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR
                                      NTEMPER  PSECHPR  CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
@@ -307,7 +310,7 @@ OPTION__
                                      EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR
                                      NTEMPER  PSECHPR  CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
@@ -317,7 +320,7 @@ OPTION__
                                      EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR
                                      NTEMPER  PSECHPR  CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMR
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -332,7 +335,7 @@ OPTION__
                                      EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR
                                      NTEMPER  PSECHPR  CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMR
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

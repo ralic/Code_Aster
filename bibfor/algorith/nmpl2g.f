@@ -7,12 +7,12 @@
      &                    SECHM,SECHP,SREF,
      &                    NZ,PHASM,PHASP,
      &                    DEPLGM,DDEPLG,EPAM,EPAP,DEFANE,
-     &                    ANGMAS,    
+     &                    ANGMAS,
      &                    SIGM,VIM,
      &                    DFDI,DEF,DFDIB,SIGP,VIP,MATRIG,VECTF,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,7 +167,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
 
-      
+
 
 
 C - INITIALISATION
@@ -344,7 +344,7 @@ C   REUNION DES EPSM, DEPS AVEC EPSRM, DEPSR POUR PASSAGE DANS NMCOMP
 
 C - LOI DE COMPORTEMENT
 
-       CALL NMCOMP(KPG,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+       CALL NMCOMP('RIGI',KPG,1,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &             INSTAM,INSTAP,
      &             TEMPM,TEMPP,TREF,
      &             HYDRGM,HYDRGP,
@@ -375,7 +375,7 @@ C
         DO 600 I=1,NDIMSI
           PROJ2(I,I)=1.D0
  600    CONTINUE
- 
+
 
         IF (COMPOR(1) .EQ. 'ENDO_ORTH_BETON') THEN
 C MODIFICATION POUR ENDO_ORTH_BETON------------------------
@@ -427,14 +427,14 @@ C-----------------------------------------------------------
           DO 705 I=1,NDIMSI
              PROJ(I,I)=1.D0
  705      CONTINUE
-          
+
         ENDIF
 
 
 
 C CONTRACTION DU PROJECTEUR
           CALL R8INIR(16,0.D0,PROJ2,1)
-          
+
           DO 730 I=1,NDIMSI
             DO 731 J=1,NDIMSI
               DO 732 K=1,NDIMSI
@@ -626,7 +626,7 @@ C - CALCUL DE LA "FORCE" DANS LE CALCUL DE EPSRM
             DO 280 PQ=1,NDIMSI
               DO 281 KL=1,NDIMSI
               VECTUB(PQ,N)=VECTUB(PQ,N)+(VFFN*(EPSRM(KL)
-     &          +DEPSR(KL))-VFFN*(EPSM(KL)+DEPS(KL))) 
+     &          +DEPSR(KL))-VFFN*(EPSM(KL)+DEPS(KL)))
      &          *PROJ2(PQ,KL)* POIDS
  281          CONTINUE
                DO 270 I=1,NDIM

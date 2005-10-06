@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8         FAMIL, ELREFA, FAPG
       CHARACTER*16        NOMTE
-C MODIF UTILIFOR  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILIFOR  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +24,8 @@ C -----------------------------------------------------------
 C IN  : NOMTE  : NOM DU TYPE D'ELEMENT (K16)
 C       FAMIL  : NOM (LOCAL) DE LA FAMILLE DE POINTS DE GAUSS :
 C                'RIGI', 'MASS', ...
-C OUT : ELREFA : NOM DE L'ELREFA
-C       FAPG   : FAMILLE DE POINT DE GAUSS
+C OUT : ELREFA : NOM DE L'ELREFA   (OU ' ')
+C       FAPG   : FAMILLE DE POINT DE GAUSS  (OU ' ')
 C -----------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -67,10 +67,15 @@ C DEB ------------------------------------------------------------------
       NUFLPG = INDK32(ZK32(JPNLFP),NOFLPG,1,NBLFPG)
       IF (NUFLPG.GT.0) THEN
          NUFGPG = ZI(JNOLFP-1+NUFLPG)
-         CALL JENUNO(JEXNUM('&CATA.TM.NOFPG',NUFGPG),NOFGPG)
 
+C        -- POUR LES FAMILLES "LISTE" : ON NE SAIT PAS FAIRE => FAPG=' '
+         IF (NUFGPG.EQ.0) GO TO 9999
+
+         CALL JENUNO(JEXNUM('&CATA.TM.NOFPG',NUFGPG),NOFGPG)
          FAPG = NOFGPG(9:16)
 
+      ELSE
+         CALL ASSERT(.FALSE.)
       END IF
 
  9999 CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,6 +101,8 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'VISC_TAHERI',
                 DEFORMATION = 'PETIT',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 20,
                 TOUT = 'OUI',
                 ALGO_C_PLAN = 'DEBORST'),
                          INCREMENT=_F( 
@@ -111,9 +113,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 20,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_INTE_MAXI = 20)
+                ITER_GLOB_MAXI = 20)
               )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,

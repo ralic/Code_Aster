@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR GODARD V.GODARD 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,9 @@ U=STAT_NON_LINE(MODELE=MO,
                        FONC_MULT=U_CHAR,),
                      _F(CHARGE=C_RIGIDE,),),
               COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
-                           DEFORMATION='PETIT',),
+                           DEFORMATION='PETIT',
+                           RESI_INTE_RELA=1.E-06,
+                           ITER_INTE_MAXI=20,),
               INCREMENT=_F(LIST_INST=L_INST,
                            INST_FIN=1., 
                            SUBD_PAS=4,
@@ -131,9 +133,7 @@ U=STAT_NON_LINE(MODELE=MO,
               NEWTON=_F(MATRICE='TANGENTE',
                         REAC_ITER=1,),
               CONVERGENCE=_F(RESI_GLOB_RELA=1.E-15,
-                             ITER_GLOB_MAXI=15,
-                             RESI_INTE_RELA=1.E-06,
-                             ITER_INTE_MAXI=20,),
+                             ITER_GLOB_MAXI=15),
              ARCHIVAGE=_F(LIST_INST=L_INST),
              );
 
@@ -146,7 +146,9 @@ U=STAT_NON_LINE(reuse=U,
                          TYPE_CHARGE='DIDI',),
                        _F(CHARGE=C_RIGIDE,),),
                          COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
-                                      DEFORMATION='PETIT',),
+                                      DEFORMATION='PETIT',
+                                      RESI_INTE_RELA=1.E-06,
+                                      ITER_INTE_MAXI=20,),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=2., 
                              SUBD_PAS=4,
@@ -154,9 +156,7 @@ U=STAT_NON_LINE(reuse=U,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                               ITER_GLOB_MAXI=15,
-                               RESI_INTE_RELA=1.E-06,
-                               ITER_INTE_MAXI=20,),
+                               ITER_GLOB_MAXI=15,),
                 ARCHIVAGE=_F(LIST_INST=L_INST),
               );
 

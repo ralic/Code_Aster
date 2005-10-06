@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION en AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,6 +270,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -285,7 +286,6 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 ),
                        CONVERGENCE=_F(
                        ITER_GLOB_MAXI=50,
-                       ITER_INTE_MAXI=100, 
                        RESI_GLOB_RELA = 1.E-6,    
                 )
               )
@@ -319,6 +319,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -336,7 +337,6 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                 CONVERGENCE=_F( 
                 ITER_GLOB_MAXI=50,
-                ITER_INTE_MAXI=100, 
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
@@ -364,6 +364,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -382,7 +383,6 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                 CONVERGENCE=_F( 
                 ITER_GLOB_MAXI=50,
-                ITER_INTE_MAXI=100, 
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
@@ -412,6 +412,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -430,7 +431,6 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                 CONVERGENCE=_F( 
                 ITER_GLOB_MAXI=50,
-                ITER_INTE_MAXI=100, 
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
@@ -483,6 +483,7 @@ U2=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -498,7 +499,6 @@ U2=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 ),
                 CONVERGENCE=_F( 
                 ITER_GLOB_MAXI=50,
-                ITER_INTE_MAXI=100, 
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
@@ -528,6 +528,7 @@ U3=STAT_NON_LINE(MODELE=MODELE,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -546,7 +547,6 @@ U3=STAT_NON_LINE(MODELE=MODELE,
                 ),
                 CONVERGENCE=_F( 
                 ITER_GLOB_MAXI=50,
-                ITER_INTE_MAXI=100, 
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
@@ -688,6 +688,7 @@ U4=STAT_NON_LINE(ETAT_INIT=_F(
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
+                ITER_INTE_MAXI=100, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      
@@ -703,7 +704,6 @@ U4=STAT_NON_LINE(ETAT_INIT=_F(
                 ),
                 CONVERGENCE=_F( 
                 ITER_GLOB_MAXI=50,
-                ITER_INTE_MAXI=100, 
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )

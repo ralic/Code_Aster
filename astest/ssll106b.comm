@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_3M 3 NOEUDS STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,7 +131,6 @@ U1=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -161,7 +160,6 @@ U2=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -191,7 +189,6 @@ U3=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -221,7 +218,6 @@ U4=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -251,7 +247,6 @@ U5=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -281,7 +276,6 @@ U6=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -311,7 +305,6 @@ U7=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 10,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,

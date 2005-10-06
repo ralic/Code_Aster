@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,13 +165,13 @@ U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH1,),
                        _F(CHARGE=CH2,),),
-                COMP_INCR=_F(RELATION='MAZARS',),
+                COMP_INCR=_F(RELATION='MAZARS',
+                             ITER_INTE_MAXI=100,),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
-                               ITER_GLOB_MAXI=25,
-                               ITER_INTE_MAXI=100,),);
+                               ITER_GLOB_MAXI=25),);
 
 U=CALC_ELEM(reuse =U,
             MODELE=MO,

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -183,7 +183,6 @@ RESULT=STAT_NON_LINE(       MODELE=MO,
                                       PREDICTION='ELASTIQUE',),
                          CONVERGENCE=_F( 
                                       ITER_GLOB_MAXI = 20,
-                                      RESI_INTE_RELA = 1.E-6,
                                       RESI_GLOB_RELA = 1.E-6)
                         )
 
@@ -210,7 +209,6 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                       PREDICTION='ELASTIQUE',),
                          CONVERGENCE=_F( 
                                       ITER_GLOB_MAXI = 20,
-                                      RESI_INTE_RELA = 1.E-6,
                                       RESI_GLOB_RELA = 1.E-6),
                            ETAT_INIT=_F( EVOL_NOLI = RESULT), 
                             PILOTAGE=_F( TYPE = 'LONG_ARC',

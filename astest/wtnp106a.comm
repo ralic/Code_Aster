@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,7 +194,9 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=( _F(CHARGE=FLUTH,),),
                  COMP_INCR=_F(RELATION='KIT_THH',
-                              RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
+                              RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),
+                              ITER_INTE_MAXI=5,),
+                 PARM_THETA=0.57,
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1, ),
@@ -204,9 +206,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                   ITER_LINE_MAXI=3,),
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-6,
-                                ITER_GLOB_MAXI=20,
-                                ITER_INTE_MAXI=5,),
-                 PARM_THETA=0.57,
+                                ITER_GLOB_MAXI=20),
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
                  );

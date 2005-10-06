@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,6 +95,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                               TYPE_CHARGE='FIXE_PILO',),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
                                   DEFORMATION='GREEN',
+                                  RESI_INTE_RELA=1.e-06,
                                   TOUT='OUI',),
                      INCREMENT=_F(LIST_INST=LISTPILO,
                      SUBD_PAS=4,
@@ -105,8 +106,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                                  GROUP_NO='P2',
                                  NOM_CMP='DX',),
                      CONVERGENCE=_F(RESI_GLOB_RELA=5.e-05,
-                                    ITER_GLOB_MAXI=60,
-                                    RESI_INTE_RELA=1.e-06),);
+                                    ITER_GLOB_MAXI=60),);
 
 
 

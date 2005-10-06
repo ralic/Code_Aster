@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -204,6 +204,7 @@ C     ---------------------------------------------------------
    30     CONTINUE
         END IF
    40 CONTINUE
+
 C     -- VERIF PAS DE DOUBLONS DANS LPAIN2 :
       CALL KNDOUB(8,LPAIN2,NIN2,IRET)
       CALL ASSERT(IRET.EQ.0)
@@ -303,6 +304,7 @@ C              TOUS LES CHAMPS LOCAUX "IN" ET "OUT":
 
 C           5.5 ON FAIT LES CALCULS ELEMENTAIRES:
 C         WRITE (6,*) 'AJACO OPTION=',OPTION,NOMTE,' ',NUMC
+          CALL VRCDEC()
           CALL TE0000(NUMC,OPT,NUTE)
 
 C           5.6 ON VERIFIE LA VALEUR "UNDEF" AU BOUT DES

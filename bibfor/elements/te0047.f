@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR GODARD V.GODARD 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -458,7 +458,7 @@ C
 C
 
 C         -- ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
-          CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+          CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
           IF (IRET2.GT.0) IRRAP=0.D0
 
 C           RELATION DE COMPORTEMENT : ELASTIQUE PARTOUT
@@ -513,8 +513,8 @@ C
           TEMPP = 0.D0
         ENDIF
 C
-C         -- ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
-        CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+C       -- ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
+        CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
         IF (IRET2.GT.0) IRRAP=0.D0
 
         IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.

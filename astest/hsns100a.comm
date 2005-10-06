@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,13 +109,13 @@ U2=STAT_NON_LINE(MODELE=MO,
                  EXCIT=(_F(CHARGE=CH_FO,
                            FONC_MULT=RAMPE,),
                         _F(CHARGE=CH_LA,),),
-                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                              RESI_INTE_RELA=1e-08,
+                              ITER_INTE_MAXI=30,),
                  INCREMENT=_F(LIST_INST=L_INST,
                               NUME_INST_FIN=2,),
                  NEWTON=_F(MATRICE='ELASTIQUE',),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,
-                                RESI_INTE_RELA=1e-08,
-                                ITER_INTE_MAXI=30,),);
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),);
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
@@ -128,15 +128,15 @@ U2=STAT_NON_LINE(reuse =U2,
                  EXCIT=(_F(CHARGE=CH_FO,
                            FONC_MULT=RAMPE,),
                         _F(CHARGE=CH_LA,),),
-                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                              RESI_INTE_RELA=1e-08,
+                              ITER_INTE_MAXI=30),
                  ETAT_INIT=_F(EVOL_NOLI=U2,
                               NUME_ORDRE=2,),
                  INCREMENT=_F(LIST_INST=L_INST,
                               NUME_INST_FIN=3,),
                  NEWTON=_F(MATRICE='TANGENTE',
-                           REAC_ITER=2,),
-                 CONVERGENCE=_F(RESI_INTE_RELA=1e-08,
-                                ITER_INTE_MAXI=30,),);
+                           REAC_ITER=2,),);
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,

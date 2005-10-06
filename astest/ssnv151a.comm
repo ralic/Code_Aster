@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COMPRESSION/TRACTION EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,6 +220,9 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'BETON_DOUBLE_DP',
                 DEFORMATION = 'PETIT',
+                ITER_INTE_MAXI = 10,
+                ITER_INTE_PAS = 0,
+                RESI_INTE_RELA = 1.E-8,
                 TOUT = 'OUI'),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
@@ -227,10 +230,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 5),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 20,
-                ITER_INTE_MAXI = 10,
-                ITER_INTE_PAS = 0,
-                RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-8)
+                RESI_GLOB_RELA = 1.E-6,)
               )
 
 SOLNL=STAT_NON_LINE( reuse=SOLNL,
@@ -255,6 +255,9 @@ SOLNL=STAT_NON_LINE( reuse=SOLNL,
                          COMP_INCR=_F( 
                 RELATION = 'BETON_DOUBLE_DP',
                 DEFORMATION = 'PETIT',
+                ITER_INTE_MAXI = 10,
+                ITER_INTE_PAS = 0,
+                RESI_INTE_RELA = 1.E-8,
                 TOUT = 'OUI'),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
@@ -262,10 +265,7 @@ SOLNL=STAT_NON_LINE( reuse=SOLNL,
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 20,
-                ITER_INTE_MAXI = 10,
-                ITER_INTE_PAS = 0,
-                RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-8)
+                RESI_GLOB_RELA = 1.E-6,)
               )
 
 SOLNL=CALC_ELEM(     reuse=SOLNL,          

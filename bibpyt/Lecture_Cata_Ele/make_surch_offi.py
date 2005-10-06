@@ -1,4 +1,4 @@
-#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,10 @@ usage= '''
 '''
 ####################################################################################################
 
-import sys  ,  os  , glob , string
+import sys  ,  os  , glob , string, traceback
 
 if len(sys.argv) !=7 : print usage ; raise StandardError
+
 
 
 # rep_scripts :
@@ -88,31 +89,36 @@ else:
     os.chdir(trav)
 
 try :
-      # surcharge des capy et écriture du résultat au format .ojb :
-      #-------------------------------------------------------------
-      from Lecture_Cata_Ele import lecture, imprime , utilit
+    try :
+        # surcharge des capy et écriture du résultat au format .ojb :
+        #-------------------------------------------------------------
+        from Lecture_Cata_Ele import lecture, imprime , utilit
 
-      if os.path.isfile(surch) :
-         # pour ne pas utiliser trop de mémoire, on splite le fichier pour la lecture :
-         liste_morceaux=utilit.cata_split(surch,"morceau",5000)
-         print "ajaco",liste_morceaux
+        if os.path.isfile(surch) :
+           # pour ne pas utiliser trop de mémoire, on splite le fichier pour la lecture :
+           liste_morceaux=utilit.cata_split(surch,"morceau",5000)
 
-         capy_surch =lecture.lire_cata(liste_morceaux[0])
-         for k in range(len(liste_morceaux)-1) :
-            print "ajaco",liste_morceaux[k]
-            capy_surc2 =lecture.lire_cata(liste_morceaux[k+1])
-            utilit.concat_capy(capy_surch,capy_surc2)
+           capy_surch =lecture.lire_cata(liste_morceaux[0])
+           for k in range(len(liste_morceaux)-1) :
+              capy_surc2 =lecture.lire_cata(liste_morceaux[k+1])
+              utilit.concat_capy(capy_surch,capy_surc2)
 
-      else:
-         capy_surch =None
+        else:
+           capy_surch =None
 
-      capy_offi  =utilit.read_capy(nom_capy_offi)
+        capy_offi  =utilit.read_capy(nom_capy_offi)
 
-      # prise en compte des destructions demandées via unigest :
-      utilit.detruire_cata(capy_offi,unigest)
+        # prise en compte des destructions demandées via unigest :
+        utilit.detruire_cata(capy_offi,unigest)
 
-      utilit.surch_capy(capy_offi,capy_surch)
-      imprime.impr_cata(capy_offi,resu_ojb,'ojb')
+        utilit.surch_capy(capy_offi,capy_surch)
+        imprime.impr_cata(capy_offi,resu_ojb,'ojb')
+
+    except  :
+        print 60*'-'+' debut trace back'
+        traceback.print_exc(file=sys.stdout)
+        print 60*'-'+' fin   trace back'
+        raise Exception
 
 finally:
       # ménage :

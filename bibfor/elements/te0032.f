@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2005   AUTEUR GODARD V.GODARD 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C              ------------------------------
             VALPAR(1) = ZR(JGEOM+3*J  )
             VALPAR(2) = ZR(JGEOM+3*J+1)
             VALPAR(3) = ZR(JGEOM+3*J+2)
-            CALL FOINTE('FM',ZK8(JPRES+J),4,NOMPAR,VALPAR,PR,IER)
+            CALL FOINTE('FM',ZK8(JPRES),4,NOMPAR,VALPAR,PR,IER)
             IF ( PR .NE. 0.D0 ) THEN
                CALL TECAEL ( IADZI, IAZK24 )
                NOMAIL = ZK24(IAZK24-1+3)(1:8)

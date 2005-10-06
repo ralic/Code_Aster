@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,18 +89,19 @@ REST=STAT_NON_LINE(
                 FONC_MULT = FONCT),COMP_INCR=(
                          _F( 
                 RELATION = 'VMIS_POU_LINE',
-                GROUP_MA = 'GC1'),
+                GROUP_MA = 'GC1',
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = 500),
                          _F( 
                 RELATION = 'VMIS_POU_FLEJOU',
-                GROUP_MA = 'GR1')),
+                GROUP_MA = 'GR1',
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = 500)),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                RESO_INTE = 'RUNGE_KUTTA_4',
-                ITER_INTE_MAXI = 500)
               )
 
 REST=CALC_ELEM( reuse=REST,
@@ -225,14 +226,14 @@ RESM=STAT_NON_LINE(
                 CHARGE = CHARM,
                 FONC_MULT = FONCM),
                          COMP_INCR=_F( 
-                RELATION = 'VMIS_POU_LINE'),
-                         INCREMENT=_F( 
-                LIST_INST = LINSR),
-                       CONVERGENCE=_F( 
-                ITER_GLOB_MAXI = 100,
+                RELATION = 'VMIS_POU_LINE',
                 ITER_INTE_MAXI = 50,
                 RESO_INTE = 'RUNGE_KUTTA_4',
                 RESI_INTE_RELA = 1.E-6),
+                         INCREMENT=_F( 
+                LIST_INST = LINSR),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 100),
                             NEWTON=_F( 
                 MATRICE = 'ELASTIQUE')
               )

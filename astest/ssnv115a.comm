@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,9 @@ U2=STAT_NON_LINE(
                 FONC_MULT = RAMPE), _F( 
                 CHARGE = CH_LIM)),
                          COMP_INCR=_F( 
-                RELATION = 'VMIS_ISOT_LINE'),
+                RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 5),
@@ -73,9 +75,7 @@ U2=STAT_NON_LINE(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 2),
                        CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8)
+                RESI_GLOB_RELA = 1.E-6,)
               )
 
 U2=CALC_ELEM( reuse=U2,
@@ -164,7 +164,9 @@ U2=STAT_NON_LINE( reuse=U2,
                 FONC_MULT = RAMPE), _F( 
                 CHARGE = CH_LIM)),
                          COMP_INCR=_F( 
-                RELATION = 'VMIS_ISOT_LINE'),
+                RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U2,
                 NUME_ORDRE = 5),
@@ -175,9 +177,7 @@ U2=STAT_NON_LINE( reuse=U2,
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 2),
                        CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8)
+                RESI_GLOB_RELA = 1.E-6)
               )
 
 U2=CALC_ELEM( reuse=U2,

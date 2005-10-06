@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK_BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,14 +112,15 @@ U1=STAT_NON_LINE(
                 FONC_MULT = COEF1), _F( 
                 CHARGE = DEPL_1)),
                          COMP_INCR=_F( 
-                RELATION = 'HOEK_BROWN'),
+                RELATION = 'HOEK_BROWN',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 100
+),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50,
-                ITER_INTE_MAXI = 100),
+                ITER_GLOB_MAXI = 50),
                          INCREMENT=_F( 
                 LIST_INST = TEMPS1)
               )
@@ -186,7 +187,11 @@ U2=STAT_NON_LINE(
                 FONC_MULT = COEF2)
                 ),
                          COMP_INCR=_F( 
-                RELATION = 'HOEK_BROWN'),
+                RELATION = 'HOEK_BROWN',
+                RESI_INTE_RELA = 1.E-8,
+                ITER_INTE_MAXI = 100,
+                ITER_INTE_PAS  = -10,
+),
                          ETAT_INIT=_F( 
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
@@ -201,9 +206,6 @@ U2=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-8,
-                RESI_INTE_RELA = 1.E-8,
-                ITER_INTE_MAXI = 100,
-                ITER_INTE_PAS  = -10,
                 ITER_GLOB_MAXI = 100),
               )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/07/2003   AUTEUR ADBHHVV V.CANO 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,7 +84,9 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
                 EXCIT=_F(CHARGE=CHA_L,
                          FONC_MULT=U_CHAR,),
                 COMP_INCR=_F(RELATION='ROUSSELIER',
-                             DEFORMATION='SIMO_MIEHE',),
+                             DEFORMATION='SIMO_MIEHE',
+                             RESI_INTE_RELA=1.E-06,
+                             ITER_INTE_MAXI=15,),
                 INCREMENT=_F(LIST_INST=L_INST,
                              SUBD_PAS=4,
                              SUBD_PAS_MINI=1.E-05,),
@@ -92,25 +94,23 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
                           REAC_ITER=1,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                               ITER_GLOB_MAXI=15,
-                               RESI_INTE_RELA=1.E-06,
-                               ITER_INTE_MAXI=15,),);
+                               ITER_GLOB_MAXI=15),);
 
 U_NL=STAT_NON_LINE(MODELE=MO_NL,
                 CHAM_MATER=CHP_MAT,
                 EXCIT=_F(CHARGE=CHA_NL,
                          FONC_MULT=U_CHAR,),
                 COMP_INCR=_F(RELATION='ROUSSELIER',
-                             DEFORMATION='SIMO_MIEHE',),
+                             DEFORMATION='SIMO_MIEHE',
+                             RESI_INTE_RELA=1.E-06,
+                             ITER_INTE_MAXI=15,),
                 INCREMENT=_F(LIST_INST=L_INST,
                              SUBD_PAS=4,
                              SUBD_PAS_MINI=1.E-05,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                               ITER_GLOB_MAXI=150,
-                               RESI_INTE_RELA=1.E-06,
-                               ITER_INTE_MAXI=15,),
+                               ITER_GLOB_MAXI=150),
                 LAGR_NON_LOCAL=_F(
                   ITER_DUAL_MAXI=25,
                   RESI_DUAL_ABSO=1.E-3,

@@ -5,11 +5,11 @@
      &                      TM, TP, TREF,
      &                      DEPLM, DDEPL,
      &                      ANGMAS,
-     &                      GONFLM, DGONFL, 
+     &                      GONFLM, DGONFL,
      &                      SIGM, VIM, SIGP, VIP,
      &                      FINTU, FINTA, KUU, KUA, KAA, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -230,7 +230,7 @@ C      CONTRAINTE EN T- POUR LA LOI DE COMPORTEMENT
         SIGMC(4) = SIGM(4,KPG) / TETJD
 
 
-       CALL NMCOMP(KPG,2,TYPMOD,IMATE,COMPOR,CRIT,
+       CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &             INSTAM,INSTAP,
      &             TEMPM,TEMPP,TREF,
      &             0.D0, 0.D0,

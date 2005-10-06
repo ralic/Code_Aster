@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TOLE ONDULEE ENCASTREE SUR UN BORD EN DEFORMATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,6 +93,7 @@ U=STAT_NON_LINE(
                 FONC_MULT = RAMPE),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
                ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
@@ -101,7 +102,6 @@ U=STAT_NON_LINE(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 10,
                 RESI_GLOB_RELA = 1.E-6),
                      RECH_LINEAIRE=_F(
@@ -119,6 +119,8 @@ U=STAT_NON_LINE( reuse=U,
                 FONC_MULT = RAMPE),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8,
                ),
                          ETAT_INIT=_F(
                 EVOL_NOLI = U,
@@ -129,9 +131,7 @@ U=STAT_NON_LINE( reuse=U,
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 10,
-                RESI_INTE_RELA = 1.E-8,
                 RESI_GLOB_RELA = 1.E-6),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3,
@@ -162,6 +162,8 @@ V=STAT_NON_LINE(
                 FONC_MULT = RAMPE),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8,
                ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
@@ -169,9 +171,7 @@ V=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
                        CONVERGENCE=_F(
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 300,
-                RESI_INTE_RELA = 1.E-8,
                 RESI_GLOB_RELA = 1.E-6)
               )
 
@@ -185,6 +185,8 @@ V=STAT_NON_LINE( reuse=V,
                 FONC_MULT = RAMPE),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8,
                ),
                          ETAT_INIT=_F(
                 EVOL_NOLI = V,
@@ -194,9 +196,7 @@ V=STAT_NON_LINE( reuse=V,
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
                        CONVERGENCE=_F(
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 300,
-                RESI_INTE_RELA = 1.E-8,
                 RESI_GLOB_RELA = 1.E-6)
               )
 

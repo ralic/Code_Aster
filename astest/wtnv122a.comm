@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,9 +221,8 @@ U1=STAT_NON_LINE(reuse=U1,
                       ETAT_INIT=_F(SIGM=RES1,),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HM',          
-                RELATION_KIT = (
-                  'CAM_CLAY',        'LIQU_SATU',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('CAM_CLAY','LIQU_SATU','HYDR_UTIL',),
+                ITER_INTE_MAXI=100      
                 ),
                        NEWTON=_F(
                      MATRICE='TANGENTE',
@@ -234,8 +233,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 LIST_INST = TEMPS2,         
                 ),
                        CONVERGENCE=_F(
-                       ITER_GLOB_MAXI=50,
-                       ITER_INTE_MAXI=100, 
+                       ITER_GLOB_MAXI=50, 
                        RESI_GLOB_RELA = 1.E-6,    
                 )
               )
@@ -272,9 +270,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HM',          
-                RELATION_KIT = (
-                  'CAM_CLAY',        'LIQU_SATU',
-                  'HYDR_UTIL',  ),      
+                RELATION_KIT = ('CAM_CLAY','LIQU_SATU','HYDR_UTIL',),    
+                ITER_INTE_MAXI=100,      
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -289,8 +286,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 REAC_ITER=1,           
                 ),
                        CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-6,    
-                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6, 
                 ITER_GLOB_MAXI = 50,    
                 )
               )

@@ -11,7 +11,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
       PARAMETER (NBCLMA=12,NBCLEM=7,NBCVIL=5,NBCCYR=3,NBCEPR=3,NBCINT=2)
       REAL*8     COELMA(NBCLMA),COELEM(NBCLEM),COEVIL(NBCVIL)
       REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR),COEINT(NBCINT)
-      INTEGER I,IVARI,CODRET,ICAS,KPGVRC
+      INTEGER I,IVARI,CODRET
       DATA ARRET,RETOUR/'FM','  '/
       DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
      +     'SIGF'/
@@ -180,8 +180,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         DO 65 I = 1,NF
             IVARI = NBVALC* (I-1) + 1
 
-            KPGVRC=(KPG-1)*NF+I
-            CALL NM1DCO(KPGVRC,OPTION,ICDMAT,
+            CALL NM1DCO('RIGI',KPG,I,OPTION,ICDMAT,
      &       TEMPM,TEMPP,EP,CONTM(I),EPSM,
      &       DEFP(I),VARIM(IVARI),SIGF(I),VARIP(IVARI),MODF(I),
      &       CRIT,CODRET)
@@ -199,8 +198,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
             DO 56 I = 1,NF
               IVARI = NBVALC* (I-1) + 1
 
-              KPGVRC=(KPG-1)*NF+I
-              CALL NM1VIL(KPGVRC,ICDMAT,CRIT,
+              CALL NM1VIL('RIGI',KPG,I,ICDMAT,CRIT,
      &                   INSTAM,INSTAP,
      &                   TEMPM,TEMPP,TREF,
      &                   DEFP(I),
@@ -223,8 +221,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
             SIGX  = CONTM(I)
             EPSX  = DEFM(I)
             DEPSX = DEFP(I)
-            KPGVRC=(KPG-1)*NF+I
-            CALL COMP1D(KPGVRC,OPTION,
+            CALL COMP1D('RIGI',KPG,I,OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
      &                  ANGMAS,
@@ -263,8 +260,7 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
             SIGX  = CONTM(I)
             EPSX  = DEFM(I)
             DEPSX = DEFP(I)
-            KPGVRC=(KPG-1)*NF+I
-            CALL COMP1D(KPGVRC,OPTION,
+            CALL COMP1D('RIGI',KPG,I,OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
      &                  ANGMAS,

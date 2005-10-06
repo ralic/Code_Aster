@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -254,8 +254,8 @@ C     ---------------------------------------------------
 C --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU
 
         EPSM = (UML(4)-UML(1))/XLONG0
-        CALL NMICLB(1,OPTION,ZK16(ICOMPO),ZI(IMATE),XLONG0,A,DLONG,
-     &              EFFNOM,TEMPM,TEMPP,TREF,ZR(IVARIM),EFFNOP,
+        CALL NMICLB('RIGI',1,1,OPTION,ZK16(ICOMPO),ZI(IMATE),XLONG0,A,
+     &              DLONG,EFFNOM,TEMPM,TEMPP,TREF,ZR(IVARIM),EFFNOP,
      &              ZR(IVARIP),KLV,FONO,EPSM,ZR(ICARCR),CODRET)
 
         IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
@@ -357,7 +357,7 @@ C     ------------
                CALL DCOPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
             ENDIF
 
-          CALL COMP1D(1,OPTION,
+          CALL COMP1D('RIGI',1,1,OPTION,
      &                SIGX,EPSX,DEPX,
      &                TEMPM,TEMPP,TREF,
      &                ANGMAS,

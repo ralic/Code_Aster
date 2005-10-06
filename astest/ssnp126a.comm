@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE cas test de validation de la loi de comportement JOINT_BA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,9 @@ U=STAT_NON_LINE(
   ),
   COMP_INCR  = (
           _F(RELATION = 'JOINT_BA',
-             MAILLE = 'CUBEDEG', ),
+             MAILLE = 'CUBEDEG',
+             RESI_INTE_RELA = 1.E-6,
+             ITER_INTE_MAXI  = 15, ),
           _F(RELATION = 'ELAS',
              MAILLE = 'CUBE',),
           ),               
@@ -128,9 +130,6 @@ U=STAT_NON_LINE(
                   INST_FIN = 30.,
                   SUBD_PAS=5,
                   SUBD_PAS_MINI=0.0001),
-  CONVERGENCE= (_F(RESI_INTE_RELA = 1.E-6,
-                   ITER_INTE_MAXI  = 15,),
-                   ),
   NEWTON     = _F(MATRICE = 'TANGENTE',
                   PAS_MINI_ELAS = 0.0001,
                   REAC_ITER=1),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,12 +87,23 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
          COMP_INCR       =FACT(statut='f',
            RELATION        =SIMP(statut='o',typ='TXM',into=("VMIS_ISOT_TRAC",) ),
            VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut= 2,into=( 2 ,) ),
+           RESI_INTE_RELA  =SIMP(statut='f',typ='R'
+                                ,defaut= 1.0E-6),
+           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
+           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
+           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
 
          COMP_ELAS       =FACT(statut='f',
            RELATION        =SIMP(statut='o',typ='TXM',into=("ELAS","ELAS_VMIS_TRAC") ),
            ELAS            =SIMP(statut='c',typ='I',defaut= 1,into=( 1 ,) ),
            ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut= 1,into=( 1 ,) ),
+           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
+           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
+           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
 
          SOLVEUR         =FACT(statut='d',
@@ -123,11 +134,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
            RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
            ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
            ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI"),
-           RESI_INTE_RELA  =SIMP(statut='f',typ='R'
-                                ,defaut= 1.0E-6),
-           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
 
          NEWTON          =FACT(statut='d',

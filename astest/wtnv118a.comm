@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TEST THHM, 2D: LA COLONNE D ABOUSTIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,9 +231,9 @@ MESTAT=STAT_NON_LINE(
                 CHARGE = CHAR0),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_THHM',
-                RELATION_KIT = (
-                        'SURF_ETAT_NSAT', 
-                        'LIQU_NSAT_GAT',   'HYDR_UTIL', )),
+                RELATION_KIT = ('SURF_ETAT_NSAT','LIQU_NSAT_GAT','HYDR_UTIL',),
+                ITER_INTE_MAXI = 5),
+                         PARM_THETA=0.57,
                          INCREMENT=_F( 
                 LIST_INST = LI),
                             NEWTON=_F( 
@@ -241,9 +241,7 @@ MESTAT=STAT_NON_LINE(
                 REAC_ITER = 120),
                        CONVERGENCE=_F( 
 #                RESI_GLOB_RELA   : 1.E-4
-                ITER_GLOB_MAXI = 120,
-                ITER_INTE_MAXI = 5,),
-                        PARM_THETA=0.57
+                ITER_GLOB_MAXI = 120),
 #                        ARCHIVAGE : ( LIST_INST : ARCHI )
               )
 

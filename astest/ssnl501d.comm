@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 13/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -93,9 +93,9 @@ LIS_INST=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
 RESULTAT=STAT_NON_LINE(CHAM_MATER=CH_MAT_D,
                        MODELE=MOD_D,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=30,
-                                      ITER_INTE_MAXI=30,
                                       RESI_GLOB_RELA=1.E-06,),
                COMP_INCR=_F(
+                                    ITER_INTE_MAXI=30,
                                     RELATION='VMIS_ISOT_LINE',),
                        INCREMENT=_F(LIST_INST=LIS_INST,),
                        PILOTAGE=_F(TYPE='DDL_IMPO',

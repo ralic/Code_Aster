@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,13 +126,13 @@ U1=STAT_NON_LINE(
                                      _F( CHARGE       = PR_V,
                                      FONC_MULT    = COEF1),
                                      _F( CHARGE       = DEP_SYM)),
-                  COMP_INCR  = _F( RELATION       = 'HOEK_BROWN'),
+                  COMP_INCR  = _F( RELATION       = 'HOEK_BROWN',
+                                   RESI_INTE_RELA = 1.E-8,
+                                   ITER_INTE_MAXI = 100),
                   NEWTON     = _F( MATRICE        = 'TANGENTE',
                                    REAC_ITER      = 1,),
                   CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,
-                                   RESI_INTE_RELA = 1.E-8,
-                                   ITER_GLOB_MAXI = 50,
-                                   ITER_INTE_MAXI = 100),
+                                   ITER_GLOB_MAXI = 50),
                   INCREMENT  = _F( LIST_INST      = TEMPS1)
                 )
 
@@ -189,7 +189,10 @@ U2=STAT_NON_LINE(
                       _F( CHARGE       = DEP_V,
                           FONC_MULT    = COEF2)),
                         COMP_INCR=_F( 
-                RELATION = 'HOEK_BROWN'),
+                RELATION = 'HOEK_BROWN',
+                RESI_INTE_RELA = 1.E-8,
+                ITER_INTE_MAXI = 100,
+                ITER_INTE_PAS  = -10,),
                          ETAT_INIT=_F( 
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
@@ -204,9 +207,6 @@ U2=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-8,
-                RESI_INTE_RELA = 1.E-8,
-                ITER_INTE_MAXI = 100,
-                ITER_INTE_PAS  = -10,
                 ITER_GLOB_MAXI = 100),
               )
     

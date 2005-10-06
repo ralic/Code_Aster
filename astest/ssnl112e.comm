@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE DEPLACEMENT IMPOSE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,6 +133,7 @@ LEDEP=STAT_NON_LINE(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -144,7 +145,6 @@ LEDEP=STAT_NON_LINE(
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -166,6 +166,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -178,7 +179,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -200,6 +200,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -212,7 +213,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -234,6 +234,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -246,7 +247,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -268,6 +268,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -280,7 +281,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -302,6 +302,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -314,7 +315,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -336,6 +336,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -348,7 +349,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -370,6 +370,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -382,7 +383,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -404,6 +404,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -416,7 +417,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -438,6 +438,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -450,7 +451,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -472,6 +472,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -484,7 +485,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -506,6 +506,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -518,7 +519,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -540,6 +540,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -552,7 +553,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',
@@ -574,6 +574,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
                          COMP_INCR=_F( 
+                ITER_INTE_MAXI = 250,
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F( 
                 LIST_INST = LINST1,
@@ -586,7 +587,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 METHODE = 'LDLT'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50),
                           PILOTAGE=_F( 
                 TYPE = 'DDL_IMPO',

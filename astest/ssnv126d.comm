@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE RELAXATION EN AXIS VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -241,6 +241,9 @@ SOLNK=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'VENDOCHAB',
                 DEFORMATION = 'PETIT',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 20,
+                RESO_INTE = 'RUNGE_KUTTA_2',
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST,
@@ -251,10 +254,7 @@ SOLNK=STAT_NON_LINE(
                 REAC_ITER = 3),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 20,
-                RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_INTE_MAXI = 20,
-                RESO_INTE = 'RUNGE_KUTTA_2')
+                RESI_GLOB_RELA = 1.E-6)
               )
 
 SOLNK=CALC_ELEM( reuse=SOLNK,
@@ -319,6 +319,9 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'VENDOCHAB',
                 DEFORMATION = 'PETIT',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 60,
+                RESO_INTE = 'IMPLICITE',
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST,
@@ -328,10 +331,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 3),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 20,
-                RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_INTE_MAXI = 60,
-                RESO_INTE = 'IMPLICITE')
+                RESI_GLOB_RELA = 1.E-6,)
               )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,

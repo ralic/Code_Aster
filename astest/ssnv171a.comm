@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COMPARAISON POLY_CFC ET MONOCRISTAL. MOD A : POLY_CFC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,6 +101,10 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                              TYPE_CHARGE='FIXE_CSTE',),
                     COMP_INCR=_F(RELATION='POLY_CFC',
                                  DEFORMATION='PETIT',
+                                 RESI_INTE_RELA=1e-06,
+                                 ITER_INTE_MAXI=100,
+                                 ITER_INTE_PAS=-4,
+                                 RESO_INTE='RUNGE_KUTTA_2',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=LINST,NUME_INST_FIN=NUMFIN,
                                  SUBD_PAS=4,
@@ -109,11 +113,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                               MATRICE='ELASTIQUE',
                               REAC_ITER=0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                   ITER_GLOB_MAXI=100,
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=100,
-                                   ITER_INTE_PAS=-4,
-                                   RESO_INTE='RUNGE_KUTTA_2',),);
+                                   ITER_GLOB_MAXI=100),);
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
                 RESULTAT=SOLNL,

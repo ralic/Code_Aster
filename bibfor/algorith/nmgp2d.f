@@ -4,14 +4,14 @@
      &                   TM, TP, TREF,
      &                   HYDRM, HYDRP,
      &                   SECHM, SECHP, SREF,
-     &                   NZ,PHASM, PHASP, 
+     &                   NZ,PHASM, PHASP,
      &                   DEPLM, DDEPL,
-     &                   ANGMAS, 
+     &                   ANGMAS,
      &                   SIGM, VIM, DFDIM,
      &                   DFDIP, SIGP, VIP, MATNS, VECTU, CODRET )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +183,7 @@ C     CALCUL DE DFDIP, RP ET POIDS EN T+
      &              FBID,EPS,RP)
 
 C -   APPEL A LA LOI DE COMPORTEMENT
-       CALL NMCOMP(KPG,2,TYPMOD,IMATE,COMPOR,CRIT,
+       CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &             INSTM,INSTP,
      &             TEMPM,TEMPP,TREF,
      &             HYDRGM,HYDRGP,

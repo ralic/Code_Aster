@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,12 +66,6 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
             ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
             ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
             ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI"),
-            RESI_INTE_RELA  =SIMP(statut='f',typ='R'
-                                 ,defaut= 1.0E-6),
-            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-            ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-            RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                  into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
           ),
           ETAT_INIT       =FACT(statut='f',
             regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI','VARI_NON_LOCAL',),

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN 
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,6 +181,8 @@ RESULT=DYNA_NON_LINE(
               GROUP_MA = ('PATBIELA', 'PATBIELB', 'PATBIELC',
                 'PATVAN', 'CDGVAN', 'BIELA', 'BIELB', 'BIELC',)),
           _F( RELATION = 'VMIS_ECMI_LINE',
+              RESI_INTE_RELA = 1.E-6,
+              ITER_INTE_MAXI = 100, 
               GROUP_MA = 'COUDES'),
           _F( RELATION = 'ELAS',
               GROUP_MA = 'POUTRES')),
@@ -190,9 +192,7 @@ RESULT=DYNA_NON_LINE(
        NEWTON=_F( MATRICE = 'TANGENTE', REAC_ITER = 1,
                   PREDICTION = 'ELASTIQUE'),
        CONVERGENCE=_F( ITER_GLOB_MAXI = 100,
-                           RESI_INTE_RELA = 1.E-6,
-                           ITER_INTE_MAXI = 100, 
-                           RESI_GLOB_RELA = 1.E-6),
+                       RESI_GLOB_RELA = 1.E-6),
        ARCHIVAGE=_F( PAS_ARCH = 1)
     )
 

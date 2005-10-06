@@ -1,4 +1,4 @@
-# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -201,15 +201,15 @@ U=STAT_NON_LINE( MODELE=MO,
                                        _F(CHARGE = CH22),
                                        _F(CHARGE = CH3),
                                       ),
-                 COMP_INCR=_F(RELATION = 'BETON_UMLV_FP'),
+                 COMP_INCR=_F(RELATION = 'BETON_UMLV_FP',
+                                ITER_INTE_MAXI = 1000),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 82),
                  NEWTON=_F(PREDICTION='ELASTIQUE',
                            MATRICE = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-8,
-                                ITER_GLOB_MAXI = 25,
-                                ITER_INTE_MAXI = 1000)
+                                ITER_GLOB_MAXI = 25)
               )
 
 U=CALC_ELEM(reuse=U,   MODELE=MO,      RESULTAT=U,

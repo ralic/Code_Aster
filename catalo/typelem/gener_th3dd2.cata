@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,11 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCOEFHF  = COEH_F   ELEM__         (H        )
     CCOEFHR  = COEH_R   ELEM__         (H        )
-    ECOEFHR2 = COEH_R   ELGA__ RIGI    (H        )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NACCELR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     CFLUXNF  = FLUN_F   ELEM__         (FLUN     )
-    EFLUXNR2 = FLUN_R   ELGA__ RIGI    (FLUN     )
+    CFLUXNR  = FLUN_R   ELEM__         (FLUN     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
@@ -41,7 +40,7 @@ MODE_LOCAL__
     CRAYONR  = RAYO_R   ELEM__         (SIGMA    EPSIL    TPINF    )
     CT_EXTF  = TEMP_F   ELEM__         (TEMP     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ET_EXTR2 = TEMP_R   ELGA__ RIGI    (TEMP     )
+    ET_EXTR  = TEMP_R   ELEM__         (TEMP     )
 
 VECTEUR__
     MVECTAR = VDEP_R NACCELR
@@ -84,7 +83,7 @@ OPTION__
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_FLUN_F    58    IN__   CFLUXNF  PFLUXNF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MVECTTR  PVECTTR
-    CHAR_THER_FLUN_R    57    IN__   EFLUXNR2 PFLUXNR  NGEOMER  PGEOMER
+    CHAR_THER_FLUN_R    57    IN__   CFLUXNR  PFLUXNR  NGEOMER  PGEOMER
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_FLUTNL    526   IN__   CFLUXNF  PFLUXNL  NGEOMER  PGEOMER  DDL_THER PTEMPEI  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
@@ -102,8 +101,8 @@ OPTION__
     CHAR_THER_TEXT_F    60    IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                                      CT_EXTF  PT_EXTF
                               OUT__  MVECTTR  PVECTTR
-    CHAR_THER_TEXT_R    59    IN__   ECOEFHR2 PCOEFHR  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                                     ET_EXTR2 PT_EXTR
+    CHAR_THER_TEXT_R    59    IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
+                                     ET_EXTR  PT_EXTR
                               OUT__  MVECTTR  PVECTTR
     FLUX_FLUI_X         309   IN__   NGEOMER  PGEOMER
                               OUT__  MMATTTR  PMATTTR
@@ -139,7 +138,7 @@ OPTION__
                               OUT__  MVECTTR  PRESIDU
     RIGI_THER_COEH_F    53    IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
-    RIGI_THER_COEH_R    52    IN__   ECOEFHR2 PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+    RIGI_THER_COEH_R    52    IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER_COET_F    527   IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR

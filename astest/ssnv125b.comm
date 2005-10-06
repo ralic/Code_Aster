@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (POLY_CFC_FO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -241,6 +241,14 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'POLY_CFC',
                 DEFORMATION = 'PETIT',
+#
+# CETTE VALEUR DE RESI_INTE_RELA EST TROP LACHE. EN LA FORCANT A 10-6,
+# LE TEST MARCHE TOUJOURS MAIS AVEC UN CPU MULTIPLIE PAR 10 :
+# ON LA LAISSE AINSI
+#
+                RESI_INTE_RELA = 1.0E-3,
+                ITER_INTE_MAXI = 50,
+                RESO_INTE = 'RUNGE_KUTTA_2',
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
@@ -249,15 +257,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 0),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 60,
-                RESI_GLOB_RELA = 1.0E-4,
-#
-# CETTE VALEUR DE RESI_INTE_RELA EST TROP LACHE. EN LA FORCANT A 10-6,
-# LE TEST MARCHE TOUJOURS MAIS AVEC UN CPU MULTIPLIE PAR 10 :
-# ON LA LAISSE AINSI
-#
-                RESI_INTE_RELA = 1.0E-3,
-                ITER_INTE_MAXI = 50,
-                RESO_INTE = 'RUNGE_KUTTA_2')
+                RESI_GLOB_RELA = 1.0E-4)
               )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,

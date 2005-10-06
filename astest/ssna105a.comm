@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,19 +167,19 @@ RESU = STAT_NON_LINE (MODELE = MO,
                          _F( CHARGE = CONT),
                          _F( CHARGE = PRES),),
                       COMP_INCR =_F(RELATION ='LEMAITRE',
-                                    GROUP_MA = 'MAILG'),
+                                    GROUP_MA = 'MAILG',
+                                    ITER_INTE_MAXI = 1000),
                       COMP_ELAS =_F(RELATION ='ELAS',
                                      GROUP_MA = 'MAILP'),
+                      PARM_THETA = 0.5,
                       INCREMENT =_F(LIST_INST =L_INST,),
                       SOLVEUR =_F( METHODE='LDLT'),
                       NEWTON    =_F(
                                 MATRICE ='TANGENTE', 
                                 REAC_ITER= 1),
-                      PARM_THETA = 0.5,
                       CONVERGENCE=_F(
                                 RESI_GLOB_RELA = 1.E-6,
-                                ITER_GLOB_MAXI = 25,
-                                ITER_INTE_MAXI = 1000),
+                                ITER_GLOB_MAXI = 25),
                         )
 
 RESU = CALC_ELEM( reuse= RESU,

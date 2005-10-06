@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  BETON  TRACTION UNIAXIALE CYCLIQUE COQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,6 +118,8 @@ U=STAT_NON_LINE(
                 CHARGE = LIAISON)),
                          COMP_INCR=_F(
                 RELATION = 'NADAI_B',
+                ITER_INTE_MAXI = 10,
+                RESI_INTE_RELA = 1.E-6,
                 TOUT = 'OUI'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
@@ -125,9 +127,7 @@ U=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE'),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-6,
-                ITER_INTE_MAXI = 10,
-                ITER_GLOB_MAXI = 100,
-                RESI_INTE_RELA = 1.E-6),
+                ITER_GLOB_MAXI = 100),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 0)
               )

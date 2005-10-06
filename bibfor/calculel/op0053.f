@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -164,7 +164,7 @@ C=======================================================================
         ENDIF
 C
         CALL RCMFMC(MATERI,MATE)
-        CALL NMDORC(MODELE,COMPOR)
+        CALL NMDORC(MODELE,COMPOR,K24BID)
         LONVEC = 1
         IORD = 0
         CALL GETVR8(' ','INST',0,1,0,RBID,NBINST)
@@ -232,7 +232,7 @@ C VERIFICATION DE LA COHERENCE DES MOTS CLE AVEC L'OPTION DE CALCUL
         CALL JEVEUO ( VECORD, 'L', IVEC )
         IORD = ZI(IVEC)
         CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,RESUCO,IORD)
-        CALL NMDORC(MODELE,COMPOR)
+        CALL NMDORC(MODELE,COMPOR,K24BID)
         CALL JEVEUO(VCHAR,'L',ICHA)
       ENDIF
 

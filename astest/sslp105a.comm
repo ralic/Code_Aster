@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE Alexis COURTOIS (MMC)
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -252,8 +252,8 @@ RESU1=STAT_NON_LINE(MODELE=MO1,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_RELA=5.E-6,
                                 ITER_GLOB_MAXI=200,
-                                ITER_INTE_MAXI=50,),
-                 PARM_THETA=0.57,);
+                                ),
+                 );
 
 
 
@@ -322,8 +322,8 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_RELA=5.E-6,
                                 ITER_GLOB_MAXI=500,
-                                ITER_INTE_MAXI=100,),
-                                PARM_THETA=0.57,);
+                                ),
+                                );
 
 
 ###########################################################
@@ -372,8 +372,8 @@ BIDON=STAT_NON_LINE(MODELE=MO2,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.,
                                 ITER_GLOB_MAXI=1,
-                                ITER_INTE_MAXI=10,),
-                 PARM_THETA=0.57,);
+                                ),
+                 );
                         
                         
 DEP2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -439,8 +439,8 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_RELA=5.E-6,
                                 ITER_GLOB_MAXI=500,
-                                ITER_INTE_MAXI=100,),
-                                PARM_THETA=0.57,);
+                                ),
+                                );
 
 
 #############################

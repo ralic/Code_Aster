@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. DKT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,15 +102,15 @@ U=STAT_NON_LINE(MODELE=MO,
                           FONC_MULT=SIGMA_F,),
                        _F(CHARGE=CISAIL,
                           FONC_MULT=TAU_F,),),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                             RESI_INTE_RELA=1e-08,
+                             ITER_INTE_MAXI=30),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=10,),
                 RECH_LINEAIRE=_F(RESI_LINE_RELA=1e-06,
                                  ITER_LINE_MAXI=100,),
-                CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                               RESI_INTE_RELA=1e-08,
-                               ITER_INTE_MAXI=30,),);
+                CONVERGENCE=_F(RESI_GLOB_RELA=1e-06),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,

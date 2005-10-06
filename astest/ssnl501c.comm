@@ -1,5 +1,5 @@
 
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 13/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -105,7 +105,8 @@ RESULT_C=STAT_NON_LINE(MODELE=MOD_C,
                        EXCIT=(_F(CHARGE=CHAR0,),
                               _F(CHARGE=PRES_LIM,
                                  TYPE_CHARGE='FIXE_PILO',),),
-                       COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                       COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                    ITER_INTE_MAXI=40,),
                        INCREMENT=_F(LIST_INST=LIS_INST,),
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1,),
@@ -114,8 +115,7 @@ RESULT_C=STAT_NON_LINE(MODELE=MOD_C,
                                    GROUP_NO='F',
                                    NOM_CMP='DY',),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                      ITER_GLOB_MAXI=40,
-                                      ITER_INTE_MAXI=40,),);
+                                      ITER_GLOB_MAXI=40,),);
 
 TABLE_DX=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DX',
                                  GROUP_NO='E',

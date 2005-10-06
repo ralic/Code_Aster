@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,17 +124,17 @@ U=STAT_NON_LINE(
                 CHARGE = CH1), _F( 
                 CHARGE = CH2)),
                          COMP_INCR=_F( 
-                RELATION = 'LEMAITRE'),
+                RELATION = 'LEMAITRE',
+                ITER_INTE_MAXI = 1000),
+                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       PARM_THETA = 0.5,
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-6,
-                ITER_GLOB_MAXI = 25,
-                ITER_INTE_MAXI = 1000)
+                ITER_GLOB_MAXI = 25)
               )
 
 U=CALC_ELEM( reuse=U,        
@@ -177,7 +177,10 @@ U1=STAT_NON_LINE(
                 CHARGE = CH1), _F( 
                 CHARGE = CH2)),
                          COMP_INCR=_F( 
-                RELATION = 'VISC_TAHERI'),
+                RELATION = 'VISC_TAHERI',
+                ITER_INTE_MAXI = 1000,
+                ITER_INTE_PAS = 10,
+                RESI_INTE_RELA = 1.E-8),
                          INCREMENT=_F( 
                 LIST_INST = L_INST2),
                             NEWTON=_F( 
@@ -185,10 +188,7 @@ U1=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 20,
-                ITER_INTE_MAXI = 1000,
-                ITER_INTE_PAS = 10,
-                RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-8),
+                RESI_GLOB_RELA = 1.E-6),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 4,
                 RESI_LINE_RELA = 1.E-3)

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE VALIDATION MONOCRISTAL.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,17 +107,17 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                   COMPOR=COMPORT,
                                   DEFORMATION='PETIT',
+                                  RESI_INTE_RELA=1e-08,
+                                  ITER_INTE_MAXI=100,
+                                  ITER_INTE_PAS=10,
+                                  RESO_INTE='IMPLICITE',
                                   TOUT='OUI',),),
                     INCREMENT=(_F(LIST_INST=LINST,
                                   SUBD_PAS=4,
                                   SUBD_PAS_MINI=1e-06,),),
                     NEWTON=(_F(REAC_ITER=1,),),
                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                    ITER_GLOB_MAXI=100,
-                                    RESI_INTE_RELA=1e-08,
-                                    ITER_INTE_MAXI=100,
-                                    ITER_INTE_PAS=10,
-                                    RESO_INTE='IMPLICITE',),),);
+                                    ITER_GLOB_MAXI=100),),);
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
                 RESULTAT=SOLNL,
@@ -181,6 +181,10 @@ SOLNL2=STAT_NON_LINE(MODELE=TROISD,
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                    COMPOR=COMPORT,
                                    DEFORMATION='PETIT',
+                                   RESI_INTE_RELA=1e-06,
+                                   ITER_INTE_MAXI=10,
+                                   ITER_INTE_PAS=-4,
+                                   RESO_INTE='RUNGE_KUTTA_2',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,
                                    SUBD_PAS=4,
@@ -190,10 +194,6 @@ SOLNL2=STAT_NON_LINE(MODELE=TROISD,
                                 REAC_ITER=0,),),
                      CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
                                      ITER_GLOB_MAXI=100,
-                                     RESI_INTE_RELA=1e-06,
-                                     ITER_INTE_MAXI=10,
-                                     ITER_INTE_PAS=-4,
-                                     RESO_INTE='RUNGE_KUTTA_2',
                                      ),),);
 
 SOLNL2=CALC_ELEM(reuse =SOLNL2,

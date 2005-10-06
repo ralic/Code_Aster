@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,13 +112,14 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                             _F(CHARGE=CHAR1,),
                                                    ),
                      COMP_INCR=_F(RELATION='KIT_HM',
-                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
+                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                  ITER_INTE_MAXI=5,),
+                     PARM_THETA=1.0,
                      INCREMENT=_F(LIST_INST=LI,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=20,),
-                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
-                                    ITER_INTE_MAXI=5,),
-                     PARM_THETA=1.0,);
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                     );
 
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NUME_ORDRE=1,

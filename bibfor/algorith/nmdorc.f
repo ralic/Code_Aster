@@ -1,4 +1,4 @@
-      SUBROUTINE NMDORC(MODELZ,COMPOZ)
+      SUBROUTINE NMDORC(MODELZ,COMPOZ,CARCRI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,14 +16,23 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
+      CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
 C OUT COMPOZ  : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+C OUT CARCRI  : CARTE DECRIVANT LES CRITERES LOCAUX DE CONVERGENCE
+C                     0 : ITER_INTE_MAXI
+C                     1 : COMPOSANTE INUTILISEE
+C                     2 : RESI_INTE_RELA
+C                     3 : THETA (POUR THM)
+C                     4 : ITER_INTE_PAS
+C                     5 : RESO_INTE (0: EULER_1, 1: RK_2, 2: RK_4)
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -47,19 +56,21 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP
       INTEGER JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
-      INTEGER INV,DIMANV,NBMONO,NUNIT
-      REAL*8 RBID
+      INTEGER INV,DIMANV,NBMONO,NUNIT,ITEINT,ITEPAS,NUMGD,JACMP,NBCRIT
+      INTEGER JCRIT,JVALC
+      REAL*8 RBID,RESI,THETA,R8VIDE
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
+      CHARACTER*1  K1BID
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
 C    DIMAKI = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (DIMANV=4)
       PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
-      LOGICAL EXIST,GETEXM,EXICP,EXI1D
+      LOGICAL EXIST,GETEXM,EXICP,EXI1D,CRILOC
       CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP
       CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2)
-      CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D
+      CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D,RESO
       CHARACTER*19 COMPOR
       CHARACTER*24 LIGRMO,MODELE,MESMAI
       CHARACTER*50 CHAIN1, CHAIN2
@@ -78,6 +89,7 @@ C     ------------------------------------------------------------------
 
       CALL GETRES(K8B,K16BID,NOMCMD)
 C                           1234567890123
+      CRILOC=.FALSE.
       IF (NOMCMD(1:13).NE.'THER_LINEAIRE') THEN
 
         COMPOR = '&&NMDORC.COMPOR'
@@ -91,6 +103,9 @@ C                           1234567890123
           MOCLEF(1) = 'COMP_INCR'
         ELSE
           NBMO1 = 2
+          IF ((NOMCMD(1:13).EQ.'STAT_NON_LINE').OR.
+     &        (NOMCMD(1:13).EQ.'DYNA_NON_LINE').OR.
+     &        (NOMCMD(1:15).EQ.'DYNA_TRAN_EXPLI')) CRILOC=.TRUE.
           MOCLEF(1) = 'COMP_INCR'
           MOCLEF(2) = 'COMP_ELAS'
         END IF
@@ -261,18 +276,34 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
           CALL UTFINM()
           CALL UTMESS('F','NMDORC','ARRET SUR ERREURS')
         END IF
-
         CALL ALCART('V',COMPOR,NOMA,NOMGRD,NBAP+1,NBET)
-
         CALL JEVEUO(COMPOR//'.NCMP','E',JNCMP)
         CALL JEVEUO(COMPOR//'.VALV','E',JVALV)
+
 
         DO 90 ICMP = 1,NCMPMA
           ZK8(JNCMP+ICMP-1) = NOMCMP(ICMP)
    90   CONTINUE
 
+        IF (CRILOC) THEN
+C CARTE DES CRITERES DE CONVERGENCES LOCAUX
+          CALL GETVR8(' ','PARM_THETA',0,1,1,THETA ,IRET)
+          CALL ALCART('V',CARCRI,NOMA,'CARCRI',NBAP+1,NBET)
+          CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JCRIT)
+          CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALC)
+
+          CALL JENONU(JEXNOM('&CATA.GD.NOMGD' ,'CARCRI'),NUMGD)
+          CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',JACMP)
+          CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'LONMAX',
+     &                NBCRIT,K1BID)
+
+          DO 95 ICMP = 1,NBCRIT
+            ZK8(JCRIT+ICMP-1) = ZK8(JACMP+ICMP-1)
+   95     CONTINUE
+
+        ENDIF
 C     ------------------------------------------------------------------
-C                       REMPLISSAGE DE LA CARTE :
+C                       REMPLISSAGE DES CARTES :
 C     ------------------------------------------------------------------
 
         DO 160 I = 1,NBMO1
@@ -458,6 +489,8 @@ C  POUR COMPORTEMENT KIT_
                 ZK16(JVALV-1+ICOMEL+7) = '        '
               END IF
   140       CONTINUE
+  
+   
 
 C ======================================================================
 C --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR RELATION -----------
@@ -476,11 +509,64 @@ C ======================================================================
               CALL JEVEUO(MESMAI,'L',JMA)
               CALL NOCART(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NCMPMA)
+              IF (CRILOC) THEN
+                CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)
+                CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
+                CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
+     &                    IRET)
+
+     
+                IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
+     &            CALL UTMESS('A','NMDOCN','CRITERE DE CONVERGENCE '//
+     &               'POUR INTEGRER LE COMPORTEMENT RESI_INTE_RELA '//
+     &               'LACHE')
+     
+                ITEPAS = 0
+                CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
+     &                       IRET)
+                ZR(JVALC) = ITEINT
+C la variable  ZR(JVALC+1) n'est pas utilisee
+                ZR(JVALC+1) = 0
+                ZR(JVALC+2) = RESI
+                ZR(JVALC+3) = THETA
+                ZR(JVALC+4) = ITEPAS
+                IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
+                IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
+                IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
+                CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
+     &                    NBCRIT)
+              ENDIF
               CALL JEDETR(MESMAI)
             ELSE
 C ------- PAR DEFAUT C'EST TOUT='OUI'
 C            CALL GETVTX ( MOCLEF(I), 'TOUT'  , K,1,1, OUI   , NT )
               CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
+              IF (CRILOC) THEN
+C    LECTURE DES PARAMETRES
+                CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO  ,IRET)
+                CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
+                CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
+     &                    IRET)
+
+     
+                IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
+     &            CALL UTMESS('A','NMDORC','CRITERE DE CONVERGENCE '//
+     &               'POUR INTEGRER LE COMPORTEMENT RESI_INTE_RELA '//
+     &               'LACHE')
+     
+                CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS' ,K,1,1,ITEPAS,
+     &                       IRET)
+                ZR(JVALC) = ITEINT
+C la variable  ZR(JVALC+1) n'est pas utilisee
+                ZR(JVALC+1) = 0
+                ZR(JVALC+2) = RESI
+                ZR(JVALC+3) = THETA
+                ZR(JVALC+4) = ITEPAS
+                IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
+                IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
+                IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
+                CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
+              ENDIF
             END IF
 
   150     CONTINUE
@@ -490,6 +576,10 @@ C            CALL GETVTX ( MOCLEF(I), 'TOUT'  , K,1,1, OUI   , NT )
 
         CALL JEDETR(COMPOR//'.NCMP')
         CALL JEDETR(COMPOR//'.VALV')
+        IF (CRILOC) THEN
+          CALL JEDETR(CARCRI(1:19)//'.NCMP')
+          CALL JEDETR(CARCRI(1:19)//'.VALV')
+        ENDIF
 
         COMPOZ = COMPOR
 

@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-import string,copy
+import string,copy,traceback
 from Lecture_Cata_Ele import spark
 GenericScanner       =spark.GenericScanner
 GenericASTBuilder    =spark.GenericASTBuilder
@@ -62,7 +62,7 @@ def lire_cata(nomfic,format='cata'):
                 print 80*'/'
                 raise "Erreur_Fatale"
         else :
-            raise "Erreur_Fatale"
+            raise "Erreur_Fatale","format inconnu: "+format
         return capy
 
 
@@ -323,9 +323,14 @@ class MonParser(GenericASTBuilder):
         elref1    ::=  ELREFE__ ident gauss1
 
         gauss1    ::=  GAUSS__  l_attr_val
+        gauss1    ::=  GAUSS__  l_attr_val  l_fpg_liste
         l_attr_val  ::=  l_attr_val  attr_val
         l_attr_val  ::=  attr_val
         attr_val    ::=  ident =  ident
+
+        l_fpg_liste  ::=  l_fpg_liste  fpg_liste
+        l_fpg_liste  ::=  fpg_liste
+        fpg_liste    ::=  FPG_LISTE__   ident = ( l_ident )
 
         l_decl_opt  ::=  l_decl_opt  decl_opt
         l_decl_opt  ::=  decl_opt
@@ -951,7 +956,11 @@ class creer_capy(GenericASTTraversal):
 
     def n_gauss1(self, node):
 #       gauss1    ::=  GAUSS__  l_attr_val
-        node.gauss1=node[1].l_attr_val
+#       gauss1    ::=  GAUSS__  l_attr_val  fpg_liste
+        if len(node)==2 :
+           node.gauss1=(node[1].l_attr_val,None)
+        if len(node)==3 :
+           node.gauss1=(node[1].l_attr_val,node[2].l_fpg_liste)
 
     def n_elref1(self, node):
 #       elref1    ::=  ELREFE__ ident
@@ -967,6 +976,20 @@ class creer_capy(GenericASTTraversal):
         if len(node)==2 :
             node.l_elref1.extend(node[0].l_elref1)
             node.l_elref1.append(node[1].elref1)
+
+    def n_fpg_liste(self, node):
+#       fpg_liste    ::=  FPG_LISTE__   ident = ( l_ident )
+        node.fpg_liste=(node[1].attr,node[4].l_ident)
+
+
+    def n_l_fpg_liste(self, node):
+#       l_fpg_liste  ::=  l_fpg_liste  fpg_liste
+#       l_fpg_liste  ::=  fpg_liste
+        node.l_fpg_liste=[]
+        if len(node)==1 : node.l_fpg_liste.append(node[0].fpg_liste)
+        if len(node)==2 :
+            node.l_fpg_liste.extend(node[0].l_fpg_liste)
+            node.l_fpg_liste.append(node[1].fpg_liste)
 
     def n_decl_en(self, node):
 #       decl_en     ::=  ENS_NOEUD__  ident = l_entier

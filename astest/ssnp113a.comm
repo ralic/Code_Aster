@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #  TITRE  ROTATION DES CONTRAINTES PRINCIPALES (WILLIAM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,12 +107,12 @@ RES1=STAT_NON_LINE(reuse     = RES1,
                    MODELE    =MODELE,
                    TITRE     ='BENCH-A LOI MAZARS',
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,
-                                  RESI_GLOB_RELA=1.E-4,
+                                  RESI_GLOB_RELA=1.E-4),
+                   COMP_INCR  =_F(RELATION='MAZARS',
+                                  DEFORMATION='PETIT',
                                   ITER_INTE_MAXI=10,
                                   RESI_INTE_RELA=1.E-6,
                                   ITER_INTE_PAS=-10),
-                   COMP_INCR  =_F(RELATION='MAZARS',
-                                 DEFORMATION='PETIT'),
                    INCREMENT  =_F(
                                   LIST_INST=L_INS1,
                                   SUBD_PAS   = 3,

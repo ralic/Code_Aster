@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,14 +110,14 @@ U1=STAT_NON_LINE(
                 FONC_MULT = COEF1), _F( 
                 CHARGE = DEPL_1)),
                          COMP_INCR=_F( 
-                RELATION = 'LAIGLE'),
+                RELATION = 'LAIGLE',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 100),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-4,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50,
-                ITER_INTE_MAXI = 100),
+                ITER_GLOB_MAXI = 50,),
                          INCREMENT=_F( 
                 LIST_INST = TEMPS1)
               )
@@ -184,7 +184,10 @@ U2=STAT_NON_LINE(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
                          COMP_INCR=_F( 
-                RELATION = 'LAIGLE'),
+                RELATION = 'LAIGLE',
+                ITER_INTE_MAXI = 100,
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_PAS  = -10,),
                          ETAT_INIT=_F( 
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
@@ -196,9 +199,6 @@ U2=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_INTE_MAXI = 100,
-                ITER_INTE_PAS  = -10,
                 ITER_GLOB_MAXI = 100)
               )
 

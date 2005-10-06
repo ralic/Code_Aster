@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -295,7 +295,10 @@ SOLNL=STAT_NON_LINE(
                 FONC_MULT = COEF_CS)),
                          COMP_INCR=_F( 
                 RELATION = 'VISCOCHAB',
-                DEFORMATION = 'PETIT',
+                DEFORMATION = 'PETIT', 
+                ITER_INTE_MAXI = 40,
+                ITER_INTE_PAS = 15,
+                RESI_INTE_RELA = 1.0E-07,
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
@@ -303,11 +306,8 @@ SOLNL=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE',
                 REAC_INCR = 1,
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                ITER_INTE_MAXI = 40,
-                ITER_INTE_PAS = 15,
-                RESI_GLOB_RELA = 1.0E-06,
-                RESI_INTE_RELA = 1.0E-07),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.0E-06),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 5,
                 RESI_LINE_RELA = 1.0E-03)

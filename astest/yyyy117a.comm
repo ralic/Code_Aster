@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  SUIVI PERFORMANCE : FLUAGE SAS FLAMANVILLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -625,10 +625,12 @@ RESU1=STAT_NON_LINE(   MODELE=MODELE,
                                    GROUP_MA = (
                                                    'BRIDEINT',)),
                          _F( RELATION = 'GRANGER_FP_V',
-                                   GROUP_MA = ('BETON', 'SURFCL',)),
+                                   GROUP_MA = ('BETON', 'SURFCL',),
+                                   ITER_INTE_MAXI = 50,),
 
                         _F( RELATION = 'VMIS_ISOT_LINE',
-                                   GROUP_MA = ('CPTOT',)),
+                                   GROUP_MA = 'CPTOT',
+                                   ITER_INTE_MAXI = 50,),
                         _F( RELATION = 'ELAS',
                                    GROUP_MA = ('COCSAS','COCINT',
                                                'COLLER1','COLLER2',),
@@ -638,8 +640,7 @@ RESU1=STAT_NON_LINE(   MODELE=MODELE,
 
                        NEWTON=_F( MATRICE = 'ELASTIQUE'),
                       CONVERGENCE=_F( RESI_GLOB_MAXI = 1.E-4,
-                                   ITER_INTE_MAXI = 50,
-                                   ITER_GLOB_MAXI = 300),
+                                      ITER_GLOB_MAXI = 300),
                            SOLVEUR=_F( METHODE = 'MULT_FRONT', RENUM = 'MD')
 
                      )

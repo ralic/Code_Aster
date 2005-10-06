@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+#& MODIF COMMUN  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -320,4 +320,9 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
+           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
+           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ) ;

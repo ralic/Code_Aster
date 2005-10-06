@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE TYPE (AXIS)
@@ -101,13 +101,13 @@ U1=STAT_NON_LINE(
      _F( CHARGE       = CHAR_U2,
                                      FONC_MULT    = COEF1),
      _F( CHARGE       = DEPL_1)),
-                  COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER'),
+                  COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER',
+                                   RESI_INTE_RELA = 1.E-6,
+                                   ITER_INTE_MAXI = 100),
                   NEWTON     = _F( MATRICE        = 'TANGENTE',
                                    REAC_ITER      = 1,),
                   CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-4,
-                                   RESI_INTE_RELA = 1.E-6,
-                                   ITER_GLOB_MAXI = 50,
-                                   ITER_INTE_MAXI = 100),
+                                   ITER_GLOB_MAXI = 50,),
                   INCREMENT  = _F( LIST_INST      = TEMPS1)
                 )
 
@@ -157,16 +157,16 @@ U2 = STAT_NON_LINE(
               _F( CHARGE       = DEPL_1),
               _F( CHARGE       = DEPL_2,
                                        FONC_MULT    = COEF2)),
-                    COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER'),
+                    COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER',
+                                     RESI_INTE_RELA = 1.E-6,
+                                     ITER_INTE_MAXI = 100,
+                                     ITER_INTE_PAS  = -10,),
                     ETAT_INIT  = _F( SIGM           = SIG_INI,
                                      VARI           = VAR_INI),
                     INCREMENT  = _F( LIST_INST      = TEMPS2),
                     NEWTON     = _F( MATRICE        = 'TANGENTE',
                                      REAC_ITER      = 1,),
                     CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,
-                                     RESI_INTE_RELA = 1.E-6,
-                                     ITER_INTE_MAXI = 100,
-                                     ITER_INTE_PAS  = -10,
                                      ITER_GLOB_MAXI = 100)
                   )
 

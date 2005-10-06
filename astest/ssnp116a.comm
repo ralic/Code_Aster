@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,6 +230,9 @@ COUPLA=STAT_NON_LINE(
                   COMP_INCR=_F(  RELATION = 'KIT_DDI',
                                  RELATION_KIT = ('GRANGER_FP',
                                              'BETON_DOUBLE_DP',),
+                                 ITER_INTE_MAXI = 20,
+                                 ITER_INTE_PAS = 0,
+                                 RESI_INTE_RELA = 1.E-6,
                                  DEFORMATION = 'PETIT',
                                  TOUT = 'OUI'),
                   NEWTON=_F(     MATRICE = 'TANGENTE',
@@ -237,10 +240,7 @@ COUPLA=STAT_NON_LINE(
                                  REAC_ITER = 5),
                   SOLVEUR=_F(),
                   CONVERGENCE=_F(ITER_GLOB_MAXI = 30,
-                                 ITER_INTE_MAXI = 20,
-                                 ITER_INTE_PAS = 0,
-                                 RESI_GLOB_RELA = 1.E-6,
-                                 RESI_INTE_RELA = 1.E-6)
+                                 RESI_GLOB_RELA = 1.E-6)
                             )
 
 COUPLA=CALC_ELEM(    reuse=COUPLA,
@@ -459,16 +459,16 @@ COUPLA2=STAT_NON_LINE(
                                  RELATION_KIT = ('GRANGER_FP',
                                              'BETON_DOUBLE_DP',),
                                  DEFORMATION = 'PETIT',
+                                 ITER_INTE_MAXI = 20,
+                                 ITER_INTE_PAS = 0,
+                                 RESI_INTE_RELA = 1.E-6,
                                  TOUT = 'OUI'),
                   NEWTON=_F(     MATRICE = 'TANGENTE',
                                  REAC_INCR = 1,
                                  REAC_ITER = 5),
                   SOLVEUR=_F(),
                   CONVERGENCE=_F(ITER_GLOB_MAXI = 30,
-                                 ITER_INTE_MAXI = 20,
-                                 ITER_INTE_PAS = 0,
-                                 RESI_GLOB_RELA = 1.E-6,
-                                 RESI_INTE_RELA = 1.E-6)
+                                 RESI_GLOB_RELA = 1.E-6)
                             )
 
 COUPLA2=CALC_ELEM(    reuse=COUPLA2,
@@ -572,15 +572,15 @@ COUPLA3=STAT_NON_LINE(
                                RELATION_KIT = ('GRANGER_FP',
                                                'VMIS_ISOT_LINE',),
                                DEFORMATION = 'PETIT',
+                               ITER_INTE_MAXI = 20,
+                               ITER_INTE_PAS = 0,
+                               RESI_INTE_RELA = 1.E-6,
                                TOUT = 'OUI'),
                 NEWTON=_F(     MATRICE = 'TANGENTE',
                                REAC_INCR = 1,
                                REAC_ITER = 5),
                 CONVERGENCE=_F(ITER_GLOB_MAXI = 30,
-                               ITER_INTE_MAXI = 20,
-                               ITER_INTE_PAS = 0,
-                               RESI_GLOB_RELA = 1.E-6,
-                               RESI_INTE_RELA = 1.E-6),
+                               RESI_GLOB_RELA = 1.E-6),
               )
 
 COUPLA3=CALC_ELEM( reuse=COUPLA3,          
@@ -684,15 +684,15 @@ COUPLA4=STAT_NON_LINE(
                                 RELATION_KIT = ('GRANGER_FP',
                                                 'CHABOCHE',),
                                 DEFORMATION = 'PETIT',
+                                ITER_INTE_MAXI = 20,
+                                ITER_INTE_PAS = 0,
+                                RESI_INTE_RELA = 1.E-6,
                                 TOUT = 'OUI'),
                  NEWTON=_F(     MATRICE = 'TANGENTE',
                                 REAC_INCR = 1,
                                 ),
                  CONVERGENCE=_F(ITER_GLOB_MAXI = 30,
-                                ITER_INTE_MAXI = 20,
-                                ITER_INTE_PAS = 0,
-                                RESI_GLOB_RELA = 1.E-6,
-                                RESI_INTE_RELA = 1.E-6),
+                                RESI_GLOB_RELA = 1.E-6),
                  SOLVEUR=_F(NPREC=9),
               )
 

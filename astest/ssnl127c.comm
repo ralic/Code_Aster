@@ -1,4 +1,4 @@
-# MODIF  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,9 @@ REST=STAT_NON_LINE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHART,
                             FONC_MULT=FONCT,),
                    COMP_INCR=_F(RELATION='CORR_ACIER',
-                                GROUP_MA='TOUT',),
+                                GROUP_MA='TOUT',
+                                RESI_INTE_RELA=1e-06,
+                                ITER_INTE_MAXI=150),
                    INCREMENT=_F(LIST_INST=LINST,
                                 SUBD_PAS=4,
                                 SUBD_PAS_MINI=1e-06,),
@@ -138,9 +140,7 @@ REST=STAT_NON_LINE(MODELE=MO,
                                     RHO_MIN=1e-06,
                                     RHO_MAX=10.0,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
-                                  ITER_GLOB_MAXI=10,
-                                  RESI_INTE_RELA=1e-06,
-                                  ITER_INTE_MAXI=150,),
+                                  ITER_GLOB_MAXI=10,),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
 CALC_ELEM(reuse=REST,RESULTAT=REST,OPTION='SIEF_ELNO_ELGA')
@@ -199,7 +199,9 @@ REST2=STAT_NON_LINE(MODELE=MO,
                     EXCIT=_F(CHARGE=CHART,
                              FONC_MULT=FONCT,),
                     COMP_INCR=_F(RELATION='CORR_ACIER',
-                                 GROUP_MA='TOUT',),
+                                 GROUP_MA='TOUT',
+                                 RESI_INTE_RELA=1e-06,
+                                 ITER_INTE_MAXI=15),
                     INCREMENT=_F(LIST_INST=LINST2,
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=1e-06,),
@@ -213,9 +215,7 @@ REST2=STAT_NON_LINE(MODELE=MO,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
-                                   ITER_GLOB_ELAS=10,
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=15,),
+                                   ITER_GLOB_ELAS=10,),
                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
 CALC_ELEM(reuse=REST2,RESULTAT=REST2,OPTION='SIEF_ELNO_ELGA')
@@ -274,7 +274,9 @@ REST3=STAT_NON_LINE(MODELE=MO,
                     EXCIT=_F(CHARGE=CHART,
                              FONC_MULT=FONCT,),
                     COMP_INCR=_F(RELATION='CORR_ACIER',
-                                 GROUP_MA='TOUT',),
+                                 GROUP_MA='TOUT',
+                                 RESI_INTE_RELA=1e-06,
+                                 ITER_INTE_MAXI=15,),
                     INCREMENT=_F(LIST_INST=LINST3,
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=1e-06,),
@@ -288,9 +290,7 @@ REST3=STAT_NON_LINE(MODELE=MO,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
-                                   ITER_GLOB_ELAS=10,
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=15,),
+                                   ITER_GLOB_ELAS=10,),
                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
 CALC_ELEM(reuse=REST3,RESULTAT=REST3,OPTION='SIEF_ELNO_ELGA')

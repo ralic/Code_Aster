@@ -1,6 +1,6 @@
       SUBROUTINE TE0059(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,8 +130,8 @@ C
         IF     (OPTION(11:14).EQ.'TEXT') THEN
            DO 104 I=1,NNO
              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + JAC * ZR(IPOIDS+IPG-1)
-     &                        *  ZR(IVF+LDEC+I-1) * ZR(IECH+IPG-1)
-     &                        * ( ZR(ITEXT+IPG-1) - (1.0D0-THETA)*TEM )
+     &                        *  ZR(IVF+LDEC+I-1) * ZR(IECH)
+     &                        * ( ZR(ITEXT) - (1.0D0-THETA)*TEM )
 104        CONTINUE
         ELSEIF (OPTION(11:14).EQ.'RAYO') THEN
            DO 105 I=1,NNO

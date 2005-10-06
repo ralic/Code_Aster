@@ -1,7 +1,7 @@
        SUBROUTINE  NIGP3D ( NNO1, NNO2, NPG1, IPOIDS, IVF1, IVF2,
      &                     IDFDE1, DFDIM, DFDIP, GEOM,
      &                     TYPMOD, OPTION, IMATE, COMPOR, LGPG, CRIT,
-     &                     INSTAM, INSTAP, 
+     &                     INSTAM, INSTAP,
      &                     TM, TP, TREF,
      &                     DEPLM, DDEPL,
      &                     ANGMAS,
@@ -9,7 +9,7 @@
      &                     SIGM, VIM, SIGP, VIP,
      &                     FINTU, FINTA, KUU, KUA, KAA, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,7 +231,7 @@ C      CONTRAINTE EN T- POUR LA LOI DE COMPORTEMENT
           SIGMC(I) = SIGM(I,KPG) / TETJD
  65     CONTINUE
 C -    APPEL A LA LOI DE COMPORTEMENT
-        CALL NMCOMP(KPG,3,TYPMOD,IMATE,COMPOR,CRIT,
+        CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &              INSTAM,INSTAP,
      &              TEMPM,TEMPP,TREF,
      &              0.D0, 0.D0,

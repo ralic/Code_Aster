@@ -1,8 +1,8 @@
-      SUBROUTINE NM1DCO(KPGVRC,OPTION,IMATE,TM,TP,E,SIGM,EPSM,DEPS,VIM,
-     &                  SIGP,VIP,DSDE,CRILDC,CODRET)
+      SUBROUTINE NM1DCO(FAMI,KPG,KSP,OPTION,IMATE,TM,TP,E,SIGM,
+     &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,7 +54,8 @@ C     ------------------------------------------------------------------
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM
       REAL*8 SIGP,DSDE,RBID,RESI,CRILDC(3)
       CHARACTER*16 OPTION
-      INTEGER IMATE,IRET,CODRET,KPGVRC
+      CHARACTER*(*) FAMI
+      INTEGER IMATE,IRET,CODRET,KPG,KSP
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
@@ -96,7 +97,7 @@ C --- PARAMETRES DE CONVERGENCE
       RESI = CRILDC(3)
       ITEMAX = NINT(CRILDC(1))
 
-        CALL RCVARC('F','CORR','-',KPGVRC,CORRM,IBID)
+        CALL RCVARC('F','CORR','-',FAMI,KPG,KSP,CORRM,IBID)
         IF (CORRM .LE. 15.D0)  THEN
          EPSC = 2.345D-1-(1.11D-2*CORRM)
         ELSE

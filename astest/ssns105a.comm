@@ -1,4 +1,4 @@
-# MODIF  DATE 23/11/2004   AUTEUR PBADEL P.BADEL 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,7 +141,8 @@ LEDEP=STAT_NON_LINE(
                 FONC_MULT=f_inst
                 ),
                 COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
-                              RELATION = 'GRILLE_ISOT_LINE',),
+                              RELATION = 'GRILLE_ISOT_LINE',
+                              ITER_INTE_MAXI = 30,),
                            _F(GROUP_MA=('GEO',),
                               RELATION = 'ELAS',)
                 ),
@@ -155,7 +156,6 @@ LEDEP=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-3,
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 30,
                 ),
               )
@@ -170,7 +170,8 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                 ),
                 ETAT_INIT=_F(EVOL_NOLI=LEDEP),
                 COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
-                              RELATION = 'GRILLE_ISOT_LINE',),
+                              RELATION = 'GRILLE_ISOT_LINE',
+                              ITER_INTE_MAXI = 30,),
                            _F(GROUP_MA=('GEO',),
                               RELATION = 'ELAS',)
                 ),
@@ -183,7 +184,6 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                 REAC_ITER = 1,
                 ),
                        CONVERGENCE=_F(
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 30,
                 ITER_GLOB_ELAS = 200,
                 ),

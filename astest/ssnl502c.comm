@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -178,7 +178,6 @@ RESULT=STAT_NON_LINE(       MODELE=MO,
                                       MATRICE = 'TANGENTE'),
                          CONVERGENCE=_F( 
                                       ITER_GLOB_MAXI = 30,
-                                      RESI_INTE_RELA = 1.E-6,
                                       RESI_GLOB_RELA = 1.E-6)
                         )
 
@@ -202,7 +201,6 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                              SOLVEUR=_F( STOP_SINGULIER='DECOUPE'),
                          CONVERGENCE=_F( 
                                       ITER_GLOB_MAXI = 40,
-                                      RESI_INTE_RELA = 1.E-6,
                                       RESI_GLOB_RELA = 1.E-6),
                            ETAT_INIT=_F( EVOL_NOLI = RESULT), 
                             PILOTAGE=_F( TYPE = 'LONG_ARC', 
@@ -234,7 +232,6 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                       MATRICE = 'TANGENTE'),
                          CONVERGENCE=_F( 
                                       ITER_GLOB_MAXI = 40,
-                                      RESI_INTE_RELA = 1.E-6,
                                       RESI_GLOB_RELA = 1.E-6),
                            ETAT_INIT=_F( EVOL_NOLI = RESULT), 
                             PILOTAGE=_F( TYPE = 'LONG_ARC',

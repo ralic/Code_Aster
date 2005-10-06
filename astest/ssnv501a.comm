@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,6 +202,9 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                            _F(CHARGE=CH2,),),
                     COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                                   DEFORMATION='SIMO_MIEHE',
+                                  RESI_INTE_RELA=9.9999999999999995E-07,
+                                  ITER_INTE_MAXI=20,
+                                  ITER_INTE_PAS=10,
                                   GROUP_MA='FLAN',),
                                _F(RELATION='ELAS',
                                   DEFORMATION='SIMO_MIEHE',
@@ -212,10 +215,7 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
-                                   ITER_GLOB_MAXI=200,
-                                   RESI_INTE_RELA=9.9999999999999995E-07,
-                                   ITER_INTE_MAXI=20,
-                                   ITER_INTE_PAS=10,),
+                                   ITER_GLOB_MAXI=200),
                     INFO=1,);
 
 TEST_RESU(RESU=(_F(RESULTAT=DEFOR,

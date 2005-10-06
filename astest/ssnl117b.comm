@@ -1,4 +1,4 @@
-# MODIF  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,13 +147,13 @@ U1=STAT_NON_LINE(
                 LIST_INST = LINST,
                 NUME_INST_FIN = 8
                 ),COMP_INCR=(
-                         _F( GROUP_MA = 'BC',  RELATION = 'VMIS_ISOT_LINE', ),
+                         _F( GROUP_MA = 'BC',  RELATION = 'VMIS_ISOT_LINE',
+                             RESI_INTE_RELA = 1.E-6 ),
                          _F( GROUP_MA = ( 'AB',  'CD',), RELATION = 'ELAS', )),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 3),
                        CONVERGENCE=_F(
-                RESI_INTE_RELA = 1.E-6,
                 RESI_GLOB_RELA = 1.E-4,
                 ITER_GLOB_MAXI = 100),
                      RECH_LINEAIRE=_F(

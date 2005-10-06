@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C
       INTEGER     INTE , INTSR , INTSN
       INTEGER            KNTSR
       REAL * 8 EPTOT , KAPPA , CTOR
-      INTEGER     NPGE      , NPGSR , NPGSN, KPGVRC
+      INTEGER     NPGE      , NPGSR , NPGSN, KSP
       PARAMETER ( NPGE = 3 )
       REAL * 8 VECTA ( 9 , 2 , 3 )
       REAL * 8 VECTN  ( 9 , 3 ) , VECTPT ( 9 , 2 , 3 )
@@ -836,9 +836,9 @@ C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
 C -    APPEL A LA LOI DE COMPORTEMENT
-              KPGVRC=(INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE + INTE
-              CALL NMCOMP(KPGVRC,2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),
-     &                    ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
+              KSP= (ICOU-1)*NPGE + INTE
+              CALL NMCOMP('MASS',INTSN,KSP,2,TYPMOD,ZI(IMATE),
+     &               ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                    TMC,TPC,ZR(ITREF),
      &                    HYDRGM,HYDRGP,
      &                    SECHGM,SECHGP,SREF,

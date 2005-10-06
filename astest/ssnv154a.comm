@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,14 +113,14 @@ U1=STAT_NON_LINE(
                 FONC_MULT = COEF1), _F( 
                 CHARGE = DEPL_1)),
                          COMP_INCR=_F( 
-                RELATION = 'CJS'),
+                RELATION = 'CJS',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 100),
                             NEWTON=_F( 
                 MATRICE = 'ELASTIQUE'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-4,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50,
-                ITER_INTE_MAXI = 100),
+                ITER_GLOB_MAXI = 50),
                          INCREMENT=_F( 
                 LIST_INST = TEMPS1)
               )
@@ -145,14 +145,14 @@ U1=STAT_NON_LINE( reuse=U1,
                 FONC_MULT = COEF1), _F( 
                 CHARGE = DEPL_1)),
                          COMP_INCR=_F( 
-                RELATION = 'CJS'),
+                RELATION = 'CJS',
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 100),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-4,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50,
-                ITER_INTE_MAXI = 100),
+                ITER_GLOB_MAXI = 50),
                          ETAT_INIT=_F( 
                 SIGM = SIG_INI1,
                 VARI = VAR_INI1),
@@ -218,7 +218,8 @@ U2=STAT_NON_LINE(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
                          COMP_INCR=_F( 
-                RELATION = 'CJS'),
+                RELATION = 'CJS',
+                RESI_INTE_RELA = 1.E-6,),
                          ETAT_INIT=_F( 
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
@@ -228,7 +229,6 @@ U2=STAT_NON_LINE(
                 MATRICE = 'TANGENTE'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50)
               )
 

@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ C     (MEME SI LES TABLEAUX SONT DIMMENSIONNES EN 3D)
 C     ------------------------------------------------------------------
 C     IN  OPT  : OPTION NON LINEAIRE A CALCULER
 C                  'RAPH_MECA'
-C                  'FULL_MECA'      OU 'FULL_MECA_ELAS' 
+C                  'FULL_MECA'      OU 'FULL_MECA_ELAS'
 C                  'RIGI_MECA_TANG' OU 'RIGI_MECA_ELAS'
 C     IN  XYZL : COORDONNEES DES NOEUDS
 C     IN  UL   : DEPLACEMENT A L'INSTANT T "-"
@@ -157,7 +157,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
      &          IER, IGAUH, IINSTM, IINSTP, IMATE, INO, IPG, IRET, ISP,
      &          ITEMP, ITEMPM, ITEMPP, ITREF, IVARIM, IVARIP, IVARIX,
      &          IVPG, J, K, LZR, NBCON, NBSP, NBVAR, NDIMV, NNOEL
-      INTEGER   IADZI, IAZK24, KPGVRC
+      INTEGER   IADZI, IAZK24, KSP
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C --DEB
@@ -375,7 +375,7 @@ C        -------------------------------------------------------
         END IF
       END IF
 
-C ---  VARIABLE D HYDRATATION ET DE SECHAGE 
+C ---  VARIABLE D HYDRATATION ET DE SECHAGE
       HYDRGM = 0.D0
       HYDRGP = 0.D0
       SECHGM = 0.D0
@@ -386,7 +386,6 @@ C===============================================================
 
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
-      KPGVRC=0
       DO 130,IPG = 1,NPG
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
@@ -416,7 +415,7 @@ C          PAR INTEGRATION EN TROIS POINTS
 C       ------------------------------------------------------
         DO 80,ICOU = 1,NBCOU
           DO 70,IGAUH = 1,NPGH
-            KPGVRC=KPGVRC+1
+            KSP=(ICOU-1)*NPGH+IGAUH
             ISP=(ICOU-1)*NPGH+IGAUH
             IVPG = ((IPG-1)*NBSP + ISP-1)*NBVAR
             ICPG = ((IPG-1)*NBSP + ISP-1)*NBCON
@@ -472,8 +471,8 @@ C         -----------------------------------------------------
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
-               CALL NMGRIL(KPGVRC,ZI(IMATE),TYPMOD,ZK16(ICOMPO),OPT,
-     &                     EPS2D,DEPS2D,
+               CALL NMGRIL('RIGI',IPG,KSP,ZI(IMATE),TYPMOD,
+     &                     ZK16(ICOMPO),OPT,EPS2D,DEPS2D,
      &                     ANGMAS,
      &                     ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),
      &                     TMC,TPC,ZR(ITREF),
@@ -485,9 +484,9 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                SIGM(4)=SIGM(4)*RAC2
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)               
-               CALL NMCOMP(KPGVRC,2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),
-     &                  ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
+               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
+               CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
+     &                ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF,
@@ -503,7 +502,7 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
 
 C            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)
 C            POUR STOCKER LA VALEUR REELLE
-            
+
             ZR(ICONTP+ICPG+3)=ZR(ICONTP+ICPG+3)/RAC2
 
 C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
@@ -583,7 +582,7 @@ C       BTSIG = BTSIG + BFT*M + BMT*N
   120       CONTINUE
         END IF
 
-        
+
 C       -- CALCUL DE LA MATRICE TANGENTE :
 C       ----------------------------------
 C       KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
@@ -595,7 +594,7 @@ C         -------------
 C         -- FLEXION :
 C         ------------
           CALL UTBTAB('CUMU',3,3*NNOEL,DF,BF,WORK,FLEX)
-          
+
 C         -- COUPLAGE:
 C         ------------
           IF (GRILLE) THEN
@@ -608,7 +607,7 @@ C         ------------
           END IF
           CALL UTCTAB('CUMU',3,3*NNOEL,2*NNOEL,DMF,BF,BM,WORK,MEFL)
         END IF
-        
+
 C       -- FIN BOUCLE SUR LES POINTS DE GAUSS
   130 CONTINUE
 

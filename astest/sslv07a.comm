@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,14 +175,14 @@ DEPLD2=STAT_NON_LINE(MODELE=MO,
                      EXCIT=(_F(CHARGE=BLOQU,),
                             _F(CHARGE=CH,
                                FONC_MULT=RAMPE,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                  RESI_INTE_RELA=1e-08,
+                                  ITER_INTE_MAXI=30,),
                      INCREMENT=_F(LIST_INST=L_INST,
                                   NUME_INST_FIN=10, ),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=2,),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                    RESI_INTE_RELA=1e-08,
-                                    ITER_INTE_MAXI=30,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,),
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
 
@@ -193,13 +193,13 @@ DEPLD2=STAT_NON_LINE(reuse=DEPLD2,
                      EXCIT=(_F(CHARGE=BLOQU,),
                             _F(CHARGE=CH,
                                FONC_MULT=RAMPE,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                  RESI_INTE_RELA=1e-08,
+                                  ITER_INTE_MAXI=30,),
                      INCREMENT=_F(LIST_INST=L_INST,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=2,),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                    RESI_INTE_RELA=1e-08,
-                                    ITER_INTE_MAXI=30,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06),
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
 
@@ -208,13 +208,13 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
                      EXCIT=(_F(CHARGE=BLOQU,),
                             _F(CHARGE=CH,
                                FONC_MULT=RAMPE,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                  RESI_INTE_RELA=1e-08,
+                                  ITER_INTE_MAXI=30,),
                      INCREMENT=_F(LIST_INST=L_INST,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=2,),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                    RESI_INTE_RELA=1e-08,
-                                    ITER_INTE_MAXI=30,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06),
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
 

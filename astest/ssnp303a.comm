@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PLAQUE CARREE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,6 +100,7 @@ CALCNL=STAT_NON_LINE(
                         CHAM_MATER=MATER,
                          COMP_INCR=_F( 
                 RELATION = 'VMIS_ISOT_LINE',
+                ITER_INTE_MAXI = 1000,
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F( 
                 LIST_INST = CAT),
@@ -109,7 +110,6 @@ CALCNL=STAT_NON_LINE(
                 REAC_ITER = 0),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-4,
-                ITER_INTE_MAXI = 1000,
                 ITER_GLOB_MAXI = 50),EXCIT=(
                              _F( 
                 CHARGE = CONDLIM), _F( 

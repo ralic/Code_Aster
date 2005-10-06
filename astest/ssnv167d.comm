@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,13 +101,10 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    ),
                           _F(CHARGE=CHA2,),
                                    ),
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                    CONVERGENCE=_F(RESO_INTE='IMPLICITE',
-                                   ARRET='OUI',
-                                   ITER_INTE_PAS=0,
-                                   RESI_INTE_RELA=9.9999999999999995E-07,
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                ),
+                    CONVERGENCE=_F(ARRET='OUI',
                                    ITER_GLOB_ELAS=25,
-                                   ITER_INTE_MAXI=10,
                                    ITER_GLOB_MAXI=20,
                                    RESI_GLOB_MAXI=1E-6,
                                    ),

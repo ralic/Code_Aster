@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,15 +213,15 @@ DYNANL=DYNA_NON_LINE(
                      _F( CHARGE = EXCIT, FONC_MULT = EVOLF),
                         ),
                   COMP_INCR=(
-                     _F( RELATION = 'VMIS_POU_LINE',TOUT='OUI',),
+                     _F( RELATION = 'VMIS_POU_LINE',TOUT='OUI',
+                                     RESO_INTE = 'RUNGE_KUTTA_4',
+                                     ITER_INTE_MAXI = 500),
                      #_F( RELATION = 'ELAS',TOUT='OUI',),
                            ),
                       NEWTON=_F( MATRICE = 'TANGENTE',
                                 REAC_ITER = 1),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                      ITER_GLOB_MAXI=50,
-                                     RESO_INTE = 'RUNGE_KUTTA_4',
-                                     ITER_INTE_MAXI = 500,
                                      ARRET='OUI',),
                      # INCREMENT=_F(LIST_INST=LINST,),
     INCREMENT=_F(LIST_INST=LINST,

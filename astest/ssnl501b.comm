@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 12/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -106,6 +106,7 @@ RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
                                        _F( CHARGE = PRES_LIM,
                                         TYPE_CHARGE = 'FIXE_PILO')),
                              COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE',
+                                           ITER_INTE_MAXI = 30,
                ),
                              INCREMENT=_F( LIST_INST = LIS_INST),
 
@@ -114,7 +115,6 @@ RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
                                         REAC_ITER = 1),
 
                                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                        ITER_INTE_MAXI = 30,
                                         ITER_GLOB_MAXI = 30),
                               PILOTAGE=_F( TYPE = 'DDL_IMPO',
                                         GROUP_NO = 'E',

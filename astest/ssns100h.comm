@@ -1,4 +1,4 @@
-# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PLAQUE ENCASTREE EN DEPLACEMENT IMPOSE CONSTITUEE D'UNE NAPPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,6 +181,7 @@ LEDEP=STAT_NON_LINE(
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -195,7 +196,6 @@ LEDEP=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -223,6 +223,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -238,7 +239,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -266,6 +266,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -281,7 +282,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -309,6 +309,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -324,7 +325,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -352,6 +352,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -367,7 +368,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -395,6 +395,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -410,7 +411,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -438,6 +438,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -453,7 +454,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -481,6 +481,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -496,7 +497,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -524,6 +524,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -539,7 +540,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -567,6 +567,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -582,7 +583,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -610,6 +610,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -625,7 +626,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -653,6 +653,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -668,7 +669,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -696,6 +696,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -711,7 +712,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(
@@ -739,6 +739,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
+                ITER_INTE_MAXI = 250,
                 ),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -754,7 +755,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_INTE_MAXI = 250,
                 ITER_GLOB_MAXI = 50,
                 ),
                           PILOTAGE=_F(

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE VALIDATION DE NON REGRESSION DU CHAINAGE 2D CYRANO3-CODE_ASTER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -950,20 +950,21 @@ MDEP=STAT_NON_LINE(
                 CHARGE = CHMEF)),COMP_INCR=(
                          _F( 
                 RELATION = 'LEMAITRE',
-                GROUP_MA = 'PASTILLE'),
+                GROUP_MA = 'PASTILLE',
+                ITER_INTE_MAXI = 1000),
                          _F( 
                 RELATION = 'ZIRC_CYRA2',
-                GROUP_MA = 'GAINE')),
+                GROUP_MA = 'GAINE',
+                ITER_INTE_MAXI = 1000),),
+                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = LINST),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       PARM_THETA = 0.5,
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-4,
-                ITER_GLOB_MAXI = 10,
-                ITER_INTE_MAXI = 1000),
+                ITER_GLOB_MAXI = 10,),
                               INFO=1
               )
 

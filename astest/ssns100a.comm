@@ -1,4 +1,4 @@
-# MODIF  DATE 23/11/2004   AUTEUR PBADEL P.BADEL 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -243,6 +243,7 @@ LEDEP=STAT_NON_LINE(
                 ),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
@@ -254,7 +255,6 @@ LEDEP=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-3,
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 30,
                 ),
                      RECH_LINEAIRE=_F(
@@ -271,6 +271,7 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                 ),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_ISOT_LINE',
+                ITER_INTE_MAXI = 30,
                 ),
                 ETAT_INIT=_F(EVOL_NOLI=LEDEP),
                          INCREMENT=_F(
@@ -284,7 +285,6 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-3,
-                ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 30,
                 ),
                      RECH_LINEAIRE=_F(

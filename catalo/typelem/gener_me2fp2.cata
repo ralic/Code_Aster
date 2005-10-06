@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,6 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
-    EDBELNO  = DBEL_R   ELNO__ IDEN__  (DB       )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (PHI      DH      )
 

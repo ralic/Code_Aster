@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,13 +122,13 @@ UR = STAT_NON_LINE (
           EXCIT =(_F(CHARGE = CH,),
                   _F(CHARGE = CHT,
                      FONC_MULT = FCT_R),),
-          COMP_INCR = _F(RELATION = 'VISC_ISOT_TRAC', 
-                          DEFORMATION = 'SIMO_MIEHE',),
+          COMP_INCR = _F(RELATION = 'VISC_ISOT_TRAC',
+                         RESI_INTE_RELA=1.E-09,
+                         ITER_INTE_MAXI=10, 
+                         DEFORMATION = 'SIMO_MIEHE',),
           INCREMENT = _F(LIST_INST = L_INST_R,
                          SUBD_PAS = 3,
                          SUBD_PAS_MINI = 1.E-10,),
-          CONVERGENCE = _F(RESI_INTE_RELA=1.E-09,
-                           ITER_INTE_MAXI=10,),
           ARCHIVAGE = _F(LIST_INST = L_ARCH_R,),
           NEWTON=_F(REAC_INCR=1,
                     MATRICE='TANGENTE',
@@ -167,13 +167,13 @@ UL = STAT_NON_LINE (
           EXCIT =(_F(CHARGE = CH,),
                   _F(CHARGE = CHT,
                      FONC_MULT = FCT_L),),
-          COMP_INCR = _F(RELATION = 'VISC_ISOT_TRAC', 
-                          DEFORMATION = 'SIMO_MIEHE',),
+          COMP_INCR = _F(RELATION = 'VISC_ISOT_TRAC',
+                         RESI_INTE_RELA=1.E-09,
+                         ITER_INTE_MAXI=10, 
+                         DEFORMATION = 'SIMO_MIEHE',),
           INCREMENT = _F(LIST_INST = L_INST_L,
                          SUBD_PAS = 3,
                          SUBD_PAS_MINI = 1.E-10,),
-          CONVERGENCE = _F(RESI_INTE_RELA=1.E-09,
-                           ITER_INTE_MAXI=10,),
           ARCHIVAGE = _F(LIST_INST = L_ARCH_L,),
           NEWTON=_F(REAC_INCR=1,
                     MATRICE='TANGENTE',

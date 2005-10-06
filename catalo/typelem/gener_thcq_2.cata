@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,6 @@ MODE_LOCAL__
     CT_EXTF  = TEMP_F   ELEM__         (TEMP     TEMP_INF TEMP_SUP )
     CT_EXTR  = TEMP_R   ELEM__         (TEMP     TEMP_INF TEMP_SUP )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
-    ZVARI1   = VARI_R   ELEM__         (VARI     )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER

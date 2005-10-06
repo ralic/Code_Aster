@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -226,12 +226,12 @@ RESM=STAT_NON_LINE(
                 CHARGE = CHARM,
                 FONC_MULT = FONCM),
                          COMP_INCR=_F( 
-                RELATION = 'VMIS_POU_LINE'),
+                RELATION = 'VMIS_POU_LINE',
+                ITER_INTE_MAXI = 100),
                          INCREMENT=_F( 
                 LIST_INST = LINSR),
                        CONVERGENCE=_F( 
-                ITER_GLOB_MAXI = 100,
-                ITER_INTE_MAXI = 100),
+                ITER_GLOB_MAXI = 100),
                             NEWTON=_F( 
                 MATRICE = 'ELASTIQUE')
               )

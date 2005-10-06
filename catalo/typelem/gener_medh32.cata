@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
@@ -21,43 +21,44 @@ GENER_MEDH32
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ THH_DPQ8         MAILLE__ QUAD8    
-   ELREFE__  QU8       GAUSS__  RIGI=FPG9
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU4       GAUSS__  RIGI=FPG9
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ THH_DPTR6        MAILLE__ TRIA6    
-   ELREFE__  TR6       GAUSS__  RIGI=FPG6
+   ELREFE__  TR6       GAUSS__  RIGI=FPG6   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ THH_DPQ8D        MAILLE__ QUAD8    
-   ELREFE__  QU8       GAUSS__  RIGI=NOEU_S
+   ELREFE__  QU8       GAUSS__  RIGI=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU4       GAUSS__  RIGI=NOEU_S
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ THH_DPTR6D       MAILLE__ TRIA6    
-   ELREFE__  TR6       GAUSS__  RIGI=NOEU_S
+   ELREFE__  TR6       GAUSS__  RIGI=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR3       GAUSS__  RIGI=NOEU_S
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ THH_DPQ8S         MAILLE__ QUAD8
-   ELREFE__  QU8    GAUSS__   RIGI=FPG4NOS   MASS=FPG4  NOEU_S=NOEU_S
+   ELREFE__  QU8    GAUSS__   RIGI=FPG4NOS   MASS=FPG4  NOEU_S=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU4    GAUSS__   RIGI=FPG4NOS   MASS=FPG4  NOEU_S=NOEU_S
    ELREFE__  SE3    GAUSS__   RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ THH_DPTR6S        MAILLE__ TRIA6
-   ELREFE__  TR6    GAUSS__   RIGI=FPG3NOS   MASS=FPG3  NOEU_S=NOEU_S
+   ELREFE__  TR6    GAUSS__   RIGI=FPG3NOS   MASS=FPG3  NOEU_S=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR3    GAUSS__   RIGI=FPG3NOS   MASS=FPG3  NOEU_S=NOEU_S
    ELREFE__  SE3    GAUSS__   RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 
 MODE_LOCAL__ 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
@@ -96,6 +97,8 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__ 
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2  
                               OUT__  ECONTPG  PEPCON3  
     CHAR_MECA_FR2D2D    600   IN__   EFORCER  PFR2D2D  NGEOMER  PGEOMER  
@@ -109,7 +112,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR  
     FULL_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
-                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
@@ -121,14 +124,14 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I  
     RAPH_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
-                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO   
                               OUT__  MVECTUR  PVECTUR  
     RIGI_MECA_TANG      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
-                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMR  
                               OUT__  MMATUNS  PMATUNS  
     SIEF_ELNO_ELGA      600   IN__   ECONTPG  PCONTRR  

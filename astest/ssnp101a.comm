@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,17 +97,17 @@ U=STAT_NON_LINE(
                 CHARGE = CH1), _F( 
                 CHARGE = CH2)),
                          COMP_INCR=_F( 
-                RELATION = 'LEMAITRE'),
+                RELATION = 'LEMAITRE',
+                ITER_INTE_MAXI = 1000),
+                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       PARM_THETA = 0.5,
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-6,
-                ITER_GLOB_MAXI = 25,
-                ITER_INTE_MAXI = 1000)
+                ITER_GLOB_MAXI = 25)
               )
 
 U=CALC_ELEM( reuse=U,

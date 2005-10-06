@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*(*)     OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,9 +265,9 @@ C
             IF (ZK16(ICOMPO).EQ.'LMARC_IRRA') THEN
                CALL RCVALA(ZI(IMATE),' ','LMARC_IRRA',0,' ',0.D0,
      &              12,NOMLMA(1),COELMA(1),CODLMA(1), 'FM' )
-               CALL RCVARC(' ','IRRA','-',1,IRRAM,IRET2)
+               CALL RCVARC(' ','IRRA','-','RIGI',1,1,IRRAM,IRET2)
                IF (IRET2.GT.0) IRRAM=0.D0
-               CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+               CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
                IF (IRET2.GT.0) IRRAP=0.D0
                CALL NMLMAB(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,TEMPM,
      &                  TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
@@ -279,21 +279,21 @@ C
                 ZR(IVARIP+LGPG+KK-1)   = ZR(IVARIP+KK-1)
                 ZR(IVARIP+2*LGPG+KK-1) = ZR(IVARIP+KK-1)
  52           CONTINUE
-                CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+                CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
                 IF (IRET2.GT.0) IRRAP=0.D0
                 ZR(IVARIP+5-1)         = IRRAP
-                CALL RCVARC(' ','IRRA','+',2,IRRAP,IRET2)
+                CALL RCVARC(' ','IRRA','+','RIGI',2,1,IRRAP,IRET2)
                 IF (IRET2.GT.0) IRRAP=0.D0
                 ZR(IVARIP+LGPG+5-1)    = IRRAP
-                CALL RCVARC(' ','IRRA','+',3,IRRAP,IRET2)
+                CALL RCVARC(' ','IRRA','+','RIGI',3,1,IRRAP,IRET2)
                 IF (IRET2.GT.0) IRRAP=0.D0
                 ZR(IVARIP+2*LGPG+5-1)  = IRRAP
             ELSEIF (ZK16(ICOMPO).EQ.'LEMAITRE_IRRA') THEN
                CALL RCVALA(ZI(IMATE),' ','LEMAITRE_IRRA',0,' ',0.D0,
      &               7,NOMLEM(1),COELEM(1),CODLEM(1), 'FM' )
-             CALL RCVARC(' ','IRRA','-',1,IRRAM,IRET2)
+             CALL RCVARC(' ','IRRA','-','RIGI',1,1,IRRAM,IRET2)
              IF (IRET2.GT.0) IRRAM=0.D0
-             CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+             CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
              IF (IRET2.GT.0) IRRAP=0.D0
              CALL NMFGAS(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,ZR(IVARIM),TEMPM,
      &               TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
@@ -302,11 +302,11 @@ C
      &               KLS,FLC,EFFNOC,ZR(IVARIP),ALPHAM,EM)
              ZR(IVARIP+1)        = IRRAP
              ZR(IVARIP+LGPG)     = ZR(IVARIP)
-             CALL RCVARC(' ','IRRA','+',2,IRRAP,IRET2)
+             CALL RCVARC(' ','IRRA','+','RIGI',2,1,IRRAP,IRET2)
              IF (IRET2.GT.0) IRRAP=0.D0
              ZR(IVARIP+LGPG+1)   = IRRAP
              ZR(IVARIP+2*LGPG)   = ZR(IVARIP)
-             CALL RCVARC(' ','IRRA','+',3,IRRAP,IRET2)
+             CALL RCVARC(' ','IRRA','+','RIGI',3,1,IRRAP,IRET2)
              IF (IRET2.GT.0) IRRAP=0.D0
              ZR(IVARIP+2*LGPG+1) = IRRAP
             ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE EPROUVETTE EN BETON EN COMPRESSION - CISAILLEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,9 @@ U=STAT_NON_LINE(
                 FONC_MULT = TAU_F), _F( 
                 CHARGE = LIAISON)),
                          COMP_INCR=_F( 
-                RELATION = 'NADAI_B'),
+                RELATION = 'NADAI_B',
+                ITER_INTE_MAXI = 10,
+                RESI_INTE_RELA = 1.E-8),
                          INCREMENT=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
@@ -112,9 +114,7 @@ U=STAT_NON_LINE(
                 REAC_ITER = 3),
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-6,
-                ITER_INTE_MAXI = 10,
-                ITER_GLOB_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8),
+                ITER_GLOB_MAXI = 30),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 0)
               )

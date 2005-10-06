@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,11 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
               ),
          COMP_INCR       =C_COMP_INCR(),
          COMP_ELAS       =FACT(statut='f',max='**',
+           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
+           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
+           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                  into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC",
                                        "ELAS_POUTRE_GR","CABLE")),
@@ -161,15 +166,8 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
            ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
            ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-           RESI_INTE_RELA  =SIMP(statut='f',typ='R'
-                                ,defaut= 1.0E-6),
-           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
-         PARM_THETA      =SIMP(statut='f',typ='R'
-                              ,defaut= 1. ),
+         PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
          SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",

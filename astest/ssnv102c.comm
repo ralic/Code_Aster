@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,6 +159,8 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'VISC_TAHERI',
                 DEFORMATION = 'PETIT',
+                ITER_INTE_MAXI = 20,
+                ITER_INTE_PAS = 10,
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
@@ -168,8 +170,6 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 10),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 20,
-                ITER_INTE_MAXI = 20,
-                ITER_INTE_PAS = 10,
                 RESI_GLOB_RELA = 1.E-6),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 4,

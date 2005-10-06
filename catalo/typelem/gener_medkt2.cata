@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -20,17 +20,17 @@ GENER_MEDKT2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEDKQU4          MAILLE__ QUAD4    
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ELREFE__  MEDKQU4 
    OPTION__   VNOR_ELEM_DEPL          -1
 ENTETE__ ELEMENT__ MEDKTR3          MAILLE__ TRIA3    
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR6       GAUSS__  RIGI=FPG4
    ELREFE__  MEDKTR3 
    OPTION__   ACCEPTANCE              -1
 ENTETE__ ELEMENT__ MEDSQU4          MAILLE__ QUAD4    
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ELREFE__  MEDSQU4 
    OPTION__   ACCEPTANCE              -1
@@ -44,7 +44,7 @@ ENTETE__ ELEMENT__ MEDSQU4          MAILLE__ QUAD4
    OPTION__   VARI_ELNO_ELGA          -1
    OPTION__   VNOR_ELEM_DEPL          -1
 ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3    
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR6       GAUSS__  RIGI=FPG4
    ELREFE__  MEDSTR3 
    OPTION__   ACCEPTANCE              -1
@@ -58,7 +58,7 @@ ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3
    OPTION__   VARI_ELNO_ELGA          -1
    OPTION__   VNOR_ELEM_DEPL          -1
 ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4    
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ELREFE__  MEQ4QU4 
    OPTION__   ACCEPTANCE              -1
@@ -73,6 +73,7 @@ ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4
    OPTION__   VNOR_ELEM_DEPL          -1
 
 MODE_LOCAL__ 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCACOQU  = CACOQU   ELEM__         (EP       ALPHA    BETA     CTOR     EXCENT   INERTIE  )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
@@ -98,7 +99,6 @@ MODE_LOCAL__
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       
                                         REP      PLAN     )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
-    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     EHYDREN  = HYDR_R   ELNO__ IDEN__  (HYDR     )
@@ -110,7 +110,6 @@ MODE_LOCAL__
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
-    EPRESNF  = PRES_F   ELNO__ IDEN__  (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     ESIGMNOC = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -140,11 +139,13 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__ 
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     ACCEPTANCE          329   IN__   NACCELR  PACCELR  NGEOMER  PGEOMER  CNUMMOD  PNUMMOD  
                               OUT__  MVECTAR  PVECTUR  
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2  
                               OUT__  ECONTPG  PEPCON3  
-    AMOR_MECA           50    IN__   CGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL  
+    AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL  
                                      CTEREFE  PTEMPER  
                               OUT__  MMATUUR  PMATUUR  
     CHAR_MECA_EPSI_R    35    IN__   CCACOQU  PCACOQU  CEPSINR  PEPSINR  NGEOMER  PGEOMER  CMATERC  PMATERC  
@@ -156,7 +157,7 @@ OPTION__
     CHAR_MECA_PESA_R    32    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  
                                      NTEMPER  PTEMPER  
                               OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_PRES_F    32    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  EPRESNF  PPRESSF  CTEMPSR  PTEMPSR  
+    CHAR_MECA_PRES_F    32    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  
                               OUT__  MVECTUR  PVECTUR  
     CHAR_MECA_PRES_R    32    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  EPRESNO  PPRESSR  
                               OUT__  MVECTUR  PVECTUR  
@@ -208,7 +209,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EHYDRER  PHYDRMR  
                                      EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
@@ -216,7 +217,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EHYDRER  PHYDRMR  
                                      EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
@@ -243,7 +244,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EHYDRER  PHYDRMR  
                                      EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX   
@@ -255,12 +256,12 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EHYDRER  PHYDRMR  
                                      EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  MMATUUR  PMATUUR  
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_HYST      50    IN__   CGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER  
+    RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER  
                               OUT__  MMATUUC  PMATUUC  
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
@@ -276,7 +277,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EHYDRER  PHYDRMR  
                                      EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  MMATUUR  PMATUUR  
     SIEF_ELGA_DEPL      33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  

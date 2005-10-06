@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_cabri_calc_ops Macro  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 
 def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
-    CHAR_MECA,RESU_THER,
+    CHAR_MECA,RESU_THER,RESO_INTE,
     AFFE_MATERIAU,DEFI_CHAR_THER,DEFI_CHAR_MECA,RELATION,SOLVEUR,CONVERGENCE,NEWTON, 
     INCREMENT,CHAM_MATER,**args):
    """
@@ -40,7 +40,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    # On met certains mots-clefs dans des variables locales pour les proteger
    affemateriau = AFFE_MATERIAU
    mail         = MAILLAGE  
-   
+   resointe     = RESO_INTE
 
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
@@ -511,7 +511,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_me11,),                            
                   ),
                   SOLVEUR        = solveur, 
-                  COMP_INCR      =_F(RELATION=relation,),
+                  COMP_INCR      =_F(RELATION=relation,RESO_INTE=resointe),
                   NEWTON         = newton,
                   INCREMENT      = increment,
                   CONVERGENCE    = convergence,
@@ -532,7 +532,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_me11,),                            
                   ),
                   SOLVEUR        = solveur, 
-                  COMP_ELAS      =_F(RELATION=relation,),
+                  COMP_ELAS      =_F(RELATION=relation,RESO_INTE=resointe),
                   NEWTON         = newton,
                   INCREMENT      = increment,
                   CONVERGENCE    = convergence,

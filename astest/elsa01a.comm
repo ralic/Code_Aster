@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # CREE  DATE 12/01/2000   AUTEUR E. CHAMPAIN 
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,21 +157,21 @@ RESULT=DYNA_NON_LINE( MODELE=MO,
        _F( CHARGE = CHART),
        _F( CHARGE = CHART2, FONC_MULT = ACCEL)),COMP_INCR=(
               _F( RELATION = 'VMIS_POU_LINE',
-  GROUP_MA = 'COUDES'),
-       _F( RELATION = 'ELAS',
-  GROUP_MA = ('POUTRES', 'PATBIELA', 'PATBIELB', 'PATBIELC', 
-              'PATVAN', 'CDGVAN', 'BIELA', 'BIELB', 'BIELC',
+                  RESI_INTE_RELA = 1.E-6,
+                  RESO_INTE = 'IMPLICITE', 
+                  ITER_INTE_MAXI = 100,
+                  GROUP_MA = 'COUDES'),
+              _F( RELATION = 'ELAS',
+                  GROUP_MA = ('POUTRES', 'PATBIELA', 'PATBIELB', 'PATBIELC', 
+                  'PATVAN', 'CDGVAN', 'BIELA', 'BIELB', 'BIELC',
               ))),
     #   ETAT_INIT=_F( INST_INIT = TMIN),
               INCREMENT=_F( LIST_INST = LINST),
               NEWMARK=_F(),
        NEWTON=_F( MATRICE = 'TANGENTE', REAC_ITER = 1,
                       PREDICTION = 'ELASTIQUE'),
-              CONVERGENCE=_F( RESO_INTE = 'IMPLICITE',
-                           ITER_GLOB_MAXI = 100,
-                           RESI_INTE_RELA = 1.E-6,
-                           RESI_GLOB_RELA = 1.E-6,
-      ITER_INTE_MAXI = 100), 
+              CONVERGENCE=_F(ITER_GLOB_MAXI = 100,
+                             RESI_GLOB_RELA = 1.E-6), 
        ARCHIVAGE=_F( PAS_ARCH = 1)
    )
 

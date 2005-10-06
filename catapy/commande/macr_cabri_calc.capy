@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,6 +138,8 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                         REAC_ITER       =SIMP(statut='f',typ='I',defaut=0),
                         EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
                       ),
+                      RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                into=("IMPLICITE",)),
                       CONVERGENCE     =FACT(statut='d',
                         regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
                         SIGM_REFE       =SIMP(statut='f',typ='R'),
@@ -148,8 +150,6 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                         RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
                         ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
                         ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
-                        RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("IMPLICITE",)),
                       ),
                      );
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -20,10 +20,11 @@ GENER_MEPGD1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MECA_POU_D_T_GD  MAILLE__ SEG2     
-   ELREFE__  SE2       GAUSS__  RIGI=FPG1
+   ELREFE__  SE2       GAUSS__  RIGI=FPG1   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  CABPOU  
 
 MODE_LOCAL__ 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1      EY1      
                                         EZ1      JX1      RY1      RZ1      RT1      A2       
@@ -66,6 +67,8 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__ 
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2  
                               OUT__  EEFGEGA  PEPCON3  
     AMOR_MECA           -1    IN__   XXXXXX   XXXXXX   
@@ -115,7 +118,7 @@ OPTION__
                                      CCOMPOR  PCOMPOR  DDL_MECA PDDEPLA  DDL_MECA PDEPKM1  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CINSTMR  PINSTMR  CINSTPR  PINSTPR  
                                      CMATERC  PMATERC  DDL_MECA PROMK    DDL_MECA PROMKM1  CSTADYN  PSTADYN  
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  
+                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMP  DDL_MECA PVITKM1  DDL_MECA PVITPLU  
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
@@ -146,7 +149,7 @@ OPTION__
                                      CCOMPOR  PCOMPOR  DDL_MECA PDDEPLA  DDL_MECA PDEPKM1  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CINSTMR  PINSTMR  CINSTPR  PINSTPR  
                                      CMATERC  PMATERC  DDL_MECA PROMK    DDL_MECA PROMKM1  CSTADYN  PSTADYN  
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  
+                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMP  DDL_MECA PVITKM1  DDL_MECA PVITPLU  
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX   
@@ -167,7 +170,7 @@ OPTION__
                                      CCOMPOR  PCOMPOR  DDL_MECA PDDEPLA  DDL_MECA PDEPKM1  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CINSTMR  PINSTMR  CINSTPR  PINSTPR  
                                      CMATERC  PMATERC  DDL_MECA PROMK    DDL_MECA PROMKM1  CSTADYN  PSTADYN  
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  
+                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMP  DDL_MECA PVITKM1  DDL_MECA PVITPLU  
                               OUT__  MMATUNS  PMATUNS  ZVARIPG  PVARIPR  
     SIEF_ELGA_DEPL      -2    IN__   XXXXXX   XXXXXX   

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COMPORTEMENT NON LINEAIRE EN ROTATION SUR UN DISCRET A 2 NOEUDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,14 +247,14 @@ REST2=STAT_NON_LINE(
                 FONC_MULT = FONCT),
                          COMP_INCR=_F( 
                 RELATION = 'DIS_CONTACT',
+                ITER_INTE_MAXI = 50,
                 GROUP_MA = 'DISC'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE'),
                        CONVERGENCE=_F( 
-                ITER_GLOB_MAXI = 50,
-                ITER_INTE_MAXI = 50),
+                ITER_GLOB_MAXI = 50),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 3)
               )

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  BETON EN COMPRESSION - CISAILLEMENT COQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,6 +122,8 @@ U=STAT_NON_LINE(
                 CHARGE = LIAISON)),
                          COMP_INCR=_F(
                 RELATION = 'NADAI_B',
+                ITER_INTE_MAXI = 10,
+                RESI_INTE_RELA = 1.E-8,
                 TOUT = 'OUI'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
@@ -130,9 +132,7 @@ U=STAT_NON_LINE(
                 REAC_ITER = 3),
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-6,
-                ITER_INTE_MAXI = 10,
-                ITER_GLOB_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8),
+                ITER_GLOB_MAXI = 30),
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 0)
               )

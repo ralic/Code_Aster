@@ -1,6 +1,6 @@
       SUBROUTINE CNSCES(CNSZ,TYPCES,CESMOZ,MNOGAZ,BASE,CESZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C     -- PAR DEFAUT : NBSP=1
       ELSE IF (TYPCES.EQ.'ELGA') THEN
 C       DEJA FAIT GRACE A CESMOD
       ELSE
-        CALL UTMESS('F','CNSCES','ERREUR')
+        CALL ASSERT(.FALSE.)
       END IF
 
 
@@ -195,7 +195,7 @@ C         -- CALCUL DE LA MOYENNE ARITHMETIQUE :
             DO 80,IPT = 1,NBPT
               DO 70,ISP = 1,NBSP
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
-                IF (IAD.GE.0) CALL UTMESS('F','CNSCES','STOP 3')
+                CALL ASSERT(IAD.LT.0)
                 ZL(JCESL-1-IAD) = .TRUE.
                 ZR(JCESV-1-IAD) = V
    70         CONTINUE
@@ -210,7 +210,7 @@ C     --------------------------
           NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
           NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
           NBNO = ZI(ILCNX1+IMA) - ZI(ILCNX1-1+IMA)
-          IF (NBNO.NE.NBPT) CALL UTMESS('F','CNSCES','STOP1')
+          CALL ASSERT(NBNO.EQ.NBPT)
 
           DO 140 ICMP = 1,NCMP
 
@@ -228,7 +228,7 @@ C           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
               V = ZR(JCNSV-1+ (NUNO-1)*NCMP+ICMP)
               DO 120,ISP = 1,NBSP
                 CALL CESEXI('C',JCESD,JCESL,IMA,INO,ISP,ICMP,IAD)
-                IF (IAD.GE.0) CALL UTMESS('F','CNSCES','STOP 3')
+                CALL ASSERT(IAD.LT.0)
                 ZL(JCESL-1-IAD) = .TRUE.
                 ZR(JCESV-1-IAD) = V
   120         CONTINUE
@@ -244,7 +244,7 @@ C     --------------------------
         CALL JEVEUO(MNOGA//'.CESD','L',MNOGAD)
         CALL JEVEUO(MNOGA//'.CESL','L',MNOGAL)
         CALL JEVEUO(MNOGA//'.CESV','L',MNOGAV)
-        IF (ZK8(MNOGAK).NE.MA) CALL UTMESS('F','CNSCES','STOP1')
+        CALL ASSERT(ZK8(MNOGAK).EQ.MA)
 
         DO 210,IMA = 1,NBMA
           CALL CESEXI('C',MNOGAD,MNOGAL,IMA,1,1,1,IAD)
@@ -255,8 +255,8 @@ C     --------------------------
           NBPG = ZI(JCESD-1+5+4* (IMA-1)+1)
           NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
           NBNO = ZI(ILCNX1+IMA) - ZI(ILCNX1-1+IMA)
-          IF (NBNO.NE.NBNO2) CALL UTMESS('F','CNSCES','STOP1')
-          IF (NBPG.NE.NBPG2) CALL UTMESS('F','CNSCES','STOP1')
+          CALL ASSERT(NBNO.EQ.NBNO2)
+          CALL ASSERT(NBPG.EQ.NBPG2)
 
           DO 200 ICMP = 1,NCMP
 
@@ -278,7 +278,7 @@ C           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
 
               DO 180,ISP = 1,NBSP
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
-                IF (IAD1.GE.0) CALL UTMESS('F','CNSCES','STOP 3')
+                CALL ASSERT(IAD1.LT.0)
                 ZL(JCESL-1-IAD1) = .TRUE.
                 ZR(JCESV-1-IAD1) = V
   180         CONTINUE

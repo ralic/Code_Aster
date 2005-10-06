@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # ======================================================================
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,6 +194,8 @@ U1=STAT_NON_LINE(
                 CHARGE = P0,)),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HM',          
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 100,
                 RELATION_KIT = (
                   'HOEK_BROWN',        'LIQU_SATU',
                   'HYDR_UTIL',)) ,
@@ -201,9 +203,7 @@ U1=STAT_NON_LINE(
                 MATRICE = 'TANGENTE'),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,
-                RESI_INTE_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50,
-                ITER_INTE_MAXI = 100),
+                ITER_GLOB_MAXI = 50),
                          INCREMENT=_F( 
                 LIST_INST = TEMPS1)
               )
@@ -266,7 +266,10 @@ U2=STAT_NON_LINE(
                 FONC_MULT = COEF2)
                 ),
                          COMP_INCR=_F( 
-                RELATION = 'KIT_HM',          
+                RELATION = 'KIT_HM',
+                RESI_INTE_RELA = 1.E-8,
+                ITER_INTE_MAXI = 100,
+                ITER_INTE_PAS  = -10,          
                 RELATION_KIT = (
                   'HOEK_BROWN',        'LIQU_SATU',
                   'HYDR_UTIL', )),
@@ -284,9 +287,6 @@ U2=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-8,
-                RESI_INTE_RELA = 1.E-8,
-                ITER_INTE_MAXI = 100,
-                ITER_INTE_PAS  = -10,
                 ITER_GLOB_MAXI = 100),
               )
 

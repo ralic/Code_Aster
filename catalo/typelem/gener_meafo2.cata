@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,6 @@ MODE_LOCAL__
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     NSECHER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ZVARI1   = VARI_R   ELEM__         (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

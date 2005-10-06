@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -420,9 +420,7 @@ U3=STAT_NON_LINE(           MODELE=MODEL,
                          INCREMENT=_F(LIST_INST = LINST0,
                                       NUME_INST_FIN = 3),
                             NEWTON=_F(MATRICE = 'ELASTIQUE'),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                                      ITER_INTE_MAXI = 30,
-                                      RESI_INTE_RELA = 1.E-8)
+                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6)
               )
 
 #
@@ -456,9 +454,7 @@ STAT_NON_LINE( reuse=U3,
                          COMP_INCR=_F(RELATION = 'ELAS'),
                          INCREMENT=_F(LIST_INST = LINST0),
                             NEWTON=_F(MATRICE = 'TANGENTE'),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                                      ITER_INTE_MAXI = 30,
-                                      RESI_INTE_RELA = 1.E-8)
+                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6)
               )
 
 CALC_ELEM( reuse=U3, RESULTAT=U3,

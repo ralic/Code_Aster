@@ -1,4 +1,4 @@
-# MODIF  DATE 11/12/2001   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CALAGE DES PARAMETRES DU MODELE DE WEIBULL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,26 +187,26 @@ U1=STAT_NON_LINE(
              MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
               _F(  CHARGE = CHARG50),
               _F(  CHARGE = CHTEMP1)),
-              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE',
+                             RESI_INTE_RELA = 1.E-6,
+                             ITER_INTE_MAXI = 100),
               NEWTON=_F( REAC_ITER = 1),
               INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
             CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
-                          ITER_GLOB_MAXI = 100,
-                          RESI_INTE_RELA = 1.E-6,
-                          ITER_INTE_MAXI = 100)
+                          ITER_GLOB_MAXI = 100)
                         )
 
 U2=STAT_NON_LINE( 
              MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
               _F(  CHARGE = CHARG100),
               _F(  CHARGE = CHTEMP2)),
-              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE',
+                             RESI_INTE_RELA = 1.E-6,
+                             ITER_INTE_MAXI = 100),
               INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
               NEWTON=_F( REAC_ITER = 1),
             CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
-                          ITER_GLOB_MAXI = 100,
-                          RESI_INTE_RELA = 1.E-6,
-                          ITER_INTE_MAXI = 100)
+                          ITER_GLOB_MAXI = 100)
                         )
 
 U3=STAT_NON_LINE( 
@@ -214,12 +214,12 @@ U3=STAT_NON_LINE(
               _F(  CHARGE = CHARG150),
               _F(  CHARGE = CHTEMP3)),
               NEWTON=_F( REAC_ITER = 1),
-              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE',
+                             RESI_INTE_RELA = 1.E-6,
+                             ITER_INTE_MAXI = 100),
               INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
             CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
-                          ITER_GLOB_MAXI = 100,
-                          RESI_INTE_RELA = 1.E-6,
-                          ITER_INTE_MAXI = 100)
+                          ITER_GLOB_MAXI = 100)
                         )
 
 T1=RECA_WEIBULL( 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D
@@ -148,9 +148,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                                  INST_INIT=0.0,
                                  INST_FIN=1.E2,),
                    NEWTON=_F(MATRICE='ELASTIQUE',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
-                                   ITER_INTE_MAXI=5,),
-                    PARM_THETA=0.57,
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
                     SOLVEUR=_F(METHODE='LDLT',),);
 
 ############################################
@@ -174,7 +172,10 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                       CHAM_MATER=CHM,
                       EXCIT=(_F(CHARGE=CHA0,),
                              _F(CHARGE=CHA2,),),
-                      COMP_INCR=_F(RELATION='CAM_CLAY',),
+                      COMP_INCR=_F(RELATION='CAM_CLAY',
+                                   ITER_INTE_MAXI=100,
+                                   ITER_INTE_PAS=-10,),
+                      PARM_THETA=0.57,
                       ETAT_INIT=_F(SIGM=RES1,),
                       INCREMENT=_F(LIST_INST=LI1,
                                    INST_INIT=100.0,
@@ -183,11 +184,7 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                       NEWTON=_F(MATRICE='TANGENTE',
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=200,
-                                     ITER_INTE_MAXI=100,
-                                     RESI_GLOB_RELA=1.E-06,
-                                     ITER_INTE_PAS=-10,
-                                     ),
-                      PARM_THETA=0.57,
+                                     RESI_GLOB_RELA=1.E-06,),
                       SOLVEUR=_F(METHODE='LDLT',),);
                       
 ############################################
@@ -200,7 +197,10 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                      CHAM_MATER=CHM,
                       EXCIT=(_F(CHARGE=CHA0,),
                              _F(CHARGE=CHA2,),),
-                      COMP_INCR=_F(RELATION='CAM_CLAY',),
+                      COMP_INCR=_F(RELATION='CAM_CLAY',
+                                   ITER_INTE_MAXI=50,
+                                   ITER_INTE_PAS=-10,),
+                      PARM_THETA=0.57,
                       ETAT_INIT=_F(EVOL_NOLI=RESU1,),
                       INCREMENT=_F(LIST_INST=LI1,
                                    INST_INIT= 8000.0,
@@ -211,11 +211,7 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                                 REAC_ITER=1,
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=200,
-                                     ITER_INTE_MAXI=50,
-                                     RESI_GLOB_RELA=1.E-06,
-                                     ITER_INTE_PAS=-10,
-                                    ),
-                      PARM_THETA=0.57,
+                                     RESI_GLOB_RELA=1.E-06),
                       SOLVEUR=_F(METHODE='LDLT',),);
 
 

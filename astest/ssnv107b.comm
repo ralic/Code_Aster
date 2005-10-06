@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # CE CAS TEST AVAIT INITIALEMENT POUR REFERENCE LE NUMERO :
 # SSNV129B
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES(OHNO)
@@ -231,6 +231,8 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F( 
                 RELATION = 'OHNO',
                 DEFORMATION = 'PETIT',
+                ITER_INTE_MAXI = 40,
+                ITER_INTE_PAS = 5,
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
@@ -240,9 +242,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 5),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 40,
-                RESI_GLOB_RELA = 1.E-4,
-                ITER_INTE_MAXI = 40,
-                ITER_INTE_PAS = 5,),
+                RESI_GLOB_RELA = 1.E-4),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 3,
                 RESI_LINE_RELA = 1.E-3)

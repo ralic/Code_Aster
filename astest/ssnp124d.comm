@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
@@ -110,14 +110,14 @@ U2       = STAT_NON_LINE(
      _F( CHARGE        = DEPL_M2, ),
             _F( CHARGE        = DEPL_M4,
                                             FONC_MULT     = COEF2,),),
-                         COMP_INCR   = _F( RELATION       = 'DRUCKER_PRAGER'),
+                         COMP_INCR   = _F( RELATION       = 'DRUCKER_PRAGER',
+                                           RESI_INTE_RELA = 1.E-6,
+                                           ITER_INTE_MAXI = 100,),
                          NEWTON      = _F( MATRICE        = 'TANGENTE',
                                            REAC_ITER      = 1,),
                          ETAT_INIT   = _F( SIGM           = SIGINIT,),
                          CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6,
-                                           RESI_INTE_RELA = 1.E-6,
-                                           ITER_GLOB_MAXI = 50,
-                                           ITER_INTE_MAXI = 100,),
+                                           ITER_GLOB_MAXI = 50),
                          ARCHIVAGE   = _F( ARCH_ETAT_INIT ='OUI',),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )

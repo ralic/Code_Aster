@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE POUTRE EN FLEXION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,16 +105,15 @@ RESU=STAT_NON_LINE(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
-                ITER_GLOB_MAXI = NBIGLOB,
-                RESO_INTE = 'RUNGE_KUTTA_4',
-                ITER_INTE_MAXI = NBIINTE),
+                ITER_GLOB_MAXI = NBIGLOB),
                          COMP_INCR=_F( 
                 RELATION = 'VMIS_POU_FLEJOU',
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = NBIINTE,
                 DEFORMATION = 'PETIT',
-                GROUP_MA = (
-                  'STICK',  )),
+                GROUP_MA = 'STICK', ),
                      RECH_LINEAIRE=_F( 
-                ITER_LINE_MAXI = RELINE)
+                ITER_LINE_MAXI = RELINE),
               )
 
 RESU=CALC_ELEM(reuse=RESU,    RESULTAT=RESU,

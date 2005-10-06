@@ -1,5 +1,5 @@
 
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,16 +167,16 @@ SOLNL=STAT_NON_LINE(MODELE=EPD3,
                              FONC_MULT=COEF_TR,),
                     COMP_INCR=_F(RELATION='VENDOCHAB',
                                  DEFORMATION='PETIT',
+                                 RESI_INTE_RELA=1e-06,
+                                 ITER_INTE_MAXI=60,
+                                 RESO_INTE='RUNGE_KUTTA_2',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=LINST,),
                     NEWTON=_F(REAC_INCR=5,
                               MATRICE='ELASTIQUE',
                               REAC_ITER=3,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                   ITER_GLOB_MAXI=60,
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=60,
-                                   RESO_INTE='RUNGE_KUTTA_2',),
+                                   ITER_GLOB_MAXI=60),
                     TITRE='TEST RELAXATION SIMPLE',);
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
@@ -283,13 +283,13 @@ SOLNL2=STAT_NON_LINE(MODELE=EPD3,
                               FONC_MULT=COEF_TR,),
                      COMP_INCR=_F(RELATION='VENDOCHAB',
                                   DEFORMATION='PETIT',
+                                  RESI_INTE_RELA=1e-06,
+                                  ITER_INTE_MAXI=60,
                                   TOUT='OUI',),
                      INCREMENT=_F(LIST_INST=LINST,),
                      NEWTON=_F(REAC_ITER=3,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                    ITER_GLOB_MAXI=60,
-                                    RESI_INTE_RELA=1e-06,
-                                    ITER_INTE_MAXI=60,),
+                                    ITER_GLOB_MAXI=60),
                      TITRE='TEST RELAXATION SIMPLE',);
 
 SOLNL2=CALC_ELEM(reuse =SOLNL2,

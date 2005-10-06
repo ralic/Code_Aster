@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -21,9 +21,10 @@ MET3SEG3
 
 TYPE_ELEM__ 
 ENTETE__ ELEMENT__ MET3SEG3         MAILLE__ SEG3     
-   ELREFE__  SE3       GAUSS__  RIGI=FPG3  MASS=FPG3
+   ELREFE__  SE3       GAUSS__  RIGI=FPG3  MASS=FPG3   FPG_LISTE__  MATER = (RIGI)
 
 MODE_LOCAL__ 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAGEPO  = CAGEPO   ELEM__         (R1       EP1      )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y        
@@ -56,7 +57,6 @@ MODE_LOCAL__
                                         REP      )
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       MX       MY       MZ       
                                         REP      )
-    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -92,7 +92,9 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__ 
-    AMOR_MECA           50    IN__   CGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL  
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
+    AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL  
                                      CTEREFE  PTEMPER  
                               OUT__  MMATUUR  PMATUUR  
     CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX   
@@ -165,7 +167,7 @@ OPTION__
                                      CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
@@ -191,7 +193,7 @@ OPTION__
                                      CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA      585   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  
@@ -206,7 +208,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX   
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_HYST      50    IN__   CGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER  
+    RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER  
                               OUT__  MMATUUC  PMATUUC  
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
@@ -214,7 +216,7 @@ OPTION__
                                      CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  
                                      ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
-                                     CTEREFE  PTEREF   ZVARIPG  PVARCMR  ZVARIPG  PVARCPR  ZVARIPG  PVARIMP  
+                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  
                                      ZVARIPG  PVARIMR  
                               OUT__  MMATUUR  PMATUUR  
     SIEF_ELGA_DEPL      584   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  

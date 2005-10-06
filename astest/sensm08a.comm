@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,7 +92,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                RESI_INTE_RELA = 1.E-8),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,
                                 SUBD_PAS=4,
@@ -102,8 +103,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(
-                            RESI_GLOB_RELA = 1.E-8,
-                            RESI_INTE_RELA = 1.E-8),
+                            RESI_GLOB_RELA = 1.E-8),
                    ARCHIVAGE=_F(LIST_INST=L_INST,
                                 ARCH_ETAT_INIT='OUI',),
                    SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
