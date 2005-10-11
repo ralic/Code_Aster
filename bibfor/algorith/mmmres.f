@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -260,8 +260,9 @@ C------DES MAILLES.
             IZONE = ZI(JMAESC+3* (IMA-1)+2)
             INTEGR = INT(ZR(JCMCF)+10* (IZONE-1)+1)
 
-C ---- INTEGR>2 : INTEGRATION DE SIMPSON
-            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
+C ---- INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
+            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+     &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
               NBNOC = NBNOC/2
             END IF
 
@@ -470,7 +471,8 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DE CONTACT
                 IZONE = ZI(JMAESC+3* (IMA-1)+2)
                 INTEGR = INT(ZR(JCMCF)+10* (IZONE-1)+1)
 
-                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
+                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+     &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
                   NBNOC = NBNOC/2
                 END IF
 
@@ -593,7 +595,7 @@ C        WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
      &                  GLI2**2)
 
                     ELSE
-                      CALL ASSERT(ZL(JCNSLR-1+19* (NUNOE-1)+1))
+C                      CALL ASSERT(ZL(JCNSLR-1+19* (NUNOE-1)+1))
                       ZR(JCNSVR-1+19* (NUNOE-1)+
      &                  2) = MIN(ZR(JCNSVR-1+19* (NUNOE-1)+2),
      &                  ZR(JJEU-1+INOE))
@@ -731,8 +733,9 @@ C------UNE DES MAILLES.
 C----NBNOC= NOMBRE DE POINTS D'INTEGRATION DE CONTACT DE LA MAILLE IMA
             NBNOC = ZI(JMAESC+3* (IMA-1)+3)
 
-C----INTEGR>2 : INTEGRATION DE SIMPSON
-            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
+C----INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
+            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+     &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
               NBNOC = NBNOC/2
             END IF
 
@@ -865,7 +868,8 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DU MAILLAGE
                 INTEGR = INT(ZR(JCMCF)+10* (IZONE-1)+1)
                 NBNOC = ZI(JMAESC+3* (IMA-1)+3)
 
-                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
+                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+     &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
                   NBNOC = NBNOC/2
                 END IF
 

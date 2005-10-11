@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 26/10/2004   AUTEUR A3BAXDP A.PARROT 
+C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,6 @@ C
       NOMRES(2) = 'VOLU_REFE'
       NOMRES(3) = 'SEUIL_EPSP_CUMU'
       NOMRES(4) = 'SIGM_REFE'
-
 C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -93,33 +92,7 @@ C
       CALL JEVECH('PCOMPOR','L',ICOMPO)
 C     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
 C
-      IF (     (ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC')
-     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE')
-     &     .OR.(ZK16(ICOMPO).EQ.'VISC_ISOT_TRAC')
-     &     .OR.(ZK16(ICOMPO).EQ.'LEMAITRE')
-     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_TRAC')
-     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_LINE')
-     &     .OR.(ZK16(ICOMPO).EQ.'VISC_CIN1_CHAB')
-     &     .OR.(ZK16(ICOMPO).EQ.'VISC_CIN2_CHAB') ) THEN
-        IPOPP  = 1
-        IPOPPT = 2
-      ELSE IF  (ZK16(ICOMPO).EQ.'ROUSS_PR')  THEN
-        IPOPP  = 1
-        IPOPPT = NBVARI
-      ELSE IF  (ZK16(ICOMPO).EQ.'ROUSSELIER')  THEN
-        IPOPP  = 1
-        IPOPPT = 9
-      ELSE IF  (ZK16(ICOMPO).EQ.'ROUSS_VISC')  THEN
-        IPOPP  = 1
-        IPOPPT = NBVARI
-      ELSE IF  (ZK16(ICOMPO).EQ.'CHABOCHE') THEN
-        IPOPP  = 9
-        IPOPPT = 10
-      ELSE
-        CALL UTMESS('F','TE0331','POUR L''OPTION '//
-     +          '"WEIBULL", LA RELATION "'//ZK16(ICOMPO)//
-     +          '" N''EST PAS ADMISE')
-      END IF
+      CALL PSVARI (ZK16(ICOMPO),NBVARI,'2D',IPOPP,IPOPPT)
 C
       OPTCAL(1) = ZK24(ISSOPT)(1:16)
       OPTCAL(2) = ZK24(ISSOPT)(17:19)

@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,7 @@ C
       INTEGER  IMATE, ITEMP2,IDTRIA,ICONPG,IENDPG,IAZK24
       INTEGER  IDTRGP,IDTRNO,IVARMR,IVARPR,IENDMG
       INTEGER  MXCVAR,IEPSP, JGANO, IPOIDS,IVF,   IDFDE
+      INTEGER  ICOMPO,IBID, JTAB(7), NBVARI 
       PARAMETER ( MXCMEL = 162 )
       PARAMETER ( NBPGMX =  27 )
       PARAMETER ( NBRES  =   2 )
@@ -123,6 +124,7 @@ C.......................................................................
       DETIER = 2.0D0 / 3.0D0
       TRDEMI = 3.0D0 / 2.0D0
       MODELI(1:2) = NOMTE(3:4)
+
 C
 C --- RECUPERATION DES CARACTERISTIQUES DU TYPE D'ELEMENT :
 C     * NDIM  = DIMENSION DE L'ELEMENT
@@ -336,8 +338,17 @@ C        -------------------------------------------------------------
 C Affectation du vecteur de travail XVARI[1,2], CENDOM et DOMMOI
 C representant les variables internes @[t-,t+], la contrainte
 C d'endommagement normalisée @t- et le dommage de Lemaitre-Sermage @t-
+C
+C ---    RECUPERATION DU COMPORTEMENT
+C        ----------------------------
+         CALL TECACH('OON','PVARIPR',7,JTAB,IRET)
+         NBVARI = MAX(JTAB(6),1)*JTAB(7)
+         NBSIG  = NBVARI
+         CALL JEVECH('PCOMPOR','L',ICOMPO)
+
+         CALL PSVARI (ZK16(ICOMPO),NBVARI,'3D',IEPSP,IBID)
          K = 0
-         NBSIG = 14
+
          DO 41 IGAU = 1, NPG
             DO 31 I = 1, NBSIG
                K = K+1
@@ -348,11 +359,13 @@ C d'endommagement normalisée @t- et le dommage de Lemaitre-Sermage @t-
             DOMMOI(IGAU) = ZR(IENDMG-1+5*(IGAU-1)+4)
             DOMCU(IGAU)  = ZR(IENDMG-1+5*(IGAU-1)+5)
   41     CONTINUE
+
 C
 C Récupération de la deformation plastique cumulee stockee dans la
 C première composante de VARI_[1,2] (IEPSP = 1)
+
          DO 81 IGAU = 1, NPG
-            IEPSP = 1
+
             PPLUS = XVARI2(IEPSP+(IGAU-1)*NBSIG)
             IF (PPLUS.GT.PSEUIL-ZERO) THEN
                IF (DOMMOI(IGAU).GE.UN) THEN

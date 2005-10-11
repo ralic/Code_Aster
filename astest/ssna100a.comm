@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/10/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -384,12 +384,20 @@ TEST_RESU(RESU=(
 #
 #
 CALC_ELEM( reuse=SOLPL,       
-                  
             MAILLE=('M6','M1',),
              NUME_ORDRE=2,
               OPTION=( 'EPSP_ELNO', ),
                RESULTAT=SOLPL
              )
+
+F1 = RECU_FONCTION( RESULTAT=SOLPL,
+                    NOM_CHAM ='EPSP_ELNO',
+                    TOUT_ORDRE='OUI',
+                    MAILLE='M6', NOEUD='N4', NOM_CMP='EPXX', ),
+
+F2 = RECU_FONCTION( RESULTAT=SOLPL,
+                    NOM_PARA_RESU ='RESI_GLOB',
+                    NUME_ORDRE=(1, 2, 3, 4, ), )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2, REFERENCE = 'NON_REGRESSION',

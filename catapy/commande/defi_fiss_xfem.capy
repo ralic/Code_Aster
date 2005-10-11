@@ -1,25 +1,25 @@
-#& MODIF COMMANDE  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
-               fr="Définition des caratéristiques d'une fissure avec XFEM",
+               fr="Définition des caratéristiques d'une fissure avec X-FEM",
 
     MODELE                =SIMP(statut='o',typ=modele_sdaster),
     DEFI_FISS             =FACT(statut='o',max=01,
@@ -32,6 +32,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
     ),
     GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
+    RAYON_ENRI            =SIMP(statut='f',typ='R',defaut=0.E+0),
     ORIE_FOND             =FACT(statut='o',max=01,
       PFON_INI            =SIMP(statut='o',typ='R',max=03),
       VECT_ORIE           =SIMP(statut='o',typ='R',max=03),
@@ -39,14 +40,14 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
     ),
     CONTACT               =FACT(statut='o',max=01,
       NOM_CHAM            =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL",) ),
-      FROTTEMENT          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ), 
+      FROTTEMENT          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
       INTEGRATION         =SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG4","FPG6","FPG7",) ),
       COEF_REGU_CONT      =SIMP(statut='f',typ='R',defaut=100.E+0),
       MODL_AXIS           =SIMP(statut='f',typ='TXM',into=("NON",)),
       ITER_CONT_MAXI      =SIMP(statut='f',typ='I',defaut=30),
       CONTACT_INIT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-      ALGO_LAG            =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",) ),
-      b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
+      ALGO_LAGR           =SIMP(statut='f',typ='TXM',defaut="VERSION1",into=("NON","VERSION1","VERSION2" , ) ),
+      b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramères du frottement de Coulomb",
            COULOMB        =SIMP(statut='o',typ='R',),
            ITER_FROT_MAXI =SIMP(statut='f',typ='I',defaut=2),
            COEF_REGU_FROT =SIMP(statut='f',typ='R',defaut=100.E+0),

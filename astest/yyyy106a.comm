@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAPET 3D, CONTACT, TEMPERATURE MED, METIS, INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -325,7 +325,6 @@ CHMAT=AFFE_MATERIAU(
 
 CHMLIA1=AFFE_CHAR_MECA(
                               MODELE=MODMECA,
-                            VERI_DDL='OUI',
                            VERI_NORM='OUI',
                           DDL_IMPO=(
 
@@ -347,7 +346,6 @@ CHMLIA1=AFFE_CHAR_MECA(
 
 CHMC1=AFFE_CHAR_MECA(
                               MODELE=MODMECA,
-                            VERI_DDL='OUI',
                            VERI_NORM='OUI',
 
 
@@ -397,7 +395,6 @@ CHMC1=AFFE_CHAR_MECA(
 
 CHMS1=AFFE_CHAR_MECA(
                               MODELE=MODMECA,
-                            VERI_DDL='OUI',
                            VERI_NORM='OUI',
                           LIAISON_GROUP=(
 
@@ -489,7 +486,6 @@ THERCST=CREA_RESU(    OPERATION='AFFE',
 
 CHT286=AFFE_CHAR_MECA(
                               MODELE=MODMECA,
-                            VERI_DDL='OUI',
                            VERI_NORM='OUI',
 
                        TEMP_CALCULEE=THERCST,
@@ -589,7 +585,6 @@ DEP=STAT_NON_LINE(
 
 CHTHER=AFFE_CHAR_MECA(
                               MODELE=MODMECA,
-                            VERI_DDL='OUI',
                            VERI_NORM='OUI',
 
                        TEMP_CALCULEE=TEMP2,

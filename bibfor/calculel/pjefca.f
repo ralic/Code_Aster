@@ -1,0 +1,155 @@
+      SUBROUTINE PJEFCA (MODEL1,LIMA1,IOCC,NCAS )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE VABHHTS J.PELLET
+C---------------------------------------------------------------------
+C BUT : DETERMINER LE "CAS DE FIGURE" DE LA PROJECTION :
+C ----
+C  "3D" : ON UTILISE LES MAILLES VOLUMIQUES  : HEXA, ...
+C         LE MAILLAGE EST 3D (X,Y,Z)
+C  "2D" : ON UTILISE LES MAILLES SURFACIQUES : TRIA, ...
+C         LE MAILLAGE EST 2D (X,Y)
+C  "2.5D" : ON UTILISE LES MAILLES SURFACIQUES : TRIA, ...
+C         MAIS LE MAILLAGE EST 3D (X,Y,Z)
+C  "1.5D" : ON UTILISE LES MAILLES LINEIQUES : SEG
+C         LE MAILLAGE PEUT ETRE 2D (X,Y) OU 3D (X,Y,Z)
+
+C ON ESSAIE DE DETERMINER LE CAS DE FIGURE EN FONCTION DES MAILLES DE
+C MODEL1.
+C MAIS ON SCRUTE AUSSI LE MOT CLE CAS_FIGURE QUI PERMET A L'UTILISATEUR
+C DE FORCER CE PARAMETRE.
+C
+C  ARGUMENTS :
+C  -----------
+C  IN MODEL1 : NOM DU MODELE CONTENANT LES MAILLES A PROJETER
+C  IN IOCC  : 0 OU NUMERO D'OCCURENCE DE VIS_A_VIS
+C  IN LIMA1 : NOM DE OBJET JEVEUX CONTENANT LA LISTE DES NUMEROS DE
+C             MAILLES A PROJETER (OU ' ' SI IOCC=0).
+C  OUT NCAS : CAS DE FIGURE : 3D/2D/2.5D/1.5D
+C---------------------------------------------------------------------
+      IMPLICIT   NONE
+      CHARACTER*(*) MODEL1, NCAS,LIMA1
+      INTEGER IOCC
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C---------------- VARIABLES LOCALES  --------------------------
+      CHARACTER*8 NOMA1,CDIM1,KBID
+      CHARACTER*19 LIGRMO
+      INTEGER NDIM,IAGMA1,IE,IBID,NBMA1,DITOPO,TYPM1,DIM1,JTYPM1
+      INTEGER NB1,KMA, JTMDIM,JREPE,N1
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+      CALL DISMOI('F','NOM_MAILLA',MODEL1,'MODELE',IBID,NOMA1,IE)
+      CALL JEVEUO(NOMA1//'.TYPMAIL','L',JTYPM1)
+
+
+C     -- SI L'UTILISATEUR A UTILISE  CAS_FIGURE :
+C     -------------------------------------------
+      IF (IOCC.EQ.0) THEN
+         CALL GETVTX(' ','CAS_FIGURE',1,0,1,NCAS,N1)
+         IF (N1.EQ.1) GO TO 9999
+      ELSE
+         CALL GETVTX('VIS_A_VIS','CAS_FIGURE',IOCC,0,1,NCAS,N1)
+         IF (N1.EQ.1) GO TO 9999
+      END IF
+
+
+C     CALCUL DE LVAVIS, IAGMA1, NBMA1 (MAILLES CONCERNEES) :
+C     ---------------------------------------------------------
+      IF (IOCC.GT.0) THEN
+         CALL JEVEUO(LIMA1,'L',IAGMA1)
+         CALL JELIRA(LIMA1,'LONMAX',NBMA1,KBID)
+      ELSE
+        CALL DISMOI('F','NB_MA_MAILLA',NOMA1,'MAILLAGE',NB1,KBID,IE)
+        LIGRMO=MODEL1
+        LIGRMO(9:19)='.MODELE'
+        CALL JEVEUO(LIGRMO//'.REPE','L',JREPE)
+        CALL WKVECT('&&PJEFCA.LIMA1','V V I',NB1,IAGMA1)
+        NBMA1=0
+        DO 1, KMA=1,NB1
+C          -- SI C'EST UNE MAILLE DU MODELE :
+           IF (ZI(JREPE-1+2*(KMA-1)+1).GT.0) THEN
+              NBMA1=NBMA1+1
+              ZI(IAGMA1-1+NBMA1)=KMA
+           END IF
+1       CONTINUE
+      END IF
+
+
+C     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
+C     --------------------------------------------------------
+      CALL DISMOI('F','Z_CST',NOMA1,'MAILLAGE',IBID,CDIM1,IE)
+      IF (CDIM1.EQ.'OUI') THEN
+         NDIM = 2
+      ELSE
+         NDIM = 3
+      END IF
+
+
+
+
+C     DETERMINATION DU CAS DE FIGURE : 2D, 3D , 2.5D OU 1.5D :
+C     --------------------------------------------------------
+      CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
+
+C     -- ON PARCOURT LES MAILLES DE LIMA1 POUR DETERMINER
+C        LA PLUS GRANDE DIMENSION TOPOLOGIQUE : 3,2,1 : DITOPO
+      DITOPO=0
+      DO 2,KMA=1,NBMA1
+          TYPM1 = ZI(JTYPM1-1+ZI(IAGMA1-1+KMA))
+          DIM1=ZI(JTMDIM-1+TYPM1)
+          DITOPO=MAX(DITOPO,DIM1)
+ 2    CONTINUE
+
+      IF (DITOPO.EQ.3) THEN
+          CALL ASSERT(NDIM.EQ.3)
+          NCAS='3D'
+      ELSE IF (DITOPO.EQ.1) THEN
+          NCAS='1.5D'
+      ELSE IF (DITOPO.EQ.2) THEN
+          IF (NDIM.EQ.2) THEN
+             NCAS='2D'
+          ELSE IF (NDIM.EQ.3) THEN
+             NCAS='2.5D'
+          ELSE
+             CALL ASSERT(.FALSE.)
+          END IF
+      ELSE
+         CALL ASSERT(.FALSE.)
+      END IF
+
+
+      CALL JEDETR('&&PJEFCA.LIMA1')
+
+9999  CONTINUE
+      CALL JEDEMA()
+      END

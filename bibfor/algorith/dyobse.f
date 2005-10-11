@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/10/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C
 
       NBOBSE = 0
 
-      CALL WKVECT(LISOBS,'V V I',NBPAS,JOBSE)
+      CALL WKVECT(LISOBS,'V V I',NBPAS+1,JOBSE)
 
       CALL GETFAC('OBSERVATION',NBOCC)
 

@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1942,7 +1942,9 @@ C     --------------------------------------------------------
 C --- A5/ CALCUL DU TAUX DE TRIAXIALITE, DE LA CONTRAINTE
 C ---     D'ENDOMMAGEMENT ET DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
 C     -------------------------------------------------------------
-                  CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,
+                  CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR1,COMPOR,IRET1)
+
+                  CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,
      &                        CHTEM1,CHSIG1,CHVAR1,
      &                        CHTEM2,CHSIG2,CHVAR2,
      &                        CHEND2,CHELE1,CHELE2)
@@ -1964,7 +1966,7 @@ C     ----------------------------------------
      &                       ' L''OPTION ENDO_ELGA')
                   ENDIF
                   CALL RSEXC1(LERES1,OPTION,IORDR2,CHELE2)
-                  CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,
+                  CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,
      &                        CHTEM1,CHSIG1,CHVAR1,
      &                        CHTEM2,CHSIG2,CHVAR2,
      &                        CHEND2,CHELE1,CHELE2)

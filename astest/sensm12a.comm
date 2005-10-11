@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,6 @@ S9999997=AFFE_CHAR_MECA_F(MODELE=MO,
                           FORCE_NODALE=_F(FY=S9999998,
                                           NOEUD=('N3','N4',)),
                           VERI_NORM='OUI',
-                          VERI_DDL='OUI',
                           DDL_IMPO=(_F(DY=S9999999,
                                        GROUP_MA='AB'),
                                     _F(DX=S9999999,

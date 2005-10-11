@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -879,11 +879,29 @@ def imprime_ojb(file,capy):
 
        # options :
        # ---------------
+       dico_opt_te={}
        if opts:
             for opt in opts:
                 noop=opt[0];numte=int(opt[1]);nbin=len(opt[2])/2;nbou=len(opt[3])/2
                 ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
                 ERR.contexte("  rubrique: OPTION__ : "+noop,"AJOUT")
+
+                if dico_opt_te.has_key(noop) :
+                    ERR.mess('E',"L'option: "+noop+" est définie plusieurs fois pour le TYPE_ELEMENT: "+note)
+                else :
+                    dico_opt_te[noop]=1
+
+                if numte < 0 :
+                    ioptte=ioptte+1
+                    nuop=NOMOP.jenonu(nom=noop)
+                    OPTT2.ecri_os(indice=2*(ioptte-1)+1,valeur=nuop)
+                    OPTT2.ecri_os(indice=2*(ioptte-1)+2,valeur=nute)
+                    OPTMOD.cree_oc(nom=str(ioptte),long=3+nbin+nbou)
+                    OPTNOM.cree_oc(nom=str(ioptte),long=nbin+nbou)
+                    OPTMOD.ecri_co(nom=str(ioptte),indice=1,valeur=numte)
+                    OPTMOD.ecri_co(nom=str(ioptte),indice=2,valeur=nbin)
+                    OPTMOD.ecri_co(nom=str(ioptte),indice=3,valeur=nbou)
+
                 if numte > 0 :
                     ioptte=ioptte+1
                     nuop=NOMOP.jenonu(nom=noop)
@@ -964,11 +982,11 @@ def degenerise(capy):
             if l_decl_opt :
                 opts2=copy.deepcopy(opts)
                 for decl in l_decl_opt:
-                    NOMOP,numte=decl
+                    nomop1,numte=decl
 
                     for iopt in range(len(opts2)) :
-                        if NOMOP==opts2[iopt][0] :
-                            opt=(NOMOP,numte)+ opts2[iopt][2:]
+                        if nomop1==opts2[iopt][0] :
+                            opt=(nomop1,numte)+ opts2[iopt][2:]
                             opts2[iopt]=opt
             else:
                 opts2=opts

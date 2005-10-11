@@ -3,7 +3,7 @@
      &                  VITPLU,ACCPLU,VALPLU,
      &                  DEPENT,VITENT,ACCENT,CNSINR)
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/10/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,11 +227,13 @@ C
      &               0,K24BID,K24BID,K24BID,K24BID,
      &               INOEUD,ICMP,VALR)
 C
-         IF ((ICMP.EQ.0).OR.(INOEUD.EQ.0)) THEN
-           CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
-           CALL UTIMPK('L','L''ENTITE ',1,TOPO(1:8))
-           CALL UTIMPK('S',' N''EST PAS POSSIBLE ',0,' ')
-           CALL UTFINM()
+         IF(TYPCHA.NE.8 .AND. TYPCHA.NE.9)THEN
+           IF ((ICMP.EQ.0).OR.(INOEUD.EQ.0)) THEN
+             CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
+             CALL UTIMPK('L','L''ENTITE ',1,TOPO(1:8))
+             CALL UTIMPK('S',' N''EST PAS POSSIBLE ',0,' ')
+             CALL UTFINM()
+           ENDIF
          ENDIF
 C
 C ---

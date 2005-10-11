@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -344,6 +344,7 @@ OPTION__
                               OUT__  EENECNO  PENERCR  
     ENDO_ELGA           512   IN__   ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC  NTEMPER  PTEMPER  
                                      NTEMPER  PTEMPMR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR  
+                                     CCOMPOR  PCOMPOR
                               OUT__  ETRIAPG  PTRIAGP  
     ENDO_ELNO_ELGA      512   IN__   ETRIAPG  PTRIAGP  
                               OUT__  ETRIANO  PTRIANO  

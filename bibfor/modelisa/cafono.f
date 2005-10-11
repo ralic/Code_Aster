@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,9 +73,7 @@ C
       LIGRCH = LIGRCZ
       TYPLAG(1:2) = '12'
 C
-      VERIF = .FALSE.
-      CALL GETVTX ( ' ', 'VERI_DDL', 1,1,1, K8BID, N )
-      IF (K8BID(1:3).EQ.'OUI') VERIF = .TRUE.
+      VERIF = .TRUE.
 C
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','FORCE_NOD_2DDL' ),N2DL  )
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','FORCE_NOD_3DDL' ),N3DL  )

@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -1075,10 +1075,8 @@ C                       WRITE(IFM,*) 'Sd_=',NUMSD
 C                       WRITE(IFM,*) '_Ad_=',ISDMAT-1+(J-1)*NBSD+NUMSD
 C                       WRITE(IFM,*) '_Ad_=',ISDMAT-1+DEC
 C                       WRITE(IFM,*) '_Val_=',ZI( ISDMAT-1+DEC )
-
-                      IF (ZI(ISDMAT-1+DEC).EQ.0) THEN
-                          ZI(ISDMAT-1+DEC) = 1
-                      ENDIF
+C POUR REMPLISSAGE OBJETS FLIM, FLIN, FLII
+                        IF (ZI(ISDMAT-1+DEC).EQ.0) ZI(ISDMAT-1+DEC) = 1
 C REMPLISSAGE OBJET TEMPORAIRE POUR DETECTER LA PRESENCE DE LIAISONS
 C TRAVERSANT LES INTERFACES. ON NE S'INTERESSE QU'AUX TRIA3 DANS LA
 C CONFIGURATION: NOEUD PHYS NOEUD TARDIF1 NOEUD TARDIF2
@@ -1089,6 +1087,7 @@ C ON NE STOCKE QUE LES INFOS RELATIVES AU NOEUD TARDIF1
 C CONFIGURATION TRIA3 QUI NOUS INTERESSE
                       IF ((N3.EQ.4).AND.(K.EQ.1).AND.(IAUX1.LT.0).AND.
      &                     (IAUX3.LT.0)) THEN
+
 C CAS DU LIAISON INTER-SOUS-DOMAINES
                         IF ((ZI(IAUX2+1).NE.0).AND.(ZI(IAUX2+1).NE.
      &                  NUMSD).AND.(NB1.EQ.1)) THEN

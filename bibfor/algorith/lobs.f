@@ -2,7 +2,7 @@
      &                NUOBSE,LISINS,LISOBS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/10/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,9 +78,9 @@ C
       IF (NBOBSE.NE.0) THEN
          CALL JEVEUO(LISINS(1:19)//'.VALE','L',JINST)
          CALL JEVEUO(LISOBS,'L',JOBSE)
-         IF ((INSTAP+R8PREM( )).GE.ZR(JINST+NUINS0)) THEN
+         IF ((INSTAP+R8PREM( )).GE.ZR(JINST+NUINS0+1)) THEN
             NUINS0 = NUINS0 + 1
-            IF (ZI(JOBSE-1+NUINS0).EQ.1) THEN
+            IF (ZI(JOBSE-1+NUINS0+1).EQ.1) THEN
                LOBSER = .TRUE.
                NUOBSE = NUOBSE + 1            
             ENDIF

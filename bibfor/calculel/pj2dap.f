@@ -8,7 +8,7 @@
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,8 +65,9 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 COBAR2(3),DMIN,D2,DX,DY,XMIN,YMIN,R8MAEM,SURF,RTR3
-      INTEGER P,Q,P1,Q1,P2,Q2,INO2,NTR3,I,K,IPOSI,NX,NTRBT
-      CHARACTER*8 KB,NONO2
+      INTEGER P,Q,P1,Q1,P2,Q2,INO2,NTR3,I,K,IPOSI,NX,NTRBT,IBID
+      CHARACTER*8 KB,NONO2,ALARME
+      CHARACTER*16 K16BID,NOMCMD
       LOGICAL OK
 
       LOGICAL LDMAX,LOIN
@@ -141,27 +142,37 @@ C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
    30     CONTINUE
    40   CONTINUE
 
+
 C       S'IL N'Y A PAS DE DISTANCE MINIMALE IMPOSEE, LE NOEUD EST
 C          OBLIGATOIREMENT PROJETE
 C       SI LE NOEUD EST PROJETE SUR UNE MAILLE LOINTAINE, ON INFORME :
+C       ---------------------------------------------------------------
         IF ((NIV.GT.0).AND.(.NOT.LDMAX)) THEN
-          DMIN = SQRT(DMIN)
+          ALARME='OUI'
+          CALL GETRES(K16BID,K16BID,NOMCMD)
+          IF (NOMCMD.EQ.'PROJ_CHAMP') THEN
+             CALL GETVTX(' ','ALARME',1,0,1,ALARME,IBID)
+          ENDIF
 
-          LOIN=.FALSE.
-          IF (RTR3.EQ.0) THEN
-            LOIN=.TRUE.
-          ELSE
-            RTR3 = RTR3** (1.D0/2.D0)
-            IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
-          END IF
+          IF (ALARME.EQ.'OUI') THEN
+            DMIN = SQRT(DMIN)
 
-          IF (LOIN) THEN
-            CALL JENUNO(JEXNUM(MA2//'.NOMNOE',INO2),NONO2)
-            WRITE (IFM,*) '<PROJCH> LE NOEUD :',NONO2,
-     &        ' EST PROJETE SUR UNE MAILLE DISTANTE.'
-            WRITE (IFM,*) '           DISTANCE              = ',DMIN
-            WRITE (IFM,*) '           DIAMETRE DE LA MAILLE = ',RTR3
-            WRITE (IFM,*)
+            LOIN=.FALSE.
+            IF (RTR3.EQ.0) THEN
+              LOIN=.TRUE.
+            ELSE
+              RTR3 = RTR3** (1.D0/2.D0)
+              IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
+            END IF
+
+            IF (LOIN) THEN
+              CALL JENUNO(JEXNUM(MA2//'.NOMNOE',INO2),NONO2)
+              WRITE (IFM,*) '<PROJCH> LE NOEUD :',NONO2,
+     &          ' EST PROJETE SUR UNE MAILLE DISTANTE.'
+              WRITE (IFM,*) '           DISTANCE              = ',DMIN
+              WRITE (IFM,*) '           DIAMETRE DE LA MAILLE = ',RTR3
+              WRITE (IFM,*)
+            END IF
           END IF
         END IF
 

@@ -1,7 +1,7 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,6 +183,13 @@ C*************************************************
         NDDL = 33
         NDIM = 3
         MAIT = 'TR3'
+      ELSE IF (NOMTE.EQ.'CFQ4T6') THEN
+        ESC = 'QU4'
+        NNM = 6
+        NNE = 4
+        NDDL = 42
+        NDIM = 3
+        MAIT = 'TR6'  
       ELSE IF (NOMTE.EQ.'CFT3Q4') THEN
         ESC = 'TR3'
         NNM = 4
@@ -190,6 +197,13 @@ C*************************************************
         NDDL = 30
         NDIM = 3
         MAIT = 'QU4'
+      ELSE IF (NOMTE.EQ.'CFT3Q8') THEN
+        ESC = 'TR3'
+        NNM = 8
+        NNE = 3
+        NDDL = 42
+        NDIM = 3
+        MAIT = 'QU8'  
       ELSE IF (NOMTE.EQ.'CFQ9Q9') THEN
         ESC = 'QU9'
         NNM = 9
@@ -539,7 +553,7 @@ C  EVALUTION DU JEU
 C    -------------------------------------------------------
 C    CONTRIBUTION DE LA COMPLIANCE AUX MATRICES ELEMENTAIRES
 C    -------------------------------------------------------
-      IF (INDCOM .eq. 1) THEN
+      IF (INDCOM .EQ. 1) THEN
 C    2.CALCUL DE A_U
 C    ---------------
 C    2.1 PREMIER BLOC DE LA MATRICE [AU]: PARTIE ESCLAVE ESCLAVE
@@ -1003,48 +1017,48 @@ C  -------------------------------------------
 
 C  1.3 ON CALCULE LE SECOND BLOC DE B_U (E-M)
 C  -------------------------
-            do 940 I = 1,NNE
-              do 930 J = 1,NNM
-                do 920 L = 1,NDIM
-                  do 910 K = 1,NDIM
+            DO 940 I = 1,NNE
+              DO 930 J = 1,NNM
+                DO 920 L = 1,NDIM
+                  DO 910 K = 1,NDIM
                     MMAT((2*NDIM)*(I-1)+L,(2*NDIM)*NNE+(J-1)*NDIM+K) =
      &                COEFFA * COEFFF * LAMBDA * PDS * FFE(I) * FFM(J) *
      &                JAC * D(L,K)
- 910              continue
- 920            continue
- 930          continue
- 940        continue
+ 910              CONTINUE
+ 920            CONTINUE
+ 930          CONTINUE
+ 940        CONTINUE
 C
 C   1.4 ON CALCULE LE TROISIEME  BLOC DE B_U (M-E)
 C   ---------------------------------------------
 C
-            do 980 I = 1,NNM
-              do 970 J = 1,NNE
-                do 960 L = 1,NDIM
-                  do 950 K = 1,NDIM
+            DO 980 I = 1,NNM
+              DO 970 J = 1,NNE
+                DO 960 L = 1,NDIM
+                  DO 950 K = 1,NDIM
                     MMAT((2*NDIM)*NNE+NDIM*(I-1)+L,(2*NDIM)*(J-1)+K) =
      &                COEFFA * COEFFF * LAMBDA * PDS * FFM(I) * FFE(J) *
      &                JAC * D(L,K)
- 950              continue
- 960            continue
- 970          continue
- 980        continue
+ 950              CONTINUE
+ 960            CONTINUE
+ 970          CONTINUE
+ 980        CONTINUE
 C
 C
 C   1.5 ON CALCULE LE QUATRIEME  BLOC DE B_U (M-M)
 C   ---------------------------------------------
 C
-            do 820 I = 1,NNM
-              do 810 J = 1,NNM
-                do 800 L = 1,NDIM
-                  do 890 K = 1,NDIM
+            DO 820 I = 1,NNM
+              DO 810 J = 1,NNM
+                DO 800 L = 1,NDIM
+                  DO 890 K = 1,NDIM
                     MMAT(NNE*(2*NDIM)+NDIM*(I-1)+L,
      &                   NNE*(2*NDIM)+NDIM*(J-1)+K) =
      &                -COEFFA*COEFFF*LAMBDA*PDS*FFM(I)*FFM(J)*JAC*D(L,K)
- 890              continue
- 800            continue
- 810          continue
- 820        continue
+ 890              CONTINUE
+ 800            CONTINUE
+ 810          CONTINUE
+ 820        CONTINUE
 C
 C
 C  ATTENTION F EST CALCULEE SAUF S'IL YA  GLISSEMENT
@@ -1052,45 +1066,45 @@ C
 C
 C   R(I,J)= H_I . TAU_J
 C
-            do 857 K = 1,NDIM
+            DO 857 K = 1,NDIM
               R(1,1) = (TAU1(K)-H1(K))*TAU1(K) + R(1,1)
               R(1,2) = (TAU1(K)-H1(K))*TAU2(K) + R(1,2)
               R(2,1) = (TAU2(K)-H2(K))*TAU1(K) + R(2,1)
               R(2,2) = (TAU2(K)-H2(K))*TAU2(K) + R(2,2)
- 857        continue
+ 857        CONTINUE
 C
-            do 831 I = 1,NNE
-              do 832 J = 1,NNE
-                do 833 L = 1,NDIM-1
-                  do 834 K = 1,NDIM-1
+            DO 831 I = 1,NNE
+              DO 832 J = 1,NNE
+                DO 833 L = 1,NDIM-1
+                  DO 834 K = 1,NDIM-1
                     MMAT(2*NDIM*(I-1)+NDIM+1+L,2*NDIM*(J-1)+NDIM+1+K) =
      &                COEFFF * LAMBDA * PDS * FFE(I) * FFE(J) * JAC *
      &                R(L,K) / COEFFA
- 834              continue
- 833            continue
- 832          continue
- 831        continue
-          end if 
+ 834              CONTINUE
+ 833            CONTINUE
+ 832          CONTINUE
+ 831        CONTINUE
+          END IF 
 C    FIN DE IF CONTACT OU NON
         ELSE
           CALL UTMESS('F','TE0364',
      &    'L INDICATEUR DE CONTACT DIFFERENT DE 0 OU 1')
-        end if
-      else
-        call UTMESS('F','TE0364','OPTION INCONNUE ')
-      end if
+        END IF
+      ELSE
+        CALL UTMESS('F','TE0364','OPTION INCONNUE ')
+      END IF
 C
- 740  continue
+ 740  CONTINUE
 C
 C
 C FIN DE CHANGEMENT ET COPIE
 C
-      do 760 J = 1,NDDL
-        do 750 I = 1,J
+      DO 760 J = 1,NDDL
+        DO 750 I = 1,J
           IJ = (J-1)*J/2 + I
           ZR(IMATT+IJ-1) = MMAT(I,J)
- 750    continue
- 760  continue
+ 750    CONTINUE
+ 760  CONTINUE
 C
-      call JEDEMA
-      end
+      CALL JEDEMA
+      END

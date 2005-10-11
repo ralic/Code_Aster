@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,8 @@ C-----------------------------------------------------------------------
      &             ADMODL,LCMODL,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,
      &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT
       REAL*8       R,RINF,RSUP,TEMPS(6)
-      LOGICAL      CUMUL,ACREER,LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2
+      LOGICAL      CUMUL,ACREER,LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,
+     &             LLICHP
 
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
@@ -594,6 +595,7 @@ C PAR DEFAUT LIGREL DE MODELE
               LLIMO=.TRUE.
               LLICH=.FALSE.
               LLICHD=.FALSE.
+              LLICHP=.FALSE.
 C RECHERCHE D'OBJET TEMPORAIRE SI FETI
               IF ((LFETI).AND.(IDD.NE.0)) THEN
                 NOMLOG=NOMLI(1:19)//'.FEL1'
@@ -609,12 +611,21 @@ C LIGREL NE CONCERNANT PAS LE SOUS-DOMAINE IDD
                   ELSE
                     CALL JEEXIN(NOMLI(1:19)//'.FEL2',IRET2)
                     IF (IRET2.NE.0) THEN
-C LIGREL DE CHARGE DUPLIQUE DE FILS NOMLID
+C LIGREL DE CHARGE A MAILLES TARDIVES DUPLIQUEES DE FILS NOMLID
+C DDL_IMPO, FORCE_NODALE...
                       LLICHD=.TRUE.
 C VRAI NOM DU LIGREL DUPLIQUE CONTENU DANS PROF_CHNO.LILI LOCAL
                       NOMLID=ZK24(IFEL1-1+IDD)
                       CALL JEVEUO(NOMLI(1:19)//'.FEL2','L',IFEL2)
-                      CALL JEVEUO(NOMLI(1:19)//'.FEL3','L',IFEL3)
+                      CALL JEEXIN(NOMLI(1:19)//'.FEL3',IRET3)
+                      IF (IRET3.NE.0) THEN
+                        CALL JEVEUO(NOMLI(1:19)//'.FEL3','L',IFEL3)
+C LIGREL DE CHARGE A NOEUDS TARDIFS DUPLIQUES (DDL_IMPO...)
+                        LLICHP=.TRUE.
+                      ELSE
+C PAS DE NOEUD TARDIF DUPLIQUE (FORCE_NODALE)
+                        LLICHP=.FALSE.
+                      ENDIF
                       CALL JEEXIN(NOMLI(1:19)//'.FEL4',IRET3) 
                       IF (IRET3.NE.0)
      &                  CALL JEVEUO(NOMLI(1:19)//'.FEL4','L',IFEL4)
@@ -628,9 +639,7 @@ C LIGREL DE CHARGE NON DUPLIQUE
                   ENDIF
                 ELSE
 C LIGREL DE MODELE              
-                  LLICH=.FALSE.
                   LLIMO=.TRUE.
-                  LLICHD=.FALSE.
                 ENDIF
               ENDIF
 C--------- POUR FETI & LIGREL TARDIF: FIN
@@ -776,7 +785,7 @@ C---- ILAGR = 1 POSSIBILITE DE NOEUDS DE LAGRANGE DANS LA MAILLE
                       NUMA = -NUMA
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
-C SI POUR FETI, LIGREL TARDIF DUPLIQUE, ON SE POSE LA QUESTION DE
+C SI POUR FETI, MAILLE TARDIVE DUPLIQUEE, ON SE POSE LA QUESTION DE
 C L'APPARTENANCE DE CETTE MAILLE TARDIVE AU SOUS-DOMAINE IDD VIA
 C L'OBJET .FEL2 (C'EST LE PENDANT DE SDFETI.MAILLE.NUMSD POUR LES
 C MAILLES DU MODELE)
@@ -824,8 +833,8 @@ C NOEUD TARDIF
                           N1 = -N1
                           
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
-C SI POUR FETI, LIGREL TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
-                          IF (LLICHD) THEN
+C SI POUR FETI, NOEUD TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
+                          IF (LLICHP) THEN
                             IAUX1=ZI(IFEL3+2*(N1-1)+1)
                             IF (IAUX1.GT.0) THEN
 C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE NON SUR L'INTERFACE

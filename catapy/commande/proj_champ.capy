@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,8 +71,11 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
+           CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
            DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+           ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+
            TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
                 fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
 
@@ -100,6 +103,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
          ),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),

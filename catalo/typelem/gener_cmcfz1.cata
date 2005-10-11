@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,14 @@ ENTETE__ ELEMENT__ CFS3S3           MAILLE__ SEG33
    ELREFE__  V_SEG33
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
+ENTETE__ ELEMENT__ CFS2S3           MAILLE__ SEG23     
+   ELREFE__  V_SEG23
+   ENS_NOEUD__  EN1     =     1  2
+   ENS_NOEUD__  EN2     =     3  4  5
+ENTETE__ ELEMENT__ CFS3S2           MAILLE__ SEG32     
+   ELREFE__  V_SEG32
+   ENS_NOEUD__  EN1     =     1  2  3       
+   ENS_NOEUD__  EN2     =     4  5
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__

@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,12 +144,6 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
               ZR(LFON+IORDR-1) = ZR(LVALE+IDDL-1)
             END IF
             CALL JELIBE(CHAM19//'.VALE')
-          ELSE
-            CALL UTDEBM('F',NOMCMD,'CHAM_NO INEXISTANT ')
-            CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
-            CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
-            CALL UTIMPI('S','POUR LE NUME_ORDRE',1,LORDR(IORDR))
-            CALL UTFINM()
           END IF
           CALL JEDEMA()
    10   CONTINUE
@@ -193,12 +187,6 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
                 II = II + 1
               END IF
             END IF
-          ELSE
-            CALL UTDEBM('F',NOMCMD,'CHAM_ELEM INEXISTANT ')
-            CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
-            CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
-            CALL UTIMPI('S','POUR LE NUME_ORDRE',1,LORDR(IORDR))
-            CALL UTFINM()
           END IF
           CALL JEDEMA()
    20   CONTINUE

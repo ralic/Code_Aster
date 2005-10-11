@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,6 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
       regles=(AU_MOINS_UN('TEMP_IMPO','SOURCE','FLUX_REP','ECHANGE',
                           'ECHANGE_PAROI','GRAD_TEMP_INIT','LIAISON_DDL','LIAISON_GROUP',
                           'LIAISON_UNIF','LIAISON_CHAMNO','RAYONNEMENT','LIAISON_MAIL' ),),
-         VERI_DDL        =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="OUI"),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
 
          TEMP_IMPO       =FACT(statut='f',max='**',

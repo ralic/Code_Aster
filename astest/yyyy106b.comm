@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -288,7 +288,7 @@ CHMLIA1=AFFE_CHAR_MECA(VERI_NORM='OUI',DDL_IMPO=(
 
                        LIAISON_UNIF=_F( DDL = 'DX',
                                      GROUP_NO = 'N_XMIN',),
-                       VERI_DDL='OUI')
+                       )
 
 CHMC1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                      INFO=1,
@@ -323,7 +323,7 @@ CHMC1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                           _F( GROUP_MA_MAIT = 'MC13_PLA',
                               GROUP_MA_ESCL = 'MC13_COR',
                               REAC_GEOM = 'SANS',)),
-                     VERI_DDL='OUI')
+                     )
 
 CHMS1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                      INFO=1,
@@ -350,7 +350,7 @@ CHMS1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                                     GROUP_NO_1 = 'NC5_GOU',
                                     GROUP_NO_2 = 'NC5_ECR',
                                     DDL_2 = 'DZ',)),
-                     VERI_DDL='OUI')
+                     )
 
 FONCS=DEFI_FONCTION(INTERPOL='LIN',
                     NOM_RESU='TOUTRESU',
@@ -401,7 +401,7 @@ CHT286=AFFE_CHAR_MECA(VERI_NORM='OUI',
                       MODELE=MODMECA,
 
                       TEMP_CALCULEE=THERCST,
-                      VERI_DDL='OUI')
+                      )
 
 LR3=DEFI_LIST_REEL(INTERVALLE=(_F( JUSQU_A = -1.0,
                                NOMBRE = 1,),
@@ -468,7 +468,7 @@ CHTHER=AFFE_CHAR_MECA(VERI_NORM='OUI',
                       MODELE=MODMECA,
 
                       TEMP_CALCULEE=TEMP2,
-                      VERI_DDL='OUI')
+                      )
 
 DEP=STAT_NON_LINE(reuse=DEP,CHAM_MATER=CHMAT, INFO=2,
                    MODELE=MODMECA,

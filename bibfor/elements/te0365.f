@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,6 +178,13 @@ C***************************************************
         NDDL = 33
         NDIM = 3
         MAIT = 'TR3'
+      ELSE IF (NOMTE.EQ.'CFQ4T6') THEN
+        ESC = 'QU4'
+        NNM = 6
+        NNE = 4
+        NDDL = 42
+        NDIM = 3
+        MAIT = 'TR6'  
       ELSE IF (NOMTE.EQ.'CFT3Q4') THEN
         ESC = 'TR3'
         NNM = 4
@@ -185,6 +192,13 @@ C***************************************************
         NDDL = 30
         NDIM = 3
         MAIT = 'QU4'
+      ELSE IF (NOMTE.EQ.'CFT3Q8') THEN
+        ESC = 'TR3'
+        NNM = 8
+        NNE = 3
+        NDDL = 42
+        NDIM = 3
+        MAIT = 'QU8'  
       ELSE IF (NOMTE.EQ.'CFQ9Q9') THEN
         ESC = 'QU9'
         NNM = 9
@@ -193,7 +207,7 @@ C***************************************************
         NDIM = 3
         MAIT = 'QU9'
       ELSE
-        CALL UTMESS('F','TE0365', 'NOM DE L ELEMENT INCONNU')
+        CALL UTMESS('F','TE0364', 'NOM DE L ELEMENT INCONNU')
       END IF
 
 C  RECUPERATION DES DONNEES PORTEES PAR LA CARTE
@@ -244,7 +258,7 @@ C
       CALL JEVECH('PGEOMER','E',IGEOM)
       CALL JEVECH('PDEPL_P','L',IDEPL)
       CALL JEVECH('PDEPL_M','L',IDEPM)
-      IF (INDCOM .eq. 1) THEN
+      IF (INDCOM .EQ. 1) THEN
       CALL JEVECH('PDEPLAR','L',IVITM)
       CALL JEVECH('PCHDYNR','L',IACCM)
       END IF
@@ -349,7 +363,7 @@ C  --ESCLAVE-----------
      &                              (2*NDIM)+I-1)
           DEPLME(I) = DEPLME(I) +FFE(J)*ZR(IDEPM+(J-1)*
      &                              (2*NDIM)+I-1)   
-          IF (INDCOM .eq. 1) THEN
+          IF (INDCOM .EQ. 1) THEN
           VITME(I) = VITME(I) +FFE(J)*ZR(IVITM+(J-1)*
      &                              (2*NDIM)+I-1)
           ACCME(I) = ACCME(I) +FFE(J)*ZR(IACCM+(J-1)*
@@ -371,7 +385,7 @@ C  --MAITRE------------
      &                                                NDIM+I-1)
           DEPLMM(I) = DEPLMM(I) +FFM(J)*ZR(IDEPM+NNE*(2*NDIM)+(J-1)*
      &                                                NDIM+I-1)  
-          IF (INDCOM .eq. 1) THEN
+          IF (INDCOM .EQ. 1) THEN
           VITMM(I) = VITMM(I) +FFM(J)*ZR(IVITM+NNE*(2*NDIM)+(J-1)*
      &                                                NDIM+I-1)
           ACCMM(I) = ACCMM(I) +FFM(J)*ZR(IACCM+NNE*(2*NDIM)+(J-1)*
@@ -417,12 +431,12 @@ C  EVALUTION DU JEU
             JEU = JEU + (GEOME(K)+DEPLE(K)-GEOMM(K)-DEPLM(K))*NORM(K)
             JDEPP = JDEPP + (DEPLE(K)-DEPLM(K))*NORM(K)            
             JDEPM = JDEPM + (DEPLME(K)-DEPLMM(K))*NORM(K)
-            IF (INDCOM .eq. 1) THEN
+            IF (INDCOM .EQ. 1) THEN
             JEVITM = JEVITM + (VITME(K)-VITMM(K))*NORM(K)
             JEACCM = JEACCM + (ACCME(K)-ACCMM(K))*NORM(K)
             END IF
    50     CONTINUE
-             IF (INDCOM .eq. 1) THEN
+             IF (INDCOM .EQ. 1) THEN
              JEVITP= (JDEPP-JDEPM)*GAMMA/(BETA*DT) +
      &                JEVITM*(BETA-GAMMA)/BETA +
      &                JEACCM*DT*(2*BETA-GAMMA)/(2*BETA)
@@ -505,7 +519,7 @@ C      DDL MULTIPLICATEUR CONTACT (DE LA SURFACE CINEMATIQUE)
    43     CONTINUE
          ENDIF
          
-         IF (INDCOM .eq. 1) THEN
+         IF (INDCOM .EQ. 1) THEN
 C  EVALUTION DU JEU
 
           JEU = 0.D0
@@ -518,13 +532,13 @@ C  EVALUTION DU JEU
             JEU = JEU+(GEOME(K)+DEPLE(K)-GEOMM(K)-DEPLM(K))*NORM(K)
             JDEPP = JDEPP+(DEPLE(K)-DEPLM(K))*NORM(K)            
             JDEPM = JDEPM+(DEPLME(K)-DEPLMM(K))*NORM(K)
-            IF (INDCOM .eq. 1) THEN
+            IF (INDCOM .EQ. 1) THEN
             JEVITM = JEVITM+(VITME(K)-VITMM(K))*NORM(K)
             JEACCM = JEACCM+(ACCME(K)-ACCMM(K))*NORM(K)
             END IF
    51     CONTINUE
             
-            IF (INDCOM .eq. 1) THEN
+            IF (INDCOM .EQ. 1) THEN
              JEVITP= (JDEPP-JDEPM)*GAMMA/(BETA*DT) +
      &                JEVITM*(BETA-GAMMA)/BETA +
      &                JEACCM*DT*(2*BETA-GAMMA)/(2*BETA)

@@ -4,7 +4,7 @@
      &              IFIV,NBPROC,RANG,K24IRR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -175,9 +175,11 @@ C CALCUL ALPHA SI MODES DE CORPS RIGIDES
         IF (LRIGID) THEN
            K24ALP='&&FETI.ALPHA.MCR'     
            CALL WKVECT(K24ALP,'V V R',NBI,IALPHA)
+
            CALL FETPRJ(NBI,ZR(IRR),ZR(IALPHA),NOMGGT,LRIGID,
      &                 DIMGI,2,SDFETI,IPIV,NBSD,VSDF,VDDL,MATAS,
      &                 NOMGI,LSTOGI,INFOFE,IREX,IPRJ,NBPROC,RANG,K24ALP)
+
            IDECAA=IALPHA           
         ENDIF
 C OBJET POUR RECONSTRUCTION DES DIRICHLETS
@@ -304,7 +306,8 @@ C USOLI = USOLI + BI * ALPHAI
                 CALL DAXPY(NBDDL,ALPHA,ZR(IDECAI),1,ZR(JXSOL),1)
                 IDECAI=IDECAI+NBDDL
                 IDECAA=IDECAA+1
-   32         CONTINUE      
+   32         CONTINUE 
+     
             ENDIF
           
 C PROF_CHNO DU SOUS-DOMAINE IDD 
@@ -315,10 +318,11 @@ C PROF_CHNO DU SOUS-DOMAINE IDD
 C .VALE DU CHAM_NO LOCAL IDD
             CHAMLS=ZK24(IFETS+IDD1)(1:19)
             CALL JEVEUO(CHAMLS//'.VALE','L',IVALCS)
-          
+                      
 C --------------------------------
 C ----  BOUCLE SUR LES DDLS PHYSIQUE DU CHAM_NO LOCAL
-C --------------------------------        
+C -------------------------------- 
+       
             DO 35 J=0,NBDDL1
           
 C NUMERO DU NOEUD DU MAILLAGE (INO) ET DE SA COMPOSANTE (ICMP) CORRES
@@ -416,100 +420,104 @@ C SI NECESSAIRE
             DO 90 ILIL=3,NBLILI
 C NOM DU LIGREL ILI, LIGRL
               CALL JENUNO(JEXNUM(LILIL,ILIL),LIGRL)
-              CALL JELIRA(JEXNUM(PRNOL,ILIL),'LONMAX',LPRNOL,K8BID)
-              CALL JEVEUO(JEXNUM(PRNOL,ILIL),'L',IPRNOL)
-              LPRNOL=LPRNOL/NEC2
+              CALL JEEXIN(JEXNUM(PRNOL,ILIL),IRET)
+C IL EST POSSIBLE D'AVOIR UN LIGREL DE MAILLE TARDIVE SANS NOEUD TARDIF
+              IF (IRET.NE.0) THEN
+                CALL JELIRA(JEXNUM(PRNOL,ILIL),'LONMAX',LPRNOL,K8BID)
+                CALL JEVEUO(JEXNUM(PRNOL,ILIL),'L',IPRNOL)
+                LPRNOL=LPRNOL/NEC2
 C --------------------------------            
 C BOUCLE SUR LES NOEUDS TARDIFS DU LIGREL LIGRL
 C --------------------------------              
-              DO 80 INO=1,LPRNOL
+                DO 80 INO=1,LPRNOL
 C ADRESSE DANS LE CHAM_NO LOCAL       
-                J=ZI(IPRNOL+(INO-1)*NEC2)
-                CALL ASSERT(J.GT.0)               
+                  J=ZI(IPRNOL+(INO-1)*NEC2)
+                  CALL ASSERT(J.GT.0)               
 C NOMBRE DE COMPOSANTE
-                NBCMP=ZI(IPRNOL+(INO-1)*NEC2+1)
-                CALL ASSERT(NBCMP.EQ.1)
+                  NBCMP=ZI(IPRNOL+(INO-1)*NEC2+1)
+                  CALL ASSERT(NBCMP.EQ.1)
 
 C --------------------------------              
 C ON PARCOURT LA LISTE DES LIGRELS TARDIFS DU SOUS-DOMAINE IDD POUR
 C CONFIRMER LE NOM DU LIGREL A RECHERCHER DANS LE PRNO GLOBAL
 C --------------------------------              
-                DO 50 ICHA=1,NBCHA
-                  LIGR2=ZK24(IKFLIN+ICHA)
-                  IF (LIGR2.EQ.LIGRL) THEN
+                  DO 50 ICHA=1,NBCHA
+                    LIGR2=ZK24(IKFLIN+ICHA)
+                    IF (LIGR2.EQ.LIGRL) THEN
 C LIGREL TARDIF NON DUPLIQUE DE NOM LIGR2=LIGRL
-                    LDUP=.FALSE.            
-                    GOTO 55
-                  ELSE
-C ON PARCOURT LES FILS DU LIGREL POUR LE SOUS-DOMAINE CONCERNE
-                    CALL JEVEUO(LIGR2(1:19)//'.FEL1','L',IFETL1)
-                    K24B=ZK24(IFETL1+IDD-1)
-C ON A TROUVE LE LIGREL DE CHARGE                 
-                    IF (K24B.EQ.LIGRL) THEN
-C LIGRL LIGREL TARDIF DUPLIQUE DE PERE LIGR2                
-                      LDUP=.TRUE.
+                      LDUP=.FALSE.            
                       GOTO 55
-                    ENDIF
-                  ENDIF  
-   50           CONTINUE
-                CALL UTMESS('F','FETRIN',
+                    ELSE
+C ON PARCOURT LES FILS DU LIGREL POUR LE SOUS-DOMAINE CONCERNE
+                      CALL JEVEUO(LIGR2(1:19)//'.FEL1','L',IFETL1)
+                      K24B=ZK24(IFETL1+IDD-1)
+C ON A TROUVE LE LIGREL DE CHARGE                 
+                      IF (K24B.EQ.LIGRL) THEN
+C LIGRL LIGREL TARDIF DUPLIQUE DE PERE LIGR2                
+                        LDUP=.TRUE.
+                        GOTO 55
+                      ENDIF
+                    ENDIF  
+   50             CONTINUE
+                  CALL UTMESS('F','FETRIN',
      &                      'INCOHERENCE 3 .LILI ET .FLIN !')
-   55           CONTINUE
+   55             CONTINUE
 
 C SI LIGREL DUPLIQUE, IL FAUT RETROUVER SON INDICE DANS LE  PRNO GLOBAL
-                IF (LDUP) THEN
-                  CALL JEVEUO(LIGR2(1:19)//'.FEL3','L',IFETL3)
-                  CALL JELIRA(LIGR2(1:19)//'.FEL3','LONMAX',LFETL3,
+                  IF (LDUP) THEN
+                    CALL JEVEUO(LIGR2(1:19)//'.FEL3','L',IFETL3)
+                    CALL JELIRA(LIGR2(1:19)//'.FEL3','LONMAX',LFETL3,
      &                        K8BID)
-                  CALL JEEXIN(LIGR2(1:19)//'.FEL5',IRET) 
-                  IF (IRET.NE.0)
-     &              CALL JEVEUO(LIGR2(1:19)//'.FEL5','L',IFETL5)
-                  LFETL3=LFETL3/2
-                  DO 60 K=1,LFETL3
-                    IAUX0=IFETL3+2*(K-1)+1
-                    IAUX1=ZI(IAUX0)
-                    IF (IAUX1.GT.0) THEN
+                    CALL JEEXIN(LIGR2(1:19)//'.FEL5',IRET) 
+                    IF (IRET.NE.0)
+     &                CALL JEVEUO(LIGR2(1:19)//'.FEL5','L',IFETL5)
+                    LFETL3=LFETL3/2
+                    DO 60 K=1,LFETL3
+                      IAUX0=IFETL3+2*(K-1)+1
+                      IAUX1=ZI(IAUX0)
+                      IF (IAUX1.GT.0) THEN
 C NOEUD TARDIF LIE A UN DDL NON SITUE SUR L'INTERFACE
-                      IF ((IAUX1.EQ.IDD).AND.(ZI(IAUX0-1).EQ.-INO)) THEN
-                        KSOL=K
-                        GOTO 65
-                      ENDIF
-                    ELSE IF (IAUX1.LT.0) THEN
-C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE DE L'INTERFACE
-                      IAUX2=(ZI(IFETL5)/3)-1
-                      DO 56 JFEL4=0,IAUX2
-                        IAUX3=IFETL5+3*JFEL4+3
-                        IF ((ZI(IAUX3-1).EQ.IDD).AND.
-     &                    (ZI(IAUX3-2).EQ.-INO)) THEN
-C VOICI SON NUMERO LOCAL CONCERNANT LE SD
-                          KSOL=ZI(IAUX3)
+                        IF ((IAUX1.EQ.IDD).AND.(ZI(IAUX0-1).EQ.-INO))
+     &                  THEN
+                          KSOL=K
                           GOTO 65
                         ENDIF
-   56                 CONTINUE
-                    ENDIF
-   60             CONTINUE
-                  CALL UTMESS('F','FETRIN',
+                      ELSE IF (IAUX1.LT.0) THEN
+C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE DE L'INTERFACE
+                        IAUX2=(ZI(IFETL5)/3)-1
+                        DO 56 JFEL4=0,IAUX2
+                          IAUX3=IFETL5+3*JFEL4+3
+                          IF ((ZI(IAUX3-1).EQ.IDD).AND.
+     &                      (ZI(IAUX3-2).EQ.-INO)) THEN
+C VOICI SON NUMERO LOCAL CONCERNANT LE SD
+                            KSOL=ZI(IAUX3)
+                            GOTO 65
+                          ENDIF
+   56                   CONTINUE
+                      ENDIF
+   60               CONTINUE
+                    CALL UTMESS('F','FETRIN',
      &                        'INCOHERENCE .LILI ET .FEL3 !')
-   65             CONTINUE
-                ELSE
-                  KSOL=INO
-                ENDIF
+   65               CONTINUE
+                  ELSE
+                    KSOL=INO
+                  ENDIF
 C INFO DU PRNO GLOBAL
-                CALL JENONU(JEXNOM(PRFCHG//'.LILI',LIGR2),ILIG)
-                CALL JEVEUO(JEXNUM(PRFCHG//'.PRNO',ILIG),'L',IPRNOG)
+                  CALL JENONU(JEXNOM(PRFCHG//'.LILI',LIGR2),ILIG)
+                  CALL JEVEUO(JEXNUM(PRFCHG//'.PRNO',ILIG),'L',IPRNOG)
 C DECALAGE DANS LE .VALE DU CHAM_NO GLOBAL              
-                DVALG=ZI(IPRNOG+(KSOL-1)*NEC2)
+                  DVALG=ZI(IPRNOG+(KSOL-1)*NEC2)
 
 C VALEUR UI A TRANSFERRER SUR LE CHAM_NO GLOBAL ET SUR LE LOCAL
-                RAUXL=-ZR(JXSOL+J)              
-                ZR(IVALCS+J)=RAUXL
+                  RAUXL=-ZR(JXSOL+J)
+                  ZR(IVALCS+J-1)=RAUXL
                       
 C TEST POUR VERIFIER LA CONTINUITE AUX INTERFACES, NORMALEMENT INACTIVE
 C POUR L'INSTANT CAR PAS DE LAGRANGE A L'INTERFACE: LA SDFETI NE CONNAIT
 C PAS LEUR MULTIPLICITE
 C TEST POUR VERIFIER LA CONTINUITE AUX INTERFACES DEBRANCHE POUR 
 C COHERENCE PARALLELISME/SEQUENTIEL.
-                IVALG=IVALS-1+DVALG
+                  IVALG=IVALS-1+DVALG
 
 C                RAUX=ZR(IVALG)
 C                UMOY=(RAUX+RAUXL)*0.5D0
@@ -527,15 +535,17 @@ C                  ENDIF
 C                ENDIF
              
 C AFFECTATION EFFECTIVE DE UI VERS U         
-                ZR(IVALG)=RAUXL
+                  ZR(IVALG)=RAUXL
 
 C MONITORING
 C              IF (INFOFE(4:4).EQ.'T') THEN
 C                WRITE(IFM,*)'NOEUD TARDIF',LDUP
 C                WRITE(IFM,*)IDD,LIGRL,INO,J,K,IVALG,RAUXL
 C              ENDIF             
-   80         CONTINUE
+   80           CONTINUE
+              ENDIF
    90       CONTINUE
+
           
 C MONITORING
             IF (INFOFE(2:2).EQ.'T')
@@ -565,6 +575,8 @@ C REDUCTION DU CHAM_NO GLOBAL POUR LE PROCESSUS MAITRE
      &       CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24VAL(1:19),1,' ')
         ENDIF
       ENDIF
+
       IF ((OPTION.EQ.2).AND.(LRIGID)) CALL JEDETR(K24ALP)
+
       CALL JEDEMA()
       END

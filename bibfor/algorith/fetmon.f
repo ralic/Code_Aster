@@ -1,8 +1,8 @@
       SUBROUTINE FETMON(INFOFE,NBI2,NBI,NBTOT,NBSD,DIMGI,IFM,MAMOY,
-     &                  LSTOGI,IFET1,RANG)
+     &                  LSTOGI,IFET1,RANG,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,14 +21,15 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  MONITORING DE ALFETI
-C   RANG: RANG DU PROCESSUS
+C   IN RANG: IN : RANG DU PROCESSUS
+C   IN ITPS: IN : NUMERO DU PAS DE TEMPS
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBI2,NBTOT,NBSD,DIMGI,IFM,MAMOY,NBI,IFET1,RANG
+      INTEGER      NBI2,NBTOT,NBSD,DIMGI,IFM,MAMOY,NBI,IFET1,RANG,ITPS
       LOGICAL      LSTOGI
       CHARACTER*24 INFOFE
       
@@ -57,6 +58,7 @@ C DECLARATION VARIABLES LOCALES
         WRITE(IFM,*)
         WRITE(IFM,*)'*****************************************'
         WRITE(IFM,*)'<FETI/ALFETI',RANG,'>'
+        WRITE(IFM,*)'NUMERO D''INCREMENT ',ITPS
         WRITE(IFM,*)'NB SOUS-DOMAINES ',NBSD
         WRITE(IFM,*)'NB DE MODES RIGIDES ',DIMGI
         WRITE(IFM,1081)NBI2,NBTOT,100.D0* NBI2/NBTOT
@@ -103,13 +105,7 @@ C DECLARATION VARIABLES LOCALES
         ENDIF
         WRITE(IFM,1082)RAUX2
         WRITE(IFM,*)'******************************************'
-      ENDIF
-      CALL JEDETR('&FETI.INFO.STOCKAGE.FVAL')
-      CALL JEDETR('&FETI.INFO.STOCKAGE.FVAF')
-      CALL JEDETR('&FETI.INFO.STOCKAGE.FNBN')
-      CALL JEDETR('&FETI.INFO.CPU.FACS')
-      CALL JEDETR('&FETI.INFO.CPU.ASSE')      
-      CALL JEDETR('&FETI.INFO.CPU.FACN')            
+      ENDIF            
  1075 FORMAT(' N ',I4,'     : ',I9,' ',I9,' ',I9)
  1080 FORMAT('TOTAL       :',I12,' ',I12,' ',I12)
  1081 FORMAT('POINTS INTERFACE / MAILLAGE / RAPPORT',I12,' ',I12,' ',

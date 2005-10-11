@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -257,7 +257,6 @@ CARTE=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R', MAILLAGE=MA,AFFE=(
 #    AFFECTATION DES CHARGEMENTS ET DES CONDITIONS LIMITES
 # ----------------------------------------------------------------------
 CHTH1=AFFE_CHAR_THER(         MODELE=MO,
-                              VERI_DDL='OUI',
                            LIAISON_DDL=_F(  GROUP_NO = ( 'GNO5', 'GNO6', ),
                                          DDL = ( 'TEMP', 'TEMP',
                                                        'TEMP', ),
@@ -304,7 +303,6 @@ CHTH2=AFFE_CHAR_THER(            MODELE=MO,GRAD_TEMP_INIT=(
                                            COEF_H = 0.7) )
 
 CHTHF=AFFE_CHAR_THER_F(         MODELE=MO,
-                                VERI_DDL='OUI',
                              LIAISON_DDL=_F(  NOEUD = ( 'N124', 'N44', ),
                                            DDL = ( 'TEMP',
                                                          'TEMP',),

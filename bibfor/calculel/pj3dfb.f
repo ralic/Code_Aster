@@ -5,7 +5,7 @@
       CHARACTER*(*) MAILLZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C  IN/JXOUT   BOITE      K14 : NOM DE LA SD BOITE_3D A CREER
 C  IN         GEOM2(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M2
 C  IN         GEOM1(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M1
 C  IN         MAILLZ   K*  : OBJET '&&PJXXCO.TETR4' OU '&&PJXXCO.TRIA3'
+C                               OU '&&PJXXCO.SEG2'
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -71,6 +72,9 @@ C DEB ------------------------------------------------------------------
       ELSE IF (MAILLE(10:14).EQ.'TETR4') THEN
         NDEC = 6
         NNO = 4
+      ELSE IF (MAILLE(10:13).EQ.'SEG2') THEN
+        NDEC = 3
+        NNO = 2
       ELSE
         CALL UTMESS('F','PJ3DFB','STOP 7')
       END IF

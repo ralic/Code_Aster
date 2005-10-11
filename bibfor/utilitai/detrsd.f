@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C RESPONSABLE                            VABHHTS J.PELLET
 C ----------------------------------------------------------------------
 C  BUT : DETRUIRE UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE
@@ -64,13 +65,16 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID
+      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID,NBSD,IFETS,ILIMPI,IDD,
+     &        IFETM,IFETN,IFETC
       CHARACTER*1 K1BID
-      CHARACTER*8 MATEL,MAILLA,MUMPS
+      CHARACTER*8 MATEL,MAILLA,MUMPS,K8BID
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
-      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK
+      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19B
+      CHARACTER*24 K24B
+      LOGICAL      LFETI
 
 C -DEB------------------------------------------------------------------
 
@@ -130,6 +134,27 @@ C     ----------------------------------
         CALL JEDETR(SOLVEU//'.SLVK')
         CALL JEDETR(SOLVEU//'.SLVR')
 
+C DESTRUCTION DE LA LISTE DE SD SOLVEUR LOCAUX SI FETI
+        K24B=SOLVEU//'.FETS'
+        CALL JEEXIN(K24B,IRET)
+C FETI OR NOT ?
+        IF (IRET.GT.0) THEN
+          LFETI=.TRUE.
+        ELSE
+          LFETI=.FALSE.
+        ENDIF
+        IF (LFETI) THEN             
+          CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
+          CALL JEVEUO(K24B,'L',IFETS)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          DO 10 IDD=1,NBSD
+            IF (ZI(ILIMPI+IDD).EQ.1) THEN
+              K19B=ZK24(IFETS+IDD-1)(1:19)
+              CALL DETRS2('SOLVEUR',K19B)
+            ENDIF         
+   10      CONTINUE
+          CALL JEDETR(K24B)   
+        ENDIF
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'LIGREL') THEN
 C     ----------------------------------
@@ -197,9 +222,9 @@ C     --------------------------------
         IF (IRET.NE.0) THEN
           CALL JEVEUO(TABLE//'.TBLP','L',IAD)
           CALL JELIRA(TABLE//'.TBLP','LONMAX',LONG,K1BID)
-          DO 10,I = 1,LONG
+          DO 20,I = 1,LONG
             CALL JEDETR(ZK24(IAD-1+I))
-   10     CONTINUE
+   20     CONTINUE
           CALL JEDETR(TABLE//'.TBLP')
           CALL JEDETR(TABLE//'.TBNP')
           CALL JEDETR(TABLE//'.TBBA')
@@ -230,8 +255,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
            IF (MUMPS.EQ.'OUI') THEN
               CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ')
            END IF
-        END IF
-
+        ENDIF
         CALL JEDETR(MATAS//'.ABLI')
         CALL JEDETR(MATAS//'.ALIG')
         CALL JEDETR(MATAS//'.COND')
@@ -255,14 +279,60 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
         CALL JEDETR(MATAS//'.VALI')
         CALL JEDETR(MATAS//'.&TRA')
         CALL JEDETR(MATAS//'.&VDI')
+        
+C FETI OR NOT ? 
+        K24B=MATAS//'.FETM'
+        CALL JEEXIN(K24B,IRET)
+        IF (IRET.GT.0) THEN
+          LFETI=.TRUE.
+        ELSE
+          LFETI=.FALSE.
+        ENDIF
+        IF (LFETI) THEN
+          CALL JEDETR(MATAS//'.FETF')
+          CALL JEDETR(MATAS//'.FETP')
+          CALL JEDETR(MATAS//'.FETR')
+
+          CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
+          CALL JEVEUO(K24B,'L',IFETM)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          DO 30 IDD=1,NBSD
+            IF (ZI(ILIMPI+IDD).EQ.1) THEN
+              K19B=ZK24(IFETM+IDD-1)(1:19)
+              CALL DETRS2('MATR_ASSE',K19B)
+            ENDIF         
+   30     CONTINUE
+          CALL JEDETR(K24B)   
+        ENDIF
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_NO') THEN
 C     ----------------------------------
         CNO = NOMSD
+
         CALL JEDETR(CNO//'.DESC')
         CALL JEDETR(CNO//'.REFE')
         CALL JEDETR(CNO//'.VALE')
+C FETI OR NOT ? 
+        K24B=CNO//'.FETC'
+        CALL JEEXIN(K24B,IRET)
+        IF (IRET.GT.0) THEN
+          LFETI=.TRUE.
+        ELSE
+          LFETI=.FALSE.
+        ENDIF
+        IF (LFETI) THEN
+          CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
+          CALL JEVEUO(K24B,'L',IFETC)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          DO 40 IDD=1,NBSD
+            IF (ZI(ILIMPI+IDD).EQ.1) THEN
+              K19B=ZK24(IFETC+IDD-1)(1:19)
+              CALL DETRS2('CHAM_NO',K19B)
+            ENDIF         
+   40     CONTINUE
+          CALL JEDETR(K24B)
+        ENDIF
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CARTE') THEN
 C     ----------------------------------
@@ -362,6 +432,28 @@ C     -----------------------------------
         CALL JEDETR(NU//'.VSUIVE')
         CALL JEDETR(NU//'.OLDN')
         CALL JEDETR(NU//'.NEWN')
+        
+C FETI OR NOT ? 
+        K24B=NU//'.FETN'
+        CALL JEEXIN(K24B,IRET)
+        IF (IRET.GT.0) THEN
+          LFETI=.TRUE.
+        ELSE
+          LFETI=.FALSE.
+        ENDIF
+        IF (LFETI) THEN
+          CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
+          CALL JEVEUO(K24B,'L',IFETN)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          DO 50 IDD=1,NBSD
+            IF (ZI(ILIMPI+IDD).EQ.1) THEN
+              K19B=ZK24(IFETN+IDD-1)(1:19)
+C RECURSIVITE DE SECOND NIVEAU SUR DETRSD
+              CALL DETRS2('NUME_DDL',K19B(1:14))
+            ENDIF         
+   50     CONTINUE
+          CALL JEDETR(K24B)
+        ENDIF
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'VARI_COM') THEN
 C     -------------------------------------
@@ -389,12 +481,12 @@ C     ---------------------------------------
         MATEL = NOMSD
         CALL JEDETR(MATEL//'.REFE_RESU')
         CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
-        IF (IRET.LE.0) GO TO 30
+        IF (IRET.LE.0) GO TO 70
         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI',NBCH,K1BID)
         CALL JEVEUO(MATEL//'.LISTE_RESU','L',ILIRES)
-        DO 20,I = 1,NBCH
+        DO 60,I = 1,NBCH
           CALL ASSDE1(ZK24(ILIRES-1+I) (1:19))
-   20   CONTINUE
+   60   CONTINUE
         CALL JEDETR(MATEL//'.LISTE_RESU')
 
 C     ------------------------------------------------------------------
@@ -466,6 +558,6 @@ C     ------------------------------------------------------------------
      &              'N EST PAS AUTORISE.')
       END IF
 
-   30 CONTINUE
+   70 CONTINUE
       CALL JEDEMA()
       END

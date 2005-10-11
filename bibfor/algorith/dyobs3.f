@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/10/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IOCC,N1,N2,N3,N4,I,JNUM,LNUM,JINSC 
-      INTEGER      IPACH,NUME,IBID
+      INTEGER      IPACH,NUME,IBID,NN1
       REAL*8       EPSI
       CHARACTER*8  K8B,RELA
       CHARACTER*19 NUMOBS
@@ -138,7 +138,8 @@ C
            CALL GETVID('OBSERVATION','LIST_INST',IOCC,1,1,NUMOBS,N2)
            CALL JEVEUO(NUMOBS//'.VALE', 'L', JNUM )
            CALL JELIRA(NUMOBS//'.VALE', 'LONUTI', LNUM, K8B )
-           CALL DYARC1(ZR(JINSC), NBPAS, ZR(JNUM), LNUM, JOBSE,
+           NN1=NBPAS+1
+           CALL DYARC1(ZR(JINSC), NN1, ZR(JNUM), LNUM, JOBSE,
      &                   EPSI, RELA  )
            GOTO 10
          ENDIF
@@ -151,7 +152,8 @@ C
             CALL WKVECT ( '&&DYOBS3.VALE_INST', 'V V R', LNUM, JNUM )
             CALL GETVR8 ( 'OBSERVATION', 'INST', IOCC,1,LNUM,
      &                                           ZR(JNUM), N3 )
-            CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, JOBSE,
+            NN1=NBPAS+1
+            CALL DYARC1 ( ZR(JINSC), NN1, ZR(JNUM), LNUM, JOBSE,
      &                    EPSI, RELA  )
             CALL JEDETR ( '&&DYOBS3.VALE_INST' )
             GOTO 10

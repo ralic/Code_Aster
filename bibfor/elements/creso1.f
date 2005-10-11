@@ -1,10 +1,10 @@
       SUBROUTINE CRESO1(SOLVEU,METHOD,PRECO,RENUM,SYME,SDFETI,EPS,
      &  RESIRE,TBLOC,NPREC,NMAXIT,ISTOP,NIREMP,IFM,NUMSD,NBMA,
      &  VERIF,TESTCO,NBREOR,TYREOR,SCALIN,INUMSD,IMAIL,NOMSD,INFOFE,
-     &  STOGI,TESTOK)
+     &  STOGI,TESTOK,NBREOI,ACMA,ACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,6 +44,9 @@ C IN NOMSD   : NOM DU SOUS-DOMAINE
 C IN INFOFE  : NIVEAU DE MONITORING POUR FETI
 C IN STOGI   : PARAMETRE DE STOCKAGE DE LA MATRICE GI
 C IN TESTOK  : FLAG SUR LA MISE EN OEUVRE DE TESTS DE COHERENCE
+C IN NBREOI  : NBRE DE PAS DE TEMPS UTLILISES POUR REORTHO SI LIST_INST
+C IN ACMA/ACSM : ACCELERATION POUR PB A MULTIPLES MATRICES ET 
+C               SECONDS MEMBRES
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -51,10 +54,11 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER      NPREC,NMAXIT,ISTOP,NIREMP,IFM,NUMSD,NBMA,NBREOR,
-     &             INUMSD,IMAIL
+     &             INUMSD,IMAIL,NBREOI
       REAL*8       EPS,RESIRE,TBLOC,TESTCO
       CHARACTER*3  SYME     
-      CHARACTER*8  METHOD,PRECO,RENUM,VERIF,TYREOR,SCALIN,NOMSD,STOGI
+      CHARACTER*8  METHOD,PRECO,RENUM,VERIF,TYREOR,SCALIN,NOMSD,STOGI,
+     &             ACMA,ACSM
       CHARACTER*19 SOLVEU
       CHARACTER*24 SDFETI,INFOFE
       LOGICAL      TESTOK
@@ -90,9 +94,9 @@ C------------------------------------------------------------------
 C --------------------------------------------------------------
 C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 C --------------------------------------------------------------
-      CALL WKVECT(SOLVEU(1:19)//'.SLVK','V V K24',9,ISLVK)
+      CALL WKVECT(SOLVEU(1:19)//'.SLVK','V V K24',11,ISLVK)
       CALL WKVECT(SOLVEU(1:19)//'.SLVR','V V R',4,ISLVR)
-      CALL WKVECT(SOLVEU(1:19)//'.SLVI','V V I',5,ISLVI)
+      CALL WKVECT(SOLVEU(1:19)//'.SLVI','V V I',6,ISLVI)
 
 C --------------------------------------------------------------
 C REMPLISSAGE DE LA SD SOLVEUR
@@ -106,6 +110,8 @@ C --------------------------------------------------------------
       ZK24(ISLVK+6) = TYREOR
       ZK24(ISLVK+7) = SCALIN
       ZK24(ISLVK+8) = STOGI
+      ZK24(ISLVK+9) = ACMA
+      ZK24(ISLVK+10)= ACSM
       
       ZR(ISLVR)   = EPS
       ZR(ISLVR+1) = RESIRE
@@ -117,6 +123,7 @@ C --------------------------------------------------------------
       ZI(ISLVI+2) = ISTOP
       ZI(ISLVI+3) = NIREMP
       ZI(ISLVI+4) = NBREOR
+      ZI(ISLVI+5) = NBREOI
       
       
 C MONITORING

@@ -1,6 +1,6 @@
       SUBROUTINE GAUSS2(ALIAS,TYPI,XPG,YPG,NORD,HPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,228 +20,1409 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.......................................................................
-
+C
 C BUT: CALCUL DES POINTS DE GAUSS ET LEUR POIDS
-
+C
 C ENTREES  ---> ALIAS : NOM D'ALIAS DE L'ELEMENT
 C          ---> TYPI  : GAUSS CLASSIQUE, SOMMETS OU POINT INTERNE
 C          ---> NORD  : L'ORDRE DE PT DE GAUSSE
-
+C
 C SORTIES  <--- XPG,YPG     : COORDONNEES DES POINTS DE GAUSS
 C          <--- HPG         : POIDS DES POINTS DE GAUSS
 C.......................................................................
-
+C
       IMPLICIT NONE
-      REAL*8 XPG,YPG,HPG,a,b,w,v
+      REAL*8 XPG,YPG,HPG,A,B,W,V
       INTEGER NORD,TYPI
       CHARACTER*8 ALIAS
 C_______________________________________________________________________
-
-
-      IF (ALIAS(1:3).EQ.'QU4') THEN
-
-        IF (TYPI.EQ.2) THEN
+C
+C
+      IF (ALIAS(1:3) .EQ. 'QU4') THEN
+C
+        IF (TYPI .EQ. 2) THEN
 C LES POINTS DE GAUSS
-          IF (NORD.EQ.1) THEN
+          IF (NORD .EQ. 1) THEN
             XPG = -1/SQRT(3.D0)
-            YPG = 1/SQRT(3.D0)
-          ELSE IF (NORD.EQ.2) THEN
+            YPG = 1 / SQRT(3.D0)
+          ELSEIF (NORD .EQ. 2) THEN
             XPG = -1/SQRT(3.D0)
             YPG = -1/SQRT(3.D0)
-          ELSE IF (NORD.EQ.3) THEN
-            XPG = 1/SQRT(3.D0)
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1 / SQRT(3.D0)
             YPG = -1/SQRT(3.D0)
-          ELSE IF (NORD.EQ.4) THEN
-            XPG = 1/SQRT(3.D0)
-            YPG = 1/SQRT(3.D0)
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = 1 / SQRT(3.D0)
+            YPG = 1 / SQRT(3.D0)
           ELSE
-            CALL JXABOR()
+            CALL JXABOR
           END IF
           HPG = 1.D0
 C LES NOEUDS
-        ELSE IF (TYPI.EQ.1) THEN
-
-          IF (NORD.EQ.1) THEN
+        ELSEIF (TYPI .EQ. 1) THEN
+C
+          IF (NORD .EQ. 1) THEN
             XPG = -1.D0
             YPG = 1.D0
-          ELSE IF (NORD.EQ.2) THEN
+          ELSEIF (NORD .EQ. 2) THEN
             XPG = -1.D0
             YPG = -1.D0
-          ELSE IF (NORD.EQ.3) THEN
+          ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
             YPG = -1.D0
-          ELSE IF (NORD.EQ.4) THEN
+          ELSEIF (NORD .EQ. 4) THEN
             XPG = 1.D0
             YPG = 1.D0
           ELSE
-            CALL JXABOR()
+            CALL JXABOR
           END IF
           HPG = 1.D0
 C SIMPSON
-        ELSE IF (TYPI.EQ.3) THEN
+        ELSEIF (TYPI .EQ. 3) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = 1.D0
+            YPG = 1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = -1.D0
+            YPG = -0.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 0.D0
+            YPG = -1.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 7) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 8) THEN
+            XPG = 0.D0
+            YPG = 1.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 9) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 16.D0 / 9.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C NEWTON COTES A 16 POINTS
+       ELSE IF (TYPI.EQ.6) THEN
+          IF (NORD.EQ.1) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.2) THEN
+            XPG = -1.D0
+            YPG = -1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = -1.D0
+            YPG = 1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.5) THEN
+            XPG = -1.D0/3.D0
+            YPG = -1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.6) THEN
+            XPG = -1.D0/3.D0
+            YPG = -1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.7) THEN
+            XPG = -1.D0/3.D0
+            YPG = 1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.8) THEN
+            XPG = -1.D0/3.D0
+            YPG = 1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.9) THEN
+            XPG = 1.D0/3.D0
+            YPG = -1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.10) THEN
+            XPG = 1.D0/3.D0
+            YPG = -1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.11) THEN
+            XPG = 1.D0/3.D0
+            YPG = 1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.12) THEN
+            XPG = 1.D0/3.D0
+            YPG = 1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.13) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.14) THEN
+            XPG = 1.D0
+            YPG = -1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.15) THEN
+            XPG = 1.D0
+            YPG = 1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.16) THEN
+            XPG = 1.D0
+            YPG = 1.D0
+            HPG = 1.D0/16.D0
+          ELSE
+            CALL JXABOR()
+          END IF          
+C NEWTON COTES A 25 POINTS
+        ELSE IF (TYPI.EQ.7) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.2) THEN
             XPG = -1.D0
             YPG = -1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.3) THEN
             XPG = 1.D0
             YPG = -1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.4) THEN
             XPG = 1.D0
             YPG = 1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.5) THEN
             XPG = -1.D0
-            YPG = -0.D0
-            HPG = 4.D0/9.D0
+            YPG = 0.D0
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.6) THEN
             XPG = 0.D0
             YPG = -1.D0            
-            HPG = 4.D0/9.D0
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.7) THEN
             XPG = 1.D0
             YPG = 0.D0            
-            HPG = 4.D0/9.D0
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.8) THEN
             XPG = 0.D0
             YPG = 1.D0            
-            HPG = 4.D0/9.D0
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.9) THEN
             XPG = 0.D0
             YPG = 0.D0            
-            HPG = 16.D0/9.D0
+            HPG = 144.D0/2025.D0
+          ELSE IF (NORD.EQ.10) THEN
+            XPG = -1.D0
+            YPG = 0.5D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.11) THEN
+            XPG = -0.5D0
+            YPG = 0.D0
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.12) THEN
+            XPG = 0.D0
+            YPG = 0.5D0
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.13) THEN
+            XPG = -0.5D0
+            YPG = 1.D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.14) THEN
+            XPG = -0.5D0
+            YPG =  0.5D0           
+            HPG = 1024.D0/2025.D0
+          ELSE IF (NORD.EQ.15) THEN
+            XPG = -1.D0
+            YPG = -0.5D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.16) THEN
+            XPG = -0.5D0
+            YPG = -1.D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.17) THEN
+            XPG = 0.D0
+            YPG = -0.5D0            
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.18) THEN
+            XPG = -0.5D0
+            YPG = -0.5D0          
+            HPG = 1024.D0/2025.D0
+          ELSE IF (NORD.EQ.19) THEN
+            XPG = 0.5D0
+            YPG = 0.D0            
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.20) THEN
+            XPG = 1.D0
+            YPG = 0.5D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.21) THEN
+            XPG = 0.5D0
+            YPG = 1.D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.22) THEN
+            XPG = 0.5D0
+            YPG = 0.5D0
+            HPG = 1024.D0/2025.D0
+          ELSE IF (NORD.EQ.23) THEN
+            XPG = 0.5D0
+            YPG = -1.D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.24) THEN
+            XPG = 1.D0
+            YPG = -0.5D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.25) THEN
+            XPG = 0.5D0
+            YPG = -0.5D0              
+            HPG = 1024.D0/2025.D0
+          ELSE
+            CALL JXABOR()
+          END IF
+C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
+        ELSE IF (TYPI.EQ.8) THEN
+          IF (NORD.EQ.1) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+            HPG = 1.D0/144.D0
+          ELSE IF (NORD.EQ.2) THEN
+            XPG = -1.D0
+            YPG = -0.7778D0 
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = -1.D0
+            YPG = -0.5556D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = -1.D0
+            YPG = -0.3333D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.5) THEN
+            XPG = -1.D0
+            YPG = -0.1111D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.6) THEN
+            XPG = -1.D0
+            YPG = 0.1111D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.7) THEN
+            XPG = -1.D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.8) THEN
+            XPG = -1.D0
+            YPG = 0.5556D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.9) THEN
+            XPG = -1.D0
+            YPG = 0.7778D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.10) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 1.D0/144.D0
+          ELSE IF (NORD.EQ.11) THEN
+            XPG = -0.7778D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.12) THEN
+            XPG = -0.7778D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.13) THEN
+            XPG = -0.7778D0 
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.14) THEN
+            XPG = -0.7778D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.15) THEN
+            XPG = -0.7778D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.16) THEN
+            XPG = -0.7778D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.17) THEN
+            XPG = -0.7778D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.18) THEN
+            XPG = -0.7778D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.19) THEN
+            XPG = -0.7778D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.20) THEN
+            XPG = -0.7778D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.21) THEN
+            XPG = -0.5556D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.22) THEN
+            XPG = -0.5556D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.23) THEN
+            XPG = -0.5556D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.24) THEN
+            XPG = -0.5556D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.25) THEN
+            XPG = -0.5556D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.26) THEN
+            XPG = -0.5556D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.27) THEN
+            XPG = -0.5556D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.28) THEN
+            XPG = -0.5556D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.29) THEN
+            XPG = -0.5556D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.30) THEN
+            XPG = -0.5556D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.31) THEN
+            XPG = -0.3333D0 
+            YPG = -1.D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.32) THEN
+            XPG = -0.3333D0
+            YPG = -0.7778D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.33) THEN
+            XPG = -0.3333D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.34) THEN
+            XPG = -0.3333D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.35) THEN
+            XPG = -0.3333D0
+            YPG = -0.1111D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.36) THEN
+            XPG = -0.3333D0
+            YPG = 0.1111D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.37) THEN
+            XPG = -0.3333D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.38) THEN
+            XPG = -0.3333D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.39) THEN
+            XPG = -0.3333D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.40) THEN
+            XPG = -0.3333D0
+            YPG = 1.D0           
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.41) THEN
+            XPG = -0.1111D0  
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.42) THEN
+            XPG = -0.1111D0  
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.43) THEN
+            XPG = -0.1111D0 
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.44) THEN
+            XPG = -0.1111D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.45) THEN
+            XPG = -0.1111D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.46) THEN
+            XPG = -0.1111D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.47) THEN
+            XPG = -0.1111D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.48) THEN
+            XPG = -0.1111D0 
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.49) THEN
+            XPG = -0.1111D0 
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.50) THEN
+            XPG = -0.1111D0 
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.51) THEN
+            XPG = 0.1111D0  
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.52) THEN
+            XPG = 0.1111D0  
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.53) THEN
+            XPG = 0.1111D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.54) THEN
+            XPG = 0.1111D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.55) THEN
+            XPG = 0.1111D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.56) THEN
+            XPG = 0.1111D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.57) THEN
+            XPG = 0.1111D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.58) THEN
+            XPG = 0.1111D0 
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.59) THEN
+            XPG = 0.1111D0 
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.60) THEN
+            XPG = 0.1111D0 
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.61) THEN
+            XPG = 0.3333D0 
+            YPG = -1.D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.62) THEN
+            XPG = 0.3333D0
+            YPG = -0.7778D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.63) THEN
+            XPG = 0.3333D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.64) THEN
+            XPG = 0.3333D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.65) THEN
+            XPG = 0.3333D0
+            YPG = -0.1111D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.66) THEN
+            XPG = 0.3333D0
+            YPG = 0.1111D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.67) THEN
+            XPG = 0.3333D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.68) THEN
+            XPG = 0.3333D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.69) THEN
+            XPG = 0.3333D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.70) THEN
+            XPG = 0.3333D0
+            YPG = 1.D0           
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.71) THEN
+            XPG = 0.5556D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.72) THEN
+            XPG = 0.5556D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.73) THEN
+            XPG = 0.5556D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.74) THEN
+            XPG = 0.5556D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.75) THEN
+            XPG = 0.5556D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.76) THEN
+            XPG = 0.5556D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.77) THEN
+            XPG = 0.5556D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.78) THEN
+            XPG = 0.5556D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.79) THEN
+            XPG = 0.5556D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.80) THEN
+            XPG = 0.5556D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.81) THEN
+            XPG = 0.7778D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.82) THEN
+            XPG = 0.7778D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.83) THEN
+            XPG = 0.7778D0 
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.84) THEN
+            XPG = 0.7778D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.85) THEN
+            XPG = 0.7778D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.86) THEN
+            XPG = 0.7778D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.87) THEN
+            XPG = 0.7778D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.88) THEN
+            XPG = 0.7778D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.89) THEN
+            XPG = 0.7778D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.90) THEN
+            XPG = 0.7778D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.91) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 1.D0/144.D0
+          ELSE IF (NORD.EQ.92) THEN
+            XPG = 1.D0
+            YPG = -0.7778D0 
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.93) THEN
+            XPG = 1.D0
+            YPG = -0.5556D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.94) THEN
+            XPG = 1.D0
+            YPG = -0.3333D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.95) THEN
+            XPG = 1.D0
+            YPG = -0.1111D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.96) THEN
+            XPG = 1.D0
+            YPG = 0.1111D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.97) THEN
+            XPG = 1.D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.98) THEN
+            XPG = 1.D0
+            YPG = 0.5556D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.99) THEN
+            XPG = 1.D0
+            YPG = 0.7778D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.100) THEN
+            XPG = 1.D0
+            YPG = 1.D0
+            HPG = 1.D0/144.D0 
           ELSE
             CALL JXABOR()
           END IF
         ELSE
-          CALL JXABOR()
+          CALL JXABOR
         END IF
-
-      ELSE IF (ALIAS(1:3).EQ.'QU8') THEN
-
-        IF ((TYPI.EQ.2).OR.(TYPI.EQ.1).OR.(TYPI.EQ.3)) THEN
+C
+      ELSEIF (ALIAS(1:3) .EQ. 'QU8') THEN
+C
+        IF ((TYPI.EQ.2) .OR. (TYPI.EQ.1) .OR. (TYPI.EQ.3)) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = 1.D0
+            YPG = 1.D0
+            HPG = 1.D0 / 9.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 0.D0
+            YPG = -1.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 7) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 8) THEN
+            XPG = 0.D0
+            YPG = 1.D0
+            HPG = 4.D0 / 9.D0
+          ELSEIF (NORD .EQ. 9) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 16.D0 / 9.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C NEWTON COTES A 16 POINTS
+       ELSE IF (TYPI.EQ.6) THEN
+          IF (NORD.EQ.1) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.2) THEN
+            XPG = -1.D0
+            YPG = -1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = -1.D0
+            YPG = 1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.5) THEN
+            XPG = -1.D0/3.D0
+            YPG = -1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.6) THEN
+            XPG = -1.D0/3.D0
+            YPG = -1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.7) THEN
+            XPG = -1.D0/3.D0
+            YPG = 1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.8) THEN
+            XPG = -1.D0/3.D0
+            YPG = 1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.9) THEN
+            XPG = 1.D0/3.D0
+            YPG = -1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.10) THEN
+            XPG = 1.D0/3.D0
+            YPG = -1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.11) THEN
+            XPG = 1.D0/3.D0
+            YPG = 1.D0/3.D0
+            HPG = 9.D0/16.D0
+          ELSE IF (NORD.EQ.12) THEN
+            XPG = 1.D0/3.D0
+            YPG = 1.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.13) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.14) THEN
+            XPG = 1.D0
+            YPG = -1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.15) THEN
+            XPG = 1.D0
+            YPG = 1.D0/3.D0
+            HPG = 3.D0/16.D0
+          ELSE IF (NORD.EQ.16) THEN
+            XPG = 1.D0
+            YPG = 1.D0
+            HPG = 1.D0/16.D0
+          ELSE
+            CALL JXABOR()
+          END IF          
+C NEWTON COTES A 25 POINTS
+        ELSE IF (TYPI.EQ.7) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.2) THEN
             XPG = -1.D0
             YPG = -1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.3) THEN
             XPG = 1.D0
             YPG = -1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.4) THEN
             XPG = 1.D0
             YPG = 1.D0
-            HPG = 1.D0/9.D0
+            HPG = 49.D0/2025.D0
           ELSE IF (NORD.EQ.5) THEN
             XPG = -1.D0
             YPG = 0.D0
-            HPG = 4.D0/9.D0
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.6) THEN
             XPG = 0.D0
-            YPG = -1.D0
-            HPG = 4.D0/9.D0
+            YPG = -1.D0            
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.7) THEN
             XPG = 1.D0
-            YPG = 0.D0
-            HPG = 4.D0/9.D0
+            YPG = 0.D0            
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.8) THEN
             XPG = 0.D0
-            YPG = 1.D0
-            HPG = 4.D0/9.D0
+            YPG = 1.D0            
+            HPG = 84.D0/2025.D0
           ELSE IF (NORD.EQ.9) THEN
             XPG = 0.D0
+            YPG = 0.D0            
+            HPG = 144.D0/2025.D0
+          ELSE IF (NORD.EQ.10) THEN
+            XPG = -1.D0
+            YPG = 0.5D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.11) THEN
+            XPG = -0.5D0
             YPG = 0.D0
-            HPG = 16.D0/9.D0  
-          ELSE
-            CALL JXABOR()
-          END IF
-        ELSE
-          CALL JXABOR()
-        END IF
-C_______________________________________________________________________
-
-      ELSE IF (ALIAS(1:3).EQ.'TR3') THEN
-
-C    POINTS DE GAUSS
-        IF (TYPI.EQ.2) THEN
-          IF (NORD.EQ.1) THEN
-            XPG = -2/3.D0
-            YPG = 1/3.D0
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = -2/3.D0
-            YPG = -2/3.D0
-          ELSE IF (NORD.EQ.3) THEN
-            XPG = 1/3.D0
-            YPG = -2/3.D0
-          ELSE
-            CALL JXABOR()
-          END IF
-          HPG = 2/3.D0
-C   NOEUDS
-        ELSE IF (TYPI.EQ.1) THEN
-          IF (NORD.EQ.1) THEN
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.12) THEN
+            XPG = 0.D0
+            YPG = 0.5D0
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.13) THEN
+            XPG = -0.5D0
+            YPG = 1.D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.14) THEN
+            XPG = -0.5D0
+            YPG =  0.5D0           
+            HPG = 1024.D0/2025.D0
+          ELSE IF (NORD.EQ.15) THEN
             XPG = -1.D0
-            YPG = 1.D0
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = -1.D0
+            YPG = -0.5D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.16) THEN
+            XPG = -0.5D0
             YPG = -1.D0
-          ELSE IF (NORD.EQ.3) THEN
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.17) THEN
+            XPG = 0.D0
+            YPG = -0.5D0            
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.18) THEN
+            XPG = -0.5D0
+            YPG = -0.5D0          
+            HPG = 1024.D0/2025.D0
+          ELSE IF (NORD.EQ.19) THEN
+            XPG = 0.5D0
+            YPG = 0.D0            
+            HPG = 384.D0/2025.D0
+          ELSE IF (NORD.EQ.20) THEN
             XPG = 1.D0
+            YPG = 0.5D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.21) THEN
+            XPG = 0.5D0
+            YPG = 1.D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.22) THEN
+            XPG = 0.5D0
+            YPG = 0.5D0
+            HPG = 1024.D0/2025.D0
+          ELSE IF (NORD.EQ.23) THEN
+            XPG = 0.5D0
             YPG = -1.D0
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.24) THEN
+            XPG = 1.D0
+            YPG = -0.5D0           
+            HPG = 224.D0/2025.D0
+          ELSE IF (NORD.EQ.25) THEN
+            XPG = 0.5D0
+            YPG = -0.5D0              
+            HPG = 1024.D0/2025.D0
           ELSE
             CALL JXABOR()
-          END IF
-          HPG = 2/3.D0
-C SIMPSON
-        ELSE IF (TYPI.EQ.3) THEN
+          END IF        
+C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
+        ELSE IF (TYPI.EQ.8) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
-            YPG = 1.D0
-            HPG = 2.D0/15.D0
+            YPG = -1.D0
+            HPG = 1.D0/144.D0
           ELSE IF (NORD.EQ.2) THEN
             XPG = -1.D0
-            YPG = -1.D0
-            HPG = 2.D0/15.D0
+            YPG = -0.7778D0 
+            HPG = 1.D0/48.D0
           ELSE IF (NORD.EQ.3) THEN
-            XPG = 1.D0
-            YPG = -1.D0
-            HPG = 2.D0/15.D0
+            XPG = -1.D0
+            YPG = -0.5556D0
+            HPG = 1.D0/48.D0
           ELSE IF (NORD.EQ.4) THEN
             XPG = -1.D0
-            YPG = 0.D0
-            HPG = 8.D0/15.D0
+            YPG = -0.3333D0
+            HPG = 1.D0/72.D0
           ELSE IF (NORD.EQ.5) THEN
-            XPG = 0.D0
-            YPG = -1.D0
-            HPG = 8.D0/15.D0
+            XPG = -1.D0
+            YPG = -0.1111D0
+            HPG = 1.D0/48.D0
           ELSE IF (NORD.EQ.6) THEN
-            XPG = 0.D0
-            YPG = 0.D0            
-            HPG = 8.D0/15.D0
+            XPG = -1.D0
+            YPG = 0.1111D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.7) THEN
+            XPG = -1.D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.8) THEN
+            XPG = -1.D0
+            YPG = 0.5556D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.9) THEN
+            XPG = -1.D0
+            YPG = 0.7778D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.10) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 1.D0/144.D0
+          ELSE IF (NORD.EQ.11) THEN
+            XPG = -0.7778D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.12) THEN
+            XPG = -0.7778D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.13) THEN
+            XPG = -0.7778D0 
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.14) THEN
+            XPG = -0.7778D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.15) THEN
+            XPG = -0.7778D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.16) THEN
+            XPG = -0.7778D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.17) THEN
+            XPG = -0.7778D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.18) THEN
+            XPG = -0.7778D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.19) THEN
+            XPG = -0.7778D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.20) THEN
+            XPG = -0.7778D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.21) THEN
+            XPG = -0.5556D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.22) THEN
+            XPG = -0.5556D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.23) THEN
+            XPG = -0.5556D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.24) THEN
+            XPG = -0.5556D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.25) THEN
+            XPG = -0.5556D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.26) THEN
+            XPG = -0.5556D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.27) THEN
+            XPG = -0.5556D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.28) THEN
+            XPG = -0.5556D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.29) THEN
+            XPG = -0.5556D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.30) THEN
+            XPG = -0.5556D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.31) THEN
+            XPG = -0.3333D0 
+            YPG = -1.D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.32) THEN
+            XPG = -0.3333D0
+            YPG = -0.7778D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.33) THEN
+            XPG = -0.3333D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.34) THEN
+            XPG = -0.3333D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.35) THEN
+            XPG = -0.3333D0
+            YPG = -0.1111D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.36) THEN
+            XPG = -0.3333D0
+            YPG = 0.1111D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.37) THEN
+            XPG = -0.3333D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.38) THEN
+            XPG = -0.3333D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.39) THEN
+            XPG = -0.3333D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.40) THEN
+            XPG = -0.3333D0
+            YPG = 1.D0           
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.41) THEN
+            XPG = -0.1111D0  
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.42) THEN
+            XPG = -0.1111D0  
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.43) THEN
+            XPG = -0.1111D0 
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.44) THEN
+            XPG = -0.1111D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.45) THEN
+            XPG = -0.1111D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.46) THEN
+            XPG = -0.1111D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.47) THEN
+            XPG = -0.1111D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.48) THEN
+            XPG = -0.1111D0 
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.49) THEN
+            XPG = -0.1111D0 
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.50) THEN
+            XPG = -0.1111D0 
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.51) THEN
+            XPG = 0.1111D0  
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.52) THEN
+            XPG = 0.1111D0  
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.53) THEN
+            XPG = 0.1111D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.54) THEN
+            XPG = 0.1111D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.55) THEN
+            XPG = 0.1111D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.56) THEN
+            XPG = 0.1111D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.57) THEN
+            XPG = 0.1111D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.58) THEN
+            XPG = 0.1111D0 
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.59) THEN
+            XPG = 0.1111D0 
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.60) THEN
+            XPG = 0.1111D0 
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.61) THEN
+            XPG = 0.3333D0 
+            YPG = -1.D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.62) THEN
+            XPG = 0.3333D0
+            YPG = -0.7778D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.63) THEN
+            XPG = 0.3333D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.64) THEN
+            XPG = 0.3333D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.65) THEN
+            XPG = 0.3333D0
+            YPG = -0.1111D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.66) THEN
+            XPG = 0.3333D0
+            YPG = 0.1111D0
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.67) THEN
+            XPG = 0.3333D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/36.D0
+          ELSE IF (NORD.EQ.68) THEN
+            XPG = 0.3333D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.69) THEN
+            XPG = 0.3333D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.70) THEN
+            XPG = 0.3333D0
+            YPG = 1.D0           
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.71) THEN
+            XPG = 0.5556D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.72) THEN
+            XPG = 0.5556D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.73) THEN
+            XPG = 0.5556D0
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.74) THEN
+            XPG = 0.5556D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.75) THEN
+            XPG = 0.5556D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.76) THEN
+            XPG = 0.5556D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.77) THEN
+            XPG = 0.5556D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.78) THEN
+            XPG = 0.5556D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.79) THEN
+            XPG = 0.5556D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.80) THEN
+            XPG = 0.5556D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.81) THEN
+            XPG = 0.7778D0 
+            YPG = -1.D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.82) THEN
+            XPG = 0.7778D0 
+            YPG = -0.7778D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.83) THEN
+            XPG = 0.7778D0 
+            YPG = -0.5556D0          
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.84) THEN
+            XPG = 0.7778D0 
+            YPG =  -0.3333D0           
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.85) THEN
+            XPG = 0.7778D0 
+            YPG = -0.1111D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.86) THEN
+            XPG = 0.7778D0 
+            YPG = 0.1111D0
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.87) THEN
+            XPG = 0.7778D0 
+            YPG = 0.3333D0            
+            HPG = 1.D0/24.D0
+          ELSE IF (NORD.EQ.88) THEN
+            XPG = 0.7778D0
+            YPG = 0.5556D0           
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.89) THEN
+            XPG = 0.7778D0
+            YPG = 0.7778D0            
+            HPG = 1.D0/16.D0
+          ELSE IF (NORD.EQ.90) THEN
+            XPG = 0.7778D0
+            YPG = 1.D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.91) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 1.D0/144.D0
+          ELSE IF (NORD.EQ.92) THEN
+            XPG = 1.D0
+            YPG = -0.7778D0 
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.93) THEN
+            XPG = 1.D0
+            YPG = -0.5556D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.94) THEN
+            XPG = 1.D0
+            YPG = -0.3333D0
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.95) THEN
+            XPG = 1.D0
+            YPG = -0.1111D0
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.96) THEN
+            XPG = 1.D0
+            YPG = 0.1111D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.97) THEN
+            XPG = 1.D0
+            YPG = 0.3333D0            
+            HPG = 1.D0/72.D0
+          ELSE IF (NORD.EQ.98) THEN
+            XPG = 1.D0
+            YPG = 0.5556D0            
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.99) THEN
+            XPG = 1.D0
+            YPG = 0.7778D0           
+            HPG = 1.D0/48.D0
+          ELSE IF (NORD.EQ.100) THEN
+            XPG = 1.D0
+            YPG = 1.D0
+            HPG = 1.D0/144.D0 
           ELSE
             CALL JXABOR()
           END IF
         ELSE
-          CALL JXABOR()
+          CALL JXABOR
         END IF
-
-      ELSE IF (ALIAS(1:3).EQ.'TR6') THEN
-
+C_______________________________________________________________________
+C
+      ELSEIF (ALIAS(1:3) .EQ. 'TR3') THEN
+C
 C    POINTS DE GAUSS
-        IF ((TYPI.EQ.2).OR.(TYPI.EQ.1).OR.(TYPI.EQ.3)) THEN
-         A=0.445948490915965D0
-         B=0.091576213509771D0
-         W=0.111690794839005D0
-         V=0.054975871827661D0
+        IF (TYPI .EQ. 2) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -2/3.D0
+            YPG = 1 / 3.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -2/3.D0
+            YPG = -2/3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1 / 3.D0
+            YPG = -2/3.D0
+          ELSE
+            CALL JXABOR
+          END IF
+          HPG = 2 / 3.D0
+C   NOEUDS
+        ELSEIF (TYPI .EQ. 1) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+          ELSE
+            CALL JXABOR
+          END IF
+          HPG = 2 / 3.D0
+C SIMPSON
+        ELSEIF (TYPI .EQ. 3) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 1.D0
+            HPG = 2.D0 / 15.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -1.D0
+            YPG = -1.D0
+            HPG = 2.D0 / 15.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1.D0
+            YPG = -1.D0
+            HPG = 2.D0 / 15.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 8.D0 / 15.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = 0.D0
+            YPG = -1.D0
+            HPG = 8.D0 / 15.D0
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 8.D0 / 15.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C HAMMER A 4 POINTS          
+        ELSE IF (TYPI .EQ. 6) THEN
+          IF (NORD.EQ.1) THEN
+            XPG = -1.D0/6.D0
+            XPG = 2.D0*(1.D0/3.D0)-1.D0
+            YPG = -1.D0/6.D0
+            YPG = 2.D0*(1.D0/3.D0)-1.D0
+            HPG = -108.D0/96.D0
+          ELSE IF (NORD.EQ.2) THEN
+            XPG = -3.D0/10.D0
+            XPG = 2.D0*(1.D0/5.D0)-1.D0
+            YPG = -3.D0/10.D0
+            YPG = 2.D0*(1.D0/5.D0)-1.D0
+            HPG = 100.D0/96.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = 1.D0/10.D0
+            XPG = 2.D0*(3.D0/5.D0)-1.D0
+            YPG = -3.D0/10.D0
+            YPG = 2.D0*(1.D0/5.D0)-1.D0 
+           HPG = 100.D0/96.D0
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = -3.D0/10.D0
+            XPG = 2.D0*(1.D0/5.D0)-1.D0
+            YPG = 1.D0/10.D0
+            YPG = 2.D0*(3.D0/5.D0)-1.D0
+            HPG = 100.D0/96.D0
+          ELSE
+            CALL JXABOR()
+          END IF
+C HAMMER A 6 POINTS          
+        ELSE IF (TYPI .EQ. 7) THEN
+          A=0.445948490915965D0
+          B=0.091576213509771D0
+          W=0.111690794839005D0
+          V=0.054975871827661D0
           IF (NORD.EQ.1) THEN
             XPG = 2.D0*A-1.D0
             YPG = 2.D0*A-1.D0
@@ -270,114 +1451,273 @@ C    POINTS DE GAUSS
             CALL JXABOR()
           END IF
         ELSE
-          CALL JXABOR()
+          CALL JXABOR
         END IF
-
-      ELSE IF (ALIAS(1:3).EQ.'SG2') THEN
-
-C POINTS DE GAUSS
-
-        IF (TYPI.EQ.2) THEN
+C
+      ELSEIF (ALIAS(1:3) .EQ. 'TR6') THEN
+C
+C    POINTS DE GAUSS
+        IF ((TYPI.EQ.2) .OR. (TYPI.EQ.1) .OR. (TYPI.EQ.3)
+     &       .OR. (TYPI.EQ.7)) THEN
+          A = 0.445948490915965D0
+          B = 0.091576213509771D0
+          W = 0.111690794839005D0
+          V = 0.054975871827661D0
+          IF (NORD .EQ. 1) THEN
+            XPG = 2.D0*A - 1.D0
+            YPG = 2.D0*A - 1.D0
+            HPG = W * 4
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = 2.D0*(1-2.D0*A) - 1.D0
+            YPG = 2.D0*A - 1.D0
+            HPG = W * 4
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 2.D0*A - 1.D0
+            YPG = 2.D0*(1-2.D0*A) - 1.D0
+            HPG = W * 4
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = 2.D0*(B) - 1.D0
+            YPG = 2.D0*B - 1.D0
+            HPG = V * 4
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = 2.D0*(1-2.D0*B) - 1.D0
+            YPG = 2.D0*B - 1.D0
+            HPG = V * 4
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 2.D0*B - 1.D0
+            YPG = 2.D0*(1-2.D0*B) - 1.D0
+            HPG = V * 4
+          ELSE
+            CALL JXABOR
+          END IF
+C HAMMER A 4 POINTS          
+        ELSE IF (TYPI .EQ. 6) THEN
           IF (NORD.EQ.1) THEN
-            XPG = -1/SQRT(3.D0)
-            YPG = 0.D0
+            XPG = -1.D0/6.D0
+            XPG = 2.D0*(1.D0/3.D0)-1.D0
+            YPG = -1.D0/6.D0
+            YPG = 2.D0*(1.D0/3.D0)-1.D0
+            HPG = -108.D0/96.D0
           ELSE IF (NORD.EQ.2) THEN
-            XPG = 1/SQRT(3.D0)
-            YPG = 0.D0
+            XPG = -3.D0/10.D0
+            XPG = 2.D0*(1.D0/5.D0)-1.D0
+            YPG = -3.D0/10.D0
+            YPG = 2.D0*(1.D0/5.D0)-1.D0
+            HPG = 100.D0/96.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = 1.D0/10.D0
+            XPG = 2.D0*(3.D0/5.D0)-1.D0
+            YPG = -3.D0/10.D0
+            YPG = 2.D0*(1.D0/5.D0)-1.D0 
+           HPG = 100.D0/96.D0
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = -3.D0/10.D0
+            XPG = 2.D0*(1.D0/5.D0)-1.D0
+            YPG = 1.D0/10.D0
+            YPG = 2.D0*(3.D0/5.D0)-1.D0
+            HPG = 100.D0/96.D0
           ELSE
             CALL JXABOR()
+          END IF
+        ELSE
+          CALL JXABOR
+        END IF
+C
+      ELSEIF (ALIAS(1:3) .EQ. 'SG2') THEN
+C
+C POINTS DE GAUSS
+C
+        IF (TYPI .EQ. 2) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1/SQRT(3.D0)
+            YPG = 0.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = 1 / SQRT(3.D0)
+            YPG = 0.D0
+          ELSE
+            CALL JXABOR
           END IF
           HPG = 1.D0
 C LES NOEUDS
-        ELSE IF (TYPI.EQ.1) THEN
-          IF (NORD.EQ.1) THEN
+        ELSEIF (TYPI .EQ. 1) THEN
+          IF (NORD .EQ. 1) THEN
             XPG = -1.D0
             YPG = 0.D0
-          ELSE IF (NORD.EQ.2) THEN
+          ELSEIF (NORD .EQ. 2) THEN
             XPG = 1.D0
             YPG = 0.D0
           ELSE
-            CALL JXABOR()
+            CALL JXABOR
           END IF
           HPG = 1.D0
 C SYMPSON
-        ELSE IF (TYPI.EQ.3) THEN
+        ELSEIF (TYPI .EQ. 3) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 4.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C SYMPSON1
+        ELSEIF (TYPI .EQ. 4) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -0.5D0
+            YPG = 0.D0
+            HPG = 2.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = 0.5D0
+            YPG = 0.D0
+            HPG = 2.D0 / 3.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C    SYMPSON2
+        ELSEIF (TYPI .EQ. 5) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 12.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -0.75D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = -0.5D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = -0.25D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 0.25D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 7) THEN
+            XPG = 0.5D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 8) THEN
+            XPG = 0.75D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 9) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 12.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C NEWTON COTES A 4 POINTS
+        ELSE IF (TYPI.EQ.6) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.2) THEN
-            XPG = 0.D0
+            XPG = -1.D0/3.D0
             YPG = 0.D0
-            HPG = 4.D0/3.D0
-           ELSE IF (NORD.EQ.3) THEN
+            HPG = 3.D0/4.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = 1.D0/3.D0
+            YPG = 0.D0
+            HPG = 3.D0/4.D0
+          ELSE IF (NORD.EQ.4) THEN
             XPG = 1.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
           ELSE
             CALL JXABOR()
           END IF
-C SYMPSON1
-        ELSE IF (TYPI.EQ.4) THEN
+C NEWTON COTES A 5 POINTS
+        ELSE IF (TYPI.EQ.7) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 0.D0
-            HPG = 1.D0/6.D0
+            HPG = 7.D0/45.D0
           ELSE IF (NORD.EQ.2) THEN
             XPG = -0.5D0
             YPG = 0.D0
-            HPG = 2.D0/3.D0
+            HPG = 32.D0/45.D0
           ELSE IF (NORD.EQ.3) THEN
             XPG = 0.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 12.D0/45.D0
           ELSE IF (NORD.EQ.4) THEN
             XPG = 0.5D0
             YPG = 0.D0
-            HPG = 2.D0/3.D0
+            HPG = 32.D0/45.D0
           ELSE IF (NORD.EQ.5) THEN
             XPG = 1.D0
             YPG = 0.D0
-            HPG = 1.D0/6.D0
+            HPG = 7.D0/45.D0
           ELSE
             CALL JXABOR()
           END IF
-
-C    SYMPSON2
-        ELSE IF (TYPI.EQ.5) THEN
+C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
+        ELSE IF (TYPI.EQ.8) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 0.D0
             HPG = 1.D0/12.D0
           ELSE IF (NORD.EQ.2) THEN
-            XPG = -0.75D0
+            XPG = -7.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.3) THEN
-            XPG = -0.5D0
+            XPG = -5.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/6.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.4) THEN
-            XPG = -0.25D0
-            YPG = 0.D0
-            HPG = 1.D0/3.D0
-          ELSE IF (NORD.EQ.5) THEN
-            XPG = 0.D0
+            XPG = -1.D0/3.D0
             YPG = 0.D0
             HPG = 1.D0/6.D0
-          ELSE IF (NORD.EQ.6) THEN
-            XPG = 0.25D0
+          ELSE IF (NORD.EQ.5) THEN
+            XPG = -1.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
+          ELSE IF (NORD.EQ.6) THEN
+            XPG = 1.D0/9.D0
+            YPG = 0.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.7) THEN
-            XPG = 0.5D0
+            XPG = 1.D0/3.D0
             YPG = 0.D0
             HPG = 1.D0/6.D0
           ELSE IF (NORD.EQ.8) THEN
-            XPG = 0.75D0
+            XPG = 5.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.9) THEN
+            XPG = 7.D0/9.D0
+            YPG = 0.D0
+            HPG = 1.D0/4.D0
+          ELSE IF (NORD.EQ.10) THEN
             XPG = 1.D0
             YPG = 0.D0
             HPG = 1.D0/12.D0
@@ -385,117 +1725,208 @@ C    SYMPSON2
             CALL JXABOR()
           END IF
         ELSE
-          CALL JXABOR()
+          CALL JXABOR
         END IF
-
-      ELSE IF (ALIAS(1:3).EQ.'SG3') THEN
-
+C
+      ELSEIF (ALIAS(1:3) .EQ. 'SG3') THEN
+C
 C POINTS DE GAUSS
-
-        IF (TYPI.EQ.2) THEN
-          IF (NORD.EQ.1) THEN
+C
+        IF (TYPI .EQ. 2) THEN
+          IF (NORD .EQ. 1) THEN
             XPG = -1/SQRT(3.D0)
             YPG = 0.D0
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = 1/SQRT(3.D0)
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = 1 / SQRT(3.D0)
             YPG = 0.D0
           ELSE
-            CALL JXABOR()
+            CALL JXABOR
           END IF
           HPG = 1.D0
 C LES NOEUDS
-        ELSE IF (TYPI.EQ.1) THEN
-          IF (NORD.EQ.1) THEN
+        ELSEIF (TYPI .EQ. 1) THEN
+          IF (NORD .EQ. 1) THEN
             XPG = -1.D0
             YPG = 0.D0
-          ELSE IF (NORD.EQ.2) THEN
+          ELSEIF (NORD .EQ. 2) THEN
             XPG = 0.D0
             YPG = 0.D0
-          ELSE IF (NORD.EQ.3) THEN
+          ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
             YPG = 0.D0
           ELSE
-            CALL JXABOR()
+            CALL JXABOR
           END IF
-          HPG = 2/3.D0
+          HPG = 2 / 3.D0
 C SYMPSON
-        ELSE IF (TYPI.EQ.3) THEN
-          IF (NORD.EQ.1) THEN
+        ELSEIF (TYPI .EQ. 3) THEN
+          IF (NORD .EQ. 1) THEN
             XPG = -1.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
-          ELSE IF (NORD.EQ.2) THEN
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 2) THEN
             XPG = 0.D0
             YPG = 0.D0
-            HPG = 4.D0/3.D0
-           ELSE IF (NORD.EQ.3) THEN
+            HPG = 4.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0 / 3.D0
           ELSE
-            CALL JXABOR()
+            CALL JXABOR
           END IF
 C SYMPSON1
-        ELSE IF (TYPI.EQ.4) THEN
+        ELSEIF (TYPI .EQ. 4) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -0.5D0
+            YPG = 0.D0
+            HPG = 2.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = 0.5D0
+            YPG = 0.D0
+            HPG = 2.D0 / 3.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C
+C    SYMPSON2
+        ELSEIF (TYPI .EQ. 5) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 12.D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -0.75D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = -0.5D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = -0.25D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 5) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 0.25D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 7) THEN
+            XPG = 0.5D0
+            YPG = 0.D0
+            HPG = 1.D0 / 6.D0
+          ELSEIF (NORD .EQ. 8) THEN
+            XPG = 0.75D0
+            YPG = 0.D0
+            HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 9) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 12.D0
+          ELSE
+            CALL JXABOR
+          END IF
+C NEWTON COTES A 4 POINTS
+        ELSE IF (TYPI.EQ.6) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 0.D0
-            HPG = 1.D0/6.D0
+            HPG = 1.D0/4.D0
+          ELSE IF (NORD.EQ.2) THEN
+            XPG = -1.D0/3.D0
+            YPG = 0.D0
+            HPG = 3.D0/4.D0
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = 1.D0/3.D0
+            YPG = 0.D0
+            HPG = 3.D0/4.D0
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = 1.D0
+            YPG = 0.D0
+            HPG = 1.D0/4.D0
+          ELSE
+            CALL JXABOR()
+          END IF
+C NEWTON COTES A 5 POINTS
+        ELSE IF (TYPI.EQ.7) THEN
+          IF (NORD.EQ.1) THEN
+            XPG = -1.D0
+            YPG = 0.D0
+            HPG = 7.D0/45.D0
           ELSE IF (NORD.EQ.2) THEN
             XPG = -0.5D0
             YPG = 0.D0
-            HPG = 2.D0/3.D0
+            HPG = 32.D0/45.D0
           ELSE IF (NORD.EQ.3) THEN
             XPG = 0.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 12.D0/45.D0
           ELSE IF (NORD.EQ.4) THEN
             XPG = 0.5D0
             YPG = 0.D0
-            HPG = 2.D0/3.D0
+            HPG = 32.D0/45.D0
           ELSE IF (NORD.EQ.5) THEN
             XPG = 1.D0
             YPG = 0.D0
-            HPG = 1.D0/6.D0
+            HPG = 7.D0/45.D0
           ELSE
             CALL JXABOR()
           END IF
-
-C    SYMPSON2
-        ELSE IF (TYPI.EQ.5) THEN
+C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
+        ELSE IF (TYPI.EQ.8) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 0.D0
             HPG = 1.D0/12.D0
           ELSE IF (NORD.EQ.2) THEN
-            XPG = -0.75D0
+            XPG = -7.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.3) THEN
-            XPG = -0.5D0
+            XPG = -5.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/6.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.4) THEN
-            XPG = -0.25D0
-            YPG = 0.D0
-            HPG = 1.D0/3.D0
-          ELSE IF (NORD.EQ.5) THEN
-            XPG = 0.D0
+            XPG = -1.D0/3.D0
             YPG = 0.D0
             HPG = 1.D0/6.D0
-          ELSE IF (NORD.EQ.6) THEN
-            XPG = 0.25D0
+          ELSE IF (NORD.EQ.5) THEN
+            XPG = -1.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
+          ELSE IF (NORD.EQ.6) THEN
+            XPG = 1.D0/9.D0
+            YPG = 0.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.7) THEN
-            XPG = 0.5D0
+            XPG = 1.D0/3.D0
             YPG = 0.D0
             HPG = 1.D0/6.D0
           ELSE IF (NORD.EQ.8) THEN
-            XPG = 0.75D0
+            XPG = 5.D0/9.D0
             YPG = 0.D0
-            HPG = 1.D0/3.D0
+            HPG = 1.D0/4.D0
           ELSE IF (NORD.EQ.9) THEN
+            XPG = 7.D0/9.D0
+            YPG = 0.D0
+            HPG = 1.D0/4.D0
+          ELSE IF (NORD.EQ.10) THEN
             XPG = 1.D0
             YPG = 0.D0
             HPG = 1.D0/12.D0
@@ -503,11 +1934,11 @@ C    SYMPSON2
             CALL JXABOR()
           END IF
         ELSE
-          CALL JXABOR()
+          CALL JXABOR
         END IF
       ELSE
-        CALL JXABOR()
+        CALL JXABOR
       END IF
 C_______________________________________________________________________
-
+C
       END

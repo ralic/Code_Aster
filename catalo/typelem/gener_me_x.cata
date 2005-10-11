@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ ENTETE__ ELEMENT__ MECA_X_TETRA10   MAILLE__ TETRA10
    ENS_NOEUD__  EN1     =     1  2  3  4
 
 MODE_LOCAL__
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
@@ -239,14 +239,14 @@ OPTION__
                               OUT__  EGTHETA  PGTHETA
     CALC_G_BILI         95    IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CPESANR  UPESANR
-                                     CROTATR  UROTATR  CEPSINR  UEPSINR  CPESANR  VPESANR  CROTATR  VROTATR  
+                                     CROTATR  UROTATR  CEPSINR  UEPSINR  CPESANR  VPESANR  CROTATR  VROTATR
                                      CEPSINR  VEPSINR  NFORCER  UPFRVOL  NFORCER  VPFRVOL  CTEREFE  PTEREF
                               OUT__  EGTHETA  PGTHETA
     CALC_G_BILI_F       95    IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CPESANR  UPESANR
-                                     CROTATR  UROTATR  CEPSINF  UEPSINF  CPESANR  VPESANR  CROTATR  VROTATR  
+                                     CROTATR  UROTATR  CEPSINF  UEPSINF  CPESANR  VPESANR  CROTATR  VROTATR
                                      CEPSINF  VEPSINF  CFORCEF  UPFFVOL  CFORCEF  VPFFVOL  CTEREFE  PTEREF
-                                     CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR 
+                                     CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
@@ -277,6 +277,7 @@ OPTION__
     CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPLAR
                                      CFORCEF  PFFVOLU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR
+                                     CTEMPSR  PTEMPSR  CEPSINF  PEPSINF
                               OUT__  EKTHETA  PGTHETA
     CHAR_ALPH_ZAC       567   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MVECTUR  PVECTUR
@@ -399,8 +400,8 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ
     EQUI_ELNO_SIGM      335   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
-    ERRE_ELGA_NORE      375   IN__   ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER  
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CREFERI  PPRESS   CROTATR  PROTATR  
+    ERRE_ELGA_NORE      375   IN__   ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CREFERI  PPRESS   CROTATR  PROTATR
                                      CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
                               OUT__  EERREUR  PERREUR
     ERRE_ELNO_ELGA      385   IN__   EERREUR  PERREUR

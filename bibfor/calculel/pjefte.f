@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE (RESU1, RESU2 )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,16 +38,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PJEFTE' )
 
-      CHARACTER*4 CDIM1,CDIM2,EXIVOL
-      CHARACTER*8 NOMA1,NOMA2,MODEL1,MODEL2
+      CHARACTER*8 NOMA1,NOMA2,MODEL1,MODEL2,NCAS
       CHARACTER*16 CORRES,CORRE1,CORRE2,CORRE3
       CHARACTER*16 TYMOCL(5),MOTCLE(5)
-      INTEGER NDIM,NCAS,N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
-      INTEGER IAGNO2,IAGMA1,K,JTYPM1,TYPM1
-      INTEGER KK,LTMVOL(9),INDIIS
+      INTEGER N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
+      INTEGER IAGNO2,IAGMA1
 
       LOGICAL LDMAX
       REAL*8  DISTMA,R8MAEM
@@ -95,18 +91,20 @@ C----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C               12   345678   9012345678901234
-      CORRES = '&&'//NOMPRO//'.CORRESP'
-      CORRE1 = '&&'//NOMPRO//'.CORRES1'
-      CORRE2 = '&&'//NOMPRO//'.CORRES2'
-      CORRE3 = '&&'//NOMPRO//'.CORRES3'
+      CORRES = '&&PJEFTE.CORRESP'
+      CORRE1 = '&&PJEFTE.CORRES1'
+      CORRE2 = '&&PJEFTE.CORRES2'
+      CORRE3 = '&&PJEFTE.CORRES3'
 
       CALL GETVID(' ','MODELE_1',1,1,1,MODEL1,N1)
       CALL GETVID(' ','MODELE_2',1,1,1,MODEL2,N1)
 
       CALL DISMOI('F','NOM_MAILLA',MODEL1,'MODELE',IBID,NOMA1,IE)
-      CALL JEVEUO(NOMA1//'.TYPMAIL','L',JTYPM1)
       CALL DISMOI('F','NOM_MAILLA',MODEL2,'MODELE',IBID,NOMA2,IE)
 
+
+C     DETERMINATION DE DISTMA ET LDMAX:
+C     --------------------------------------------------------
       LDMAX = .FALSE.
       DISTMA = R8MAEM()
       CALL GETVR8(' ','DISTANCE_MAX',1,0,0,DISTMA,N1)
@@ -114,38 +112,6 @@ C               12   345678   9012345678901234
         CALL GETVR8(' ','DISTANCE_MAX',1,0,1,DISTMA,N1)
         LDMAX = .TRUE.
       ENDIF
-
-C     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
-C     --------------------------------------------------------
-      CALL DISMOI('F','Z_CST',NOMA1,'MAILLAGE',IBID,CDIM1,IE)
-      CALL DISMOI('F','Z_CST',NOMA2,'MAILLAGE',IBID,CDIM2,IE)
-      IF ( CDIM1 .EQ. CDIM2 ) THEN
-         IF (CDIM1.EQ.'OUI') THEN
-            NDIM = 2
-         ELSE
-            NDIM = 3
-         END IF
-      ELSE
-         IF ( CDIM1.EQ.'OUI' .AND. CDIM2.NE.'OUI') THEN
-            CALL UTMESS('F',NOMPRO,'ON NE PEUT PAS PROJETER UN '//
-     +              'CHAMP D''UN MAILLAGE "2D" SUR UN MAILLAGE "3D".')
-         ELSEIF ( CDIM1.NE.'OUI' .AND. CDIM2.EQ.'OUI') THEN
-            NDIM = 3
-         END IF
-      END IF
-
-C     REMPLISSAGE DE LTMVOL : LISTE DES NUMEROS DES TYPE_MAILLE
-C     VOLUMIQUES :
-C     --------------------------------------------------------
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA8')  ,LTMVOL(1))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA20') ,LTMVOL(2))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA27') ,LTMVOL(3))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TETRA4') ,LTMVOL(4))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TETRA10'),LTMVOL(5))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA6') ,LTMVOL(6))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA15'),LTMVOL(7))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM5') ,LTMVOL(8))
-      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM13'),LTMVOL(9))
 
 
       CALL GETFAC('VIS_A_VIS',NBOCC)
@@ -155,31 +121,22 @@ C     --------------------------------------------------------
 C       -- CAS : TOUT:'OUI'
 C       ------------------------
 
-C     DETERMINATION DU CAS DE FIGURE : 2D, 3D OU 2.5D : NCAS
-C     --------------------------------------------------------
-        IF (NDIM.EQ.2) THEN
-          NCAS = 2
-        ELSE IF (NDIM.EQ.3) THEN
-          CALL DISMOI('F','EXI_ELTVOL',MODEL1,'MODELE',IBID,EXIVOL,IE)
-          IF (EXIVOL.EQ.'OUI') THEN
-            NCAS = 3
-          ELSE
-            NCAS = 4
-          END IF
-        END IF
+      CALL PJEFCA (MODEL1,' ',0,NCAS )
 
-
-        IF (NCAS.EQ.2) THEN
+        IF (NCAS.EQ.'2D') THEN
           CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
      +                 LDMAX,DISTMA)
-        ELSE IF (NCAS.EQ.3) THEN
+        ELSE IF (NCAS.EQ.'3D') THEN
           CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
      +                 LDMAX,DISTMA)
-        ELSE IF (NCAS.EQ.4) THEN
+        ELSE IF (NCAS.EQ.'2.5D') THEN
           CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
      +                 LDMAX,DISTMA)
+        ELSE IF (NCAS.EQ.'1.5D') THEN
+          CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+     +                 LDMAX,DISTMA)
         ELSE
-          CALL UTMESS('F',NOMPRO,'STOP 4')
+          CALL UTMESS('F','PJEFTE','STOP 4')
         END IF
 
       ELSE
@@ -198,8 +155,8 @@ C        ----------------------------------------------
           MOTCLE(3) = 'TOUT_1'
           TYMOCL(3) = 'TOUT'
           CALL RELIEM(MODEL1,NOMA1,'NU_MAILLE','VIS_A_VIS',IOCC,3,
-     +                MOTCLE,TYMOCL,'&&'//NOMPRO//'.LIMANU1',NBMA1)
-          CALL JEVEUO('&&'//NOMPRO//'.LIMANU1','L',IAGMA1)
+     +                MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
+          CALL JEVEUO('&&PJEFTE.LIMANU1','L',IAGMA1)
 
 
 C        -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
@@ -215,45 +172,28 @@ C        ----------------------------------------------
           MOTCLE(5) = 'TOUT_2'
           TYMOCL(5) = 'TOUT'
           CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,MOTCLE,
-     +                TYMOCL,'&&'//NOMPRO//'.LINONU2',NBNO2)
-          CALL JEVEUO('&&'//NOMPRO//'.LINONU2','L',IAGNO2)
-
-
-
-C         DETERMINATION DU CAS DE FIGURE : 2D, 3D OU 2.5D : NCAS
-C         --------------------------------------------------------
-          IF (NDIM.EQ.2) THEN
-            NCAS = 2
-          ELSE IF (NDIM.EQ.3) THEN
-C            -- SI UNE MAILLE EST DE TYPE "VOLUMIQUE" : NCAS=3
-C               SINON NCAS=4
-            NCAS = 4
-            DO 10,K = 1,NBMA1
-              TYPM1 = ZI(JTYPM1-1+ZI(IAGMA1-1+K))
-              KK = INDIIS(LTMVOL,TYPM1,1,9)
-              IF (KK.GT.0) THEN
-                NCAS = 3
-                GO TO 20
-              END IF
-   10       CONTINUE
-   20       CONTINUE
-          END IF
+     +                TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
+          CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
 
 
 C        -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
 C        ----------------------------------------------
+          CALL PJEFCA (MODEL1,'&&PJEFTE.LIMANU1',IOCC,NCAS)
           CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
-          IF (NCAS.EQ.2) THEN
+          IF (NCAS.EQ.'2D') THEN
             CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
      +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
-          ELSE IF (NCAS.EQ.3) THEN
+          ELSE IF (NCAS.EQ.'3D') THEN
             CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
      +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
-          ELSE IF (NCAS.EQ.4) THEN
+          ELSE IF (NCAS.EQ.'2.5D') THEN
             CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
      +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
+          ELSE IF (NCAS.EQ.'1.5D') THEN
+            CALL PJ6DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
+     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
           ELSE
-            CALL UTMESS('F',NOMPRO,'STOP 5')
+            CALL UTMESS('F','PJEFTE','STOP 5')
           END IF
 
 
@@ -268,8 +208,8 @@ C        ----------------------------------------------
             CALL DETRSD('CORRESP_2_MAILLA',CORRE3)
           END IF
 
-          CALL JEDETR('&&'//NOMPRO//'.LIMANU1')
-          CALL JEDETR('&&'//NOMPRO//'.LINONU2')
+          CALL JEDETR('&&PJEFTE.LIMANU1')
+          CALL JEDETR('&&PJEFTE.LINONU2')
    30   CONTINUE
         CALL COPISD('CORRESP_2_MAILLA','V',CORRE2,CORRES)
         CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
