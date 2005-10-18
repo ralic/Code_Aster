@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF E_ETAPE Execution  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,8 +84,8 @@ class ETAPE:
              self.AfficheTexteCommande()       
           ier=self.codex.oper(self,0,self.modexec,self.icmd)
           if (self.modexec == 2) and (self.definition.op_init==None):
-             self.cpu_user=times()[0]-self.cpu_user
-             self.cpu_syst=times()[1]-self.cpu_syst
+             self.cpu_user=times()[0]-self.cpu_user_0
+             self.cpu_syst=times()[1]-self.cpu_syst_0
              # affichage du texte de la commande
              self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
       else:

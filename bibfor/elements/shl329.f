@@ -1,8 +1,7 @@
-      SUBROUTINE SHL329 ( NOMTE )
+      SUBROUTINE SHL329
       IMPLICIT NONE
-      CHARACTER*16        NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,32 +43,29 @@ C
       CHARACTER*24  VETEL
       REAL*8        SX(9,9),SY(9,9),SZ(9,9),JAC(9)
       REAL*8        NX(9),NY(9),NZ(9),NORM(3,9),ACC(3,9)
-      REAL*8        FLUFN(9),ACLOC(3,8)
+      REAL*8        FLUFN(9),ACLOC(3,8),QSI,ETA,ZERO,UN
       REAL*8        X(3,9),FF(4,4),DFDX(4,4),DFDY(4,4)
-      INTEGER       NC,NPG,NNO,IGEOM,IPG,IADZI,IAZK24,IVETEL
-      INTEGER       LZR,IACCE,IHARM,IVECTU,I,K,IDIM,INO,JNO,J
+      INTEGER       IGEOM,IPG,IADZI,IAZK24,IVETEL
+      INTEGER       IACCE,IHARM,IVECTU,I,K,IDIM,INO,JNO,J
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
 C
-      INTEGER LJACO,LTOR,LQSI,LETA
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
 C DEB ------------------------------------------------------------------
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       CALL JEVECH('PACCELR','L',IACCE)
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PNUMMOD','L',IHARM)
       CALL JEVECH('PVECTUR','E',IVECTU)
 C
+      ZERO = 0.0D0
+      UN   = 1.0D0
+C
       DO 1200 I=1,NNO
-         ACLOC(1,I)=0.0D0
-         ACLOC(2,I)=0.0D0
-         ACLOC(3,I)=0.0D0
+         ACLOC(1,I)=ZERO
+         ACLOC(2,I)=ZERO
+         ACLOC(3,I)=ZERO
 1200  CONTINUE
 C
         K=0
@@ -81,38 +77,30 @@ C
 1201    CONTINUE
 C
        DO 1052 IPG=1,NPG
-          ACC(1,IPG)=0.0D0
-          ACC(2,IPG)=0.0D0
-          ACC(3,IPG)=0.0D0
+          ACC(1,IPG)=ZERO
+          ACC(2,IPG)=ZERO
+          ACC(3,IPG)=ZERO
 1052   CONTINUE
 C
        DO 1061 IPG=1,NPG
-          FF(1,IPG)=(1-ZR(LZR+LQSI+IPG-1))*
-     &                 (1-ZR(LZR+LETA+IPG-1))/4.D0
-          FF(2,IPG)=(1+ZR(LZR+LQSI+IPG-1))*
-     &                 (1-ZR(LZR+LETA+IPG-1))/4.D0
-          FF(3,IPG)=(1+ZR(LZR+LQSI+IPG-1))*
-     &                 (1+ZR(LZR+LETA+IPG-1))/4.D0
-          FF(4,IPG)=(1-ZR(LZR+LQSI+IPG-1))*
-     &                 (1+ZR(LZR+LETA+IPG-1))/4.D0
+
+          QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
+
+          FF(1,IPG)= (UN-QSI)*(UN-ETA)/4.D0
+          FF(2,IPG)= (UN+QSI)*(UN-ETA)/4.D0
+          FF(3,IPG)= (UN+QSI)*(UN+ETA)/4.D0
+          FF(4,IPG)= (UN-QSI)*(UN+ETA)/4.D0
 C
-          DFDX(1,IPG)= -1.D0*
-     &                 (1-ZR(LZR+LETA+IPG-1))/4.D0
-          DFDX(2,IPG)=1.D0*
-     &                 (1-ZR(LZR+LETA+IPG-1))/4.D0
-          DFDX(3,IPG)=1.D0*
-     &                 (1+ZR(LZR+LETA+IPG-1))/4.D0
-          DFDX(4,IPG)=-1.D0*
-     &                 (1+ZR(LZR+LETA+IPG-1))/4.D0
+          DFDX(1,IPG)= -(UN-ETA)/4.D0
+          DFDX(2,IPG)=  (UN-ETA)/4.D0
+          DFDX(3,IPG)=  (UN+ETA)/4.D0
+          DFDX(4,IPG)= -(UN+ETA)/4.D0
 C
-          DFDY(1,IPG)=-1.D0*(1-ZR(LZR+LQSI+IPG-1))
-     &                 /4.D0
-          DFDY(2,IPG)=-1.D0*(1+ZR(LZR+LQSI+IPG-1))
-     &                /4.D0
-          DFDY(3,IPG)=(1+ZR(LZR+LQSI+IPG-1))
-     &                 /4.D0
-          DFDY(4,IPG)=(1-ZR(LZR+LQSI+IPG-1))
-     &                 /4.D0
+          DFDY(1,IPG)= -(UN-QSI)/4.D0
+          DFDY(2,IPG)= -(UN+QSI)/4.D0
+          DFDY(3,IPG)=  (UN+QSI)/4.D0
+          DFDY(4,IPG)=  (UN-QSI)/4.D0
 
 1061   CONTINUE
 
@@ -127,29 +115,25 @@ C
             SZ(INO,JNO) = ZR(I+1) * ZR(J+2) - ZR(I+2) * ZR(J+1)
 22       CONTINUE
 21    CONTINUE
-
 C
 C     BOUCLE SUR LES POINTS DE GAUSS
 
       DO 101 IPG=1,NPG
-         NX(IPG) = 0.0D0
-         NY(IPG) = 0.0D0
-         NZ(IPG) = 0.0D0
+         NX(IPG) = ZERO
+         NY(IPG) = ZERO
+         NZ(IPG) = ZERO
          DO 102 I=1,NNO
             DO 104 J=1,NNO
-              NX(IPG) = NX(IPG) + DFDX(I,IPG)
-     &            * DFDY(J,IPG) * SX(I,J)
-              NY(IPG) = NY(IPG) + DFDX(I,IPG)
-     &            * DFDY(J,IPG) * SY(I,J)
-              NZ(IPG) = NZ(IPG) + DFDX(I,IPG)
-     &            * DFDY(J,IPG) * SZ(I,J)
+              NX(IPG) = NX(IPG) + DFDX(I,IPG)*DFDY(J,IPG)*SX(I,J)
+              NY(IPG) = NY(IPG) + DFDX(I,IPG)*DFDY(J,IPG)*SY(I,J)
+              NZ(IPG) = NZ(IPG) + DFDX(I,IPG)*DFDY(J,IPG)*SZ(I,J)
 104        CONTINUE
 102      CONTINUE
 
 C      CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 
          JAC(IPG) = SQRT (NX(IPG)*NX(IPG) + NY(IPG)*NY(IPG)
-     &            + NZ(IPG)*NZ(IPG))
+     &                                    + NZ(IPG)*NZ(IPG))
 
 C       CALCUL DE LA NORMALE UNITAIRE
 
@@ -161,35 +145,23 @@ C       CALCUL DE LA NORMALE UNITAIRE
 C
        DO 1051 IPG=1,NPG
          DO 105 I=1,NNO
-           ACC(1,IPG) = ACC(1,IPG) + ACLOC(1,I)*
-     &           FF(I,IPG)
-           ACC(2,IPG) = ACC(2,IPG) + ACLOC(2,I)*
-     &           FF(I,IPG)
-           ACC(3,IPG) = ACC(3,IPG) + ACLOC(3,I)*
-     &           FF(I,IPG)
+           ACC(1,IPG) = ACC(1,IPG) + ACLOC(1,I)*FF(I,IPG)
+           ACC(2,IPG) = ACC(2,IPG) + ACLOC(2,I)*FF(I,IPG)
+           ACC(3,IPG) = ACC(3,IPG) + ACLOC(3,I)*FF(I,IPG)
 105      CONTINUE
 1051   CONTINUE
-
 
 C    CALCUL DE COORDONNEES AUX POINTS DE GAUSS
 
            DO 90 IPG=1,NPG
-             X(1,IPG)=0.0D0
-             X(2,IPG)=0.0D0
-             X(3,IPG)=0.0D0
-
+             X(1,IPG)=ZERO
+             X(2,IPG)=ZERO
+             X(3,IPG)=ZERO
               DO 91 J=1,NNO
-
-                X(1,IPG)= X(1,IPG)+ZR(IGEOM + 3*(J-1) -1+1)
-     &                     *FF(J,IPG)
-                X(2,IPG)= X(2,IPG)+ZR( IGEOM + 3*(J-1) -1+2)
-     &                     *FF(J,IPG)
-                X(3,IPG)= X(3,IPG)+ZR( IGEOM + 3*(J-1) -1+3)
-     &                     *FF(J,IPG)
-
+                X(1,IPG)= X(1,IPG) + ZR(IGEOM+3*(J-1)-1+1)*FF(J,IPG)
+                X(2,IPG)= X(2,IPG) + ZR(IGEOM+3*(J-1)-1+2)*FF(J,IPG)
+                X(3,IPG)= X(3,IPG) + ZR(IGEOM+3*(J-1)-1+3)*FF(J,IPG)
 91            CONTINUE
-
-
 
 C CALCUL DU FLUX FLUIDE NORMAL AUX POINTS DE GAUSS
 

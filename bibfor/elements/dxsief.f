@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-
 C     NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
 CCC      PARAMETER (NNO=3)  POUR LES DKT
 CCC      PARAMETER (NNO=4)  POUR LES DKQ
@@ -51,61 +50,44 @@ CCC      PARAMETER (NNO=4)  POUR LES DKQ
       PARAMETER (NNO=4)
 C
 C --------------------------------------------------------------------
-      INTEGER      I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG,
-     +             IRET, ITEMP, LZR, NNOEL, IBID, NBCON, NBCOU,
-     +             NPG, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
-      REAL*8       DISTN, ROT(9), DH(9), D(4,4), REPERE(7), INST
-      REAL*8       C,S,PI,PHI,EPSL(4),R8PI
-      REAL*8       HIC, H, ZIC, ZMIN, VALPU(2), TINF, TMOY, TSUP
-      REAL*8       ZERO, DEUX, HYDR, SECH, TEMPG, SIG, C1, C2, C3
-      REAL*8       TREF, ALPHA,E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
-      REAL*8       EPS2D(6), KHI(3), DEPF(12), DEPM(8)
-      REAL*8       BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
+      INTEGER  NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET, ITEMP,
+     +         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
+      REAL*8   DISTN, ROT(9), DH(9), D(4,4), REPERE(7), INST
+      REAL*8   C,S,PI,PHI,EPSL(4),R8PI
+      REAL*8   HIC, H, ZIC, ZMIN, VALPU(2), TINF, TMOY, TSUP
+      REAL*8   ZERO, DEUX, HYDR, SECH, TEMPG, SIG, C1, C2, C3
+      REAL*8   TREF, ALPHA,E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
+      REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
+      REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
+      REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
       LOGICAL      TEMPNO, GRILLE, DKT, DKQ 
       CHARACTER*2  CODRET
       CHARACTER*8  NOMPAR(2)
 C     ------------------------------------------------------------------
-C --DEB
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
       ZERO = 0.0D0
       DEUX = 2.0D0
 C
-      DKT = .FALSE.
-      DKQ = .FALSE.
+      DKT    = .FALSE.
+      DKQ    = .FALSE.
       GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        NPG=3
-        NNOEL=3
         GRILLE = .TRUE.
-        CALL JEVETE('&INEL.MEGRDKT .DESR',' ',LZR)
-      ELSEIF ( NOMTE(1:8).EQ.'MEDKTR3 ' ) THEN
-        NPG=3
-        NNOEL=3
+      ELSEIF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
         DKT = .TRUE.
-        CALL JEVETE('&INEL.MEDKTR3 .DESR',' ',LZR)
-      ELSEIF ( NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
-        NPG=3
-        NNOEL=3
-        DKT = .TRUE.
-        CALL JEVETE('&INEL.MEDSTR3 .DESR',' ',LZR)
-      ELSEIF ( NOMTE(1:8).EQ.'MEDKQU4 ' ) THEN
-        NPG=4
-        NNOEL=4
+      ELSEIF ( NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
         DKQ = .TRUE.
-        CALL JEVETE('&INEL.MEDKQU4 .DESR',' ',LZR)
-      ELSEIF ( NOMTE(1:8).EQ.'MEDSQU4 ' ) THEN
-        NPG=4
-        NNOEL=4
-        DKQ = .TRUE.
-        CALL JEVETE('&INEL.MEDSQU4 .DESR',' ',LZR)
-      ELSEIF ( NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
-        NPG=4
-        NNOEL=4
-        DKQ = .TRUE.
-        CALL JEVETE('&INEL.MEQ4QU4 .DESR',' ',LZR)
       ELSE
         CALL UTMESS('F','DXSIEF','ELEMENT NON TRAITE '//NOMTE)
       END IF
-
+C
       CALL TECACH ('ONN','PTEREF',8,ITAB,IRET)
       JTREF = ITAB(1)
       IF (IRET.EQ.0) THEN
@@ -113,12 +95,11 @@ C
       ELSE
          TREF = ZERO
       END IF
-
-
+C
 C --- VARIABLE D'HYDRATATION ET DE SECHAGE
       HYDR = ZERO
       SECH = ZERO
-
+C
       REPERE(1) = ZERO
       REPERE(2) = ZERO
       REPERE(3) = ZERO
@@ -133,7 +114,7 @@ C     ---------------------------
       H = ZR(ICACOQ)
       DISTN = ZERO
       IF ( GRILLE ) THEN
-         CALL GTRIA3(XYZL,ZR(LZR))
+         CALL GTRIA3(XYZL,CARAT3)
          DISTN = ZR(ICACOQ+3)
          CALL GRDMAT(ICACOQ,MATER,PGL,DH,ROT)
          ALPH = ZR(ICACOQ+1) * R8DGRD()
@@ -141,12 +122,11 @@ C     ---------------------------
          CALL GRIROT ( ALPH , BETA ,PGL , ROT, C, S )
          PI = R8PI()
          PHI= 0.D0
-C         IF(ABS(C).GT.1.D-14) PHI= (ATAN(S/C)*180.D0/PI)-90.D0
          IF(ABS(C).GT.1.D-14) PHI= (ATAN2(S,C)*180.D0/PI)-90.D0
       ELSEIF ( DKT ) THEN
-         CALL GTRIA3(XYZL,ZR(LZR))
+         CALL GTRIA3(XYZL,CARAT3)
       ELSEIF ( DKQ ) THEN
-         CALL GQUAD4(XYZL,ZR(LZR))
+         CALL GQUAD4(XYZL,CARAQ4)
       END IF
 C
       CALL TECACH ( 'ONN', 'PTEMPSR', 8, ITAB, IRET )
@@ -235,13 +215,16 @@ C --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     ---------------------------------------------
       DO 100, IPG = 1 , NPG
 
+        QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
+
         IF ( DKQ ) THEN
-          CALL JQUAD4( IPG, XYZL, ZR(LZR) )
-          CALL DXQBM ( IPG, ZR(LZR), BM )
-          CALL DKQBF ( IPG, ZR(LZR), BF )
+          CALL JQUAD4( XYZL, QSI, ETA, JACOB )
+          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
+          CALL DKQBF ( QSI, ETA, JACOB(2), CARAQ4, BF )
         ELSE
-          CALL DXTBM ( ZR(LZR), BM )
-          CALL DKTBF ( IPG, ZR(LZR), BF )
+          CALL DXTBM ( CARAT3(9), BM )
+          CALL DKTBF ( QSI, ETA, CARAT3, BF )
         ENDIF
 C
         CALL PMRVEC ( 'ZERO', 3, 2*NNOEL, BM, DEPM, EPSM )

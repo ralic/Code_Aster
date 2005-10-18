@@ -1,6 +1,9 @@
-      SUBROUTINE DKTB (LZR , IGAU, JACGAU, BMAT)
+      SUBROUTINE DKTB ( CARAT3 , IGAU, JACGAU, BMAT )
+      IMPLICIT  NONE
+      INTEGER   IGAU
+      REAL*8    BMAT(8,1), CARAT3(*), JACGAU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/10/95   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8       BMAT(8,1)
-      REAL*8       JACGAU
 C     ------------------------------------------------------------------
 C --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS DU PREMIER 
 C --- ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION D'INDICE IGAU  
@@ -27,9 +27,6 @@ C --- POUR UN ELEMENT DE TYPE DKT
 C --- (I.E. (EPS_1) = (B)*(UN))
 C --- D'AUTRE_PART, ON CALCULE LE PRODUIT NOTE JACGAU = JACOBIEN*POIDS
 C     ------------------------------------------------------------------
-C     IN  LZR           : ADRESSE DU VECTEUR .DESR DEFINISSANT UN 
-C                         CERTAIN NOMBRE DE QUANTITES GEOMETRIQUES
-C                         SUR L'ELEMENT
 C     IN  IGAU          : INDICE DU POINT D'INTEGRATION
 C     OUT JACGAU        : PRODUIT JACOBIEN*POIDS AU POINT D'INTEGRATION
 C                         COURANT
@@ -51,18 +48,26 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      REAL*8        BM(3,6),  BF(3,9), BC(2,9)
-      PARAMETER (NNO   = 3)
-      PARAMETER (LDETJ = 1)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  I, J
+      REAL*8   QSI, ETA, BM(3,6),  BF(3,9), BC(2,9)
 C     ------------------------------------------------------------------
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
+C --- COORDONNEES DU POINT D'INTEGRATION COURANT :
+C     ------------------------------------------
+      QSI = ZR(ICOOPG-1+NDIM*(IGAU-1)+1)
+      ETA = ZR(ICOOPG-1+NDIM*(IGAU-1)+2)
 C
 C --- PRODUIT JACOBIEN*POIDS
 C     ----------------------
-      JACGAU = 1.0D0/6.0D0*ZR(LZR-1+LDETJ)
+      JACGAU = ZR(IPOIDS+IGAU-1)*CARAT3(7)
 C
 C --- CALCUL DE LA MATRICE B_MEMBRANE NOTEE, ICI, (BM)
 C     ------------------------------------------------
-      CALL DXTBM (ZR(LZR) , BM)
+      CALL DXTBM ( CARAT3(9) , BM)
 C
 C --- CALCUL DE LA MATRICE B_FLEXION RELATIVE AUX INCONNUES W, BETAX
 C --- ET BETAY.
@@ -76,7 +81,7 @@ C ---  (ALFA) = (AN)*(UN)
 C --- AVEC (UN) = (...,W_I,BETAX_I,BETAY_I,...)
 C --- CETTE MATRICE (AN) EST CALCULEE IMPLICITEMENT DANS DKTBF
 C     --------------------------------------------------------
-      CALL DKTBF (IGAU, ZR(LZR) , BF)
+      CALL DKTBF ( QSI, ETA, CARAT3, BF )
 C
 C --- MISE A ZERO DE LA PARTIE (BC) DE LA MATRICE (B) RELATIVE
 C --- AU CISAILLEMENT

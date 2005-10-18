@@ -1,6 +1,9 @@
-      SUBROUTINE DSTNIW ( INT , R , DCI , BCA , AN , AM, WST , WMEST)
+      SUBROUTINE DSTNIW (QSI, ETA, CARAT3, DCI, BCA, AN, AM, WST, WMEST)
+      IMPLICIT  NONE
+      REAL*8    QSI, ETA, CARAT3(*), DCI(2,2), BCA(2,3), AN(3,9)
+      REAL*8    AM(3,6), WST(9), WMEST(6)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2000   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C  
 C  DSTNIW -- CALCUL DES FONCTIONS DE FORME CUBIQUES RELATIVES A 
 C            LA FLECHE W DANS LE CADRE DU CALCUL DE LA MATRICE
@@ -65,39 +67,19 @@ C    WST(9)         OUT   R       FONCTIONS DE FORME TELLES QUE
 C                                 W = WST*UN (+ WMEST*UM)
 C    WMEST(6)       OUT   R       FONCTIONS DE FORME TELLES QUE
 C                                 W = WMEST*UM (+ WST*UN)
-C
-C -----  ARGUMENTS
-      INTEGER   INT
-      REAL*8    R(*)
-      REAL*8    DCI(2,2), BCA(2,3), AN(3,9), AM(3,6)
-      REAL*8    WST(9),   WMEST(6)
-C -----  VARIABLES LOCALES
-      REAL*8  DB(2,3) , DBA(2,9), DBAM(2,6)
-      REAL*8  QSI , ETA , LBD
-      REAL*8  X4,X6 , Y4,Y6
-      REAL*8  N(9)
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC
-               PARAMETER (NPG   = 3)
-               PARAMETER (NNO   = 3)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI  + NPG + NNO )
-               PARAMETER (LWGT  = LETA  + NPG + NNO )
-               PARAMETER (LXYC  = LWGT  + NPG)
+C     ------------------------------------------------------------------
+      INTEGER  I , J
+      REAL*8   DB(2,3) , DBA(2,9) , DBAM(2,6) , N(9)
+      REAL*8   LBD , ZERO,  X4,X6 , Y4,Y6
 C     ------------------------------------------------------------------
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       ZERO = 0.0D0
 C
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
-      X4  = R(LXYC)
-      X6  = R(LXYC+2)
-      Y4  = R(LXYC+3)
-      Y6  = R(LXYC+5)
+      X4  = CARAT3(1)
+      X6  = CARAT3(3)
+      Y4  = CARAT3(4)
+      Y6  = CARAT3(6)
 C
       DO 10 I = 1, 6
         WMEST(I) = ZERO

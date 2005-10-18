@@ -1,10 +1,10 @@
-      SUBROUTINE DKTEDG(NOMTE,XYZL,OPTION,PGL,DEPL,EDGL,MULTIC,GRILLE)
+      SUBROUTINE DKTEDG ( XYZL, OPTION, PGL, DEPL, EDGL, MULTIC, GRILLE)
       IMPLICIT   NONE
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
       LOGICAL       GRILLE
-      CHARACTER*16  NOMTE, OPTION
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,56 +48,52 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER MULTIC,LZR,NE,INE,K,J,I,IE,JCOQU
-      REAL*8 DEPF(9),DEPM(6)
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
-      REAL*8 HFT2(2,6)
-      REAL*8 BF(3,9),BM(3,6)
-      REAL*8 BDM(3),BDF(3),DCIS(2)
-      REAL*8 VF(3),VM(3),VT(2)
-      REAL*8 VFM(3),VMF(3)
-      REAL*8 DISTN,EPS(3)
-      LOGICAL ELASCO
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG,NNO
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC,NE,K,J,I,IE,JCOQU
+      REAL*8   DEPF(9),DEPM(6)
+      REAL*8   DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
+      REAL*8   HFT2(2,6),DFC(3,2),BF(3,9),BM(3,6)
+      REAL*8   BDM(3),BDF(3),DCIS(2),VF(3),VM(3),VT(2)
+      REAL*8   VFM(3),VMF(3),DISTN,EPS(3)
+      REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
+      LOGICAL  ELASCO
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NPG
-        INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NNO
-        INE = NPG
       END IF
+C
       DISTN = 0.D0
       IF (GRILLE) THEN
         CALL JEVECH('PCACOQU','L',JCOQU)
         DISTN = ZR(JCOQU+3)
       END IF
-
+C
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
-
+C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            GRILLE,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,GRILLE,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 20 J = 1,3
         DO 10 I = 1,2
-          DEPM(I+2* (J-1)) = DEPL(I+6* (J-1))
+          DEPM(I+2* (J-1)) = DEPL(I+6*(J-1))
    10   CONTINUE
-        DEPF(1+3* (J-1)) = DEPL(1+2+6* (J-1))
-        DEPF(2+3* (J-1)) = DEPL(3+2+6* (J-1))
-        DEPF(3+3* (J-1)) = -DEPL(2+2+6* (J-1))
+        DEPF(1+3* (J-1)) =  DEPL(1+2+6*(J-1))
+        DEPF(2+3* (J-1)) =  DEPL(3+2+6*(J-1))
+        DEPF(3+3* (J-1)) = -DEPL(2+2+6*(J-1))
    20 CONTINUE
 C     ------ CALCUL DE LA MATRICE BM -----------------------------------
-      CALL DXTBM(ZR(LZR),BM)
+      CALL DXTBM ( CARAT3(9), BM )
       DO 30 K = 1,3
         BDM(K) = 0.D0
    30 CONTINUE
@@ -112,14 +108,16 @@ C     ------ CALCUL DE LA MATRICE BM -----------------------------------
    60   CONTINUE
       ELSE
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-        CALL DSXHFT(DF,ZR(LZR),HFT2)
+        CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
-        CALL DKTTXY(HFT2,DEPF,ZR(LZR),VT)
+        CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
       END IF
       IF (OPTION(1:4).EQ.'DEGE') THEN
         DO 110 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DKTBF(IE+INE,ZR(LZR),BF)
+          CALL DKTBF ( QSI, ETA, CARAT3, BF )
           DO 70 K = 1,3
             BDF(K) = 0.D0
    70     CONTINUE
@@ -155,11 +153,13 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
   140     CONTINUE
         END IF
         DO 250 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DKTBF(IE+INE,ZR(LZR),BF)
+          CALL DKTBF ( QSI, ETA, CARAT3, BF )
           DO 150 K = 1,3
             BDF(K) = 0.D0
-            VF(K) = 0.D0
+             VF(K) = 0.D0
             VMF(K) = 0.D0
   150     CONTINUE
 C           ------ VF = DF.BF.DEPF , VMF = DMF.BF.DEPF ----------------
@@ -175,28 +175,28 @@ C           ------ VF = DF.BF.DEPF , VMF = DMF.BF.DEPF ----------------
             DO 200 I = 1,3
               DO 190 J = 1,3
                 VMF(I) = VMF(I) + DM(I,J)*EPS(J)
-                VF(I) = VF(I) + DF(I,J)*BDF(J)
+                 VF(I) =  VF(I) + DF(I,J)*BDF(J)
   190         CONTINUE
   200       CONTINUE
             DO 210 I = 1,3
-              EDGL(I+8* (IE-1)) = VMF(I)
-              EDGL(I+3+8* (IE-1)) = VF(I)
+              EDGL(I+  8*(IE-1)) = VMF(I)
+              EDGL(I+3+8*(IE-1)) =  VF(I)
   210       CONTINUE
           ELSE
             DO 230 I = 1,3
               DO 220 J = 1,3
-                VF(I) = VF(I) + DF(I,J)*BDF(J)
+                 VF(I) =  VF(I) +  DF(I,J)*BDF(J)
                 VMF(I) = VMF(I) + DMF(I,J)*BDF(J)
   220         CONTINUE
   230       CONTINUE
             DO 240 I = 1,3
-              EDGL(I+8* (IE-1)) = VM(I) + VMF(I)
-              EDGL(I+3+8* (IE-1)) = VF(I) + VFM(I)
+              EDGL(I+  8*(IE-1)) = VM(I) + VMF(I)
+              EDGL(I+3+8*(IE-1)) = VF(I) + VFM(I)
   240       CONTINUE
           END IF
-          EDGL(7+8* (IE-1)) = VT(1)
-          EDGL(8+8* (IE-1)) = VT(2)
+          EDGL(7+8*(IE-1)) = VT(1)
+          EDGL(8+8*(IE-1)) = VT(2)
   250   CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

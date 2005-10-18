@@ -1,10 +1,9 @@
-      SUBROUTINE DSQDI2 ( NOMTE, XYZL, DF, DCI, DMF, DFC, DMC, AN, AM )
+      SUBROUTINE DSQDI2 ( XYZL, DF, DCI, DMF, DFC, DMC, AN, AM )
       IMPLICIT  NONE
       REAL*8    XYZL(3,*), DF(3,3), DMC(3,2), DFC(3,2), DCI(2,2),
      +          DMF(3,3), AN(4,12), AM(4,8)
-      CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,34 +90,22 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  VARIABLES LOCALES
-      INTEGER           LZR,I, J, K, IC, INT, IRET
-          REAL*8        QSI,ETA,ZERO,UNDEMI,UN,DEUX,TROIS
-          REAL*8        L(4),DET
-          REAL*8        X(4) , Y(4)
-          REAL*8        HFT2(2,6), DFCBFA(2,4), HMFT2(2,6)
-          REAL*8        DFCBFB(2,12), DCIDFB(2,12), BFA(3,4)
-          REAL*8        DMCTBM(2,8), AB(4,12), AW(4,12), DCIDMC(2,8)
-          REAL*8        BFB(3,12), BM(3,8), AL(4,8)
-          REAL*8        BCB(2,12), BCA(2,4), BCM(2,8)
-          REAL*8        DB(2,4), DCB(2,12)
-          REAL*8        AA(4,4), AAI(4,4)
-C
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
-               PARAMETER (LCOTE = LXYC + 2*NC)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  NC, I, J, K, IC, INT, IRET
+      REAL*8   QSI,ETA,ZERO,UNDEMI,UN,DEUX,TROIS, DET
+      REAL*8   L(4), X(4) , Y(4)
+      REAL*8   HFT2(2,6), DFCBFA(2,4), HMFT2(2,6)
+      REAL*8   DFCBFB(2,12), DCIDFB(2,12), BFA(3,4)
+      REAL*8   DMCTBM(2,8), AB(4,12), AW(4,12), DCIDMC(2,8)
+      REAL*8   BFB(3,12), BM(3,8), AL(4,8)
+      REAL*8   BCB(2,12), BCA(2,4), BCM(2,8)
+      REAL*8   DB(2,4), DCB(2,12)
+      REAL*8   AA(4,4), AAI(4,4), CARAQ4(25),JACOB(5)
 C     ------------------------------------------------------------------
-C.========================= DEBUT DU CODE EXECUTABLE ==================
-      CALL JEMARQ()
+C
+      CALL ELREF5('SE2','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+      NC = 4
 C
 C --- INITIALISATIONS :
 C     ===============
@@ -140,21 +127,19 @@ C
           AW(I,J) = ZERO
   20  CONTINUE
 C
-      CALL JEVETE( '&INEL.'//NOMTE(1:8)//'.DESR' ,' ',LZR )
-C
-      CALL GQUAD4 (XYZL , ZR(LZR))
-      L(1) = ZR(LZR-1+LCOTE)
-      L(2) = ZR(LZR-1+LCOTE+1)
-      L(3) = ZR(LZR-1+LCOTE+2)
-      L(4) = ZR(LZR-1+LCOTE+3)
-      X(1) = ZR(LZR-1+LXYC)
-      X(2) = ZR(LZR-1+LXYC+1)
-      X(3) = ZR(LZR-1+LXYC+2)
-      X(4) = ZR(LZR-1+LXYC+3)
-      Y(1) = ZR(LZR-1+LXYC+4)
-      Y(2) = ZR(LZR-1+LXYC+5)
-      Y(3) = ZR(LZR-1+LXYC+6)
-      Y(4) = ZR(LZR-1+LXYC+7)
+      CALL GQUAD4 ( XYZL, CARAQ4 )
+      L(1) = CARAQ4( 9)
+      L(2) = CARAQ4(10)
+      L(3) = CARAQ4(11)
+      L(4) = CARAQ4(12)
+      X(1) = CARAQ4(1)
+      X(2) = CARAQ4(2)
+      X(3) = CARAQ4(3)
+      X(4) = CARAQ4(4)
+      Y(1) = CARAQ4(5)
+      Y(2) = CARAQ4(6)
+      Y(3) = CARAQ4(7)
+      Y(4) = CARAQ4(8)
 C
 C===================================================================
 C --- DETERMINATION DES MATRICES AN ET AM QUI SONT TELLES QUE      =
@@ -212,31 +197,42 @@ C
                 DFCBFB(I,J) = ZERO
  100        CONTINUE
 C
-            CALL JQUAD4 (NPG+NNO+2*(IC-1)+INT , XYZL , ZR(LZR))
+C ---       COORDONNEES DU POINT D'INTEGRATION COURANT :
+C           ------------------------------------------
+            IF ( IC .EQ. 1 ) THEN
+              QSI = -ZR(ICOOPG-1+NDIM*(INT-1)+1)
+              ETA = -ZR(IPOIDS-1+INT)
+            ELSEIF ( IC .EQ. 2 ) THEN
+              QSI =  ZR(IPOIDS-1+INT)
+              ETA = -ZR(ICOOPG-1+NDIM*(INT-1)+1)
+            ELSEIF ( IC .EQ. 3 ) THEN
+              QSI =  ZR(ICOOPG-1+NDIM*(INT-1)+1)
+              ETA =  ZR(IPOIDS-1+INT)
+            ELSEIF ( IC .EQ. 4 ) THEN
+              QSI = -ZR(IPOIDS-1+INT)
+              ETA =  ZR(ICOOPG-1+NDIM*(INT-1)+1)
+            ENDIF
+C
+            CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C ---       CALCUL DE LA MATRICE HFT2 :
 C           -------------------------
-            CALL DSXHFT (DF, ZR(LZR), HFT2)
+            CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C
 C ---       CALCUL DU PRODUIT HMF.T2 :
 C           ------------------------
-            CALL DXHMFT(DMF,ZR(LZR),HMFT2)
-C
-C ---       COORDONNEES DU POINT D'INTEGRATION COURANT :
-C           ------------------------------------------
-            QSI  = ZR(LZR-1+LQSI+NPG+NNO+2*(IC-1)+INT-1)
-            ETA  = ZR(LZR-1+LETA+NPG+NNO+2*(IC-1)+INT-1)
+            CALL DXHMFT ( DMF, JACOB(2), HMFT2 )
 C
 C ---       CALCUL DES MATRICES  [BCB] ET [BCA] QUI SONT TELLES QUE
 C ---       D (BETA)/(DQSI*DQSI) = [TB]*BETA + [TA]*ALPHA :
 C           ---------------------------------------------
-            CALL DSQCI2(QSI, ETA, ZR(LZR), HFT2, HMFT2, BCB, BCA, BCM)
+            CALL DSQCI2( QSI, ETA, CARAQ4, HFT2, HMFT2, BCB, BCA, BCM )
 C
 C ---      CALCUL DE LA MATRICE BFA AU POINT D'INTEGRATION COURANT
 C ---       RELIANT LES COURBURES AUX INCONNUES ALPHA
 C ---       (X = BFB*UN + BFA*ALPHA) :
 C           -----------------------
-            CALL DSQBFA(QSI, ETA, ZR(LZR), BFA)
+            CALL DSQBFA ( QSI, ETA , JACOB(2) , CARAQ4 , BFA )
 C
 C ---       CALCUL DU PRODUIT DFC_T*BFA :
 C           ---------------------------
@@ -270,7 +266,10 @@ C
 C ---      CALCUL DE LA MATRICE BFB RELIANT LES COURBURES AUX
 C ---      INCONNUES DE FLEXION UN (X = BFB*UN+BFA*ALPHA) :
 C          ----------------------------------------------
-           CALL DSQBFB(INT, ZR(LZR), BFB)
+CCCCC           QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+CCCCC           ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
+C
+           CALL DSQBFB ( QSI, ETA, JACOB(2), BFB )
 C
 C ---      CALCUL DU PRODUIT DFC_T*BFB :
 C          ---------------------------
@@ -304,7 +303,7 @@ C
 C ---     CALCUL DE LA MATRICE BM RELIANT LES DEFORMATIONS MEMBRANAIRES
 C ---     AUX DEPLACEMENTS DE MEMBRANE UM (I.E. (UX,UY) ) :
 C         -----------------------------------------------
-          CALL DXQBM(INT, ZR(LZR), BM)
+          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
 C
 C ---     CALCUL DU TERME BCM-DMC_T*BM :
 C         ----------------------------
@@ -503,5 +502,4 @@ C
                AM(I,J) = AM(I,J) + AAI(I,K) * AL(K,J)
  250  CONTINUE
 C
-      CALL JEDEMA()
       END

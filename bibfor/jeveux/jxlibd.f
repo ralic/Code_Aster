@@ -1,6 +1,6 @@
       SUBROUTINE JXLIBD ( IDCO , IDOS , IC , IADDI , LONOI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,14 +49,15 @@ C     ------------------------------------------------------------------
       COMMON /LFICJE/  LITLEC(N)
       COMMON /JUSADI/  JUSADI(N)
       COMMON /KUSADI/  IUSADI(1)
+      COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
 C     ------------------------------------------------------------------
       INTEGER          KADD , LADD , LGBL
       LOGICAL          LPETIT , LRAB
 C DEB ------------------------------------------------------------------
       KADD   = IADDI(1)
       LADD   = IADDI(2)
-      LPETIT = ( (IUSADI(JUSADI(IC)+2*KADD-1) .EQ. 0  .AND.
-     &            IUSADI(JUSADI(IC)+2*KADD)   .EQ. 0       ) )
+      LPETIT = ( (IUSADI(JUSADI(IC)+3*KADD-2) .EQ. 0  .AND.
+     &            IUSADI(JUSADI(IC)+3*KADD-1) .EQ. 0       ) )
       LGBL = 1024*LONGBL(IC)*LOIS
 C
       IF ( LPETIT ) THEN
@@ -83,6 +84,8 @@ C
           IITLEC(IC) = KADD
           LITLEC(IC) = .TRUE.
         ENDIF
+        IUSADI(JUSADI(IC)+3*KADD) = IUSADI(JUSADI(IC)+3*KADD) + 1
+        NBPETI(IC) = NBPETI(IC) + 1
       ELSE
 C
 C ----- GROS  OBJET
@@ -90,13 +93,14 @@ C
         NBLENT = LONOI / LGBL
         LRAB = ( MOD (LONOI , LGBL) .NE. 0 )
         DO 10 I = 1 , NBLENT
-          IUSADI(JUSADI(IC)+2*(KADD+I-1)-1) = -IDCO
-          IUSADI(JUSADI(IC)+2*(KADD+I-1)  ) = -IDOS
+          IUSADI(JUSADI(IC)+3*(KADD+I-1)-2) = -IDCO
+          IUSADI(JUSADI(IC)+3*(KADD+I-1)-1) = -IDOS
    10   CONTINUE
         IF ( LRAB ) THEN
-          IUSADI(JUSADI(IC)+2*(KADD+NBLENT)-1) = -IDCO
-          IUSADI(JUSADI(IC)+2*(KADD+NBLENT)  ) = -IDOS
+          IUSADI(JUSADI(IC)+3*(KADD+NBLENT)-2) = -IDCO
+          IUSADI(JUSADI(IC)+3*(KADD+NBLENT)-1) = -IDOS
         ENDIF
       ENDIF
+      NBGROS(IC) = NBGROS(IC) + 1
 C FIN ------------------------------------------------------------------
       END

@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,7 +148,7 @@ C        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
         IF (NUMC.LT.0) THEN
           IF (NUMC.EQ.-1) THEN
             IER = IER + 1
-            CALL UTMESS('E','CALCUL',' LE TYPE_ELEMENT: '//NOMTE//
+            CALL UTMESS('F','CALCUL',' LE TYPE_ELEMENT: '//NOMTE//
      &                  ' NE SAIT PAS ENCORE '//'CALCULER L''OPTION: '//
      &                  OPTION//'. ON ARRETE TOUT.')
           ELSE IF (NUMC.EQ.-2) THEN

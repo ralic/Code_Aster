@@ -1,0 +1,993 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR adbhhfa Y.WADIER   DATE  le 18/10/2005 a 17:44:47
+
+-----------------------------------------------------------------------
+REALISATION EL 2005-263
+   NB_JOURS_TRAV  : 2
+   INTERET_UTILISATEUR : OUI
+   TITRE :  test meca rupture parametre GP
+   FONCTIONNALITE
+      nouveau cas-test "metier" : ssnp131a
+      identification du critere energetique Gp de mecanique
+      de la rupture sur une eprouvette CT pourvu d'un defaut de
+      type entaille et soumis a un deplacement impose a
+      temperature uniforme.
+   DETAILS
+      le test est decompose en deux fichiers de commandes s'enchainant :
+      - premier fichier :
+          calcul elastoplastique de l'eprouvette CT et calcul
+	  du g en fond d'entaille par theta-methode sur le
+	  transitoire considere.
+      - second  fichier :
+          l'identification du Gp critique a partir des donnees
+	  de trois valeurs de tenacites min, moyenne et maximale
+	  en procedant aux etapes suivantes :
+	     - calcul du flux d'energie en fond d'entaille Gp = dEelas/dl
+	     en exploitant une zone derriere le fond d'entaille sur
+	     une hauteur egale au rayon de fond d'entaille et un pas de
+	     calcul de dl egal au cinquieme du rayon.
+	     - recherche du maximum du flux sur une distance dlmax qui
+	     fournit une valeur Gp max a chaque instant.
+	     - identification des instants critiques ou le G-theta
+	     coincide aux valeurs donnees des Kjmin, Kjmoy et Kjmax via
+	     la formule d'Irwin et deduction du Gpmax a ces intants.
+	     - constitution d'une loi exponentielle de repartition
+	     probabiliste P(Kj) d'apres le transitoire de calcul en
+	     considerant que P(Kjmin)=5% P(Kjmoy)=50% P(Kjmax)=95%.
+      - la geometrie est une eprouvette CT modelisee en 2D et pourvue
+	     d'une entaille de rayon 100 microns.
+	     - les valeurs testees (non regression) sont les Gp critiques
+	     identifiees pour les trois valeurs de Kj min,moy et max.
+	  	    	
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V6.03.131
+   VALIDATION :
+      ajout cas-test SSNP131A
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boiteau O.BOITEAU   DATE  le 18/10/2005 a 09:41:21
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-174
+   NB_JOURS_TRAV  : 2
+   INTERET_UTILISATEUR : OUI
+   TITRE :  Extension du perimetre d utilisation du solveur FETI
+            en sequentiel comme en parallele (part III)
+   FONCTIONNALITE :
+     SOLVEUR='FETI' dans MECA_STATIQUE
+     Extension au parallelisme de la restit de la semaine derniere concernant la
+     prise en compte des problemes avec multiples seconds membres
+
+   DETAILS :
+   routines modifiees <M>, nouvelles <N>
+   <M> alfeti.
+
+   VALIDATION :
+     Sur le cube et FETI005A, diverses combinaisons en  variant nbre
+     de sous-domaines, vrai ou faux multi-seconds membres, parametres d acceleration
+     + cas_test FETI de la base.
+
+     Exemple du cube decoupe en 10 SD (90 000 DDLs)
+     ---------------------------------
+     calcul thermo-mecanique lineaire sur 4 pas de temps
+     INST=DEFI_LIST_REEL(VALE=(1.0,20.0,300.0,4000.0,),)
+     Machine Linux clpaster en nodebug.
+     Pour FETI: 10SD, NB_REORTHO_INST=3
+                         Encombrement     /  Temps     / Speed-up effectif
+                           memoire (Mo)      elapsed(s)     (theorique)
+     MULT_FRONT                       400 /    294          sans objet
+     FETI_10 SD NB_PROC=1              80 /    214          sans objet
+     FETI_10 SD NB_PROC=2              80 /    115          1.86 (1.86)
+     FETI_10 SD NB_PROC=5              80 /     52          4.11 (3.9)
+
+     On constate donc un leger effet superlineaire sur le speed-up effectif
+     pour 5 proc. Ces resultats restent a confirmer sur un nombre de proc.
+     plus significatif, en variant les cas-tests et en affinant le calcul du
+     speed-up theorique .
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D9.03.01
+       EXPL_ :  Descriptif informatique du solveur FETI
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 14/10/2005 a 16:47:20
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-375
+   NB_JOURS_TRAV  : 0.
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   INTERET_UTILISATEUR : NON
+   TITRE :  calcul thermomecanique par SNL et DST/Q4G
+   FONCTIONNALITE
+     En changeant d'opérateur, STAT_NON_LINE à la place d'un MECA_STATIQUE
+     le cas test hsls01a s'arrete en ERREUR
+     <F> <STAT_NON_LINE> <TLLLGG> MATRICE NON FACTORISABLE.
+         PIVOT VRAIMENT NUL A LA LIGNE 3355
+         NOEUD >N424    < CMP >DX      <
+     Depuis la correction de AL 2005-381 realisee par J.Pellet,
+     le cas test s'arrete en ERREUR :
+     <E> <STAT_NON_LINE> <CALCUL>  LE TYPE_ELEMENT: MEDSTR3  NE SAIT PAS
+         ENCORE CALCULER L'OPTION: RIGI_MECA_TANG  . ON ARRETE TOUT.
+     <E> <STAT_NON_LINE> <CALCUL>  LE TYPE_ELEMENT: MEDSQU4  NE SAIT PAS
+         ENCORE CALCULER L'OPTION: RIGI_MECA_TANG  . ON ARRETE TOUT.
+
+   IMPACT_DOCUMENTAIRE : NON
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-380
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE :  bug dans sinoz2 (indicateurs d'erreur)
+   FONCTIONNALITE
+     La routine sinoz2 utilise les services de la routine ELREF6 pour
+     accéder aux fonctions de forme des éléments finis. Mais elle le fait
+     en dehors de la routine CALCUL. Malheureusement, la routine ELREF6
+     ne peut être appellée que "sous CALCUL" car ELREF6 utilise des variables
+     en COMMON initialisées par CALCUL.
+
+   DETAIL
+     1) Les tests sslv111b/d ont été passés en mode "debug_jeveux".
+        Ils terminent OK.
+     2) ELREF6 a été blindé pour que l'on ne puisse l'appeler que "sous CALCUL".
+        Ajout CALL ASSERT(IACTIF.EQ.1)
+     3) Modification de SINOZ2 pour qu'elle utilise ELRFVF au lieu de ELREF6.
+        Nouvel utilitaire:
+      SUBROUTINE UTELVF ( ELREFA, FAMIL, NOMJV, NPG, NNO )
+C ----------------------------------------------------------------------
+C BUT: RECUPERER LES VALEURS DES FONCTIONS DE FORME
+C ----------------------------------------------------------------------
+C   IN   ELREFA : NOM DE L'ELREFA (K8)
+C        FAMIL  : NOM DE LA FAMILLE DE POINTS DE GAUSS :
+C                 'FPG1','FPG3',...
+C   VAR  NOMJV  : NOM JEVEUX POUR STOCKER LES FONCTIONS DE FORME
+C   OUT  NPG    : NOMBRE DE POINTS DE GAUSS
+C        NNO    : NOMBRE DE NOEUDS DU TYPE_MAILLE
+C ----------------------------------------------------------------------
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D6.00.01
+       EXPL_ : ajout de la routine UTELVF
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-378
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : E.BOYERE
+   INTERET_UTILISATEUR : NON
+   TITRE :  NEW8.1.17, le test forma11c s'arrete en ERREUR
+   FONCTIONNALITE
+     MODEST = EXTR_MODE(FILTRE_MODE=_F( CRIT_EXTR='MASS_EFFE_UN',
+                                        MODE=MODES)),
+   DETAIL
+    En 8.1.17, la catalogue de la commande EXTR_MODE a été modifié pour
+    introduire de nouveaux mots clés SEUIL_X, SEUIL_Y et SEUIL_Z.
+    La valeur par défaut de SEUIL a été supprimée et aucune regle n'a
+    été définie sur les mots clés SEUIL, SEUIL_X, SEUIL_Y et SEUIL_Z.
+    Sous le bloc CRIT_EXTR, on a introduit la regle AU_MOINS_UN :
+         b_crit_extr     =BLOC(condition = "CRIT_EXTR != None",
+           regles=(AU_MOINS_UN('SEUIL','SEUIL_X','SEUIL_Y','SEUIL_Z'),),
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U6.52.12 commande EXTR_MODE
+       EXPL_ : regle sur les mots clés SEUIL, SEUIL_X, SEUIL_Y et SEUIL_Z
+   VALIDATION
+     test forma11c:
+     ajout du mot cle SEUIL dans la commande EXTR_MODE
+     MODEST = EXTR_MODE(FILTRE_MODE=_F( CRIT_EXTR='MASS_EFFE_UN',
+                                        SEUIL=0.001,
+                                        MODE=MODES)),
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-260
+   NB_JOURS_TRAV  : 6
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   INTERET_UTILISATEUR : NON
+   TITRE : suppression de l'objet .DESR des éléments de PLAQUE
+   FONCTIONNALITE
+     suppression de l'objet .DESR pour les éléments DKT, DST et Q4G
+   DETAIL
+     suppression de jni079, ménage dans nuelrf et ini002
+     ménage dans les catalogues d'élément:
+       gener_medkg1.cata, gener_medkt2.cata, gener_megri2.cata
+     ménage dans le fortran:
+       suppression des instructions PARAMETRAGE TRIANGLE et QUADRANGLE
+       suppression de
+         CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
+       appel à
+         CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+                                              IVF,IDFDX,IDFD2,JGANO)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage de cas tests validant DKT, DST et Q4G
+     un seul NOOK, test ssls200a :
+     REFERENCE: NON_REGRESSION   VERSION: 5.03.14
+     NOOK              RELA  1.03E-09 % VALE: 1.8713731513779D+03
+      SOMM_ABS         TOLE  1.00E-09 % REFE: 1.8713731513585D+03
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 14/10/2005 a 10:43:27
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-386
+   NB_JOURS_TRAV  : 0.
+   POUR_LE_COMPTE_DE : P. BADEL
+   INTERET_UTILISATEUR : OUI
+   TITRE :  DYNA/STAT_NON_LINE mots clés inconnus
+   FONCTIONNALITE :
+     Suite a l'EL2005-148, les mots clés de convergence locale
+     sont passés sous COMP_INCR/COMP_ELAS. Cependant, le changement de syntaxe
+     n'a pas été répercuté sur les cas tests sdnv100g et wtnv125b. On change
+     donc la syntaxe
+   DETAIL :
+     Dans le cas test sdnv100g, ces mots clés sont meme supprimés car il
+     s'agit d'un comportement purement élastique.
+     Dans le cas test wtnv125b, ils sont déplacés.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : passage des deux cas tests.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 17/10/2005 a 17:08:44
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-345
+   NB_JOURS_TRAV  : 2.5
+   INTERET_UTILISATEUR : NON
+   TITRE :  Temps système dans CALC_ELEM
+   FONCTIONNALITE
+     limiter les appels à JERECU
+   DETAILS
+   Depuis l'introduction de l'appel à la routine JERECU dans
+   chaque commande pour récupérer les petits enregistrements sur la
+   base volatile, de nombreux cas tests ont vu leur temps système s'accroitre.
+   La correction porte sur deux points :
+     - la modification de l'objet système JEVEUX $$USADI pour introduire
+       un compteur du nombre d'objet détruit par enregistrement et ainsi
+       il ne devient plus nécessaire de relire un enregistrement pour
+       savoir si on peut récupérer de l'espace libre.
+     - de compter le nombre d'objets détruits et de ne déclencher effectivement
+       le processus de récupération qu'au-delà d'un certain seuil.
+       Le seuil est pour le moment fixé en dur à 500 et n'est pas accessible
+       par le fichier de commande. Evolution à mettre en oeuvre si le besoin
+       s'en fait sentir, en passant un paramètre dans DEBUT/POURSUITE
+   La mise en oeuvre de ces corrrections permet de diminuer sensiblement le temps système
+   sur clayastr :
+   avant (version 8.1.14)
+   ======================
+   forma12c * CALC_ELEM  44.27 :  7.48 :  51.75 *
+   forma12c * CALC_ELEM  81.68 :  9.90 :  91.58 *
+   ssnp303c * CALC_ELEM   8.92 :  8.15 :  17.07 *
+   ssnp303c * CALC_ELEM   4.55 :  2.18 :   6.73 *
+    rccm06a * CALC_ELEM   9.43 :  1.68 :  11.12 *
+    rccm06a * CALC_ELEM  20.03 :  7.92 :  27.95 *
+   ssnv160c * CALC_ELEM   4.03 :  7.83 :  11.87 *
+   ssnv183a * CALC_ELEM  12.23 : 24.63 :  36.87 *
+   ssnv183a * CALC_ELEM  15.45 : 37.52 :  52.97 *
+   ssnp312b * CALC_ELEM  14.85 : 11.22 :  26.07 *
+
+   après (version 8.1.19 surchargée)
+   ======================
+   forma12c * CALC_ELEM   0.20 :  0.00 :   0.20 *
+   forma12c * CALC_ELEM  35.75 :  0.52 :  36.27 *
+   forma12c * CALC_ELEM  36.45 :  1.28 :  37.73 *
+   forma12c * CALC_ELEM  42.95 :  2.78 :  45.73 *
+   ssnp303c * CALC_ELEM   6.22 :  0.10 :   6.32 *
+   ssnp303c * CALC_ELEM   3.77 :  0.02 :   3.78 *
+    rccm06a * CALC_ELEM   9.43 :  0.23 :   9.67 *
+    rccm06a * CALC_ELEM   9.17 :  0.20 :   9.37 *
+    rccm06a * CALC_ELEM   9.37 :  0.63 :  10.00 *
+    rccm06a * CALC_ELEM  19.85 :  2.37 :  22.22 *
+   ssnv160c * CALC_ELEM   3.75 :  0.03 :   3.78 *
+   ssnv183a * CALC_ELEM   9.82 :  0.10 :   9.92 *
+   ssnv183a * CALC_ELEM  10.47 :  0.28 :  10.75 *
+   ssnp312b * CALC_ELEM  13.42 :  1.23 :  14.65 *
+
+   Le .para du test mtlp100a est modifié et passe à 32 Mo
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : ssnv183a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 17/10/2005 a 15:56:30
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-398
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE :  mémoire cas tests
+   FONCTIONNALITE
+   DETAILS
+     ajustement des .para demo003a et sensd06a
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-395
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE :  affichages commande DETRUIRE dans mess et resu
+   FONCTIONNALITE
+     DETRUIRE
+   DETAILS
+     Je donne à DETRUIRE le statut de macro et je modifie les conditions
+     d'appel de AfficheTexteCommande et AfficheFinCommande.
+     Ainsi, on a bien désormais l'écho de DETRUIRE dans le .mess et une
+     mesure correcte du cpu dans le .resu
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     l'ensemble des tests qui utilisent DETRUIRE
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+     tolérances absolues sur cas tests
+   DETAILS
+    sur les tests suivants : hsnv126a, mtlp101a, ttlv01a, ttlv01b, ttlv01c,
+    ttlv01d
+    je modifie les test_resu en absolu avec valeur de référence non nulle
+    pour des tests en relatif. En cohérence avec les docs V, je renseigne
+    le champ REFERENCE analytique ou non_regression.
+    Il faudra que je poursuive ce petit chantier.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : les tests produits
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-399
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  floating point exception
+   FONCTIONNALITE  :  defi_materiau / elas_fo
+   DETAILS
+     Le pb vient de la discrétisation de la fonction du coef de dilatation :
+      ALPHA=DEFI_FONCTION (NOM_PARA='TEMP',
+                           VALE=(0.0, 1.00E-5,
+                                 0.01, 1.00E-5),
+                           PROL_GAUCHE='CONSTANT',
+                           PROL_DROITE='CONSTANT',);
+     Ca pose probleme ensuite dans alfint.f
+     En effet, la température de référence vaut (par défaut) zéro et,
+     en balayant les abscisses de ALPHA, si abs(Ti-Tref)<PRECISION,
+     on prend la dérivée en Ti-1.
+     Le hic, c'est que par défaut Tref=0. et PRECISION=1. (cf catalogue de
+     defi_materiau/elas_fo). Donc dans ce cas, les 2 abscisses satisfont
+     le critère et pour 0.01, Ti-1 sera 0.
+     La solution consiste à serrer le PRECISION à une valeur inférieure à 0.01
+     Je blinde la programmation en testant l'égalité stricte de Ti-Tref
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : étude jointe
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.43.01
+       EXPL_ :  mot clé PRECISION sous ELAS_FO, dire que ça ne sert pas
+                que pour le cas TEMP_DEF_ALPHA mais aussi à discriminer comme
+		ici la température de référence parmi les abscisses de ALPHA
+
+
+-----------------------------------------------------------------------
+--- AUTEUR geniaut S.GENIAUT   DATE  le 13/10/2005 a 09:49:48
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+     Me mettre Responsable sur les routines X-FEM
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 18/10/2005 a 08:31:12
+
+----------------------------------------------------------------------------
+REALISATION EL 2005-264
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE :  Passage des variables de commande et des angles à Zmat
+   FONCTIONNALITE interface Zmat Aster
+     Pour permettre d'utiliser des comportements dans Zmat dépendant
+     d'autre chose que de la temperature, on restitue la possiblité de passer
+     les variables de commande d'Aster (irradiation, corrosion...) à Zmat.
+     De plus on fournit maintenant à Zmat les angles (nautiques) fournis
+     sous AFFE_CARA_ELEM (mot -clé MASSIF). Comme Zmat attend des angles
+     d'Euler, on effectue la tranformation dans nmzmat.
+   DETAILS
+     Dans la routine NMZMAT, on récupère les variables de commande à la nouvelle
+     "mode", c'est à dire directement par RCVARC, dans la routine. Cela évite de
+     passer ces variables en arguments. Actuellement, on passe donc la température
+     (qui elle est toujours en argument), la corrosion et l'irradiation (qui sont
+     appelées par RCVARC). L'hydratation et le séchage sont à ajouter dès qu'elles
+     seront sous la nouvelle forme.
+     Ceci implique une modif dans Zaster.c, pour prendre maintenant en compte
+     ces variables.
+     D'autre part, on tranforme les angles nautiques en angles d'Euler via une
+     nouvelle routine NAUEUL. Ceci est validé dans ZMAT004A.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U2.10.01
+       EXPL_ :  Ajout des variables de commande
+   VALIDATION
+     L'ensemble des tests ZMAT : ZMAT001, ZMAT002, ZMAT003, ZMAT004
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 18/10/2005 a 10:21:11
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.0
+   POUR_LE_COMPTE_DE : J.M. PROIX
+   INTERET_UTILISATEUR : OUI
+   TITRE :  CALC_ELEM option ENDO_ELGA
+   FONCTIONNALITE :
+     Dans le cadre de la fiche EL2005-285, on restitue le catalogue
+     gener_me_x.cata qui n'a pas pu être restitué suite à un problème de conflit
+     de notation.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-384
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : E. GALENNEE
+   INTERET_UTILISATEUR : OUI
+   TITRE :  ASCOU22 sur claspter
+   FONCTIONNALITE
+   DETAILS :
+     Resultat NOOK sur clpaster: le fichier ascouf_ssep_mult_v1.datg restitué
+     dans la 8.1.13, n'avait pas été mis à jour sur clpaster dans le répertoire
+     /home/aster/NEW8_intel/datg.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-262
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : M. ABBAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : Cas-test Wagonner
+   FONCTIONNALITE
+   DETAIL
+   - Modifications: les 3 modélisations simulant l'emboutissage d'une tôle par un
+     poinçon hémisphérique (test de Wagonner) ont été réactualisées du point de vue :
+     * De la loi de comportement : l'intervalle de définition de la loi de
+       comportement a été étendu, on n'utilise plus lors de l'interpolation de valeur
+       de déformation en dehors des points définissants la loi de comportement.
+     * Des valeurs de référence : les valeurs existantes ne correspondaient pas
+       tout à fait aux valeurs décrites dans le document de référence, on les
+       réactualise.
+   - Résultats
+    * Pour les modélisations a et c, contact sans frottement, les calculs ne
+      convergent plus au delà de 75% du chargement.
+    * Pour la modélisation b (contact avec frottement) les calculs ne convergent
+      plus au delà de 78% du chargement.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V6.04.501 : cas-test ssnv501
+       EXPL_ : création de la doc V avec description des 3 modélisations
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 17/10/2005 a 12:54:58
+
+--------------------------------------------------------------------------
+REALISATION ED 2005-041
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  DOCV Validation independante contact
+   FONCTIONNALITE
+     Contact frottement - Test de Wagoner
+   DETAILS
+     Emboutissage de tole: chargement jusqu'a  78% avec frottement
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V6.04.501
+       EXPL_ : nouvelle doc pour cas-test Wagoner
+   VALIDATION
+     ssnv501a, b et c
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 17/10/2005 a 17:38:21
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-266
+   NB_JOURS_TRAV  : 1   (JP+MC)
+   INTERET_UTILISATEUR : NON
+   TITRE :  Permettre de récupérer les erreurs <F> dans certains cas-test
+   FONCTIONNALITE
+      Il est important de vérifier que certains messages d'erreur sont émis
+      dans certaines conditions (option non supportée par un élément par
+      exemple).
+      Récupérer proprement la main quelque soit l'erreur peut également être
+      intéressant dans des macros (Stanley ou outil métier...).
+      Dans le premier cas, il faut choisir le comportement en cas d'erreur <F>
+      de manière globale. Dans le second, on veut pouvoir modifier ce
+      comportement par exemple en entrée et sortie de macro.
+
+   DETAILS
+   1. Syntaxe
+      Les deux comportements sont :
+         - 'ABORT' : comme avant, on plante avec remontée d'erreur.
+         - 'EXCEPTION' : on lève l'exception aster.FatalError (code 20).
+      On positionne le nouveau comportement par :
+         DEBUT(ERREUR=_F(ERREUR_F='ABORT',),)
+      et/ou
+         aster.onFatalError('ABORT')
+      On peut récupérer le comportement courant avec :
+         cmpout = aster.onFatalError()
+
+   2. Implémentation
+      La commande DEBUT et la méthode onFatalError aboutissement à un
+      CALL ONERRF(SET, GET, LONG)
+        où SET vaut 'ABORT' ou 'EXCEPTION' ou ' ' ; dans ce dernier cas,
+        on récupère dans GET le comportement courant, LONG = longueur "utile"
+        de la chaine.
+      Pour connaître le comportement courant en fortran :
+         CALL ONERRF(' ', CMPOUT, LOUT)
+      L'aiguillage est fait dans UTFINM, selon le comportement courant, on
+      continue de passer par la branche CALL JEFINI('ERREUR') ou bien, on
+      lève l'exception avec CALL UEXCEP(20,...) (et non UTEXCEP qui repasse
+      par UTDEBM).
+      Modif de UTDEBM pour ne pas afficher le code <F> si on lève l'exception.
+
+   3. Exception dans astermodule
+    . aster.error == erreurs <S>. Les exceptions particularisés comme
+      NonConvergenceError sont sous aster.error.
+    . aster.FatalError est maintenant à part pour pouvoir trapper toutes les
+      erreurs <S> avec aster.error sans trapper aster.FatalError.
+
+      try:
+         raise aster.error
+      except aster.FatalError:
+         print "on ne passe pas là"
+      except aster.NonConvergenceError:
+         print "pas la bonne"
+      except aster.error:
+         print 'on passe ici'
+
+   4. Ménage dans UTFINM
+      Je supprime ce bloc :
+-         CALL GETRES(SPVR,CBID,NOMCMD)
+-         CALL JEDETC('V',SPVR(1:6),1)
+-         IF ( SPVR .NE. '  ' ) THEN
+-            SPVR(20:24) = '.SPVR'
+-            CALL JEEXIN(SPVR,IRET)
+-            IF (IRET.NE.0) CALL JEDETR(SPVR)
+-            NBL = MIN(LIGCOU,NT)
+-            IF(NBL.GT.0)THEN
+-               CALL WKVECT(SPVR,'G V K80',NBL,LSPVR)
+-               DO 1 L= 1, NBL
+-                  ZK80(LSPVR+L-1) = TAMPON(L)
+- 1             CONTINUE
+-            ENDIF
+-         ENDIF
+      car JP et moi ne les comprenons pas :
+         - pourquoi prendre les 6 premiers caractères du concept ?
+         - l'objet .SPVR est rempli dans UTFINM et lu dans GCUINI.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.11.01
+       EXPL_ : Mot-clé ERREUR et explication du mécanisme
+   VALIDATION
+    . ajout d'un except FatalError dans zzzz107a (on ne doit pas passer dedans)
+    . erreu01a : test de l'erreur <F> émise par calcul quand un élément ne
+         sait pas traiter une option
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rezette C.REZETTE   DATE  le 18/10/2005 a 08:29:48
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-258
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : P.BADEL
+   INTERET_UTILISATEUR : NON
+   TITRE :  Suppression d'une routine redondante
+   FONCTIONNALITE
+   DETAILS :
+     Le but de cette fiche était de substituer l'appel de RNLIR8 par UTACLI dans
+     la routine INIOBS, puis de supprimer RNLIR8 (car cette routine n'est
+     appelée que dans INIOBS).
+     Or INIOBS n'est plus appelée en NEW8.1.19!
+     Nous avons donc supprimé les routines INIOBS et RNLIR8 du source Aster.
+     Sources supprimées  : rnlir8.f, iniobs.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : liste restreinte
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 17/10/2005 a 11:39:42
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-387
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE :  "New8.1.18 : les tests mumps02a et sensd04q manquent de mémoire"
+   FONCTIONNALITE
+     Ces 2 tests s'arrêtent par manque de mémoire. Mais ils font partie des "petits" tests
+     qui tournaient jusqu'à présent avec 16 Mo. Ce qui est très faible.
+     J'ai regardé le test mumps02a. Il se plante apparemment lors de l'assemblage quand
+     il cherche une place mémoire pour l'objet .VALE de la matrice assemblée.
+     La taille demandée est tout à fait raisonnable (100 000 mots environ).
+     Au moment du plantage, les objets devant être en mémoire ("U") sont environ 50
+     en dehors des objets "système" des collections.
+     Parmi ces objets, je n'ai rien vu d'anormal (nom et taille).
+     J'en déduis donc que la dérive "naturelle" du code (taille de l'exécutable) ou le hasard
+     des chargements / déchargements ont fait franchir à ce test la barre des 16 Mo.
+     Je ne regarde pas spécialement le test sensd04a et j'augmente le .para de ces 2 tests :
+        - mumps02a : 16 Mo -> 32 Mo
+        - sensd04a : 16 Mo -> 32 Mo
+   DETAILS
+     Liste des fichiers modifiés:
+       mumps02a.comm  sensd04a.comm
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : les 2 tests sont OK avec 32 Mo
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-388
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE :  "test ssnl127e cassé en 8.1.18"
+   FONCTIONNALITE
+     Les coques 3D utilisent apparemment pour les calculs non linéaires, la famille
+     de points de Gauss appelée 'MASS' (voir routine vdxnlr.f).
+     Il faut donc que le catalogue de ces éléments déclare la famille 'MASS' dans la famille 'MATER'
+     Sinon, les variables de commande sont indisponibles sur la famille 'MASS'.
+     Je modifie donc le catalogue  :
+      <  FPG_LISTE__  MATER = (RIGI)
+      --
+      >  FPG_LISTE__  MATER = (RIGI  MASS)
+   DETAILS
+     Liste des fichiers modifiés:
+       rcvarc.f
+       gener_mecq32.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-396
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE :  "CREA_CHAMP/AFFE/VARI_R se plante en écrasement aval"
+   FONCTIONNALITE
+     Il s'agit d'une erreur d'utilisation. Pour créer un champ de variables internes
+     par affectation sur les mailles, il ne faut pas utiliser le mot clé AFFE avec
+     la grandeur VARI_R  (car celle-ci n'a qu'une seule composante).
+     Je modifie le code (routine CARAFF) pour ne plus s'arrêter dans un écrasement mais
+     par un message plus "user friend" :
+     <F> ON NE PEUT PAS CREER UN CHAMP DE VARI_R AVEC LE MOT CLE FACTEUR AFFE (VOIR U2.01.09)
+   DETAILS
+     Liste des fichiers modifiés:
+       caraff.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule         mcourtoi M.COURTOIS        4083     67     21
+ CASTEST AJOUT erreu01a                     mcourtoi M.COURTOIS         121    121      0
+ CASTEST AJOUT ssnp131a                      adbhhfa Y.WADIER           418    418      0
+ CASTEST MODIF demo003a                       durand C.DURAND           201      1      1
+ CASTEST MODIF forma11c                      cibhhlv L.VIVAN            188      3      2
+ CASTEST MODIF hsnv126a                       durand C.DURAND           380     13     13
+ CASTEST MODIF mtlp100a                      d6bhhjp J.P.LEFEBVRE       784      1      1
+ CASTEST MODIF mtlp101a                       durand C.DURAND           118      4      4
+ CASTEST MODIF mumps02a                      vabhhts J.PELLET            52      1      1
+ CASTEST MODIF sdnv100g                      cibhhpd L.SALMONA          255      1      3
+ CASTEST MODIF sensd04a                      vabhhts J.PELLET           257      1      1
+ CASTEST MODIF sensd06a                       durand C.DURAND           435      1      1
+ CASTEST MODIF ssls200a                      cibhhlv L.VIVAN            257      2      2
+ CASTEST MODIF ssnv501a                     lebouvie F.LEBOUVIER        404    140     39
+ CASTEST MODIF ssnv501b                     lebouvie F.LEBOUVIER        430    201     15
+ CASTEST MODIF ssnv501c                     lebouvie F.LEBOUVIER        411    138     49
+ CASTEST MODIF ttlv01a                        durand C.DURAND           350    201    151
+ CASTEST MODIF ttlv01b                        durand C.DURAND           295    145    109
+ CASTEST MODIF ttlv01c                        durand C.DURAND           335    185    139
+ CASTEST MODIF ttlv01d                        durand C.DURAND           335    185    139
+ CASTEST MODIF wtnv125b                      cibhhpd L.SALMONA          487      3      3
+ CASTEST MODIF zmat001a                      jmbhh01 J.M.PROIX          218      1      1
+ CASTEST MODIF zmat002a                      jmbhh01 J.M.PROIX          249      1      1
+ CASTEST MODIF zmat003a                      jmbhh01 J.M.PROIX          150      1      1
+ CASTEST MODIF zmat004a                      jmbhh01 J.M.PROIX          358      2      2
+ CASTEST MODIF zzzz107a                     mcourtoi M.COURTOIS         464     76     14
+CATALOGU MODIF typelem/gener_me_x           lebouvie F.LEBOUVIER        591      2      1
+CATALOGU MODIF typelem/gener_mecq32          vabhhts J.PELLET           258      3      3
+CATALOGU MODIF typelem/gener_medkg1          cibhhlv L.VIVAN            214      5      5
+CATALOGU MODIF typelem/gener_medkt2          cibhhlv L.VIVAN            315     11     11
+CATALOGU MODIF typelem/gener_megri2          cibhhlv L.VIVAN            201      3      3
+CATALOPY MODIF commande/debut               mcourtoi M.COURTOIS          82      4      1
+CATALOPY MODIF commande/detruire              durand C.DURAND            34      2      2
+CATALOPY MODIF commande/extr_mode            cibhhlv L.VIVAN             55      2      1
+CATALOPY MODIF commande/poursuite           mcourtoi M.COURTOIS          79      4      1
+ FORTRAN AJOUT elements/utelvf               cibhhlv L.VIVAN             93     93      0
+ FORTRAN AJOUT supervis/onerrf              mcourtoi M.COURTOIS          71     71      0
+ FORTRAN AJOUT utilitai/angvec               jmbhh01 J.M.PROIX           45     45      0
+ FORTRAN AJOUT utilitai/naueul               jmbhh01 J.M.PROIX           70     70      0
+ FORTRAN MODIF algeline/alfeti               boiteau O.BOITEAU          960      9      5
+ FORTRAN MODIF algeline/xerbla               geniaut S.GENIAUT           60      1      1
+ FORTRAN MODIF algorith/nmcomp               jmbhh01 J.M.PROIX          734      2      2
+ FORTRAN MODIF algorith/nmgril               cibhhlv L.VIVAN            251     12     18
+ FORTRAN MODIF algorith/nmzmat               jmbhh01 J.M.PROIX          167     59     14
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          194      2      2
+ FORTRAN MODIF algorith/xadher               geniaut S.GENIAUT          150      2      1
+ FORTRAN MODIF algorith/xajpin               geniaut S.GENIAUT           93      2      1
+ FORTRAN MODIF algorith/xcalfe               geniaut S.GENIAUT          158      2      1
+ FORTRAN MODIF algorith/xcface               geniaut S.GENIAUT          287      3      1
+ FORTRAN MODIF algorith/xconli               geniaut S.GENIAUT          238      2      1
+ FORTRAN MODIF algorith/xcourb               geniaut S.GENIAUT          148      2      2
+ FORTRAN MODIF algorith/xcrvol               geniaut S.GENIAUT          121      2      1
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          158      3      1
+ FORTRAN MODIF algorith/xdecov               geniaut S.GENIAUT          298      3      1
+ FORTRAN MODIF algorith/xdivte               geniaut S.GENIAUT          120      2      1
+ FORTRAN MODIF algorith/xgrals               geniaut S.GENIAUT          113      3      2
+ FORTRAN MODIF algorith/xjacff               geniaut S.GENIAUT          128      3      1
+ FORTRAN MODIF algorith/xkel3d               geniaut S.GENIAUT          370      2      2
+ FORTRAN MODIF algorith/xlagsp               geniaut S.GENIAUT          185      2      2
+ FORTRAN MODIF algorith/xmafis               geniaut S.GENIAUT          105      3      1
+ FORTRAN MODIF algorith/xmafr1               geniaut S.GENIAUT           68      3      2
+ FORTRAN MODIF algorith/xmafr2               geniaut S.GENIAUT           93      3      2
+ FORTRAN MODIF algorith/xmmbca               geniaut S.GENIAUT          157      2      2
+ FORTRAN MODIF algorith/xmmcme               geniaut S.GENIAUT          158      2      1
+ FORTRAN MODIF algorith/xoriff               geniaut S.GENIAUT          138      2      1
+ FORTRAN MODIF algorith/xoula                geniaut S.GENIAUT           78      2      1
+ FORTRAN MODIF algorith/xpente               geniaut S.GENIAUT           73      3      1
+ FORTRAN MODIF algorith/xplmat               geniaut S.GENIAUT           71      3      2
+ FORTRAN MODIF algorith/xreacl               geniaut S.GENIAUT          116      3      2
+ FORTRAN MODIF algorith/xrell1               geniaut S.GENIAUT          188      2      2
+ FORTRAN MODIF algorith/xrell2               geniaut S.GENIAUT          306      2      2
+ FORTRAN MODIF algorith/xsella               geniaut S.GENIAUT          193      2      2
+ FORTRAN MODIF algorith/xtopoc               geniaut S.GENIAUT          107      2      1
+ FORTRAN MODIF algorith/xtopoi               geniaut S.GENIAUT           97      2      1
+ FORTRAN MODIF calculel/calcul              mcourtoi M.COURTOIS         339      2      2
+ FORTRAN MODIF calculel/elref6               cibhhlv L.VIVAN            202      5      3
+ FORTRAN MODIF calculel/nuelrf               cibhhlv L.VIVAN             60     10     32
+ FORTRAN MODIF calculel/rcvarc               vabhhts J.PELLET           164      1      1
+ FORTRAN MODIF calculel/sinoz2               cibhhlv L.VIVAN            480     17     18
+ FORTRAN MODIF calculel/thaclm                durand C.DURAND           890      1      1
+ FORTRAN MODIF elements/dkqb                 cibhhlv L.VIVAN            109     20     24
+ FORTRAN MODIF elements/dkqbf                cibhhlv L.VIVAN            137     22     40
+ FORTRAN MODIF elements/dkqcod               cibhhlv L.VIVAN            222     42     54
+ FORTRAN MODIF elements/dkqcol               cibhhlv L.VIVAN            329     49     57
+ FORTRAN MODIF elements/dkqedg               cibhhlv L.VIVAN            176     35     31
+ FORTRAN MODIF elements/dkqlxy               cibhhlv L.VIVAN            139     14     48
+ FORTRAN MODIF elements/dkqmas               cibhhlv L.VIVAN            240     28     43
+ FORTRAN MODIF elements/dkqnib               cibhhlv L.VIVAN            130     19     43
+ FORTRAN MODIF elements/dkqniw               cibhhlv L.VIVAN             72     15     31
+ FORTRAN MODIF elements/dkqrig               cibhhlv L.VIVAN            135     24     34
+ FORTRAN MODIF elements/dkqtxy               cibhhlv L.VIVAN            139     14     47
+ FORTRAN MODIF elements/dktb                 cibhhlv L.VIVAN            100     19     14
+ FORTRAN MODIF elements/dktbf                cibhhlv L.VIVAN            116     20     38
+ FORTRAN MODIF elements/dktcod               cibhhlv L.VIVAN            232     37     44
+ FORTRAN MODIF elements/dktcol               cibhhlv L.VIVAN            324     37     44
+ FORTRAN MODIF elements/dktedg               cibhhlv L.VIVAN            202     40     40
+ FORTRAN MODIF elements/dktlxy               cibhhlv L.VIVAN            116     16     47
+ FORTRAN MODIF elements/dktmas               cibhhlv L.VIVAN            229     32     49
+ FORTRAN MODIF elements/dktnib               cibhhlv L.VIVAN            112     17     40
+ FORTRAN MODIF elements/dktniw               cibhhlv L.VIVAN             56     11     27
+ FORTRAN MODIF elements/dktnli               cibhhlv L.VIVAN            607     28     45
+ FORTRAN MODIF elements/dktrig               cibhhlv L.VIVAN            153     22     33
+ FORTRAN MODIF elements/dkttxy               cibhhlv L.VIVAN            115     16     47
+ FORTRAN MODIF elements/dmatel               cibhhlv L.VIVAN            572     53     61
+ FORTRAN MODIF elements/dmathl               cibhhlv L.VIVAN            391     47     56
+ FORTRAN MODIF elements/dsqb                 cibhhlv L.VIVAN            182     27     39
+ FORTRAN MODIF elements/dsqbfa               cibhhlv L.VIVAN             71     19     36
+ FORTRAN MODIF elements/dsqbfb               cibhhlv L.VIVAN             59     11     25
+ FORTRAN MODIF elements/dsqci2               cibhhlv L.VIVAN            117     18     37
+ FORTRAN MODIF elements/dsqcis               cibhhlv L.VIVAN            115     15     39
+ FORTRAN MODIF elements/dsqcod               cibhhlv L.VIVAN            396     49     75
+ FORTRAN MODIF elements/dsqcol               cibhhlv L.VIVAN            623     66    103
+ FORTRAN MODIF elements/dsqdi2               cibhhlv L.VIVAN            505     50     52
+ FORTRAN MODIF elements/dsqdis               cibhhlv L.VIVAN            215     59     66
+ FORTRAN MODIF elements/dsqedg               cibhhlv L.VIVAN            302     54     65
+ FORTRAN MODIF elements/dsqmas               cibhhlv L.VIVAN            329     38     55
+ FORTRAN MODIF elements/dsqnib               cibhhlv L.VIVAN            206     16     39
+ FORTRAN MODIF elements/dsqniw               cibhhlv L.VIVAN            225     18     36
+ FORTRAN MODIF elements/dsqrig               cibhhlv L.VIVAN            436     31     48
+ FORTRAN MODIF elements/dstb                 cibhhlv L.VIVAN            169     28     39
+ FORTRAN MODIF elements/dstbfa               cibhhlv L.VIVAN             53     16     32
+ FORTRAN MODIF elements/dstbfb               cibhhlv L.VIVAN             49     10     12
+ FORTRAN MODIF elements/dstci2               cibhhlv L.VIVAN            390     28     52
+ FORTRAN MODIF elements/dstcis               cibhhlv L.VIVAN            122     22     45
+ FORTRAN MODIF elements/dstcod               cibhhlv L.VIVAN            291     40     59
+ FORTRAN MODIF elements/dstcol               cibhhlv L.VIVAN            443     47     64
+ FORTRAN MODIF elements/dstedg               cibhhlv L.VIVAN            239     29     38
+ FORTRAN MODIF elements/dstmas               cibhhlv L.VIVAN            304     35     48
+ FORTRAN MODIF elements/dstnib               cibhhlv L.VIVAN            145     13     38
+ FORTRAN MODIF elements/dstniw               cibhhlv L.VIVAN            156     13     31
+ FORTRAN MODIF elements/dstrig               cibhhlv L.VIVAN            341     27     44
+ FORTRAN MODIF elements/dsxhft               cibhhlv L.VIVAN             67     10     18
+ FORTRAN MODIF elements/dsxhlt               cibhhlv L.VIVAN             77     10     18
+ FORTRAN MODIF elements/dxbmat               cibhhlv L.VIVAN             64      9     13
+ FORTRAN MODIF elements/dxbsig               cibhhlv L.VIVAN            130      7     20
+ FORTRAN MODIF elements/dxeffi               cibhhlv L.VIVAN            180     18     18
+ FORTRAN MODIF elements/dxefgi               cibhhlv L.VIVAN            127      8     25
+ FORTRAN MODIF elements/dxefgm               cibhhlv L.VIVAN             67      7     10
+ FORTRAN MODIF elements/dxefgt               cibhhlv L.VIVAN            161     31     67
+ FORTRAN MODIF elements/dxefin               cibhhlv L.VIVAN            131      2      9
+ FORTRAN MODIF elements/dxefnt               cibhhlv L.VIVAN            146     24     49
+ FORTRAN MODIF elements/dxglrc               cibhhlv L.VIVAN            352     37     62
+ FORTRAN MODIF elements/dxhmft               cibhhlv L.VIVAN             66     10     18
+ FORTRAN MODIF elements/dxmate               cibhhlv L.VIVAN            623     58     69
+ FORTRAN MODIF elements/dxmath               cibhhlv L.VIVAN            525     48     57
+ FORTRAN MODIF elements/dxqbm                cibhhlv L.VIVAN             63     11     25
+ FORTRAN MODIF elements/dxqfor               cibhhlv L.VIVAN             91     23     63
+ FORTRAN MODIF elements/dxqnim               cibhhlv L.VIVAN             35      5     21
+ FORTRAN MODIF elements/dxrepe               cibhhlv L.VIVAN            100     27     33
+ FORTRAN MODIF elements/dxsief               cibhhlv L.VIVAN            327     28     45
+ FORTRAN MODIF elements/dxsigm               cibhhlv L.VIVAN             92     10     16
+ FORTRAN MODIF elements/dxsigt               cibhhlv L.VIVAN            157     26     46
+ FORTRAN MODIF elements/dxtbm                cibhhlv L.VIVAN             51      9     13
+ FORTRAN MODIF elements/dxtfor               cibhhlv L.VIVAN             81     28     70
+ FORTRAN MODIF elements/dxtnim               cibhhlv L.VIVAN             30      4     20
+ FORTRAN MODIF elements/gquad4               cibhhlv L.VIVAN             72     30     49
+ FORTRAN MODIF elements/gtria3               cibhhlv L.VIVAN             59     25     44
+ FORTRAN MODIF elements/ini002               cibhhlv L.VIVAN            115      1      4
+ FORTRAN MODIF elements/jquad4               cibhhlv L.VIVAN             50     12     26
+ FORTRAN MODIF elements/q4gb                 cibhhlv L.VIVAN             98     21     26
+ FORTRAN MODIF elements/q4gbc                cibhhlv L.VIVAN             79     22     35
+ FORTRAN MODIF elements/q4gcod               cibhhlv L.VIVAN            262     32     48
+ FORTRAN MODIF elements/q4gcol               cibhhlv L.VIVAN            416     44     55
+ FORTRAN MODIF elements/q4gedg               cibhhlv L.VIVAN            217     35     29
+ FORTRAN MODIF elements/q4gmas               cibhhlv L.VIVAN            156     27     42
+ FORTRAN MODIF elements/q4gniw               cibhhlv L.VIVAN             87     14     31
+ FORTRAN MODIF elements/q4grig               cibhhlv L.VIVAN            179     28     44
+ FORTRAN MODIF elements/shl329               cibhhlv L.VIVAN            190     48     76
+ FORTRAN MODIF elements/te0031               cibhhlv L.VIVAN            368     12     22
+ FORTRAN MODIF elements/te0032               cibhhlv L.VIVAN            268      2      4
+ FORTRAN MODIF elements/te0033               cibhhlv L.VIVAN            462     50     55
+ FORTRAN MODIF elements/te0329               cibhhlv L.VIVAN            201     25     30
+ FORTRAN MODIF elements/te0409               cibhhlv L.VIVAN            334      9     18
+ FORTRAN MODIF elements/te0580               cibhhlv L.VIVAN            112     41     75
+ FORTRAN MODIF elements/xbsigm               geniaut S.GENIAUT          138      2      2
+ FORTRAN MODIF elements/xdel3d               geniaut S.GENIAUT          104      3      2
+ FORTRAN MODIF elements/xjacob               geniaut S.GENIAUT           72      2      1
+ FORTRAN MODIF elements/xsif3d               geniaut S.GENIAUT          360      2      2
+ FORTRAN MODIF elements/xxbsig               geniaut S.GENIAUT          204      2      1
+ FORTRAN MODIF jeveux/jeinif                 d6bhhjp J.P.LEFEBVRE       563     11      5
+ FORTRAN MODIF jeveux/jelibf                 d6bhhjp J.P.LEFEBVRE       277      1      1
+ FORTRAN MODIF jeveux/jelihd                 d6bhhjp J.P.LEFEBVRE       577      5      3
+ FORTRAN MODIF jeveux/jerecu                 d6bhhjp J.P.LEFEBVRE       170     11      6
+ FORTRAN MODIF jeveux/jetass                 d6bhhjp J.P.LEFEBVRE       249      9      7
+ FORTRAN MODIF jeveux/jxecrb                 d6bhhjp J.P.LEFEBVRE       126      5      5
+ FORTRAN MODIF jeveux/jxecro                 d6bhhjp J.P.LEFEBVRE       279     11      9
+ FORTRAN MODIF jeveux/jxlibd                 d6bhhjp J.P.LEFEBVRE       106     11      7
+ FORTRAN MODIF jeveux/jxliro                 d6bhhjp J.P.LEFEBVRE       103      3      3
+ FORTRAN MODIF modelisa/alfint                durand C.DURAND           216      9      1
+ FORTRAN MODIF modelisa/caxfem               geniaut S.GENIAUT          111      2      2
+ FORTRAN MODIF modelisa/xdelco               geniaut S.GENIAUT          178      2      2
+ FORTRAN MODIF modelisa/xdeldl               geniaut S.GENIAUT          223      2      1
+ FORTRAN MODIF modelisa/xrelco               geniaut S.GENIAUT          150      2      2
+ FORTRAN MODIF supervis/debut               mcourtoi M.COURTOIS          86      6      3
+ FORTRAN MODIF supervis/ibdbgs              mcourtoi M.COURTOIS         156     10      4
+ FORTRAN MODIF utilifor/utdebm              mcourtoi M.COURTOIS         164     14      7
+ FORTRAN MODIF utilifor/utfinm              mcourtoi M.COURTOIS         112     40     42
+ FORTRAN MODIF utilitai/caraff               vabhhts J.PELLET           162     11      7
+ FORTRAN SUPPR algorith/iniobs               rezette C.REZETTE          109      0    109
+ FORTRAN SUPPR algorith/rnlir8               rezette C.REZETTE           86      0     86
+  PYTHON MODIF Build/B_ETAPE                  durand C.DURAND           703      4      4
+  PYTHON MODIF Execution/E_ETAPE              durand C.DURAND           280      3      3
+  PYTHON MODIF Execution/E_JDC                durand C.DURAND           281      4      4
+  PYTHON MODIF Execution/E_MACRO_ETAPE        durand C.DURAND           209      5      5
+  PYTHON MODIF Utilitai/Utmess              mcourtoi M.COURTOIS          51      6      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    6         818       818              +818
+ MODIF :  197       47855      4182    4796      -614
+ SUPPR :    2         195               195      -195
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  205       48868      5000    4991        +9 

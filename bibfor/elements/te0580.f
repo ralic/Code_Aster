@@ -1,7 +1,7 @@
       SUBROUTINE TE0580 ( OPTION, NOMTE )
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,106 +41,72 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER    NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
       INTEGER    JNUMC,JSIGM,ICOU,JNBSPI,IRET
       INTEGER    NBCOU,NBSP,JCONT,NUSP,IPG,ICMP,JGEOM
-      INTEGER    NORDO,JTAB(7),LZR,LT2EV
+      INTEGER    NORDO,JTAB(7)
       INTEGER    JVARN,JVARI,NCMP,INO
-      REAL*8     VPG(24),VNO(24),PGL(3,3)
+      REAL*8     VPG(24),VNO(24),PGL(3,3),T2EV(4), T2VE(4), T1VE(9)
       LOGICAL    GRILLE
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
 C
+      CALL JEVECH('PNBSP_I','L',JNBSPI)
+      NBCOU = ZI(JNBSPI-1+1)
+C
+      CALL JEVECH('PNUMCOR','L',JNUMC)
+      ICOU = ZI(JNUMC)
+      IF (ICOU.LE.0 .OR. ICOU.GT.NBCOU) 
+     +                 CALL UTMESS('F','TE0580','NUME_COUCHE INCORRECT')
+      NORDO = ZI(JNUMC+1)
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
+        IF (NORDO.NE.0) 
+     +    CALL UTMESS('F','TE0580','NIVE_COUCHE NE PEUT ETRE QUE "MOY"')
+        NUSP = ICOU
       ELSE
-        GRILLE = .FALSE.
+        NUSP = 3*(ICOU-1) + NORDO +2
       END IF
 C
       IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
+C                          --------------
         CALL JEVECH('PSIGNOD','E',JSIGM)
         CALL JEVECH('PGEOMER','L',JGEOM)
-      ELSE IF (OPTION(1:14).EQ.'VARI_ELNO_COQU') THEN
-        CALL JEVECH('PVARINR','E',JVARN)
-      END IF
-
-      CALL JEVECH('PNUMCOR','L',JNUMC)
-
-      IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-        IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
-          CALL DXTPGL(ZR(JGEOM),PGL)
-          LT2EV = 51
-        END IF
-      ELSE IF (NOMTE.EQ.'MEDKQU4 ') THEN
-        IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
-          CALL DXQPGL(ZR(JGEOM),PGL)
-          LT2EV = 81
-        END IF
-      END IF
-C
-C
-      IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
-        CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
-        CALL DXREPE(NNO,PGL,ZR(LZR))
-      END IF
-
-
-      CALL JEVECH('PNBSP_I','L',JNBSPI)
-      NBCOU=ZI(JNBSPI-1+1)
-
-
-      IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
         CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
         JCONT = JTAB(1)
         NBSP  = JTAB(7)
+        IF ( NNO .EQ. 3 ) THEN
+          CALL DXTPGL ( ZR(JGEOM), PGL )
+        ELSE IF ( NNO .EQ. 4 ) THEN
+          CALL DXQPGL ( ZR(JGEOM), PGL )
+        END IF
+        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
+        DO 10, IPG=1,NPG
+          DO 12,ICMP=1,6
+            VPG(6*(IPG-1)+ICMP)= ZR( JCONT-1+(IPG-1)*6*NBSP + 
+     +                              (NUSP-1)*6+ICMP )
+ 12       CONTINUE
+ 10     CONTINUE
+C       -- PASSAGE GAUSS -> NOEUDS :
+        CALL PPGAN2 ( JGANO, 6, VPG ,  VNO )
+C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
+        CALL DXSIRO ( NNO, T2EV, VNO, ZR(JSIGM) )
+C
       ELSE IF (OPTION(1:14).EQ.'VARI_ELNO_COQU') THEN
+C                               --------------
+        CALL JEVECH('PVARINR','E',JVARN)
         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         JVARI = JTAB(1)
         NCMP  = JTAB(6)
         NBSP  = JTAB(7)
-      END IF
-
-
-      ICOU = ZI(JNUMC)
-      IF (ICOU.LE.0 .OR. ICOU.GT.NBCOU) CALL UTMESS('F','TE0580',
-     +    ' NUME_COUCHE INCORRECT')
-
-      NORDO = ZI(JNUMC+1)
-
-      IF (GRILLE) THEN
-        IF (NORDO.NE.0) CALL UTMESS('F','TE0580',
-     +                           ' NIVE_COUCHE NE PEUT ETRE QUE "MOY"')
-        NUSP=ICOU
-      ELSE
-        NUSP=3*(ICOU-1) + NORDO +2
-      END IF
-
-
-
-      IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
- 
-        DO 1, IPG=1,NPG
-          DO 2,ICMP=1,6
-            VPG(6*(IPG-1)+ICMP)= ZR( JCONT-1+(IPG-1)*6*NBSP + 
-     +                              (NUSP-1)*6+ICMP )
- 2        CONTINUE
- 1      CONTINUE
-C       -- PASSAGE GAUSS -> NOEUDS :
-        CALL PPGAN2 ( JGANO, 6, VPG ,  VNO )
-C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
-        CALL DXSIRO(NNO,ZR(LZR-1+LT2EV),VNO,ZR(JSIGM))
-
-      ELSE IF (OPTION(1:14).EQ.'VARI_ELNO_COQU') THEN
-        DO 4, ICMP=1,NCMP
-          DO 5, IPG=1,NPG
+        DO 20, ICMP=1,NCMP
+          DO 22, IPG=1,NPG
             VPG(IPG) = ZR(JVARI-1+(IPG-1)*NCMP*NBSP+(NUSP-1)*NCMP+ICMP)
- 5        CONTINUE
+ 22       CONTINUE
 C         -- PASSAGE GAUSS -> NOEUDS :
           CALL PPGAN2 ( JGANO, 1, VPG ,  VNO )
-          DO 6, INO=1,NNO
+          DO 24, INO=1,NNO
             ZR(JVARN-1 + (INO-1)*NCMP + ICMP) = VNO(INO)
- 6        CONTINUE
- 4      CONTINUE
-
+ 24       CONTINUE
+ 20     CONTINUE
+C
       END IF
-
-
+C
       END

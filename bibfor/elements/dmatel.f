@@ -1,13 +1,14 @@
-      SUBROUTINE DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,R,MULTIC,ICOU,GRILLE)
+      SUBROUTINE DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,GRILLE,
+     +                  T2EV,T2VE,T1VE)
       IMPLICIT   NONE
-C TOLE CRP_20
       INTEGER NNO,MULTIC,ICOU
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
-      REAL*8 PGL(3,3),R(*)
+      REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +52,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IBID,JCOQU,JMATE,ITEMP,INDEP,ELASCO,IADZI,IAZK24
-      INTEGER LT1VE,LT2VE,LT2EV,NBV,I,J,K,NBPAR,IER,ITAB(8),IRET,IRETF
+      INTEGER NBV,I,J,K,NBPAR,IER,ITAB(8),IRET,IRETF
       REAL*8 DMC(3,2),DFC(3,2),EXCENT
       REAL*8 KCIS,CDF,CDM,CDC,GCIS,VALRES(134),VALPU(2)
       REAL*8 YOUNG,NU,EPAIS,VALPAR
@@ -93,16 +94,6 @@ C     ------------------------------------------------
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
 
-      IF (NNO.EQ.3) THEN
-C        8 + 3 * NPG + 2 * NNO + 5 * NC ( NNO = NPG = NC = 3 )
-        LT1VE = 38
-      ELSE IF (NNO.EQ.4) THEN
-C        8 + 3 * NPG + 2 * NNO + 9 * NC + 4 ( NNO = NPG = NC = 4 )
-        LT1VE = 68
-      END IF
-      LT2VE = LT1VE + 9
-      LT2EV = LT2VE + 4
-
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
         IF (NORM.LE.R8PREM()) THEN
           CALL UTMESS('F','DMATEL','L''AXE DE REFERENCE EST NORMAL A'//
@@ -116,23 +107,23 @@ C          ET T2VE INVERSE DE T2EV
         PJDZ = PJDZ/NORM
         C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
         S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-        R(LT2EV) = C
-        R(LT2EV+1) = S
-        R(LT2EV+2) = -S
-        R(LT2EV+3) = C
-        R(LT2VE) = C
-        R(LT2VE+1) = -S
-        R(LT2VE+2) = S
-        R(LT2VE+3) = C
-        R(LT1VE) = C*C
-        R(LT1VE+3) = S*S
-        R(LT1VE+6) = C*S
-        R(LT1VE+1) = R(LT1VE+3)
-        R(LT1VE+4) = R(LT1VE)
-        R(LT1VE+7) = -R(LT1VE+6)
-        R(LT1VE+2) = -R(LT1VE+6) - R(LT1VE+6)
-        R(LT1VE+5) = R(LT1VE+6) + R(LT1VE+6)
-        R(LT1VE+8) = R(LT1VE) - R(LT1VE+3)
+        T2EV(1) = C
+        T2EV(2) = S
+        T2EV(3) = -S
+        T2EV(4) = C
+        T2VE(1) = C
+        T2VE(2) = -S
+        T2VE(3) = S
+        T2VE(4) = C
+        T1VE(1) = C*C
+        T1VE(4) = S*S
+        T1VE(7) = C*S
+        T1VE(2) =  T1VE(4)
+        T1VE(5) =  T1VE(1)
+        T1VE(8) = -T1VE(7)
+        T1VE(3) = -T1VE(7) - T1VE(7)
+        T1VE(6) =  T1VE(7) + T1VE(7)
+        T1VE(9) =  T1VE(1) - T1VE(4)
         NBV = 56
         DO 10 I = 1,NBV
           CALL CODENT(I,'G',NUM)
@@ -162,6 +153,7 @@ C          ET T2VE INVERSE DE T2EV
         NBV = 2
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
+CCC        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         IF (NORM.LE.R8PREM()) THEN
@@ -187,23 +179,23 @@ C        ET T2VE INVERSE DE T2EV
         PJDZ = PJDZ/NORM
         C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
         S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-        R(LT2EV) = C
-        R(LT2EV+1) = S
-        R(LT2EV+2) = -S
-        R(LT2EV+3) = C
-        R(LT2VE) = C
-        R(LT2VE+1) = -S
-        R(LT2VE+2) = S
-        R(LT2VE+3) = C
-        R(LT1VE) = C*C
-        R(LT1VE+3) = S*S
-        R(LT1VE+6) = C*S
-        R(LT1VE+1) = R(LT1VE+3)
-        R(LT1VE+4) = R(LT1VE)
-        R(LT1VE+7) = -R(LT1VE+6)
-        R(LT1VE+2) = -R(LT1VE+6) - R(LT1VE+6)
-        R(LT1VE+5) = R(LT1VE+6) + R(LT1VE+6)
-        R(LT1VE+8) = R(LT1VE) - R(LT1VE+3)
+        T2EV(1) = C
+        T2EV(2) = S
+        T2EV(3) = -S
+        T2EV(4) = C
+        T2VE(1) = C
+        T2VE(2) = -S
+        T2VE(3) = S
+        T2VE(4) = C
+        T1VE(1) = C*C
+        T1VE(4) = S*S
+        T1VE(7) = C*S
+        T1VE(2) =  T1VE(4)
+        T1VE(5) =  T1VE(1)
+        T1VE(8) = -T1VE(7)
+        T1VE(3) = -T1VE(7) - T1VE(7)
+        T1VE(6) =  T1VE(7) + T1VE(7)
+        T1VE(9) =  T1VE(1) - T1VE(4)
 C
         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'MEMB_L  ',
      +              VALRES(1),CODRET,' ')
@@ -513,14 +505,14 @@ C        --- CALCUL DE SON INVERSE -------------------------------------
         ENDIF
 C
 C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        CALL UTBTAB('ZERO',3,3,DM,R(LT1VE),XAB1,DM)
-        CALL UTBTAB('ZERO',3,3,DF,R(LT1VE),XAB1,DF)
-        CALL UTBTAB('ZERO',3,3,DMF,R(LT1VE),XAB1,DMF)
-        CALL UTBTAB('ZERO',2,2,DC,R(LT2VE),XAB2,DC)
-        CALL UTBTAB('ZERO',2,2,DCI,R(LT2VE),XAB2,DCI)
+        CALL UTBTAB('ZERO',3,3, DM,T1VE,XAB1,DM)
+        CALL UTBTAB('ZERO',3,3, DF,T1VE,XAB1,DF)
+        CALL UTBTAB('ZERO',3,3,DMF,T1VE,XAB1,DMF)
+        CALL UTBTAB('ZERO',2,2, DC,T2VE,XAB2,DC)
+        CALL UTBTAB('ZERO',2,2,DCI,T2VE,XAB2,DCI)
         IF (ELASCO.EQ.2) THEN
-          CALL UTDTAB('ZERO',3,2,2,3,DMC,R(LT2VE),R(LT1VE),XAB3,DMC)
-          CALL UTDTAB('ZERO',3,2,2,3,DFC,R(LT2VE),R(LT1VE),XAB3,DFC)
+          CALL UTDTAB('ZERO',3,2,2,3,DMC,T2VE,T1VE,XAB3,DMC)
+          CALL UTDTAB('ZERO',3,2,2,3,DFC,T2VE,T1VE,XAB3,DFC)
         ENDIF
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
@@ -565,11 +557,11 @@ C        ------ MATERIAU MULTICOUCHE -----------------------------------
         DC(2,1) = DC(1,2)
 C
 C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        CALL UTBTAB('ZERO',3,3,DM,R(LT1VE),XAB1,DM)
-        CALL UTBTAB('ZERO',3,3,DF,R(LT1VE),XAB1,DF)
-        CALL UTBTAB('ZERO',3,3,DMF,R(LT1VE),XAB1,DMF)
-        CALL UTBTAB('ZERO',2,2,DC,R(LT2VE),XAB2,DC)
-        CALL UTBTAB('ZERO',2,2,DCI,R(LT2VE),XAB2,DCI)
+        CALL UTBTAB('ZERO',3,3, DM,T1VE,XAB1,DM)
+        CALL UTBTAB('ZERO',3,3, DF,T1VE,XAB1,DF)
+        CALL UTBTAB('ZERO',3,3,DMF,T1VE,XAB1,DMF)
+        CALL UTBTAB('ZERO',2,2, DC,T2VE,XAB2,DC)
+        CALL UTBTAB('ZERO',2,2,DCI,T2VE,XAB2,DCI)
 
         MULTIC = 1
         DO 80 K = 1,9

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,15 +54,15 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
    def set_icmd(self,icmd):
       """
       Demande au jdc un numero de commande unique.
-      Declenche le top de mesure du temps de la commande en cours (attributs 'cpu_user' et 'cpu_syst').
+      Declenche le top de mesure du temps de la commande en cours (attributs 'cpu_user_0' et 'cpu_syst_0').
 
       @param icmd: entier indiquant l'incrément de numero de commande demandé (en général 1)
       """
       if icmd is not None:
           self.icmd=self.jdc.icmd=self.jdc.icmd+icmd
           #top de mesure du temps pour la commande courante
-          self.cpu_user=times()[0]
-          self.cpu_syst=times()[1]
+          self.cpu_user_0=times()[0]
+          self.cpu_syst_0=times()[1]
       else:
           self.icmd=None
       self.affiche_cmd()

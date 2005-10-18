@@ -1,6 +1,6 @@
       SUBROUTINE JERECU ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C
       COMMON /LFICJE/  LITLEC(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
+      COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
@@ -95,7 +96,8 @@ C DEB ------------------------------------------------------------------
         NCLA1 = INDEX ( CLASSE , KCLAS)
         NCLA2 = NCLA1
       ENDIF
-      DO 100 IC=NCLA1,NCLA2
+      DO 100 IC=NCLA1,NCLA2 
+        IF ( NBPETI(IC) .LT. NBLIM(IC) ) GOTO 100
         LGBL = 1024*LONGBL(IC)*LOIS
         CALL JJALLS(LGBL,'V','I',LOIS,'INIT',ITP,JITP,IADITP)
         ISZON(JISZON+IADITP-1) = ISTAT(2)
@@ -124,15 +126,16 @@ C
 C --------L'ENREGISTREMENT 1 N'EST JAMAIS RECUPERABLE
         K = K + 1
         IF ( K .LE. NBLUTI(IC) ) THEN
-          IDCO = IUSADI(JUSADI(IC)+2*K-1)
-          IDOS = IUSADI(JUSADI(IC)+2*K  )
+          IDCO  = IUSADI(JUSADI(IC)+3*K-2)
+          IDOS  = IUSADI(JUSADI(IC)+3*K-1)
+          NBDET = IUSADI(JUSADI(IC)+3*K  ) 
 C
-C --------L'ENREGISTREMENT CONTIENT DES PETITS OBJETS
+C --------L'ENREGISTREMENT CONTIENT DES PETITS OBJETS 
 C --------ON PARCOURT LE CHAINAGE POUR DETERMINER SI UNE
 C --------PARTIE DE L'ENREGISTREMENT EST OCCUPEE
 C --------ON EXPLORE L'ENREGISTREMENT
 C
-          IF ( IDCO .EQ. 0 .AND. IDOS .EQ. 0 ) THEN
+          IF ( IDCO .EQ. 0 .AND. IDOS .EQ. 0 .AND. NBDET .GT. 0 ) THEN
             IADDI(1) = K
             CALL JXLIRO (IC, IADITP, IADDI, LGBL)
             ACTU = .TRUE.
@@ -153,13 +156,15 @@ C
             GOTO 300
  350        CONTINUE
             IF ( ACTU ) THEN
-              IUSADI(JUSADI(IC)+2*K-1) = -1
-              IUSADI(JUSADI(IC)+2*K  ) = -1
+              IUSADI(JUSADI(IC)+3*K-2) = -1
+              IUSADI(JUSADI(IC)+3*K-1) = -1
+              IUSADI(JUSADI(IC)+3*K  ) =  0
             ENDIF
           ENDIF
           GOTO 200
         ENDIF
         CALL JJLIBP (IADITP)
+        NBPETI(IC) = 0
  100  CONTINUE
 C FIN ------------------------------------------------------------------
       END

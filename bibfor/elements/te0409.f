@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,11 +52,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NNOS,   IPOIDS,  IVF,    IDFDX, JGANO
       INTEGER MULTIC, JTAB(7), CODRET, JDEPM, JDEPR
-      INTEGER ICOMPO, I1,      I2,     J,     LT2EV, JVECT, IPG
-      INTEGER ICONTP, NPG
-      INTEGER ICHG,   ICHN,    NCMP,   NBVAR, NBCOU, K,     IAD,  K1
+      INTEGER ICOMPO, I1,      I2,     J,     JVECT
+      INTEGER ICONTP, IPG,     NPG
+      INTEGER ICHG,   ICHN,    NCMP,   NBVAR, NBCOU, K, IAD,  K1
       INTEGER ICONTM, JCRET
-      INTEGER JMATE,  LZI,     NNO,    LZR,   JGEOM, JMATR 
+      INTEGER JMATE,  LZI,     NNO,    JGEOM, JMATR 
       INTEGER JENER,  I,      JFREQ,   IACCE
       INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET
       LOGICAL LCOELA
@@ -65,6 +65,7 @@ C
 C
       REAL*8 PGL(3,3)  ,XYZL(3,4),BSIGMA(24), EFFGT(32)
       REAL*8 VECLOC(24),ENER(3),  MATP(24,24),MATV(300)
+      REAL*8 T2EV(4), T2VE(4), T1VE(9)
 C
 C     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -97,8 +98,6 @@ C --    DETECTION D'UN MATERIAU ELAS_COQUE :
 C       ----------------------------------
         IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
       ENDIF
-C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
 C
       IF ((OPTION.NE.'SIEF_ELNO_ELGA') .AND.
      +    (OPTION.NE.'VARI_ELNO_ELGA')) THEN
@@ -140,9 +139,9 @@ C
      +         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
 C     --------------------------------------
         IF (NOMTE.EQ.'MEDKTG3') THEN
-          CALL DKTMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,.FALSE.)
+          CALL DKTMAS(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,.FALSE.)
         ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
-          CALL DKQMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DKQMAS(XYZL,OPTION,PGL,MATLOC,ENER)
         END IF
         IF (OPTION.EQ.'MASS_MECA') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
@@ -222,7 +221,6 @@ C
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPR),DUL)
 C
         IF (NOMTE.EQ.'MEDKTG3') THEN
-          LT2EV = 51 
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DXGLRC(NOMTE,OPTION,ZK16(ICOMPO),XYZL,UML,DUL,VECLOC,
      +                  MATLOC,EFFINT,PGL,CODRET)
@@ -232,7 +230,6 @@ C
      &                'POUR LA MODELISATION DKTG.')
          ENDIF
         ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
-          LT2EV = 81
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DXGLRC(NOMTE,OPTION,ZK16(ICOMPO),XYZL,UML,DUL,VECLOC,
      +                  MATLOC,EFFINT,PGL,CODRET)
@@ -262,24 +259,18 @@ C
       ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
 C     ---------------------------------------
           CALL JEVECH('PGEOMER','L',JGEOM)
-          CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
              CALL UTMESS('F','TE0409','OPTION "SIEF_ELNO_ELGA" NON '//
      +                    'IMPLANTEE POUR LA DEFORMATION "GREEN_GR"')
           ENDIF
 
-          IF (NOMTE.EQ.'MEDKTG3') THEN
-            LT2EV = 51
-          ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
-            LT2EV = 81
-          ENDIF
-         IF (NNO.EQ.3) THEN
+          IF (NNO.EQ.3) THEN
            CALL DXTPGL(ZR(JGEOM),PGL)
           ELSE IF (NNO.EQ.4) THEN
             CALL DXQPGL(ZR(JGEOM),PGL)
           END IF
-          CALL DXREPE(NNO,PGL,ZR(LZR))
+          CALL DXREPE( PGL, T2EV, T2VE, T1VE )
           CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
           CALL R8INIR(32,0.D0,EFFINT,1)
           DO 779,IPG=1,NPG
@@ -290,8 +281,8 @@ C     ---------------------------------------
 C --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 C --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE :
 C     -----------------------------------------------------
-          CALL DXEFRO(NPG,ZR(LZR-1+LT2EV),EFFINT,EFFIN2)
-            IPG=1
+          CALL DXEFRO(NPG,T2EV,EFFINT,EFFIN2)
+          IPG=1
           CALL JEVECH('PSIEFNOR','E',ICHN)
           CALL PPGAN2(JGANO,8,EFFIN2,ZR(ICHN))
 

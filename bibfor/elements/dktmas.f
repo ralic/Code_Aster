@@ -1,6 +1,10 @@
-      SUBROUTINE DKTMAS(NOMTE,XYZL,OPTION,PGL,MAS,ENER,MULTIC,GRILLE)
+      SUBROUTINE DKTMAS ( XYZL, OPTION, PGL, MAS, ENER, MULTIC, GRILLE )
+      IMPLICIT   NONE
+      REAL*8        XYZL(3,*), PGL(*), MAS(*), ENER(*)
+      CHARACTER*16  OPTION
+      LOGICAL       GRILLE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT NONE
-      REAL*8        XYZL(3,*), PGL(*), MAS(*), ENER(*)
-      CHARACTER*16  OPTION , NOMTE
-      LOGICAL       GRILLE
 C     ------------------------------------------------------------------
 C     MATRICE MASSE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -48,34 +48,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER  I, J, K, I1, I2, LZR, INT, MULTIC, JCOQU, JDEPG
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  I, J, K, I1, I2, INT, MULTIC, JCOQU, JDEPG
       REAL*8   DETJ,WGT,WKT(9),DEPL(18),NFX(9),NFY(9),NMI(3)
       REAL*8   FLEX(9,9),MEMB(6,6),MEFL(6,9),MASLOC(171),MASGLO(171)
       REAL*8   RHO,EPAIS,ROE,ROF,CTOR,EXCENT,XINERT
       REAL*8   R8GAEM,ZERO,UN,SIX,DOUZE,WGTF, WGTMF
-      LOGICAL      EXCE, INER
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      INTEGER LAIRE
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
-      PARAMETER (NC=3)
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO)
-      PARAMETER (LWGT=LETA+NPG+NNO)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
+      REAL*8   QSI, ETA, CARAT3(21)
+      LOGICAL  EXCE, INER
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO  =  0.0D0
       UN    =  1.0D0
@@ -87,7 +71,7 @@ C
       ROF = RHO*EPAIS*EPAIS*EPAIS/DOUZE
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
-      CTOR = ZR(JCOQU+3)
+      CTOR   = ZR(JCOQU+3)
       EXCENT = ZERO
 C
       IF ( GRILLE ) THEN
@@ -101,25 +85,19 @@ C
       INER = .FALSE.
       IF (ABS(EXCENT).GT.UN/R8GAEM()) EXCE = .TRUE.
       IF (ABS(XINERT).GT.UN/R8GAEM()) INER = .TRUE.
-      IF ( .NOT. INER )  ROF = 0.0D0
+      IF ( .NOT. INER )  ROF = ZERO
 C
 C --- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE :
 C     -------------------------------------------------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 C
 C --- INITIALISATIONS :
 C     ---------------
-      DO 10 K = 1,54
-        MEFL(K,1) = ZERO
-   10 CONTINUE
-      DO 20 K = 1,81
-        FLEX(K,1) = ZERO
-   20 CONTINUE
-      DO 30 K = 1,36
-        MEMB(K,1) = ZERO
-   30 CONTINUE
+      CALL R8INIR(81,ZERO,FLEX,1)
+      CALL R8INIR(54,ZERO,MEFL,1)
+      CALL R8INIR(36,ZERO,MEMB,1)
 C
-      DETJ = ZR(LZR-1+LDETJ)
+      DETJ = CARAT3(7)
 C
 C======================================
 C ---  CALCUL DE LA MATRICE DE MASSE  =
@@ -129,8 +107,8 @@ C ---  CALCUL DE LA PARTIE MEMBRANE CLASSIQUE DE LA MATRICE DE MASSE =
 C ---  LES TERMES SONT EN NK*NP                                      =
 C=====================================================================
 C
-      MEMB(1,1) = ZR(LZR-1+LAIRE)*ROE/SIX
-      MEMB(1,3) = ZR(LZR-1+LAIRE)*ROE/DOUZE
+      MEMB(1,1) = CARAT3(8)*ROE/SIX
+      MEMB(1,3) = CARAT3(8)*ROE/DOUZE
       MEMB(1,5) = MEMB(1,3)
       MEMB(2,2) = MEMB(1,1)
       MEMB(2,4) = MEMB(1,3)
@@ -152,18 +130,21 @@ C --- BOUCLE SUR LES POINTS D'INTEGRATION :
 C     ===================================
       DO 40 INT = 1,NPG
 C
+        QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
+C
 C===========================================================
 C ---  CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE  =
 C===========================================================
 C
 C ---   CALCUL DES FONCTIONS D'INTERPOLATION DE LA FLECHE :
 C       -------------------------------------------------
-        CALL DKTNIW(INT,ZR(LZR),WKT)
+        CALL DKTNIW ( QSI, ETA, CARAT3, WKT )
 C
 C ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION W
 C ---   EST EGALE A RHO_E = RHO*EPAIS :
 C       -----------------------------
-        WGT = ZR(LZR-1+LWGT+INT-1)*DETJ*ROE
+        WGT = ZR(IPOIDS+INT-1)*DETJ*ROE
 C
 C ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 C ---   DUE AUX SEULS TERMES DE LA FLECHE W :
@@ -176,12 +157,12 @@ C       -----------------------------------
 C
 C ---   CALCUL DES FONCTIONS D'INTERPOLATION DES ROTATIONS :
 C       --------------------------------------------------
-        CALL DKTNIB(INT,ZR(LZR),NFX,NFY)
+        CALL DKTNIB ( QSI, ETA, CARAT3, NFX, NFY )
 C
 C ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 C ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
 C       ----------------------------------------------------
-        WGTF = ZR(LZR-1+LWGT+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
+        WGTF = ZR(IPOIDS+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
 C
 C ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 C       -------------------------------------------------------
@@ -200,13 +181,13 @@ C
 C
 C ---     FONCTIONS D'INTERPOLATION MEMBRANE :
 C         ----------------------------------
-          CALL DXTNIM(INT,ZR(LZR),NMI)
+          CALL DXTNIM ( QSI, ETA, NMI )
 C
 C ---     POUR LE COUPLAGE MEMBRANE-FLEXION, ON DOIT TENIR COMPTE
 C ---     DE LA MASSE VOLUMIQUE
 C ---     RHO_MF = D*EPAIS*RHO 
 C         --------------------
-          WGTMF = ZR(LZR-1+LWGT+INT-1)*DETJ*EXCENT*ROE
+          WGTMF = ZR(IPOIDS+INT-1)*DETJ*EXCENT*ROE
 C
 C ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA :
 C         ------------------------------------------
@@ -232,15 +213,17 @@ C --- DE MASSE A LA MATRICE ELLE MEME :
 C     ===============================   
       IF (( OPTION .EQ. 'MASS_MECA' ).OR.(OPTION.EQ.'M_GAMMA')) THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MAS)
+
       ELSE IF (OPTION.EQ.'MASS_MECA_DIAG') THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MASLOC)
-        WGT = ZR(LZR-1+LAIRE)*ROE
+        WGT = CARAT3(8)*ROE
         CALL UTPSLG(3,6,PGL,MASLOC,MASGLO)
         CALL DIALUM(3,6,18,WGT,MASGLO,MAS)
+
       ELSE IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
         CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,0,DEPL,ENER)
       END IF
-      CALL JEDEMA()
+C
       END

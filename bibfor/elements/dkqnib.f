@@ -1,6 +1,8 @@
-      SUBROUTINE DKQNIB  ( INT , R , NFX, NFY )
+      SUBROUTINE DKQNIB  ( QSI, ETA, CARAQ4, NFX, NFY )
+      IMPLICIT  NONE
+      REAL*8    QSI, ETA, CARAQ4(*), NFX(12), NFY(12)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2000   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +20,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C  DKQNIB -- DETERMINATION DES FONCTIONS DE FORME DES ROTATIONS
 C            SUR LES DEPLACEMENTS DE MEMBRANE ET DE FLEXION 
 C            POUR LES ELEMENTS DE PLAQUE DKQ :
@@ -59,32 +60,10 @@ C    NFX(12)        OUT   R       FONCTIONS DE FORME TELLES QUE
 C                                 BETA_X =  NFXI*WI + NFXJ*BETAXJ
 C    NFY(12)        OUT   R       FONCTIONS DE FORME TELLES QUE
 C                                 BETA_Y =  NFYI*WI + NFYJ*BETAYJ
-C
-C -----  ARGUMENTS
-      INTEGER  INT
-      REAL*8   R(*)
-      REAL*8   NFX(12), NFY(12)
-C -----  VARIABLES LOCALES
-      REAL*8  QSI , ETA 
+C     ------------------------------------------------------------------
       REAL*8  L5,L6 , L7, L8, C5, C6, C7, C8, S5, S6, S7, S8
-      REAL*8  N1, N2, N3, N4
-      REAL*8  P5, P6, P7, P8
-C
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
-               PARAMETER (LCOTE = LXYC + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS + NC)
+      REAL*8  N1, N2, N3, N4, P5, P6, P7, P8
+      REAL*8  UNQUAR, UNDEMI, UN, DEUX, TROIS, QUATRE
 C     ------------------------------------------------------------------
       UNQUAR = 0.25D0
       UNDEMI = 0.50D0
@@ -93,21 +72,18 @@ C     ------------------------------------------------------------------
       TROIS  = 3.0D0
       QUATRE = 4.0D0
 C
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
-C
-      C5   = R(LCOS)
-      C6   = R(LCOS+1)
-      C7   = R(LCOS+2)
-      C8   = R(LCOS+3)
-      S5   = R(LSIN)
-      S6   = R(LSIN+1)
-      S7   = R(LSIN+2)
-      S8   = R(LSIN+3)
-      L5   = R(LCOTE)
-      L6   = R(LCOTE+1)
-      L7   = R(LCOTE+2)
-      L8   = R(LCOTE+3)
+      C5   = CARAQ4(13)
+      C6   = CARAQ4(14)
+      C7   = CARAQ4(15)
+      C8   = CARAQ4(16)
+      S5   = CARAQ4(17)
+      S6   = CARAQ4(18)
+      S7   = CARAQ4(19)
+      S8   = CARAQ4(20)
+      L5   = CARAQ4( 9)
+      L6   = CARAQ4(10)
+      L7   = CARAQ4(11)
+      L8   = CARAQ4(12)
 C
       N1 = UNQUAR*(UN-QSI)*(UN-ETA)
       N2 = UNQUAR*(UN+QSI)*(UN-ETA)     

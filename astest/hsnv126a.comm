@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,32 +347,32 @@ RESULTAT=U, NOM_CHAM='VARI_NOEU_ELGA',
 
 TEST_RESU(CHAM_NO=(
     
-       _F( CHAM_GD = CHSIY11, CRITERE = 'ABSOLU',  PRECISION = 1.E-6,
+       _F( CHAM_GD = CHSIY11, PRECISION = 1.E-6,
         NOEUD = 'NO3', NOM_CMP = 'SIYY',      VALE = 60.),
-        _F( CHAM_GD = CHSIY14, CRITERE = 'ABSOLU',  PRECISION = 1.E-6,
+        _F( CHAM_GD = CHSIY14, PRECISION = 1.E-6,
         NOEUD = 'NO3', NOM_CMP = 'SIYY',      VALE = 142.),
-        _F( CHAM_GD = CHSIY20, CRITERE = 'ABSOLU',  PRECISION = 1.E-6,
+        _F( CHAM_GD = CHSIY20, PRECISION = 1.E-6,
         NOEUD = 'NO3', NOM_CMP = 'SIYY',      VALE = 218.),
 
-       _F( CHAM_GD = CHUY11, CRITERE = 'ABSOLU',  PRECISION = 1.E-12,
+       _F( CHAM_GD = CHUY11, PRECISION = 1.E-6,
            NOEUD = 'NO3', NOM_CMP = 'DY',      VALE = 4.),
-       _F( CHAM_GD = CHUY14, CRITERE = 'ABSOLU',  PRECISION = 1.E-12,
+       _F( CHAM_GD = CHUY14, PRECISION = 1.E-6,
            NOEUD = 'NO3', NOM_CMP = 'DY',      VALE = 13.),
-        _F( CHAM_GD = CHUY20, CRITERE = 'ABSOLU',  PRECISION = 1.E-12,
+        _F( CHAM_GD = CHUY20, PRECISION = 1.E-6,
            NOEUD = 'NO3', NOM_CMP = 'DY',      VALE = 31.),
 
-       _F( CHAM_GD = CHVAR11, CRITERE = 'ABSOLU', PRECISION = 0.,
+       _F( CHAM_GD = CHVAR11, CRITERE = 'ABSOLU', PRECISION = 1.E-12,
          NOEUD = 'NO3', NOM_CMP = 'V1',    VALE = 0.),
-         _F( CHAM_GD = CHVAR14, CRITERE = 'RELATIF', PRECISION = 1.E-12,
+         _F( CHAM_GD = CHVAR14, PRECISION = 1.E-6,
          NOEUD = 'NO3', NOM_CMP = 'V1',    VALE = 4.9E-3),
-         _F( CHAM_GD = CHVAR20, CRITERE = 'RELATIF', PRECISION = 1.E-12,
+         _F( CHAM_GD = CHVAR20, PRECISION = 1.E-6,
          NOEUD = 'NO3', NOM_CMP = 'V1',    VALE = 1.91E-2),
 
-       _F( CHAM_GD = CHVAR11, CRITERE = 'ABSOLU', PRECISION = 0.,
+       _F( CHAM_GD = CHVAR11, CRITERE = 'ABSOLU', PRECISION = 1.E-12,
          NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 0.),
-         _F( CHAM_GD = CHVAR14, CRITERE = 'RELATIF', PRECISION = 1.E-6,
+         _F( CHAM_GD = CHVAR14, PRECISION = 1.E-6,
          NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 41.1),
-         _F( CHAM_GD = CHVAR20, CRITERE = 'RELATIF', PRECISION = 1.E-6,
+         _F( CHAM_GD = CHVAR20, PRECISION = 1.E-6,
          NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 117.58))
 )
 

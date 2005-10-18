@@ -1,6 +1,8 @@
-      SUBROUTINE DKQBF  ( INT , R , BF )
+      SUBROUTINE DKQBF  ( QSI, ETA, JACOB, CARAQ4, BF )
+      IMPLICIT  NONE
+      REAL*8    QSI, ETA, JACOB(*), CARAQ4(*), BF(3,12)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,53 +19,33 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER  INT
-      REAL*8   R(*)
-      REAL*8   BF(3,12)
 C     ---------------------------------------------------
 C     MATRICE B(3,12) AU POINT QSI ETA POUR L'ELEMENT DKQ
 C     ---------------------------------------------------
+      INTEGER  I
       REAL*8  VJ11 , VJ12 , VJ21 , VJ22
-      REAL*8  QSI,ETA,PETA,META,PQSI,MQSI,QSIC,ETAC
+      REAL*8  PETA,META,PQSI,MQSI,QSIC,ETAC
       REAL*8  L5,L6,L7,L8 , C5,C6,C7,C8 , S5,S6,S7,S8
       REAL*8  CU5,CU6,CU7,CU8 , SU5,SU6,SU7,SU8 , CS5,CS6,CS7,CS8
       REAL*8  CL5,CL6,CL7,CL8 , SL5,SL6,SL7,SL8
       REAL*8  BXQ(12) , BYQ(12) , BXE(12) , BYE(12)
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
-               PARAMETER (LCOTE = LXYC + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS + NC)
 C     ------------------------------------------------------------------
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
-      VJ11 = R(LJACO)
-      VJ12 = R(LJACO+1)
-      VJ21 = R(LJACO+2)
-      VJ22 = R(LJACO+3)
-      C5   = R(LCOS)
-      C6   = R(LCOS+1)
-      C7   = R(LCOS+2)
-      C8   = R(LCOS+3)
-      S5   = R(LSIN)
-      S6   = R(LSIN+1)
-      S7   = R(LSIN+2)
-      S8   = R(LSIN+3)
-      L5   = R(LCOTE)
-      L6   = R(LCOTE+1)
-      L7   = R(LCOTE+2)
-      L8   = R(LCOTE+3)
+      VJ11 = JACOB(1)
+      VJ12 = JACOB(2)
+      VJ21 = JACOB(3)
+      VJ22 = JACOB(4)
+      C5   = CARAQ4(13)
+      C6   = CARAQ4(14)
+      C7   = CARAQ4(15)
+      C8   = CARAQ4(16)
+      S5   = CARAQ4(17)
+      S6   = CARAQ4(18)
+      S7   = CARAQ4(19)
+      S8   = CARAQ4(20)
+      L5   = CARAQ4( 9)
+      L6   = CARAQ4(10)
+      L7   = CARAQ4(11)
+      L8   = CARAQ4(12)
 C
       PETA = (1.D0 + ETA) / 4.D0
       META = (1.D0 - ETA) / 4.D0

@@ -1,6 +1,6 @@
       SUBROUTINE DXEFGI(NOMTE,XYZL,PGL,EPSINI,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,40 +56,28 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      LOGICAL GRILLE
-      CHARACTER*24 DESR
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
-      REAL*8 KXX,KYY,KXY
       INTEGER MULTIC
-      LOGICAL ELASCO
+      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
+      REAL*8 KXX,KYY,KXY,T2EV(4),T2VE(4),T1VE(9)
+      LOGICAL GRILLE, ELASCO
 C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
-      CALL JEMARQ()
       ZERO = 0.0D0
 
       DO 10 I = 1,32
         SIGT(I) = ZERO
    10 CONTINUE
 
-      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
+      GRILLE = .FALSE.
+      IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
 
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
-      END IF
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
      +    NOMTE(1:8).EQ.'MEGRDKT ' .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
 
         NPG = 3
         NNO = 3
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
-C      -------------------------------------------------
-        CALL GTRIA3(XYZL,ZR(LZR))
 
       ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
      +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
@@ -97,10 +85,6 @@ C      -------------------------------------------------
      +         NOMTE(1:8).EQ.'MEDKQG4 ') THEN
         NPG = 4
         NNO = 4
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE
-C      ---------------------------------------------------
-        CALL GQUAD4(XYZL,ZR(LZR))
 
       ELSE
         CALL UTMESS('F','DXEFGI','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
@@ -111,8 +95,8 @@ C --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 C     ----------------------------------------------------
 
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            GRILLE,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,GRILLE,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 
 C --- CHOIX DE NOTATIONS PLUS EXPLICITES POUR LES DEFORMATIONS
 C --- INITIALES
@@ -120,9 +104,9 @@ C     ---------
       EPXX = EPSINI(1)
       EPYY = EPSINI(2)
       EPXY = EPSINI(3)
-      KXX = EPSINI(4)
-      KYY = EPSINI(5)
-      KXY = EPSINI(6)
+      KXX  = EPSINI(4)
+      KYY  = EPSINI(5)
+      KXY  = EPSINI(6)
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
 C     -----------------------------------
@@ -140,5 +124,4 @@ C     -----------------------------------
         SIGT(8+8* (IGAU-1)) = ZERO
    20 CONTINUE
 
-      CALL JEDEMA()
       END

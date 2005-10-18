@@ -1,4 +1,8 @@
       SUBROUTINE DKTRIG(NOMTE,XYZL,OPTION,PGL,RIG,ENER,MULTIC,GRILLE)
+      IMPLICIT  NONE
+      REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
+      LOGICAL       GRILLE
+      CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,12 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT  NONE
-      REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
-      LOGICAL       GRILLE
-      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -48,37 +48,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      MULTIC, I, INT, JCOQU, JDEPG, LZR
-      REAL*8       WGT,AIRE,DISTN,WGT0
-      REAL*8       DM(9),DF(9),DMF(9),DF2(9),DMF2(9),DC(4),DCI(4)
-      REAL*8       DMC(3,2),DFC(3,2)
-      REAL*8       BF(3,9),BM(3,6)
-      REAL*8       XAB1(3,9),DEPL(18)
-      REAL*8       FLEX(81),MEMB(36),MEFL(54)
-      REAL*8       BSIGTH(24), ENERTH, CTOR
-      LOGICAL      ELASCO, INDITH
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER   NPG,NC,NNO
-      INTEGER   LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      INTEGER   LAIRE
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
-      PARAMETER (NC=3)
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO)
-      PARAMETER (LWGT=LETA+NPG+NNO)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC, I, INT, JCOQU, JDEPG
+      REAL*8   WGT,AIRE,DISTN,WGT0
+      REAL*8   DM(9),DF(9),DMF(9),DF2(9),DMF2(9),DC(4),DCI(4)
+      REAL*8   DMC(3,2),DFC(3,2)
+      REAL*8   BF(3,9),BM(3,6)
+      REAL*8   XAB1(3,9),DEPL(18)
+      REAL*8   FLEX(81),MEMB(36),MEFL(54)
+      REAL*8   BSIGTH(24), ENERTH, CTOR
+      LOGICAL  ELASCO, INDITH
+      REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
 C     ------------------------------------------------------------------
       ENERTH = 0.0D0
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','E',LZR)
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
 C
@@ -88,25 +73,26 @@ C
       ELSE
          CTOR = ZR(JCOQU+3)
       ENDIF
+C
 C     ------ MISE A ZERO DES MATRICES : FLEX ET MEFL -------------------
       CALL R8INIR(81,0.D0,FLEX,1)
       CALL R8INIR(36,0.D0,MEMB,1)
       CALL R8INIR(54,0.D0,MEFL,1)
-
+C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 C
 C     CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION
 C     MEMBRANE ET CISAILLEMENT INVERSEE
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            GRILLE,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,GRILLE,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ------------------------------------------------------------------
 C     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 C     ------------------------------------------------------------------
 C
 C     ------ CALCUL DE LA MATRICE BM -----------------------------------
-      CALL DXTBM(ZR(LZR),BM)
-      AIRE = ZR(LZR-1+LAIRE)
+      CALL DXTBM ( CARAT3(9), BM )
+      AIRE = CARAT3(8)
 C
 C     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
       CALL DCOPY(9,DM,1,DMF2,1)
@@ -118,9 +104,11 @@ C     CALCUL DES MATRICES DE RIGIDITE DE L'ELEMENT EN FLEXION ET
 C     COUPLAGE MEMBRANE/FLEXION
 C     ------------------------------------------------------------------
       DO 10 INT = 1,NPG
-        WGT = ZR(LZR-1+LWGT+INT-1)*ZR(LZR-1+LDETJ)
+        QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
+        WGT = ZR(IPOIDS+INT-1)*CARAT3(7)
 C        ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-        CALL DKTBF(INT,ZR(LZR),BF)
+        CALL DKTBF ( QSI, ETA, CARAT3, BF )
 C        ----- CALCUL DU PRODUIT BFT.DF.BF -------------------------
         CALL DCOPY(9,DF,1,DF2,1)
         CALL DSCAL(9,WGT,DF2,1)
@@ -148,6 +136,7 @@ C
      +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
      +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
          CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,RIG)
+
       ELSEIF ( OPTION .EQ. 'EPOT_ELEM_DEPL' ) THEN
          CALL JEVECH('PDEPLAR','L',JDEPG)
          CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)

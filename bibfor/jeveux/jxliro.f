@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRO ( IC , IADMI , IADDI , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,8 +84,8 @@ C
           ELSE
             IF ( LITLEC(IC) ) THEN
               CALL JXECRB ( IC , IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
-              IUSADI ( JUSADI(IC) + 2*IITLEC(IC)-1 ) = 0
-              IUSADI ( JUSADI(IC) + 2*IITLEC(IC)   ) = 0
+              IUSADI ( JUSADI(IC) + 3*IITLEC(IC)-2 ) = 0
+              IUSADI ( JUSADI(IC) + 3*IITLEC(IC)-1 ) = 0
             ENDIF
             CALL JXLIRB ( IC , KADD , KITLEC(IC)+1 , LGBL )
             CALL JXDEPS ( KITLEC(IC)+1+LADD , IADMO , LSO )

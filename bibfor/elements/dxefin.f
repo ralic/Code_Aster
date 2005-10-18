@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C
 C     CALCUL DES EFFORTS GENERALISES POUR LES ELEMENTS DE PLAQUE
 C     DKT, DST, DKQ, DSQ ET Q4G, DANS LE REPERE LOCAL A L'ELEMENT
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      I, ICOMPX, JGEOM, JMATE, LZR, NNO
+      INTEGER      I, ICOMPX, JGEOM, JMATE, NNO
       REAL*8       PGL(3,3), SIGTH(32), TMOY(4), TSUP(4), TINF(4),
      +             XYZL(3,4), ZERO
       LOGICAL      INDITH
@@ -93,16 +93,9 @@ C
      +                'N''EST PAS PREVU.')
       END IF
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
-C
 C --- CALCUL DES COORDONNEES LOCALES DES CONNECTIVITES :
 C     ------------------------------------------------
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
-C
-C --- CALCUL DE LA MATRICE DE PASSAGE ELEMENT --> REPERE UTILISATEUR
-C --- ET DE SON INVERSE :
-C     -----------------
-      CALL DXREPE(NNO,PGL,ZR(LZR))
 C
 C --- CACUL DU DEPLACEMENT DANS LE REPERE DE L'ELEMENT :
 C     ------------------------------------------------

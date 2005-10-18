@@ -1,7 +1,7 @@
       SUBROUTINE ALFINT (CHMATZ, IMATE, NOMMAZ, TDEF, NOPARZ, NUMMAT,
      +                    PREC, CH19)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,6 +163,10 @@ C
              TIP1     = ZR(IDVALE+I+1-1)
              ALFIM1   = ZR(IDVALE+I+NBPTS-1-1)
              ALFIP1   = ZR(IDVALE+I+NBPTS+1-1)
+             IF ( TIP1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
+     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
+             IF ( TIM1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
+     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
 C
              DALREF = UNDEMI*((ALFIP1-ALFREF)/(TIP1-TREF)
      +                       +(ALFREF-ALFIM1)/(TREF-TIM1))
@@ -174,6 +178,8 @@ C       ----------------------------------------------------------
 C
              TIM1     = ZR(IDVALE+I-1-1)
              ALFIM1   = ZR(IDVALE+I+NBPTS-1-1)
+             IF ( TIM1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
+     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
 C
              DALREF   = (ALFREF-ALFIM1)/(TREF-TIM1)
 C
@@ -184,6 +190,8 @@ C       ----------------------------------------------------------
 C
              TIP1     = ZR(IDVALE+I+1-1)
              ALFIP1   = ZR(IDVALE+I+NBPTS+1-1)
+             IF ( TIP1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
+     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
 C
              DALREF   = (ALFIP1-ALFREF)/(TIP1-TREF)
 C

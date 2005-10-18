@@ -1,4 +1,7 @@
       SUBROUTINE DKQRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
+      IMPLICIT  NONE
+      REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
+      CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,11 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT  NONE
-      REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
@@ -46,34 +46,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER MULTIC, I, INT, JCOQU, JDEPG, LZR
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER MULTIC, I, INT, JCOQU, JDEPG
       REAL*8 WGT
       REAL*8 DF(9),DM(9),DMF(9),DC(4),DCI(4)
       REAL*8 DF2(9),DM2(9),DMF2(9)
       REAL*8 DMC(3,2),DFC(3,2)
       REAL*8 BF(3,12),BM(3,8)
-      REAL*8 XAB1(3,12),DEPL(24)
-      REAL*8 FLEX(144),MEMB(64),MEFL(96)
+      REAL*8 XAB1(3,12),DEPL(24),CARAQ4(25),JACOB(5),QSI,ETA
+      REAL*8 FLEX(144),MEMB(64),MEFL(96),T2EV(4),T2VE(4),T1VE(9)
       REAL*8 BSIGTH(24),ENERTH, EXCENT, R8GAEM, UN, CTOR
       LOGICAL ELASCO, EXCE, INDITH
-
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG,NNO,NC
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA,LWGT
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
-      PARAMETER (NC=4)
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO+2*NC)
-      PARAMETER (LWGT=LETA+NPG+NNO+2*NC)
 C     ------------------------------------------------------------------
-
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       UN = 1.0D0
       ENERTH = 0.0D0
@@ -87,30 +74,32 @@ C
 
 C     ----- MISE A ZERO DES MATRICES : FLEX ,MEMB ET MEFL :
       CALL R8INIR(144,0.D0,FLEX,1)
-      CALL R8INIR(64,0.D0,MEMB,1)
-      CALL R8INIR(96,0.D0,MEFL,1)
-
+      CALL R8INIR( 64,0.D0,MEMB,1)
+      CALL R8INIR( 96,0.D0,MEFL,1)
+C
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4(XYZL,ZR(LZR))
+      CALL GQUAD4 ( XYZL, CARAQ4 )
 
       DO 10 INT = 1,NPG
+        QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
 C        ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE --------------------
-        CALL JQUAD4(INT,XYZL,ZR(LZR))
-        WGT = ZR(LZR-1+LWGT+INT-1)*ZR(LZR-1+LDETJ)
+        CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
+        WGT = ZR(IPOIDS+INT-1)*JACOB(1)
 
 C        -- FLEXION :
-        CALL DKQBF(INT,ZR(LZR),BF)
+        CALL DKQBF( QSI, ETA, JACOB(2), CARAQ4, BF )
 C        ----- CALCUL DU PRODUIT BFT.DF.BF -----------------------------
         CALL DCOPY(9,DF,1,DF2,1)
         CALL DSCAL(9,WGT,DF2,1)
         CALL UTBTAB('CUMU',3,12,DF2,BF,XAB1,FLEX)
 
 C        -- MEMBRANE :
-        CALL DXQBM(INT,ZR(LZR),BM)
+        CALL DXQBM ( QSI, ETA, JACOB(2), BM )
 C        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
         CALL DCOPY(9,DM,1,DM2,1)
         CALL DSCAL(9,WGT,DM2,1)
@@ -129,6 +118,7 @@ C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
      +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
      +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
         CALL DXQLOC(FLEX,MEMB,MEFL,CTOR,RIG)
+C
       ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
@@ -141,5 +131,5 @@ C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
           ENER(1) = ENER(1) - ENERTH
         ENDIF
       END IF
-      CALL JEDEMA()
+C
       END

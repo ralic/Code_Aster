@@ -1,6 +1,9 @@
-      SUBROUTINE DSTMAS ( NOMTE, XYZL, OPTION, PGL, MAS, ENER )
+      SUBROUTINE DSTMAS ( XYZL, OPTION, PGL, MAS, ENER )
+      IMPLICIT NONE
+      REAL*8        XYZL(3,*), PGL(*), MAS(*), ENER(*)
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT NONE
-      REAL*8        XYZL(3,*), PGL(*), MAS(*), ENER(*)
-      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
 C     MATRICE MASSE DE L'ELEMENT DE PLAQUE DST
 C     ------------------------------------------------------------------
@@ -45,7 +45,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER  I, J, K, I1,I2,J1,J2, LZR, INT, P, MULTIC, JCOQU, JDEPG
+      INTEGER  I, J, K, I1,I2,J1,J2, INT, P, MULTIC, JCOQU, JDEPG
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       REAL*8   NFX(9),NFY(9),NMX(6),NMY(6),NMI(3)
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8   HFT2(2,6), BCA(2,3),AN(3,9),AM(3,6)
@@ -54,31 +55,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   MASLOC(171), MASGLO(171)
       REAL*8   RHO,EPAIS,ROE,ROF,CTOR,EXCENT,DETJ,WGT
       REAL*8   R8GAEM,ZERO,UN,SIX,DOUZE,WGTF,WGTM,WGTMF
+      REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
       LOGICAL  ELASCO, EXCE
-
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      INTEGER LAIRE
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
-      PARAMETER (NC=3)
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO)
-      PARAMETER (LWGT=LETA+NPG+NNO)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
-
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
       ZERO  =  0.0D0
       UN    =  1.0D0
       SIX   =  6.0D0
@@ -109,27 +92,27 @@ C
       IF (ABS(EXCENT).GT.UN/R8GAEM()) EXCE = .TRUE.
 
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 
 C     -------- CALCUL DU PRODUIT HF.T2 ---------------------------------
-      CALL DSXHFT(DF,ZR(LZR),HFT2)
+      CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 
       IF (EXCE) THEN
 C ---   CALCUL DES MATRICES BCA ,AN ET AM DANS LE CAS DE L'EXCENTREMENT:
 C       ---------------------------------------------------------------
-        CALL DSTCI2(DCI,ZR(LZR),HFT2,DFC,DMC,BCA,AN,AM)
+        CALL DSTCI2 ( DCI, CARAT3, HFT2, DFC, DMC, BCA, AN, AM )
       ELSE
 C ---   CALCUL DES MATRICES BCA ET AN DANS LE CAS NON EXCENTRE :
 C       ------------------------------------------------------
-        CALL DSTCIS(DCI,ZR(LZR),HFT2,BCA,AN)
+        CALL DSTCIS ( DCI , CARAT3 , HFT2 , BCA , AN )
       ENDIF
 C
-      DETJ = ZR(LZR-1+LDETJ)
+      DETJ = CARAT3(7)
 C
 C===========================================================
 C ---  CALCUL DE LA PARTIE MEMBRANE DE LA MATRICE DE MASSE =
@@ -138,8 +121,8 @@ C
 C --- PRISE EN COMPTE DES TERMES DE MEMBRANE CLASSIQUES
 C --- EN U*U ET V*V :
 C     -------------
-      MEMB(1,1) = ZR(LZR-1+LAIRE)*ROE/SIX
-      MEMB(1,3) = ZR(LZR-1+LAIRE)*ROE/DOUZE
+      MEMB(1,1) = CARAT3(8)*ROE/SIX
+      MEMB(1,3) = CARAT3(8)*ROE/DOUZE
       MEMB(1,5) = MEMB(1,3)
       MEMB(2,2) = MEMB(1,1)
       MEMB(2,4) = MEMB(1,3)
@@ -161,23 +144,25 @@ C --- BOUCLE SUR LES POINTS D'INTEGRATION :
 C     ===================================
 C
       DO 40 INT = 1,NPG
+        QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
 C
 C ---   CALCUL DES FONCTIONS D'INTERPOLATION DE LA FLECHE :
 C       -------------------------------------------------
-        CALL DSTNIW(INT,ZR(LZR),DCI,BCA,AN,AM,WST,WMEST)
+        CALL DSTNIW ( QSI, ETA, CARAT3, DCI, BCA, AN, AM, WST, WMEST )
 C
 C ---   CALCUL DES FONCTIONS D'INTERPOLATION DES ROTATIONS :
 C       --------------------------------------------------
-        CALL DSTNIB(INT,ZR(LZR),AN,AM,NFX,NFY,NMX,NMY)
+        CALL DSTNIB ( QSI, ETA, CARAT3, AN, AM, NFX, NFY, NMX, NMY )
 C
 C ---   CALCUL DES FONCTIONS DE FORME DE MEMBRANE :
 C       -----------------------------------------
-        CALL DXTNIM(INT,ZR(LZR),NMI)
+        CALL DXTNIM ( QSI, ETA, NMI )
 C
 C ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION W
 C ---   EST EGALE A RHO_F = RHO*EPAIS :
 C       -----------------------------
-        WGT = ZR(LZR-1+LWGT+INT-1)*DETJ*ROE
+        WGT = ZR(IPOIDS+INT-1)*DETJ*ROE
 C
 C==========================================================
 C ---  CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE =
@@ -195,7 +180,7 @@ C
 C ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 C ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
 C       ----------------------------------------------------
-          WGTF = ZR(LZR-1+LWGT+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
+          WGTF = ZR(IPOIDS+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
 C
 C ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 C       -------------------------------------------------------
@@ -222,9 +207,9 @@ C ---     RHO_M  = EPAIS*RHO
 C ---     RHO_MF = D*EPAIS*RHO 
 C ---     RHO_F  = RHO*EPAIS**3/12 + D**2*EPAIS*RHO
 C         -------------------------------------------------
-          WGTM  = ZR(LZR-1+LWGT+INT-1)*DETJ*ROE
-          WGTMF = ZR(LZR-1+LWGT+INT-1)*DETJ*EXCENT*ROE
-          WGTF  = ZR(LZR-1+LWGT+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
+          WGTM  = ZR(IPOIDS+INT-1)*DETJ*ROE
+          WGTMF = ZR(IPOIDS+INT-1)*DETJ*EXCENT*ROE
+          WGTF  = ZR(IPOIDS+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
 C
 C ---     PRISE EN COMPTE DES TERMES DE COUPLAGE MEMBRANE-FLEXION 
 C ---     ON A 3 TYPES DE TERMES DONT IL FAUT TENIR COMPTE
@@ -303,15 +288,17 @@ C --- DE MASSE A LA MATRICE ELLE MEME :
 C     ===============================   
       IF (( OPTION .EQ. 'MASS_MECA' ).OR.(OPTION.EQ.'M_GAMMA')) THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MAS)
+
       ELSE IF (OPTION.EQ.'MASS_MECA_DIAG') THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MASLOC)
-        WGT = ZR(LZR-1+LAIRE)*ROE
+        WGT = CARAT3(8)*ROE
         CALL UTPSLG(3,6,PGL,MASLOC,MASGLO)
         CALL DIALUM(3,6,18,WGT,MASGLO,MAS)
+
       ELSE IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
         CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,0,DEPL,ENER)
       END IF
-      CALL JEDEMA()
+C
       END

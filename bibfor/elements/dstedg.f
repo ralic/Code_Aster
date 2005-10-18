@@ -1,9 +1,9 @@
-      SUBROUTINE DSTEDG ( NOMTE, XYZL, OPTION, PGL, DEPL, EDGL )
+      SUBROUTINE DSTEDG ( XYZL, OPTION, PGL, DEPL, EDGL )
       IMPLICIT  NONE
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
-      CHARACTER*16  NOMTE, OPTION
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,46 +45,36 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER MULTIC,LZR,NE,INE,K,J,I,IE
-      REAL*8 DEPF(9),DEPM(6)
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
-      REAL*8 BFB(3,9),BFA(3,3),BFN(3,9),BF(3,9)
-      REAL*8 BCA(2,3),BCN(2,9)
-      REAL*8 HFT2(2,6),AN(3,9)
-      REAL*8 BM(3,6)
-      REAL*8 BDM(3),BDF(3),DCIS(2)
-      REAL*8 VF(3),VM(3),VT(2),QSI,ETA
-      REAL*8 VFM(3),VMF(3),VMC(3),VFC(3),VCM(2),VCF(2) 
-      LOGICAL ELASCO
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG,NNO
-      INTEGER LJACO,LTOR,LQSI,LETA
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC,NE,K,J,I,IE
+      REAL*8   DEPF(9),DEPM(6)
+      REAL*8   DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
+      REAL*8   BFB(3,9),BFA(3,3),BFN(3,9),BF(3,9),DFC(3,2)
+      REAL*8   BCA(2,3),BCN(2,9),HFT2(2,6),AN(3,9)
+      REAL*8   BM(3,6),BDM(3),BDF(3),DCIS(2),VF(3),VM(3),VT(2)
+      REAL*8   VFM(3),VMF(3),VMC(3),VFC(3),VCM(2),VCF(2) 
+      REAL*8 QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
+      LOGICAL  ELASCO
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NPG
-        INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NNO
-        INE = NPG
       END IF
 
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
 
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 20 J = 1,NNO
         DO 10 I = 1,2
@@ -95,7 +85,7 @@ C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
         DEPF(3+3* (J-1)) = -DEPL(2+2+6* (J-1))
    20 CONTINUE
 C     ------ CALCUL DE LA MATRICE BM -----------------------------------
-      CALL DXTBM(ZR(LZR),BM)
+      CALL DXTBM ( CARAT3(9), BM )
       DO 30 K = 1,3
         BDM(K) = 0.D0
    30 CONTINUE
@@ -105,9 +95,9 @@ C     ------ CALCUL DE LA MATRICE BM -----------------------------------
    40   CONTINUE
    50 CONTINUE
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-      CALL DSXHFT(DF,ZR(LZR),HFT2)
+      CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 C     ------- CALCUL DES MATRICES BCA ET AN ----------------------------
-      CALL DSTCIS(DCI,ZR(LZR),HFT2,BCA,AN)
+      CALL DSTCIS ( DCI , CARAT3 , HFT2 , BCA , AN )
 C     ------ VT = BCA.AN.DEPF ------------------------------------------
       DO 60 K = 1,18
         BCN(K,1) = 0.D0
@@ -123,15 +113,16 @@ C     ------ VT = BCA.AN.DEPF ------------------------------------------
    80   CONTINUE
    90 CONTINUE
 C     ------- CALCUL DE LA MATRICE BFB ---------------------------------
-      CALL DSTBFB(ZR(LZR),BFB)
+      CALL DSTBFB ( CARAT3(9) , BFB )
+C
       IF (OPTION(1:4).EQ.'DEGE') THEN
         DO 180 IE = 1,NE
 C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
 C         ------------------------------------------
-          QSI = ZR(LZR-1+LQSI+IE+INE-1)
-          ETA = ZR(LZR-1+LETA+IE+INE-1)
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSTBFA(QSI,ETA,ZR(LZR),BFA)
+          CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
 C           ------ BF = BFB + BFA.AN -----------------------------------
           DO 100 K = 1,27
             BFN(K,1) = 0.D0
@@ -182,10 +173,10 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
         DO 320 IE = 1,NE
 C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
 C         ------------------------------------------
-          QSI = ZR(LZR-1+LQSI+IE+INE-1)
-          ETA = ZR(LZR-1+LETA+IE+INE-1)
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA ------------
-          CALL DSTBFA(QSI,ETA,ZR(LZR),BFA)
+          CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
 C           ------ BF = BFB + BFA.AN -----------------------------------
           DO 220 K = 1,27
             BFN(K,1) = 0.D0
@@ -244,5 +235,5 @@ C
           EDGL(8+8* (IE-1)) = VT(2) + VCM(2) + VCF(2)
   320   CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

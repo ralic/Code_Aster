@@ -1,9 +1,9 @@
-      SUBROUTINE Q4GEDG ( NOMTE, XYZL, OPTION, PGL, DEPL, EDGL )
+      SUBROUTINE Q4GEDG ( XYZL, OPTION, PGL, DEPL, EDGL )
       IMPLICIT  NONE
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
-      CHARACTER*16  NOMTE, OPTION
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,39 +45,37 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER MULTIC,LZR,NE,INE,K,J,I,IE
-      REAL*8 DEPF(12),DEPM(8)
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DMC(3,2),DFC(3,2)
-      REAL*8 DCI(2,2),DC(2,2)
-      REAL*8 BF(3,12),BM(3,8),BC(2,12)
-      REAL*8 BDM(3),BDF(3),BCDF(2),DCIS(2)
-      REAL*8 VF(3),VM(3),VT(2)
-      REAL*8 VFM(3),VMF(3),VMC(3),VFC(3),VCM(2),VCF(2)
-      LOGICAL ELASCO
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG,NNO
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC,NE,K,J,I,IE
+      REAL*8   DEPF(12),DEPM(8)
+      REAL*8   DF(3,3),DM(3,3),DMF(3,3),DMC(3,2),DFC(3,2)
+      REAL*8   DCI(2,2),DC(2,2)
+      REAL*8   BF(3,12),BM(3,8),BC(2,12)
+      REAL*8   BDM(3),BDF(3),BCDF(2),DCIS(2)
+      REAL*8   VF(3),VM(3),VT(2)
+      REAL*8   VFM(3),VMF(3),VMC(3),VFC(3),VCM(2),VCF(2),CARAQ4(25)
+      REAL*8   T2EV(4), T2VE(4), T1VE(9), JACOB(5), QSI, ETA
+      LOGICAL  ELASCO
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NPG
-        INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NNO
-        INE = NPG
       END IF
-
+C
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
-
+C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4(XYZL,ZR(LZR))
+      CALL GQUAD4(XYZL,CARAQ4)
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +           .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 20 J = 1,NNO
         DO 10 I = 1,2
@@ -89,14 +87,18 @@ C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
    20 CONTINUE
       IF (OPTION(1:4).EQ.'DEGE') THEN
         DO 90 IE = 1,NE
+
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
+
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
 C           ----- CALCUL DE LA MATRICE BM ------------------------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
-C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DSQBFB(IE+INE,ZR(LZR),BF)
+          CALL DXQBM(QSI,ETA,JACOB(2),BM)
+C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA -------------
+          CALL DSQBFB(QSI,ETA,JACOB(2),BF)
 C           ---- CALCUL DE LA MATRICE BC AU POINT QSI ETA --------------
-          CALL Q4GBC(IE+INE,ZR(LZR),BC)
+          CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
 C           ------ BCDF = BC.DEPF -------------------------------------
           BCDF(1) = 0.D0
           BCDF(2) = 0.D0
@@ -130,14 +132,18 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
    90   CONTINUE
       ELSE
         DO 180 IE = 1,NE
+
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
+
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
 C           ----- CALCUL DE LA MATRICE BM ------------------------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
-C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DSQBFB(IE+INE,ZR(LZR),BF)
+          CALL DXQBM(QSI,ETA,JACOB(2),BM)
+C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA -------------
+          CALL DSQBFB(QSI,ETA,JACOB(2),BF)
 C           ---- CALCUL DE LA MATRICE BC AU POINT QSI ETA --------------
-          CALL Q4GBC(IE+INE,ZR(LZR),BC)
+          CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
 C           ------ VT = DC.BC.DEPF -------------------------------------
           VT(1) = 0.D0
           VT(2) = 0.D0
@@ -207,5 +213,5 @@ C
           EDGL(8+8* (IE-1)) = VT(2) + VCM(2) + VCF(2)
   180   CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

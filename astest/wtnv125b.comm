@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 14/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -336,6 +336,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=_F(CHARGE=CALEXT,),
                  COMP_INCR=_F(RELATION='KIT_THH',
+                              ITER_INTE_MAXI=5,
                               RELATION_KIT=('LIQU_GAZ','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT
@@ -344,8 +345,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-05,
-                                ITER_GLOB_MAXI=150,
-                                ITER_INTE_MAXI=5,),
+                                ITER_GLOB_MAXI=150,),
                  PARM_THETA=0.57,
                  ARCHIVAGE=_F(PAS_ARCH=1,),);
 

@@ -1,6 +1,9 @@
-      SUBROUTINE Q4GB (LZR , XYZL, IGAU, JACGAU, BMAT)
+      SUBROUTINE Q4GB ( CARAQ4, XYZL, IGAU, JACGAU, BMAT )
+      IMPLICIT  NONE
+      INTEGER   IGAU
+      REAL*8    XYZL(3,1), CARAQ4(*), BMAT(8,1), JACGAU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/10/95   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8       XYZL(3,1) 
-      REAL*8       BMAT(8,1)
-      REAL*8       JACGAU
 C     ------------------------------------------------------------------
 C --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS DU PREMIER 
 C --- ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION D'INDICE IGAU  
@@ -28,9 +27,6 @@ C --- POUR UN ELEMENT DE TYPE Q4G
 C --- (I.E. (EPS_1) = (B)*(UN))
 C --- D'AUTRE_PART, ON CALCULE LE PRODUIT NOTE JACGAU = JACOBIEN*POIDS
 C     ------------------------------------------------------------------
-C     IN  LZR           : ADRESSE DU VECTEUR .DESR DEFINISSANT UN 
-C                         CERTAIN NOMBRE DE QUANTITES GEOMETRIQUES
-C                         SUR L'ELEMENT
 C     IN  XYZL(3,NNO)   : COORDONNEES DES CONNECTIVITES DE L'ELEMENT
 C                         DANS LE REPERE LOCAL DE L'ELEMENT
 C     IN  IGAU          : INDICE DU POINT D'INTEGRATION
@@ -54,31 +50,30 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      REAL*8        BM(3,8),  BF(3,12), BC(2,12)
-C ------------------ PARAMETRAGE QUADRANGLE ----------------------------
-      PARAMETER (NPG   = 4)
-      PARAMETER (NNO   = 4)
-      PARAMETER (NC    = 4)
-      PARAMETER (LDETJ = 1)
-      PARAMETER (LJACO = 2)
-      PARAMETER (LTOR  = LJACO + 4)
-      PARAMETER (LQSI  = LTOR  + 1)
-      PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-      PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      REAL*8   BM(3,8),  BF(3,12), BC(2,12), QSI, ETA, JACOB(5)
 C ------------------------------------------------------------------
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
+C --- COORDONNEES DU POINT D'INTEGRATION COURANT :
+C     ------------------------------------------
+      QSI = ZR(ICOOPG-1+NDIM*(IGAU-1)+1)
+      ETA = ZR(ICOOPG-1+NDIM*(IGAU-1)+2)
 C
 C --- CALCUL DE LA MATRICE JACOBIENNE ET DE SON DETERMINANT AU POINT
 C --- D'INTEGRATION D'INDICE IGAU 
 C     ---------------------------
-      CALL JQUAD4 (IGAU , XYZL , ZR(LZR))
+      CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C --- PRODUIT JACOBIEN*POIDS
 C     ----------------------
-      JACGAU = ZR(LZR-1+LWGT+IGAU-1)*ZR(LZR-1+LDETJ)
+      JACGAU = ZR(IPOIDS+IGAU-1)*JACOB(1)
 C
 C --- CALCUL DE LA MATRICE B_MEMBRANE NOTEE, ICI, (BM)
 C     ------------------------------------------------
-      CALL DXQBM (IGAU, ZR(LZR) , BM)
+      CALL DXQBM ( QSI, ETA, JACOB(2), BM)
 C
 C --- CALCUL DE LA MATRICE B_FLEXION RELATIVE AUX INCONNUES W, BETAX
 C --- ET BETAY.
@@ -89,15 +84,15 @@ C --- POUR LE DSQ.
 C --- ON RAPPELLE QUE LE Q4G EST UN ELEMENT ISOPARAMETRIQUE EXPRIME
 C --- EN COORDONNEES CARTESIENNES.
 C     ----------------------------
-      CALL DSQBFB (IGAU, ZR(LZR) , BF)
+      CALL DSQBFB ( QSI, ETA, JACOB(2), BF )
 C
 C --- CALCUL DE LA MATRICE B_CISAILLEMENT, NOTEE (BC) 
 C     -----------------------------------------------
-      CALL Q4GBC (IGAU, ZR(LZR) , BC)
+      CALL Q4GBC ( QSI, ETA, JACOB(2), CARAQ4, BC )
 C
 C --- AFFECTATION DE LA MATRICE B COMPLETE, NOTEE (BMAT) 
 C --- AVEC LES MATRICES (BM), (BF) ET (BC)
 C     ------------------------------------
-      CALL BCOQAF ( BM, BF, BC, NNO, BMAT)
+      CALL BCOQAF ( BM, BF, BC, NNO, BMAT )
 C
       END

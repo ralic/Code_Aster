@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -20,19 +20,19 @@ GENER_MEDKT2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEDKQU4          MAILLE__ QUAD4    
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4   NOEU=NOEU   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
-   ELREFE__  MEDKQU4 
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   VNOR_ELEM_DEPL          -1
 ENTETE__ ELEMENT__ MEDKTR3          MAILLE__ TRIA3    
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3   NOEU=NOEU   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR6       GAUSS__  RIGI=FPG4
-   ELREFE__  MEDKTR3 
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   ACCEPTANCE              -1
 ENTETE__ ELEMENT__ MEDSQU4          MAILLE__ QUAD4    
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4   NOEU=NOEU   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
-   ELREFE__  MEDSQU4 
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   ACCEPTANCE              -1
    OPTION__   FULL_MECA               -1
    OPTION__   MECA_SENS_MATE          -1
@@ -44,9 +44,9 @@ ENTETE__ ELEMENT__ MEDSQU4          MAILLE__ QUAD4
    OPTION__   VARI_ELNO_ELGA          -1
    OPTION__   VNOR_ELEM_DEPL          -1
 ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3    
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3   NOEU=NOEU   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR6       GAUSS__  RIGI=FPG4
-   ELREFE__  MEDSTR3 
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   ACCEPTANCE              -1
    OPTION__   FULL_MECA               -1
    OPTION__   MECA_SENS_MATE          -1
@@ -58,9 +58,9 @@ ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3
    OPTION__   VARI_ELNO_ELGA          -1
    OPTION__   VNOR_ELEM_DEPL          -1
 ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4    
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4   NOEU=NOEU   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
-   ELREFE__  MEQ4QU4 
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   ACCEPTANCE              -1
    OPTION__   FULL_MECA               -1
    OPTION__   MECA_SENS_MATE          -1

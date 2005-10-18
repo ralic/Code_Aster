@@ -1,6 +1,8 @@
-      SUBROUTINE DXTBM  ( R , BM )
+      SUBROUTINE DXTBM  ( JACOB , BM )
+      IMPLICIT NONE
+      REAL*8   JACOB(*), BM(3,6)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,22 +19,15 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8   R(*)
-      REAL*8   BM(3,6)
 C     ------------------------------------------------------------------
 C     MATRICE BM(3,6) EN MEMBRANE POUR LES ELEMENT DKT ET DST
 C     ------------------------------------------------------------------
       REAL*8  VJ11 , VJ12 , VJ21 , VJ22
-C
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER LJACO
-               PARAMETER (LJACO = 2)
 C     ------------------------------------------------------------------
-      VJ11 = R(LJACO)
-      VJ12 = R(LJACO+1)
-      VJ21 = R(LJACO+2)
-      VJ22 = R(LJACO+3)
+      VJ11 = JACOB(1)
+      VJ12 = JACOB(2)
+      VJ21 = JACOB(3)
+      VJ22 = JACOB(4)
 C
       BM(1,1) = - VJ11 - VJ12
       BM(1,2) = 0.D0
@@ -52,4 +47,5 @@ C
       BM(3,4) = BM(1,3)
       BM(3,5) = BM(2,6)
       BM(3,6) = BM(1,5)
+C
       END

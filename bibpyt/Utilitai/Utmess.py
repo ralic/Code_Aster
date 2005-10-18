@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF Utmess Utilitai  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,14 +28,18 @@ def UTMESS(code, sprg, texte):
       texte : contenu du message
    """
    fmt='\n <%s> <%s> %s\n\n'
+   sanscode='\n <%s> %s\n\n'
    UL=[
       'MESSAGE',
       'RESULTAT',
       #'ERREUR',
    ]
 #
-
-   reason=fmt % (code, sprg, texte)
+   # Comme l'UTMESS fortran, on supprime le code si on ne fait pas l'abort
+   if aster.onFatalError()=='EXCEPTION':
+      reason=sanscode % (sprg, texte)
+   else:
+      reason=fmt % (code, sprg, texte)
    
    for nom in UL:
       # écriture du message

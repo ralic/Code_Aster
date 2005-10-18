@@ -1,6 +1,8 @@
-      SUBROUTINE DSQBFB ( INT , R , BFB )
+      SUBROUTINE DSQBFB ( QSI, ETA, JACOB, BFB )
+      IMPLICIT NONE
+      REAL*8     QSI, ETA, JACOB(*), BFB(3,12)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,33 +19,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER  INT
-      REAL*8   R(*)
-      REAL*8   BFB(3,12)
 C     -----------------------------------------------------
 C     MATRICE BFB(3,12) AU POINT QSI ETA POUR L'ELEMENT DSQ
 C     -----------------------------------------------------
-C
-      REAL*8  VJ11 , VJ12 , VJ21 , VJ22
-      REAL*8  QSI,ETA,PETA,META,PQSI,MQSI
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
+      INTEGER  K
+      REAL*8  VJ11, VJ12, VJ21, VJ22, PETA, META, PQSI, MQSI
 C     ------------------------------------------------------------------
-      QSI  = R(LQSI+INT-1)
-      ETA  = R(LETA+INT-1)
-      VJ11 = R(LJACO)
-      VJ12 = R(LJACO+1)
-      VJ21 = R(LJACO+2)
-      VJ22 = R(LJACO+3)
+      VJ11 = JACOB(1)
+      VJ12 = JACOB(2)
+      VJ21 = JACOB(3)
+      VJ22 = JACOB(4)
 C
       PETA = (1.D0 + ETA) / 4.D0
       META = (1.D0 - ETA) / 4.D0
@@ -70,4 +55,5 @@ C
       BFB(3, 9) = BFB(1, 8)
       BFB(3,11) = BFB(2,12)
       BFB(3,12) = BFB(1,11)
+C
       END

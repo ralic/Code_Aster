@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,9 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
            NIV_PUB_WEB     =SIMP(statut='o',typ='TXM',into=('INTERNET','INTRANET')),
            VISU_EFICAS     =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI'),
            UNITE           =SIMP(statut='f',typ='I',defaut=15),
+         ),
+         ERREUR          =FACT(fr="comportement en cas d'erreur",statut='f',min=1,max=1,
+           ERREUR_F        =SIMP(statut='f',typ='TXM',into=('ABORT','EXCEPTION'),defaut='ABORT'),
          ),
          DEBUG           =FACT(fr="option de déboggage reservée aux développeurs",
                                statut='f',min=1,max=1,

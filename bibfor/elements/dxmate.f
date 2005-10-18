@@ -1,5 +1,10 @@
-      SUBROUTINE DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,R,MULTIC,
-     +                  GRILLE,ELASCQ)
+      SUBROUTINE DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
+     +                  GRILLE,ELASCQ,T2EV,T2VE,T1VE)
+      IMPLICIT   NONE
+      INTEGER NNO,MULTIC
+      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
+      REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
+      LOGICAL GRILLE,ELASCQ
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,13 +22,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT   NONE
-      INTEGER NNO,MULTIC
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
-      REAL*8 PGL(3,3),R(*)
-      LOGICAL GRILLE,ELASCQ
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -55,7 +55,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      JCOQU,JMATE,LT1VE,LT2VE,LT2EV,NBV,I,J,K,NBPAR,ELASCO
+      INTEGER      JCOQU,JMATE,NBV,I,J,K,NBPAR,ELASCO
       INTEGER      ICACOQ,IAZI,IAZK24
       REAL*8       KCIS,CDF,CDM,CDC,GCIS,VALRES(33)
       REAL*8       YOUNG,NU,EPAIS,VALPAR,EXCENT,CTOR
@@ -108,16 +108,6 @@ C     ------------------------------------------------
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
 
-      IF (NNO.EQ.3) THEN
-C        8 + 3 * NPG + 2 * NNO + 5 * NC ( NNO = NPG = NC = 3 )
-        LT1VE = 38
-      ELSE IF (NNO.EQ.4) THEN
-C        8 + 3 * NPG + 2 * NNO + 9 * NC + 4 ( NNO = NPG = NC = 4 )
-        LT1VE = 68
-      END IF
-      LT2VE = LT1VE + 9
-      LT2EV = LT2VE + 4
-
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
         IF (NORM.LE.R8PREM()) THEN
           CALL UTMESS('F','DXMATE','L''AXE DE REFERENCE EST NORMAL A'//
@@ -131,23 +121,23 @@ C          ET T2VE INVERSE DE T2EV
         PJDZ = PJDZ/NORM
         C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
         S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-        R(LT2EV) = C
-        R(LT2EV+1) = S
-        R(LT2EV+2) = -S
-        R(LT2EV+3) = C
-        R(LT2VE) = C
-        R(LT2VE+1) = -S
-        R(LT2VE+2) = S
-        R(LT2VE+3) = C
-        R(LT1VE) = C*C
-        R(LT1VE+3) = S*S
-        R(LT1VE+6) = C*S
-        R(LT1VE+1) = R(LT1VE+3)
-        R(LT1VE+4) = R(LT1VE)
-        R(LT1VE+7) = -R(LT1VE+6)
-        R(LT1VE+2) = -R(LT1VE+6) - R(LT1VE+6)
-        R(LT1VE+5) = R(LT1VE+6) + R(LT1VE+6)
-        R(LT1VE+8) = R(LT1VE) - R(LT1VE+3)
+        T2EV(1) = C
+        T2EV(2) = S
+        T2EV(3) = -S
+        T2EV(4) = C
+        T2VE(1) = C
+        T2VE(2) = -S
+        T2VE(3) = S
+        T2VE(4) = C
+        T1VE(1) = C*C
+        T1VE(4) = S*S
+        T1VE(7) = C*S
+        T1VE(2) =  T1VE(4)
+        T1VE(5) =  T1VE(1)
+        T1VE(8) = -T1VE(7)
+        T1VE(3) = -T1VE(7) - T1VE(7)
+        T1VE(6) =  T1VE(7) + T1VE(7)
+        T1VE(9) =  T1VE(1) - T1VE(4)
         NBV = 26
         DO 10 I = 1,NBV
           CALL CODENT(I,'G',NUM)
@@ -163,6 +153,7 @@ C          ET T2VE INVERSE DE T2EV
         NBV = 2
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
+CCC        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         IF (NORM.LE.R8PREM()) THEN
@@ -179,23 +170,23 @@ C        ET T2VE INVERSE DE T2EV
         PJDZ = PJDZ/NORM
         C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
         S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-        R(LT2EV) = C
-        R(LT2EV+1) = S
-        R(LT2EV+2) = -S
-        R(LT2EV+3) = C
-        R(LT2VE) = C
-        R(LT2VE+1) = -S
-        R(LT2VE+2) = S
-        R(LT2VE+3) = C
-        R(LT1VE) = C*C
-        R(LT1VE+3) = S*S
-        R(LT1VE+6) = C*S
-        R(LT1VE+1) = R(LT1VE+3)
-        R(LT1VE+4) = R(LT1VE)
-        R(LT1VE+7) = -R(LT1VE+6)
-        R(LT1VE+2) = -R(LT1VE+6) - R(LT1VE+6)
-        R(LT1VE+5) = R(LT1VE+6) + R(LT1VE+6)
-        R(LT1VE+8) = R(LT1VE) - R(LT1VE+3)
+        T2EV(1) = C
+        T2EV(2) = S
+        T2EV(3) = -S
+        T2EV(4) = C
+        T2VE(1) = C
+        T2VE(2) = -S
+        T2VE(3) = S
+        T2VE(4) = C
+        T1VE(1) = C*C
+        T1VE(4) = S*S
+        T1VE(7) = C*S
+        T1VE(2) =  T1VE(4)
+        T1VE(5) =  T1VE(1)
+        T1VE(8) = -T1VE(7)
+        T1VE(3) = -T1VE(7) - T1VE(7)
+        T1VE(6) =  T1VE(7) + T1VE(7)
+        T1VE(9) =  T1VE(1) - T1VE(4)
 
         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'MEMB_L  ',
      +              VALRES(1),CODRET,' ')
@@ -266,11 +257,9 @@ C        ET T2VE INVERSE DE T2EV
       ELSE
         CALL UTMESS('F','DXMATE','COMPORTEMENT MATERIAU NON ADMIS')
       END IF
-
 C
       CALL DXTEMA ( NNO, NBPAR, NOMPAR, VALPAR )
 C
-
       IF (PHENOM.EQ.'ELAS') THEN
 
 C        ------ MATERIAU ISOTROPE --------------------------------------
@@ -331,9 +320,9 @@ C LE CALCUL EFFECTIF DU SECOND MEMBRE FERA PAR APPEL A VECHDE
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
           YOUNG1 = YOUNG
           YOUNG2 = 0.D0
-          CALL R8INIR(9,0.D0,DH,1)
+          CALL R8INIR(9,0.D0, DH,1)
           CALL R8INIR(9,0.D0,DMF,1)
-          CALL R8INIR(4,0.D0,DC,1)
+          CALL R8INIR(4,0.D0, DC,1)
           CALL R8INIR(4,0.D0,DCI,1)
           DH(1,1) = YOUNG1
           DH(2,2) = YOUNG2
@@ -365,7 +354,7 @@ C              SUPPRESION DE LA RIGIDITE DE FLEXION PROPRE
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
           CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
           DO 50 K = 1,9
-            DF(K,1) = 0.D0
+             DF(K,1) = 0.D0
             DMF(K,1) = 0.D0
    50     CONTINUE
           DF(1,1) = CDF
@@ -554,14 +543,14 @@ C
 C
         IF(ELREFE.NE.'MEDKQG4'.AND.ELREFE.NE.'MEDKTG3')THEN
 C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-          CALL UTBTAB('ZERO',3,3,DM,R(LT1VE),XAB1,DM)
-          CALL UTBTAB('ZERO',3,3,DF,R(LT1VE),XAB1,DF)
-          CALL UTBTAB('ZERO',3,3,DMF,R(LT1VE),XAB1,DMF)
-          CALL UTBTAB('ZERO',2,2,DC,R(LT2VE),XAB2,DC)
-          CALL UTBTAB('ZERO',2,2,DCI,R(LT2VE),XAB2,DCI)
+          CALL UTBTAB('ZERO',3,3, DM,T1VE,XAB1, DM)
+          CALL UTBTAB('ZERO',3,3, DF,T1VE,XAB1, DF)
+          CALL UTBTAB('ZERO',3,3,DMF,T1VE,XAB1,DMF)
+          CALL UTBTAB('ZERO',2,2 ,DC,T2VE,XAB2, DC)
+          CALL UTBTAB('ZERO',2,2,DCI,T2VE,XAB2,DCI)
           IF (ELASCO.EQ.2) THEN
-            CALL UTDTAB('ZERO',3,2,2,3,DMC,R(LT2VE),R(LT1VE),XAB3,DMC)
-            CALL UTDTAB('ZERO',3,2,2,3,DFC,R(LT2VE),R(LT1VE),XAB3,DFC)
+            CALL UTDTAB('ZERO',3,2,2,3,DMC,T2VE,T1VE,XAB3,DMC)
+            CALL UTDTAB('ZERO',3,2,2,3,DFC,T2VE,T1VE,XAB3,DFC)
           ENDIF
         ENDIF
 C 
@@ -617,11 +606,11 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
   100     CONTINUE
 C
 C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        CALL UTBTAB('ZERO',3,3,DM,R(LT1VE),XAB1,DM)
-        CALL UTBTAB('ZERO',3,3,DF,R(LT1VE),XAB1,DF)
-        CALL UTBTAB('ZERO',3,3,DMF,R(LT1VE),XAB1,DMF)
-        CALL UTBTAB('ZERO',2,2,DC,R(LT2VE),XAB2,DC)
-        CALL UTBTAB('ZERO',2,2,DCI,R(LT2VE),XAB2,DCI)
+        CALL UTBTAB('ZERO',3,3, DM,T1VE,XAB1, DM)
+        CALL UTBTAB('ZERO',3,3, DF,T1VE,XAB1, DF)
+        CALL UTBTAB('ZERO',3,3,DMF,T1VE,XAB1,DMF)
+        CALL UTBTAB('ZERO',2,2, DC,T2VE,XAB2, DC)
+        CALL UTBTAB('ZERO',2,2,DCI,T2VE,XAB2,DCI)
 C
         MULTIC = 1
 C

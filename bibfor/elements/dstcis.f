@@ -1,6 +1,8 @@
-      SUBROUTINE DSTCIS ( DCI , R , HFT2 , BCA , AN )
+      SUBROUTINE DSTCIS ( DCI , CARAT3 , HFT2 , BCA , AN )
+      IMPLICIT  NONE
+      REAL*8    DCI(2,2), CARAT3(*), HFT2(2,6), BCA(2,3), AN(3,9)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,54 +19,29 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8   DCI(2,2)
-      REAL*8   R(*)
-      REAL*8   HFT2(2,6)
-      REAL*8   BCA(2,3)
-      REAL*8   AN(3,9)
 C     --------------------------------------------------------
 C     MATRICES BCA(2,3) ET AN(3,9) DU CISAILLEMENT POUR LE DST
 C     --------------------------------------------------------
 C
-      REAL*8  L(3) , C(3) , S(3)
-      REAL*8  X(3) , Y(3)
-      REAL*8  TA(6,3)
-      REAL*8  DB(2,3)
-      REAL*8  AA(3,3)
-      REAL*8  AAI(3,3)
-      REAL*8  AW(3,9)
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 3)
-               PARAMETER (NNO   = 3)
-               PARAMETER (NC    = 3)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI  + NPG + NNO )
-               PARAMETER (LWGT  = LETA  + NPG + NNO )
-               PARAMETER (LXYC  = LWGT  + NPG)
-               PARAMETER (LCOTE = LXYC  + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS  + NC)
+      INTEGER  I, J, K, IRET
+      REAL*8  L(3) , C(3) , S(3) , X(3) , Y(3) , DET
+      REAL*8  TA(6,3), DB(2,3), AA(3,3), AAI(3,3), AW(3,9)
 C     ------------------------------------------------------------------
-      C(1) = R(LCOS)
-      C(2) = R(LCOS+1)
-      C(3) = R(LCOS+2)
-      S(1) = R(LSIN)
-      S(2) = R(LSIN+1)
-      S(3) = R(LSIN+2)
-      L(1) = R(LCOTE)
-      L(2) = R(LCOTE+1)
-      L(3) = R(LCOTE+2)
-      X(1) = R(LXYC)
-      X(2) = R(LXYC+1)
-      X(3) = R(LXYC+2)
-      Y(1) = R(LXYC+3)
-      Y(2) = R(LXYC+4)
-      Y(3) = R(LXYC+5)
+      C(1) = CARAT3(16)
+      C(2) = CARAT3(17)
+      C(3) = CARAT3(18)
+      S(1) = CARAT3(19)
+      S(2) = CARAT3(20)
+      S(3) = CARAT3(21)
+      L(1) = CARAT3(13)
+      L(2) = CARAT3(14)
+      L(3) = CARAT3(15)
+      X(1) = CARAT3(1)
+      X(2) = CARAT3(2)
+      X(3) = CARAT3(3)
+      Y(1) = CARAT3(4)
+      Y(2) = CARAT3(5)
+      Y(3) = CARAT3(6)
 C
       DO 100 K = 1 , 18
          TA(K,1) = 0.D0

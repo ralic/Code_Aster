@@ -1,6 +1,9 @@
-      SUBROUTINE DKQMAS ( NOMTE, XYZL , OPTION , PGL , MAS , ENER )
+      SUBROUTINE DKQMAS ( XYZL , OPTION , PGL , MAS , ENER )
+      IMPLICIT NONE
+      REAL*8        XYZL(3,*) , PGL(*) , MAS(*) , ENER(*)
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT NONE
-      REAL*8        XYZL(3,*) , PGL(*) , MAS(*) , ENER(*)
-      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
 C     MATRICE MASSE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
@@ -45,34 +45,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      I, J, K, I1, I2, LZR, INT, II(8), JJ(8), LL(16)
+      INTEGER      I, J, K, I1, I2, INT, II(8), JJ(8), LL(16)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER      JDEPG, JCOQU
-      REAL*8       ROE , RHO , EPAIS, ROF, ZERO, DOUZE
+      REAL*8       ROE , RHO , EPAIS, ROF, ZERO, DOUZE, QSI, ETA
       REAL*8       DETJ , WGT, NFX(12), NFY(12), NMI(4)
       REAL*8       WKQ(12) , DEPL(24), MASLOC(300), MASGLO(300)
       REAL*8       FLEX(12,12), MEMB(8,8) , MEFL(8,12), AMEMB(64)
       REAL*8       UNQUAR, UNDEMI, UN, NEUF, EXCENT, XINERT
-      REAL*8       R8GAEM, COEFM, WGTF, WGTMF
+      REAL*8       R8GAEM, COEFM, WGTF, WGTMF,CARAQ4(25),JACOB(5)
       LOGICAL      EXCE, INER
-C
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      INTEGER LAIRE
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LDETJ = 1)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT  + NPG)
-               PARAMETER (LCOTE = LXYC  + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS  + NC)
-               PARAMETER (LAIRE = LSIN  + NC)
 C     ------------------------------------------------------------------
       REAL*8        CTOR
       DATA (II(K),K=1,8)
@@ -82,9 +64,9 @@ C     ------------------------------------------------------------------
       DATA (LL(K),K=1,16)
      &   / 3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62/
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO   =  0.0D0
       UNQUAR =  0.25D0
@@ -111,7 +93,7 @@ C
 C
 C --- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE :
 C     ---------------------------------------------------
-      CALL GQUAD4 (XYZL , ZR(LZR))
+      CALL GQUAD4 (XYZL , CARAQ4 )
 C
 C --- INITIALISATIONS :
 C     ---------------
@@ -122,8 +104,6 @@ C     ---------------
          FLEX(K,1) = ZERO
    20 CONTINUE
 C
-      DETJ     = ZR(LZR-1+LDETJ)
-C
 C======================================
 C ---  CALCUL DE LA MATRICE DE MASSE  =
 C======================================
@@ -132,7 +112,7 @@ C ---  CALCUL DE LA PARTIE MEMBRANE CLASSIQUE DE LA MATRICE DE MASSE =
 C ---  LES TERMES SONT EN NK*NP                                      =
 C=====================================================================
 C
-      COEFM = ZR(LZR-1+LAIRE) * ROE /  NEUF
+      COEFM = CARAQ4(21) * ROE /  NEUF
       DO 30 K = 1 , 64
          AMEMB(K) = ZERO
   30  CONTINUE
@@ -150,10 +130,13 @@ C
 C --- BOUCLE SUR LES POINTS D'INTEGRATION :
 C     ===================================
       DO 70 INT = 1, NPG
+         QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+         ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
+
 C
 C ---    CALCUL DU JACOBIEN SUR LE QUADRANGLE :
 C        ------------------------------------ 
-         CALL JQUAD4 (INT , XYZL , ZR(LZR))
+         CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C===========================================================
 C ---  CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE  =
@@ -161,14 +144,14 @@ C===========================================================
 C
 C ---    CALCUL DES FONCTIONS D'INTERPOLATION DE LA FLECHE :
 C        -------------------------------------------------
-         CALL DKQNIW (INT , ZR(LZR) , WKQ)
+         CALL DKQNIW (QSI, ETA, CARAQ4, WKQ )
 C
-         DETJ     = ZR(LZR-1+LDETJ)
+         DETJ     = JACOB(1)
 C
 C ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION W
 C ---   EST EGALE A RHO_E = RHO*EPAIS :
 C       -----------------------------
-         WGT = ZR(LZR-1+LWGT+INT-1) * DETJ * ROE
+         WGT = ZR(IPOIDS+INT-1) * DETJ * ROE
 C
 C ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 C ---   DUE AUX SEULS TERMES DE LA FLECHE W :
@@ -181,12 +164,12 @@ C       -----------------------------------
 C
 C ---   CALCUL DES FONCTIONS D'INTERPOLATION DES ROTATIONS :
 C       --------------------------------------------------
-        CALL DKQNIB(INT,ZR(LZR),NFX,NFY)
+        CALL DKQNIB ( QSI, ETA, CARAQ4, NFX, NFY )
 C
 C ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 C ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
 C       ----------------------------------------------------
-          WGTF = ZR(LZR-1+LWGT+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
+          WGTF = ZR(IPOIDS+INT-1)*DETJ*(ROF+EXCENT*EXCENT*ROE)
 C
 C ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 C       -------------------------------------------------------
@@ -204,7 +187,7 @@ C
 C
 C ---     FONCTIONS D'INTERPOLATION MEMBRANE :
 C         ----------------------------------
-          CALL DXQNIM(INT,ZR(LZR),NMI)
+          CALL DXQNIM ( QSI, ETA, NMI )
 C
 C====================================================================
 C ---  CALCUL DE LA PARTIE MEMBRANE-FLEXION DE LA MATRICE DE MASSE  =
@@ -214,7 +197,7 @@ C ---     POUR LE COUPLAGE MEMBRANE-FLEXION, ON DOIT TENIR COMPTE
 C ---     DE LA MASSE VOLUMIQUE
 C ---     RHO_MF = D*EPAIS*RHO  :
 C         --------------------
-          WGTMF = ZR(LZR-1+LWGT+INT-1)*DETJ*EXCENT*ROE
+          WGTMF = ZR(IPOIDS+INT-1)*DETJ*EXCENT*ROE
 C
 C ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA :
 C         ------------------------------------------
@@ -240,16 +223,18 @@ C --- DE MASSE A LA MATRICE ELLE MEME :
 C     ===============================   
       IF (( OPTION .EQ. 'MASS_MECA' ).OR.(OPTION.EQ.'M_GAMMA')) THEN
          CALL DXQLOC ( FLEX   , MEMB   , MEFL  , CTOR , MAS )
+C
       ELSE IF ( OPTION .EQ. 'MASS_MECA_DIAG' ) THEN
          CALL DXQLOC ( FLEX   , MEMB   , MEFL  , CTOR , MASLOC )
-         WGT = ZR(LZR-1+LAIRE) * ROE
+         WGT = CARAQ4(21) * ROE
          CALL UTPSLG ( 4 , 6 , PGL , MASLOC , MASGLO)
          CALL DIALUM ( 4 , 6 , 24 ,WGT , MASGLO , MAS )
+C
       ELSE IF ( OPTION .EQ. 'ECIN_ELEM_DEPL' ) THEN
          CALL JEVECH ('PDEPLAR' , 'L' , JDEPG)
          CALL UTPVGL ( 4 , 6 , PGL , ZR(JDEPG) , DEPL )
          CALL DXQLOE ( FLEX   , MEMB   , MEFL  , CTOR ,
      &                 0 , DEPL , ENER )
       ENDIF
-      CALL JEDEMA()
+C
       END

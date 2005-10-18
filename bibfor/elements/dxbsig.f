@@ -1,6 +1,6 @@
       SUBROUTINE DXBSIG (NOMTE, XYZL , PGL , SIGMA, BSIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,22 +56,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*24  DESR
       REAL*8        BMAT(NBSIG,LGLIGB)
-      REAL*8        BSILOC(LGLIGB), JACGAU, DISTN
+      REAL*8        BSILOC(LGLIGB), JACGAU, DISTN, CARA(25)
 C     ------------------------------------------------------------------
 C
-      CALL JEMARQ()
       ZERO   = 0.0D0
-C
-C --- AFFECTATION DANS LE TABLEAU .DESR
-C ---        -DES VALEURS DES PROJECTIONS DES COTES SUR LES AXES
-C ---         DU REPERE LOCAL
-C ---        -DES LONGUEURS DES COTES
-C ---        -DES COS ET DES SIN DES ANGLES QUE FONT LES COTES AVEC
-C ---         LES AXES DU REPERE LOCAL
-C ---        -DES AIRES DES TRIANGLES CONSTITUANT L'ELEMENT
-C     -----------------------------------------------------
-      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-      CALL JEVETE( DESR ,' ',LZR )
 C
       IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 '.OR. 
      +    NOMTE(1:8) .EQ.'MEGRDKT '.OR.NOMTE(1:8) .EQ.'MEDKTG3 ') THEN
@@ -80,7 +68,7 @@ C
 C
 C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
 C      -------------------------------------------------
-         CALL GTRIA3 (XYZL , ZR(LZR))
+         CALL GTRIA3 (XYZL , CARA )
 C
       ELSEIF (NOMTE(1:8) .EQ.'MEDKQU4 '.OR.NOMTE(1:8) .EQ.'MEDSQU4 '
      +.OR.NOMTE(1:8) .EQ.'MEQ4QU4 '.OR.NOMTE(1:8) .EQ.'MEDKQG4 ') THEN
@@ -89,7 +77,7 @@ C
 C
 C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE
 C      ---------------------------------------------------
-         CALL GQUAD4 (XYZL , ZR(LZR))
+         CALL GQUAD4 (XYZL , CARA )
 C
       ELSE
          CALL UTMESS('F','DXBSIG','LE TYPE D''ELEMENT : '//NOMTE(1:8)
@@ -116,13 +104,13 @@ C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
 C
-             CALL DXBMAT(NOMTE, LZR, XYZL, PGL, IGAU, JACGAU, BMAT)
+             CALL DXBMAT(NOMTE, CARA, XYZL, PGL, IGAU, JACGAU, BMAT)
 C
 C  --        CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 C          ---------------------------------------------
 C
-           CALL BTSIG(LGLIGB,NBSIG,JACGAU,BMAT,SIGMA(1+8*(IGAU-1))
-     +               ,BSILOC)
+           CALL BTSIG(LGLIGB,NBSIG,JACGAU,BMAT,SIGMA(1+8*(IGAU-1)),
+     +               BSILOC)
   30  CONTINUE
 C
 C --- PERMUTATION DES COMPOSANTES EN BETA_X ET  BETA_Y
@@ -139,5 +127,4 @@ C --- (LE RESULTAT EST ICI LE VECTEUR BSIGMA)
 C      --------------------------------------
       CALL UTPVLG ( NNO , 6 , PGL , BSILOC , BSIGMA )
 C
-      CALL JEDEMA()
       END

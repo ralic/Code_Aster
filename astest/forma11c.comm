@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TP ANALYSE MODALE TPAM3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,7 +122,8 @@ MODES=NORM_MODE(reuse =MODES,
 
 # ON TRIE LES MODES.
 MODEST=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
-                                CRIT_EXTR='MASS_EFFE_UN',),
+                                CRIT_EXTR='MASS_EFFE_UN',
+                                SEUIL=0.001,),
                  IMPRESSION=_F(CUMUL='OUI',),);
 
 # IMPRESSION FORMAT CASTEM DES MODES PROPRES

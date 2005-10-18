@@ -1,6 +1,9 @@
-      SUBROUTINE DSQNIB  ( INT, R, AN, AM, NFX, NFY, NMX, NMY )
+      SUBROUTINE DSQNIB ( QSI, ETA, CARAQ4, AN, AM, NFX, NFY, NMX, NMY )
+      IMPLICIT  NONE
+      REAL*8    QSI, ETA, CARAQ4(*)
+      REAL*8    AN(4,12), AM(4,8), NFX(12), NFY(12), NMX(8), NMY(8)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2000   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C  
 C  DSQNIB -- DETERMINATION DES FONCTIONS DE FORME DES ROTATIONS
 C            SUR LES DEPLACEMENTS DE MEMBRANE ET DE FLEXION 
@@ -71,32 +73,10 @@ C                                        (+ NFXI*WI + NFXJ*BETAXJ)
 C    NMY(8)         OUT   R       FONCTIONS DE FORME TELLES QUE
 C                                 BETA_Y =  NMY*UM
 C                                        (+ NFYI*WI + NFYJ*BETAYJ)
-C
-C -----  ARGUMENTS
-      INTEGER   INT
-      REAL*8    R(*)
-      REAL*8    AN(4,12), AM(4,8)
-      REAL*8    NFX(12), NFY(12), NMX(8), NMY(8)
-C -----  VARIABLES LOCALES
-      REAL*8  QSI , ETA 
+C     ------------------------------------------------------------------
       REAL*8  C5,C6,C7,C8,S5,S6,S7,S8
-      REAL*8  N1, N2, N3, N4
-      REAL*8  P5, P6, P7, P8
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
-      PARAMETER (NC=4)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO+2*NC)
-      PARAMETER (LWGT=LETA+NPG+NNO+2*NC)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
+      REAL*8  N1, N2, N3, N4, P5, P6, P7, P8
+      REAL*8  UNQUAR, UNDEMI, UN
 C     ------------------------------------------------------------------
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -104,17 +84,14 @@ C
       UNDEMI = 0.5D0
       UN     = 1.0D0
 C
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
-C
-      C5   = R(LCOS)
-      C6   = R(LCOS+1)
-      C7   = R(LCOS+2)
-      C8   = R(LCOS+3)
-      S5   = R(LSIN)
-      S6   = R(LSIN+1)
-      S7   = R(LSIN+2)
-      S8   = R(LSIN+3)
+      C5   = CARAQ4(13)
+      C6   = CARAQ4(14)
+      C7   = CARAQ4(15)
+      C8   = CARAQ4(16)
+      S5   = CARAQ4(17)
+      S6   = CARAQ4(18)
+      S7   = CARAQ4(19)
+      S8   = CARAQ4(20)
 C
       N1 = UNQUAR*(UN-QSI)*(UN-ETA)
       N2 = UNQUAR*(UN+QSI)*(UN-ETA)

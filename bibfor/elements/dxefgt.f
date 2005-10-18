@@ -1,6 +1,9 @@
-      SUBROUTINE DXEFGT(NOMTE,XYZL,PGL,TSUP,TINF,TMOY,SIGT)
+      SUBROUTINE DXEFGT ( NOMTE, XYZL, PGL, TSUP, TINF, TMOY, SIGT )
+      IMPLICIT  REAL*8 (A-H,O-Z)
+      REAL*8        XYZL(3,1),PGL(3,1),TSUP(1),TINF(1),TMOY(1),SIGT(1)
+      CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,11 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16 NOMTE
-      REAL*8 XYZL(3,1),PGL(3,1)
-      REAL*8 TSUP(1),TINF(1),TMOY(1)
-      REAL*8 SIGT(1)
 C     ------------------------------------------------------------------
 C --- EFFORTS GENERALISES N, M, V D'ORIGINE THERMIQUE AUX POINTS
 C --- D'INTEGRATION POUR LES ELEMENTS COQUES A FACETTES PLANES :
@@ -60,22 +58,21 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC
+      REAL*8   DF(3,3),DM(3,3),DMF(3,3)
+      REAL*8   TMOYPG(4),TSUPPG(4),TINFPG(4)
+      REAL*8   N(4),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL GRILLE
-      CHARACTER*2 CODRET(56)
-      CHARACTER*10 PHENOM
-      CHARACTER*24 DESR
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3)
-      REAL*8 TMOYPG(4),TSUPPG(4),TINFPG(4)
-      REAL*8 N(4)
-      INTEGER MULTIC
+      CHARACTER*2   CODRET(56)
+      CHARACTER*10  PHENOM
 C     ------------------------------------------------------------------
-
-C --- INITIALISATIONS :
-C     -----------------
-      CALL JEMARQ()
-
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
       CALL R8INIR(32,0.D0,SIGT,1)
-
+C
 C --- POUR L'INSTANT PAS DE PRISE EN COMPTE DES CONTRAINTES
 C --- THERMIQUES POUR LES MATERIAUX MULTICOUCHES
 C     ------------------------------------------
@@ -86,61 +83,29 @@ C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 C --- DE L'EPAISSEUR DE LA COQUE
 C     --------------------------
 
+      GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
-      END IF
-
-      CALL JEVECH('PCACOQU','L',JCARA)
-      CALL JEVECH('PTEREF','L',JTREF)
-      EPAIS = ZR(JCARA)
-      TREF = ZR(JTREF)
-
-      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
-
-      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     +    NOMTE(1:8).EQ.'MEGRDKT'  .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
-
-        NPG = 3
-        NNO = 3
-        NC = 3
-        LJACO = 2
-        LTOR = LJACO + 4
-        LQSI = LTOR + 1
-        LETA = LQSI + NPG + NNO
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
-C      -------------------------------------------------
-        CALL GTRIA3(XYZL,ZR(LZR))
-
-      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
-        NPG = 4
-        NNO = 4
-        NC = 4
-        LJACO = 2
-        LTOR = LJACO + 4
-        LQSI = LTOR + 1
-        LETA = LQSI + NPG + NNO + 2*NC
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE
-C      ---------------------------------------------------
-        CALL GQUAD4(XYZL,ZR(LZR))
-
-      ELSE
+         GRILLE = .TRUE.
+      ELSEIF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
+     +        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
+     +        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
+     +        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
+     +        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
         CALL UTMESS('F','DXEFGT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
      +              'N''EST PAS PREVU.')
       END IF
-
+C
+      CALL JEVECH('PCACOQU','L',JCARA)
+      CALL JEVECH('PTEREF','L',JTREF)
+      EPAIS = ZR(JCARA)
+      TREF  = ZR(JTREF)
+C
 C --- CALCUL DES COEFFICIENTS THERMOELASTIQUES DE FLEXION,
 C --- MEMBRANE, MEMBRANE-FLEXION
 C     ----------------------------------------------------
 
-      CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,ZR(LZR),MULTIC,INDITH,GRILLE)
+      CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,GRILLE,
+     +                                           T2EV,T2VE,T1VE)
       IF (INDITH.EQ.-1) GO TO 30
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
@@ -151,8 +116,8 @@ C     -----------------------------------
         TSUPPG(IGAU) = 0.D0
         TINFPG(IGAU) = 0.D0
 
-        QSI = ZR(LZR-1+LQSI+IGAU-1)
-        ETA = ZR(LZR-1+LETA+IGAU-1)
+        QSI = ZR(ICOOPG-1+NDIM*(IGAU-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(IGAU-1)+2)
 
 C  --      CALCUL DES FONCTIONS DE FORME DE MEMBRANE N AU POINT
 C  --      D'INTEGRATION COURANT
@@ -190,8 +155,7 @@ C          ----------------------------------------
         SIGT(6+8* (IGAU-1)) = COE2* (DF(3,1)+DF(3,2)) +
      +                        COE1* (DMF(3,1)+DMF(3,2))
    20 CONTINUE
-
+C
    30 CONTINUE
-
-      CALL JEDEMA()
+C
       END

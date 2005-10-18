@@ -1,8 +1,13 @@
-      SUBROUTINE DXGLRC(NOMTE,OPT,COMPOR,XYZL,UL,DUL,BTSIG,KTAN,
-     +                  EFFINT,PGL,CODRET)
+      SUBROUTINE DXGLRC ( NOMTE, OPT, COMPOR, XYZL, UL, DUL, BTSIG,
+     +                    KTAN, EFFINT, PGL, CODRET )
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER      CODRET
+      REAL*8       XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
+      REAL*8       UL(6,4), DUL(6,4), PGL(3,3)
+      CHARACTER*16 OPT, NOMTE, COMPOR(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,20 +26,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C 
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16 OPT
-      CHARACTER*16 NOMTE,COMPOR(*)
-      INTEGER NNO, CODRET
 C
-      REAL*8 XYZL(3,4),KTAN((6*4)* (6*4+1)/2),BTSIG(6,4)
-      REAL*8 UL(6,4),  DUL(6,4)
-      REAL*8 MG(3),    PGL(3,3), ROT(9), DH(9)
-      REAL*8     R,        R8B
-      INTEGER MULTIC
-      INTEGER LZR,    IMATE,  IRET,   ICONTM, IVARIM 
-      INTEGER ICOMPO, ICACOQ, ICONTP, IVARIP, INO,   NBCON
-      INTEGER NBVAR,  NDIMV,  IVARIX, L,      IPG,    JVARI, IVARI
-      INTEGER K
+      REAL*8   MG(3), ROT(9), DH(9), R, R8B
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC
+      INTEGER  IMATE,  IRET,   ICONTM, IVARIM 
+      INTEGER  ICOMPO, ICACOQ, ICONTP, IVARIP, INO,   NBCON
+      INTEGER  NBVAR,  NDIMV,  IVARIX, L,      IPG,    JVARI, IVARI
+      INTEGER  K
 C GLRC
       REAL*8 DELAS(6,6)
       REAL*8 ZERO
@@ -89,7 +88,6 @@ C  CMPS D' EFFORTS COQUE :
 C   - MEMBRANE : NXX,NYY,NXY
 C   - FLEXION  : MXX,MYY,MXY
 C --------------------------------------------------------------------
-      INTEGER NPG,NC,ITABP(8),ITABM(8)
 C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
       REAL*8 POIDS,ZIC,ZMIN,TP,TM,VALPU(2)
@@ -124,22 +122,15 @@ C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
 C           WORK:    TABLEAU DE TRAVAIL
 C           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 C             LE MATERIAU EST SUPPOSE HOMOGENE
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER   LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,JTAB(7),COD
-      INTEGER   NDIM,NNOS,IPOIDS,IVF,IDFDX,JGANO
-C
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      REAL*8 DEUX
-      REAL*8 CTOR
-      REAL*8 LC
+C     ------------------
+      INTEGER  JTAB(7), COD, ITABP(8),ITABM(8)
+      REAL*8   DEUX, CTOR, LC
+      REAL*8   T2EV(4),T2VE(4),T1VE(9),CARAT3(21),JACOB(5),CARAQ4(25)
 C     ------------------------------------------------------------------
-C --DEB
-
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
-
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
       CODRET=0
 C
 C     2 BOOLEENS COMMODES :
@@ -149,20 +140,12 @@ C     ---------------------
 C
 C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
-      IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN   
-        NC  = 0
-      ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ') THEN
-        NC  = 4
-      ELSE
+      IF ( NOMTE(1:8).NE.'MEDKTG3 ' .AND.
+     +     NOMTE(1:8).NE.'MEDKQG4 ' ) THEN
         CALL UTMESS('F','DXGLRC','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
      +              'N''EST PAS PREVU.')
       ENDIF
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)     
-C
-      LETA=LQSI+NPG+NNO+2*NC
-      LWGT=LETA+NPG+NNO+2*NC
-
       CALL JEVECH('PMATERC','L',IMATE)
 
       CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
@@ -183,9 +166,9 @@ C
 C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
       IF(NNO.EQ.3) THEN
-        CALL GTRIA3(XYZL,ZR(LZR))
-      ELSE IF(NNO.EQ.4) THEN
-        CALL GQUAD4(XYZL,ZR(LZR))
+        CALL GTRIA3(XYZL,CARAT3)
+      ELSEIF(NNO.EQ.4) THEN
+        CALL GQUAD4(XYZL,CARAQ4)
       ENDIF
       CTOR = ZR(ICACOQ+3)
 C
@@ -228,8 +211,8 @@ C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
 C
 C- REMPLISSAGE DE LA MATRICE ELASTIQUE
 C
-      CALL DXMATE(DFE,DME,DMFE,RBIB1,RBIB2,RBIB3,RBIB4,NNO,PGL,ZR(LZR),
-     +            MULTIC,LBID,ELASCQ)
+      CALL DXMATE(DFE,DME,DMFE,RBIB1,RBIB2,RBIB3,RBIB4,NNO,PGL,
+     +                               MULTIC,LBID,ELASCQ,T2EV,T2VE,T1VE)
 C  
       L=0
       DO 20 I = 1,3
@@ -242,20 +225,13 @@ C
  30     CONTINUE
  20   CONTINUE
 C
-      IF (NNO.EQ.3) THEN
-C        8 + 3 * NPG + 2 * NNO + 5 * NC ( NNO = NPG = NC = 3 )
-        LT1VE = 38
-      ELSE IF (NNO.EQ.4) THEN
-C        8 + 3 * NPG + 2 * NNO + 9 * NC + 4 ( NNO = NPG = NC = 4 )
-        LT1VE = 68
-      END IF
-      LT2VE = LT1VE + 9
-      LT2EV = LT2VE + 4
-C
 C===============================================================
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
       DO 130,IPG = 1,NPG
+C
+        QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
 C
         ICPG = (IPG-1)*NBCON
         ICPV = (IPG-1)*NBVAR
@@ -267,15 +243,15 @@ C
         CALL R8INIR(9,0.D0,DMF,1)
 C
         IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
-          CALL DXTBM(ZR(LZR),BM)
-          CALL DKTBF(IPG,ZR(LZR),BF)
+          CALL DXTBM(CARAT3(9),BM)
+          CALL DKTBF(QSI,ETA,CARAT3,BF)
+          POIDS = ZR(IPOIDS+IPG-1)*CARAT3(7)
         ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ') THEN
-          CALL JQUAD4(IPG,XYZL,ZR(LZR))
-          CALL DXQBM(IPG,ZR(LZR),BM)
-          CALL DKQBF(IPG,ZR(LZR),BF)
+          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
+          CALL DXQBM(QSI,ETA,JACOB(2),BM)
+          CALL DKQBF(QSI,ETA,JACOB(2),CARAQ4,BF)
+          POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
         ENDIF
-
-        POIDS = ZR(LZR-1+LWGT+IPG-1)*ZR(LZR-1+LDETJ)
 C
 C       -- CALCUL DE EPS, DEPS, KHI, DKHI : 
 C          DANS LE REPERE DE L'ELEMENT
@@ -286,8 +262,7 @@ C       -----------------------------------
         CALL PMRVEC('ZERO',3,3*NNO,BF,DUF,DKHI)
 C
         IF ( COMPOR(1)(1:4).EQ.'GLRC') THEN
-            CALL GLRCST(OPT,DELAS,EPS,DEPS,KHI,DKHI,ZR(LZR+LT1VE-1),
-     &                  ZR(LZR+LT2VE-1),ZR(LZR+LT2EV-1),
+            CALL GLRCST(OPT,DELAS,EPS,DEPS,KHI,DKHI,T1VE,T2VE,T2EV,
      &                  ZR(ICONTM+ICPG),ZR(IVARIM+ICPV),
      &                  ZR(ICONTP+ICPG),ZR(IVARIP+ICPV),
      &                  DSIDEP)

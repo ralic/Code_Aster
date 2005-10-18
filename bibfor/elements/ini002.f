@@ -1,7 +1,7 @@
       SUBROUTINE INI002(NOMTE,NMAX,ITABL,K24TAB,NVAL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,9 +83,6 @@ C       -------------------
 
         ELSE IF (NUJNI.EQ.15) THEN
           CALL JNI015(ELREFE,10,LIOBJ,NBOBJ)
-
-        ELSE IF (NUJNI.EQ.79) THEN
-          CALL JNI079(ELREFE,10,LIOBJ,NBOBJ)
 
         ELSE IF (NUJNI.EQ.80) THEN
           CALL JNI080(ELREFE,10,LIOBJ,NBOBJ)

@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C
       COMMON /JIACCE/  JIACCE(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
+      COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
      +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
@@ -178,6 +179,8 @@ C
       ENDIF
 C
       ICLAS  = IC
+      NBGROS(IC) = 0
+      NBPETI(IC) = 0
       NOMUTI = ' '
       NOMOS  = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
       NOMCO  = '$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -193,6 +196,7 @@ C
         ELSE
           NBLMAX(IC) = MIN ( NBLOC , MFIC/(LONGBL(IC)*LOIS) )
         ENDIF
+        NBLIM(IC) = 500    
 C
         LMARQ = 2 * NREP * LOIS
         CALL JJALLS (LMARQ,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC))
@@ -308,10 +312,12 @@ C
         CALL JJALLS ( LON,'V','I',LOIS        ,Z,HCOD, IADRS , KAT(13))
         JHCOD(IC) = IADRS - 1
         CALL JJECRS (KAT(13),IC,13,0,'E',IMARQ(JMARQ(IC)+2*13-1))
-        LON = 2*NBLMAX(IC)*LOIS
+        LON = 3*NBLMAX(IC)*LOIS
         CALL JJALLS ( LON,'V','I',LOIS        ,Z,IUSADI,IADRS, KAT(14))
-        DO 123 L=1,2*NBLMAX(IC)
-          IUSADI( IADRS + L - 1 ) = -1
+        DO 123 L=1,NBLMAX(IC)
+          IUSADI( IADRS + (3*L-2) - 1 ) = -1
+          IUSADI( IADRS + (3*L-1) - 1 ) = -1
+          IUSADI( IADRS + (3*L  ) - 1 ) =  0
  123    CONTINUE
         JUSADI(IC) = IADRS - 1
         CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
@@ -542,7 +548,7 @@ C
         JHCOD(IC) = IADRS - 1
         CALL JJECRS (KAT(13),IC,13,0,'E',IMARQ(JMARQ(IC)+2*13-1))
         CALL JXLIRO ( IC , KAT(13), IADD(JIADD(IC)+2*13-1), LON )
-        LON = 2*NBLMAX(IC) * LOIS
+        LON = 3*NBLMAX(IC) * LOIS
         CALL JJALLS ( LON, 'V','I',LOIS     ,Z,IUSADI,IADRS, KAT(14))
         JUSADI(IC) = IADRS - 1
         CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))

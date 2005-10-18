@@ -1,6 +1,8 @@
-      SUBROUTINE DKTBF  ( INT , R , BF )
+      SUBROUTINE DKTBF  ( QSI, ETA, CARAT3, BF )
+      IMPLICIT  NONE
+      REAL*8    QSI, ETA, CARAT3(*), BF(3,9)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,54 +19,33 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER  INT
-      REAL*8   R(*)
-      REAL*8   BF(3,9)
 C        ORDRE DES COMPOSANTES POUR BF :
 C        DEFORMATIONS : KXX, KYY, KXY   (REP. INTRINSEQUE DE L'ELEMENT)
 C        DEPLACEMENTS : DZ, DRY, -DRX   (REP. INTRINSEQUE DE L'ELEMENT)
 C     ------------------------------------------------------------------
 C     MATRICE B(3,9) AU POINT QSI ETA POUR L'ELEMENT DKT (FLEXION)
 C     ------------------------------------------------------------------
+      INTEGER  I
       REAL*8  VJ11 , VJ12 , VJ21 , VJ22
-      REAL*8  QSI , ETA , LMQ , LME
+      REAL*8  LMQ , LME
       REAL*8  L4,L5,L6 , C4,C5,C6 , S4,S5,S6
       REAL*8  CU4,CU5,CU6 , SU4,SU5,SU6 , CS4,CS5,CS6
       REAL*8  CL4,CL5,CL6 , SL4,SL5,SL6
       REAL*8  BXQ(9) , BYQ(9) , BXE(9) , BYE(9)
-C
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 3)
-               PARAMETER (NNO   = 3)
-               PARAMETER (NC    = 3)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI  + NPG + NNO )
-               PARAMETER (LWGT  = LETA  + NPG + NNO )
-               PARAMETER (LXYC  = LWGT  + NPG)
-               PARAMETER (LCOTE = LXYC  + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS  + NC)
 C     ------------------------------------------------------------------
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
-      VJ11 = R(LJACO)
-      VJ12 = R(LJACO+1)
-      VJ21 = R(LJACO+2)
-      VJ22 = R(LJACO+3)
-      C4   = R(LCOS)
-      C5   = R(LCOS+1)
-      C6   = R(LCOS+2)
-      S4   = R(LSIN)
-      S5   = R(LSIN+1)
-      S6   = R(LSIN+2)
-      L4   = R(LCOTE)
-      L5   = R(LCOTE+1)
-      L6   = R(LCOTE+2)
+      VJ11 = CARAT3( 9)
+      VJ12 = CARAT3(10)
+      VJ21 = CARAT3(11)
+      VJ22 = CARAT3(12)
+      C4   = CARAT3(16)
+      C5   = CARAT3(17)
+      C6   = CARAT3(18)
+      S4   = CARAT3(19)
+      S5   = CARAT3(20)
+      S6   = CARAT3(21)
+      L4   = CARAT3(13)
+      L5   = CARAT3(14)
+      L6   = CARAT3(15)
 C
       CU4 = 3.D0 * C4 * C4
       CU5 = 3.D0 * C5 * C5
@@ -131,4 +112,5 @@ C     --------------------- CALCUL DE B -------------------------------
         BF(2,I) = VJ21*BYQ(I) + VJ22*BYE(I)
         BF(3,I) = VJ11*BYQ(I) + VJ12*BYE(I) + VJ21*BXQ(I) + VJ22*BXE(I)
   100 CONTINUE
+C
       END

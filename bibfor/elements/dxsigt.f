@@ -1,6 +1,6 @@
       SUBROUTINE DXSIGT(NOMTE,XYZL,PGL,IC,INIV,TSUP,TINF,TMOY,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,18 +66,35 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2 CODRET(56)
       CHARACTER*8 NOMAIL
       CHARACTER*10 PHENOM
-      CHARACTER*24 DESR
       REAL*8 DF(3,3),DM(3,3),DMF(3,3)
-      REAL*8 N(4)
+      REAL*8 N(4),T2EV(4),T2VE(4),T1VE(9),CARAT3(21),CARAQ4(25)
       REAL*8 ORDI,EPI,EPAIS
       INTEGER MULTIC,IAZK24,IADZI
 C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
-      CALL JEMARQ()
-
       CALL R8INIR(24,0.D0,SIGT,1)
+
+      GRILLE = .FALSE.
+      IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
+
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8).EQ.'MEGRDKT'  .OR. 
+     +    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
+
+         NNO = 3
+         CALL GTRIA3(XYZL,CARAT3)
+      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDKQG4 ') THEN
+         NNO = 4
+         CALL GQUAD4(XYZL,CARAQ4)
+      ELSE
+         CALL UTMESS('F','DXSIGT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +                'N''EST PAS PREVU.')
+      END IF
 
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
@@ -97,52 +114,17 @@ C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 C --- DE L'EPAISSEUR DE LA COQUE
 C     --------------------------
 
-        IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-          GRILLE = .TRUE.
-        ELSE
-          GRILLE = .FALSE.
-        END IF
-
         CALL JEVECH('PCACOQU','L',JCARA)
-        CALL JEVECH('PTEREF','L',JTREF)
+        CALL JEVECH('PTEREF' ,'L',JTREF)
         EPAIS = ZR(JCARA)
-        TREF = ZR(JTREF)
-
-        DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-        CALL JEVETE(DESR,' ',LZR)
-
-        IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     +      NOMTE(1:8).EQ.'MEGRDKT'  .OR. 
-     +      NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
-
-          NNO = 3
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
-C      -------------------------------------------------
-          CALL GTRIA3(XYZL,ZR(LZR))
-
-        ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     +           NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +           NOMTE(1:8).EQ.'MEQ4QU4 ' .OR.
-     +           NOMTE(1:8).EQ.'MEDKQG4 ') THEN
-          NNO = 4
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE
-C      ---------------------------------------------------
-          CALL GQUAD4(XYZL,ZR(LZR))
-
-        ELSE
-          CALL UTMESS('F','DXSIGT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
-     +                'N''EST PAS PREVU.')
-        END IF
+        TREF  = ZR(JTREF)
 
 C --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 C     ----------------------------------------------------
 
-
-        CALL DMATHL(ORDI,EPI,EPAIS,DF,DM,DMF,NNO,PGL,ZR(LZR),MULTIC,IC,
-     +              INDITH,GRILLE)
+        CALL DMATHL(ORDI,EPI,EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,IC,
+     +              INDITH,GRILLE,T2EV,T2VE,T1VE)
         IF (INDITH.EQ.-1) GO TO 20
 
 C --- BOUCLE SUR LES NOEUDS
@@ -166,12 +148,10 @@ C          ----------------------------------------
 
 C --- CAS ELAS_COQUE
 
-        CALL UTMESS('A','DXSIGT',
-     +           'LE TYPE DE COMPORTEMENT :                            '
+        CALL UTMESS('A','DXSIGT','LE TYPE DE COMPORTEMENT : '
      +              //PHENOM(1:10)//'N''EST PAS PREVU.')
       END IF
 
    20 CONTINUE
 
-      CALL JEDEMA()
       END

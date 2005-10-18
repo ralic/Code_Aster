@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,8 +123,8 @@ C
         ENDIF
         K = K + 1
         IF ( K .LE. NBLUTI(IC) ) THEN
-          LIBRE  = IUSADI(JUSADI(IC)+2*K-1) .LT. -1 .OR.
-     &             IUSADI(JUSADI(IC)+2*K  ) .LT. -1
+          LIBRE  = IUSADI(JUSADI(IC)+3*K-2) .LT. -1 .OR.
+     &             IUSADI(JUSADI(IC)+3*K-1) .LT. -1
 C
 C ------- "GROS" OBJET DETRUIT
           IF ( LIBRE ) THEN
@@ -135,8 +135,8 @@ C ------- "GROS" OBJET DETRUIT
 C
 C --------- ENREGISTREMENT A DEPLACER
             IF ( KLIB .NE. 0 ) THEN
-              IDCO = IUSADI(JUSADI(IC)+2*K-1)
-              IDOS = IUSADI(JUSADI(IC)+2*K  )
+              IDCO = IUSADI(JUSADI(IC)+3*K-2)
+              IDOS = IUSADI(JUSADI(IC)+3*K-1)
               IF ( IDOS .GT. 0 .OR. IDCO .GT. 0 ) THEN
 C
 C ----------- L'ENREGISTREMENT CONTIENT UN OU UNE PARTIE D'UN "GROS"
@@ -227,6 +227,7 @@ C
                   CALL JXLIBD (IDCOL, IDOSL, IC, IADDI, LOIS)
                   IADDIB(1) = KLIB
                   CALL JXECRO (IC,IADITP,IADDIB,LGBL,IDCO,IDOS)
+                  IUSADI(JUSADI(IC)+3*KLIB) = IUSADI(JUSADI(IC)+3*K)
                   KLIB = MIN(KLIB+1,K)
                 ENDIF
               ENDIF
@@ -236,8 +237,9 @@ C
         ENDIF
         IF ( KLIB .GT. 0 ) THEN
           DO 400 K = KLIB , NBLUTI(IC)
-            IUSADI(JUSADI(IC)+2*K-1) = -1
-            IUSADI(JUSADI(IC)+2*K  ) = -1
+            IUSADI(JUSADI(IC)+3*K-2) = -1
+            IUSADI(JUSADI(IC)+3*K-1) = -1
+            IUSADI(JUSADI(IC)+3*K  ) =  0
  400      CONTINUE
           NBLUTI(IC) = KLIB-1
         ENDIF

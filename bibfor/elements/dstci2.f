@@ -1,6 +1,9 @@
-      SUBROUTINE DSTCI2 ( DCI , R , HFT2 , DFC, DMC, BCA , AN, AM )
+      SUBROUTINE DSTCI2 ( DCI, CARAT3, HFT2, DFC, DMC, BCA, AN, AM )
+      IMPLICIT  NONE
+      REAL*8    DCI(2,2), CARAT3(*), HFT2(2,6), DMC(3,2), DFC(3,2)
+      REAL*8    BCA(2,3), AN(3,9), AM(3,6)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
 C  DSTCI2 -- DETERMINATION DES MATRICES AN ET AM QUI SONT TELLES QUE
 C            ALPHA = AN*UN + AM*UM
@@ -72,39 +74,13 @@ C    AN(3,9)        OUT   R       MATRICE RELIANT LES ROTATIONS ALPHA
 C                                 AUX INCONNUES DE FLEXION UN
 C    AM(3,6)        OUT   R       MATRICE RELIANT LES ROTATIONS ALPHA
 C                                 AUX INCONNUES DE MEMBRANE UM
-C
-C -----  ARGUMENTS
-      REAL*8   DCI(2,2)
-      REAL*8   R(*)
-      REAL*8   HFT2(2,6), DMC(3,2), DFC(3,2)
-      REAL*8   BCA(2,3)
-      REAL*8   AN(3,9), AM(3,6)
-C -----  VARIABLES LOCALES
-      REAL*8  L(3) , C(3) , S(3)
-      REAL*8  X(3) , Y(3)
-      REAL*8  QSI(2)
-      REAL*8  TA(6,3)
-      REAL*8  DB(2,3)
-      REAL*8  AA(3,3)
-      REAL*8  AAI(3,3)
-      REAL*8  AW(3,9)
+C     ------------------------------------------------------------------
+      INTEGER I, J, K, IC, INT, IRET
+      REAL*8  L(3) , C(3) , S(3) , X(3) , Y(3) , QSI(2), DET
+      REAL*8  TA(6,3), DB(2,3), AA(3,3), AAI(3,3), AW(3,9)
       REAL*8  AB(3,9), AL(3,6), DFCBFB(2,9), DFCBFA(2,3), BFA(3,3)
       REAL*8  BM(3,6), BFB(3,9), DMCTBM(3,6), DCIDMC(2,6), DCIDFB(2,9)
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 3)
-               PARAMETER (NNO   = 3)
-               PARAMETER (NC    = 3)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI  + NPG + NNO )
-               PARAMETER (LWGT  = LETA  + NPG + NNO )
-               PARAMETER (LXYC  = LWGT  + NPG)
-               PARAMETER (LCOTE = LXYC  + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS  + NC)
+      REAL*8  ZERO, UNDEMI, UN, DEUX, TROIS, QUATRE, HUIT, RAC3, ETA
 C     ------------------------------------------------------------------
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -149,21 +125,21 @@ C
           TA(I,J) = ZERO
   50  CONTINUE
 C
-      C(1) = R(LCOS)
-      C(2) = R(LCOS+1)
-      C(3) = R(LCOS+2)
-      S(1) = R(LSIN)
-      S(2) = R(LSIN+1)
-      S(3) = R(LSIN+2)
-      L(1) = R(LCOTE)
-      L(2) = R(LCOTE+1)
-      L(3) = R(LCOTE+2)
-      X(1) = R(LXYC)
-      X(2) = R(LXYC+1)
-      X(3) = R(LXYC+2)
-      Y(1) = R(LXYC+3)
-      Y(2) = R(LXYC+4)
-      Y(3) = R(LXYC+5)
+      C(1) = CARAT3(16)
+      C(2) = CARAT3(17)
+      C(3) = CARAT3(18)
+      S(1) = CARAT3(19)
+      S(2) = CARAT3(20)
+      S(3) = CARAT3(21)
+      L(1) = CARAT3(13)
+      L(2) = CARAT3(14)
+      L(3) = CARAT3(15)
+      X(1) = CARAT3(1)
+      X(2) = CARAT3(2)
+      X(3) = CARAT3(3)
+      Y(1) = CARAT3(4)
+      Y(2) = CARAT3(5)
+      Y(3) = CARAT3(6)
 C
       TA(1,1) =   - HUIT * C(1)
       TA(2,3) =   - HUIT * C(3)
@@ -214,7 +190,7 @@ C ---     CALCUL DE LA MATRICE BFA AU POINT D'INTEGRATION COURANT
 C ---     RELIANT LES COURBURES AUX INCONNUES ALPHA
 C ---     I.E. X = BFB*UN + BFA*ALPHA :
 C         ---------------------------
-          CALL DSTBFA(QSI(INT), ETA, R, BFA)
+          CALL DSTBFA ( QSI(INT), ETA, CARAT3 , BFA )
 C
 C ---     CALCUL DU PRODUIT DFC_T*BFA :
 C         ---------------------------
@@ -272,7 +248,7 @@ C
 C --- CALCUL DE LA MATRICE BFB RELIANT LES COURBURES AUX INCONNUES
 C --- DE FLEXION UN (X = BFB*UN+BFA*ALPHA) :
 C     ------------------------------------
-      CALL DSTBFB(R, BFB)
+      CALL DSTBFB ( CARAT3(9) , BFB )
 C
 C --- CALCUL DU PRODUIT DFC_T*BFB :
 C     ---------------------------
@@ -314,7 +290,7 @@ C
 C --- CALCUL DE LA MATRICE BM RELIANT LES DEFORMATIONS MEMBRANAIRES
 C --- AUX DEPLACEMENTS DE MEMBRANE UM (I.E. (UX,UY) ) :
 C     -----------------------------------------------
-      CALL DXTBM(R, BM)
+      CALL DXTBM  ( CARAT3(9) , BM )
 C
 C --- CALCUL DU PRODUIT DMC_T*BM :
 C     --------------------------

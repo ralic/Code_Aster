@@ -1,6 +1,6 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,7 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
               CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LGBL,0,0)
             ENDIF
             DO 101 KD=1,NBLMAX(IC)
-              LSADI = JUSADI(IC)+2*KD-1
+              LSADI = JUSADI(IC)+3*KD-2
               ISO = IUSADI(LSADI)+IUSADI(LSADI+1)
               IF ( ISO .GE. 0 ) GOTO 101
               NBLUTI(IC) = MAX (KD,NBLUTI(IC))
@@ -144,13 +144,14 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
             CALL JVFINM ( )
  104        CONTINUE
             IITECR(IC) = KD
-            IUSADI(JUSADI(IC)+ 2*IITECR(IC)-1) = 0
-            IUSADI(JUSADI(IC)+ 2*IITECR(IC)  ) = 0
+            IUSADI(JUSADI(IC)+ 3*IITECR(IC)-2) = 0
+            IUSADI(JUSADI(IC)+ 3*IITECR(IC)-1) = 0
+            IUSADI(JUSADI(IC)+ 3*IITECR(IC)  ) = 0
             NITECR(IC) = 0
           ELSE
             IF ( IITECR(IC) .EQ. 0 ) THEN
               DO 201 KD=1,NBLMAX(IC)
-                LSADI = JUSADI(IC)+2*KD-1
+                LSADI = JUSADI(IC)+3*KD-2
                 ISO = IUSADI(LSADI)+IUSADI(LSADI+1)
                 IF ( ISO .GE. 0 ) GOTO 201
                 NBLUTI(IC) = MAX (KD,NBLUTI(IC))
@@ -180,8 +181,9 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
               CALL JVFINM ( )
  204          CONTINUE
               IITECR(IC) = KD
-              IUSADI(JUSADI(IC)+ 2*IITECR(IC)-1) = 0
-              IUSADI(JUSADI(IC)+ 2*IITECR(IC)  ) = 0
+              IUSADI(JUSADI(IC)+ 3*IITECR(IC)-2) = 0
+              IUSADI(JUSADI(IC)+ 3*IITECR(IC)-1) = 0
+              IUSADI(JUSADI(IC)+ 3*IITECR(IC)  ) = 0
               NITECR(IC) = 0
             ENDIF
           ENDIF
@@ -205,9 +207,9 @@ C
           KD = 1
  301      CONTINUE
           IF ( KD .LE. NBLMAX(IC)-NBL ) THEN
-            LSADI = JUSADI(IC)+2*KD-1
+            LSADI = JUSADI(IC)+3*KD-2
             DO 302 KL=1,NBL
-              LSA = LSADI+2*(KL-1)
+              LSA = LSADI+3*(KL-1)
               ISO = IUSADI(LSA)+IUSADI(LSA+1)
               IF( ISO .GE. 0 ) THEN
                 KD = KD + KL

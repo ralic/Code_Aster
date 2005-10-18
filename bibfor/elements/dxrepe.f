@@ -1,6 +1,9 @@
-      SUBROUTINE DXREPE ( NNO , PGL , R )
+      SUBROUTINE DXREPE ( PGL , T2EV, T2VE, T1VE )
+      IMPLICIT   NONE
+      REAL*8              PGL(3,3) , T2EV(*), T2VE(*), T1VE(*)
+C     ---------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/95   AUTEUR B8BHHHH J.R.LEVESQUE 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-C     ---------------------------------------------------
-      INTEGER       NNO
-      REAL*8        PGL(3,3) , R(*)
 C     ------------------------------------------------------------------
 C         CALCUL DES MATRICE T1VE ET T2VE DE PASSAGE D'UNE MATRICE
 C         (3,3) ET (2,2) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -45,9 +44,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      REAL*8        DX , DY , DZ , S , C , NORM
-      REAL*8        PS , PJDX , PJDY , PJDZ
-      REAL*8        ALPHA , BETA , R8DGRD , R8PREM
+      INTEGER    JCOQU
+      REAL*8     DX , DY , DZ , S , C , NORM
+      REAL*8     PS , PJDX , PJDY , PJDZ
+      REAL*8     ALPHA , BETA , R8DGRD , R8PREM
 C
       CALL JEVECH ('PCACOQU', 'L', JCOQU)
       ALPHA = ZR(JCOQU+1) * R8DGRD()
@@ -71,36 +71,30 @@ C
      &                //' IMPOSSIBLE - ORIENTER CES MAILLES' )
       ENDIF
 C
-      IF ( NNO .EQ. 3 ) THEN
-C        8 + 3 * NPG + 2 * NNO + 5 * NC ( NNO = NPG = NC = 3 )
-         LT1VE = 38
-      ELSE IF ( NNO .EQ. 4 ) THEN
-C        8 + 3 * NPG + 2 * NNO + 9 * NC + 4 ( NNO = NPG = NC = 4 )
-         LT1VE = 68
-      ENDIF
-      LT2VE = LT1VE + 9
-      LT2EV = LT2VE + 4
-C
       PJDX = PJDX/NORM
       PJDY = PJDY/NORM
       PJDZ = PJDZ/NORM
       C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
       S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-      R(LT2EV  ) =   C
-      R(LT2EV+1) =   S
-      R(LT2EV+2) = - S
-      R(LT2EV+3) =   C
-      R(LT2VE  ) =   C
-      R(LT2VE+1) = - S
-      R(LT2VE+2) =   S
-      R(LT2VE+3) =   C
-      R(LT1VE  ) =   C * C
-      R(LT1VE+3) =   S * S
-      R(LT1VE+6) =   C * S
-      R(LT1VE+1) =   R(LT1VE+3)
-      R(LT1VE+4) =   R(LT1VE  )
-      R(LT1VE+7) = - R(LT1VE+6)
-      R(LT1VE+2) = - R(LT1VE+6) - R(LT1VE+6)
-      R(LT1VE+5) =   R(LT1VE+6) + R(LT1VE+6)
-      R(LT1VE+8) =   R(LT1VE  ) - R(LT1VE+3)
+C
+      T2EV(1) =   C
+      T2EV(2) =   S
+      T2EV(3) = - S
+      T2EV(4) =   C
+C
+      T2VE(1) =   C
+      T2VE(2) = - S
+      T2VE(3) =   S
+      T2VE(4) =   C
+C
+      T1VE(1) =   C * C
+      T1VE(4) =   S * S
+      T1VE(7) =   C * S
+      T1VE(2) =   T1VE(4)
+      T1VE(5) =   T1VE(1)
+      T1VE(8) = - T1VE(7)
+      T1VE(3) = - T1VE(7) - T1VE(7)
+      T1VE(6) =   T1VE(7) + T1VE(7)
+      T1VE(9) =   T1VE(1) - T1VE(4)
+C
       END

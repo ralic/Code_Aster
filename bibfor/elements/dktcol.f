@@ -1,12 +1,12 @@
-      SUBROUTINE DKTCOL ( NOMTE, XYZL, OPTION, PGL, ICOU, INIV, DEPL,
+      SUBROUTINE DKTCOL ( XYZL, OPTION, PGL, ICOU, INIV, DEPL,
      +                    CDL, MULTIC, GRILLE )
       IMPLICIT  NONE
-      INTEGER             ICOU, INIV, MULTIC
-      REAL*8              XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
-      LOGICAL             GRILLE
-      CHARACTER*16        NOMTE, OPTION
+      INTEGER       ICOU, INIV, MULTIC
+      REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
+      LOGICAL       GRILLE
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER       LZR,NE,INE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER       NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
       REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,DISTN
       REAL*8        DEPF(9),DEPM(6),VT(2),LAMBDA(4)
       REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
@@ -62,45 +63,29 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2   VAL, CODRET
       CHARACTER*3   NUM
       CHARACTER*8   NOMRES
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      INTEGER LAIRE,LT1VE,LT2VE
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
-      PARAMETER (NC=3)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO)
-      PARAMETER (LWGT=LETA+NPG+NNO)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
-      PARAMETER (LT1VE=LAIRE+1)
-      PARAMETER (LT2VE=LT1VE+9)
+      REAL*8 QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
+C
+      IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+        NE  = NPG
+      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+        NE  = NNO
+      END IF
 C
       DEUX = 2.D0
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        NE  = NPG
-        INE = 0
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        NE  = NNO
-        INE = NPG
-      END IF
 C     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,ZR(LZR),MULTIC,ICOU,GRILLE)
+      CALL DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,GRILLE,
+     +                                                 T2EV,T2VE,T1VE)
 
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0 .OR. GRILLE) THEN
@@ -124,8 +109,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,ZR(LZR-1+LT1VE),ZR(LZR-1+LT2VE),H,D1I,D2I,
-     +              X3I)
+        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,3
@@ -137,7 +121,7 @@ C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
         DEPF(3+3* (J-1)) = -DEPL(2+2+6* (J-1))
    30 CONTINUE
 C     ------ CALCUL DE LA MATRICE BM -----------------------------------
-      CALL DXTBM(ZR(LZR),BM)
+      CALL DXTBM ( CARAT3(9), BM )
 C     ------ SM = BM.DEPM ----------------------------------------------
       DO 40 I = 1,3
         SM(I) = 0.D0
@@ -155,9 +139,9 @@ C     ------ SM = BM.DEPM ----------------------------------------------
       ELSE
 
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-        CALL DSXHFT(DF,ZR(LZR),HFT2)
+        CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
-        CALL DKTTXY(HFT2,DEPF,ZR(LZR),VT)
+        CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
 
       END IF
 
@@ -165,8 +149,12 @@ C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
       IF (OPTION(1:4).EQ.'EPSI') THEN
 C         ---------------------
         DO 100 IE = 1,NE
+
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
+
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DKTBF(IE+INE,ZR(LZR),BF)
+          CALL DKTBF ( QSI, ETA, CARAT3, BF )
           DO 110 I = 1,3
             SF(I) = 0.D0
  110      CONTINUE
@@ -200,17 +188,20 @@ C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
 
         IF (MULTIC.GT.0 .AND. (.NOT.GRILLE)) THEN
 C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
-          CALL DSXHLT(DF,ZR(LZR),HLT2)
+          CALL DSXHLT ( DF, CARAT3(9), HLT2 )
 C           ------ LAMBDA = HLT2.TKT.DEPF -----------------------------
-          CALL DKTLXY(HLT2,DEPF,ZR(LZR),LAMBDA)
+          CALL DKTLXY ( CARAT3(16), CARAT3(13), HLT2, DEPF, LAMBDA )
           DO 200 J = 1,4
             CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
             CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
  200      CONTINUE
         END IF
+C
         DO 210 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DKTBF(IE+INE,ZR(LZR),BF)
+          CALL DKTBF ( QSI, ETA, CARAT3, BF )
           DO 212 I = 1,3
             SF(I) = 0.D0
  212      CONTINUE
@@ -255,9 +246,9 @@ C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
 
         IF (MULTIC.GT.0 .AND. (.NOT.GRILLE)) THEN
 C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
-          CALL DSXHLT(DF,ZR(LZR),HLT2)
+          CALL DSXHLT ( DF, CARAT3(9), HLT2 )
 C           ------ LAMBDA = HLT2.TKT.DEPF -----------------------------
-          CALL DKTLXY(HLT2,DEPF,ZR(LZR),LAMBDA)
+          CALL DKTLXY ( CARAT3(16), CARAT3(13), HLT2, DEPF, LAMBDA )
           DO 300 J = 1,4
             CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
             CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
@@ -265,8 +256,10 @@ C           ------ LAMBDA = HLT2.TKT.DEPF -----------------------------
         END IF
 
         DO 310 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DKTBF(IE+INE,ZR(LZR),BF)
+          CALL DKTBF ( QSI, ETA, CARAT3, BF )
           DO 312 I = 1,3
             SF(I) = 0.D0
  312      CONTINUE
@@ -327,5 +320,5 @@ C             --------------------------------
  320      CONTINUE
  310    CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

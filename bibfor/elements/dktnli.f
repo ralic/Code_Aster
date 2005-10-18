@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +89,7 @@ C  CMPS D' EFFORTS COQUE :
 C   - MEMBRANE : NXX,NYY,NXY
 C   - FLEXION  : MXX,MYY,MXY
 C --------------------------------------------------------------------
-      INTEGER NBCOU, NPG, NC, NPGH, NZ, JNBSPI, ITABP(8), ITABM(8)
+      INTEGER NBCOU, NC, NPGH, NZ, JNBSPI, ITABP(8), ITABM(8)
 C            NBCOU:  NOMBRE DE COUCHES (INTEGRATION DE LA PLASTICITE)
 C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
@@ -142,27 +142,26 @@ C           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 C             LE MATERIAU EST SUPPOSE HOMOGENE
 C             IL PEUT NEANMOINS Y AVOIR COUPLAGE PAR LA PLASTICITE
 C     ------------------ PARAMETRAGE ELEMENT ---------------------------
-      INTEGER    LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,JTAB(7),COD,I
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      REAL*8    DEUX,RAC2
-      PARAMETER (DEUX=2.D0)
-      REAL*8    CTOR,EPSANP(4),EPSANM(4),PHASM(7),PHASP(7)
-      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,JACGAU,BMAT(6,18)
-      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
-      REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
+      INTEGER   NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER   JTAB(7), COD, I, IADZI, IAZK24, KSP
       INTEGER   ICACOQ, ICARCR, ICOMPO, ICONTM, ICONTP, ICOU, ICPG,
      &          IER, IGAUH, IINSTM, IINSTP, IMATE, INO, IPG, IRET, ISP,
      &          ITEMP, ITEMPM, ITEMPP, ITREF, IVARIM, IVARIP, IVARIX,
-     &          IVPG, J, K, LZR, NBCON, NBSP, NBVAR, NDIMV, NNOEL
-      INTEGER   IADZI, IAZK24, KSP
+     &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV
+      REAL*8     DEUX, RAC2, QSI, ETA, CARA(25), JACOB(5)
+      REAL*8    CTOR,EPSANP(4),EPSANM(4),PHASM(7),PHASP(7)
+      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,JACGAU,BMAT(6,18)
+      REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
+      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
-C --DEB
-      RAC2 = SQRT(DEUX)
-      CODRET=0
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
+      DEUX   = 2.D0
+      RAC2   = SQRT(DEUX)
+      CODRET = 0
 
 C     2 BOOLEENS COMMODES :
 C     ---------------------
@@ -170,33 +169,15 @@ C     ---------------------
       MATRIC = ((OPT(1:9).EQ.'FULL_MECA').OR.(OPT(1:9).EQ.'RIGI_MECA'))
 C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
-      DKT = .FALSE.
-      DKQ = .FALSE.
+      DKT    = .FALSE.
+      DKQ    = .FALSE.
       GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        NC=3
-        NPG=3
-        NNOEL=3
-        LETA = LQSI+NPG+NNOEL
-        LWGT = LETA+NPG+NNOEL
         GRILLE = .TRUE.
-        CALL JEVETE('&INEL.MEGRDKT .DESR',' ',LZR)
       ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
-        NC=3
-        NPG=3
-        NNOEL=3
-        LETA = LQSI+NPG+NNOEL
-        LWGT = LETA+NPG+NNOEL
         DKT = .TRUE.
-        CALL JEVETE('&INEL.MEDKTR3 .DESR',' ',LZR)
       ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
-        NC=4
-        NPG=4
-        NNOEL=4
-        LETA=LQSI+NPG+NNOEL+2*NC
-        LWGT=LETA+NPG+NNOEL+2*NC
         DKQ = .TRUE.
-        CALL JEVETE('&INEL.MEDKQU4 .DESR',' ',LZR)
       ELSE
         CALL UTMESS('F','DKTNLI','ELEMENT NON TRAITE '//NOMTE)
       END IF
@@ -254,13 +235,13 @@ C     ---------------------------
       ENDIF
       IF ( GRILLE ) THEN
          DISTN = ZR(ICACOQ+3)
-         CALL GTRIA3(XYZL,ZR(LZR))
+         CALL GTRIA3(XYZL,CARA)
          CTOR  = ZR(ICACOQ+4)
       ELSEIF ( DKT ) THEN
-         CALL GTRIA3(XYZL,ZR(LZR))
+         CALL GTRIA3(XYZL,CARA)
          CTOR = ZR(ICACOQ+3)
       ELSEIF ( DKQ ) THEN
-         CALL GQUAD4(XYZL,ZR(LZR))
+         CALL GQUAD4(XYZL,CARA)
          CTOR = ZR(ICACOQ+3)
       END IF
 C
@@ -392,15 +373,17 @@ C     -------------------------------------------------
         CALL R8INIR(9,0.D0,DF,1)
         CALL R8INIR(9,0.D0,DM,1)
         CALL R8INIR(9,0.D0,DMF,1)
+        QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
         IF ( DKQ ) THEN
-          CALL JQUAD4(IPG,XYZL,ZR(LZR))
-          POIDS = ZR(LZR-1+LWGT+IPG-1)*ZR(LZR-1+LDETJ)
-          CALL DXQBM(IPG,ZR(LZR),BM)
-          CALL DKQBF(IPG,ZR(LZR),BF)
+          CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
+          POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
+          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
+          CALL DKQBF ( QSI, ETA, JACOB(2), CARA, BF )
         ELSE
-          POIDS = ZR(LZR-1+LWGT+IPG-1)*ZR(LZR-1+LDETJ)
-          CALL DXTBM(ZR(LZR),BM)
-          CALL DKTBF(IPG,ZR(LZR),BF)
+          POIDS = ZR(IPOIDS+IPG-1)*CARA(7)
+          CALL DXTBM ( CARA(9), BM )
+          CALL DKTBF ( QSI, ETA, CARA, BF )
         ENDIF
 
 C       -- CALCUL DE EPS, DEPS, KHI, DKHI :

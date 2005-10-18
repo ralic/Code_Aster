@@ -1,4 +1,7 @@
       SUBROUTINE DSQRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
+      IMPLICIT REAL*8 (A-H,O-Z)
+      REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
+      CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,11 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DSQ (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -46,7 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER I, INT, J, JCOQU, JDEPG, K, LZR, MULTIC
+      INTEGER I, INT, J, JCOQU, JDEPG, K, MULTIC
       REAL*8 WGT,DEPL(24)
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 BFB(3,12),BFA(3,4),HFT2(2,6),HMFT2(2,6)
@@ -73,22 +73,13 @@ C                   -----(8,12)  -----(8,12)
       REAL*8 BCMBCB(8,12), KMA(8,4), KMB(8,12)
       REAL*8 KMPMT(8,8), KMPM(8,8), MEMBCF(8,8), BCAPM(2,8), R8GAEM
       REAL*8 BSIGTH(24), ENERTH, CTOR, UN, ZERO, ETA, EXCENT, QSI
+      REAL*8 JACOB(5),CARAQ4(25),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL ELASCO, EXCE, INDITH
-
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER   NPG,NNO,NC
-      INTEGER   LDETJ,LJACO,LTOR,LQSI,LETA,LWGT
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
-      PARAMETER (NC=4)
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO+2*NC)
-      PARAMETER (LWGT=LETA+NPG+NNO+2*NC)
+      INTEGER   NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO   = 0.0D0
       UN     = 1.0D0
@@ -114,35 +105,26 @@ C
       CALL R8INIR(96,ZERO,KMAPB,1)
       CALL R8INIR(16,ZERO,BCAPM,1)
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-
       CALL JEVECH('PCACOQU','L',JCOQU)
-      CTOR = ZR(JCOQU+3)
+      CTOR   = ZR(JCOQU+3)
       EXCENT = ZR(JCOQU+4)
 C
       EXCE = .FALSE.
       IF (ABS(EXCENT).GT.UN/R8GAEM()) EXCE = .TRUE.
 C
-C --- ON NE CALCULE PAS ENCORE LA MATRICE DE RIGIDITE D'UN ELEMENT
-C --- DSQ EXCENTRE, ON S'ARRETE EN ERREUR FATALE :
-C     ------------------------------------------
-C      IF (EXCENT.NE.ZERO) THEN
-C        CALL UTMESS('F','DSQRIG','POUR L''INSTANT ON NE PEUT PAS '//
-C     +              'EXCENTRER LES ELEMENTS DSQ .')
-C      ENDIF
+C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
+      CALL GQUAD4 ( XYZL, CARAQ4 )
 
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
-C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4(XYZL,ZR(LZR))
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 
 C     ---- CALCUL DE LA MATRICE PB -------------------------------------
       IF (EXCE) THEN
-        CALL DSQDI2(NOMTE,XYZL,DF,DCI,DMF,DFC,DMC,PB,PM)
+        CALL DSQDI2(XYZL,DF,DCI,DMF,DFC,DMC,PB,PM)
       ELSE
-        CALL DSQDIS(NOMTE,XYZL,DF,DCI,PB)
+        CALL DSQDIS(XYZL,CARAQ4,DF,DCI,PB)
       ENDIF
 C
 C --- BOUCLE SUR LES POINTS D'INTEGRATION :
@@ -154,26 +136,26 @@ C --- CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT POUR    =
 C --- LA FLEXION ET LE CISAILLEMENT                         =
 C============================================================
 C
-C ---   CALCUL DU JACOBIEN SUR LE QUADRANGLE :
-C       ------------------------------------ 
-        CALL JQUAD4(INT,XYZL,ZR(LZR))
-C
 C ---   COORDONNEES DU POINT D'INTEGRATION COURANT :
 C       ------------------------------------------
-        QSI = ZR(LZR-1+LQSI+INT-1)
-        ETA = ZR(LZR-1+LETA+INT-1)
+        QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
+C
+C ---   CALCUL DU JACOBIEN SUR LE QUADRANGLE :
+C       ------------------------------------ 
+        CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C ---   CALCUL DE LA MATRICE BM :
 C       -----------------------
-        CALL DXQBM(INT,ZR(LZR),BM)
+        CALL DXQBM ( QSI, ETA, JACOB(2), BM )
 C
 C ---   CALCUL DE LA MATRICE BFB  :
 C       ------------------------
-        CALL DSQBFB(INT,ZR(LZR),BFB)
+        CALL DSQBFB ( QSI, ETA, JACOB(2), BFB )
 C
 C ---   CALCUL DE LA MATRICE BFA  :
 C       ------------------------
-        CALL DSQBFA(QSI,ETA,ZR(LZR),BFA)
+        CALL DSQBFA ( QSI, ETA , JACOB(2) , CARAQ4 , BFA )
 C
 C ---   CALCUL DU PRODUIT BFBT.DF.BFB :
 C       -----------------------------
@@ -189,15 +171,15 @@ C       -----------------------------
 C
 C ---   CALCUL DU PRODUIT HF.T2 :
 C       -----------------------
-        CALL DSXHFT(DF,ZR(LZR),HFT2)
+        CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C
 C ---   CALCUL DU PRODUIT HMF.T2 :
 C       ------------------------
-        CALL DXHMFT(DMF,ZR(LZR),HMFT2)
+        CALL DXHMFT ( DMF, JACOB(2), HMFT2 )
 C
 C ---   CALCUL DES MATRICES BCB, BCA ET BCM:
 C       -----------------------------------
-        CALL DSQCIS(INT,ZR(LZR),HMFT2,HFT2,BCM,BCB,BCA)
+        CALL DSQCIS ( QSI, ETA, CARAQ4, HMFT2, HFT2, BCM, BCB, BCA )
 C
 C ---   CALCUL DES MATRICES BCBT.DCI.BCB  :
 C       --------------------------------
@@ -349,7 +331,7 @@ C
   220     CONTINUE
   210   CONTINUE
 C
-        WGT = ZR(LZR-1+LWGT+INT-1)*ZR(LZR-1+LDETJ)
+        WGT = ZR(IPOIDS+INT-1)*JACOB(1)
         DO 230 I = 1,12
         DO 230 J = 1,12
           FLEX(I,J) = FLEX(I,J) + FLEXI(I,J)*WGT
@@ -437,6 +419,7 @@ C
      +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
      +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
         CALL DXQLOC(FLEX,MEMB,MEFL,CTOR,RIG)
+C
       ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
@@ -449,5 +432,5 @@ C
           ENER(1) = ENER(1) - ENERTH
         ENDIF
       END IF
-      CALL JEDEMA()
+C
       END

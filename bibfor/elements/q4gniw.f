@@ -1,6 +1,8 @@
-      SUBROUTINE Q4GNIW ( INT , R , DBA , WSQ )
+      SUBROUTINE Q4GNIW ( QSI, ETA, CARAQ4, DBA , WSQ )
+      IMPLICIT  NONE
+      REAL*8    QSI, ETA, CARAQ4(*), DBA(2,12), WSQ(12)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/98   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,41 +19,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER  INT
-      REAL*8   DBA(2,12)
-      REAL*8   R(*)
-      REAL*8   WSQ(12)
 C     ------------------------------------------------------------------
 C     INTERPOLATION DE LA FLECHE AU POINTS D'INTEGRATION POUR LE Q4G
 C     ------------------------------------------------------------------
-      REAL*8  QSI,ETA , PQSI,MQSI , PETA,META , QSIC,ETAC
+      INTEGER  J
+      REAL*8  PQSI,MQSI , PETA,META , QSIC,ETAC
       REAL*8  X5,X6,X7,X8 , Y5,Y6,Y7,Y8
       REAL*8  N(12)
-C
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
 C     ------------------------------------------------------------------
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
-      X5  = R(LXYC)
-      X6  = R(LXYC+1)
-      X7  = R(LXYC+2)
-      X8  = R(LXYC+3)
-      Y5  = R(LXYC+4)
-      Y6  = R(LXYC+5)
-      Y7  = R(LXYC+6)
-      Y8  = R(LXYC+7)
+      X5   = CARAQ4(1)
+      X6   = CARAQ4(2)
+      X7   = CARAQ4(3)
+      X8   = CARAQ4(4)
+      Y5   = CARAQ4(5)
+      Y6   = CARAQ4(6)
+      Y7   = CARAQ4(7)
+      Y8   = CARAQ4(8)
 C
       PETA = 1.D0 + ETA
       META = 1.D0 - ETA

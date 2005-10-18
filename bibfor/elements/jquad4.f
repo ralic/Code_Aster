@@ -1,6 +1,8 @@
-      SUBROUTINE JQUAD4 ( INT , XYZL , R )
+      SUBROUTINE JQUAD4 ( XYZL , QSI, ETA, JACOB )
+      IMPLICIT  NONE
+      REAL*8    XYZL(3,*), QSI, ETA, JACOB(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,29 +19,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER INT
-      REAL*8  XYZL(3,*)
-      REAL*8  R(*)
 C     ------------------------------------------------------------------
-C     JACOBIEN AU POINT 'INT' SUR LE QUAD4
+C     JACOBIEN ET LA MATRICE INVERSE AU POINT 'INT' SUR LE QUAD4
 C     ------------------------------------------------------------------
       REAL*8  X21 , X32 , X43 , X14 , Y21 , Y32 , Y43 , Y14
-      REAL*8  J11 , J12 , J21 , J22 , ETA , QSI
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LDETJ = 1)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
+      REAL*8  J11 , J12 , J21 , J22
 C     ------------------------------------------------------------------
-      QSI = R(LQSI+INT-1)
-      ETA = R(LETA+INT-1)
 C     -------- PROJECTION DES COTES ------------------------------------
       X21 = XYZL(1,2) - XYZL(1,1)
       X32 = XYZL(1,3) - XYZL(1,2)
@@ -55,10 +40,11 @@ C     ----------- MATRICE JACOBIENNE ----------------------------------
       J21 = (X32 - X14 + QSI * (X32 + X14)) / 4.D0
       J22 = (Y32 - Y14 + QSI * (Y32 + Y14)) / 4.D0
 C     -------------- JACOBIEN -----------------------------------------
-      R(LDETJ)  = J11 * J22 - J12 * J21
+      JACOB(1)  = J11 * J22 - J12 * J21
 C     ------- MATRICE JACOBIENNE INVERSE ------------------------------
-      R(LJACO)    =   J22 / R(LDETJ)
-      R(LJACO+1)  = - J12 / R(LDETJ)
-      R(LJACO+2)  = - J21 / R(LDETJ)
-      R(LJACO+3)  =   J11 / R(LDETJ)
+      JACOB(2)  =   J22 / JACOB(1)
+      JACOB(3)  = - J12 / JACOB(1)
+      JACOB(4)  = - J21 / JACOB(1)
+      JACOB(5)  =   J11 / JACOB(1)
+C
       END

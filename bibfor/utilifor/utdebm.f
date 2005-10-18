@@ -1,6 +1,6 @@
       SUBROUTINE UTDEBM ( CH1 , SPGLU , TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,16 +48,23 @@ C
 C     ------------------------------------------------------------------
       CHARACTER *80    SPG, SPG1
       CHARACTER *20    VERS
-      CHARACTER *16    NOMCMD,DATE
+      CHARACTER *16    NOMCMD,DATE,COMPEX
       CHARACTER *8     K8B
-      INTEGER          CDEB , CFIN
+      LOGICAL          LEXC
+      INTEGER          CDEB , CFIN, LOUT
       INTEGER          IFIC,INIVO,IUTIL,IVERS,K,LC,LL,LXLGUT         
 C     ------------------------------------------------------------------
       CALL GETRES(K8B,K8B,NOMCMD)
-C --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
+C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
       IDF  = INDEX('EFIDASXZ',CH1(1:1))
+
+C     --- COMPORTEMENT EN CAS D'ERREUR <F>
+      CALL ONERRF(' ', COMPEX, LOUT)
+      LEXC= IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION'
+
 C     --- SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP/UTDEXC
       IF ( IDF.NE.8 ) THEN
+C        ASTER.ERROR DANS ASTERMODULE.C
          NEXCEP = 21
       ENDIF
       IF ( IDF .EQ. 5) THEN
@@ -98,7 +105,7 @@ C
       LL  = MIN(MXCOLS-10,LXLGUT(SPGLU))
       SPG = SPGLU(1:LL)
 C -- MESSAGE:     E             F             A 
-      IF ( IDF.EQ.1 .OR. IDF.EQ.2 .OR. IDF.EQ.5 ) THEN
+      IF ( (IDF.EQ.1 .OR. IDF.EQ.2 .OR. IDF.EQ.5) .AND. .NOT.LEXC ) THEN
         IF (IDF.EQ.1) NBERRE=NBERRE+1
         IF (IDF.EQ.2) NBERRF=NBERRF+1
         LC  = LXLGUT(NOMCMD)
@@ -113,7 +120,7 @@ C -- MESSAGE:     E             F             A
      &                             '> <'//SPG(1:LL)//'>  '
         ENDIF
 C -- MESSAGE:          S             Z
-      ELSE IF ( IDF.EQ.6 .OR. IDF.EQ.8 ) THEN
+      ELSE IF ( IDF.EQ.6 .OR. IDF.EQ.8 .OR. LEXC ) THEN
         IF (IDF.EQ.1) NBERRE=NBERRE+1
         IF (IDF.EQ.2) NBERRF=NBERRF+1
         LC  = LXLGUT(NOMCMD)
@@ -130,7 +137,7 @@ C -- MESSAGE:          S             Z
         COLCOU = LDEB + LL + 3
         TAMPON(1) (1 : COLCOU) = '<'//CH1(1:1)//'> <'//SPG(1:LL)//'>  '
       ENDIF
-      IF ( IDF.EQ.2 ) THEN
+      IF ( IDF.EQ.2 .AND. .NOT.LEXC ) THEN
         CALL VERSIO(IVERS,IUTIL,INIVO,DATE,LEXP)
         WRITE(VERS,'(I2,''.'',I2,''.'',I2,'' '',A10)')
      &        IVERS,IUTIL,INIVO,DATE(1:10)
@@ -138,7 +145,7 @@ C -- MESSAGE:          S             Z
         TAMPON(2) = TAMPON(1)
         TAMPON(1) = '<'//CH1(1:1)//'> <ASTER '//VERS//'>  '
       ENDIF
-      IF ( IDF.EQ.6 .OR. IDF.EQ.8 ) THEN
+      IF ( IDF.EQ.6 .OR. IDF.EQ.8 .OR. LEXC ) THEN
         CALL VERSIO(IVERS,IUTIL,INIVO,DATE,LEXP)
         WRITE(VERS,'(I2,''.'',I2,''.'',I2,'' '',A10)')
      &        IVERS,IUTIL,INIVO,DATE(1:10)

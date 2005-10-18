@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 14/10/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,8 +140,6 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            NEWMARK     =_F(  ALPHA = ALF, DELTA = DEL),
            NEWTON      =_F( MATRICE = 'TANGENTE',  REAC_ITER = 1),
            CONVERGENCE =_F(  
-                         RESI_INTE_RELA = 1.E-6,
-                         ITER_INTE_MAXI = 20,
                          ITER_GLOB_MAXI = 20),
            SOLVEUR=_F(METHODE='MULT_FRONT',),              
            );

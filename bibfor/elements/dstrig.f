@@ -1,4 +1,7 @@
-      SUBROUTINE DSTRIG(NOMTE,XYZL,OPTION,PGL,RIG,ENER)
+      SUBROUTINE DSTRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
+      IMPLICIT  NONE
+      REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
+      CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,11 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT  NONE
-      REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/08/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DST (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -46,8 +46,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER INT, MULTIC, PERM(9), PERM2(36)
-      INTEGER I, J, JCOQU, JDEPG, K, K1, K2, LZR
+      INTEGER I, J, JCOQU, JDEPG, K, K1, K2
       REAL*8 WGT,AIRE
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 BFB(3,9),BFA(3,3),HFT2(2,6)
@@ -66,28 +67,9 @@ C                   ----(6,9)  -----(6,9)
       REAL*8 MEFL(6,9),MEFLI(6,9),DEPL(18)
       REAL*8 KFC11(9,3), KFC21(9), KMC(6,3)
       REAL*8 KMF12(6,3), KMF12A(36)
-      REAL*8 BSIGTH(24),ENERTH
-      REAL*8 ETA, EXCENT, UN, QSI, R8GAEM, ZERO
+      REAL*8 BSIGTH(24), ENERTH, EXCENT, UN, R8GAEM, ZERO
+      REAL*8 QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
       LOGICAL      ELASCO, EXCE, INDITH
-
-C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-      INTEGER LAIRE
-      PARAMETER (NPG=3)
-      PARAMETER (NNO=3)
-      PARAMETER (NC=3)
-      PARAMETER (LDETJ=1)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO)
-      PARAMETER (LWGT=LETA+NPG+NNO)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
 C     ------------------------------------------------------------------
       REAL*8 CTOR
       DATA PERM  / 1, 4,   7,  2,  5,  8, 3, 6, 9 /
@@ -98,7 +80,9 @@ C     ------------------------------------------------------------------
      +             5, 11, 17, 23, 29, 35,
      +             6, 12, 18, 24, 30, 36 /
 C     ----------------------------------------------------------------
-      CALL JEMARQ()
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO = 0.0D0
       UN   = 1.0D0
@@ -110,8 +94,6 @@ C
       CALL R8INIR(36,ZERO,KMF12A,1)
       ENERTH = ZERO
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-
       CALL JEVECH('PCACOQU','L',JCOQU)
       CTOR = ZR(JCOQU+3)
       EXCENT = ZR(JCOQU+4)
@@ -119,21 +101,21 @@ C
       IF (ABS(EXCENT).GT.UN/R8GAEM()) EXCE = .TRUE.
 
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE --------
-      CALL GTRIA3(XYZL,ZR(LZR))
+      CALL GTRIA3 ( XYZL, CARAT3 )
 
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE -------------------------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ------------------------------------------------------------------
 C     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 C     ------------------------------------------------------------------
 
 C     ------ CALCUL DE LA MATRICE BM -----------------------------------
-      CALL DXTBM(ZR(LZR),BM)
+      CALL DXTBM ( CARAT3(9), BM )
 C     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
       CALL UTBTAB('ZERO',3,6,DM,BM,XAB1,MEMB)
-      AIRE = ZR(LZR-1+LAIRE)
+      AIRE = CARAT3(8)
       DO 10 K = 1,36
         MEMB(K) = MEMB(K)*AIRE
    10 CONTINUE
@@ -144,7 +126,7 @@ C     COUPLAGE MEMBRANE/FLEXION
 C     ------------------------------------------------------------------
 
 C     ------- CALCUL DE LA MATRICE BFB -------------------------------
-      CALL DSTBFB(ZR(LZR),BFB)
+      CALL DSTBFB ( CARAT3(9) , BFB )
 
 C     ------- CALCUL DU PRODUIT BFBT.DF.BFB --------------------------
       CALL UTBTAB('ZERO',3,9,DF,BFB,XAB2,KF11)
@@ -155,18 +137,18 @@ C        ----- CALCUL DU PRODUIT BMT.DMF.BFB ------------------------
       END IF
 
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-      CALL DSXHFT(DF,ZR(LZR),HFT2)
+      CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 
       IF (EXCE) THEN
 C
 C ---   CALCUL DES MATRICES BCA ,PB ET PM DANS LE CAS DE L'EXCENTREMENT:
 C       ---------------------------------------------------------------
-        CALL DSTCI2(DCI,ZR(LZR),HFT2,DFC,DMC,BCA,PB,PM)
+        CALL DSTCI2 ( DCI, CARAT3, HFT2, DFC, DMC, BCA, PB, PM )
       ELSE
 C
 C ---   CALCUL DES MATRICES BCA ET PB DANS LE CAS NON EXCENTRE :
 C       ------------------------------------------------------
-        CALL DSTCIS(DCI,ZR(LZR),HFT2,BCA,PB)
+        CALL DSTCIS ( DCI , CARAT3 , HFT2 , BCA , PB )
 C
       ENDIF
 
@@ -185,12 +167,12 @@ C     ------- CALCUL DU PRODUIT BCAT.DCI.BCA ---------------------------
 C
 C ---   COORDONNEES DU POINT D'INTEGRATION COURANT :
 C       ------------------------------------------
-        QSI = ZR(LZR-1+LQSI+INT-1)
-        ETA = ZR(LZR-1+LETA+INT-1)
+        QSI = ZR(ICOOPG-1+NDIM*(INT-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
 C
 C ---   CALCUL DE LA MATRICE BFA AU POINT QSI ETA :
 C       -----------------------------------------
-        CALL DSTBFA(QSI,ETA,ZR(LZR),BFA)
+        CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
 C
 C ---   CALCUL DU PRODUIT BFBT.DF.BFA :
 C       -----------------------------
@@ -254,7 +236,7 @@ C       ---------------------------
           FLEXI(K) = FLEXI(K) + KF11(K) + KFB(K) + KFC(K)
    90   CONTINUE
 
-        WGT = ZR(LZR-1+LWGT+INT-1)*ZR(LZR-1+LDETJ)
+        WGT = ZR(IPOIDS+INT-1)*CARAT3(7)
         DO 100 K = 1,81
           FLEX(K) = FLEX(K) + FLEXI(K)*WGT
   100   CONTINUE
@@ -342,6 +324,7 @@ C         --------------------------------------
      +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
      +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,RIG)
+C
       ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
@@ -354,5 +337,5 @@ C         --------------------------------------
            ENER(1) = ENER(1) - ENERTH
          ENDIF
       END IF
-      CALL JEDEMA()
+C
       END

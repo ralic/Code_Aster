@@ -1,11 +1,10 @@
-      SUBROUTINE DSQCOL ( NOMTE, XYZL, OPTION, PGL, ICOU, INIV, DEPL,
-     +                    CDL )
+      SUBROUTINE DSQCOL ( XYZL, OPTION, PGL, ICOU, INIV, DEPL, CDL )
       IMPLICIT  NONE
-      INTEGER             ICOU, INIV
-      REAL*8              XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
-      CHARACTER*16        NOMTE, OPTION
+      INTEGER       ICOU, INIV
+      REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +49,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER       MULTIC,LZR,NE,INE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER       MULTIC,NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
       REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,META,MQSI
       REAL*8        QSI,PQSI,ETA,PETA
       REAL*8        DEPF(12),DEPM(8),H(3,3),D1I(2,2),D2I(2,4)
@@ -62,50 +62,32 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        BLB(4,12),BLA(4,4),BLN(4,12)
       REAL*8        SF(3),SM(3),VT(2),LAMBDA(4)
       REAL*8        EPS(3),SIG(3),DCIS(2),CIST(2),C(4),S(4)
+      REAL*8        JACOB(5),CARAQ4(25),T2EV(4),T2VE(4),T1VE(9)
       CHARACTER*2   VAL, CODRET
       CHARACTER*3   NUM
       CHARACTER*8   NOMRES
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN,LAIRE,
-     +        LAIRN,LT1VE,LT2VE
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
-      PARAMETER (NC=4)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO+2*NC)
-      PARAMETER (LWGT=LETA+NPG+NNO+2*NC)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
-      PARAMETER (LAIRN=LAIRE+1)
-      PARAMETER (LT1VE=LAIRN+4)
-      PARAMETER (LT2VE=LT1VE+9)
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
+C
+      IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+        NE  = NPG
+      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+        NE  = NNO
+      END IF
 
       DEUX = 2.D0
-
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        NE  = NPG
-        INE = 0
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        NE  = NNO
-        INE = NPG
-      END IF
 
 C     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4(XYZL,ZR(LZR))
+      CALL GQUAD4 ( XYZL, CARAQ4 )
 
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,ZR(LZR),MULTIC,ICOU,.FALSE.)
+      CALL DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,.FALSE.,
+     +                                                 T2EV,T2VE,T1VE)
 
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
@@ -126,8 +108,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,ZR(LZR-1+LT1VE),ZR(LZR-1+LT2VE),H,D1I,D2I,
-     +              X3I)
+        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,NNO
@@ -139,26 +120,27 @@ C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
         DEPF(3+3* (J-1)) = -DEPL(2+2+6* (J-1))
    30 CONTINUE
 C     ---- CALCUL DE LA MATRICE AN -------------------------------------
-      CALL DSQDIS(NOMTE,XYZL,DF,DCI,AN)
-
+      CALL DSQDIS(XYZL,CARAQ4,DF,DCI,AN)
 C
       IF (OPTION(1:4).EQ.'EPSI') THEN
 C         ---------------------
         DO 100 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C ---     CALCUL DU PRODUIT HF.T2 :
-C         ------------------------
-          CALL DSXHFT(DF,ZR(LZR),HFT2)
+C         -----------------------
+          CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C
 C ---     CALCUL DU PRODUIT HMF.T2 :
 C         ------------------------
-          CALL DXHMFT(DMF,ZR(LZR),HMFT2)
+          CALL DXHMFT ( DMF, JACOB(2), HMFT2 )
 C
 C ---     CALCUL DES MATRICES BCB, BCA ET BCM :
-C         -----------------------------------
-          CALL DSQCIS(IE+INE,ZR(LZR),HMFT2,HFT2,BCM,BCB,BCA)
+C       -------------------------------------
+          CALL DSQCIS ( QSI, ETA, CARAQ4, HMFT2, HFT2, BCM, BCB, BCA )
 C
 C           ------ BC = BCB + BCA.AN -----------------------------------
           DO 110 K = 1,24
@@ -181,7 +163,7 @@ C           ------ VT = BC.DEPF ---------------------------------------
  128        CONTINUE
  126      CONTINUE
 C           ----- CALCUL DE LA MATRICE BM AU POINT QSI ETA -------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
+          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
 C           ------ SM = BM.DEPM ----------------------------------------
           DO 130 I = 1,3
             SM(I) = 0.D0
@@ -191,16 +173,10 @@ C           ------ SM = BM.DEPM ----------------------------------------
               SM(I) = SM(I) + BM(I,J)*DEPM(J)
  134        CONTINUE
  132      CONTINUE
-C
-C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
-C         ------------------------------------------
-          QSI = ZR(LZR-1+LQSI+IE+INE-1)
-          ETA = ZR(LZR-1+LETA+IE+INE-1)
-
 C           ----- CALCUL DE LA MATRICE BFB AU POINT QSI ETA -----------
-          CALL DSQBFB(IE+INE,ZR(LZR),BFB)
+          CALL DSQBFB ( QSI, ETA, JACOB(2), BFB )
 C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSQBFA(QSI,ETA,ZR(LZR),BFA)
+          CALL DSQBFA ( QSI, ETA , JACOB(2) , CARAQ4 , BFA )
 C           ------ BF = BFB + BFA.AN ----------------------------------
           DO 136 K = 1,36
             BFN(K,1) = 0.D0
@@ -236,7 +212,6 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
           CDL(5+6* (IE-1)) = DCIS(1)/DEUX
           CDL(6+6* (IE-1)) = DCIS(2)/DEUX
  100    CONTINUE
-
 C
       ELSE IF (OPTION(1:4).EQ.'SIGM') THEN
 C              ---------------------
@@ -253,30 +228,32 @@ C           ---- CALCUL DE LA MATRICE TB -------------------------------
           TB(6,6) = -0.25D0
           TB(6,9) = 0.25D0
           TB(6,12) = -0.25D0
-          C(1) = ZR(LZR-1+LCOS)
-          C(2) = ZR(LZR-1+LCOS+1)
-          C(3) = ZR(LZR-1+LCOS+2)
-          C(4) = ZR(LZR-1+LCOS+3)
-          S(1) = ZR(LZR-1+LSIN)
-          S(2) = ZR(LZR-1+LSIN+1)
-          S(3) = ZR(LZR-1+LSIN+2)
-          S(4) = ZR(LZR-1+LSIN+3)
+          C(1) = CARAQ4(13)
+          C(2) = CARAQ4(14)
+          C(3) = CARAQ4(15)
+          C(4) = CARAQ4(16)
+          S(1) = CARAQ4(17)
+          S(2) = CARAQ4(18)
+          S(3) = CARAQ4(19)
+          S(4) = CARAQ4(20)
         END IF
         DO 210 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C ---     CALCUL DU PRODUIT HF.T2 :
 C         ------------------------
-          CALL DSXHFT(DF,ZR(LZR),HFT2)
+          CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C
 C ---     CALCUL DU PRODUIT HMF.T2 :
 C         ------------------------
-          CALL DXHMFT(DMF,ZR(LZR),HMFT2)
+          CALL DXHMFT ( DMF, JACOB(2), HMFT2 )
 C
 C ---     CALCUL DES MATRICES BCB, BCA ET BCM :
 C         -----------------------------------
-          CALL DSQCIS(IE+INE,ZR(LZR),HMFT2,HFT2,BCM,BCB,BCA)
+          CALL DSQCIS ( QSI, ETA, CARAQ4, HMFT2, HFT2, BCM, BCB, BCA )
 C
 C           ------ BC = BCB + BCA.AN -----------------------------------
           DO 212 K = 1,24
@@ -303,9 +280,7 @@ C           ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
           CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
           IF (MULTIC.GT.0) THEN
 C              ------- CALCUL DU PRODUIT HL.T2 ------------------------
-            CALL DSXHLT(DF,ZR(LZR),HLT2)
-            QSI = ZR(LZR-1+LQSI+IE+INE-1)
-            ETA = ZR(LZR-1+LETA+IE+INE-1)
+            CALL DSXHLT ( DF, JACOB(2), HLT2 )
             PETA = 1.D0 + ETA
             META = 1.D0 - ETA
             PQSI = 1.D0 + QSI
@@ -372,7 +347,7 @@ C              -------- LAMBDA = (BLB + BLA.AN).DEPF ------------------
  252        CONTINUE
           END IF
 C           ----- CALCUL DE LA MATRICE BM AU POINT QSI ETA -------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
+          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
 C           ------ SM = BM.DEPM ----------------------------------------
           DO 254 I = 1,3
             SM(I) = 0.D0
@@ -382,16 +357,10 @@ C           ------ SM = BM.DEPM ----------------------------------------
               SM(I) = SM(I) + BM(I,J)*DEPM(J)
  258        CONTINUE
  256      CONTINUE
-C
-C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
-C         ------------------------------------------
-          QSI = ZR(LZR-1+LQSI+IE+INE-1)
-          ETA = ZR(LZR-1+LETA+IE+INE-1)
-
 C           ----- CALCUL DE LA MATRICE BFB AU POINT QSI ETA -----------
-          CALL DSQBFB(IE+INE,ZR(LZR),BFB)
+          CALL DSQBFB ( QSI, ETA, JACOB(2), BFB )
 C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSQBFA(QSI,ETA,ZR(LZR),BFA)
+          CALL DSQBFA ( QSI, ETA, JACOB(2), CARAQ4, BFA )
 C           ------ BF = BFB + BFA.AN ----------------------------------
           DO 260 K = 1,36
             BFN(K,1) = 0.D0
@@ -450,30 +419,32 @@ C           ---- CALCUL DE LA MATRICE TB -------------------------------
           TB(6,6)  = -0.25D0
           TB(6,9)  =  0.25D0
           TB(6,12) = -0.25D0
-          C(1) = ZR(LZR-1+LCOS)
-          C(2) = ZR(LZR-1+LCOS+1)
-          C(3) = ZR(LZR-1+LCOS+2)
-          C(4) = ZR(LZR-1+LCOS+3)
-          S(1) = ZR(LZR-1+LSIN)
-          S(2) = ZR(LZR-1+LSIN+1)
-          S(3) = ZR(LZR-1+LSIN+2)
-          S(4) = ZR(LZR-1+LSIN+3)
+          C(1) = CARAQ4(13)
+          C(2) = CARAQ4(14)
+          C(3) = CARAQ4(15)
+          C(4) = CARAQ4(16)
+          S(1) = CARAQ4(17)
+          S(2) = CARAQ4(18)
+          S(3) = CARAQ4(19)
+          S(4) = CARAQ4(20)
         END IF
         DO 310 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C ---     CALCUL DU PRODUIT HF.T2 :
 C         ------------------------
-          CALL DSXHFT(DF,ZR(LZR),HFT2)
+          CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C
 C ---     CALCUL DU PRODUIT HMF.T2 :
 C         ------------------------
-          CALL DXHMFT(DMF,ZR(LZR),HMFT2)
+          CALL DXHMFT ( DMF, JACOB(2), HMFT2 )
 C
 C ---     CALCUL DES MATRICES BCB, BCA ET BCM :
 C         -----------------------------------
-          CALL DSQCIS(IE+INE,ZR(LZR),HMFT2,HFT2,BCM,BCB,BCA)
+          CALL DSQCIS ( QSI, ETA, CARAQ4, HMFT2, HFT2, BCM, BCB, BCA )
 C
 C           ------ BC = BCB + BCA.AN -----------------------------------
           DO 312 K = 1,24
@@ -500,9 +471,7 @@ C           ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
           CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
           IF (MULTIC.GT.0) THEN
 C              ------- CALCUL DU PRODUIT HL.T2 ------------------------
-            CALL DSXHLT(DF,ZR(LZR),HLT2)
-            QSI = ZR(LZR-1+LQSI+IE+INE-1)
-            ETA = ZR(LZR-1+LETA+IE+INE-1)
+            CALL DSXHLT ( DF, JACOB(2), HLT2 )
             PETA = 1.D0 + ETA
             META = 1.D0 - ETA
             PQSI = 1.D0 + QSI
@@ -569,7 +538,7 @@ C              -------- LAMBDA = (BLB + BLA.AN).DEPF ------------------
  352        CONTINUE
           END IF
 C           ----- CALCUL DE LA MATRICE BM AU POINT QSI ETA -------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
+          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
 C           ------ SM = BM.DEPM ----------------------------------------
           DO 354 I = 1,3
             SM(I) = 0.D0
@@ -579,16 +548,10 @@ C           ------ SM = BM.DEPM ----------------------------------------
               SM(I) = SM(I) + BM(I,J)*DEPM(J)
  358        CONTINUE
  356      CONTINUE
-C
-C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
-C         ------------------------------------------
-          QSI = ZR(LZR-1+LQSI+IE+INE-1)
-          ETA = ZR(LZR-1+LETA+IE+INE-1)
-
 C           ----- CALCUL DE LA MATRICE BFB AU POINT QSI ETA -----------
-          CALL DSQBFB(IE+INE,ZR(LZR),BFB)
+          CALL DSQBFB ( QSI, ETA, JACOB(2), BFB )
 C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSQBFA(QSI,ETA,ZR(LZR),BFA)
+          CALL DSQBFA ( QSI, ETA, JACOB(2), CARAQ4, BFA )
 C           ------ BF = BFB + BFA.AN ----------------------------------
           DO 360 K = 1,36
             BFN(K,1) = 0.D0
@@ -656,5 +619,5 @@ C             --------------------------------
  380      CONTINUE
  310    CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

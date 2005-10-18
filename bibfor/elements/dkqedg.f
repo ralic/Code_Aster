@@ -1,9 +1,9 @@
-      SUBROUTINE DKQEDG ( NOMTE, XYZL, OPTION, PGL, DEPL, EDGL )
+      SUBROUTINE DKQEDG ( XYZL, OPTION, PGL, DEPL, EDGL )
       IMPLICIT  NONE
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*),EDGL(*)
-      CHARACTER*16  NOMTE, OPTION
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,57 +45,57 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER MULTIC,LZR,NE,INE,K,J,I,IE
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER MULTIC,NE,K,J,I,IE
       REAL*8 DEPF(12),DEPM(8)
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 HFT2(2,6)
       REAL*8 BF(3,12),BM(3,8)
       REAL*8 BDF(3),BDM(3),DCIS(2)
-      REAL*8 VF(3),VM(3),VT(2)
-      REAL*8 VFM(3),VMF(3)
+      REAL*8 VF(3),VM(3),VT(2),QSI,ETA,CARAQ4(25),JACOB(5)
+      REAL*8 VFM(3),VMF(3),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL ELASCO
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG,NNO
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NPG
-        INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NNO
-        INE = NPG
       END IF
-
+C
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES ------------------------
-
+C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4(XYZL,ZR(LZR))
+      CALL GQUAD4 ( XYZL, CARAQ4 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 20 J = 1,4
         DO 10 I = 1,2
           DEPM(I+2* (J-1)) = DEPL(I+6* (J-1))
    10   CONTINUE
-        DEPF(1+3* (J-1)) = DEPL(1+2+6* (J-1))
-        DEPF(2+3* (J-1)) = DEPL(3+2+6* (J-1))
+        DEPF(1+3* (J-1)) =  DEPL(1+2+6* (J-1))
+        DEPF(2+3* (J-1)) =  DEPL(3+2+6* (J-1))
         DEPF(3+3* (J-1)) = -DEPL(2+2+6* (J-1))
    20 CONTINUE
+C
       IF (OPTION(1:4).EQ.'DEGE') THEN
         DO 80 IE = 1,NE
-C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE ----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
+C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
+          CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C           ------- CALCUL DU PRODUIT HF.T2 ---------------------------
-          CALL DSXHFT(DF,ZR(LZR),HFT2)
+          CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C           ----- CALCUL DES MATRICES BM ET BF AU POINT QSI ETA -------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
-          CALL DKQBF(IE+INE,ZR(LZR),BF)
+          CALL DXQBM( QSI, ETA, JACOB(2), BM )
+          CALL DKQBF( QSI, ETA, JACOB(2), CARAQ4, BF )
           DO 30 K = 1,3
             BDF(K) = 0.D0
             BDM(K) = 0.D0
@@ -109,7 +109,8 @@ C           ----- CALCUL DES MATRICES BM ET BF AU POINT QSI ETA -------
    50       CONTINUE
    60     CONTINUE
 C           ------ VT = HFT2.TKQ.DEPF ---------------------------------
-          CALL DKQTXY(IE+INE,HFT2,DEPF,ZR(LZR),VT)
+          CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13), 
+     +                                            CARAQ4(9), VT )
 C           ------ DCIS = DCI.VT --------------------------------------
           DCIS(1) = DCI(1,1)*VT(1) + DCI(1,2)*VT(2)
           DCIS(2) = DCI(2,1)*VT(1) + DCI(2,2)*VT(2)
@@ -125,13 +126,15 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
    80   CONTINUE
       ELSE
         DO 160 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C           ------- CALCUL DU PRODUIT HF.T2 ----------------------------
-          CALL DSXHFT(DF,ZR(LZR),HFT2)
+          CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C           ----- CALCUL DES MATRICES BM ET BF AU POINT QSI ETA --------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
-          CALL DKQBF(IE+INE,ZR(LZR),BF)
+          CALL DXQBM( QSI, ETA, JACOB(2), BM )
+          CALL DKQBF( QSI, ETA, JACOB(2), CARAQ4, BF )
           DO 90 K = 1,3
             BDF(K) = 0.D0
             BDM(K) = 0.D0
@@ -159,7 +162,8 @@ C           ------ VM = DM.BM.DEPM , VMF = DMF.BF.DEPF ----------------
   130       CONTINUE
   140     CONTINUE
 C           ------ VT = HFT2.TKQ.DEPF ---------------------------------
-          CALL DKQTXY(IE+INE,HFT2,DEPF,ZR(LZR),VT)
+          CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13), 
+     +                                            CARAQ4(9), VT )
           DO 150 I = 1,3
             EDGL(I+8* (IE-1)) = VM(I) + VMF(I)
             EDGL(I+3+8* (IE-1)) = VF(I) + VFM(I)
@@ -168,5 +172,5 @@ C           ------ VT = HFT2.TKQ.DEPF ---------------------------------
           EDGL(8+8* (IE-1)) = VT(2)
   160   CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,6 +47,10 @@ is_ok = 0
 try:
    raise aster.error, \
       """CAS 1 : declencher error car l'exception n'est pas particularisee."""
+
+except aster.FatalError,err:
+   print "Exception FatalError interceptee"
+   print "Raison : " + str(err)
 
 except aster.NonConvergenceError,err:
    print "Exception NonConvergence interceptee"
@@ -164,17 +168,44 @@ DETRUIRE(CONCEPT=_F(NOM='TAB1'))
 
 print sep
 
-# Verifier que l'on s'arrete en <S>_ERREUR si on n'intercepte pas
-# l'exception qui est levee par le code...
-# ... mais on ne peut pas l'inserer dans le cas-test !
-# try:
-#    raise aster.error, \
-#       "CAS 4 : declencher error non interceptee donc erreur S"
-# 
-# except aster.NonConvergenceError,err:
-#    print "Exception EchecComportement interceptee"
-#    print "Raison : " + str(err)
+# Test de la recuperation de l'erreur fatale : LIRE_MAILLAGE avec UNITE invalide
+is_ok = 0
+fmt="""
+   Comportement en cas d'erreur fatale : %s
+"""
+prev=aster.onFatalError()
+print fmt % prev
 
+aster.onFatalError('EXCEPTION')
+print fmt % aster.onFatalError()
+try:
+   ma=LIRE_MAILLAGE(UNITE=999)   # unite invalide
+except aster.FatalError, msg:
+   is_ok = 1
+   print """
+   Message emis lors de l'erreur dans LIRE_MAILLAGE :
+      %s
+""" % str(msg)
+
+# on remet dans l'etat initial
+aster.onFatalError(prev)
+print fmt % aster.onFatalError()
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM='TAB1'))
+
+print sep
 
 
 # ======================================================================
@@ -266,7 +297,9 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                    MY=3000.0,
                                    MZ=0.0,),);
 
+is_ok = 0
 try :
+     # avoir au moins un pas de temps converge
      STATNL=STAT_NON_LINE(MODELE=MO,
                           CHAM_MATER=CHMAT,
                           CARA_ELEM=CAREL,
@@ -275,12 +308,27 @@ try :
                           COMP_INCR=_F(RELATION='ASSE_CORN',
                                        MAILLE='D1',),
                           INCREMENT=_F(LIST_INST=LINST,
-                                       NUME_INST_FIN=12,),
+                                       NUME_INST_FIN=1,),
                           NEWTON=_F(MATRICE='TANGENTE',
-                                    REAC_ITER=1,),
-                          CONVERGENCE=_F(ITER_GLOB_MAXI=4,),)
+                                    REAC_ITER=1,),)
+
+     # non convergence avec matrice elastique
+     STATNL=STAT_NON_LINE(reuse=STATNL,
+                          MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                          CARA_ELEM=CAREL,
+                          EXCIT=_F(CHARGE=CH1,
+                                   FONC_MULT=F1,),
+                          ETAT_INIT=_F(EVOL_NOLI=STATNL,),
+                          COMP_INCR=_F(RELATION='ASSE_CORN',
+                                       MAILLE='D1',),
+                          INCREMENT=_F(LIST_INST=LINST,
+                                       NUME_INST_FIN=12,),
+                          NEWTON=_F(MATRICE='ELASTIQUE',
+                                    REAC_ITER=1,),)
 
 except aster.NonConvergenceError:
+     is_ok = 1
      print """\nNon convergence, on augmente le nombre d'iterations...\n"""
 # on recupere le dernier instant proprement calcule dans le try precedent
 # dans la variable last_iter pour repartir de cet ETAT_INIT
@@ -397,6 +445,20 @@ TEST_RESU(RESU=(_F(RESULTAT = STATNL,
                    POINT = 2,
                    VALE = 1.07417,
                    REFERENCE='AUTRE_ASTER'),),);
+
+# TEST_RESU NonConvergence STAT_NON_LINE
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM='TAB1'))
+
 
 FIN();
 #

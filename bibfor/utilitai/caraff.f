@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/10/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,23 +53,27 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*24  MESMAI
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-C
+
       IF (NOMA.EQ.' ') CALL UTMESS('F','CARAFF','MAILLAGE OBLIGATOIRE.')
-C
+
+      IF (GRAN.EQ.'VARI_R')  CALL UTMESS('F','CARAFF','ON NE PEUT'
+     &  // ' PAS CREER UN CHAMP DE VARI_R AVEC LE MOT CLE FACTEUR AFFE'
+     &  // ' (VOIR U2.01.09)')
+
       CALL DISMOI('F','TYPE_SCA',GRAN,'GRANDEUR',IBID,TSCA,IED)
-C
+
       MOTCLF = 'AFFE'
       CALL GETFAC ( MOTCLF, NOCC )
-C
+
       MESMAI = '&&CARAFF.MES_MAILLES'
       MOTCLS(1) = 'GROUP_MA'
       MOTCLS(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
-C
+
       NBAPNO = NOCC
       CALL ALCAR0 ( NOMA, MOTCLF, 2, MOTCLS, TYPMCL, NBE )
-C
+
 C     1- ALLOCATION DE LA CARTE
 C     --------------------------------------------
       CARTE = CARTZ
@@ -102,9 +106,9 @@ C     --------------------------------------------
         CALL GETVID ( MOTCLF,'GROUP_NO',IOCC,1,0,K8B,N1)
         IF (N1.NE.0) CALL UTMESS('F','CARAFF',
      &      'MOT CLE AFFE/GROUP_NO INTERDIT ICI.')
-  
+
         CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, K8B, NBCMP)
-  
+
         IF (TSCA.EQ.'R') THEN
           CALL GETVR8 ( MOTCLF, 'VALE'  ,IOCC,1,0, RBID, NBVAR)
         ELSE IF (TSCA.EQ.'I') THEN

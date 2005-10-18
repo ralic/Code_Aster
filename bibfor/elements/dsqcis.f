@@ -1,6 +1,9 @@
-      SUBROUTINE DSQCIS ( INT , R , HMFT2, HFT2 , BCM, BCB , BCA )
+      SUBROUTINE DSQCIS ( QSI, ETA, CARAQ4, HMFT2, HFT2, BCM, BCB, BCA )
+      IMPLICIT  NONE
+      REAL*8   QSI, ETA, CARAQ4(*), HFT2(2,6), HMFT2(2,6)
+      REAL*8   BCB(2,12), BCM(2,8), BCA(2,4)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2000   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,47 +20,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER  INT
-      REAL*8   R(*)
-      REAL*8   HFT2(2,6), HMFT2(2,6)
-      REAL*8   BCB(2,12), BCM(2,8)
-      REAL*8   BCA(2,4)
 C     -------------------------------------------------------
 C     MATRICES BCB(2,12), BCA(2,4), BCM(2,8) AU POINT QSI, ETA POUR DSQ
 C     -------------------------------------------------------
-C
-      REAL*8  QSI,ETA,PETA,META,PQSI,MQSI
-      REAL*8  C(4) , S(4)
-      REAL*8  TB(6,12)
-      REAL*8  TA(6,4)
-      REAL*8  TC(6,8)
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
-               PARAMETER (LCOTE = LXYC + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS + NC)
+      INTEGER J, K
+      REAL*8  PETA,META,PQSI,MQSI,TA(6,4),TB(6,12),TC(6,8),C(4),S(4)
 C     ------------------------------------------------------------------
-      QSI  = R(LQSI+INT-1)
-      ETA  = R(LETA+INT-1)
-      C(1) = R(LCOS)
-      C(2) = R(LCOS+1)
-      C(3) = R(LCOS+2)
-      C(4) = R(LCOS+3)
-      S(1) = R(LSIN)
-      S(2) = R(LSIN+1)
-      S(3) = R(LSIN+2)
-      S(4) = R(LSIN+3)
+      C(1) = CARAQ4(13)
+      C(2) = CARAQ4(14)
+      C(3) = CARAQ4(15)
+      C(4) = CARAQ4(16)
+      S(1) = CARAQ4(17)
+      S(2) = CARAQ4(18)
+      S(3) = CARAQ4(19)
+      S(4) = CARAQ4(20)
 C
       PETA = 1.D0 + ETA
       META = 1.D0 - ETA

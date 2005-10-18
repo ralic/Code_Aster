@@ -1,10 +1,10 @@
-      SUBROUTINE Q4GCOD (NOMTE,XYZL,OPTION,PGL,ICOU,INIV,DEPL,CDL)
+      SUBROUTINE Q4GCOD ( XYZL, OPTION, PGL, ICOU, INIV, DEPL, CDL )
       IMPLICIT  NONE 
       INTEGER       ICOU, INIV
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), CDL(*)
-      CHARACTER*16  NOMTE, OPTION
+      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,54 +48,35 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER MULTIC,LZR,NE,INE,JCACO,K,J,I,IE
-      REAL*8 DEPF(12),DEPM(8)
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
-      REAL*8 H(3,3),D1I(2,2),D2I(2,4)
-      REAL*8 BF(3,12),BM(3,8),BC(2,12),BLB(4,12)
-      REAL*8 SM(3),SF(3)
-      REAL*8 HLT2(4,6),TB(6,12)
-      REAL*8 VT(2),LAMBDA(4)
-      REAL*8 EPS(3),SIG(3),BCDF(2),CIST(2),X3I,EPAIS
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  MULTIC,NE,JCACO,K,J,I,IE
+      REAL*8   DEPF(12),DEPM(8)
+      REAL*8   DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
+      REAL*8   H(3,3),D1I(2,2),D2I(2,4),DFC(3,2)
+      REAL*8   BF(3,12),BM(3,8),BC(2,12),BLB(4,12)
+      REAL*8   SM(3),SF(3), HLT2(4,6),TB(6,12)
+      REAL*8   VT(2),LAMBDA(4),CARAQ4(25)
+      REAL*8   EPS(3),SIG(3),BCDF(2),CIST(2),X3I,EPAIS
+      REAL*8   T2EV(4), T2VE(4), T1VE(9), JACOB(5), QSI, ETA
       LOGICAL ELASCO
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG,NC,NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN,LAIRE,
-     +        LAIRN,LT1VE,LT2VE
-      PARAMETER (NPG=4)
-      PARAMETER (NNO=4)
-      PARAMETER (NC=4)
-      PARAMETER (LJACO=2)
-      PARAMETER (LTOR=LJACO+4)
-      PARAMETER (LQSI=LTOR+1)
-      PARAMETER (LETA=LQSI+NPG+NNO+2*NC)
-      PARAMETER (LWGT=LETA+NPG+NNO+2*NC)
-      PARAMETER (LXYC=LWGT+NPG)
-      PARAMETER (LCOTE=LXYC+2*NC)
-      PARAMETER (LCOS=LCOTE+NC)
-      PARAMETER (LSIN=LCOS+NC)
-      PARAMETER (LAIRE=LSIN+NC)
-      PARAMETER (LAIRN=LAIRE+1)
-      PARAMETER (LT1VE=LAIRN+4)
-      PARAMETER (LT2VE=LT1VE+9)
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
+        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NPG
-        INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
         NE  = NNO
-        INE = NPG
       END IF
 C     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4(XYZL,ZR(LZR))
+      CALL GQUAD4 ( XYZL, CARAQ4 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,ZR(LZR),MULTIC,
-     +            .FALSE.,ELASCO)
+      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
         CALL JEVECH('PCACOQU','L',JCACO)
@@ -115,8 +96,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,ZR(LZR-1+LT1VE),ZR(LZR-1+LT2VE),H,D1I,D2I,
-     +              X3I)
+        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,NNO
@@ -129,14 +109,16 @@ C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
    30 CONTINUE
       IF (OPTION(1:4).EQ.'EPSI') THEN
         DO 120 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
 C           ----- CALCUL DE LA MATRICE BM ------------------------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
+          CALL DXQBM(QSI,ETA,JACOB(2),BM)
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA -------------
-          CALL DSQBFB(IE+INE,ZR(LZR),BF)
+          CALL DSQBFB(QSI,ETA,JACOB(2),BF)
 C           ---- CALCUL DE LA MATRICE BC AU POINT QSI ETA --------------
-          CALL Q4GBC(IE+INE,ZR(LZR),BC)
+          CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
 C           ------ SM = BM.DEPM ----------------------------------------
           DO 40 I = 1,3
             SM(I) = 0.D0
@@ -189,16 +171,18 @@ C           ---- CALCUL DE LA MATRICE TB -------------------------------
           TB(6,12) = -0.25D0
         END IF
         DO 320 IE = 1,NE
+          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
 C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE ----------------
-          CALL JQUAD4(IE+INE,XYZL,ZR(LZR))
+          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
 C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
-          CALL DSXHLT(DF,ZR(LZR),HLT2)
+          CALL DSXHLT(DF,JACOB(2),HLT2)
 C           ----- CALCUL DE LA MATRICE BM -----------------------------
-          CALL DXQBM(IE+INE,ZR(LZR),BM)
+          CALL DXQBM(QSI,ETA,JACOB(2),BM)
 C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
-          CALL DSQBFB(IE+INE,ZR(LZR),BF)
+          CALL DSQBFB(QSI,ETA,JACOB(2),BF)
 C           ---- CALCUL DE LA MATRICE BC AU POINT QSI ETA -------------
-          CALL Q4GBC(IE+INE,ZR(LZR),BC)
+          CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
 C           ------ SM = BM.DEPM ---------------------------------------
           DO 140 I = 1,3
             SM(I) = 0.D0
@@ -274,5 +258,5 @@ C              -------- LAMBDA = BLB.DEPF -----------------------------
           CDL(6+6* (IE-1)) = CIST(2)
   320   CONTINUE
       END IF
-      CALL JEDEMA()
+C
       END

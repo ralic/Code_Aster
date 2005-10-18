@@ -1,9 +1,8 @@
-      SUBROUTINE DSQDIS ( NOMTE, XYZL , DF , DCI , AN )
+      SUBROUTINE DSQDIS ( XYZL, CARAQ4, DF, DCI, AN )
       IMPLICIT  NONE
-      REAL*8   XYZL(3,*), DF(3,3), DCI(2,2), AN(4,12)
-      CHARACTER*16  NOMTE
+      REAL*8    XYZL(3,*), DF(3,3), DCI(2,2), AN(4,12), CARAQ4(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,76 +22,56 @@ C ======================================================================
 C     -------------------------------------------------------
 C     MATRICE AN(4,12) DU CISAILLEMENT POUR LE DSQ
 C     -------------------------------------------------------
-C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER         ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8          ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16      ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL         ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8     ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                     ZK24
+      CHARACTER*32                              ZK32
+      CHARACTER*80                                       ZK80
+      COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER LZR, K, IC, INT, J, I, IRET
-      REAL*8  QSI,ETA,PETA,META,PQSI,MQSI,DET
-      REAL*8  L(4) , C(4) , S(4)
-      REAL*8  X(4) , Y(4)
-      REAL*8  HFT2(2,6)
-      REAL*8  TB(6,12)
-      REAL*8  TA(6,4)
-      REAL*8  DT(2,6)
-      REAL*8  DIB(2,12)
-      REAL*8  DIA(2,4)
-      REAL*8  AW(4,12)
-      REAL*8  AA(4,4)
-      REAL*8  AAI(4,4)
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
-               PARAMETER (LCOTE = LXYC + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS + NC)
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  NC, K, IC, INT, J, I, IRET
+      REAL*8   QSI,ETA,PETA,META,PQSI,MQSI,DET,JACOB(5)
+      REAL*8   L(4) , C(4) , S(4), X(4) , Y(4)
+      REAL*8   HFT2(2,6), TB(6,12), TA(6,4), DT(2,6)
+      REAL*8   DIB(2,12), DIA(2,4), AW(4,12), AA(4,4), AAI(4,4)
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
 C
-      CALL JEVETE( '&INEL.'//NOMTE(1:8)//'.DESR' ,' ',LZR )
+      CALL ELREF5('SE2','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+      NC = 4
 C
-      CALL GQUAD4 (XYZL , ZR(LZR))
-      C(1) = ZR(LZR-1+LCOS)
-      C(2) = ZR(LZR-1+LCOS+1)
-      C(3) = ZR(LZR-1+LCOS+2)
-      C(4) = ZR(LZR-1+LCOS+3)
-      S(1) = ZR(LZR-1+LSIN)
-      S(2) = ZR(LZR-1+LSIN+1)
-      S(3) = ZR(LZR-1+LSIN+2)
-      S(4) = ZR(LZR-1+LSIN+3)
-      L(1) = ZR(LZR-1+LCOTE)
-      L(2) = ZR(LZR-1+LCOTE+1)
-      L(3) = ZR(LZR-1+LCOTE+2)
-      L(4) = ZR(LZR-1+LCOTE+3)
-      X(1) = ZR(LZR-1+LXYC)
-      X(2) = ZR(LZR-1+LXYC+1)
-      X(3) = ZR(LZR-1+LXYC+2)
-      X(4) = ZR(LZR-1+LXYC+3)
-      Y(1) = ZR(LZR-1+LXYC+4)
-      Y(2) = ZR(LZR-1+LXYC+5)
-      Y(3) = ZR(LZR-1+LXYC+6)
-      Y(4) = ZR(LZR-1+LXYC+7)
+      C(1) = CARAQ4(13)
+      C(2) = CARAQ4(14)
+      C(3) = CARAQ4(15)
+      C(4) = CARAQ4(16)
+      S(1) = CARAQ4(17)
+      S(2) = CARAQ4(18)
+      S(3) = CARAQ4(19)
+      S(4) = CARAQ4(20)
+
+      L(1) = CARAQ4( 9)
+      L(2) = CARAQ4(10)
+      L(3) = CARAQ4(11)
+      L(4) = CARAQ4(12)
+
+      X(1) = CARAQ4(1)
+      X(2) = CARAQ4(2)
+      X(3) = CARAQ4(3)
+      X(4) = CARAQ4(4)
+      Y(1) = CARAQ4(5)
+      Y(2) = CARAQ4(6)
+      Y(3) = CARAQ4(7)
+      Y(4) = CARAQ4(8)
 C
       DO 100 K = 1 , 72
          TB(K,1) = 0.D0
@@ -116,9 +95,23 @@ C
  110     CONTINUE
 C
          DO 250 INT = 1, 2
-            CALL JQUAD4 (NPG+NNO+2*(IC-1)+INT , XYZL , ZR(LZR))
-            QSI  = ZR(LZR-1+LQSI+NPG+NNO+2*(IC-1)+INT-1)
-            ETA  = ZR(LZR-1+LETA+NPG+NNO+2*(IC-1)+INT-1)
+C
+            IF ( IC .EQ. 1 ) THEN
+              QSI = -ZR(ICOOPG-1+NDIM*(INT-1)+1)
+              ETA = -ZR(IPOIDS-1+INT)
+            ELSEIF ( IC .EQ. 2 ) THEN
+              QSI =  ZR(IPOIDS-1+INT)
+              ETA = -ZR(ICOOPG-1+NDIM*(INT-1)+1)
+            ELSEIF ( IC .EQ. 3 ) THEN
+              QSI =  ZR(ICOOPG-1+NDIM*(INT-1)+1)
+              ETA =  ZR(IPOIDS-1+INT)
+            ELSEIF ( IC .EQ. 4 ) THEN
+              QSI = -ZR(IPOIDS-1+INT)
+              ETA =  ZR(ICOOPG-1+NDIM*(INT-1)+1)
+            ENDIF
+
+            CALL JQUAD4 ( XYZL , QSI, ETA, JACOB )
+
             PETA = 1.D0 + ETA
             META = 1.D0 - ETA
             PQSI = 1.D0 + QSI
@@ -144,7 +137,7 @@ C
             TA(6,3)  = -  QSI * S(3)
             TA(6,4)  =    ETA * S(4)
 C
-            CALL DSXHFT (DF , ZR(LZR) , HFT2)
+            CALL DSXHFT (DF , JACOB(2) , HFT2)
 C
 C           -------- PRODUIT DCI.HFT2 ----------------------------------
             DO 130 K = 1 , 12
@@ -218,5 +211,5 @@ C     -------------- AN = AAI.AW ---------------------------------------
             DO 420 J = 1, 12
                AN(I,J) = AN(I,J) + AAI(I,K) * AW(K,J)
  420  CONTINUE
-      CALL JEDEMA()
+C
       END

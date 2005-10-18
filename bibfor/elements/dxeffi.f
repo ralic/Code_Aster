@@ -5,7 +5,7 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,16 +47,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C 
-      INTEGER  NBCON, NBCOU, NPGH, NNO, K, INO, IPG, ICOU, IGAUH,
-     +         NPG, ICPG, LZR, ICACOQ, JNBSPI, JDEPL, IMATE
+      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  NBCON, NBCOU, NPGH, K, INO, IPG, ICOU, IGAUH, ICPG, 
+     +         ICACOQ, JNBSPI, JDEPL, IMATE, IADZI, IAZK24
       REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN, 
      +         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
      +         UF(3,3), UL(6,3), ROT(9)
+      REAL*8   QSI, ETA, CARAT3(21)
       LOGICAL  GRILLE
-      INTEGER   IADZI, IAZK24
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
-C --DEB
+C
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+     +                                         IVF,IDFDX,IDFD2,JGANO)
+C
       ZERO = 0.0D0
       DEUX = 2.0D0
 C
@@ -65,9 +69,6 @@ C     --------------------------------------------------------
       GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
          GRILLE = .TRUE.
-         CALL JEVETE ( '&INEL.MEGRDKT .DESR', ' ', LZR )
-         NPG = 3
-         NNO = 3
          CALL JEVECH ( 'PDEPLPR', 'L', JDEPL )
          CALL UTPVGL ( NNO, 6, PGL, ZR(JDEPL), UL )
          DO 10,INO = 1,NNO
@@ -75,14 +76,11 @@ C     --------------------------------------------------------
             UF(2,INO) =  UL(5,INO)
             UF(3,INO) = -UL(4,INO)
  10      CONTINUE
-      ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     +        NOMTE(1:8).EQ.'MEDSTR3 ') THEN
-         NPG = 3
-      ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     +        NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +        NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
-         NPG = 4
-      ELSE
+      ELSEIF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
+     +        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
+     +        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
+     +        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
+     +        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
          CALL UTMESS('F','DXEFFI','ELEMENT NON TRAITE '//NOMTE)
       END IF
 
@@ -103,7 +101,7 @@ C     ---------------------------
          DISTN = ZR(ICACOQ+3)
          COEF = DEUX
          ZMIN = -H/DEUX + HIC/DEUX + DISTN
-         CALL GTRIA3 ( XYZL, ZR(LZR) )
+         CALL GTRIA3 ( XYZL, CARAT3 )
          CALL GRDMAT(ICACOQ,ZI(IMATE),PGL,DH,ROT)
       ELSE
          NPGH = 3
@@ -112,7 +110,7 @@ C     ---------------------------
             CALL TECAEL(IADZI, IAZK24)
             NOMELE=ZK24(IAZK24-1+3)
             CALL UTMESS('F','DXEFFI',
-     &    'PAS D EXCENTREMENT AVEC FORC_NODA MAILLE '//NOMELE)
+     &              'PAS D EXCENTREMENT AVEC FORC_NODA MAILLE '//NOMELE)
          ENDIF
          DISTN = ZERO
          ZMIN = -H/DEUX
@@ -128,7 +126,9 @@ C     -------------------------------------------------
          CALL R8INIR ( 3, ZERO, M, 1 )
 
          IF ( GRILLE ) THEN
-           CALL DKTBF ( IPG, ZR(LZR), BF )
+           QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+           ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
+           CALL DKTBF  ( QSI, ETA, CARAT3, BF )
            CALL PMRVEC ( 'ZERO', 3, 3*NNO, BF, UF, KHI )
          END IF
 

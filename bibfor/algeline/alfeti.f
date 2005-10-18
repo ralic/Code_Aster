@@ -3,7 +3,7 @@
      &                  ACMA,ACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 18/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -526,9 +526,13 @@ C MISE A JOUR PAR PROC 0 DE LAMBDA0, R0 ET G0
      &              IVLAGI,NBI,IR1,IR2,IR3,NOMGGT,LRIGID,DIMGI,SDFETI,
      &              IPIV,NBSD,ZI(IFETF),ZI(IFETH),MATAS,NOMGI,LSTOGI,
      &              INFOFE,IREX,IPRJ,NBPROC)     
-C  ON DIFFUSE GO A TOUS LES PROCESSEURS POUR CALCUL SUIVANT
-        IF (LPARA) CALL FETMPI(9,NBI,IFM,NIVMPI,IBID,IBID,K24IRG,K24BID,
-     &                         K24BID,RBID)
+C  ON DIFFUSE GO ET LAMBDA0 A TOUS LES PROCESSEURS POUR CALCUL SUIVANT
+        IF (LPARA) THEN
+          CALL FETMPI(9,NBI,IFM,NIVMPI,IBID,IBID,K24IRG,K24BID,K24BID,
+     &                RBID)
+          CALL FETMPI(9,NBI,IFM,NIVMPI,IBID,IBID,K24LAI,K24BID,K24BID,
+     &                RBID)
+        ENDIF
       ENDIF
 
 C----  2.8 CALCUL DE LA NORME DU RESIDU PROJETE POUR CRITERES D'ARRET
@@ -712,7 +716,7 @@ C---------------------------------------------------
         ANORM=DNRM2(NBI,ZR(IRG),1)
         IF (RANG.EQ.0) THEN
           IF (ANORM.LE.ANORMK) THEN
-            IF (NIV.EQ.1) THEN
+            IF (NIV.GE.1) THEN
               WRITE(IFM,*)'******************************************'
               WRITE (*,1041)ITER1,ANORM,ANORM/ANORM0
               WRITE(IFM,*)'******************************************'

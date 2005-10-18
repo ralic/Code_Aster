@@ -1,0 +1,418 @@
+# MODIF  DATE 18/10/2005   AUTEUR ADBHHFA Y.WADIER 
+# TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE ADBHHFA Y.WADIER
+
+DEBUT(CODE=_F( NOM = 'SSNP131A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);               
+
+# IDENTIFICATION DU GP CRITIQUE A RUPTURE (D'APRES TENACITES KJ CRIT. EXP.)
+# A TEMPERATURE CONSTANTE (35 DEGRES) SUR UNE EPROUVETTE CT
+#
+#    * CARACTERISTIQUES MECANIQUES :
+#
+#       LE MODULE D'YOUNG EVOLUE  AVEC LA  TEMPERATURE
+#       ALORS QUE LE COEFFICIENT DE POISSON EST CONSIDERE
+#       CONSTANT.
+#
+#    * GOUPILLE MAILLEE AFIN DE MIEUX REPRESENTER L'APPLICATION 
+#      DU CHARGEMENT (ICI FORCE IMPOSEE)
+#
+#    * CONDITIONS AUX LIMITES (1/2 DE L'EPROUVETTE MAILLE) :
+#
+#      - DEPLACEMENT BLOQUE SUIVANT DY SUR LE LIGAMENT
+#      - DEPLACEMENT IMPOSE MONOTONE CROISSANT AU CENTRE DE LA GOUPILLE
+#        (DONNEE EN NEWTON CAR N/MM2 = MPA)
+#
+
+PRE_GIBI();
+
+MA=LIRE_MAILLAGE();
+
+TPCAL = 35.;
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              
+#----------------------------------------------------------------------
+#----------------  AFFECTATION MODELE MECANIQUE    --------------------
+#----------------------------------------------------------------------
+
+MOD=AFFE_MODELE(MAILLAGE=MA,
+                AFFE=_F(GROUP_MA=('SEPRO','FOND_0','SGOUP',),
+                 PHENOMENE='MECANIQUE',
+                 MODELISATION='D_PLAN',),);
+
+#----------------------------------------------------------------------
+#---------------- DONNEES MECANIQUES ACIER  -------------------
+#----------------------------------------------------------------------
+
+E_T=DEFI_FONCTION(NOM_PARA='TEMP',
+                  VALE=(  
+                         23.0, 220200.0, 
+                        100.0, 214100.0, 
+                        180.0, 206500.0, 
+                        300.0, 205000.0, ), );
+
+
+
+ALPHA_T= DEFI_FONCTION  ( NOM_PARA    = 'TEMP',
+                            VALE        = ( 
+                                         0.000E+00, 1.140E-05,
+                                         1.000E+01, 1.150E-05,
+                                         2.000E+01, 1.156E-05,
+                                         3.000E+01, 1.160E-05,
+                                         4.000E+01, 1.170E-05,
+                                         5.000E+01, 1.180E-05,
+                                         6.000E+01, 1.190E-05,
+                                         7.000E+01, 1.190E-05,
+                                         8.000E+01, 1.200E-05,
+                                         9.000E+01, 1.210E-05,
+                                         1.000E+02, 1.210E-05,
+                                         1.100E+02, 1.220E-05,
+                                         1.200E+02, 1.220E-05,
+                                         1.300E+02, 1.230E-05,
+                                         1.400E+02, 1.230E-05,
+                                         1.500E+02, 1.240E-05,
+                                         1.600E+02, 1.250E-05,
+                                         1.700E+02, 1.250E-05,
+                                         1.800E+02, 1.260E-05,
+                                         1.900E+02, 1.260E-05,
+                                         2.000E+02, 1.270E-05,
+                                         2.100E+02, 1.270E-05,
+                                         2.200E+02, 1.280E-05,
+                                         2.300E+02, 1.280E-05,
+                                         2.400E+02, 1.290E-05,
+                                         2.500E+02, 1.290E-05,
+                                         ),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE', );
+
+
+NU_T=DEFI_CONSTANTE(NOM_RESU='TEMP',
+                    VALE=0.3,);
+                  
+#----------------------------------------------------------------------
+# DEFINITION DE LA COURBE DE TRACTION 
+#----------------------------------------------------------------------
+
+
+#-- DEFINITION DE LA NAPPE (EPSI, SI, TEMP)
+# ECROUISSAGE ISOTROPE NON LINEAIRE 
+
+CT_23 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+0.00434654,     855.9222268,
+0.006014974,    910.4599555,
+0.007862112,    931.797171,
+0.010757925,    949.0551424,
+0.014221395,    961.578204,
+0.017791783,    971.9294353,
+0.022185081,    984.4905114,
+0.028276427,    1001.471414,
+0.035811061,    1019.316952,
+0.04373072,     1035.194221,
+0.051452332,    1048.650972,
+0.058982804,    1060.757,
+0.066852716,    1070.207138,
+                                ),
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'LINEAIRE',);
+
+CT_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+0.003439678,    740.6632663,
+0.004628373,    842.148772,
+0.00607988,     876.3117064,
+0.007654628,    895.2063119,
+0.010417548,    911.0718694,
+0.014178015,    925.022448,
+0.017543214,    935.2135771,
+0.021942493,    945.6948965,
+0.027416704,    960.732311,
+0.033866984,    975.8041996,
+0.040205805,    988.2450325,
+0.046616375,    1000.143035,
+0.052903597,    1010.004051,
+0.058235889,    1017.5664,
+                            ),
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'LINEAIRE',);
+                          
+
+CT_180 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+0.003517805,    757.4699504,
+0.004684809,    824.0113073,
+0.006144782,    860.2699635,
+0.008034933,    882.1596942,
+0.01091719,     897.2825266,
+0.014242098,    911.895256,
+0.017244456,    922.2778349,
+0.020804086,    931.4681604,
+0.025396755,    943.0898357,
+0.030522415,    954.7613776,
+0.036394608,    968.8987176,
+0.043101634,    980.6600888,
+0.049733529,    992.3982518,
+0.057071966,    1002.619204,
+                            ),
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'LINEAIRE',);
+                            
+
+CT_300 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+0.003899686,    752.4084432,
+0.006058212,    839.0678844,
+0.007710795,    866.9491608,
+0.010249296,    885.5196,
+0.014199705,    901.713589,
+0.018138498,    912.4207501,
+0.023019995,    928.0189803,
+0.028623413,    936.8352848,
+0.034338623,    948.5593249,
+0.040005021,    958.5707197,
+0.045730249,    965.278307,
+0.051311744,    970.2389532,
+0.056285811,    977.4996,
+                            ),
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'LINEAIRE',);
+
+
+
+SIG = DEFI_NAPPE ( NOM_PARA    = 'TEMP',
+
+                        PARA        = (  23.0,
+                                        100.0,
+                                        180.0, 
+                                        300.0, ),
+
+                        FONCTION    = ( CT_23,
+                                        CT_100,
+                                        CT_180,
+                                        CT_300,),
+                        PROL_DROITE = 'LINEAIRE',
+                        PROL_GAUCHE = 'LINEAIRE', );
+
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E_T,
+                               NU=NU_T,
+                               ALPHA=ALPHA_T,
+                      TEMP_DEF_ALPHA = TPCAL,),
+                    TRACTION=_F(SIGM=SIG,),);
+
+#----------------------------------------------------------------------
+#---------------- DONNEES MECANIQUES GOUPILLE  -------------------
+#----------------------------------------------------------------------
+#-- GOUPILLE ELASTIQUE "RIGIDE"
+
+
+MATGOUP=DEFI_MATERIAU(ELAS=_F(   E=2.E6,
+                                 NU=0.3,
+                                 ALPHA = 0.),              
+                      ECRO_LINE=_F(D_SIGM_EPSI=200000.,
+                                   SY=200000., )
+                      );
+
+#----------------------------------------------------------------------
+# AFFECTATION DES PROPRIETES MECANIQUES
+# ----------------------------------------------------------------------
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=(_F(GROUP_MA='SEPRO',
+                            MATER=ACIER,
+                            TEMP_REF=TPCAL,),
+                         _F(GROUP_MA='FOND_0',
+                            MATER=ACIER,
+                            TEMP_REF=TPCAL,),
+                         _F(GROUP_MA='SGOUP',
+                            MATER=MATGOUP,),),);
+
+#----------------------------------------------------------------------
+#--------- TEMPERATURE IMPOSEE
+#----------------------------------------------------------------------
+
+T_T=DEFI_FONCTION(NOM_PARA='INST',
+                  VALE=(
+                         0.0  ,  TPCAL,
+                         50.0 ,  TPCAL,
+                         150.0 , TPCAL,
+                        ),
+                  PROL_GAUCHE='CONSTANT',);
+        
+TEMP_T=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                  OPERATION='AFFE',
+                  MAILLAGE=MA,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE_F=T_T,),);
+                                    
+#----------------------------------------------------------------------
+# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS 
+# ----------------------------------------------------------------------
+
+RAMPD=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(   0.0   ,    0.0 ,
+                           100.    ,    0.25 ),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=100.0,
+                                   NOMBRE=50,),
+                     ),);
+                     
+RESU_T=CREA_RESU(TYPE_RESU='EVOL_THER',
+                 OPERATION='AFFE',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=TEMP_T,
+                         LIST_INST=L_INST,),);
+ 
+#----------------------------------------------------------------------
+# CHARGEMENT ET CONDITIONS LIMITES
+# ----------------------------------------------------------------------
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
+#                        LIAISON_SOLIDE=_F(GROUP_MA='SGOUP'),
+                        DDL_IMPO=(_F(GROUP_NO='LIGBE',
+                                     DY=0.0,),
+                                  _F(GROUP_NO='PGOUP',
+                                     DX=0.0,),),);
+                                                                       
+CHTEMP = AFFE_CHAR_MECA (
+                        MODELE = MOD,
+                        TEMP_CALCULEE = RESU_T,
+                          );
+                          
+CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
+                      DDL_IMPO=_F(GROUP_NO='PGOUP',
+                                      DY=RAMPD,),);
+                
+#----------------------------------------------------------------------
+#---------------  RESOLUTION   ------------------
+#----------------------------------------------------------------------
+
+RESU=STAT_NON_LINE(MODELE=MOD,
+                CHAM_MATER=CHMAT,
+                EXCIT=(_F(CHARGE=COND_LIM,),
+                       _F(CHARGE=CHAD,),
+                       _F(CHARGE=CHTEMP,)),
+                COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
+                             DEFORMATION='PETIT',
+                             GROUP_MA='SEPRO',),
+                          _F(RELATION='VMIS_ISOT_TRAC',
+                             DEFORMATION='PETIT',
+                             GROUP_MA='FOND_0',),
+                          _F(RELATION='VMIS_ISOT_LINE',
+                             DEFORMATION='PETIT',
+                             GROUP_MA='SGOUP',),),
+                INCREMENT=_F(LIST_INST=L_INST,
+                             NUME_INST_FIN=40,),
+                NEWTON=_F(REAC_ITER=3,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
+                               ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              RENUM='METIS',),);
+
+#----------------------------------------------------------------------
+# --------------- CALCUL DE G-THETA 
+#----------------------------------------------------------------------
+
+# nombre de couronnes ( rayons inferieur et superieur )
+nbcour = 4
+Rinf = [0.,0.25,0.5,1.,2.,5. ]
+Rsup=  [0.,0.5 ,1. ,2.,5.,10.]
+
+theta  = [None]*(nbcour+1)
+gtheta = [None]*(nbcour+1)
+
+for i in range(1,nbcour+1) :
+
+  theta[i]=CALC_THETA(MODELE=MOD,
+                      DIRECTION=(1.0,0.0,0.0),
+                      THETA_2D=_F(GROUP_NO='PFON_0',
+                                  MODULE=1.0,
+                                  R_INF=Rinf[i],
+                                  R_SUP=Rsup[i],),);
+
+  gtheta[i]=CALC_G_THETA_T(MODELE=MOD,
+                    CHAM_MATER=CHMAT,
+                    THETA=theta[i],
+                    EXCIT=(_F(CHARGE=COND_LIM,),
+                           _F(CHARGE=CHAD,),
+                           _F(CHARGE=CHTEMP,)),
+                    RESULTAT=RESU,
+                    TOUT_ORDRE='OUI',
+                    SYME_CHAR='SYME',
+                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
+                                 DEFORMATION='PETIT',),);
+
+
+  IMPR_TABLE(TABLE=gtheta[i]);
+
+#
+#----------------------------------------------------------------------
+# --------------- OUVERTURE
+#----------------------------------------------------------------------
+#
+
+OUVERTUR=POST_RELEVE_T(ACTION=_F(INTITULE='OUV',
+                                 GROUP_NO='PCMOD',
+                                 RESULTAT=RESU,
+                                 NOM_CHAM='DEPL',
+                                 TOUT_ORDRE='OUI',
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=OUVERTUR,
+           NOM_PARA=('NUME_ORDRE','INST','DY'));
+
+#
+#----------------------------------------------------------------------
+# --------------- FORCE RESULTANT DU DEPLACEMENT IMPOSEE
+#----------------------------------------------------------------------
+#
+
+RESU=CALC_NO(reuse =RESU,
+             MODELE=MOD,
+             RESULTAT=RESU,
+             EXCIT=(_F(CHARGE=COND_LIM,),          
+                  _F(CHARGE=CHAD,),                   
+                  _F(CHARGE=CHTEMP,),
+                  ),                    
+             TOUT_ORDRE='OUI',
+             OPTION=('FORC_NODA'),
+             CHAM_MATER=CHMAT,);
+
+FNODA=POST_RELEVE_T(ACTION=_F(INTITULE='F_NODA',
+                              GROUP_NO='PGOUP',
+                              RESULTAT=RESU,
+                              NOM_CHAM='FORC_NODA',
+                              TOUT_ORDRE='OUI',
+                              RESULTANTE=('DY'),
+                              OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=FNODA,
+           NOM_PARA=('NUME_ORDRE','INST','DY',));
+
+FIN();
+#

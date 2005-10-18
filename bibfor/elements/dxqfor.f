@@ -1,6 +1,6 @@
       SUBROUTINE DXQFOR ( TYPELE , GLOBAL , XYZL , PGL , FOR , VECL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,70 +33,31 @@ C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  FOR    : FORCE APPLIQUE SUR LA FACE
 C     OUT VECL   : CHARGEMENT NODAL RESULTANT
 C     ------------------------------------------------------------------
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*24 DESR
-      REAL*8       AIRE(4) , C1 , C2 , FNO(6,4,4)
+      REAL*8       AIRETR(4) , C1 , C2 , FNO(6,4,4)
       REAL*8       FX , FY
-C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-      INTEGER NPG , NC , NNO
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN,
-     &        LAIRE,LAIRN,LT1VE,LT2VE
-               PARAMETER (NPG   = 4)
-               PARAMETER (NNO   = 4)
-               PARAMETER (NC    = 4)
-               PARAMETER (LJACO = 2)
-               PARAMETER (LTOR  = LJACO + 4)
-               PARAMETER (LQSI  = LTOR  + 1)
-               PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-               PARAMETER (LWGT  = LETA + NPG + NNO + 2*NC)
-               PARAMETER (LXYC  = LWGT + NPG)
-               PARAMETER (LCOTE = LXYC + 2*NC)
-               PARAMETER (LCOS  = LCOTE + NC)
-               PARAMETER (LSIN  = LCOS + NC)
-               PARAMETER (LAIRE = LSIN  + NC)
-               PARAMETER (LAIRN = LAIRE + 1)
-               PARAMETER (LT1VE = LAIRN + 4 )
-               PARAMETER (LT2VE = LT1VE + 9 )
+      REAL*8       T2EV(4), T2VE(4), T1VE(9), CARAQ4(25)
 C     ------------------------------------------------------------------
 C
-      CALL JEMARQ()
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE( DESR ,' ',LZR )
+      NNO = 4
 C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
-      CALL GQUAD4 (XYZL , ZR(LZR))
-      CALL DXREPE ( NNO , PGL , ZR(LZR) )
+      CALL GQUAD4 ( XYZL , CARAQ4 )
+      CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
 C
       IF (.NOT. GLOBAL) THEN
          DO 50 I = 1, NNO
             FX = FOR(1,I)
             FY = FOR(2,I)
-            FOR(1,I) = FX*ZR(LZR-1+LT2VE  ) + FY*ZR(LZR-1+LT2VE+2)
-            FOR(2,I) = FX*ZR(LZR-1+LT2VE+1) + FY*ZR(LZR-1+LT2VE+3)
+            FOR(1,I) = FX*T2VE(1) + FY*T2VE(3)
+            FOR(2,I) = FX*T2VE(2) + FY*T2VE(4)
             FX = FOR(4,I)
             FY = FOR(5,I)
-            FOR(4,I) = FX*ZR(LZR-1+LT2VE  ) + FY*ZR(LZR-1+LT2VE+2)
-            FOR(5,I) = FX*ZR(LZR-1+LT2VE+1) + FY*ZR(LZR-1+LT2VE+3)
+            FOR(4,I) = FX*T2VE(1) + FY*T2VE(3)
+            FOR(5,I) = FX*T2VE(2) + FY*T2VE(4)
    50    CONTINUE
       ENDIF
       DO 100 INO = 1, NNO
-         AIRE(INO) = ZR(LZR-1+LAIRN+INO-1)
+         AIRETR(INO) = CARAQ4(21+INO)
   100 CONTINUE
       DO 110 K = 1, 6*NNO*NNO
          FNO(K,1,1) = 0.D0
@@ -107,18 +68,18 @@ C
       C1 = 1.D0 /  6.D0
       C2 = 1.D0 / 12.D0
       DO 200 I = 1, 6
-         FNO(I,1,1) = (C1*FOR(I,1)+C2*FOR(I,2)+C2*FOR(I,4)) * AIRE(1)
-         FNO(I,1,2) = (C2*FOR(I,1)+C1*FOR(I,2)+C2*FOR(I,4)) * AIRE(1)
-         FNO(I,1,4) = (C2*FOR(I,1)+C2*FOR(I,2)+C1*FOR(I,4)) * AIRE(1)
-         FNO(I,2,2) = (C1*FOR(I,2)+C2*FOR(I,3)+C2*FOR(I,1)) * AIRE(2)
-         FNO(I,2,3) = (C2*FOR(I,2)+C1*FOR(I,3)+C2*FOR(I,1)) * AIRE(2)
-         FNO(I,2,1) = (C2*FOR(I,2)+C2*FOR(I,3)+C1*FOR(I,1)) * AIRE(2)
-         FNO(I,3,3) = (C1*FOR(I,3)+C2*FOR(I,4)+C2*FOR(I,2)) * AIRE(3)
-         FNO(I,3,4) = (C2*FOR(I,3)+C1*FOR(I,4)+C2*FOR(I,2)) * AIRE(3)
-         FNO(I,3,2) = (C2*FOR(I,3)+C2*FOR(I,4)+C1*FOR(I,2)) * AIRE(3)
-         FNO(I,4,4) = (C1*FOR(I,4)+C2*FOR(I,1)+C2*FOR(I,3)) * AIRE(4)
-         FNO(I,4,1) = (C2*FOR(I,4)+C1*FOR(I,1)+C2*FOR(I,3)) * AIRE(4)
-         FNO(I,4,3) = (C2*FOR(I,4)+C2*FOR(I,1)+C1*FOR(I,3)) * AIRE(4)
+         FNO(I,1,1) = (C1*FOR(I,1)+C2*FOR(I,2)+C2*FOR(I,4)) * AIRETR(1)
+         FNO(I,1,2) = (C2*FOR(I,1)+C1*FOR(I,2)+C2*FOR(I,4)) * AIRETR(1)
+         FNO(I,1,4) = (C2*FOR(I,1)+C2*FOR(I,2)+C1*FOR(I,4)) * AIRETR(1)
+         FNO(I,2,2) = (C1*FOR(I,2)+C2*FOR(I,3)+C2*FOR(I,1)) * AIRETR(2)
+         FNO(I,2,3) = (C2*FOR(I,2)+C1*FOR(I,3)+C2*FOR(I,1)) * AIRETR(2)
+         FNO(I,2,1) = (C2*FOR(I,2)+C2*FOR(I,3)+C1*FOR(I,1)) * AIRETR(2)
+         FNO(I,3,3) = (C1*FOR(I,3)+C2*FOR(I,4)+C2*FOR(I,2)) * AIRETR(3)
+         FNO(I,3,4) = (C2*FOR(I,3)+C1*FOR(I,4)+C2*FOR(I,2)) * AIRETR(3)
+         FNO(I,3,2) = (C2*FOR(I,3)+C2*FOR(I,4)+C1*FOR(I,2)) * AIRETR(3)
+         FNO(I,4,4) = (C1*FOR(I,4)+C2*FOR(I,1)+C2*FOR(I,3)) * AIRETR(4)
+         FNO(I,4,1) = (C2*FOR(I,4)+C1*FOR(I,1)+C2*FOR(I,3)) * AIRETR(4)
+         FNO(I,4,3) = (C2*FOR(I,4)+C2*FOR(I,1)+C1*FOR(I,3)) * AIRETR(4)
          DO 160 INO = 1, NNO
             DO 150 IT = 1, NNO
                VECL(I+6*(INO-1)) = VECL(I+6*(INO-1)) + FNO(I,IT,INO)
@@ -127,5 +88,4 @@ C
   160    CONTINUE
   200 CONTINUE
 C
-      CALL JEDEMA()
       END

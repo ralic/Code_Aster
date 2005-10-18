@@ -1,6 +1,10 @@
       SUBROUTINE DXEFNT(NOMTE,XYZL,PGL,TSUP,TINF,TMOY,SIGT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      REAL*8        XYZL(3,1),PGL(3,1),TSUP(1),TINF(1),TMOY(1),SIGT(1)
+      LOGICAL       GRILLE
+      CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,12 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16 NOMTE
-      REAL*8 XYZL(3,1),PGL(3,1)
-      REAL*8 TSUP(1),TINF(1),TMOY(1)
-      REAL*8 SIGT(1)
-      LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C --- EFFORTS GENERALISES D'ORIGINE THERMIQUE AUX NOEUDS
 C --- POUR LES ELEMENTS COQUES A FACETTES PLANES :
@@ -63,20 +61,34 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2 CODRET(56)
       CHARACTER*10 PHENOM
-      CHARACTER*24 DESR
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
-      REAL*8 N(4)
+      REAL*8 N(4),T2EV(4),T2VE(4),T1VE(9)
       INTEGER MULTIC
 C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
-      CALL JEMARQ()
       ZERO = 0.0D0
 
       DO 10 I = 1,32
         SIGT(I) = ZERO
    10 CONTINUE
+
+      GRILLE = .FALSE.
+      IF (NOMTE(1:8).EQ.'MEGRDKT ') GRILLE = .TRUE.
+
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8).EQ.'MEGRDKT ' .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+         NNO = 3
+      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+         NNO = 4
+      ELSE
+         CALL UTMESS('F','DXEFNT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +                'N''EST PAS PREVU.')
+      END IF
 
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
@@ -88,52 +100,16 @@ C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 C --- DE L'EPAISSEUR DE LA COQUE
 C     --------------------------
 
-        IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-          GRILLE = .TRUE.
-        ELSE
-          GRILLE = .FALSE.
-        END IF
-
         CALL JEVECH('PCACOQU','L',JCARA)
         CALL JEVECH('PTEREF','L',JTREF)
         EPAIS = ZR(JCARA)
         TREF = ZR(JTREF)
 
-        DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-        CALL JEVETE(DESR,' ',LZR)
-
-
-        IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     +      NOMTE(1:8).EQ.'MEGRDKT'  .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
-
-          NNO = 3
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
-C      -------------------------------------------------
-          CALL GTRIA3(XYZL,ZR(LZR))
-
-        ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     +           NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
-     +           NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +           NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
-          NNO = 4
-
-C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE
-C      ---------------------------------------------------
-          CALL GQUAD4(XYZL,ZR(LZR))
-
-        ELSE
-          CALL UTMESS('F','DXEFNT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
-     +                'N''EST PAS PREVU.')
-        END IF
-
 C --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 C     ----------------------------------------------------
-
-
-        CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,ZR(LZR),MULTIC,INDITH,
-     +              GRILLE)
+        CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,GRILLE,
+     +                                             T2EV,T2VE,T1VE)
         IF (INDITH.EQ.-1) GO TO 30
 
 C --- BOUCLE SUR LES NOEUDS
@@ -167,5 +143,4 @@ C          ----------------------------------------
 
    30 CONTINUE
 
-      CALL JEDEMA()
       END

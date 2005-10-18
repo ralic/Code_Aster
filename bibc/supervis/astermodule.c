@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 03/10/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -550,7 +550,7 @@ void initExceptions(PyObject *dict)
         AsterError = PyErr_NewException("aster.error", NULL, NULL);
         if(AsterError != NULL) PyDict_SetItemString(dict, "error", AsterError);
         /* type d'exception Fatale derivee de AsterError */
-        FatalError = PyErr_NewException("aster.FatalError", AsterError, NULL);
+        FatalError = PyErr_NewException("aster.FatalError", NULL, NULL);
         if(FatalError != NULL) PyDict_SetItemString(dict, "FatalError", FatalError);
         
         /* Exceptions particularisées */
@@ -3221,6 +3221,51 @@ PyObject *args;
         return Py_None;
 }
 
+void DEFSSP(ONERRF,onerrf,char *,int, _OUT char *,int, _OUT INTEGER *);
+#define CALL_ONERRF(a,b,c) CALLSSP(ONERRF,onerrf,a,b,c)
+
+
+static PyObject * aster_onFatalError(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+/* 
+   Cette méthode définie le comportement lors des erreurs Fatales :
+
+   aster.onFatalError('ABORT')
+         => on s'arrête avec un JEFINI('ERREUR') dans UTFINM
+
+   aster.onFatalError('EXCEPTION()
+         => on lève l'exception FatalError
+
+   aster.onFatalError()
+         => retourne la valeur actuelle : 'ABORT' ou 'EXCEPTION'.
+*/
+      int len=-1;
+      int lng;
+      char tmp[16+1];
+      char *comport, *res;
+
+      _DEBUT(aster_onFatalError) ;
+      if (!PyArg_ParseTuple(args, "|s#:onFatalError",&comport ,&len)) return NULL;
+                                                     SSCRUTE(comport);
+      if (len == -1) {
+            CALL_ONERRF(" ", &tmp, &lng);
+            res = PyString_FromStringAndSize(tmp, lng);
+            _FIN(aster_onFatalError) ;
+            return res;
+
+      } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0) {
+            CALL_ONERRF(comport, &tmp, &lng);
+            Py_INCREF( Py_None ) ;
+            _FIN(aster_onFatalError) ;
+            return Py_None;
+
+      } else {
+            MYABORT("Seules ABORT et EXCEPTION sont des valeurs valides.");
+      }
+}
+
 void DEFSSSSP(ULOPEN,ulopen,char *,int,char *,int,char *,int,char *,int,INTEGER *);
 #define CALL_ULOPEN(a,b,c,d,e) CALLSSSSP(ULOPEN,ulopen,a,b,c,d,e)
 
@@ -3737,26 +3782,27 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 /* List of functions defined in the module */
 
 static PyMethodDef aster_methods[] = {
-                {"fclose",      aster_fclose ,            METH_VARARGS},
-                {"ulopen",      aster_ulopen ,            METH_VARARGS},
-                {"affiche",     aster_affich ,            METH_VARARGS},
-                {"init",        aster_init ,              METH_VARARGS},
-                {"debut",       aster_debut ,             METH_VARARGS},
-                {"poursu",      aster_poursu ,            METH_VARARGS},
-                {"oper" ,       aster_oper ,              METH_VARARGS},
-                {"opsexe" ,     aster_opsexe ,            METH_VARARGS},
-                {"repout" ,     aster_repout ,            METH_VARARGS},
-                {"impers" ,     aster_impers ,            METH_VARARGS},
-                {"repdex" ,     aster_repdex ,            METH_VARARGS},
-                {"mdnoma" ,     aster_mdnoma ,            METH_VARARGS},
-                {"mdnoch" ,     aster_mdnoch ,            METH_VARARGS},
-                {"argv" ,       aster_argv ,              METH_VARARGS},
-                {"prepcompcham",aster_prepcompcham,       METH_VARARGS},
-                {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},
-                {"putvectjev"  , aster_putvectjev ,         METH_VARARGS},
-                {"putcolljev"  , aster_putcolljev ,         METH_VARARGS},
-                {"getcolljev" , aster_getcolljev ,        METH_VARARGS, getcolljev_doc},
-                {"GetResu",     aster_GetResu,            METH_VARARGS},
+                {"onFatalError", aster_onFatalError, METH_VARARGS},
+                {"fclose",       aster_fclose,       METH_VARARGS},
+                {"ulopen",       aster_ulopen,       METH_VARARGS},
+                {"affiche",      aster_affich,       METH_VARARGS},
+                {"init",         aster_init,         METH_VARARGS},
+                {"debut",        aster_debut,        METH_VARARGS},
+                {"poursu",       aster_poursu,       METH_VARARGS},
+                {"oper",         aster_oper,         METH_VARARGS},
+                {"opsexe",       aster_opsexe,       METH_VARARGS},
+                {"repout",       aster_repout,       METH_VARARGS},
+                {"impers",       aster_impers,       METH_VARARGS},
+                {"repdex",       aster_repdex,       METH_VARARGS},
+                {"mdnoma",       aster_mdnoma,       METH_VARARGS},
+                {"mdnoch",       aster_mdnoch,       METH_VARARGS},
+                {"argv",         aster_argv,         METH_VARARGS},
+                {"prepcompcham", aster_prepcompcham, METH_VARARGS},
+                {"getvectjev",   aster_getvectjev,   METH_VARARGS, getvectjev_doc},
+                {"putvectjev",   aster_putvectjev,   METH_VARARGS},
+                {"putcolljev",   aster_putcolljev,   METH_VARARGS},
+                {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
+                {"GetResu",      aster_GetResu,      METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };
 

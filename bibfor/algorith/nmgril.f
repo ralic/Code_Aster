@@ -1,13 +1,11 @@
       SUBROUTINE NMGRIL (FAMI,KPG,KSP,IMATE, TYPMOD, COMPOR, OPTION,
-     &                   EPSM, DEPS,
-     &                    ANGMAS,
-     &                   SIGM, VIM,
+     &                   EPSM, DEPS, ANGMAS, SIGM, VIM,
      &                   TM, TP, TREF,
      &                   SIGP, VIP, DSIDEP,CODRET )
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +110,7 @@ C     DEPSL   : DEF TOTALES TEMPS PLUS - TEMPS MOINS  REPERE LOCAL
 C     DEPSG   : DEF TOTALES TEMPS PLUS - TEMPS MOINS REPERE GLOBAL
 C
 C
-      INTEGER       JGEOM,JCOQU,I,J,LT2EV,LT2VE,LT1VE
+      INTEGER       JGEOM,JCOQU,I,J
       INTEGER       NVARPI,KPG,KSP
       PARAMETER    ( NVARPI=8)
       INTEGER      NCSTPM
@@ -126,7 +124,8 @@ C
       REAL*8        SIGMG(6),SIGML(6)
       REAL*8        DH(3,3),SIGL(6),DEPSG(6),DEPSL(6),EPSMG(6),EPSML(6)
       REAL*8        PGL(3,3),ROT(3,3), XAB1(3,3)
-      REAL*8        EM,EP,ALPHAM,ALPHAP,DHL(3,3),TAB(100)
+      REAL*8        EM,EP,ALPHAM,ALPHAP,DHL(3,3)
+      REAL*8        T2EV(4), T2VE(4), T1VE(9)
       CHARACTER*2  CODRES
       LOGICAL       CINE,ISOT,PINTO,COM1D,VECTEU
 C
@@ -181,10 +180,7 @@ C     ------------------------------------------------
       ENDIF
 C     ------------------------------------------------
 C
-      CALL DXREPE(3,PGL,TAB)
-      LT1VE = 38
-      LT2VE=47
-      LT2EV=51
+      CALL DXREPE( PGL, T2EV, T2VE, T1VE )
 C
 C     -- INITIALISATIONS
 C     ---------------------------------------
@@ -200,18 +196,16 @@ C     DEFORMATIONS  ET CONTRAINTES DANS REPERE LOCAL
 C
       DEPS(4)=DEPS(4)/RAC2
       EPSM(4)=EPSM(4)/RAC2
-      CALL DXSIRO(1,TAB(LT2EV),DEPS,DEPSL)
-      CALL DXSIRO(1,TAB(LT2EV),EPSM,EPSML)
-      CALL DXSIRO(1,TAB(LT2EV),SIGM,SIGML)
+      CALL DXSIRO(1,T2EV,DEPS,DEPSL)
+      CALL DXSIRO(1,T2EV,EPSM,EPSML)
+      CALL DXSIRO(1,T2EV,SIGM,SIGML)
 C
 C     CALCUL DES CONTRAINTES PLUS DANS REPERE LOCAL
 C     ET VARIABLES INTERNES
 C
 
       CALL NMCO1D(FAMI,KPG,KSP,IMATE,COMPOR,OPTION,
-     &            EPSML(1),DEPSL(1),
-     &            ANGMAS,
-     &            SIGML(1),VIM(1),
+     &            EPSML(1), DEPSL(1), ANGMAS, SIGML(1),VIM(1),
      &            TM,TP,TREF,
      &            SIGL(1),VIP(1),DSDE1,CODRET)
 
@@ -234,7 +228,7 @@ C
      >     ( OPTION(1:9)  .EQ. 'FULL_MECA' )) THEN
            SIGL(2) = 0.D0
            CALL R8INIR(6,0.D0,SIGP,1)
-           CALL DXSIRO(1,TAB(LT2VE),SIGL,SIGP)
+           CALL DXSIRO(1,T2VE,SIGL,SIGP)
            SIGP(4)=SIGP(4)*RAC2
       ENDIF
 C
@@ -242,7 +236,7 @@ C
      >     ( OPTION(1:9)  .EQ. 'FULL_MECA' )) THEN
           CALL R8INIR(9,0.D0,DHL,1)
           DHL(1,1)=DSDE1
-          CALL UTBTAB('ZERO',3,3,DHL,TAB(LT1VE),XAB1,DH)
+          CALL UTBTAB('ZERO',3,3,DHL,T1VE,XAB1,DH)
 C
           DO 3 I=1,2
               DO 4 J=1,2

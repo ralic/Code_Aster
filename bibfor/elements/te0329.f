@@ -1,7 +1,7 @@
       SUBROUTINE TE0329(OPTION,NOMTE)
       IMPLICIT REAL*8  (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,22 @@ C....................................................................
 C   CALCUL DES TERMES ELEMENTAIRES DE L'ACCEPTANCE
 C     OPTION : ACCEPTANCE
 C....................................................................
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*2        CODRET
       CHARACTER*7        IELEM,IMODE
@@ -36,29 +52,10 @@ C
       INTEGER            NDIM,NNO,IPG,NPG1,IVECTT,IMATE
       INTEGER            IDEC,JDEC,KDEC,LDEC
       INTEGER            NBPG(10),IMATTT,NNOS,JGANO
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      COMMON /NOMAJE/PGC
-      CHARACTER*6 PGC
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-
+C     ------------------------------------------------------------------
 C
-C
-C------------FIN  COMMUNS NORMALISES  JEVEUX  ---------------------
-C
-      IF(NOMTE(1:5).EQ.'THER_') THEN
+      IF ( NOMTE(1:5).EQ.'THER_' ) THEN
+C          ---------------------
           CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,
      &                IDFDX,JGANO)
           IDFDY  = IDFDX  + 1
@@ -120,7 +117,6 @@ C     BOUCLE SUR LES POINTS DE GAUSS
          KDEC=(IPG-1)*NNO*NDIM
          LDEC=(IPG-1)*NNO
 
-
          NX(IPG) = 0.0D0
          NY(IPG) = 0.0D0
          NZ(IPG) = 0.0D0
@@ -137,15 +133,13 @@ C     BOUCLE SUR LES POINTS DE GAUSS
               NZ(IPG) = NZ(IPG) + ZR(IDFDX+KDEC+IDEC)
      &        * ZR(IDFDY+KDEC+JDEC) * SZ(I,J)
 
-
-
 104        CONTINUE
 102      CONTINUE
 
 C      CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 
          JAC(IPG) = SQRT (NX(IPG)*NX(IPG) + NY(IPG)*NY(IPG)
-     &            + NZ(IPG)*NZ(IPG))
+     &                                    + NZ(IPG)*NZ(IPG))
 
 C       CALCUL DE LA NORMALE UNITAIRE
 
@@ -173,8 +167,6 @@ C    CALCUL DE COORDONNEES AUX POINTS DE GAUSS
 
 91            CONTINUE
 
-
-
 C CALCUL DU FLUX FLUIDE NORMAL AUX POINTS DE GAUSS
 
                 FLUFN(IPG) = ACC(1,IPG)*NORM(1,IPG)+ACC(2,IPG)*
@@ -198,9 +190,12 @@ C PAR LE MODE ET L'ELEMENT
              ZR(IVETEL+4*IPG+2) = X(2,IPG+1)
              ZR(IVETEL+4*IPG+3) = X(3,IPG+1)
 100       CONTINUE
+C
+C
+      ELSEIF ( NOMTE(1:7).EQ.'MEDKQU4') THEN
+C              -----------------------
+           CALL SHL329
 
-      ELSEIF(NOMTE(1:7).EQ.'MEDKQU4') THEN
-           CALL SHL329(NOMTE)
       ENDIF
 
-       END
+      END

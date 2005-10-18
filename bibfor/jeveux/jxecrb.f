@@ -1,6 +1,6 @@
       SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,8 +95,8 @@ C     ------------------------------------------------------------------
      +                    1 , ' ' )
             CALL JVFINM
           ENDIF
-          IUSADI(JUSADI(IC)+2*(IADDI+I-1)-1) = IDCO
-          IUSADI(JUSADI(IC)+2*(IADDI+I-1) )  = IDOS
+          IUSADI(JUSADI(IC)+3*(IADDI+I-1)-2) = IDCO
+          IUSADI(JUSADI(IC)+3*(IADDI+I-1)-1) = IDOS
    10   CONTINUE
         IACCE (JIACCE(IC)+IADDI) = IACCE (JIACCE(IC)+IADDI) + 1
         IF ( LRAB ) THEN
@@ -118,8 +118,8 @@ C     ------------------------------------------------------------------
      +                    1 , ' ' )
             CALL JVFINM
           ENDIF
-          IUSADI(JUSADI(IC)+2*(IADDI+NBLENT)-1) = IDCO
-          IUSADI(JUSADI(IC)+2*(IADDI+NBLENT) )  = IDOS
+          IUSADI(JUSADI(IC)+3*(IADDI+NBLENT)-2) = IDCO
+          IUSADI(JUSADI(IC)+3*(IADDI+NBLENT)-1) = IDOS
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------
