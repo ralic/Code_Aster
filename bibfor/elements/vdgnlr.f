@@ -1,5 +1,7 @@
       SUBROUTINE VDGNLR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+      IMPLICIT NONE
+      CHARACTER*16        OPTION , NOMTE
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +20,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-C
-      IMPLICIT NONE
-C
-      CHARACTER*16        OPTION , NOMTE
-C
 C ......................................................................
 C     FONCTION  :  CALCUL DES OBJETS ELEMENTS FINIS EN NON LINEAIRE
 C                  GEOMETRIQUE AVEC GRANDES ROTATIONS
@@ -210,12 +207,6 @@ C
 C....... LES REELS ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
 C
          CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
-C
-         IF ( ZR ( LZR - 1 + 1550 ) . LE . SQRT ( R8PREM ( ) ) ) THEN
-C
-              ZR ( LZR - 1 + 1550 ) = 1.D0
-C
-         ENDIF
 C
 C______________________________________________________________________
 C
@@ -1127,16 +1118,8 @@ C
 C
             END IF
 C
-C
       END IF
 C
  900      CONTINUE
-C
-C
-C
-C
-C
-C
-C FIN
 C
       END

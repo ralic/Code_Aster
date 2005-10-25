@@ -3,7 +3,7 @@
      &                  SDFETI,NBPROC,RANG,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 24/10/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DES MATRICES GI ET (GI)T * GI
 C
@@ -56,6 +57,8 @@ C DECLARATION PARAMETRES D'APPELS
       LOGICAL      LRIGID,LSTOGI
       
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -185,12 +188,12 @@ C DECALAGE DU VECTEUR OUTPUT DE FETREX (GI)
 C PREPARATION DU TERRAIN POUR LE PARALLELISME SI NECESSAIRE
         IF (LPARA) THEN
           NOM1='&&RECVCOUNT_FETGGT'
-          CALL WKVECT(NOM1,'V V I',NBPROC,IACH1)
+          CALL WKVECT(NOM1,'V V S',NBPROC,IACH1)
           NOM2='&&DISPLS_FETGGT'
-          CALL WKVECT(NOM2,'V V I',NBPROC,IACH2)
+          CALL WKVECT(NOM2,'V V S',NBPROC,IACH2)
           DO 14 I=1,NBPROC
-            ZI(IACH1+I-1)=0
-            ZI(IACH2+I-1)=0
+            ZI4(IACH1+I-1)=0
+            ZI4(IACH2+I-1)=0
    14     CONTINUE
           NBPRO1=NBPROC-1
           DO 16 IDD=1,NBSD
@@ -198,13 +201,13 @@ C PREPARATION DU TERRAIN POUR LE PARALLELISME SI NECESSAIRE
             IF (NBMC.NE.0) THEN
               NBMC=NBMC*NBI
               IAUX1=ZI(ILIMP1+IDD-1)
-              ZI(IACH1+IAUX1)=ZI(IACH1+IAUX1)+NBMC
+              ZI4(IACH1+IAUX1)=ZI4(IACH1+IAUX1)+NBMC
               IAUX11=IAUX1+1
               DO 15 I=IAUX11,NBPRO1
-                ZI(IACH2+I)=ZI(IACH2+I)+NBMC
+                ZI4(IACH2+I)=ZI4(IACH2+I)+NBMC
    15         CONTINUE
             ENDIF
-   16     CONTINUE         
+   16     CONTINUE        
         ENDIF
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
@@ -229,9 +232,10 @@ C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
           ENDIF
    30   CONTINUE
-C COLLECTE SELECTIVE DE GI POUR LE PROCESSUS MAITRE 
+
+C COLLECTE SELECTIVE DE GI POUR LE PROCESSUS MAITRE
         IF (LPARA) THEN
-          IBID=ZI(IACH1+RANG)
+          IBID=ZI4(IACH1+RANG)
           CALL FETMPI(8,IBID,IFM,NIVMPI,RANG,NBPROC,NOMGI,NOM1,NOM2,
      &                RBID)
         ENDIF

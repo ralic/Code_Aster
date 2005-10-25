@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,7 +209,7 @@ C
 C     -----------------------------------------------------------------
 C
 C OBJETS DE MAILLAGE : OBJ1 A OBJ5
-C
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
       IF (NOUM(1:2) .EQ. 'NO') THEN
          MOTCLE = 'NOEUD'
          GROUPE = 'GROUP_NO'
@@ -229,7 +229,6 @@ C
          GROUPE = 'GROUP_MA'
          OBJ1 = NOMA//'.GROUPEMA'
          OBJ2 = NOMA//'.NOMMAI'
-         CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
          OBJ4 = NOMA//'.CONNEX'
          OBJ5 = NOMA//'.NOMNOE'
       ENDIF
@@ -320,16 +319,14 @@ C
                     NUMA = ZI(ACNCIN+ADRA-1+J-1)
                     DO 22 K = 1,NBMB
                       NUMB = ZI(ACNCIN+ADRB-1+K-1)
-                      CALL JENUNO(JEXNUM(OBJ2,NUMB),MAILLE)
-                      CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
-                      ITYP = IATYMA-1+IBID
+                      ITYP = IATYMA-1+NUMB
                       CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),
      +                             TYPE)
                       IF (TYPE(1:3).EQ.'SEG ') THEN
                         IF ((IT.GT.1) .AND. 
      +                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
                           CALL UTMESS('F','GVERIF',
-     +                     'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                     'MELANG1 SEG2 ET SEG3 : LES MAILLES DU '//
      +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
@@ -386,7 +383,7 @@ C
                   TYPM = TYPE(1:4)
                   IF ((IMA.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
                    CALL UTMESS('F','GVERIF',
-     +                     'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                     'MELANG2 SEG2 ET SEG3 : LES MAILLES DU '//
      +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
                   ENDIF
                   TYPMP(1:4) = TYPM(1:4)
@@ -523,15 +520,14 @@ C
                   NUMA = ZI(ACNCIN+ADRA-1+J-1)
                   DO 214 K = 1,NBMB
                      NUMB = ZI(ACNCIN+ADRB-1+K-1)
-                     CALL JENUNO(JEXNUM(OBJ2,NUMB),MAILLE)
-                     CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
-                     ITYP = IATYMA-1+IBID
-                     CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
+                     ITYP = IATYMA-1+NUMB
+                     CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),
+     +                             TYPE)
                      IF (TYPE(1:3).EQ.'SEG ') THEN
                         IF ((IT.GT.1) .AND. 
      +                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
                           CALL UTMESS('F','GVERIF',
-     +                     'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                     'MELANG3 SEG2 ET SEG3 : LES MAILLES DU '//
      +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
@@ -563,7 +559,7 @@ C
                TYPM = TYPE(1:4)
                IF ((INO.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
                 CALL UTMESS('F','GVERIF',
-     +                    'MELANGE SEG2 ET SEG3 : LES MAILLES DU '//
+     +                    'MELANG4 SEG2 ET SEG3 : LES MAILLES DU '//
      +                    'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
                ENDIF
                TYPMP(1:4) = TYPM(1:4)

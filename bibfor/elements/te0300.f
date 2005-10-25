@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,15 +77,29 @@ C.......................................................................
       EPS = R8PREM()
       DEPI = R8DEPI()
 
-
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDK,JGANO)
+      CALL JEVECH('PTHETAR','L',ITHET)
+      TCLA = 0.D0
+      TCLA1 = 0.D0
+      TCLA2 = 0.D0
+      CALL JEVECH('PGTHETA','E',IFIC)
 
+C PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
 
+      COMPT = 0
+      DO 10 I = 1,NNO
+        THX = ZR(ITHET+2* (I-1))
+        THY = ZR(ITHET+2* (I-1)+1)
+        IF ((ABS(THX).LT.EPS) .AND. (ABS(THY).LT.EPS)) THEN
+          COMPT = COMPT + 1
+        END IF
+   10 CONTINUE
+      IF (COMPT.EQ.NNO) GO TO 110
 
+C RECUPERATION CHARGE, MATER...
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PTHETAR','L',ITHET)
       CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PFISSR','L',IFOND)
@@ -103,7 +117,6 @@ C.......................................................................
         CALL JEVECH('PFR1D2D','L',IFORC)
         CALL JEVECH('PPRESSR','L',IPRES)
       END IF
-      CALL JEVECH('PGTHETA','E',IFIC)
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
@@ -113,22 +126,6 @@ C.......................................................................
       XNORM = ZR(IFOND+2)
       YNORM = ZR(IFOND+3)
       NORM = SQRT(XNORM*XNORM+YNORM*YNORM)
-
-      TCLA = 0.D0
-      TCLA1 = 0.D0
-      TCLA2 = 0.D0
-
-C PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
-
-      COMPT = 0
-      DO 10 I = 1,NNO
-        THX = ZR(ITHET+2* (I-1))
-        THY = ZR(ITHET+2* (I-1)+1)
-        IF ((ABS(THX).LT.EPS) .AND. (ABS(THY).LT.EPS)) THEN
-          COMPT = COMPT + 1
-        END IF
-   10 CONTINUE
-      IF (COMPT.EQ.NNO) GO TO 110
 
 C - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
 

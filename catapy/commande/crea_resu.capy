@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ def crea_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "MULT_ELAS"    : return mult_elas
   if TYPE_RESU == "FOURIER_ELAS" : return fourier_elas
   if TYPE_RESU == "EVOL_VARC"    : return evol_varc
+  if TYPE_RESU == "EVOL_CHAR"    : return evol_char
   raise AsException("type de concept resultat non prevu")
 
 CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
@@ -35,7 +36,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
 
            TYPE_RESU    =SIMP(statut='o',typ='TXM',into=("MULT_ELAS","EVOL_ELAS","EVOL_NOLI","FOURIER_ELAS",
-                                                         "EVOL_THER","EVOL_VARC",) ),
+                                                         "EVOL_THER","EVOL_VARC","EVOL_CHAR",) ),
            NOM_CHAM     =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
 
            AFFE         =FACT(statut='o',max='**',

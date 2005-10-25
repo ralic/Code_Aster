@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF COMPELEM  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -48,6 +48,9 @@ GRANDEUR_SIMPLE__
                     Y        Z        PAS_T    PAS_N    COEF_ECH K_DRL    K_DRT    K_DRN
                     KT_DL    KT_DT    KT_DN    KT_DRL   KT_DRT   KT_DRN   KN_DL    KN_DT
                     KN_DN    KN_DRL   KN_DRT   KN_DRN   DIST_N   CTOR     EXCENT   INERTIE
+<<  CACO3D : UNE "CARACTERISTIQUE" DES ELEMENTS DE COQUE_3D :
+                CRF : COEFFICIENT DE ROTATION FICTIVE >>
+    CACO3D   = R    CRF
     CADISA   = R    A1       A2       A3       A4       A5       A6       A7       A8
                     A9       A10      A11      A12      A13      A14      A15      A16
                     A17      A18      A19      A20      A21      A22      A23      A24

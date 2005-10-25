@@ -1,7 +1,7 @@
       SUBROUTINE XRELCO(FISS,MOD,MA,LISREL,NREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 24/10/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,14 +80,11 @@ C        ----------------------
       CALL JEVEUO(FISS//'.CONTACT.LISEQ','L',JLIS1)
       CALL JELIRA(FISS//'.CONTACT.LISEQ','LONMAX',NEQ,K8BID)
 
-      write(6,*)'neq ',NEQ/2
-
       DO 10 I = 1,NEQ/2
         NUNO(1) = ZI(JLIS1-1+2*(I-1)+1)
         NUNO(2) = ZI(JLIS1-1+2*(I-1)+2)
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(1)),NOEUD(1))
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(2)),NOEUD(2))
-        write(6,*)' ',NUNO(1),NUNO(2)
         COEFR(1) = 1.D0
         COEFR(2) = -1.D0
         NDIM(1) = 0
@@ -115,9 +112,6 @@ C     ----------------------
       CALL JEVEUO(FISS//'.CONTACT.LISCO','L',JLIS3)
       CALL JELIRA(FISS//'.CONTACT.LISCO','LONMAX',IER,K8BID)
       CALL ASSERT(IER.EQ.NRL)
-
-
-            write(6,*)'nrl ',NRL/3
 
       DO 30 I = 1,NRL/3
         NUNO(1) = ZI(JLIS2-1+3*(I-1)+1)

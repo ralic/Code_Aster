@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(0. ,20. ,15. ),),
-                    CONTACT=_F(ALGO_LAG='NON',),);
+                    CONTACT=_F(ALGO_LAGR='NON',),);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
@@ -105,7 +105,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('VOL',),
+                       AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 TEMP_REF=0.0,),
                              );

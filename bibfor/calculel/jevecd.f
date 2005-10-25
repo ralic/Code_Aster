@@ -1,6 +1,6 @@
       SUBROUTINE JEVECD(NOMPAR,JAD,VALDEF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,8 +59,8 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
         LONEL=ITAB(2)*MAX(1,ITAB(6))*MAX(1,ITAB(7))
         DO 1, K = 1,LONEL
           IF (ZL(ITAB(8)-1+K)) THEN
-            CALL UTMESS('F','JEVECD',
-     &          'MAILLE PARTIELLEMENT AFFECTEE.')
+            CALL UTMESS('E','JEVECD',
+     &                      'MAILLE PARTIELLEMENT AFFECTEE.')
             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
           ZR(JAD-1+K)=VALDEF

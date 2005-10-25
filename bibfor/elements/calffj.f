@@ -1,6 +1,6 @@
-      SUBROUTINE CALFFJ(ALIAS,XI,YI,IGEOM,TN,JAC,IAXIS)
+      SUBROUTINE CALFFJ(ALIAS,XI,YI,IGEOM,TN,JAC,IAXIS,NDIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C.......................................................................
 C-----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-      INTEGER ZI,IOC,I
+      INTEGER ZI,IOC,I,NDIM
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -78,9 +78,16 @@ C   CALCUL DE JACOBIEN  L'ESCLAVE OU DU MAITRE )
 
         DXDS = 0
         DYDS = 0
+        DZDS = 0
         DO 10 I = 1,2
-          DXDS = DXDS + ZR(IGEOM-1+2*(I-1)+1)*AJ(1,I)
-          DYDS = DYDS + ZR(IGEOM-1+2*(I-1)+2)*AJ(1,I)
+          IF(NDIM.EQ.2) THEN
+            DXDS = DXDS + ZR(IGEOM-1+2*(I-1)+1)*AJ(1,I)
+            DYDS = DYDS + ZR(IGEOM-1+2*(I-1)+2)*AJ(1,I)
+          ELSEIF(NDIM.EQ.3) THEN
+            DXDS = DXDS + ZR(IGEOM-1+3*(I-1)+1)*AJ(1,I)
+            DYDS = DYDS + ZR(IGEOM-1+3*(I-1)+2)*AJ(1,I)
+            DZDS = DZDS + ZR(IGEOM-1+3*(I-1)+3)*AJ(1,I)
+          ENDIF
    10   CONTINUE
          IF (IAXIS.EQ.1) THEN
           XX =0.D0
@@ -90,7 +97,7 @@ C   CALCUL DE JACOBIEN  L'ESCLAVE OU DU MAITRE )
           IF (XX.EQ.0.D0) XX=0.01D-5
           JAC = SQRT(DXDS**2+DYDS**2)*ABS(XX)
          ELSE
-          JAC = SQRT(DXDS**2+DYDS**2)
+          JAC = SQRT(DXDS**2+DYDS**2+DZDS**2)
          END IF
 
       ELSE IF (ALIAS(1:5).EQ.'SG3') THEN

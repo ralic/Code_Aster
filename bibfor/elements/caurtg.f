@@ -1,6 +1,6 @@
       SUBROUTINE  CAURTG(NOMTE,NCMP,SIGMAU,SIGRTG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +74,6 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     ---------------
-      UN     = 1.0D0
-C
       LGREEN = .FALSE.
 C
 C --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
@@ -109,10 +107,6 @@ C     -------------------------------------------------
       NB2 = ZI(LZI+2-1)
 C
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-C
-      IF (ZR(LZR+1550-1).LE.SQRT(R8PREM())) THEN
-        ZR(LZR+1550-1) = UN
-      ENDIF
 C
 C --- AFFECTATION DES VECTEURS DE TRANSLATION ET DE ROTATION :
 C     ------------------------------------------------------

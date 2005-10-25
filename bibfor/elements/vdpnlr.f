@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -221,11 +221,11 @@ C
       NBCOU=ZI(JNBSPI-1+1)
 C
       IF ( NBCOU . LE . 0 )
-     &   CALL UTMESS ( 'F' , 'VDGNLR' ,
+     &   CALL UTMESS ( 'F' , 'VDPNLR' ,
      &        'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0' )
 C
       IF ( NBCOU . GT . 10 )
-     &   CALL UTMESS ( 'F' , 'VDGNLR' ,
+     &   CALL UTMESS ( 'F' , 'VDPNLR' ,
      &        'NOMBRE DE COUCHES LIMITE A 10 POUR LES COQUES 3D' )
 C
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
@@ -269,12 +269,6 @@ C
 C....... LES REELS ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
 C
          CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
-C
-         IF ( ZR ( LZR - 1 + 1550 ) . LE . SQRT ( R8PREM ( ) ) ) THEN
-C
-              ZR ( LZR - 1 + 1550 ) = 1.D0
-C
-         ENDIF
 C
 C______________________________________________________________________
 C

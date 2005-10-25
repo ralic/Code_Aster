@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 24/10/2005   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,5 +147,26 @@ TEST_TABLE(TABLE=LAG,
            PRECISION=0.97,
            REFERENCE='AUTRE_ASTER',);
 
-FIN();
+# TEST DE NON-REGRESSION PAR RAPPORT A LA VERSION 8.1.20
 
+LA8120=-0.18685302453474
+
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_C',
+           FILTRE=(_F(NOM_PARA='COOR_X',
+                      CRIT_COMP='EQ',
+                      VALE=0.,),
+                   _F(NOM_PARA='COOR_Y',
+                      CRIT_COMP='EQ',
+                      VALE=10.,),
+                   _F(NOM_PARA='COOR_Z',
+                     CRIT_COMP='EQ',
+                     VALE=17.5,),
+                  ),
+           VALE=LA8120,
+           CRITERE='RELATIF',
+           PRECISION=1.E-3,
+           REFERENCE='NON_REGRESSION',VERSION='8.1.20');
+
+FIN();

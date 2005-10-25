@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_20
-C.......................................................................
+C
 C  CALCUL DES SECONDS MEMBRES DE CONTACT ET DE FROTTEMENT DE COULOMB STD
 C        AVEC LA METHODE CONTINUE DE L'ECP
 C  OPTION : 'CHAR_MECA_CONT' (CALCUL DU SECOND MEMBRE  DE CONTACT)
@@ -29,7 +29,6 @@ C
 C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
 C
-C.......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
       INTEGER ZI
@@ -60,11 +59,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 GEOME(3),DEPLE(6),DEPLM(6),GEOMM(3),RESE(3),VECTT(3),NOOR
       REAL*8 MCH(72,72), M(3,3),MM1(3,3),GAUS,ORD,TT(3)
       REAL*8 DEPLME(6),DEPLMM(6),DEPLEE(6),JDEPP,JDEPM,JEACCM 
-      REAL*8 BETA,GAMMA
+      REAL*8 BETA,GAMMA,JEUSUP
       REAL*8 ACCME(6), ACCMM(6),VITME(6), VITMM(6), JEVITM, JEVITP   
       CHARACTER*8 ESC,MAIT
-
-C.......................................................................
 
       CALL JEMARQ()
 C***************************************************
@@ -206,6 +203,17 @@ C***************************************************
         NDDL = 81
         NDIM = 3
         MAIT = 'QU9'
+        
+C ---- CONTACT POUTRE-POUTRE
+
+      ELSEIF (NOMTE .EQ. 'CFP2P2') THEN
+        ESC = 'SG2'
+        NNM = 2
+        NNE = 2
+        NDDL = 18
+        NDIM = 3
+        MAIT = 'SG2'
+        
       ELSE
         CALL UTMESS('F','TE0364', 'NOM DE L ELEMENT INCONNU')
       END IF
@@ -244,8 +252,9 @@ C      INDNOR  = NINT(ZR(JPCF-1+17))
       COEASP   = ZR(JPCF-1+29)
       CN       = ZR(JPCF-1+30) 
       BETA     = ZR(JPCF-1+31) 
-      GAMMA    = ZR(JPCF-1+32)     
-C
+      GAMMA    = ZR(JPCF-1+32)
+      JEUSUP   = ZR(JPCF-1+33)
+
       IF (INDM .GE. 1) THEN
         IF (NDIM .EQ. 2) THEN
           DIRLG = 1
@@ -253,8 +262,9 @@ C
           DIRLG = 1
         END IF
       END IF
+      
 C  RECUPERARTION DE LA GEOMETRIE ET DE CHAMPS DE DEPLACEMENT
-C
+
       CALL JEVECH('PGEOMER','E',IGEOM)
       CALL JEVECH('PDEPL_P','L',IDEPL)
       CALL JEVECH('PDEPL_M','L',IDEPM)
@@ -267,7 +277,7 @@ C  RECUPERATION DES VECTEURS 'OUT' (A REMPLIR => MODE ECRITURE)
 
       CALL JEVECH('PVECTUR','E',IVECT)
 
-C     REACTUALISATION DE LA GEOMETRIE AVEC DEPMPOI (ESCALVE)
+C  REACTUALISATION DE LA GEOMETRIE AVEC DEPMPOI (ESCALVE)
 
       DO 20 I = 1,NNE
         DO 10 J = 1,NDIM
@@ -291,14 +301,12 @@ C  INITIALISATION A ZERO DU VECTEUR DE TRAVAIL
    30 CONTINUE
 
 C  RECUPERATION DES COORDONNEES DES PCS, DES FFS, JACOBIENS ET NORMALES
-
       
-      CALL CALFFJ(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS)
+      CALL CALFFJ(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS,NDIM)
 C
       MGEOM = IGEOM + NNE*NDIM
 
-      CALL CALFFJ(MAIT,ERR,ESS,MGEOM,FFM,JACM,AXIS)
-C      IF (INDNOR.EQ.0) THEN
+      CALL CALFFJ(MAIT,ERR,ESS,MGEOM,FFM,JACM,AXIS,NDIM)
         IF (NDIM.EQ.2) THEN
           NORM(1) =-TAU1(2)
           NORM(2) =TAU1(1)
@@ -306,24 +314,13 @@ C      IF (INDNOR.EQ.0) THEN
         ELSE IF (NDIM.EQ.3) THEN
          CALL PROVEC(TAU2,TAU1,NORM)
         END IF
-C       ELSE IF (INDNOR.EQ.1) THEN
-C          IF (NDIM.EQ.2) THEN
-C           NORM(1) =-TAU1(2)
-C           NORM(2) =TAU1(1)
-C           NORM(3) =0.D0
-C          ELSE IF (NDIM.EQ.3) THEN
-C           CALL PROVEC(TAU2,TAU1,NORM)
-C          END IF
-C      END IF
-      NOOR = 0.D0
+        NOOR = 0.D0
       DO 1 I=1,3
         NOOR = NORM(I)*NORM(I)+NOOR
 1     CONTINUE
       DO 2 I=1,3
         NORM(I) = NORM(I)/SQRT(NOOR)
 2     CONTINUE
-
-
 
        DO 3 J=1,NDDL
            VTMP(J)=0.D0
@@ -421,7 +418,7 @@ C   ---- CONTACT
 
 C  EVALUTION DU JEU
 
-          JEU = 0.D0
+          JEU = JEUSUP
           JDEPP = 0.D0
           JDEPM = 0.D0  
           JEVITM = 0.D0 
@@ -441,7 +438,6 @@ C  EVALUTION DU JEU
      &                JEVITM*(BETA-GAMMA)/BETA +
      &                JEACCM*DT*(2*BETA-GAMMA)/(2*BETA)
              END IF
-
   
 C FORMULATION EN DEPLACEMENT
 
@@ -486,7 +482,7 @@ C       DDL DEPLACEMENT DE LA  SURFACE CINEMATIQUE
      &          FFE(I)*NORM(J)
    61       CONTINUE
    71     CONTINUE
-C
+
 C      DDL DEPLACEMENT DE LA SURFACE GEOMETRIQUE
 
           DO 91 I = 1,NNM
@@ -497,7 +493,6 @@ C      DDL DEPLACEMENT DE LA SURFACE GEOMETRIQUE
    81       CONTINUE
    91     CONTINUE
 
-C
 C      DDL MULTIPLICATEUR CONTACT (DE LA SURFACE CINEMATIQUE)
 
           DO 105 I = 1,NNE
@@ -520,9 +515,10 @@ C      DDL MULTIPLICATEUR CONTACT (DE LA SURFACE CINEMATIQUE)
          ENDIF
          
          IF (INDCOM .EQ. 1) THEN
+         
 C  EVALUTION DU JEU
 
-          JEU = 0.D0
+          JEU = JEUSUP
           JDEPP = 0.D0
           JDEPM = 0.D0  
           JEVITM = 0.D0 
@@ -544,8 +540,7 @@ C  EVALUTION DU JEU
      &                JEACCM*DT*(2*BETA-GAMMA)/(2*BETA)
             END IF
 
-
-C       DDL DEPLACEMENT DE LA  SURFACE CINEMATIQUE
+C  DDL DEPLACEMENT DE LA  SURFACE CINEMATIQUE
 
           DO 72 I = 1,NNE
             DO 62 J = 1,NDIM
@@ -553,8 +548,8 @@ C       DDL DEPLACEMENT DE LA  SURFACE CINEMATIQUE
      &          (-COEASP*((JEU-ASP)**2)-CN*JEVITP)*FFE(I)*NORM(J)
    62       CONTINUE
    72     CONTINUE
-C
-C      DDL DEPLACEMENT DE LA SURFACE GEOMETRIQUE
+
+C  DDL DEPLACEMENT DE LA SURFACE GEOMETRIQUE
 
           DO 92 I = 1,NNM
             DO 82 J = 1,NDIM
@@ -632,7 +627,6 @@ C   ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C   INADH = 1  ADHERENCE
 C   INADH = 0  GLISSEMENT
 
-
           CALL TTPRSM(NDIM,C,DEPLE,DEPLM,COEFFA,INADH,RESE,TAU1,TAU2,
      &                INDM)
 
@@ -648,7 +642,6 @@ C       SI GLISSANT ON NORMALISE RESE
                   RESE(K) = RESE(K)/MERESE
   150          CONTINUE
           END IF
-
 
 C  EVALUTION RESE.C(*,I)
 

@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
       INTEGER ADRECG,ADCHSE
       INTEGER NVITES,NACCE
 
-      REAL*8       TIME,ALPHA,PREC,RBID, PULS
+      REAL*8       TIME,ALPHA,PREC,RBID,PULS,TIMEU,TIMEV
 
       CHARACTER*4 K4BID
       CHARACTER*5 SUFFIX
@@ -171,6 +171,8 @@ C
         IF (NBINST.EQ.0) THEN
           EXITIM = .FALSE.
           TIME  = 0.D0
+          TIMEU = 0.D0
+          TIMEV = 0.D0
         ELSE
           NBINST = -NBINST
           IF(NBINST.GT.1) THEN
@@ -179,6 +181,8 @@ C
           ENDIF
           CALL GETVR8(' ','INST',0,1,NBINST,TIME,IBID)
           EXITIM = .TRUE.
+          TIMEU = TIME
+          TIMEV = TIME
         ENDIF
       ENDIF
 
@@ -601,7 +605,9 @@ C 3.3.1.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
      >                      'ACCES IMPOSSIBLE AU DEPLACEMENT')
               ENDIF
               CALL RSADPA(RESUCO,'L',1,'INST',IORD1,0,JINST,K8BID)
-              TIME  = ZR(JINST)
+              TIMEU = ZR(JINST)
+              CALL RSADPA(RESUCO,'L',1,'INST',IORD2,0,JINST,K8BID)
+              TIMEV = ZR(JINST)
               EXITIM = .TRUE.
             ELSE
               DEPLA1 = DEPLA
@@ -609,8 +615,8 @@ C 3.3.1.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
             ENDIF
             OPTIO2 = 'CALC_G_BILI'
             CALL MEBILG (OPTIO2,LATAB1,MODELE,DEPLA1,DEPLA2,THETA,MATE,
-     &                   NCHA,ZK8(ICHA),SYMECH,EXITIM,TIME,I,J,NBPRUP,
-     &                   NOPRUP )
+     &                   NCHA,ZK8(ICHA),SYMECH,EXITIM,TIMEU,TIMEV,I,J,
+     &                   NBPRUP,NOPRUP )
             CALL JEDEMA()
  3312       CONTINUE
  3311     CONTINUE

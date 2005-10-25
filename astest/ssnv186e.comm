@@ -1,0 +1,175 @@
+# MODIF  DATE 24/10/2005   AUTEUR GENIAUT S.GENIAUT 
+# TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV186E',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');
+
+PRE_GMSH()
+
+MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG1,);
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_MA =(_F(NOM='SURFINF',GROUP_MA='GM1'),
+                                    _F(NOM='SURFSUP',GROUP_MA='GM2'),
+                                    _F(NOM='VOL',    GROUP_MA='GM3'),),
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
+                    CREA_GROUP_NO=_F(NOM='VOLQUAD',GROUP_MA='VOL',),);                        
+
+#IMPR_RESU(FORMAT='RESULTAT',
+#          RESU=_F(MAILLAGE=MAILLAG2,));
+
+             
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+                     AFFE=(_F(GROUP_MA=('VOL',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D_XFEM',),
+                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),);        
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-17.5');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-100. ');                      
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(
+                                 FONC_LT=LT,
+                                 FONC_LN=LN,               
+                                 ),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 PT_ORIGIN=(-0.5,0.,1.5 ),),
+                    CONTACT=_F(INTEGRATION='FPG4',
+                               COEF_REGU_CONT=100., 
+                               ITER_CONT_MAXI=4,   
+                               CONTACT_INIT='OUI',    
+                               ALGO_LAGR='VERSION1',
+                               FROTTEMENT='SANS',
+#                               FROTTEMENT='COULOMB',
+#                               COULOMB=1.0,
+#                               ITER_FROT_MAXI=6,
+#                               COEF_REGU_FROT=1000.,
+#                                SEUIL_INIT=-1.E11,
+                               ),
+                    INFO=1,);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         INFO=1,);
+
+E=1.0E3
+nu=0.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+                       MODELE=MODELEK,
+                       AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
+                                MATER=ACIER,
+                                TEMP_REF=0.0,),);
+
+pres=100.*E/1e6
+
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   DDL_IMPO=(_F(GROUP_MA='SURFINF',DX=0.0,DY=0.0,DZ=0.0,),
+                             _F(GROUP_MA='SURFSUP',DX=0.0,DY=0.0,),),     
+                   PRES_REP=_F(GROUP_MA='SURFSUP',PRES=pres,),
+                   INFO=1,);          
+
+
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                                INFO=1,);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,              
+                   EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CHXFEM,),),                  
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA='VOL',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              PCENT_PIVOT=250,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+
+LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                            NOEUD=('N415','N416','N795','NS49','NS50','NS53','NS101','NS102',
+                                   'NS105','NS360','NS361','NS362','NS363','NS367','NS453','NS454',
+                                   'NS455','NS456','NS460','NS582','NS583','NS586','NS631','NS751',
+                                   'NS752','NS754','NS887','NS889','NS890','NS933','NS935','NS937',
+                                   'NS948','NS950','NS952','NS1056','NS1057','NS1204','NS1206','NS1207',
+                                   'NS1401','NS1402','NS1403','NS1574','NS1575','NS1576','NS1855','NS1856',
+                                   'NS1857','NS1957','NS1958','NS1959','NS1999','NS2001','NS2059','NS2060',
+                                   'NS2062','NS2064','NS2114','NS2156','NS2158','NS2172','NS2189','NS2241',
+                                   'NS2290','NS2291','NS2292','NS2363','NS2364','NS2366','NS2368','NS2451',
+                                   'NS2454','NS2477','NS2478','NS2493','NS2494','NS2495','NS2496','NS2497',
+                                   'NS2538','NS2541','NS2634','NS2794','NS2936','NS2938','NS2939','NS3034',
+                                   'NS3035','NS3037','NS3133','NS3134','NS3136','NS3138','NS3184','NS3185',
+                                   'NS3191','NS3192','NS3226','NS3227','NS3251','NS3253','NS3254','NS3291',
+                                   'NS3293','NS3554','NS3555','NS3638','NS3697','NS3744','NS3950','NS3970',
+                                   'NS4016','NS4196','NS4197','NS4198','NS4277','NS4279','NS4280','NS4340',
+                                   'NS4411','NS4412','NS4618','NS4626','NS4627','NS4628','NS4634','NS4645',
+                                   'NS4657','NS4695','NS4696','NS4800','NS4848','NS5011','NS5012','NS5055',
+                                   'NS5159','NS5171','NS5245','NS5246','NS5271','NS5294','NS5295','NS5297',
+                                   'NS5315','NS5376','NS5377','NS5462','NS5463','NS5581','NS5593','NS5594',),
+                             RESULTAT=UTOT1,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=1,
+                             NOM_CMP='LAGS_C',
+                             OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=LAG,);
+
+
+# TESTS
+
+LAREF=-1.*pres
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=LAREF,
+           CRITERE='RELATIF',
+           PRECISION=3.E-2,
+           REFERENCE='ANALYTIQUE',);     
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=LAREF,
+           CRITERE='RELATIF',
+           PRECISION=2.E-2,
+           REFERENCE='ANALYTIQUE',);      
+
+FIN();                  
+

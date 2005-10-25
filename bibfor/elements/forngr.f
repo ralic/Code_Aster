@@ -1,5 +1,5 @@
       SUBROUTINE FORNGR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,12 +163,6 @@ C
 C....... LES REELS ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
 C
          CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
-C
-         IF ( ZR ( LZR - 1 + 1550 ) . LE . SQRT ( R8PREM ( ) ) ) THEN
-C
-              ZR ( LZR - 1 + 1550 ) = 1.D0
-C
-         ENDIF
 C
 C------- CONTRAINTES DE CAUCHY AUX POINTS DE GAUSS
 C

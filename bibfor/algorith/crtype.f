@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C                                          "EVOL_VARC"
 C                                          "EVOL_ELAS"
 C                                          "MULT_ELAS"
 C                                          "FOURIER_ELAS"
+C                                          "EVOL_CHAR"
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -184,13 +185,17 @@ C
             CALL GETVIS ('AFFE', 'NUME_MODE', IOCC,1,1, NUME, N0 )
             CALL RSADPA ( RESU,'E',1,'NUME_MODE',NUMINI,0,IAD,K8B)
             ZI(IAD) = NUME
-            CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
+            IF ( TYPRES .NE. 'EVOL_CHAR' ) THEN
+              CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
+            ENDIF
           ENDIF
           IF ( TYPRES .EQ. 'FOURIER_ELAS' ) THEN
             CALL GETVTX ( 'AFFE', 'TYPE_MODE', IOCC,1,1, TYPMOD, N0 )
             CALL RSADPA (RESU,'E',1,'TYPE_MODE',NUMINI,0,IAD,K8B)
             ZK8(IAD) = TYPMOD
-            CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
+            IF ( TYPRES .NE. 'EVOL_CHAR' ) THEN
+              CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
+            ENDIF
           ENDIF
           GOTO 100
         ENDIF
@@ -367,7 +372,9 @@ C           ----------------------------------
           CALL RSNOCH ( RESU, NSYMB, ICOMPT, ' ' )
           CALL RSADPA ( RESU,'E',1,'INST',ICOMPT,0,IAD,K8B)
           ZR(IAD) = TPS
-          CALL RSSEPA (RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)
+          IF ( TYPRES .NE. 'EVOL_CHAR' ) THEN
+            CALL RSSEPA (RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)
+          ENDIF
           IF (J.GE.2) CALL JEDEMA()
 
 3       CONTINUE

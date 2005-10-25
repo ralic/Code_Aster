@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,3 +79,4 @@ OPTION__
    OUT__
         PMATUUR  MDEP_R RESL__
         PMATUNS  MDNS_R RESL__
+        PCACO3D  CACO3D ELEM__  << NE SERT QUE POUR COQUE_3D >>

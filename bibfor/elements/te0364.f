@@ -1,7 +1,7 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,10 +19,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_20
+
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
-C.......................................................................
-
 
 C  CALCUL CALCUL DES MATRICES DE CONTACT ET DE FROTTEMENT
 C  DE COULOMB STANDARD  AVEC LA METHODE CONTINUE (ECP)
@@ -35,8 +34,8 @@ C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
 C  REMARQUE
 C
-C......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
+
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR 
@@ -67,7 +66,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8 GEOMM(3),GEOME(3),DEPLE(6),D1(3),D2(3),D3(3),D(3,3),M(3,3)
       REAL*8 DEPLM(6),RESE(3),F(3,3),MCH(56,56),MPR(56,56),MM1(3,3)
       REAL*8 DEPLME(6),NOOR,TT(3,3),GAUS,ORD,DT,ASP, JEU
-      REAL*8 JDEPP,JDEPM,GAMMA,BETA
+      REAL*8 JDEPP,JDEPM,GAMMA,BETA,JEUSUP
       REAL*8 DEPLMM(6)
       CHARACTER*8 ESC,MAIT
 
@@ -211,6 +210,17 @@ C*************************************************
         NDDL = 81
         NDIM = 3
         MAIT = 'QU9'
+        
+C ---- CONTACT POUTRE-POUTRE
+
+      ELSEIF (NOMTE .EQ. 'CFP2P2') THEN
+        ESC = 'SG2'
+        NNM = 2
+        NNE = 2
+        NDDL = 18
+        NDIM = 3
+        MAIT = 'SG2'
+        
       ELSE
         CALL UTMESS('F','TE0364', 'NOM DE L ELEMENT INCONNU')
       END IF
@@ -249,7 +259,9 @@ C  RECUPERATION DES DONNEES
       COEASP   = ZR(JPCF-1+29)
       CN       = ZR(JPCF-1+30) 
       BETA     = ZR(JPCF-1+31) 
-      GAMMA    = ZR(JPCF-1+32)     
+      GAMMA    = ZR(JPCF-1+32)
+      JEUSUP   = ZR(JPCF-1+33)
+      
       INDNOR   = 1
       IF (INDNOR.EQ.1) GOTO 99
 99    CONTINUE
@@ -309,17 +321,16 @@ C INITIALISATION DE LA MATRICE
 C   RECUPERATION DES COOR DE PC, JAC ET  FFE
 C   ----------------------------------------
 
-      CALL CALFFJ(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS)
+      CALL CALFFJ(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS,NDIM)
 
 C   FF DE LA MAILLE MAITRE AU VIS AVIS
 
       MGEOM = IGEOM + NNE*NDIM
 
-      CALL CALFFJ(MAIT,ERR,ESS,MGEOM,FFM,JACM,AXIS)
+      CALL CALFFJ(MAIT,ERR,ESS,MGEOM,FFM,JACM,AXIS,NDIM)
 
 C CALCUL DE LA NORMALE
 
-C        IF (INDNOR.EQ.0) THEN
          IF (NDIM.EQ.2) THEN
           NORM(1) =-TAU1(2)
           NORM(2) =TAU1(1)
@@ -327,16 +338,7 @@ C        IF (INDNOR.EQ.0) THEN
          ELSE IF (NDIM.EQ.3) THEN
           CALL PROVEC(TAU2,TAU1,NORM)
          END IF
-C        ELSE IF (INDNOR.EQ.1) THEN
-C          IF (NDIM.EQ.2) THEN
-C           NORM(1) =TAU1(2)
-C           NORM(2) =-TAU1(1)
-C           NORM(3) =0.D0
-C         ELSE IF (NDIM.EQ.3) THEN
-C           CALL PROVEC(TAU2,TAU1,NORM)
-C          END IF
-C        END IF
-        NOOR = 0.D0
+         NOOR = 0.D0
       DO 1 I=1,NDIM
         NOOR = NORM(I)*NORM(I)+NOOR
 1     CONTINUE
@@ -422,7 +424,7 @@ C  --- CONTACT
              
 C  EVALUTION DU JEU
 
-         JEU = 0.D0
+         JEU = JEUSUP
          JDEPP = 0.D0
          JDEPM = 0.D0
          
@@ -530,10 +532,9 @@ C   --------------------------------------------------------
   
          ELSE IF (INDCO .EQ. 0) THEN
 
-
 C  EVALUTION DU JEU
 
-         JEU = 0.D0
+         JEU = JEUSUP
          JDEPP = 0.D0
          JDEPM = 0.D0
          

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF COMPELEM  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -83,6 +83,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ CFQ8E3D
               MAILLE__ TRIA6     ELEMENT__ CFT6E3D
               MAILLE__ QUAD9     ELEMENT__ CFQ9E3D
+              MAILLE__ SEG2      ELEMENT__ CFP2E3D
 
        MODELISATION__ 'COQUE_3D'         DIM__ 2 3   CODE__ 'CQ3'
               MAILLE__ QUAD9     ELEMENT__ MEC3QU9H

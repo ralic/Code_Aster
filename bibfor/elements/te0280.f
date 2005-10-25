@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,10 +80,31 @@ C
       DPRES = .FALSE.
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+      CALL JEVECH ( 'PTHETAR', 'L', ITHET )
+      TCLA   = 0.D0
+      TSURF   = 0.D0
+      TSURP   = 0.D0
+      CALL JEVECH('PGTHETA','E',IGTHET)
+C
+C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
+C
+      COMPT = 0
+      EPSI  = 1.D-10
+      DO 20 I=1,NNO
+        THETX = ZR(ITHET + 3*(I - 1) + 1 - 1)
+        THETY = ZR(ITHET + 3*(I - 1) + 2 - 1)
+        THETZ = ZR(ITHET + 3*(I - 1) + 3 - 1)
+        IF((ABS(THETX).LT.EPSI).AND.(ABS(THETY).LT.EPSI).AND.
+     &     (ABS(THETZ).LT.EPSI)) THEN
+          COMPT = COMPT + 1
+        ENDIF
+20    CONTINUE
+      IF ( COMPT .EQ. NNO )  GOTO 9999
+C
+C RECUPERATION DES CHAMPS LOCAUX
 C
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
       CALL JEVECH ( 'PDEPLAR', 'L', IDEPL )
-      CALL JEVECH ( 'PTHETAR', 'L', ITHET )
       IF ( OPTION .EQ. 'CALC_G_F'.OR.OPTION .EQ. 'CALC_DG_E_F'  
      & .OR.OPTION.EQ.'CALC_DG_FORC_F') THEN
         FONC = .TRUE.
@@ -115,26 +136,6 @@ C
         DERIVE = .TRUE.
         CALL JEVECH('PDEPLSE','L',IDEPSE)
       ENDIF
-      CALL JEVECH('PGTHETA','E',IGTHET)
-C
-      TCLA   = 0.D0
-      TSURF   = 0.D0
-      TSURP   = 0.D0
-C
-C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
-C
-      COMPT = 0
-      EPSI  = 1.D-10
-      DO 20 I=1,NNO
-        THETX = ZR(ITHET + 3*(I - 1) + 1 - 1)
-        THETY = ZR(ITHET + 3*(I - 1) + 2 - 1)
-        THETZ = ZR(ITHET + 3*(I - 1) + 3 - 1)
-        IF((ABS(THETX).LT.EPSI).AND.(ABS(THETY).LT.EPSI).AND.
-     &     (ABS(THETZ).LT.EPSI)) THEN
-          COMPT = COMPT + 1
-        ENDIF
-20    CONTINUE
-      IF ( COMPT .EQ. NNO )  GOTO 9999
 C
 C - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
 C

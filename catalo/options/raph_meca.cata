@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,6 +30,7 @@ OPTION__
         PCACABL  CACABL
         PCAORIE  CAORIE
         PCACOQU  CACOQU
+        PCACO3D  CACO3D
         PCAGEPO  CAGEPO
         PTEREF   TEMP_R
         PINSTMR  INST_R

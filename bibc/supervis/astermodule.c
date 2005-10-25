@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 24/10/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -654,10 +654,6 @@ void TraiteMessageErreur( _IN char * message )
           abort();
         }
 }
-
-
-
-
 
 void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message )
 {
@@ -1546,46 +1542,45 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 }
 
 void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN char *param,_IN int lpara,_IN double *val,
-		               _OUT double *resu)
+                     _OUT double *resu)
 {
 
         PyObject *res  = (PyObject*)0 ;
         PyObject *tup_par;
         PyObject *tup_val;
-        char *nfon	= (char*)0 ;
-        char *npar	= (char*)0 ;
+        char *nfon   = (char*)0 ;
+        char *npar   = (char*)0 ;
         char *kvar;
         int i;
 
         _DEBUT(fiintf) ;
-        						DSCRUTE(*val); ISCRUTE(*nbpu) ;
+                        DSCRUTE(*val); ISCRUTE(*nbpu) ;
                                                         SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
                                                         FSSCRUTE(nomfon,lfon) ; FSSCRUTE(param,lpara) ;
-        						ASSERT(EstPret(motcle,lcle)!=0);
                                                         ASSERT(commande!=(PyObject*)0);
         tup_par = PyTuple_New( *nbpu ) ;
         tup_val = PyTuple_New( *nbpu ) ;
         for(i=0;i<*nbpu;i++){
-        			    OBSCRUTE(tup_par);
+                   OBSCRUTE(tup_par);
            kvar = param + i*lpara;
            PyTuple_SetItem( tup_par, i, PyString_FromStringAndSize(kvar,lpara) ) ;
         }
         for(i=0;i<*nbpu;i++){
-        			    OBSCRUTE(tup_val);
+                   OBSCRUTE(tup_val);
            PyTuple_SetItem( tup_val, i, PyFloat_FromDouble(val[i]) ) ;
         }
 
         res=PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
 
         if (res == NULL)MYABORT("erreur dans la partie Python");
-        					       OBSCRUTE(res);
+                            OBSCRUTE(res);
                                                        ASSERT(PyFloat_Check(res)) ;
 
         *resu=PyFloat_AsDouble(res);
 
         Py_DECREF(tup_par);
         Py_DECREF(tup_val);
-        Py_DECREF(res); 	       /*  decrement sur le refcount du retour */
+        Py_DECREF(res);           /*  decrement sur le refcount du retour */
         _FIN(fiintf) ;
         return ;
 }
@@ -2426,8 +2421,17 @@ PyObject *args;
 
 #define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
 void DEFSPPPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
-#define CALL_JELIBE(nomsd) CALLS(JELIBE,jelibe,nomsd)
-void DEFS(JELIBE,jelibe,char *,int);
+
+/* -------------------- appels aux routines JEVEUX -------------------- */
+#define CALL_JEMARQ() STDCALL(JEMARQ, jemarq)()
+void CALL_JEMARQ();
+
+#define CALL_JEDEMA() STDCALL(JEDEMA, jedema)()
+void CALL_JEDEMA();
+
+#define CALL_JEDETR(nom) CALLS(JEDETR, jedetr, nom)
+void DEFS(JEDETR, jedetr, char *, int);
+/* -------------------------------------------------------------------- */
 
 static char getvectjev_doc[]=
 "getvectjev(nomsd)->valsd      \n\
@@ -2458,6 +2462,7 @@ PyObject *args;
 
         try(1){
           iob=0 ;
+          CALL_JEMARQ();
                                    SSCRUTE(nomsd);
                                    ISCRUTE(iob);
                                    ISCRUTE(ishf);
@@ -2470,11 +2475,13 @@ PyObject *args;
           if(ctype < 0){
             /* Erreur */
             PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+            CALL_JEDEMA();
             _FIN(aster_getvectjev) ;
             return NULL;
           }
           else if(ctype == 0){
             Py_INCREF( Py_None ) ;
+            CALL_JEDEMA();
             _FIN(aster_getvectjev) ;
             return Py_None;
           }
@@ -2485,8 +2492,6 @@ PyObject *args;
             for(i=0;i<lcon;i++){
                PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 2){
             /* ENTIER */
@@ -2495,8 +2500,6 @@ PyObject *args;
             for(i=0;i<lcon;i++){
                PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 3){
             /* COMPLEXE */
@@ -2505,8 +2508,6 @@ PyObject *args;
             for(i=0;i<lcon;i++){
                PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 4){
             /* CHAINE K8 */
@@ -2516,8 +2517,6 @@ PyObject *args;
                kvar = iaddr + i*8;
                PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,8) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 5){
             /* CHAINE K16 */
@@ -2527,8 +2526,6 @@ PyObject *args;
                kvar = iaddr + i*16;
                PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,16) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 6){
             /* CHAINE K24 */
@@ -2538,8 +2535,6 @@ PyObject *args;
                kvar = iaddr + i*24;
                PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,24) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 7){
             /* CHAINE K32 */
@@ -2549,8 +2544,6 @@ PyObject *args;
                kvar = iaddr + i*32;
                PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,32) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
           else if(ctype == 8){
             /* CHAINE K80 */
@@ -2560,15 +2553,17 @@ PyObject *args;
                kvar = iaddr + i*80;
                PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,80) ) ;
             }
-            _FIN(aster_getvectjev) ;
-            return tup;
           }
                                    SSCRUTE(nomsd);
-          CALL_JELIBE(nomsd);
+          CALL_JEDETR("&&GETCON.PTEUR_NOM");
+          CALL_JEDEMA();
+          _FIN(aster_getvectjev) ;
+          return tup;
         }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          CALL_JEDEMA();
           _FIN(aster_getvectjev) ;
           return NULL;
         }
@@ -2576,8 +2571,6 @@ PyObject *args;
 
 #define CALL_TAILSD(nom, nomsd, val, nbval) CALLSSPP(TAILSD,tailsd,nom, nomsd, val, nbval)
 void DEFSSPP(TAILSD,tailsd,char *,int,char *,int,INTEGER *, INTEGER *);
-#define CALL_JELIBE(nomsd) CALLS(JELIBE,jelibe,nomsd)
-void DEFS(JELIBE,jelibe,char *,int);
 
 static char getcolljev_doc[]=
 "getcolljev(nomsd)->valsd      \n\
@@ -2611,6 +2604,7 @@ PyObject *args;
         val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
         nom = (char *)malloc(24*sizeof(char));
         strcpy(nom, "LIST_COLLECTION");
+        CALL_JEMARQ();
         CALL_TAILSD(nom, nomsd, val, &nbval);
         iob=val[0];
 
@@ -2721,14 +2715,16 @@ PyObject *args;
             }
             PyDict_SetItem(dico,key,tup);
           }
-          CALL_JELIBE(nomsd);
          }
-         return dico;
+         CALL_JEDETR("&&GETCON.PTEUR_NOM");
+         CALL_JEDEMA();
          _FIN(aster_getcolljev) ;
+         return dico;
        }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          CALL_JEDEMA();
           _FIN(aster_getcolljev) ;
           return NULL;
         }
@@ -2784,7 +2780,7 @@ PyObject *args;
                  convr8(nind,tupc,valc);
         }
         try(1){
-        
+          CALL_JEMARQ();
                                    SSCRUTE(nomsd);
                                    ISCRUTE(*nbind);
                                    TISCRUTE(nind,ind);
@@ -2793,7 +2789,8 @@ PyObject *args;
                                    ISCRUTE(*num);
           CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,&iret);
                                    ISCRUTE(iret);
-                                   
+          CALL_JEDEMA();
+          
           if(iret == 0){
             /* Erreur */
             PyErr_SetString(PyExc_KeyError, "Concept inexistant");
@@ -2806,8 +2803,6 @@ PyObject *args;
           free((char *)ind);                                                   
           free((char *)nbind);                           
           free((char *)num);                           
-                                   
-          CALL_JELIBE(nomsd);
         }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
@@ -2815,8 +2810,8 @@ PyObject *args;
           _FIN(aster_putvectjev) ;
           return NULL;
         }  
-        _FIN(aster_putvectjev) ;
         Py_INCREF( Py_None ) ;
+        _FIN(aster_putvectjev) ;
         return Py_None;
 }
 
@@ -2866,6 +2861,7 @@ PyObject *args;
                  convr8(nind,tupc,valc);
         }
         
+        CALL_JEMARQ();
                                    SSCRUTE(nomsd);
                                    ISCRUTE(*nbind);
                                    TISCRUTE(nind,ind);
@@ -2874,7 +2870,8 @@ PyObject *args;
                                    ISCRUTE(*num);
         CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,&iret);
                                    ISCRUTE(iret);
-                                   
+        CALL_JEDEMA();
+        
         if(iret == 0){
           /* Erreur */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
@@ -2888,8 +2885,8 @@ PyObject *args;
         free((char *)nbind);                           
         free((char *)num);                           
                                    
-        _FIN(aster_putcolljev) ;
         Py_INCREF( Py_None ) ;
+        _FIN(aster_putcolljev) ;
         return Py_None;
 }
 
@@ -2951,14 +2948,15 @@ PyObject *args;
 
    if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
 
-/* Identifiant de la SD resultat */	
+/* Identifiant de la SD resultat */ 
    nbval = 1;
    val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
    nom = (char *)malloc(24*sizeof(char));
    strcpy(nom, "LIST_RESULTAT");
 
 /* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */
-	CALL_TAILSD(nom, nomsd, val, &nbval);
+   CALL_JEMARQ();
+   CALL_TAILSD(nom, nomsd, val, &nbval);
    nbchmx = val[0];
    nbpamx = val[1];
    nbord  = val[2];
@@ -3069,7 +3067,8 @@ PyObject *args;
           free(rval);
           };
 
-        return dico;
+   CALL_JEDEMA();
+   return dico;
 
 }
 

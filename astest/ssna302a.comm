@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,6 +42,11 @@ MATER=AFFE_MATERIAU(   MAILLAGE=MAYA,
                                        MATER = ACIER)
                          )
 
+CAT=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
+                          _F(  JUSQU_A = 0.1,    NOMBRE = 1),
+                                     _F(  JUSQU_A = 1.,     NOMBRE = 5))
+                      )
+
 PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
                              PROL_DROITE='EXCLU',
                             PROL_GAUCHE='EXCLU',
@@ -49,16 +54,37 @@ PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
                                           1.,    222.72E6,   )
                         )
 
-PRES=AFFE_CHAR_MECA_F(      MODELE=MODEL,
-                             PRES_REP=_F(  GROUP_MA = 'FACE',
-                                        PRES = PRES_FO)
-                         )
+F0=DEFI_CONSTANTE(VALE=0.)
 
-CAT=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
-                          _F(  JUSQU_A = 0.1,    NOMBRE = 1),
-                                     _F(  JUSQU_A = 1.,     NOMBRE = 5))
-                      )
+gg=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_F',
+              MODELE=MODEL,
+              OPERATION='AFFE',
+              PROL_ZERO='OUI',
+              AFFE=(_F( TOUT = 'OUI',
+                        NOM_CMP  = 'PRES',
+                        VALE_F   = F0         ),
+                    _F( GROUP_MA = 'FACE',
+                        NOM_CMP  = 'PRES',
+                        VALE_F   = PRES_FO    ),),
+              ) ;
 
+evol_gg=CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='EVOL_CHAR',
+                  NOM_CHAM='PRES',
+                  AFFE=_F(CHAM_GD=gg,
+                          LIST_INST=CAT,
+                          MODELE=MODEL,
+                          CHAM_MATER=MATER,
+                          ) )
+
+PRES=AFFE_CHAR_MECA( MODELE=MODEL,
+                     EVOL_CHAR=evol_gg, );
+#
+#PRES=AFFE_CHAR_MECA_F(      MODELE=MODEL,
+#                             PRES_REP=_F(  GROUP_MA = 'FACE',
+#                                        PRES = PRES_FO)
+#                         )
+#
 CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
                               _F(  GROUP_NO = 'FIX_C1',
                                                DX = 0.),
@@ -470,29 +496,21 @@ CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
 CALCNL=STAT_NON_LINE( 
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_ELAS=_F( 
-                RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
-                         INCREMENT=_F( 
-                LIST_INST = CAT),
-                            NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50),EXCIT=(
-                             _F( 
-                CHARGE = PRES,
-                TYPE_CHARGE = 'SUIV'), _F( 
-                CHARGE = CONDLIM)),
-                     RECH_LINEAIRE=_F( 
-                ITER_LINE_MAXI = 3)
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                       DEFORMATION = 'GREEN'),
+                         INCREMENT=_F( LIST_INST = CAT),
+                            NEWTON=_F( MATRICE = 'TANGENTE',
+                                       REAC_ITER = 1),
+                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
+                                       ITER_GLOB_MAXI = 50),
+                             EXCIT=(_F( CHARGE = PRES,
+                                        TYPE_CHARGE = 'SUIV'),
+                                    _F( CHARGE = CONDLIM)),
+                     RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3)
               )
 
-CALCNL=CALC_ELEM( reuse=CALCNL,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CALCNL,
+CALCNL=CALC_ELEM( reuse=CALCNL, RESULTAT=CALCNL,
+                  OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
               )
 
 TEST_RESU(RESU=( 

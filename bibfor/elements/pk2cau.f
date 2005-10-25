@@ -1,5 +1,5 @@
       SUBROUTINE  PK2CAU(NOMTE,NCMP,PK2,SIGMA)
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,10 +149,6 @@ C     ---------------------
       NPGSN = ZI(LZI+4-1)
 C
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-C
-      IF (ZR(LZR+1550-1).LE.SQRT(R8PREM())) THEN
-        ZR(LZR+1550-1) = UN
-      ENDIF
 C
 C --- AFFECTATION DES VECTEURS DE TRANSLATION ET DE ROTATION :
 C     ------------------------------------------------------

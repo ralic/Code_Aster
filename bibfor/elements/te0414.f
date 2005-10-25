@@ -1,6 +1,8 @@
       SUBROUTINE TE0414 ( OPTIOZ , NOMTZ )
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*(*)   OPTIOZ , NOMTZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)   OPTIOZ , NOMTZ
-      CHARACTER*16    OPTION , NOMTE
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE : COQUE_3D
 C     ----------------------------------------------------------------
@@ -41,99 +40,97 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER    NB1, JCRET, CODRET
-      REAL*8     MATLOC(51,51),PLG(9,3,3)
+      INTEGER       NB1, JCRET, CODRET
+      REAL*8        MATLOC(51,51), PLG(9,3,3), COEF
+      LOGICAL       MATRIC
+      CHARACTER*16  OPTION , NOMTE
       CHARACTER*24  DESI , DESR
-      LOGICAL    MATRIC
-C DEB
+C ----------------------------------------------------------------------
 C
       OPTION = OPTIOZ
       NOMTE  = NOMTZ
 C
       CALL JEVEUO ('&INEL.'//NOMTE(1:8)//'.DESI', 'L' , LZI )
-      NB2  =ZI(LZI-1+2)
+      NB2 = ZI(LZI-1+2)
 C
-      MATRIC=((OPTION(1:9).EQ.'FULL_MECA').OR.(OPTION(1:10).EQ.
-     &                                       'RIGI_MECA_'))
+      MATRIC = ( OPTION(1:9) .EQ.'FULL_MECA'  .OR.
+     &           OPTION(1:10).EQ.'RIGI_MECA_' )
 C
-      CALL JEVECH ('PGEOMER' , 'L' , JGEOM)
-      CALL JEVECH ('PDEPLMR','L',IDEPLM)
-      CALL JEVECH ('PDEPLPR','L',IDEPLP)
+      CALL JEVECH ('PGEOMER', 'L', JGEOM )
+      CALL JEVECH ('PDEPLMR', 'L', IDEPLM)
+      CALL JEVECH ('PDEPLPR', 'L', IDEPLP)
+      CALL JEVECH ('PCOMPOR', 'L', ICOMPO)
 C
-      CALL JEVECH ('PCOMPOR','L',ICOMPO)
+      IF ( ZK16(ICOMPO+3)(1:9) .EQ. 'COMP_ELAS' ) THEN
+C          ------------------------------------
 C
-      IF (ZK16(ICOMPO+3) (1:9) . EQ . 'COMP_ELAS') THEN
-C
-C------- HYPER-ELASTICITE
+C ------ HYPER-ELASTICITE
 C
          IF ( ZK16 ( ICOMPO + 2 ) ( 1 : 8 ) . EQ . 'GREEN_GR' ) THEN
 C
-C----------- DEFORMATION DE GREEN 
+C --------- DEFORMATION DE GREEN 
 C
-             CALL VDGNLR ( OPTION , NOMTE ) 
+            CALL VDGNLR ( OPTION , NOMTE ) 
 C
-             GO TO 9999
+            GO TO 9999
 C
          ELSE
 C
-C----------- AUTRES MESURES DE DEFORMATIONS
+C --------- AUTRES MESURES DE DEFORMATIONS
 C
-        CALL UTMESS('F','TE0414',' DEFORMATION : '//ZK16(ICOMPO+2)// 
-     &' NON IMPLANTEE SUR LES ELEMENTS COQUE_3D EN GRANDES ROTATIONS.
-     &  DEFORMATION : GREEN_GR OBLIGATOIREMENT ' )
+           CALL UTMESS('F','TE0414',' DEFORMATION : '//ZK16(ICOMPO+2)// 
+     &   ' NON IMPLANTEE SUR LES ELEMENTS COQUE_3D EN GRANDES ROTATIONS.
+     &   DEFORMATION : GREEN_GR OBLIGATOIREMENT ' )
 C
          ENDIF
 C
-      ELSE IF (ZK16(ICOMPO+3) (1:9) . EQ . 'COMP_INCR') THEN
+      ELSEIF ( ZK16(ICOMPO+3)(1:9) .EQ. 'COMP_INCR' ) THEN
+C              ------------------------------------
 
-      IF( ZK16(ICOMPO+2)(1:8) .EQ. 'GREEN_GR') THEN 
+         IF ( ZK16(ICOMPO+2)(1:8) .EQ. 'GREEN_GR') THEN 
 C
-C------- HYPO-ELASTICITE
+C --------- HYPO-ELASTICITE
 C
+            CALL VDPNLR ( OPTION , NOMTE, CODRET ) 
+C
+            GO TO 9999
+C
+         ELSE IF( ZK16(ICOMPO+2)(6:10) .EQ. '_REAC') THEN
+C
+            CALL UTMESS('A','TE0414',' LA REACTUALISATION DE LA '//
+     +                  'GEOMETRIE (DEFORMATION : PETIT_REAC '//
+     +                  'SOUS LE MOT CLE COMP_INCR) EST '//
+     +                  'DECONSEILLEE POUR LES ELEMENTS DE COQUE_3D.')
+C
+            DO 90 I=1,NB2-1
+               I1=3*(I-1)
+               I2=6*(I-1)
+               ZR(JGEOM+I1)   = ZR(JGEOM+I1)  +ZR(IDEPLM+I2)  
+     &                                        +ZR(IDEPLP+I2)
+               ZR(JGEOM+I1+1) = ZR(JGEOM+I1+1)+ZR(IDEPLM+I2+1)
+     &                                        +ZR(IDEPLP+I2+1)
+               ZR(JGEOM+I1+2) = ZR(JGEOM+I1+2)+ZR(IDEPLM+I2+2)
+     &                                        +ZR(IDEPLP+I2+2)
+ 90         CONTINUE
+         ENDIF
+C
+         CALL VDXNLR (OPTION,NOMTE,ZR(JGEOM),MATLOC,NB1,CODRET)
 
-             CALL VDPNLR ( OPTION , NOMTE, CODRET ) 
-C
-             GO TO 9999
-C
-       ELSE IF( ZK16(ICOMPO+2)(6:10) .EQ. '_REAC') THEN
-C
-         CALL UTMESS('A','TE0414',' LA REACTUALISATION DE LA '//
-     +               'GEOMETRIE (DEFORMATION : PETIT_REAC '//
-     +               'SOUS LE MOT CLE COMP_INCR) '//
-     +               'EST DECONSEILLEE POUR LES ELEMENTS DE COQUE_3D.')
-C
-        DO 90 I=1,NB2-1
-          I1=3*(I-1)
-          I2=6*(I-1)
-          ZR(JGEOM+I1)   = ZR(JGEOM+I1)  +ZR(IDEPLM+I2)  
-     &                     +ZR(IDEPLP+I2)
-          ZR(JGEOM+I1+1) = ZR(JGEOM+I1+1)+ZR(IDEPLM+I2+1)
-     &                     +ZR(IDEPLP+I2+1)
-          ZR(JGEOM+I1+2) = ZR(JGEOM+I1+2)+ZR(IDEPLM+I2+2)
-     &                     +ZR(IDEPLP+I2+2)
- 90     CONTINUE
-      ENDIF
-C
-      CALL VDXNLR (OPTION,NOMTE,ZR(JGEOM),MATLOC,NB1,CODRET)
-
-           IF (MATRIC) THEN
-C
-C     CONSTRUCTION DE LA MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
-C
-            CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ', LZR )
-C
-            CALL MATPGL(NB2,ZR(LZR),PLG)
+         IF ( MATRIC ) THEN
 C
             CALL JEVECH ('PMATUUR' , 'E' , JMATR)
 C
-C     OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL
-C     ET STOCKAGE DANS ZR
+C --------- MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
 C
-            NDDLET=6*NB1+3
-            CALL TRANLG(NB1 , 51 , NDDLET , PLG , MATLOC , ZR(JMATR))
-           ENDIF
-C        CALL UTMESS ('F' , 'TE0414' , 'COMPORTEMENT:'//
-C    &                       ZK16(ICOMPO+2)//'NON IMPLANTE')
+            CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ', LZR )
+            CALL MATPGL ( NB2, ZR(LZR), PLG )
+C
+C --------- OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL
+C           ET STOCKAGE DANS ZR
+C
+            NDDLET = 6*NB1+3
+            CALL TRANLG ( NB1 , 51 , NDDLET , PLG , MATLOC , ZR(JMATR) )
+         ENDIF
 
       ENDIF
 C

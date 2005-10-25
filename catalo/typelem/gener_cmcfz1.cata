@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ MODE_LOCAL__
                                         X13      X14      X15      X16      X17      X18
                                         X19      X20      X21      X22      X23      X24
                                         X25      X26      X27      X28      X29      X30
-                                        X31      X32   )
+                                        X31      X32      X33)
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

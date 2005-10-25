@@ -1,7 +1,7 @@
       SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE,INST)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/09/2005   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,8 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER JNOMA,JTYMAI,NBNOT,JTYNMA,JTABF,IACNX1,ILCNX1,JCMCF
       INTEGER NUMA1,NUMA2,ITYMA1,ITYMA2
       INTEGER JNBNO,LONG,NBNO,JAD,ITYTE,ITYMA,NCMP
-      PARAMETER (NBTYP=29)
+      INTEGER JDIM,NDIM,JJSUP
+      PARAMETER (NBTYP=30)
 
       INTEGER COMPT(NBTYP)
       CHARACTER*2 CH2
@@ -127,10 +128,12 @@ C      ------------------------------------------------------
       NOMTE(28) = 'CFT3Q9'
       NOMTE(29) = 'CFQ9Q9'
 
+C ---- Contact Poutre-Poutre
+
+      NOMTE(30) = 'CFP2P2'
 
 C     2.CREATION DU LIGREL :
 C      --------------------
-
 
 C     2.1 CREATION DE .NOMA :
 C     ----------------------
@@ -143,16 +146,18 @@ C     ----------------------
 
 C     2.2. ON COMPTE DES CHOSES ET ON CREE .TYPNEMA :
 C      ------------------------------------------------
-      DO 10,K = 1,29
+      DO 10,K = 1,NBTYP
         COMPT(K) = 0
    10 CONTINUE
 
+      CALL JEVEUO(SD1(1:16)//'.JSUPCO','L',JJSUP)
+      CALL JEVEUO(SD1(1:16)//'.NDIMCO','L',JDIM)
       CALL JEVEUO(SD1(1:16)//'.TABFIN','L',JTABF)
       CALL JEVEUO(SD1(1:16)//'.CARACF','L',JCMCF)
       CALL JEVEUO(SD1(1:16)//'.ECPDON','L',JECPD)
       CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYMAI)
       NBPC = NINT(ZR(JTABF-1+1))
-
+      NDIM=ZI(JDIM)
 
       CALL WKVECT('&&FRAPP2.TYPNEMA','V V I',2*NBPC,JTYNMA)
 C          : 2 ENTIERS PAR NOUVELLE MAILLE :
@@ -166,8 +171,6 @@ C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
         ITYMA1 = ZI(JTYMAI-1+NUMA1)
         ITYMA2 = ZI(JTYMAI-1+NUMA2)
 
-
-
         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYMA1),NTYMA1)
         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYMA2),NTYMA2)         
         IF ((NTYMA1.EQ.'SEG2') .AND. (NTYMA2.EQ.'SEG2')) THEN
@@ -176,7 +179,11 @@ C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 4
             NBNOT = NBNOT + 0
-            COMPT(1) = COMPT(1) + 1
+            IF (NDIM.EQ.2) THEN
+              COMPT(1) = COMPT(1) + 1
+            ELSEIF (NDIM.EQ.3) THEN
+              COMPT(30) = COMPT(30) + 1
+            ENDIF
          
         ELSE IF ((NTYMA1.EQ.'SEG3') .AND. (NTYMA2.EQ.'SEG3')) THEN
 
@@ -249,7 +256,6 @@ C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
             ZI(JTYNMA-1+2* (IPC-1)+2) = 12
             NBNOT = NBNOT + 0
             COMPT(10) = COMPT(10) + 1
-          
 
         ELSE IF ((NTYMA1.EQ.'QUAD8') .AND. (NTYMA2.EQ.'QUAD4')) THEN
 
@@ -453,7 +459,8 @@ C     'CFT3Q9'
       LONG = LONG + COMPT(28)* (12+1)
 C     'CFQ9Q9'
       LONG = LONG + COMPT(29)* (18+1)
-C 
+C     'CFP2P2'   :
+      LONG = LONG + COMPT(30)*(4+1)
 C 
 
 
@@ -625,6 +632,14 @@ C      --------------------
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ9Q9'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9QU9'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
+          
+C ---- Element de Poutre
+
+        ELSEIF (NOMTE(K) .EQ. 'CFP2P2') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFP2P2'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG22'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+          
         ELSE
           CALL JXABOR()
         END IF
@@ -646,7 +661,7 @@ C      -------------------------
       CALL JEVEUO(CARTE//'.NCMP','E',JNCMP)
       CALL JEVEUO(CARTE//'.VALV','E',JVALV)
 
-      NCMP = 32
+      NCMP = 33
       DO 100,K = 1,NCMP
         CALL CODENT(K,'G',CH2)
         ZK8(JNCMP-1+K) = 'X'//CH2
@@ -684,7 +699,8 @@ C      -------------------------
         ZR(JVALV-1+29) = ZR(JCMCF+10* (IZONE-1)+9)
         ZR(JVALV-1+30) = ZR(JCMCF+10* (IZONE-1)+10) 
         ZR(JVALV-1+31) = INST(4) 
-        ZR(JVALV-1+32) = INST(5) 
+        ZR(JVALV-1+32) = INST(5)
+        ZR(JVALV-1+33) = ZR(JJSUP+IZONE-1)
             
         CALL NOCART(CARTE,-3,KBID,'NUM',1,KBID,-IPC,LIGREL,NCMP)
 
