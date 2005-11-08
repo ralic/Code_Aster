@@ -1,4 +1,4 @@
-#@ MODIF codex Build  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF codex Build  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,12 +60,12 @@ def opsexe(cmd,icmd,ipass,op):
    ops[op](cmd)
    return 0
 
-def oper(cmd,lot,ipass,icmd):
+def oper(cmd,jxvrf,ipass,icmd):
    """
       Fonction d'execution de l'operateur d'un operateur ou d'une
       procedure
    """
-   print "codex.oper : ",cmd.nom,icmd,ipass,lot
+   print "codex.oper : ",cmd.nom,icmd,ipass,jxvrf
 
 def debut(cmd,lot):
    """

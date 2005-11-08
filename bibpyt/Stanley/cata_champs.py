@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF cata_champs Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,11 +23,20 @@
 
 from Cata.cata import *
 
+try:
+   from Utilitai.Utmess import UTMESS
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+
+
+# ----------------------------------------------------------------------
 
 class CHAMP :
 
   '''Informations sur les champs'''
-   
+
 
   def Calc_no(champ, contexte, numeros) :
 
@@ -38,14 +47,21 @@ class CHAMP :
       'CHAM_MATER' : contexte.cham_mater,
       'NUME_ORDRE' : tuple(numeros)
       }
-    
+
     if contexte.cara_elem :
       para['CARA_ELEM'] = contexte.cara_elem
 
     if champ.nom in ['FORC_NODA','REAC_NODA'] :  # une specificite a disparaitre
       para['MODELE'] = contexte.modele
-  
-    apply(CALC_NO,(),para)
+
+    try:
+      apply(CALC_NO,(),para)
+    except aster.error,err:
+      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+    except aster.FatalError,err:
+      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+    except Exception,err:
+      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
 
 
   def Calc_elem(champ, contexte, numeros) :
@@ -58,11 +74,18 @@ class CHAMP :
       'CHAM_MATER' : contexte.cham_mater,
       'NUME_ORDRE' : tuple(numeros)
       }
-    
+
     if contexte.cara_elem :
       para['CARA_ELEM'] = contexte.cara_elem
   
-    apply(CALC_ELEM,(),para)
+    try:
+      apply(CALC_ELEM,(),para)
+    except aster.error,err:
+      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+    except aster.FatalError,err:
+      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+    except Exception,err:
+      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
 
 
   def __init__(self, nom_cham, type_cham, heredite, comment, fonc) :
@@ -83,13 +106,11 @@ class CHAMP :
         
 
   def Evalue(self, contexte, numeros) :
-  
     self.fonc(self, contexte, numeros)
     
 
         
 # ----------------------------------------------------------------------
-
 
 class CATA_CHAMPS :
 
@@ -97,7 +118,7 @@ class CATA_CHAMPS :
   
   
   def __init__(self) :
-  
+
     self.cata = {}
     self('DEPL'          , 'NOEU',[],                            "Deplacements aux noeuds")
     self('TEMP'          , 'NOEU',[],                            "Temperature aux noeuds")
@@ -110,7 +131,7 @@ class CATA_CHAMPS :
     self('VARI_ELNO_ELGA', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
     self('VARI_NOEU_ELGA', 'NOEU',['VARI_ELNO_ELGA'],            "Variables internes aux noeuds")
     self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],                 "Invariants des contraintes aux points de Gauss")
-    self('EQUI_ELNO_SIGM', 'ELNO',['SIEF_ELNO_ELGA'],            "Invariants des contraintes aux noeuds par element")
+    self('EQUI_ELNO_SIGM', 'ELNO',['SIEF_ELNO_ELGA', 'SIGM_ELNO_COQU'], "Invariants des contraintes aux noeuds par element")
     self('EQUI_NOEU_SIGM', 'NOEU',['EQUI_ELNO_SIGM'],            "Invariants des contraintes aux noeuds")
     self('EPSI_ELGA_DEPL', 'ELGA',['DEPL'],                      "Deformations aux points de Gauss")
     self('EPSI_ELNO_DEPL', 'ELNO',['DEPL'],                      "Deformations aux noeuds par elements")
@@ -126,22 +147,62 @@ class CATA_CHAMPS :
     self('ERRE_ELNO_ELGA', 'ELNO',['ERRE_ELGA_NORE'],            "Indicateurs d'erreur en residu aux noeuds par element")
     self('ERTH_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
     self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
- 
-     
+    self('VALE_CONT'     , 'NOEU',[],                            "Informations sur l'etat de contact")
+
+# dyn
+    self('VITE'          , 'NOEU',[],                            "Vitesses aux noeuds")
+    self('ACCE'          , 'NOEU',[],                            "Accélérations aux noeuds")
+#    self('ECIN_ELEM_DEPL', 'ELEM',[],                            "Accélérations aux noeuds")
+
+
+# lineaire
+    # contraintes
+    self('SIGM_ELNO_DEPL', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element en lineaire")
+    self('SIPO_ELNO_DEPL', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element pour les elements Poutres")
+    self('SIGM_ELNO_TUYO', 'ELNO',[],                            "")
+    # efforts
+    self('EFGE_ELNO_DEPL', 'ELNO',['DEPL'],                      "Efforts generalises aux noeuds par element")
+    # déformations
+    self('DEGE_ELNO_DEPL', 'ELNO',[],                            "")
+
+
+# non lineaire
+    self('SIGM_ELNO_COQU', 'ELNO',['SIEF_ELGA', 'SIEF_ELGA_DEPL'], "Contraintes aux noeuds par element pour les elements Coques")
+    self('VARI_ELNO_COQU', 'ELNO',['VARI_ELGA'],                   "Variables internes aux noeuds par element pour les elements Coques")
+
+    self('EPSP_ELNO',      'ELNO',['SIEF_ELGA', 'DEPL'],         "")
+    self('EPSP_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "")
+    self('ETOT_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "")
+    self('ETOT_ELNO_ELGA', 'ELNO',['SIEF_ELGA', 'DEPL'],         "")
+
+
+
   def __getitem__(self, nom_cham) :
-       
     return self.cata[nom_cham]
-  
-  
-  def __call__(self,nom_cham,type_cham,heredite, comment, fonc = None) :
-      
+
+
+  def __call__(self, nom_cham, type_cham, heredite, comment, fonc = None) :
     self.cata[nom_cham] = CHAMP(nom_cham, type_cham, heredite, comment, fonc)
-  
-  
-  def Champs_presents(self) :
-    
+
+
+  def Champs_presents(self, type_resu='evol_noli') :
+#    return self.cata.keys()
+
     return self.cata.keys()
 
+
+  def Ajoute_Champs(self, champ, typech='NOEU'):
+
+    try:
+      typech = champ.strip('_')[1]
+      if typech in ['ELNO', 'ELGA', 'NOEU', 'ELEM']: typech = [ typech ]
+      else: typech = None
+    except:
+      typech = None
+
+    if typech:
+#      print 'Ajout de :', champ
+      self(champ     , typech,[], "")
 
 
 

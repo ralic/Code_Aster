@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ MODE_LOCAL__
     CCDTAU   = PILO_R   ELEM__         (A0       )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN     SITX     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIGN     SITX     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
@@ -95,6 +96,7 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELNO_ELGA      122   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
+                                     ECONTNC  PSIEFNOC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VARI_ELNO_ELGA      122   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR

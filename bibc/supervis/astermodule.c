@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 24/10/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -300,6 +300,7 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #define TAB fflush(stdout);fprintf( stderr, "\t" );ICI
 #define RES fflush(stdout);fprintf( stderr, "\t RESULTAT >> " );ICI
 #define ISCRUTE(entier) TAB ; fprintf(stderr,"%s = %ld\n",#entier,(INTEGER)entier) ; fflush(stderr);
+#define PSCRUTE(pointeur) TAB ; fprintf(stderr,"%s = %p\n",#pointeur,(void*)pointeur) ; fflush(stderr);
 #define TISCRUTE(n,entier) TAB ; fprintf(stderr,"%s = %ld",#n,(INTEGER)n) ; \
                            if(n>0) fprintf(stderr,", %s[0] = %ld",#entier,(INTEGER)entier[0]) ; \
                            fprintf(stderr,"\n");fflush(stderr);
@@ -321,6 +322,7 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #define RES
 #define MESSAGE(chaine)
 #define ISCRUTE(entier)
+#define PSCRUTE(pointeur)
 #define TISCRUTE(n,entier)
 #define DSCRUTE(reel)
 #define TDSCRUTE(n,reel)
@@ -361,10 +363,8 @@ void TraiteMessageErreur( _IN char* ) ;
 void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message ) ;
 #define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
-PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval) ;
 
 
-char * fstring2c( _IN char *s, _IN int l) ;
 char * fstr1( _IN char *s, _IN int l) ;
 char * fstr2( _IN char *s, _IN int l) ;
 char * fstr3( _IN char *s, _IN int l) ;
@@ -376,6 +376,12 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement ) ;
 
 void TraitementFinAster( _IN int val ) ;
 
+PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval);
+PyObject * MakeListString( long nbval,char *kval,int lkval );
+PyObject * MakeTupleInt(long nbval,long* kval);
+PyObject * MakeListInt(long nbval,long* kval);
+PyObject * MakeTupleFloat(long nbval,double* kval);
+PyObject * MakeListFloat(long nbval,double* kval);
 
 
 /*}*/
@@ -745,27 +751,6 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 }
 
 
-
-
-char * fstring2c( _IN char *s, _IN int l)
-{
-        char *fs;
-                                                        ASSERT(EstPret(s,l)!=0);
-        fs=(char *)malloc(l+1);
-        if(fs == NULL){
-                MYABORT("impossible d allouer de la memoire");
-        }
-        strncpy(fs, s, l );
-        fs[l]='\0';
-        return fs;
-}
-
-
-
-
-
-
-
 char * fstr1( _IN char *s, _IN int l)
 {
         /*
@@ -1095,6 +1080,7 @@ void DEFP(INIRAN,iniran,_IN INTEGER *jump)
                                                            ISCRUTE(*jump);
         res=PyObject_CallMethod(commande,"iniran","i",*jump);
                                                            ISCRUTE(*jump);
+        Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(iniran) ;
         return ;
 }
@@ -1987,149 +1973,234 @@ long FindLength( _IN char *chaineFortran , _IN INTEGER longueur )
 
 PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval)
 {
-        /*
-                  Entrees:
-                    nbval nombre de chaines dans kval
-                    kval  tableau de nbval chaines FORTRAN
-                    lkval longueur des chaines FORTRAN (compilateur)
-                    lval  longueur des nbval chaines FORTRAN (utilisateur)
-                  Sorties:
-                    RETOUR fonction : tuple de string Python de longueur nbval
-                  Fonction:
-                    Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
-        */
-        int i;
-        char *deb=kval;
-        if(nbval == 1){
-                return PyString_FromStringAndSize(deb,FindLength(deb,*lval));
-        }
-        else{
-                PyObject *t=PyTuple_New(nbval);
-                for(i=0;i<nbval;i++){
-                        if(PyTuple_SetItem(t,i,PyString_FromStringAndSize(deb,FindLength(deb,lval[i]))))return NULL;
-                        deb=deb+lkval;
-                }
-                return t;
-        }
+   /*
+            Entrees:
+               nbval nombre de chaines dans kval
+               kval  tableau de nbval chaines FORTRAN
+               lkval longueur des chaines FORTRAN (compilateur)
+               lval  longueur des nbval chaines FORTRAN (utilisateur)
+            Sorties:
+               RETOUR fonction : tuple de string Python de longueur nbval
+            Fonction:
+               Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
+   */
+   int i, len;
+   char *deb=kval;
+   if(nbval == 1){
+      if (lval) {
+         len = lval[0];
+      } else {
+         len = lkval;
+      }     
+      return PyString_FromStringAndSize(deb, FindLength(deb,len));
+   }
+   else{
+      PyObject *t=PyTuple_New(nbval);
+      for(i=0;i<nbval;i++){
+         if (lval) {
+            len = lval[i];
+         } else {
+            len = lkval;
+         }
+         if( PyTuple_SetItem(t,i,PyString_FromStringAndSize(deb,FindLength(deb,len)))) {
+            Py_DECREF(t);
+            return NULL;
+         }
+         deb=deb+lkval;
+      }
+      return t;
+   }
 }
 
+PyObject * MakeListString( long nbval,char *kval,int lkval )
+{
+   /*
+            Entrees:
+               nbval nombre de chaines dans kval
+               kval  tableau de nbval chaines FORTRAN
+               lkval longueur des chaines FORTRAN (compilateur)
+            Sorties:
+               RETOUR fonction : tuple de string Python de longueur nbval les espaces terminant la
+               chaine sont supprimes
+            Fonction:
+               Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
+   */
+   int i;
+   char *deb=kval;
+   PyObject *l=PyList_New(nbval);
+   for(i=0;i<nbval;i++){
+      if( PyList_SetItem(l,i,PyString_FromStringAndSize(deb,FindLength(deb,lkval)))) {
+         Py_DECREF(l);
+         return NULL;
+      }
+      deb=deb+lkval;
+   }
+   return l;
+}
 
 
 PyObject * MakeTupleInt(long nbval,long* kval)
 {
-        /*
-                  Entrees:
-                    nbval nombre d'entiers dans kval
-                    kval  tableau de nbval long FORTRAN
-                  Sorties:
-                    RETOUR fonction : tuple de int Python de longueur nbval
-                  Fonction:
-                    Convertir un tableau de long FORTRAN en un tuple de int Python de meme longueur
-        */
-        int i;
-        if(nbval == 1){
-                return PyInt_FromLong(*kval);
-        }
-        else{
-                PyObject * t=PyTuple_New(nbval);
-                for(i=0;i<nbval;i++){
-                        if(PyTuple_SetItem(t,i,PyInt_FromLong(kval[i])))return NULL;
-                }
-                return t;
-        }
+   /*
+            Entrees:
+               nbval nombre d'entiers dans kval
+               kval  tableau de nbval long FORTRAN
+            Sorties:
+               RETOUR fonction : tuple de int Python de longueur nbval
+            Fonction:
+               Convertir un tableau de long FORTRAN en un tuple de int Python de meme longueur
+   */
+   int i;
+   if(nbval == 1){
+      return PyInt_FromLong(*kval);
+   }
+   else{
+      PyObject * t=PyTuple_New(nbval);
+      for(i=0;i<nbval;i++){
+         if(PyTuple_SetItem(t,i,PyInt_FromLong(kval[i]))) {
+         Py_DECREF(t);
+         return NULL;
+         }
+      }
+      return t;
+   }
 }
+
+PyObject * MakeListInt(long nbval,long* kval)
+{
+   /*
+            Entrees:
+               nbval nombre d'entiers dans kval
+               kval  tableau de nbval long FORTRAN
+            Sorties:
+               RETOUR fonction : liste de int Python de longueur nbval
+            Fonction:
+               Convertir un tableau de long FORTRAN en une liste de int Python de meme longueur
+   */
+   int i;
+   PyObject *l=PyList_New(nbval);
+   for(i=0;i<nbval;i++){
+      if (PyList_SetItem(l,i,PyInt_FromLong(kval[i]))) {
+         Py_DECREF(l);
+         return NULL;
+      }
+   }
+   return l;
+}
+
+
 
 PyObject * MakeTupleFloat(long nbval,double * kval)
 {
-        /*
-                  Entrees:
-                    nbval nombre de reels dans kval
-                    kval  tableau de nbval double FORTRAN
-                  Sorties:
-                    RETOUR fonction : tuple de float Python de longueur nbval
-                  Fonction:
-                    Convertir un tableau de double FORTRAN en un tuple de float Python de meme longueur
-        */
-        int i;
-        if(nbval == 1){
-                return PyFloat_FromDouble(*kval);
-        }
-        else{
-                PyObject * t=PyTuple_New(nbval);
-                for(i=0;i<nbval;i++){
-                        if(PyTuple_SetItem(t,i,PyFloat_FromDouble(kval[i])))return NULL;
-                }
-                return t;
-        }
-}
-
-
-#if defined HPUX
-void putvir (_IN INTEGER *ival)
-#elif defined PPRO_NT
-void __stdcall PUTVIR (_IN INTEGER *ival)
-#else
-void putvir_(_IN INTEGER *ival)
-#endif
-{
-        /*
+   /*
             Entrees:
-              ival entier à affecter
+               nbval nombre de reels dans kval
+               kval  tableau de nbval double FORTRAN
+            Sorties:
+               RETOUR fonction : tuple de float Python de longueur nbval
             Fonction:
-              renseigner l'attribut valeur associé à la sd
-              n'est utile que pour DEFI_FICHIER
-              cet attribut est ensuite évalué par la méthode traite_value
-              de B_ETAPE.py
-        */
-        PyObject *res = (PyObject*)0 ;
-        _DEBUT("putvir_") ;{
-        ISCRUTE(*ival) ;
+               Convertir un tableau de double FORTRAN en un tuple de float Python de meme longueur
+   */
+   int i;
+   if(nbval == 1){
+      return PyFloat_FromDouble(*kval);
+   }
+   else{
+      PyObject * t=PyTuple_New(nbval);
+      for(i=0;i<nbval;i++){
+         if(PyTuple_SetItem(t,i,PyFloat_FromDouble(kval[i]))) {
+            Py_DECREF(t);
+            return NULL;
+         }
+      }
+      return t;
+   }
+}
 
-        res = PyObject_CallMethod(commande,"putvir","i",*ival);
-        /*
-                    Si le retour est NULL : une exception a ete levee dans le code Python appele
-                    Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-                    On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-                MYABORT("erreur a l appel de putvir dans la partie Python");
-
-        }_FIN("putvir_") ;
+PyObject * MakeListFloat(long nbval,double * kval)
+{
+   /*
+            Entrees:
+               nbval nombre de reels dans kval
+               kval  tableau de nbval double FORTRAN
+            Sorties:
+               RETOUR fonction : list de float Python de longueur nbval
+            Fonction:
+               Convertir un tableau de double FORTRAN en une liste de float Python de meme longueur
+   */
+   int i;
+   PyObject *l=PyTuple_New(nbval);
+   for(i=0;i<nbval;i++){
+      if(PyList_SetItem(l,i,PyFloat_FromDouble(kval[i]))) {
+         Py_DECREF(l);
+         return NULL;
+      }
+   }
+   return l;
 }
 
 
 
-void DEFPSSP(GCUCON,gcucon,INTEGER *icmd, char *resul, int lresul, char *concep, int lconcep, INTEGER *ier)
+void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
 {
-        /*
-                  Entrees:
-                    icmd    numero de la commande
-                    resul   nom du concept
-                    concep type du concept
-                  Sorties :
-                    ier     >0 le concept existe avant
-                            =0 le concept n'existe pas avant
-                            <0 le concept existe avant mais n'est pas du bon type
-                  Fonction:
-                    Verification de l existence du couple (resul,concep) dans les
-                    resultats produits par les etapes precedentes
-        */
-        PyObject * res = (PyObject*)0 ;
-        _DEBUT("gcucon_") ;
-                                                                                    ASSERT(lresul) ;
-                                                                                    ASSERT(lconcep) ;
-        res = PyObject_CallMethod(commande,"gcucon","ls#s#",*icmd,resul,lresul,concep,lconcep);
-        /*
-                    Si le retour est NULL : une exception a ete levee dans le code Python appele
-                    Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-                    On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-                MYABORT("erreur a l appel de gcucon dans la partie Python");
+   /*
+      Entrees:
+         ival entier à affecter
+      Fonction:
+         renseigner l'attribut valeur associé à la sd
+         n'est utile que pour DEFI_FICHIER
+         cet attribut est ensuite évalué par la méthode traite_value
+         de B_ETAPE.py
+   */
+   PyObject *res = (PyObject*)0 ;
+   _DEBUT("putvir_") ;
+   ISCRUTE(*ival) ;
+   
+   res = PyObject_CallMethod(commande,"putvir","i",*ival);
+   /*
+         Si le retour est NULL : une exception a ete levee dans le code Python appele
+         Cette exception est a transferer normalement a l appelant mais FORTRAN ???
+         On produit donc un abort en ecrivant des messages sur la stdout
+   */
+   if (res == NULL)
+      MYABORT("erreur a l appel de putvir dans la partie Python");
+   
+   Py_DECREF(res);
+   _FIN("putvir_") ;
+}
 
-        *ier = PyInt_AsLong(res);
-        Py_DECREF(res);
-        _FIN("gcucon_") ;
+
+
+void DEFSSP(GCUCON,gcucon, char *resul, int lresul, char *concep, int lconcep, INTEGER *ier)
+{
+   /*
+            Entrees:
+               resul   nom du concept
+               concep type du concept
+            Sorties :
+               ier     >0 le concept existe avant
+                        =0 le concept n'existe pas avant
+                        <0 le concept existe avant mais n'est pas du bon type
+            Fonction:
+               Verification de l existence du couple (resul,concep) dans les
+               resultats produits par les etapes precedentes
+   */
+   PyObject * res = (PyObject*)0 ;
+   _DEBUT("gcucon_") ;
+                                                                              ASSERT(lresul) ;
+                                                                              ASSERT(lconcep) ;
+   res = PyObject_CallMethod(commande,"gcucon","s#s#",resul,lresul,concep,lconcep);
+   /*
+               Si le retour est NULL : une exception a ete levee dans le code Python appele
+               Cette exception est a transferer normalement a l appelant mais FORTRAN ???
+               On produit donc un abort en ecrivant des messages sur la stdout
+   */
+   if (res == NULL)
+            MYABORT("erreur a l appel de gcucon dans la partie Python");
+   
+   *ier = PyInt_AsLong(res);
+   Py_DECREF(res);
+   _FIN("gcucon_") ;
 }
 
 
@@ -2833,8 +2904,8 @@ PyObject *args;
         double *valr;
         double *valc;
         INTEGER *ind;
-        INTEGER *num;
-        INTEGER *nbind;
+        INTEGER num;
+        INTEGER nbind;
         unsigned int nind  = 0 ;
         int ok        = 0 ;
         INTEGER iret=0;
@@ -2842,14 +2913,12 @@ PyObject *args;
 
         _DEBUT(aster_putcolljev) ;
         
-        nbind = (INTEGER *)malloc((1)*sizeof(INTEGER));
-        num = (INTEGER *)malloc((1)*sizeof(INTEGER));
 
-        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,nbind,&tupi,&tupr,&tupc,num);
+        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
 /*        PyObject_Print(args, stdout, 0);*/
                 
-        nind = (unsigned int)(*nbind);
+        nind = (unsigned int)(nbind);
 
         ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
         valr = (double *)malloc((nind)*sizeof(double));
@@ -2882,8 +2951,6 @@ PyObject *args;
         free((char *)valc);                           
         free((char *)valr);                           
         free((char *)ind);                                                   
-        free((char *)nbind);                           
-        free((char *)num);                           
                                    
         Py_INCREF( Py_None ) ;
         _FIN(aster_putcolljev) ;
@@ -3081,14 +3148,14 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         PyObject *temp;
-        INTEGER lot=1 ; /* FORTRAN_TRUE */
+        INTEGER jxvrf=1 ; /* FORTRAN_TRUE */
         INTEGER iertot=0 ;
         INTEGER icmd=0 ;
         INTEGER ipass=0 ;
 
         _DEBUT(aster_oper) ;
 
-        if (!PyArg_ParseTuple(args, "Olll",&temp,&lot,&ipass,&icmd)) return NULL;
+        if (!PyArg_ParseTuple(args, "Olll",&temp,&jxvrf,&ipass,&icmd)) return NULL;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
@@ -3107,7 +3174,7 @@ PyObject *args;
         try(1){
 
                 /*  appel du sous programme expass pour verif ou exec */
-                CALL_EXPASS (&lot,&ipass,&icmd,&iertot);
+                CALL_EXPASS (&jxvrf,&ipass,&icmd,&iertot);
 
                 /* On depile l appel */
                 commande = depile();
@@ -3609,7 +3676,7 @@ PyObject *args;
           /*  retour de la fonction poursu sous la forme
            *  d'un tuple de trois entiers et un objet */
           _FIN(aster_poursu) ;
-          return Py_BuildValue("(iiiO)",lot ,ier,lonuti,concepts );
+          return Py_BuildValue("(iiiN)",lot ,ier,lonuti,concepts );
         }
 }
 
@@ -3938,19 +4005,16 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
         taille = ( *base ) ? strlen( *base ) : 0 ;
 
         ajout = ( supplement ) ? strlen( supplement ) : 0 ;
-
+   total = taille + ajout + 1 /* caractere de fin de chaine */; 
+   
         if ( ajout > 0 ){
                 if ( taille > 0 ){
-                        total = taille + ajout ;
-                        total += 1 ; /* caractere de fin de chaine */
                         resultat = (char*)(malloc(total)) ;
                         ASSERT(resultat!=NULL) ;
                         strcpy(resultat,*base) ;
                         strcat(resultat,supplement) ;
                 }
                 else{
-                        total = ajout ;
-                        total += 1 ; /* caractere de fin de chaine */
                         resultat = (char*)(malloc(total)) ;
                         ASSERT(resultat!=NULL) ;
                         strcpy(resultat,supplement) ;
@@ -3958,8 +4022,6 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
         }
         else{
                 if ( taille > 0 ){
-                        total = taille  ;
-                        total += 1 ; /* caractere de fin de chaine */
                         resultat = (char*)(malloc(total)) ;
                         strcpy(resultat,*base) ;
                 }
@@ -4012,71 +4074,4 @@ void DEFP(GETCMC,getcmc,INTEGER *icmc)
                                                                                    ISCRUTE(*icmc) ;
         Py_DECREF(res);
         _FIN("getcmc_") ;
-}
-
-
-#define CALL_GETRES(a,la,b,lb,c,lc) FCALLSSS(GETRES,getres,a,la,b,lb,c,lc)
-#define CALL_GCUCON(a,b,lb,c,lc,d) FCALLPSSP(GCUCON,gcucon,a,b,lb,c,lc,d)
-#define CALL_GETCMC(a) CALLP(GETCMC,getcmc,a)
-
-
-void DEFSSSSP(GETCMD,getcmd,_OUT char *nomres,int lres,_OUT char *concep,int lconc, _OUT char *nomcmd,
-                       int lcmd,_OUT char *statu,int lstat, _OUT INTEGER *inum)
-{
-        /*
-          Procedure GETCMD : emule la procedure equivalente ASTER
-          Retourne des infos sur la commande courante
-
-          Entrees : RAS
-
-          Sorties :
-            le nom du concept produit                 : nomres (string)
-            le type du concept produit                : concep (string)
-            le nom de la commande en cours            : nomcmd (string)
-            le statut du concept produit              : statu (string)
-                                   'NOUVEAU' : concept produit nouveau
-                                   'MODIFIE' : concept produit modifie
-                                   'ERRONE'  : concept produit existe mais pas du bon type
-            le numero d'ordre de la commande courante : inum
-          Fonction:
-            Retourne le numero de la commande courante, le nom de la commande
-                le nom du concept produit, son type, le statut du concept
-
-          Commentaires:
-            Dans l'ancienne version, "statu" qualifiait la donnee dans la memoire JEVEUX !
-        */
-
-        int k=0 ;
-        INTEGER ier ;
-
-        _DEBUT("getcmd_") ;
-
-        CALL_GETRES(nomres,lres,concep ,  lconc , nomcmd , lcmd ) ;
-        CALL_GETCMC ( inum ) ;
-        CALL_GCUCON ( inum , nomres , lres , concep , lconc , &ier ) ;
-                                                         ISCRUTE(ier) ;
-        switch( ier )
-        {
-        case 0 :
-                {
-                        STRING_FCPY(statu,lstat,"NOUVEAU",7);
-                }
-                break ;
-        default :
-                if ( ier>0 ){
-                        STRING_FCPY(statu,lstat,"MODIFIE",7);
-
-                }
-                else{
-                        STRING_FCPY(statu,lstat,"ERRONE",6);
-                }
-                break ;
-        }
-                                                         FSSCRUTE(nomres,lres) ;
-                                                         FSSCRUTE(concep,lconc) ;
-                                                         FSSCRUTE(nomcmd,lcmd) ;
-                                                         FSSCRUTE(statu,lstat) ;
-                                                         ISCRUTE(*inum) ;
-        _FIN("getcmd_") ;
-        return ;
 }

@@ -1,10 +1,9 @@
         SUBROUTINE LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &               COMP, NBCOMM, CPMONO, PGL,NR,NVI,VP,VECP,SEUIL,
-     &               INDICS )
+     &               COMP, NBCOMM, CPMONO, PGL,NR,NVI,VP,VECP,SEUIL)
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +42,6 @@ C ======================================================================
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3),VP(3),VECP(3)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
-        REAL*8          INDICS(*)
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
          CALL RSLCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
@@ -74,8 +72,7 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
          CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, TEMPF,
-     &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL,
-     &                   INDICS)
+     &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
 C ======================================================================
       ENDIF
 C ======================================================================

@@ -1,4 +1,4 @@
-#@ MODIF sup_gmsh Utilitai  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+#@ MODIF sup_gmsh Utilitai  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1320,8 +1320,9 @@ class Mesh :
   def Create(self, file = 'fort.19') :
 
     self.Save()
-#    os.system('gmsh -3 fort.geo')
     os.system(self.gmsh + ' -3 fort.geo')
+    try: os.remove(file)
+    except: pass
     os.rename('fort.msh',file)
 
 

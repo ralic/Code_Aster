@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -38,6 +38,7 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DRZ      )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPXZ     )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPXZ     )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MY       MZ       REP      )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MY       MZ       REP      )
@@ -55,9 +56,12 @@ MODE_LOCAL__
                                         Z        )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXZ     )
     EEFFOPG  = SIEF_R   ELGA__ RIGI    (NXX      NYY      NXY      MXX      MYY      MXY      )
+    EEFFOPC  = SIEF_C   ELGA__ RIGI    (NXX      NYY      NXY      MXX      MYY      MXY      )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIXZ     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIXZ     )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
     EEFFRNO  = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
+    EEFFRNC  = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
@@ -107,10 +111,12 @@ OPTION__
     EFGE_ELNO_DEPL      231   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   
                               OUT__  EEFFRNO  PEFFORR  
+                                     EEFFRNC  PEFFORC  
     EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
     EPSI_ELNO_DEPL      229   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CNUMCOR  PNUMCOR  
                               OUT__  EDEFONO  PDEFORR  
+                                     EDEFONC  PDEFORC  
     FORC_NODA           234   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER  
                               OUT__  MVECTUR  PVECTUR  
@@ -166,6 +172,7 @@ OPTION__
     SIEF_ELGA_DEPL      231   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   
                               OUT__  EEFFOPG  PCONTRR  
+                                     EEFFOPC  PCONTRC  
     SIEF_ELNO_ELGA      -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
     SIGM_ELNO_CART      -1    IN__   XXXXXX   XXXXXX   
@@ -175,6 +182,7 @@ OPTION__
     SIGM_ELNO_DEPL      230   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  
                                      CNUMCOR  PNUMCOR  NTEMPER  PTEMPER  CTEREFE  PTEREF   
                               OUT__  ECONTNO  PCONTRR  
+                                     ECONTNC  PCONTRC  
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM   
                               OUT__  MMATUUR  PSYM     
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER  

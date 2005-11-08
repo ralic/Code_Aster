@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,10 +64,14 @@ MODE_LOCAL__
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   )
-    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   
+                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
+    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   
+                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
@@ -104,13 +108,14 @@ MODE_LOCAL__
     ERICTRA  = RICE_TRA ELEM__         (TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ   )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
 
     ESINGUL  = SING_R   ELEM__         (DEGRE   TAILLE   )
@@ -244,9 +249,11 @@ OPTION__
     EPSI_ELGA_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
                                      NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
+                                     EDEFOPC  PDEFORC
     EPSI_ELNO_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
                                      NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
+                                     EDEFONC  PDEFORC
     EPSP_ELGA           333   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFAPR  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC  NTEMPER  PSECHER
                                      CTEREFE  PSECREF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
@@ -273,7 +280,7 @@ OPTION__
                                      CMATERC  PMATERC  CPESANR  PPESANR  CREFERI  PPRESS   CROTATR  PROTATR
                                      CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
                               OUT__  EERREUR  PERREUR
-    ERRE_ELNO_ELGA      385   IN__   EERREUR  PERREUR
+    ERRE_ELNO_ELGA      379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
     FORC_NODA           9     IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -382,20 +389,19 @@ OPTION__
                                      CMATERC  PMATERC  NTEMPER  PSECHER  CTEREFE  PSECREF  NTEMPER  PTEMPER
                                      CTEREFE  PTEREF
                               OUT__  ECONTPG  PCONTRR
+                                     ECONTPC  PCONTRC
     SIEF_ELGA_ELNO      20    IN__   ECONTNO  PCONTRR
                               OUT__  ECONTPG  PSIEFGR
     SIEF_ELGA_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIEF_ELNO_ELGA      20    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
+                                     ECONTNC  PSIEFNOC
     SIGM_ELNO_DEPL      23    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  EHYDRER  PHYDRER
                                      CMATERC  PMATERC  NTEMPER  PSECHER  CTEREFE  PSECREF  NTEMPER  PTEMPER
                                      CTEREFE  PTEREF
                               OUT__  ECONTNO  PCONTRR
-    SIGM_ELNO_DEPL_C    23    IN__   CCAMASS  PCAMASS  NDEPLAC  PDEPLAC  NGEOMER  PGEOMER  EHYDRER  PHYDRER
-                                     CMATERC  PMATERC  NTEMPER  PSECHER  CTEREFE  PSECREF  NTEMPER  PTEMPER
-                                     CTEREFE  PTEREF
-                              OUT__  ECONTNC  PCONTRC
+                                     ECONTNC  PCONTRC
     SIGM_ELNO_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SING_ELEM           99    IN__   NGEOMER  PGEOMER

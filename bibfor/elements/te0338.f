@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,7 +172,7 @@ C VOLUME PLASTIQUE ACTIF
           ELSE
              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
           END IF
-          IF (PPT.EQ. (1.D0)) THEN
+          IF (PPT.GE. (1.D0)) THEN
             DVPG = POIDS
             VKPACT = VKP + DVPG
           END IF
@@ -240,7 +240,7 @@ C VOLUME PLASTIQUE ACTIF
           ELSE
              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
           END IF
-          IF (PPT.EQ. (1.D0)) THEN
+          IF (PPT.GE. (1.D0)) THEN
             DVPG = POIDS
             VKPACT = VKPACT + DVPG
           END IF
@@ -294,7 +294,7 @@ C     -------------------------------------------------------------
           ELSE
              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
           END IF
-            IF (PPT.EQ. (1.D0)) THEN
+            IF (PPT.GE. (1.D0)) THEN
               DO 100,I = 1,6,1
                 SIGM(I) = ZR(ICONG+6*KP+I-7)
                 EPSG(I) = ZR(IDEFG+6*KP+I-7)
@@ -338,7 +338,7 @@ C     ----------------------------------------------------
              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
           END IF
             SIG1 = 0.D0
-            IF (PPT.EQ. (1.D0)) THEN
+            IF (PPT.GE. (1.D0)) THEN
               DO 130,I = 1,6,1
                 SIGM(I) = ZR(ICONG+6*KP+I-7)
   130         CONTINUE

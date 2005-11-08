@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,14 +133,6 @@ C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
           ZR(JEFFO+I-1) = -ZR(JEFFO+I-1)
           ZR(JEFFO+I+6-1) = ZR(JEFFO+I+6-1)
    10   CONTINUE
-
-      ELSE IF (OPTION.EQ.'EFGE_ELNO_DEPL_C') THEN
-        CALL JEVECH('PEFFORC','E',JEFFO)
-        CALL POEFGC(NOMTE,KLC,E,NU,RHO,ALPHA,ZC(JEFFO))
-        DO 20 I = 1,6
-          ZC(JEFFO+I-1) = -ZC(JEFFO+I-1)
-          ZC(JEFFO+I+6-1) = ZC(JEFFO+I+6-1)
-   20   CONTINUE
 
       ELSE
         CH16 = OPTION

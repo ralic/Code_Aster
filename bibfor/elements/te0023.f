@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C                 DES CONTRAINTES AUX POINTS DE GAUSS
 C          ELEMENTS ISOPARAMETRIQUES 3D
 
 C          OPTIONS : 'SIGM_ELNO_DEPL'
-C                    'SIGM_ELNO_DEPL_C'
 
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -54,20 +53,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 MODELI
       REAL*8 SIGMA(162),CONTNO(162),REPERE(7)
       REAL*8 NHARM,INSTAN,ZERO,DEPLA(81),SIGM2(162)
-      LOGICAL CPX,LSENS
+      LOGICAL LSENS
       INTEGER JGANO,NBSIGM,NITER,I,ICONT,IDEPL,ITER,IDEPLC,IDFDE,
      &        IGEOM,IMATE,J,INO,IPOIDS,ITEMPE,ITREF,IVF,NBINCO,
      &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS,IHYDR,ISECH,ISREF
 C     ------------------------------------------------------------------
 
       MODELI(1:2) = NOMTE(3:4)
-
-      CPX = OPTION .EQ. 'SIGM_ELNO_DEPL_C'
-      IF (CPX) THEN
-        NITER = 2
-      ELSE
-        NITER = 1
-      END IF
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -107,11 +99,7 @@ C      ------------------------------------------------------------
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------
       NBINCO = NNO*NDIM
-      IF (CPX) THEN
-        CALL JEVECH('PDEPLAC','L',IDEPLC)
-      ELSE
-        CALL JEVECH('PDEPLAR','L',IDEPL)
-      END IF
+      CALL JEVECH('PDEPLAR','L',IDEPL)
 
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT DERIVE SUR L'ELEMENT
 C      ---------------------------------------------------------
@@ -136,27 +124,14 @@ C      --------------------------------------------------
 C ---- RECUPERATION DU SECHAGE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PSECREF','L',ISREF)
-      DO 140 ITER = 1,NITER
 
         DO 20 I = 1,NBSIG*NPG
           SIGMA(I) = ZERO
    20   CONTINUE
 
-        IF (CPX) THEN
-          IF (ITER.EQ.1) THEN
-            DO 30 I = 1,NBINCO
-              DEPLA(I) = DBLE(ZC(IDEPLC-1+I))
-   30       CONTINUE
-          ELSE
-            DO 40 I = 1,NBINCO
-              DEPLA(I) = DIMAG(DCMPLX(ZC(IDEPLC-1+I)))
-   40       CONTINUE
-          END IF
-        ELSE
-          DO 50 I = 1,NBINCO
-            DEPLA(I) = ZR(IDEPL-1+I)
-   50     CONTINUE
-        END IF
+        DO 50 I = 1,NBINCO
+          DEPLA(I) = ZR(IDEPL-1+I)
+   50   CONTINUE
 
 C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
@@ -193,31 +168,11 @@ C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C ---- AVEC LE VECTEUR DES CONTRAINTES AUX NOEUDS
 C      ------------------------------------------
 
-        IF (CPX) THEN
-          CALL JEVECH('PCONTRC','E',ICONT)
-          IF (ITER.EQ.1) THEN
-            DO 90 INO = 1,NNO
-              DO 80 J = 1,6
-                ZC(ICONT+6* (INO-1)-1+J) = CONTNO(6* (INO-1)+J)
-   80         CONTINUE
-   90       CONTINUE
-          ELSE
-            DO 110 INO = 1,NNO
-              DO 100 J = 1,6
-                ZC(ICONT+6* (INO-1)-1+J) = DCMPLX(DBLE(ZC(ICONT+6* (INO-
-     &                                     1)-1+J)),DBLE(CONTNO(6* (INO-
-     &                                     1)+J)))
-  100         CONTINUE
-  110       CONTINUE
-          END IF
-        ELSE
-          CALL JEVECH('PCONTRR','E',ICONT)
-          DO 130 INO = 1,NNO
-            DO 120 J = 1,6
-              ZR(ICONT+6* (INO-1)-1+J) = CONTNO(6* (INO-1)+J)
-  120       CONTINUE
-  130     CONTINUE
-        END IF
-  140 CONTINUE
+        CALL JEVECH('PCONTRR','E',ICONT)
+        DO 130 INO = 1,NNO
+          DO 120 J = 1,6
+            ZR(ICONT+6* (INO-1)-1+J) = CONTNO(6* (INO-1)+J)
+  120     CONTINUE
+  130   CONTINUE
 
       END

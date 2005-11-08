@@ -1,13 +1,13 @@
       SUBROUTINE GERPAS( COMP,    MOD,    IMAT, MATCST,NBCOMM,
      &                   CPMONO, NBPHAS, NVI,     NMAT,  Y,
      &                   PAS,     EPS,    TOLY,  COTHE, COEFF,
-     &                   DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,
+     &                   DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL, ANGMAS,
      &                   SIGI,    EPSD,   DETOT, TPERD, DTPER,
      &                   TPEREF, BZ, X )
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C      POUR GAGNER EN TEMPS CPU
       REAL*8 TPERD, DTPER, TPEREF,DMG1,EPS
       REAL*8 COTHE(NMAT),DCOTHE(NMAT)
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
-      REAL*8 SIGI(6),EPSD(6),DETOT(6),PGL(3,3)
+      REAL*8 SIGI(6),EPSD(6),DETOT(6),PGL(3,3),ANGMAS(3)
 C     TABLEAUX AUTOMATIQUES F90      
       REAL*8 Y(NVI),WK(3*NVI),YMFS(NVI)
       REAL*8 MAXOUT,MAXDOM
@@ -85,7 +85,7 @@ C
       LOI=COMP(1)
       IF (LOI(1:8).EQ.'POLYCRIS') THEN
          CALL CALCMS( NBPHAS,NBFSYM,NBCOMM,CPMONO,NMAT,PGL,
-     &                COEFF,TOUTMS )
+     &                COEFF,ANGMAS,TOUTMS )
       ENDIF
 C
       DMG1=0.0D0

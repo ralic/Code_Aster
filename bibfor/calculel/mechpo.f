@@ -1,8 +1,8 @@
-      SUBROUTINE MECHPO ( OPTIO2, SOUCHE, CHARGE, MODELE, CHDEP2,
+      SUBROUTINE MECHPO ( SOUCHE, CHARGE, MODELE, CHDEP2,
      +                    CHDYNR, SUROPT, LPAIN, LCHIN, NBOPT,
      +                    TYPCOE, ALPHA,  CALPHA )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       OPTIO2, SOUCHE, CHARGE, MODELE, CHDEP2,
+      CHARACTER*(*)       SOUCHE, CHARGE, MODELE, CHDEP2,
      +                    CHDYNR, SUROPT, LPAIN(*), LCHIN(*),
      +                    TYPCOE
       INTEGER                                           NBOPT
@@ -10,7 +10,7 @@
       COMPLEX*16                          CALPHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,6 @@ C
       CHARACTER*5  CH5
       CHARACTER*8  K8B, NCMPPE(4),NCMPFO(11),TPF(11)
       CHARACTER*19 CH19
-      CHARACTER*16 OPTION
       CHARACTER*24 LIGRCH, LIGRMO,CHDEPL
       COMPLEX*16   C16B, TPC(11)
       DATA         NCMPPE/ 'G' , 'AG' , 'BG' , 'CG' /
@@ -74,7 +73,6 @@ C    -------------------------------------------------------------------
  10   CONTINUE
       LIGRMO = MODELE(1:8)//'.MODELE'
       CHDEPL = CHDEP2
-      OPTION = OPTIO2
       CH5 = '.    '
 C
       NBOPT = 0
@@ -184,11 +182,7 @@ C
       ENDIF
 C
       NBOPT = NBOPT+1
-      IF ( OPTION(15:16) .EQ. '_C' ) THEN
-         LPAIN(NBOPT) = 'PCHDYNC'
-      ELSE
-         LPAIN(NBOPT) = 'PCHDYNR'
-      ENDIF
+      LPAIN(NBOPT) = 'PCHDYNR'
       CH19         = CHDYNR
       LCHIN(NBOPT) = CH19//'.VALE'
       CALL JEEXIN(LCHIN(NBOPT),IRET)
@@ -197,11 +191,6 @@ C
          LCHIN(NBOPT) = SOUCHE(1:8)//CH5//'.PCHDY'
 
          CALL COPISD('CHAMP_GD','V',CHDEPL,LCHIN(NBOPT))
-         IF ( OPTION(15:16) .EQ. '_C' ) THEN
-            CALL SDCHGD(LCHIN(NBOPT),'C')
-         ELSE
-            CALL SDCHGD(LCHIN(NBOPT),'R')
-         ENDIF
       ENDIF
 C
       NBOPT = NBOPT+1

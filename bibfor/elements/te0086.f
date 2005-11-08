@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C
       CHARACTER*8      MODELI
       REAL*8           SIGMA(54), REPERE(7),SIGM2(54)
       REAL*8           NHARM, INSTAN, DEPLA(36),CONTNO(54)
-      LOGICAL          CPX,LSENS
+      LOGICAL          LSENS
       INTEGER          IHYDR, ISECH, ISREF      
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -59,12 +59,6 @@ C
       ENDIF
       MODELI(1:2) = NOMTE(3:4)
       
-      CPX = OPTION .EQ. 'SIGM_ELNO_DEPL_C'
-      IF (CPX) THEN
-        NITER = 2
-      ELSE
-        NITER = 1
-      END IF
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -102,11 +96,7 @@ C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------
       NBINCO = NNO*NDIM
-      IF (CPX) THEN
-        CALL JEVECH('PDEPLAC','L',IDEPLC)
-      ELSE
-        CALL JEVECH('PDEPLAR','L',IDEPL)
-      END IF
+      CALL JEVECH('PDEPLAR','L',IDEPL)
 C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT DERIVE SUR L'ELEMENT
 C      ---------------------------------------------------------
@@ -134,27 +124,13 @@ C      -------------------------------------------
 
 C-----------------------------------------------------------------
 
-      DO 150 ITER = 1,NITER
+      DO 20 I = 1,NBSIG*NPG
+        SIGMA(I) = ZERO
+20    CONTINUE
 
-        DO 20 I = 1,NBSIG*NPG
-          SIGMA(I) = ZERO
-20      CONTINUE
-
-        IF (CPX) THEN
-          IF (ITER.EQ.1) THEN
-            DO 30 I = 1,NBINCO
-              DEPLA(I) = DBLE(ZC(IDEPLC-1+I))
-30          CONTINUE
-          ELSE
-            DO 40 I = 1,NBINCO
-              DEPLA(I) = DIMAG(DCMPLX(ZC(IDEPLC-1+I)))
-40          CONTINUE
-          END IF
-        ELSE
-          DO 50 I = 1,NBINCO
-            DEPLA(I) = ZR(IDEPL-1+I)
-50        CONTINUE
-        END IF
+      DO 50 I = 1,NBINCO
+        DEPLA(I) = ZR(IDEPL-1+I)
+50    CONTINUE
 
 C
 C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
@@ -207,34 +183,12 @@ C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C ---- AVEC LE VECTEUR DES CONTRAINTES AUX NOEUDS
 C      ------------------------------------------
 
-        IF (CPX) THEN
-          CALL JEVECH('PCONTRC','E',ICONT)
-          IF (ITER.EQ.1) THEN
-            DO 100 INO = 1,NNO
-              DO 90 J = 1,NBSIG
-                ZC(ICONT+NBSIG* (INO-1)-1+J) = CONTNO(NBSIG* (INO-1)+J)
-   90         CONTINUE
-  100       CONTINUE
-          ELSE
-            DO 120 INO = 1,NNO
-              DO 110 J = 1,NBSIG
-                ZC(ICONT+NBSIG* (INO-1)-1+J) = DCMPLX(DBLE(ZC(ICONT+
-     &                                 NBSIG*(INO-1)-1+J)),DBLE(CONTNO
-     &                                 (NBSIG*(INO-1)+J)))
-  110         CONTINUE
-  120       CONTINUE
-          END IF
-        ELSE 
-          CALL JEVECH('PCONTRR','E',ICONT)
-          DO 140 INO = 1,NNO
-            DO 130 J = 1,NBSIG
-              ZR(ICONT+NBSIG* (INO-1)-1+J) = CONTNO(NBSIG* (INO-1)+J)
-  130       CONTINUE
-  140     CONTINUE
-        END IF
+        CALL JEVECH('PCONTRR','E',ICONT)
+        DO 140 INO = 1,NNO
+          DO 130 J = 1,NBSIG
+            ZR(ICONT+NBSIG* (INO-1)-1+J) = CONTNO(NBSIG* (INO-1)+J)
+  130     CONTINUE
+  140   CONTINUE
       END IF
-
-  150 CONTINUE
-  
 
       END

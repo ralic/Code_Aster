@@ -1,5 +1,4 @@
-
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -447,6 +446,44 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    VALE=9.9102820670140E-02,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.03.26',),
+                ),
+          )
+TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='ERRE_ELGA_NORE',
+                   NOM_CMP='ERREST',
+                   MAILLE='M12',
+                   POINT=1,
+                   VALE=7.88728E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
+                _F(RESULTAT=DEPLD2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='ERRE_ELGA_NORE',
+                   NOM_CMP='TERMRE',
+                   MAILLE='M12',
+                   POINT=1,
+                   VALE=4.61706E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
+                _F(RESULTAT=DEPLD2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='ERRE_ELGA_NORE',
+                   NOM_CMP='TERMSA',
+                   MAILLE='M12',
+                   POINT=1,
+                   VALE=2.02266E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
+                _F(RESULTAT=DEPLD2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='ERRE_ELGA_NORE',
+                   NOM_CMP='TERMNO',
+                   MAILLE='M12',
+                   POINT=1,
+                   VALE=1.24756E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
                 ),
           )
 #---------------------------------------------------------------------

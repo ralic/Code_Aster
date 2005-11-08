@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -684,13 +684,33 @@ C
         COEFF = SQRT(24.D0)
       ENDIF
 C
-      ERREST =( H * SQRT(TER) + TER2 + TER3)/COEFF
+      ERREST =( H*SQRT(TER) + TER2 + TER3 ) / COEFF
       SIGCAL = SQRT(NORSIG)
-      NUEST = 100.D0 * SQRT(ERREST**2/(ERREST**2 + NORSIG))
+      NUEST = 100.D0 * SQRT( ERREST**2 /(ERREST**2 + NORSIG) )
 C
-C
-      ZR(IERR) = ERREST
+      ZR(IERR  ) = ERREST
       ZR(IERR+1) = NUEST
       ZR(IERR+2) = SIGCAL
+
+      ERREST = H*SQRT(TER) / COEFF
+      NUEST  = 100.D0*SQRT( ERREST**2 / (ERREST**2 + NORSIG) )
+
+      ZR(IERR+3) = ERREST
+      ZR(IERR+4) = NUEST
+
+      ERREST = TER2 / COEFF
+      NUEST  = 100.D0*SQRT(  ERREST**2 / (ERREST**2 + NORSIG) )
+
+      ZR(IERR+5) = ERREST
+      ZR(IERR+6) = NUEST
+
+      ERREST = TER3 / COEFF
+      NUEST  = 100.D0*SQRT( ERREST**2 / (ERREST**2 + NORSIG) )
+
+      ZR(IERR+7) = ERREST
+      ZR(IERR+8) = NUEST
+
+C
       CALL JEDEMA()
+C
       END

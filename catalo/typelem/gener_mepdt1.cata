@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,16 +70,17 @@ MODE_LOCAL__
     EINDUCR  = NEUT_R   ELEM__         (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CMASDIA  = POSI     ELEM__         (POS      )
-    EEFGENOC = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
-    ECONTNOC = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECONTPOC = SIEF_C   ELNO__ IDEN__  (SN       SVY      SVZ      SMT      SMFY     SMFZ     )
     ECOEQPG  = SIEF_R   ELGA__ BIZZ    (PM       PMPB     )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
+    EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (PM       PMPB     )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
+    EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPO  = SIEF_R   ELNO__ IDEN__  (SN       SVY      SVZ      SMT      SMFY     SMFZ     )
+    ECONTPC  = SIEF_C   ELNO__ IDEN__  (SN       SVY      SVZ      SMT      SMFY     SMFZ     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
@@ -144,12 +145,7 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EEFGENO  PEFFORR
-    EFGE_ELNO_DEPL_C    142   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NDEPLAC  PCHDYNC  CCOEFC   PCOEFFC
-                                     CCOEFR   PCOEFFR  NDEPLAC  PDEPLAC  CFORCEC  PFC1D1D  CFORCEF  PFF1D1D
-                                     CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
-                                     CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
-                              OUT__  EEFGENOC PEFFORC
+                                     EEFGENC  PEFFORC
     EPOT_ELEM_DEPL      151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EENEDNO  PENERDR
@@ -225,9 +221,11 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER
                                      CTEREFE  PTEREF
                               OUT__  EEFGEGA  PCONTRR
+                                     EEFGEGC  PCONTRC
     SIEF_ELNO_ELGA      347   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTRR
                                      DDL_MECA PDEPPLU  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  EEFGENO  PSIEFNOR
+                                     EEFGENC  PSIEFNOC
     SIGM_ELNO_CART      39    IN__   CCAORIE  PCAORIE  ECONTNO  PCONTRR
                               OUT__  ECONTNO  PCONTGL
     SIGM_ELNO_DEPL      149   IN__   CABSCUR  PABSCUR  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
@@ -236,12 +234,7 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  ECONTNO  PCONTRR
-    SIGM_ELNO_DEPL_C    149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NDEPLAC  PCHDYNC
-                                     CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  NDEPLAC  PDEPLAC  CFORCEC  PFC1D1D
-                                     CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER
-                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF
-                              OUT__  ECONTNOC PCONTRC
+                                     ECONTNC  PCONTRC
     SIGM_ELNO_SIEF      149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  EEFGENO  PSIEFNOR CSUROPT  PSUROPT
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
@@ -252,12 +245,7 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  ECONTPO  PCONTPO
-    SIPO_ELNO_DEPL_C    149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NDEPLAC  PCHDYNC
-                                     CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  NDEPLAC  PDEPLAC  CFORCEC  PFC1D1D
-                                     CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  NTEMPER  PTEMPER
-                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF
-                              OUT__  ECONTPOC PCONTPC
+                                     ECONTPC  PCONTPC
     SIPO_ELNO_SIEF      149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  EEFGENO  PSIEFNOR CSUROPT  PSUROPT
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF

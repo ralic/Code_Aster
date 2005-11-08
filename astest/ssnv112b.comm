@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,7 @@ TEST_RESU(RESU=(
  GROUP_NO = 'A',   NOM_CMP = 'SIXX',      VALE = -59.9955, REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 3.5E-2,
  GROUP_NO = 'A',   NOM_CMP = 'SIZZ',      VALE = 19.9326, REFERENCE = 'ANALYTIQUE'),
-           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 3,
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 4,
  GROUP_NO = 'A',   NOM_CMP = 'SIXY',      VALE = 0., REFERENCE = 'ANALYTIQUE'),
 
 
@@ -209,8 +209,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M531',    
                NOM_CMP = 'NUEST',      
-               VALE = 1.5172144847232, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 1.5237023391660E+00, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
 
@@ -223,8 +223,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M531',    
                NOM_CMP = 'ERREST',      
-               VALE = 4.6036685268245E-04, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 4.6170971515351E-04, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
 FIN( )

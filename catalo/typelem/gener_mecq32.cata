@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,7 @@ MODE_LOCAL__
     EENECNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ
@@ -70,9 +71,13 @@ MODE_LOCAL__
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
     ECONTPG  = SIEF_R   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTPC  = SIEF_C   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNOR = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ESIGMNOC = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     EEFGENOR = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
+                                        QX       QY       )
+    EEFGENOC = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
@@ -136,6 +141,7 @@ OPTION__
     EFGE_ELNO_DEPL      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EEFGENOR PEFFORR
+                                     EEFGENOC PEFFORC
     EPOT_ELEM_DEPL      401   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EENEDNO  PENERDR
@@ -143,6 +149,7 @@ OPTION__
                                      CNUMCOR  PNUMCOR  CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                                      CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
+                                     EDEFONC  PDEFORC
     EQUI_ELNO_SIGM      588   IN__   ESIGMNOR PCONCOR
                               OUT__  ECOEQNO  PCONTEQ
     FORC_NODA           416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
@@ -229,9 +236,11 @@ OPTION__
     SIEF_ELGA_DEPL      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  ECONTPG  PCONTRR
+                                     ECONTPC  PCONTRC
     SIEF_ELNO_ELGA      415   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                               OUT__  EEFGENOR PSIEFNOR
+                                     EEFGENOC PSIEFNOC
     SIGM_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_COQU      415   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPLAR
@@ -242,6 +251,7 @@ OPTION__
                                      CNUMCOR  PNUMCOR  CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                                      CTEREFE  PTEREF
                               OUT__  ESIGMNOR PCONTRR
+                                     ESIGMNOC PCONTRC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER

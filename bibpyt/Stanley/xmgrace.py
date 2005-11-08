@@ -1,4 +1,4 @@
-#@ MODIF xmgrace Stanley  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF xmgrace Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,9 +24,18 @@
 
 
 import os, string, glob
-from popen2 import Popen3
+try: from popen2 import Popen3
+except: pass
+
 import aster
-from Utilitai.Utmess import UTMESS
+
+try:
+   from Utilitai.Utmess import UTMESS
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+
 
 TERMINAL = 0    # terminal actif ou non (au plus un terminal en meme temps)
 
@@ -34,8 +43,8 @@ TERMINAL = 0    # terminal actif ou non (au plus un terminal en meme temps)
 class Xmgr :
 
   DEJA_ACTIF = 'Terminal xmgrace deja actif'
-  
-  def __init__(self, gr_max = 10, options=None) :
+
+  def __init__(self, gr_max = 10, options=None, xmgrace=aster.repout() + '/xmgrace') :
   
     # Declaration
     global TERMINAL
@@ -45,10 +54,11 @@ class Xmgr :
 
     # Initialisation
     TERMINAL = 1
-    self.gr_max = gr_max        # nombre de graphes 
-    self.gr_act = 0             # numero du graphe actif
-    self.sets   = [0]*gr_max    # nombre de sets par graphe
-    self.nom_pipe = 'xmgr.pipe' # nom du pipe de communication
+    self.gr_max   = gr_max        # nombre de graphes 
+    self.gr_act   = 0             # numero du graphe actif
+    self.sets     = [0]*gr_max    # nombre de sets par graphe
+    self.nom_pipe = 'xmgr.pipe'   # nom du pipe de communication
+    self.xmgrace  = xmgrace
 
     # Ouverture du pipe de communication avec xmgrace
     if os.path.exists(self.nom_pipe) :
@@ -58,14 +68,14 @@ class Xmgr :
  
     # Lancement de xmgrace
     if options != None :
-       shell = aster.repout() + '/xmgrace -noask ' + options + ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+       shell = self.xmgrace + ' -noask ' + options + ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
     else :
-       shell = aster.repout() + '/xmgrace -noask ' +           ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
-
+       shell = self.xmgrace + ' -noask ' +           ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
 
     # Teste le DISPLAY avant de lancer xmgrace...
     if os.environ.has_key('DISPLAY'):
 
+      UTMESS('I','STANLEY',"Execution de : " + shell)
       self.controle = Popen3(shell)  
 
       # Mise a l'echelle des graphes
@@ -76,7 +86,7 @@ class Xmgr :
         self.Send('VIEW XMAX 0.95')
         self.Send('VIEW YMIN 0.10')
         self.Send('VIEW YMAX 0.95')
-  
+
       # Activation du graphe G0
       self.Active(0)
 
@@ -87,7 +97,12 @@ class Xmgr :
                XMGRACE ne pourra pas fonctionner. On l'ignore.
 
                Si vous etes en Interactif, cochez le bouton Suivi Interactif
-               dans ASTK.""")
+               dans ASTK.
+
+               Vous pouvez également préciser votre DISPLAY dans les arguments
+               de la commande STANLEY :
+
+               STANLEY(DISPLAY='adresse_ip:0.0');""")
 
 # --------------------------------------------------------------------
 

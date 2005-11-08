@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (HEXA20) 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,8 +179,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M1',    
                NOM_CMP = 'NUEST',      
-               VALE = 1.6335975600357E-01, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 1.4741827586470E-01, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
 
@@ -193,8 +193,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M1',    
                NOM_CMP = 'ERREST',      
-               VALE = 1.0460625523925E-04, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 9.4399990209059E-05, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
  

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI   (EPXX     )
+    EDEFOPC  = EPSI_C   ELGA__ RIGI   (EPXX     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      )
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       MX       MY       MZ
@@ -52,10 +53,11 @@ MODE_LOCAL__
     ENBSP_I  = NBSP_I   ELEM__         (NBFIBR   )
     CSUROPT  = NEUT_K24 ELEM__         (Z1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    EEFGENOC = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
+    EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     ECONTPG  = SIEF_R   ELGA__ RIGI   (SIXX     )
+    ECONTPC  = SIEF_C   ELGA__ RIGI   (SIXX     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI   (VARI     )
@@ -95,16 +97,13 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                                      CTEREFE  PTEREF
                               OUT__  EEFGENO  PEFFORR
-    EFGE_ELNO_DEPL_C    142   IN__   NDEPLAC  PCHDYNC  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  NDEPLAC  PDEPLAC
-                                     CFORCEF  PFF1D1D  ECAFIEL  PFIBRES  CFORCER  PFR1D1D  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  CPESANR  PPESANR  CSUROPT  PSUROPT
-                                     NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
-                              OUT__  EEFGENOC PEFFORC
+                                     EEFGENC  PEFFORC
     EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPSI_ELGA_DEPL      537   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
+                                     EDEFOPC  PDEFORC
     FORC_NODA           536   IN__   CCAORIE  PCAORIE  ECONTPG  PCONTMR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                               OUT__  MVECTUR  PVECTUR
@@ -155,10 +154,12 @@ OPTION__
                                      ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  ECONTPG  PCONTRR
+                                     ECONTPC  PCONTRC
     SIEF_ELNO_ELGA      536   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                                      DDL_MECA PDEPPLU  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                               OUT__  EEFGENO  PSIEFNOR
+                                     EEFGENC  PSIEFNOC
     SIGM_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX

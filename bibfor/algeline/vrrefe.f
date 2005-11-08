@@ -4,7 +4,7 @@
       INTEGER                              IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,8 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     VERIFICATION QUE DEUX CONCEPTD ONT MEME DOMAINE DE DEFINITION
 C         ==> COMPARAISON DES "REFE"
-C     LES CONCEPTS DOIVENT ETRE DE TYPE MATR_ASSE_GD OU CHAM_NO
+C     LES CONCEPTS DOIVENT ETRE DE TYPE MATR_ASSE_GD, CHAM_NO 
+C     OU CHAM_ELEM
 C     ------------------------------------------------------------------
 C IN  OBJET1  : CH*19 : NOM DU 1-ER CONCEPT
 C IN  OBJET2  : CH*19 : NOM DU 2-ND CONCEPT
@@ -54,7 +55,7 @@ C
       CHARACTER*8  CTYP , CBID
       CHARACTER*19  NOM1, NOM2
       CHARACTER*24  REFE1, REFE2
-      LOGICAL REFA
+      LOGICAL REFA,CELK
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -65,6 +66,7 @@ C
 C  SI OBJET1 ET OBJET2 SONT DES CHAM_NO : ON COMPARE LEUR .REFE
 C  SI OBJET1 ET OBJET2 SONT DES MATR_ASSE : ON COMPARE LEUR .REFA
       REFA=.FALSE.
+      CELK=.FALSE.
       REFE1 = NOM1//'.REFE'
       CALL JEEXIN(REFE1,IRET)
       IF (IRET.GT.0) THEN
@@ -76,7 +78,15 @@ C  SI OBJET1 ET OBJET2 SONT DES MATR_ASSE : ON COMPARE LEUR .REFA
            REFE2 = NOM2//'.REFA'
            REFA=.TRUE.
          ELSE
-           CALL UTMESS('F','VRREFE','OBJET .REFE/.REFA INEXISTANT.')
+           REFE1 = NOM1//'.CELK'
+           CALL JEEXIN(REFE1,IRET)
+           IF (IRET.GT.0) THEN
+             REFE2 = NOM2//'.CELK'
+             CELK=.TRUE.
+           ELSE
+             CALL UTMESS('F','VRREFE','OBJET .REFE/.REFA/.CELK'// 
+     &                    ' INEXISTANT.')
+           ENDIF
          ENDIF
       ENDIF
 
@@ -95,6 +105,16 @@ C     --- CONTROLE DES REFERENCES ---
 C       -- cas des matr_asse :
         IF (ZK24(IREFE1).NE.ZK24(IREFE2)) IER=IER+1
         IF (ZK24(IREFE1+1).NE.ZK24(IREFE2+1)) IER=IER+1
+      ELSE IF (CELK) THEN
+C       -- cas des cham_elem :
+C       POUR LES CHAM_ELEM ON NE VERIFIE PAS L OPTION
+C       CAR QUELQUES OPTIONS METALLURGIQUES PRODUISENT
+C       DES CHAMPS QUE L ON SOUHAITE COMBINER
+C       ON VERIFIE DONC LE LIGREL ET LE TYPE DE CHAMP
+        IF (ZK24(IREFE1).NE.ZK24(IREFE2)) IER=IER+1
+        CALL JEVEUO(NOM1//'.CELD','L',IREFE1)
+        CALL JEVEUO(NOM2//'.CELD','L',IREFE2)
+        IF (ZI(IREFE1).NE.ZI(IREFE2)) IER=IER+1
       ELSE
 C       -- cas des cham_no :
         IF (ZK24(IREFE1).NE.ZK24(IREFE2)) IER=IER+1

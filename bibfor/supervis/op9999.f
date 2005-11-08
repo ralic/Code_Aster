@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,6 @@ C     --- CLOTURE DES FICHIERS ---
       IF (IUNRES.GT.0) WRITE(IUNRES,*)
      +        '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
 
-      CALL JELIBF( 'DETRUIT' , 'L' )
       CALL JELIBF( 'DETRUIT' , 'V' )
 C
 C     --- RETASSAGE EFFECTIF ----

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,13 +76,17 @@ MODE_LOCAL__
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
+    EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
-    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   )
-    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   )
+    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   
+                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
+    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   
+                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
@@ -121,6 +125,7 @@ MODE_LOCAL__
                                         VECT_3_X VECT_3_Y VECT_3_Z )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
 
     ESINGUL  = SING_R   ELEM__         (DEGRE   TAILLE   )
@@ -208,9 +213,11 @@ OPTION__
     EPSI_ELGA_DEPL      87    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
                                      NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
+                                     EDEFOPC  PDEFORC
     EPSI_ELNO_DEPL      87    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
                                      NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
+                                     EDEFONC  PDEFORC
     EQUI_ELGA_EPSI      336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
     EQUI_ELGA_SIGM      336   IN__   ECONTPG  PCONTRR
@@ -296,6 +303,7 @@ OPTION__
                               OUT__  ECONTPG  PSIEFGR
     SIEF_ELNO_ELGA      98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
+                                     ECONTNC  PSIEFNOC
     SING_ELEM           99    IN__   NGEOMER  PGEOMER
                               OUT__  ESINGUL  PSING_R
     SING_ELNO_ELEM      99    IN__   ESINGUL  PSING_R

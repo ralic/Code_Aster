@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ try:
 except:
    pass
 
-def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,**args):
+def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    """
        Fonction sdprod de la macro DEBUT
    """
@@ -47,6 +47,9 @@ def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,**args):
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
 
    self.jdc.impr_macro=IMPR_MACRO
+   self.jdc.jxveri=0
+   if DEBUG!=None :
+      if DEBUG['JXVERI']=='OUI' : self.jdc.jxveri=1
    self.jdc.set_par_lot(PAR_LOT)
    if CODE!=None :
       self.jdc.fico=CODE['NOM']
@@ -73,7 +76,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,**args):
+def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    """
        Fonction sdprod de la macro POURSUITE
    """
@@ -83,6 +86,9 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,**args):
 
    self.jdc.impr_macro=IMPR_MACRO
    self.jdc.set_par_lot(PAR_LOT)
+   self.jdc.jxveri=0
+   if DEBUG!=None :
+      if DEBUG['JXVERI']=='OUI' : self.jdc.jxveri=1
    if CODE!=None :
       self.jdc.fico=CODE['NOM']
    else:

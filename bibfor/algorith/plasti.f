@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -256,7 +256,6 @@ C
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-        REAL*8          INDICS(NVI)
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
@@ -348,7 +347,7 @@ C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &     COMP, NBCOMM, CPMONO, PGL, NR, NVI,VP,VECP, SEUIL,INDICS)
+     &     COMP, NBCOMM, CPMONO, PGL, NR, NVI,VP,VECP, SEUIL)
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -360,8 +359,7 @@ C
      1                  MATERF, MATCST, NR, NVI, TEMPD, TEMPF, TIMED,
      2                  TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF, VINF,
      3                COMP,NBCOMM, CPMONO, PGL,
-     3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,
-     4               INDICS)
+     3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
 C
           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
           ELSE

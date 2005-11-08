@@ -1,4 +1,4 @@
-#@ MODIF graphiqueTk Stanley  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF graphiqueTk Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,18 +22,12 @@
 
 import Tkinter
 
-
-
-
 class LIGNE_ETAT :
-
 
   def __init__(self, frame_parent) :
 
-#    self.var = Tkinter.StringVar()  
     frame_ligne_etat = Tkinter.Frame(frame_parent)
     frame_ligne_etat.pack()
-#    self.label = Tkinter.Label(frame_ligne_etat, textvariable=self.var)
     self.label = Tkinter.Label(frame_ligne_etat, text='')
     self.label.pack()
 #    self.Affecter("")
@@ -41,7 +35,6 @@ class LIGNE_ETAT :
   
   def Affecter(self, chaine) :
     
-#    self.var.set(chaine)
     self.label.configure(text = chaine)
            
 # ==============================================================================
@@ -487,12 +480,31 @@ class C_SAISIE :
     self.root.quit()
 
 
-
 # ==============================================================================
 
+class CASE_A_COCHER :
+
+  """
+    Case a cocher de base
+  """
+
+  def __init__(self, frame, x, y, txt) :
+
+    self.var = Tkinter.IntVar()
+    self.var.set(0)
+
+    self.check = Tkinter.Checkbutton(frame, variable=self.var, command=self.Check_Commande)
+    self.check.pack(side=Tkinter.LEFT,padx=x,pady=y)  
+    self.check.configure(text=txt )
+
+  def Check_Commande(self):
+    return True
+
+  def Valeur(self):
+    return self.var.get()
 
 
-
+# ==============================================================================
 
 class BARRE :
 

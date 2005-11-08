@@ -1,6 +1,6 @@
       SUBROUTINE TE0344(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C     POUR LES ELEMENTS DE POUTRE DE TIMOSHENKO AVEC GAUCHISSEMENT.
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C       'EFGE_ELNO_DEPL' , 'EFGE_ELNO_DEPL_C'
+C       'EFGE_ELNO_DEPL'
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C        'MECA_POU_D_TG': POUTRE DROITE DE TIMOSHENKO AVEC GAUCHISSEMENT
 C
@@ -53,12 +53,11 @@ C
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
-      REAL*8       NU, UGI(14),ULI(14)
+      REAL*8       NU,ULI(14)
       REAL*8       ULR(14), UGR(14), PGL(14,14), KLC(14,14)
       REAL*8       PGL1(3,3), PGL2(3,3)
-      REAL*8       FLR(14), FLI(14), KLV(105)
+      REAL*8       FLR(14), KLV(105)
       REAL*8       FE(12), FI(12)
-      LOGICAL      LCOMPL
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','ALPHA'/
 C     ------------------------------------------------------------------
@@ -136,12 +135,8 @@ C     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
       CALL JEVECH('PCAORIE','L',LORIEN)
       CALL MATROT ( ZR(LORIEN) , PGL )
 C
-      LCOMPL = .FALSE.
       IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
           CALL JEVECH('PEFFORR','E',JEFFO)
-      ELSEIF (OPTION.EQ.'EFGE_ELNO_DEPL_C') THEN
-          LCOMPL = .TRUE.
-          CALL JEVECH('PEFFORC','E',JEFFO)
       ELSE
           CH16 = OPTION
           CALL UTMESS('F','ELEMENTS DE POUTRE (TE0344)',
@@ -154,20 +149,10 @@ C
 C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
       CALL VECMA(KLV,105,KLC,14)
 C
-      IF ( LCOMPL ) THEN
-         CALL JEVECH('PDEPLAC','L',JDEPL)
-         DO 500 I = 1,14
-             UGR(I) =  DBLE( ZC(JDEPL+I-1) )
-             UGI(I) = DIMAG( ZC(JDEPL+I-1) )
- 500     CONTINUE
-         CALL UTPVGL ( NNO, NC, PGL, UGI, ULI )
-         CALL PMAVEC ('ZERO',14,KLC,ULI,FLI)
-      ELSE
-         CALL JEVECH('PDEPLAR','L',JDEPL)
-         DO 510 I = 1,14
-             UGR(I) = ZR(JDEPL+I-1)
- 510     CONTINUE
-      ENDIF
+      CALL JEVECH('PDEPLAR','L',JDEPL)
+      DO 510 I = 1,14
+          UGR(I) = ZR(JDEPL+I-1)
+ 510  CONTINUE
 C      --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UGR
       CALL UTPVGL ( NNO, NC, PGL, UGR, ULR )
 C     --- VECTEUR EFFORT       LOCAL  FLR = KLC * ULR
@@ -177,7 +162,6 @@ C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
       IF (ALPHA.NE.0.D0) THEN
           DO 20 I = 1,14
               UGR(I) = 0.D0
-              UGI(I) = 0.D0
    20     CONTINUE
 C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
 C           TEMPERATURE DE REFERENCE
@@ -198,14 +182,6 @@ C              --- CALCUL DES FORCES INDUITES ---
                   FLR(I)   = FLR(I)   - KLC(I,1)*UGR(1)
                   FLR(I+7) = FLR(I+7) - KLC(I+7,1+7)*UGR(1+7)
    35         CONTINUE
-              IF ( LCOMPL ) THEN
-                 UGI(1) = -F*XL
-                 UGI(8) = -UGI(1)
-                 DO 37 I = 1,7
-                     FLI(I)   = FLI(I)   - KLC(I,1)*UGI(I)
-                     FLI(I+7) = FLI(I+7) - KLC(I+7,1+7)*UGI(I+7)
-   37            CONTINUE
-              ENDIF
           END IF
       END IF
 C
@@ -239,16 +215,9 @@ C
 C       --- ARCHIVAGE ---
 C       --- NOTER L INVERSION DU SIGNE DES EFFORTS SUR LE PREMIER NOEUD
 C           (CONVENTION ADOPTEE/AL95-205)
-      IF ( LCOMPL ) THEN
-         DO 710 I = 1,7
-             ZC(JEFFO-1+I)   = - DCMPLX(FLR(I),FLI(I))
-             ZC(JEFFO-1+I+7) =   DCMPLX(FLR(I+7),FLI(I+7))
-  710    CONTINUE
-      ELSE
-         DO 700 I = 1,7
-             ZR(JEFFO-1+I)   = - FLR(I)
-             ZR(JEFFO-1+I+7) =   FLR(I+7)
-  700    CONTINUE
-      ENDIF
+      DO 700 I = 1,7
+          ZR(JEFFO-1+I)   = - FLR(I)
+          ZR(JEFFO-1+I+7) =   FLR(I+7)
+  700 CONTINUE
 C
       END

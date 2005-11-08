@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
                CALL JEDETC('G',ZK8(LCON-1+II),1)
                CALL GCDETC(ICMD,ZK8(LCON-1+II))
 C
-               CALL GCUCON(0,ZK8(LCON-1+II),' ',IEX)
+               CALL GCUCON(ZK8(LCON-1+II),' ',IEX)
                IF ( IEX.EQ.0 .AND. ALARME.NE.'NON' ) THEN
 C
 C   SI LE CONCEPT A DETRUIRE N EXISTE PAS : ALARME

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,7 @@ TEST_RESU(RESU=(
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'SIYY',      VALE = -59.9955, REFERENCE='ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.5E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'SIZZ',      VALE = 19.9326, REFERENCE='ANALYTIQUE'),
-           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',  CRITERE = 'ABSOLU',     PRECISION = 2.E0,
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',  CRITERE = 'ABSOLU',     PRECISION = 3.E0,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'SIXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
 
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
@@ -159,8 +159,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M2',    
                NOM_CMP = 'NUEST',      
-               VALE = 4.0222869221567E-01, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 5.4485432124957E-01, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
 
@@ -173,8 +173,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M2',    
                NOM_CMP = 'ERREST',      
-               VALE = 2.0360587349278E-03, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 2.7566668668882E-03, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
 

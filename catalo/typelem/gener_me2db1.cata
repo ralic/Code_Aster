@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,12 +46,14 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    ECONTNOC = SIEF_C   ELNO__ IDEN__  (N        )
-    EEFGENOC = SIEF_C   ELNO__ IDEN__  (N        )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     )
     EEFGEGA  = SIEF_R   ELGA__ RIGI   (N        )
+    EEFGEGC  = SIEF_C   ELGA__ RIGI   (N        )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (N        )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (N        )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        )
+    EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI   (VARI     )
@@ -109,15 +111,14 @@ OPTION__
     EFGE_ELNO_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EEFGENO  PEFFORR
-    EFGE_ELNO_DEPL_C    154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NDEPLAC  PDEPLAC  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
-                              OUT__  EEFGENOC PEFFORC
+                                     EEFGENC  PEFFORC
     EPOT_ELEM_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  EENEDNO  PENERDR
     EPSI_ELNO_DEPL      154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  EDEFONO  PDEFORR
+                                     EDEFONC  PDEFORC
     FORC_NODA           156   IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
@@ -185,14 +186,14 @@ OPTION__
     SIEF_ELGA_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  EEFGEGA  PCONTRR
+                                     EEFGEGC  PCONTRC
     SIEF_ELNO_ELGA      156   IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR
+                                     EEFGENC  PSIEFNOC
     SIGM_ELNO_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  ECONTNO  PCONTRR
-    SIGM_ELNO_DEPL_C    154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NDEPLAC  PDEPLAC  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
-                              OUT__  ECONTNOC PCONTRC
+                                     ECONTNC  PCONTRC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

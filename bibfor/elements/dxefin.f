@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C
 C     CALCUL DES EFFORTS GENERALISES POUR LES ELEMENTS DE PLAQUE
 C     DKT, DST, DKQ, DSQ ET Q4G, DANS LE REPERE LOCAL A L'ELEMENT
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      I, ICOMPX, JGEOM, JMATE, NNO
+      INTEGER      I, JGEOM, JMATE, NNO
       REAL*8       PGL(3,3), SIGTH(32), TMOY(4), TSUP(4), TINF(4),
      +             XYZL(3,4), ZERO
       LOGICAL      INDITH
@@ -59,7 +59,6 @@ C
 C --- INITIALISATIONS :
 C     ===============
       ZERO   = 0.0D0
-      ICOMPX = 0
       OPTION = 'SIEF_ELGA_DEPL'
 C
       DO 10 I = 1,32
@@ -126,6 +125,6 @@ C --- PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES
 C --- EFFORTS GENERALISES SUR UN FEUILLET DE REFERENCE DIFFERENT
 C --- DU FEUILLET DU MAILLAGE (I.E. EN PEAU SUP, INF OU MOY) :
 C     ------------------------------------------------------
-      CALL EXCENT(OPTION,NOMTE,NNO,EFFGT,ICOMPX)
+      CALL EXCENT(OPTION,NOMTE,NNO,EFFGT)
 C
       END

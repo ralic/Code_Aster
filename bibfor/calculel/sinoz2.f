@@ -1,6 +1,6 @@
       SUBROUTINE SINOZ2(MODELE,NUME,SIGEL,SIGNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C ----------------------- DECLARATIONS --------------------------------
       CHARACTER*16 PHEN,NOMTE
       CHARACTER*19 NOEUB,MO,LIGRMO
       CHARACTER*24 SIGNO,SIGEL,LISVEC,NUNUME,TYPMAI,CONNEX,CONINV
-      CHARACTER*24 NOMJV
+      CHARACTER*24 NOMJV, ELRFAM
       REAL*8  RCMP(4),EPS,X(9),Y(9),A(9,9),B(9,4),DIAG(9)
       REAL*8  WK1(9,9),WK2(9)
       INTEGER NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
@@ -64,7 +64,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       CALL JEMARQ()
 C
-      NOMJV = '&&SINOZ2.FFORMES'
+      NOMJV  = '&&SINOZ2.FFORMES        '
+      ELRFAM = '&&SINOZ2.ELRE_FAMI      '
 
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER(SIGEL,'NBVARI_CST','STOP',IBID)
@@ -219,6 +220,11 @@ C    VERIFICATION DES TYPES DE MAILLE
       CALL JEVEUO(MA//'.COORDO    .VALE','L',IACOOR)
       CALL JEVEUO(SIGEL(1:19)//'.CELV','L',JCELV)
 
+C --- RECUPERATION DE L'ELREFE ET DE LA FAMILLE POUR CHAQUE MAILLE
+
+      CALL CELFPG ( SIGEL, ELRFAM )
+      CALL JEVEUO ( ELRFAM, 'L', JELFA )
+
 C   BOUCLE SUR LES NOEUDS
 C   *********************
 
@@ -252,9 +258,9 @@ C      POUR AMELIORER LE CONDITIONNEMENT DE LA MATRICE A
 
 C      CALCUL DE XMIN,XMAX,YMIN,YMAX SUR LE PATCH
 
-            XMIN = 1.D+10
+            XMIN =  1.D+10
             XMAX = -1.D+10
-            YMIN = 1.D+10
+            YMIN =  1.D+10
             YMAX = -1.D+10
             DO 140 IMA = 1,NBMAV
               NUMAV = ZI(IAMAV-1+IMA)
@@ -295,36 +301,8 @@ C    SI NOEUD BORD
   150         CONTINUE
 
 C        RECUPERATION DES FCTS DE FORME DE L'ELEMENT
-              IGREL = ZI(IA1+2* (NUMAV-1))
-              CALL JEVEUO(JEXNUM(MO//'.LIEL',IGREL),'L',IA2)
-              CALL JELIRA(JEXNUM(MO//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
-              ITYPEL = ZI(IA2-1+NEL)
-              CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
-              IAD = IATYMA - 1 + NUMAV
-              CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IAD)),TYPEMA)
-              IF (TYPEMA(1:5).EQ.'TRIA3') THEN
-                ELREFE = 'TR3'
-                FAMIL  = 'FPG3'
-              ELSE IF (TYPEMA(1:5).EQ.'TRIA6') THEN
-                ELREFE = 'TR6'
-                FAMIL  = 'FPG6'
-              ELSE IF (TYPEMA(1:5).EQ.'TRIA7') THEN
-                ELREFE = 'TR7'
-                FAMIL  = 'FPG6'
-              ELSE IF (TYPEMA(1:5).EQ.'QUAD4') THEN
-                ELREFE = 'QU4'
-                FAMIL  = 'FPG4'
-              ELSE IF (TYPEMA(1:5).EQ.'QUAD8') THEN
-                ELREFE = 'QU8'
-                FAMIL  = 'FPG9'
-              ELSE IF (TYPEMA(1:5).EQ.'QUAD9') THEN
-                ELREFE = 'QU9'
-                FAMIL  = 'FPG9'
-              ELSE
-                CALL UTMESS('F','SINOZ2','TYPE MAILLE NON TRAITEE: '//
-     &                                   TYPEMA )
-              END IF
-
+              ELREFE = ZK16(JELFA-1+NUMAV)(1:8)
+              FAMIL  = ZK16(JELFA-1+NUMAV)(9:16)
               CALL UTELVF ( ELREFE, FAMIL, NOMJV, NPG, NNO )
               CALL JEVEUO ( NOMJV, 'L', IVF )
 
@@ -475,6 +453,7 @@ C    SI PAS NOEUD BORD
       CALL JEDETR('&&SINOZ2.LONGCONINV')
       CALL JEDETR('&&SINOZ2.NOMINEL')
       CALL JEDETR('&&SINOZ2.IADINEL')
+      CALL JEDETR ( ELRFAM )
 
       CALL JEDEMA()
       END

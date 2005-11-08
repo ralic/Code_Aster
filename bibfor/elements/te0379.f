@@ -1,6 +1,8 @@
       SUBROUTINE TE0379 ( OPTION , NOMTE )
+      IMPLICIT NONE
+      CHARACTER*16        OPTION  , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16        OPTION  , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE: EXTENSION DU CHAM_ELEM ERREUR DES POINTS
 C                         DE GAUSS AUX NOEUDS
@@ -49,22 +49,24 @@ C
 C
 C --------- FIN DECLARATIONS NORMALISEES JEVEUX ----------------------
 C
-      INTEGER           I, NNO, IERRG, IERRN
-      REAL*8            ERREST, NUEST, SIGCAL
+      INTEGER    NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
+      INTEGER    I, IERRG, IERRN
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PERREUR','L',IERRG)
       CALL JEVECH('PERRENO','E',IERRN)
 C
-      ERREST = ZR(IERRG  )
-      NUEST  = ZR(IERRG+1)
-      SIGCAL = ZR(IERRG+2)
-C
-      DO 10 I=1,NNO
-        ZR(IERRN+3*I-3) = ERREST
-        ZR(IERRN+3*I-2) = NUEST
-        ZR(IERRN+3*I-1) = SIGCAL
+      DO 10 I = 1 , NNO
+        ZR(IERRN+9*I-9) = ZR(IERRG  )
+        ZR(IERRN+9*I-8) = ZR(IERRG+1)
+        ZR(IERRN+9*I-7) = ZR(IERRG+2)
+        ZR(IERRN+9*I-6) = ZR(IERRG+3)
+        ZR(IERRN+9*I-5) = ZR(IERRG+4)
+        ZR(IERRN+9*I-4) = ZR(IERRG+5)
+        ZR(IERRN+9*I-3) = ZR(IERRG+6)
+        ZR(IERRN+9*I-2) = ZR(IERRG+7)
+        ZR(IERRN+9*I-1) = ZR(IERRG+8)
    10 CONTINUE
 C
       END

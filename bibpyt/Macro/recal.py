@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 11/07/2005   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF recal Macro  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,16 +21,25 @@
 
 
 
-import string
-import copy
-import Numeric
-import types
-import Gnuplot
+import string, copy, Numeric, types
+# import Gnuplot
 import Cata
-from Cata.cata import INCLUDE,DETRUIRE
+from Cata.cata import INCLUDE, DETRUIRE, FIN, EXEC_LOGICIEL, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE
+from Utilitai.Utmess import UTMESS
 from Accas import _F
 
-import os
+import os, aster, cPickle, sys
+
+# try:
+#   import Gnuplot
+# except: pass
+
+try:
+   from Utilitai.Utmess import UTMESS
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
 
 
 #_____________________________________________
@@ -39,7 +48,7 @@ import os
 #_____________________________________________
 
 
-# Transforme les donneés entrées par l'utilsateur en tableau Numeric
+# Transforme les données entrées par l'utilisateur en tableau Numeric
 def transforme_list_Num(parametres,res_exp):
    dim_para = len(parametres)  #donne le nb de parametres
    val_para = Numeric.zeros(dim_para,Numeric.Float)
@@ -177,37 +186,6 @@ def calcul_F(self,UL,para,val,reponses):
       x.writelines(fichiersauv)
       x.close()
       return self.g_context['Lrep']
-
-#_____________________________________________
-#
-# IMPRESSIONS GRAPHIQUES
-#_____________________________________________
-
-def graphique(L_F,res_exp,reponses,iter,UL_out,interactif):
-   graphe=[]
-   impr=Gnuplot.Gnuplot()
-   Gnuplot.GnuplotOpts.prefer_inline_data=1
-   impr('set data style linespoints')
-   impr('set grid')
-   impr('set pointsize 2.')
-   impr('set terminal postscript color')
-   impr('set output "fort.'+str(UL_out)+'"')
-   for i in range(len(L_F)):
-         if interactif:
-            graphe.append(Gnuplot.Gnuplot(persist=0))
-            graphe[i]('set data style linespoints')
-            graphe[i]('set grid')
-            graphe[i]('set pointsize 2.')
-            graphe[i].xlabel(reponses[i][1])
-            graphe[i].ylabel(reponses[i][2])
-            graphe[i].title(reponses[i][0]+'  Iteration '+str(iter))
-            graphe[i].plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
-            graphe[i]('pause 5')
-#
-         impr.xlabel(reponses[i][1])
-         impr.ylabel(reponses[i][2])
-         impr.title(reponses[i][0]+'  Iteration '+str(iter))
-         impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
 
 
 #_____________________________________________

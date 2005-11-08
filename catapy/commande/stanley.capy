@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,4 +27,5 @@ STANLEY=MACRO(nom="STANLEY",op=stanley_ops,sd_prod=None,
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+         DISPLAY         =SIMP(statut='f',typ='TXM'),
 )  ;

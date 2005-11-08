@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,8 @@ C     CALCUL DU VECTEUR ELEMENTAIRE CONTRAINTE
 C     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C        'SIGM_ELNO_DEPL'   'SIGM_ELNO_DEPL_C'
-C        'SIPO_ELNO_DEPL'   'SIPO_ELNO_DEPL_C'
+C        'SIGM_ELNO_DEPL'
+C        'SIPO_ELNO_DEPL'
 C        'SIGM_ELNO_SIEF'  
 C        'SIPO_ELNO_SIEF'
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
@@ -137,7 +137,7 @@ C
       IF ( OPTION .EQ. 'SIGM_ELNO_DEPL' ) THEN
 C
 C     --- CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE ---
-      CALL POEFGR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE )
+         CALL POEFGR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE )
 C
 C     NOEUD 1 EFGE(1)  = N   EFGE(2)  = VY   EFGE(3)  = VZ
 C             EFGE(4)  = MT  EFGE(5)  = MFY  EFGE(6)  = MFZ
@@ -147,9 +147,6 @@ C
          CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
          CALL POSIGR ( NOMTE, EFGE, ZR(JEFFO) )
 C
-      ELSEIF ( OPTION .EQ. 'SIGM_ELNO_DEPL_C') THEN
-         CALL JEVECH ( 'PCONTRC' , 'E' , JEFFO )
-         CALL POSIGC ( NOMTE, KLC, E, NU, RHO, ALPHA, ZC(JEFFO) )
 C
       ELSEIF ( OPTION .EQ. 'SIPO_ELNO_DEPL' ) THEN
 C
@@ -163,10 +160,6 @@ C             EFGE(10) = MT  EFGE(11) = MFY  EFGE(12) = MFZ
 C
          CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
          CALL POSIPR ( NOMTE, EFGE, ZR(JEFFO) )
-C
-      ELSEIF ( OPTION .EQ. 'SIPO_ELNO_DEPL_C' ) THEN
-         CALL JEVECH ( 'PCONTPC' , 'E' , JEFFO )
-         CALL POSIPC ( NOMTE, KLC, E, NU, RHO, ALPHA, ZC(JEFFO) )
 C
       ELSEIF ( OPTION .EQ. 'SIGM_ELNO_SIEF' ) THEN
          CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )

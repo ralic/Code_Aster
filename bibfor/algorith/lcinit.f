@@ -2,11 +2,11 @@
      1                      MATERF,TIMED,TIMEF,
      2                      NR, NVI, YD,     EPSD,   DEPS, DY,
      3                      COMP,NBCOMM, CPMONO, PGL,
-     4                      INDICS)
+     4                      VIND,SIGD)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C       ----------------------------------------------------------------
         REAL*8          MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF
         REAL*8          PGL(3,3)
-        REAL*8          INDICS(*)
+        REAL*8          VIND(*),SIGD(6)
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
@@ -78,7 +78,7 @@ C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMIN(TYPESS,ESSAI,MOD,NMAT,MATERF,NR, NVI,YD,DEPS,DY,
      1                      COMP,NBCOMM, CPMONO, PGL,
-     2                     INDICS)
+     2                     TIMED,TIMEF,VIND,SIGD)
       ENDIF
 C
       END

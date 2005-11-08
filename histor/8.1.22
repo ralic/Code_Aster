@@ -1,0 +1,1030 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR acbhhcd G.DEVESA   DATE  le 08/11/2005 a 13:53:41
+
+------------------------------------------------------------------------
+REALISATION EL 2005-060
+   NB_JOURS_TRAV  : 10
+   INTERET_UTILISATEUR : NON
+   TITRE  "MACRO_MISS"
+   FONCTIONNALITE
+   Malgré le titre trompeur il s'agit de créer deux commandes
+   LIRE_IMPE_MISS et LIRE_FORC_MISS permettant de créer respectivement
+   une matrice généralisée et un vecteur généralisé de force sismique
+   à partir de la matrice d'impédance de sol (ou des forces sismiques de
+    sol) créée(s) par MISS3D pour une fréquence d'extraction donnée.
+   Cette matrice ou ce vecteur seront associés à un profil de
+   numérotation généralisée bâtie sur la base de Ritz des modes d'
+   interface. La résolution se fera désormais dans Aster dans une boucle
+    de fréquences avec DYNA_LINE_HARM sur base de projection de Ritz.
+   DETAILS
+   On introduit les 2 commandes :
+   LIRE_IMPE_MISS=OPER(op= 164,sd_prod=matr_asse_gene_c,
+                    reentrant='n',
+         BASE            =SIMP(statut='o',typ=base_modale ),
+         NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
+         FREQ_EXTR       =SIMP(statut='o',typ='R',max=1),
+         UNITE_RESU_IMPE =SIMP(statut='f',typ='I',defaut=30), )  ;
+   LIRE_FORC_MISS=OPER(op= 179,sd_prod=vect_asse_gene_c,
+                    reentrant='n',
+         BASE            =SIMP(statut='o',typ=base_modale ),
+         NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
+         FREQ_EXTR       =SIMP(statut='o',typ='R',max=1),
+         NOM_CMP         =SIMP(statut='o',typ='TXM',into=("DX","DY","DZ") ),
+         NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE"),defaut="DEPL"),
+         UNITE_RESU_FORC =SIMP(statut='f',typ='I',defaut=30), )  ;
+
+   # BASE: base modale de RITZ contenant des modes propres de structure
+    et des modes statiques d'interface
+   # NUME_DDL_GENE : numérotation généralisée associée à la base
+   précédente
+   # FREQ_EXTR : fréquence d'extraction de la matrice d'impédance de sol
+    calculée par MISS3D (ou des forces sismiques de sol calculées par
+   MISS3D) et relative(s) aux modes statiques d'interface.
+   # UNITE_RESU_IMPE : numéro d'unité logique de la matrice d'impédance
+   de sol calculée par MISS3D donnée soit comme entrée dans le profil d'
+   étude, soit comme résultat de MACRO_MISS dans le fichier de commandes.
+   # UNITE_RESU_FORC : numéro d'unité logique des forces sismiques de
+   sol calculées par MISS3D données comme entrée (issues d'un calcul
+   précédent MACRO_MISS avec post-traitement)
+   # NOM_CMP : nom de la composante correspondant à une direction de
+   champ sismique incident
+   # NOM_CHAM : nature du champ sismique incident unitaire imposé (par
+   exemple 'ACCE' si accélération unitaire imposée).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION
+     On complète le test ZZZZ108A en testant en plus d'une réponse harmonique
+     à une force imposée une réponse à une accélération sismique impoésée à
+     la base. On compare les résultats Miss-Aster et les résultats purement
+     Aster obtenus avec DYNA_LINE_HARM. Les différences sont nettement en
+     dessous de 0.1%. La très légère différence provenant d'une légère
+     dissymétrie de la matrice d'impédance qu'on symétrise ici.
+     On teste aussi les valeurs 'DEPL' et 'VITE' de NOM_CHAM dans
+     LIRE_FORC_MISS en vérifiant que les réponses des champs 'DEPL' et
+     'VITE' sont les mêmes que celles du champ 'ACCE' avec sollicitation
+     en accélération imposée quand on sollicite respectivement en déplacement
+     ou vitesse imposé(e).
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V1.01.108
+       EXPL_ : complétude de la modélisation ZZZZ108A
+     DOC_U : U7.02.32
+       EXPL_ : introduction de la commande LIRE_IMPE_MISS
+     DOC_U : U7.02.33
+       EXPL_ : introduction de la commande LIRE_FORC_MISS
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 08/11/2005 a 11:21:19
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-122
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  Résorption de Gnuplot
+   FONCTIONNALITE
+   Depuis le choix d'utiliser de Xmgrace, Gnuplot n'etait plus utilisé que
+   dans MACR_RECAL. On ajoute XMGRACE dans MACR_RECAL et on le met par defaut.
+   Gnuplot et Gnuplot.py n'est donc plus un pre-requis d'Aster, mais il est
+   encore utilisable si jamais il est présent.
+   DETAILS
+   On ajoute un nouveau mot-clé FORMAT pour le mcf GRAPHIQUE. Il est
+   optionnel et vaut 'XMGRACE' par defaut (val possible: 'GNUPLOT', 'XMGRACE')
+
+   GRAPHIQUE=_F(UNITE=90,
+                FORMAT='XMGRACE',
+                INTERACTIF='OUI',),
+
+   En fait, on utilise IMPR_FONCTION pour generer les courbes avec XMGRACE.
+   Tant que IMPR_FONCTION ne gere pas les pipes, on doit fermer chacune des
+   courbes générées pour pouvoir continuer l'optimisation (alors que Gnuplot
+   est fermé automatiquement au bout de 5 secondes, ce qui ne bloque pas
+   l'optimisation).
+   De plus, lorsque l'on veut sortir les courbes au format PS, celles-ci sont
+   toutes concacténées dans le fichier d'unité logique UNITE. Ce fichier est
+   utilisable avec certains logiciels, comme gv ou display (de Image Magick).
+   Note : si on veut utiliser Gnuplot mais que Gnuplot.py n'est pas disponible
+   alors on emet une alarme et on desactive l'affichage.
+   Fichier ajouté: reca_graphique.py
+   Fichiiers modifiés: Graph.py, macr_recal.capy, macr_recal_ops.py, recal.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.73.02
+       EXPL_ : Ajout du mot-clé FORMAT
+   VALIDATION
+     zzzz159a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-332
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : OUI
+   TITRE Plantage sale dans Stanley lorsque l'on veut tracer SIEF_ELGA ou
+     VARI_ELGA sur un group_ma et que ce n'est pas valide (par exemple le bord
+     d'un element HEXA).
+   FONCTIONNALITE
+   DETAILS
+     Cette fiche a deja ete soldée en HORS AREX par JP en 8.1.15.
+     Aujourd'hui Stanley ne plante plus mais le resultat visualisé sous GMSH est
+     vide. On considere la fiche AL soldée mais il reste à emettre une EL pour
+     pouvoir gerer ces cas la directement dans Stanley (ca revient à pouvoir
+     trapper en Python des <A> dans certaines commandes).
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sur un test perso
+
+------------------------------------------------------------------------------
+REALISATION EO 2005-106
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  Acces a VALE_CONT depuis STANLEY
+   FONCTIONNALITE
+     Le champ VALE_CONT (informations de contact) est disponible dans Stanley.
+   DETAILS
+     On ajoute l'option VALE_CONT dans cata_champs.py.
+     Fichier modifié: cata_champs.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     test perso
+
+------------------------------------------------------------------------------
+REALISATION EO 2005-104
+   NB_JOURS_TRAV  : 2.
+   INTERET_UTILISATEUR : OUI
+   TITRE  Tracé des champs sur la déformée depuis STANLEY
+   FONCTIONNALITE
+     Depuis STANLEY, on peut cocher un nouveau bouton pour imprimer le champ
+     ainsi que le champ des deplacements.
+     Ne fonctionne pas pour les champs ELGA.
+     Une fois dans GMSH, l'utilisateur peut afficher le champ sur le maillage
+     deformé (voir dans details).
+   DETAILS
+   Il a trois solutions pour visualiser le champ sur la deformée dans GMSH
+   (v1.60.1) :
+   Solution 1 (la plus générale):
+   - Decocher le champ XXX_DEPL_VECTEUR
+   - Aller dans Tools / Options puis 'View [0]' (ou celle correspondant
+     au champ à tracer)
+   - Onglet Offset, cliquer sur "Use general transformation expressions",
+     puis choisir Data Source = 'View [1]' (ou celle correspondant au champ
+     deformee)
+   Solution 2 (les deux champs doivent etre compatibles, ex. champ NOEU):
+   - Decocher le champ (ne laisser que le champ XXX_DEPL_VECTEUR)
+   - Aller dans Tools / Options puis 'View [1]' (ou celle correspondant
+     au champ XXX_DEPL_VECTEUR)
+   - Onglet Aspect, choisir Data Source = 'View [0]' (ou celle correspondant
+     au champ a visualiser)
+   - Dans ce meme onglet Aspect, mettre Vector Display = Displacement
+   Solution 3 (marche pour les champs NOEU et ELNO):
+   - Decocher le champ XXX_DEPL_VECTEUR
+   - Cliquer sur la case a droite du champ à visualiser puis choisir 'Plugins'
+     et 'Displacement Raise'.
+   - Dans la fenetre du plugin : Factor est le facteur d'amplification,
+     dTimeStep est l'instant utilisé dans le champ deformée pour construire
+     le mailage deformé (on defini un seul maillage deformé qui sera utilisé
+     pour tous les pas de temps du champ à visualiser).
+   - Cliquer sur About pour avoir les details concernant ce Plugin.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.31
+       EXPL_ : Modif doc de Stanley
+   VALIDATION
+     test perso
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 2.
+   INTERET_UTILISATEUR : OUI
+   FONCTIONNALITE  Amelioration diverses dans STANLEY
+   DETAILS
+   - Ajout d'un mot-clé facultatif DISPLAY dans la commande STANLEY. Sous
+     certaines configurations, la variable DISPLAY n'etait pas definie et donc
+     les utilisateurs n'arrivaient meme pas a lancer une fois Stanley pour
+     creer leur configuration personalisé (dans laquelle figure le display...)
+   - Suppression du message warning callit etc...
+   - Correction : la commande xmgrace etait systematiquement prise dans
+     aster.repout meme si la variable correspondante etait redefinie.
+   - Amelioration pour le mode WINDOWS de Stanley : on peut maintenant mettre
+     un sous-repertoire du repertoire de partage : dans la configuration
+     WINDOWS, pour la variable 'machine_gmsh_tmp', il faut ajouter le
+     sous-repertoire avec un \ : par exemple "PARTAGE\toto" signifie que le
+     nom de partage Windows est PARTAGE et que dedans on utilise un
+     sous-repertoire toto.
+     Dorenavent, on peut utiliser cette configuration Windows avec des
+     serveurs Samba (sous Unix ou Linux) ou des serveurs Microsoft (pour
+     lesquels le nom de partage abouti dans un repertoire dont l'utilisateur
+     n'a pas les droits d'ecriture).
+     - Exemple 1 : machine Portalis (pour EDF) avec un accès samba à une
+       machine Unix, cad une lettre de lecteur montée automatiquement vers un
+       compte Unix. Exemple pour EDF / AMA, utilisateur 'assire':
+       . serveur samba Unix : clayrd02.der.edf.fr
+       . login Unix : assire
+       . sous Samba, le nom de partage est le nom d'utilisateur
+       --> Dans Stanley, mettre :
+           mode = WINDOWS
+           machine_gmsh       = clayrd02.der.edf.fr
+           machine_gmsh_login = assire
+           machine_gmsh_pass  = mot_de_passe
+           machine_gmsh_tmp   = assire\tmp
+       Ne pas oublier de creer le repertoire /home/assire/tmp !
+     - Exemple 2 : machine sous serveur Microsoft. Exemple pour EDF / AMA :
+       . serveur Microsoft : clas0003.cla.edfgdf.fr
+       . login Microsoft : assire-aim
+       . le nom de partage est dans ce cas : USERS
+       . il faut definir un sous-repertoire car le home de l'utilisateur n'est
+         pas directement le repertoire partagé, c'est :
+         clas0003.cla.edfgdf.fr\USERS\assire-aim
+       Note : il faut se baser sur la configuration sous Windows pour
+       "deviner" la configuration samba a utiliser...
+       --> Dans Stanley, mettre :
+           mode = WINDOWS
+           machine_gmsh       = clas0003.cla.edfgdf.fr
+           machine_gmsh_login = assire-aim
+           machine_gmsh_pass  = mot_de_passe
+           machine_gmsh_tmp   = USERS\ASSIRE-AIM\tmp
+       Ne pas oublier de creer le repertoire tmp dans son repertoire partagé !
+     Note : afin de determiner les configurations qui fonctionnent, il peut
+     etre utile de simuler à la main l'operation avec la commande smbclient
+     depuis le serveur Aster :
+     smbclient //serveur/nom_de_partage password -U user
+     Tant que cette commande ne fonctionne pas, Stanley ne pourra pas
+     fonctionner!
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.31
+       EXPL_ : Modif doc de Stanley
+   VALIDATION
+     test perso
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1.
+   INTERET_UTILISATEUR : OUI
+   FONCTIONNALITE  Amelioration diverses dans STANLEY
+   DETAILS
+   - Ajout de quelques options dans cata_champs.py:
+      VITE et ACCE (dynamique)
+     Lineaire:
+      SIGM_ELNO_DEPL
+      EFGE_ELNO_DEPL
+      DEGE_ELNO_DEPL
+      SIGM_ELNO_TUYO (elements tuyaux)
+     Non-lineaire:
+      SIGM_ELNO_COQU (elements coques)
+      VARI_ELNO_COQU (elements coques)
+      EPSP_ELNO
+      EPSP_ELGA
+      ETOT_ELGA
+      ETOT_ELNO_ELGA
+   - On utilise maintenant les fonctionnalités de récupération des Exceptions
+     des commandes Aster en Python : maintenant Stanley ne peut plus planter
+     dans les commandes Aster. Au pire il ne fait rien et dit d'aller voir ce
+     qui s'est passé dans le fichier .mess.
+   - Corrections pour Aster sous Windows (utilisation de IMPR_FONCTION, ...)
+   - Remplacement de quelques 'print' par des UTMESS('I',..)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.31
+       EXPL_ : Modif doc de Stanley
+   VALIDATION
+     test perso
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 08/11/2005 a 13:47:38
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-355
+   NB_JOURS_TRAV  : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE VARIABLE NON INITIALISEE DANS DYNA_TRAN_EXPLI
+   FONCTIONNALITE
+     DYNA_TRAN_EXPLI plantait sur ROCKS de facon mysterieuse.
+     Comme on pouvait s'en douter, c'etait du a une variable non initialisee.
+     Puisqu'elle n'est pas exploitee actuellement pour DYNA_TRAN_EXPLI, cela ne
+     posait pas de probleme sauf pour un compilo plus conscencieux.
+   DETAILS
+     La variable IALGO enregistre le type de methode d'integration temporelle
+     utilisee et est exploitee, il me semble, par le contact continu.
+     Elle n'etait pas initialisee pour l'integration explicite dans NDLECT,
+     la routine de lecture des operandes de dynamique.
+     J'ai affectee le numero 6 a DYNA_TRAN_EXPLI.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage des cas tests qui posaient problemes
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-383
+   NB_JOURS_TRAV  : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE VARIABLES NON INITIALISEES DANS RECU_FONCTION(RESU_GENE)
+   FONCTIONNALITE
+     Sur ROCKS avec compilateur INTEL, RECU_FONCTION avec un RESU_GENE plantait
+     sur certaines syntaxes.
+     C'etait du a un oubli d'initialisation de deux variables locales.
+   DETAILS
+     Dans RFRGEN on utilise les variables MONMOT(1) et MONMOT(2)
+     pour savoir si la restitution du calcul transitoire sur base modale
+     vers l'espace physique est en multi_appui et/ou avec correction statique.
+     Ils n'etaient pas initialises ce qui pouvait poser probleme sur
+     des RECU_GENE successifs. Seul le compilo INTEL a exhume le probleme
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage des cas tests qui posaient problemes
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 08/11/2005 a 12:13:22
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-403
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE :  NEW8.1.20, les tests sslv111a et c plantent
+   FONCTIONNALITE
+     supression de ELREF6 dans SINOZ2
+   DETAIL
+     ELREF6 questionne les catalogues d'éléments et renvoie le bon nombre
+     de points de gauss pour la famille RIGI.
+     J'avais imposé 3 points de gauss pour le TR3 alors que le champ de
+     contrainte était calculé sur 1 point de gauss.
+     Le test sslv111a plantait sur un débordement de tableau.
+   SOLUTION :
+     SINOZ2 appelle la routine CELFPG qui fournit pour chaque maille
+     l'ELREFE et la famille de points de gauss.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage des 5 cas tests validant la calcul de SIGM_NOZ2_ELGA
+
+--------------------------------------------------------------------------
+REALISATION EL 2001-188
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   INTERET_UTILISATEUR : OUI
+   TITRE : amélioration de l'estimateur d'erreur en mécanique
+   FONCTIONNALITE
+     1- Pour etre au meme niveau que la thermique :
+     on décompose l'erreur en 4 x 2 termes (absolue/relatif)
+          - terme total
+          - terme volumique
+          - terme de saut
+          - terme de neumann
+     permettant ainsi à l'utilisateur de pouvoir éventuellement orienter
+     sa stratégie de remaillage sur les termes volumiques ou sur certain
+     type de CL.
+     2- Prévenir l'utilisateur lorsqu'il fournit un chargement dont l'erreur
+     ne sera pas calculée (Alarme dans RESLOC.F).
+   DETAIL
+     1- ajout dans 6 nouveaux termes pour le mode local EERREUR
+     EERREUR = ERREUR ELEM__ (ERREST NUEST  SIGCAL
+                              TERMRE TERMR2 TERMSA TERMS2 TERMNO TERMN2 )
+     Pour chaque élément :
+       ERREST : erreur absolue
+       NUEST  : erreur relative
+       SIGCAL : norme du tenseur des contraintes
+       TERMRE : erreur absolue du résidu de l'équation d'équilibre
+       TERMR2 : erreur relative du résidu de l'équation d'équilibre
+       TERMSA : erreur absolue des sauts de contraintes sur chaque bord
+       TERMS2 : erreur relative des sauts de contraintes sur chaque bord
+       TERMNO : erreur absolue des sauts entre les contraintes normales et
+                la force de Neumann
+       TERMN2 : erreur relative des sauts entre les contraintes normales et
+                la force de Neumann
+     Suppression du te0385 en doublon avec le te0379
+
+     2- Comme le dit la doc U4.81.01, on ne tient compte que les chargements
+     de type PESANTEUR, ROTATION, FORCE_INTERNE, PRES_REP, FORCE_FACE et
+     FORCE_ARETE. Pour les autres forces, le code émet un message d'Alarme
+     signalant que ce chargement ne sera pas traité.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R4.10.02  estimateur d'erreur en résidu
+       EXPL_ : calcul de 6 nouveaux termes
+     DOC_U : U4.81.01 opérateur CALC_ELEM
+       EXPL_ : calcul de 6 nouveaux termes
+   VALIDATION
+     validation dans le cas test sslv07a (3D)
+     validation dans le cas test ssls09b (2D)
+     passage des 45 cas tests validant le calcul d'erreur
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-001
+   POUR_LE_COMPTE_DE : X. DESROCHES
+   NB_JOURS_TRAV  : 9.
+   INTERET_UTILISATEUR : OUI
+   TITRE : AFFE_CHAR_MECA calcul de normales imprécis
+   FONCTIONNALITE :
+     Le calcul de normale pour des elements quadratiques se fait
+     comme si les elements etaient linéaires.
+   DETAIL :
+   La routine responsable du calcul de ces normales, CANORT, a été entièrement
+   réécrite.
+   Dorénavant, on utilise les fonctions de formes de l'élément de peau ( que l'on
+   récupère avec une nouvelle routine DFFNO) pour calculer de facon exacte la
+   normale ( en quadratique notamment ).
+   Pour cela, on balaie tous les noeuds concernés et on s'intéresse à toutes les
+   mailles connectés à ce noeud ( via la connectivité inverse ). Ensuite, on fait
+   une moyenne pour chaque noeud sur toutes les mailles.
+   Lors du passage de la validation, les cas tests ssnv112a,b et c ont vu leurs
+   alarmes supprimés ( écart entre la normale et la normale moyenne supérieure à
+   10 degrés ).
+   Par contre il a fallu ajuster les tolérances ( cas test analytique ) sur les
+   contraintes et/ou les erreurs. A noter que les résultats du champ de
+   déplacement sont par contre plus proche de la solution analytique de référence.
+
+Pour le ssnv112a :
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: ERRE_ELGA_NORE
+REFERENCE: NON_REGRESSION   VERSION: 7.2.10
+NOOK NUEST        RELA    -9.759 % VALE: 1.4741827586470D-01
+M1       1        TOLE     0.100 % REFE: 1.6335975600357D-01
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: ERRE_ELNO_ELGA
+REFERENCE: NON_REGRESSION   VERSION: 7.2.10
+NOOK ERREST       RELA    -9.757 % VALE: 9.4399990209059D-05
+M1       N4       TOLE     0.100 % REFE: 1.0460625523925D-04
+
+Pour le ssnv112b
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: SIEF_NOEU_ELGA
+REFERENCE: ANALYTIQUE
+NOOK SIXY         ABSO    -3.333   VALE:-3.3334971027734D+00
+         N5       TOLE     3.000   REFE: 0.0000000000000D+00
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: ERRE_ELGA_NORE
+REFERENCE: NON_REGRESSION   VERSION: 7.2.10
+NOOK NUEST        RELA     0.428 % VALE: 1.5237023391660D+00
+M531     1        TOLE     0.010 % REFE: 1.5172144847232D+00
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: ERRE_ELNO_ELGA
+REFERENCE: NON_REGRESSION   VERSION: 7.2.10
+NOOK ERREST       RELA     0.292 % VALE: 4.6170971515351D-04
+M531     N5       TOLE     0.010 % REFE: 4.6036685268245D-04
+
+Pour le ssnv112c
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: SIEF_NOEU_ELGA
+REFERENCE: ANALYTIQUE
+NOOK SIXY         ABSO     2.228   VALE: 2.2279998991612D+00
+         N2       TOLE     2.000   REFE: 0.0000000000000D+00
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: ERRE_ELGA_NORE
+REFERENCE: NON_REGRESSION   VERSION: 7.2.10
+NOOK NUEST        RELA    35.459 % VALE: 5.4485432124957D-01
+M2       1        TOLE     0.100 % REFE: 4.0222869221567D-01
+ ---- RESULTAT:  EVOL     NUME_ORDRE:   1 NOM_CHAM: ERRE_ELNO_ELGA
+REFERENCE: NON_REGRESSION   VERSION: 7.2.10
+NOOK ERREST       RELA    35.392 % VALE: 2.7566668668882D-03
+M2       N2       TOLE     0.100 % REFE: 2.0360587349278D-03
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U4.44.01
+     EXPL_ : supprimer le paragraphe expliquant les approximations faites en
+             quadratiques
+   VALIDATION : passage de la liste contenant AFFE_CHAR_MECA ,FACE_IMPO DNOR
+                LIAISON_MAIL DNOR et LIAISON_CYCL DNOR ( 59 cas tests )
+
+--------------------------------------------------------------------------------
+REALISATION EL 2005-063
+   NB_JOURS_TRAV  : 7.
+   POUR_LE_COMPTE_DE : O. NICOLAS et J. PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_ELEM sur concept DYNA_HARMO
+   FONCTIONNALITE : Il s'agit de développer plusieurs options de CALC_ELEM pour le
+   concept DYNA_HARMO ( champs complexes )
+   DETAILS
+      Les options développées sont :
+        'SIEF_ELGA_DEPL', 'SIEF_ELNO_ELGA',
+        'SIGM_ELNO_DEPL',
+        'EPSI_ELNO_DEPL', 'EPSI_ELGA_DEPL',
+        'EPOT_ELEM_DEPL', 'ECIN_ELEM_DEPL',
+        'ENEL_ELGA',      'ENEL_ELNO_ELGA'
+     De plus dans un cadre plus large, on profite de cette évolution pour revoir la
+     facon de traiter les options complexes. Désormais, toutes les options complexes
+     sont supprimés en tant qu'option indépendantes. Cela signifie qu'il n'existe plus
+     d'option SIGM_ELNO_DEPL_C par exemple. Elles sont regroupés sous l'option réelle
+     équivalente.
+     On divise les options de post-traitement en trois paquets :
+     1) Les options dont le champ d'entrée est potentiellement complexe et de type DEPL.
+        Par exemple SIEF_ELGA_DEPL
+     2) Les options dont le champ d'entrée est potentiellement complexe et de type autre
+     que DEPL. Par exemple ENEL_ELGA
+     3) Les options dont le champ d'entrée et de sortie est réel pour l'instant. Par
+     exemple EQUI_ELNO_SIGM
+     Cette séparation est rassemblée dans la nouvelle routine MECEUC qui remplace dans
+     mecalc l'appel à CALCUL. En effet, c'est maintenant MECEUC qui fait l'appel à
+     CALCUL.
+     Pour l'option 1), le champ d'entrée est inspecté. S'il est réel on fait un appel
+     classique à CALCUL. S'il est complexe on sépare ce champ en partie réelle et
+     partie imaginaire ( grace à une nouvelle routine SEPACH )et on lance CALCUL avec
+     ces deux champs. Ensuite, on réassemble la partie réelle et imaginaire ( avec la
+     nouvelle routine ASSACH ou BARYCH ) dans un vrai champ de sortie.
+     Pour l'option 2), la facon de procéder est identique mais le champ inspecté est
+     différent
+     Pour l'option 3) on fait un appel à CALCUL
+     Pour réaliser ces développements, il a fallu modifier toutes les options
+     potentiellement complexes en introduisant dans les catalogues comme champ de
+     sortie le champ complexe. Meme si l'option ne sera traitée que d'un point de vue
+     réel, le champ doit être présent à cause de vérification ( notamment passage en un
+     cham_elem_s ) qui compare le cham_elem avec le catalogue compilé de tous les
+     catalogues d'éléments.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D6.00.01
+       EXPL_ : ajouter les nouvelles routines SEPACH et ASSACH
+     DOC_V : V2.03.113
+       EXPL_ : doc du nouveau cas test sdls113a
+     DOC_V : V2.04.124
+       EXPL_ : doc du nouveau cas test sdlv124a
+   VALIDATION
+     nouveau cas test sdls113a et sdlv124a pour valider l'introduction de
+     nouvelles options et liste restreinte pour le travail complémentaire.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 08/11/2005 a 12:25:35
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  Suppression de la base locale
+   FONCTIONNALITE
+   DETAILS
+     Depuis l'introduction du superviseur Python, il est inutile de
+     créer et de trainer en mémoire les objets systèmes associés à la
+     base LOCALE. Cette dernière est donc purement supprimée.
+     On constate au passage que le mot clé de DEBUT/POURSUITE
+     DEBUG (JXVERI='OUI') n'est plus actif. Christophe modifie la
+     récupération du mot clé pour éviter de créer un objet sur la base
+     DUMMY et rend de nouveau actif l'exécution de la routine JXVERI
+     entre chaque commande.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : liste restreinte
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE  Portabilite de la fonction C hdfwsv
+   FONCTIONNALITE
+   DETAILS
+     Correction signalée par P.Badel suite au portage sur le cluster
+     du Lamsid :
+     On ajoute l'include <stdlib.h> dans la fonction C hdfwsv qui par
+     son absence provoque une erreur avec la version compilée sur AMD64
+     avec le compilateur pgi
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : liste restreinte
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-405
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  zzzz119a Memoire insuffisante
+   FONCTIONNALITE Concerne en réalité la relecture des bases HDF.
+   DETAILS
+     Il s'agit en fait d'un écrasement mémoire.
+     Depuis la correction de l'AL2005-345 une erreur dans la dimension
+     de l'objet systeme IUSADI a été introduite dans la routine JELIHD
+     de relecture d'une base au format HDF pouvait entrainer un
+     écrasement de la segmentation memoire. On rétablit la bonne
+     dimension de l'objet.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : test zzzz119a
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------
+REALISATION EL 2005-223
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  Nouvelle version  de med 2.2.3
+   FONCTIONNALITE
+   DETAILS
+     Mise à niveau des librairies MED et HDF.
+     On restitue toutes les fonctions C de bibc/hdf (interface HDF/JEVEUX)
+     pour pointer sur le bon include (/aster/local/hdf5-1.6.4/include sur clayastr).
+     Cette nouvelle version est compatible avec les anciens fichiers, mais
+     il faut mettre à niveau HOMARD pour qu'il puisse relire les "nouveaux"
+     maillages.
+     Les librairies sont déposées sous /aster/local/med2.2.3/lib/libmed.a et
+     /aster/local/hdf5-1.6.4/lib/libhdf5.a sur l'AlphaServer. Le fichier
+     config.txt est modifié pour pointer au bon endroit.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : tests s'appuyant sur med ou hdf dans la liste complète
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR gnicolas G.NICOLAS   DATE  le 07/11/2005 a 16:46:56
+
+-----------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV : 0,5
+   INTERET_UTILISATEUR : OUI
+   TITRE : Mise à jour de la version de HOMARD
+   FONCTIONNALITE : Pour corriger un bug dans HDF, la bibliothèque MED a évolué
+   pour passer de 2.2.2 à 2.2.3. En conséquence, la version de HOMARD associée change
+   également : la version par défaut passe de 7.5 à 7.7.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  OUI
+     DOC_U : U7.03.01
+      EXPL_ : U7.03.01 : macro-commande MACR_ADAP_MAIL ; numéro de version de HOMARD.
+     DOC_U : U7.03.02
+      EXPL_ : U7.03.02 : macro-commande MACR_INFO_MAIL ; numéro de version de HOMARD.
+   VALIDATION : zzzz121a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR joumana J.EL-GHARIB   DATE  le 08/11/2005 a 17:12:41
+
+----------------------------------------------------------------------------
+REALISATION EL 2005-282
+   NB_JOURS_TRAV  : 8
+   INTERET_UTILISATEUR : OUI
+   TITRE :  EVOLUTION DE L'ARCHITECTURE MICRO_MACRO
+   FONCTIONNALITE STAT_NON_LINE - MONOCRISTAL
+     Dans le cadre des développements prévus en 2005 et des travaux d'optimisation
+     des performances  (projet Perfect/Sinergy), on propose de restituer les
+     évolutions suivantes :
+     - On ajoute une nouvelle alternative d'initialisation du Newton local:
+       Initialisation du vecteur solution par sa valeur à l'instant de calcul précédent
+       (qui remplace l'initialisation par une valeur d'essai).
+     - Les performances sur un aagregat de 20 grains () sont :
+       - initialisation par une solution nulle :  1581s, 8 à 10 itérations locales
+       - intialisation actuelle (solution d'essai) erreur numérique
+       - intialisation proposee (solution déduite de la solution du pas précédent)  :
+         1516s, 7 à 9 itérations locales
+     - Possibilité de faire un post traitement Weibull à la suite d'un calcul avec
+       la loi MONOCRISTAL ou POLYCRISTAL
+     - Prise en compte du changement de répère pour le polycristal avec l'activation
+       du mot clé  ORIEN lors d'un calcul avec la loi Polycristal
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R5.03.11-A
+       EXPL_ : Comportements élastoviscoplastiques mono et polycristallins
+     DOC_V : V6.04.171-A
+       EXPL_ : Comparaison POLY_CFC et MONOCRISTAL
+   VALIDATION
+     test modifié :
+       ssnv171c : comparaison polycristal avec deux orientations différentes et test  de
+                  la contrainte de WEIBULL
+     Passage de tous les tests utilisant DEFI_COMPOR :
+       sslv120a ssnv171b  ssnv172a  ssnv125a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 08/11/2005 a 08:31:36
+
+-----------------------------------------------------------------------------
+CORRECTION AL 2005-406
+   NB_JOURS_TRAV  : 3
+   INTERET_UTILISATEUR : NON
+   TITRE :  Problème mémoire dans Python
+   FONCTIONNALITE
+   1/.Olivier s'inquiète à juste titre de voir la mémoire utilisée par son
+      job grimpée en flèche, allocation dynamique Python car le malloc
+      de Jeveux est fait une fois pour toutes par DEBUT.
+      Il ne s'agit pas d'un oubli de DECREF quelque part mais de la
+      concaténation de mots-clés facteurs passés à CREA_CHAMP.
+         mcfact=_F( GROUP_MA = 'ALL_SUP',
+                    NOM_CMP  = 'X1',
+                    VALE_F   = bb1[n] )
+         liste_2.append(mcfact)
+      Deux effets :
+       - la liste prend de la place en mémoire,
+       - CREA_CHAMP/AFFE devient très long car il affecte 5*n formules au
+         pas de temps n au lieu de 5.
+      Il suffit de faire "liste_2 = []" à chaque itération.
+      Sur 100 pas de temps, le temps passe de 1500 à 95 s, la mémoire total
+      de 250 à 130 Mo (dont 128 pour Jeveux).
+   2/. Vérification des Py_DECREF dans astermodule.c + un peu de ménage :
+       - manquaient des Py_DECREF dans MakeTupleInt/Float,
+       - manquaient des Py_DECREF dans putvir, iniran, aster_argv,
+       - Py_BuildValue("iiiO",...) => "iiiN" pour ne pas incrémenter le
+         refcount de 'concepts' dans aster_poursu,
+       - PyDict_SetItem : DECREF sur key et value ?
+       - ménage dans putcolljev.
+   DETAILS
+      L'évolution de la mémoire a été analysée avec de simples ps
+      lancés à différents moments, c'est le paramètre VSZ (virtual
+      memory size) qui a été relevé.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : C.DURAND
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      Ménage dans astermodule.c : suppression de GETCMD
+      Dans op0037 et ops007, on utilise à la place GCUCON.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF hdf/hdfcld                    d6bhhjp J.P.LEFEBVRE        43      1      1
+       C MODIF hdf/hdfclf                    d6bhhjp J.P.LEFEBVRE        43      1      1
+       C MODIF hdf/hdfclg                    d6bhhjp J.P.LEFEBVRE        42      1      1
+       C MODIF hdf/hdfcrf                    d6bhhjp J.P.LEFEBVRE        55      1      1
+       C MODIF hdf/hdfcrg                    d6bhhjp J.P.LEFEBVRE        63      1      1
+       C MODIF hdf/hdfnbo                    d6bhhjp J.P.LEFEBVRE        68      1      1
+       C MODIF hdf/hdfnom                    d6bhhjp J.P.LEFEBVRE        79      1      1
+       C MODIF hdf/hdfopd                    d6bhhjp J.P.LEFEBVRE        64      1      1
+       C MODIF hdf/hdfopf                    d6bhhjp J.P.LEFEBVRE        52      1      1
+       C MODIF hdf/hdfopg                    d6bhhjp J.P.LEFEBVRE        59      1      1
+       C MODIF hdf/hdfrat                    d6bhhjp J.P.LEFEBVRE        67      1      1
+       C MODIF hdf/hdfrsv                    d6bhhjp J.P.LEFEBVRE        69      1      1
+       C MODIF hdf/hdftsd                    d6bhhjp J.P.LEFEBVRE        68      1      1
+       C MODIF hdf/hdftyp                    d6bhhjp J.P.LEFEBVRE        97      1      1
+       C MODIF hdf/hdfwat                    d6bhhjp J.P.LEFEBVRE        69      1      1
+       C MODIF hdf/hdfwsv                    d6bhhjp J.P.LEFEBVRE       124      2      2
+       C MODIF supervis/astermodule         mcourtoi M.COURTOIS        4077    121    126
+ CASTEST AJOUT sdls113a                      cibhhlv L.VIVAN            416    416      0
+ CASTEST AJOUT sdlv124a                      cibhhlv L.VIVAN            555    555      0
+ CASTEST MODIF ssll102e                      d6bhhjp J.P.LEFEBVRE        73      2      4
+ CASTEST MODIF ssls09b                       cibhhlv L.VIVAN            342     34      1
+ CASTEST MODIF sslv04b                       d6bhhjp J.P.LEFEBVRE       667      2      4
+ CASTEST MODIF sslv04l                       d6bhhjp J.P.LEFEBVRE       338      2      4
+ CASTEST MODIF sslv04m                       d6bhhjp J.P.LEFEBVRE       338      2      4
+ CASTEST MODIF sslv07a                       cibhhlv L.VIVAN            677     39      2
+ CASTEST MODIF ssnv112a                      cibhhlv L.VIVAN            202      5      5
+ CASTEST MODIF ssnv112b                      cibhhlv L.VIVAN            233      6      6
+ CASTEST MODIF ssnv112c                      cibhhlv L.VIVAN            182      6      6
+ CASTEST MODIF ssnv171c                      joumana J.EL-GHARIB        450    233     43
+ CASTEST MODIF zzzz108a                      acbhhcd G.DEVESA           892    286      6
+ CASTEST MODIF zzzz121a                     gnicolas G.NICOLAS          271      3      3
+CATALOGU MODIF compelem/grandeur_simple__    cibhhlv L.VIVAN            605     31      2
+CATALOGU MODIF options/efge_elno_depl        cibhhlv L.VIVAN             90      2      2
+CATALOGU MODIF options/epsi_elga_depl        cibhhlv L.VIVAN             64      2      1
+CATALOGU MODIF options/epsi_elno_depl        cibhhlv L.VIVAN             56      2      1
+CATALOGU MODIF options/sief_elga_depl        cibhhlv L.VIVAN             92      2      1
+CATALOGU MODIF options/sief_elno_elga        cibhhlv L.VIVAN             59      2      1
+CATALOGU MODIF options/sigm_elno_depl        cibhhlv L.VIVAN             92      2      1
+CATALOGU MODIF options/sipo_elno_depl        cibhhlv L.VIVAN             81      2      1
+CATALOGU MODIF typelem/gener_me2db1          cibhhlv L.VIVAN            203     10      9
+CATALOGU MODIF typelem/gener_me2dg_1         cibhhlv L.VIVAN            371      7      1
+CATALOGU MODIF typelem/gener_me2dg_2         cibhhlv L.VIVAN            387      7      1
+CATALOGU MODIF typelem/gener_me2dt0          cibhhlv L.VIVAN            151      6      4
+CATALOGU MODIF typelem/gener_me2dt1          cibhhlv L.VIVAN            154      6      4
+CATALOGU MODIF typelem/gener_me2tr0          cibhhlv L.VIVAN            154      6      4
+CATALOGU MODIF typelem/gener_me2tr1          cibhhlv L.VIVAN            157      6      4
+CATALOGU MODIF typelem/gener_me3d_3          cibhhlv L.VIVAN            617     15      9
+CATALOGU MODIF typelem/gener_me3dg_1         cibhhlv L.VIVAN            347      7      1
+CATALOGU MODIF typelem/gener_me3dg_3         cibhhlv L.VIVAN            371      7      1
+CATALOGU MODIF typelem/gener_me3di3          cibhhlv L.VIVAN            207     13      4
+CATALOGU MODIF typelem/gener_me3dj2          cibhhlv L.VIVAN             92      1      1
+CATALOGU MODIF typelem/gener_me3g33          cibhhlv L.VIVAN            164      5      1
+CATALOGU MODIF typelem/gener_me3h13          cibhhlv L.VIVAN            212     10      1
+CATALOGU MODIF typelem/gener_me3h23          cibhhlv L.VIVAN            206      8      1
+CATALOGU MODIF typelem/gener_me3h33          cibhhlv L.VIVAN            173      6      1
+CATALOGU MODIF typelem/gener_me3h43          cibhhlv L.VIVAN            215     11      1
+CATALOGU MODIF typelem/gener_me3h53          cibhhlv L.VIVAN            209      9      1
+CATALOGU MODIF typelem/gener_me_x            cibhhlv L.VIVAN            597     15      9
+CATALOGU MODIF typelem/gener_meaa12          cibhhlv L.VIVAN            139      6      1
+CATALOGU MODIF typelem/gener_meaa22          cibhhlv L.VIVAN            184     11      1
+CATALOGU MODIF typelem/gener_meaa32          cibhhlv L.VIVAN            181     10      1
+CATALOGU MODIF typelem/gener_meafo2          cibhhlv L.VIVAN            169      7      1
+CATALOGU MODIF typelem/gener_meag32          cibhhlv L.VIVAN            128      4      1
+CATALOGU MODIF typelem/gener_meah12          cibhhlv L.VIVAN            191      9      1
+CATALOGU MODIF typelem/gener_meah22          cibhhlv L.VIVAN            188      8      1
+CATALOGU MODIF typelem/gener_meah32          cibhhlv L.VIVAN            149      5      1
+CATALOGU MODIF typelem/gener_meah42          cibhhlv L.VIVAN            194     10      1
+CATALOGU MODIF typelem/gener_meah52          cibhhlv L.VIVAN            191      9      1
+CATALOGU MODIF typelem/gener_meax_2          cibhhlv L.VIVAN            578     14      3
+CATALOGU MODIF typelem/gener_meaxs2          cibhhlv L.VIVAN            543     14      3
+CATALOGU MODIF typelem/gener_mebar1          cibhhlv L.VIVAN            203     10      9
+CATALOGU MODIF typelem/gener_mecab1          cibhhlv L.VIVAN            154      3      1
+CATALOGU MODIF typelem/gener_mecap1          cibhhlv L.VIVAN            147      3      1
+CATALOGU MODIF typelem/gener_mecpg2          cibhhlv L.VIVAN            366      7      1
+CATALOGU MODIF typelem/gener_mecpl2          cibhhlv L.VIVAN            569     14      3
+CATALOGU MODIF typelem/gener_mecq32          cibhhlv L.VIVAN            269     11      1
+CATALOGU MODIF typelem/gener_mecqd1          cibhhlv L.VIVAN            198      9      1
+CATALOGU MODIF typelem/gener_meda12          cibhhlv L.VIVAN            139      6      1
+CATALOGU MODIF typelem/gener_meda22          cibhhlv L.VIVAN            184     11      1
+CATALOGU MODIF typelem/gener_meda32          cibhhlv L.VIVAN            181     10      1
+CATALOGU MODIF typelem/gener_medg32          cibhhlv L.VIVAN            128      4      1
+CATALOGU MODIF typelem/gener_medh12          cibhhlv L.VIVAN            191      9      1
+CATALOGU MODIF typelem/gener_medh22          cibhhlv L.VIVAN            188      8      1
+CATALOGU MODIF typelem/gener_medh32          cibhhlv L.VIVAN            149      5      1
+CATALOGU MODIF typelem/gener_medh42          cibhhlv L.VIVAN            194     10      1
+CATALOGU MODIF typelem/gener_medh52          cibhhlv L.VIVAN            191      9      1
+CATALOGU MODIF typelem/gener_medit0          cibhhlv L.VIVAN            163      6      4
+CATALOGU MODIF typelem/gener_medit1          cibhhlv L.VIVAN            163      6      4
+CATALOGU MODIF typelem/gener_medkg1          cibhhlv L.VIVAN            214      8      8
+CATALOGU MODIF typelem/gener_medkt2          cibhhlv L.VIVAN            317     12     10
+CATALOGU MODIF typelem/gener_medpg2          cibhhlv L.VIVAN            368      7      1
+CATALOGU MODIF typelem/gener_medpl2          cibhhlv L.VIVAN            586     14      8
+CATALOGU MODIF typelem/gener_medtr0          cibhhlv L.VIVAN            171      6      4
+CATALOGU MODIF typelem/gener_medtr1          cibhhlv L.VIVAN            206      6      4
+CATALOGU MODIF typelem/gener_megri2          cibhhlv L.VIVAN            203     12     10
+CATALOGU MODIF typelem/gener_megrm2          cibhhlv L.VIVAN            162      3      5
+CATALOGU MODIF typelem/gener_mepct1          cibhhlv L.VIVAN            223     10     22
+CATALOGU MODIF typelem/gener_mepde1          cibhhlv L.VIVAN            263     10     22
+CATALOGU MODIF typelem/gener_mepdg1          cibhhlv L.VIVAN            213      8     11
+CATALOGU MODIF typelem/gener_mepdt1          cibhhlv L.VIVAN            257     10     22
+CATALOGU MODIF typelem/gener_mepgd1          cibhhlv L.VIVAN            196      3      7
+CATALOGU MODIF typelem/gener_mepli2          cibhhlv L.VIVAN            194     11      3
+CATALOGU MODIF typelem/gener_mepmf1          cibhhlv L.VIVAN            175      8      7
+CATALOGU MODIF typelem/gener_mepmf2          cibhhlv L.VIVAN            209      4      7
+CATALOGU MODIF typelem/gener_meshb3          cibhhlv L.VIVAN            320      7      3
+CATALOGU MODIF typelem/gener_metu61          cibhhlv L.VIVAN            269      8     10
+CATALOGU MODIF typelem/gener_mf2fi2          cibhhlv L.VIVAN            104      3      1
+CATALOGU MODIF typelem/gener_mv2d_2          cibhhlv L.VIVAN            327     11      3
+CATALOGU MODIF typelem/gener_mv3d_3          cibhhlv L.VIVAN            427     15      9
+CATALOGU MODIF typelem/mecpqs4               cibhhlv L.VIVAN            521     15      3
+CATALOGU MODIF typelem/mecptr3               cibhhlv L.VIVAN            554     14      3
+CATALOGU MODIF typelem/mecptr6               cibhhlv L.VIVAN            550     14      3
+CATALOGU MODIF typelem/medpqs4               cibhhlv L.VIVAN            532     15      3
+CATALOGU MODIF typelem/medpqs8               cibhhlv L.VIVAN            531     14      3
+CATALOGU MODIF typelem/medptr6               cibhhlv L.VIVAN            560     14      8
+CATALOGU MODIF typelem/met3seg3              cibhhlv L.VIVAN            260      8     10
+CATALOGU MODIF typelem/met3seg4              cibhhlv L.VIVAN            260      8     10
+CATALOGU SUPPR options/efge_elno_depl_c      cibhhlv L.VIVAN             89      0     89
+CATALOGU SUPPR options/sigm_elno_depl_c      cibhhlv L.VIVAN             91      0     91
+CATALOGU SUPPR options/sipo_elno_depl_c      cibhhlv L.VIVAN             82      0     82
+CATALOPY AJOUT commande/lire_forc_miss       acbhhcd G.DEVESA            30     30      0
+CATALOPY AJOUT commande/lire_impe_miss       acbhhcd G.DEVESA            28     28      0
+CATALOPY MODIF commande/macr_adap_mail      gnicolas G.NICOLAS          351      5      5
+CATALOPY MODIF commande/macr_info_mail      gnicolas G.NICOLAS          104      3      3
+CATALOPY MODIF commande/macr_recal            assire A.ASSIRE            44      4      2
+CATALOPY MODIF commande/stanley               assire A.ASSIRE            31      2      1
+CATALOPY MODIF entete/accas                  cibhhlv L.VIVAN           1119      5      1
+ FORTRAN AJOUT algorith/op0164               acbhhcd G.DEVESA           214    214      0
+ FORTRAN AJOUT algorith/op0179               acbhhcd G.DEVESA           191    191      0
+ FORTRAN AJOUT calculel/assach               cibhhlv L.VIVAN            254    254      0
+ FORTRAN AJOUT calculel/meceuc               cibhhlv L.VIVAN            252    252      0
+ FORTRAN AJOUT calculel/sepach               cibhhlv L.VIVAN            191    191      0
+ FORTRAN AJOUT elements/dffno                cibhhlv L.VIVAN             49     49      0
+ FORTRAN MODIF algeline/op0037              mcourtoi M.COURTOIS         598      3      3
+ FORTRAN MODIF algeline/vrrefe               cibhhlv L.VIVAN            126     24      4
+ FORTRAN MODIF algorith/adhc01              gnicolas G.NICOLAS          579     10      2
+ FORTRAN MODIF algorith/calcms               joumana J.EL-GHARIB         85      7      4
+ FORTRAN MODIF algorith/gerpas               joumana J.EL-GHARIB        228      4      4
+ FORTRAN MODIF algorith/lccnvx               joumana J.EL-GHARIB         79      3      6
+ FORTRAN MODIF algorith/lcinit               joumana J.EL-GHARIB         84      4      4
+ FORTRAN MODIF algorith/lcmmap               joumana J.EL-GHARIB        450      1     11
+ FORTRAN MODIF algorith/lcmmin               joumana J.EL-GHARIB        143     25     42
+ FORTRAN MODIF algorith/lcmmvx               joumana J.EL-GHARIB         96      2      7
+ FORTRAN MODIF algorith/lcplas               joumana J.EL-GHARIB        132      3      6
+ FORTRAN MODIF algorith/lcplnl               joumana J.EL-GHARIB        245     10      5
+ FORTRAN MODIF algorith/ndlect                boyere E.BOYERE           221      4      1
+ FORTRAN MODIF algorith/nmvprk               joumana J.EL-GHARIB        355      3      3
+ FORTRAN MODIF algorith/plasti               joumana J.EL-GHARIB        472      3      5
+ FORTRAN MODIF calculel/barych               cibhhlv L.VIVAN            141      8      3
+ FORTRAN MODIF calculel/celfpg               cibhhlv L.VIVAN            106     11     10
+ FORTRAN MODIF calculel/mecalc               cibhhlv L.VIVAN            537     17     17
+ FORTRAN MODIF calculel/mecalm               cibhhlv L.VIVAN           2571     25      6
+ FORTRAN MODIF calculel/mechpo               cibhhlv L.VIVAN            204      3     14
+ FORTRAN MODIF calculel/resloc               cibhhlv L.VIVAN            298     41     30
+ FORTRAN MODIF calculel/sinoz2               cibhhlv L.VIVAN            459     12     33
+ FORTRAN MODIF calculel/zzglob               cibhhlv L.VIVAN            165     43     20
+ FORTRAN MODIF elements/bsthpl               cibhhlv L.VIVAN            115      3      4
+ FORTRAN MODIF elements/dxefin               cibhhlv L.VIVAN            130      3      4
+ FORTRAN MODIF elements/ernozz               cibhhlv L.VIVAN             49      6      4
+ FORTRAN MODIF elements/excent               cibhhlv L.VIVAN             95      3      5
+ FORTRAN MODIF elements/psvari               joumana J.EL-GHARIB         88      7      1
+ FORTRAN MODIF elements/te0023               cibhhlv L.VIVAN            178      2     47
+ FORTRAN MODIF elements/te0033               cibhhlv L.VIVAN            366      5    101
+ FORTRAN MODIF elements/te0042               cibhhlv L.VIVAN            198      3     40
+ FORTRAN MODIF elements/te0086               cibhhlv L.VIVAN            194      2     48
+ FORTRAN MODIF elements/te0142               cibhhlv L.VIVAN            143      1      9
+ FORTRAN MODIF elements/te0149               cibhhlv L.VIVAN            192      3     10
+ FORTRAN MODIF elements/te0154               cibhhlv L.VIVAN            242      3     42
+ FORTRAN MODIF elements/te0338               joumana J.EL-GHARIB        380      5      5
+ FORTRAN MODIF elements/te0344               cibhhlv L.VIVAN            223      4     35
+ FORTRAN MODIF elements/te0375               cibhhlv L.VIVAN            830     24     10
+ FORTRAN MODIF elements/te0377               cibhhlv L.VIVAN            716     25      5
+ FORTRAN MODIF elements/te0379               cibhhlv L.VIVAN             72     15     13
+ FORTRAN MODIF elements/tuforc               cibhhlv L.VIVAN            510      1     40
+ FORTRAN MODIF jeveux/jelihd                 d6bhhjp J.P.LEFEBVRE       577      3      3
+ FORTRAN MODIF modelisa/canort               cibhhlv L.VIVAN            647    493    284
+ FORTRAN MODIF modelisa/irmifr               acbhhcd G.DEVESA            52      2      2
+ FORTRAN MODIF supervis/debut                d6bhhjp J.P.LEFEBVRE        82      1      5
+ FORTRAN MODIF supervis/expass               d6bhhjp J.P.LEFEBVRE       127      6     17
+ FORTRAN MODIF supervis/ib0mai               d6bhhjp J.P.LEFEBVRE       100      1      1
+ FORTRAN MODIF supervis/ibbase               d6bhhjp J.P.LEFEBVRE       211      7     15
+ FORTRAN MODIF supervis/ibdbgs               d6bhhjp J.P.LEFEBVRE       146      1     11
+ FORTRAN MODIF supervis/op9999               d6bhhjp J.P.LEFEBVRE       151      1      2
+ FORTRAN MODIF supervis/ops007              mcourtoi M.COURTOIS         109      2      2
+ FORTRAN MODIF utilifor/lcverr               joumana J.EL-GHARIB         81      4      3
+ FORTRAN MODIF utilitai/rfrgen                boyere E.BOYERE           287      8      6
+ FORTRAN SUPPR elements/te0385               cibhhlv L.VIVAN             71      0     71
+ FORTRAN SUPPR supervis/ibtlot               d6bhhjp J.P.LEFEBVRE        92      0     92
+  PYTHON AJOUT Macro/reca_graphique           assire A.ASSIRE            92     92      0
+  PYTHON MODIF Build/B_ETAPE                mcourtoi M.COURTOIS         702      3      4
+  PYTHON MODIF Build/codex                   d6bhhjp J.P.LEFEBVRE       145      3      3
+  PYTHON MODIF Cata/ops                      d6bhhjp J.P.LEFEBVRE       448      9      3
+  PYTHON MODIF Execution/E_ETAPE             d6bhhjp J.P.LEFEBVRE       280      2      2
+  PYTHON MODIF Macro/macr_recal_ops           assire A.ASSIRE           166     31     21
+  PYTHON MODIF Macro/recal                    assire A.ASSIRE           357     18     40
+  PYTHON MODIF Macro/stanley_ops              assire A.ASSIRE            75     12      3
+  PYTHON MODIF Stanley/cata_champs            assire A.ASSIRE           208     69      8
+  PYTHON MODIF Stanley/gmsh                   assire A.ASSIRE           317     90     39
+  PYTHON MODIF Stanley/graphiqueTk            assire A.ASSIRE           549     21      9
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          2375    426    101
+  PYTHON MODIF Stanley/xmgrace                assire A.ASSIRE           282     23      8
+  PYTHON MODIF Utilitai/Graph                 assire A.ASSIRE          1199     47     41
+  PYTHON MODIF Utilitai/sup_gmsh              assire A.ASSIRE          1416      3      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   11        2272      2272             +2272
+ MODIF :  187       57547      3170    1879     +1291
+ SUPPR :    5         425               425      -425
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  203       60244      5442    2304     +3138 

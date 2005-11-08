@@ -1,8 +1,7 @@
       SUBROUTINE CANORT(NOMA,NBMA,LISTI,LISTK,NDIM,NBNO,NBOPN,NUNO,L)
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/09/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +19,10 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
+      IMPLICIT NONE
+      INTEGER NBMA,LISTI(*),NDIM,NBNO,NBOPN(*),NUNO(*),L
+      CHARACTER*8 NOMA,LISTK(*)
+
 C     BUT: CALCULER LES NORMALES AUX NOEUDS D'UNE LISTE DE MAILLES
 C                   ET LES TANGENTES
 C ARGUMENTS D'ENTREE:
@@ -39,27 +42,58 @@ C     &&CANORT.NORMALE : NORMALES MOYENNEES AUX NOEUDS (2 EN 2D,3 EN 3D)
 C     &&CANORT.TANGENT : TANGENTES AUX NOEUDS (2 EN 2D)
 C
 C ROUTINES APPELEES:
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON/IVARJE/ZI(1)
-      COMMON/RVARJE/ZR(1)
-      COMMON/CVARJE/ZC(1)
-      COMMON/LVARJE/ZL(1)
-      COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C-------------- FIN COMMUNS NORMALISES JEVEUX --------------------------
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C TOLE CRP_20
+
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-      INTEGER      ZI,LISTI(*),NBOPN(*),DIMCOO,NUNO(*)
-      REAL*8       ZR,COOR(3,9),A,B,C,PVEC(3)
-      COMPLEX*16   ZC
-      LOGICAL      ZL
-      CHARACTER*8  KANGL
-      CHARACTER*8  ZK8,LISTK(*),NOMA,MK,NOMTYP,NOMNOE
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24,NOMOBJ, NOMOB2
-      CHARACTER*32 ZK32,JEXNOM,JEXNUM
-      CHARACTER*80 ZK80
-      CHARACTER*1 K1BID
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      DIMCOO,I,J,K,IFONC,IBID,IRET,JNORM,ISOM,IN
+      INTEGER      IDOBJ2,JCOOR,IATYMA,M,JCOODE,IJ,INO
+      INTEGER      N,NOCC,NNO,NNOS
+      INTEGER      IINVER,IMAIL,NUMAIL,ITYP,JDES,NN,NUMNO,LINO(9)
+      REAL*8       COOR(3,9),A,B,C,PVEC(3),NORME
+      CHARACTER*8  KANGL,K8B,KNUMAI
+      CHARACTER*8  MK,NOMTYP,NOMNOE
+      CHARACTER*24 NOMOBJ, NOMOB2,CONINV
+      CHARACTER*32 JEXNOM,JEXNUM
+      CHARACTER*1  K1B
+      REAL*8       DFSE2(4),DFSE3(9),R8RDDG
+      REAL*8       DFTR3(18),DFTR6(72),DFTR7(98)
+      REAL*8       DFQU4(32),DFQU8(128),DFQU9(162)
+      REAL*8       EKSIX,EKSIY,EKSIZ,EETAX,EETAY,EETAZ
+      REAL*8       VNORM,COSVEC,SINVEC,ANGL,ATAN2
+
 C
       CALL JEMARQ()
+      
+C     RECUPERATION DES FONCTIONS DE FORMES POUR TOUS LES
+C     TYPES D ELEMENTS SUSCEPTIBLES D ETRE PRESENT
+      
+      CALL DFFNO('SE2',IBID,NNO,NNOS,DFSE2)
+      CALL DFFNO('SE3',IBID,NNO,NNOS,DFSE3)
+      CALL DFFNO('TR3',IBID,NNO,NNOS,DFTR3)
+      CALL DFFNO('TR6',IBID,NNO,NNOS,DFTR6)
+      CALL DFFNO('TR7',IBID,NNO,NNOS,DFTR7)
+      CALL DFFNO('QU4',IBID,NNO,NNOS,DFQU4)
+      CALL DFFNO('QU8',IBID,NNO,NNOS,DFQU8)
+      CALL DFFNO('QU9',IBID,NNO,NNOS,DFQU9)
+      CONINV='&&CANORT.CONINV'
+      
       IF (L.EQ.1) NOMOBJ = '&&CANORT.NORMALE'
       IF (L.EQ.2) NOMOBJ = '&&CANORT.TANGENT'
       CALL JEEXIN(NOMOBJ,IRET)
@@ -72,290 +106,471 @@ C
       CALL JEEXIN(NOMOB2,IRET)
       IF (IRET.NE.0) CALL JEDETR(NOMOB2)
       ISOM = 0
-      DO 10 I = 1, NBNO
+      DO 1 I = 1, NBNO
          ISOM = ISOM + NBOPN(I)
- 10   CONTINUE
+ 1    CONTINUE
         
       CALL WKVECT(NOMOB2,'V V R',NDIM*ISOM,IDOBJ2)
 C
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
-      IJ = 0
-      DO 1 M=1,ABS(NBMA)
-         IF (NBMA.GT.0) THEN
-            MI=LISTI(M)
-            CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',MI),'L',JDES)
-            CALL JELIRA(JEXNUM(NOMA//'.CONNEX',MI),'LONMAX',NN,K1BID)
-            CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
-            JTYP=IATYMA-1+MI
-         ELSE IF (NBMA.LT.0) THEN
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
+
+C     TRANSFORMATION DE LA LISTE DE NOM DE MAILLES EN LISTE DE NUMERO
+C     DE MAILLE ( POUR PASSAGE DANS CNCINV )
+      IF (NBMA.LT.0) THEN
+         DO 5 M=1,ABS(NBMA)
             MK=LISTK(M)
-            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),IBID)
-            CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',IBID),'L',JDES)
-            CALL JELIRA(JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',NN,K1BID)
-            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),IBID)
-            CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
-            JTYP=IATYMA-1+IBID
-         END IF
-         ITYP=ZI(JTYP)
-         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYP),NOMTYP)
-C
-C       ATTENTION, NDIM PEUT ETRE DIFFERENT DU NOMBRE DE COMPOSANTES DE
-C       LA GEOMETRIE ( CAS DU 2D (COOR2D) PLONGE DANS LE 3D)
-C
-         CALL JEVEUO (NOMA//'.COORDO    .DESC', 'L', JCOODE)
-         DIMCOO = -ZI(JCOODE-1+2)
-         IF (NDIM.EQ.2.AND.NOMTYP(1:3).EQ.'SEG') THEN
-            INO1=ZI(JDES-1+1)
-            INO2=ZI(JDES-1+2)
-            COOR(1,1)=ZR(JCOOR-1+DIMCOO*(INO1-1)+1)
-            COOR(2,1)=ZR(JCOOR-1+DIMCOO*(INO1-1)+2)
-            COOR(1,2)=ZR(JCOOR-1+DIMCOO*(INO2-1)+1)
-            COOR(2,2)=ZR(JCOOR-1+DIMCOO*(INO2-1)+2)
-            IF (L.EQ.1) CALL CANOR2(COOR,A,B)
-            IF (L.EQ.2) CALL CATAN2(COOR,A,B)
-            DO 3 N=1,NBNO
-               DO 4 IN=1,NN
-                  INO=ZI(JDES-1+IN)
-                  IF(INO.EQ.NUNO(N)) THEN
-                     ZR(JNORM-1+2*(N-1)+1)=ZR(JNORM-1+2*(N-1)+1)+A
-                     ZR(JNORM-1+2*(N-1)+2)=ZR(JNORM-1+2*(N-1)+2)+B
-                     IJ = IJ + 1
-                     ZR(IDOBJ2-1+2*(IJ-1)+1) = A
-                     ZR(IDOBJ2-1+2*(IJ-1)+2) = B
-                  END IF
-    4          CONTINUE
-    3       CONTINUE
-         ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:3).EQ.'SEG') THEN
-            CALL UTMESS ('F','CANORT','IMPOSSIBLE DE CALCULER '//
-     &                 'LA NORMALE D UN SEGMENT EN 3D')
-         ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:4).EQ.'TRIA') THEN
-            INO1=ZI(JDES-1+1)
-            INO2=ZI(JDES-1+2)
-            INO3=ZI(JDES-1+3)
-            COOR(1,1)=ZR(JCOOR-1+3*(INO1-1)+1)
-            COOR(2,1)=ZR(JCOOR-1+3*(INO1-1)+2)
-            COOR(3,1)=ZR(JCOOR-1+3*(INO1-1)+3)
-            COOR(1,2)=ZR(JCOOR-1+3*(INO2-1)+1)
-            COOR(2,2)=ZR(JCOOR-1+3*(INO2-1)+2)
-            COOR(3,2)=ZR(JCOOR-1+3*(INO2-1)+3)
-            COOR(1,3)=ZR(JCOOR-1+3*(INO3-1)+1)
-            COOR(2,3)=ZR(JCOOR-1+3*(INO3-1)+2)
-            COOR(3,3)=ZR(JCOOR-1+3*(INO3-1)+3)
-            CALL CANOR3(COOR,A,B,C)
-            DO 5 N=1,NBNO
-               DO 6 IN=1,NN
-                  INO=ZI(JDES-1+IN)
-                  IF(INO.EQ.NUNO(N)) THEN
-                     ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+A
-                     ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+B
-                     ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+C
-                     IJ = IJ + 1
-                     ZR(IDOBJ2-1+3*(IJ-1)+1) = A
-                     ZR(IDOBJ2-1+3*(IJ-1)+2) = B
-                     ZR(IDOBJ2-1+3*(IJ-1)+3) = C
-                  END IF
-    6          CONTINUE
-    5       CONTINUE
-         ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:4).EQ.'QUAD') THEN
-C
-C           ON TRAITE D'ABORD LES QUATRE SOMMETS DU QUADRILATERE
-C
-            INO1=ZI(JDES-1+1)
-            INO2=ZI(JDES-1+2)
-            INO3=ZI(JDES-1+3)
-            INO4=ZI(JDES-1+4)
-            DO 45 N=1,NBNO
-               INOGRE=NUNO(N)
-               IF (INOGRE.EQ.INO1) THEN
-                  COOR(1,1)=ZR(JCOOR-1+3*(INO1-1)+1)
-                  COOR(2,1)=ZR(JCOOR-1+3*(INO1-1)+2)
-                  COOR(3,1)=ZR(JCOOR-1+3*(INO1-1)+3)
-                  COOR(1,2)=ZR(JCOOR-1+3*(INO2-1)+1)
-                  COOR(2,2)=ZR(JCOOR-1+3*(INO2-1)+2)
-                  COOR(3,2)=ZR(JCOOR-1+3*(INO2-1)+3)
-                  COOR(1,3)=ZR(JCOOR-1+3*(INO4-1)+1)
-                  COOR(2,3)=ZR(JCOOR-1+3*(INO4-1)+2)
-                  COOR(3,3)=ZR(JCOOR-1+3*(INO4-1)+3)
-                  CALL CANOR3(COOR,A1,B1,C1)
-                  ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+A1
-                  ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+B1
-                  ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+C1
-                  IJ = IJ + 1
-                  ZR(IDOBJ2-1+3*(IJ-1)+1) = A1
-                  ZR(IDOBJ2-1+3*(IJ-1)+2) = B1
-                  ZR(IDOBJ2-1+3*(IJ-1)+3) = C1
-               ELSE IF (INOGRE.EQ.INO2) THEN
-                  COOR(1,1)=ZR(JCOOR-1+3*(INO2-1)+1)
-                  COOR(2,1)=ZR(JCOOR-1+3*(INO2-1)+2)
-                  COOR(3,1)=ZR(JCOOR-1+3*(INO2-1)+3)
-                  COOR(1,2)=ZR(JCOOR-1+3*(INO3-1)+1)
-                  COOR(2,2)=ZR(JCOOR-1+3*(INO3-1)+2)
-                  COOR(3,2)=ZR(JCOOR-1+3*(INO3-1)+3)
-                  COOR(1,3)=ZR(JCOOR-1+3*(INO1-1)+1)
-                  COOR(2,3)=ZR(JCOOR-1+3*(INO1-1)+2)
-                  COOR(3,3)=ZR(JCOOR-1+3*(INO1-1)+3)
-                  CALL CANOR3(COOR,A2,B2,C2)
-                  ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+A2
-                  ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+B2
-                  ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+C2
-                  IJ = IJ + 1
-                  ZR(IDOBJ2-1+3*(IJ-1)+1) = A2
-                  ZR(IDOBJ2-1+3*(IJ-1)+2) = B2
-                  ZR(IDOBJ2-1+3*(IJ-1)+3) = C2
-               ELSE IF (INOGRE.EQ.INO3) THEN
-                  COOR(1,1)=ZR(JCOOR-1+3*(INO3-1)+1)
-                  COOR(2,1)=ZR(JCOOR-1+3*(INO3-1)+2)
-                  COOR(3,1)=ZR(JCOOR-1+3*(INO3-1)+3)
-                  COOR(1,2)=ZR(JCOOR-1+3*(INO4-1)+1)
-                  COOR(2,2)=ZR(JCOOR-1+3*(INO4-1)+2)
-                  COOR(3,2)=ZR(JCOOR-1+3*(INO4-1)+3)
-                  COOR(1,3)=ZR(JCOOR-1+3*(INO2-1)+1)
-                  COOR(2,3)=ZR(JCOOR-1+3*(INO2-1)+2)
-                  COOR(3,3)=ZR(JCOOR-1+3*(INO2-1)+3)
-                  CALL CANOR3(COOR,A3,B3,C3)
-                  ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+A3
-                  ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+B3
-                  ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+C3
-                  IJ = IJ + 1
-                  ZR(IDOBJ2-1+3*(IJ-1)+1) = A3
-                  ZR(IDOBJ2-1+3*(IJ-1)+2) = B3
-                  ZR(IDOBJ2-1+3*(IJ-1)+3) = C3
-               ELSE IF (INOGRE.EQ.INO4) THEN
-                  COOR(1,1)=ZR(JCOOR-1+3*(INO4-1)+1)
-                  COOR(2,1)=ZR(JCOOR-1+3*(INO4-1)+2)
-                  COOR(3,1)=ZR(JCOOR-1+3*(INO4-1)+3)
-                  COOR(1,2)=ZR(JCOOR-1+3*(INO1-1)+1)
-                  COOR(2,2)=ZR(JCOOR-1+3*(INO1-1)+2)
-                  COOR(3,2)=ZR(JCOOR-1+3*(INO1-1)+3)
-                  COOR(1,3)=ZR(JCOOR-1+3*(INO3-1)+1)
-                  COOR(2,3)=ZR(JCOOR-1+3*(INO3-1)+2)
-                  COOR(3,3)=ZR(JCOOR-1+3*(INO3-1)+3)
-                  CALL CANOR3(COOR,A4,B4,C4)
-                  ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+A4
-                  ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+B4
-                  ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+C4
-                  IJ = IJ + 1
-                  ZR(IDOBJ2-1+3*(IJ-1)+1) = A4
-                  ZR(IDOBJ2-1+3*(IJ-1)+2) = B4
-                  ZR(IDOBJ2-1+3*(IJ-1)+3) = C4
-              END IF
-   45       CONTINUE
-C
-C           ON TRAITE ENSUITE LES EVENTUELS NOEUDS MILIEUX DE COTES
-C
-            IF (NN.GT.4.AND.NN.LE.9) THEN
-               INO5=ZI(JDES-1+5)
-               INO6=ZI(JDES-1+6)
-               INO7=ZI(JDES-1+7)
-               INO8=ZI(JDES-1+8)
-               IF (NN.EQ.9) THEN
-                  INO9=ZI(JDES-1+9)
+            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),LISTI(M))
+    5    CONTINUE
+      END IF
+
+C     RECUPERATION DE LA CONNECTIVITE INVERSE
+      CALL CNCINV(NOMA,LISTI,ABS(NBMA),'V',CONINV)
+      
+      CALL JEVEUO (NOMA//'.COORDO    .DESC', 'L', JCOODE)
+
+      IJ=0
+C     BOUCLE SUR TOUS LES NOEUDS CONCERNES
+      DO 10 INO=1,NBNO
+         NUMNO=NUNO(INO)
+         CALL JEVEUO(JEXNUM(CONINV,NUMNO),'L',IINVER)
+
+C    BOUCLE SUR TOUTES LES MAILLES CONNECTEES AU NOEUD ACTUEL
+         DO 20 IMAIL=1,NBOPN(INO)
+
+C           NUMERO ABSOLUE DE LA MAILLE
+
+            NUMAIL=LISTI(ZI(IINVER-1+IMAIL))
+            ITYP=ZI(IATYMA-1+NUMAIL)
+            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYP),NOMTYP)
+            CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMAIL),'L',JDES)
+            CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMAIL),'LONMAX',NN,K1B)
+            IF (NDIM.EQ.2.AND.NOMTYP(1:4).EQ.'SEG2') THEN
+               DIMCOO = -ZI(JCOODE-1+2)
+               LINO(1)=ZI(JDES-1+1)
+               LINO(2)=ZI(JDES-1+2)
+               COOR(1,1)=ZR(JCOOR-1+DIMCOO*(LINO(1)-1)+1)
+               COOR(2,1)=ZR(JCOOR-1+DIMCOO*(LINO(1)-1)+2)
+               COOR(1,2)=ZR(JCOOR-1+DIMCOO*(LINO(2)-1)+1)
+               COOR(2,2)=ZR(JCOOR-1+DIMCOO*(LINO(2)-1)+2)
+               EKSIX=COOR(1,1)*DFSE2(1)+COOR(1,2)*DFSE2(2)
+               EKSIY=COOR(2,1)*DFSE2(1)+COOR(2,2)*DFSE2(2)
+               IF (L.EQ.2) THEN
+                  NORME=SQRT(EKSIX**2+EKSIY**2)
+                  IF (NORME.GT.0.D0) THEN
+                      A=EKSIX/NORME
+                      B=EKSIY/NORME
+                  ELSE
+                     CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                     CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+                  ENDIF
+               ELSEIF (L.EQ.1) THEN
+                  NORME=SQRT(EKSIX**2+EKSIY**2)
+                  IF (NORME.GT.0.D0) THEN
+                     A=EKSIY/NORME
+                     B=-EKSIX/NORME
+                  ELSE
+                     CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                     CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+                  ENDIF
+               ENDIF
+               ZR(JNORM-1+2*(INO-1)+1)=ZR(JNORM-1+2*(INO-1)+1)
+     &               +A/NBOPN(INO)
+               ZR(JNORM-1+2*(INO-1)+2)=ZR(JNORM-1+2*(INO-1)+2)
+     &               +B/NBOPN(INO)
+               IJ=IJ+1
+               ZR(IDOBJ2-1+2*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+2*(IJ-1)+2) = B
+            ELSE IF (NDIM.EQ.2.AND.NOMTYP(1:4).EQ.'SEG3') THEN
+               DO 30 I=1,NN
+                  DIMCOO = -ZI(JCOODE-1+2)
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+DIMCOO*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+DIMCOO*(LINO(I)-1)+2)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 30            CONTINUE
+               EKSIX=0.D0
+               EKSIY=0.D0
+C              CALCUL DU  VECTEUR TANGENT VIA LES FONCTIONS DE FORMES
+               DO 35 IFONC=1,NN
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFSE3((IN-1)*NN+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFSE3((IN-1)*NN+IFONC)
+     
+ 35            CONTINUE
+C              ON S INTERESSE AU VECTEUR TANGENT
+               IF (L.EQ.2) THEN
+                  NORME=SQRT(EKSIX**2+EKSIY**2)
+                  IF (NORME.GT.0) THEN
+                     A=EKSIX/NORME
+                     B=EKSIY/NORME
+                  ELSE
+                     CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                    CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+                  ENDIF
+
+C              ON S INTERESSE AU VECTEUR NORMAL
+               ELSEIF (L.EQ.1) THEN
+                  NORME=SQRT(EKSIX**2+EKSIY**2)
+                  IF (NORME.GT.0) THEN
+                     A=EKSIY/NORME
+                     B=-EKSIX/NORME
+                  ELSE
+                     CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                     CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+                  ENDIF
+               ENDIF
+               ZR(JNORM-1+2*(INO-1)+1)=ZR(JNORM-1+2*(INO-1)+1)
+     &               +A/NBOPN(INO)
+               ZR(JNORM-1+2*(INO-1)+2)=ZR(JNORM-1+2*(INO-1)+2)
+     &               +B/NBOPN(INO)
+               IJ=IJ+1
+               ZR(IDOBJ2-1+2*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+2*(IJ-1)+2) = B
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:3).EQ.'SEG') THEN
+               CALL UTMESS ('F','CANORT','IMPOSSIBLE DE CALCULER '//
+     &                    'LA NORMALE D UN SEGMENT EN 3D')
+
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:5).EQ.'QUAD4') THEN
+               DO 40 I=1,NN
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+3*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+3*(LINO(I)-1)+2)
+                  COOR(3,I)=ZR(JCOOR-1+3*(LINO(I)-1)+3)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 40            CONTINUE
+               EKSIX=0.D0
+               EKSIY=0.D0
+               EKSIZ=0.D0
+               EETAX=0.D0
+               EETAY=0.D0
+               EETAZ=0.D0
+
+C              CALCUL DES DEUX VECTEURS TANGENTS
+               DO 45 IFONC=1,NN
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFQU4((IN-1)*NN*2+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFQU4((IN-1)*NN*2+IFONC)
+                  EKSIZ=EKSIZ+COOR(3,IFONC)*DFQU4((IN-1)*NN*2+IFONC)
+
+                  EETAX=EETAX+COOR(1,IFONC)*DFQU4((IN-1)*NN*2+NN+IFONC)
+                  EETAY=EETAY+COOR(2,IFONC)*DFQU4((IN-1)*NN*2+NN+IFONC)
+                  EETAZ=EETAZ+COOR(3,IFONC)*DFQU4((IN-1)*NN*2+NN+IFONC)
+ 45            CONTINUE
+
+C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
+               A=EKSIY*EETAZ-EKSIZ*EETAY
+               B=EKSIZ*EETAX-EKSIX*EETAZ
+               C=EKSIX*EETAY-EKSIY*EETAX
+               NORME=SQRT(A*A+B*B+C*C)
+               IF (NORME.GT.0) THEN
+                  A=A/NORME
+                  B=B/NORME
+                  C=C/NORME
                ELSE
-                  INO9=0
-               END IF
-               DO 46 N=1,NBNO
-                  INOGRE=NUNO(N)
-                  IF (INOGRE.EQ.INO5) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A1+A2)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B1+B2)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C1+C2)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A1+A2)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B1+B2)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C1+C2)/2
-                  ELSE IF (INOGRE.EQ.INO6) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A2+A3)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B2+B3)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C2+C3)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A2+A3)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B2+B3)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C2+C3)/2
-                  ELSE IF (INOGRE.EQ.INO7) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A3+A4)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B3+B4)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C3+C4)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A3+A4)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B3+B4)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C3+C4)/2
-                  ELSE IF (INOGRE.EQ.INO8) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A4+A1)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B4+B1)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C4+C1)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A4+A1)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B4+B1)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C4+C1)/2
-                  ELSE IF (INOGRE.EQ.INO9) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)
-     &                                   +(A1+A2+A3+A4)/4
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)
-     &                                   +(B1+B2+B3+B4)/4
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)
-     &                                   +(C1+C2+C3+C4)/4
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A1+A2+A3+A4)/4
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B1+B2+B3+B4)/4
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C1+C2+C3+C4)/4
-                  END IF
-   46          CONTINUE
-            ELSE IF (NN.EQ.12) THEN
-               INO5=ZI(JDES-1+5)
-               INO6=ZI(JDES-1+6)
-               INO7=ZI(JDES-1+7)
-               INO8=ZI(JDES-1+8)
-               INO9=ZI(JDES-1+9)
-               IN10=ZI(JDES-1+10)
-               IN11=ZI(JDES-1+11)
-               DO 47 N=1,NBNO
-                  INOGRE=NUNO(N)
-                  IF (INOGRE.EQ.INO5.OR.INOGRE.EQ.6) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A1+A2)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B1+B2)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C1+C2)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A1+A2)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B1+B2)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C1+C2)/2
-                  ELSE IF (INOGRE.EQ.INO7.OR.INOGRE.EQ.8) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A2+A3)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B2+B3)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C2+C3)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A2+A3)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B2+B3)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C2+C3)/2
-                  ELSE IF (INOGRE.EQ.INO9.OR.INOGRE.EQ.IN10) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A3+A4)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B3+B4)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C3+C4)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A3+A4)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B3+B4)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C3+C4)/2
-                  ELSE IF (INOGRE.EQ.IN11.OR.INOGRE.EQ.12) THEN
-                   ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)+(A4+A1)/2
-                   ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)+(B4+B1)/2
-                   ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)+(C4+C1)/2
-                   IJ = IJ + 1
-                   ZR(IDOBJ2-1+3*(IJ-1)+1) = (A4+A1)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+2) = (B4+B1)/2
-                   ZR(IDOBJ2-1+3*(IJ-1)+3) = (C4+C1)/2
-                  END IF
-   47          CONTINUE
-            END IF
-         ELSE
-            CALL UTMESS('F','CANORT','NOMBRE DE NOEUDS PAS PREVU')
-         END IF
-    1 CONTINUE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+               ENDIF
+C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
+C              RELATIVES A UN NOEUD
+               ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
+     &            +A/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
+     &            +B/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
+     &            +C/NBOPN(INO)
+               IJ=IJ+1
+C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
+C              UNE VERIFICATION ULTERIEURE
+               ZR(IDOBJ2-1+3*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+3*(IJ-1)+2) = B
+               ZR(IDOBJ2-1+3*(IJ-1)+3) = C
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:5).EQ.'QUAD8') THEN
+               DO 50 I=1,NN
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+3*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+3*(LINO(I)-1)+2)
+                  COOR(3,I)=ZR(JCOOR-1+3*(LINO(I)-1)+3)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 50            CONTINUE
+               EKSIX=0.D0
+               EKSIY=0.D0
+               EKSIZ=0.D0
+               EETAX=0.D0
+               EETAY=0.D0
+               EETAZ=0.D0
+C              CALCUL DES DEUX VECTEURS TANGENTS
+               DO 55 IFONC=1,NN
+                  
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFQU8((IN-1)*NN*2+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFQU8((IN-1)*NN*2+IFONC)
+                  EKSIZ=EKSIZ+COOR(3,IFONC)*DFQU8((IN-1)*NN*2+IFONC)
+
+                  EETAX=EETAX+COOR(1,IFONC)*DFQU8((IN-1)*NN*2+NN+IFONC)
+                  EETAY=EETAY+COOR(2,IFONC)*DFQU8((IN-1)*NN*2+NN+IFONC)
+                  EETAZ=EETAZ+COOR(3,IFONC)*DFQU8((IN-1)*NN*2+NN+IFONC)
+ 55            CONTINUE
+C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
+               A=EKSIY*EETAZ-EKSIZ*EETAY
+               B=EKSIZ*EETAX-EKSIX*EETAZ
+               C=EKSIX*EETAY-EKSIY*EETAX
+               NORME=SQRT(A*A+B*B+C*C)
+               IF (NORME.GT.0) THEN
+                  A=A/NORME
+                  B=B/NORME
+                  C=C/NORME
+               ELSE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+               ENDIF
+C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
+C              RELATIVES A UN NOEUD
+               ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
+     &            +A/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
+     &            +B/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
+     &            +C/NBOPN(INO)
+               IJ=IJ+1
+C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
+C              UNE VERIFICATION ULTERIEURE
+               ZR(IDOBJ2-1+3*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+3*(IJ-1)+2) = B
+               ZR(IDOBJ2-1+3*(IJ-1)+3) = C
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:5).EQ.'QUAD9') THEN
+               DO 60 I=1,NN
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+3*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+3*(LINO(I)-1)+2)
+                  COOR(3,I)=ZR(JCOOR-1+3*(LINO(I)-1)+3)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 60            CONTINUE
+               EKSIX=0.D0
+               EKSIY=0.D0
+               EKSIZ=0.D0
+               EETAX=0.D0
+               EETAY=0.D0
+               EETAZ=0.D0
+C              CALCUL DES DEUX VECTEURS TANGENTS
+               DO 65 IFONC=1,NN
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFQU9((IN-1)*NN*2+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFQU9((IN-1)*NN*2+IFONC)
+                  EKSIZ=EKSIZ+COOR(3,IFONC)*DFQU9((IN-1)*NN*2+IFONC)
+
+                  EETAX=EETAX+COOR(1,IFONC)*DFQU9((IN-1)*NN*2+NN+IFONC)
+                  EETAY=EETAY+COOR(2,IFONC)*DFQU9((IN-1)*NN*2+NN+IFONC)
+                  EETAZ=EETAZ+COOR(3,IFONC)*DFQU9((IN-1)*NN*2+NN+IFONC)
+ 65            CONTINUE
+C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
+               A=EKSIY*EETAZ-EKSIZ*EETAY
+               B=EKSIZ*EETAX-EKSIX*EETAZ
+               C=EKSIX*EETAY-EKSIY*EETAX
+               NORME=SQRT(A*A+B*B+C*C)
+               IF (NORME.GT.0) THEN
+                  A=A/NORME
+                  B=B/NORME
+                  C=C/NORME
+               ELSE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+               ENDIF
+C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
+C              RELATIVES A UN NOEUD
+               ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
+     &            +A/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
+     &            +B/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
+     &            +C/NBOPN(INO)
+               IJ=IJ+1
+C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
+C              UNE VERIFICATION ULTERIEURE
+               ZR(IDOBJ2-1+3*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+3*(IJ-1)+2) = B
+               ZR(IDOBJ2-1+3*(IJ-1)+3) = C
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:5).EQ.'TRIA3') THEN
+               DO 70 I=1,NN
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+3*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+3*(LINO(I)-1)+2)
+                  COOR(3,I)=ZR(JCOOR-1+3*(LINO(I)-1)+3)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 70            CONTINUE
+C              CALCUL DES DEUX VECTEURS TANGENTS
+               EKSIX=0.D0
+               EKSIY=0.D0
+               EKSIZ=0.D0
+               EETAX=0.D0
+               EETAY=0.D0
+               EETAZ=0.D0
+               DO 75 IFONC=1,NN
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFTR3((IN-1)*NN*2+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFTR3((IN-1)*NN*2+IFONC)
+                  EKSIZ=EKSIZ+COOR(3,IFONC)*DFTR3((IN-1)*NN*2+IFONC)
+
+                  EETAX=EETAX+COOR(1,IFONC)*DFTR3((IN-1)*NN*2+NN+IFONC)
+                  EETAY=EETAY+COOR(2,IFONC)*DFTR3((IN-1)*NN*2+NN+IFONC)
+                  EETAZ=EETAZ+COOR(3,IFONC)*DFTR3((IN-1)*NN*2+NN+IFONC)
+ 75            CONTINUE
+C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
+               A=EKSIY*EETAZ-EKSIZ*EETAY
+               B=EKSIZ*EETAX-EKSIX*EETAZ
+               C=EKSIX*EETAY-EKSIY*EETAX
+               NORME=SQRT(A*A+B*B+C*C)
+               IF (NORME.GT.0) THEN
+                  A=A/NORME
+                  B=B/NORME
+                  C=C/NORME
+               ELSE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+               ENDIF
+C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
+C              RELATIVES A UN NOEUD
+               ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
+     &            +A/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
+     &            +B/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
+     &            +C/NBOPN(INO)
+               IJ=IJ+1
+C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
+C              UNE VERIFICATION ULTERIEURE
+               ZR(IDOBJ2-1+3*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+3*(IJ-1)+2) = B
+               ZR(IDOBJ2-1+3*(IJ-1)+3) = C
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:5).EQ.'TRIA6') THEN
+               DO 90 I=1,NN
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+3*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+3*(LINO(I)-1)+2)
+                  COOR(3,I)=ZR(JCOOR-1+3*(LINO(I)-1)+3)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 90            CONTINUE
+C              CALCUL DES DEUX VECTEURS TANGENTS
+               EKSIX=0.D0
+               EKSIY=0.D0
+               EKSIZ=0.D0
+               EETAX=0.D0
+               EETAY=0.D0
+               EETAZ=0.D0
+              DO 95 IFONC=1,NN
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFTR6((IN-1)*NN*2+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFTR6((IN-1)*NN*2+IFONC)
+                  EKSIZ=EKSIZ+COOR(3,IFONC)*DFTR6((IN-1)*NN*2+IFONC)
+
+                  EETAX=EETAX+COOR(1,IFONC)*DFTR6((IN-1)*NN*2+NN+IFONC)
+                  EETAY=EETAY+COOR(2,IFONC)*DFTR6((IN-1)*NN*2+NN+IFONC)
+                  EETAZ=EETAZ+COOR(3,IFONC)*DFTR6((IN-1)*NN*2+NN+IFONC)
+ 95            CONTINUE
+C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
+               A=EKSIY*EETAZ-EKSIZ*EETAY
+               B=EKSIZ*EETAX-EKSIX*EETAZ
+               C=EKSIX*EETAY-EKSIY*EETAX
+               NORME=SQRT(A*A+B*B+C*C)
+               IF (NORME.GT.0) THEN
+                  A=A/NORME
+                  B=B/NORME
+                  C=C/NORME
+               ELSE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+               ENDIF
+C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
+C              RELATIVES A UN NOEUD
+               ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
+     &            +A/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
+     &            +B/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
+     &            +C/NBOPN(INO)
+               IJ=IJ+1
+C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
+C              UNE VERIFICATION ULTERIEURE
+               ZR(IDOBJ2-1+3*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+3*(IJ-1)+2) = B
+               ZR(IDOBJ2-1+3*(IJ-1)+3) = C
+            ELSE IF (NDIM.EQ.3.AND.NOMTYP(1:5).EQ.'TRIA7') THEN
+               DO 100 I=1,NN
+                  LINO(I)=ZI(JDES-1+I)
+                  COOR(1,I)=ZR(JCOOR-1+3*(LINO(I)-1)+1)
+                  COOR(2,I)=ZR(JCOOR-1+3*(LINO(I)-1)+2)
+                  COOR(3,I)=ZR(JCOOR-1+3*(LINO(I)-1)+3)
+                  IF ( NUMNO.EQ.LINO(I)) IN=I
+ 100           CONTINUE
+C              CALCUL DES DEUX VECTEURS TANGENTS
+               EKSIX=0.D0
+               EKSIY=0.D0
+               EKSIZ=0.D0
+               EETAX=0.D0
+               EETAY=0.D0
+               EETAZ=0.D0
+               DO 105 IFONC=1,NN
+                  EKSIX=EKSIX+COOR(1,IFONC)*DFTR7((IN-1)*NN*2+IFONC)
+                  EKSIY=EKSIY+COOR(2,IFONC)*DFTR7((IN-1)*NN*2+IFONC)
+                  EKSIZ=EKSIZ+COOR(3,IFONC)*DFTR7((IN-1)*NN*2+IFONC)
+
+                  EETAX=EETAX+COOR(1,IFONC)*DFTR7((IN-1)*NN*2+NN+IFONC)
+                  EETAY=EETAY+COOR(2,IFONC)*DFTR7((IN-1)*NN*2+NN+IFONC)
+                  EETAZ=EETAZ+COOR(3,IFONC)*DFTR7((IN-1)*NN*2+NN+IFONC)
+ 105           CONTINUE
+C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
+               A=EKSIY*EETAZ-EKSIZ*EETAY
+               B=EKSIZ*EETAX-EKSIX*EETAZ
+               C=EKSIX*EETAY-EKSIY*EETAX
+               NORME=SQRT(A*A+B*B+C*C)
+               IF (NORME.GT.0) THEN
+                  A=A/NORME
+                  B=B/NORME
+                  C=C/NORME
+               ELSE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
+                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
+     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+               ENDIF
+C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
+C              RELATIVES A UN NOEUD
+               ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
+     &            +A/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
+     &            +B/NBOPN(INO)
+               ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
+     &            +C/NBOPN(INO)
+               IJ=IJ+1
+C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
+C              UNE VERIFICATION ULTERIEURE
+               ZR(IDOBJ2-1+3*(IJ-1)+1) = A
+               ZR(IDOBJ2-1+3*(IJ-1)+2) = B
+               ZR(IDOBJ2-1+3*(IJ-1)+3) = C
+            ELSE 
+               CALL UTMESS ('F','CANORT','TYPE D ELEMENT INCONNU')
+            ENDIF
+ 20      CONTINUE
+ 10   CONTINUE
+    
+
       IJ = 0
       DO 2 N=1,NBNO
          INO = NUNO(N)
          NOCC=NBOPN(N)
          IF (NDIM.EQ.2) THEN
-            ZR(JNORM-1+2*(N-1)+1)=ZR(JNORM-1+2*(N-1)+1)/NOCC
-            ZR(JNORM-1+2*(N-1)+2)=ZR(JNORM-1+2*(N-1)+2)/NOCC
             VNORM =  ZR(JNORM-1+2*(N-1)+1)*ZR(JNORM-1+2*(N-1)+1)
      +             + ZR(JNORM-1+2*(N-1)+2)*ZR(JNORM-1+2*(N-1)+2) 
             VNORM = SQRT(VNORM)
@@ -369,8 +584,6 @@ C
      +                   //'IL Y A UN PROBLEME DANS '
      +                   //'LA DEFINITION DE VOS MAILLES DE BORD .')
             ENDIF
-            ZR(JNORM-1+2*(N-1)+1)=ZR(JNORM-1+2*(N-1)+1)/VNORM
-            ZR(JNORM-1+2*(N-1)+2)=ZR(JNORM-1+2*(N-1)+2)/VNORM
             DO 7 I = 1, NOCC
                IJ = IJ + 1
                COSVEC =  ZR(JNORM-1+2*(N-1)+1)*ZR(IDOBJ2-1+2*(IJ-1)+1)
@@ -389,9 +602,6 @@ C
                ENDIF
   7         CONTINUE
          ELSE IF (NDIM.EQ.3) THEN
-            ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)/NOCC
-            ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)/NOCC
-            ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)/NOCC
             VNORM =  ZR(JNORM-1+3*(N-1)+1)*ZR(JNORM-1+3*(N-1)+1)
      +             + ZR(JNORM-1+3*(N-1)+2)*ZR(JNORM-1+3*(N-1)+2) 
      +             + ZR(JNORM-1+3*(N-1)+3)*ZR(JNORM-1+3*(N-1)+3) 
@@ -406,9 +616,6 @@ C
      +                   //'IL Y A UN PROBLEME DANS LA'
      +                   //' DEFINITION DE VOS MAILLES DE BORD .')
             ENDIF
-            ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)/VNORM
-            ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)/VNORM
-            ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)/VNORM
             DO 8 I = 1, NOCC
                IJ = IJ + 1
                COSVEC =  ZR(JNORM-1+3*(N-1)+1)*ZR(IDOBJ2-1+3*(IJ-1)+1)
@@ -431,8 +638,10 @@ C
                ENDIF
   8         CONTINUE
          END IF
+         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO),NOMNOE)
     2 CONTINUE
 C
       CALL JEDETR(NOMOB2)
+      CALL JEDETR(CONINV)
       CALL JEDEMA()
       END

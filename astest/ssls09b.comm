@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) -ancien SSLP09b
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,6 +206,10 @@ DEF_PESA=CALC_ELEM(reuse =DEF_PESA,
                       ),
                );
 
+IMPR_RESU(RESU=_F(RESULTAT=DEF_PESA,
+                   NUME_ORDRE=1,                   
+                   NOM_CHAM='ERRE_ELGA_NORE',),
+          ) ;
 #
 # TEST_RESU DEPLACEMENTS
 #
@@ -303,7 +307,36 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    VALE=8.5414926709598E-01,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.02.10',),
+                _F(RESULTAT=DEF_PESA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_ELNO_ELGA',
+                   NOM_CMP='TERMRE',
+                   MAILLE='M7',
+                   POINT=1,
+                   VALE=6.76356E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
+                _F(RESULTAT=DEF_PESA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_ELNO_ELGA',
+                   NOM_CMP='TERMSA',
+                   MAILLE='M7',
+                   POINT=1,
+                   VALE=1.23828E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
+                _F(RESULTAT=DEF_PESA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_ELNO_ELGA',
+                   NOM_CMP='TERMNO',
+                   MAILLE='M7',
+                   POINT=1,
+                   VALE=0.00000E+00,
+                   CRITERE='ABSOLU',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.01.22',),
                 ),
           )
+
 FIN()
 #

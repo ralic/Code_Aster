@@ -1,9 +1,11 @@
-      SUBROUTINE ZZGLOB (CHAMP,OPTION)
+      SUBROUTINE ZZGLOB ( CHAMP, OPTION, IORD, TIME, RESUCO )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)      CHAMP
+      INTEGER             IORD
+      REAL*8              TIME
+      CHARACTER*(*)       CHAMP, OPTION, RESUCO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,15 +46,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     ------------------------------------------------------------------
-      INTEGER      IFI, NBGREL, NBELEM, DIGDEL
-      INTEGER      LONGT, LONG2, MODE, J
-      REAL*8       RZERO, ERR, ERR0, NORS, NORV, NU0, NUEX, THETA
-      REAL*8       Q, NORSEL, NORSUP, ERRSIG
-      CHARACTER*4  CVAL, DOCU
-      CHARACTER*8  SCAL,SCALAI
-      CHARACTER*19 CHAMP2, LIGREL
-      CHARACTER*(*) OPTION
-      LOGICAL      FIRST
+      INTEGER       IFI, NBGREL, NBELEM, DIGDEL, LONGT, LONG2, MODE, J
+      REAL*8        NU0, NUVO, NUSA, NUNO, TERMVO, TERMSA, TERMNO
+      REAL*8        RZERO, ERR, ERR0, NORS, NORV, NUEX, THETA
+      REAL*8        Q, NORSEL, NORSUP, ERRSIG
+      LOGICAL       FIRST
+      CHARACTER*4   CVAL, DOCU
+      CHARACTER*8   SCAL,SCALAI
+      CHARACTER*19  CHAMP2, LIGREL
 C
       CALL JEMARQ()
       IFI    = IUNIFI('RESULTAT')
@@ -101,6 +102,9 @@ C        --------------
 C
          ERR0 = 0.D0
          NORS = 0.D0
+         TERMVO = 0.D0
+         TERMSA = 0.D0
+         TERMNO = 0.D0
          NBEL = 0
          DO 2 ,J = 1,NBGR
             MODE=ZI(JCELD-1+ZI(JCELD-1+4+J) +2)
@@ -109,34 +113,53 @@ C
             IDECGR=ZI(JCELD-1+ZI(JCELD-1+4+J)+8)
             DO 3 , K = 1,NEL
                IAD  = IAVALE-1+IDECGR+(K-1)*LONGT
-               ERR0 = ERR0 + ZR(IAD+1-1)**2
-               NORS = NORS + ZR(IAD+3-1)**2
+               ERR0   = ERR0   + ZR(IAD+1-1)**2
+               NORS   = NORS   + ZR(IAD+3-1)**2
+               TERMVO = TERMVO + ZR(IAD+4-1)**2
+               TERMSA = TERMSA + ZR(IAD+6-1)**2
+               TERMNO = TERMNO + ZR(IAD+8-1)**2
                NBEL = NBEL + 1
  3          CONTINUE
 2        CONTINUE
-      NU0  = 100.D0*SQRT(ERR0/(ERR0+NORS))
-      ERR0 = SQRT(ERR0)
-      NORS = SQRT(NORS)
-      WRITE(IFI,*) ' '
-      WRITE(IFI,*) ' ++++++++++++++++++++++++'
-      IF(OPTION(1:14).EQ.'ERRE_ELEM_NOZ1') THEN
-         WRITE(IFI,*) ' ESTIMATEUR D''ERREUR ZZ1'
-      ELSEIF(OPTION(1:14).EQ.'ERRE_ELEM_NOZ2') THEN
-         WRITE(IFI,*) ' ESTIMATEUR D''ERREUR ZZ2'
-      ELSEIF(OPTION(1:14).EQ.'ERRE_ELGA_NORE') THEN
-         WRITE(IFI,*) ' ESTIMATEUR D''ERREUR EN RESIDU'
-      ENDIF
-      WRITE(IFI,*) ' ++++++++++++++++++++++++'
-         WRITE(IFI,*)
-         WRITE(IFI,*) '   IMPRESSION DES NORMES GLOBALES :'
-         WRITE(IFI,*)
-         WRITE(IFI,101) NU0
-101      FORMAT(5X,'ERREUR RELATIVE ESTIMEE = ',F7.3,' %')
-         WRITE(IFI,104) ERR0
-104      FORMAT(5X,'ERREUR ABSOLUE ESTIMEE  =  ',D10.3)
-         WRITE(IFI,107) NORS
-107      FORMAT(5X,'NORME DE SIGMA CALCULEE  =  ',D11.4)
+      NU0    = 100.D0*SQRT(ERR0/(ERR0+NORS))
+      ERR0   = SQRT(ERR0)
+      NUVO   = 100.D0*SQRT(TERMVO/(TERMVO+NORS))
+      TERMVO = SQRT(TERMVO)
+      NUSA   = 100.D0*SQRT(TERMSA/(TERMSA+NORS))
+      TERMSA = SQRT(TERMSA)
+      NUNO   = 100.D0*SQRT(TERMNO/(TERMNO+NORS))
+      TERMNO = SQRT(TERMNO)
+      NORS   = SQRT(NORS)
 C
+      WRITE(IFI,*) ' '
+      WRITE(IFI,*) '**********************************************'
+      IF(OPTION(1:14).EQ.'ERRE_ELEM_NOZ1') THEN
+         WRITE(IFI,*) ' MECANIQUE: ESTIMATEUR D''ERREUR ZZ1'
+      ELSEIF(OPTION(1:14).EQ.'ERRE_ELEM_NOZ2') THEN
+         WRITE(IFI,*) ' MECANIQUE: ESTIMATEUR D''ERREUR ZZ2'
+      ELSEIF(OPTION(1:14).EQ.'ERRE_ELGA_NORE') THEN
+         WRITE(IFI,*) ' MECANIQUE: ESTIMATEUR D''ERREUR EN RESIDU'
+      ENDIF
+      WRITE(IFI,*) '**********************************************'
+
+      WRITE(IFI,111)'SD RESULTAT: ',RESUCO
+      WRITE(IFI,110)' NUMERO D''ORDRE: ',IORD
+      WRITE(IFI,109)' INSTANT: ',TIME
+      WRITE(IFI,*)'ERREUR            ABSOLUE'//
+     &            '         RELATIVE   NORME DE SIGMA'
+
+      WRITE(IFI,108)' TOTALE          ',ERR0,NU0,NORS
+      WRITE(IFI,108)' TERME VOLUMIQUE ',TERMVO,NUVO
+      WRITE(IFI,108)' TERME SAUT      ',TERMSA,NUSA
+      WRITE(IFI,108)' TERME NORMAL    ',TERMNO,NUNO
+C
+101   FORMAT(5X,'ERREUR RELATIVE ESTIMEE = ',F7.3,' %')
+104   FORMAT(5X,'ERREUR ABSOLUE ESTIMEE  =  ',D10.3)
+107   FORMAT(5X,'NORME DE SIGMA CALCULEE  =  ',D11.4)
+108   FORMAT(A17,1P,D16.8,1X,0P,F7.3,' %',1X,1P,D16.8)
+109   FORMAT(1P,A17,D16.8)
+110   FORMAT(1P,A17,I5)
+111   FORMAT(A17,A8)
 C
       CALL JEDEMA()
       END

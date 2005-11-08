@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE CYLINDRE EN C.P. (PYRAM13)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,9 +32,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT( CODE=_F(  NOM = 'SSLV04M',NIV_PUB_WEB='INTERNET'),
-            BASE=_F(  FICHIER = 'LOCALE', LONG_REPE = 2000,  )
-                                 )
+DEBUT( CODE=_F(  NOM = 'SSLV04M',NIV_PUB_WEB='INTERNET'), )
 
 M=LIRE_MAILLAGE()
 

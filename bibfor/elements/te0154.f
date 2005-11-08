@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -29,11 +29,9 @@ C     POUR LES ELEMENTS DE BARRE
 C ----------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C        'EFGE_ELNO_DEPL'   : CALCUL DU VECTEUR EFFORT GENERALISE
-C        'EFGE_ELNO_DEPL_C' : CALCUL DU VECTEUR EFFORT GENERALISE
 C        'SIGM_ELNO_DEPL'   : CALCUL DU VECTEUR CONTRAINTE
 C        'SIEF_ELGA_DEPL'   : CALCUL DU VECTEUR EFFORT GENERALISE
 C        'EPSI_ELNO_DEPL'   : CALCUL DU VECTEUR DEFORMATION
-C        'SIGM_ELNO_DEPL_C' : CALCUL DU VECTEUR CONTRAINTE
 C        'EPOT_ELEM_DEPL'   : CALCUL DE L'ENERGIE DE DEFORMATION
 C        'ECIN_ELEM_DEPL'   : CALCUL DE L'ENERGIE CINETIQUE
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
@@ -58,16 +56,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       REAL*8       PGL(3,3), KLC(6,6), ENERTH,EPSGL(6)
-      REAL*8       UGR(6),UGI(6),ULR(6),ULI(6),FLR(6),FLI(6),EPS(6)
+      REAL*8       UGR(6),ULR(6),FLR(6),EPS(6)
       CHARACTER*2  BL2, CODRES
       CHARACTER*16 CH16
-      LOGICAL      LTEIMP, LCOMPL
+      LOGICAL      LTEIMP
       REAL*8       A,ALPHAT,E,R8BID,RHO,TEMP,XFL1,XFL4,XL,XMAS,XRIG
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
       INTEGER      LMATER,LORIEN,LSECT,LTEMP,LTREF,LX,NC,NNO
 C     ------------------------------------------------------------------
       LTEIMP = .FALSE.
-      LCOMPL = .FALSE.
       NNO = 2
       NC  = 3
 C
@@ -120,40 +117,19 @@ C
 C     --- RECUPERATION DES DEPLACEMENTS ----
       DO 19 I=1,6
            UGR(I) =  0.D0
-           UGI(I) =  0.D0
  19   CONTINUE
 C
-      IF( OPTION(15:16) .EQ. '_C' ) THEN
-        LCOMPL = .TRUE.
-        CALL JEVECH ('PDEPLAC', 'L', JDEPL)
-
-        IF (NOMTE.EQ.'MECA_BARRE') THEN
-          DO 20 I = 1,6
-            UGR(I) =  DBLE( ZC(JDEPL+I-1) )
-            UGI(I) = DIMAG( ZC(JDEPL+I-1) )
- 20      CONTINUE
-       ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-         DO 21 I = 1,4
-           UGR(I) =  DBLE( ZC(JDEPL+I-1) )
-           UGI(I) = DIMAG( ZC(JDEPL+I-1) )
- 21      CONTINUE
-        ENDIF
+      CALL JEVECH ('PDEPLAR', 'L', JDEPL)
 C
-        CALL UTPVGL ( NNO, NC, PGL, UGI, ULI )
-C
-      ELSE
-        CALL JEVECH ('PDEPLAR', 'L', JDEPL)
-C
-        IF (NOMTE.EQ.'MECA_BARRE') THEN
-          DO 22 I = 1,6
-             UGR(I) = ZR(JDEPL+I-1)
- 22       CONTINUE
-        ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-           UGR(1) =  ZR(JDEPL+1-1)
-           UGR(2) =  ZR(JDEPL+2-1)
-           UGR(4) =  ZR(JDEPL+3-1)
-           UGR(5) =  ZR(JDEPL+4-1)
-        ENDIF
+      IF (NOMTE.EQ.'MECA_BARRE') THEN
+        DO 22 I = 1,6
+           UGR(I) = ZR(JDEPL+I-1)
+ 22     CONTINUE
+      ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+         UGR(1) =  ZR(JDEPL+1-1)
+         UGR(2) =  ZR(JDEPL+2-1)
+         UGR(4) =  ZR(JDEPL+3-1)
+         UGR(5) =  ZR(JDEPL+4-1)
       ENDIF
 
 C
@@ -215,7 +191,6 @@ C
 C
 C        --- VECTEUR EFFORT LOCAL  FLR = KLC * ULR
          CALL PMAVEC('ZERO',6,KLC,ULR,FLR)
-         IF ( LCOMPL ) CALL PMAVEC('ZERO',6,KLC,ULI,FLI)
 C
 C        --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
          IF ( LTEIMP ) THEN
@@ -235,10 +210,6 @@ C              --- CALCUL DES FORCES INDUITES ---
                XFL4 = -XFL1
                FLR(1) = FLR(1) - XFL1
                FLR(4) = FLR(4) - XFL4
-               IF ( LCOMPL ) THEN
-                 FLI(1) = FLI(1) - XFL1
-                 FLI(4) = FLI(4) - XFL4
-               ENDIF
             ENDIF
          ENDIF
 C
@@ -256,20 +227,10 @@ C
             CALL JEVECH('PCONTRR','E',JEFFO)
             ZR(JEFFO  ) = -FLR(1)
 C
-         ELSEIF ( OPTION .EQ. 'SIGM_ELNO_DEPL_C' ) THEN
-            CALL JEVECH('PCONTRC','E',JEFFO)
-            ZC(JEFFO  ) = DCMPLX(-FLR(1),-FLI(1)) / A
-            ZC(JEFFO+1) = DCMPLX(FLR(4),FLI(4)) / A
-C
          ELSEIF (OPTION .EQ. 'EFGE_ELNO_DEPL') THEN
             CALL JEVECH('PEFFORR','E',JEFFO)
             ZR(JEFFO  ) = -FLR(1)
             ZR(JEFFO+1) = FLR(4)
-C
-         ELSEIF (OPTION .EQ. 'EFGE_ELNO_DEPL_C') THEN
-            CALL JEVECH('PEFFORC','E',JEFFO)
-            ZC(JEFFO  ) = DCMPLX(-FLR(1),-FLI(1))
-            ZC(JEFFO+1) = DCMPLX(FLR(4),FLI(4))
 C
          ELSE
             CH16 = OPTION

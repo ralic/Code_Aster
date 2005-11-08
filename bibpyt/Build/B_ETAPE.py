@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -662,10 +662,9 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           liste= liste+child.getlfact()
       return liste
 
-   def gcucon(self,icmd,resul,concep):
+   def gcucon(self,resul,concep):
       """
           Entrees:
-            icmd   numero d ordre de la commande
             resul  nom du concept
             concep type du concept
           Sorties:
@@ -674,7 +673,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
                                            -1=existe d un autre type)
           Fonction:
             Retourner l indicateur d existence du concept vid avant
-            la commande icmd
+            la commande en cours
       """
       objet_sd = self.parent.get_sd_avant_etape(string.strip(resul),self)
       if not objet_sd:

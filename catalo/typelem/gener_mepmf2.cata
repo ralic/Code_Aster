@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,8 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
                                         BX       SIMAX    SIMIN    )
+    EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
+                                        BX       SIMAX    SIMIN    )
     ECONTPG  = SIEF_R   ELGA__ RIGI  (SIXX     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
@@ -117,8 +119,6 @@ OPTION__
     EFGE_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EFGE_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    EFGE_ELNO_DEPL_C    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -191,15 +191,12 @@ OPTION__
                                      DDL_MECA PDEPPLU  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                               OUT__  EEFGENO  PSIEFNOR
+                                     EEFGENC  PSIEFNOC
     SIGM_ELNO_CART      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_DEPL      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIGM_ELNO_DEPL_C    -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
     SIPO_ELNO_DEPL      -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    SIPO_ELNO_DEPL_C    -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIPO_ELNO_SIEF      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

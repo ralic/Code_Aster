@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 07/11/2005   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
 #
 # 2. Version de HOMARD
 #
-         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_5",
-                               into=("V7_5", "V7_N", "V7_N_PERSO"),
+         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_7",
+                               into=("V7_7", "V7_N", "V7_N_PERSO", "V8_N"),
                            fr="Version de HOMARD",
                            ang="HOMARD release"),
 #

@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,10 +74,6 @@ C     --- LECTURE DU MOT CLE FACTEUR CODE ---
 C
 C     --- LECTURE DU MOT CLE FACTEUR  CATALOGUE ---
       IF ( IER .EQ. 0 .AND. FICHDF .EQ. '  ') CALL IBCATA( IER )
-C
-C     --- LECTURE DU MOT CLE SIMPLE PAR LOT  ---
-      IF ( IER .EQ. 0 ) CALL IBTLOT( LOT, IER )
-C
 C
 C     --- STATS SUR LA COMMANDE DE DEMARRAGE  ---
 C

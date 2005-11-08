@@ -5,7 +5,7 @@
      &                  CHSREF,CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -358,7 +358,7 @@ C ----------------------------------------------------------------------
      &          OPTIO2.EQ.'SIPO_ELNO_SIEF') THEN
               LPAOUT(1) = 'PCONTRR'
               IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO(OPTIO2,'&&MECHPO',CHARGE,MODELE,CHDEP2,
+                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
@@ -367,21 +367,21 @@ C ----------------------------------------------------------------------
                   LPAOUT(1) = 'PCONTPO'
                 END IF
               END IF
-            ELSE IF (OPTIO2.EQ.'SIPO_ELNO_DEPL_C') THEN
-              LPAIN(1) = 'PDEPLAC'
-              LPAOUT(1) = 'PCONTRC'
+            ELSE IF (OPTIO2.EQ.'SIPO_ELNO_DEPL') THEN
+              LPAIN(1) = 'PDEPLAR'
+              LPAOUT(1) = 'PCONTRR'
               IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO(OPTIO2,'&&MECHPO',CHARGE,MODELE,CHDEP2,
+                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
                 LPAOUT(1) = 'PCONTPC'
               END IF
-            ELSE IF (OPTIO2.EQ.'SIGM_ELNO_DEPL_C') THEN
-              LPAIN(1) = 'PDEPLAC'
-              LPAOUT(1) = 'PCONTRC'
+            ELSE IF (OPTIO2.EQ.'SIGM_ELNO_DEPL') THEN
+              LPAIN(1) = 'PDEPLAR'
+              LPAOUT(1) = 'PCONTRR'
               IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO(OPTIO2,'&&MECHPO',CHARGE,MODELE,CHDEP2,
+                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
@@ -389,16 +389,16 @@ C ----------------------------------------------------------------------
             ELSE IF (OPTIO2.EQ.'EFGE_ELNO_DEPL') THEN
               LPAOUT(1) = 'PEFFORR'
               IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO(OPTIO2,'&&MECHPO',CHARGE,MODELE,CHDEP2,
+                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
               END IF
-            ELSE IF (OPTIO2.EQ.'EFGE_ELNO_DEPL_C') THEN
-              LPAIN(1) = 'PDEPLAC'
-              LPAOUT(1) = 'PEFFORC'
+            ELSE IF (OPTIO2.EQ.'EFGE_ELNO_DEPL') THEN
+              LPAIN(1) = 'PDEPLAR'
+              LPAOUT(1) = 'PEFFORR'
               IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO(OPTIO2,'&&MECHPO',CHARGE,MODELE,CHDEP2,
+                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
@@ -517,8 +517,8 @@ C REDEFINITION DE L'OPTION
    30     CONTINUE
         END IF
 
-        CALL CALCUL('C',OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              BASE2)
+        CALL MECEUC('C',POUX,OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,1,
+     &              LCHOUT,LPAOUT,BASE2)
         CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
         IF (IRET.EQ.0) THEN
           CODRET = 1

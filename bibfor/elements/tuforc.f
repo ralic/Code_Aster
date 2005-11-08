@@ -1,6 +1,6 @@
       SUBROUTINE TUFORC(OPTION,NOMTE,NBRDDL,B,F,VIN,VOUT,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,13 +70,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       PI = R8PI()
       DEUXPI = 2.D0*PI
-      IF (OPTION(15:16).EQ.'_C') THEN
-        ICOMPX = 1
-        NITER = 2
-      ELSE
-        ICOMPX = 0
-        NITER = 1
-      END IF
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCOU = ZI(JNBSPI-1+1)
       NBSEC = ZI(JNBSPI-1+2)
@@ -345,28 +338,10 @@ C  FONCTIONS DE FORMES AUX POINT DE GAUSS
             HK(K,IGAU) = ZR(IVF-1+NNO* (IGAU-1)+K)
   250     CONTINUE
   260   CONTINUE
-        IF (ICOMPX.EQ.0) THEN
           CALL JEVECH('PDEPLAR','L',JIN)
-        ELSE
-          CALL JEVECH('PDEPLAC','L',JIN)
-        END IF
-C     2 ITERATION EN COMPLEXE
-        DO 470 ITER = 1,NITER
-          IF (ICOMPX.EQ.1) THEN
-            IF (ITER.EQ.1) THEN
-              DO 270 I = 1,NBRDDL
-                VIN(I) = DBLE(ZC(JIN+I-1))
-  270         CONTINUE
-            ELSE
-              DO 280 I = 1,NBRDDL
-                VIN(I) = DIMAG(ZC(JIN+I-1))
-  280         CONTINUE
-            END IF
-          ELSE
-            DO 290 I = 1,NBRDDL
-              VIN(I) = ZR(JIN-1+I)
-  290       CONTINUE
-          END IF
+          DO 290 I = 1,NBRDDL
+            VIN(I) = ZR(JIN-1+I)
+  290     CONTINUE
           IF (ICOUDE.EQ.0) THEN
             CALL VLGGL(NNO,NBRDDL,PGL,VIN,'GL',PASS,VTEMP)
           ELSE
@@ -523,24 +498,10 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
   420         CONTINUE
   430       CONTINUE
           END IF
-          IF (ICOMPX.EQ.1) THEN
-            CALL JEVECH('PEFFORC','E',JOUT)
-            IF (ITER.EQ.1) THEN
-              DO 440 J = 1,6*NNO
-                ZC(JOUT-1+J) = VOUT(J)
-  440         CONTINUE
-            ELSE
-              DO 450 J = 1,6*NNO
-                ZC(JOUT-1+J) = DCMPLX(DBLE(ZC(JOUT-1+J)),DBLE(VOUT(J)))
-  450         CONTINUE
-            END IF
-          ELSE
-            CALL JEVECH('PEFFORR','E',JOUT)
-            DO 460 J = 1,6*NNO
-              ZR(JOUT-1+J) = VOUT(J)
-  460       CONTINUE
-          END IF
-  470   CONTINUE
+          CALL JEVECH('PEFFORR','E',JOUT)
+          DO 460 J = 1,6*NNO
+            ZR(JOUT-1+J) = VOUT(J)
+  460     CONTINUE
       ELSE
         CALL UTMESS('F','TE0585','L''OPTION "'//OPTION//
      &              '" EST NON PREVUE')

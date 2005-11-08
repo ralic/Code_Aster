@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,9 @@ MODE_LOCAL__
                                  EN1   (DX       DY       PRE1     PRE2     TEMP     )
                                  EN2   (DX       DY       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
@@ -92,6 +94,11 @@ MODE_LOCAL__
                                         FH12X    FH12Y    ENT12    M21      FH21X    FH21Y
                                         ENT21    M22      FH22X    FH22Y    ENT22    QPRIM
                                         FHTX     FHTY     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
+                                        SIP      M11      FH11X    FH11Y    ENT11    M12
+                                        FH12X    FH12Y    ENT12    M21      FH21X    FH21Y
+                                        ENT21    M22      FH22X    FH22Y    ENT22    QPRIM
+                                        FHTX     FHTY     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
@@ -114,8 +121,10 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     EPSI_ELGA_DEPL      600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFORR
+                                     EDEFOPC  PDEFORC
     EPSI_ELNO_DEPL      600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFONO  PDEFORR
+                                     EDEFONC  PDEFORC
     EXTR_ELGA_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
                               OUT__  E1GNEUT  PVARIGS
     EXTR_ELNO_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
@@ -162,6 +171,7 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELNO_ELGA      600   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
+                                     ECONTNC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

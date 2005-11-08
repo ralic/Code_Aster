@@ -1,11 +1,11 @@
         SUBROUTINE CALCMS( NBPHAS,NBFSYM,NBCOMM,CPMONO,NMAT,PGL2,
-     &                     COEFT,TOUTMS )
+     &                     COEFT,ANGMAS,TOUTMS )
         IMPLICIT NONE
         INTEGER NMAT,NBCOMM(NMAT,3),NBFSYM,NBPHAS
         REAL*8 PGL(3,3),TOUTMS(NBPHAS,NBFSYM,12,6),COEFT(NMAT)  
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,8 @@ C
 C     ----------------------------------------------------------------
       CHARACTER*8 MOD
       CHARACTER*16 NOMFAM,NCOEFT,NECOUL,NECRIS,NECRCI,CPMONO(5*NMAT+1)
-      REAL*8 ANG(3),PGL2(3,3),R8DGRD,MS(6),WORK(3,3)
+      REAL*8 ANG(3),ANGMAS(3),PGL1(3,3),PGL2(3,3)
+      REAL*8 R8DGRD,MS(6),WORK(3,3)
       INTEGER NBFSYS,I,IFA,NBSYS,IS,INDORI,INDCP
       INTEGER INDPHA,IPHAS,INDFA
 C     ----------------------------------------------------------------
@@ -52,7 +53,9 @@ C         recuperer l'orientation de la phase et la proportion
          ANG(1)=COEFT(INDORI)*R8DGRD()
          ANG(2)=COEFT(INDORI+1)*R8DGRD()
          ANG(3)=COEFT(INDORI+2)*R8DGRD()
-         CALL MATROT(ANG,PGL)
+         CALL MATROT(ANG,PGL1)
+         CALL MATROT(ANGMAS,PGL2)
+         CALL PROMAT(PGL1,3,3,3,PGL2,3,3,3,PGL)
          NBFSYS=NBCOMM(INDPHA,1)
          INDCP=NBCOMM(1+IPHAS,2)     
          IF (NBFSYS.GT.NBFSYM) THEN

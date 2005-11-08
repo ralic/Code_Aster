@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILIFOR  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C
             ERR(1)=0.D0
             DO 1 I = 1,NR
 C                IF(DY(I).EQ.ZERO) THEN
-                IF(DY(I).LT.R8PREM()) THEN
+                IF(ABS(DY(I)).LT.R8PREM()) THEN
                    ERR(I)    = ABS(DDY(I))
                 ELSE
                    ERR(I)    = ABS(DDY(I) / DY(I))
@@ -68,13 +68,14 @@ C       ERREUR = !!DDYI/DYI!! < EPS
 C
         ELSEIF ( TYP .EQ. 2 ) THEN
             DO 2 I = 1,NR
-                IF(DY(I).EQ.ZERO) THEN
+                IF(ABS(DY(I)).LT.R8PREM()) THEN
                 E(I) =  DDY(I)
                 ELSE
                 E(I) =  DDY(I) / DY(I)
                 ENDIF
  2          CONTINUE
         CALL LCNRVN ( NR , E , ERR(1) )
+C
         ENDIF
 C
         END

@@ -4,12 +4,11 @@
      3                      SIGF, VINF, 
      3                COMP,NBCOMM, CPMONO, PGL,
      5               ICOMP, IRTETI, THETA,VP,VECP,
-     4                      SEUIL, DEVG, DEVGII,
-     5                      INDICS)
+     4                      SEUIL, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +74,6 @@ C
         
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
-        REAL*8          INDICS(*)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C       ----------------------------------------------------------------
 C
@@ -99,8 +97,7 @@ C
      1                 NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
      2                 TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                COMP,NBCOMM, CPMONO, PGL,
-     3                 SIGF, VINF, ICOMP, IRTET,
-     4                 INDICS)
+     3                 SIGF, VINF, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 CC
 

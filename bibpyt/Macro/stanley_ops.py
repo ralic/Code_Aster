@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF stanley_ops Macro  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 
 
-def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,**args):
+def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
 
   """
      Importation et lancement de Stanley
@@ -37,13 +37,17 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,**args):
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
+  # Redefinition eventuelle du DISPLAY
+  if DISPLAY:
+    UTMESS('I','STANLEY', 'Redefinition du DISPLAY vers : ' + DISPLAY)
+    os.environ['DISPLAY'] = DISPLAY
 
   # On ne lance Stanley que si la variable DISPLAY est définie
   if os.environ.has_key('DISPLAY'):
   
     import Stanley
     from Stanley import stanley
-  
+
     if (RESULTAT and MODELE and CHAM_MATER):
       _MAIL = aster.getvectjev( string.ljust(MODELE.nom,8) + '.MODELE    .NOMA        ' )
       _MAIL = string.strip(_MAIL[0])
@@ -61,6 +65,11 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,**args):
                STANLEY ne pourra pas fonctionner. On l'ignore.
 
                Si vous etes en Interactif, cochez le bouton Suivi Interactif
-               dans ASTK.""")
+               dans ASTK.
+
+               Vous pouvez également préciser votre DISPLAY dans les arguments
+               de la commande STANLEY :
+
+               STANLEY(DISPLAY='adresse_ip:0.0');""")
 
   return ier

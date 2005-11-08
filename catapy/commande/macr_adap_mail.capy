@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 07/11/2005   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,8 +47,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_5",
-                               into=("V7_5", "V7_N", "V7_N_PERSO"),
+         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_7",
+                               into=("V7_7", "V7_N", "V7_N_PERSO", "V8_N"),
                            fr="Version de HOMARD",
                            ang="HOMARD release"),
 #
@@ -77,7 +77,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 5.1. Deux choix d'adaptation exclusifs :
 #
 # 5.1.
-#      A. Selon un indicateur d'erreur, avec trois variantes :
+#      A. Pilote par une consigne, avec trois variantes :
 #         . Raffinement et deraffinement
 #         . Raffinement seul
 #         . Deraffinement seul
@@ -109,7 +109,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                            fr="Maillage apres adaptation",
                            ang="Mesh after adaptation" ),
 #
-# 5.3. Pour de l'adaptation libre, il faut l'indicateur d'erreur
+# 5.3. Pour de l'adaptation libre, il faut un indicateur d'erreur et/ou des definitions de zones
 #
            b_indicateur_d_erreur   =BLOC( condition = " LIBRE != None " ,
                            fr="Choix de l'indicateur d'erreur",

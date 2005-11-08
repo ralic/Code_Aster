@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE POUTRE EN HEXA20 SOUMISE A UN EFFORT TRANCHANT (FORCE_ARETE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,9 +23,7 @@
 #       LINEIQUE APPLIQUEE SUR L'ARETE SUPERIEURE DE LA FACE EXTREMITE.
 # ----------------------------------------------------------------------
 #
-DEBUT( CODE=_F(  NOM = 'SSLL102E',NIV_PUB_WEB='INTERNET'),
-           BASE=_F(  FICHIER = 'LOCALE', LONG_REPE = 2000)
-                                )
+DEBUT( CODE=_F(  NOM = 'SSLL102E',NIV_PUB_WEB='INTERNET'), )
 
 M=LIRE_MAILLAGE(   )
 

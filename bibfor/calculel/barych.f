@@ -1,6 +1,6 @@
       SUBROUTINE BARYCH(CH1,CH2,R1,R2,CH,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,8 @@ C ======================================================================
       CHARACTER*1                        BASE
       REAL*8                    R1,R2
 C ----------------------------------------------------------------------
-C     BUT :   FAIRE LE BARYCENTRE DE 2 CHAMP : CH = R1*CH1+ R2*CH2
-C               (CHAMP = CHAM_NO OU CHAM_ELEM)
+C     BUT :   FAIRE LA COMBINAISON LINERAIRE DE 2 CHAMP : 
+C             CH = R1*CH1+ R2*CH2 (CHAMP = CHAM_NO OU CHAM_ELEM)
 C
 C IN:  CH1    : NOM DU 1ER CHAMP
 C      CH2    : NOM DU 2EM CHAMP
@@ -108,26 +108,31 @@ C ----- RECOPIE BRUTALE DES .VALE
 
       ELSE IF ( DOCU(1:4).EQ.'CHML') THEN
 C     -----------------------------------
-        VALE='.CELV'
-        CALL JELIRA(CH1//VALE,'TYPE',IBID,SCAL)
-        CALL JELIRA(CH1//VALE,'LONMAX',LON1,K1BID)
-        CALL JELIRA(CH2//VALE,'LONMAX',LON2,K1BID)
-        CALL JELIRA(CH//VALE,'LONMAX',LONG,K1BID)
-        IF ((LON1.NE.LON2).OR.(LON1.NE.LONG)) CALL UTMESS('F',
-     &  'BARYCH','LONGUEURS DES CHAM_ELEM INCOMPATIBLES')
+        CALL VRREFE(CH1,CH2,IER)
+        IF (IER.EQ.0) THEN
+          VALE='.CELV'
+          CALL JELIRA(CH1//VALE,'TYPE',IBID,SCAL)
+          CALL JELIRA(CH1//VALE,'LONMAX',LON1,K1BID)
+          CALL JELIRA(CH2//VALE,'LONMAX',LON2,K1BID)
+          CALL JELIRA(CH//VALE,'LONMAX',LONG,K1BID)
+          IF ((LON1.NE.LON2).OR.(LON1.NE.LONG)) CALL UTMESS('F',
+     &    'BARYCH','LONGUEURS DES CHAM_ELEM INCOMPATIBLES')
 
-        CALL JEVEUO(CH//VALE,'E',IACH)
-        CALL JEVEUO(CH1//VALE,'L',IACH1)
-        CALL JEVEUO(CH2//VALE,'L',IACH2)
-        IF (SCAL(1:1).EQ.'R') THEN
-          DO 5,I = 1,LON1
-             ZR(IACH-1+I) = R1*ZR(IACH1-1+I) + R2*ZR(IACH2-1+I)
-    5     CONTINUE
-        ELSE IF (SCAL(1:1).EQ.'C') THEN
-          DO 6,I = 1,LON1
+          CALL JEVEUO(CH//VALE,'E',IACH)
+          CALL JEVEUO(CH1//VALE,'L',IACH1)
+          CALL JEVEUO(CH2//VALE,'L',IACH2)
+          IF (SCAL(1:1).EQ.'R') THEN
+            DO 5,I = 1,LON1
+               ZR(IACH-1+I) = R1*ZR(IACH1-1+I) + R2*ZR(IACH2-1+I)
+    5       CONTINUE
+          ELSE IF (SCAL(1:1).EQ.'C') THEN
+            DO 6,I = 1,LON1
              ZC(IACH-1+I) = R1*ZC(IACH1-1+I) + R2*ZC(IACH2-1+I)
-    6     CONTINUE
-        END IF
+    6       CONTINUE
+          END IF
+        ELSE
+          CALL UTMESS ('F','BARYCH','CHAM_ELEM A COMBINER INCOMPATIBLE')
+        ENDIF
       END IF
 
 

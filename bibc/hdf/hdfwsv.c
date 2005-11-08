@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 27/06/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfwsv hdf  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -28,7 +28,7 @@
 /     identificateur du fichier, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
-
+#include <stdlib.h>
 #if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
    long hdfwsv_( long *idf, char *nomg, char *nomdts, char *type, long *ltype, void *sv, long *lsv, long lg, long ln, long lt )
 #elif defined HPUX

@@ -1,10 +1,10 @@
-      SUBROUTINE EXPASS( LOT , IPASS , ICMDEB , IERTOT )
+      SUBROUTINE EXPASS( JXVRF , IPASS , ICMDEB , IERTOT )
       IMPLICIT REAL*8 (A-H,O-Z)
-      LOGICAL            LOT
+      LOGICAL            JXVRF
       INTEGER                  IPASS , ICMDEB , IERTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     EXECUTION D'UNE PASSE SPECIFIQUE D'OPERATEURS
 C     ------------------------------------------------------------------
+C IN  JXVRF  : LOGICAL : DOIT ON FAIRE JXVERI (INFO DEPUIS MCSIMP JXVERI
+C                        SOUS DEBUT, TRANSMIS PAR LE JDC).
 C IN  IPASS  : IS : INDICATEUR DE LA PASSE
 C         = 1  DEMANDE DE VERIFICATION SUPPLEMENTAIRE  --- SANS CALCUL -
 C         = 2  EXECUTION DE L'OPERATEUR
@@ -67,11 +69,7 @@ C
          ICOND = 1
       ELSEIF ( IPASS .EQ. 2 ) THEN
          ICOND = 0
-         CALL JEEXIN('&&SYS   .DEBUG',IRET)
-         IF ( IRET.NE.0) THEN
-            CALL JEVEUO('&&SYS   .DEBUG','L',LLDBG)
-            LDBG  = ZK8(LLDBG) .EQ. 'OUI'
-         ENDIF
+         LDBG  = JXVRF
       ENDIF
 C
       ICMD  =  ICMDEB
@@ -99,14 +97,9 @@ C           --- VERIFICATIONS SUPPLEMENTAIRES ---
      +                        'COMMANDE N '//CI4//' :  "'//NOMCMD//
      +                        '"  :  '//CH4//' ERREUR(S) DETECTEE(S)')
             ELSE
-               IF ( .NOT.LOT ) THEN
-                  CALL UTMESS('I','SUPERVISEUR',
-     +                            'VERIFICATIONS SUPPLEMENTAIRES : '//
-     +                            'AUCUNE ERREUR DETECTEE.')
-               ELSEIF ( (IFIN.NE.0.AND.IERTOT.EQ.0) )  THEN
-                  CALL UTMESS('I','SUPERVISEUR',
-     +                            'AUCUNE ERREUR DETECTEE.')
-               ENDIF
+               CALL UTMESS('I','SUPERVISEUR',
+     +                         'VERIFICATIONS SUPPLEMENTAIRES : '//
+     +                         'AUCUNE ERREUR DETECTEE.')
             ENDIF
 C
          ELSEIF( IPASS .EQ. 2 ) THEN
@@ -125,13 +118,9 @@ C
          ENDIF
       IF ( IFIN .EQ. 0 ) THEN
          ICMD = ICMD + 1
-         IF ( LOT )  GOTO 10
       ELSEIF ( IPASS.EQ.1 .AND. IERTOT.NE.0 ) THEN
          IPASS = 2
          ICOND = 0
-         IF ( LOT )  GOTO 10
-CCCC  ELSEIF ( IPASS.EQ.2 .AND. IERTOT.NE.0 ) THEN
-CCCC     GOTO 10
       ENDIF
 C
       CALL JEDEMA()

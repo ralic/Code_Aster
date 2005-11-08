@@ -1,9 +1,9 @@
-      SUBROUTINE TE0375(OPTION,NOMTE)
+      SUBROUTINE TE0375 ( OPTION, NOMTE )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16 OPTION,NOMTE
+      CHARACTER*16        OPTION, NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -257,7 +257,6 @@ C -----------CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS--------
 C --------- CALCUL DU PREMIER TERME DE L'ERREUR (RESIDUS D'EQUILIBRE)---
 C --------- *********************************** ------------------------
 
-
       TER = 0.D0
       NORSIG = 0.D0
       DO 30 KP = 1,NPG1
@@ -362,9 +361,6 @@ C
 C --------- TEST SUR LE TYPE DE LA MAILLE COURANTE --------------------
 
       IATYMA = ZI(IREF1+3)
-
-C      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TY),TYPEMA)
-
 
 C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
 
@@ -803,13 +799,31 @@ C------------MISE EN MEMOIRE DES DIFFERENTS TERMES DE L'ERREUR ---------
         COEFF = SQRT(24.D0)
       END IF
 
-      ERREST = (H*SQRT(TER)+TER2+TER3)/COEFF
+      ERREST = ( H*SQRT(TER) + TER2 + TER3 ) / COEFF
       SIGCAL = SQRT(NORSIG)
-      NUEST = 100.D0*SQRT(ERREST**2/ (ERREST**2+NORSIG))
+      NUEST  = 100.D0*SQRT( ERREST**2 / (ERREST**2 + NORSIG) )
 
-      ZR(IERR) = ERREST
+      ZR(IERR  ) = ERREST
       ZR(IERR+1) = NUEST
       ZR(IERR+2) = SIGCAL
+
+      ERREST = H*SQRT(TER) / COEFF
+      NUEST  = 100.D0*SQRT( ERREST**2 / (ERREST**2 + NORSIG))
+
+      ZR(IERR+3) = ERREST
+      ZR(IERR+4) = NUEST
+
+      ERREST = TER2 / COEFF
+      NUEST  = 100.D0*SQRT( ERREST**2 / (ERREST**2 + NORSIG) )
+
+      ZR(IERR+5) = ERREST
+      ZR(IERR+6) = NUEST
+
+      ERREST = TER3 / COEFF
+      NUEST  = 100.D0*SQRT(ERREST**2 / (ERREST**2 + NORSIG) )
+
+      ZR(IERR+7) = ERREST
+      ZR(IERR+8) = NUEST
 
   310 CONTINUE
       CALL JEDEMA()

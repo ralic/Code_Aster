@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF ENTETE  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -280,6 +280,7 @@ class carte_depl_f   (carte_sdaster):pass
 class carte_depl_r   (carte_sdaster):pass
 class carte_durt_r   (carte_sdaster):pass
 class carte_ener_r   (carte_sdaster):pass
+class carte_epsi_c   (carte_sdaster):pass
 class carte_epsi_r   (carte_sdaster):pass
 class carte_erreur   (carte_sdaster):pass
 class carte_flux_r   (carte_sdaster):pass
@@ -293,6 +294,7 @@ class carte_neut_f   (carte_sdaster):pass
 class carte_neut_r   (carte_sdaster):pass
 class carte_pres_f   (carte_sdaster):pass
 class carte_pres_r   (carte_sdaster):pass
+class carte_sief_c   (carte_sdaster):pass
 class carte_sief_r   (carte_sdaster):pass
 class carte_sour_r   (carte_sdaster):pass
 class carte_temp_f   (carte_sdaster):pass
@@ -414,6 +416,7 @@ class cham_no_depl_f   (cham_no_sdaster):pass
 class cham_no_depl_r   (cham_no_sdaster):pass
 class cham_no_durt_r   (cham_no_sdaster):pass
 class cham_no_ener_r   (cham_no_sdaster):pass
+class cham_no_epsi_c   (cham_no_sdaster):pass
 class cham_no_epsi_r   (cham_no_sdaster):pass
 class cham_no_erreur   (cham_no_sdaster):pass
 class cham_no_facy_r   (cham_no_sdaster):pass
@@ -429,6 +432,7 @@ class cham_no_neut_r   (cham_no_sdaster):pass
 class cham_no_pres_c   (cham_no_sdaster):pass
 class cham_no_pres_f   (cham_no_sdaster):pass
 class cham_no_pres_r   (cham_no_sdaster):pass
+class cham_no_sief_c   (cham_no_sdaster):pass
 class cham_no_sief_r   (cham_no_sdaster):pass
 class cham_no_sour_r   (cham_no_sdaster):pass
 class cham_no_spma_r   (cham_no_sdaster):pass

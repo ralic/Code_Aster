@@ -1,6 +1,6 @@
-      SUBROUTINE EXCENT ( OPTION, NOMTE, NNO, TENS , ICOMPX )
+      SUBROUTINE EXCENT ( OPTION, NOMTE, NNO, TENS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
-      INTEGER  NNO, ICOMPX
+      INTEGER  NNO
       REAL*8   TENS(32)
 C     ------------------------------------------------------------------
 C ---    PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES 
@@ -64,17 +64,15 @@ C
       END IF
 C
       IF (OPTION(1:9).EQ.'EFGE_ELNO') THEN
-         IF (ICOMPX.EQ.0) THEN
-            CALL JEVECH('PCACOQU','L',JCARA)
-            CALL JEVECH('PFREQR ','L',JPLAN)
-            EPAIS  = ZR(JCARA)
-            IF ((.NOT.GRILLE)) THEN
-               EXCEN = ZR(JCARA+5-1)
-            ELSE
-               EXCEN = ZR(JCARA+4-1)
-            ENDIF
-            IPLAN  = NINT(ZR(JPLAN))
+         CALL JEVECH('PCACOQU','L',JCARA)
+         CALL JEVECH('PFREQR ','L',JPLAN)
+         EPAIS  = ZR(JCARA)
+         IF ((.NOT.GRILLE)) THEN
+            EXCEN = ZR(JCARA+5-1)
+         ELSE
+            EXCEN = ZR(JCARA+4-1)
          ENDIF
+         IPLAN  = NINT(ZR(JPLAN))
       ENDIF
 C
       IF (IPLAN.EQ.1) THEN

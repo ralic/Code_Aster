@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 03/10/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -414,19 +414,19 @@ class TraceGraph:
 # ------------------------------------------------------------------------------
    def Entete(self):
       """Retourne l'entete"""
-      raise StandardError, "Cette méthode doit etre définie par la classe fille."
+      raise NotImplementedError, "Cette méthode doit etre définie par la classe fille."
 # ------------------------------------------------------------------------------
    def DescrCourbe(self,**args):
       """Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
-      raise StandardError, "Cette méthode doit etre définie par la classe fille."
+      raise NotImplementedError, "Cette méthode doit etre définie par la classe fille."
 # ------------------------------------------------------------------------------
    def Trace(self):
       """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
-      raise StandardError, "Cette méthode doit etre définie par la classe fille."
+      raise NotImplementedError, "Cette méthode doit etre définie par la classe fille."
 
 
 # ------------------------------------------------------------------------------
@@ -830,10 +830,10 @@ class TraceXmgrace(TraceGraph):
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
-      g=self.Graph
-      if self.PILOTE=='INTERACTIF':
-         self.NomFich[0]='Trace_'+time.strftime('%y%m%d%H%M%S',time.localtime())+'.dat'
-         self.Fich[0]=open(self.NomFich[0],'w')
+      g = self.Graph
+      if self.PILOTE == 'INTERACTIF':
+         self.NomFich[0] = 'Trace_%s.dat' % time.strftime('%y%m%d%H%M%S',time.localtime())
+         self.Fich[0] = open(self.NomFich[0],'w')
       # initialise le graph
       self._FermFich()
       nbsets, x0, x1, y0, y1 = IniGrace(self.NomFich[0])
@@ -853,8 +853,6 @@ class TraceXmgrace(TraceGraph):
                UTMESS('A', 'TraceXmgrace', 'On limite la fenetre aux ordonnées positives.')
             g.Min_Y=g.MinP_Y
       
-      self._OuvrFich()
-      fich=self.Fich[0]
       if g.NbCourbe < 1:
          self._FermFich()
          return
@@ -869,8 +867,8 @@ class TraceXmgrace(TraceGraph):
          if deltaY>4:
             g.Grille_Y=int(round(g.Grille_Y))
       # entete
-      fich.write('\n'.join(self.Entete()))
-      fich.write('\n')
+      content = self.Entete()
+      content.append('')
       # valeurs
       it=-1
       for i in range(g.NbCourbe):
@@ -878,62 +876,66 @@ class TraceXmgrace(TraceGraph):
          for k in range(dCi['NbCol']-1):
             it=it+1
             dCi['NumSet'] = NumSetIni + it
-            fich.write('\n'.join(self.DescrCourbe(**dCi)))
-            fich.write('\n')
+            content.extend(self.DescrCourbe(**dCi))
+            content.append('')
       # partie données (.dat)
-      lig=[]
       it=-1
       for i in range(g.NbCourbe):
          dCi=g.Courbe(i)
          for k in range(dCi['NbCol']-1):
             it=it+1
-            lig.append('@target g0.s%d' % (NumSetIni + it))
-            lig.append('@type xy')
+            content.append('@target g0.s%d' % (NumSetIni + it))
+            content.append('@type xy')
             listX, listY = Tri(g.Tri, lx=dCi['Abs'], ly=dCi['Ord'][k])
             for j in range(dCi['NbPts']):
-               svX=self.DicForm['formR'] % listX[j]
-               svY=self.DicForm['formR'] % listY[j]
-               lig.append(self.DicForm['formR'] % listX[j] + \
+               svX = self.DicForm['formR'] % listX[j]
+               svY = self.DicForm['formR'] % listY[j]
+               content.append(self.DicForm['formR'] % listX[j] + \
                   ' ' + self.DicForm['formR'] % listY[j])
-            lig.append('&')
-      fich.write('\n'.join(lig))
-      fich.write('\n')
-      self._FermFich()
+            content.append('&')
+      content.append('')
       
       # Production du fichier postscript, jpeg ou lancement interactif
       pilo=self.PILOTE
-      if self.PILOTE<>'':
+      if pilo == '':
+         self._OuvrFich()
+         self.Fich[0].write('\n'.join(content))
+         self._FermFich()
+      else:
          xmgr=os.path.join(aster.repout(),'xmgrace')
-         nfhard=self.NomFich[0]+'.hardcopy'
+         nfwrk = self.NomFich[0]+'.wrk'
+         open(nfwrk, 'w').write('\n'.join(content))
+         nfhard = self.NomFich[0]+'.hardcopy'
          # nom exact du pilote
-         if pilo=='POSTSCRIPT':
-            pilo='PostScript'
-         elif pilo=='INTERACTIF':
-            pilo='X11'
+         if pilo == 'POSTSCRIPT':
+            pilo = 'PostScript'
+         elif pilo == 'INTERACTIF':
+            pilo = 'X11'
          # ligne de commande
-         if pilo=='X11':
-            lcmde=xmgr+' '+self.NomFich[0]
+         if pilo == 'X11':
+            lcmde = '%s %s' % (xmgr, nfwrk)
             if not os.environ.has_key('DISPLAY') or os.environ['DISPLAY']=='':
                os.environ['DISPLAY']=':0.0'
                UTMESS('A','TraceXmgrace','Variable DISPLAY non définie')
             UTMESS('I','TraceXmgrace','on fixe le DISPLAY à %s' % os.environ['DISPLAY'])
          else:
             if os.path.exists(os.path.join(aster.repout(),'gracebat')):
-               xmgr=os.path.join(aster.repout(),'gracebat')
-            lcmde=xmgr+' -hdevice '+pilo+' -hardcopy -printfile '+nfhard+' '+self.NomFich[0]
+               xmgr = os.path.join(aster.repout(),'gracebat')
+            lcmde = '%s -hdevice %s -hardcopy -printfile %s %s' % (xmgr, pilo, nfhard, nfwrk)
          # appel xmgrace
          UTMESS('I','TraceXmgrace','Lancement de : '+lcmde)
          if not os.path.exists(xmgr):
             UTMESS('S','TraceXmgrace','Fichier inexistant : '+xmgr)
-         iret=os.system(lcmde)
-         if iret==0 or os.path.exists(nfhard):
-            if pilo not in ['','X11']:
-               os.remove(self.NomFich[0])             # necessaire sous windows
-               os.rename(nfhard,self.NomFich[0])
+         iret = os.system(lcmde)
+         if iret == 0 or os.path.exists(nfhard):
+            if pilo not in ('', 'X11'):
+               new = open(nfhard, 'r').read()
+               open(self.NomFich[0], 'a').write(new)
          else:
-            UTMESS('A','TraceXmgrace',"Erreur lors de l'utilisation du filtre "+pilo+"\nLe fichier retourné est le fichier '.agr'")
+            UTMESS('A','TraceXmgrace', "Erreur lors de l'utilisation du filtre %s" \
+                  "\nLe fichier retourné est le fichier '.agr'" % pilo)
       # menage
-      if self.PILOTE=='INTERACTIF':
+      if self.PILOTE == 'INTERACTIF':
          os.remove(self.NomFich[0])
       return
 
@@ -1184,10 +1186,14 @@ def IniGrace(fich):
             fnew.write(line)
       fpre.close()
       fnew.close()
-      UTMESS('I',  'Graph.IniGrace', """
+      try:
+         UTMESS('I', 'Graph.IniGrace', """
    <I> Informations sur le fichier '%s' :
       Nombre de courbes    : %3d
       Bornes des abscisses : [ %13.6G , %13.6G ]
       Bornes des ordonnées : [ %13.6G , %13.6G ]
 """ % (fich, ns, x0, x1, y0, y1))
+      except TypeError:
+         # pas un format xmgrace
+         pass
    return ns, x0, x1, y0, y1

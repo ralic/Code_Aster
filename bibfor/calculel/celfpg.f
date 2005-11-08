@@ -1,6 +1,8 @@
-      SUBROUTINE CELFPG(CELZ,NOMOBJ)
+      SUBROUTINE CELFPG ( CELZ, NOMOBJ )
+      IMPLICIT  NONE
+      CHARACTER*(*)  CELZ , NOMOBJ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,8 +20,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
-      IMPLICIT NONE
-      CHARACTER*(*) CELZ,NOMOBJ
 C ------------------------------------------------------------------
 C BUT : EXTRAIRE DU CHAM_ELEM (ELGA) CELZ UN OBJET JEVEUX CONTENANT
 C       LE SCHEMA DE POINT DE GAUSS DES MAILLES
@@ -28,6 +28,11 @@ C     ARGUMENTS:
 C CELZ    IN/JXIN  K19 : SD CHAM_ELEM A EXAMINER
 C         REMARQUE:   SI CELZ N'EST PAS "ELGA", NOMOBJ N'EST PAS CREE
 C NOMOBJ  IN/JXOUT K24 : OBJET JEVEUX A CREER (SUR LA BASE 'V')
+C    EN SORTIE, L'OBJET NOMOBJ EST UN VECTEUR DE K16 DIMENSIONNE AU
+C    NOMBRE DE MAILLES DU MAILLAGE.
+C    V(IMA)(1: 8) : NOM DE L'ELREFE POUR LA MAILLE IMA (OU ' ')
+C    V(IMA)(9:16) : NOM DE LA FAMILLE DE PG POUR LA MAILLE IMA (OU ' ')
+C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -60,7 +65,6 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       CEL = CELZ
 
-
 C     1 CALCUL DE LIGREL,NBMA,NEC :
 C     --------------------------------------------------------
       CALL DISMOI('F','NOM_MAILLA',CEL,'CHAM_ELEM',IBID,MA,IBID)
@@ -68,8 +72,6 @@ C     --------------------------------------------------------
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,KBID,IBID)
       CALL DISMOI('F','NOM_GD',CEL,'CHAM_ELEM',IBID,NOMGD,IBID)
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,KBID,IBID)
-
-
 
 C     2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
 C     -------------------------------------------------------
@@ -81,10 +83,9 @@ C     -------------------------------------------------------
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
       NBGR = ZI(JCELD-1+2)
 
-
 C     3 REPLISSAGE DE NOMOBJ :
 C     -------------------------------------------------------
-      CALL WKVECT(NOMOBJ,'V V K16',NBMA,JOBJ)
+      CALL WKVECT ( NOMOBJ, 'V V K16', NBMA, JOBJ )
       DO 90,IGR = 1,NBGR
         NBEL = NBELEM(LIGREL,IGR)
         IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
@@ -96,7 +97,7 @@ C     -------------------------------------------------------
 
         DO 80,IEL = 1,NBEL
           NUMA = NUMAIL(IGR,IEL)
-          IF (NUMA.GT.0)  ZK16(JOBJ-1+NUMA)=NOFPG
+          IF (NUMA.GT.0)  ZK16(JOBJ-1+NUMA) = NOFPG
    80   CONTINUE
    90 CONTINUE
 

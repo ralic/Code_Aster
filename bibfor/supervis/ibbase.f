@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C
       CHARACTER*16  MOTFAC, NOMRES, CONCEP, NOMCMD
 C
 C     --- VARIABLES LOCALES --------------------------------------------
-      PARAMETER   ( MXBASE = 3 )
+      PARAMETER   ( MXBASE = 2 )
       INTEGER      BANBBL(MXBASE), BALGBL(MXBASE), BALGRE(MXBASE)
 C
 C     --- VALEURS PAR DEFAUTS DES BASES --------------------------------
@@ -58,11 +58,11 @@ C     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------
       INTEGER      NBBLCA(MXBASE,MXCAS), LGBLCA(MXBASE,MXCAS)
       INTEGER      LGRECA(MXBASE,MXCAS)
 C
-      DATA      NOMBA  /'GLOBALE '   , 'VOLATILE'    , 'LOCALE  ' /
-      DATA      PRESBA /    0        ,     0         ,      0     /
-      DATA      TITRBA /'BASEGLOBALE', 'BASEVOLATILE', 'BASELOCALE'/
-      DATA      STIN   /'........'   , 'DEBUT   '    , 'DEBUT   ' /
-      DATA      STOUT  /'SAUVE   '   , 'SAUVE   '    , 'SAUVE   ' /
+      DATA      NOMBA  /'GLOBALE '   , 'VOLATILE'   /
+      DATA      PRESBA /    0        ,     0        /
+      DATA      TITRBA /'BASEGLOBALE', 'BASEVOLATILE'/
+      DATA      STIN   /'........'   , 'DEBUT   '    /
+      DATA      STOUT  /'SAUVE   '   , 'SAUVE   '    /
 C
 C
       DATA
@@ -80,13 +80,6 @@ C     TAILLE(VOLATILE)       PETIT   MOYEN      GROS
      +  (LGBLCA(2,I),I=1,3)/ 100   ,  100     ,  100         /,
      +  (LGRECA(2,I),I=1,3)/2000   , 2000     , 2000         /
 C
-C
-C     TAILLE(LOCALE)         PETIT   MOYEN      GROS
-      DATA
-     +  (NBBLCA(3,I),I=1,3)/ 512   ,  512     ,  512         /,
-     +  (LGBLCA(3,I),I=1,3)/ 100   ,  100     ,  100         /,
-     +  (LGRECA(3,I),I=1,3)/2000   , 4000     , 6000         /
-C
 C     ------------------------------------------------------------------
 C
 C     INITIALISATION DU CODE RETOUR
@@ -95,7 +88,6 @@ C
 C     --- RECUPERATION DU NOM DE LA COMMANDE UTILISATEUR ---
       CALL GETRES( NOMRES , CONCEP , NOMCMD )
       STIN(1) = NOMCMD
-C
 C
       INDCAS = 1
       DO 12 INDBAS = 1, MXBASE

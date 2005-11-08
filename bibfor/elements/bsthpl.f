@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       I, ICOMPX, JGEOM, NNO
+      INTEGER       I, JGEOM, NNO
       REAL*8        PGL(3,3), XYZL(3,4), TSUP(4), TMOY(4), TINF(4),
      +              SIGTH(32), ZERO
       CHARACTER*16  TYPELE, OPTION
@@ -58,7 +58,6 @@ C --- INITIALISATIONS :
 C     ---------------
       ZERO = 0.0D0
       INDITH = .FALSE.
-      ICOMPX = -1
       TYPELE = NOMTE
       OPTION = 'INCONNU_INCONNU_'
 C
@@ -105,7 +104,7 @@ C --- PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES EFFORTS
 C --- GENERALISES THERMIQUES SUR UN FEUILLET DE REFERENCE DIFFERENT
 C --- DU FEUILLET DU MAILLAGE :
 C     -----------------------
-      CALL EXCENT(OPTION,TYPELE,NNO,SIGTH,ICOMPX)
+      CALL EXCENT(OPTION,TYPELE,NNO,SIGTH)
 C
 C --- CALCUL DE BT*SIGTH :
 C     ------------------

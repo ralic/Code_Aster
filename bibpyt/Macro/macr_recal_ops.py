@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_recal_ops Macro  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,32 +22,39 @@
 
 def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC, 
                         ITER_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
-                        GRAPHIQUE, **args ):
+                        GRAPHIQUE, INFO, **args ):
    """Macro commande réalisant le recalage de modèles Aster""",
    # Initialisation du compteur d'erreurs
    ier=0
-   # On essaie d'importer Numeric -> ERREUR FATALE
-   from Utilitai.Utmess     import UTMESS
-   try:
-     import Numeric
-   except ImportError:
-     UTMESS('F', "MACR_RECAL", "Le module Numeric de Python n'a pu etre chargé")
-   # On essaie d'importer Gnuplot -> PAS DE GRAPHIQUE
-   try:
-     import Gnuplot
-     gnuplot=1
-   except ImportError:
-     gnuplot=0
-   import string
-   import copy
-   import types
+
+   import string, copy, types, Numeric
    import Macro
    from Cata import cata
    from Cata.cata import DEFI_LIST_REEL
-   from Macro.recal import gestion,transforme_list_Num,calcul_F,graphique
+   from Macro.recal import gestion,transforme_list_Num,calcul_F
    from Macro import reca_message
    from Macro import reca_algo
    from Macro import reca_interp
+   from Macro import reca_graphique
+
+   try:
+      from Utilitai.Utmess import UTMESS
+   except ImportError:
+      def UTMESS(code,sprg,texte):
+         fmt='\n <%s> <%s> %s\n\n'
+         print fmt % (code,sprg,texte)
+
+   # Test du mot-clé GRAPHIQUE
+   if GRAPHIQUE:
+     dGRAPHIQUE=GRAPHIQUE[0].cree_dict_valeurs(GRAPHIQUE[0].mc_liste)
+     if dGRAPHIQUE.has_key('FORMAT') and dGRAPHIQUE['FORMAT'] == 'GNUPLOT':
+       # On essaie d'importer Gnuplot -> PAS DE GRAPHIQUE
+       try:
+         import Gnuplot
+       except ImportError:
+         GRAPHIQUE == None
+         UTMESS('A','MACR_RECAL',"Le logiciel Gnuplot ou le module python Gnuplot.py n'est pas disponible. On desactive l'affichage des courbes.")
+
    # La macro compte pour 1 dans l'execution des commandes
    self.set_icmd(1)
 
@@ -127,16 +134,19 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
       A = Dim.adim_sensi(A)
       residu = reca_algo.test_convergence(gradient_init,erreur,A,s)
       Mess.affiche_result_iter(iter,J,val,residu,Act,UNITE_RESU)
-      if (gnuplot):
-         if (GRAPHIQUE):
+
+      # Affichage des courbes
+      if GRAPHIQUE:
             GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
             interactif=(GRAPHIQUE['INTERACTIF']=='OUI')
-            graphique(L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,interactif)
+            reca_graphique.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,interactif)
+
       # On teste un manque de temps CPU
       restant,temps_iter,err=reca_algo.temps_CPU(self,restant,temps_iter)
       if (err==1):
          ier=ier+1
          return ier
+
    #_____________________________________________
    #
    # FIN DES ITERATIONS

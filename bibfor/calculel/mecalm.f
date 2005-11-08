@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -471,12 +471,28 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
             END IF
             IF (CONCEP.EQ.'DYNA_HARMO') THEN
               IF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
-                OPTIO2 = 'SIGM_ELNO_DEPL_C'
+                OPTIO2 = OPTION
               ELSE IF (OPTION.EQ.'SIPO_ELNO_DEPL') THEN
-                OPTIO2 = 'SIPO_ELNO_DEPL_C'
+                OPTIO2 = OPTION
               ELSE IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-                OPTIO2 = 'EFGE_ELNO_DEPL_C'
-              ELSE
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'SIEF_ELGA_DEPL') THEN
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'EPSI_ELGA_DEPL') THEN
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'EPSI_ELNO_DEPL') THEN
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+                OPTIO2 = OPTION
+              ELSE IF (OPTION.EQ.'ENEL_ELGA') THEN
+                OPTIO2 = OPTION
+               ELSE IF (OPTION.EQ.'ENEL_ELNO_ELGA') THEN
+                OPTIO2 = OPTION
+             ELSE
                 GO TO 520
               END IF
             ELSE IF (CONCEP.EQ.'EVOL_NOLI') THEN
@@ -784,6 +800,8 @@ C ---- VERIF SENSIBILITE FIN
             ELSE IF (TYSD.EQ.'EVOL_NOLI') THEN
               TYPE = 'VITE'
             ELSE IF (TYSD.EQ.'DYNA_TRANS') THEN
+              TYPE = 'VITE'
+            ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
               TYPE = 'VITE'
             ELSE
               CALL UTMESS('A',NOMCMD,' OPTION '//OPTION//' NON '//
@@ -1232,7 +1250,8 @@ C ---- VERIF SENSIBILITE FIN
      &                    IORDR,CHSIGN,OPTION,IRET)
               IF (IRET.GT.0) GO TO 182
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL ERNOZZ(MODELE,CHSIG,MATE,CHSIGN,OPTION,CHELEM,LIGRMO)
+              CALL ERNOZZ(MODELE,CHSIG,MATE,CHSIGN,OPTION,CHELEM,
+     &                    LIGRMO,IORDR,TIME,RESUCO)
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   182         CONTINUE
               CALL JEDEMA()
@@ -1295,7 +1314,7 @@ C --------- VERIFICATION DU PERIMETRE D'UTILISATION
                  CALL JEDEMA
                  GOTO 440
               ENDIF
-              CALL ZZGLOB(CHELEM,OPTION)
+              CALL ZZGLOB ( CHELEM, OPTION, IORDR, TIME, RESUCO )
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   192         CONTINUE
               CALL JEDEMA()
