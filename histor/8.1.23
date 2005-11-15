@@ -1,0 +1,349 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 14/11/2005 a 11:57:41
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE :  NEW8.1.22, des tests plantent sous Linux
+   FONCTIONNALITE
+   DETAIL
+   programmation NEW8.1.22 :
+      CALL ELRACA(ELREFE,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,X,VOL)
+      DIMD = NDIM*NNO
+      DO 10 INO = 1 , NNO
+        CALL ELRFDF(ELREFE,X(NDIM*(INO-1)+1),DIMD,TAB,IBID,IBID)
+                                                      ---------
+   programmation modifiée :
+      CALL ELRACA(ELREFE,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,X,VOL)
+      DIMD = NDIM*NNO
+      DO 10 INO = 1, NNO
+        CALL ELRFDF(ELREFE,X(NDIM*(INO-1)+1),DIMD,TAB,IBI1,IBI2)
+                                                      ---------
+
+   dans ELRFDF, les 2 derniers arguments servent à tester une dimension
+      SUBROUTINE ELRFDF(ELREFZ,X,DIMD,DFF,NNO,NDIM)
+      ...
+      IF (ELREFE.EQ.'HE8') THEN
+        NNO = 8
+        NDIM = 3
+      ...
+      IF (DIMD.LT. (NNO*NDIM)) THEN
+        CALL UTMESS('F','ELRFDF',' ERREUR PROGRAMMEUR '//
+     &          'ECRASEMENT DE DFF, DIMF EST INFERIEUR AU NB DE NOEUDS '
+     &              //'* NB CMPS')
+      END IF
+
+     Sous LINUX, le produit NNO*NDIM vaut 64
+     NNO = NDIM = 8
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-338
+   NB_JOURS_TRAV  : 3
+   POUR_LE_COMPTE_DE   : E.LONGATTE
+   INTERET_UTILISATEUR : NON
+   TITRE :  sagrappe et probleme de convergence
+   FONCTIONNALITE
+     a ce jour le code émet des messages d'Alarme :
+     <A> <DYNA_NON_LINE> <MECANISME> CALCUL DE L'ERREUR RESIDUELLE DANS LA
+        RESOLUTION DU MODELE DANS LE MECANISME DE COMMANDE
+        SOMME(F) > 1.0D-3 , SOMME(F) =   1.3800E+01
+        F =  -1.6941E-21  0.0000E+00  0.0000E+00  0.0000E+00  8.4703E-22
+              0.0000E+00 -1.3800E+01  0.0000E+00 -2.6157E-12
+   DETAIL
+     routine gfcomm :
+     - zone manchette thermique adaptateur
+       l'accélération dans la section de passage Am est égale à
+         DUM = (UM-UMM1)/DT
+       alors qu'elle doit etre déduite de UA :
+         IF (UA.EQ.ZERO) THEN
+            DUM = ZERO
+         ELSE
+            DUM = AT/AM*D2Z - AA/AM*(UA-UAM1)/DT
+         ENDIF
+     - zone carter/mécanisme de levée
+       l'accélération dans la section de passage Ai est égale à
+         DUM = (UI-UIM1)/DT
+       alors qu'elle doit etre déduite de UA :
+         IF (UML.EQ.ZERO) THEN
+            DUI = ZERO
+         ELSE
+            DUI = AT/AI*D2Z - AML/AI*(UML-UMLM1)/DT
+         ENDIF
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI  DEPUIS : 8.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI  DEPUIS : 7.2.2
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage du test fdnl100a: vérification que les messages d'Alarme
+     correspondant au mécanisme n'existent plus
+     passage du cas test sur clayastr et clp50a8
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 14/11/2005 a 16:24:23
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-423
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE :  typage crea_champ_prod
+   FONCTIONNALITE crea_champ
+   DETAILS
+     pb signalé par Pascale Noyret dans le cadre de la recette d'EFICAS.
+     Le typage dans crea_champ.capy est dynamique en fonction du TYPE_CHAM
+     donné. Or, tous les champs possibles permis par ce typage dynamique
+     n'existent pas nécessairement dans accas.capy.
+     Donc on encapsule dans un try/except.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR granet S.GRANET   DATE  le 14/11/2005 a 14:31:29
+
+--------------------------------------------------------------------------------
+CORRECTION AL 2005-424
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  Erreur dans le calcul de la pression de la vapeur en air dissous
+   FONCTIONNALITE
+     Pour les modélisations THH2x, il manque un terme dans le calcul de la pression de vapeur
+   DETAILS
+     Lors de la réécriture de la routine hmlvga en STA8 un terme a été oublié dans
+     l'écriture de la pression de vapeur pour les modélisations THH2x avec coefficient de Henry.
+     Cette erreur ayant un impact très minime, les cas tests restaient OK. On rajoute
+     donc des tests de non regression aux cas tests concernés
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 8.0.6
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Passage des cas tests THH2X et vérification que les résultats sont les memes qu'en STA7
+
+--------------------------------------------------------------------------------
+CORRECTION AL 2005-425
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE :  Mise a jour du nettoyage des routines THM
+   FONCTIONNALITE
+     Cette correction impacte uniquement les modelisations de couplage
+     'LIQU_GAZ' et 'LIQU_VAPE_GAZ'.
+   DETAIL
+     Lors de la restitution en version 8.0.22 le nettoyage qui avait
+     ete fait en 8.0.6 a ete ecrase.
+     Description des etapes d'un ecrasement malheureux :
+     -----------
+     1- Restitution le 31/01/2005 en version 8.0.6 du nettoyage des
+        routines de couplages THM + quelques corrections d'anomalie.
+     2- Restitution le 31/01/2005 en version 7.4.1 des memes corrections
+        d'anomalies precedentes.
+     3- Introduction le 23/05/2005 en version 8.0.22 du redecoupage du pas
+        de temps pour la loi de Barcelone dans les routines hmliga.f et
+        hmlvag.f - ces routines ayant ete recuperees en NEW7.
+     4- ASVERIF et ASREST OK car l'entete de ces deux routines etait
+        identique en NEW7 et NEW8 :
+        C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES
+     On reporte donc en NEW8 le nettoyage qui avait ete fait en version 8.0.6.
+     Il ne s'agit la que d'un nettoyage informatique qui n'impacte en rien
+     les calculs : Pas d'impact sur les cas-tests.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Passage des cas-tests de la base Code_Aster avec modelisations
+     'LIQU_GAZ' et 'LIQU_VAPE_GAZ'.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR kham M.KHAM   DATE  le 14/11/2005 a 13:16:36
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-158
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE :  "SSNV506F: Indenteur sphérique"
+   FONCTIONNALITE
+     Cas-test d'indenteur sphérique avec la méthode continue.
+     Non-convergence.
+   DETAILS
+     Restitué le 24/08/2005
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V6.04.506
+   VALIDATION
+     ssnv506f
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-258
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE :  "SSNV504D: Contact Methode Continue"
+   FONCTIONNALITE
+     Cas-test d'extrusion du lopin en 2D avec la méthode continue.
+     Le calcul finit en NOOK sous NEW8.1.20 sur machine LINUX.
+   DETAILS
+     Le message d'erreur est le suivant:
+       ---- RESULTAT:  U        NUME_ORDRE:   1
+       REFERENCE: NON_REGRESSION
+       NOOK              RELA   ******* % VALE:        0
+       ITER_GLOB         TOLE     0.100 % REFE:        1
+     dès le premier pas de temps. Cela signifie que le nombre global d'itérations de Newton
+     est au plus de zero au lieu de 1, ce qui est mieux. De plus, les solutions obtenues
+     ne sont pas par ailleurs affectées.
+     On choisit de relacher la tolérance.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssnv504d
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-284
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE :  "Plantage brutal de SDNL111E"
+   FONCTIONNALITE
+     Cas-test d'impact entre deux barres avec la méthode continue.
+     Plantage brutal sous NEW8.1.20 sur ROCKS et CALIBRE3.
+   DETAILS
+     n'est plus observé => classement sans suite.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-157
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE :  "SSNV504D: interpénétration de 2 surfaces"
+   FONCTIONNALITE
+     Extrusion du lopin avec la methode continue de contact.
+     interénétration du lopin dans le rétrécissement.
+   DETAILS
+     n'est plus observé => classement sans suite.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-414
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE :  "Plantage de SSNV505F sous linux Calibre 3"
+   FONCTIONNALITE
+     Arret brutal dans la definition du chargement de contact
+     AFFE_CHAR_MECA.
+   DETAILS
+     n'est plus observé => classement sans suite.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 14/11/2005 a 10:00:54
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      Manipulation des tables
+      Problème dans le typage des tables : il y a 32 types de tables !
+      En attendant de les supprimer (tous ou presque, après la STA),
+      je type la table qui sort de CALC_TABLE (créée avec CREA_TABLE)
+      du même type que la table d'entrée.
+      Pour cela, on récupère tous les classes dérivées de table_sdaster ;
+      derrière TABLE, on passe le nom de la classe en majuscules.
+      Exemple : TABL_POST_RELE pour tabl_post_rele.
+      Renommage d'un paramètre :
+      C'était fait dans calc_table_ops, j'en fais une méthode de Table
+      pour pouvoir en bénéficier hors de CALC_TABLE.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.33.02
+       EXPL_ : typage de la table : tous les types dérivés de table_sdaster.
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF fdnl100a                      cibhhlv L.VIVAN            333     25     25
+ CASTEST MODIF ssnv504d                         kham M.KHAM             262      9     25
+ CASTEST MODIF wtna102a                       granet S.GRANET           332     20      1
+ CASTEST MODIF wtna102b                       granet S.GRANET           329     20      1
+ CASTEST MODIF wtna103a                       granet S.GRANET           310     23      3
+ CASTEST MODIF wtna103b                       granet S.GRANET           296     24      3
+ CASTEST MODIF wtnp103a                       granet S.GRANET           287      1      1
+ CASTEST MODIF wtnp106a                       granet S.GRANET           272     14      5
+ CASTEST MODIF wtnp106b                       granet S.GRANET           274     16      5
+ CASTEST MODIF wtnp112c                       granet S.GRANET           291     10      1
+ CASTEST MODIF wtnp112g                       granet S.GRANET           305     10      1
+CATALOPY MODIF commande/calc_table          mcourtoi M.COURTOIS          90     11      2
+CATALOPY MODIF commande/crea_champ            durand C.DURAND           190      6      2
+CATALOPY MODIF commande/crea_table          mcourtoi M.COURTOIS          72     26     13
+ FORTRAN AJOUT algorith/vipvpt                granet S.GRANET           102    102      0
+ FORTRAN MODIF algorith/gfcomm               cibhhlv L.VIVAN            442     24     15
+ FORTRAN MODIF algorith/hmliga                granet S.GRANET           330    180    311
+ FORTRAN MODIF algorith/hmlvag                granet S.GRANET           355    196    380
+ FORTRAN MODIF algorith/hmlvga                granet S.GRANET           370      3      3
+ FORTRAN MODIF elements/dffno                cibhhlv L.VIVAN             49     16     16
+  PYTHON MODIF Macro/calc_table_ops         mcourtoi M.COURTOIS         177     62     61
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         838     70     23
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         102       102              +102
+ MODIF :   21        6204       766     897      -131
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   22        6306       868     897       -29 

@@ -1,11 +1,11 @@
-      SUBROUTINE DFFNO(ELREFE,NDIM,NNO,NNOS,DFF)
+      SUBROUTINE DFFNO ( ELREFE, NDIM, NNO, NNOS, DFF )
       IMPLICIT NONE
-      CHARACTER*3 ELREFE
-      INTEGER     NDIM,NNO,NNOS
-      REAL*8      DFF(*)
-
+      CHARACTER*(*)      ELREFE
+      INTEGER            NDIM, NNO, NNOS
+      REAL*8             DFF(*)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,28 +22,28 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-
 C BUT:   CALCUL DES DERIVEES DES FONCTIONS DE FORMES
 C        AUX NOEUDS D'UN ELREFE
-
-
-
-      REAL*8  X(27*3),VOL,TAB(3,27)
-      INTEGER NBFPG,NBPG(10),INO,IDERI,IFONC,IBID
+C
+      REAL*8      X(27*3),VOL,TAB(3,27)
+      INTEGER     DIMD,NBFPG,NBPG(10),INO,IDERI,IFONC,IBI1,IBI2
       CHARACTER*8 FAPG(10)
-      
-      
+C ----------------------------------------------------------------------
+C      
       CALL ELRACA(ELREFE,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,X,VOL)
-      
+
+      DIMD = NDIM*NNO
+
       DO 10 INO=1,NNO
-        CALL ELRFDF(ELREFE,X(NDIM*(INO-1)+1),NDIM*NNO,
-     &              TAB,IBID,IBID)
+
+        CALL ELRFDF(ELREFE,X(NDIM*(INO-1)+1),DIMD,TAB,IBI1,IBI2)
      
-        DO 20 IDERI=1,NDIM
-          DO 30 IFONC=1,NNO
-            DFF((INO-1)*NNO*NDIM+(IDERI-1)*NNO+IFONC)=TAB(IDERI,IFONC)
+        DO 20 IDERI = 1 , NDIM
+          DO 30 IFONC = 1 , NNO
+             DFF((INO-1)*NNO*NDIM+(IDERI-1)*NNO+IFONC)=TAB(IDERI,IFONC)
  30       CONTINUE
  20     CONTINUE
+
  10   CONTINUE
 
       END

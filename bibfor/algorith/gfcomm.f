@@ -8,7 +8,7 @@
      &          FPMEC, FFMEC, Z, DZ, D2Z, DT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 14/11/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C-----------------------------------------------------------------------
       REAL*8   LMEQI1,LAMML1,UG,LAMEQG,PS,PML
       REAL*8   L4,L5,LCT,LLT,LCM,LCI,LCG,CFCM,CFCI,CFCG
       REAL*8   HRUGC,HRUGTC,HRUGM,HRUGA,HRUGML,HRUGG,HRUGSP
-      REAL*8   ROI,NUI,ROA,UN,ZERO, R8PI
+      REAL*8   ROI,NUI,ROA,UN,ZERO, R8PI, DUM, DUI
       REAL*8   F(9)
 C     ------------------------------------------------------------------
 C
@@ -207,9 +207,17 @@ C
          C1 = KA+KM*(AA/AM)**2
          C2 = -(ROA*LA*ACMT+ROM*LM*AMT*AA/AM)/DT-2*KM*AT*AA/AM**2*DZ
          C3 = FR+(ROA*LA*ACMT+ROM*LM*AMT*AA/AM)*UAM1/DT
-         D = C2**2-4*C1*C3
-         UA = (-C2-SQRT(D))/2/C1
+         IF ((DZ.NE.ZERO).AND.(C1.NE.ZERO)) THEN
+           UA = (-C2-SQRT(C2**2-4.D0*C1*C3))/2.D0/C1
+         ELSE
+           UA = ZERO
+         ENDIF
          UM = AT/AM*DZ-AA/AM*UA
+      ENDIF
+      IF (UA.EQ.ZERO) THEN
+        DUM = ZERO
+      ELSE
+        DUM = AT/AM*D2Z - AA/AM*(UA-UAM1)/DT
       ENDIF
 C
       CALL GFCFRV( (UM+DZ)*DHM/NUM, HRUGC/DHM, CF1 )
@@ -249,7 +257,7 @@ C
          ENDIF
       ENDIF 
 C
-      PM = P3-ROM/2*UM**2*(LAMEQM*LM/DHM+CDM)-ROM*LM*(UM-UMM1)/DT
+      PM = P3-ROM/2*UM**2*(LAMEQM*LM/DHM+CDM)-ROM*LM*DUM
       PA = P4-ROA/2*UA**2*(LAMA*LA/DHA+CDA)-ROA*LA*(UA-UAM1)/DT
 C
 C----------------------------------------------------------------------
@@ -297,6 +305,11 @@ C
          UML = ZERO
       ENDIF
       UI = AT/AI*DZ - AML/AI*UML
+      IF (UML.EQ.ZERO) THEN
+        DUI = ZERO
+      ELSE
+        DUI = AT/AI*D2Z - AML/AI*(UML-UMLM1)/DT
+      ENDIF
 C
       IF (UI.EQ.ZERO) THEN
          LMEQI1 = ZERO
@@ -333,7 +346,7 @@ C
          ENDIF
       ENDIF
 C
-      PML = PM-ROI/2*UI**2*KI-ROI*LI*(UI-UIM1)/DT
+      PML = PM-ROI/2*UI**2*KI-ROI*LI*DUI
 C
 C----------------------------------------------------------------------
 C                           ZONE GAINE DE TIGE
@@ -378,7 +391,7 @@ C
       F(1) = AT*DZ - AM*UM - AA*UA
 C
       F(2) = PM - P3 + ROM/2*UM**2*(LAMEQM*LM/DHM+CDM)
-     +               + ROM*LM*(UM-UMM1)/DT
+     +               + ROM*LM*DUM
 C
       F(3) = PA - P4 + ROA/2*UA**2*(LAMA*LA/DHA+CDA)
      +               + ROA*LA*(UA-UAM1)/DT
@@ -394,7 +407,7 @@ C
       F(5) = AT*DZ - AML*UML - AI*UI
 C
       F(6) = PML - PM + ROI/2*UI**2*(LAMEQI*LI/DHI+CDI)
-     +                + ROI*LI*(UI-UIM1)/DT
+     +                + ROI*LI*DUI
 C
       F(7) = PML - PM + ROML/2*UML**2*(LAMML*LML/DHML+CDML)
      +                + ROML*LML*(UML-UMLM1)/DT
@@ -404,18 +417,14 @@ C
       F(9) = PS - PML + ROG/2*UG**2*(LAMEQG*(LG-Z)/DHG+CDG-1)
      +                + ROG/2*DZ**2 + ROG*(LG-Z)*AT/AG*D2Z
 C
-      S = 0.D0
       DO 20 I = 1 , 9
-         S = S + ABS(F(I))
+        IF ( ABS(F(I)) .GT. 1.0D-3 )  THEN
+          CALL UTDEBM('A','MECANISME','CALCUL DE L''ERREUR RESIDUELLE'//
+     +    ' DANS LA RESOLUTION DU MODELE DANS LE MECANISME DE COMMANDE')
+          CALL UTIMPR('L',' ABS(F) > 1.0D-3 , F = ', 1, F(I) )
+          CALL UTFINM
+        ENDIF
  20   CONTINUE
-C
-      IF ( S .GT. 1.0D-3 )  THEN
-         CALL UTDEBM('A','MECANISME','CALCUL DE L''ERREUR RESIDUELLE'//
-     +   ' DANS LA RESOLUTION DU MODELE DANS LE MECANISME DE COMMANDE')
-         CALL UTIMPR('L',' SOMME(F) > 1.0D-3 , SOMME(F) = ', 1, S )
-         CALL UTIMPR('L',' F = ', 9, F )
-         CALL UTFINM
-      ENDIF
 C
 C----------------------------------------------------------------------
 C                 CALCUL DE LA FORCE FLUIDE RESULTANTE

@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 14/11/2005   AUTEUR GRANET S.GRANET 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,9 +135,9 @@ C --- NB : CE CALCUL SE FAIT AVEC LA MASSE VOLUMIQUE DU FLUIDE --------
 C ---    : A L INSTANT MOINS ------------------------------------------
 C =====================================================================
          PINF = R8MAEM()
-         CALL VIPVP1(NBVARI,VINTM,VINTP,ADVICO,VICPVP,DIMCON,PINF,
+         CALL VIPVPT(NBVARI,VINTM,VINTP,ADVICO,VICPVP,DIMCON,PINF,
      +     CONGEM,ADCP11,ADCP12,NDIM,PVP0,DP1,DP2,T,DT,MAMOLV,R,RHO11M,
-     +                          SIGNE,CP11,CP12,YATE,PVP1,PVP1M,RETCOM)
+     +                        KH,SIGNE,CP11,CP12,YATE,PVP1,PVP1M,RETCOM)
       IF (RETCOM.NE.0) THEN
          GO TO 30
       ENDIF

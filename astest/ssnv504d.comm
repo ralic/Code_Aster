@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
+# MODIF  DATE 14/11/2005   AUTEUR KHAM M.KHAM 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,14 +27,11 @@
 # CONTACT : METHODE CONTINUE
 #
 
-
-
 DEBUT(CODE=_F(NOM='SSNV504D',NIV_PUB_WEB='INTERNET'),);
-#......................................................................
+
+
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
-#......................................................................
-#
-#
+
 
 MAILL1=LIRE_MAILLAGE();
 
@@ -52,23 +49,21 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                     NOM='LMN',),
                                  _F(GROUP_MA='LNK',
                                     NOM='LNK',),),);
+                                    
 #_____________________________________________________________________
 #
 #                    DEFINITION DU MODELE
 #_____________________________________________________________________
 #
-#
-
 
 MO=AFFE_MODELE(MAILLAGE=MAILL1,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS',),);
+                       
 #
 # REORIENTATION DU MAILLAGE
 #
-#
-
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
@@ -79,13 +74,12 @@ MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA=('SMAI2','SESC2'),),
                      MODELE=MO,);
-#_____________________________________________________________________
+                     
+#____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
 #_____________________________________________________________________
 #
-#
-
 
 MLOPIN=DEFI_MATERIAU(ELAS=_F(E=5000.0,
                              NU=0.45000000000000001,),);
@@ -98,14 +92,13 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                           MATER=MLOPIN,),
                        _F(GROUP_MA='FILIERE',
                           MATER=MFILIERE,),),);
+                          
 #_____________________________________________________________________
 #
 #                    AFFECTATION DES CONDITIONS AUX LIMITES
 #                       ET DU DEPLACEMENT IMPOSE 
 #_____________________________________________________________________
 #
-#
-
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='LIM1',
@@ -136,22 +129,17 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
 
                             _F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_BOUCLE',
-
-                               
                                METHODE='CONTINUE',
                                MODL_AXIS='OUI',
                                ITER_GEOM_MAXI=1,
                                GROUP_MA_ESCL='SMAI2',
                                GROUP_MA_MAIT='SESC2',),),);
 
-
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES 
 #_____________________________________________________________________
 #
-#
-
 
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0),
@@ -197,7 +185,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
                    PARA='ITER_GLOB',
                    VALE_I=1,
-                   PRECISION=1.E-3,
+                   PRECISION=1.,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=4,
@@ -269,10 +257,6 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    VALE_I=1,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',),),);
-
-
-
-
 
 FIN();
 #

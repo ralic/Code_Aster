@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 14/11/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,22 +22,22 @@
 __all__ = ['Table', 'merge']
 
 import sys
-import string
 import re
 from copy  import copy
 
 from types import *
-EnumTypes=(ListType, TupleType)
-NumberTypes=(IntType, LongType, FloatType, ComplexType)
+EnumTypes = (ListType, TupleType)
+NumberTypes = (IntType, LongType, FloatType, ComplexType)
 
 # try/except pour utiliser hors aster
 try:
    from Utilitai.Utmess import UTMESS
 except ImportError:
    def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
+      fmt = '\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
-      if code=='F' : sys.exit(1)
+      if code == 'F':
+         sys.exit(1)
 
 if not sys.modules.has_key('Graph'):
    try:
@@ -46,7 +46,7 @@ if not sys.modules.has_key('Graph'):
       import Graph
 
 # formats de base (identiques à ceux du module Graph)
-DicForm={
+DicForm = {
    'csep'  : ' ',       # séparateur
    'ccom'  : '#',       # commentaire
    'cdeb'  : '',        # début de ligne
@@ -56,7 +56,7 @@ DicForm={
    'formI' : '%8d'      # entiers
 }
 # type par défaut des chaines de caractères
-Kdef='K24'
+Kdef = 'K24'
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ class TableBase(object):
    """
    def __repr__(self):
       return self.ReprTable()
-   def Croise(self,**kargs):
-      raise StandardError, 'Must be defined in a derived class'
+   def Croise(self, **kargs):
+      raise NotImplementedError, 'Must be defined in a derived class'
 
 # ------------------------------------------------------------------------------
    def Impr(self,FICHIER=None,FORMAT='TABLEAU',dform=None,**opts):
@@ -152,6 +152,7 @@ class TableBase(object):
       if kargs.get('FICHIER')<>None:
          f.close()
 
+# ------------------------------------------------------------------------------
    def ReprTable(self,FORMAT='TABLEAU',dform=None,**ignore):
       """Représentation d'une Table ou d'une Colonne sous forme d'un tableau.
       """
@@ -297,6 +298,7 @@ class Table(TableBase):
    t.a retourne un objet intermédiaire de la classe Colonne qui mémorise
    le nom de la colonne demandée (a, ici).
    """
+# ------------------------------------------------------------------------------
    def __init__(self, rows=[], para=[], typ=[], titr=''):
       """Constructeur de la Table :
          rows : liste des lignes (dict)
@@ -304,17 +306,18 @@ class Table(TableBase):
          type : liste des types des paramètres
          titr : titre de la table
       """
-      self.rows=[r for r in rows if r.values()<>[None]*len(r.values())]
-      self.para=list(para)
+      self.rows = [r for r in rows if r.values() != [None]*len(r.values())]
+      self.para = list(para)
       for i in self.para :
-          if self.para.count(i)!=1 :
+          if self.para.count(i) != 1 :
              UTMESS('F','Table','Parametre en double: %s' %i)
-      if len(typ)==len(self.para):
-         self.type=list(typ)
+      if len(typ) == len(self.para):
+         self.type = list(typ)
       else:
-         self.type=[None]*len(self.para)
-      self.titr=titr
+         self.type = [None]*len(self.para)
+      self.titr = titr
    
+# ------------------------------------------------------------------------------
    def append(self, obj):
       """Ajoute une ligne (type dict) qui peut éventuellement définir un
       nouveau paramètre."""
@@ -328,6 +331,7 @@ class Table(TableBase):
             self.type[ip]=_typaster(obj[p], self.type[ip])
       self.rows.append(obj)
 
+# ------------------------------------------------------------------------------
    def __setitem__(self, k_para, k_value):
       """Ajoute une colonne k_para dont les valeurs sont dans k_value"""
       if len(k_value)==0:
@@ -347,10 +351,12 @@ class Table(TableBase):
       for j in range(i,len(k_value)): 
          self.append({k_para:k_value[j]})
 
+# ------------------------------------------------------------------------------
    def __iter__(self):
       """Itère sur les lignes de la Table"""
       return iter(self.rows)
 
+# ------------------------------------------------------------------------------
    def __getattr__(self, column):
       """Construit un objet intermediaire (couple table, colonne)"""
       typ=None
@@ -360,6 +366,7 @@ class Table(TableBase):
          typ=self.type[self.para.index(column)]
       return Colonne(self, column, typ)
 
+# ------------------------------------------------------------------------------
    def sort(self, CLES=None, ORDRE='CROISSANT'):
       """Tri de la table.
          CLES  : liste des clés de tri
@@ -374,6 +381,7 @@ class Table(TableBase):
          CLES=list(CLES)
       self.rows=sort_table(self.rows, self.para, CLES, (ORDRE=='DECROISSANT'))
 
+# ------------------------------------------------------------------------------
    def __delitem__(self, args):
       """Supprime les colonnes correspondantes aux éléments de args """
       if not type(args) in EnumTypes:
@@ -387,6 +395,7 @@ class Table(TableBase):
          for line in new_rows : del line[item] 
       return Table(new_rows, new_para, new_type, self.titr)
 
+# ------------------------------------------------------------------------------
    def __getitem__(self, args):
       """Extrait la sous table composée des colonnes dont les paramètres sont dans args """
       if not type(args) in EnumTypes:
@@ -407,6 +416,7 @@ class Table(TableBase):
          new_rows.append(new_line)
       return Table(new_rows, new_para, new_type, self.titr)
 
+# ------------------------------------------------------------------------------
    def __and__(self, other):
       """Intersection de deux tables (opérateur &)"""
       if other.para<>self.para:
@@ -416,6 +426,7 @@ class Table(TableBase):
          tmp = [ r for r in self if r in other.rows ]
          return Table(tmp, self.para, self.type, self.titr)
 
+# ------------------------------------------------------------------------------
    def __or__(self, other):
       """Union de deux tables (opérateur |)"""
       if other.para<>self.para:
@@ -426,6 +437,7 @@ class Table(TableBase):
          tmp.extend([ r for r in other if r not in self ])
          return Table(tmp, self.para, self.type[:], self.titr)
 
+# ------------------------------------------------------------------------------
    def values(self):
       """Renvoie la table sous la forme d'un dictionnaire de listes dont les
       clés sont les paramètres.
@@ -435,6 +447,7 @@ class Table(TableBase):
          dico[column]=Colonne(self, column).values()
       return dico
 
+# ------------------------------------------------------------------------------
    def dict_CREA_TABLE(self):
       """Renvoie le dictionnaire des mots-clés à fournir à la commande CREA_TABLE
       pour produire une table_sdaster.
@@ -474,25 +487,27 @@ class Table(TableBase):
          UTMESS('F','Table','La table est vide')
       return dico
 
+# ------------------------------------------------------------------------------
    def Array(self,Para,Champ):
       """Renvoie sous forme de NumArray le résultat d'une extraction dans une table
       méthode utile à macr_recal
       """
       import Numeric
       __Rep = self[Para,Champ].values()
-      F=Numeric.zeros((len(__Rep[Para]),2),Numeric.Float)
+      F = Numeric.zeros((len(__Rep[Para]),2), Numeric.Float)
       for i in range(len(__Rep[Para])):
-       F[i][0] = __Rep[Para][i]
-       F[i][1] = __Rep[Champ][i]
+         F[i][0] = __Rep[Para][i]
+         F[i][1] = __Rep[Champ][i]
       del(__Rep)
       return F
 
+# ------------------------------------------------------------------------------
    def Croise(self):
       """Retourne un tableau croisé P3(P1,P2) à partir d'une table ayant
       trois paramètres (P1, P2, P3).
       """
       if len(self.para)<>3:
-         UTMESS('A','Table','La table doit avoir exactement trois paramètres.')
+         UTMESS('A', 'Table', 'La table doit avoir exactement trois paramètres.')
          return Table()
       py, px, pz = self.para
       ly, lx, lz = [getattr(self,p).values() for p in self.para]
@@ -522,6 +537,20 @@ class Table(TableBase):
       return Table(new_rows, new_para, new_type, new_titr)
 
 # ------------------------------------------------------------------------------
+   def Renomme(self, pold, pnew):
+      """Renomme le paramètre `pold` en `pnew`.
+      """
+      if not pold in self.para:
+         raise KeyError, 'Paramètre %s inexistant dans cette table' % pold
+      elif self.para.count(pnew)>0:
+         raise KeyError, 'Le paramètre %s existe déjà dans la table' % pnew
+      else:
+         self.para[self.para.index(pold)] = pnew
+         for lig in self:
+            lig[pnew] = lig[pold]
+            del lig[pold]
+
+# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 class Colonne(TableBase):
@@ -531,13 +560,14 @@ class Colonne(TableBase):
    Alors on peut écrire la requete simple :
      soustable=t.a<10
    Ainsi que des requetes plus complexes :
-     soustable=t.a<10 & t.b <4
+     soustable=t.a<10 and t.b <4
    ou
-     soustable=t.a<10 | t.b <4
+     soustable=t.a<10 or t.b <4
    Les "alias" EQ, NE, LE, LT, GE, GT permettent à la macro IMPR_TABLE
    d'utiliser directement le mot-clé utilisateur CRIT_COMP défini dans le
    catalogue : getattr(Table,CRIT_COMP).
    """
+# ------------------------------------------------------------------------------
    def __init__(self, table, column, typ=None):
       """Constructeur (objet Table associé, paramètre de la colonne, type du
       paramètre).
@@ -548,6 +578,7 @@ class Colonne(TableBase):
       self.type=typ
       self.titr=''
 
+# ------------------------------------------------------------------------------
    def _extract(self, fun):
       """Construit une table avec les lignes de self.Table 
          dont l'élément de nom self.para satisfait le critère fun,
@@ -555,18 +586,23 @@ class Colonne(TableBase):
       """
       return Table([row for row in self.Table if fun(row.get(self.para))], self.Table.para, self.Table.type, self.Table.titr)
 
+# ------------------------------------------------------------------------------
    def __le__(self, VALE):
       return self._extract(lambda v: v<>None and v<=VALE)
 
+# ------------------------------------------------------------------------------
    def __lt__(self, VALE):
       return self._extract(lambda v: v<>None and v<VALE)
 
+# ------------------------------------------------------------------------------
    def __ge__(self, VALE):
       return self._extract(lambda v: v<>None and v>=VALE)
 
+# ------------------------------------------------------------------------------
    def __gt__(self, VALE):
       return self._extract(lambda v: v<>None and v>VALE)
 
+# ------------------------------------------------------------------------------
    def __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
       if type(VALE) in EnumTypes :
          return self._extract(lambda v: v in VALE)
@@ -584,6 +620,7 @@ class Colonne(TableBase):
             vmax=(1.+PRECISION)*VALE
          return self._extract(lambda v: v<>None and vmin<v<vmax)
 
+# ------------------------------------------------------------------------------
    def __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
       if type(VALE) in EnumTypes :
          return self._extract(lambda v: v not in VALE)
@@ -601,27 +638,32 @@ class Colonne(TableBase):
             vmax=(1.+PRECISION)*VALE
          return self._extract(lambda v: v<>None and (v<vmin or vmax<v))
 
+# ------------------------------------------------------------------------------
    def MAXI(self):
       # important pour les performances de récupérer le max une fois pour toutes
       maxi=max(self)
       return self._extract(lambda v: v==maxi)
 
+# ------------------------------------------------------------------------------
    def MINI(self):
       # important pour les performances de récupérer le min une fois pour toutes
       mini=min(self)
       return self._extract(lambda v: v==mini)
 
+# ------------------------------------------------------------------------------
    def ABS_MAXI(self):
       # important pour les performances de récupérer le max une fois pour toutes
       abs_maxi=max([abs(v) for v in self.values() if type(v) in NumberTypes])
       return self._extract(lambda v: v==abs_maxi or v==-abs_maxi)
 
+# ------------------------------------------------------------------------------
    def ABS_MINI(self):
       # important pour les performances de récupérer le min une fois pour toutes
       abs_mini=min([abs(v) for v in self.values() if type(v) in NumberTypes])
       # tester le type de v est trop long donc pas de abs(v)
       return self._extract(lambda v: v==abs_mini or v==-abs_mini)
 
+# ------------------------------------------------------------------------------
    def __iter__(self):
       """Itère sur les éléments de la colonne"""
       for row in self.Table:
@@ -629,14 +671,17 @@ class Colonne(TableBase):
          yield row.get(self.para)
          #yield row[self.para]
 
+# ------------------------------------------------------------------------------
    def __getitem__(self, i):
       """Retourne la ième valeur d'une colonne"""
       return self.values()[i]
 
+# ------------------------------------------------------------------------------
    def values(self):
       """Renvoie la liste des valeurs"""
       return [r.get(self.para,None) for r in self.Table]
 
+# ------------------------------------------------------------------------------
    # équivalences avec les opérateurs dans Aster
    LE=__le__
    LT=__lt__
@@ -644,8 +689,10 @@ class Colonne(TableBase):
    GT=__gt__
    EQ=__eq__
    NE=__ne__
-   def VIDE(self)    : return self.__eq__(None)
-   def NON_VIDE(self): return self.__ne__(None)
+   def VIDE(self):
+      return self.__eq__(None)
+   def NON_VIDE(self):
+      return self.__ne__(None)
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------

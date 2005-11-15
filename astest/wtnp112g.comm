@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 14/11/2005   AUTEUR GRANET S.GRANET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THH2D, 2D ,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -293,4 +293,13 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,
                   REFERENCE='SOURCE_EXTERNE',),);   
+TEST_RESU(RESU=_F(RESULTAT=RESU0,
+                  INST = 36000,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='N58',
+                  VALE=0.4627,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,
+                  REFERENCE='NON_REGRESSION',),);   
 FIN()

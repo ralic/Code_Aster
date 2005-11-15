@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 14/11/2005   AUTEUR GRANET S.GRANET 
 # ======================================================================
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -223,7 +223,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='NO1',
                   VALE=0.144,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,
+                  PRECISION=1.E-3,
                   REFERENCE='ANALYTIQUE',),);   
                         
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -233,7 +233,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='NO1',
                   VALE=9.95E4,
                   CRITERE='RELATIF',
-                  PRECISION=0.1,
+                  PRECISION=1.E-3,
                   REFERENCE='ANALYTIQUE',),);
                                           
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -243,9 +243,18 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='NO1',
                   VALE=75.,
                   CRITERE='RELATIF',
-                  PRECISION=0.1,
+                  PRECISION=0.05,
                   REFERENCE='ANALYTIQUE',),);
                                           
+TEST_RESU(RESU=_F(RESULTAT=U0,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE2',
+                  NOEUD='NO1',
+                  VALE=73.33,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,
+                  REFERENCE='NON_REGRESSION',),);
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=1,
                   NOM_CHAM='VARI_ELNO_ELGA',
@@ -254,8 +263,10 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   MAILLE='MA1',
                   VALE=29.4,
                   CRITERE='RELATIF',
-                  PRECISION=0.1,
+                  PRECISION=1.E-2,
                   REFERENCE='ANALYTIQUE',),);
+
+
 
 
 

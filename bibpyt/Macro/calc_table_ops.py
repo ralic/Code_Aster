@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_table_ops Macro  DATE 14/11/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,126 +20,122 @@
 
 # RESPONSABLE MCOURTOI M.COURTOIS
 from types import *
-import aster
-EnumTypes=(ListType, TupleType)
+EnumTypes = (ListType, TupleType)
 
-def calc_table_ops(self,TABLE,FILTRE,EXTR,RENOMME,TRI,COMB,OPER,INFO,**args):
+def calc_table_ops(self, TABLE, FILTRE, EXTR, RENOMME, TRI, COMB, OPER,
+                   INFO, **args):
    """
    Macro CALC_TABLE permettant de faire des opérations sur une table
    """
-   macro='CALC_TABLE'
+   import aster
+
+   macro = 'CALC_TABLE'
    from Accas               import _F
-   from Cata.cata           import table_jeveux
    from Utilitai.Utmess     import UTMESS
    from Utilitai            import transpose
    from Utilitai.Table      import Table, merge
 
-   ier=0
+   ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
-   # Le concept sortant (de type table_sdaster) est tab
-   self.DeclareOut('tabout',self.sd)
+   # Le concept sortant (de type table_sdaster ou dérivé) est tab
+   self.DeclareOut('tabout', self.sd)
 
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    DETRUIRE      = self.get_cmd('DETRUIRE')
 
-   tab=TABLE.EXTR_TABLE()
+   tab = TABLE.EXTR_TABLE()
 
    #----------------------------------------------
    # 1. Traitement du FILTRE
-   Filtre=[]
+   Filtre = []
    # format pour l'impression des filtres
-   form_filtre='\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
-   if FILTRE<>None:
+   form_filtre = '\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
+   if FILTRE != None:
       for Fi in FILTRE:
          dF = Fi.cree_dict_valeurs(Fi.mc_liste)
          for mc in dF.keys():
-            if dF[mc]==None: del dF[mc]
+            if dF[mc] == None:
+               del dF[mc]
          Filtre.append(dF)
 
    for Fi in Filtre:
       col = getattr(tab, Fi['NOM_PARA'])
       # peu importe le type
-      opts=[Fi[k] for k in ('VALE','VALE_I','VALE_C','VALE_K') if Fi.has_key(k)]
-      kargs={}
+      opts = [Fi[k] for k in ('VALE','VALE_I','VALE_C','VALE_K') if Fi.has_key(k)]
+      kargs = {}
       for k in ('CRITERE','PRECISION'):
          if Fi.has_key(k):
-            kargs[k]=Fi[k]
+            kargs[k] = Fi[k]
       tab = tab & ( getattr(col, Fi['CRIT_COMP'])(*opts,**kargs) )
       # trace l'operation dans le titre
       #if FORMAT in ('TABLEAU','ASTER'):
-      tab.titr+=form_filtre % (Fi['NOM_PARA'], Fi['CRIT_COMP'], \
+      tab.titr += form_filtre % (Fi['NOM_PARA'], Fi['CRIT_COMP'], \
          ' '.join([str(v) for v in opts]))
 
    #----------------------------------------------
    # 2. Traitement de EXTR
-   if EXTR<>None:
-      lpar=EXTR['NOM_PARA']
+   if EXTR != None:
+      lpar = EXTR['NOM_PARA']
       if not type(lpar) in EnumTypes:
-         lpar=[lpar]
+         lpar = [lpar]
       for p in lpar:
          if not p in tab.para:
             UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
-      tab=tab[EXTR['NOM_PARA']]
+      tab = tab[EXTR['NOM_PARA']]
 
    #----------------------------------------------
    # 3. Traitement de RENOMME
-   if RENOMME<>None:
+   if RENOMME != None:
       for MCFi in RENOMME:
-         pold, pnew = MCFi['NOM_PARA']
-         if not pold in tab.para:
-            UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (pold, TABLE.nom))
-         elif tab.para.count(pnew)>0:
-            UTMESS('F', macro, 'Le paramètre %s existe déjà dans la table %s' % (pnew, TABLE.nom))
-         else:
-            tab.para[tab.para.index(pold)]=pnew
-            for lig in tab:
-               lig[pnew]=lig[pold]
-               del lig[pold]
+         try:
+            tab.Renomme(*MCFi['NOM_PARA'])
+         except KeyError, msg:
+            UTMESS('F', macro, msg)
 
    #----------------------------------------------
    # 4. Traitement du TRI
-   if TRI<>None:
+   if TRI != None:
       tab.sort(CLES=TRI['NOM_PARA'], ORDRE=TRI['ORDRE'])
 
    #----------------------------------------------
    # 5. Traitement de COMB
-   if COMB<>None:
-      tab2=COMB['TABLE'].EXTR_TABLE()
-      opts=[tab, tab2]
+   if COMB != None:
+      tab2 = COMB['TABLE'].EXTR_TABLE()
+      opts = [tab, tab2]
       if COMB['NOM_PARA']<>None:
-         lpar=COMB['NOM_PARA']
+         lpar = COMB['NOM_PARA']
          if not type(lpar) in EnumTypes:
-            lpar=[lpar]
+            lpar = [lpar]
          for p in lpar:
             if not p in tab.para:
                UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
             if not p in tab2.para:
                UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, COMB['TABLE'].nom))
          opts.append(lpar)
-      tab=merge(*opts)
+      tab = merge(*opts)
 
    #----------------------------------------------
    # 6. Traitement de OPER
-   if OPER<>None:
+   if OPER != None:
       for MCFi in OPER:
          if MCFi['NOM_PARA'] in tab.para :
             UTMESS('F', macro, 'Le paramètre %s existe déjà dans la table %s' % (MCFi['NOM_PARA'], TABLE.nom))
-         func=MCFi['FORMULE']
-         tabpar=[]
+         func = MCFi['FORMULE']
+         tabpar = []
          for para in func.nompar :
             if para not in tab.para :
                UTMESS('F', macro, 'Le paramètre de la formule %s est inexistant dans la table %s' % (para, TABLE.nom))
-            i=tab.para.index(para)
-            if tab.type[i]<>'R' :
-               UTMESS('F', macro, 'Le paramètre %s doit etre réel dans la table %s' % (para, TABLE.nom))
-            vals=getattr(tab,para).values()
+#             i = tab.para.index(para)
+#             if tab.type[i] != 'R' :
+#                UTMESS('F', macro, 'Le paramètre %s doit etre réel dans la table %s' % (para, TABLE.nom))
+            vals = getattr(tab,para).values()
             tabpar.append(vals)
-         tabpar=transpose.transpose(tabpar)
-         vectval=[]
+         tabpar = transpose.transpose(tabpar)
+         vectval = []
          for lpar in tabpar:
             # si un paramètre est absent, on ne peut pas évaluer la formule
             if None in lpar:
@@ -147,30 +143,35 @@ def calc_table_ops(self,TABLE,FILTRE,EXTR,RENOMME,TRI,COMB,OPER,INFO,**args):
             else:
                vectval.append(func(*lpar))
          # ajout de la colonne dans la table
-         if INFO==2:
+         if INFO == 2:
             aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (MCFi['NOM_PARA']+repr(vectval))+'\n')
-         tab[MCFi['NOM_PARA']]=vectval
+         tab[MCFi['NOM_PARA']] = vectval
 
    #----------------------------------------------
    # 99. Création de la table_sdaster résultat
    # cas réentrant : il faut détruire l'ancienne table_sdaster
-   if self.sd.nom==TABLE.nom:
-      DETRUIRE(CONCEPT=_F(NOM=TABLE.nom,),)
+   if self.sd.nom == TABLE.nom:
+      DETRUIRE(CONCEPT=_F(NOM=TABLE.nom,), INFO=1)
 
-   dprod=tab.dict_CREA_TABLE()
-   if INFO==2:
-      echo_mess=[]
+   dprod = tab.dict_CREA_TABLE()
+   if INFO == 2:
+      echo_mess = []
       echo_mess.append( '@-'*30+'\n' )
       echo_mess.append( tab )
       from pprint import pformat
       echo_mess.append( pformat(dprod) )
       echo_mess.append( '@-'*30+'\n' )
-      texte_final=string.join(echo_mess)
-      aster.affiche('MESSAGE',texte_final)
+      texte_final = ' '.join(echo_mess)
+      aster.affiche('MESSAGE', texte_final)
 
    # surcharge par le titre fourni
-   if args['TITRE']<>None:
-      dprod['TITRE']=tuple(['%-80s' % lig for lig in args['TITRE']])
-   tabout=CREA_TABLE(**dprod)
+   tit = args['TITRE']
+   if tit != None:
+      if not type(tit) in EnumTypes:
+         tit = [tit]
+      dprod['TITRE'] = tuple(['%-80s' % lig for lig in tit])
+   # type de la table de sortie à passer à CREA_TABLE
+   dprod['TYPE_TABLE'] = self.sd.__class__.__name__.upper()
+   tabout = CREA_TABLE(**dprod)
    
    return ier

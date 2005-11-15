@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/11/2005   AUTEUR DURAND C.DURAND 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,11 @@ def crea_champ_prod(TYPE_CHAM,**args):
   else :
      raise AsException("type de concept resultat_sdaster non prevu")
 
-  vv=eval(uu) ; return vv
+  try :
+     vv=eval(uu)
+  except :
+     raise AsException("type de concept champ non prevu : %s" % uu)
+  return vv
 
 
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
