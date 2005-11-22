@@ -1,7 +1,7 @@
       SUBROUTINE AVPIC2(METHOD, NBVEC, NBORDR, RTRV, ITRV, NPOIN,
      &                  VALPOI, VALORD, NPIC, PIC, ORDPIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/11/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 21/11/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,50 +69,49 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER       IVECT, ADRS, I, NMAX, NTRV, OINTER
-C
       REAL*8        EPSILO, PMAX, PINTER, DP1, DP2
-C
-      CHARACTER*8  K8B
-C
+      CHARACTER*8   K8B
 C-----------------------------------------------------------------------
 C234567                                                              012
 C-----------------------------------------------------------------------
       EPSILO = 1.0D-7
 C-----------------------------------------------------------------------
-C
+
       CALL JEMARQ()
-C
+
       IF (METHOD .NE. 'RAINFLOW') THEN
           K8B = METHOD(1:8)
           CALL UTMESS('F','AVPIC2','METHODE '//K8B//' ILLICITE')
       ENDIF
-C
+
       DO 10 IVECT=1, NBVEC
-C
+
 C LE TEST SI (NPOIN(IVECT) .EQ. 0) EST EQUIVALENT
 C AU TEST SI (IFLAG(IVECT) .EQ. 3).
          IF (NPOIN(IVECT) .EQ. 0) THEN
             GOTO 10
          ENDIF
-C
-C ----- RECHERCHE DU POINT LE PLUS GRAND -----
-C
+
+C ----- RECHERCHE DU POINT LE PLUS GRAND EN VALEUR ABSOLUE -----
+
          CALL ASSERT(NBORDR .GE. NPOIN(IVECT))
          ADRS = (IVECT-1)*(NBORDR+2)
-C
-         PMAX = VALPOI((IVECT-1)*NBORDR + 1)
+
+         PMAX = ABS(VALPOI((IVECT-1)*NBORDR + 1))
          NMAX = 1
          DO 20 I=2, NPOIN(IVECT)
-            IF ( ABS(VALPOI((IVECT-1)*NBORDR + I)) .GT. PMAX ) THEN
-               PMAX = VALPOI((IVECT-1)*NBORDR + I)
+            IF ( ABS(VALPOI((IVECT-1)*NBORDR + I)) .GT. 
+     &           PMAX*(1.0D0+EPSILO) ) THEN
+               PMAX = ABS(VALPOI((IVECT-1)*NBORDR + I))
                NMAX = I
             ENDIF
  20      CONTINUE
+         PMAX = VALPOI((IVECT-1)*NBORDR + NMAX)
          NTRV = NPOIN(IVECT)
-C
+
 C ----- REARANGEMENT AVEC POINT LE PLUS GRAND AU DEBUT
 C       ET A LA FIN                                    -----
-C
+
          DO 30 I=NMAX, NPOIN(IVECT)
             RTRV(I-NMAX+1) = VALPOI((IVECT-1)*NBORDR + I)
             ITRV(I-NMAX+1) = VALORD((IVECT-1)*NBORDR + I)
@@ -121,45 +120,45 @@ C
             RTRV(NPOIN(IVECT)+I-NMAX+1) = VALPOI((IVECT-1)*NBORDR + I)
             ITRV(NPOIN(IVECT)+I-NMAX+1) = VALORD((IVECT-1)*NBORDR + I)
  40      CONTINUE
-C
+
 C ----- EXTRACTION DES PICS SUR LE VECTEUR REARANGE -----
-C
+
 C 1. LE PREMIER POINT EST UN PIC
-C
+
          NPIC(IVECT) = 1
          PIC(ADRS + 1) = RTRV(1)
          PINTER = RTRV(2)
          ORDPIC(ADRS + 1) = ITRV(1)
          OINTER = ITRV(2)
-C
+
 C 2. RECHERCHE DE TOUS LES PICS
-C
+
          DO 50 I=3, NTRV
             DP1 = PINTER - PIC(ADRS + NPIC(IVECT))
             DP2 = RTRV(I) - PINTER
-C
+
 C 2.1 ON CONSERVE LE POINT INTERMEDIAIRE COMME UN PIC
-C
+
             IF ( DP1*DP2 .LT. -EPSILO ) THEN
                NPIC(IVECT) = NPIC(IVECT) + 1
                PIC(ADRS + NPIC(IVECT)) = PINTER
                ORDPIC(ADRS + NPIC(IVECT)) = OINTER
             ENDIF
-C
+
 C 2.2 LE DERNIER POINT DEVIENT POINT INTERMEDIAIRE
-C
+
             PINTER = RTRV(I)
             OINTER = ITRV(I)
  50      CONTINUE
-C
+
 C 3. LE DERNIER POINT EST UN PIC
-C
+
          NPIC(IVECT) = NPIC(IVECT) + 1
          PIC(ADRS + NPIC(IVECT)) = RTRV(NTRV)
          ORDPIC(ADRS + NPIC(IVECT)) = ITRV(NTRV)
-C
+
  10   CONTINUE
-C
+
       CALL JEDEMA()
-C
+
       END

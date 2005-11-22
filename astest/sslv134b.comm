@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 22/11/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,11 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = '3D') )
 
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D=_F(GROUP_MA=('SLA2_I','SLA2_S','SAV_I','SAV_S',),),
+                 MODELE=MO,);
+
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,
                              NU = 0.3,
                              ALPHA = 0.) )
@@ -43,22 +48,26 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',
                               MATER = MAT) )
 
-SYMETRIE=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-     _F(  GROUP_NO = 'D',               DZ = 0.),
-              _F(  GROUP_NO = ('SLA2_I', 'SLA2_S',), DX = 0.),
-              _F(  GROUP_NO = ('SAV_I', 'SAV_S',),   DY = 0.))
-                        )
+SYMETR1=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO='D',
+                                   DZ=0.0,),
+                       FACE_IMPO=_F(GROUP_MA=('SLA2_I','SLA2_S',),
+                                    DNOR=0.0,),);
+
+SYMETR2=AFFE_CHAR_MECA(MODELE=MO,
+                       FACE_IMPO=_F(GROUP_MA=('SAV_I','SAV_S',),
+                                    DNOR=0.0,),);
 
 PRESSION=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
         _F(  GROUP_MA = 'SINF_S', FZ = 1.E6),
         _F(  GROUP_MA = 'SINF_1', FZ = -1.E6))
                          )
 
-CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
-                              CHAM_MATER=CHMAT,EXCIT=(
-                              _F( CHARGE = PRESSION),
-                              _F( CHARGE = SYMETRIE))
-                           )
+CHAMDEPL=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=PRESSION,),
+                              _F(CHARGE=SYMETR1,),
+                              _F(CHARGE=SYMETR2,),),);
 
 DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  NOM_CHAM='DEPL',  RESULTAT=CHAMDEPL,  NUME_ORDRE=1  )

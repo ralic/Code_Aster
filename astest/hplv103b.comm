@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 21/11/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DE G THERMO-ELASTIQUE 3D EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -330,7 +330,7 @@ TEST_TABLE(       TABLE=GKLOC1,
                               VALE_I = 1),
                   NOM_PARA='K1_LOCAL',
                   VALE=1.5881571155563E+05,
-                  PRECISION=1.E-5,
+                  PRECISION=5.E-4,
                   REFERENCE = 'NON_REGRESSION'   )
 
 TEST_TABLE(       TABLE=GKLOC3,

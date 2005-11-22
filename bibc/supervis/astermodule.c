@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 21/11/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2823,8 +2823,8 @@ PyObject *args;
         double *valr;
         double *valc;
         INTEGER *ind;
-        INTEGER *num;
-        INTEGER *nbind;
+        INTEGER num;
+        INTEGER nbind;
         unsigned int nind  = 0 ;
         int ok        = 0 ;
         INTEGER iret=0;
@@ -2832,14 +2832,11 @@ PyObject *args;
 
         _DEBUT(aster_putvectjev) ;
         
-        nbind = (INTEGER *)malloc((1)*sizeof(INTEGER));
-        num = (INTEGER *)malloc((1)*sizeof(INTEGER));
-
-        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,nbind,&tupi,&tupr,&tupc,num);
+        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
 /*        PyObject_Print(args, stdout, 0);*/
                 
-        nind = (unsigned int)(*nbind);
+        nind = (unsigned int)(nbind);
 
         ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
         valr = (double *)malloc((nind)*sizeof(double));
@@ -2858,7 +2855,7 @@ PyObject *args;
                                    TDSCRUTE(nind,valr);
                                    TDSCRUTE(nind,valc);
                                    ISCRUTE(*num);
-          CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,&iret);
+          CALL_PUTCON(nomsd,&nbind,ind,valr,valc,&num,&iret);
                                    ISCRUTE(iret);
           CALL_JEDEMA();
           
@@ -2872,8 +2869,6 @@ PyObject *args;
           free((char *)valc);                           
           free((char *)valr);                           
           free((char *)ind);                                                   
-          free((char *)nbind);                           
-          free((char *)num);                           
         }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
@@ -2937,7 +2932,7 @@ PyObject *args;
                                    TDSCRUTE(nind,valr);
                                    TDSCRUTE(nind,valc);
                                    ISCRUTE(*num);
-        CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,&iret);
+        CALL_PUTCON(nomsd,&nbind,ind,valr,valc,&num,&iret);
                                    ISCRUTE(iret);
         CALL_JEDEMA();
         

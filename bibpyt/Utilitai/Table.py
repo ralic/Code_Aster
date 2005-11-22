@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 14/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 21/11/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,7 +72,7 @@ class TableBase(object):
       raise NotImplementedError, 'Must be defined in a derived class'
 
 # ------------------------------------------------------------------------------
-   def Impr(self,FICHIER=None,FORMAT='TABLEAU',dform=None,**opts):
+   def Impr(self, FICHIER=None, FORMAT='TABLEAU', dform=None, **opts):
       """Impresssion de la Table selon le format spécifié.
          FICHIER : nom du(des) fichier(s). Si None, on dirige vers stdout
          dform : dictionnaire de formats d'impression (format des réels,
@@ -92,7 +92,7 @@ class TableBase(object):
          'dform'     : DicForm.copy(),
          'mode'      : para[FORMAT]['mode'],
       }
-      if dform<>None and type(dform)==DictType:
+      if dform != None and type(dform) == DictType:
          kargs['dform'].update(dform)
       # ajout des options
       kargs.update(opts)
@@ -103,36 +103,36 @@ class TableBase(object):
 
       else:
          if not type(kargs['PAGINATION']) in EnumTypes:
-            ppag=[kargs['PAGINATION'],]
+            ppag = [kargs['PAGINATION'],]
          else:
-            ppag=list(kargs['PAGINATION'])
+            ppag = list(kargs['PAGINATION'])
          del kargs['PAGINATION']
-         npag=len(ppag)
+         npag = len(ppag)
          # paramètres hors ceux de la pagination
-         lkeep=[p for p in self.para if ppag.count(p)==0]
+         lkeep = [p for p in self.para if ppag.count(p)==0]
          # création des listes des valeurs distinctes
-         lvd=[]
+         lvd = []
          for p in ppag:
-            lvp=getattr(self,p).values()
-            lvn=[]
+            lvp = getattr(self,p).values()
+            lvn = []
             for it in lvp:
-               if it<>None and lvn.count(it)==0:
+               if it != None and lvn.count(it) == 0:
                   lvn.append(it)
             lvn.sort()
             lvd.append(lvn)
          # création des n-uplets
-         s = '[['+','.join(['x'+str(i) for i in range(npag)])+'] '
-         s+= ' '.join(['for x'+str(i)+' in lvd['+str(i)+']' for i in range(npag)])+']'
+         s  = '[['+','.join(['x'+str(i) for i in range(npag)])+'] '
+         s += ' '.join(['for x'+str(i)+' in lvd['+str(i)+']' for i in range(npag)])+']'
          try:
-            lnup=eval(s)
+            lnup = eval(s)
          except SyntaxError, s:
             UTMESS('F','Table','Erreur lors de la construction des n-uplets')
          # pour chaque n-uplet, on imprime la sous-table
          for nup in lnup:
-            tab=self
+            tab = self
             for i in range(npag):
                tab = tab & (getattr(tab,ppag[i]) == nup[i])
-               sl=''
+               sl = ''
                if tab.titr: sl='\n'
                tab.titr += sl+ppag[i]+': '+str(nup[i])
             tab[lkeep].Impr(**kargs)
@@ -235,20 +235,23 @@ class TableBase(object):
       kargs['FORMAT']='TABLEAU'
       tabc.Impr(**kargs)
 # ------------------------------------------------------------------------------
-   def ImprGraph(self,**kargs):
+   def ImprGraph(self, **kargs):
       """Impression au format XMGRACE : via le module Graph
       """
       args=kargs.copy()
-      if len(self.para)<>2:
+      if len(self.para) != 2:
          UTMESS('A','Table','La table doit avoir exactement deux paramètres '\
                 'pour une impression au format XMGRACE.')
          return
-      lx, ly = [[v for v in getattr(self,p).values() if v<>None] for p in self.para]
+      # suppression des lignes contenant une cellule vide
+      tnv = getattr(self, self.para[0]).NON_VIDE() \
+          & getattr(self, self.para[1]).NON_VIDE()
       # objet Graph
       graph=Graph.Graph()
       dicC={
-         'Val' : [lx, ly],
-         'Lab' : self.para,
+         'Val' : [getattr(tnv, tnv.para[0]).values(),
+                  getattr(tnv, tnv.para[1]).values()],
+         'Lab' : tnv.para,
       }
       if args['LEGENDE']==None: del args['LEGENDE']
       Graph.AjoutParaCourbe(dicC, args)

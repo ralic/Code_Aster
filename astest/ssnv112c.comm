@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/11/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,7 +159,7 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M2',    
                NOM_CMP = 'NUEST',      
-               VALE = 5.4485432124957E-01, 
+               VALE = 4.0222908024143E-01, 
                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
@@ -173,7 +173,7 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M2',    
                NOM_CMP = 'ERREST',      
-               VALE = 2.7566668668882E-03, 
+               VALE = 2.0360609181554E-03, 
                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );

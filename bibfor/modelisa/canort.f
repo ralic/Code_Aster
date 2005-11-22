@@ -1,7 +1,7 @@
       SUBROUTINE CANORT(NOMA,NBMA,LISTI,LISTK,NDIM,NBNO,NBOPN,NUNO,L)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 22/11/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,15 +64,17 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      DIMCOO,I,J,K,IFONC,IBID,IRET,JNORM,ISOM,IN
       INTEGER      IDOBJ2,JCOOR,IATYMA,M,JCOODE,IJ,INO
-      INTEGER      N,NOCC,NNO,NNOS
+      INTEGER      N,NOCC,NNO,NNOS,NBPAR
       INTEGER      IINVER,IMAIL,NUMAIL,ITYP,JDES,NN,NUMNO,LINO(9)
-      REAL*8       COOR(3,9),A,B,C,PVEC(3),NORME
+      REAL*8       COOR(3,9),A,B,C,PVEC(3),NORME,R8B
+      COMPLEX*16   C16B
       CHARACTER*8  KANGL,K8B,KNUMAI
-      CHARACTER*8  MK,NOMTYP,NOMNOE
-      CHARACTER*24 NOMOBJ, NOMOB2,CONINV
+      CHARACTER*8  MK,NOMTYP,NOMNOE,K8BID
+      CHARACTER*19 NOMT19
+      CHARACTER*24 NOMOBJ,NOMOB2,CONINV,PARA
       CHARACTER*32 JEXNOM,JEXNUM
       CHARACTER*1  K1B
-      REAL*8       DFSE2(4),DFSE3(9),R8RDDG
+      REAL*8       DFSE2(4),DFSE3(9),R8RDDG,ARMIN,PREC
       REAL*8       DFTR3(18),DFTR6(72),DFTR7(98)
       REAL*8       DFQU4(32),DFQU8(128),DFQU9(162)
       REAL*8       EKSIX,EKSIY,EKSIZ,EETAX,EETAY,EETAZ
@@ -114,6 +116,23 @@ C
 C
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
+
+C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
+C
+      CALL JEEXIN ( NOMA//'           .LTNT', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
+         NBPAR = 0
+         PARA = 'AR_MIN                  '
+         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID,
+     +                K8BID, R8B , PARA, K8BID, IBID, ARMIN, C16B,
+     +                K8BID, IRET )
+          IF ( IRET .NE. 0 ) CALL UTMESS('F','CANORT',
+     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+         PREC = ARMIN*1.D-06
+      ELSE
+         PREC = 1.D-10
+      ENDIF
 
 C     TRANSFORMATION DE LA LISTE DE NOM DE MAILLES EN LISTE DE NUMERO
 C     DE MAILLE ( POUR PASSAGE DANS CNCINV )
@@ -157,25 +176,25 @@ C           NUMERO ABSOLUE DE LA MAILLE
                EKSIY=COOR(2,1)*DFSE2(1)+COOR(2,2)*DFSE2(2)
                IF (L.EQ.2) THEN
                   NORME=SQRT(EKSIX**2+EKSIY**2)
-                  IF (NORME.GT.0.D0) THEN
+                  IF (NORME.GT.PREC) THEN
                       A=EKSIX/NORME
                       B=EKSIY/NORME
                   ELSE
                      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
                      CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+     &               CALCULER LA TANGENTE DE LA MAILLE '//KNUMAI//
+     &               '. DES NOEUDS DOIVENT ETRE CONFONDUS.')
                   ENDIF
                ELSEIF (L.EQ.1) THEN
                   NORME=SQRT(EKSIX**2+EKSIY**2)
-                  IF (NORME.GT.0.D0) THEN
+                  IF (NORME.GT.PREC) THEN
                      A=EKSIY/NORME
                      B=-EKSIX/NORME
                   ELSE
                      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
                      CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//
+     &               '. DES NOEUDS DOIVENT ETRE CONFONDUS.')
                   ENDIF
                ENDIF
                ZR(JNORM-1+2*(INO-1)+1)=ZR(JNORM-1+2*(INO-1)+1)
@@ -191,6 +210,7 @@ C           NUMERO ABSOLUE DE LA MAILLE
                   LINO(I)=ZI(JDES-1+I)
                   COOR(1,I)=ZR(JCOOR-1+DIMCOO*(LINO(I)-1)+1)
                   COOR(2,I)=ZR(JCOOR-1+DIMCOO*(LINO(I)-1)+2)
+                  COOR(3,I)=0.D0
                   IF ( NUMNO.EQ.LINO(I)) IN=I
  30            CONTINUE
                EKSIX=0.D0
@@ -204,27 +224,23 @@ C              CALCUL DU  VECTEUR TANGENT VIA LES FONCTIONS DE FORMES
 C              ON S INTERESSE AU VECTEUR TANGENT
                IF (L.EQ.2) THEN
                   NORME=SQRT(EKSIX**2+EKSIY**2)
-                  IF (NORME.GT.0) THEN
+                  IF (NORME.GT.PREC) THEN
                      A=EKSIX/NORME
                      B=EKSIY/NORME
                   ELSE
-                     CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
-                    CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+                     CALL NORLIN('SE3',2,KNUMAI,COOR,DFSE2,IN,PREC,
+     &                           A,B,C)
                   ENDIF
 
 C              ON S INTERESSE AU VECTEUR NORMAL
                ELSEIF (L.EQ.1) THEN
                   NORME=SQRT(EKSIX**2+EKSIY**2)
-                  IF (NORME.GT.0) THEN
+                  IF (NORME.GT.PREC) THEN
                      A=EKSIY/NORME
                      B=-EKSIX/NORME
                   ELSE
-                     CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
-                     CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &               CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &               DES NOEUDS DOIVENT ETRE CONFONDUS.')
+                     CALL NORLIN('SE3',1,KNUMAI,COOR,DFSE2,IN,PREC,
+     &                           A,B,C)
                   ENDIF
                ENDIF
                ZR(JNORM-1+2*(INO-1)+1)=ZR(JNORM-1+2*(INO-1)+1)
@@ -269,15 +285,15 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                B=EKSIZ*EETAX-EKSIX*EETAZ
                C=EKSIX*EETAY-EKSIY*EETAX
                NORME=SQRT(A*A+B*B+C*C)
-               IF (NORME.GT.0) THEN
+               IF (NORME.GT.PREC) THEN
                   A=A/NORME
                   B=B/NORME
                   C=C/NORME
                ELSE
                   CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
                   CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI// 
+     &            '. DES ARETES DOIVENT ETRE CONFONDUES.')
                ENDIF
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
@@ -323,15 +339,12 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                B=EKSIZ*EETAX-EKSIX*EETAZ
                C=EKSIX*EETAY-EKSIY*EETAX
                NORME=SQRT(A*A+B*B+C*C)
-               IF (NORME.GT.0) THEN
+               IF (NORME.GT.PREC) THEN
                   A=A/NORME
                   B=B/NORME
                   C=C/NORME
                ELSE
-                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
-                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+                  CALL NORLIN('QU8',0,KNUMAI,COOR,DFQU4,IN,PREC,A,B,C)
                ENDIF
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
@@ -376,15 +389,15 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                B=EKSIZ*EETAX-EKSIX*EETAZ
                C=EKSIX*EETAY-EKSIY*EETAX
                NORME=SQRT(A*A+B*B+C*C)
-               IF (NORME.GT.0) THEN
+               IF (NORME.GT.PREC) THEN
                   A=A/NORME
                   B=B/NORME
                   C=C/NORME
                ELSE
                   CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
                   CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI// 
+     &            '. DES ARETES DOIVENT ETRE CONFONDUES.')
                ENDIF
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
@@ -429,15 +442,15 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                B=EKSIZ*EETAX-EKSIX*EETAZ
                C=EKSIX*EETAY-EKSIY*EETAX
                NORME=SQRT(A*A+B*B+C*C)
-               IF (NORME.GT.0) THEN
+               IF (NORME.GT.PREC) THEN
                   A=A/NORME
                   B=B/NORME
                   C=C/NORME
                ELSE
                   CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
                   CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI// 
+     &            '. DES ARETES DOIVENT ETRE CONFONDUES.')
                ENDIF
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
@@ -482,15 +495,12 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                B=EKSIZ*EETAX-EKSIX*EETAZ
                C=EKSIX*EETAY-EKSIY*EETAX
                NORME=SQRT(A*A+B*B+C*C)
-               IF (NORME.GT.0) THEN
+               IF (NORME.GT.PREC) THEN
                   A=A/NORME
                   B=B/NORME
                   C=C/NORME
                ELSE
-                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
-                  CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+                  CALL NORLIN('TR6',0,KNUMAI,COOR,DFTR3,IN,PREC,A,B,C)
                ENDIF
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
@@ -535,15 +545,15 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                B=EKSIZ*EETAX-EKSIX*EETAZ
                C=EKSIX*EETAY-EKSIY*EETAX
                NORME=SQRT(A*A+B*B+C*C)
-               IF (NORME.GT.0) THEN
+               IF (NORME.GT.PREC) THEN
                   A=A/NORME
                   B=B/NORME
                   C=C/NORME
                ELSE
                   CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),KNUMAI)
                   CALL UTMESS('F','CANORT','IL EST IMPOSSIBLE DE 
-     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI//'. 
-     &            DES ARETES DOIVENT ETRE CONFONDUES.')
+     &            CALCULER LA NORMALE DE LA MAILLE '//KNUMAI// 
+     &            '. DES ARETES DOIVENT ETRE CONFONDUES.')
                ENDIF
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
@@ -584,6 +594,8 @@ C              UNE VERIFICATION ULTERIEURE
      +                   //'IL Y A UN PROBLEME DANS '
      +                   //'LA DEFINITION DE VOS MAILLES DE BORD .')
             ENDIF
+            ZR(JNORM-1+2*(N-1)+1)=ZR(JNORM-1+2*(N-1)+1)/VNORM
+            ZR(JNORM-1+2*(N-1)+2)=ZR(JNORM-1+2*(N-1)+2)/VNORM
             DO 7 I = 1, NOCC
                IJ = IJ + 1
                COSVEC =  ZR(JNORM-1+2*(N-1)+1)*ZR(IDOBJ2-1+2*(IJ-1)+1)
@@ -596,7 +608,7 @@ C              UNE VERIFICATION ULTERIEURE
                   CALL CODREE(ABS(ANGL),'G',KANGL)
                   CALL UTMESS('A','CANORT','L''ANGLE '//
      +                       'FORME PAR LE VECTEUR NORMAL COURANT '
-     +                     //'A 1 FACE ET LE VECTEUR NORMAL MOYENNE,'
+     +                     //'A 1 FACE ET LE VECTEUR NORMAL MOYEN,'
      +                     //' AU NOEUD '//NOMNOE//', EST SUPERIEUR'
      +                     //' A 10 DEGRES ET VAUT '//KANGL//' DEGRES.')
                ENDIF
@@ -616,6 +628,9 @@ C              UNE VERIFICATION ULTERIEURE
      +                   //'IL Y A UN PROBLEME DANS LA'
      +                   //' DEFINITION DE VOS MAILLES DE BORD .')
             ENDIF
+            ZR(JNORM-1+3*(N-1)+1)=ZR(JNORM-1+3*(N-1)+1)/VNORM
+            ZR(JNORM-1+3*(N-1)+2)=ZR(JNORM-1+3*(N-1)+2)/VNORM
+            ZR(JNORM-1+3*(N-1)+3)=ZR(JNORM-1+3*(N-1)+3)/VNORM
             DO 8 I = 1, NOCC
                IJ = IJ + 1
                COSVEC =  ZR(JNORM-1+3*(N-1)+1)*ZR(IDOBJ2-1+3*(IJ-1)+1)
@@ -638,7 +653,6 @@ C              UNE VERIFICATION ULTERIEURE
                ENDIF
   8         CONTINUE
          END IF
-         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO),NOMNOE)
     2 CONTINUE
 C
       CALL JEDETR(NOMOB2)

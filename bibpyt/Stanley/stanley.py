@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 21/11/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,11 +93,25 @@ class ERREUR:
   def __init__(self) :
     pass
 
-#   def Affiche_Erreur(self):
-#     UTMESS('A','STANLEY',texte_onFatalError)
-#     return False
- 
 
+  def Remonte_Erreur(self, err, l_detr=[], l_return=1, texte=None):
+
+    if not texte: texte = texte_onFatalError + "\nRaison :\n" + str(err)
+    if l_detr: self.DETRUIRE(tuple(l_detr))
+
+    UTMESS('A','STANLEY',texte)
+
+    if l_return==0: return
+    if l_return==1: return False
+    if l_return==2: return False, False
+
+
+  def DETRUIRE(self, l_detr=[]):
+    if len(l_detr)>0: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+
+
+
+# ==============================================================================
 
 class PARAMETRES :
 
@@ -110,6 +124,9 @@ class PARAMETRES :
   """
   
   def __init__(self) :
+
+    # Gestion des erreurs
+    self.erreur = ERREUR()
 
     ok_env=1
     
@@ -151,6 +168,16 @@ class PARAMETRES :
                                'machine_gmsh_exe': '', 
                                'machine_gmsh': os.environ['HOSTNAME'], 
                                'machine_gmsh_tmp': '/tmp'} 
+
+      elif os.environ['DISPLAY'].split(':')[0] == 'localhost':
+        self.para['CONFIG'] = {'mode': 'LOCAL', 
+                               'machine_gmsh_login': '', 
+                               'machine_gmsh_pass': '', 
+                               'machine_visu': os.environ['DISPLAY'], 
+                               'machine_gmsh_exe': '', 
+                               'machine_gmsh': 'localhost', 
+                               'machine_gmsh_tmp': '/tmp'} 
+
       else:
         mgmsh = string.split(os.environ['DISPLAY'],':')[0]
         self.para['CONFIG'] = {'mode': 'DISTANT',
@@ -270,7 +297,7 @@ class PARAMETRES :
               'machine_gmsh_pass': '-na-',
               'machine_visu': os.environ['DISPLAY'],
               'machine_gmsh_exe': '-na-',
-              'machine_gmsh': os.environ['HOSTNAME'],
+              'machine_gmsh': 'localhost',
               'machine_gmsh_tmp': '/tmp'}
 
     elif mode == 'DISTANT':
@@ -394,6 +421,9 @@ class ETAT_GEOM :
 
   
   def __init__(self, maillage) :
+
+    # Gestion des erreurs
+    self.erreur = ERREUR()
 
     self.volu = []
     self.surf = []
@@ -849,7 +879,10 @@ class SELECTION :
     }
  
   def __init__(self, contexte, etat_geom, etat_resu) :
-  
+
+    # Gestion des erreurs
+    self.erreur = ERREUR()
+
     self.contexte  = contexte
     self.etat_geom = etat_geom
     self.etat_resu = etat_resu
@@ -1057,6 +1090,9 @@ class STANLEY :
   
   def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem) :
 
+    # Gestion des erreurs
+    self.erreur = ERREUR()
+
     self.contexte   = CONTEXTE(resultat, maillage, modele, cham_mater, cara_elem)
     self.etat_geom  = ETAT_GEOM(maillage)
     self.etat_resu  = ETAT_RESU(self.contexte)
@@ -1185,12 +1221,13 @@ class STANLEY :
     pass
 
   def Quitter(self) :
+    l_detr=[]
     for i in range(_NUM):
-      DETRUIRE(CONCEPT=_F(NOM='_MA_'+str(i)), INFO=1, ALARME='NON')
+      l_detr.append( '_MA_'+str(i) )
+    if len(l_detr)>0: DETRUIRE(CONCEPT=_F(NOM= l_detr ), INFO=1, ALARME='NON')
     self.selection.interface.rootTk.quit()
 
   def Select(self):
-
     for driver in self.driver.keys() :
       try :
         self.driver[driver].Fermer()
@@ -1273,6 +1310,9 @@ class INTERFACE :
                    Tracer et Calculer en lien avec les boutons et un
                    changement dans la selection
     """
+
+    # Gestion des erreurs
+    self.erreur = ERREUR()
 
 
     etat_geom = stan.etat_geom
@@ -1380,7 +1420,7 @@ class INTERFACE :
     titres = ['Fichier','Geometrie','Parametres']
     choix  = {}
     choix['Fichier'] = [
-                        ('Version',self.stan.Information),
+                        ('Informations',self.stan.Information),
                         ('Quitter',self.stan.Quitter)]
     choix['Geometrie'] = [('Ajout Point',self.stan.Ajout_point),
                           ('Ajout Chemin',self.stan.Ajout_chemin),]
@@ -1579,7 +1619,10 @@ class DRIVER :
   """
 
   def __init__(self, stan) :
-  
+
+    # Gestion des erreurs
+    self.erreur = ERREUR()
+
     self.terminal = None
     self.stan     = stan
 #    self.contexte = stan.contexte
@@ -1613,53 +1656,44 @@ class DRIVER :
 #    l_detr = []
 
    # Pas de projection si meme maillage 
-    maillage = selection.etat_geom.mail[geom]
-    if maillage == contexte.maillage :
+    __MA = selection.etat_geom.mail[geom]
+    if __MA == contexte.maillage :
       return contexte, []
 
     try:
-      MO_P = AFFE_MODELE(MAILLAGE = maillage,
-                         AFFE = _F(GROUP_MA = selection.geom[1],
-  #                                 TOUT         = 'OUI',
-                                   PHENOMENE    = 'MECANIQUE',   # sans doute faire qchose de plus fin
-                                   MODELISATION = 'BARRE',       # a ce niveau ...
-                                  )
-                        )
+      __MO_P = AFFE_MODELE(MAILLAGE = __MA,
+                           AFFE = _F(GROUP_MA = selection.geom[1],
+  #                                   TOUT         = 'OUI',
+                                     PHENOMENE    = 'MECANIQUE',   # sans doute faire qchose de plus fin
+                                     MODELISATION = 'BARRE',       # a ce niveau ...
+                                    )
+                          )
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'MO_P'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [], 2)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'MO_P'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [], 2)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'MO_P'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False, False
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [], 2, texte)
 
     try:
-      RESU_P = PROJ_CHAMP(METHODE = 'ELEM',
-                          RESULTAT = contexte.resultat,
-                          MODELE_1 = contexte.modele,
-                          MODELE_2 = MO_P,
-                          NOM_CHAM = selection.nom_cham,
-                          NUME_ORDRE = tuple(selection.numeros),
-                         )
+      __RESU_P = PROJ_CHAMP(METHODE = 'ELEM',
+                            RESULTAT = contexte.resultat,
+                            MODELE_1 = contexte.modele,
+                            MODELE_2 = __MO_P,
+                            NOM_CHAM = selection.nom_cham,
+                            NUME_ORDRE = tuple(selection.numeros),
+                           )
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'RESU_P'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [__MO_P], 2)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'RESU_P'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [__MO_P], 2)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'RESU_P'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False, False
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [__MO_P], 2, texte)
 
-    return CONTEXTE(RESU_P, maillage, MO_P, None, None), [MO_P, RESU_P]
+
+    return CONTEXTE(__RESU_P, __MA, __MO_P, None, None), [__MO_P, __RESU_P]
 
 
   # ----------------------------------------------------------------------------
@@ -1710,22 +1744,17 @@ class DRIVER :
       para['GROUP_MA'] = selection.geom[1]
 
     try:
-      __MA_G = CREA_MAILLAGE(
-        MAILLAGE = contexte.maillage,
-        ECLA_PG  = para,
-        )
+      __MA_G = CREA_MAILLAGE(MAILLAGE = contexte.maillage,
+                             ECLA_PG  = para,
+                            )
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = '__MA_G'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [], 2)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = '__MA_G'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [], 2)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = '__MA_G'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False, False
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [], 2, texte)
+
 
     para = _F(
       MAILLAGE    = __MA_G,
@@ -1738,25 +1767,18 @@ class DRIVER :
     if selection.geom[0] in ['VOLUME','SURFACE'] :
       para['GROUP_MA'] = selection.geom[1]
 
-
     try:
       __RESU_G = CREA_RESU(
         OPERATION   = 'ECLA_PG',
         TYPE_RESU   = type_resu,
         ECLA_PG     = para,)
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = __RESU_G), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [__MA_G], 2)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = __RESU_G), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False, False
+      return self.erreur.Remonte_Erreur(err, [__MA_G], 2)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = __RESU_G), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False, False
-
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [__MA_G], 2, texte)
 
     if selection.geom[0] == 'MAILLAGE':
         __MO_G   = copy.copy(contexte.modele)
@@ -1766,6 +1788,7 @@ class DRIVER :
         if   selection.geom[0] == 'VOLUME':  pmod = '3D'
         else:                                pmod = 'D_PLAN'
 
+
         try:
            __MO_G = AFFE_MODELE(
               MAILLAGE = __MA_G,
@@ -1773,18 +1796,14 @@ class DRIVER :
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = pmod,))
         except aster.error,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__MO_G'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-          return False, []
+          return self.erreur.Remonte_Erreur(err, [__MA_G, __RESU_G], 2)
         except aster.FatalError,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__MO_G'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-          return False, []
+          return self.erreur.Remonte_Erreur(err, [__MA_G, __RESU_G], 2)
         except Exception,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__MO_G'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-          return False, []
-        
+          texte = "Cette action n'est pas realisable.\n"+str(err)
+          return self.erreur.Remonte_Erreur(err, [__MA_G, __RESU_G], 2, texte)
+
+
         ldetr = [__MA_G, __MO_G, __RESU_G]
 
     return CONTEXTE(__RESU_G, __MA_G, __MO_G, None, None), ldetr
@@ -1828,17 +1847,12 @@ class DRIVER_SUP_GMSH(DRIVER) :
     try:
       ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'ma'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False
+      return self.erreur.Remonte_Erreur(err, [ma], 1)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'ma'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False
+      return self.erreur.Remonte_Erreur(err, [ma], 1)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'ma'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [ma], 1, texte)
 
 
     INDICE=_NUM
@@ -1871,34 +1885,24 @@ class DRIVER_SUP_GMSH(DRIVER) :
     try:
       ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'ma'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False
+      return self.erreur.Remonte_Erreur(err, [ma], 1)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'ma'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False
+      return self.erreur.Remonte_Erreur(err, [ma], 1)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = 'ma'), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [ma], 1, texte)
 
     INDICE=_NUM
 
     try:
       _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
     except aster.error,err:
-      DETRUIRE(CONCEPT = _F(NOM = _MA[INDICE]), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False
+      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
     except aster.FatalError,err:
-      DETRUIRE(CONCEPT = _F(NOM = _MA[INDICE]), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-      return False
+      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
     except Exception,err:
-      DETRUIRE(CONCEPT = _F(NOM = _MA[INDICE]), INFO=1, ALARME='NON')
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-      return False
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1, texte)
 
     DETRUIRE(CONCEPT = _F(NOM = ma), INFO=1, ALARME='NON')
     _NUM = _NUM + 1
@@ -1958,15 +1962,16 @@ class DRIVER_GMSH(DRIVER) :
                  RESU    = para,
                )
     except aster.error,err:
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+      self.erreur.Remonte_Erreur(err, [], 0)
       DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
       return
     except aster.FatalError,err:
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+      self.erreur.Remonte_Erreur(err, [], 0)
       DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
       return
     except Exception,err:
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      self.erreur.Remonte_Erreur(err, [], 0, texte)
       DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
       return
 
@@ -2026,9 +2031,8 @@ class DRIVER_GRACE(DRIVER) :
       IMPR_FONCTION(FORMAT='XMGRACE',
                     UNITE=53,
                     PILOTE='INTERACTIF',
-#                    PILOTE='POSTSCRIPT',
-#                    TITRE='Courbe de traction',
-#                    SOUS_TITRE='avec un palier horizontal',
+#                    TITRE='Titre',
+#                    SOUS_TITRE='Sous-titre',
                     LEGENDE_X=_x,
                     LEGENDE_Y=_y,
                     **motscle2
@@ -2115,17 +2119,12 @@ class DRIVER_GRACE(DRIVER) :
         try:
           __GRACE = POST_RELEVE_T(ACTION = para)
         except aster.error,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__GRACE'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-          return False
+          return self.erreur.Remonte_Erreur(err, [], 1)
         except aster.FatalError,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__GRACE'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-          return False
+          return self.erreur.Remonte_Erreur(err, [], 1)
         except Exception,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__GRACE'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-          return False
+          texte = "Cette action n'est pas realisable.\n"+str(err)
+          return self.erreur.Remonte_Erreur(err, [], 1, texte)
 
         for comp in l_nom_cmp :
           vale_x = selection.vale_va
@@ -2155,17 +2154,13 @@ class DRIVER_GRACE(DRIVER) :
         try:
           __GRACE = POST_RELEVE_T(ACTION = para)
         except aster.error,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__GRACE'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-          return False
+          return self.erreur.Remonte_Erreur(err, [], 1)
         except aster.FatalError,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__GRACE'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
-          return False
+          return self.erreur.Remonte_Erreur(err, [], 1)
         except Exception,err:
-          DETRUIRE(CONCEPT = _F(NOM = '__GRACE'), INFO=1, ALARME='NON')
-          UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-          return False
+          texte = "Cette action n'est pas realisable.\n"+str(err)
+          return self.erreur.Remonte_Erreur(err, [], 1, texte)
+
 
         for comp in l_nom_cmp :
           courbe = as_courbes.Courbe()
@@ -2181,7 +2176,6 @@ class DRIVER_GRACE(DRIVER) :
       if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
 
     else:
-#      raise 'ERREUR_DVP'    
       UTMESS('A','STANLEY',"Cette action n'est pas realisable.")
       return False
 

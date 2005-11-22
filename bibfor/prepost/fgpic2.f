@@ -1,7 +1,7 @@
         SUBROUTINE FGPIC2( METHOD,RTRV,POINT,NPOINT,PIC,NPIC)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF PREPOST  DATE 21/11/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,70 +21,78 @@ C ======================================================================
 C       ----------------------------------------------------------------
 C       REARRANGEMENT ET EXTRACTION DES PICS
 C       ----------------------------------------------------------------
-C       IN  POINT  VECTEUR DES POINTS
-C           NPOINT  NOMBRE  DE  POINTS
-C           RTRV  VECTEUR  DE TRAVAIL REEL
-C           METHOD  METHODE DE  DEXTRACTION DES PICS EMPLOYEE
-C       OUT PIC  VECTEUR DES PICS
-C           NPIC  NOMBRE  DE  PICS (NPIC = NPOINT   AU MAXIMUM)
+C       IN  POINT VECTEUR DES POINTS
+C           NPOINT NOMBRE DE POINTS
+C           RTRV VECTEUR DE TRAVAIL REEL
+C           METHOD METHODE DE DEXTRACTION DES PICS EMPLOYEE
+C       OUT PIC VECTEUR DES PICS
+C           NPIC NOMBRE DE PICS (NPIC = NPOINT AU MAXIMUM)
 C       ----------------------------------------------------------------
-C
-        IMPLICIT REAL*8 (A-H,O-Z)
-        CHARACTER*(*)  METHOD
-        CHARACTER*16  K16B
-        REAL*8    POINT(*), PIC(*), RTRV(*), PMAX
-        REAL*8    DP1,      DP2
-        INTEGER    NPOINT,   NPIC, NMAX, NTRV
-C       ----------------------------------------------------------------
-C -     EXTRACTION DES PICS POUR RAINFLOW=PIC LE PLUS GRAND EN DEBUT
-C       ----------------------------------------------------------------
-          IF ( METHOD.EQ.'RAINFLOW' ) THEN
-C
-C -       RECHERCHE DU POINT LE PLUS GRAND
-C
-          PMAX = POINT(1)
-          NMAX = 1
-            DO 8 I = 2 , NPOINT
-            IF(ABS(POINT(I)).GT.PMAX)THEN
-            PMAX = POINT(I)
-            NMAX = I
+
+      IMPLICIT       NONE
+      INTEGER        I, NPOINT, NPIC, NMAX, NTRV
+      REAL*8         POINT(*), PIC(*), RTRV(*), PMAX, PINTER
+      REAL*8         DP1, DP2, EPSI
+      CHARACTER*(*)  METHOD
+      CHARACTER*16   K16B
+
+      EPSI = 1.0D-6
+
+C     ----------------------------------------------------------------
+C -   EXTRACTION DES PICS POUR RAINFLOW=PIC LE PLUS GRAND EN DEBUT
+C     ----------------------------------------------------------------
+      IF ( METHOD.EQ.'RAINFLOW' ) THEN
+
+C -     RECHERCHE DU POINT LE PLUS GRAND EN VALEUR ABSOLUE
+
+         PMAX = ABS(POINT(1))
+         NMAX = 1
+         DO 10 I = 2 , NPOINT
+            IF(ABS(POINT(I)).GT.PMAX*(1.0D0+EPSI))THEN
+               PMAX = ABS(POINT(I))
+               NMAX = I
             ENDIF
-  8         CONTINUE
-C
-C -       REARANGEMENT AVEC POINT LE PLUS GRAND AU DEBUT ET A LA FIN
-C
-            DO 5 I = NMAX,NPOINT
+ 10      CONTINUE
+         PMAX = POINT(NMAX)
+
+C -     REARANGEMENT AVEC POINT LE PLUS GRAND AU DEBUT ET A LA FIN
+
+         DO 20 I=NMAX, NPOINT
             RTRV(I-NMAX+1) = POINT(I)
- 5          CONTINUE
-            DO 6 I = 1,NMAX-1
+ 20      CONTINUE
+         DO 30 I=1, NMAX-1
             RTRV(NPOINT-NMAX+1+I) = POINT(I)
- 6          CONTINUE
-          NTRV = NPOINT
-C
-C -       EXTRACTION DES PICS SUR LE VECTEUR REARANGE
-C
-C -       LE PREMIER POINT EST UN PIC
-          NPIC   = 1
-          PIC(1) = RTRV(1)
-          PINTER = RTRV(2)
-C -       ON RECHERCHE TOUS LES PICS
-            DO 1 I = 3,NTRV
+ 30      CONTINUE
+         NTRV = NPOINT
+
+C -     EXTRACTION DES PICS SUR LE VECTEUR REARANGE
+
+C -      LE PREMIER POINT EST UN PIC
+         NPIC   = 1
+         PIC(1) = RTRV(1)
+         PINTER = RTRV(2)
+
+C -     ON RECHERCHE TOUS LES PICS
+         DO 40 I=3, NTRV
             DP1 = PINTER  - PIC(NPIC)
             DP2 = RTRV(I) - PINTER
-C -             ON CONSERVE LE POINT INTERMEDIAIRE COMME UN PIC
-                IF( DP2*DP1 .LT.  0.D0 )  THEN
-                NPIC = NPIC+1
-                PIC(NPIC) = PINTER
-                ENDIF
+
+C -         ON CONSERVE LE POINT INTERMEDIAIRE COMME UN PIC
+            IF( DP2*DP1 .LT.  0.D0 )  THEN
+               NPIC = NPIC+1
+               PIC(NPIC) = PINTER
+            ENDIF
+
 C -         LE DERNIER POINT DEVIENT POINT INTERMEDIAIRE
             PINTER = RTRV(I)
-  1         CONTINUE
-C -       LE DERNIER POINT EST UN PIC
-          NPIC = NPIC+1
-          PIC(NPIC) = RTRV(NTRV)
-          ELSE
-          K16B = METHOD(1:16)
-          CALL UTMESS('F','FGPIC2','METHODE '//K16B//' ILLICITE')
-          ENDIF
-C
-        END
+ 40      CONTINUE
+
+C -      LE DERNIER POINT EST UN PIC
+         NPIC = NPIC+1
+         PIC(NPIC) = RTRV(NTRV)
+      ELSE
+         K16B = METHOD(1:16)
+         CALL UTMESS('F','FGPIC2','METHODE '//K16B//' ILLICITE')
+      ENDIF
+
+      END

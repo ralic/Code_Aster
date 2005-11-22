@@ -1,6 +1,6 @@
       SUBROUTINE PMFITG(NF,NCF,VF,VS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/11/2005   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,6 @@ C -----------------------------------------------------------
       REAL*8 VF(NCF,NF),VS(6),ZERO
       PARAMETER (ZERO=0.0D+0)
       CHARACTER*2 KNCF
-
-      IF (NF.GT.1000) THEN
-        CALL UTMESS('F','PMFITG','PLUS DE 1000 FIBRES')
-      END IF
 
       DO 10 I = 1,6
         VS(I) = ZERO
