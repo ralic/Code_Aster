@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2005   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 24/11/2005   AUTEUR GRANET S.GRANET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -294,7 +294,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='N12',
                   VALE=7957.6,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-5,
+                  PRECISION=1.E-4,
                   REFERENCE='NON_REGRESSION',),);   
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -304,7 +304,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='N12',
                   VALE=9568.8,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-5,
+                  PRECISION=1.E-4,
                   REFERENCE='AUTRE_ASTER',),);   
 
 FIN();

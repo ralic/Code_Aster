@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/11/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C     ------------------
 C     -- SI LE CHAM_ELEM CHEL1 EST "ELGA", ON VERIFIE LA COHERENCE
 C        DES FAMILLES DE POINTS DE GAUSS :
 C     ------------------------------------------------------------
-      CALL CELFPG(CHEL1,'&&CHLIGR.CHEL1')
+      CALL CELFPG(CHEL1,'&&CHLIGR.CHEL1',1,IBID)
       CALL JEEXIN('&&CHLIGR.CHEL1',IRET1)
       IF (IRET1.GT.0) THEN
          CHELV='&&CHLIGR.CHELVIDE'
@@ -116,7 +116,7 @@ C     ------------------------------------------------------------
             CALL JEDETR('&&CHLIGR.CHEL1')
             GO TO 10
          END IF
-         CALL CELFPG(CHELV,'&&CHLIGR.CHEL2')
+         CALL CELFPG(CHELV,'&&CHLIGR.CHEL2',1,IBID)
          CALL JEEXIN('&&CHLIGR.CHEL2',IRET2)
          CALL ASSERT(IRET2.GT.0)
          CALL JEVEUO('&&CHLIGR.CHEL1','L',J1)

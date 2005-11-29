@@ -4,7 +4,7 @@ C RESPONSABLE CAMBIER S.CAMBIER
       REAL*8   A, B, WMOY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 28/11/2005   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,13 +32,13 @@ C  B    : BORNE SUPPERIEURE DU SUPPORT DE LA LOI DE PROBABILITE DE
 C         LA VARIABLE ALEATOIRE W.
 C  WMOY : VALEUR MOYENNE DE LA VARIABLE ALEATOIRE W.
 C ----------------------------------------------------------------------
-      REAL*8     ALPHA, FTYP1, K, TEST, EPS, U 
-      PARAMETER  (EPS=1.D-7)
-      SAVE  K
-      DATA K /1D0/
+      REAL*8     ALPHA, FTYP1, K, TEST, EPS, U, NMCRI9, BSUP
+      INTEGER    I,NITMAX
+      PARAMETER  (EPS=1.D-4,NITMAX=100000)
 C
       FTYP1(A,B,WMOY,K) = 1D0/(WMOY-(A*EXP(-A*K) 
      +                     - B*EXP(-B*K))/(EXP(-A*K) - EXP(-B*K)))
+
 C
       IF (A.GE.B) THEN
         CALL UTDEBM('F','GEVAT1','ON DOIT AVOIR BORNE_INF < BORNE_SUP ')
@@ -52,23 +52,41 @@ C
          CALL UTIMPR('S',' < BORNE_SUP= ', 1, B )
          CALL UTFINM
       ENDIF
-C
+
+      IF (EXP(-B*K).LT.1.D-12) THEN
+        CALL UTDEBM('A','GEVAT1','BORNE_SUP TRES GRANDE : PB '//
+     &                      'PRECISION POSSIBLE, VERIFIEZ')
+        CALL UTIMPK('L',' LA DISTRIBUTION DES VALEURS ',1,'GENEREES')
+        CALL UTFINM
+      ENDIF
+
 C --- CALCUL DE LA VARIABLE K
-C
+C NE CONVERGE PAS AVEC ZEROF3 => ON FAIT UN POINT FIXE
+
+      K=1.D0/(WMOY-A)
+
+      I=1
 1     CONTINUE
       TEST = FTYP1(A,B,WMOY,K)
-      IF (ABS(TEST-K).GT.EPS) THEN
+      IF (ABS((TEST-K)/K).GT.EPS) THEN
          K = TEST
-         GOTO 1
-      ENDIF
-C
-      IF (K.LE.0D0) THEN
-         CALL UTMESS('F','GEVAT1',' K < 0 ')
+         IF (I.GT.NITMAX) THEN
+           CALL UTMESS('F','GEVAT1','NON CONVERGENCE DU CALCUL DE K ')
+         ELSE
+           I=I+1
+           GOTO 1
+       ENDIF 
       ENDIF 
 C
-C --- GENERATION DE LA VARIABLE ALEATOIRE SUIVANT LA LOI DE TYPE 1
+      IF (K.LE.0D0) THEN
+         CALL UTMESS('F','GEVAT1','PB CALCUL DE K : K < 0 ')
+      ENDIF 
+
+C
+C --- GENERATION DE LA VARIABLE ALEATOIRE 
 C
       ALPHA = EXP(-A*K) - EXP(-B*K)
+
       CALL GETRAN ( U )
       GEVAT1 = -(LOG(EXP(-A*K)-ALPHA*U))/K
 C      

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/11/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTTE DE GRAPPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -235,59 +235,68 @@ RESU=DYNA_NON_LINE( reuse=RESU, MODELE=MODELE,
                  ARCHIVAGE=_F( INST=( 0.700, 1.400, 1.785 ), ),
             );
 
-#  reference PEGASE 
-
+#######################################################################
+#                      reference PEGASE 
+#######################################################################
+#
+#  Les valeurs sont issus du code PEGASE
+#  modelisation POI1, algo :
+#    ACCE(IT) = FORCE_FLUIDE(DEPL(IT-1),VITE(IT-1),ACCE(IT-1))
+#    VITE(IT) = VITE(IT-1) + DT*ACCE(IT)
+#    DEPL(IT) = DEPL(IT-1) + (VITE(IT)+VITE(IT-1))/2*DT
+#    avec DEPL(0)=VITE(0)=ACCE(0)
+#
 #  instant 0.7
-DEPL_1 = -1.15123E+00
-VITE_1 = -2.61813E+00
-ACCE_1 = -1.20711E+00
+DEPL_1 = -1.15640E+00
+VITE_1 = -2.62173E+00
+ACCE_1 = -1.19459E+00
 
 #  instant 1.4
-DEPL_2 = -3.15521E+00
-VITE_2 = -2.65416E+00
-ACCE_2 =  1.59127E+01
+DEPL_2 = -3.16070E+00
+VITE_2 = -2.62081E+00
+ACCE_2 =  1.61194E+01
 
 #  instant 1.785
-DEPL_3 = -3.60779E+00
-VITE_3 = -7.28194E-01
-ACCE_3 = -2.90925E-01
+DEPL_3 = -3.60930E+00
+VITE_3 = -7.27578E-01
+ACCE_3 =  2.94495E-01
 
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD SUPERIEUR DE LA TIGE
         
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,   NOM_CHAM = 'DEPL',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0100, 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0050, 
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'DEPL',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0100,
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0050,
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'DEPL',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0100,
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0050,
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_3 ),
 
           # VITESSE DU NOEUD SUPERIEUR DE LA TIGE
         
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0100, 0.001 ),
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ),
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0250, 0.001 ),
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0150, 0.001 ),
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0100, 0.001 ),
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ),
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_3 ),
 
           # ACCELERATION DU NOEUD SUPERIEUR DE LA TIGE
         
-#   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
-#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.180, 
-#        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
+   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.300, 
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
         REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.060, 0.001 ), 
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
-#   _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
-#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 25.000, 0.001 ), 
-#        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
+   _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 25.000, 0.001 ), 
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
 
         )       )
 
@@ -307,27 +316,64 @@ TEST_RESU(RESU=(
           # VITESSE DU NOEUD INFERIEUR DU CRAYON
         
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0100, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0250, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0150, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0100, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_3 ),
 
           # ACCELERATION DU NOEUD INFERIEUR DU CRAYON
         
-#   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
-#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.400, 0.001 ), 
-#        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
+   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.150, 0.001 ), 
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.070, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',   PRECISION = ( 0.060, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
-#   _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
-#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.700, 0.001 ), 
-#        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
+   _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.700, 0.001 ), 
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
 
+        )       )
+
+#######################################################################
+#                      TEST de NON REGRESSION
+#######################################################################
+# -3.6108930296854E+00 sur clpaster
+# -3.6108930296853E+00 sur clp50a8
+# -3.6108930659582D+00 sur clayastr
+#
+TEST_RESU(RESU=(
+          # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
+        
+   _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'DEPL',
+        REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-8,
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -3.6108930478218 ),
+        )       )
+
+# -7.2637884125762E-01 sur clp50a8
+# -7.2637883847989D-01 sur clayastr
+#
+TEST_RESU(RESU=(
+          # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
+        
+   _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'VITE',
+        REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-8,
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -0.72637883986876 ),
+        )       )
+
+#  4.8937232246381E-01 sur clp50a8
+#  4.8937325064298D-01 sur clayastr
+#
+TEST_RESU(RESU=(
+          # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
+        
+   _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'ACCE',
+        REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-6,
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE =  0.48937278655340 ),
         )       )
 
 FIN();

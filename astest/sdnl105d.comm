@@ -1,4 +1,4 @@
-# MODIF  DATE 15/09/2005   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 28/11/2005   AUTEUR CAMBIER S.CAMBIER 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -305,17 +305,17 @@ for k in range(1,ns+1):
 ###### CALCUL MODAL :
 ###
 #
-#   RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE, 
-#                                 MATR_B=M_GENE, 
-#                             CALC_FREQ=_F( NMAX_FREQ = 15))
-#
-   RESGEN=MODE_ITER_INV(     MATR_A=K_GENE,  MATR_B=M_GENE,
-          CALC_FREQ=_F( NMAX_FREQ = 15, OPTION = 'AJUSTE', FREQ = (2., 40.,),
-                     NMAX_ITER_AJUSTE = 100,PREC_AJUSTE=1.E-14),
-          VERI_MODE=(_F(STOP_ERREUR='OUI',
-                                     SEUIL=2.E-2)),
-          CALC_MODE=_F( NMAX_ITER = 100, PREC=1.E-14),
-            )
+   RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE, 
+                                 MATR_B=M_GENE, 
+                             CALC_FREQ=_F( NMAX_FREQ = 15))
+
+#   RESGEN=MODE_ITER_INV(     MATR_A=K_GENE,  MATR_B=M_GENE,
+#          CALC_FREQ=_F( NMAX_FREQ = 15, OPTION = 'AJUSTE', FREQ = (2., 40.,),
+#                     NMAX_ITER_AJUSTE = 100,PREC_AJUSTE=1.E-14),
+#          VERI_MODE=(_F(STOP_ERREUR='OUI',
+#                                     SEUIL=2.E-2)),
+#          CALC_MODE=_F( NMAX_ITER = 100, PREC=1.E-14),
+#            )
 
 
    SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
@@ -484,7 +484,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='SUP', 
-                   VALE=6.6669680322774E+00, 
+                   VALE=4.1245671733566E+00, 
 #                   PRECISION=1.E-7,)
 )
 
@@ -494,7 +494,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='INF', 
-                   VALE=3.4446080622352E+00, 
+                   VALE=3.4852445451528E+00, 
 #                   PRECISION=1.E-7,)
 )
 
@@ -504,7 +504,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='MOY', 
-                   VALE= 4.8998167855633E+00,
+                   VALE= 3.7318143788391E+00,
 #                   PRECISION=1.E-7,)
 )
 
@@ -514,7 +514,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='VAR', 
-                   VALE=1.6217291048088E+00, 
+                   VALE=4.3744293902475E-02, 
 #                   PRECISION=1.E-7,)
 )
 
@@ -524,7 +524,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='SUP', 
-                   VALE= 1.4000658314861E-02,
+                   VALE= 1.1881667275227E-02,
 #                   PRECISION=1.E-7,)
 )
 
@@ -534,7 +534,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='MOY', 
-                   VALE=1.1493164445308E-02 ,
+                   VALE=1.1469763652458E-02 ,
 #                   PRECISION=1.E-7,)
 )
 
@@ -544,7 +544,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='INF', 
-                   VALE= 8.9854291403646E-02,
+                   VALE= 8.8058769141797E-02,
 #                   PRECISION=1.E-7,)
 )
 
@@ -554,7 +554,7 @@ TEST_TABLE(      TABLE=RMS,
                    REFERENCE='NON_REGRESSION',  
                    VERSION  ='8.1.07',
                    NOM_PARA='MOY', 
-                   VALE= 1.1371466967789E-01, 
+                   VALE= 9.2781999953829E-02, 
 #                   PRECISION=1.E-7,),
 )
 FIN();

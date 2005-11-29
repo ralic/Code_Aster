@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/11/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,18 +89,24 @@ U2=CALC_ELEM( reuse=U2,
 # ----------------------------------------------------------
 
 
-MA2=CREA_MAILLAGE(  MAILLAGE=M,
-        ECLA_PG=_F( MODELE = MO,  SHRINK = 0.90)
-                       )
-
+#MA2=CREA_MAILLAGE(  MAILLAGE=M,
+#        ECLA_PG=_F( MODELE = MO,  SHRINK = 0.90)
+#                       )
+#
 #
 
-U2B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_NOLI',
-            ECLA_PG=_F(  MODELE_INIT = MO,
-                      RESU_INIT = U2,
-                      MAILLAGE = MA2,
-                      NOM_CHAM = ('SIEF_ELGA','VARI_ELGA',))
-                 )
+#U2B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_NOLI',
+#            ECLA_PG=_F(  MODELE_INIT = MO,
+#                      RESU_INIT = U2,
+#                      MAILLAGE = MA2,
+#                      NOM_CHAM = ('SIEF_ELGA','VARI_ELGA',))
+#                 )
+
+MACR_ECLA_PG(RESULTAT = CO('U2B'),
+             MAILLAGE = CO('MA2'),
+             RESU_INIT = U2,
+             MODELE_INIT = MO,
+             NOM_CHAM = ('SIEF_ELGA','VARI_ELGA'),);
 
 #
 
