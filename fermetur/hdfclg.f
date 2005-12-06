@@ -1,0 +1,6 @@
+       INTEGER FUNCTION HDFCLG (I)
+       INTEGER I
+      CALL UTMESS('F','HDFCLG','LA BIBLIOTHEQUE "HDF5" EST INDISPONIBLE'
+     &            //' SUR CETTE MACHINE.')
+      END
+   
