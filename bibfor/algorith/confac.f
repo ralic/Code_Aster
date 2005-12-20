@@ -4,7 +4,7 @@
       CHARACTER*8      TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -215,10 +215,39 @@ C       CONNECTIVITÉ DES FACES POUR UNE MAILLE TETRA4 OU TETRA10
         F(4,2)=2
         F(4,3)=4
         F(4,4)=0
+      ELSEIF (TYPMA.EQ.'QUAD4'.OR.TYPMA.EQ.'QUAD8') THEN
+        NBFT=2
+C     CONNECTIVITE DES TRIANGLES POUR UNE MAILLE QUAD4 OU QUAD8
+        FT(1,1)=1
+        FT(1,2)=2
+        FT(1,3)=3
+        FT(2,1)=3
+        FT(2,2)=4
+        FT(2,3)=1
+        
+        NBF=1
+C       CONNECTIVITE DES FACES POUR UNE MAILLE QUAD4 OU QUAD8
+        F(1,1)=1
+        F(1,2)=2
+        F(1,3)=3
+        F(1,4)=4
+      ELSEIF (TYPMA.EQ.'TRIA3'.OR.TYPMA.EQ.'TRIA6') THEN
+        NBFT=1
+C     CONNECTIVITE DES TRIANGLES POUR UNE MAILLE TRIA3 OU TRIA6
+        FT(1,1)=1
+        FT(1,2)=3
+        FT(1,3)=2
+
+        NBF=1
+C       CONNECTIVITE DES FACES POUR UNE MAILLE TRIA3 OU TRIA6
+        F(1,1)=1
+        F(1,2)=3
+        F(1,3)=2
+        F(1,4)=0
       ELSE
         CALL UTMESS('F','CONFAC','LA MAILLE DOIT ETRE DE TYPE '//
      &      'TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 OU HEXA20. '//
-     &      'OR LA MAILLE EST DE TYPE : '//TYPMA//'.') 
+     & 'OU TRIA3-6 ou QUAD4-8 OR LA MAILLE EST DE TYPE : '//TYPMA//'.') 
       ENDIF
 
       CALL JEDEMA()

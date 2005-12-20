@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-C
 C                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
 C
 C     ENTREE
@@ -66,7 +65,8 @@ C
       INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE
       INTEGER         A1,A2,A3,A4,A,B,C
       PARAMETER      (NSEMAX=6)
-      CHARACTER*8     TYPMA
+      CHARACTER*8     TYPMA,NOMA
+      INTEGER         IADZI,IAZK24,DIMENS,ADDIM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -81,7 +81,16 @@ C ----------------------------------------------------------------------
  20     CONTINUE
  10   CONTINUE
 
-      TYPMA='TETRA4'
+      CALL TECAEL(IADZI,IAZK24)
+      NOMA=ZK24(IAZK24)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      DIMENS=ZI(ADDIM-1+6)
+
+      IF (DIMENS .EQ. 2) THEN
+        TYPMA='TRIA3'
+      ELSE 
+        TYPMA='TETRA4'
+      ENDIF
       CALL CONARE(TYPMA,AR,NBAR)
 
 C-----------------------------------------------------------------------
@@ -89,7 +98,66 @@ C     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
 C                  ALGO BOOK III (26/04/04)
 C-----------------------------------------------------------------------
 
-      IF (NINTER.LT.3) THEN
+
+      IF (DIMENS .EQ. 2) THEN
+       IF (NINTER .LT. 2) THEN
+        IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
+C     1 SEUL ELEMENT
+       NSE=1
+        DO 90 IN=1,3
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 90     CONTINUE
+       ELSEIF (NINTER .EQ. 2) THEN
+        A1=NINT(ZR(JAINT-1+4*(1-1)+1))
+        A2=NINT(ZR(JAINT-1+4*(2-1)+1)) 
+        IF (NPTS .EQ. 2) THEN
+C     1 SEUL ELEMENT
+        NSE=1
+        DO 91 IN=1,3
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 91     CONTINUE
+        ELSEIF (NPTS .EQ. 1) THEN
+C     2 ELEMENTS
+        NSE=2
+        CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
+C       101 et 102 les 2 points d'intersection
+          CNSE(1,1)=101
+          CNSE(1,2)=102
+          CNSE(1,3)=CONNEC(IT,AR(A2,1))
+          CNSE(2,1)=101
+          CNSE(2,2)=102
+          CNSE(2,3)=CONNEC(IT,AR(A2,2))         
+        ELSE
+C     3 ELEMENTS
+        NSE=3
+        CALL ASSERT(A1.NE.0)
+C       101 et 102 les 2 points d'intersection
+C         ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
+          DO 93 I=1,2
+            DO 94 J=1,2
+              IF (AR(A1,I).EQ.AR(A2,J)) THEN
+                 A=AR(A1,I)
+                 B=AR(A1,3-I)
+                 C=AR(A2,3-J)
+              ENDIF
+ 94         CONTINUE
+ 93       CONTINUE
+          CNSE(1,1)=101
+          CNSE(1,2)=102
+          CNSE(1,3)=CONNEC(IT,A)
+          CNSE(2,1)=101
+          CNSE(2,2)=102
+          CNSE(2,3)=CONNEC(IT,C)
+          CNSE(3,1)=101
+          CNSE(3,2)=CONNEC(IT,B)
+          CNSE(3,3)=CONNEC(IT,C)
+        ENDIF
+       ELSE
+        CALL UTMESS('F','XDECOV','TROP DE POINTS D INTERSECTION')
+       ENDIF
+C      
+      ELSE
+       IF (NINTER.LT.3) THEN
 
 C     1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 C     ---------------------------------------------
@@ -101,7 +169,7 @@ C       ON A UN SEUL ELEMENT
             CNSE(1,IN)=CONNEC(IT,IN)
  100    CONTINUE
 
-      ELSEIF (NINTER.EQ.3) THEN
+       ELSEIF (NINTER.EQ.3) THEN
 
 C     2°) AVEC TROIS POINTS D'INTERSECTION
 C     ------------------------------------
@@ -192,7 +260,7 @@ C           CONFIGURATION N°4
 
         ENDIF
 
-      ELSEIF (NINTER.EQ.4) THEN
+       ELSEIF (NINTER.EQ.4) THEN
 
 C     2°) AVEC QUATRE POINTS D'INTERSECTION
 C     -------------------------------------
@@ -218,9 +286,8 @@ C         CONFIGURATION N°3
         ELSE
           CALL UTMESS('F','XDECOV','PROBLEME DE DECOUPAGE A 4 PTS')
         ENDIF
-
+       ENDIF
       ENDIF
-
 C      WRITE(6,*)'NSE ',NSE
 C      DO 99 ISE=1,NSE
 C          WRITE(6,*)(CNSE(ISE,J),J=1,4)
@@ -228,45 +295,74 @@ C 99   CONTINUE
 C        WRITE(6,*)'  '
 
 C-----------------------------------------------------------------------
-C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA
+C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA (TRIA EN 2D)
 C                  ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
-      DO 200 ISE=1,NSE
+      IF (DIMENS.EQ.2) THEN
+      DO 190 ISE=1,NSE
+          DO 191 IN=1,3
+           INH=CNSE(ISE,IN)
+           IF (INH.LT.100) THEN
+             DO 192 J=1,2
+               XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)
+ 192         CONTINUE
+           ELSE
+             DO 199 J=1,2
+               XYZ(IN,J)=ZR(JPTINT-1+3*(INH-100-1)+J)
+ 199         CONTINUE
+           ENDIF
+ 191     CONTINUE
+         DO 193 J=1,2
+           AB(J)=XYZ(2,J)-XYZ(1,J)
+           AC(J)=XYZ(3,J)-XYZ(1,J)
+ 193     CONTINUE
+         PS=AB(1)*AC(2)-AB(2)*AC(1)
+         IF (PS.LT.0) THEN
+C         ON INVERSE LES NOEUDS 2 ET 3
+           INH=CNSE(ISE,2)
+           CNSE(ISE,2)=CNSE(ISE,3)
+           CNSE(ISE,3)=INH
+         ENDIF
+ 190   CONTINUE
+ 
+      ELSE
+       DO 200 ISE=1,NSE
+          DO 210 IN=1,4
+           INH=CNSE(ISE,IN)
+           IF (INH.LT.100) THEN
+             DO 220 J=1,3
+               XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)
+ 220         CONTINUE
+           ELSE
+             DO 221 J=1,3
+               XYZ(IN,J)=ZR(JPTINT-1+3*(INH-100-1)+J)
+ 221         CONTINUE
+           ENDIF
+ 210     CONTINUE
 
-        DO 210 IN=1,4
-          INH=CNSE(ISE,IN)
-          IF (INH.LT.100) THEN
-            DO 220 J=1,3
-              XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)
- 220        CONTINUE
-          ELSE
-            DO 221 J=1,3
-              XYZ(IN,J)=ZR(JPTINT-1+3*(INH-100-1)+J)
- 221        CONTINUE
-          ENDIF
- 210    CONTINUE
+         DO 230 J=1,3
+           AB(J)=XYZ(2,J)-XYZ(1,J)
+           AC(J)=XYZ(3,J)-XYZ(1,J)
+           AD(J)=XYZ(4,J)-XYZ(1,J)
+ 230     CONTINUE
 
-        DO 230 J=1,3
-          AB(J)=XYZ(2,J)-XYZ(1,J)
-          AC(J)=XYZ(3,J)-XYZ(1,J)
-          AD(J)=XYZ(4,J)-XYZ(1,J)
- 230    CONTINUE
+         CALL PROVEC(AB,AC,VN)
+         PS=DDOT(3,VN,1,AD,1)
 
-        CALL PROVEC(AB,AC,VN)
-        PS=DDOT(3,VN,1,AD,1)
-
-        IF (PS.LT.0) THEN
+         IF (PS.LT.0) THEN
 C          WRITE(6,*)'MAUVAIS SENS DU TETRA'
 C         ON INVERSE LES NOEUDS 3 ET 4
-          INH=CNSE(ISE,3)
-          CNSE(ISE,3)=CNSE(ISE,4)
-          CNSE(ISE,4)=INH
-        ELSE
-C          WRITE(6,*)'VERIF SENS OK'
-        ENDIF
+           INH=CNSE(ISE,3)
+           CNSE(ISE,3)=CNSE(ISE,4)
+           CNSE(ISE,4)=INH
+         ELSE
+C           WRITE(6,*)'VERIF SENS OK'
+         ENDIF
 
- 200  CONTINUE
+     
+ 200   CONTINUE
+      ENDIF
 
 C-----------------------------------------------------------------------
 C             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE

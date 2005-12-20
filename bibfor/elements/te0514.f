@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
-      CHARACTER*8   ELP
+      CHARACTER*8   ELP,NOMA
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
       REAL*8        NEWPT(3),P(3),PADIST,LONREF,CRIT
       INTEGER       IGEOM,JLSN,JGRLSN,JOUT1,JOUT2,JOUT3,JOUT4,JOUT5
@@ -59,6 +59,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER       NPTS,CNSE(6,4),I,J,IT,NP,IPT,ISE,IN,NI,NSEMX,CPT
       LOGICAL       DEJA
       PARAMETER    (NSEMX=6)
+      INTEGER       NDIM,IBID
 C......................................................................
 
       CALL JEMARQ()
@@ -66,6 +67,7 @@ C......................................................................
 C      INFO : LE NB DE SOUS-TETRAS MAX POUR CHAQUE TETRA EST NSEMX=6
  
       CALL ELREF1(ELP)
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 C
 C     RECUPERATION DES ENTRÉES / SORTIE
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -175,9 +177,13 @@ C         ARCHIVAGE DE PCNSETO
 C     ARCHIVAGE DE LONCHAM
       ZI(JOUT4-1+NIT+2)=NP
 C      write(6,*)'ninter se ',NP
-
+     
+      IF (NDIM .EQ. 2) GOTO 200
+      
       CALL XCRVOL(IGEOM,ZR(JOUT1),ZI(JOUT2),ZI(JOUT3),ZI(JOUT4),CRIT)
       ZR(JOUT5)=CRIT       
+  
+ 200  CONTINUE
 C ----------------------------------------------------------------------
 
       CALL JEDEMA()

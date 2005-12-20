@@ -8,7 +8,7 @@
       CHARACTER*24 GRNO
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,9 +61,9 @@ C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
       REAL*8       RBID,BETAR
-      INTEGER      IER,JLISNO,LONG,INO,NUNO,K,NDIM
-      CHARACTER*8  K8BID,NOMNO,DDLH(3)
-      PARAMETER   (NDIM=3)
+      INTEGER      IER,JLISNO,LONG,INO,NUNO,K
+      INTEGER      IADZI,IAZK24,NDIM,ADDIM
+      CHARACTER*8  K8BID,NOMNO,DDLH(3),NOMA
       COMPLEX*16   CBID
       DATA         DDLH/'H1X','H1Y','H1Z'/
       DATA         BETAR/0.D0/
@@ -75,6 +75,12 @@ C-----------------------------------------------------------------------
 
       CALL JEVEUO(GRNO,'L',JLISNO)
       CALL JELIRA(GRNO,'LONMAX',LONG,K8BID)
+C     RECUPERATION DE LA DIMENSION
+      CALL TECAEL(IADZI,IAZK24)
+      NOMA=ZK24(IAZK24)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)      
+C     CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 
 C     BOUCLE SUR LES NOEUDS DE GRNO
       DO 10 INO = 1,LONG

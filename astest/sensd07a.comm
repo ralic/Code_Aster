@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 19/12/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE SENSIBILITE EN DYNAMIQUE NON LINEAIRE (3D-VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,6 +67,8 @@ cste_dsde=2000.
 cste_sigy=200.
 coef_char=1.E7
 epsilon=1.E-5
+
+lis_amor = DEFI_LIST_REEL(VALE=(0.07 ),)
 #      
 # 1. Definition/memorisation des fonctions constantes
 #
@@ -232,7 +234,7 @@ FC=DEFI_FONCTION(NOM_PARA='INST',
 DYT=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,
                    SENSIBILITE=tuple(PS),
                    AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'OUI',
-                            AMOR_REDUIT = 0.07),
+                            LIST_AMOR = lis_amor),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    EXCIT=(_F(FONC_MULT=FC,CHARGE=CH), 
                           _F( CHARGE = CLIM),),
@@ -247,7 +249,7 @@ DYT=DYNA_NON_LINE(reuse=DYT,
                     MODELE=MO,CHAM_MATER=CHMAT,
                    SENSIBILITE=tuple(PS),
                    AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'OUI',
-                            AMOR_REDUIT = 0.07),
+                            LIST_AMOR = lis_amor),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    EXCIT=(_F(FONC_MULT=FC,CHARGE=CH), 
                           _F( CHARGE = CLIM),),
@@ -299,7 +301,7 @@ for i in range(n):
 
   DYT2=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT2,
                    AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'OUI',
-                            AMOR_REDUIT = 0.07),
+                            LIST_AMOR = lis_amor),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    EXCIT=(_F(FONC_MULT=FC,CHARGE=CH2), 
                           _F( CHARGE = CLIM),),

@@ -3,7 +3,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,8 +78,8 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       LREFE = .TRUE.
-      NUMGEN = '&&MDALNU'//NOMRES(7:8)
-      MATGEN = '&&MDALMA'//NOMRES(7:8)
+      NUMGEN = '&&MDALNU'
+      MATGEN = '&&MDALMA'
       TYPROF = 'LIGN_CIE'
       
 C creation de la numerotation generalise support      
@@ -141,8 +141,8 @@ C        --- VECTEUR PROPRE ---
  100  CONTINUE
 
       CALL VPCREA(0,NOMRES,' ',' ',' ',IER)
-      CALL JEDETR (MATGEN)
-      CALL JEDETR (NUMGEN)
+      CALL JEDETC (' ',NUMGEN,1)
+      CALL JEDETC (' ',MATGEN,1)
 
       CALL JEDEMA()
       

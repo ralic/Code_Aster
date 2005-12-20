@@ -5,7 +5,7 @@
       CHARACTER*8   ELREFP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -111,6 +111,21 @@ C       CONNECTIVITÉ DES NOEUDS
         CONNEC(1,2)=2
         CONNEC(1,3)=3
         CONNEC(1,4)=4
+        NIT=1
+      ELSEIF (ELREFP.EQ.'QU4'.OR.ELREFP.EQ.'X8') THEN
+C       CONNECTIVITÉ DES NOEUDS
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=4
+        CONNEC(2,1)=2
+        CONNEC(2,2)=3
+        CONNEC(2,3)=4
+        NIT=2
+      ELSEIF (ELREFP.EQ.'TR3'.OR.ELREFP.EQ.'X6') THEN
+C       CONNECTIVITÉ DES NOEUDS
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=3
         NIT=1
       ELSE
         CALL UTMESS('F','XDIVTE','TYPE D''ELEMENT FINI PAS TRAITE')

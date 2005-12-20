@@ -2,7 +2,7 @@
      1                 DEPSM, SIGM, VIM, SEUIL, VP, VECP, ICOMP, SIGP,
      2                 VIP, IRTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C ======================================================================
       INTEGER      NDT,NDI,II,ITERI,ITER,JJ
       REAL*8       GM,ETAM,ETAP,AUX,SIG3,MU,K,AUX2,AUX3,DDOT
       REAL*8       EPSM(6),EPSP(6),SIGE(6),SE(6),SEB(6)
-      REAL*8       TOLER2,SEQ,I1E,SEUIL2,PLAS,DG,SIGEQE
+      REAL*8       SEQ,I1E,SEUIL2,PLAS,DG,SIGEQE
       REAL*8       HOOKF(6,6),DKOOH(6,6),DEUX,TROIS,TRACE
       REAL*8       INCRG,GNP,DGNP,ETANP,VH,VG
       REAL*8       PARAME(4),DERIVE(5),PI,R8PI,FMOINS
@@ -75,7 +75,6 @@ C ======================================================================
 C ======================================================================
 C --- INITIALISATION DES PARAMETRES DE CONVERGENCE ---------------------
 C ======================================================================
-      TOLER2 = 1.0D-6
       PI     = R8PI()
       PI     = PI/180.D0
 C ======================================================================
@@ -116,7 +115,7 @@ C ======================================================================
       GNP    = GM
       ETANP  = ETAM
       CALL CALCVH(NBMAT,MATERF,ETANP,VP,SIGEQE,VH,VG)
-       CALL HBDERI(GNP,NBMAT,MATERF,VG,ETANP,PARAME,DERIVE)
+      CALL HBDERI(GNP,NBMAT,MATERF,VG,ETANP,PARAME,DERIVE)
 C ======================================================================
 C --------- PREMIERE ITERATION -----------------------------------------
 C ======================================================================
@@ -147,8 +146,8 @@ C ======================================================================
 C ======================================================================
 C ---------- IL Y A CONVERGENCE ----------------------------------------
 C ======================================================================
-         IF ((ABS(SEUIL2).LT.TOLER2).OR.
-     &             (ABS(SEUIL2/FMOINS).LT.TOLER2)) THEN
+         IF ((ABS(SEUIL2).LT.TOLER).OR.
+     &             (ABS(SEUIL2/FMOINS).LT.TOLER)) THEN
 C ======================================================================
 C --------- ON DETECTE LES SOLUTIONS NON ADMISSIBLES -------------------
 C ======================================================================

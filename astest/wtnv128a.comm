@@ -1,5 +1,6 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
-# TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN MODIFIE
+# MODIF  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+# TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN 
+#                   EN CONTRAINTES EFFECTIVES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -200,7 +201,7 @@ U1=STAT_NON_LINE(
                 CHARGE = P0,)),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HM',          
-                RELATION_KIT = ('HOEK_BROWN','LIQU_SATU','HYDR_UTIL',),
+                RELATION_KIT = ('HOEK_BROWN_EFF','LIQU_SATU','HYDR_UTIL',),
                 RESI_INTE_RELA = 1.E-6,
                 ITER_INTE_MAXI = 100),
                             NEWTON=_F( 
@@ -272,7 +273,7 @@ U2=STAT_NON_LINE(
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HM',          
-                RELATION_KIT = ('HOEK_BROWN','LIQU_SATU','HYDR_UTIL',),
+                RELATION_KIT = ('HOEK_BROWN_EFF','LIQU_SATU','HYDR_UTIL',),
                 RESI_INTE_RELA = 1.E-8,
                 ITER_INTE_MAXI = 100,
                 ITER_INTE_PAS  = -10,),

@@ -1,6 +1,6 @@
       SUBROUTINE LCHBVP(SIGD,VP,VECP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,13 +29,16 @@ C IN  : SIGD   :  TENSEUR DES CONTRAINTES (ELASTIQUE) -----------------
 C OUT : VP     :  VALEURS PROPRES ORDONNEES DU DEVIATEUR DE SIGD ------
 C --- : VECP   :  VECTEURS PROPRES DU DEVIATEUR DE SIGD ---------------
 C =====================================================================
-      REAL*8        SEB(6),DEUX,SE(6)
+      REAL*8        SEB(6),DEUX,SE(6),AUX,TU(6),TOL,TOLDYN,JACAUX(3)
       CHARACTER*10  CVP1,CVP2,CVP3 
-      INTEGER       NDT,NDI
+      INTEGER       NDT,NDI,NPERM,TTRIJ,OTRIJ,NITJAC
 C ======================================================================
       PARAMETER   (DEUX = 2.0D0)
 C ======================================================================
       COMMON /TDIM/   NDT, NDI
+C ======================================================================
+      DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
+      DATA   TTRIJ,OTRIJ  /0,0/      
 C ======================================================================
       CALL LCDEVI(SIGD,SE)
       SEB(1) = SE(1)
@@ -49,12 +52,20 @@ C ======================================================================
           SEB(3) = SE(5) / SQRT(DEUX)
           SEB(5) = SE(6) / SQRT(DEUX)
       ENDIF
-      CALL HBDIAG(SEB,VECP,VP)
+C -- MATRICE UNITE POUR JACOBI ----------------------------------------
+      TU(1) = 1.D0
+      TU(2) = 0.D0
+      TU(3) = 0.D0
+      TU(4) = 1.D0
+      TU(5) = 0.D0
+      TU(6) = 1.D0
+      CALL JACOBI(3,NPERM,TOL,TOLDYN,SEB,TU,VECP,VP,JACAUX,
+     &       NITJAC,TTRIJ,OTRIJ)
       IF ((VP(2).LT.VP(1)) .OR. (VP(3).LT.VP(2))) THEN
           CALL CODREE(VP(1),'E',CVP1)
           CALL CODREE(VP(2),'E',CVP2)
           CALL CODREE(VP(3),'E',CVP3)
-          CALL UTMESS('F','LCHOBR','VALEURS PROPRES NON//
+          CALL UTMESS('F','LCHBVP','VALEURS PROPRES NON//
      &               ORDONNEES'//CVP1//CVP2//CVP3)
       ENDIF                 
 C ======================================================================

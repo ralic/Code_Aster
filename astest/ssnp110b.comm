@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 19/12/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,19 +18,21 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 #    RECTANGULAIRE FINIE SOUMISE A FLEXION CISAILLANTE - EX SSNP310
-#
+# 
 
 DEBUT( CODE=_F( NOM = 'SSNP110B',NIV_PUB_WEB='INTERNET'))
 
 PRE_GIBI()
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),  )
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'), )
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
-      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
+MO=AFFE_MODELE(MAILLAGE=MA, 
+               AFFE=_F( TOUT = 'OUI',
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = 'C_PLAN'))
 
-MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.0601E5, NU = 0.3, ALPHA = 0.),
-                          ECRO_LINE=_F(  D_SIGM_EPSI = 0., SY = 808.344)
+MAT=DEFI_MATERIAU(ELAS=_F(E = 2.0601E5, NU = 0.3, ALPHA = 0.),
+                  ECRO_LINE=_F(  D_SIGM_EPSI = 0., SY = 808.344)
                          )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
@@ -41,181 +43,239 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                  )
 
 CL=AFFE_CHAR_MECA(  MODELE=MO, 
-            DDL_IMPO=_F(  GROUP_NO = 'LPOP11', DX = 0., DY = 0.)
-                          )
+            DDL_IMPO=(_F(  GROUP_NO = 'LPOP11', DY = 0.,),
+                      _F(  GROUP_NO = 'PB', DX = 0.),),);
 
 CH=AFFE_CHAR_MECA(  MODELE=MO, 
-            DDL_IMPO=_F(  GROUP_NO = 'LP9P10',  DX = 1.)
-                          )
-
+            DDL_IMPO=_F(  GROUP_NO = 'LP9P10', DY = 1.),);
+            
 RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
                         VALE=(0.,0.,1.,1.,),
                         PROL_DROITE='LINEAIRE'
                       )
 
-L_INST=DEFI_LIST_REEL(  DEBUT=0.,
-                          INTERVALLE=_F( JUSQU_A = .30,  NOMBRE = 6)
+L_INST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=_F( JUSQU_A = 0.1,  NOMBRE = 150)
                         )
 
-CHAMDEP=STAT_NON_LINE( 
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
-                CHARGE = CL), _F( 
-                CHARGE = CH,
-                FONC_MULT = RAMPE)),
-                         COMP_ELAS=_F( 
-                RELATION = 'ELAS_VMIS_LINE',
-                DEFORMATION = 'GREEN'),
-                         INCREMENT=_F( 
-                LIST_INST = L_INST),
-                            NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                PREDICTION = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-6),
-                           SOLVEUR=_F( 
-                METHODE = 'MULT_FRONT'),
-                     RECH_LINEAIRE=_F( 
-                ITER_LINE_MAXI = 3)
-              )
-
-CHAMDEP=CALC_ELEM( reuse=CHAMDEP,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP,
-              )
+CHAMDEP=STAT_NON_LINE( MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE = CL), 
+                              _F(CHARGE = CH,
+                                 FONC_MULT = RAMPE)),
+                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_LINE',
+                                    DEFORMATION = 'GREEN'),
+                       INCREMENT=_F(LIST_INST = L_INST,
+                                    COEF_SUBD_PAS_1=1.0,
+                                    SUBD_PAS=2,
+                                    SUBD_PAS_MINI=0.00001),
+                       NEWTON=_F(MATRICE = 'TANGENTE',
+                                 REAC_ITER = 1),
+                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
+                       SOLVEUR=_F(METHODE = 'MULT_FRONT'),
+                       ARCHIVAGE = _F(LIST_INST=L_INST,),
+                     );
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                            FOND_FISS=_F( GROUP_NO = ('P0',)),
                            NORMALE=(0., 1., 0.,)
                       )
 
-# RT = 1.8  AVEC 4 COURONNES REGULIERES
-# -------------------------------------
+# TEST CALC_G_THETA  AVEC 3 COURONNES 
+# ------------------------------
 
 THETA0=CALC_THETA(    MODELE=MO,
                         THETA_2D=_F(  GROUP_NO = ('P0',),
                                    MODULE = 1.,
-                                   R_INF = 0.45,
-                                   R_SUP = 0.9),
+                                   R_INF = 0.15,
+                                   R_SUP = 0.6),
                                      DIRECTION=(1., 0., 0.,)
                      )
 
 THETA1=CALC_THETA(    MODELE=MO,
                         THETA_2D=_F(  GROUP_NO = ('P0',),
                                    MODULE = 1.,
-                                   R_INF = 0.9,
-                                   R_SUP = 1.35),
+                                   R_INF = 0.3,
+                                   R_SUP = 0.9),
                                      DIRECTION=(1., 0., 0.,)
                      )
 
 THETA2=CALC_THETA(    MODELE=MO,
                         THETA_2D=_F(  GROUP_NO = ('P0',),
                                    MODULE = 1.,
-                                   R_INF = 1.35,
-                                   R_SUP = 1.8),
+                                   R_INF = 0.9,
+                                   R_SUP = 1.5),
                                      DIRECTION=(1., 0., 0.,)
                      )
 
-G1_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                         THETA=THETA0,
-                         COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),                         
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1
-                      )
+G_0=CALC_G_THETA_T(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    THETA=THETA0,
+                    RESULTAT=CHAMDEP,
+                    TOUT_ORDRE='OUI',
+                    SYME_CHAR='SYME',
+                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+                    );
 
-G2_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                         THETA=THETA0,
-                         COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),                         
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=2
-                      )
+IMPR_TABLE(TABLE=G_0,);
 
-G3_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                         THETA=THETA0,
-                         COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),                         
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=3
-                      )
+LISTG = (30, 60,90,120,150);
+G_1=CALC_G_THETA_T(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    THETA=THETA1,
+                    RESULTAT=CHAMDEP,
+                    NUME_ORDRE=LISTG,
+                    SYME_CHAR='SYME',
+                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+                    );
 
-G4_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                         THETA=THETA0,
-                         COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),                         
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=4
-                      )
+IMPR_TABLE(TABLE=G_1,);
 
-G5_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                         THETA=THETA0,
-                         COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),                         
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=5
-                      )
+G_2=CALC_G_THETA_T(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    THETA=THETA2,
+                    RESULTAT=CHAMDEP,
+                    NUME_ORDRE=LISTG,
+                    SYME_CHAR='SYME',
+                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+                    );
 
-G6_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                         THETA=THETA0,
-                         COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=6
-                      )
-
+IMPR_TABLE(TABLE=G_2,);
 #
+# TEST
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 30),
+           NOM_PARA='G',
+           VALE=3.2555317317980E+00,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
-TEST_TABLE(       TABLE=G1_0,
-                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I = 1),
-                       NOM_PARA='G',
-                            VALE=2.48,
-                      PRECISION=0.01,
-                      REFERENCE='NON_REGRESSION',
-                        VERSION='5.3'            )
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 60),
+           NOM_PARA='G',
+           VALE=1.3356972318693E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
-TEST_TABLE(       TABLE=G2_0,
-                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I = 2),
-                       NOM_PARA='G',
-                           VALE=9.71,
-                      PRECISION=0.01,
-                      REFERENCE='NON_REGRESSION',
-                        VERSION='5.3'            )
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 90),
+           NOM_PARA='G',
+           VALE=3.1016676852305E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
-TEST_TABLE(       TABLE=G3_0,
-                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I = 3),
-                       NOM_PARA='G',
-                           VALE=21.08,
-                      PRECISION=0.01,
-                      REFERENCE='NON_REGRESSION',
-                        VERSION='5.3'            )
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 120),
+           NOM_PARA='G',
+           VALE=5.6328224060881E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
-TEST_TABLE(       TABLE=G4_0,
-                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I = 4),
-                       NOM_PARA='G',
-                           VALE=35.35,
-                      PRECISION=0.01,
-                      REFERENCE='NON_REGRESSION',
-                        VERSION='5.3'            )
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 150),
+           NOM_PARA='G',
+           VALE=8.5845368296506E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
-TEST_TABLE(       TABLE=G5_0,
-                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I = 5),
-                       NOM_PARA='G',
-                           VALE=51.69,
-                      PRECISION=0.01,
-                      REFERENCE='NON_REGRESSION',
-                        VERSION='5.3'            )
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 30),
+           NOM_PARA='G',
+           VALE=3.1736689255331E+00,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
-TEST_TABLE(       TABLE=G6_0,
-                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I = 6),
-                       NOM_PARA='G',
-                            VALE=68.58,
-                      PRECISION=0.01,
-                      REFERENCE='NON_REGRESSION',
-                        VERSION='5.3'            )
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 60),
+           NOM_PARA='G',
+           VALE=1.3030305691554E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
 
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 90),
+           NOM_PARA='G',
+           VALE=3.0500113491007E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 120),
+           NOM_PARA='G',
+           VALE=5.5902118446902E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 150),
+           NOM_PARA='G',
+           VALE=8.5989043074851E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 30),
+           NOM_PARA='G',
+           VALE=3.1810884956539E+00,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 60),
+           NOM_PARA='G',
+           VALE=1.3066612876293E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 90),
+           NOM_PARA='G',
+           VALE=3.0674217498316E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 120),
+           NOM_PARA='G',
+           VALE=5.6512443262292E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )
+
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 150),
+           NOM_PARA='G',
+           VALE=8.7473933571217E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.1'            )           
 FIN()
 #

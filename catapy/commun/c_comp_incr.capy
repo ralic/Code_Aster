@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMUN  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,6 +100,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "LAIGLE",
                                         "DRUCKER_PRAGER",
                                         "HOEK_BROWN",
+                                        "HOEK_BROWN_EFF",
+                                        "HOEK_BROWN_TOT",
                                         "OHNO",
                                         "GRANGER_FP",
                                         "GRANGER_FP_INDT",
@@ -212,6 +214,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           DRUCKER_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           HOEK_BROWN      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          HOEK_BROWN_EFF  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          HOEK_BROWN_TOT  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           OHNO            =SIMP(statut='c',typ='I',defaut=32,into=(32,)),
           GRANGER_FP      =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           GRANGER_FP_INDT =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
@@ -253,7 +257,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "BARCELONE",
                                        "LAIGLE",
                                        "DRUCKER_PRAGER",
-                                       "HOEK_BROWN",
+                                       "HOEK_BROWN_EFF",
+                                       "HOEK_BROWN_TOT",
                                        "ELAS_THM",
                                        "ELAS_THER",
                                        "SURF_ETAT_NSAT",

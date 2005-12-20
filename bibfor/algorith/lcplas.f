@@ -8,7 +8,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,8 @@ C
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 CC
 
-      ELSEIF ( LOI(1:10) .EQ. 'HOEK_BROWN'   ) THEN
+      ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'       ).OR.
+     1         ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
          CALL LCHOBR ( TOLER, ITMAX, MOD, NMAT, MATERF, NR, NVI,
      1                 DEPS, SIGD, VIND, SEUIL, VP,VECP,ICOMP, SIGF,
      2                 VINF, IRTET)

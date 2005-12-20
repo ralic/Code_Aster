@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
 C     TRAITEMENT DE COMMANDE:   CREA_CHAMP / OPTION: 'EXTR'
 
 C     ------------------------------------------------------------------
@@ -71,7 +70,7 @@ CC      CHARACTER*8 LERESU, NOPASE
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-C               12   345678   9012345678901234
+C               12   345678   9012345678901234f
       NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
 C
       BASE = 'G'
@@ -122,6 +121,12 @@ C     ==============================================================
                  CHEXTR = FIS//'.GRLNNO'
                ELSE IF (NOMCH.EQ.'GRLTNO') THEN
                  CHEXTR = FIS//'.GRLTNO'
+               ELSE IF (NOMCH.EQ.'STNO') THEN
+                 CHEXTR = FIS//'.STNO'
+               ELSE IF (NOMCH.EQ.'STNOR') THEN
+                 CHEXTR = FIS//'.STNOR'
+               ELSE IF (NOMCH.EQ.'BASLOC') THEN
+                 CHEXTR = FIS//'.BASLOC'  
                END IF
 C
 C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE 

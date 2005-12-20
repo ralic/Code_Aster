@@ -13,7 +13,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,MILIEU
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -256,9 +256,14 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         LCHIN(18) = CF2D3D
         LPAIN(19) = PAPRES
         LCHIN(19) = CHPRES
+        LPAIN(20) = 'PLSN'
+        LCHIN(20) = FISS//'.LNNO'
+        LPAIN(21) = 'PLST'
+        LCHIN(21) = FISS//'.LTNO'
+
 
         LIGRMO = MODELE//'.MODELE'
-        NCHIN = 19
+        NCHIN = 21
 C
         CHTIME = '&&'//NOMPRO//'.CH_INST_R'
         IF (OPTI .EQ. 'CALC_K_G_F') THEN

@@ -1,7 +1,7 @@
       SUBROUTINE TE0542(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,8 +47,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER    NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,IGEOM,IVECTU
-      INTEGER    JPINTT,JCNSET,JHEAVT,JLONCH,JBASLO,ICONTM
-      INTEGER    DDLH,DDLC,NFE,I
+      INTEGER    JPINTT,JCNSET,JHEAVT,JLONCH,JBASLO,ICONTM,JLSN,JLST
+      INTEGER    DDLH,DDLC,NFE,I,IBID
 
 C DEB ------------------------------------------------------------------
 
@@ -60,23 +60,8 @@ C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
-C     DDLS PAR NOEUD SOMMET : HEAVYSIDE, ENRICHIS (FOND), CONTACT
-      IF (NOMTE(1:8).EQ.'MECA_XH_') THEN
-        DDLH=NDIM
-        NFE=0
-        DDLC=NDIM
-      ELSEIF (NOMTE(1:8).EQ.'MECA_XT_') THEN
-        DDLH=0
-        NFE=4
-        DDLC=0
-      ELSEIF (NOMTE(1:8).EQ.'MECA_XHT') THEN
-        DDLH=NDIM
-        NFE=4
-        DDLC=NDIM
-      ELSE 
-        CALL UTMESS('F','TE542','NOM D''ELEMENT FINI INCOMPATIBLE')
-      ENDIF
-
+C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+      CALL XTEINI(NOMTE,DDLH,NFE,IBID,DDLC,IBID,IBID,IBID)
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -96,10 +81,10 @@ C       PARAMÈTRES PROPRES À X-FEM
         CALL JEVECH('PCNSETO','L',JCNSET)
         CALL JEVECH('PHEAVTO','L',JHEAVT)
         CALL JEVECH('PLONCHA','L',JLONCH)
-        IF (NOMTE(6:7).EQ.'XT'.OR.NOMTE(6:8).EQ.'XHT') THEN
-          CALL JEVECH('PBASLOR','L',JBASLO)        
-        ENDIF
-        
+        CALL JEVECH('PBASLOR','L',JBASLO)        
+        CALL JEVECH('PLSN'   ,'L',JLSN)
+        CALL JEVECH('PLST'   ,'L',JLST)
+
         CALL JEVECH('PCONTMR','L',ICONTM)
              
         
@@ -108,7 +93,7 @@ C      --------------------------------------------------
 
         CALL XBSIGM(NDIM,NNO,DDLH,NFE,DDLC,IGEOM,ZR(JPINTT),ZI(JCNSET),
      &              ZI(JHEAVT),ZI(JLONCH),ZR(JBASLO),ZR(ICONTM),NOMTE,
-     &              ZR(IVECTU))
+     &              ZR(JLSN),ZR(JLST),ZR(IVECTU))
       
       ELSE IF (OPTION.EQ.'REFE_FORC_NODA') THEN
 

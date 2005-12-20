@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,6 +74,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "BARRE",
                                                                       "2D_BARRE",
                                                                       "C_PLAN",
+                                                                      "C_PLAN_X",
                                                                       "C_PLAN_NS",
                                                                       "C_PLAN_SI",
                                                                       "C_PLAN_GRAD_EPSI",

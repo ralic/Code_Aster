@@ -4,7 +4,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,13 +52,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      IFM,NIV,IBID,ME1,ME2,NVAL,IADRMA,IOCCC,CRIT(2),IRAY
-      INTEGER      NMAEN1,NMAEN3
+      INTEGER      NMAEN1,NMAEN3,IOCC2
       REAL*8       PFI(3),VOR(3),ORI(3),NORME,RHON,MU,RHOT,SEUIL0,RAYON
       CHARACTER*8  FISS,MODE,NFONF,NFONG,MAFIS,FONFIS,NOMA,METH
       CHARACTER*8  FROTT,STACO0,INTE,ALGOLA
       CHARACTER*16 K16BID
-      CHARACTER*19 CNSLT,CNSLN,GRLT,GRLN,CNSEN,CNSBAS
+      CHARACTER*19 CNSLT,CNSLN,GRLT,GRLN,CNSEN,CNSBAS,CNSENR
       CHARACTER*24 OBJMA,CHFOND
+      INTEGER      DIMENS,ADDIM
+
+      INTEGER      CNSV,CTV,TOK,IRET,NBNO,JGSV,CTL
+      CHARACTER*19 CTEST     
+      CHARACTER*8  K8BID
 C
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -75,9 +80,6 @@ C
       CALL GETVID('DEFI_FISS','GROUP_MA_FISS',1,1,1,MAFIS,ME2)
       CALL GETVID('DEFI_FISS','GROUP_MA_FOND',1,1,1,FONFIS,ME2)
       CALL GETVR8(' ','RAYON_ENRI',1,1,1,RAYON,IRAY)
-      CALL GETVR8('ORIE_FOND','PFON_INI',1,1,3,PFI,IBID)
-      CALL GETVR8('ORIE_FOND','VECT_ORIE',1,1,3,VOR,IBID)
-      CALL GETVR8('ORIE_FOND','PT_ORIGIN',1,1,3,ORI,IBID)
       CALL GETFAC('CONTACT',IOCCC)
       IF (IOCCC.EQ.1) THEN
         CALL GETVR8('CONTACT','COEF_REGU_CONT',1,1,1,RHON,IBID)
@@ -97,6 +99,21 @@ C
       OBJMA = MODE//'.MODELE    .NOMA'
       CALL JEVEUO(OBJMA,'L',IADRMA)
       NOMA = ZK8(IADRMA)
+
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      DIMENS=ZI(ADDIM-1+6)
+      CALL GETFAC('ORIE_FOND',IOCC2)
+      IF (IOCC2 .EQ. 0) THEN
+       IF (DIMENS .EQ. 3) CALL UTMESS('F','OP0041','ORIE_FOND MANQUANT')
+      ELSEIF (IOCC2 .EQ. 1) THEN
+       IF (DIMENS .EQ. 2) CALL UTMESS('F','OP0041',
+     &                   'ORIE_FOND NON NECESSAIRE')
+      CALL GETVR8('ORIE_FOND','PFON_INI',1,1,3,PFI,IBID)
+      CALL GETVR8('ORIE_FOND','VECT_ORIE',1,1,3,VOR,IBID)
+      CALL GETVR8('ORIE_FOND','PT_ORIGIN',1,1,3,ORI,IBID)
+      ELSE
+        CALL UTMESS('F','OP0041','TROP DE ORIE_FOND')
+      ENDIF
 
 C
 C-----------------------------------------------------------------------
@@ -142,20 +159,27 @@ C
         CALL IMPRSD('CHAMP',FISS//'.GRLTNO',IFM,'FISSURE.GRLTNO=')
         CALL IMPRSD('CHAMP',FISS//'.GRLNNO',IFM,'FISSURE.GRLNNO=')
       END IF
-
 C
 C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT ET DES POINTS DU FOND DE FISSURE
 C-----------------------------------------------------------------------
 C
       CNSEN='&&OP0041.CNSEN'
+      CNSENR='&&OP0041.CNSENR'
+
+      IF (DIMENS .EQ. 3) THEN
       CALL NORMEV(VOR,NORME)
       IF (NORME.LT.1.D-10) CALL UTMESS('F','OP0041','LA NORME '//
      &                              'DU VECTEUR VECT_ORIE EST NULLE')
 
-      CALL XENRCH(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,PFI,VOR,ORI,
+      CALL XNRCH3(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,PFI,VOR,ORI,
      &            RAYON,FISS,NMAEN1,NMAEN3)
-
+      ELSE 
+      CALL XNRCH2(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
+     &            RAYON,FISS,NMAEN1,NMAEN3)
+      ENDIF
+      
+      CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
       CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO')
 
       IF (NIV.GT.2) THEN
@@ -168,13 +192,34 @@ C-----------------------------------------------------------------------
 C
       CHFOND = FISS//'.FONDFISS'
       CNSBAS='&&OP0041.CNSBAS'
+      IF (DIMENS .EQ. 3) THEN
       CALL XBASLO(MODE,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+      ELSE
+      CALL XBASL2(MODE,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+      ENDIF
+      
+C??????????????????????????????????????????????????      
+C      CTEST='&&OP0041.CTEST'
+C      CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CTEST)
+C      CALL JEVEUO(CTEST//'.CNSV','E',CTV)
+C      CALL JEVEUO(CTEST//'.CNSL','E',CTL)
+C      CALL JEVEUO(CNSBAS//'.CNSV','E',JGSV)
+C      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IRET)
+C      DO 200 TOK=1,NBNO
+C        ZR(CTV-1+(TOK-1)+1)=ZR(JGSV-1+6*(TOK-1)+4)
+C        ZL(CTL-1+(TOK-1)+1)=.TRUE.
+C200   CONTINUE
+C      CALL CNSCNO(CTEST,' ','NON','G',FISS//'.STNOR')
+C      CALL IMPRSD('CHAMP',FISS//'.STNOR',IFM,'FISSURE.STNOR=')
+C????????????????????????????????????????????????????
 
       CALL CNSCNO(CNSBAS,' ','NON','G',FISS//'.BASLOC')
       CALL DETRSD('CHAM_NO_S',CNSBAS)
 
-C      CALL IMPRSD('CHAMP',FISS//'.BASLOC',IFM,'FISSURE.BASLOC=')
-
+      
+      IF (NIV.GT.2) THEN
+        CALL IMPRSD('CHAMP',FISS//'.BASLOC',IFM,'FISSURE.BASLOC=')
+      ENDIF
 C
 C-----------------------------------------------------------------------
 C     STRUCTURE DE DONNEES SUR LE CONTACT
@@ -189,6 +234,5 @@ C
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
-
       CALL JEDEMA()
       END

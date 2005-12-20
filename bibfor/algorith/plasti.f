@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -410,7 +410,8 @@ C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
 C ------------ HOEK-BROWN : CALCUL DES VALEURS ET VECTEURS PROPRES DU --
 C ------------ DEVIATEUR ELASTIQUE -------------------------------------
-               IF (LOI(1:10).EQ.'HOEK_BROWN') THEN
+               IF ((LOI(1:10).EQ.'HOEK_BROWN').OR.
+     1            (LOI(1:14).EQ.'HOEK_BROWN_EFF')) THEN
                   CALL LCHBVP(SIGD,VP,VECP)
                ENDIF
                CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,

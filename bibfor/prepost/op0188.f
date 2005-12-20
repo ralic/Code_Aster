@@ -5,7 +5,7 @@
 C RESPONSABLE GALENNE E.GALENNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IBID, N1, N2, NBPAR1, NBPAR2, NBINST, JINST,
      +             NBVAL, JABSCS, JDXS, JDYS, JDZS, JABSCI, JDXI, JDYI,
-     +             NDIM, I, JDZI, NFON, IFM , NIV,NRE,
+     +             NDIM, I, JDZI, NFON, IFM , NIV, NRE, ITCOEF,
      +             JCOXS, JCOYS, JCOZS, JCOXI, JCOYI, JCOZI
       PARAMETER  ( NBPAR1=10 , NBPAR2=8  )
       REAL*8       RMAX, COEFD, COEFG, COEFG3, COEFD3, PREC, PRECV,
@@ -58,7 +58,7 @@ C
      +             NOMPA1(NBPAR1), NOMPA2(NBPAR2)
       CHARACTER*19 DEPSU2, DEPIN2
       CHARACTER*24 ABSSUP, DXSUP, DYSUP, DZSUP, ABSINF,
-     +             DEPINF, DXINF, DYINF, DZINF,
+     +             DEPINF, DXINF, DYINF, DZINF, TCOEF,
      +             COORXS, COORYS, COORZS, COORXI, COORYI, COORZI
 C
       DATA  NOMPA1 / 'INST' , 'METHODE' , 'K1_MAX' , 'K1_MIN' ,
@@ -120,7 +120,7 @@ C     ------------------------------------------------------------------
 C                     CARACTERISTIQUES MATERIAUX
 C     ------------------------------------------------------------------
 C
-      CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3 )
+      CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3, TCOEF, ITCOEF )
 C
 C     ------------------------------------------------------------------
 C                   LES INSTANTS DE POST-TRAITEMENT

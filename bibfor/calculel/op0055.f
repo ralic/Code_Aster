@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,11 +44,12 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NBV, IFM, IRET, IRETEX, IRETNO, IRETOR, JEXTR,
-     +              JNORM, JORIG, NIV, N1, N2, IOC
+     +              JNORM, JORIG, NIV, N1, N2, IOC, ILEV
       REAL*8        PS1, PS2, R8PREM, ZERO,DDOT
-      CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2
+      CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2,FONLEV(2)
       CHARACTER*16  TYPE, OPER, TYPFON, MOTCLE(2), TYPMCL(2)
       CHARACTER*24  NCNCIN
+      DATA FONLEV /'FOND_INF','FOND_SUP'/
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -65,15 +66,22 @@ C      --------
 C
       CALL GETVID (' ', 'MAILLAGE', 0, 1, 1, NOMA, NBV)
 C
-C ---  MOTS CLES FACTEUR : FOND ET FOND_FERME
-C      ------------------------------------
+C ---  MOTS CLES FACTEUR : FOND, FOND_INF, FOND_SUP, FOND_FERME
+C      --------------------------------------------------------
 C
+      ENTIT1 = 'NOEUD'
+      ENTIT2 = 'MAILLE'
       CALL GETFAC ( 'FOND_FISS', NBV )
       IF (NBV.GT.0) TYPFON = 'FOND_FISS'
       CALL GETFAC ( 'FOND_FERME', NBV )
       IF (NBV.GT.0) TYPFON = 'FOND_FERME'
-      ENTIT1 = 'NOEUD'
-      ENTIT2 = 'MAILLE'
+      CALL GETFAC ( 'FOND_INF',NBV)
+      ILEV=0
+10    CONTINUE
+      IF (NBV.GT.0)THEN
+         ILEV=ILEV+1
+         TYPFON=FONLEV(ILEV)
+      ENDIF
       CALL GETVID ( TYPFON, 'NOEUD_ORIG'   , 1,1,0, K8B, N1 )
       CALL GETVID ( TYPFON, 'GROUP_NO_ORIG', 1,1,0, K8B, N2 )
       IF ( N1+N2 .EQ. 0 ) THEN
@@ -88,7 +96,9 @@ C
      +                    2, MOTCLE, TYPMCL, 'G' )
       ENDIF
       CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1)
+      IF(ILEV.EQ.1)GOTO 10
 C
+ 490  CONTINUE
 C
 C ---  MOT CLE FACTEUR : LEVRE_SUP
 C      ---------------------------
@@ -155,8 +165,16 @@ C
 C IMPRESSION DES OBJETS
 C
       IF ( NIV .GT. 1 ) THEN
-        CALL JEIMPO(IFM,RESU//'.FOND      .NOEU',' ',
-     &                'OBJET POUR LE MOT CLE FOND')
+        CALL JEEXIN(RESU//'.FOND      .NOEU',IRET)
+        IF(IRET.NE.0) THEN
+           CALL JEIMPO(IFM,RESU//'.FOND      .NOEU',' ',
+     &          'OBJET POUR LE MOT CLE FOND')
+        ELSE
+           CALL JEIMPO(IFM,RESU//'.FOND_INF  .NOEU',' ',
+     &          'OBJET POUR LE MOT CLE FOND_FISS_INF')
+           CALL JEIMPO(IFM,RESU//'.FOND_SUP  .NOEU',' ',
+     &          'OBJET POUR LE MOT CLE FOND_FISS_SUP')
+        ENDIF
 C
         CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRET)
         IF(IRET.NE.0) THEN

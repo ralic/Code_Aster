@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -171,7 +171,8 @@ C ET SI ON EST SUR UN POINT DE GAUSS (POUR L'INTEGRATION REDUITE)
 C  C'EST A DIRE SI KPI<NPG
 C ======================================================================
       IF (YAMEC.EQ.1 .AND. KPI .LE. NPG) THEN 
-         CALL CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,CRIT,INSTAM,INSTAP,
+         CALL CALCME(OPTION,COMPOR,THMC,MECA,IMATE,TYPMOD,CRIT,
+     +               INSTAM,INSTAP,
      +               T0,NDIM,DIMDEF,DIMCON,NVIM,NVITH,YATE,ADDEME,
      +               ADCOME,ADDETE,DEFGEM,CONGEM,CONGEP,VINTM,VINTP,
      +               ADVIME,ADDEP1,ADDEP2,DSDE,DEPS,DEPSV,PHI,

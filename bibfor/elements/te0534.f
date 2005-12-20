@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
 C.......................................................................
 C
 C               CALCUL DES SECONDS MEMBRES DE CONTACT FROTTEMENT
@@ -52,20 +53,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER     I,J,K,L,IJ,IFA,IPGF,INO,ISSPG,NI,NJ,NLI,NLJ,PLI,PLJ
-      INTEGER     JINDCO,JDONCO,JLSN,IPOIDS,IVF,IDFDE,JGANO,IGEOM,JSEUIL
+      INTEGER     JINDCO,JDONCO,JLST,IPOIDS,IVF,IDFDE,JGANO,IGEOM,JSEUIL
       INTEGER     IDEPM,IDEPL,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER     IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,IVECT,JBASEC
       INTEGER     NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
       INTEGER     NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
       INTEGER     INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
-      INTEGER     INTEG,NFE
+      INTEGER     INTEG,NFE,SINGU
       CHARACTER*8 ELREF,TYPMA,FPG
       REAL*8      HE,SIGN,VTMP(204),REAC,REAC12(3),FFI,LAMBDA,JAC
       REAL*8      ND(3),DN,SAUT(3),FFP(27),NND(3),PTPB(3),PADIST,MULT
       REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60)
       REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3)
       REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3),DDOT
-
+      REAL*8      LST,R,RR
 C.......................................................................
 
       CALL JEMARQ()
@@ -73,32 +74,13 @@ C
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
-
+C        write(6,*)'te0534'
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
-C     DDLS PAR NOEUD SOMMET : HEAVYSIDE, ENRICHIS (FOND), CONTACT
-      IF (NOMTE(1:8).EQ.'MECA_XH_') THEN
-        DDLH=NDIM
-        NFE=0
-        DDLC=NDIM
-      ELSEIF (NOMTE(1:8).EQ.'MECA_XHT') THEN
-        DDLH=NDIM
-        NFE=4
-        DDLC=NDIM
-      ELSE 
-        CALL UTMESS('F','TE534','NOM D''ELEMENT FINI INCOMPATIBLE')
-      ENDIF
-     
-C     NB DE 'NOEUDS MILIEU' SERVANT À PORTER DES DDL DE CONTACT
-      NNOM=3*(NNO/2)
-C
-C     NOMBRE DE DDL À CHAQUE NOEUD SOMMET 
-      DDLS=NDIM+DDLH+NFE*NDIM+DDLC
-C
-C     NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
-      NDDL=(NNO*DDLS)+(NNOM*DDLC)
-C
+C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL)
+
 C     INITIALISATION DU VECTEUR DE TRAVAIL
       DO 40 J=1,NDDL
         VTMP(J)=0.D0
@@ -120,7 +102,7 @@ C     INCRÉMENT DE DÉP DEPUIS L'ÉQUILIBRE PRÉCÉDENT (DEPDEL) : 'PDEPL_P'
       CALL JEVECH('PINDCOI','L',JINDCO)
       CALL JEVECH('PDONCO','L',JDONCO)
       CALL JEVECH('PSEUIL','L',JSEUIL)
-      CALL JEVECH('PLEVSET','L',JLSN)
+      CALL JEVECH('PLST','L',JLST)
       CALL JEVECH('PPINTER','L',JPTINT)
       CALL JEVECH('PAINTER','L',JAINT)
       CALL JEVECH('PCFACE','L',JCFACE)
@@ -219,6 +201,7 @@ C        (DEPDEL+DEPMOI)
  121        CONTINUE
  120      CONTINUE
 
+
 C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)        
 C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
@@ -232,8 +215,16 @@ C         NORMALE AU CENTRE DE LA FACETTE
             NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/3.D0
             NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/3.D0
  122      CONTINUE          
-C          IF (PADIST(3,ND,NBARY).GT.1.D-12) CALL UTMESS('F','TE0534',
-C     &                       'PB DE NORMALE. FISSURE PLANE ?') 
+
+C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
+          IF (SINGU.EQ.1) THEN
+            LST=0.D0   
+            DO 112 I=1,NNO
+              LST=LST+ZR(JLST-1+I)*FFP(I)
+ 112        CONTINUE
+            R=ABS(LST)
+            RR=SQRT(R)
+          ENDIF
           
 C         I) CALCUL DES SECONDS MEMBRES DE CONTACT
 C         ..............................
@@ -257,22 +248,35 @@ C           SI CONTACT POUR CE PG : ON REMPLIT LES VECTEURS LN1 ET LN2
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 C
 C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
-              DN = 0.D0
-              DO 140 J = 1,DDLH
-                SAUT(J)=0.D0
-                DO 141 I = 1,NNO
-                  SAUT(J) = SAUT(J) - 2 * FFP(I) * 
-     &          (ZR(IDEPM-1+DDLS*(I-1)+3+J)+ZR(IDEPL-1+DDLS*(I-1)+3+J))
+              CALL LCINVN(NDIM,0.D0,SAUT)
+              DO 140 I = 1,NNO
+                DO 141 J = 1,NDIM
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * 
+     &                             (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
+     &                               + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
  141            CONTINUE
-                DN = DN + SAUT(J)*ND(J)
+                DO 142 J = 1,SINGU*NDIM
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
+     &                             (   ZR(IDEPM-1+DDLS*(I-1)+2*NDIM+J)
+     &                               + ZR(IDEPL-1+DDLS*(I-1)+2*NDIM+J) )
+ 142            CONTINUE
  140          CONTINUE
+              DN = 0.D0
+              DO 143 J = 1,NDIM
+                DN = DN + SAUT(J)*ND(J)
+ 143          CONTINUE
+                   
 C
 C             TERME LN1
               DO 150 I = 1,NNO
                 DO 151 J = 1,DDLH
-                  VTMP(DDLS*(I-1)+J+3) = VTMP(DDLS*(I-1)+J+3)
-     &                       + (REAC-RHON*DN)*2*FFP(I)*ND(J)*JAC*MULT
+                  VTMP(DDLS*(I-1)+NDIM+J) = VTMP(DDLS*(I-1)+NDIM+J)
+     &                    + (REAC-RHON*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
  151            CONTINUE
+                DO 152 J = 1,SINGU*DDLH
+                  VTMP(DDLS*(I-1)+2*NDIM+J) = VTMP(DDLS*(I-1)+2*NDIM+J)
+     &                    + (REAC-RHON*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
+ 152            CONTINUE
  150          CONTINUE
 C
 C             TERME LN2

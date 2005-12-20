@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,17 +51,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
       INTEGER      I,J,L,IJ,IFA,IPGF,INO,ISSPG,NI,NJ,NLI,NLJ,PLI,PLJ
-      INTEGER      JINDCO,JDONCO,JLSN,IPOIDS,IVF,IDFDE,JGANO,IGEOM
+      INTEGER      JINDCO,JDONCO,JLST,IPOIDS,IVF,IDFDE,JGANO,IGEOM
       INTEGER      IDEPM,IDEPL,IMATT,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JOUT1,JOUT2
       INTEGER      NDIM,DDLH,DDLC,DDLS,NNO,NNOS,NNOM,NNOF
-      INTEGER      NPG,NPGF,XOULA,INCOCA,INTEG,NFE
+      INTEGER      NPG,NPGF,XOULA,INCOCA,INTEG,NFE,SINGU
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3)
 
       CHARACTER*8   ELREF,TYPMA,FPG
       REAL*8        HE,SIGN,VTMP(204),SOMME,FFI,REAC,JAC,FFP(27),PREC
-      REAL*8        ND(3),DN,SAUT(3),LAMBDA
-      PARAMETER    (PREC=1.D-16)
+      REAL*8        ND(3),DN,SAUT(3),LAMBDA,LST,R,RR
+      PARAMETER    (PREC=3.D-2)
       LOGICAL       IMPRIM
 C......................................................................
 
@@ -73,24 +73,8 @@ C
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
-C     DDLS PAR NOEUD SOMMET : HEAVYSIDE, ENRICHIS (FOND), CONTACT
-      IF (NOMTE(1:8).EQ.'MECA_XH_') THEN
-        DDLH=NDIM
-        NFE=0
-        DDLC=NDIM
-      ELSEIF (NOMTE(1:8).EQ.'MECA_XHT') THEN
-        DDLH=NDIM
-        NFE=4
-        DDLC=NDIM
-      ELSE 
-        CALL UTMESS('F','TE533','NOM D''ELEMENT FINI INCOMPATIBLE')
-      ENDIF
-      
-C     NB DE 'NOEUDS MILIEU' SERVANT À PORTER DES DDL DE CONTACT
-      NNOM=3*(NNO/2)
-
-C     NOMBRE DE DDL À CHAQUE NOEUD SOMMET 
-      DDLS=NDIM+DDLH+NFE*NDIM+DDLC
+C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,IBID)
 C
 C     RECUPERATION DES ENTRÉES / SORTIE
       CALL JEVECH('PGEOMER','E',IGEOM)
@@ -100,7 +84,7 @@ C     DEPLACEMENT COURANT (DEPPLU) : 'PDEPL_P'
       CALL JEVECH('PDEPL_P','L',IDEPL)
       CALL JEVECH('PINDCOI','L',JINDCO)
       CALL JEVECH('PDONCO','L',JDONCO)
-      CALL JEVECH('PLEVSET','L',JLSN)
+      CALL JEVECH('PLST','L',JLST)
       CALL JEVECH('PPINTER','L',JPTINT)
       CALL JEVECH('PAINTER','L',JAINT)
       CALL JEVECH('PCFACE','L',JCFACE)
@@ -160,17 +144,35 @@ C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
      &                                                    JAC,FFP,ND)
-C
-C         CALCUL DE LA DISTANCE DN
-          DN = 0.D0
-          DO 140 J = 1,DDLH
-            SAUT(J)=0.D0
-            DO 141 I = 1,NNO
-              SAUT(J) = SAUT(J) - 2 * FFP(I) * 
-     &        (ZR(IDEPM-1+DDLS*(I-1)+J+3)+ZR(IDEPL-1+DDLS*(I-1)+J+3)) 
+
+C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
+          IF (SINGU.EQ.1) THEN
+            LST=0.D0   
+            DO 112 I=1,NNO
+              LST=LST+ZR(JLST-1+I)*FFP(I)
+ 112        CONTINUE
+            R=ABS(LST)
+            RR=SQRT(R)
+          ENDIF
+
+C         CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
+          CALL LCINVN(NDIM,0.D0,SAUT)
+          DO 140 I = 1,NNO
+            DO 141 J = 1,NDIM
+              SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * 
+     &                         (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
+     &                           + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
  141        CONTINUE
-            DN = DN + SAUT(J)*ND(J)
+            DO 142 J = 1,SINGU*NDIM
+              SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
+     &                         (   ZR(IDEPM-1+DDLS*(I-1)+2*NDIM+J)
+     &                           + ZR(IDEPL-1+DDLS*(I-1)+2*NDIM+J) )
+ 142        CONTINUE
  140      CONTINUE
+          DN = 0.D0
+          DO 143 J = 1,NDIM
+            DN = DN + SAUT(J)*ND(J)
+ 143      CONTINUE
 
 C         CALCUL DE LA REACTION A PARTIR DES LAMBDA DE DEPPLU
           REAC = 0.D0
@@ -190,6 +192,7 @@ C         INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
             IF (DN.GT.PREC) THEN
               ZI(JOUT2-1+ISSPG) = 1
               INCOCA = 0
+              WRITE(6,*)'DN ',DN
             ELSE
               ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
             END IF           
@@ -198,6 +201,7 @@ C         ON REGARDE LA REACTION POUR LES POINTS SUPPOSÉS CONTACTANT :
           ELSE IF (INDCO(ISSPG).EQ.1) THEN
 
             IF (REAC.GT.-1.D-3) THEN
+C            IF (REAC.GT.0.D0) THEN
               ZI(JOUT2-1+ISSPG) = 0
               INCOCA = 0
             ELSE

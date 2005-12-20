@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF ENTETE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -429,6 +429,7 @@ class cham_no_inte_r   (cham_no_sdaster):pass
 class cham_no_irra_r   (cham_no_sdaster):pass
 class cham_no_neut_f   (cham_no_sdaster):pass
 class cham_no_neut_r   (cham_no_sdaster):pass
+class cham_no_neut_i   (cham_no_sdaster):pass
 class cham_no_pres_c   (cham_no_sdaster):pass
 class cham_no_pres_f   (cham_no_sdaster):pass
 class cham_no_pres_r   (cham_no_sdaster):pass

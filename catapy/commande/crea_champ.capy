@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/11/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,7 +118,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
              ),
              b_extr_fissure  =BLOC(condition = "FISSURE != None",
-                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO",)),
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO","STNO","STNOR","BASLOC")),
              ),
              b_extr_table    =BLOC(condition = "TABLE != None",
                       regles=( EXCLUS('MODELE','MAILLAGE'),

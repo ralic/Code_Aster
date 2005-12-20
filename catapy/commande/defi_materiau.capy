@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,9 +61,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              NU              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=0.5E+0),
              RHO             =SIMP(statut='f',typ='R'),
              ALPHA           =SIMP(statut='f',typ='R'),
-             AMOR_ALPHA      =SIMP(statut='f',typ='R'),
-             AMOR_BETA       =SIMP(statut='f',typ='R'),
-             AMOR_HYST       =SIMP(statut='f',typ='R'),
+             AMOR_ALPHA      =SIMP(statut='f',typ='R',defaut= 0.),
+             AMOR_BETA       =SIMP(statut='f',typ='R',defaut= 0.),
+             AMOR_HYST       =SIMP(statut='f',typ='R',defaut= 0.),
            ),
            ELAS_FO         =FACT(statut='f',
              regles=(PRESENT_PRESENT('ALPHA','TEMP_DEF_ALPHA'),),
@@ -136,6 +136,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              YT              =SIMP(statut='f',typ='R',defaut= 1. ),
              YC              =SIMP(statut='f',typ='R',defaut= 1. ),
              S_LT            =SIMP(statut='f',typ='R',defaut= 1. ),
+             AMOR_ALPHA      =SIMP(statut='f',typ='R',defaut= 0.),
+             AMOR_BETA       =SIMP(statut='f',typ='R',defaut= 0.),
+             AMOR_HYST       =SIMP(statut='f',typ='R',defaut= 0.),
            ),
            ELAS_ORTH_FO    =FACT(statut='f',
              regles=(
@@ -159,6 +162,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ALPHA_T         =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              ALPHA_N         =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP","INST",) ),
+             AMOR_ALPHA      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             AMOR_BETA       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             AMOR_HYST       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            ),
            ELAS_THM        =FACT(statut='f',
              RHO_S           =SIMP(statut='o',typ='R'),

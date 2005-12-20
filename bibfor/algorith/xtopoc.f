@@ -5,7 +5,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,8 +51,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       JNOMA
-      CHARACTER*8   LPAIN(4),LPAOUT(5)
-      CHARACTER*19  LCHIN(4),LCHOUT(5)
+      CHARACTER*8   LPAIN(5),LPAOUT(5)
+      CHARACTER*19  LCHIN(5),LCHOUT(5)
       CHARACTER*19  LIGREL,CHGEOM,PINTER,AINTER,CFACE,LONCHA,BASECO
 
 C ----------------------------------------------------------------------
@@ -76,12 +76,14 @@ C     --------------------
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
-      LPAIN(2) = 'PLEVSET'
+      LPAIN(2) = 'PLSN'
       LCHIN(2) = FISS//'.LNNO'
-      LPAIN(3) = 'PGRADLN'
-      LCHIN(3) = FISS//'.GRLNNO'
-      LPAIN(4) = 'PGRADLT'
-      LCHIN(4) = FISS//'.GRLTNO'
+      LPAIN(3) = 'PLST'
+      LCHIN(3) = FISS//'.LTNO'
+      LPAIN(4) = 'PGRADLN'
+      LCHIN(4) = FISS//'.GRLNNO'
+      LPAIN(5) = 'PGRADLT'
+      LCHIN(5) = FISS//'.GRLTNO'
 
       LPAOUT(1) = 'PPINTER'
       LCHOUT(1) = PINTER
@@ -94,7 +96,7 @@ C     --------------------
       LPAOUT(5) = 'PBASECO'
       LCHOUT(5) = BASECO
 
-      CALL CALCUL('C','TOPOFA',LIGREL,4,LCHIN,LPAIN,5,LCHOUT,LPAOUT,'G')
+      CALL CALCUL('C','TOPOFA',LIGREL,5,LCHIN,LPAIN,5,LCHOUT,LPAOUT,'G')
 
 C      CALL IMPRSD('CHAMP',PINTER,6,'PINTER')
 C      CALL IMPRSD('CHAMP',AINTER,6,'AINTER')

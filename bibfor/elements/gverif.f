@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,16 +58,19 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       KK1,KK2,KK3,JADR,NBOBJ,NENT,NSOM,MM1,MM2,MM3,NCI
       INTEGER       JJJ,NDIM,NGRO,NBGM,NBEM,IER,DIM1,DIM2,DIM3
-      INTEGER       IGR,NGR,INO,IRET,LL1,LL2,LL3,ITYP,DIM
-      INTEGER       I,J,K,L,NA,NB, JTYPM, IT
+      INTEGER       IGR,NGR,INO,IRET,LL1,LL2,LL3,ITYP,DIM,JJTYP
+      INTEGER       I,J,K,L,NA,NB,JTYPM,IT,JFINF,JFSUP,IRE1,IRE2,IN
       INTEGER       IAA,IAB,IADM,IAGRN,IATYMA,IBID,IGAA,IGAB,K1,K2,K3
       INTEGER       IMA,JEXTR,JNORM,JORIG,JVALE,NCMP,NUMER,J1,J2,J3
       INTEGER       ADRVLC, ACNCIN, NBMA, NBMB, ADRA, ADRB, NUMA, NUMB
-      REAL*8        XPFI,XPFO,YPFI,YPFO,ZPFI,ZPFO,ZRBID
+      INTEGER       NUFINF, NUFSUP
+      REAL*8        XPFI,XPFO,YPFI,YPFO,ZPFI,ZPFO,ZRBID,D,PREC
       CHARACTER*4   TYPMA, TYPMP, TYPM
       CHARACTER*8   K8B, MOTCLE, GROUPE, NOEUD, MAILLE, TYPE, NOMGRP(2)
       CHARACTER*24  GRPNOE, COOVAL, NCNCIN
       CHARACTER*24  OBJ1, OBJ2, OBJ4, OBJ5, TRAV
+      LOGICAL       LFON
+      PARAMETER(PREC=1.D0)
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -78,7 +81,7 @@ C
       GRPNOE = NOMA//'.GROUPENO       '
       COOVAL = NOMA//'.COORDO    .VALE'
       TYPMP = '    '
-      CALL JEVEUO ( COOVAL, 'E', JVALE )
+      CALL JEVEUO ( COOVAL, 'L', JVALE )
 C
 C     -----------------------------------------------------------------
       IF ( MOTFAC .EQ. 'NORMALE' ) THEN
@@ -295,6 +298,11 @@ C
 C --- TRAITEMENT DES "GROUP_NO" OU "GROUP_MA"
 C     ---------------------------------------
 C
+      LFON=.FALSE.
+      IF(MOTFAC(6:8).EQ.'INF'.OR.MOTFAC(6:8).EQ.'SUP')THEN
+            LFON=.TRUE.
+      ENDIF
+C
       DO 110 IGR = 1, NGR
 
          CALL JELIRA (JEXNOM(OBJ1,ZK8(JJJ+IGR-1)),'LONMAX',NBOBJ,K8B)
@@ -331,8 +339,9 @@ C
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
                         IT = IT + 1
+                        IF(LFON .AND. NUMA.EQ.NUMB) GOTO 24
                       ENDIF
-                      IF ( NUMA .EQ. NUMB ) GOTO 24
+                      IF (.NOT.LFON .AND. NUMA .EQ. NUMB ) GOTO 24
  22                 CONTINUE
  20               CONTINUE
                   CALL UTMESS('F','GVERIF','LE GROUPE DE NOEUDS '//
@@ -532,8 +541,9 @@ C
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
                         IT = IT + 1
+                        IF(LFON .AND. NUMA.EQ.NUMB) GOTO 216
                       ENDIF
-                     IF ( NUMA .EQ. NUMB ) GOTO 216
+                      IF (.NOT.LFON .AND. NUMA .EQ. NUMB ) GOTO 216
  214              CONTINUE
  212           CONTINUE
                CALL UTMESS('F','GVERIF','LA LISTE DE NOEUDS DEFINIS'//
@@ -654,6 +664,10 @@ C          -----------------------
          IF(NOUM(1:2).EQ.'MA') DIM = DIM3
          IF (MOTFAC(6:10).EQ.'FERME') THEN
             CALL WKVECT(RESU//'.FOND      .NOEU','G V K8',DIM+1,MM1)
+         ELSEIF(MOTFAC(6:8).EQ.'INF') THEN
+           CALL WKVECT(RESU//'.FOND_INF  .NOEU','G V K8',DIM,MM1)
+         ELSEIF(MOTFAC(6:8).EQ.'SUP') THEN
+           CALL WKVECT(RESU//'.FOND_SUP  .NOEU','G V K8',DIM,MM1)
          ELSE
             CALL WKVECT(RESU//'.FOND      .NOEU','G V K8',DIM,MM1)
          ENDIF
@@ -685,8 +699,50 @@ C
 C
         IF (MOTFAC(6:10).EQ.'FERME')  ZK8(MM1+DIM+1-1) = ZK8(MM1+1- 1)
 C
-        CALL WKVECT(RESU//'.FOND      .TYPE','G V K8',1,JTYPM)
-        ZK8(JTYPM) = TYPMP
+        IF(LFON)THEN
+          CALL JEEXIN(RESU//'.FOND      .TYPE',IRET)
+          IF(IRET.EQ.0)THEN
+             CALL WKVECT(RESU//'.FOND      .TYPE','G V K8',1,JTYPM)
+             ZK8(JTYPM) = TYPMP
+          ELSE
+             CALL JEVEUO(RESU//'.FOND      .TYPE','L',JJTYP)
+             IF(ZK8(JJTYP)(1:4).NE.TYPMP)THEN
+                CALL UTMESS('F','GVERIF','LES MAILLES DU FOND_INF 
+     +                    ET DU FOND_SUP SONT DE TYPE DIFFERENT')
+             ENDIF
+          ENDIF
+        ELSE
+          CALL WKVECT(RESU//'.FOND      .TYPE','G V K8',1,JTYPM)
+          ZK8(JTYPM) = TYPMP
+        ENDIF
+
+C
+C       LORSQUE LE FOND DE FISSURE EST DEFINI PAR FOND_INF ET FOND_SUP,
+C       ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
+        CALL JEEXIN(RESU//'.FOND_INF  .NOEU',IRE1)
+        CALL JEEXIN(RESU//'.FOND_SUP  .NOEU',IRE2)
+        IF(IRE1.NE.0 .AND. IRE2.NE.0)THEN
+           CALL JEVEUO(RESU//'.FOND_INF  .NOEU','L',JFINF)
+           CALL JEVEUO(RESU//'.FOND_SUP  .NOEU','L',JFSUP)
+           DO 555 IN = 1 , DIM
+             CALL JENONU(JEXNOM(OBJ2,ZK8(JFINF+IN-1)),NUFINF)
+             CALL JENONU(JEXNOM(OBJ2,ZK8(JFSUP+IN-1)),NUFSUP)
+             D = ABS(ZR(JVALE+3*(NUFINF-1))-
+     +               ZR(JVALE+3*(NUFSUP-1)))
+             D = D+ABS(ZR(JVALE+3*(NUFINF-1)+1)-
+     +                 ZR(JVALE+3*(NUFSUP-1)+1))
+             D = D+ABS(ZR(JVALE+3*(NUFINF-1)+2)-
+     +                 ZR(JVALE+3*(NUFSUP-1)+2))
+             IF ( SQRT(D) .GT.PREC)THEN
+               CALL UTDEBM('F','GVERIF','LES NOEUDS')
+               CALL UTIMPK('S',' ',1,ZK8(JFINF+IN-1))
+               CALL UTIMPK('S','ET',1,ZK8(JFSUP+IN-1))
+               CALL UTIMPK('S','NE SONT PAS EN VIS A VIS.',1,' ')
+               CALL UTFINM()
+             ENDIF
+ 555       CONTINUE
+        ENDIF
+C
 C
       ELSEIF ( MOTFAC .EQ. 'LEVRE_SUP' ) THEN
 C              -----------------------

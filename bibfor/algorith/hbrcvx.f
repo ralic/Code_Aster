@@ -1,6 +1,6 @@
       SUBROUTINE HBRCVX(SIG,VID,NMAT, MATERF, SEUIL, VP, VECP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2005   AUTEUR GEVAIS V.GERVAIS 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,15 +35,18 @@ C OUT : VP    :  VALEURS PROPRES DU DEVIATEUR DE SIG (ELASTIQUE) ------
 C OUT : VECP  :  VECTEURS PROPRES DU DEVIATEUR DE SIG (ELASTIQUE) -----
 C OUT : SEUIL :  VALEUR DU CRITERE PLASTIQUE --------------------------
 C =====================================================================
-      REAL*8       DIFSIG,SIG3,SIGBD,DEUX
+      REAL*8       DIFSIG,SIG3,SIGBD,DEUX,AUX
       REAL*8       AUX1,AUX2,PARAME(4),SEB(6)
-      REAL*8       GAMMA,I1E,SE(6),TRACE
+      REAL*8       GAMMA,I1E,SE(6),TRACE,TU(6),TOL,TOLDYN,JACAUX(3)
       CHARACTER*10 CVP1,CVP2,CVP3 
-      INTEGER      NDT,NDI     
+      INTEGER      NDT,NDI,NPERM,TTRIJ,OTRIJ,NITJAC     
 C ======================================================================
       PARAMETER       ( DEUX   =  2.0D0  )
 C ======================================================================
       COMMON /TDIM/   NDT, NDI      
+C ======================================================================
+      DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
+      DATA   TTRIJ,OTRIJ  /0,0/      
 C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU --------------------------------
 C ======================================================================
@@ -72,14 +75,22 @@ C ======================================================================
           SEB(3) = SE(5) / SQRT(DEUX)
           SEB(5) = SE(6) / SQRT(DEUX)
       ENDIF
-      CALL HBDIAG(SEB,VECP,VP)
+C -- MATRICE UNITE POUR JACOBI ----------------------------------------
+      TU(1) = 1.D0
+      TU(2) = 0.D0
+      TU(3) = 0.D0
+      TU(4) = 1.D0
+      TU(5) = 0.D0
+      TU(6) = 1.D0
+      CALL JACOBI(3,NPERM,TOL,TOLDYN,SEB,TU,VECP,VP,JACAUX,
+     &       NITJAC,TTRIJ,OTRIJ)
       IF ((VP(2).LT.VP(1)) .OR. (VP(3).LT.VP(2))) THEN
           CALL CODREE(VP(1),'E',CVP1)
           CALL CODREE(VP(2),'E',CVP2)
           CALL CODREE(VP(3),'E',CVP3)
           CALL UTMESS('F','HBRCVX','VALEURS PROPRES NON//
      &               ORDONNEES'//CVP1//CVP2//CVP3)
-        ENDIF                 
+      ENDIF                 
       DIFSIG  = VP(3)-VP(1)
       SIG3    = VP(3)+I1E/3.0D0
 C ======================================================================

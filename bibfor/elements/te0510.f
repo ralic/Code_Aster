@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,24 +50,27 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
-      CHARACTER*8   ELP,TYPMA
+      CHARACTER*8   ELP,TYPMA,NOMA
       CHARACTER*24  PINTER,AINTER
-      INTEGER       IGEOM,JLSN,JGRLSN,JGRLST
+      INTEGER       IGEOM,JLSN,JLST,JGRLSN,JGRLST
       INTEGER       JOUT1,JOUT2,JOUT3,JOUT4,JOUT5
       INTEGER       JPTINT,JAINT,IADZI,IAZK24
       INTEGER       NINTER,NFACE,CFACE(5,3),AR(12,2),NBAR,IN,IA,NA,NB
       INTEGER       I,J,NLI,IMAX,NABS
       REAL*8        LONGAR,AL,ND(3),GRLT(3),TAU1(3),TAU2(3),NORME,PS
       REAL*8        POINT(3),NORM2,LSN,MAX
+      INTEGER       NDIM,IBID
 C......................................................................
 
       CALL JEMARQ()
 C
       CALL ELREF1(ELP)
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 C
 C     RECUPERATION DES ENTRÉES / SORTIE
       CALL JEVECH('PGEOMER','L',IGEOM)
-      CALL JEVECH('PLEVSET','L',JLSN)
+      CALL JEVECH('PLSN','L',JLSN)
+      CALL JEVECH('PLST','L',JLST)
       CALL JEVECH('PGRADLN','L',JGRLSN)
       CALL JEVECH('PGRADLT','L',JGRLST)
 
@@ -87,8 +90,8 @@ C     ET DÉCOUPAGE EN FACETTES
 
       PINTER='&&TE0510.PTINTER'
       AINTER='&&TE0510.ATINTER'
-
-      CALL XCFACE(ELP,ZR(JLSN),JGRLSN,IGEOM,
+      
+      CALL XCFACE(ELP,ZR(JLSN),ZR(JLST),JGRLSN,IGEOM,
      &                                PINTER,NINTER,AINTER,NFACE,CFACE)
       CALL JEVEUO(PINTER,'L',JPTINT)
       CALL JEVEUO(AINTER,'L',JAINT)
@@ -121,14 +124,17 @@ C     TAU1 EST LE PROJETÉ DE GRAD(LST) SUR LA SURFACE
 C     TAU2 EST LE PRODUIT VECTORIEL : ND ^ TAU1
 C                   (BOOK IV 01/02/05)
       DO 130 NLI=1,NINTER
-
         IA=NINT(ZR(JAINT-1+4*(NLI-1)+1))
         IN=NINT(ZR(JAINT-1+4*(NLI-1)+2))
 
+C       REINITIALISATION TAU1 POUR CAS 2D
+        TAU1(3)=0.D0
+        ND(3)=0.D0
+        
         IF (IN.NE.0) THEN
-          DO 131 J=1,3
-            ND(J)  =ZR(JGRLSN-1+3*(IN-1)+J)
-            GRLT(J)=ZR(JGRLST-1+3*(IN-1)+J)
+          DO 131 J=1,NDIM
+            ND(J)  =ZR(JGRLSN-1+NDIM*(IN-1)+J)
+            GRLT(J)=ZR(JGRLST-1+NDIM*(IN-1)+J)
  131      CONTINUE   
         ELSE
           CALL ASSERT(IA.NE.0)
@@ -136,17 +142,17 @@ C                   (BOOK IV 01/02/05)
           NB=AR(IA,2)
           LONGAR=ZR(JAINT-1+4*(NLI-1)+3)
           AL=ZR(JAINT-1+4*(NLI-1)+4)
-          DO 132 J=1,3
-            ND(J)  = (1-AL/LONGAR) * ZR(JGRLSN-1+3*(NA-1)+J)
-     &             +    AL/LONGAR  * ZR(JGRLSN-1+3*(NB-1)+J)
-            GRLT(J)= (1-AL/LONGAR) * ZR(JGRLST-1+3*(NA-1)+J)
-     &             +    AL/LONGAR  * ZR(JGRLST-1+3*(NB-1)+J)
+          DO 132 J=1,NDIM
+            ND(J)  = (1-AL/LONGAR) * ZR(JGRLSN-1+NDIM*(NA-1)+J)
+     &             +    AL/LONGAR  * ZR(JGRLSN-1+NDIM*(NB-1)+J)
+            GRLT(J)= (1-AL/LONGAR) * ZR(JGRLST-1+NDIM*(NA-1)+J)
+     &             +    AL/LONGAR  * ZR(JGRLST-1+NDIM*(NB-1)+J)
  132      CONTINUE             
         ENDIF  
 
         CALL NORMEV(ND,NORME)
-        PS=DDOT(3,GRLT,1,ND,1)
-        DO 133 J=1,3
+        PS=DDOT(NDIM,GRLT,1,ND,1)
+        DO 133 J=1,NDIM
           TAU1(J)=GRLT(J)-PS*ND(J)
  133    CONTINUE
         CALL NORMEV(TAU1,NORME)
@@ -162,13 +168,13 @@ C                   (BOOK IV 01/02/05)
 C         ESSAI AVEC LE PROJETE DE OX
           TAU1(1)=1.D0-ND(1)*ND(1)
           TAU1(2)=0.D0-ND(1)*ND(2)
-          TAU1(3)=0.D0-ND(1)*ND(3)
+          IF (NDIM .EQ. 3) TAU1(3)=0.D0-ND(1)*ND(3)
           CALL NORMEV(TAU1,NORM2)
           IF (NORM2.LT.1.D-12) THEN
 C           ESSAI AVEC LE PROJETE DE OY
             TAU1(1)=0.D0-ND(2)*ND(1)
             TAU1(2)=1.D0-ND(2)*ND(2)
-            TAU1(3)=0.D0-ND(2)*ND(3)               
+            IF (NDIM .EQ. 3) TAU1(3)=0.D0-ND(2)*ND(3)               
             CALL NORMEV(TAU1,NORM2)
           ENDIF
           CALL ASSERT(NORM2.GT.1.D-12)

@@ -1,0 +1,539 @@
+# MODIF  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+# TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#             EN CONTRAINTES TOTALES 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+#   HOEK-BROWN MODIFIE NON DRAINE POUR UN CONFINEMENT DE 5 MPa
+# ======================================================================
+        
+DEBUT(   CODE=_F(NOM = 'WTNV129B',NIV_PUB_WEB='INTERNET',
+        VISU_EFICAS='OUI')   )
+
+BIDON=DEFI_CONSTANTE(    VALE=1.)
+
+UN=DEFI_CONSTANTE(    VALE=1.)
+
+ZERO=DEFI_CONSTANTE(    VALE=0.)
+
+VISCOLIQ=DEFI_CONSTANTE(    VALE=1.E-3)
+
+VISCOGAZ=DEFI_CONSTANTE(    VALE=1.8E-5)
+
+DVISCOL=DEFI_CONSTANTE(    VALE=0.)
+
+DVISCOG=DEFI_CONSTANTE(    VALE=0.)
+
+KINT=DEFI_CONSTANTE(    VALE=1.E-18)
+
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
+                        INFO = 2,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = '3D_HMS')
+                           )
+
+MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
+                          MAILLAGE     = MAILLAGE,
+                          MODELE       = MODELE,
+                          ORIE_PEAU_3D = _F( GROUP_MA = ('HAUT',
+                                    'DEVANT',
+                                    'GAUCHE',
+                                    'BAS',
+                                    'DERRIERE',
+                                          'DROITE',),  )
+                                             )
+MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
+                          MAILLAGE     = MAILLAGE,
+                          CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                            TOUT='OUI',)),
+                          CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                            CRIT_NOEUD='SOMMET',
+                                            GROUP_MA='ROCHE'),),);
+#***********************************************************************
+#    LISTE DES INSTANTS DE CALCUL
+#***********************************************************************
+
+TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
+                           INTERVALLE=_F(  JUSQU_A = 2.0,   NOMBRE = 1)
+                         )
+
+#***********************************************************************
+#    CARACTERISTIQUES DU MATERIAU
+#***********************************************************************
+
+SOL=DEFI_MATERIAU(    ELAS=_F(  E  = 4500.0,
+                                RHO = 2500.,
+                                NU = 0.3  ,
+                                ALPHA = 0.0
+                                ),
+                                HOEK_BROWN =
+                                _F(GAMMA_RUP            =0.005,
+                                   GAMMA_RES            =0.017,
+                                     S_END              =225.0,
+                                     S_RUP              =482.5675,
+                                     M_END              =13.5,
+                                     M_RUP              =83.75,
+                                     BETA               =3.0,
+                                     ALPHAHB            =3.3,
+                                     PHI_RUP            =15.0,
+                                     PHI_RES            =30.0),
+                                 COMP_THM = 'LIQU_SATU',
+                               THM_LIQU=_F(  
+                                RHO = 1000.,  
+                                UN_SUR_K = 0.0,  
+                                ALPHA = 1.E-4,  
+                                CP = 4180.,  
+                                VISC = VISCOLIQ,   
+                                D_VISC_TEMP = DVISCOL,  
+                                        ),
+                              THM_GAZ=_F( 
+                                MASS_MOL = 28.96E-3,  
+                                CP = 1000.,  
+                                VISC = VISCOGAZ,  
+                                D_VISC_TEMP = DVISCOG,  
+                                  ),
+                              THM_VAPE_GAZ=_F( 
+                                MASS_MOL = 18.E-3,  
+                                CP = 1870.,  
+                                VISC = BIDON,  
+                                D_VISC_TEMP = BIDON,  
+                                 ),      
+                              THM_DIFFU=_F( 
+                                R_GAZ = 8.315,  
+                                RHO = 2400.,  
+                                CP = 800.,  
+                                BIOT_COEF = 1.,  
+                                SATU_PRES = UN,  
+                                D_SATU_PRES = ZERO,  
+                                PESA_X = 0.,  
+                                PESA_Y = 0.,  
+                                PESA_Z = 0.,  
+                                PERM_IN = KINT, 
+                                PERM_LIQU = UN,  
+                                D_PERM_LIQU_SATU = ZERO,  
+                                PERM_GAZ = UN,  
+                                D_PERM_SATU_GAZ = ZERO,  
+                                D_PERM_PRES_GAZ = ZERO,  
+                                 ),
+                              THM_INIT=_F( 
+                                TEMP = 293.,  
+                                PRE1 = 1.0,  
+                                PRE2 = 0.1E6,  
+                                PORO = 0.14,  
+                                PRES_VAPE = 2269.8,  
+                                )
+                                     )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',  MATER = SOL)
+                          )
+
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+
+PR_LATE=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              PRES_REP=_F(   GROUP_MA = ( 'DEVANT', 'DROITE'),  
+                                          PRES = 1.,  
+                                    )
+                       )
+                       
+
+PR_V=AFFE_CHAR_MECA(    MODELE=MODELE,
+                             PRES_REP=_F(   GROUP_MA = 'HAUT',    PRES = 1.,  
+                                    )
+                        )
+
+DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
+                              _F(  GROUP_MA = 'BAS',      DZ = 0.,   ),
+                              _F(  GROUP_MA = 'DERRIERE', DX = 0.,   ),
+                              _F(  GROUP_MA = 'GAUCHE',   DY = 0.,   ))
+                           )
+
+COEF1    = DEFI_FONCTION( NOM_PARA    = 'INST',
+                          PROL_DROITE = 'CONSTANT',
+                          VALE=( 0.0,  0.0,
+                                 2.0,  5.0,)
+                        )
+
+P0=AFFE_CHAR_MECA(    MODELE=MODELE,
+                               DDL_IMPO=_F(GROUP_NO='ROCHES',   PRE1 = 0.,  )
+                                               )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION DEFINISSANT L ETAT INITIAL
+#***********************************************************************
+
+
+
+U1=STAT_NON_LINE( 
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = PR_LATE,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = PR_V,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = DEP_SYM), _F( 
+                CHARGE = P0,)),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HM',          
+                RELATION_KIT = ('HOEK_BROWN_TOT','LIQU_SATU','HYDR_UTIL',),
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 100),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE'),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 50),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS1)
+              )
+
+U1=CALC_ELEM( reuse=U1,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U1,
+              )                   
+
+#***********************************************************************
+#    LISTE DES INSTANTS DE CALCUL
+#***********************************************************************
+
+TEMPS2=DEFI_LIST_REEL(   DEBUT=2.,
+                      INTERVALLE=(_F(  JUSQU_A = 15.0,   NOMBRE = 520 ),
+                    ))
+
+#***********************************************************************
+#    NOUVEAU CHARGEMENT MECANIQUE : DEPLACEMENT UNIAXIALE UNITAIRE
+#***********************************************************************
+
+DEP_V=AFFE_CHAR_MECA( MODELE    = MODELE,
+                      FACE_IMPO = _F( GROUP_MA = 'HAUT', DZ = 1., )
+                     )
+
+COEF2=DEFI_FONCTION(      NOM_PARA='INST',
+                          PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 2.0,  0.0,
+                                6.0,  -0.04, )
+                       )
+
+#***********************************************************************
+#  EXTRACTION DES CONTRAINTES ET VARIABLES INTERNES POUR DEFINIR 
+#  L ETAT INITIAL
+#***********************************************************************
+
+
+SIG_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                     NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
+                     INST=2.
+                      )
+
+VAR_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
+                     NOM_CHAM='VARI_ELGA', RESULTAT=U1,
+                     INST=2.
+                      )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION : SIMULATION DE L ESSAI TRIAXIAL
+#***********************************************************************
+U2=STAT_NON_LINE( 
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = PR_LATE,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = DEP_SYM), _F( 
+                CHARGE = DEP_V,
+                FONC_MULT = COEF2)
+                ),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HM',          
+                RELATION_KIT = ('HOEK_BROWN_TOT','LIQU_SATU','HYDR_UTIL',),
+                RESI_INTE_RELA = 1.E-8,
+                ITER_INTE_MAXI = 100,
+                ITER_INTE_PAS  = -10,),
+                         ETAT_INIT=_F( 
+                SIGM = SIG_INI,
+                VARI = VAR_INI),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS2,
+                SUBD_PAS  = 2,
+                SUBD_PAS_MINI = 1.E-8,
+                INST_FIN=5.0),
+                NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1,
+                ),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-8,
+                ITER_GLOB_MAXI = 100),
+              )
+
+              
+      
+
+U2=CALC_ELEM( reuse      = U2,
+              OPTION     = ('SIEF_ELNO_ELGA',),
+              RESULTAT   = U2,
+              )
+
+U2=CALC_NO(  reuse      = U2,
+             RESULTAT   = U2,
+             TOUT_ORDRE = 'OUI',
+             OPTION     = ('SIEF_NOEU_ELGA',),
+               )
+                                           
+#
+#------------------------------------
+#    TEST_RESU AU POINT D (NOEUD N8)
+#------------------------------------
+
+TEST_RESU(RESU=(
+
+# CONTRAINTE SIXX
+                _F(  RESULTAT = U2,    
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIXX',     
+                       NUME_ORDRE = 16,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = 1.14121E+00,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIXX',     
+                       NUME_ORDRE = 28,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = 1.94894E+00,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIXX',     
+                       NUME_ORDRE = 36,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = 1.49781E+00,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIXX',     
+                       NUME_ORDRE = 44,                         
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -2.69068E+00,
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIXX',     
+                       NUME_ORDRE = 52,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -1.24045E+01,
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIXX',     
+                       NUME_ORDRE = 80,  
+                       PRECISION = 3.E-3,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -3.72255E+01,
+                     ),
+#
+
+# CONTRAINTE SIYY
+                _F(  RESULTAT = U2,    
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIYY',     
+                       NUME_ORDRE = 16,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = 1.141214E+00,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIYY',     
+                       NUME_ORDRE = 28,  
+                       PRECISION = 1.E-5,   
+                       VALE = 1.94894E+00,        
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIYY',     
+                       NUME_ORDRE = 36,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = 1.49781E+00,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIYY',     
+                       NUME_ORDRE = 44,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -2.69068E+00,
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIYY',     
+                       NUME_ORDRE = 52,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -1.24045E+01,
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIYY',     
+                       NUME_ORDRE = 80,  
+                       PRECISION = 3.E-3,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -3.72255E+01,
+                     ),
+
+# CONTRAINTE SIZZ
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       NUME_ORDRE = 16,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -1.74245E+01,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       NUME_ORDRE = 28,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -2.23066E+01,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       NUME_ORDRE = 36,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -2.62168E+01,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       NUME_ORDRE = 44,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -2.95247E+01,
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       NUME_ORDRE = 52,  
+                       PRECISION = 1.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -3.24666E+01,
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       NUME_ORDRE = 80,  
+                       PRECISION = 1.E-4,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -5.29470E+01,
+                     ),
+
+# PRESSION PRE1
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE1',     
+                       NUME_ORDRE = 16,  
+                       PRECISION = 3.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = 6.14121E+00,        
+                     ),
+                 _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE1',     
+                       NUME_ORDRE = 44,  
+                       PRECISION = 5.E-4,   
+                       VALE = 2.3093E+00,        
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                     ),
+                  _F(  RESULTAT = U2,   
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE1',     
+                       NUME_ORDRE = 80,  
+                       PRECISION = 3.E-5,   
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '8.01.25',
+                       VALE = -3.22255E+01,        
+                     ),)
+                    )
+
+FIN()

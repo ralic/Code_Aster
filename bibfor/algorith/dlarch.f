@@ -8,7 +8,7 @@
       REAL*8        DEP0(*),VIT0(*),ACC0(*),TEMPS                 
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/06/99   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,9 +105,8 @@ C
  44   CONTINUE
       CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
       ZR(LINST) = TEMPS
-      IF (NIV.EQ.2) THEN
-        WRITE(IFM,1000) (TYPE(ITY),ITY=1,3), IARCHI, TEMPS
-      ENDIF
+
+      WRITE(IFM,1000) (TYPE(ITY),ITY=1,3), IARCHI, TEMPS
 C 
  1000 FORMAT(1P,3X,'CHAMP(S) STOCKE(S):',3(1X,A4),
      &             ' NUME_ORDRE:',I8,' INSTANT:',D12.5)          

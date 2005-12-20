@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,16 +17,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 def dyna_line_harm_prod(MATR_RIGI,**args):
-  if AsType(MATR_RIGI) == matr_asse_depl_r : return dyna_harmo
-  if AsType(MATR_RIGI) == matr_asse_depl_c : return dyna_harmo
-  if AsType(MATR_RIGI) == matr_asse_pres_c : return acou_harmo
-  if AsType(MATR_RIGI) == matr_asse_gene_r : return harm_gene
-  if AsType(MATR_RIGI) == matr_asse_gene_c : return harm_gene
-  raise AsException("type de concept resultat non prevu")
+   if (AsType(MATR_RIGI) == matr_asse_depl_r) : return dyna_harmo
+   elif (AsType(MATR_RIGI) == matr_asse_depl_c) : return dyna_harmo
+   elif (AsType(MATR_RIGI) == matr_asse_pres_c) : return acou_harmo
+   elif (AsType(MATR_RIGI) == matr_asse_gene_r) : return harm_gene
+   elif (AsType(MATR_RIGI) == matr_asse_gene_c) : return harm_gene
+   raise AsException("type de concept resultat non prevu")
 
 DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
                     fr="Calcul de la réponse dynamique complexe d'un système à une excitation harmonique",
-                    reentrant='n',
+                    reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(PRESENT_ABSENT('AMOR_REDUIT','MATR_AMOR'),
                  PRESENT_ABSENT('AMOR_REDUIT','LIST_AMOR'),
@@ -46,6 +46,9 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",)),
          NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","VITE","ACCE") ),
+         b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : RESULTAT obligatoire",
+             RESULTAT      =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
+         ),         
          EXCIT           =FACT(statut='o',max='**',
            regles=(UN_PARMI('VECT_ASSE','CHARGE'),
                    UN_PARMI('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),

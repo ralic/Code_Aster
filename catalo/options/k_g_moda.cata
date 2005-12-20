@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+%& MODIF OPTIONS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,5 +38,7 @@ OPTION__
          PBASLOR  NEUT_R
          PCOURB   NEUT_R
          PPULPRO  FREQ_R
+         PLSN     NEUT_R
+         PLST     NEUT_R
    OUT__
 PGTHETA G ELEM__

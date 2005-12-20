@@ -6,7 +6,7 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-C
 C                      TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 C                      ET LE PLAN DE FISSURE 
 C                    
@@ -61,7 +60,8 @@ C
       REAL*8          ALPHA
       INTEGER         AR(12,2),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
       INTEGER         IA,I,IPT,IBID,PP,PD,K
-      CHARACTER*8     TYPMA
+      CHARACTER*8     TYPMA,NOMA
+      INTEGER         IADZI,IAZK24,DIMENS,ADDIM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -75,8 +75,17 @@ C     - VRAI NUMÉRO ARETE CORRESPONDANTE (SERT QUE POUR NOEUD SOMMET)
 C     - LONGUEUR DE L'ARETE
 C     - POSITION DU PT SUR L'ARETE
       CALL WKVECT(AINTER,'V V R',12*4,JAINT)
-
-      TYPMA='TETRA4'
+  
+      CALL TECAEL(IADZI,IAZK24)
+      NOMA=ZK24(IAZK24)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      DIMENS=ZI(ADDIM-1+6)
+      
+      IF (DIMENS .EQ. 2) THEN
+        TYPMA='TRIA3'
+      ELSE 
+        TYPMA='TETRA4'
+      ENDIF
       IPT=0
 C     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMENT
       INS=0
@@ -114,7 +123,7 @@ C           INTERPOLATION DES COORDONNÉES DE C
 C           POSITION DU PT D'INTERSECTION SUR L'ARETE
             ALPHA=PADIST(3,A,C)
 C           ON AJOUTE A LA LISTE LE POINT C
-            CALL XAJPIN(JPTINT,12,IPT,IBID,C,LONGAR,JAINT,IA,IA,ALPHA)
+            CALL XAJPIN(JPTINT,12,IPT,IBID,C,LONGAR,JAINT,IA,0,ALPHA)
           ENDIF
         ENDIF
 

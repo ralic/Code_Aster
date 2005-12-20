@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C TOLE CRP_20
 C.......................................................................
 C
 C         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM 
@@ -53,19 +55,19 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
       INTEGER      I,J,K,L,IJ,IFA,IPGF,INO,ISSPG,NI,NJ,NLI,NLJ,PLI,PLJ
       INTEGER      JINDCO,JDONCO,JLSN,IPOIDS,IVF,IDFDE,JGANO,IGEOM
-      INTEGER      IDEPM,IDEPD,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
+      INTEGER      IDEPM,IDEPD,IMATT,JLST,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JBASEC,JSEUIL
       INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
       INTEGER      NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
-      INTEGER      INTEG,NFE
+      INTEGER      INTEG,NFE,SINGU
       CHARACTER*8  ELREF,TYPMA,FPG
-      REAL*8       LSN(27),HE,SIGN,XG,FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
+      REAL*8       HE,SIGN,XG,FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
       REAL*8       MMAT(204,204),JAC,AL,RHON,MU,RHOTK,PADIST,MULT
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
-
+      REAL*8       LSN,LST,R,RR
 C......................................................................
 
       CALL JEMARQ()
@@ -77,27 +79,8 @@ C-----------------------------------------------------------------------
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
-C     DDLS PAR NOEUD SOMMET : HEAVYSIDE, ENRICHIS (FOND), CONTACT
-      IF (NOMTE(1:8).EQ.'MECA_XH_') THEN
-        DDLH=NDIM
-        NFE=0
-        DDLC=NDIM
-      ELSEIF (NOMTE(1:8).EQ.'MECA_XHT') THEN
-        DDLH=NDIM
-        NFE=4
-        DDLC=NDIM
-      ELSE 
-        CALL UTMESS('F','TE533','NOM D''ELEMENT FINI INCOMPATIBLE')
-      ENDIF
-
-C     NB DE 'NOEUDS MILIEU' SERVANT À PORTER DES DDL DE CONTACT
-      NNOM=3*(NNO/2)
-
-C     NOMBRE DE DDL À CHAQUE NOEUD SOMMET 
-      DDLS=NDIM+DDLH+NFE*NDIM+DDLC
-C
-C     NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
-      NDDL=(NNO*DDLS)+(NNOM*DDLC)
+C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL)
 
 C     INITIALISATION DE LA MATRICE
       CALL MATINI(204,204,0.D0,MMAT)
@@ -118,8 +101,8 @@ C     DEPDEL
       CALL JEVECH('PINDCOI','L',JINDCO)
       CALL JEVECH('PDONCO','L',JDONCO)
       CALL JEVECH('PSEUIL','L',JSEUIL)
-      CALL JEVECH('PLEVSET','L',JLSN)
-      CALL JEVECH('PSTANO','L',JSTANO)
+      CALL JEVECH('PLSN','L',JLSN)
+      CALL JEVECH('PLST','L',JLST)
       CALL JEVECH('PPINTER','L',JPTINT)
       CALL JEVECH('PAINTER','L',JAINT)
       CALL JEVECH('PCFACE','L',JCFACE)
@@ -215,8 +198,19 @@ C         NORMALE AU CENTRE DE LA FACETTE
             NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/3.D0
  122      CONTINUE          
 
-C          IF (PADIST(3,ND,NBARY).GT.1.D-12) CALL UTMESS('F','TE0533',
-C     &                       'PB DE NORMALE. FISSURE PLANE ?') 
+C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
+          IF (SINGU.EQ.1) THEN
+            LSN=0.D0
+            LST=0.D0   
+            DO 112 I=1,NNO
+              LSN=LSN+ZR(JLSN-1+I)*FFP(I)
+              LST=LST+ZR(JLST-1+I)*FFP(I)
+ 112        CONTINUE
+            IF (ABS(LSN).GT.1.D-6) CALL UTMESS('A','TE0533',
+     &                                    'LSN NON NUL SUR LA SURFACE.')
+            R=SQRT(LSN*LSN+LST*LST)
+            RR=SQRT(R)
+          ENDIF
  
 C         I) CALCUL DES MATRICES DE CONTACT
 C         ..............................
@@ -258,13 +252,28 @@ C             I.1. CALCUL DE A ET DE At
                 DO 131 J = 1,NNO
                   DO 132 L = 1,DDLH
 C
-                 MMAT(PLI,DDLS*(J-1)+NDIM+L)=MMAT(PLI,DDLS*(J-1)+NDIM+L)
-     &             + 2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
+                    MMAT(PLI,DDLS*(J-1)+NDIM+L)=
+     &              MMAT(PLI,DDLS*(J-1)+NDIM+L)+
+     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
 C
-                 MMAT(DDLS*(J-1)+NDIM+L,PLI)=MMAT(DDLS*(J-1)+NDIM+L,PLI)
-     &             + 2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
+                    MMAT(DDLS*(J-1)+NDIM+L,PLI)=
+     &              MMAT(DDLS*(J-1)+NDIM+L,PLI)+
+     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
 C
  132              CONTINUE
+
+                  DO 133 L = 1,SINGU*NDIM
+
+                    MMAT(PLI,DDLS*(J-1)+2*NDIM+L)=
+     &              MMAT(PLI,DDLS*(J-1)+2*NDIM+L)+
+     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT
+
+                    MMAT(DDLS*(J-1)+2*NDIM+L,PLI)=
+     &              MMAT(DDLS*(J-1)+2*NDIM+L,PLI)+
+     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT
+
+ 133              CONTINUE
+
  131            CONTINUE
 
  130          CONTINUE
@@ -272,15 +281,33 @@ C
 C             I.2. CALCUL DE A_U
               DO 140 I = 1,NNO
                 DO 141 J = 1,NNO
+
                   DO 142 K = 1,DDLH
                     DO 143 L = 1,DDLH
-C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
-     &                4.D0*RHON*FFP(I)*FFP(J)*ND(K) * ND(L) * JAC * MULT
-C
+     &                4.D0*RHON*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC*MULT
  143                CONTINUE
+                    DO 144 L = 1,SINGU*NDIM
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
+     &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
+     &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
+ 144                CONTINUE
  142              CONTINUE
+
+                  DO 145 K = 1,SINGU*NDIM
+                    DO 146 L = 1,DDLH
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
+     &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
+     &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
+ 146                CONTINUE
+                    DO 147 L = 1,SINGU*NDIM
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
+     &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
+     &                4.D0*RHON*FFP(I)*FFP(J)*RR*RR*ND(K)*ND(L)*JAC*MULT
+ 147                CONTINUE
+ 145              CONTINUE
+
  141            CONTINUE
  140          CONTINUE
 C

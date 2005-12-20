@@ -13,7 +13,7 @@
       LOGICAL            LAMOR,LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,7 +155,7 @@ C
       REAL*8        TXLOC(3), TZLOC(3), TYLOC(3), ANG(3)
       REAL*8        NORMX(3), NORMY(3), DIRCHO(3)
       CHARACTER*8   NOMNO1,NOMNO2,NOMCHO,SST1,SST2,MAYA1,MAYA2
-      CHARACTER*8   NOMGR1,NOMGR2,REPERE,NOEUD(3),KBID
+      CHARACTER*8   NOMGR1,NOMGR2,REPERE,NOEUD(3),KBID,MAMAI
       CHARACTER*10  MOTFAC
       CHARACTER*14  NUME1,NUME2
       CHARACTER*16  NOMCMD,TYPNUM,K16B
@@ -193,7 +193,7 @@ C
 C --- CALCUL DIRECT
       IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
         CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IB,MAILLA,IE)
-        DO 111 I=1,NBNLI
+        DO 100 I=1,NBNLI
           II = I
           IF (I.GT.NBCHOC+NBSISM) THEN
               MOTFAC = 'FLAMBAGE'
@@ -202,10 +202,55 @@ C --- CALCUL DIRECT
               MOTFAC = 'ANTI_SISM'
               II = I-NBCHOC
           ENDIF
-          CALL GETVID(MOTFAC,'NOEUD_1',II,1,1,NOMNO1,IBID)
+C
+C ------- RECUPERATION DES NOEUDS DE CHOC
+          IF (MOTFAC(1:4).EQ.'CHOC') THEN
+          CALL GETVEM ( MAILLA, 'MAILLE', MOTFAC, 'MAILLE',
+     +                                              II,1,1,MAMAI,IBID)
+          IF (IBID.NE.0) THEN
+            CALL JENONU(JEXNOM(MAILLA//'.NOMMAI',MAMAI),IMAMA)
+            CALL JEVEUO(JEXNUM(MAILLA//'.CONNEX',IMAMA),'L',JMAMA)
+            CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',IMAMA),'LONMAX',
+     +                                                  NBNMA,KBID)
+            IF (NBNMA.NE.2) CALL UTMESS('F','MDCHOC','QUE 2 NOEUDS')
+          CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA))  ,NOECHO(I,1))
+          CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA+1)),NOECHO(I,5))
+            NN1 = 1
+            NN2 = 0
+            GOTO 102
+          ENDIF
+C
+          CALL GETVEM ( MAILLA, 'GROUP_MA', MOTFAC, 'GROUP_MA',
+     +                                              II,1,1,MAMAI,IBID)
+          IF (IBID.NE.0) THEN
+            CALL JELIRA(JEXNOM(MAILLA//'.GROUPEMA',MAMAI),'LONMAX',
+     +                                                  NBNMA,KBID)
+            CALL JEVEUO(JEXNOM(MAILLA//'.GROUPEMA',MAMAI),'L',KMA)
+            IF (NBNMA.NE.1) THEN
+              CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',ZI(KMA)),KBID)
+              CALL UTDEBM('A','MDCHOC','TROP DE MAILLES')
+              CALL UTIMPK('S',' DANS LE GROUP_MA ',1,MAMAI)
+              CALL UTIMPK('L',' ON NE PREND QUE LA MAILLE ',1,KBID)
+              CALL UTFINM()
+            ENDIF
+            CALL JEVEUO(JEXNUM(MAILLA//'.CONNEX',ZI(KMA)),'L',JMAMA)
+            CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',ZI(KMA)),'LONMAX',
+     +                                                  NBNMA,KBID)
+            IF (NBNMA.NE.2) CALL UTMESS('F','MDCHOC','QUE 2 NOEUDS')
+          CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA))  ,NOECHO(I,1))
+          CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA+1)),NOECHO(I,5))
+            NN1 = 1
+            NN2 = 0
+            GOTO 102
+          ENDIF
+          ENDIF
+C
+          CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_1',
+     +                                              II,1,1,NOMNO1,IBID)
           IF (IBID.NE.0) THEN
             NOECHO(I,1) = NOMNO1
-            CALL GETVID(MOTFAC,'NOEUD_2',II,1,1,NOMNO2,NN1)
+            CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_2',
+     +                                              II,1,1,NOMNO2,NN1)
             IF (NN1.NE.0) THEN
               NOECHO(I,5) = NOMNO2
               NN2 = 0
@@ -217,8 +262,8 @@ C --- CALCUL DIRECT
                   CALL UTMESS('F','MDCHOC',
      +                    'LE GROUP_NO : '//NOMGR2//'N''EXISTE PAS.')
                 ELSEIF (IRET.EQ.1) THEN
-                  CALL UTDEBM('A','MDCHOC',
-     +                    'TROP DE NOEUDS DANS LE GROUP_NO')
+                  CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
+                  CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR2)
                   CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO2)
                   CALL UTFINM( )
                 ENDIF
@@ -227,42 +272,47 @@ C --- CALCUL DIRECT
                 NOECHO(I,5) = NOMNO1
               ENDIF
             ENDIF
-          ELSE
-            CALL GETVID(MOTFAC,'GROUP_NO_1',II,1,1,NOMGR1,IBI2)
-            CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR1,NOMNO1,IRET)
-            IF (IRET.EQ.10) THEN
-               CALL UTMESS('F','MDCHOC',
+            GOTO 102
+          ENDIF
+C
+          CALL GETVEM ( MAILLA, 'GROUP_NO', MOTFAC, 'GROUP_NO_1',
+     +                                              II,1,1,NOMGR1,IBI2)
+          CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR1,NOMNO1,IRET)
+          IF (IRET.EQ.10) THEN
+             CALL UTMESS('F','MDCHOC',
      +                     'LE GROUP_NO : '//NOMGR1//'N''EXISTE PAS.')
-            ELSEIF (IRET.EQ.1) THEN
-               CALL UTDEBM('A','MDCHOC',
-     +                     'TROP DE NOEUDS DANS LE GROUP_NO')
-               CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO1)
-               CALL UTFINM( )
-            ENDIF
-            NOECHO(I,1) = NOMNO1
-            CALL GETVID(MOTFAC,'NOEUD_2',II,1,1,NOMNO2,NN1)
-            IF (NN1.NE.0) THEN
-              NOECHO(I,5) = NOMNO2
-              NN2 = 0
-            ELSE
-              CALL GETVID(MOTFAC,'GROUP_NO_2',II,1,1,NOMGR2,NN2)
-              IF (NN2.NE.0) THEN
-                CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
-                IF (IRET.EQ.10) THEN
-                  CALL UTMESS('F','MDCHOC',
+          ELSEIF (IRET.EQ.1) THEN
+             CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
+             CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR1)
+             CALL UTIMPK('L',' NOEUD UTILISE: ',1,NOMNO1)
+             CALL UTFINM( )
+          ENDIF
+          NOECHO(I,1) = NOMNO1
+          CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_2',
+     +                                              II,1,1,NOMNO2,NN1)
+          IF (NN1.NE.0) THEN
+            NOECHO(I,5) = NOMNO2
+            NN2 = 0
+          ELSE
+            CALL GETVID(MOTFAC,'GROUP_NO_2',II,1,1,NOMGR2,NN2)
+            IF (NN2.NE.0) THEN
+              CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
+              IF (IRET.EQ.10) THEN
+                CALL UTMESS('F','MDCHOC',
      +                     'LE GROUP_NO : '//NOMGR2//'N''EXISTE PAS.')
-                ELSEIF (IRET.EQ.1) THEN
-                  CALL UTDEBM('A','MDCHOC',
-     +                     'TROP DE NOEUDS DANS LE GROUP_NO')
-                  CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO2)
-                  CALL UTFINM( )
-                ENDIF
-                NOECHO(I,5) = NOMNO2
-              ELSE
-                NOECHO(I,5) = NOMNO1
+              ELSEIF (IRET.EQ.1) THEN
+                CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
+                CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR2)
+                CALL UTIMPK('L',' NOEUD UTILISE: ',1,NOMNO2)
+                CALL UTFINM( )
               ENDIF
+              NOECHO(I,5) = NOMNO2
+            ELSE
+              NOECHO(I,5) = NOMNO1
             ENDIF
           ENDIF
+ 102      CONTINUE
+C
           IF (MOTFAC(1:9).EQ.'ANTI_SISM' .AND. 
      &                         NN1.EQ.0 .AND. NN2.EQ.0) THEN
            CALL UTMESS('F','MDCHOC',' DISPOSITIF ANTI-SISMIQUE : '//
@@ -273,7 +323,7 @@ C --- CALCUL DIRECT
           NOECHO(I,4) = MAILLA
           NOECHO(I,7) = NUMDDL(1:8)
           NOECHO(I,8) = MAILLA
-111     CONTINUE
+ 100    CONTINUE
 C
 C --- CALCUL PAR SOUS-STRUCTURATION
       ELSEIF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
@@ -319,7 +369,7 @@ C --- CALCUL PAR SOUS-STRUCTURATION
           NOECHO(I,2) = SST1
           NOECHO(I,3) = NUME1(1:8)
           NOECHO(I,4) = MAYA1
-          CALL GETVID('CHOC','NOEUD_2',I,1,1,NOMNO2,NN1)
+          CALL GETVID('CHOC','NOEUD_2'   ,I,1,1,NOMNO2,NN1)
           CALL GETVID('CHOC','GROUP_NO_2',I,1,1,NOMGR2,NN2)
           IF (NN1.NE.0.OR.NN2.NE.0) THEN
             CALL GETVTX('CHOC','SOUS_STRUC_2',I,1,1,SST2,N2)
@@ -421,9 +471,16 @@ C
           INTITU(I) = NOMCHO
         ENDIF
 C
-        CALL GETVID(MOTFAC,'NOEUD_2',II,1,1,NOMNO2,N1)
+        CALL GETVID(MOTFAC,'NOEUD_2'   ,II,1,1,NOMNO2,N1)
         CALL GETVID(MOTFAC,'GROUP_NO_2',II,1,1,NOMNO2,N2)
-        IF (N1.NE.0.OR.N2.NE.0) THEN
+        IF (MOTFAC(1:4).EQ.'CHOC') THEN
+          CALL GETVID(MOTFAC,'MAILLE'    ,II,1,1,NOMNO2,N3)
+          CALL GETVID(MOTFAC,'GROUP_MA'  ,II,1,1,NOMNO2,N4)
+        ELSE
+          N3=0
+          N4=0
+        ENDIF
+        IF (N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0) THEN
           CALL POSDDL('NUME_DDL',NOECHO(I,7),NOECHO(I,5),'DX',
      &       NUNOE,NUDDL)
           IF (NUNOE.EQ.0) THEN
@@ -495,11 +552,11 @@ C
            PARCHO(I,50) = 0.D0
            PARCHO(I,51) = 0.D0
            IF (MOTFAC(1:4).EQ.'CHOC') THEN
-              CALL GETVR8('CHOC','AMOR_NOR',I,1,1,PARCHO(I,3) ,N1)
-              CALL GETVR8('CHOC','RIGI_TAN',I,1,1,KTANG       ,N1)
-              CALL GETVR8('CHOC','COULOMB' ,I,1,1,PARCHO(I,6) ,N1)
-              CALL GETVR8('CHOC','AMOR_TAN',I,1,1,CTANG       ,N1)
-              CALL GETVTX('CHOC','LAME_FLUIDE',I,1,1,K24REP,N1)
+              CALL GETVR8('CHOC','AMOR_NOR   ',I,1,1,PARCHO(I,3),N1)
+              CALL GETVR8('CHOC','RIGI_TAN   ',I,1,1,KTANG      ,N1)
+              CALL GETVR8('CHOC','COULOMB    ',I,1,1,PARCHO(I,6),N1)
+              CALL GETVR8('CHOC','AMOR_TAN   ',I,1,1,CTANG      ,N1)
+              CALL GETVTX('CHOC','LAME_FLUIDE',I,1,1,K24REP     ,N1)
               IF (K24REP.EQ.'OUI') THEN
                 LFLU=.TRUE.
                 LOGCHO(I,2)=1
@@ -552,12 +609,12 @@ C
            PARCHO(I,35)=0.D0
            LOGCHO(I,4)=1
            II = I-NBCHOC
-           CALL GETVR8('ANTI_SISM','RIGI_K1 ',II,1,1,PARCHO(I,38),N1)
-           CALL GETVR8('ANTI_SISM','RIGI_K2 ',II,1,1,PARCHO(I,39),N1)
-           CALL GETVR8('ANTI_SISM','SEUIL_FX',II,1,1,PARCHO(I,40),N1)
-           CALL GETVR8('ANTI_SISM','C       ',II,1,1,PARCHO(I,41),N1)
+           CALL GETVR8('ANTI_SISM','RIGI_K1   ',II,1,1,PARCHO(I,38),N1)
+           CALL GETVR8('ANTI_SISM','RIGI_K2   ',II,1,1,PARCHO(I,39),N1)
+           CALL GETVR8('ANTI_SISM','SEUIL_FX  ',II,1,1,PARCHO(I,40),N1)
+           CALL GETVR8('ANTI_SISM','C         ',II,1,1,PARCHO(I,41),N1)
            CALL GETVR8('ANTI_SISM','PUIS_ALPHA',II,1,1,PARCHO(I,42),N1)
-           CALL GETVR8('ANTI_SISM','DX_MAX  ',II,1,1,PARCHO(I,43),N1)
+           CALL GETVR8('ANTI_SISM','DX_MAX    ',II,1,1,PARCHO(I,43),N1)
         ENDIF
 C       SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
         IF ( CTANG.EQ.ZERO .AND. KTANG.NE.ZERO ) THEN
@@ -648,19 +705,26 @@ C
         ORIGOB(1) = PARCHO(I,13)
         ORIGOB(2) = PARCHO(I,14)
         ORIGOB(3) = PARCHO(I,15)
-        CALL GETVID(MOTFAC,'NOEUD_2',II,1,1,K16B,NN1)
+        CALL GETVID(MOTFAC,'NOEUD_2'   ,II,1,1,K16B,NN1)
         CALL GETVID(MOTFAC,'GROUP_NO_2',II,1,1,K16B,NN2)
-            IF (NN1.NE.0.OR.NN2.NE.0) THEN
-            DIRCHO(1)=PARCHO(I,7)-PARCHO(I,10)
-            DIRCHO(2)=PARCHO(I,8)-PARCHO(I,11)
-            DIRCHO(3)=PARCHO(I,9)-PARCHO(I,12)
-            ELSE
-            DIRCHO(1)=PARCHO(I,7)-PARCHO(I,13)
-            DIRCHO(2)=PARCHO(I,8)-PARCHO(I,14)
-            DIRCHO(3)=PARCHO(I,9)-PARCHO(I,15)
-            ENDIF
-           TXNO=SQRT(DIRCHO(1)**2+DIRCHO(2)**2+DIRCHO(3)**2)
-           IF (TXNO.EQ.0.D0) TXNO=1.D0
+        IF (MOTFAC(1:4).EQ.'CHOC') THEN
+          CALL GETVID(MOTFAC,'MAILLE'    ,II,1,1,K16B,NN3)
+          CALL GETVID(MOTFAC,'GROUP_MA'  ,II,1,1,K16B,NN4)
+        ELSE
+          NN3=0
+          NN4=0
+        ENDIF
+        IF (NN1.NE.0.OR.NN2.NE.0.OR.NN3.NE.0.OR.NN4.NE.0) THEN
+          DIRCHO(1)=PARCHO(I,7)-PARCHO(I,10)
+          DIRCHO(2)=PARCHO(I,8)-PARCHO(I,11)
+          DIRCHO(3)=PARCHO(I,9)-PARCHO(I,12)
+        ELSE
+          DIRCHO(1)=PARCHO(I,7)-PARCHO(I,13)
+          DIRCHO(2)=PARCHO(I,8)-PARCHO(I,14)
+          DIRCHO(3)=PARCHO(I,9)-PARCHO(I,15)
+        ENDIF
+        TXNO=SQRT(DIRCHO(1)**2+DIRCHO(2)**2+DIRCHO(3)**2)
+        IF (TXNO.EQ.0.D0) TXNO=1.D0
 C
 C DEBUG : UN TRAVAIL DOIT ETRE FAIT SI TXNO = 0.
 C 

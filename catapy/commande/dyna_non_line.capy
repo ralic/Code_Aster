@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 19/12/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,8 +49,10 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                 MAILLE      =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
               ),
          AMOR_MODAL      =FACT(statut='f',
+           regles=(EXCLUS('AMOR_REDUIT','LIST_AMOR'),),
            MODE_MECA       =SIMP(statut='f',typ=mode_meca),
            AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**' ),
+           LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
            NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
            REAC_VITE       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),

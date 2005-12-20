@@ -1,10 +1,12 @@
-      SUBROUTINE PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3 )
+      SUBROUTINE PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3,
+     &                    TCOEF, ITCOEF )
       IMPLICIT   NONE
-      INTEGER             NDIM
+      INTEGER             NDIM, ITCOEF
       REAL*8              COEFD, COEFD3, COEFG, COEFG3
+      CHARACTER*24        TCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/05/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +27,33 @@ C
 C     OPERATEUR POST_K1_K2_K3 : RECUPERTAION DES CARACTERISTIQUES
 C                               MATERIAU ET DIMENSION DU PROBLEME
 C     ------------------------------------------------------------------
-      INTEGER       N1, NBPAR
+      INTEGER       N1, NBPAR,NRE,NBR,IVALK,IVALR, IR, ITDEF
+      INTEGER       NBORDR, IRET, JORDR
       REAL*8        R8B, VALRES(2), E,  NU,  R8DEPI, UNMNU2, UNPNU
+      REAL*8        VALPAR,TEMDEF,PREC    
       CHARACTER*2   CODRET(2)
-      CHARACTER*8   NOMRES, NOMPAR, NOMVAL(2), NOMMAT
+      CHARACTER*8   NOMRES, NOMPAR, NOMVAL(2), NOMMAT,K8B
+      CHARACTER*8   RESU,CRIT
       CHARACTER*16  NOMCMD, CONCEP, PHENOM, MODELI
-C DEB ------------------------------------------------------------------
+      CHARACTER*24 KNUM
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*32       JEXNUM , JEXNOM  , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
 C
@@ -41,11 +64,53 @@ C
      +                   'COMPORTEMENT "ELAS" DANS DEFI_MATERIAU')
       ENDIF
 C
-      NBPAR     = 0
-      NOMPAR    = ' '
+C --- RECHERCHE SI LE MATERIAU DEPEND DE LA TEMPERATURE:
+      CALL JEVEUO(NOMMAT//'.'//PHENOM(1:10)//'.VALK','L',IVALK)
+      CALL JEVEUO(NOMMAT//'.'//PHENOM(1:10)//'.VALR','L',IVALR)
+      CALL JELIRA(NOMMAT//'.'//PHENOM(1:10)//'.VALR','LONUTI',NBR,K8B)
+      ITDEF=0
+      ITCOEF=0
+      DO 10 IR=1,NBR
+         IF(ZK8(IVALK+IR-1).EQ.'TEMP_DEF')THEN
+              ITDEF=1
+              TEMDEF=ZR(IVALR+IR-1)
+         ENDIF
+10    CONTINUE
+C
+      CALL GETVID(' ','RESULTAT', 1,1,1,RESU, NRE )
+C 
+C  --- DETERMINATION DES CARACTERISTIQUES MATERIAUX
+C     =============================================
+      TCOEF='&&PKMATE.TCOEF' 
+      IF(ITDEF.EQ.1)THEN 
+C       PROPRIETES MATERIAUX DEPENDANT DE LA TEMPERATURE :
+        IF(NRE.EQ.0 )THEN
+C         - MODELISATION '2D'
+C         - MODELISATION '3D' SANS FOND_FISS
+          NBPAR=1
+          NOMPAR='TEMP'
+          VALPAR=TEMDEF
+          CALL UTMESS('A','PKMATE','LES PROPRIETES MATERIAUX, '    //
+     &    'NECESSAIRES AUX CALCULS DES COEFFICIENTS D''INTENSITE ' //
+     &    'DES CONTRAINTES,ONT ETE OBTENUES A LA TEMPERATURE DE '  //
+     &    'REFERENCE DU MATERIAU ET NON A LA TEMPERATURE CALCULEE.')
+        ELSE
+C         - MODELISATION '3D' AVEC FOND_FISS
+          NDIM=3
+          CALL PKTEMP(NOMMAT,TCOEF)
+          ITCOEF=1
+          GOTO 999
+        ENDIF
+      ELSE
+C       PROPRIETES MATERIAUX INDEPENDANTES DE LA TEMPERATURE
+        NBPAR=0
+        NOMPAR=' '
+        VALPAR=0.D0
+      ENDIF
+
       NOMVAL(1) = 'E'
       NOMVAL(2) = 'NU'
-      CALL RCVALE ( NOMMAT, 'ELAS', NBPAR, NOMPAR, R8B, 2,
+      CALL RCVALE ( NOMMAT, 'ELAS', NBPAR, NOMPAR, VALPAR, 2,
      +              NOMVAL, VALRES, CODRET, 'F ' )
       E  = VALRES(1)
       NU = VALRES(2)
@@ -54,7 +119,7 @@ C
       UNPNU  = 1.D0 + NU
 C
       CALL GETVTX ( ' ', 'MODELISATION', 1,1,1, MODELI, N1 )
-C
+C   
       IF     ( MODELI .EQ. '3D'     ) THEN
          NDIM = 3
          COEFD = COEFD / ( 8.D0 * UNMNU2 )
@@ -84,5 +149,7 @@ C
          CALL UTMESS('F',NOMCMD,'MODELISATION '//MODELI//
      +                          ' NON IMPLANTEE')
       ENDIF
+C
+ 999  CONTINUE
 C
       END

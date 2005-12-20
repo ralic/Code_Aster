@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+%& MODIF OPTIONS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,5 +42,7 @@ OPTION__
          PCNSETO  NEUT_I
          PHEAVTO  NEUT_I
          PLONCHA  NEUT_I
+         PLSN     NEUT_R
+         PLST     NEUT_R
    OUT__
 PGTHETA G ELEM__

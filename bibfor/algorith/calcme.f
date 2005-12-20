@@ -1,13 +1,13 @@
-        SUBROUTINE CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,CRIT,INSTAM,
-     +                    INSTAP,TREF,NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,
-     +                    YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
+        SUBROUTINE CALCME(OPTION,COMPOR,THMC,MECA,IMATE,TYPMOD,CRIT,
+     +                    INSTAM,INSTAP,TREF,NDIM,DIMDEF,DIMCON,NVIMEC,
+     +                    NVITH,YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
      +                    CONGEP,VINTM,VINTP,ADVIME,ADDEP1,ADDEP2,DSDE,
      +                    DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM,DP1,DP2,
      +                    SAT,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,14 +48,14 @@ C                                 N = NOMBRE DE PALIERS
 C                OUT RETCOM
 C ======================================================================
       IMPLICIT      NONE
-      LOGICAL       MECTRU
+      LOGICAL       MECTRU,PRE2TR
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,ADDEME,ADDETE,ADDEP1
       INTEGER       ADDEP2,ADCOME,ADVIME,IMATE,YATE,RETCOM
       REAL*8        DEFGEM(1:DIMDEF),CONGEM(1:DIMCON),CONGEP(1:DIMCON)
       REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF)
       CHARACTER*8   TYPMOD(2)
-      CHARACTER*16  OPTION,COMPOR(*),MECA
+      CHARACTER*16  OPTION,COMPOR(*),MECA,THMC
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
@@ -97,6 +97,9 @@ CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 CCCC    ET ENSUITE CONTRAINTES NETTES DANS LE MODELE DE BARCELONE
       REAL*8  SIPM,SIPP      
 C ======================================================================
+C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE HOEK_BROWN_TOT
+      REAL*8  DSIDP2(6),DSPDP1,DSPDP2
+C ======================================================================
       INTEGER NDT,NDI
       COMMON /TDIM/   NDT  , NDI
 C
@@ -119,7 +122,8 @@ C ======================================================================
      +      (MECA.EQ.'CAM_CLAY')        .OR.
      +      (MECA.EQ.'BARCELONE')       .OR.
      +      (MECA.EQ.'LAIGLE')          .OR.
-     +      (MECA.EQ.'HOEK_BROWN')      .OR.
+     +      (MECA.EQ.'HOEK_BROWN_EFF')  .OR.
+     +      (MECA.EQ.'HOEK_BROWN_TOT')  .OR.
      +      (MECA.EQ.'MAZARS')          .OR.
      +      (MECA.EQ.'ENDO_ISOT_BETON') ) THEN
          IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
@@ -226,8 +230,8 @@ C ======================================================================
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME,RETCOM)
       ENDIF
-      IF (MECA.EQ.'HOEK_BROWN') THEN
-        COMPLG(1) = 'HOEK_BROWN'
+      IF (MECA.EQ.'HOEK_BROWN_EFF') THEN
+        COMPLG(1) = 'HOEK_BROWN_EFF'
         WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
@@ -331,6 +335,49 @@ C ======================================================================
      >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
      >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
  416        CONTINUE
+         ENDIF
+        ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI HOEK_BROWN_TOT -----------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'HOEK_BROWN_TOT') THEN
+        TINI = T - DT
+        SIPM=CONGEM(ADCOME+6)
+        SIPP=CONGEP(ADCOME+6)
+        DSPDP1 = 0.0D0
+        DSPDP2 = 0.0D0         
+        CALL DSIPDP(THMC,ADCOME,ADDEP1,ADDEP2,
+     1              DIMCON,DIMDEF,DSDE,DSPDP1,DSPDP2,PRE2TR)
+        
+        CALL LCHBR2( TYPMOD,OPTION,IMATE,CRIT,CONGEM(ADCOME),
+     &   DEFGEM(ADDEME+NDIM),TINI,T,TREF,DEPS,VINTM,VINTP,DSPDP1,DSPDP2,
+     &    SIPM,SIPP,CONGEP(ADCOME),DSDEME,DSIDP1,DSIDP2,RETCOM)
+        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+     >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
+          DO 413 I = 1 , 2*NDIM
+        IF (ADDEP1.GE.1) THEN
+            DSDE(ADCOME+I-1,ADDEP1) = DSIDP1(I)
+        ENDIF
+C
+        IF (PRE2TR) THEN
+            DSDE(ADCOME+I-1,ADDEP2) = DSIDP2(I)
+        ENDIF
+            DO 414 J = 1 , 2*NDIM
+                DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  414       CONTINUE
+  413     CONTINUE        
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            DO 417 I=1,3 
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 417        CONTINUE
          ENDIF
         ENDIF
       ENDIF

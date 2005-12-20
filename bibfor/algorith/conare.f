@@ -4,7 +4,7 @@
       CHARACTER*8      TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -122,6 +122,33 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
         AR(5,2)=4
         AR(6,1)=3
         AR(6,2)=4
+      ELSEIF (TYPMA.EQ.'QUAD4'.OR.TYPMA.EQ.'QUAD8') THEN
+        NBAR=4
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4 OU QUAD10
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(3,1)=3
+        AR(3,2)=4
+        AR(4,1)=1
+        AR(4,2)=4     
+      ELSEIF (TYPMA.EQ.'TRIA3'.OR.TYPMA.EQ.'TRIA6') THEN
+        NBAR=3
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA3 OU TRIA6
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(3,1)=1
+        AR(3,2)=3
+      ELSEIF (TYPMA.EQ.'SEG2'.OR.TYPMA.EQ.'SEG3') THEN
+        NBAR=1
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG2 OU SEG3
+        AR(1,1)=1
+        AR(1,2)=2
+      ELSEIF (TYPMA.EQ.'POI1') THEN
+        NBAR=0
       ELSE
         CALL UTMESS('F','CONARE','LA MAILLE DOIT ETRE DE TYPE '//
      &      'TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 OU HEXA20. '//

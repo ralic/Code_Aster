@@ -4,7 +4,7 @@
       REAL*8       VALE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
       REAL*8       XT
 C     ------------------------------------------------------------------
 C
-      NS2=NB/2
+      NS2=NB/3
       DO 100 I=1,NS2
          INV=NB-I+1
          XT=VALE(3*(I-1)+1)

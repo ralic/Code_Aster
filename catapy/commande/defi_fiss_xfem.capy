@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
     ),
     GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
     RAYON_ENRI            =SIMP(statut='f',typ='R',defaut=0.E+0),
-    ORIE_FOND             =FACT(statut='o',max=01,
+    ORIE_FOND             =FACT(statut='f',max=01,
       PFON_INI            =SIMP(statut='o',typ='R',max=03),
       VECT_ORIE           =SIMP(statut='o',typ='R',max=03),
       PT_ORIGIN           =SIMP(statut='o',typ='R',max=03),

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,59 +28,55 @@ DEBUT(  CODE=_F( NOM = 'SDNL105A',NIV_PUB_WEB='INTERNET'))
 #
 MAYA=LIRE_MAILLAGE( )
 
-MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
-
 #
 MATERIO1=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E08,  NU = 0.3,  E = 1.E10))
 
 MATERIO2=DEFI_MATERIAU(  ELAS=_F( RHO = 0.,     NU = 0.,   E = 1.E15))
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=( 
-                              _F( TOUT = 'OUI',      MATER = MATERIO1),
-                              _F( GROUP_MA = 'RIGIDE', MATER = MATERIO2)))
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                      AFFE=( _F( GROUP_MA = 'TOUT',   MATER = MATERIO1),
+                             _F( GROUP_MA = 'RIGIDE', MATER = MATERIO2)))
 
 #
 BARRE=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( TOUT = 'OUI', 
-                                  MODELISATION = 'POU_D_E', 
-                                  PHENOMENE = 'MECANIQUE'))
+                    AFFE=_F( GROUP_MA = 'TOUT',
+                             MODELISATION = 'POU_D_E', 
+                             PHENOMENE = 'MECANIQUE'))
 
 #
 CARA=AFFE_CARA_ELEM(  MODELE=BARRE, 
-                           POUTRE=_F( 
-       GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE', 
-                                   CARA = ('R', 'EP',),  VALE = (0.1, 0.01,)))
+                      POUTRE=_F( GROUP_MA = 'TOUT',
+                                 SECTION = 'CERCLE', 
+                                 CARA = ('R', 'EP',),
+                                 VALE = (0.1, 0.01,)))
 
 #
-GUIDAGE=AFFE_CHAR_MECA(    MODELE=BARRE,DDL_IMPO=(
-                           _F( TOUT = 'OUI', 
-                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
-                           _F( GROUP_NO = 'L1',  DY = 0., DRZ = 0.)))
+GUIDAGE=AFFE_CHAR_MECA(  MODELE=BARRE,
+                         DDL_IMPO=(_F( GROUP_MA = 'TOUT',
+                                       DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
+                                   _F( GROUP_NO = 'L1',  DY = 0., DRZ = 0.)))
 
 #
-CHARTRAN=AFFE_CHAR_MECA(        MODELE=BARRE,
-                           FORCE_NODALE=_F( NOEUD = 'N8',  FY = 1000.))
+CHARTRAN=AFFE_CHAR_MECA(  MODELE=BARRE,
+                          FORCE_NODALE=_F( NOEUD = 'N8',  FY = 1000.))
 
 #
 K_ELEM=CALC_MATR_ELEM(      MODELE=BARRE, 
-                             CARA_ELEM=CARA, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
-                                CHARGE=GUIDAGE    )
+                         CARA_ELEM=CARA, 
+                        CHAM_MATER=CHMAT, 
+                            OPTION='RIGI_MECA', 
+                            CHARGE=GUIDAGE    )
 
 #
 M_ELEM=CALC_MATR_ELEM(      MODELE=BARRE, 
-                             CARA_ELEM=CARA, 
-                            CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
-                                CHARGE=GUIDAGE    )
+                         CARA_ELEM=CARA, 
+                        CHAM_MATER=CHMAT,
+                            OPTION='MASS_MECA', 
+                            CHARGE=GUIDAGE    )
 
 #
-V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
-                            CHARGE=CHARTRAN)
+V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', CHARGE=CHARTRAN)
 
 #
 NUM=NUME_DDL( MATR_RIGI=K_ELEM)
@@ -94,8 +90,8 @@ V_ASSE=ASSE_VECTEUR( VECT_ELEM=V_ELEM,    NUME_DDL=NUM)
 
 #
 MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
-                                 MATR_B=M_ASSE, 
-                             CALC_FREQ=_F( NMAX_FREQ = 15)
+                            MATR_B=M_ASSE, 
+                         CALC_FREQ=_F( NMAX_FREQ = 15)
                              )
 
 #
@@ -139,8 +135,8 @@ TRAN_GE1=DYNA_TRAN_MODAL(   METHODE='EULER',
                              INCREMENT=_F(  INST_INIT = 0.,
                                          INST_FIN = 1.,
                                          PAS = 2.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 5),CHOC=(
-                                 _F( INTITULE = 'CHOC1',
+                            ARCHIVAGE=_F( PAS_ARCH = 5),
+                            CHOC=( _F( INTITULE = 'CHOC1',
                                        GROUP_NO_1 = 'GROUP1',
                                        GROUP_NO_2 = 'GROUP2',
                                        OBSTACLE = OBSTACLE,
@@ -148,9 +144,8 @@ TRAN_GE1=DYNA_TRAN_MODAL(   METHODE='EULER',
                                        DIST_1 = 0.0995,
                                        DIST_2 = 0.0995,
                                        RIGI_NOR = 1.E+8),
-                                 _F( INTITULE = 'CHOC2',
-                                       NOEUD_1 = 'M8',
-                                       NOEUD_2 = 'O8',
+                                   _F( INTITULE = 'CHOC2',
+                                       MAILLE = 'MC1',
                                        OBSTACLE = OBSTACLE,
                                        NORM_OBST = (1., 0., 0.,),
                                        DIST_1 = 0.0995,
@@ -167,8 +162,8 @@ TRAN_GE2=DYNA_TRAN_MODAL(   METHODE='DEVOGE',
                              INCREMENT=_F(  INST_INIT = 0.,
                                          INST_FIN = 1.,
                                          PAS = 2.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 5),CHOC=(
-                                 _F( INTITULE = 'CHOC1',
+                            ARCHIVAGE=_F( PAS_ARCH = 5),
+                            CHOC=( _F( INTITULE = 'CHOC1',
                                        NOEUD_1 = 'N8',
                                        GROUP_NO_2 = 'GROUP2',
                                        OBSTACLE = OBSTACLE,
@@ -176,7 +171,7 @@ TRAN_GE2=DYNA_TRAN_MODAL(   METHODE='DEVOGE',
                                        DIST_1 = 0.0995,
                                        DIST_2 = 0.0995,
                                        RIGI_NOR = 1.E+8),
-                                 _F( INTITULE = 'CHOC2',
+                                   _F( INTITULE = 'CHOC2',
                                        GROUP_NO_1 = 'GROUP2',
                                        NOEUD_2 = 'O8',
                                        OBSTACLE = OBSTACLE,
@@ -195,16 +190,15 @@ TRAN_GE3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                              INCREMENT=_F(  INST_INIT = 0.,
                                          INST_FIN = 1.,
                                          PAS = 2.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 5),CHOC=(
-                                 _F( INTITULE = 'CHOC1',
-                                       NOEUD_1 = 'N8',
-                                       NOEUD_2 = 'M8',
+                            ARCHIVAGE=_F( PAS_ARCH = 5),
+                            CHOC=( _F( INTITULE = 'CHOC1',
+                                       GROUP_MA = 'GMC2',
                                        OBSTACLE = OBSTACLE,
                                        NORM_OBST = (1., 0., 0.,),
                                        DIST_1 = 0.0995,
                                        DIST_2 = 0.0995,
                                        RIGI_NOR = 1.E+8),
-                                 _F( INTITULE = 'CHOC2',
+                                   _F( INTITULE = 'CHOC2',
                                        NOEUD_1 = 'M8',
                                        NOEUD_2 = 'O8',
                                        OBSTACLE = OBSTACLE,

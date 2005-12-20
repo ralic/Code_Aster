@@ -3,7 +3,7 @@
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,8 @@ C ======================================================================
       ELSEIF ( LOI(1:6)  .EQ. 'LAIGLE') THEN
          CALL LGLCVX ( SIGF, VIND, NMAT, MATERF, SEUIL)
 C ======================================================================
-      ELSEIF ( LOI(1:10)  .EQ. 'HOEK_BROWN') THEN
+      ELSEIF (( LOI(1:10)  .EQ. 'HOEK_BROWN').OR.
+     &        ( LOI(1:14)  .EQ. 'HOEK_BROWN_EFF')) THEN
          CALL HBRCVX ( SIGF, VIND, NMAT, MATERF, SEUIL, VP, VECP)
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN

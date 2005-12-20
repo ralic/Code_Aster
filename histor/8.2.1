@@ -1,0 +1,1110 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR d6bhhjp      LEFEBVRE J.P.          DATE 20/12/2005 - 10:00:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009247 DU 30/11/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TMA : CS
+TITRE
+   test fdnl100a : CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTTE DE GRAPPE
+FONCTIONNALITE
+   Passage sur la machine clpaster et ajustement de la precision.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   fdnl100a
+NB_JOURS_TRAV  : 0.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 20/12/2005 - 10:00:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008607 DU 22/04/2005
+TYPE evolution POUR Code_Aster (VERSION 7.4)
+TITRE
+   DYNA_TRAN_MODAL et chocs
+FONCTIONNALITE
+   Pour rendre plus facile l'usage de DYNA_TRAN_MODAL avec chocs,
+   on propose d'etendre les possibilites de saisie des couples de noeuds
+   candidats au choc potentiel, dans le cas de deux structures en vis-a-vis.
+   DETAIL
+   syntaxe :
+   CHOC =_F( o / MAILLE          <-- nouveaute
+   / GROUP_MA        <-- nouveaute
+   / o / NOEUD_1
+   / GROUP_NO_1
+   f / NOEUD_2
+   / GROUP_NO_2
+
+   MAILLE   = maille de type SEG2, definissant les 2 noeuds de choc
+   GROUP_MA = groupe d'une maille de type SEG2, definissant les 2 noeuds de choc
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.21
+VALIDATION
+   sdnl105a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 20/12/2005 - 10:00:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009138 DU 25/10/2005
+TYPE evolution POUR Code_Aster (VERSION 8.1)
+TMA : CS
+TITRE
+   MECA_STATIQUE et DYNA_LINE_TRAN
+FONCTIONNALITE
+   Pour ces deux operateurs, on ne voit pas l'avancee des pas de temps au cours du calcul
+   dans le .mess.
+
+   pour MECA_STATIQUE :
+   la fonctionnalite n'existait pas
+   ajout de l'impression du champ stocke:
+   CHAMP STOCKE : DEPL         INSTANT : 2.20000E+02  NUMERO D'ORDRE : 13
+   pour DYNA_LINE_TRAN :
+   la fonctionnalite existait pour INFO=2
+   suppression de la condition sur INFO et impression du champ stocke:
+   CHAMP(S) STOCKE(S): DEPL VITE ACCE  NUME_ORDRE: 13  INSTANT: 2.20000E+02
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   ensemble des tests
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR f1bhhaj      ANGLES J.              DATE 19/12/2005 - 16:08:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009116 DU 18/10/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TITRE
+   POST_FATIGUE
+FONCTIONNALITE
+   IMPACT_DOCUMENTAIRE :
+   DOC_U : U4.83.01
+   EXPL_ : Remanier les parties 3.13.2 (critere de Dang
+   Van-Papadopoulos) et 3.13.3 (Operande COEF_CORR) en
+   ajoutant quelques mots sur l'impact du type de
+   prolongement (EXCLU, CONSTANT, LINEAIRE) de la courbe de
+   fatigue sur la valeur du dommage calcule.
+
+   DETAILS : Le prolongement : 'CONSTANT' de la courbe de
+   fatigue ne donnait pas un dommage nul lorsque le critere
+   de Dang Van-Papadopoulos etait negatif.
+   Le dommage obtenu correspondait au dernier point de la
+   courbe de fatigue.
+   Pour remedier a cela, dans la routine limend.f, je
+   remplace :
+
+   C      PROLONGEMENT A GAUCHE DE LA COURBE DE WOHLER EXCLU
+   IF (ZK16(IPROL-1+5)(1:1).EQ.'E') THEN
+
+   par
+
+   C      PROLONGEMENT A GAUCHE DE LA COURBE DE WOHLER EXCLU
+   IF ( (ZK16(IPROL-1+5)(1:1).EQ.'E') .OR.
+   &              (ZK16(IPROL-1+5)(1:1).EQ.'C') ) THEN
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.83.01
+VALIDATION
+   SDNL112B SZLZ100A SZLZ101A SZLZ102A SZLZ103A SZLZ107A SZLZ108A SZLZ109A SZLZ111A SZLZ111B
+SSLV135A SSLV135B SSLV135C SSLV135D SSLV135E RCCM01A RCCM01B RCCM02A RCCM02B RCCM03A
+RCCM04A RCCM05A RCCM06A RCCM07A Etude d'Olivier Nicolas
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 19/12/2005 - 12:52:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008990 DU 09/09/2005
+TYPE evolution POUR Documentation (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   docv ascouf, rccm et SSNP110
+FONCTIONNALITE
+   Petit historique du cas test SSNP110 : ce cas test, initialement appele SSNP310, est un
+   cas test en mecanique de la rupture elastoplatique sur une plaque rectangulaire en
+   flexion
+   cisaillante : la solution presentait des l'origine un ecart tres important avec la
+   solution de reference bibliographique (80 % !!) et un ecart de l'ordre de 5% avec un
+   calcul castem.
+
+   Cet ecart s'etant aggrave lors d'un changement de maillage (AL98-366) et la solution de
+   reference ne paraissant finalement pas suffisament precise, on est passe a un cas
+   test de
+   non regression. Les CL de type "flexion trois points" etant difficiles a appliquer sans
+   induire de fortes contraintes locales, le chargement a egalement ete modifie.
+
+   On garde donc ce cas test de non-regression, on change legerement les chargements pour
+   se
+   placer en traction et on verifie l'invariance de G selon les couronnes d'integration.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.110
+VALIDATION
+   ssnp110
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 20/12/2005 - 16:50:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009179 DU 09/11/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TITRE
+   contact avec X-FEM elements en fond de fissure
+FONCTIONNALITE
+   La prise du contact par la methode continue dans le cadre d'X-FEM n'est pas correcte sur
+   les elements doublement enrichis (par Heaviside et les fonctions singuieres). Le terme de
+   saut du a la 1ere fonction singuliere a ete oublie.
+
+   Le saut se calcule donc en prenant en compte les ddls
+   Heaviside
+   (H1X,H1Y,H1Z) et les ddls enrichis par la 1ere
+   fonction singuliere
+   (E1X,E1Y,E1Z). Les termes enrichis par les autres
+   fonctions
+   singulieres ne sont pas discontinus au travers de
+   l'interface, donc il
+   ne rentre pas en compte dans le calcul du saut.
+
+   Ceci impacte les routines elementaires de calcul de la
+   matrice
+   tangente et des seconds membres de contact et de
+   frottement.
+
+   Deplus, les level sets sont necessaires au calcul
+   elementaire.
+
+   fortran modifie : xmmcme xmmbca te0532 te0533 te0534
+   catalogues modifies : gener_me_xh.cata
+   gener_me_xht.cata
+   rigi_cont rigi_frot
+   char_meca_cont char_meca_frot
+   xcvbca
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0.6
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009269 DU 16/12/2005
+TYPE anomalie POUR Code_Aster (VERSION 2.x)
+TITRE
+   erreur si pas de fond de fissure et elements enrichis avec X-FEM
+FONCTIONNALITE
+   Dans le cas d'une structure entierement traversee par une
+   fissure,
+   le fond de fissure n'existe pas, donc la base locale au
+   fond de
+   fissure n'a pas de sens. L'utilisation de
+   l'enrichissement par les
+   fonctions singulieres est donc a proscire dans ce cas
+   (car il fait
+   appel a la base locale en fond de fissure).
+
+   Dans le cas ou on ne trouve pas de fond de fissure et
+   ou le mot-cle
+   RAYON_ENRI est present, on rajoute le message
+   d'erreur F suivant :
+   'NE PAS UTILISER LE MOT-CLE RAYON_ENRI LORSQUE LE
+   FOND DE FISSURE EST
+   EN DEHORS DE LA STRUCTURE'
+
+   De plus, on verifie que le nombre d'elements
+   enrichis par les
+   fonctions singulieres est nul :
+   CALL ASSERT(NMAEN2+NMAEN3.EQ.0)
+
+   fortran modifie : xnrch2.f xnrch3.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.1.19
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009270 DU 16/12/2005
+TYPE anomalie POUR Code_Aster (VERSION 2.x)
+TITRE
+   Calcul des coordonnees polaires en fond de fissure
+FONCTIONNALITE
+   L'interet des level sets est que l'on peut calculer facilement
+   les coordonnees d'un point dans la base locale au fond de fissure
+   Cela evite les problemes de projection dans cette base, notamment lorsque le projete
+   du
+   point se trouve en dehors du fond de fissure.
+
+   On se sert de la level set normale (lsn) et de la
+   level set tangente
+   (lst) pour le calcul des corrdonnees dans la base
+   polaire.
+   Les formules de calcul de (r,theta) sont les
+   suivantes :
+   r=sqrt(lsn**2+lst**2)
+   theta=atan2(lsn,lst)   theta appartient a ]-pi,pi]
+
+   remarque : si le point se trouve sur la levre
+   inferieure, alors la
+   formule pour theta donne theta=pi au lieu de -pi.
+
+   on la modifie en faisant intervenir la valeur de la
+   fonction
+   Heaviside H qui vaut -1 sur la levre inf et +1 sur la
+   levre sup :
+   theta = H * abs( atan2(lsn,lst) )
+
+   fortran modifie : merimo te0539 xmel3d xkel3d xcalfe
+   vefnme te0542 xbsigm xxbsig
+   cakg3d te0461
+   te0311
+   te0295
+   te0297 xsif3d
+
+   catalogues modifies : full_meca  rigi_meca_tang
+   raph_meca
+   forc_noda
+   calc_k_g   calc_k_g_f      k_g_moda
+   gener_me3d_3
+   gener_me_x
+   gener_me_xh
+   gener_me_xt
+   gener_me_xht
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.1.0
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+   ssnv185b,c,d,e,f + cas test perso (type ascouf simplifie)
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009159 DU 02/11/2005
+TYPE evolution POUR Code_Aster (VERSION 8.1)
+TITRE
+   XFEM 2D
+FONCTIONNALITE
+   Cette EL fait part de la demande d'elements XFEM en 2D.
+   On la decompose en plusieurs parties :
+   Point 1
+   - Creation des champs lst, lsn ;
+   - Creation des gradients lst, lsn ;
+   - Attribution du statut des noeuds ;
+   - Creation de la base locale ;
+   Point 2
+   - Resolution avec contact pour ces elements ;
+   POint 3
+   - Exploitation des resultats en fond de fissure (avec POST_K1_K2_K3).
+   Cette EL sera resituee progressivement, point par point.
+   PMa.
+
+
+   De nombreuses routines ont ete modifiees par rapport au
+   code XFEM 3D.
+   L'ensemble de ces routines a ete modifie pour inserer
+   dedoubler les
+   routines pour le calcul en 3D en 2 branches quand
+   c'etait necessaire,
+   une pour le calcul en 2D et une pour le calcul en 3D.
+
+   L'op0041 concernant DEFI_FISS_XFEM a ete modifie pour
+   appeler les
+   nouvelle routines apres avoir teste la dimension du
+   modele.
+   XINILS a ete modifie pour tenir compte de la dimension
+   en ce qui
+   concerne la partie methode 1 (analytique), la partie
+   methode 2 a ete
+   decoupe en 2 souroutines xls2d et xls3d etant donne
+   leur plus grandes
+   differences. La partie reajustement des level set a
+   ete modifiee pour
+   tenir compte des mailles 2D et un test a ete change
+   pour mieux
+   convenir aux fissures maillees.
+   XLS3D est une copie de l'ancienne partie de xinils et
+   toutes les
+   formules de calcul de LSN et LST ont ete modifies dans
+   xls2d
+   pour convenir au cas 2D.
+   Des catalogues pour les elements XFEM 2D ont ete crees
+   pour le cas
+   des contraintes planes pour le moment.
+   (gener_mecpl2_x.cata gener_mecpl2_xh.cata
+   gener_mecpl2_xt.cata
+   et gener_mecpl2_xht.cata)
+   Le te0024 a ete modifie pour gerer 2D et 3D pour le
+   calcul des
+   gradients des level set.
+   XENRCH a ete dedouble en XNRCH2 et XNRCH3.
+   Des corrections mineures et la prise en compte des
+   nouveaux elements
+   ont ete faite sur xstano.
+   La connectivite des aretes et des faces pour les
+   elements 2D ont ete
+   ajoutes dans conare et confac.
+   XBASL2 a ete ajoute pour remplacer XBASLO dans le cas
+   2D pour le
+   calcul de la base locale en fond de fissure en faisant
+   les
+   simplifications necessaires.
+   La catalogue de la commande DEFI_FISS XFEM a ete
+   modifie pour mettre
+   le mot cle facteur ORIE_FOND en facultatif.
+
+   L'op0113 concernant la commande MODI_MODELE_XFEM a ete
+   modifiee pour
+   prendre en compte les nouvelles mailles.
+   Un decoupage des mailles 2D pour l'integration a ete
+   implemente de la
+   meme facon que ce qui avait ete fait pour les mailles
+   3D (meme type de
+   decoupage algorithmes legerement differents).
+   Les routines concernees sont xdecou, xdecov, xcface et
+   loncar.
+   Le critere de conditionnement dans xstan2 n'est garde
+   que
+   pour le cas 3D.
+
+   La suppression des degres de liberte en trop a ete
+   modifie pour tenir
+   compte des mailles 2d dans la commande AFFE_CHAR_MECA.
+   Les routines concernes sont xdeldl, xdelco et xdelh.
+
+   La routine chprec et le catalogue de creachamp ont ete
+   modifie pour
+   pouvoir extraire le statut des noeuds stno ou stnor
+   (valeurs reelles)
+   et la base locale basloc.
+
+   Les 2 tests reprennent le maillage des tests sslp313
+   pour pouvoir
+   tester les methodes en 2D sur un mallaige complexe. Il
+   est
+   specifiquement teste la base locale et donc par la
+   meme occasion la
+   definition des level sets. Le cas d correspond a une
+   definition
+   de la fissure en donnant les mailles de la fissure, le
+   cas e correspond
+   a la methonde avec une formule analytique pour les
+   level sets.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.02.313;U4.82.08;U4.72.04;R7.02.12
+VALIDATION
+   sslsp313d et e
+NB_JOURS_TRAV  : 50.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- AUTEUR joumana      EL-GHARIB J.           DATE 19/12/2005 - 12:55:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009264 DU 15/12/2005
+TYPE evolution POUR Code_Aster (VERSION )
+TITRE
+   EVOLUTION DE LA LOI DE COMPORTEMENT HOEK_BROWN
+FONCTIONNALITE
+   C'est une restitution qui combine des modifications de
+   l'existant plus des ajouts.
+   Notamment on supprime les routines de calcul de valeurs
+   propres developpees pour cette loi en particulier.
+   Maintenant cette loi calcule les contraintes principales
+   par des routines existantes et utilisant la methode de
+   Jacobi.
+   La loi HOEK_BROWN restituee dans le Code_Aster en version
+   8.1.1 est utilisable en mecanique pure comme en
+   modelisation de type THM.
+   Elle gardera desormais le meme nom HOEK_BROWN en mecanique
+   pure mais change de nom en modelisation de type THM et
+   s'appelle desormais HOEK_BROWN_EFF : le couplage est
+   formule en contraintes effectives(dans le critere
+   HOEK_BROWN, le tenseur des contraintes ne depend que du
+   tenseur de deformations)
+
+   On introduit la loi HOEK_BROWN en contraintes totales
+   developpes par Chavant et Gervais et s'appelle
+   HOEK_BROWN_TOT. (le critere de plastification
+   HOEK_BROWN est inchang, mais il saapplique aux
+   contraintes totales.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.18-A   V7.31.128-A   V7.31.129-A
+VALIDATION
+   wtnv128a wtnv128b wtnv129a wtnv129b
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 19/12/2005 - 16:09:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008737 DU 06/06/2005
+TYPE evolution POUR Code_Aster (VERSION 7.4)
+TMA : DeltaCad
+TITRE
+   Commande DYNA_NON_LINE, mot cle AMOR_REDUIT
+FONCTIONNALITE
+   Dans la version actuelle, sous le mot cle facteur AMOR_MODAL de la commande
+   DYNA_NON_LINE,
+   il est possible de donner une liste d'amortissement que sous la forme de liste de reels
+   (L_R) via le mot cle AMOR_REDUIT. On ajoute donc le mot-cle LIST_AMOR, afin de pouvoir
+   donner la liste les amortissements sous forme de concept listr8.
+
+   exemple:
+   lis_amor = DEFI_LIST_REEL(VALE=(0.02,0.02,0.03,0.04,0.05 ),)
+
+   DYNAEL=DYNA_NON_LINE(...
+   ...
+   AMOR_MODAL=_F(MODE_MECA = FREQ,
+   #                       AMOR_REDUIT = ( 0.02,0.02,0.03,0.04,0.05 ),
+   LIST_AMOR = lis_amor,),
+   ...
+   ...);
+   Fichiers modifies:
+   - fortran : nmmoam.f
+   - catapy : dyna_non_line.capy
+   - cas-test : sensd07a
+   Documentation : ajout du mot cle LIST_AMOR au niveau du mot cle facteur AMOR_MODAL
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U3.53.01
+VALIDATION
+   sensd07a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS M.            DATE 19/12/2005 - 12:44:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009140 DU 25/10/2005
+TYPE anomalie POUR Code_Aster (VERSION 7.5)
+TITRE
+   AOM Boucle Python avec LIRE_FONCTION
+FONCTIONNALITE
+   L'utilisateur a un fichier contenant 3000 fonctions complexes rangees
+   en autant de blocs successifs de 3 colonnes (frequence, partie reelle,
+   partie imaginaire).
+
+   En faisant une boucle ou l'on appelle LIRE_FONCTION a chaque fois
+   pour lire une fonction/un bloc. Le fichier faisant environ 80 000 lignes,
+   il faut environ 5 s par fonction, soit environ 15 000 s au total !
+
+   La solution de contournement proposee consiste a utiliser la fonction
+   lire_blocs de lire_fonction_ops pour obtenir la liste des 3000 tableaux
+   Numeric, puis de faire une boucle pour creer les fonctions.
+   On descend a environ 160 s.
+
+   from Macro.lire_fonction_ops import lire_blocs
+   ier, msg, blocs = lire_blocs(nomfich='fort.31', SEPAR='None')
+
+   for i in range(...):
+   # le bloc contient 3 colonnes
+   # "ravel" le met sous la forme xi, yi, zi...
+   # "tolist" fait du tableau Numeric une liste python ordinaire
+   K[...] = DEFI_FONCTION(NOM_PARA = 'FREQ',
+   VALE_C   = Numeric.ravel(blocs[q-1]).tolist(),)
+
+
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   RAS
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nicolas      NICOLAS O.             DATE 20/12/2005 - 10:07:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009223 DU 21/11/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TITRE
+   MODE_ITER_SIMULT ou factorisation
+FONCTIONNALITE
+   Une fiche issue de la formation dynamique (sic).
+
+   Une des questions consiste a faire planter proprement MODE_ITER_SIMULT sur le test de
+   Sturm avec la methode de Sorensen. En l'occurence, il plante bien mais salement par
+   ecrasement aval. Cas test forma11a.
+
+   JP a trouve un ecrasement dans op0045. En fait il s'agit d'un biais du dimensionnement
+   d'un objet. On dimensionnait plusieurs vecteurs de travail par rapport au nombre de
+   frequences propres demandees, hors ce cas de formation etait caracteristique d'un probleme
+   de convergence de MODE_ITER_SIMULT et menait a un nombre de frequence calculees inferieur
+   au nombre demande d'ou ecrasement.
+   Je corrige donc OP0045
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Cas test de la formation
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009044 DU 26/09/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TITRE
+   PROJ_MESU_MODAL
+FONCTIONNALITE
+   Dans la routine mdallr, le nom des objets de numerotation et de matrices generalisees sont
+   crees et detruits a la fin de la routine. Malheureusement, ce n'etait pas le cas d'ou un
+   plantage dans certains cas.
+   Je corrige MDALLR.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008904 DU 11/08/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TITRE
+   MODE_ITER_SIMULT Quadratique
+FONCTIONNALITE
+   Cette etude ne passe pas des lors que le nombre de modes demande pour le calcul de modes
+   complexes est superieur ou egal a la taille de la matrice.
+   Il ne s'arrete plus en fait.
+   Dans le cas traite, le nombre de ddl actif du modele etait egal au nombre de frequences
+   demandees et la methode utilisees etait Sorensen. Il s'agissait d'un biais dans la methode
+   de dimensionnement de Sorensen qui testait les choses de maniere incomplete.
+   Je corrige OP0045
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009167 DU 03/11/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TITRE
+   amor_hyst
+FONCTIONNALITE
+   Il semble qu'il y ait obligation de definir un amor_hyst pour toutes les mailles si je
+   veux avoir un amortissement hysteritique pour une partie du maillage.
+
+   Je resout le pb en fixant des valeurs par defaut pour les mots cles AMOR_ALPHA, AMOR_BETA
+   et AMOR_HYST.
+   De plus, je permet au te0050 de prendre en compte des amortissements hysteretiques pour
+   des comportements ELAS_ORTH.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.43.01
+VALIDATION
+   Cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009261 DU 15/12/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.2)
+TITRE
+   RECU_FONCTION
+FONCTIONNALITE
+   Dans le cas de fonctions complexes (typiquement issues de DYNA_LINE_HARM), si les
+   abscisses ne sont pas bien ordonnees on rentre dans la routine ORDON2 (plutot que ORDON1
+   dans le cas des fonctions reelles).
+   Cette routine est buggee car il y a NS2=NB/2 (une abscisse pour une ordonnee) au lieu de
+   NS2=NB/3 (une abscisse pour 2 ordonnees (partie reelle et imaginaire).
+   Je corrige donc la routine en consequence
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Cas test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009263 DU 15/12/2005
+TYPE evolution POUR Code_Aster (VERSION )
+TITRE
+   DYNA_LINE_HARM
+FONCTIONNALITE
+   fin de repondre au besoin decrit dans la fiche 8488, je modifie l'operateur
+   DYNA_LINE_HARM afin de le rendre reentrant.
+   Je modifie l'op0060 et le catalogue a l'image de ce qui est fait pour MECA_STATIQUE afin
+   de permettre le concept reentrant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.11
+VALIDATION
+   sdld313d
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009127 DU 21/10/2005
+TYPE evolution POUR Code_Aster (VERSION 8.1)
+TITRE
+   PROJ_CHAMP
+FONCTIONNALITE
+   Je rajoute la SD dyna_tran dans le catalogue de proj_champ.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Cas test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 19/12/2005 - 16:48:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009154 DU 28/10/2005
+TYPE anomalie POUR Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   POST_K1_K2_K3 avec materiau ELAS_FO
+FONCTIONNALITE
+   - Anomalie :
+   -----------
+   L'operateur POST_K1_K2_K3 plante si les proprietes materiaux dependent de la
+   temperature:
+   <F> <POST_K1_K2_K3> <FOINTE> ERREUR RENCONTREE POUR LA FONCTION ...
+   Cette erreur fatale etait attendue car cette fonctionnalite n'avait pas ete
+   developpee.
+   - Correction :
+   --------------
+   Nous avons donc enrichi la commande POST_K1_K2_K3 pour que le materiau considere
+   puisse dependre de la temperature (materiau defini dans DEFI_MATERIAU/ELAS_FO).
+   --> Lorsque la modelisation est 2D ('AXIS','D_PLAN','C_PLAN') :
+   les proprietes materiaux sont celles qui ont ete obtenues a la temperature
+   de reference du materiau (TEMP_DEF_ALPHA de DEFI_MATERIAU).
+   --> Lorsque la modelisation est 3D ('3D'):
+   - si le mot cle RESULTAT n'est pas renseigne (i.e. TABL_DEPL_INF &
+   TABL_DEPL _SUP presents), alors les proprietes materiaux sont celles qui ont
+   ete obtenues a la temperature de reference du materiau (TEMP_DEF_ALPHA de
+   DEFI_MATERIAU).
+   - si le mot cle RESULTAT est renseigne (donc FOND_FISS present), alors les
+   proprietes materiaux aux noeuds du fond de fissure sont obtenues a la
+   temperature du chargement thermique du calcul mecanique.
+   Remarque: Les noeuds des levres voisins du noeud du fond de fissure
+   considere et celui-ci ont localement les memes proprietes materiaux; ceci
+   se justifie car le calcul des K n'est theoroiquement valide que dans une
+   structure a temperature constante et avec un materiau homogene.
+
+   Sources modifiees  : op0188.f  pkfond.f  pkmate.f
+   Source ajoutee     : pktemp.f
+   Cas-test           : sslv134g
+
+   Documentation: Materiau ELAS_FO dans POST_K1_K2_K3
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   cas-tests utilisant POST_K1_K2_K3
++ etude fournie avec la fiche+ nouveau cas-test sslv134g
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 19/12/2005 - 16:48:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009059 DU 29/09/2005
+TYPE evolution POUR Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   post traitement des elements X-FEM (suite)
+FONCTIONNALITE
+   1) Objectif
+   -----------
+   Le but de cette fiche est de poursuivre le travail accompli lors du
+   traitement de l'EL2005_003. La precedente realisation a permis de creer un
+   maillage fissure et de visualiser les deplacements sur ce maillage pour les
+   elements XFEM, seulement pour les HEXA8 enrichis par la fonction d'Heaviside
+   (elements completement coupes).
+   On poursuit cette realisation en 2 etapes:
+   - etape A : pour tout type d'elements 3D (PENTA et TETRA) et 2D (TRIA et
+   QUAD) completement coupes.
+   - etape B : pour tout type d'elements 3D et 2D en fond de fissure enrichi par
+   les fonctons singulieres.
+   2) Realisation
+   --------------
+   La realisation de l'etape B sera traitee ulterieurement lorsque les
+   specifications complementaires seront disponibles.
+   L'etape A est decomposee en 2 realisations partielles:
+   - le cas 3D
+   - le cas 2D
+   Nous traitons ici uniquement le cas 3D, i.e. nous etendons les fonctionnalites
+   developpees pour les HEXA aux PENTA et TETRA.
+   3)Validation
+   ------------
+   a) TETRA
+   on ajoute 2 nouvelles modelisations au cas-test ssnv173:
+   ssnv173d : idem ssnv173a avec des tetra a la place de l'hexa
+   ssnv173e : idem ssnv173b avec des tetra a la place des hexa.
+   b) PENTA
+   modification du cas-test ssnv186c : ajout des commandes POST_MAIL_XFEM et
+   POST_CHAM_XFEM
+
+   Sources modifiees  : op0187.f (POST_MAIL_XFEM)
+   op0196.f,te0151.f (POST_CHAM_XFEM)
+   Cas-tests modifies   : ssnv186c,ssnv186e
+   Cas-tests enrichis : ssnv173d,ssnv173e
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   cas-tests utilisant la methode XFEM
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 19/12/2005 - 16:48:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009016 DU 19/09/2005
+TYPE evolution POUR Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   DEFI_FOND_FISS propagation de fissure
+FONCTIONNALITE
+   But:
+   ---
+   Permettre la definition du fond de fissure par deux listes de noeuds,
+   chacune se referant a une levre du fond de fissure (inf ou sup).
+
+   Objectifs
+   ---------
+   1) enrichir la commande DEFI_FOND_FISS pour permettre la definition du fond
+   de fissure par 2 entites (GROUP_NO ou GROUP_MA ou NOEUD ou MAILLE) dont
+   les noeuds sont coincidents : une entite incluant les noeuds du
+   fond de fissure de la levre inferieure, une autre specifique aux noeuds
+   du fond de fissure de la levre superieure.
+   2) pouvoir traiter ce type de fissure dans POST_K1_K2_K3
+
+   Syntaxe
+   -------
+   ff = DEFI_FOND_FISS ( o MAILLAGE = ma,
+   o /  FOND_FISS
+   ...
+   /  FOND_FERME
+   ...
+   /  o FOND_INF
+   / GROUP_NO  =gno
+   / NOEUD     =no
+   / GROUP_MA  =gma
+   / MAILLE    = ma
+   o FOND_SUP
+   / GROUP_NO  =gno
+   / NOEUD     =no
+   / GROUP_MA  =gma
+   / MAILLE    = ma
+   ...
+   )
+
+   Le mot cle FOND_INF (resp. FOND_SUP) est approprie aux noeuds du fond de
+   fissure de la levre inferieure (resp. superieure).
+
+   Remarques:
+   - La fissure traitee par FOND_INF et FOND_SUP est une fissure non fermee.
+   - Comme pour FOND_FISS, les noeuds devront etre ordonnees par rapport au
+   fond de fissure.
+
+   Developpement
+   -------------
+   - la commande DEFI_FONF_FISS genere deux nouveaux objets:
+   FISS//'.FOND_INF  .NOEUD' --> objets des noms du fond de fissure de la
+   levre inferieure
+   FISS//'.FOND_SUP  .NOEUD' --> objets des noms du fond de fissure de la
+   levre superieure
+   - on verifie que les noeuds de ces objets sont en vis a vis.
+   La precision utilisee est la valeur par defaut du mot cle PREC_VIS_A_VIS
+   de l'operateur POST_K1_K2_K3, i.e. 0.1
+   - Ces objets sont repris dans de pkfond.f pour que le calcul des
+   coefficients d'intensite K1 K2 K3 soit possible en 3D.
+
+   Sources modifiees  : gverif.f, op0055.f, pkfond.f
+   Nouveau cas-test: sslv134g
+
+   Documentation:
+   DOC_U : U48201 (Operateur DEFI_FOND_FISS): ajout des mots cles FOND_INF, FOND_SUP
+   DOC_V : SSLV134 (Calcul de G, fissure circulaire en milieu infini): ajout de la
+   modelisation G
+   DOC_D : Structure de donnees fond_fiss: ajout des objets '.fond_inf .noeu' et
+   '.fond_sup  .noeu'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.01, V3.04.134, D4.10.01
+VALIDATION
+   cas-tests utilisant DEFI_FOND_FISS +nouveau cas-test sslv134g
+NB_JOURS_TRAV  : 12.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sslp313d                      geniaut S.GENIAUT          221    221      0
+ CASTEST AJOUT sslp313e                      geniaut S.GENIAUT          231    231      0
+ CASTEST AJOUT sslv134g                      rezette C.REZETTE         1143   1143      0
+ CASTEST AJOUT ssnv173d                      rezette C.REZETTE          343    343      0
+ CASTEST AJOUT ssnv173e                      rezette C.REZETTE          654    654      0
+ CASTEST AJOUT wtnv129a                      joumana J.EL-GHARIB        538    538      0
+ CASTEST AJOUT wtnv129b                      joumana J.EL-GHARIB        539    539      0
+ CASTEST MODIF fdnl100a                      cibhhlv L.VIVAN            382      6      3
+ CASTEST MODIF rccm01a                       f1bhhaj J.ANGLES           199      1      1
+ CASTEST MODIF rccm01b                       f1bhhaj J.ANGLES           415      1      1
+ CASTEST MODIF rccm02a                       f1bhhaj J.ANGLES           353      1      1
+ CASTEST MODIF rccm02b                       f1bhhaj J.ANGLES           354      1      1
+ CASTEST MODIF rccm03a                       f1bhhaj J.ANGLES          4279      1      1
+ CASTEST MODIF rccm04a                       f1bhhaj J.ANGLES           361      1      1
+ CASTEST MODIF rccm05a                       f1bhhaj J.ANGLES          2167      1      1
+ CASTEST MODIF rccm06a                       f1bhhaj J.ANGLES          1433      1      1
+ CASTEST MODIF rccm07a                       f1bhhaj J.ANGLES           350      1      1
+ CASTEST MODIF sdld313d                      nicolas O.NICOLAS          290     25      3
+ CASTEST MODIF sdnl105a                      cibhhlv L.VIVAN            420     18     24
+ CASTEST MODIF sdnl112b                      f1bhhaj J.ANGLES           490      1      1
+ CASTEST MODIF sensd07a                     lebouvie F.LEBOUVIER        507      6      4
+ CASTEST MODIF sslv135a                      f1bhhaj J.ANGLES          1286      1      1
+ CASTEST MODIF sslv135b                      f1bhhaj J.ANGLES          1266      1      1
+ CASTEST MODIF sslv135c                      f1bhhaj J.ANGLES          1184      1      1
+ CASTEST MODIF sslv135d                      f1bhhaj J.ANGLES           780      1      1
+ CASTEST MODIF sslv135e                      f1bhhaj J.ANGLES          1057      1      1
+ CASTEST MODIF ssnp110a                      galenne E.GALENNE          281    172    109
+ CASTEST MODIF ssnp110b                      galenne E.GALENNE          281    173    113
+ CASTEST MODIF ssnv186c                      rezette C.REZETTE          158     12      1
+ CASTEST MODIF ssnv186e                      rezette C.REZETTE          186     12      1
+ CASTEST MODIF szlz100a                      f1bhhaj J.ANGLES           314      1      1
+ CASTEST MODIF szlz101a                      f1bhhaj J.ANGLES           153      1      1
+ CASTEST MODIF szlz102a                      f1bhhaj J.ANGLES           335      1      1
+ CASTEST MODIF szlz103a                      f1bhhaj J.ANGLES           258      1      1
+ CASTEST MODIF szlz105a                      f1bhhaj J.ANGLES           299      1      1
+ CASTEST MODIF szlz105b                      f1bhhaj J.ANGLES           302      1      1
+ CASTEST MODIF szlz107a                      f1bhhaj J.ANGLES           147      1      1
+ CASTEST MODIF szlz108a                      f1bhhaj J.ANGLES           298      1      1
+ CASTEST MODIF szlz109a                      f1bhhaj J.ANGLES           178      1      1
+ CASTEST MODIF szlz111a                      f1bhhaj J.ANGLES           202      1      1
+ CASTEST MODIF szlz111b                      f1bhhaj J.ANGLES           202      1      1
+ CASTEST MODIF wtnv128a                      joumana J.EL-GHARIB        538      5      4
+ CASTEST MODIF wtnv128b                      joumana J.EL-GHARIB        530      4      3
+ CASTEST MODIF zzzz183a                      f1bhhaj J.ANGLES           227      1      1
+CATALOGU AJOUT options/ener_rela             geniaut S.GENIAUT           34     34      0
+CATALOGU AJOUT options/ener_rela2            geniaut S.GENIAUT           33     33      0
+CATALOGU AJOUT typelem/gener_mecpl2_x        geniaut S.GENIAUT          165    165      0
+CATALOGU AJOUT typelem/gener_mecpl2_xh       geniaut S.GENIAUT          190    190      0
+CATALOGU AJOUT typelem/gener_mecpl2_xht      geniaut S.GENIAUT          195    195      0
+CATALOGU AJOUT typelem/gener_mecpl2_xt       geniaut S.GENIAUT          190    190      0
+CATALOGU MODIF compelem/phenomene_modelisation__    geniaut S.GENIAUT          945      5      1
+CATALOGU MODIF options/calc_k_g              geniaut S.GENIAUT           48      3      1
+CATALOGU MODIF options/calc_k_g_f            geniaut S.GENIAUT           49      3      2
+CATALOGU MODIF options/char_meca_cont        geniaut S.GENIAUT           42      3      2
+CATALOGU MODIF options/char_meca_frot        geniaut S.GENIAUT           42      3      2
+CATALOGU MODIF options/depl_post_xfem        geniaut S.GENIAUT           34      2      1
+CATALOGU MODIF options/forc_noda             geniaut S.GENIAUT           90      7      2
+CATALOGU MODIF options/full_meca             geniaut S.GENIAUT           87      3      2
+CATALOGU MODIF options/k_g_moda              geniaut S.GENIAUT           44      3      1
+CATALOGU MODIF options/raph_meca             geniaut S.GENIAUT           85      3      2
+CATALOGU MODIF options/rigi_cont             geniaut S.GENIAUT           40      3      3
+CATALOGU MODIF options/rigi_frot             geniaut S.GENIAUT           40      3      3
+CATALOGU MODIF options/rigi_meca_tang        geniaut S.GENIAUT           88      3      2
+CATALOGU MODIF options/topofa                geniaut S.GENIAUT           37      3      2
+CATALOGU MODIF options/xcvbca                geniaut S.GENIAUT           34      2      2
+CATALOGU MODIF typelem/gener_me3d_3          geniaut S.GENIAUT          622     31     26
+CATALOGU MODIF typelem/gener_me_x            geniaut S.GENIAUT          600     30     27
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          283     41     29
+CATALOGU MODIF typelem/gener_me_xht          geniaut S.GENIAUT          285     46     24
+CATALOGU MODIF typelem/gener_me_xt           geniaut S.GENIAUT          259     41     11
+CATALOPY MODIF commande/affe_modele          geniaut S.GENIAUT          205      2      1
+CATALOPY MODIF commande/crea_champ           geniaut S.GENIAUT          190      2      2
+CATALOPY MODIF commande/defi_fiss_xfem       geniaut S.GENIAUT           57      2      2
+CATALOPY MODIF commande/defi_fond_fiss       rezette C.REZETTE           99     25      2
+CATALOPY MODIF commande/defi_materiau        nicolas O.NICOLAS         2876     10      4
+CATALOPY MODIF commande/dyna_line_harm       nicolas O.NICOLAS           73     10      7
+CATALOPY MODIF commande/dyna_non_line       lebouvie F.LEBOUVIER        355      3      1
+CATALOPY MODIF commande/dyna_tran_modal      cibhhlv L.VIVAN            209      9      9
+CATALOPY MODIF commande/proj_champ           nicolas O.NICOLAS          113      4      2
+CATALOPY MODIF commun/c_comp_incr            joumana J.EL-GHARIB        333      7      2
+CATALOPY MODIF entete/accas                  geniaut S.GENIAUT         1120      2      1
+ FORTRAN AJOUT algorith/cadldp               joumana J.EL-GHARIB         77     77      0
+ FORTRAN AJOUT algorith/dsipdp               joumana J.EL-GHARIB         92     92      0
+ FORTRAN AJOUT algorith/hbdsdp               joumana J.EL-GHARIB         81     81      0
+ FORTRAN AJOUT algorith/hbmata               joumana J.EL-GHARIB        137    137      0
+ FORTRAN AJOUT algorith/lchbr2               joumana J.EL-GHARIB        355    355      0
+ FORTRAN AJOUT algorith/xbasl2               geniaut S.GENIAUT          128    128      0
+ FORTRAN AJOUT algorith/xls2d                geniaut S.GENIAUT          262    262      0
+ FORTRAN AJOUT algorith/xls3d                geniaut S.GENIAUT          300    300      0
+ FORTRAN AJOUT algorith/xnrch2               geniaut S.GENIAUT          356    356      0
+ FORTRAN AJOUT algorith/xnrch3               geniaut S.GENIAUT          404    404      0
+ FORTRAN AJOUT algorith/xurefa               geniaut S.GENIAUT          130    130      0
+ FORTRAN AJOUT elements/xteini               geniaut S.GENIAUT           92     92      0
+ FORTRAN AJOUT prepost/pktemp                rezette C.REZETTE          160    160      0
+ FORTRAN MODIF algeline/op0045               nicolas O.NICOLAS         1065     12      6
+ FORTRAN MODIF algorith/cakg3d               geniaut S.GENIAUT          387      7      2
+ FORTRAN MODIF algorith/calcme               joumana J.EL-GHARIB        931     56      9
+ FORTRAN MODIF algorith/comthm               joumana J.EL-GHARIB        259      3      2
+ FORTRAN MODIF algorith/conare               geniaut S.GENIAUT          159     28      1
+ FORTRAN MODIF algorith/confac               geniaut S.GENIAUT          254     31      2
+ FORTRAN MODIF algorith/dlarch               cibhhlv L.VIVAN            115      2      3
+ FORTRAN MODIF algorith/hbcalc               joumana J.EL-GHARIB         77      2      2
+ FORTRAN MODIF algorith/hbrcvx               joumana J.EL-GHARIB        108     16      5
+ FORTRAN MODIF algorith/hbrjpl               joumana J.EL-GHARIB        105      6     85
+ FORTRAN MODIF algorith/hbrmat               joumana J.EL-GHARIB        178     10      3
+ FORTRAN MODIF algorith/lccnvx               joumana J.EL-GHARIB         80      3      2
+ FORTRAN MODIF algorith/lcelas               joumana J.EL-GHARIB         72      2      1
+ FORTRAN MODIF algorith/lchbvp               joumana J.EL-GHARIB         72     16      5
+ FORTRAN MODIF algorith/lchobr               joumana J.EL-GHARIB        204      4      5
+ FORTRAN MODIF algorith/lcjela               joumana J.EL-GHARIB         63      2      1
+ FORTRAN MODIF algorith/lcjpla               joumana J.EL-GHARIB         70      3      3
+ FORTRAN MODIF algorith/lcmate               joumana J.EL-GHARIB        141      3      2
+ FORTRAN MODIF algorith/lcplas               joumana J.EL-GHARIB        133      3      2
+ FORTRAN MODIF algorith/loncar               geniaut S.GENIAUT          102     15      2
+ FORTRAN MODIF algorith/mdallr               nicolas O.NICOLAS          149      5      5
+ FORTRAN MODIF algorith/mdchoc               cibhhlv L.VIVAN           1098     91     27
+ FORTRAN MODIF algorith/mereso               cibhhlv L.VIVAN            271      6      1
+ FORTRAN MODIF algorith/merimo               geniaut S.GENIAUT          469     11      4
+ FORTRAN MODIF algorith/nmmoam              lebouvie F.LEBOUVIER        148     23      3
+ FORTRAN MODIF algorith/nmthmc               joumana J.EL-GHARIB        532      4      3
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          238     54     10
+ FORTRAN MODIF algorith/op0060               nicolas O.NICOLAS          629     46     10
+ FORTRAN MODIF algorith/op0113               geniaut S.GENIAUT          357     26      3
+ FORTRAN MODIF algorith/plasti               joumana J.EL-GHARIB        473      3      2
+ FORTRAN MODIF algorith/vefnme               geniaut S.GENIAUT          245     14      5
+ FORTRAN MODIF algorith/xcalfe               geniaut S.GENIAUT          156     26     27
+ FORTRAN MODIF algorith/xcface               geniaut S.GENIAUT          305     30     12
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          167     13      4
+ FORTRAN MODIF algorith/xdecov               geniaut S.GENIAUT          394    103      7
+ FORTRAN MODIF algorith/xdelh                geniaut S.GENIAUT          102     10      4
+ FORTRAN MODIF algorith/xdivte               geniaut S.GENIAUT          135     16      1
+ FORTRAN MODIF algorith/xinils               geniaut S.GENIAUT          223     41    265
+ FORTRAN MODIF algorith/xkel3d               geniaut S.GENIAUT          380     18      8
+ FORTRAN MODIF algorith/xmel3d               geniaut S.GENIAUT          165      9      6
+ FORTRAN MODIF algorith/xmmbca               geniaut S.GENIAUT          157      5      5
+ FORTRAN MODIF algorith/xmmcme               geniaut S.GENIAUT          158      8      8
+ FORTRAN MODIF algorith/xstano               geniaut S.GENIAUT          221     10      6
+ FORTRAN MODIF algorith/xtopoc               geniaut S.GENIAUT          109     11      9
+ FORTRAN MODIF calculel/op0055               rezette C.REZETTE          210     25      7
+ FORTRAN MODIF elements/gverif               rezette C.REZETTE          826     63      7
+ FORTRAN MODIF elements/te0024               geniaut S.GENIAUT          102     17     13
+ FORTRAN MODIF elements/te0050               nicolas O.NICOLAS          163      6      2
+ FORTRAN MODIF elements/te0295               geniaut S.GENIAUT          557     29     25
+ FORTRAN MODIF elements/te0297               geniaut S.GENIAUT          139      7     19
+ FORTRAN MODIF elements/te0311               geniaut S.GENIAUT          447     37     40
+ FORTRAN MODIF elements/te0461               geniaut S.GENIAUT          482     28     25
+ FORTRAN MODIF elements/te0510               geniaut S.GENIAUT          198     24     18
+ FORTRAN MODIF elements/te0514               geniaut S.GENIAUT          190      8      2
+ FORTRAN MODIF elements/te0515               rezette C.REZETTE          184      8      7
+ FORTRAN MODIF elements/te0532               geniaut S.GENIAUT          231     37     33
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          492     64     37
+ FORTRAN MODIF elements/te0534               geniaut S.GENIAUT          400     42     38
+ FORTRAN MODIF elements/te0539               geniaut S.GENIAUT          310     11     31
+ FORTRAN MODIF elements/te0542               geniaut S.GENIAUT          105      8     23
+ FORTRAN MODIF elements/te0548               geniaut S.GENIAUT          131      3     16
+ FORTRAN MODIF elements/xbsigm               geniaut S.GENIAUT          133      7     12
+ FORTRAN MODIF elements/xsif3d               geniaut S.GENIAUT          358     28     30
+ FORTRAN MODIF elements/xxbsig               geniaut S.GENIAUT          211     15      7
+ FORTRAN MODIF modelisa/chprec               geniaut S.GENIAUT          278      8      3
+ FORTRAN MODIF modelisa/limend               f1bhhaj J.ANGLES           161      8      5
+ FORTRAN MODIF modelisa/mode18               geniaut S.GENIAUT          373      5      1
+ FORTRAN MODIF modelisa/xdelco               geniaut S.GENIAUT          186     12      4
+ FORTRAN MODIF modelisa/xdeldl               geniaut S.GENIAUT          238     20      5
+ FORTRAN MODIF prepost/op0187                rezette C.REZETTE          782     55     26
+ FORTRAN MODIF prepost/op0188                rezette C.REZETTE          333      4      4
+ FORTRAN MODIF prepost/op0196                rezette C.REZETTE          472     30     15
+ FORTRAN MODIF prepost/pkfond                rezette C.REZETTE          840     54     14
+ FORTRAN MODIF prepost/pkmate                rezette C.REZETTE          155     76      9
+ FORTRAN MODIF utilitai/ordon2               nicolas O.NICOLAS           51      2      2
+ FORTRAN SUPPR algorith/hbdiag               joumana J.EL-GHARIB        251      0    251
+ FORTRAN SUPPR algorith/hbzero               joumana J.EL-GHARIB        122      0    122
+ FORTRAN SUPPR algorith/xenrch               geniaut S.GENIAUT          404      0    404
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   26        7050      7050             +7050
+ MODIF :  143       53440      2322    1528      +794
+ SUPPR :    3         777               777      -777
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  172       61267      9372    2305     +7067 

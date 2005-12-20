@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,9 +62,9 @@ C
         ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
           CALL  LGLJPL(MOD,NMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE)
 C
-        ELSEIF ( LOI(1:10) .EQ. 'HOEK_BROWN'   ) THEN
+        ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'   ).OR.
+     1          ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
           CALL  HBRJPL(MOD,NMAT,MATER,SIG,VIN,VIND,VP,VECP,DSDE)
-C
         ENDIF
 C
         END

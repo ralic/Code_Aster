@@ -5,7 +5,7 @@
       CHARACTER*8   ELREF
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,7 +80,20 @@ C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
      &        (COORD(2)-COORD(3*I+2))**2 + (COORD(3)-COORD(3*I+3))**2 )
  10     CONTINUE
         L=(AR(1)*AR(2)*AR(3))**(1/3)
-
+      ELSEIF (ELREF.EQ.'QU4'.OR.ELREF.EQ.'X8') THEN
+C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
+        DO 20 I=1,2
+          AR(I)=SQRT((COORD(1)-COORD(3*I+1))**2 + 
+     &        (COORD(2)-COORD(3*I+2))**2 + (COORD(3)-COORD(3*I+3))**2 )
+ 20     CONTINUE
+        L=(AR(1)*AR(2))**(1/2)
+      ELSEIF (ELREF.EQ.'TR3'.OR.ELREF.EQ.'X6') THEN
+C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
+        DO 30 I=1,2
+          AR(I)=SQRT((COORD(1)-COORD(3*I+1))**2 + 
+     &        (COORD(2)-COORD(3*I+2))**2 + (COORD(3)-COORD(3*I+3))**2 )
+ 30     CONTINUE
+        L=(AR(1)*AR(2))**(1/2)
       ELSE
         CALL UTMESS('F','LONCAR','TYPE D''ELEMENT FINI PAS TRAITE')
       ENDIF

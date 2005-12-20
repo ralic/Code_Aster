@@ -1,5 +1,5 @@
 
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE SUR BASE MODALE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,14 +131,27 @@ VECTASC=COMB_CHAM_NO(COMB_C=_F(CHAM_NO=VECTASS,
                                
 # DEFINITION DES PULSATIONS/FREQUENCES DE LA REPONSE HARMONIQUE
 #-------------------------------------------------
+L_REEL1 = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004);
+L_REEL2 = (11.874599999999999, 13.4747, 15.5802, 21.054300000000001);
 L_REEL = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004, 11.874599999999999, 13.4747, 15.5802, 21.054300000000001);
 
 
+LISFREQ1=DEFI_LIST_REEL(VALE=L_REEL1,);
+LISFREQ2=DEFI_LIST_REEL(VALE=L_REEL2,);
 LISFREQ=DEFI_LIST_REEL(VALE=L_REEL,);
 
 REPHARM=DYNA_LINE_HARM(MATR_MASS=MATRMASS,
                        MATR_RIGI=MATRRIGI,
-                       LIST_FREQ=LISFREQ,
+                       LIST_FREQ=LISFREQ1,
+                       EXCIT=_F(VECT_ASSE=VECTASC,
+                                COEF_MULT=1.0,
+                                PHAS_DEG=0.0,),);
+
+REPHARM=DYNA_LINE_HARM(reuse=REPHARM,
+                       RESULTAT=REPHARM,
+                       MATR_MASS=MATRMASS,
+                       MATR_RIGI=MATRRIGI,
+                       LIST_FREQ=LISFREQ2,
                        EXCIT=_F(VECT_ASSE=VECTASC,
                                 COEF_MULT=1.0,
                                 PHAS_DEG=0.0,),);
@@ -169,7 +182,16 @@ FGEN=PROJ_VECT_BASE(BASE=MODES,
 
 REPHARMG=DYNA_LINE_HARM(MATR_MASS=MGEN,
                        MATR_RIGI=KGEN,
-                       LIST_FREQ=LISFREQ,
+                       LIST_FREQ=LISFREQ1,
+                       EXCIT=_F(VECT_ASSE=FGEN,
+                                COEF_MULT=1.0,
+                                PHAS_DEG=0.0,),);
+
+REPHARMG=DYNA_LINE_HARM(reuse=REPHARMG,
+                       RESULTAT=REPHARMG,
+                       MATR_MASS=MGEN,
+                       MATR_RIGI=KGEN,
+                       LIST_FREQ=LISFREQ2,
                        EXCIT=_F(VECT_ASSE=FGEN,
                                 COEF_MULT=1.0,
                                 PHAS_DEG=0.0,),);

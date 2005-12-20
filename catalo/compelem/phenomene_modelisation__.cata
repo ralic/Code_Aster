@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
+%& MODIF COMPELEM  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -247,6 +247,10 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
+       MODELISATION__ 'C_PLAN_X'          DIM__ 2 2   CODE__ 'CPX'
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_X
+              MAILLE__ QUAD8     ELEMENT__ MECPQU8_X
+       
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
               MAILLE__ SEG3      ELEMENT__ MEPLSE3

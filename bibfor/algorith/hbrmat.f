@@ -1,7 +1,7 @@
       SUBROUTINE HBRMAT(MOD, IMAT, NBMAT, TEMPD, MATERD, MATERF, MATCST,
      &   NDT, NDI, NR, NVI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,6 +63,13 @@ C =================================================================
       PARAMETER       ( DEUX   =  2.0D0  )
       PARAMETER       ( EPS    =  1.0D-6  )
 C =================================================================
+      DO 12 II = 1 , NBMAT
+         MATERD(II,1) = 0.D0
+         MATERD(II,2) = 0.D0
+         MATERF(II,1) = 0.D0
+         MATERF(II,2) = 0.D0
+ 12   CONTINUE
+C =================================================================
 C --- DEFINITION DES CHAMPS ---------------------------------------
 C =================================================================
       NOMC(1)  = 'E         '
@@ -120,11 +127,11 @@ C =================================================================
       CP      = BRES*GRUP*(GRUP-DEUX*GRES) / (GRUP - GRES)**2
       COHERE  = AP*GRUP**2+DP*GRUP+CP    
       IF (ABS(COHERE).GT.EPS) THEN
-         CALL UTMESS('F','HBMATE','COEF PARABOLIQUES PAS COMPATIBLES')
+         CALL UTMESS('F','HBRMAT','COEF PARABOLIQUES PAS COMPATIBLES')
       ENDIF
       COHERE  = AP*GRES**2+DP*GRES+CP
       IF (ABS(COHERE-BRES).GT.EPS) THEN
-         CALL UTMESS('F','HBMATE','COEF PARABOLIQUES PAS COMPATIBLES 2')
+         CALL UTMESS('F','HBRMAT','COEF PARABOLIQUES PAS COMPATIBLES 2')
       ENDIF
       SIGBD  = ((MRUP) +SQRT((MRUP)**2 +
      +    4.0D0*((UN-ALPHA)**2)*SRUP)) /

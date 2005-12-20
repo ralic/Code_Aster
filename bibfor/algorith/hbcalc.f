@@ -1,7 +1,7 @@
       SUBROUTINE HBCALC(FMOINS,GAMMA,DG,NBMAT,MATERF,I1E,SIGEQE,VP,ETAP,
      &     VH,VG,PARAME,DERIVE,INCRG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,7 +70,7 @@ C ======================================================================
 C ======================================================================
       DFDGA = DEUX*AUX3*(AUX1 + AUX2) - AUX4
       IF (ABS(DFDGA).LT.EPS) THEN
-         CALL UTMESS('F','HBCAL2','DERIVEE DE F NULLE')
+         CALL UTMESS('F','HBCALC','DERIVEE DE F NULLE')
       ENDIF
       INCRG = -FMOINS/DFDGA
 C ======================================================================

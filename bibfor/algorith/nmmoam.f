@@ -3,7 +3,7 @@
       CHARACTER*24 VALMOD,BASMOD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,15 +41,17 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*6  PGC
       CHARACTER*8  K8B
-      CHARACTER*8  MODMEC, MAILLA
+      CHARACTER*8  MODMEC, MAILLA, LISTAM
       CHARACTER*14 NUMDDL
       CHARACTER*24 DEEQ
       CHARACTER*24 KBID, MATRIC, NOMCHA
       CHARACTER*80 TITRE
+      LOGICAL EXIAM, GETEXM
       DATA PGC/'NMMOAM'/
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      EXIAM = .FALSE.
       PI = R8PI()
       CALL GETVID('AMOR_MODAL','MODE_MECA',1,1,1,MODMEC,NBMD)
       CALL JEVEUO(MODMEC//'           .REFD','L',IADRIF)
@@ -72,13 +74,31 @@ C
       CALL WKVECT(BASMOD,'V V R',NBMODE*NEQ,JBASMO)
 C
 C     ----- RECUPERATION DES AMORTISSEMENTS -----
-      CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,0,R8B,NA)
+
       CALL WKVECT('&&'//PGC//'.AMORTISSEMENT','V V R',NBMODE,JAMOR)
-      IF (NA.NE.0) THEN
-         NBAMOR = -NA
-         CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBAMOR,
+
+      NA = 0
+      NB = 0
+      CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,0,R8B,NA)
+      EXIAM = GETEXM('AMOR_MODAL','LIST_AMOR')
+      IF(EXIAM) THEN
+         CALL GETVID('AMOR_MODAL','LIST_AMOR',1,1,0,K8B,NB)
+      ENDIF   
+      IF (NA.NE.0 .OR. NB.NE.0) THEN
+        IF (NA.NE.0) THEN
+          NBAMOR = -NA
+          CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBAMOR,
      &                ZR(JAMOR),NA)
-         IF (NBAMOR.GT.NBMODE) THEN
+        ELSE
+          CALL GETVID('AMOR_MODAL','LIST_AMOR',1,1,1,LISTAM,N)
+          CALL JELIRA(LISTAM//'           .VALE','LONMAX',NBAMOR,K8B)
+          CALL JEVEUO(LISTAM//'           .VALE','L',IAMOR)
+          DO 30 IAM = 1,NBMODE
+             ZR(JAMOR+IAM-1) = ZR(IAMOR+IAM-1)
+   30     CONTINUE
+        ENDIF
+ 
+        IF (NBAMOR.GT.NBMODE) THEN
             CALL UTMESS('A',PGC,'TROP D''AMORTISSEMENTS MODAUX')
          ENDIF
          IF (NBAMOR.LT.NBMODE) THEN

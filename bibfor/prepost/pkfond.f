@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/09/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,33 +44,36 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER      NDIM, IBID, N1, NBPAR1, IDCOOR, NBNOE, IM, IN,
      +             NBVAL, JABSCS, JDXS, JDYS, JDZS, JABSCI, JDXI, JDYI,
-     +             JDZI, IRET, NBMA, IADRMA, JLIMA, IDLINO, II,
+     +             JDZI, IRET, NBMA, IADRMA, JLIMA, IDLINO, II, ITCOEF,
      +             NBNOLI, NBNOFO, INF, NUMORI, NBVAS, NBVAI, NBNOFT,
      +             JNOLS, JNOLI, NBNOLS, NBTRLS, NBTRLI, JCOORI, JCOORS,
      +             KNOLS, KNOLI, JNOFO, JINTS, JINTI, NUTYP, IPAS,
      +             NUMEXT, KNULS, KNULI, IFM, NIV, IATYMA, NTTRI6,
      +             NTQUA8, NTQUA9, JTGOR, JTGEX, NO1, NO2, NO3,
-     +             NBINST, JINST, IIN, JNFT, IERA, JTYPM
-      PARAMETER  ( NBPAR1=12 )
+     +             NBINST, JINST, IIN, JNFT, IERA, JTYPM, NBPAR2
+      PARAMETER  ( NBPAR1=12, NBPAR2=2 )
       REAL*8       R8B, COEFD, COEFD3, COEFG, COEFG3, X0(3), D1, D2,
      +             D, RMAX, EPSI, VECNOR(3), X1, X2, Y1, Y2, Z1, Z2,
      +             KG2(10),KG1(10),KG3(10),VECTY(3),VO(3),VE(3),
      +             RMAXEM,DMAX, ABSC, VP(3), TGOR(3), TGEX(3), DINST,
-     +             PRECI, PREC, PRECV, PRECN, RMPREC
+     +             PRECI, PREC, PRECV, PRECN, RMPREC, VRTMP, PRECT
+      PARAMETER  ( PRECT=1.D-6)
       COMPLEX*16   CBID
-      LOGICAL      EXTGOR, EXTGEX, EXIST, TYPLIN, TYPQUA
+      LOGICAL      EXTGOR, EXTGEX, EXIST, TYPLIN, TYPQUA, LFOINF
       CHARACTER*2  TYPPA1(NBPAR1)
-      CHARACTER*8  K8B, NOMRES, NOMA, CRITI, CRITN, TYPM, SYMECH
-      CHARACTER*16 NOMCMD, CONCEP,NOMPA1(NBPAR1), MOTFAC
+      CHARACTER*8  K8B, NOMRES, NOMA, CRITI, CRITN, TYPM, SYMECH, CRITT
+      PARAMETER  ( CRITT='RELATIF')
+      CHARACTER*16 NOMCMD, CONCEP,NOMPA1(NBPAR1), MOTFAC, NOMPA2(NBPAR2)
       CHARACTER*19 DEPSU2, DEPIN2
       CHARACTER*24 NOESUP, ABSSUP, DXSUP, DYSUP, DZSUP, NOEINF, ABSINF,
      +             DEPINF, DXINF, DYINF, DZINF, NUMSUP, NUMINF, MESNOE,
      +             FONNOE, FONLSU, FONLIN, FONTOR, FONTEX, NOMNOE,
-     +             DEPSUP
+     +             DEPSUP, TCOEF
 
       DATA  NOMPA1 / 'INST' , 'NOEUD_FOND' , 'ABSC_CURV',
      +               'METHODE' , 'K1_MAX' , 'K1_MIN' , 'K2_MAX' ,
      +              'K2_MIN' , 'K3_MAX' , 'K3_MIN' , 'G_MAX' , 'G_MIN' /
+      DATA  NOMPA2 / 'INST' , 'NOEUD'/
       DATA  TYPPA1 / 'R', 'K8', 'R', 'I', 'R', 'R', 'R', 'R', 'R',
      +               'R', 'R', 'R' /
 C DEB ------------------------------------------------------------------
@@ -101,9 +104,18 @@ C DEB ------------------------------------------------------------------
       CALL GETVTX ( ' ', 'TOUT', 1,1,1, K8B, N1 )
       IF ( N1 .NE. 0 )  IPAS = 1
 
+      LFOINF=.FALSE.
       FONNOE = FOND//'.FOND      .NOEU'
       CALL JEEXIN ( FONNOE, IRET )
-      IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .NOEU')
+      IF (IRET.EQ.0) THEN
+          CALL JEEXIN (FOND//'.FOND_INF  .NOEU', IRET )
+           IF (IRET.EQ.0) THEN
+               CALL UTMESS('F',NOMCMD,'BUG: MANQUE .NOEU')
+           ELSE
+               LFOINF=.TRUE.
+               FONNOE =FOND//'.FOND_INF  .NOEU'
+           ENDIF
+      ENDIF
       CALL JELIRA ( FONNOE, 'LONMAX', NBNOFO, K8B )
       CALL JEVEUO ( FONNOE, 'L', JNOFO )
 
@@ -164,7 +176,8 @@ C     ------------------------------------------------------------------
 C                     CARACTERISTIQUES MATERIAUX
 C     ------------------------------------------------------------------
 
-      CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3 )
+      CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3, TCOEF, ITCOEF )
+C
       IF ( NDIM .NE. 3 ) THEN
          CALL UTMESS('F',NOMCMD,'LA MODELISATION DOIT ETRE "3D"')
       ENDIF
@@ -322,7 +335,26 @@ C     ----------------------------------------
          IF ( .NOT. ZL(JNFT+INF-1) ) GOTO 200
          IF ( NIV .EQ. 2 )  WRITE(IFM,1000) ZK8(JNOFO+INF-1)
          CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO+INF-1)), NUMORI )
-
+C
+         IF(ITCOEF.NE.0)THEN
+            CALL TBLIVA ( TCOEF, 2, NOMPA2, IBID, DINST, CBID,
+     +                 ZK8(JNOFO+INF-1),CRITT, PRECT,'COEFD', K8B,
+     +                 IBID, VRTMP, CBID, K8B, IRET )
+            IF(IRET.EQ.0)COEFD=VRTMP
+            CALL TBLIVA ( TCOEF, 2, NOMPA2, IBID, DINST, CBID,
+     +                 ZK8(JNOFO+INF-1),CRITT, PRECT,'COEFD3', K8B,
+     +                 IBID, VRTMP, CBID, K8B, IRET )
+            IF(IRET.EQ.0)COEFD3=VRTMP
+            CALL TBLIVA ( TCOEF, 2, NOMPA2, IBID, DINST, CBID,
+     +                 ZK8(JNOFO+INF-1),CRITT, PRECT,'COEFG', K8B,
+     +                 IBID, VRTMP, CBID, K8B, IRET )
+            IF(IRET.EQ.0)COEFG=VRTMP
+            CALL TBLIVA ( TCOEF, 2, NOMPA2, IBID, DINST, CBID,
+     +                 ZK8(JNOFO+INF-1),CRITT, PRECT,'COEFG3', K8B,
+     +                 IBID, VRTMP, CBID, K8B, IRET )
+            IF(IRET.EQ.0)COEFG3=VRTMP
+         ENDIF
+C
 C ------ DETERMINATION DU PLAN PASSANT PAR UN NOEUD N_I DU FOND DE
 C        FISSURE ET UN VECTEUR NORMAL
 
@@ -448,14 +480,18 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
             CALL UTFINM
             GOTO 202
          ELSE
-            NBVAS = 1
+            NBVAS = 0
             DMAX  = 0.D0
             NUMEXT = NUMORI
             X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
             Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
             Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
+            
             CALL WKVECT ( NUMSUP , 'V V I' , NBTRLS, KNULS )
-            ZI(KNULS) = NUMORI
+            IF(.NOT.LFOINF)THEN
+                ZI(KNULS) = NUMORI
+                NBVAS=1
+            ENDIF
             DO 110 IN = 1 , NBTRLS
               IF ( ZI(JINTS+IN-1) .EQ. NUMORI ) GOTO 110
                X2 = ZR(IDCOOR-1+3*(ZI(JINTS+IN-1)-1)+1)
@@ -463,9 +499,11 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
                Z2 = ZR(IDCOOR-1+3*(ZI(JINTS+IN-1)-1)+3)
                D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
                IF ( D .LE. RMPREC ) THEN
-                  DO 112 II = 1 , NBVAS
-                     IF ( ZI(KNULS+II-1) .EQ. ZI(JINTS+IN-1) ) GOTO 110
- 112              CONTINUE
+                  IF(NBVAS.GT.0)THEN
+                    DO 112 II = 1 , NBVAS
+                      IF ( ZI(KNULS+II-1) .EQ. ZI(JINTS+IN-1) ) GOTO 110
+ 112                CONTINUE
+                  ENDIF
                   NBVAS = NBVAS + 1
                   ZI(KNULS+NBVAS-1)  = ZI(JINTS+IN-1)
                   IF ( D .GT. DMAX ) THEN
@@ -475,6 +513,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
                ENDIF
  110        CONTINUE
          ENDIF
+
          CALL OREINO ( NOMA, ZI(KNULS), NBVAS, NUMORI, NUMEXT,
      +                       ZR(IDCOOR), CRITN, PREC,IERA, IRET )
          IF ( IRET .NE. 0 ) GOTO 202
@@ -536,7 +575,8 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
                     ENDIF
                  ENDIF
  120          CONTINUE
-           ENDIF
+           ENDIF 
+ 
            CALL OREINO ( NOMA, ZI(KNULI), NBVAI, NUMORI, NUMEXT,
      +                       ZR(IDCOOR), CRITN, PREC,IERA, IRET )
            IF ( IRET .NE. 0 ) GOTO 202
@@ -716,7 +756,7 @@ C        --- CAS SYMETRIQUE ---
      +            SYMECH)
 
 C ------ ON CALCULE LES K1, K2, K3
-
+C
          CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP, DZSUP,
      +                 DXINF, DYINF, DZINF,
      +                 COEFD,COEFD3,COEFG,COEFG3,KG1(3),KG2(3),KG3(3))

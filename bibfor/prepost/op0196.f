@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,15 +50,16 @@ C     ------------------------------------------------------------------
      &        IOR,JORD,JCNSV1,JCNSD1,JCNSK1,JNO,NUMNOE,JCNSV2,JCNSD2,
      &        JCOR,JJCNS,IICNS,JNOLOC,IIHEA,JJHEA,JHEA,JLNNO,NBHEA,
      &        JCNSK2,NBCMP,JDIM,JCNSC2,I,JCNSL1,JCNSL2,K,KK,JCO,JCNSC1,
-     &        JINST,JCESV,JCESD,JCESK,JCESL,JCESC,IAD,NBMX,NBN,JHEAV,J,
-     &        NBNOE,KX,KY,KZ,IDX,IDY,IDZ,JCNS,I1000,NB1000,JNIM,II,ILOC,
-     &        NBGREL,NUTYEL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,JCORX,
-     &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS
+     &        JINST,JCESV,JCESD,JCESK,JCESL,JCESC,IAD,NBMX,JHEAV,J,
+     &        KX,KY,KZ,IDX,IDY,IDZ,JCNS,I1000,NB1000,JNIM,II,ILOC,
+     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,JCORX,
+     &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS,
+     &        JTYPMA,NBNOSO
       REAL*8  INST,EPS
       PARAMETER(EPS=1.D-10, NBCNS=128, NBHEA=36)
       CHARACTER*1  KBID
       CHARACTER*8  MO,RESUCO,RESUC1,MA,LDEP(3),NOMNOE,NOMNOI,
-     &             LPAIN(6),LPAOUT(1),K8B,NOMA
+     &             LPAIN(6),LPAOUT(1),K8B,NOMA,TYPMA
       CHARACTER*16 K16B,TYSD,OPTION,NOTYPE,NOMCHA
       CHARACTER*19 CHS,CHNO,CHNOS,CH,CHOUT,CHAMS
       CHARACTER*24 ORDR,LIGREL,LCHIN(6),LCHOUT(1),HEAV,CONNEX,LIEL,
@@ -280,8 +281,12 @@ C             BOUCLE SUR LES GRELS:
                  CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
                  CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',
      &                ZI(IGREL+NBMAGL-1)),NOTYPE)
-                 IF(NOTYPE(1:13).NE.'MECA_X_HEXA20'   .AND.
-     &                NOTYPE(1:13).NE.'MECA_XH_HEXA8') GOTO 140
+                 IF(NOTYPE(1:13).NE.'MECA_X_HEXA20'  .AND.
+     &              NOTYPE(1:13).NE.'MECA_XH_HEXA8'  .AND.
+     &              NOTYPE(1:14).NE.'MECA_X_PENTA15' .AND.
+     &              NOTYPE(1:14).NE.'MECA_XH_PENTA6' .AND.
+     &              NOTYPE(1:14).NE.'MECA_X_TETRA10' .AND.
+     &              NOTYPE(1:14).NE.'MECA_XH_TETRA4'  ) GOTO 140
 C             BOUCLE SUR LES MAILLES DU GREL:
                  DO 150 J=1,NBMAGL-1
                     IMA=ZI(IGREL+J-1)
@@ -351,11 +356,21 @@ C
 C
 C             REMPLISSAGE DU CHAM_NO
               KK=0
+              CALL JEVEUO(ZK8(JCNSK1)//'.TYPMAIL','L',JTYPMA)
               DO 777 I=1,NBMX
                  CALL JEVEUO(JEXNUM(CONNEX,ZI(JHEAV+I-1)),'L',JCO)
+                 CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',
+     &                ZI(JTYPMA+ZI(JHEAV+I-1)-1)),TYPMA)
+                 IF(TYPMA(1:4).EQ.'HEXA')THEN
+                       NBNOSO=8
+                 ELSEIF(TYPMA(1:4).EQ.'PENT')THEN
+                       NBNOSO=6
+                 ELSEIF(TYPMA(1:4).EQ.'TETR')THEN
+                       NBNOSO=4
+                 ENDIF
 C
-                  CALL WKVECT('&&OP0196.NO_LOC','V V I',8,JNOLOC)
-                  DO 780 II=1,8
+                  CALL WKVECT('&&OP0196.NO_LOC','V V I',NBNOSO,JNOLOC)
+                  DO 780 II=1,NBNOSO
                      ZI(JNOLOC+II-1)=0
  780              CONTINUE
                   DO 781 II=1,NBCNS
@@ -370,17 +385,17 @@ C
                        NUMNOE=ZI(JLNONX+KK-1)
                        CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUMNOE),NOMNOE)
                        ZR(JCNSV2+3*(NUMNOE-1)  )=
-     &                      ZR(JCESV+3*(J-1)+24+90*(I-1))
+     &                      ZR(JCESV+3*(J-1)+3*NBNOSO+90*(I-1))
                        ZR(JCNSV2+3*(NUMNOE-1)+1)=
-     &                      ZR(JCESV+3*(J-1)+24+90*(I-1)+1)
+     &                      ZR(JCESV+3*(J-1)+3*NBNOSO+90*(I-1)+1)
                        ZR(JCNSV2+3*(NUMNOE-1)+2)=
-     &                      ZR(JCESV+3*(J-1)+24+90*(I-1)+2)
+     &                      ZR(JCESV+3*(J-1)+3*NBNOSO+90*(I-1)+2)
                        ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
                        ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
                        ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
  779                CONTINUE
 C
-                   DO 799 J=1,8
+                   DO 799 J=1,NBNOSO
                       IF(ZI(JNOLOC+J-1).EQ.0)GOTO 799
                       IF(ABS(ZR(JLNNO+ZI(JCO+J-1)-1)).LT.EPS)THEN
                             GOTO 799
@@ -401,7 +416,7 @@ C
                    ENDIF
 C
                   IF(ZI(JINDMF+ZI(JHEAV+I-1)-1).EQ.0 .OR. QUMAFI)THEN
-                    DO 778 J=1,8
+                    DO 778 J=1,NBNOSO
                        CALL JENUNO(JEXNUM(ZK8(JCNSK1)//'.NOMNOE',
      &                     ZI(JCO+J-1)),NOMNOE)
                        NOMNOI='NI'//NOMNOE(2:LEN(NOMNOE))
@@ -431,7 +446,7 @@ C
                  CALL JEDETR('&&OP0196.NO_LOC')
  777          CONTINUE
 
-              CALL IMPRSD('CHAMP',CHS,8,'--- CHAMP DEPL ---')
+C              CALL IMPRSD('CHAMP',CHS,8,'--- CHAMP DEPL ---')
               CALL CNSCNO(CHS,' ','NON','G',CH)
 C
 C             3 - AJOUT DU CHAMP DANS LA SD RESULTAT

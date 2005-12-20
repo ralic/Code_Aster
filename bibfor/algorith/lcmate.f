@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,8 @@ C
          CALL LGLMAT ( MOD, IMAT, NMAT, TEMPD, MATERD,
      1                 MATERF, MATCST, NDT, NDI, NR, NVI )
      
-      ELSEIF ( LOI(1:10) .EQ. 'HOEK_BROWN' ) THEN
+      ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN' ).OR.
+     1        ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF' ))THEN
          CALL HBRMAT ( MOD, IMAT, NMAT, TEMPD, MATERD,
      1                 MATERF, MATCST, NDT, NDI, NR, NVI )     
      

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,9 +56,10 @@ C     ------------------------------------------------------------------
      &        JCORF,ILOC,JNBSE,IIND,JSE,JIIND,JIINDP,NBGEL,NBMAGL,JCOFL,
      &        IIPIN,JJCNS,IICNS,JJPIN,IGREL,NBGREL,JWXFEM,JL,JDIMI,JJSE,
      &        JHTET,JINDNP,JINDNM,IIHEA,JJHEA,JNTE,JNUNO,NUTYEL,JCONN,
-     &        NBTNO,JH20N,JH20M,JCOR,NUNO,NBNH20,MH20,NCO,NTGEO,IAD,IMX,
+     &        NBTNO,JH20N,JH20M,JCOR,NUNO,NBNH20,NCO,NTGEO,IAD,IMX,
      &        NBTGNO,NBNOGP,JNO,NBNOF,JNOGP,JGPNO,JNIM,II,I1000,NB1000,
-     &        NBMANI,JMANIS,JNDNIS,JLNNO,JINDNS,JNNEW,NBNOIS,IRE,JMX,JNX
+     &        NBMANI,JMANIS,JNDNIS,JLNNO,JINDNS,JNNEW,NBNOIS,IRE,JMX,
+     &        NBNOSO,NBNOMI,JNX
       REAL*8  XNIS,YNIS,ZNIS,XNXIS,YNXIS,ZNXIS,EPS
       PARAMETER(EPS=1.D-10, NBCNS=128, NBPIN=33, NBHEA=36)
       CHARACTER*1 KBID
@@ -150,9 +151,11 @@ C
  12   CONTINUE
 C
 C     ON PARCOURT LE LIGREL:
-C     ATTENTION : SEULS LES ELEMENTS SONT EXPLOITES: 
-C                   - MECA_X_HEXA20  
-C                   - MECA_X_HEXA8
+C     ATTENTION : SEULS LES ELEMENTS SUIVANTS SONT EXPLOITES: 
+C                   - MECA_X_HEXA20 , MECA_XH_HEXA8
+C                   - MECA_X_PENTA15, MECA_XH_PENTA6
+C                   - MECA_X_TETRA10, MECA_XH_TETRA4
+C
       CALL JEVEUO(FISS//'.TOPOSE.LON.CELV','L',JLON)
       CALL JEVEUO(FISS//'.TOPOSE.CNS.CELV','L',JCNS)
       LIEL=MO//'.MODELE    .LIEL'
@@ -164,7 +167,6 @@ C                   - MECA_X_HEXA8
       IIHEA=0
       NBSE=0
       NBNI=0
-      MH20=0
       NBNOIS=0
       NBMANI=0
       DO 40 I=1,NBGREL
@@ -172,14 +174,18 @@ C                   - MECA_X_HEXA8
          CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
          NUTYEL=ZI(IGREL+NBMAGL-1)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NOTYPE)
-          IF(NOTYPE(1:13).NE.'MECA_X_HEXA20'   .AND.
-     &       NOTYPE(1:13).NE.'MECA_XH_HEXA8') GOTO 40
+          IF(NOTYPE(1:13).NE.'MECA_X_HEXA20'    .AND.
+     &       NOTYPE(1:13).NE.'MECA_XH_HEXA8'    .AND.
+     &       NOTYPE(1:14).NE.'MECA_X_PENTA15'   .AND.
+     &       NOTYPE(1:14).NE.'MECA_XH_PENTA6'   .AND.
+     &       NOTYPE(1:14).NE.'MECA_X_TETRA10'   .AND.
+     &       NOTYPE(1:14).NE.'MECA_XH_TETRA4'  ) GOTO 40
            DO 50 J=1,NBMAGL-1
            IMA=ZI(IGREL+J-1)
            IOCC=IOCC+1
            I1=ZI(JLON+8*(IOCC-1))
            IF(I1.NE.0)THEN
-C            LA MAILLE X-FEM N'EST ELOIGNEE DE LA FISSURE:
+C            LA MAILLE X-FEM N'EST PAS ELOIGNEE DE LA FISSURE:
              I2=ZI(JLON+8*(IOCC-1)+I1+1)
              KK=KK+1
              ZI(JNDNIS+KK-1)=0
@@ -225,13 +231,27 @@ C            NOMBRE DE SOUS-ELEMENTS
              ZI(JJSE+KK-1)=NBSE
              NBSE=NBSE+JJ
           ELSE
-C            ON RECUPERE LES MAILLES HEXA20 EN VUE DE LES LINEARISER
-             IF(NOTYPE(1:13).EQ.'MECA_X_HEXA20')THEN
-                MH20=MH20+1
-                ZI(JH20M+IMA-1)=MH20
-                CALL JEVEUO(JEXNUM(MA//'.CONNEX',I),'L',JCO)
-                DO 46 INO=1,12
-                   ZI(JH20N+ZI(JCO+8+INO-1)-1)=1
+C            ON RECUPERE LES MAILLES QUADRATIQUES EN VUE DE LES
+C            LINEARISER
+             IF(NOTYPE(1:13).EQ.'MECA_X_HEXA20'  .OR.
+     &          NOTYPE(1:14).EQ.'MECA_X_PENTA15' .OR.
+     &          NOTYPE(1:14).EQ.'MECA_X_TETRA10' )THEN
+                CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMA),'L',JCO)
+                IF(NOTYPE(8:11).EQ.'HEXA')THEN
+                      NBNOSO=8
+                      NBNOMI=12
+                      ZI(JH20M+IMA-1)=24
+                ELSEIF(NOTYPE(8:12).EQ.'PENTA')THEN
+                      NBNOSO=6
+                      NBNOMI=9
+                      ZI(JH20M+IMA-1)=20
+                ELSEIF(NOTYPE(8:12).EQ.'TETRA')THEN
+                      NBNOSO=4
+                      NBNOMI=6
+                      ZI(JH20M+IMA-1)=18
+                ENDIF
+                DO 46 INO=1,NBNOMI
+                   ZI(JH20N+ZI(JCO+NBNOSO+INO-1)-1)=1
  46             CONTINUE
              ENDIF
           ENDIF
@@ -315,8 +335,8 @@ C --- CREATION DES OBJETS : '.NOMMAI','.TYPMAIL','.CONNEX'
            CALL JECROC(JEXNUM(CONNEX,J))
            CALL JEVEUO(JEXNUM(MA//'.CONNEX',I),'L',JCO)
            IF(ZI(JH20M+I-1).NE.0)THEN
-              NBCO=8
-              ZI(JTYPF+J-1)=24
+              NBCO=NBNOSO
+              ZI(JTYPF+J-1)=ZI(JH20M+I-1)
            ELSE
               CALL JELIRA(JEXNUM(MA//'.CONNEX',I),'LONMAX',NBCO,KBID)
               ZI(JTYPF+J-1)=ZI(JTYP+I-1)
@@ -357,7 +377,8 @@ C     QUI NE NECESSITENT AUCUNE MODIFICATION
             CALL JEECRA(JEXNOM(GRPNO,NOMGNO),'LONMAX',NBNOF,KBID)
             CALL JEVEUO(JEXNOM(GRPNO,NOMGNO),'E',JNO)
             DO 68 J=1,NBNOF
-               ZI(JNO+J-1)=ZI(JNOGP+J-1)
+               CALL JENUNO(JEXNUM(MA //'.NOMNOE',ZI(JNOGP+J-1)),NOMNO)
+               CALL JENONU(JEXNOM(TMP //'.NOMNOE',NOMNO),ZI(JNO+J-1))   
  68         CONTINUE
             CALL JEDETR('&&OP0187.NO_GROUP')
  66      CONTINUE
@@ -381,6 +402,14 @@ C     --------------------------------
       DO 100 I=1,NBMF
 C        NUMERO DE LA MAILLE X-FEM
          NUMAF=ZI(JWXFEM+I-1)
+C        NOMBRE DE NOEUDS SOMMETS:
+         IF(ZI(JTYP+NUMAF-1).EQ.25)THEN
+                 NBNOSO=8
+         ELSEIF(ZI(JTYP+NUMAF-1).EQ.21)THEN
+                 NBNOSO=6
+         ELSEIF(ZI(JTYP+NUMAF-1).EQ.19)THEN
+                 NBNOSO=4
+         ENDIF
          CALL JEVEUO(JEXNUM(MA//'.CONNEX',NUMAF),'L',JCO)
 C        NBRE DE SOUS-ELEMENTS DE LA MAILLE:NBSEM
          NBSEM=ZI(JNBSEM+I-1)
@@ -416,11 +445,11 @@ C        - UTILE POUR LA NUMEROTATION DES NOEUDS D'INTER :ZI(JNUNO)
             DO 103 J=1,NBNIM
                ZI(JNUNO+J-1)=0
  103        CONTINUE
-            CALL WKVECT('&&OP0187.NEW_NO','V V I',8,JNNEW)
-            DO 104 J=1,8
+            CALL WKVECT('&&OP0187.NEW_NO','V V I',NBNOSO,JNNEW)
+            DO 104 J=1,NBNOSO
                ZI(JNNEW+J-1)=0
  104        CONTINUE
-            DO 105 J=1,8
+            DO 105 J=1,NBNOSO
                 IF(ABS(ZR(JLNNO+ZI(JCO+J-1)-1)).LT.EPS)THEN
                   ZI(JNNEW+J-1)=1
                   LNIS=.TRUE.
@@ -432,8 +461,8 @@ C        - UTILE POUR LA NUMEROTATION DES NOEUDS D'INTER :ZI(JNUNO)
               CALL WKVECT('&&OP0187.NX','V V I',2*NBNIM,JNX)
             ENDIF
             IF(ZI(JNDNIS+I-1).NE.0)THEN
-               CALL WKVECT('&&OP0187.NOIS','V V I',8,JINDNS)
-               DO 106 J=1,8
+               CALL WKVECT('&&OP0187.NOIS','V V I',NBNOSO,JINDNS)
+               DO 106 J=1,NBNOSO
                   ZI(JINDNS+J-1)=0
  106           CONTINUE
             ENDIF
@@ -603,8 +632,8 @@ C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
          IF(LMNIS)THEN
 
              NBNIS=0
-             CALL WKVECT('&&OP0187.NIS','V V I',8,JNIS)
-             DO 399 J=1,8
+             CALL WKVECT('&&OP0187.NIS','V V I',NBNOSO,JNIS)
+             DO 399 J=1,NBNOSO
                 IF(ZI(JNNEW+J-1).EQ.1)THEN
                    NBNIS=NBNIS+1
                    ZI(JNIS+NBNIS-1)=ZI(JCO+J-1)

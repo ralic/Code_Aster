@@ -1,7 +1,7 @@
       SUBROUTINE XDELDL(MOD,MA,GRMAEN,JSTANO,LISREL,NREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       INTEGER IER,NBNO,JMA,LONG,IMA,NMAABS,NBNOMA,JCONX1,JCONX2
       INTEGER INO,NUNO,ISTATU,K,IRET,NDIM(2),JPRNM,NBEC,NBCMP,INOM
       INTEGER ICMP,INDIK8,NNOS,NFE,ICMP2,ICMP3
+      INTEGER NDIME,ADDIM
       CHARACTER*1 K1BID
       CHARACTER*8 K8BID,NOMNO,DDLM(3),DDLC(3),DDLH(3),DDLE(12),DDL(2)
       CHARACTER*8 NOEUD(2),NOMG
@@ -96,6 +97,10 @@ C     POUR UN NOEUD (COMME DANS AFLRCH.F)
       CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
       ICMP = INDIK8(ZK8(INOM),'DX',1,NBCMP)
 
+C     RECUPERATION DE LA DIMENSION
+      CALL JEVEUO(MA//'.DIME','L',ADDIM)
+      NDIME=ZI(ADDIM-1+6)      
+
 C     BOUCLE SUR LES MAILLES
       DO 90 IMA = 1,LONG
 
@@ -105,7 +110,11 @@ C       NUMERO ABS DE LA MAILLE TRAITÉE
 
 C       ATTENTION : COMME MAINTENANT, ON A DES MAILLES À 10,15,20 NOEUDS
 C       IL FAUT BOUCLER SEULEMENT SUR LES NOEUDS SOMMETS : NNOS
-        NNOS = 2*NBNOMA/5
+        IF (NDIME.EQ.2) THEN
+          NNOS = NBNOMA/2
+          ELSE
+          NNOS = 2*NBNOMA/5
+        ENDIF
 
         DO 80 INO = 1,NNOS
 
@@ -125,7 +134,7 @@ C           -------------------------
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS H
-              DO 10 K = 1,3
+              DO 10 K = 1,NDIME
                 CALL AFRELA(1.D0,CBID,DDLH(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
@@ -145,9 +154,11 @@ C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS E
               DO 20 K = 1,3*NFE
+               IF (NDIME.EQ.3 .OR. K-3*INT(K/3) .NE. 0) THEN
                 CALL AFRELA(1.D0,CBID,DDLE(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
+               ENDIF
    20         CONTINUE
             END IF
 
@@ -163,7 +174,7 @@ C           ------------------------------
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.2) THEN
 C             ON SUPPRIME LES DDLS H
-              DO 30 K = 1,3
+              DO 30 K = 1,NDIME
                 CALL AFRELA(1.D0,CBID,DDLH(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
@@ -171,21 +182,25 @@ C             ON SUPPRIME LES DDLS H
             ELSE IF (ISTATU.EQ.1) THEN
 C             ON SUPPRIME LES DDLS E
               DO 40 K = 1,3*NFE
+               IF (NDIME.EQ.3 .OR. K-3*INT(K/3) .NE. 0) THEN
                 CALL AFRELA(1.D0,CBID,DDLE(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
+               ENDIF
    40         CONTINUE
             ELSE IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS H ET E
-              DO 50 K = 1,3
+              DO 50 K = 1,NDIME
                 CALL AFRELA(1.D0,CBID,DDLH(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
    50         CONTINUE
               DO 60 K = 1,3*NFE
+               IF (NDIME.EQ.3 .OR. K-3*INT(K/3) .NE. 0) THEN
                 CALL AFRELA(1.D0,CBID,DDLE(K),NOMNO,0,RBID,1,BETAR,CBID,
      &                      K8BID,'REEL','REEL','12',0.D0,LISREL)
                 NREL = NREL + 1
+               ENDIF
    60         CONTINUE
             END IF
 
@@ -198,7 +213,7 @@ C         DX = DCX , DY = DCY ET DZ = DCZ SOUS RÉSERVE QUE CES NOEUDS
 C         PORTENT BIEN LES DDLS DX, DY ET DZ (ON NE VÉRIFIE QUE 'DX')
           IF (ISTATU.EQ.0) THEN
             IF (EXISDG(ZI(JPRNM-1+ (NUNO-1)*NBEC+1),ICMP)) THEN
-              DO 70 K = 1,3
+              DO 70 K = 1,NDIME
                 DDL(1) = DDLM(K)
                 DDL(2) = DDLC(K)
                 COEFR(1) = 1

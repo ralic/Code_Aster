@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,11 @@ C
 C     ------------------------------------------
         NOMRES(1)='AMOR_HYST'
         CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
-     +                1,NOMRES,VALRES,CODRET, 'FM' )
+     +                1,NOMRES,VALRES,CODRET, BL2 )
+        IF (CODRET(1) .NE. 'OK') THEN
+          CALL RCVALA(MATER,' ','ELAS_ORTH',NPARA,NOMPAR,VALPAR,
+     +                1,NOMRES,VALRES,CODRET, BL2 )
+        ENDIF
       ELSE
         CALL UTMESS('F','TE0050','MESSAGE VIDE    ')
       END IF
