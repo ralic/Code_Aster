@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -560,7 +560,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            POLY_CFC        =FACT(statut='f',
-             TEXTURE         =SIMP(statut='o',typ=(tabl_texture) ),
+             TEXTURE         =SIMP(statut='o',typ=(table_sdaster) ),
              DL              =SIMP(statut='f',typ='R'),
              DA              =SIMP(statut='f',typ='R'),
              N               =SIMP(statut='o',typ='R'),
@@ -576,7 +576,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              C2              =SIMP(statut='o',typ='R'),
            ),
            POLY_CFC_FO     =FACT(statut='f',
-             TEXTURE         =SIMP(statut='o',typ=(tabl_texture) ),
+             TEXTURE         =SIMP(statut='o',typ=(table_sdaster) ),
              DL              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              DA              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              N               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -1233,7 +1233,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # comportement métallurgique
 #
            META_ACIER      =FACT(statut='f',
-             TRC             =SIMP(statut='o',typ=(tabl_trc) ),
+             TRC             =SIMP(statut='o',typ=(table_sdaster) ),
              AR3             =SIMP(statut='o',typ='R'),
              ALPHA           =SIMP(statut='o',typ='R'),
              MS0             =SIMP(statut='o',typ='R'),

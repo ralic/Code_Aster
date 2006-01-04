@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            FLUN            =SIMP(statut='f',typ='R'),
            FLUN_INF        =SIMP(statut='f',typ='R'),
            FLUN_SUP        =SIMP(statut='f',typ='R'),
-           CARA_TORSION    =SIMP(statut='f',typ=tabl_aire_int ),
+           CARA_TORSION    =SIMP(statut='f',typ=table_sdaster),
          ),
 
 

@@ -3,7 +3,7 @@
       CHARACTER*8       CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -613,6 +613,13 @@ C
          CALL UTMESS('F','CAGRFL','ERREUR: OUBLI DE LA TABLE '//
      +                       '"MASS_INER" DANS FICHIER DE COMMANDES.')
  302     CONTINUE
+C        VERIFICATION DES PARAMETRES DE LA TABLE K8TIN
+         CALL TBEXP2(K8TIN,'LIEU')
+         CALL TBEXP2(K8TIN,'ENTITE')
+         CALL TBEXP2(K8TIN,'CDG_X')
+         CALL TBEXP2(K8TIN,'CDG_Y')
+         CALL TBEXP2(K8TIN,'CDG_Z')
+C
          CALL GETVID ( MOTCLF, 'GROUP_MA', 1, 1, 1, KCRIT, N1)
          VALEK(1) = 'LIEU'
          VALEK(2) = 'ENTITE'

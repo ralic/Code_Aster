@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -553,7 +553,6 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=40)
 TAB2=LIRE_TABLE( UNITE=40,
                    FORMAT='ASTER',
                    NUME_TABLE=1,
-                   TYPE_TABLE='TABLE',
                    SEPARATEUR=' ',)
 
 TEST_TABLE(    TABLE=TAB2,
@@ -621,7 +620,6 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=41)
 TAB3=LIRE_TABLE( UNITE=41,
                    FORMAT='ASTER',
                    NUME_TABLE=1,
-                   TYPE_TABLE='TABLE',
                    SEPARATEUR=' ',)
 
 TEST_TABLE(    TABLE=TAB3,

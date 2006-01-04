@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF lire_table_ops Macro  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,7 +113,7 @@ def lecture_table(texte,nume,separ):
 
 # ------------------------------------------------------------------------------
 def lire_table_ops(self,UNITE,FORMAT,NUME_TABLE,SEPARATEUR,
-                        TYPE_TABLE,PARA,TITRE,**args):   
+                        PARA,TITRE,**args):   
   """Méthode corps de la macro LIRE_TABLE
   """
   import os
@@ -170,7 +170,7 @@ def lire_table_ops(self,UNITE,FORMAT,NUME_TABLE,SEPARATEUR,
   motscles={}
   motscles['LISTE']=mcfact
 
-  ut_tab=CREA_TABLE(TITRE=titr_tab,TYPE_TABLE=TYPE_TABLE, **motscles)
+  ut_tab=CREA_TABLE(TITRE=titr_tab,**motscles)
 
   # remet UNITE dans son état initial
   UL.EtatInit()

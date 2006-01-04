@@ -2,7 +2,7 @@
      &                  DEPTOT,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/01/2006   AUTEUR KHAM M.KHAM 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -106,7 +106,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ZCONV
-      PARAMETER    (ZCONV=3)
+      PARAMETER    (ZCONV=4)
       INTEGER      ZTOLE
       PARAMETER    (ZTOLE=4)
       CHARACTER*24 K24BID

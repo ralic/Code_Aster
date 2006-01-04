@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
+DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=table_sdaster
                     ,fr="Calcul de la réponse spectrale d'une structure linéaire sous une excitation connue par sa DSP",
                      reentrant='n',
             UIinfo={"groupes":("Résolution",)},
@@ -36,7 +36,7 @@ DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
 # MODE_STAT devrait etre dans EXCIT car est utile et obligatoire que si NOM_CMP=depl_r, on pourrait
 # ainsi rajouter un bloc du genre  b_mod_stat= BLOC(condition = "(GRANDEUR == None) or (GRANDEUR == 'DEPL_R')",        
          EXCIT           =FACT(statut='o',
-           INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
+           INTE_SPEC       =SIMP(statut='o',typ=table_sdaster),
            NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG",) ),
            MODAL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 03/01/2006   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +64,7 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     EKTHETA  = G        ELEM__         (GTHETA   K1     K2     K3    )
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
@@ -89,13 +90,13 @@ OPTION__
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
                                      DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   EFORCNO  PFR2D3D
-                                     EPRESNO  PPRESSR
+                                     EPRESNO  PPRESSR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   CFORCEF  PFFVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINF  PEPSINF  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR  
                                      DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D  
-                                     CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
+                                     CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  EKTHETA  PGTHETA
     CALC_G_BILI         298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINR  UEPSINR  

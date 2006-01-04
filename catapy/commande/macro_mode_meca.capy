@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=mode_
            STURM           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
          NORM_MODE       =FACT(statut='o',max='**',
-           MASS_INER       =SIMP(statut='o',typ=tabl_mass_iner ),
+           MASS_INER       =SIMP(statut='o',typ=table_sdaster),
            NORME           =SIMP(statut='f',typ='TXM',defaut="TRAN_ROTA",    
                                  into=("MASS_GENE","RIGI_GENE","EUCL",           
                                        "EUCL_TRAN","TRAN","TRAN_ROTA") ),

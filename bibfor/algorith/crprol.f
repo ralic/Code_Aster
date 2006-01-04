@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,6 +90,9 @@ C
       ENDIF
       CALL JEVEUO ( NOMMAF//'.COORDO    .VALE', 'L', AXYZMF )
 C
+      CALL TBEXP2(TABLE,'INST')
+      CALL TBEXP2(TABLE,'COOR_X')
+      CALL TBEXP2(TABLE,'TEMP')
       CALL NORMEV ( AXEZ , XNORMR )
 C
       KNUM  = '&&RS1D3D.INSTANT'

@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  # Le concept sortant (de type tabl_cara_geom) est nommé 'nomres' dans 
+  # Le concept sortant (de type table_sdaster) est nommé 'nomres' dans 
   # le contexte de la macro
   
   self.DeclareOut('nomres',self.sd)

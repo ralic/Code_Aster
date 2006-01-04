@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,27 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-def post_elem_prod( MASS_INER,ENER_POT,ENER_CIN,TRAV_EXT,WEIBULL,
-                    CARA_GEOM,CARA_POUTRE,RICE_TRACEY,CHAR_LIMITE,
-                    INDIC_ENER,INDIC_SEUIL,ENER_ELAS,ENER_TOTALE,
-                    AIRE_INTERNE,**args ):
-  if MASS_INER    != None  : return tabl_mass_iner
-  if ENER_POT     != None  : return tabl_ener_pot
-  if ENER_CIN     != None  : return tabl_ener_cin
-  if TRAV_EXT     != None  : return tabl_trav_ext
-  if WEIBULL      != None  : return tabl_weibull
-  if CARA_GEOM    != None  : return tabl_cara_geom
-  if CARA_POUTRE  != None  : return tabl_cara_geom
-  if RICE_TRACEY  != None  : return tabl_rice_tracey
-  if CHAR_LIMITE  != None  : return tabl_char_limite
-  if INDIC_ENER   != None  : return tabl_indic_ener
-  if INDIC_SEUIL  != None  : return tabl_indic_seuil
-  if ENER_ELAS    != None  : return tabl_ener_elas
-  if ENER_TOTALE  != None  : return tabl_ener_totale
-  if AIRE_INTERNE != None  : return tabl_aire_int
-  raise AsException("type de concept resultat_sdaster non prevu")
-
-POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=post_elem_prod,reentrant='f',
+POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
                fr="Calcul de quantités globales (masse, inerties, énergie, ...) sur tout ou partie du modèle",
 
@@ -364,7 +344,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=post_elem_prod,reentrant='f',
                                TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) ),
                                GROUP_MA      = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                                GROUP_MA_INTE = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                               CARA_GEOM     = SIMP(statut='f',typ=tabl_cara_geom),
+                               CARA_GEOM     = SIMP(statut='f',typ=table_sdaster),
                                RT            = SIMP(statut='f',typ='R'),
                                LAPL_PHI      = SIMP(statut='f',typ=evol_ther),
                                LAPL_PHI_Y    = SIMP(statut='f',typ=evol_ther),

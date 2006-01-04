@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,7 +130,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
          ),
          REPERE          =FACT(statut='f',max='**',
                                fr="changement de repère servant à déterminer les caractéristiques d'une section de poutre",
-           TABLE           =SIMP(statut='o',typ=tabl_cara_geom,
+           TABLE           =SIMP(statut='o',typ=table_sdaster,
                                  fr="Nom de la table contenant les caractéristiques de la section de poutre" ),
            NOM_ORIG        =SIMP(statut='f',typ='TXM',into=("CDG","TORSION"),fr="Origine du nouveau repère" ),
            NOM_ROTA        =SIMP(statut='f',typ='TXM',into=("INERTIE",),fr="Direction du repére"  ),

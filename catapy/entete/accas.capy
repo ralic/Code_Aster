@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF ENTETE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -995,38 +995,6 @@ class table_jeveux(table_sdaster):
    c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
    def __init__(self,nom_jeveux):
       self.nom=nom_jeveux
-
-class tabl_aire_int   (table_sdaster):pass
-class tabl_calc_g_loca(table_sdaster):pass
-class tabl_calc_g_th  (table_sdaster):pass
-class tabl_cara_geom  (table_sdaster):pass
-class tabl_char_limite(table_sdaster):pass
-class tabl_ener_elas  (table_sdaster):pass
-class tabl_ener_pot   (table_sdaster):pass
-class tabl_ener_cin   (table_sdaster):pass
-class tabl_trav_ext   (table_sdaster):pass
-class tabl_ener_totale(table_sdaster):pass
-class tabl_indic_ener (table_sdaster):pass
-class tabl_indic_seuil(table_sdaster):pass
-class tabl_intsp      (table_sdaster):pass
-class tabl_mass_iner  (table_sdaster):pass
-class tabl_post_alea  (table_sdaster):pass
-class tabl_post_beta  (table_sdaster):pass
-class tabl_post_dyna  (table_sdaster):pass
-class tabl_post_f_alea(table_sdaster):pass
-class tabl_post_fatig (table_sdaster):pass
-class tabl_post_gouj2e(table_sdaster):pass
-class tabl_post_k     (table_sdaster):pass
-class tabl_post_rccm  (table_sdaster):pass
-class tabl_post_rele  (table_sdaster):pass
-class tabl_post_simpli(table_sdaster):pass
-class tabl_post_usur  (table_sdaster):pass
-class tabl_reca_weib  (table_sdaster):pass
-class tabl_rice_tracey(table_sdaster):pass
-class tabl_texture    (table_sdaster):pass
-class tabl_trc        (table_sdaster):pass
-class tabl_weibull    (table_sdaster):pass
-
 
 # vect_asse :
 #--------------------------------

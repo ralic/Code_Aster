@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,7 +79,7 @@ DEFI_SPEC_TURB=OPER(nom="DEFI_SPEC_TURB",op= 145,sd_prod=spectre_sdaster,
          SPEC_FONC_FORME =FACT(statut='f',
            regles=(UN_PARMI('INTE_SPEC','GRAPPE_1'),
                    ENSEMBLE('INTE_SPEC','FONCTION'),),
-           INTE_SPEC       =SIMP(statut='f',typ=tabl_intsp ),
+           INTE_SPEC       =SIMP(statut='f',typ=table_sdaster),
            FONCTION        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
            GRAPPE_1        =SIMP(statut='f',typ='TXM',into=("DEBIT_180","DEBIT_300",) ),
            NOEUD           =SIMP(statut='o',typ=no),
@@ -88,7 +88,7 @@ DEFI_SPEC_TURB=OPER(nom="DEFI_SPEC_TURB",op= 145,sd_prod=spectre_sdaster,
          ),
          SPEC_EXCI_POINT =FACT(statut='f',
            regles=(UN_PARMI('INTE_SPEC','GRAPPE_2'),),
-           INTE_SPEC       =SIMP(statut='f',typ=tabl_intsp ),
+           INTE_SPEC       =SIMP(statut='f',typ=table_sdaster),
            GRAPPE_2        =SIMP(statut='f',typ='TXM',
                                  into=("ASC_CEN","ASC_EXC","DES_CEN","DES_EXC",) ),
 #  Quels sont les statuts des mots cles à l interieur des deux blocs qui suivent

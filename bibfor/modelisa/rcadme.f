@@ -5,7 +5,7 @@
       INTEGER             VALRES(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ C
      +                   NBCB1, NBCB2, NBLB2, NBHIST, NBTRC
       CHARACTER*8        NOMMAT, K8B
       CHARACTER*10       NOMPHE
-      CHARACTER*16       TYPECO
       CHARACTER*19       CH19, LISTR
 C DEB ------------------------------------------------------------------
 C
@@ -90,25 +89,20 @@ C
          IF ( NOMRES .EQ. ZK8(IVALK+IK-1) ) THEN
             CODRET = 'OK'
             CH19   = ZK8(IVALK+NBCO+IK-1)
-            CALL GETTCO ( CH19(1:8), TYPECO )
-            IF ( TYPECO .EQ. 'TABL_TRC' ) THEN
-               LISTR = '&&RCADME.LR8'
-               CALL TBEXLR ( CH19, LISTR, 'V' )
-               CALL JEVEUO ( LISTR//'.VALE' , 'L', IADTRC )
-               NBCB1  = NINT( ZR(IADTRC+1) )
-               NBHIST = NINT( ZR(IADTRC+2) )
-               NBCB2  = NINT( ZR(IADTRC+1+2+NBCB1*NBHIST) )
-               NBLB2  = NINT( ZR(IADTRC+1+2+NBCB1*NBHIST+1) )
-               NBTRC =NINT(ZR(IADTRC+1+2+NBCB1*NBHIST+2+NBCB2*NBLB2+1))
+            LISTR = '&&RCADME.LR8'
+            CALL TBEXLR ( CH19, LISTR, 'V' )
+            CALL JEVEUO ( LISTR//'.VALE' , 'L', IADTRC )
+            NBCB1  = NINT( ZR(IADTRC+1) )
+            NBHIST = NINT( ZR(IADTRC+2) )
+            NBCB2  = NINT( ZR(IADTRC+1+2+NBCB1*NBHIST) )
+            NBLB2  = NINT( ZR(IADTRC+1+2+NBCB1*NBHIST+1) )
+            NBTRC =NINT(ZR(IADTRC+1+2+NBCB1*NBHIST+2+NBCB2*NBLB2+1))
 C --- NBHIST
-               VALRES(1) = NBHIST
+            VALRES(1) = NBHIST
 C --- NBTRC
-               VALRES(2) = NBTRC
-               CALL JEDETC ( 'V', LISTR, 1 )
-               GOTO 9999
-            ELSE
-               CALL UTMESS('F','RCADME','TYPE NON TRAITE: '//TYPECO)
-            ENDIF
+            VALRES(2) = NBTRC
+            CALL JEDETC ( 'V', LISTR, 1 )
+            GOTO 9999
          ENDIF
   150 CONTINUE
 C

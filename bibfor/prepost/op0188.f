@@ -5,7 +5,7 @@
 C RESPONSABLE GALENNE E.GALENNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,6 +122,19 @@ C     ------------------------------------------------------------------
 C
       CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3, TCOEF, ITCOEF )
 C
+C    ------------------------------------------------------------------
+C                     VERIFICATION DE LA TABLE 'DEPSUP'
+C     ------------------------------------------------------------------
+      CALL TBEXP2(DEPSUP,'DX')
+      CALL TBEXP2(DEPSUP,'DY')
+      CALL TBEXP2(DEPSUP,'COOR_X')
+      CALL TBEXP2(DEPSUP,'COOR_Y')
+      CALL TBEXP2(DEPSUP,'ABSC_CURV')
+      IF (NDIM .EQ. 3)THEN
+         CALL TBEXP2(DEPSUP,'DZ')
+         CALL TBEXP2(DEPSUP,'COOR_Z')
+      ENDIF      
+C
 C     ------------------------------------------------------------------
 C                   LES INSTANTS DE POST-TRAITEMENT
 C     ------------------------------------------------------------------
@@ -175,7 +188,19 @@ C
      +                    '"TABL_DEPL_INF" SONT OBLIGATOIRES')
       ENDIF
 C
-
+C    ------------------------------------------------------------------
+C                     VERIFICATION DE LA TABLE 'DEPINF'
+C     ------------------------------------------------------------------
+      CALL TBEXP2(DEPINF,'DX')
+      CALL TBEXP2(DEPINF,'DY')
+      CALL TBEXP2(DEPINF,'COOR_X')
+      CALL TBEXP2(DEPINF,'COOR_Y')
+      CALL TBEXP2(DEPINF,'ABSC_CURV')
+      IF (NDIM .EQ. 3)THEN
+         CALL TBEXP2(DEPINF,'DZ')
+         CALL TBEXP2(DEPINF,'COOR_Z')
+      ENDIF      
+C
 C     ------------------------------------------------------------------
 C
       ABSSUP = '&&OP0188.ABSC_CURV_SUP'

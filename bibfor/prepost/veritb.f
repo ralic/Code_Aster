@@ -5,7 +5,7 @@ C
       CHARACTER*8  ORIDEF
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,21 +52,12 @@ C ======================================================================
 C ======================================================================
 C --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 C ======================================================================
-      CALL TBEXIP ( TABREV, 'INST', EXIST, K8B )
-      IF (.NOT.EXIST) THEN
-         CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE INST POUR LA'//
-     +               ' TABLE TABL_MECA_REV A L OCCURENCE 1')
-      ENDIF
-      CALL TBEXIP ( TABMDB, 'INST', EXIST, K8B )
-      IF (.NOT.EXIST) THEN
-         CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE INST POUR LA'//
-     +               ' TABLE TABL_MECA_MDB A L OCCURENCE 1')
-      ENDIF
-      CALL TBEXIP ( TABTHR, 'INST', EXIST, K8B )
-      IF (.NOT.EXIST) THEN
-         CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE INST POUR LA'//
-     +               ' TABLE TABL_THER A L OCCURENCE 1')
-      ENDIF
+      CALL TBEXP2 ( TABREV, 'INST')
+      CALL TBEXP2 ( TABMDB, 'INST')
+      CALL TBEXP2 ( TABTHR, 'INST')
+      CALL TBEXP2 ( TABREV, 'ABSC_CURV')
+      CALL TBEXP2 ( TABTHR, 'ABSC_CURV')
+
 C ======================================================================
 C --- VERIFICATION DE LA COHERENCE DES LISTES D'INSTANT POUR -----------
 C --- LES CHAMPS MECANIQUES --------------------------------------------
@@ -102,21 +93,9 @@ C ======================================================================
 C ======================================================================
 C --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 C ======================================================================
-         CALL TBEXIP ( TABREV, 'INST', EXIST, K8B )
-         IF (.NOT.EXIST) THEN
-            CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE INST POUR'//
-     +                  ' LA TABLE TABL_MECA_REV')
-         ENDIF
-         CALL TBEXIP ( TABMDB, 'INST', EXIST, K8B )
-         IF (.NOT.EXIST) THEN
-            CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE INST POUR'//
-     +                  ' LA TABLE TABL_MECA_MDB')
-         ENDIF
-         CALL TBEXIP ( TABTHR, 'INST', EXIST, K8B )
-         IF (.NOT.EXIST) THEN
-            CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE INST POUR'//
-     +                  ' LA TABLE TABL_THER')
-         ENDIF
+         CALL TBEXP2 ( TABREV, 'INST')
+         CALL TBEXP2 ( TABMDB, 'INST')
+         CALL TBEXP2 ( TABTHR, 'INST')
 C ======================================================================
 C --- VERIFICATION DE LA COHERENCE DES LISTES D'INSTANT POUR -----------
 C --- LES CHAMPS MECANIQUES --------------------------------------------
@@ -167,34 +146,14 @@ C ======================================================================
 C ======================================================================
 C --- CAS D'UN DEFAUT CIRCONFERENTIEL ----------------------------------
 C ======================================================================
-               CALL TBEXIP ( TABREV, 'SIYY', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIYY'//
-     +             ' POUR LA TABLE TABL_MECA_REV '//
-     +             ' POUR UN DEFAUT CIRCONFERENTIEL EN DIMENSION 2' )
-               ENDIF
-               CALL TBEXIP ( TABMDB, 'SIYY', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIYY'//
-     +             ' POUR LA TABLE TABL_MECA_MDB '//
-     +             ' POUR UN DEFAUT CIRCONFERENTIEL EN DIMENSION 2' )
-               ENDIF
+               CALL TBEXP2 ( TABREV, 'SIYY')
+               CALL TBEXP2 ( TABMDB, 'SIYY')
             ELSE
 C ======================================================================
 C --- CAS D'UN DEFAUT LONGITUDINAL -------------------------------------
 C ======================================================================
-               CALL TBEXIP ( TABREV, 'SIZZ', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIZZ'//
-     +             ' POUR LA TABLE TABL_MECA_REV '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 2' )
-               ENDIF
-               CALL TBEXIP ( TABMDB, 'SIZZ', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIZZ'//
-     +             ' POUR LA TABLE TABL_MECA_MDB '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 2' )
-               ENDIF
+               CALL TBEXP2 ( TABREV, 'SIZZ')
+               CALL TBEXP2 ( TABMDB, 'SIZZ')
             ENDIF
          ELSE
 C ======================================================================
@@ -204,68 +163,28 @@ C ======================================================================
 C ======================================================================
 C --- CAS D'UN DEFAUT CIRCONFERENTIEL ----------------------------------
 C ======================================================================
-               CALL TBEXIP ( TABREV, 'SIZZ', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIZZ'//
-     +             ' POUR LA TABLE TABL_MECA_REV '//
-     +             ' POUR UN DEFAUT CIRCONFERENTIEL EN DIMENSION 3' )
-               ENDIF
-               CALL TBEXIP ( TABMDB, 'SIZZ', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIZZ'//
-     +             ' POUR LA TABLE TABL_MECA_MDB '//
-     +             ' POUR UN DEFAUT CIRCONFERENTIEL EN DIMENSION 3')
-               ENDIF
+               CALL TBEXP2 ( TABREV, 'SIZZ')
+               CALL TBEXP2 ( TABMDB, 'SIZZ')
             ELSE
 C ======================================================================
 C --- CAS D'UN DEFAUT LONGITUDINAL -------------------------------------
 C ======================================================================
-               CALL TBEXIP ( TABREV, 'SIXX', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIXX'//
-     +             ' POUR LA TABLE TABL_MECA_REV '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 3' )
-               ENDIF
-               CALL TBEXIP ( TABMDB, 'SIXX', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIXX'//
-     +             ' POUR LA TABLE TABL_MECA_MDB '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 3' )
-               ENDIF
-               CALL TBEXIP ( TABREV, 'SIYY', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIYY'//
-     +             ' POUR LA TABLE TABL_MECA_REV '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 3' )
-               ENDIF
-               CALL TBEXIP ( TABMDB, 'SIYY', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIYY'//
-     +             ' POUR LA TABLE TABL_MECA_MDB '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 3' )
-               ENDIF
-               CALL TBEXIP ( TABREV, 'SIZZ', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIZZ'//
-     +             ' POUR LA TABLE TABL_MECA_REV '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 3' )
-               ENDIF
-               CALL TBEXIP ( TABMDB, 'SIZZ', EXIST, K8B )
-               IF (.NOT.EXIST) THEN
-                  CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE SIZZ'//
-     +             ' POUR LA TABLE TABL_MECA_MDB '//
-     +             ' POUR UN DEFAUT LONGITUDINAL EN DIMENSION 3' )
-               ENDIF
+               CALL TBEXP2 ( TABREV, 'SIXX')
+               CALL TBEXP2 ( TABMDB, 'SIXX')
+               CALL TBEXP2 ( TABREV, 'SIYY')
+               CALL TBEXP2 ( TABMDB, 'SIYY')
+               CALL TBEXP2 ( TABREV, 'SIZZ')
+               CALL TBEXP2 ( TABMDB, 'SIZZ')
+               CALL TBEXP2 ( TABREV, 'SIXY')
+               CALL TBEXP2 ( TABMDB, 'SIXY')
+               CALL TBEXP2 ( TABREV, 'COOR_X')
+               CALL TBEXP2 ( TABREV, 'COOR_Y')
             ENDIF
          ENDIF
 C ======================================================================
 C --- VERIFICATION DU PARAMETRE TEMP POUR LA TABLE DONNEE THERMIQUE ----
 C ======================================================================
-         CALL TBEXIP ( TABTHR, 'TEMP', EXIST, K8B )
-         IF (.NOT.EXIST) THEN
-            CALL UTMESS('F','VERITB','ABSENCE DU PARAMETRE TEMP POUR'//
-     +                  ' LA TABLE TABL_THER')
-         ENDIF
+         CALL TBEXP2 ( TABTHR, 'TEMP')
          CALL JEDETR ( TABREV )
          CALL JEDETR ( TABMDB )
          CALL JEDETR ( TABTHR )

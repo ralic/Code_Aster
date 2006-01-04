@@ -5,7 +5,7 @@
       CHARACTER*(*)       TABPUS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,13 @@ C
       NOMTA = TABPUS
       PREC  = 1.D-06
       CRIT  = 'RELATIF '
+C
+C     VERIFICATION DES PARAMETRES DE LA TABLE
+      CALL TBEXP2( NOMTA, 'INST')
+      CALL TBEXP2( NOMTA, 'SECTEUR')
+      CALL TBEXP2( NOMTA, 'V_USUR_TUBE_CUMU')
+      CALL TBEXP2( NOMTA, 'V_USUR_OBST_CUMU')
+      CALL TBEXP2( NOMTA, 'ANGLE_DEBUT')
 C
       CALL GETVR8 ( ' ', 'INST', 1,1,1, DINST, NIS )
       IF ( NIS .EQ. 0 ) THEN

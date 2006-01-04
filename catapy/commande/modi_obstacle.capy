@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=obstacle_sdaster,
               PRESENT_PRESENT('V_USUR_TUBE','V_USUR_OBST'),),
          V_USUR_TUBE     =SIMP(statut='f',typ='R',max='**'),
          V_USUR_OBST     =SIMP(statut='f',typ='R',max='**'),
-         TABL_USURE      =SIMP(statut='f',typ=tabl_post_usur),
+         TABL_USURE      =SIMP(statut='f',typ=table_sdaster),
          INST            =SIMP(statut='f',typ='R'),  
          OBSTACLE        =SIMP(statut='f',typ=obstacle_sdaster),
          GUIDE           =SIMP(statut='o',typ=obstacle_sdaster),

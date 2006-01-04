@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCF, NOMF
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF ALGORITH  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +43,12 @@ C
       CALL GETVTX ( MCF, 'NOM_CMP_I'     , IOCC,1,1, CMPI  , N7 )
       CALL GETVTX ( MCF, 'NOM_CMP_J'     , IOCC,1,1, CMPJ  , N8 )
 C
+      CALL TBEXP2(INTESP,'FONCTION')
       NBPAR = 0
       NBPARK = 0
 C
       IF ( N2 .NE. 0 ) THEN
+         CALL TBEXP2(INTESP,'NUME_VITE_FLUI')
          NBPAR = NBPAR + 1
          IVAL(NBPAR) = IVIT
          NOPAR(NBPAR) = 'NUME_VITE_FLUI'
@@ -66,6 +68,8 @@ C
          NBPAR = NBPAR + 1
          IVAL(NBPAR) = NUMJ
          NOPAR(NBPAR) = 'NUME_ORDRE_J'
+         CALL TBEXP2(INTESP,'NUME_ORDRE_I')
+         CALL TBEXP2(INTESP,'NUME_ORDRE_J')
       ENDIF
 C
       IF ( N5 .NE. 0 ) THEN
@@ -85,6 +89,11 @@ C
          KVAL(NBPARK) = CMPJ
          NBPAR = NBPAR + 1
          NOPAR(NBPAR) = 'NOM_CMP_J'
+         CALL TBEXP2(INTESP,'NOEUD_I')
+         CALL TBEXP2(INTESP,'NOEUD_J')
+         CALL TBEXP2(INTESP,'NOM_CMP_I')
+         CALL TBEXP2(INTESP,'NOM_CMP_J')
+
       ENDIF
 C
       CALL TBLIVA ( INTESP, NBPAR, NOPAR, IVAL, R8B, C16B, KVAL, K8B,

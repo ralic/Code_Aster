@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,26 +19,12 @@
 
 from Macro.lire_table_ops import lire_table_ops
 
-def lire_table_prod(self,TYPE_TABLE,**args):
-  if TYPE_TABLE == "TABLE"          : return table_sdaster
-  if TYPE_TABLE == "TABL_CARA_GEOM" : return tabl_cara_geom
-  if TYPE_TABLE == "TABL_POST_RELE" : return tabl_post_rele
-  if TYPE_TABLE == "TABL_POST_USUR" : return tabl_post_usur
-  if TYPE_TABLE == "TABL_POST_ALEA" : return tabl_post_alea
-  raise AsException("type de concept resultat non prevu")
-
-LIRE_TABLE=MACRO(nom="LIRE_TABLE",op=lire_table_ops,sd_prod=lire_table_prod,
+LIRE_TABLE=MACRO(nom="LIRE_TABLE",op=lire_table_ops,sd_prod=table_sdaster,
                  fr="Lecture d'un fichier contenant une table",
             UIinfo={"groupes":("Table",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER",),defaut="ASTER"),
          NUME_TABLE      =SIMP(statut='f',typ='I',defaut=1),
-         TYPE_TABLE      =SIMP(statut='f',typ='TXM',defaut="TABLE",
-                              into=("TABLE",
-                                    "TABL_CARA_GEOM",
-                                    "TABL_POST_RELE",
-                                    "TABL_POST_USUR",
-                                    "TABL_POST_ALEA" ) ),
          SEPARATEUR      =SIMP(statut='o',typ='TXM'),
          PARA            =SIMP(statut='f',typ='TXM',max='**'),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),

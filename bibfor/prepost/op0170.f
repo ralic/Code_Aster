@@ -3,7 +3,7 @@
       INTEGER             IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,10 @@ C
 C
       IF ( NBTAB .NE. 0 ) THEN
         CALL GETVID ( ' ', 'TABL_POST_ALEA', 1,1,1, TABLE, N1 )
+        CALL TBEXP2(TABLE,'GRANDEUR')
+        CALL TBEXP2(TABLE,'LAMBDA_00')
+        CALL TBEXP2(TABLE,'LAMBDA_02')
+        CALL TBEXP2(TABLE,'LAMBDA_04')
         CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B, 
      +                'GRANDEUR', K8B, IBID, R8B, C16B, K8B, IRET )
         IF ( IRET.NE.0 .AND. IRET.NE.3 ) 

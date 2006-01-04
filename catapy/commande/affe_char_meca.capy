@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -834,7 +834,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                  fr="direction d'application de la force de plaquage",),
              b_CDG    =BLOC(condition = "(APPL_FORC_ARCHI == 'CDG') or (APPL_FORC_FPLAQ == 'CDG') or \
                                          (APPL_FORC_FMEC  == 'CDG') or (APPL_FORC_FTG   == 'CDG')",
-                MASS_INER        =SIMP(statut='o',typ=tabl_mass_iner ),
+                MASS_INER        =SIMP(statut='o',typ=table_sdaster ),
              ),
              UNITE_IMPR_FORCE =SIMP(statut='f',typ='I',
                                  fr="unité d'impression des forces",),

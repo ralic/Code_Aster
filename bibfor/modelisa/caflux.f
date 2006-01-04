@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,6 +186,11 @@ C
 C
             CALL GETVID ( MOTCLF, 'CARA_TORSION', IOCC,1,1, NOMTAB, N )
             IF (N.EQ.1) THEN
+C              VERIFICATION DES PARAMETRES DE LA TABLE 'NOMTAB'
+               CALL TBEXP2(NOMTAB,'AIRE')
+               CALL TBEXP2(NOMTAB,'LONGUEUR')
+               CALL TBEXP2(NOMTAB,'GROUP_MA')
+C
                CALL GETVEM (NOMA,'GROUP_MA',MOTCLF,'GROUP_MA',
      +                                      IOCC,1,1,MONGRM,NGR)
                PARA = 'AIRE'

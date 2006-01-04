@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 14/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,6 @@ def calc_table_ops(self, TABLE, FILTRE, EXTR, RENOMME, TRI, COMB, OPER,
          tit = [tit]
       dprod['TITRE'] = tuple(['%-80s' % lig for lig in tit])
    # type de la table de sortie à passer à CREA_TABLE
-   dprod['TYPE_TABLE'] = self.sd.__class__.__name__.upper()
    tabout = CREA_TABLE(**dprod)
    
    return ier

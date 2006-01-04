@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -256,18 +256,18 @@ C     ----- MASSE DE LA STRUCTURE ---
       XMASTR = 1.D0
       CALL GETVID(' ','MASS_INER',1,1,1,TMAS,NT)
       IF ( NT .NE. 0 ) THEN
+C        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
+         CALL TBEXP2(TMAS,'LIEU')
+         CALL TBEXP2(TMAS,'MASSE')
          CALL TBLIVA ( TMAS, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
-         IF ( IRET .EQ. 1 ) THEN
+         IF ( IRET .EQ. 2 ) THEN
             CALL UTDEBM('F','OP0109', 'ERREUR DANS LES DONNEES' )
-            CALL UTIMPK('L','LE PARAMETRE ',1,'LIEU')
-            CALL UTIMPK('S','N EXISTE PAS DANS LA TABLE ',1,TMAS)
-            CALL UTFINM()
-         ELSEIF ( IRET .EQ. 2 ) THEN
-            CALL UTDEBM('F','OP0109', 'ERREUR DANS LES DONNEES' )
-        CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',1,TMAS)
+            CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS '//
+     +               'LA TABLE ',1,TMAS)
             CALL UTFINM()
          ELSEIF ( IRET .EQ. 3 ) THEN
+            CALL TBEXP2(TMAS,'ENTITE')
             PARAKI(1) = 'LIEU'
             PARAKI(2) = 'ENTITE'
             VALEKI(1) = NOMA
@@ -276,7 +276,8 @@ C     ----- MASSE DE LA STRUCTURE ---
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
                CALL UTDEBM('F','OP0109', 'ERREUR DANS LES DONNEES' )
-        CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',1,TMAS)
+               CALL UTIMPK('L','LA MASSE N EXISTE PAS '//
+     +              'DANS LA TABLE ',1,TMAS)
                CALL UTFINM()
             ENDIF
          ENDIF

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 03/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -473,7 +473,7 @@ C=======================================================================
 
             CALL CAKGMO(OPTION,RESULT,MODELE,CHDEPL,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
-     &              IORD,NDEG,THLAGR,GLAGR,PULS,NBPRUP,NOPRUP)
+     &              IORD,NDEG,THLAGR,GLAGR,PULS,NBPRUP,NOPRUP,FISS)
  4444     CONTINUE
 C
         ENDIF

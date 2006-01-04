@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -213,18 +213,17 @@ C     --- RECUPERATION DE LA MASSE ---
       XMASTR = 1.D0
       CALL GETVID('  ','MASS_INER',1,1,1,MASINE,NMI)
       IF ( NMI .NE. 0 ) THEN
+         CALL TBEXP2(MASINE,'LIEU')
+         CALL TBEXP2(MASINE,'MASSE')
          CALL TBLIVA ( MASINE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
-         IF ( IRET .EQ. 1 ) THEN
+         IF ( IRET .EQ. 2 ) THEN
             CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
-            CALL UTIMPK('L','LE PARAMETRE ',1,'LIEU')
-            CALL UTIMPK('S','N EXISTE PAS DANS LA TABLE ',1,MASINE)
-            CALL UTFINM()
-         ELSEIF ( IRET .EQ. 2 ) THEN
-            CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
-        CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',1,MASINE)
+            CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',
+     +      1,MASINE)
             CALL UTFINM()
          ELSEIF ( IRET .EQ. 3 ) THEN
+            CALL TBEXP2(MASINE,'ENTITE')
             PARAKI(1) = 'LIEU'
             PARAKI(2) = 'ENTITE'
             VALEKI(1) = NOMA
@@ -233,7 +232,8 @@ C     --- RECUPERATION DE LA MASSE ---
      +           K8B, R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
                CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
-        CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',1,MASINE)
+               CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',
+     +         1,MASINE)
                CALL UTFINM()
             ENDIF
          ENDIF

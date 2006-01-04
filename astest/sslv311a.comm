@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 03/01/2006   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,8 +32,12 @@ MA2=CREA_MAILLAGE(MAILLAGE=MA,
 MA2=DEFI_GROUP(reuse=MA2,        
                MAILLAGE=MA2,
                CREA_GROUP_NO=_F(GROUP_MA = ('SSUP_S','FACE2',),),
+               CREA_GROUP_MA=_F(NOM='GRMAXP',OPTION='BANDE',POINT=(0.3,0.0,0.0),VECT_NORMALE=(1.,0.,0.),DIST=0.3,),
               );
              
+#IMPR_RESU(FORMAT='RESULTAT',
+#          RESU=_F(MAILLAGE=MA2,));
+
                                    
 MO=AFFE_MODELE(MAILLAGE=MA2,
                AFFE=_F( TOUT = 'OUI',
@@ -117,7 +121,7 @@ FISS1=DEFI_FISS_XFEM(MODELE=MO,
                                  GROUP_MA_FISS='LEVREINF',
                                  GROUP_MA_FOND='LFF',               
                                  ),
-                     GROUP_MA_ENRI='VOLU',
+                     GROUP_MA_ENRI='GRMAXP',
                      ORIE_FOND=_F(PFON_INI=(9.99995E-02, 
                                             9.94462E-06, 
                                             4.99901E-02,),
@@ -152,7 +156,7 @@ GLO1=CALC_G_LOCAL_T(MODELE=MO,
                     LISSAGE_G='LAGRANGE',
                     R_INF_FO=RAY_INF1,
                     R_SUP_FO=RAY_SUP1,
-                    INFO=1,
+                    INFO=2,
                     EXCIT=(_F( CHARGE = CL),
                            _F( CHARGE = CH)),
                    );
@@ -177,7 +181,7 @@ TEST_TABLE(TABLE=GLO1,
            FILTRE=_F(  NOM_PARA = 'NUM_PT',
                        VALE_I = 2),
            VALE=595.E+5,
-           PRECISION=0.10,
+           PRECISION=0.105,
            REFERENCE = 'ANALYTIQUE')
 
 
@@ -340,7 +344,7 @@ GLO2=CALC_G_LOCAL_T(MODELE=MO,
                     LISSAGE_G='LAGRANGE',
                     R_INF_FO=RAY_INF1,
                     R_SUP_FO=RAY_SUP1,
-                    INFO=1,
+                    INFO=2,
                     EXCIT=(_F( CHARGE = CL),
                            _F( CHARGE = CH2)),
                    );
@@ -349,25 +353,28 @@ TEST_TABLE(TABLE=GLO2,
            NOM_PARA='K1_LOCAL',
            FILTRE=_F(  NOM_PARA = 'NUM_PT',
                        VALE_I = 1),
-           VALE=5.7886402601367E+7,
-           PRECISION=0.00001,
-           REFERENCE = 'NON_REGRESSION')
+           VALE=5.7646267197495E+07,
+           PRECISION=1.E-6,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION='8.2.1', )
 
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',
            FILTRE=_F(  NOM_PARA = 'NUM_PT',
                        VALE_I = 8),
-           VALE=8.0525486225614E+7,
-           PRECISION=0.00001,
-           REFERENCE = 'NON_REGRESSION')   
+           VALE=8.0514485705379E+07,
+           PRECISION=1.E-6,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION='8.2.1', ) 
 
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',
            FILTRE=_F(  NOM_PARA = 'NUM_PT',
                        VALE_I = 17),
-           VALE=9.7195531543641E+7,
-           PRECISION=0.00001,
-           REFERENCE = 'NON_REGRESSION')   
+           VALE=9.7192350527728E+07,
+           PRECISION=1.E-6,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION='8.2.1', )
 
 
 FIN();

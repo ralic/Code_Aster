@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLEZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/12/2001   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGELINE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,6 +82,13 @@ C     ---------------
       TABLE  = TABLEZ
       COOVAL = NOMAOU//'.COORDO    .VALE'
       COODES = NOMAOU//'.COORDO    .DESC'
+C
+C --- VERIFICATION DES PARAMETRES DE LA TABLE
+C     ---------------------------------------
+      CALL TBEXP2(TABLE,'MAILLAGE')
+      CALL TBEXP2(TABLE,'LIEU')
+      CALL TBEXP2(TABLE,'EY')
+      CALL TBEXP2(TABLE,'EZ')
 C
 C --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE 
 C --- DE CISAILLEMENT-TORSION :

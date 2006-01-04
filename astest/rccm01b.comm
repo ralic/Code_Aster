@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR F1BHHAJ J.ANGLES 
+# MODIF  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / UNITAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,13 +56,13 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
 
 #Relecture des tables de contraintes
 TBTHME = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     TYPE_TABLE='TABL_POST_RELE',NUME_TABLE=1,)
+                     NUME_TABLE=1,)
 
 TBTHER = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     TYPE_TABLE='TABL_POST_RELE',NUME_TABLE=2,)
+                     NUME_TABLE=2,)
 
 TBTHM2 = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     TYPE_TABLE='TABL_POST_RELE',NUME_TABLE=3,)
+                     NUME_TABLE=3,)
 
 #--------------------------------------------------------------------------------
 #   option = PM_PB

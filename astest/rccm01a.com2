@@ -4,13 +4,13 @@
 POURSUITE( CODE=_F(  NOM = 'RCCM01A') )
 
 TBTHME = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     TYPE_TABLE='TABL_POST_RELE',NUME_TABLE=1,)
+                     NUME_TABLE=1,)
 
 TBTHER = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     TYPE_TABLE='TABL_POST_RELE',NUME_TABLE=2,)
+                     NUME_TABLE=2,)
 
 TBTHM2 = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     TYPE_TABLE='TABL_POST_RELE',NUME_TABLE=3,)
+                     NUME_TABLE=3,)
 
 #--------------------------------------------------------------------------------
 #   option = PM_PB

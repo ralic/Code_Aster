@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_stat,
          LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
          AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r ),
          
-         MASS_INER       =SIMP(statut='f',typ=tabl_mass_iner ),
+         MASS_INER       =SIMP(statut='f',typ=table_sdaster ),
          CORR_FREQ       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          
          EXCIT           =FACT(statut='o',max='**',

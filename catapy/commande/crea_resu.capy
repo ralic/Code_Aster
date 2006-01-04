@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            PROL_RTZ        =FACT(statut='o',
               regles=(EXCLUS('INST','LIST_INST'),),
               MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage_sdaster,),
-              TABLE           =SIMP(statut='o',typ=tabl_post_rele,fr="Table issue de post_releve_t"),
+              TABLE           =SIMP(statut='o',typ=table_sdaster,fr="Table issue de post_releve_t"),
               INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
               LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
               b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",

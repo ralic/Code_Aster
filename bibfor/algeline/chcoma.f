@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLEZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF ALGELINE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,13 @@ C     ---------------
       COOVAL = NOMAOU//'.COORDO    .VALE'
       COODES = NOMAOU//'.COORDO    .DESC'
 C
+C --- VERIFICATION DES PARARAMETRES DE LA TABLE
+C     -----------------------------------------
+      CALL TBEXP2(TABLE,'LIEU')
+      CALL TBEXP2(TABLE,'CDG_X')
+      CALL TBEXP2(TABLE,'CDG_Y')
+      CALL TBEXP2(TABLE,'ALPHA')
+C
 C --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE GRAVITE :
 C     ---------------------------------------------------------------
       CALL GETVID('REPERE','GROUP_MA',1,1,0,K8B,NGM)
@@ -94,6 +101,7 @@ C     ---------------------------------------------------------------
           NOMA=NOGRMA
           IRET=0
       ELSE
+         CALL TBEXP2(TABLE,'MAILLAGE')
          CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
      +                 'MAILLAGE', K8B, IBID, R8B, C16B, NOMA, IRET )
       ENDIF

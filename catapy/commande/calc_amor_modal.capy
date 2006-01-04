@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8_sdaster,
            COOR_CENTRE     =SIMP(statut='f',typ='R',max=3),
          ),
          AMOR_INTERNE    =FACT(statut='o',
-           ENER_POT        =SIMP(statut='o',typ=tabl_ener_pot ),
+           ENER_POT        =SIMP(statut='o',typ=table_sdaster ),
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            AMOR_REDUIT     =SIMP(statut='o',typ='R',max='**'),
          ),

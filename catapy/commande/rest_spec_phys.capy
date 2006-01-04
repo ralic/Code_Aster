@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=tabl_intsp,
+REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=table_sdaster,
                     reentrant='n',
             fr="Calculer la réponse d'une structure dans la base physique",
             UIinfo={"groupes":("Matrices/vecteurs",)},
@@ -25,7 +25,7 @@ REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=tabl_intsp,
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          BANDE           =SIMP(statut='f',typ='R',min=2,validators=NoRepeat(),max=2    ),  
          NUME_ORDRE      =SIMP(statut='f',typ='I'      ,validators=NoRepeat(),max='**' ),  
-         INTE_SPEC_GENE  =SIMP(statut='o',typ=tabl_intsp ),
+         INTE_SPEC_GENE  =SIMP(statut='o',typ=table_sdaster),
          NOEUD           =SIMP(statut='o',typ=no   ,max='**'),
          MAILLE          =SIMP(statut='f',typ=ma   ,max='**'),
          NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),  

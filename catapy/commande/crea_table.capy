@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,41 +16,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-def dict_table_types():
-   """Extraction des types de table
-   """
-   from types import ClassType
-   # en attendant la résorption des 30 types de table !
-   d_table = {}
-   for k, v in globals().items():
-      if type(v) is ClassType and issubclass(v, table_sdaster):
-         d_table[k] = v
-   # traduction de type
-   d_table['table']          = d_table['table_sdaster']
-   d_table['tabl_inte_spec'] = d_table['tabl_intsp']
-   return d_table
-
-def into_table_types():
-   """Récupération de la liste des type de table.
-   """
-   return tuple([typ.upper() for typ in dict_table_types().keys()])
-
-def crea_table_prod(TYPE_TABLE,**args):
-   """Typage du concept résultat
-   """
-   d_table = dict_table_types()
-   if TYPE_TABLE.lower() in d_table.keys():
-      return d_table[TYPE_TABLE.lower()]
-   raise AsException("type de concept resultat non prevu")
-
-CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=crea_table_prod,
+CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
                 fr="Création d'une table à partir d'une fonction ou de deux listes",
                 reentrant='n',UIinfo={"groupes":("Table",)},
 
            regles=(EXCLUS('FONCTION','LISTE')),
 
-           TYPE_TABLE=SIMP(statut='f',typ='TXM',defaut="TABLE",
-                           into=into_table_types(),),
            LISTE=FACT(statut='f',min=2,max='**',
                  fr="Creation d'une table a partir de listes",
                  regles=(UN_PARMI('LISTE_I','LISTE_R','LISTE_K')), 

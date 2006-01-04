@@ -1,4 +1,4 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF lire_inte_spec_ops Macro  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,8 +108,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
   mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j    ,NUME_LIGN=range(2,len(nume_j)+2)))
   mcfact.append(_F(PARA='FONCTION'    ,LISTE_K=l_fonc    ,NUME_LIGN=range(2,len(list_fonc)+2)))
   self.DeclareOut('tab_inte',self.sd)
-  tab_inte=CREA_TABLE(TYPE_TABLE='TABL_INTE_SPEC',
-                      LISTE=mcfact,
+  tab_inte=CREA_TABLE(LISTE=mcfact,
                       TITRE=TITRE,)
 
   # remet UNITE dans son état initial

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
+CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=table_sdaster,
                     fr="Calculer le taux de restitution d'énergie local et sous certaines conditions"
                        +" les facteurs d'intensité de contraintes en 3D par la méthode théta",
             UIinfo={"groupes":("Post traitements",)},reentrant='n',

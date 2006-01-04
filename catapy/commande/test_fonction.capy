@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
          TABL_INTSP      =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction contenue dans une table interspectrale",
            regles=(UN_PARMI('NUME_ORDRE_I','NOEUD_I'),),
-           INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
+           INTE_SPEC       =SIMP(statut='o',typ=table_sdaster),
            NOEUD_I         =SIMP(statut='f',typ=no),
            NUME_ORDRE_I    =SIMP(statut='f',typ='I' ),
            b_nume_ordre_i = BLOC (condition = "NUME_ORDRE_I != None", 

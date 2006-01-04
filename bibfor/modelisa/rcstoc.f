@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       REAL*8             VALR8,E1,EI,PRECMA
       CHARACTER*4        VALTX
       CHARACTER*8        VALCH,TYPFON,NOMPF(10),K8BID,CPROL,NOMCLE(5)
-      CHARACTER*8        MCLE8
+      CHARACTER*8        MCLE8,TABLE
       CHARACTER*19       RDEP,NOMFCT,CH19,MZP,NOMINT
       CHARACTER*24       PROL1,PROL2
       CHARACTER*16       TYPECO
@@ -575,7 +575,7 @@ C
       ENDIF
       ENDIF
 C
-C --- 6 CREATION SI NEXCESSAIRE D'UNE FONCTION POUR STOCKER BETA
+C --- 6 CREATION SI NECESSAIRE D'UNE FONCTION POUR STOCKER BETA
 C       (ENTHALPIE VOLUMIQUE) CALCULEE A PARTIR DE RHO_CP
 C
       IF ( NOMRC(1:8) .EQ. 'THER_NL'  ) THEN
@@ -616,6 +616,59 @@ C
         VALK(NBR+NBC+2*NBK) = NOMINT
  651    CONTINUE
       ENDIF
+C
+C --- 7 VERIFICATION DES NOMS DES PARAMETRES DES TABLES
+C       'TEXTURE' ET 'TRC'
+C
+      IF ( NOMRC(1:8) .EQ. 'POLY_CFC')THEN  
+       DO 710 I=1,NBK
+          IF (VALK(NBR+NBC+I)(1:7) .EQ. 'TEXTURE') THEN             
+             CALL GETVID(NOMRC,'TEXTURE',1,1,1,TABLE,N)
+             CALL TBEXP2(TABLE,'N1')
+             CALL TBEXP2(TABLE,'N2')
+             CALL TBEXP2(TABLE,'N3')
+             CALL TBEXP2(TABLE,'L1')
+             CALL TBEXP2(TABLE,'L2')
+             CALL TBEXP2(TABLE,'L3')
+             CALL TBEXP2(TABLE,'PHI1')
+             CALL TBEXP2(TABLE,'GPHI')
+             CALL TBEXP2(TABLE,'PHI2')
+             CALL TBEXP2(TABLE,'PROPORTION')
+             CALL TBEXP2(TABLE,'XMS_1')
+             CALL TBEXP2(TABLE,'XMS_2')
+             CALL TBEXP2(TABLE,'XMS_3')
+             CALL TBEXP2(TABLE,'XMS_4')
+             CALL TBEXP2(TABLE,'XMS_5')
+             CALL TBEXP2(TABLE,'XMS_6')       
+          ENDIF
+ 710   CONTINUE
+      ENDIF
+      IF ( NOMRC(1:10) .EQ. 'META_ACIER')THEN  
+       DO 720 I=1,NBK
+          IF (VALK(NBR+NBC+I)(1:3) .EQ. 'TRC') THEN             
+             CALL GETVID(NOMRC,'TRC',1,1,1,TABLE,N)
+             CALL TBEXP2(TABLE,'VITESSE')
+             CALL TBEXP2(TABLE,'PARA_EQ')
+             CALL TBEXP2(TABLE,'COEF_0')
+             CALL TBEXP2(TABLE,'COEF_1')
+             CALL TBEXP2(TABLE,'COEF_2')
+             CALL TBEXP2(TABLE,'COEF_3')
+             CALL TBEXP2(TABLE,'COEF_4')
+             CALL TBEXP2(TABLE,'COEF_5')
+             CALL TBEXP2(TABLE,'NB_POINT')
+             CALL TBEXP2(TABLE,'Z1')
+             CALL TBEXP2(TABLE,'Z2')
+             CALL TBEXP2(TABLE,'Z3')
+             CALL TBEXP2(TABLE,'TEMP')
+             CALL TBEXP2(TABLE,'SEUIL')
+             CALL TBEXP2(TABLE,'AKM')
+             CALL TBEXP2(TABLE,'BKM')       
+             CALL TBEXP2(TABLE,'TPLM')
+             CALL TBEXP2(TABLE,'DREF')       
+             CALL TBEXP2(TABLE,'A')       
+          ENDIF
+ 720   CONTINUE
+      ENDIF      
 C
       CALL JEDETR('&&RCSTOC.TYPOBJ')
       CALL JEDETR('&&RCSTOC.NOMOBJ')

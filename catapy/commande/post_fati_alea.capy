@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-POST_FATI_ALEA=OPER(nom="POST_FATI_ALEA",op=170,sd_prod=tabl_post_f_alea,reentrant='n',
+POST_FATI_ALEA=OPER(nom="POST_FATI_ALEA",op=170,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
                     fr="Calculer le dommage de fatigue subi par une structure soumise à une sollicitation de type aléatoire",
          regles=(ENSEMBLE('MOMENT_SPEC_0','MOMENT_SPEC_2'),
@@ -25,7 +25,7 @@ POST_FATI_ALEA=OPER(nom="POST_FATI_ALEA",op=170,sd_prod=tabl_post_f_alea,reentra
          MOMENT_SPEC_0   =SIMP(statut='f',typ='R'),  
          MOMENT_SPEC_2   =SIMP(statut='f',typ='R'),  
          MOMENT_SPEC_4   =SIMP(statut='f',typ='R'),  
-         TABL_POST_ALEA  =SIMP(statut='f',typ=tabl_post_alea),
+         TABL_POST_ALEA  =SIMP(statut='f',typ=table_sdaster),
          COMPTAGE        =SIMP(statut='o',typ='TXM',into=("PIC","NIVEAU")),
          DUREE           =SIMP(statut='f',typ='R',defaut= 1.),  
          CORR_KE         =SIMP(statut='f',typ='TXM',into=("RCCM",)),

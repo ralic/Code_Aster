@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE LIRE_TABLE / IMPR_TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,14 +27,14 @@ DEBUT( CODE=_F(  NOM = 'ZZZZ128B',NIV_PUB_WEB='INTERNET') )
 # ----------------------------------------------------------------------------
 #
 T1=LIRE_TABLE(     UNITE=38, FORMAT='ASTER',  NUME_TABLE=2,
-                   SEPARATEUR='%', TYPE_TABLE='TABLE', TITRE='titre 1',)
+                   SEPARATEUR='%', TITRE='titre 1',)
 
 IMPR_TABLE (TABLE = T1,   FORMAT='ASTER', UNITE=39)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=39)
 
 T2=LIRE_TABLE(     UNITE=39, FORMAT='ASTER',  NUME_TABLE=1,
-                   SEPARATEUR=' ', TYPE_TABLE='TABLE', TITRE='titre 2',)
+                   SEPARATEUR=' ', TITRE='titre 2',)
 
 TEST_TABLE(TABLE=T2, REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='NOEUD', VALE_K='N2'),

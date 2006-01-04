@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,10 +77,10 @@ C
 C
 C --- RECUPERATION DU MAILLAGE INITIAL :
 C     --------------------------------
+      CALL TBEXP2(RESU,'MAILLAGE')
       CALL TBLIVA ( RESU, 0, K8B, IBID, R8B, C16B, 'TOUT', K8B,
      +              R8B, 'MAILLAGE', K8B, IBID, R8B, C16B, NOMA, IRET )
       NOMAIL=NOMA
-      IF ( IRET .NE. 0 ) CALL UTMESS('F','PECAPO','Y A UN BUG 0' )
 C
       NGM = 0
       NT = 0
@@ -111,6 +111,7 @@ C
 C ---   RECUPERATION DU NUMERO DE LIGNE DE LA TABLE RESULTAT POUR LA
 C ---   VARIABLE "NOMA" :
 C       ---------------
+         CALL TBEXP2(RESU,'LIEU')
          CALL TBNULI ( RESU, 1, 'LIEU', IBID , R8B, C16B, NOMAIL,
      +                                     R8B, K8B, ILIGNM )
          CALL TBNULI ( RESU, 1, 'LIEU', IBID , R8B, C16B, NOMA,
@@ -272,6 +273,13 @@ C --- DES INERTIES PRINCIPALES IY ET IZ, DE L'ANGLE ALPHA FORME
 C --- PAR LES AXES PRINCIPAUX D'INERTIE AVEC LES AXES GLOBAUX ET
 C --- DES COORDONNEES DU CENTRE DE GRAVITE DANS LE REPERE GLOBAL :
 C     ----------------------------------------------------------
+            CALL TBEXP2(RESU,'LIEU')
+            CALL TBEXP2(RESU,'AIRE')
+            CALL TBEXP2(RESU,'IY_PRIN_G')
+            CALL TBEXP2(RESU,'IZ_PRIN_G')
+            CALL TBEXP2(RESU,'ALPHA')
+            CALL TBEXP2(RESU,'CDG_X')
+            CALL TBEXP2(RESU,'CDG_Y')
             CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      +                    R8B, 'AIRE', K8B, IBID, S, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) CALL UTMESS('F','PECAPO','Y A UN BUG 1' )
@@ -311,6 +319,8 @@ C     CF DOC MACRO_CARA_POUTRE
             CALL TBAJLI ( RESU, NBCISA, PCISA, IBID , VALPAR,
      +                                     C16B, K8B, ILIGN )
         IF (NOMAIL.NE.NOMA) THEN
+            CALL TBEXP2(RESU,'KY')
+            CALL TBEXP2(RESU,'KZ')
 C       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
             CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      +                    R8B, 'AIRE', K8B, IBID, SEQ, C16B, K8B, IRET )
