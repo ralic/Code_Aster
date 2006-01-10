@@ -1,7 +1,7 @@
       SUBROUTINE SLENEU(NBNODE,AMA,BMA,CMA,AMI,BMI,CMI,MIX,MAN,ITES,
      &                  DATSET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 03/05/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 09/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C -->  GESTION DES SYSTEMES DE COORDONNEES
 C
         CALL JEEXIN('&&IDEAS.SYST',IRET)
         IF (IRET.EQ.0) THEN
-          CALL UTMESS('A','PRESUP',' ATTENTION AUCUN SYSTEME DE '
+          CALL UTMESS('I','PRESUP',' AUCUN SYSTEME DE '
      &      //'COORDONNES N''EST DEFINI')
 C     Il n'y a pas de sys de coord defini dans le fichier, pour ne pas 
 C     planter on en cree un bidon ici qu'on declare comme cartesien    

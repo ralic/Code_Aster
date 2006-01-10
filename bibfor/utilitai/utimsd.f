@@ -1,6 +1,6 @@
       SUBROUTINE UTIMSD(UNIT,NIVEAU,LATTR,LCONT,SCH1,IPOS,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,8 @@ C          : FAUX : ON N'IMPRIME PAS LES ATTRIBUTS
 C  LCONT   : VRAI : ON IMPRIME LE CONTENU DES OBJETS
 C          : FAUX : ON N'IMPRIME PAS LE CONTENU DES OBJETS
 C   SCH1   : CHAINE DE CARACTERES CHERCHEE
-C   IPOS   : DEBUT DE LA CHAINE DE CARACTERES A CHERCHER
+C   IPOS   : / DEBUT DE LA CHAINE DE CARACTERES A CHERCHER (1,...,24)
+C            / 0 : ON NE REGARDE PAS SCH1, ON IMPRIME TOUS LES OBJETS
 C   BASE   : 'G','V','L',OU ' '(TOUTES)
 C
 C ----------------------------------------------------------------------
@@ -63,7 +64,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL
+      LOGICAL ZL ,TOUT
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
@@ -78,21 +79,27 @@ C
 C
 C     --QUELQUES VERIFICATIONS:
 C     -------------------------
-      LONG=LEN(SCH1)
-      IF (LEN(SCH1).GT.24) THEN
-         CALL UTMESS('F','UTIMSD','CHAINE SCH1 TROP LONGUE >24')
-      END IF
-      IF ((IPOS.LT.0).OR.(IPOS.GT.24)) THEN
-         CALL UTMESS('F','UTIMSD','IPOS HORS DE L INTERVALLE (0 24)')
-      END IF
-      IF (IPOS+LEN(SCH1).GT.25) THEN
-         CALL UTMESS('F','UTIMSD','LONGUEUR TOTALE > 24 ')
-      END IF
+      IF (IPOS.EQ.0) THEN
+         TOUT=.TRUE.
+      ELSE
+         TOUT=.FALSE.
+
+         LONG=LEN(SCH1)
+         IF (LEN(SCH1).GT.24) THEN
+            CALL UTMESS('F','UTIMSD','CHAINE SCH1 TROP LONGUE >24')
+         END IF
+         IF ((IPOS.LT.0).OR.(IPOS.GT.24)) THEN
+            CALL UTMESS('F','UTIMSD','IPOS HORS DE L INTERVALLE (0 24)')
+         END IF
+         IF (IPOS+LEN(SCH1).GT.25) THEN
+            CALL UTMESS('F','UTIMSD','LONGUEUR TOTALE > 24 ')
+         END IF
+      ENDIF
 C
 C     -- ECRITURE DE L'ENTETE :
 C    --------------------------
       CHAIN2='????????????????????????'
-      CHAIN2(IPOS:IPOS-1+LONG)=SCH1
+      IF (.NOT.TOUT) CHAIN2(IPOS:IPOS-1+LONG)=SCH1
       WRITE(UNIT,*) ' '
       WRITE(UNIT,*) '====> IMPR_CO DE LA STRUCTURE DE DONNEE : ',
      +                CHAIN2

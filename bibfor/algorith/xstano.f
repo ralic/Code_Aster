@@ -9,7 +9,7 @@
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C
       INTEGER         INO,IMAE,IN,AR(12,2),IA,I,NNOS
       INTEGER         NBNOE,PARE,NABS,NMAABS,NBNOMA,NUNO,NRIEN,NBAR,NA
       INTEGER         NB,NUNOA,NUNOB,ENR,ENR1,ENR2,JDLINO,JMA,JSTANO
-      INTEGER         JCONX1,JCONX2,JLTSV,JLNSV,JCOOR,ITYPMA
+      INTEGER         JCONX1,JCONX2,JLTSV,JLNSV,JCOOR,ITYPMA,NDIM,ADDIM
       REAL*8          MINLSN,MINLST,MAXLSN,MAXLST,LSNA,LSNB,LSTA,LSTB
       REAL*8          LSNC,LSTC,LSN,A(3),B(3),C(3),R8MAEM,LST
       CHARACTER*8     TYPMA
@@ -94,6 +94,8 @@ C ----------------------------------------------------------------------
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)      
       MAI=NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMA)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)
 
 C     BOUCLE SUR LES NOEUDS DE GROUP_ENRI
       DO 200 INO=1,NBNOE
@@ -108,7 +110,7 @@ C       BOUCLE SUR LES MAILLES DE MAFIS
         DO 210 IMAE=1,NMAFIS
           MARE=.FALSE.
           NMAABS=ZI(JMAFIS-1+(IMAE-1)+1)
-C         NOMBRE DE NOEUDS DE LA MAILLE TRAITÉE
+C         NOMBRE DE NOEUDS DE LA MAILLE TRAITEE
           NBNOMA=ZI(JCONX2+NMAABS) - ZI(JCONX2+NMAABS-1)
 
           DO 211 IN=1,NBNOMA
@@ -146,7 +148,7 @@ C               ET ACTUALISATION DE MIN ET MAX POUR LST
               ELSEIF((LSNA*LSNB).LE.0.D0) THEN
 C              CA VEUT DIRE QUE LSN S'ANNULE SUR L'ARETE AU PT C
 C              (RETENU) ET ACTUALISATION DE MIN ET MAX POUR LST EN CE PT
-                DO 21 I=1,3
+                DO 21 I=1,NDIM
                   A(I)=ZR(JCOOR-1+3*(NUNOA-1)+I)
                   B(I)=ZR(JCOOR-1+3*(NUNOB-1)+I)
 C                 INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
@@ -156,8 +158,9 @@ C                 INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
                   LSTC=LSTA+(LSTB-LSTA)*(C(1)-A(1))/(B(1)-A(1))
                 ELSEIF (A(2).NE.B(2)) THEN
                   LSTC=LSTA+(LSTB-LSTA)*(C(2)-A(2))/(B(2)-A(2))
-                ELSEIF (A(3).NE.B(3)) THEN
-                  LSTC=LSTA+(LSTB-LSTA)*(C(3)-A(3))/(B(3)-A(3))
+                ELSEIF (NDIM .EQ. 3) THEN
+                  IF (A(3).NE.B(3))
+     &            LSTC=LSTA+(LSTB-LSTA)*(C(3)-A(3))/(B(3)-A(3))
                 ENDIF
                 IF (LSTC.LT.MINLST) MINLST=LSTC
                 IF (LSTC.GT.MAXLST) MAXLST=LSTC

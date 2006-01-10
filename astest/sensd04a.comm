@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE H.ANDRIAMBOLOLONA
 # TITRE Sensibilite au chargement/condition limite dans DYNA_LYNE_TRAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,11 +142,18 @@ VIT_INI=CREA_CHAMP(OPERATION='EXTR',
                    NOM_CHAM='VITE',
                    NUME_ORDRE=0,)
 
+ACC_INI=CREA_CHAMP(OPERATION='EXTR',
+                   TYPE_CHAM='NOEU_DEPL_R',
+                   RESULTAT=DYTRN,
+                   NOM_CHAM='ACCE',
+                   NUME_ORDRE=0,)
+
 DYTRNI=DYNA_LINE_TRAN(MODELE=MO,CARA_ELEM=CARELEM,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_TMPS,),
                     ETAT_INIT=_F(DEPL_INIT=DEP_INI,
-                                 VITE_INIT=VIT_INI,),
+                                 VITE_INIT=VIT_INI,
+                                 ACCE_INIT=ACC_INI,),
                     EXCIT=(
                            _F(CHARGE=CLIM2,),
                            _F(FONC_MULT=FC,CHARGE=CHF),

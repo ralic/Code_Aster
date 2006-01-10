@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 09/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1,N2,N3,IBID,NBMOD1,NBMOD2,IADRI1,IADRI2,
      &              LLNEQU,NEQ,NBMODE,IDBAS1,IDBAS2,
      &              I,J,MIN,IDPIJ,NBPARA,INOM,ITYP,IND,IMATRA,IDVEC1,
-     &              IDDEEQ,IDVEC2,IFM,NIV
+     &              IDDEEQ,IDVEC2,IFM,NIV,LLNEQ1,NEQ1,LLNEQ2,NEQ2
       REAL*8        RBID,PIJ,DDOT,PII,PJJ
       COMPLEX*16    CBID
       CHARACTER*8   TABLE, CONCPT, TYP,BASE1,BASE2,K8B,CODENT,
@@ -69,11 +69,10 @@ C
       CALL INFMAJ
       CALL INFNIV ( IFM , NIV )
 
-C RECUPERATION DE LA MATRICE ASSEMBLEE
+C RECUPERATION DE LA MATRICE ASSEMBLEE SI ELLE EXISTE
       CALL GETVID ( ' ', 'MATR_ASSE'     , 1,1,1, MATRAS, N1 )
       IF (N1.NE.0) THEN
-        CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
-     +                                            NUMDDA,IER)
+C COOL ELLE EXISTE      
         CALL MTDSCR ( MATRAS )
         MATR=MATRAS
         CALL JEVEUO ( MATR//'.&INT', 'E', IMATRA )
@@ -81,6 +80,7 @@ C RECUPERATION DE LA MATRICE ASSEMBLEE
      +              NUMDDA,IER)
         CALL DISMOI('F','NB_EQUA',MATRAS,'MATR_ASSE',NEQ,K8B,IER)
       ELSE
+C PAS COOL ELLE EXISTE PAS      
         MATR=' '
       ENDIF
 
@@ -100,44 +100,55 @@ C RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
 C RECUPERATION DE LA NUMEROTATION DES BASES
       CALL JEVEUO(BASE1//'           .REFD','L',IADRI1)
       IF ((TYPBA1.EQ.'MODE_MECA').OR.(TYPBA1.EQ.'MODE_GENE')) THEN
-         MATRI1 = ZK24(IADRI1)
-      ELSE
-         MATRI1 = ZK24(IADRI1+2)
-      ENDIF
-      IF (MATRI1.NE.' ') THEN
+C On passe par les matrices du REFD
+        MATRI1 = ZK24(IADRI1)
         CALL DISMOI('F','NOM_NUME_DDL',MATRI1,'MATR_ASSE',IBID,
      +                NUMDD1,IER)
       ELSE
-        NUMDD1 = ZK24(IADRI1+1)(1:14)
+C On passe par la numerotation du REFD
+        NUMDD1 = ZK24(IADRI1+3)(1:14)
       ENDIF
+      CALL JEVEUO(NUMDD1//'.NUME.NEQU','L',LLNEQ1)
+      NEQ1 = ZI(LLNEQ1)
+
       CALL JEVEUO(BASE2//'           .REFD','L',IADRI2)
       IF ((TYPBA2.EQ.'MODE_MECA').OR.(TYPBA2.EQ.'MODE_GENE')) THEN
-         MATRI2 = ZK24(IADRI2)
-      ELSE
-         MATRI2 = ZK24(IADRI2+2)
-      ENDIF
-      IF (MATRI2.NE.' ') THEN
+        MATRI2 = ZK24(IADRI2)
         CALL DISMOI('F','NOM_NUME_DDL',MATRI2,'MATR_ASSE',IBID,
      +                NUMDD2,IER)
       ELSE
-        NUMDD2 = ZK24(IADRI2+1)(1:14)
+        NUMDD2 = ZK24(IADRI2+3)(1:14)
       ENDIF
+      CALL JEVEUO(NUMDD2//'.NUME.NEQU','L',LLNEQ2)
+      NEQ2 = ZI(LLNEQ2)
+      
+      IF (NEQ1.NE.NEQ2) THEN
+         CALL UTMESS('F',NOMCOM,'BASE MODALE 1 ET 2 AVEC'//
+     +               ' NUMEROTATIONS DE TAILLE INCOMPATIBLE') 
+      ENDIF
+  
       IF (NUMDD1.NE.NUMDD2) THEN
+        IF (NEQ1.NE.NEQ2) THEN
+         CALL UTMESS('F',NOMCOM,'BASE MODALE 1 ET 2 AVEC'//
+     +               ' NUMEROTATIONS DE TAILLE INCOMPATIBLE')   
+        ELSE
          CALL UTMESS('I',NOMCOM,'BASE MODALE 1 ET 2 AVEC'//
-     +               ' NUMEROTATIONS INCOMPATIBLES')    
+     +               ' NUMEROTATIONS INCOMPATIBLES') 
+        ENDIF 
       ENDIF
-      NU = NUMDD1(1:14)
+C PAR DEFAUT ON PREND EN REFERENCE LA NUMEROTATION DE LA BASE 1      
       IF (MATR.NE.' ') THEN
         IF (NUMDD1.NE.NUMDDA) THEN
           CALL UTMESS('I',NOMCOM,'BASE MODALE ET MATRICE AVEC'//
      +               ' NUMEROTATIONS INCOMPATIBLES')    
         ENDIF
         NU = NUMDDA(1:14)
+        CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
+      ELSE
+        NU = NUMDD1(1:14)
+        NEQ=NEQ1  
       ENDIF
-      CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
       
-      CALL JEVEUO(NUMDD1//'.NUME.NEQU','L',LLNEQU)
-      NEQ = ZI(LLNEQU)
       CALL WKVECT ( '&&OP0141.BASE1','V V R',NBMOD1*NEQ,
      &             IDBAS1)
       CALL WKVECT ( '&&OP0141.BASE2','V V R',NBMOD2*NEQ,
@@ -146,16 +157,9 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
      &             IDVEC1)
       CALL WKVECT ( '&&OP0141.TEMP2','V V R',NEQ,
      &             IDVEC2)
-      IF ((TYPBA1.EQ.'MODE_MECA').OR.(TYPBA1.EQ.'MODE_GENE')) THEN
-         CALL COPMOD(BASE1,'DEPL',NEQ,NU,NBMOD1,ZR(IDBAS1))
-      ELSE
-         CALL COPMO2(BASE1,NEQ,NU,NBMOD1,ZR(IDBAS1))
-      ENDIF
-      IF ((TYPBA2.EQ.'MODE_MECA').OR.(TYPBA2.EQ.'MODE_GENE')) THEN
-         CALL COPMOD(BASE2,'DEPL',NEQ,NU,NBMOD2,ZR(IDBAS2))
-      ELSE
-         CALL COPMO2(BASE2,NEQ,NU,NBMOD2,ZR(IDBAS2))
-      ENDIF
+ 
+      CALL COPMO2(BASE1,NEQ,NU,NBMOD1,ZR(IDBAS1))
+      CALL COPMO2(BASE2,NEQ,NU,NBMOD2,ZR(IDBAS2))
       
 C INITIALISATION DE LA TABLE DES MACS      
       NBPARA=3
@@ -174,41 +178,46 @@ C INITIALISATION DE LA TABLE DES MACS
 
 C BOUCLE DE CALCUL DES MACS
       DO 30 I = 1 , NBMOD1
+        PII=0.D0
         IF (MATR.NE.' ') THEN
           CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBAS1+(I-1)*NEQ),
      &                    'R',ZR(IDVEC1),1)
           CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
         ELSE
           CALL DCOPY(NEQ,ZR(IDBAS1+(I-1)*NEQ),1,ZR(IDVEC1),1)
-          CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
         ENDIF
+
+        PII = ABS(DDOT( NEQ, ZR(IDBAS1+(I-1)*NEQ),1,
+     &           ZR(IDVEC1),1))
             
+        ZI(IND)=I
+
         DO 40 J = 1 , NBMOD2
-        IF (MATR.NE.' ') THEN
-          CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBAS2+(J-1)*NEQ),
+          PIJ=0.D0
+          PJJ=0.D0
+          IF (MATR.NE.' ') THEN
+            CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBAS2+(J-1)*NEQ),
      &                    'R',ZR(IDVEC2),1)
-          CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
-        ELSE
-          CALL DCOPY(NEQ,ZR(IDBAS2+(J-1)*NEQ),1,ZR(IDVEC2),1)
-          CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
-        ENDIF
-           PIJ = ABS(DDOT( NEQ,ZR(IDBAS2+(J-1)*NEQ) ,1,
-     &           ZR(IDVEC1),1))
-           PII = ABS(DDOT( NEQ, ZR(IDBAS1+(I-1)*NEQ),1,
-     &           ZR(IDVEC1),1))
-           PJJ = ABS(DDOT( NEQ, ZR(IDBAS2+(J-1)*NEQ),1,
+            CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
+          ELSE
+            CALL DCOPY(NEQ,ZR(IDBAS2+(J-1)*NEQ),1,ZR(IDVEC2),1)
+          ENDIF
+
+          PIJ = ABS(DDOT( NEQ,ZR(IDBAS1+(I-1)*NEQ) ,1,
+     &           ZR(IDVEC2),1))
+
+          PJJ = ABS(DDOT( NEQ, ZR(IDBAS2+(J-1)*NEQ),1,
      &           ZR(IDVEC2),1))
            
-           PIJ = (PIJ**2) / (PII * PJJ)
-           
-           ZI(IND)=I
-           ZI(IND+1)=J
-           CALL TBAJLI (TABLE, 3, ZK16(INOM), 
+          PIJ = (PIJ**2) / (PII * PJJ)
+          
+          ZI(IND+1)=J
+          CALL TBAJLI (TABLE, 3, ZK16(INOM), 
      &          ZI(IND), PIJ, CBID, K8B, 0 )
  40     CONTINUE
  30   CONTINUE
       IF ( NIV .GE. 2 ) THEN
-      CALL TBIMPR(TABLE,' ','TABLEAU',IFM,3,ZK16(INOM),0,
+        CALL TBIMPR(TABLE,' ','TABLEAU',IFM,3,ZK16(INOM),0,
      &   ' ','1PE12.5','RI')
       ENDIF
 

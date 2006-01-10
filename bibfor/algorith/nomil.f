@@ -1,7 +1,7 @@
       FUNCTION NOMIL(TYPMA,IA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -90,9 +90,20 @@ C --- VARIABLES
         TAB(4)=6
         TAB(5)=9
         TAB(6)=10       
+      ELSEIF (TYPMA.EQ.'QUAD8') THEN        
+        CALL ASSERT(IA.LE.4)
+        TAB(1)=5
+        TAB(2)=7
+        TAB(3)=8
+        TAB(4)=6
+      ELSEIF (TYPMA.EQ.'TRIA6') THEN        
+        CALL ASSERT(IA.LE.3)
+        TAB(1)=4
+        TAB(2)=5
+        TAB(3)=6
       ELSE
         CALL UTMESS('F','NOMIL','LA MAILLE DOIT ETRE DE TYPE '//
-     &      'TETRA10,PENTA15 OU HEXA20. '//
+     &      'TETRA10,PENTA15,HEXA20,QUAD8 OU TRIA6. '//
      &      'OR LA MAILLE EST DE TYPE : '//TYPMA//'.') 
       ENDIF
 

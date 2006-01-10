@@ -1,4 +1,4 @@
-#@ MODIF UniteAster Utilitai  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF UniteAster Utilitai  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,7 +84,7 @@ class UniteAster:
          print __tab.EXTR_TABLE()
          raise aster.FatalError,"<F> <UniteAster._setinfo> %s" % message
       self.infos[unit]['nom'] = nomfich
-      DETRUIRE(CONCEPT=_F(NOM=__tab))
+      DETRUIRE(CONCEPT=_F(NOM=__tab),INFO=1)
 
 #-------------------------------------------------------------------------------
    def Libre(self, nom=None):
@@ -93,7 +93,7 @@ class UniteAster:
       """
       __tab=INFO_EXEC_ASTER(LISTE_INFO=('UNITE_LIBRE'))
       unit = __tab['UNITE_LIBRE',1]
-      DETRUIRE(CONCEPT=_F(NOM=__tab))
+      DETRUIRE(CONCEPT=_F(NOM=__tab),INFO=1)
       if nom==None:
          nom='fort.'+str(unit)
 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -383,6 +383,38 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    CRITERE='ABSOLU',
                    PRECISION=2.0,),),);
 
+
+CHACCE=CREA_CHAMP(OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  TYPE_CHAM='NOEU_DEPL_R',
+                  NOM_CHAM='ACCE',
+                  INST=0.5,)
+
+
+CHDEPL=CREA_CHAMP(OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  TYPE_CHAM='NOEU_DEPL_R',
+                  NOM_CHAM='DEPL',
+                  INST=0.5,)
+
+CHVITE=CREA_CHAMP(OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  TYPE_CHAM='NOEU_DEPL_R',
+                  NOM_CHAM='VITE',
+                  INST=0.5,)
+
+CHSIEF=CREA_CHAMP(OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  TYPE_CHAM='ELGA_SIEF_R',
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=0.5,)
+
+CHVARI=CREA_CHAMP(OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  TYPE_CHAM='ELGA_VARI_R',
+                  NOM_CHAM='VARI_ELGA',
+                  INST=0.5,)
+
 RESU=DYNA_NON_LINE(reuse =RESU,
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -396,7 +428,11 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                    COMP_ELAS=_F(RELATION='CABLE',
                                 DEFORMATION='GREEN',
                                 GROUP_MA='CABLE',),
-                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   ETAT_INIT=_F(DEPL=CHDEPL,
+                                VITE=CHVITE,
+                                ACCE=CHACCE,
+                                SIGM=CHSIEF,
+                                VARI=CHVARI),
                    INCREMENT=_F(LIST_INST=L_INST21,),
                    NEWMARK=_F(),
                    NEWTON=_F(REAC_ITER=1,),

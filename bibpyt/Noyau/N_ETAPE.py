@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_ETAPE Noyau  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,6 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
            le nommage du concept.
 
       """
-      if not self.isactif():return
       self.sdnom=nom
       try:
          if self.parent:

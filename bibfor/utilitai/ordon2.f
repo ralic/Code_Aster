@@ -4,7 +4,7 @@
       REAL*8       VALE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 09/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,22 +30,18 @@ C IN/OUT : VALE : ABSCISSES, PARTIE REELLE, PARTIE IMAGINAIRE
 C                 SOUS LA FORME X1,Y1,Z1, X2,Y2,Z2, ...
 C IN     : NB   : NBRE DE POINTS
 C ----------------------------------------------------------------------
-      INTEGER      I,INV,NS2
-      REAL*8       XT
+      INTEGER      I, IORD(NB)
+      REAL*8       XBID(NB), YRBID(NB), YIBID(NB)
 C     ------------------------------------------------------------------
 C
-      NS2=NB/3
-      DO 100 I=1,NS2
-         INV=NB-I+1
-         XT=VALE(3*(I-1)+1)
-         VALE(3*(I-1)+1)=VALE(3*(INV-1)+1)
-         VALE(3*(INV-1)+1)=XT
-         XT=VALE(3*(I-1)+2)
-         VALE(3*(I-1)+2)=VALE(3*(INV-1)+2)
-         VALE(3*(INV-1)+2)=XT
-         XT=VALE(3*I)
-         VALE(3*I)=VALE(3*INV)
-         VALE(3*INV)=XT
- 100  CONTINUE
-C
+      CALL DCOPY(NB,VALE,1,XBID,1)
+      CALL DCOPY(NB,VALE(NB+1),2,YRBID,1)
+      CALL DCOPY(NB,VALE(NB+2),2,YIBID,1)
+      CALL ORDR8(XBID,NB,IORD)
+      DO 101 I=1,NB
+        VALE(I)=XBID(IORD(I))
+        VALE(NB+1+2*(I-1))=YRBID(IORD(I))
+        VALE(NB+2+2*(I-1))=YIBID(IORD(I))
+ 101  CONTINUE
+
       END

@@ -4,7 +4,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/01/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,6 +76,13 @@ C
 C
 C ----------------------------------------------------------------------
 C
+      IF (LAG2D) THEN
+          PROJ1   = FCTF(1) * TANG(1) + FCTF(2) * TANG(2)
+          RTX = PROJ1 * TANG(1) 
+          RTY = PROJ1 * TANG(2) 
+        GOTO 100
+      ENDIF
+
       IF ((TYPLIA.EQ.'F0').OR.(TYPLIA.EQ.'GL')) THEN
         PROJ1 = FCTF(1) * TANG(1) + FCTF(2) * TANG(2)
         PROJ2 = FCTF(1) * TANG(4) + FCTF(2) * TANG(5)
@@ -98,7 +105,6 @@ C
         ENDIF
       ENDIF
 
-
       RTX = PROJ1 * TANG(1) + PROJ2 * TANG(4)
       RTY = PROJ1 * TANG(2) + PROJ2 * TANG(5)
       RTZ = 0.D0
@@ -106,5 +112,6 @@ C
         RTZ = PROJ1 * TANG(3) + PROJ2 * TANG(6)
       ENDIF
 
+100   CONTINUE
 
       END

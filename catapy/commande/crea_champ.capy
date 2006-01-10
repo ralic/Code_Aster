@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 09/01/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,8 +139,9 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                  b_type_maxi =BLOC(condition = "TYPE_MAXI != None",
                       TYPE_RESU       =SIMP(statut='o',typ='TXM',defaut="VALE",into=("VALE","INST",) ),
 
-                      regles=(AU_PLUS_UN('LIST_INST','LIST_FREQ','NUME_ORDRE','INST',
+                      regles=(EXCLUS('TOUT_ORDRE','LIST_INST','LIST_FREQ','NUME_ORDRE','INST',
                                       'FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGL'),),
+                      TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                       LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
                       LIST_FREQ       =SIMP(statut='f',typ=(listr8_sdaster) ),
                       NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
@@ -150,29 +151,18 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                       NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
                       NOM_CAS         =SIMP(statut='f',typ='TXM',max='**'),
                       ANGL            =SIMP(statut='f',typ='R',max='**'),
-
-                      b_tout =BLOC(condition = "(LIST_INST,LIST_FREQ,NUME_ORDRE,INST,\
-                                                 FREQ,NUME_MODE,NOEUD_CMP,NOM_CAS,ANGL)\
-                                              ==(None     ,None     ,None      ,None,\
-                                                 None,None     ,None     ,None   ,None)",
-                                      TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),
-                      ),
                  ),
 
                  # si .not. TYPE_MAXI, on ne doit spécifier qu'un seul numéro d'ordre :
                  b_non_type_maxi =BLOC(condition = "TYPE_MAXI == None",
-                      regles=(AU_PLUS_UN('INST','FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGL'),),
+                      regles=(EXCLUS('NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGL'),),
+                      NUME_ORDRE      =SIMP(statut='f',typ='I'),
                       INST            =SIMP(statut='f',typ='R'),
                       FREQ            =SIMP(statut='f',typ='R'),
                       NUME_MODE       =SIMP(statut='f',typ='I'),
                       NOEUD_CMP       =SIMP(statut='f',typ='TXM',max=2),
                       NOM_CAS         =SIMP(statut='f',typ='TXM'),
                       ANGL            =SIMP(statut='f',typ='R'),
-
-                      b_nume_1 =BLOC(condition = "(INST,FREQ,NUME_MODE,NOEUD_CMP,NOM_CAS,ANGL)\
-                                                ==(None,None,None     ,None     ,None   ,None)",
-                                     NUME_ORDRE =SIMP(statut='f',typ='I',defaut=1,),
-                      ),
 
                       INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN",) ),
                  ),

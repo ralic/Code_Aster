@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 31/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,6 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
            création et le nommage du concept.
 
       """
-      if not self.isactif():return
       self.sdnom=nom
       try:
          # On positionne la macro self en tant que current_step pour que les 

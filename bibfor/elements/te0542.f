@@ -1,7 +1,7 @@
       SUBROUTINE TE0542(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,6 +62,7 @@ C      ------------------------
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
       CALL XTEINI(NOMTE,DDLH,NFE,IBID,DDLC,IBID,IBID,IBID)
+
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -84,7 +85,7 @@ C       PARAMÈTRES PROPRES À X-FEM
         CALL JEVECH('PBASLOR','L',JBASLO)        
         CALL JEVECH('PLSN'   ,'L',JLSN)
         CALL JEVECH('PLST'   ,'L',JLST)
-
+                
         CALL JEVECH('PCONTMR','L',ICONTM)
              
         

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,10 @@ C ......................................................................
       INTEGER KK,NI,MJ,JTAB(7),NZ,NNOS,ICAMAS
       INTEGER DDLH,DDLC,NDDL,INO,NNOM,NFE,IBID
       LOGICAL DEFANE, MATSYM
-      REAL*8 MATNS(3*27*3*27)
-      REAL*8 PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
-      REAL*8 ANGMAS(3),R8VIDE,R8DGRD
+      REAL*8  MATNS(3*27*3*27)
+      REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
+      REAL*8  PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
+      REAL*8  ANGMAS(3),R8VIDE,R8DGRD
       REAL*8  PHASM(7*27),PHASP(7*27)
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -69,10 +70,30 @@ C - FONCTIONS DE FORMES ET POINTS DE GAUSS
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
       CALL XTEINI(NOMTE,DDLH,NFE,IBID,DDLC,NNOM,IBID,NDDL)
-
+      
 C - TYPE DE MODELISATION
-      TYPMOD(1) = '3D      '
-      TYPMOD(2) = '        '
+      IF (NDIM .EQ. 3) THEN
+        TYPMOD(1) = '3D      '
+        TYPMOD(2) = '        '
+      ELSE
+         IF (NOMTE(3:4).EQ.'AX') THEN
+          TYPMOD(1) = 'AXIS    '
+         ELSE IF (NOMTE(3:4).EQ.'CP') THEN
+          TYPMOD(1) = 'C_PLAN  '
+         ELSE IF (NOMTE(3:4).EQ.'DP') THEN
+          TYPMOD(1) = 'D_PLAN  '
+         ELSE
+          CALL UTMESS('F','TE0100','NOM D''ELEMENT ILLICITE')
+         END IF
+         IF (NOMTE(1:2).EQ.'MD') THEN
+           TYPMOD(2) = 'ELEMDISC'
+         ELSE IF (NOMTE(1:2).EQ.'MI') THEN
+           TYPMOD(2) = 'INCO    '
+         ELSE
+           TYPMOD(2) = '        '
+         END IF
+         CODRET=0     
+      ENDIF
 
 C - PARAMETRES EN ENTREE
 
@@ -107,14 +128,21 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PTEMPPR','L',ITEMPP)
       CALL JEVECH('PINSTMR','L',IINSTM)
       CALL JEVECH('PINSTPR','L',IINSTP)
-      CALL JEVECH('PHYDRMR','L',IHYDRM)
-      CALL JEVECH('PHYDRPR','L',IHYDRP)
-      CALL JEVECH('PSECHMR','L',ISECHM)
-      CALL JEVECH('PSECHPR','L',ISECHP)
-      CALL JEVECH('PSECREF','L',ISREF)
+      IF (NDIM .EQ. 3) THEN
+         CALL JEVECH('PHYDRMR','L',IHYDRM)
+         CALL JEVECH('PHYDRPR','L',IHYDRP)
+         CALL JEVECH('PSECHMR','L',ISECHM)
+         CALL JEVECH('PSECHPR','L',ISECHP)
+         CALL JEVECH('PSECREF','L',ISREF)
+      ENDIF
       CALL TECACH('ONN','PDEFAMR',1,IDEFAM,IRET)
-      CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
-      DEFANE = IRET .EQ. 0
+      IF (NDIM .EQ. 3) THEN
+         CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
+         DEFANE = IRET .EQ. 0
+      ELSE
+         CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
+         DEFANE = IDEFAM .NE. 0
+      ENDIF
       CALL TECACH('NNN','PPHASMR',1,IPHASM,IRET)
       CALL TECACH('NNN','PPHASPR',1,IPHASP,IRET)
       IF (IRET.EQ.0) THEN
@@ -175,13 +203,11 @@ C         OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
      &                ZR(ITREF),ZR(IDEPLM),ZR(JLSN),ZR(JLST),ZR(ICONTM),
      &                ZR(IVARIM),ZR(IMATUU),ZR(IVECTU),CODRET)
 
-C          do 444 LI=1,NDDL
+C          DO 444 LI=1,NDDL
 C            DO 445 I=1,LI
 C              IJ = (LI-1)*LI/2 + I
-                                
-C              IF (ZI(IADZI).EQ.42.AND.ABS(ZR(IMATUU-1+IJ)).GT.1.D-12)
+C              IF (ABS(ZR(IMATUU-1+IJ)).GT.1.D-12)
 C     &                WRITE(6,*)'K1(',I,',',LI,')=',ZR(IMATUU-1+IJ),';'
-
 C 445        CONTINUE                
 C 444      CONTINUE
 
@@ -199,14 +225,14 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
      &                ZR(ITREF),ZR(IDEPLP),ZR(JLSN),ZR(JLST),ZR(ICONTP),
      &                ZR(IVARIP),ZR(IMATUU),ZR(IVECTU),CODRET)
 
-C          WRITE(6,*)'VECTU long: ',NDDL 
+C          WRITE(6,*)'VECTU long: ',NDDL
 C          DO 446 LI=1,NDDL
 C           WRITE(6,*)' ',ZR(IVECTU-1+LI)
 C 446      CONTINUE
 
         END IF
 
-      ELSE
+      ELSEIF (NDIM .EQ. 3) THEN
 
 C - LOIS DE COMPORTEMENT ECRITE EN CONFIGURATION ACTUELLE
 C                          COMP_INCR
@@ -215,7 +241,7 @@ C
 C ATTENTION : LE FONCTIONNEMENT DE NMTSTM AVEC 'SIMO_MIEHE' A CHANGE
 C             C'EST LA MATRICE NON SYMETRIQUE QUI EST UTILISEE
 C
-       CALL UTMESS('F','TE0359','COMP_INCR NON DISPONIBLE POUR LES '//
+       CALL UTMESS('F','TE0539','COMP_INCR NON DISPONIBLE POUR LES '//
      &                            'ELEMENTS ENRICHIS AVEC X-FEM.')
 
 C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
@@ -293,6 +319,99 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
      &                ZR(ICONTM),ZR(IVARIM),
      &                DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+        ELSE
+          CALL UTMESS('F','TE0539','COMPORTEMENT:'//ZK16(ICOMPO+2)//
+     &                'NON IMPLANTE')
+        END IF
+
+      ELSE
+       CALL UTMESS('F','TE0539','COMP_INCR NON DISPONIBLE POUR LES '//
+     &                            'ELEMENTS ENRICHIS AVEC X-FEM.')
+
+
+C PARTIE 2D
+C - HYPO-ELASTICITE
+
+        IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
+CCDIR$ IVDEP
+          DO 25 I = 1,2*NNO
+            ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1) +
+     &                      ZR(IDEPLP+I-1)
+  25     CONTINUE
+        END IF
+
+        IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
+
+C -       ELEMENT A DISCONTINUITE INTERNE
+          IF (TYPMOD(2).EQ.'ELEMDISC') THEN
+
+            CALL NMED2D(NNO,NPG,IPOIDS,IVF,IDFDE,
+     &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                  LGPG,ZR(ICARCR),
+     &                  ZR(IDEPLM),ZR(IDEPLP),
+     &                  ZR(ICONTM),ZR(IVARIM),VECT1,
+     &                  VECT3,ZR(ICONTP),ZR(IVARIP),
+     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
+
+          ELSE
+
+            CALL NMPL2D(NNO,NPG,IPOIDS,IVF,IDFDE,
+     &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                  LGPG,ZR(ICARCR),
+     &                  ZR(IINSTM),ZR(IINSTP),
+     &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                  ZR(IHYDRM),ZR(IHYDRP),
+     &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                  NZ,PHASM,PHASP,
+     &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
+     &                  DEFANE,
+     &                  ANGMAS,
+     &                  ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
+     &                  VECT3,ZR(ICONTP),ZR(IVARIP),
+     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
+
+          ENDIF
+
+C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
+
+        ELSE IF (ZK16(ICOMPO+2) (1:10).EQ.'SIMO_MIEHE') THEN
+          CALL NMGP2D(NNO,NPG,IPOIDS,IVF,IDFDE,
+     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
+     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                NZ,PHASM,PHASP,
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT2,ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+
+
+C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
+        ELSE IF (ZK16(ICOMPO+2) .EQ.'GREEN') THEN
+
+          DO 45 LI = 1,2*NNO
+            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+   45     CONTINUE
+
+          CALL NMGR2D(NNO,NPG,IPOIDS,IVF,IDFDE,
+     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
+     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                NZ,PHASM,PHASP,
+     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
+     &                DEFANE,
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT2,VECT3,
+     &                ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
         ELSE
           CALL UTMESS('F','TE0539','COMPORTEMENT:'//ZK16(ICOMPO+2)//

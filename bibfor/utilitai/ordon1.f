@@ -4,7 +4,7 @@
       REAL*8       VALE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 09/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,19 +29,17 @@ C     ORDON1 POUR LES FONCTIONS A VALEURS REELLES
 C IN/OUT : VALE : ABSCISSES SUIVIES DES ORDONNEES
 C IN     : NB   : NBRE DE POINTS
 C ----------------------------------------------------------------------
-      INTEGER      I,INV,NS2
-      REAL*8       XT
+      INTEGER      I, IORD(NB)
+      REAL*8       XBID(NB), YRBID(NB)
 C     ------------------------------------------------------------------
 C
-      NS2=NB/2
-      DO 100 I=1,NS2
-         INV=NB-I+1
-         XT=VALE(I)
-         VALE(I)=VALE(INV)
-         VALE(INV)=XT
-         XT=VALE(I+NB)
-         VALE(I+NB)=VALE(INV+NB)
-         VALE(INV+NB)=XT
- 100  CONTINUE
-C
+
+      CALL DCOPY(NB,VALE,1,XBID,1)
+      CALL DCOPY(NB,VALE(NB+1),1,YRBID,1)
+      CALL ORDR8(XBID,NB,IORD)
+      DO 101 I=1,NB
+        VALE(I)=XBID(IORD(I))
+        VALE(NB+I)=YRBID(IORD(I))
+ 101  CONTINUE
+
       END

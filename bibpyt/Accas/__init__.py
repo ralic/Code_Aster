@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF __init__ Accas  DATE 09/01/2006   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,6 @@ from A_MCSIMP import MCSIMP
 
 # Les règles
 from A_AU_MOINS_UN import AU_MOINS_UN
-from A_AU_PLUS_UN import AU_PLUS_UN
 from A_UN_PARMI import UN_PARMI
 from A_PRESENT_PRESENT import PRESENT_PRESENT
 from A_PRESENT_ABSENT import PRESENT_ABSENT

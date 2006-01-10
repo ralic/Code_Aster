@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,16 +64,26 @@ C
       INTEGER         JPTINT,JAINT,JCOSE,JHEAV
       INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE
       INTEGER         A1,A2,A3,A4,A,B,C
-      PARAMETER      (NSEMAX=6)
       CHARACTER*8     TYPMA,NOMA
-      INTEGER         IADZI,IAZK24,DIMENS,ADDIM
+      INTEGER         IADZI,IAZK24,NDIM,ADDIM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
+      CALL TECAEL(IADZI,IAZK24)
+      NOMA=ZK24(IAZK24)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)
+
+      IF (NDIM.EQ.3) THEN
+        NSEMAX=6
+      ELSE
+        NSEMAX=3
+      ENDIF
+
       CALL JEVEUO(PINTER,'L',JPTINT)
       CALL JEVEUO(AINTER,'L',JAINT)
-      CALL WKVECT(COORSE,'V V R',3*NSEMAX*4,JCOSE)
+      CALL WKVECT(COORSE,'V V R',NDIM*NSEMAX*(NDIM+1),JCOSE)
 
       DO 10 IN=1,6
         DO 20 J=1,4
@@ -81,12 +91,7 @@ C ----------------------------------------------------------------------
  20     CONTINUE
  10   CONTINUE
 
-      CALL TECAEL(IADZI,IAZK24)
-      NOMA=ZK24(IAZK24)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      DIMENS=ZI(ADDIM-1+6)
-
-      IF (DIMENS .EQ. 2) THEN
+      IF (NDIM .EQ. 2) THEN
         TYPMA='TRIA3'
       ELSE 
         TYPMA='TETRA4'
@@ -99,7 +104,7 @@ C                  ALGO BOOK III (26/04/04)
 C-----------------------------------------------------------------------
 
 
-      IF (DIMENS .EQ. 2) THEN
+      IF (NDIM .EQ. 2) THEN
        IF (NINTER .LT. 2) THEN
         IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
 C     1 SEUL ELEMENT
@@ -299,17 +304,17 @@ C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA (TRIA EN 2D)
 C                  ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
-      IF (DIMENS.EQ.2) THEN
+      IF (NDIM.EQ.2) THEN
       DO 190 ISE=1,NSE
-          DO 191 IN=1,3
+          DO 191 IN=1,NDIM+1
            INH=CNSE(ISE,IN)
            IF (INH.LT.100) THEN
-             DO 192 J=1,2
-               XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)
+             DO 192 J=1,NDIM
+               XYZ(IN,J)=ZR(IGEOM-1+NDIM*(INH-1)+J)
  192         CONTINUE
            ELSE
-             DO 199 J=1,2
-               XYZ(IN,J)=ZR(JPTINT-1+3*(INH-100-1)+J)
+             DO 199 J=1,NDIM
+               XYZ(IN,J)=ZR(JPTINT-1+NDIM*(INH-100-1)+J)
  199         CONTINUE
            ENDIF
  191     CONTINUE
@@ -374,16 +379,18 @@ C-----------------------------------------------------------------------
       DO 300 ISE=1,NSE
 
         ZR(JHEAV-1+ISE)=1.D0
-        DO 310 IN=1,4
+        DO 310 IN=1,NDIM+1
           INH=CNSE(ISE,IN)
           IF (INH.LT.100) THEN
-            DO 320 J=1,3
-              ZR(JCOSE-1+12*(ISE-1)+3*(IN-1)+J)=ZR(IGEOM-1+3*(INH-1)+J)
+            DO 320 J=1,NDIM
+              ZR(JCOSE-1+NDIM*(NDIM+1)*(ISE-1)+NDIM*(IN-1)+J)=
+     &         ZR(IGEOM-1+NDIM*(INH-1)+J)
  320        CONTINUE
             IF (LSN(INH).LT.0) ZR(JHEAV-1+ISE)=-1.D0
           ELSE
-            DO 330 J=1,3
-          ZR(JCOSE-1+12*(ISE-1)+3*(IN-1)+J)=ZR(JPTINT-1+3*(INH-100-1)+J)
+            DO 330 J=1,NDIM
+          ZR(JCOSE-1+NDIM*(NDIM+1)*(ISE-1)+NDIM*(IN-1)+J)=
+     &    ZR(JPTINT-1+NDIM*(INH-100-1)+J)
  330        CONTINUE
           ENDIF
  310    CONTINUE

@@ -1,10 +1,10 @@
-      SUBROUTINE XJACOB(NNO,DFF,IGEOM,INVJAC)
+      SUBROUTINE XJACOB(NNO,DFF,IGEOM,INVJAC,NDIM,NBNOMX)
       IMPLICIT NONE
-      INTEGER    NNO,IGEOM
-      REAL*8     DFF(3,*),INVJAC(3,3)
+      INTEGER    NNO,IGEOM,NDIM,NBNOMX
+      REAL*8     DFF(3,NBNOMX),INVJAC(NDIM,NDIM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C        INVJAC : INVERSE DE LA JACONIENNE AU POINT XE
 C.......................................................................
 C
       INTEGER       I,J,K
-      REAL*8        JACOBI(3,3)
+      REAL*8        JACOBI(3,3),TEMP(3,3)
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -57,16 +57,25 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     JACOBIENNE EN XE
       CALL MATINI(3,3,0.D0,JACOBI)
-      DO 100 I=1,3
-        DO 110 J=1,3
+
+      DO 100 I=1,NDIM
+        DO 110 J=1,NDIM
           DO 120 K=1,NNO
-            JACOBI(I,J) = JACOBI(I,J) + DFF(J,K) * ZR(IGEOM-1+3*(K-1)+I)
- 120       CONTINUE
- 110     CONTINUE
- 100   CONTINUE
+       JACOBI(I,J) = JACOBI(I,J) + DFF(J,K) * ZR(IGEOM-1+NDIM*(K-1)+I)
+ 120      CONTINUE
+ 110    CONTINUE
+ 100  CONTINUE
+
+      IF (NDIM .EQ. 2) JACOBI(3,3)=1.D0
 
 C     INVERSE DE LA JACOBIENNE
-      CALL MATINV(3,JACOBI,INVJAC)  
+      CALL MATINV(3,JACOBI,TEMP)  
+           
+      DO 200 I=1,NDIM
+         DO 210 J=1, NDIM
+            INVJAC(I,J)=TEMP(I,J)
+ 210     CONTINUE
+ 200  CONTINUE
            
       CALL JEDEMA()
       END

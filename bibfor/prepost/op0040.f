@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -321,7 +321,7 @@ C
 C
       DO 200 IOCC = 1,NOCC
 C
-         IF (IOCC.EQ.1) WRITE(IFI,'(A)') '<CHAR>'
+         WRITE(IFI,'(A)') '<CHAR>'
 C
 C
          CALL GETVID ( 'CHARGE', 'RESULTAT' ,IOCC,1,1, RESU, IBID)

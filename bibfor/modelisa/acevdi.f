@@ -4,7 +4,7 @@
       CHARACTER*(*)           NOMAZ,NOMOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,6 +81,11 @@ C --- 2D
           IER = IER + 1
       ENDIF
 C
+      IF (I2D.EQ.0.AND.I3D.EQ.0) THEN
+          CALL UTMESS('E',CMD,'ABSENCE D ELEMENTS DISCRETS DANS LE '
+     +              //'MODELE')
+          IER = IER + 1
+      ENDIF
 C
       DO 10 IOC = 1,NBOCC
 C

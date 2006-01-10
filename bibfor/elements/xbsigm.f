@@ -10,7 +10,7 @@ C
        CHARACTER*16  NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,9 +75,16 @@ C     VARIABLES LOCALES
       CHARACTER*24  COORSE
       INTEGER       CONNEC(6,4),NSE
       INTEGER       IT,ISE,IN,INO,NIT,NSEMAX,CPT,NCMP,NPG,IDEB,JCOORS,I
-      PARAMETER    (NSEMAX=6)
+
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
+
+      IF (NDIM.EQ.3) THEN
+        NSEMAX=6
+      ELSE
+        NSEMAX=3
+      ENDIF
+
       CALL ELREF1(ELREFP)
 
 C     RÉCUPÉRATION DE LA SUBDIVISION L'ÉLÉMENT PARENT EN NIT TETRAS 
@@ -86,43 +93,51 @@ C     RÉCUPÉRATION DE LA SUBDIVISION L'ÉLÉMENT PARENT EN NIT TETRAS
       CPT=0
 C     BOUCLE SUR LES NIT TETRAS
       DO 100 IT=1,NIT
-
 C       RÉCUPÉRATION DU DÉCOUPAGE EN NSE SOUS-ÉLÉMENTS 
         NSE=LONCH(1+IT)
 
 C       BOUCLE SUR LES NSE SOUS-ÉLÉMENTS
         DO 110 ISE=1,NSE
-
           CPT=CPT+1
 
 C         COORD DU SOUS-ÉLT EN QUESTION
           COORSE='&&XMEL3D.COORSE'
-          CALL WKVECT(COORSE,'V V R',3*4,JCOORS)
-C         BOUCLE SUR LES 4 SOMMETS DU SOUS-TÉTRA
-          DO 112 IN=1,4
-            INO=CNSET(4*(CPT-1)+IN)
+          CALL WKVECT(COORSE,'V V R',NDIM*(NDIM+1),JCOORS)
+C         BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
+          DO 112 IN=1,NDIM+1
+            INO=CNSET((NDIM+1)*(CPT-1)+IN)
             IF (INO.LT.1000) THEN
-              ZR(JCOORS-1+3*(IN-1)+1)=ZR(IGEOM-1+3*(INO-1)+1)
-              ZR(JCOORS-1+3*(IN-1)+2)=ZR(IGEOM-1+3*(INO-1)+2)
-              ZR(JCOORS-1+3*(IN-1)+3)=ZR(IGEOM-1+3*(INO-1)+3)
+              ZR(JCOORS-1+NDIM*(IN-1)+1)=ZR(IGEOM-1+NDIM*(INO-1)+1)
+              ZR(JCOORS-1+NDIM*(IN-1)+2)=ZR(IGEOM-1+NDIM*(INO-1)+2)
+              IF (NDIM .EQ. 3) 
+     &        ZR(JCOORS-1+NDIM*(IN-1)+3)=ZR(IGEOM-1+NDIM*(INO-1)+3)
             ELSE
-              ZR(JCOORS-1+3*(IN-1)+1)=PINTT(3*(INO-1000-1)+1)
-              ZR(JCOORS-1+3*(IN-1)+2)=PINTT(3*(INO-1000-1)+2)
-              ZR(JCOORS-1+3*(IN-1)+3)=PINTT(3*(INO-1000-1)+3)
+              ZR(JCOORS-1+NDIM*(IN-1)+1)=PINTT(NDIM*(INO-1000-1)+1)
+              ZR(JCOORS-1+NDIM*(IN-1)+2)=PINTT(NDIM*(INO-1000-1)+2)
+              IF (NDIM .EQ. 3) 
+     &        ZR(JCOORS-1+NDIM*(IN-1)+3)=PINTT(NDIM*(INO-1000-1)+3)
             ENDIF
  112      CONTINUE
 
-C         FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT
+C         FONCTION HEAVYSIDE CSTE SUR LE SS-ELT
           HE=HEAVT(NSEMAX*(IT-1)+ISE)
 
 C         DEBUT DE LA ZONE MÉMOIRE DE SIGMA CORRESPONDANTE
-          NPG=15
-          NCMP=6
-          IDEB=(NSEMAX*NPG*(IT-1)+NPG*(ISE-1))*NCMP+1
+          IF (NDIM .EQ. 3) THEN
+             NPG=15
+             NCMP=6
+             IDEB=(NSEMAX*NPG*(IT-1)+NPG*(ISE-1))*NCMP+1
 
             CALL XXBSIG(ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,NFE,
      &                  BASLOC,NNOP,NPG,SIGMA(IDEB),LSN,LST,BSIGMA)
-          
+          ELSE
+             NPG=3
+             NCMP=4  
+             IDEB=(NSEMAX*NPG*(IT-1)+NPG*(ISE-1))*NCMP+1
+              
+             CALL XXBSI2(ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,NFE,
+     &                  BASLOC,NNOP,NPG,SIGMA(IDEB),LSN,LST,BSIGMA)
+          ENDIF
           CALL JEDETR(COORSE)
 
  110    CONTINUE

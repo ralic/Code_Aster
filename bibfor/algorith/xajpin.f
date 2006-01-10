@@ -5,7 +5,7 @@
       REAL*8        NEWPT(3),LONGAR,AL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,31 +58,33 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8          PADIST,P(3)
-      INTEGER         I
+      INTEGER         I,J,NDIM,IBID
       LOGICAL         DEJA
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-
-C     VÉRIFICATION SI CE POINT EST DEJA DANS LA LISTE
+   
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
+      
+C     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
       DEJA = .FALSE.
 
       DO 100 I = 1,IPT
-        P(1) = ZR(JLIST-1+3*(I-1)+1)
-        P(2) = ZR(JLIST-1+3*(I-1)+2)
-        P(3) = ZR(JLIST-1+3*(I-1)+3)
-        IF (PADIST(3,P,NEWPT) .LT. (LONGAR*1.D-3)) DEJA = .TRUE.
+        DO 99 J = 1, NDIM
+         P(J) = ZR(JLIST-1+NDIM*(I-1)+J)
+ 99     CONTINUE
+        IF (PADIST(NDIM,P,NEWPT) .LT. (LONGAR*1.D-3)) DEJA = .TRUE.
  100  CONTINUE
 
       IF (.NOT. DEJA) THEN
-C       CE POINT N'A PAS DÉJÀ ÉTÉ TROUVÉ, ON LE GARDE
+C       CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
         IPT = IPT + 1
         CPT = CPT + 1
-        IF (IPT .GE. LONG) CALL UTMESS('E','XAJPIN','TROP DE POINTS '//
+        IF (IPT .GT. LONG) CALL UTMESS('F','XAJPIN','TROP DE POINTS '//
      &                                                'DANS LA LISTE.')
-        ZR(JLIST-1+3*(IPT-1)+1) = NEWPT(1)
-        ZR(JLIST-1+3*(IPT-1)+2) = NEWPT(2)
-        ZR(JLIST-1+3*(IPT-1)+3) = NEWPT(3)
+        DO 101 J = 1, NDIM
+         ZR(JLIST-1+NDIM*(IPT-1)+J) = NEWPT(J)
+ 101    CONTINUE
         ZR(JAINT-1+4*(IPT-1)+1)=IA
         ZR(JAINT-1+4*(IPT-1)+2)=IN
         ZR(JAINT-1+4*(IPT-1)+3)=LONGAR

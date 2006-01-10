@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,7 @@ import E_ETAPE
 from os import times
 import aster
 import string
+from Noyau.N__F import _F
 
 class MACRO_ETAPE(E_ETAPE.ETAPE):
    """
@@ -91,6 +92,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          E_ETAPE.ETAPE.Exec(self)
          self.setmode(2)
          E_ETAPE.ETAPE.Exec(self)
+
          if self.icmd!=None :
             self.cpu_user=times()[0]-self.cpu_user_0
             self.cpu_syst=times()[1]-self.cpu_syst_0
@@ -102,6 +104,25 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
       if hasattr(self,'postexec'):
          self.postexec(self)
+
+      # Destruction des concepts temporaires internes à la macro
+      # préfixés par '.' dans la base jeveux
+      # Pour ne pas avoir l'affichage en cas de IMPR_MACRO='NON'
+      # on déclare l'étape DETRUIRE fille de la macro en cours
+      # par set_current_step
+      self.set_current_step()
+      if self.nom!='DETRUIRE' :
+         l_obj=[]
+         for etape in self.etapes :
+             if etape.sd!=None :
+                if etape.sd.nom[:1]=='.' :l_obj.append(etape.sd.nom)
+         if self.sd!=None : 
+                if self.sd.nom in l_obj  :l_obj.remove(self.sd.nom)
+         if l_obj!=[] :
+             l_detr=dict([(i,0) for i in l_obj]).keys()
+             DETRUIRE=self.get_cmd('DETRUIRE')
+             DETRUIRE(CONCEPT=_F(NOM=l_detr),ALARME='NON',INFO=1)
+      self.reset_current_step()
 
    def Execute_alone(self):
       """

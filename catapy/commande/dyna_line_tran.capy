@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,8 +41,8 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
          ADAPT           =FACT(statut='f',
          ),
          ETAT_INIT       =FACT(statut='f',
-           regles=(AU_MOINS_UN('DYNA_TRANS', 'DEPL_INIT', 'VITE_INIT',),
-                   PRESENT_ABSENT('DYNA_TRANS', 'DEPL_INIT', 'VITE_INIT'),),
+           regles=(AU_MOINS_UN('DYNA_TRANS', 'DEPL_INIT', 'VITE_INIT', 'ACCE_INIT'),
+                   PRESENT_ABSENT('DYNA_TRANS', 'DEPL_INIT', 'VITE_INIT', 'ACCE_INIT'),),
            DYNA_TRANS      =SIMP(statut='f',typ=dyna_trans ),
            b_dyna_trans    =BLOC(condition = "DYNA_TRANS != None",
              regles=(EXCLUS('NUME_INIT','INST_INIT' ),),
@@ -55,6 +55,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
            ),
            DEPL_INIT       =SIMP(statut='f',typ=(cham_no_depl_r) ),
            VITE_INIT       =SIMP(statut='f',typ=(cham_no_depl_r) ),
+           ACCE_INIT       =SIMP(statut='f',typ=(cham_no_depl_r) ),
          ),
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('CHARGE','VECT_ASSE'),

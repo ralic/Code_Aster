@@ -1,0 +1,234 @@
+# MODIF  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+# TITRE VALIDATION DES COMMANDES COMB_MATR_ASSE ET CALC_CHAR_CINE (REEL/SYMETRIQUE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#----------------------------------------------------------------------------------
+#
+# PHYSIQUEMENT, LE PROBLEME TRAITE EST CELUI D'UN BARREAU ETIRE SELON Y
+#  D - C
+#  E   !       DX=0. PARTOUT   (CAR NU=0.)
+#  A - B       DY(A)=DY(B)=1.  (IMPOSE)
+#              DY(D)=DY(C)=2.  (IMPOSE)
+#              DY(E)=1.5       (SOLUTION)
+#--------------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='ZZZZ213A',NIV_PUB_WEB='INTERNET'),
+      ERREUR=_F(ERREUR_F='EXCEPTION',), PAR_LOT='NON',)
+
+import re
+fmt_raison='-'*80+"""
+
+   Exception erreur_Fatale interceptee
+   Raison : %s
+
+"""+'-'*80+'\n'
+
+PRE_GIBI();
+mail = LIRE_MAILLAGE(INFO=2);
+model = AFFE_MODELE(MAILLAGE=mail, AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='D_PLAN'));
+
+mat = DEFI_MATERIAU(ELAS=_F(E  = 1.,  NU = 0.,),);
+chmat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT  = 'OUI', MATER = mat),);
+
+
+# ------- Chargements
+ch0=AFFE_CHAR_MECA(MODELE=model, DDL_IMPO= _F(GROUP_MA='AB',DX=0.,DY=1.), );
+chcine=AFFE_CHAR_CINE(MODELE=model,  MECA_IMPO=(_F(GROUP_MA='CD',DY=2.), ));
+chcine2=AFFE_CHAR_CINE(MODELE=model,  MECA_IMPO=(_F(GROUP_MA='AB',DY=5.), ));
+
+# ------- calculs communs
+rigiel = CALC_MATR_ELEM(MODELE= model, CHAM_MATER= chmat, OPTION= 'RIGI_MECA', CHARGE=ch0)
+rigiel2= CALC_MATR_ELEM(MODELE= model, CHAM_MATER= chmat, OPTION= 'RIGI_MECA', CHARGE=ch0)
+vecel = CALC_VECT_ELEM(CHARGE=ch0, CHAM_MATER = chmat, OPTION = 'CHAR_MECA')
+
+
+#***************************************************************************************************
+# 1) resolution "simple" : DDL_IMPO + AFFE_CHAR_CINE :
+#***************************************************************************************************
+
+# 1.1) avec LDLT :
+#-----------------
+nu11    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'LDLT', RENUM= 'RCMK');
+matas11 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu11, CHAR_CINE = chcine);
+vecas11 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu11 )
+vcine11 = CALC_CHAR_CINE (NUME_DDL=nu11, CHAR_CINE=chcine);
+k11 = FACT_LDLT (MATR_ASSE=matas11);
+u11=RESO_LDLT( MATR_FACT = k11, CHAM_NO= vecas11 , CHAM_CINE= vcine11)
+TEST_RESU(CHAM_NO=_F(CHAM_GD= u11, GROUP_NO= 'E', NOM_CMP= 'DY', VALE=1.5, REFERENCE='ANALYTIQUE') )
+
+# 1.2) avec MULT_FRONT :
+#-----------------------
+nu12    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'MULT_FRONT', RENUM= 'MD');
+matas12 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu12, CHAR_CINE = chcine);
+vecas12 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu12 )
+vcine12 = CALC_CHAR_CINE (NUME_DDL=nu12, CHAR_CINE=chcine);
+k12 = FACT_LDLT (MATR_ASSE=matas12);
+u12=RESO_LDLT( MATR_FACT = k12, CHAM_NO= vecas12 , CHAM_CINE= vcine12 )
+TEST_RESU(CHAM_NO=_F(CHAM_GD= u12, GROUP_NO= 'E', NOM_CMP= 'DY', VALE=1.5, REFERENCE='ANALYTIQUE') )
+
+# 1.3) avec GCPC :
+#-----------------------
+nu13    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'GCPC' );
+matas13 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu13, CHAR_CINE = chcine);
+vecas13 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu13 )
+vcine13 = CALC_CHAR_CINE (NUME_DDL=nu13, CHAR_CINE=chcine);
+k13=FACT_GRAD(MATR_ASSE=matas13 )
+u13=RESO_GRAD(MATR_FACT=k13, MATR_ASSE=matas13, CHAM_NO=vecas13,CHAM_CINE=vcine13 )
+TEST_RESU(CHAM_NO=_F(CHAM_GD= u13, GROUP_NO= 'E', NOM_CMP= 'DY', VALE=1.5, REFERENCE='ANALYTIQUE') )
+
+
+
+#***************************************************************************************************
+# 2) avec COMB_MATR_ASSE et DDL_IMPO + AFFE_CHAR_CINE :
+#   (les 2 matrices a combiner ont le meme nume_ddl et les memes char_cine)
+#***************************************************************************************************
+
+# 2.1) avec LDLT :
+#-----------------
+nu21    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'LDLT', RENUM= 'RCMK');
+matas21a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu21, CHAR_CINE = chcine);
+matas21b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu21, CHAR_CINE = chcine);
+vecas21 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu21 )
+vcine21 = CALC_CHAR_CINE (NUME_DDL=nu21, CHAR_CINE=chcine);
+matas21=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas21a, COEF_R = 1.),
+                                  _F(  MATR_ASSE = matas21b, COEF_R = 1.)))
+k21 = FACT_LDLT (MATR_ASSE=matas21);
+u21=RESO_LDLT( MATR_FACT = k21, CHAM_NO= vecas21 , CHAM_CINE= vcine21)
+TEST_RESU(CHAM_NO=_F(CHAM_GD= u21, GROUP_NO= 'E', NOM_CMP= 'DY', VALE=1.5, REFERENCE='ANALYTIQUE') )
+
+# 2.2) avec MULT_FRONT :
+#------------------------
+nu22    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'MULT_FRONT', RENUM= 'MD');
+matas22a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu22, CHAR_CINE = chcine);
+matas22b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu22, CHAR_CINE = chcine);
+vecas22 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu22 )
+vcine22 = CALC_CHAR_CINE (NUME_DDL=nu22, CHAR_CINE=chcine);
+matas22=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas22a, COEF_R = 1.),
+                                  _F(  MATR_ASSE = matas22b, COEF_R = 1.)))
+k22 = FACT_LDLT (MATR_ASSE=matas22);
+u22=RESO_LDLT( MATR_FACT = k22, CHAM_NO= vecas22 , CHAM_CINE= vcine22)
+TEST_RESU(CHAM_NO=_F(CHAM_GD= u22, GROUP_NO= 'E', NOM_CMP= 'DY', VALE=1.5, REFERENCE='ANALYTIQUE') )
+
+# 2.3) avec GCPC :
+#------------------------
+nu23    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'GCPC');
+matas23a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu23, CHAR_CINE = chcine);
+matas23b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu23, CHAR_CINE = chcine);
+vecas23 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu23 )
+vcine23 = CALC_CHAR_CINE (NUME_DDL=nu23, CHAR_CINE=chcine);
+matas23=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas23a, COEF_R = 1.),
+                                  _F(  MATR_ASSE = matas23b, COEF_R = 1.)))
+k23=FACT_GRAD(MATR_ASSE=matas23 )
+u23=RESO_GRAD(MATR_FACT=k23, MATR_ASSE=matas23, CHAM_NO=vecas23,CHAM_CINE=vcine23 )
+TEST_RESU(CHAM_NO=_F(CHAM_GD= u23, GROUP_NO= 'E', NOM_CMP= 'DY', VALE=1.5, REFERENCE='ANALYTIQUE') )
+
+
+#***************************************************************************************************
+# 3) On verifie que certaines choses sont impossibles COMB_MATR_ASSE et DDL_IMPO + AFFE_CHAR_CINE :
+#***************************************************************************************************
+
+
+# 3.1) COMB_MATR_ASSE : on ne peut pas combiner une matrice LIGNE_DE_CIEL avec une matrice MORSE :
+#-------------------------------------------------------------------------------------------------
+is_ok = 0
+try :
+    XXXX=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas21a, COEF_R = 1.),
+                                   _F(  MATR_ASSE = matas22b, COEF_R = 1.)))
+except aster.FatalError,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("COMB_MATR_ASSE.*ERR_31A", str(err))<>None :
+      is_ok = 1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),  _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=('XXXX', 'TAB1'),),)
+
+
+# 3.2) RESO_LDLT + AFFE_CHAR_CINE : Il ne faut pas oublier le mot cle CHAM_CINE :
+#-------------------------------------------------------------------------------------------------
+is_ok = 0
+try :
+    XXXX=RESO_LDLT( MATR_FACT = k11, CHAM_NO= vecas11 )
+
+except aster.FatalError,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("MATRICE A DES DDLS ELIMINES", str(err))<>None :
+      is_ok = 1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),  _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=('XXXX', 'TAB1'),),)
+
+
+# 3.3) COMB_MATR_ASSE + 2 AFFE_CHAR_CINE incompatibles  :
+#-------------------------------------------------------------------------------------------------
+is_ok = 0
+try :
+      nu33    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'LDLT', RENUM= 'RCMK');
+      matas33a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu33, CHAR_CINE = chcine);
+      matas33b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu33, CHAR_CINE = chcine2);
+      XXXX=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas33a, COEF_R = 1.),
+                                        _F(  MATR_ASSE = matas33b, COEF_R = 1.)))
+
+except aster.FatalError,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("LES ELIM_DDL DES MATRICES A COMBINER NE SONT PA", str(err))<>None :
+      is_ok = 1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),  _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=('XXXX', 'TAB1'),),)
+
+
+# 3.4) RESO_LDLT +  AFFE_CHAR_CINE incompatibles  :
+#      incoherence de la charge cinematique du 1er membre et celle du second_membre
+#-------------------------------------------------------------------------------------------------
+is_ok = 0
+try :
+     nu34    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'MULT_FRONT', RENUM= 'MD');
+     matas34 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu34, CHAR_CINE = chcine);
+     vecas34 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu34 )
+     vcine34 = CALC_CHAR_CINE (NUME_DDL=nu34, CHAR_CINE=chcine2);
+     k34 = FACT_LDLT (MATR_ASSE=matas34);
+     u34=RESO_LDLT( MATR_FACT = k34, CHAM_NO= vecas34 , CHAM_CINE= vcine34 )
+
+except aster.FatalError,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("CHAM_CINE /= O. SUR DES DDLS NON ELIMINES", str(err))<>None :
+      is_ok = 1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),  _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=('TAB1'),),)
+
+
+FIN();
+
+

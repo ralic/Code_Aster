@@ -3,7 +3,7 @@
       INTEGER IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       CHARACTER*24  NUMEDD, CINE
       CHARACTER*24  INFOCH, CRITER, VAPRIN
 
-      LOGICAL       LAMORT, LCREA
+      LOGICAL       LAMORT, LCREA, LPREM
 C     -----------------------------------------------------------------
       DATA SOLVEU   /'&&OP0048.SOLVEUR'/
       DATA INFCHA   /'&&OP0048.INFCHA'/
@@ -88,7 +88,7 @@ C
 C              12345678 90123
       INPSCO = BASENO//'_PSCO'
       TYPSOL = 'R'
-
+      LPREM  = .TRUE.
       LAMORT=.TRUE.
       AMORT = ' '
       CRITER = '&&RESGRA_GCPC'
@@ -305,7 +305,8 @@ C        --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
      +                ZR(IFORC1),ZR(IWK))
 C
          MATREI = '&&MASSI'
-         IF (NRPASE.EQ.0) THEN
+         IF (LPREM) THEN
+           LPREM=.FALSE.
            CALL AJLAGR ( RIGID , MASSE , MATREI )
 C
 C        --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONEMENT

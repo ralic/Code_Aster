@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -537,7 +537,7 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 10
+        NBFPG = 12
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -548,6 +548,8 @@ C     ------------------------------------------------------------------
         NBPG(8) = 12
         NBPG(9) = 3
         NBPG(10) = 6
+        NBPG(11) = 13
+        NBPG(12) = 16
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -559,6 +561,8 @@ C     ------------------------------------------------------------------
         FAPG(8) = 'FPG12'
         FAPG(9) = 'COT3'
         FAPG(10) = 'FPG3NOS'
+        FAPG(11) = 'FPG13'
+        FAPG(12) = 'FPG16'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -576,7 +580,7 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 9
+        NBFPG = 11
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -586,6 +590,8 @@ C     ------------------------------------------------------------------
         NBPG(7) = 7
         NBPG(8) = 12
         NBPG(9) = 6
+        NBPG(10) = 13
+        NBPG(11) = 16
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -596,6 +602,8 @@ C     ------------------------------------------------------------------
         FAPG(7) = 'FPG7'
         FAPG(8) = 'FPG12'
         FAPG(9) = 'FPG3NOS'
+        FAPG(10) = 'FPG13'
+        FAPG(11) = 'FPG16'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -622,7 +630,7 @@ C     -------------------------------------------------------
         NNOS = 3
         VOL  = 1.D0/2.D0
 
-        NBFPG = 8
+        NBFPG = 10
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -631,6 +639,8 @@ C     -------------------------------------------------------
         NBPG(6) = 6
         NBPG(7) = 7
         NBPG(8) = 12
+        NBPG(9) = 13
+        NBPG(10) = 16
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -640,6 +650,8 @@ C     -------------------------------------------------------
         FAPG(6) = 'FPG6'
         FAPG(7) = 'FPG7'
         FAPG(8) = 'FPG12'
+        FAPG(9) = 'FPG13'
+        FAPG(10) = 'FPG16'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0

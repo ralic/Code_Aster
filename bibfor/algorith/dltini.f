@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -194,6 +194,16 @@ C
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE
             CALL UTMESS('I',NOMCMD,'VITESSES INITIALES NULLES.')
+         ENDIF
+
+         CALL GETVID('ETAT_INIT','ACCE_INIT',1,1,1,CHAMP,NAI)
+         IF (NAI.GT.0 .AND. NRPASE.EQ.0) THEN
+              INCHAC = 0
+              CHAM2 = '&&OP0048.ACCINI'
+              CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
+              CALL VTCOPY(CHAMP,CHAM2,IRET)
+              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+              CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF
 C
       ENDIF

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,15 +114,18 @@ C        --- TRANSFERT DU SECOND MEMBRE DANS LE VECTEUR SOLUTION ---
          CALL VTCOPY(SECMBR,XSOL,IRET)
          IF (IRET.NE.0) CALL UTMESS('F','RESO_LDLT','STOP')
       ENDIF
-  
+
 C     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
-       CALL MTDSCR(MATFAC)
-       CALL JEVEUO(MATFAC//'           .&INT','E', LMAT )
-      IF (LMAT.EQ.0) THEN
-         CALL UTMESS('F','RESO_LDLT',
-     +                   'PROBLEMES A L''ALLOCATION DES DESCRIPTEURS '//
-     +               'DE LA MATRICE "'//MATFAC//'" ')
+      CALL MTDSCR(MATFAC)
+      CALL JEVEUO(MATFAC//'           .&INT','E', LMAT )
+      CALL ASSERT(LMAT.NE.0)
+
+C     --- SI LA MATRICE A DES DDLS ELIM., IL FAUT RENSEIGNER CHAM_CINE:
+      IF ((ZI(LMAT+7).GT.0).AND.(NBCINE.EQ.0)) THEN
+            CALL UTMESS('F','OP0015','LA MATRICE A DES DDLS ELIMINES. '
+     +      // 'IL FAUT UTILISER LE MOT CLE CHAM_CINE.' )
       ENDIF
+
       MAT19 = MATFAC
       CALL JELIRA(MAT19//'.REFA','DOCU',IBID,ETAMAT)
       IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT') THEN
@@ -188,7 +191,7 @@ C     --- CONTROLE DES TYPES ---
      +               'DE L''OPERATEUR.')
       ENDIF
 C     --------------------------------------------------------------
-  
+
 9999  CONTINUE
       CALL TITRE
       CALL JEDEMA()
