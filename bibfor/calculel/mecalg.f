@@ -4,7 +4,7 @@
      &                 CHVITE,CHACCE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/11/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -250,10 +250,13 @@ C
         DO 70 ICHA = 1,NCHAR
           NOMCH0 = LCHAR(ICHA)(1:8)
           CALL PSRENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
-          IF(EXICHA.NE.0) THEN
-             CALL UTMESS('F',NOMPRO,'EXICHA DIFFERENT DE 0 ')
+          IF(EXICHA.EQ.0) THEN
+            LCHARS(ICHA)(1:8) = NOMCHS
+          ELSE IF(EXICHA.EQ.1) THEN
+            LCHARS(ICHA)(1:8) = ' '
+          ELSE
+            CALL UTMESS('F',NOMPRO,'EXICHA DIFFERENT DE 0 ET 1 ')
           ENDIF
-          LCHARS(ICHA)(1:8) = NOMCHS
 70      CONTINUE
 C - TRAITEMENT DES CHARGES DERIVEES
 

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +49,11 @@ C     -------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER NEC,IMA,INO,NNO,LONG,NUGL,NUM
+      INTEGER NEC,IMA,INO,NNO,LONG,NUGL,NUM,IFETI,IRET,IACHL1,IIEL
       INTEGER DESC,PRNO1,PRNO2,MODLOC,ITYPLO
       INTEGER DEB1,DEB2,IDG1,IDG2
+      LOGICAL LFETI
+
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -78,6 +80,17 @@ C     NUMGLS(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 C                     IMA ETANT UNE MAILLE SUPPLEMENTAIRE DU LIGREL
       NUMGLS(IMA,INO) = ZI(IAMSCO-1+ZI(ILMSCO+IMA-1)+INO-1)
 C DEB-------------------------------------------------------------------
+
+C     FETI PARALLELE OR NOT ?
+C     -------------------------
+      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        LFETI=.TRUE.
+        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
+        IFETI=IFETI-1
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
 
       DESC = ZI(IACHII-1+11* (IICHIN-1)+4)
       NUM = ZI(DESC-1+2)
@@ -144,13 +157,39 @@ C       --------------------------------------------------
           LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
           NCMP=LGCATA
           IF (TYPEGD.EQ.'R') THEN
-            DO 71,K=1,NBELGR *NCMP
-              ZR(IACHLO-1+K) = 0.D0
-71          CONTINUE
+C         -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC
+C            COURANT ?
+            IF (LFETI) THEN
+              IACHL1=IACHLO-1
+              DO 170 IIEL=1,NBELGR
+                IF (ZL(IFETI+IIEL)) THEN
+                  IAUX1=IACHL1+(IIEL-1)*NCMP
+                  DO 169 K=1,NCMP
+                    ZR(IAUX1+K) = 0.D0
+  169             CONTINUE
+                ENDIF
+  170         CONTINUE
+            ELSE
+              DO 171,K=1,NBELGR *NCMP
+                ZR(IACHLO-1+K) = 0.D0
+  171         CONTINUE
+            ENDIF
           ELSE IF (TYPEGD.EQ.'C') THEN
-            DO 72,K=1,NBELGR *NCMP
-              ZC(IACHLO-1+K) = (0.D0,0.D0)
-72          CONTINUE
+            IF (LFETI) THEN
+              IACHL1=IACHLO-1
+              DO 174 IIEL=1,NBELGR
+                IF (ZL(IFETI+IIEL)) THEN
+                  IAUX1=IACHL1+(IIEL-1)*NCMP
+                  DO 173 K=1,NCMP
+                    ZC(IAUX1+K) = (0.D0,0.D0)
+  173             CONTINUE
+                ENDIF
+  174         CONTINUE
+            ELSE
+              DO 172,K=1,NBELGR *NCMP
+                ZC(IACHLO-1+K) = (0.D0,0.D0)
+  172         CONTINUE
+            ENDIF
           ELSE
             CALL ASSERT(.FALSE.)
           END IF
@@ -164,6 +203,11 @@ C        -------------------------------------------------------
           LONG = -NUM
           DEB2 = 1
           DO 30,IEL = 1,NBELGR
+C     -- SI FETI, ON NE FAIT FINALEMENT RIEN CAR LA ROUTINE TRIGD MET
+C        A JOUR UN COMPTEUR DEB2 ELEMENT DE GREL APRES GREL           
+C            IF (LFETI) THEN
+C              IF (.NOT.ZL(IFETI+IEL)) GOTO 30
+C            ENDIF
             IMA = NUMAIL(IGR,IEL)
             IF (IMA.EQ.0) CALL UTMESS('F',' EXCHNO','2')
             DO 20 INO = 1,NNO
@@ -198,6 +242,11 @@ C        ------------------------------------
           PRNO2 = ZI(IACHII-1+11* (IICHIN-1)+9)
           DEB2 = 1
           DO 50,IEL = 1,NBELGR
+C     -- SI FETI, ON NE FAIT FINALEMENT RIEN CAR LA ROUTINE TRIGD MET A
+C        JOUR UN COMPTEUR DEB2 ELEMENT DE GREL APRES GREL
+C           IF (LFETI) THEN
+C              IF (.NOT.ZL(IFETI+IEL)) GOTO 50
+C           ENDIF
             IMA = NUMAIL(IGR,IEL)
             IF (IMA.EQ.0) CALL UTMESS('F',' EXCHNO','3')
             DO 40 INO = 1,NNO
@@ -227,13 +276,39 @@ C        ------------------------------------
           LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
           NCMP=LGCATA
           IF (TYPEGD.EQ.'R') THEN
-            DO 171,K=1,NBELGR *NCMP
-              ZR(IACHLO-1+K) = ZR(IACHLO-1+K)/DBLE(NNO)
-171         CONTINUE
+C         -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC
+C            COURANT
+            IF (LFETI) THEN
+              IACHL1=IACHLO-1
+              DO 270 IIEL=1,NBELGR
+                IF (ZL(IFETI+IIEL)) THEN
+                  IAUX1=IACHL1+(IIEL-1)*NCMP
+                  DO 269 K=1,NCMP
+                    ZR(IAUX1+K) = ZR(IAUX1+K)/DBLE(NNO)
+  269             CONTINUE
+                ENDIF
+  270         CONTINUE
+            ELSE
+              DO 271,K=1,NBELGR *NCMP
+                ZR(IACHLO-1+K) = ZR(IACHLO-1+K)/DBLE(NNO)
+  271         CONTINUE
+            ENDIF
           ELSE IF (TYPEGD.EQ.'C') THEN
-            DO 172,K=1,NBELGR *NCMP
-              ZC(IACHLO-1+K) = ZC(IACHLO-1+K)/DBLE(NNO)
-172         CONTINUE
+            IF (LFETI) THEN
+              IACHL1=IACHLO-1
+              DO 274 IIEL=1,NBELGR
+                IF (ZL(IFETI+IIEL)) THEN
+                  IAUX1=IACHL1+(IIEL-1)*NCMP
+                  DO 273 K=1,NCMP
+                    ZC(IAUX1+K) = ZC(IAUX1+K)/DBLE(NNO)
+  273             CONTINUE
+                ENDIF
+  274         CONTINUE
+            ELSE
+              DO 272,K=1,NBELGR *NCMP
+                ZC(IACHLO-1+K) = ZC(IACHLO-1+K)/DBLE(NNO)
+  272         CONTINUE
+            ENDIF
           ELSE
             CALL ASSERT(.FALSE.)
           END IF

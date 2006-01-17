@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,8 +27,8 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
                            into=("OUI","NON"),defaut="OUI"),
          IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
                            statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
-         BASE            =FACT(fr="définition des parmètres associés aux bases JEVEUX",
-                               statut='f',min=1,max=3,
+         BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",
+                               statut='f',min=1,max=2,
            FICHIER         =SIMP(fr="nom de la base",statut='o',typ='TXM'),
            TITRE           =SIMP(statut='f',typ='TXM'),
            CAS             =SIMP(statut='f',typ='TXM'),
@@ -55,7 +55,7 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
            JEVEUX          =SIMP(fr="force les déchargement sur disque",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            ENVIMA          =SIMP(fr="imprime les valeurs définies dans ENVIMA",
-                                 statut='f',typ='TXM',into=('TES',)),
+                                 statut='f',typ='TXM',into=('TEST',)),
          ),
          MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='f',min=1,max=1,
            GESTION         =SIMP(statut='f',typ='TXM',into=('COMPACTE','RAPIDE'),defaut='RAPIDE'),

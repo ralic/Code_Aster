@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+#& MODIF COMMUN  DATE 16/01/2006   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -300,6 +300,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                             
                                         
            ELAS_THM        =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
+           ELAS_THER       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            SURF_ETAT_NSAT  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            SURF_ETAT_SATU  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            CAM_CLAY_THM    =SIMP(statut='c',typ='I',defaut=6,into=(6,)),

@@ -3,7 +3,7 @@
      &   IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 17/01/2006   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -533,7 +533,7 @@ C        | SET DEFAULT PARAMETERS |
 C        %------------------------%
 
          IF (NB .LE. 0) NB = 1
-         IF (TOL .LE. ZERO) TOL = R8PREM()*0.5D0
+         IF (TOL .LE. ZERO) TOL = R8PREM()*10.D0
 
 C        %----------------------------------------------%
 C        | NP IS THE NUMBER OF ADDITIONAL STEPS TO      |

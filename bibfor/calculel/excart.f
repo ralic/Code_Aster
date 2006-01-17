@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,22 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER DESC,IGD,MODLOC,NBPOIN,DEC1,DEC2,LGCATA
+      INTEGER DESC,IGD,MODLOC,NBPOIN,DEC1,DEC2,LGCATA,IRET,IFETI
+      LOGICAL LFETI
 
 C DEB-------------------------------------------------------------------
 
+C     FETI PARALLELE OR NOT ?
+C     -------------------------
+      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        LFETI=.TRUE.
+        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
+        IFETI=IFETI-1
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
+      
 C     RECUPERATION DE LA CARTE:
 C     -------------------------
       DESC = ZI(IACHII-1+11* (IICHIN-1)+4)
@@ -82,6 +94,11 @@ C     -------------------------------------------
 C         ON DUPPLIQUE LES VALEURS PAR LA FIN POUR NE PAS
 C         LES ECRASER :
           DO 77,IEL=NBELGR,1,-1
+C           SI FETI ON REGARDE SI LA MAILLE IEL EST CONCERNEE
+C           PAR LE PROC COURANT
+            IF (LFETI) THEN
+              IF (.NOT.ZL(IFETI+IEL)) GOTO 77
+            ENDIF
             DO 78,IPT=NBPOIN,1,-1
               DEC1=(IEL-1)*NCMP
               DEC2=(IEL-1)*NCMP*NBPOIN +NCMP*(IPT-1)

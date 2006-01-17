@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 17/01/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       CHARACTER*8   ELREF,TYPMA,FPG
       REAL*8        HE,SIGN,VTMP(204),SOMME,FFI,REAC,JAC,FFP(27),PREC
       REAL*8        ND(3),DN,SAUT(3),LAMBDA,LST,R,RR
-      PARAMETER    (PREC=3.D-2)
+      PARAMETER    (PREC=1.D-16)
       LOGICAL       IMPRIM
 C......................................................................
 

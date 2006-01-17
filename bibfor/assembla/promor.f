@@ -4,7 +4,7 @@
       CHARACTER*1 TYPMAT,BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 06/09/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,8 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
       CHARACTER*14 NU
+      INTEGER      IRET
+      LOGICAL      LFETI
 C     ------------------------------------------------------------------
       PARAMETER (NNOEMA=100)
 C     NNOEMA : NBRE MAXI DE NOEUDS PAR MAILLE ADMIS PAR LE S.P.
@@ -138,6 +140,15 @@ C-----RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 C----------------------------------------------------------------------
       CALL JEMARQ()
+C FETI OR NOT FETI ?
+      CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL INFMUE()
+        CALL INFNIV(IFM,NIV)
+        LFETI=.TRUE.
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
       NU = NUZ
 
       CALL DISMOI('F','NOM_MODELE',NU,'NUME_DDL',IBID,MO,IER)
@@ -375,8 +386,10 @@ C---- HMAX = HAUTEUR MAXIMUM DES COLONNES
 C        WRITE(IFM,*)'--- HAUTEUR MAXIMUM D''UNE COLONNE : ',HMAX
       END IF
       NBLC = 1
-      IF (NIV.GE.1) WRITE (IFM,*) '--- NOMBRE DE BLOCS UTILISES '//
+      IF (NIV.GE.1) THEN
+        WRITE (IFM,*) '--- NOMBRE DE BLOCS UTILISES '//
      &    'POUR LE STOCKAGE : ',NBLC
+      ENDIF
 
 C---- CALCUL ET ALLOCATION DES ABLO
 
@@ -412,7 +425,7 @@ C---- CREATION ET REMPLISSAGE DE DESC
       ZI(IDDESC+1) = ITBLOC
       ZI(IDDESC+2) = NBLC
       ZI(IDDESC+3) = HMAX
-
+      IF (LFETI) CALL INFBAV()
 
       CALL JEDEMA()
   111 FORMAT (1X,'LIGNE ',I4)

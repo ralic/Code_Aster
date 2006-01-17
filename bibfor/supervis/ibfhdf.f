@@ -4,7 +4,7 @@
       CHARACTER*80              FICHDF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 16/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C ----------------------------------------------------------------------
 C
       FICHDF = ' '
       CALL GETRES(CBID,CBID,NOMCMD)
-      IF ( NOMCMD .EQ. 'DEBUT' .OR. NOMCMD .EQ. 'POURSUITE') THEN
+      IF ( NOMCMD .EQ. 'POURSUITE') THEN
         CALL GETVTX(' ','FORMAT_HDF',1,1,1,FHDF,NFHDF)
         IF (NFHDF .GT. 0) THEN
           IF ( FHDF .EQ. 'OUI' ) THEN

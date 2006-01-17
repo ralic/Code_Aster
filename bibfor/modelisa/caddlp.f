@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/02/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,14 +51,15 @@ C
       INTEGER      DDLIMP(NDDLA), NDDLI, N1, N2, IOC, I, J, K, IBID
       INTEGER      IER, NBEC, JNOMA, NBNOEU, JPRNM, JVAL, IFM, NIV
       INTEGER      JDIREC, JDIMEN, NBNO, IALINO, INO, NBMA, IALIMA
+      INTEGER      INOM, NBCMP, IRET
       REAL*8       VALIMR(NDDLA), PGL(3,3), DLOC(3), DGLO(3), ZERO
       COMPLEX*16   VALIMC(NDDLA)
 
       CHARACTER*1   K1BID
-      CHARACTER*8   MOD, NOMA, K8BID
+      CHARACTER*8   MOD, NOMA, K8BID, NOMG
       CHARACTER*8   NOMN, VALIMF(NDDLA), DDL(NDDLA)
       CHARACTER*16  MOTFAC, MOTCLE(NDDLA), MOTCL1(2), TYMOC1(2), 
-     +              MOTCL2(2), TYMOC2(2)
+     +              MOTCL2(2), TYMOC2(2), NOMCMD
       CHARACTER*19  LIGRMO, LISREL
       CHARACTER*24  NOMNOE, NCNCIN
 C ----------------------------------------------------------------------
@@ -69,8 +70,21 @@ C
       MOTFAC = 'DDL_POUTRE      '
       CALL GETFAC ( MOTFAC, NDDLI )
       IF ( NDDLI .EQ. 0 ) GOTO 9999
+      CALL GETRES(K8BID,K8BID,NOMCMD)
 C
       CALL INFNIV ( IFM, NIV )
+
+      IF (NOMCMD(11:14).EQ.'MECA') THEN
+        NOMG='DEPL_R'
+      ELSE IF (NOMCMD(11:14).EQ.'THER') THEN
+        NOMG='TEMP_R'
+      ELSE IF (NOMCMD(11:14).EQ.'ACOU') THEN
+        NOMG='PRES_C'
+      ELSE
+        CALL ASSERT(.FALSE.)
+      END IF
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
 C
       LISREL = '&&CADDLP.RLLISTE'
       MOTCL1(1) = 'NOEUD'
@@ -153,6 +167,7 @@ C
             IALIMA = 1
          ENDIF
 C
+         IRET = 0
          DO 110 K = 1 , NBNO
             INO = ZI(IALINO-1+K)
             CALL JENUNO ( JEXNUM(NOMNOE,INO), NOMN )
@@ -215,8 +230,11 @@ C
      +                    ZI(JPRNM-1+(INO-1)*NBEC+1), NDDLA,
      +                    FONREE, NOMN, INO, DDLIMP, VALIMR, VALIMF,
      +                    VALIMC, MOTCLE, NBEC, ZR(JDIREC+3*(INO-1)),
-     +                    ZI(JDIMEN+INO-1), LISREL )
+     +                    ZI(JDIMEN+INO-1), LISREL, 
+     +                    ZK8(INOM), NBCMP, IRET )
  110     CONTINUE
+         IF ( IRET .EQ. 0 ) CALL UTMESS('F','CADDLP',
+     &                      'AUCUN NOEUD NE CONNAIT LES DDL FOURNIS')
 C
  100  CONTINUE
 C

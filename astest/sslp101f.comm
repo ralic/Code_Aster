@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DES DERIVEES DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,7 +100,7 @@ DGE1=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
 TEST_TABLE(            TABLE=DGE1,
                        SENSIBILITE = (YOUNG,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
@@ -115,10 +115,112 @@ DGF1=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
 TEST_TABLE(            TABLE=DGF1,
                        SENSIBILITE = (FORC,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                        VALE=4.6E-3,
                       PRECISION=5.E-3     )
 
+#-----------------------------------------------------------------------
+# CALCUL K1 ET DERIVEES
+#-----------------------------------------------------------------------
+GK1=CALC_G_THETA_T(         MODELE=MO,
+                            RESULTAT=CHAMDEPL,
+                            THETA=THETA1,
+                             FOND_FISS=FOND,
+                              EXCIT=_F( CHARGE = CH),
+                        SYME_CHAR='SYME',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       CHAM_MATER=CHMAT ,
+                           OPTION='CALC_K_G')
+
+DGKE1=CALC_G_THETA_T(         MODELE=MO,
+                     SENSIBILITE = (YOUNG,), 
+                            RESULTAT=CHAMDEPL,
+                            THETA=THETA1,
+                             FOND_FISS=FOND,
+                              EXCIT=_F( CHARGE = CH),
+                        SYME_CHAR='SYME',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       CHAM_MATER=CHMAT ,
+                           OPTION='CALC_K_G')
+
+TEST_TABLE(            TABLE=DGKE1,
+                       SENSIBILITE = (YOUNG,),
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='DK1/DE',
+                       CRITERE='ABSOLU',
+                       VALE=0.0,
+                      PRECISION=1.E-6     )
+#-----------------------------------------------------------------------
+# CHARGEMENT FORCE CONTOUR
+#-----------------------------------------------------------------------
+
+DGKF1=CALC_G_THETA_T(         MODELE=MO,
+                     SENSIBILITE = (FORC,), 
+                            RESULTAT=CHAMDEPL,
+                            THETA=THETA1,
+                             FOND_FISS=FOND,
+                              EXCIT=_F( CHARGE = CH),
+                        SYME_CHAR='SYME',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       CHAM_MATER=CHMAT ,
+                           OPTION='CALC_K_G')
+
+
+TEST_TABLE(            TABLE=DGKF1,
+                       SENSIBILITE = (FORC,),
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='DK1/DF',
+                       VALE=2.14430E+01,
+                      PRECISION=1.E-6     )
+
+#-----------------------------------------------------------------------
+# CHARGEMENT PRESSION
+#-----------------------------------------------------------------------
+CHP =AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
+                                 _F(  GROUP_NO = 'GRNM5', DY = ZERO),
+                                 _F(  NOEUD = 'N451', DX = ZERO)),
+                        PRES_REP=_F(  GROUP_MA = 'GRMA4', PRES =PRES ) )
+
+#-----------------------------------------------------------------------
+
+CHAMDEP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+                          SENSIBILITE = (YOUNG,PRES), 
+                              EXCIT=_F( CHARGE = CHP )
+                      )
+
+CHAMDEP=CALC_ELEM(reuse=CHAMDEP,RESULTAT=CHAMDEP,   
+              OPTION=('EPSI_ELGA_DEPL',),)
+
+CHAMDEP=CALC_ELEM(reuse=CHAMDEP,RESULTAT=CHAMDEP,   
+              SENSIBILITE = (YOUNG,PRES), 
+              OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
+
+DGKP1=CALC_G_THETA_T(         MODELE=MO,
+                     SENSIBILITE = (PRES,), 
+                            RESULTAT=CHAMDEP,
+                            THETA=THETA1,
+                             FOND_FISS=FOND,
+                              EXCIT=_F( CHARGE = CHP),
+                        SYME_CHAR='SYME',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       CHAM_MATER=CHMAT ,
+                           OPTION='CALC_K_G')
+
+
+TEST_TABLE(            TABLE=DGKP1,
+                       SENSIBILITE = (PRES,),
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='DK1/DF',
+                       VALE=2.14430E+01,
+                      PRECISION=1.E-5     )
+
+#-----------------------------------------------------------------------
+# DEUXIEME COURONNE
+#-----------------------------------------------------------------------
 G2=CALC_G_THETA_T(         MODELE=MO,
                              DEPL=DEP,
                             THETA=THETA2,
@@ -139,7 +241,7 @@ DGE2=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
 TEST_TABLE(            TABLE=DGE2,
                        SENSIBILITE = (YOUNG,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
@@ -154,29 +256,9 @@ DGF2=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
 TEST_TABLE(            TABLE=DGF2,
                        SENSIBILITE = (FORC,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                        VALE=4.6E-3,
                       PRECISION=5.E-3     )
-#-----------------------------------------------------------------------
-# CHARGEMENT PRESSION
-#-----------------------------------------------------------------------
-CHP =AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
-                                 _F(  GROUP_NO = 'GRNM5', DY = ZERO),
-                                 _F(  NOEUD = 'N451', DX = ZERO)),
-                        PRES_REP=_F(  GROUP_MA = 'GRMA4', PRES =PRES ) )
-
-#-----------------------------------------------------------------------
-
-CHAMDEP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
-                          SENSIBILITE = (YOUNG,PRES), 
-                              EXCIT=_F( CHARGE = CHP ))
-
-CHAMDEP=CALC_ELEM(reuse=CHAMDEP,RESULTAT=CHAMDEP,   
-              OPTION=('EPSI_ELGA_DEPL',),)
-
-CHAMDEP=CALC_ELEM(reuse=CHAMDEP,RESULTAT=CHAMDEP,   
-              SENSIBILITE = (YOUNG,PRES), 
-              OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
 
 DEPL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  NOM_CHAM='DEPL', RESULTAT=CHAMDEP,
@@ -203,7 +285,7 @@ DGE1P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
 TEST_TABLE(            TABLE=DGE1P,
                        SENSIBILITE = (YOUNG,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
@@ -219,7 +301,7 @@ DGF1P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
 TEST_TABLE(            TABLE=DGF1P,
                        SENSIBILITE = (PRES,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                        VALE=4.6E-3,
                       PRECISION=5.E-3     )
 
@@ -245,7 +327,7 @@ DGE2P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
 TEST_TABLE(            TABLE=DGE2P,
                        SENSIBILITE = (YOUNG,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
@@ -261,7 +343,7 @@ DGF2P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
 TEST_TABLE(            TABLE=DGF2P,
                        SENSIBILITE = (PRES,),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                        VALE=4.6E-3,
                       PRECISION=5.E-3     )
 

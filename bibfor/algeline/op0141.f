@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1,N2,N3,IBID,NBMOD1,NBMOD2,IADRI1,IADRI2,
      &              LLNEQU,NEQ,NBMODE,IDBAS1,IDBAS2,
      &              I,J,MIN,IDPIJ,NBPARA,INOM,ITYP,IND,IMATRA,IDVEC1,
-     &              IDDEEQ,IDVEC2,IFM,NIV,LLNEQ1,NEQ1,LLNEQ2,NEQ2
+     &              IDDEEQ,IDVEC2,IFM,NIV,LLNEQ1,NEQ1,LLNEQ2,NEQ2,IRET
       REAL*8        RBID,PIJ,DDOT,PII,PJJ
       COMPLEX*16    CBID
       CHARACTER*8   TABLE, CONCPT, TYP,BASE1,BASE2,K8B,CODENT,
@@ -59,7 +59,6 @@ C     --- RECUPERATION DU RESULTAT ET DU MODE A TRAITER ---
       CALL JEMARQ()
       
       NOMCOM = 'MAC_MODES'
-      
       CALL GETRES ( TABLE, TYPCON, NOMCMD )
 C CREATION DE LA TABLE CONTENANT LE MAC
       CALL TBCRSD (TABLE, 'G' )
@@ -102,8 +101,13 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       IF ((TYPBA1.EQ.'MODE_MECA').OR.(TYPBA1.EQ.'MODE_GENE')) THEN
 C On passe par les matrices du REFD
         MATRI1 = ZK24(IADRI1)
-        CALL DISMOI('F','NOM_NUME_DDL',MATRI1,'MATR_ASSE',IBID,
+        CALL EXISD('MATR_ASSE',MATRI1,IRET) 
+        IF (IRET.NE.0) THEN 
+          CALL DISMOI('F','NOM_NUME_DDL',MATRI1,'MATR_ASSE',IBID,
      +                NUMDD1,IER)
+        ELSE 
+          NUMDD1 = ZK24(IADRI1+3)(1:14)
+        ENDIF
       ELSE
 C On passe par la numerotation du REFD
         NUMDD1 = ZK24(IADRI1+3)(1:14)
@@ -114,8 +118,13 @@ C On passe par la numerotation du REFD
       CALL JEVEUO(BASE2//'           .REFD','L',IADRI2)
       IF ((TYPBA2.EQ.'MODE_MECA').OR.(TYPBA2.EQ.'MODE_GENE')) THEN
         MATRI2 = ZK24(IADRI2)
-        CALL DISMOI('F','NOM_NUME_DDL',MATRI2,'MATR_ASSE',IBID,
+        CALL EXISD('MATR_ASSE',MATRI2,IRET) 
+        IF (IRET.NE.0) THEN 
+          CALL DISMOI('F','NOM_NUME_DDL',MATRI2,'MATR_ASSE',IBID,
      +                NUMDD2,IER)
+        ELSE 
+          NUMDD2 = ZK24(IADRI2+3)(1:14)
+        ENDIF
       ELSE
         NUMDD2 = ZK24(IADRI2+3)(1:14)
       ENDIF

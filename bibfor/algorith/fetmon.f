@@ -2,7 +2,7 @@
      &                  LSTOGI,IFET1,RANG,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,32 +51,46 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER    IFET2,IFET3,IFET4,IFET5,IFET6,I
-      REAL*8     R1,R2,R3,R1M,R2M,R3M,RAUX2
+      INTEGER     IFET2,IFET3,IFET4,IFET5,IFET6,IFET7,I,NBPROC
+      CHARACTER*8 K8BID
+      REAL*8      R1,R2,R3,R1M,R2M,R3M,RAUX2
       
-      IF ((INFOFE(9:9).EQ.'T').AND.(RANG.EQ.0)) THEN
+      IF ((INFOFE(11:11).EQ.'T').AND.(RANG.EQ.0)) THEN
         WRITE(IFM,*)
         WRITE(IFM,*)'*****************************************'
-        WRITE(IFM,*)'<FETI/ALFETI',RANG,'>'
-        WRITE(IFM,*)'NUMERO D''INCREMENT ',ITPS
-        WRITE(IFM,*)'NB SOUS-DOMAINES ',NBSD
-        WRITE(IFM,*)'NB DE MODES RIGIDES ',DIMGI
+        WRITE(IFM,'(A13,I4,A1)')'<FETI/ALFETI ',RANG,'>'
+        WRITE(IFM,'(A20,I4)')'NUMERO D''INCREMENT  ',ITPS
+        WRITE(IFM,'(A20,I4)')'NB SOUS-DOMAINES    ',NBSD
+        WRITE(IFM,'(A20,I4)')'NB DE MODES RIGIDES ',DIMGI
+        WRITE(IFM,*)'POINTS INTERFACE / MAILLAGE / RAPPORT'
         WRITE(IFM,1081)NBI2,NBTOT,100.D0* NBI2/NBTOT
+        IF (MAMOY.NE.0) THEN
+          IF (LSTOGI) THEN
+            RAUX2=(100.D0*DIMGI*(NBI+DIMGI))/MAMOY
+          ELSE
+            RAUX2=(100.D0*DIMGI*DIMGI)/MAMOY    
+          ENDIF
+        ENDIF
+        WRITE(IFM,1082)RAUX2
         CALL JEVEUO('&FETI.INFO.STOCKAGE.FVAF','L',IFET2)
         CALL JEVEUO('&FETI.INFO.STOCKAGE.FNBN','L',IFET3)
         CALL JEVEUO('&FETI.INFO.CPU.FACS','L',IFET4)
         CALL JEVEUO('&FETI.INFO.CPU.ASSE','L',IFET5)
         CALL JEVEUO('&FETI.INFO.CPU.FACN','L',IFET6)
-        
-        WRITE(IFM,*)'SOUS-DOMAINE/ MATRICE / FACTORISEE / NOEUDS '
+        CALL JEVEUO('&FETI.INFO.CPU.ELEM','L',IFET7)
+        CALL JELIRA('&FETI.INFO.CPU.ELEM','LONMAX',NBPROC,K8BID)
+        WRITE(IFM,*)
+        WRITE(IFM,*)'SOUS-DOMAINE   / MATRICE   / FACTORISEE   / NOEUDS'
         DO 15 I=1,NBSD
           WRITE(IFM,1075)I,ZI(IFET1+I-1),ZI(IFET2+I-1),ZI(IFET3+I-1)
    15   CONTINUE
-        WRITE(IFM,*)'-----------------------------------'
+        WRITE(IFM,*)'--------------------------------------------------'
         WRITE(IFM,1080)ZI(IFET1+NBSD),ZI(IFET2+NBSD),ZI(IFET3+NBSD)
         WRITE(IFM,1083)ZI(IFET1+NBSD)/NBSD,ZI(IFET2+NBSD)/NBSD,
      &                 ZI(IFET3+NBSD)/NBSD
-        WRITE(IFM,*)'SOUS-DOMAINE/CPU FACSYM/CPU ASSE/CPU FACNUM '
+        WRITE(IFM,*)
+        WRITE(IFM,*)'SOUS-DOMAINE   / CPU FACSYM / CPU ASSE /'//
+     &              ' CPU FACNUM'
         R1=0.D0
         R2=0.D0
         R3=0.D0
@@ -92,27 +106,33 @@ C DECLARATION VARIABLES LOCALES
           IF (ZR(IFET5+I).GT.R2M) R2M=ZR(IFET5+I)
           IF (ZR(IFET6+I).GT.R3M) R3M=ZR(IFET6+I)         
    16   CONTINUE
-        WRITE(IFM,*)'-----------------------------------'
+        WRITE(IFM,*)'--------------------------------------------------'
         WRITE(IFM,1085)R1,R2,R3
         WRITE(IFM,1086)R1M,R2M,R3M
-   
-        IF (MAMOY.NE.0) THEN
-          IF (LSTOGI) THEN
-            RAUX2=(100.D0*DIMGI*(NBI+DIMGI))/MAMOY
-          ELSE
-            RAUX2=(100.D0*DIMGI*DIMGI)/MAMOY    
-          ENDIF
-        ENDIF
-        WRITE(IFM,1082)RAUX2
+
+        R1=0.D0
+        R1M=-1.D0
+        WRITE(IFM,*)
+        WRITE(IFM,*)'PROCESSEUR     / CPU CALCUL_ELEM '
+        DO 20 I=1,NBPROC
+          WRITE(IFM,1087)I,ZR(IFET7+I-1)
+          R1=R1+ZR(IFET7+I-1)
+          IF (ZR(IFET7+I-1).GT.R1M) R1M=ZR(IFET7+I-1)
+   20   CONTINUE
+        WRITE(IFM,*)'-----------------------------------'
+        WRITE(IFM,1088)R1
+        WRITE(IFM,1089)R1M
         WRITE(IFM,*)'******************************************'
       ENDIF            
- 1075 FORMAT(' N ',I4,'     : ',I9,' ',I9,' ',I9)
+ 1075 FORMAT(' N ',I4,'     :   ',I9,'    ',I9,'    ',I9)
  1080 FORMAT('TOTAL       :',I12,' ',I12,' ',I12)
- 1081 FORMAT('POINTS INTERFACE / MAILLAGE / RAPPORT',I12,' ',I12,' ',
-     &       D8.2,' %')
- 1082 FORMAT('TAILLE (GI + GIT*GI)/MATRICE MOYENNE :',D10.2,' %')
+ 1081 FORMAT(I12,' ',I12,'        ',D8.2,' %')
+ 1082 FORMAT('TAILLE (GI + GIT*GI)/MATRICE MOYENNE :',D11.4,' %')
  1083 FORMAT('MOYENNE     :',I12,' ',I12,' ',I12) 
- 1084 FORMAT(' N ',I4,'     : ',D10.2,' ',D10.2,' ',D10.2)
- 1085 FORMAT('CPU + SYS TOTAL  :',D10.2,' ',D10.2,' ',D10.2) 
- 1086 FORMAT('CPU + SYS LA PIRE:',D10.2,' ',D10.2,' ',D10.2)       
+ 1084 FORMAT(' N ',I4,'     :     ',D11.4,' ',D11.4,' ',D11.4)
+ 1085 FORMAT('CPU + SYS TOTAL  :',D11.4,' ',D11.4,' ',D11.4) 
+ 1086 FORMAT('CPU + SYS LE PIRE:',D11.4,' ',D11.4,' ',D11.4)
+ 1087 FORMAT(' N ',I4,'     :     ',D11.4)
+ 1088 FORMAT('CPU + SYS TOTAL  :',D11.4) 
+ 1089 FORMAT('CPU + SYS LE PIRE:',D11.4)       
       END 

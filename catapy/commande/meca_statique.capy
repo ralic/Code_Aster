@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
              SCALING         =SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") ),
              VERIF_SDFETI    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
              TEST_CONTINU    =SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.),
-             INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFF'),
+             INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFFFFFFFFFFFFFFFF'),
              STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","CAL") ),
              NB_SD_PROC0     =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              ACCELERATION_SM =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

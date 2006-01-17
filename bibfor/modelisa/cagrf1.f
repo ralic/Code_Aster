@@ -1,10 +1,12 @@
-      SUBROUTINE CAGRF1 ( CHAR, NOMA, Z0, CDG, Z22, DIRGC )
+      SUBROUTINE CAGRF1 ( CHAR, NOMA, Z0, CDG, Z22, DIRGC, 
+     +                    VGRAP, FFGR, NGR )
       IMPLICIT   NONE
-      REAL*8              Z0, CDG(3), Z22, DIRGC(3)
-      CHARACTER*8         CHAR, NOMA
+      INTEGER             NGR
+      REAL*8              Z0, CDG(3), Z22, DIRGC(3), VGRAP(*)
+      CHARACTER*8         CHAR, NOMA, FFGR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,10 +52,12 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       N1, I, J, NBM, NBNO, JMAIL, IDNONO, JVMA, JVNO, 
      +              ICOOR, JVAL, JABSC, IAPL, INO
-      INTEGER       IZONE, IPNOEU, IDNOEU, NG, NOEUDG, NM
-      REAL*8        XM1, XM2, YM1, YM2, ZM1, ZM2, XM, YM, ZM
-      REAL*8        COTE
+      INTEGER       IZONE, IPNOEU, IDNOEU, NG, NOEUDG, NM, INDIK8
+      REAL*8        XM1, XM2, YM1, YM2, ZM1, ZM2, XM, YM, ZM, COTE
       REAL*8        S, X1, Y1, Z1, X2, Y2, Z2, X12, Y12, Z12, V1(3)
+      REAL*8        PI, R8PI, MGRAPP, MTIGE, MARAIG, MCRAYO, DTIGE, 
+     +              LTIGE, ROTIGE, VARAI, RORAI, DCRAY, LCRAY, ROCRAY,
+     +              MGRAP2, ERR, LGR, LGR2
       CHARACTER*8   K8B, GRMA, PREFIX
       CHARACTER*16  MOTCLF, MOTCLE, TYPMCL
       CHARACTER*24  LISNOM
@@ -61,6 +65,7 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      PI = R8PI()
       MOTCLF = 'GRAPPE_FLUIDE'
       MOTCLE = 'GROUP_MA'
       TYPMCL = 'GROUP_MA'
@@ -116,16 +121,16 @@ C
             ZR(JVAL-1+3*(INO-1)+I) = V1(I) / S
  112     CONTINUE
  100  CONTINUE
-      S = 0.D0
+      LGR = 0.D0
       DO 114 I = 1 , 3
          X1 = ZR(ICOOR+3*(ZI(JVNO-1+1   )-1)+I-1)
          X2 = ZR(ICOOR+3*(ZI(JVNO-1+NBNO)-1)+I-1)
          V1(I) = X2 - X1
-         S = S + V1(I)**2
+         LGR = LGR + V1(I)**2
  114  CONTINUE
-      S = SQRT( S )
+      LGR = SQRT( LGR )
       DO 116 I = 1 , 3
-         ZR(JVAL-1+3*(NBNO-1)+I) = V1(I) / S
+         ZR(JVAL-1+3*(NBNO-1)+I) = V1(I) / LGR
  116  CONTINUE
       ZR(JVAL-1+3*NBNO+1) = DIRGC(1)
       ZR(JVAL-1+3*NBNO+2) = DIRGC(2)
@@ -185,6 +190,58 @@ C     ---------------
       ZM = 0.5D0*(ZM1+ZM2)
       NM = NOEUDG(ICOOR,NBNO,JVNO,XM,YM,ZM)
       ZI(IAPL-1+5) = NM
+C
+C ----------------------------------------------------------------------
+C     VERIFICATION DE QUELQUES GRANDEURS
+C ----------------------------------------------------------------------
+C
+C --- VERIFICATION QUE LA MASSE EST COHERENTE AVEC LES MASSES VOLUMIQUES
+C
+      J = INDIK8 ( FFGR, 'M', 1, NGR )
+      MGRAPP = VGRAP(J)
+C
+      J = INDIK8 ( FFGR, 'DTIGE', 1, NGR )
+      DTIGE  = VGRAP(J)
+      J = INDIK8 ( FFGR, 'LTIGE', 1, NGR )
+      LTIGE  = VGRAP(J)
+      J = INDIK8 ( FFGR, 'ROTIGE', 1, NGR )
+      ROTIGE = VGRAP(J)
+      MTIGE  = ROTIGE * ( LTIGE * PI * DTIGE**2 / 4 )
+C
+      J = INDIK8 ( FFGR, 'VARAI', 1, NGR )
+      VARAI  = VGRAP(J)
+      J = INDIK8 ( FFGR, 'RORAI', 1, NGR )
+      RORAI  = VGRAP(J)
+      MARAIG = RORAI * VARAI
+C
+      J = INDIK8 ( FFGR, 'DCRAY', 1, NGR )
+      DCRAY  = VGRAP(J)
+      J = INDIK8 ( FFGR, 'LCRAY', 1, NGR )
+      LCRAY  = VGRAP(J)
+      J = INDIK8 ( FFGR, 'ROCRAY', 1, NGR )
+      ROCRAY = VGRAP(J)
+      MCRAYO = ROCRAY * ( 24 * LCRAY * PI * DCRAY**2 / 4 )
+C
+      MGRAP2 = MTIGE + MARAIG + MCRAYO
+      ERR = ( MGRAPP - MGRAP2 ) / MGRAPP
+      IF ( ABS(ERR).GT.1.D-06 ) THEN
+         CALL UTDEBM('F','CAGRF1','ERREURS DANS LES DONNEES')
+         CALL UTIMPR('L','MASSE TOTALE DE LA GRAPPE: ',1,MGRAPP)
+         CALL UTIMPR('L','MASSE DE LA TIGE:            ',1,MTIGE)
+         CALL UTIMPR('L','MASSE DE L''ARAIGNEE:          ',1,MARAIG)
+         CALL UTIMPR('L','MASSE DU CRAYON:              ',1,MCRAYO)
+         CALL UTIMPR('L','MASSE GRAPPE+ARAIGNEE+CRAYON: ',1,MGRAP2)
+         CALL UTFINM()
+      ENDIF
+C
+      LGR2 = LTIGE + LCRAY
+      ERR = ( LGR - LGR2 ) / LGR
+      IF ( ABS(ERR).GT.1.D-06 ) THEN
+         CALL UTDEBM('F','CAGRF1','ERREURS DANS LES DONNEES')
+         CALL UTIMPR('L','LONGUEUR MODELISEE: ',1,LGR)
+         CALL UTIMPR('L','LONGUEUR DONNEE   : ',1,LGR2)
+         CALL UTFINM()
+      ENDIF
 C
       CALL JEDEMA()
       END

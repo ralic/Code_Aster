@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,6 +63,11 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
+#          POUR IMPOSER LA NUMEROTATION DES DDLS :
+#          ------------------------------------------------------------------
+           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster) ),
+
+
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
            LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
@@ -85,11 +90,6 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                 fr="Si le résultat est un mode_xxx ou une base_xxx, on peut prolonger"
                    +" les champs par zéro la ou la projection ne donne pas de valeurs."),
 
-           b_modele_gene     =BLOC(condition = "AsType(RESULTAT)     == mode_meca",
-             RIGI_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
-             MASS_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
-             AMOR_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
-                                    ),
          ),
 
          VIS_A_VIS       =FACT(statut='f',max='**',

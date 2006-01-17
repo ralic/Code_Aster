@@ -1,6 +1,9 @@
-      SUBROUTINE CAFACI(FONREE,CHAR)
+      SUBROUTINE CAFACI ( FONREE, CHAR )
+      IMPLICIT   NONE
+      CHARACTER*4         FONREE
+      CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,10 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-      IMPLICIT NONE
-
-      CHARACTER*4 FONREE
-      CHARACTER*8 CHAR
 
 C     BUT: CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH POUR FACE_IMPO
@@ -58,7 +57,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER IDIM,IN,JNORM,JTANG,JNUNOE,JNBN,JNONO,NFACI,NBGM
       INTEGER NBGT,NBET,NBEGT,IBID,JNOMA,IER,IOCC,NDIM,NNO
       INTEGER NBEM,NBEGM,IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
-      INTEGER NCMP,NBTYP,IE,NBMA,JGR0
+      INTEGER NCMP,NBTYP,IE,NBMA,JGR0,NBCMP,INOM
 
       INTEGER DDLIMP(NMOCL)
       REAL*8 VALIMR(NMOCL),COEF(3),DIRECT(3)
@@ -67,9 +66,9 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*3 TYMOCL(NMOCL)
       CHARACTER*3 CDIM
       CHARACTER*4 TYPCOE
-      CHARACTER*8 MOMA,MOGROU,K8BID,NOMA,MOD,LITYP(10)
+      CHARACTER*8 MOMA,MOGROU,K8BID,NOMA,MOD,LITYP(10),NOMG
       CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3),NOEUD(3)
-      CHARACTER*16 MOTFAC,MOTCLE(NMOCL)
+      CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD
       CHARACTER*24 TRAV,OBJ1,OBJ2,GRMA
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
@@ -78,6 +77,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
       IF (NFACI.EQ.0) GO TO 220
+      CALL GETRES(K8BID,K8BID,NOMCMD)
 
       LISREL = '&&CAFACI.RLLISTE'
 
@@ -114,6 +114,18 @@ C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 C ---  LIGREL DU MODELE ---
 
       LIGRMO = MOD(1:8)//'.MODELE'
+
+      IF (NOMCMD(11:14).EQ.'MECA') THEN
+        NOMG='DEPL_R'
+      ELSE IF (NOMCMD(11:14).EQ.'THER') THEN
+        NOMG='TEMP_R'
+      ELSE IF (NOMCMD(11:14).EQ.'ACOU') THEN
+        NOMG='PRES_C'
+      ELSE
+        CALL ASSERT(.FALSE.)
+      END IF
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
 
 C --- MAILLAGE ASSOCIE AU MODELE ---
 
@@ -487,6 +499,7 @@ C        ---------------
             CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
             CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
 
+            IRET = 0
             DO 180 INO = 1,NBNO
               IN = ZI(JNUNOE-1+INO)
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
@@ -494,8 +507,11 @@ C        ---------------
               CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                    ZI(JPRNM-1+ (IN-1)*NBEC+1),NDDLA,FONREE,
      &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
-     &                    NBEC,ZR(JDIREC+3* (IN-1)),0,LISREL)
+     &                    NBEC,ZR(JDIREC+3* (IN-1)),0,LISREL,
+     &                    ZK8(INOM),NBCMP,IRET)
   180       CONTINUE
+            IF ( IRET .EQ. 0 ) CALL UTMESS('F','CAFACI',
+     &                        'AUCUN NOEUD NE CONNAIT LES DDL FOURNIS')
 
           END IF
 C        -------------------------------------
@@ -511,6 +527,7 @@ C        -------------------------------------
             CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
             CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
 
+            IRET = 0
             DO 190 INO = 1,NBNO
               IN = ZI(JNUNOE-1+INO)
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
@@ -518,8 +535,11 @@ C        -------------------------------------
               CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                    ZI(JPRNM-1+ (IN-1)*NBEC+1),NDDLA,FONREE,
      &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
-     &                    NBEC,ZR(JDIREC+3* (IN-1)),0,LISREL)
+     &                    NBEC,ZR(JDIREC+3* (IN-1)),0,LISREL,
+     &                    ZK8(INOM),NBCMP,IRET)
   190       CONTINUE
+            IF ( IRET .EQ. 0 ) CALL UTMESS('F','CAFACI',
+     &                        'AUCUN NOEUD NE CONNAIT LES DDL FOURNIS')
 
             NBMA = NBML
           END IF

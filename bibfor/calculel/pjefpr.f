@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       INTEGER       IBID, IE, JCONO, IRET, JORDR, NBORDR, I, IORDR
       INTEGER       IAINS1, IAINS2, NBSYM, ISYM, ICO
       LOGICAL       ACCENO
-      CHARACTER*8   KB, MA1, MA2, RAIDE,MASSE,AMOR,PROL0
+      CHARACTER*8   KB, MA1, MA2, NUME,PROL0,K8B
       CHARACTER*16  NOMSYM(200)
       CHARACTER*19  CH1, CH2, PRFCHN,LIGREL,PRFCH2
       CHARACTER*19 NOMS2,REFE
@@ -77,6 +77,8 @@ C     FONCTIONS FORMULES :
 
 C DEB -----------------------------------------------------------------
       CALL JEMARQ()
+C 
+      K8B='        '
 C
       LIGREL=MODEL2//'.MODELE'
 
@@ -115,22 +117,11 @@ C     ------------------------------------
 
 C Dans le cas des concepts type modes meca on teste la presence
 C des matrices afin de recuperer la numerotation sous-jacente
-      RAIDE='        '
-      MASSE='        '
-      AMOR='        '
       PRFCH2='12345678.00000.NUME'
-      IF ((TYPRES(1:9).EQ.'MODE_MECA').OR.
-     &     (TYPRES(1:9).EQ.'MODE_STAT').OR.
-     &     (TYPRES(1:4).EQ.'BASE')) THEN
-C    On essaye de recuperer la numerotation de matrices assemblees
-        CALL GETVID(' ','RIGI_MECA',1,1,1,RAIDE,IER)
-        IF (IER.NE.0) THEN
-          CALL GETVID(' ','MASS_MECA',1,1,1,MASSE,IER)
-          CALL GETVID(' ','AMOR_MECA',1,1,1,AMOR,IER)
-          REFE=RAIDE
-          CALL JEVEUO(REFE//'.REFA','L',LMATAS)
-          PRFCH2=ZK24(LMATAS+1)(1:19)
-        ENDIF
+C    On essaye de recuperer la numerotation imposee
+      CALL GETVID(' ','NUME_DDL',1,1,1,NUME,IER)
+      IF (IER.NE.0) THEN
+        PRFCH2=NUME(1:8)//'      .NUME'
       ENDIF
 
 
@@ -139,16 +130,15 @@ C     ------------------------------------
       ICO=0
       DO 4,ISYM=1,NBSYM
 
-      IF ((PRFCH2.NE.'12345678.00000.NUME').AND.
-     &    (NOMSYM(ISYM)(1:4).EQ.'DEPL')) THEN
-C On prend la numerotation des matrices assemblees
-        PRFCHN=PRFCH2
-      ELSE
+        IF (PRFCH2.NE.'12345678.00000.NUME') THEN
+C On prend la numerotation imposee
+          PRFCHN=PRFCH2
+        ELSE
 C On definit une numerotation 'bidon"
-        NOOJB='12345678.00000.NUME.PRNO'
-        CALL GNOMSD ( NOOJB,10,14)
-        PRFCHN=NOOJB(1:19)
-      ENDIF
+          NOOJB='12345678.00000.NUME.PRNO'
+          CALL GNOMSD ( NOOJB,10,14)
+          PRFCHN=NOOJB(1:19)
+        ENDIF
 
         DO 5,I=1,NBORDR
           IORDR = ZI(JORDR+I-1)
@@ -171,7 +161,7 @@ C       -- PROJECTION DU CHAMP SI POSSIBLE :
 C       -- Attribution des attributs du concept resultat
           IF ((TYPRES(1:9).EQ.'MODE_MECA').OR.
      &     (TYPRES(1:4).EQ.'BASE')) THEN
-              CALL VPCREA(0,RESU2,MASSE,AMOR,RAIDE,IER)
+              CALL VPCREA(0,RESU2,K8B,K8B,K8B,IER)
               CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
               ZR(IAINS2)=ZR(IAINS1)
@@ -183,7 +173,7 @@ C             Recuperation de nume_mode
                 ZI(IAINS2+IORDR-1)=ZI(IAINS1+IORDR-1)
               ENDIF
           ELSEIF (TYPRES(1:9).EQ.'MODE_STAT') THEN
-              CALL VPCREA(0,RESU2,MASSE,AMOR,RAIDE,IER)
+              CALL VPCREA(0,RESU2,K8B,K8B,K8B,IER)
               CALL RSADPA ( RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'NOEUD_CMP',IORDR,0,IAINS2,KB)
               ZK16(IAINS2)=ZK16(IAINS1)

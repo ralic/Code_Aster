@@ -6,7 +6,7 @@
       CHARACTER*8 KBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,8 @@ C----------------------------------------------------------------------
       CHARACTER*24 KNULIL,NOMLI,KHCOL,KADIA,KABLO,KIABL,KVALE,KDESC,
      &             KTEMP1,KTEMP2,KREFE
       REAL*8 X
-      INTEGER HMAX,HMOY,ITBLOC
+      INTEGER HMAX,HMOY,ITBLOC,IRET
+      LOGICAL LFETI
 C-----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -145,7 +146,15 @@ C----RECUPERATION DU NIVEAU D'IMPRESSION
 
       CALL INFNIV(IFM,NIV)
 C----------------------------------------------------------------------
-
+C FETI OR NOT FETI ?
+      CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL INFMUE()
+        CALL INFNIV(IFM,NIV)
+        LFETI=.TRUE.
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
       NU = NUZ
 
       CALL DISMOI('F','NUM_GD_SI',NU,'NUME_DDL',IGD,KBID,IER)
@@ -459,9 +468,10 @@ C---- HMAX = HAUTEUR MAXIMUM DES COLONNES
           NBLC = NBLC + 1
         END IF
   180 CONTINUE
-      IF (NIV.GE.1) WRITE (IFM,*) '--- NOMBRE DE BLOCS UTILISES '//
+      IF (NIV.GE.1) THEN
+        WRITE (IFM,*) '--- NOMBRE DE BLOCS UTILISES '//
      &    'POUR LE STOCKAGE DU PROFIL SUP (OU INF) : ',NBLC
-
+      ENDIF
 C---- CALCUL ET ALLOCATION DES ABLO
 
       CALL WKVECT(KABLO,BASE//' V I',NBLC+1,IDABLO)
@@ -505,5 +515,6 @@ C---- CREATION ET REMPLISSAGE DE DESC
       ZI(IDDESC+3) = HMAX
       CALL JEDETR('&&PROLCI.NUMLOC')
   220 CONTINUE
+      IF (LFETI) CALL INFBAV()
       CALL JEDEMA()
       END

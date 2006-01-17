@@ -3,7 +3,7 @@
       INTEGER IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C     -----------------------------------------------------------------
 
       CALL JEMARQ()
       CALL INFMAJ()
+      K80BM = ' '
       CALL GETRES(RESU,CONCEP,NOMCMD)
 
 C     LECTURE DE LA NUMEROTATION DES DDL

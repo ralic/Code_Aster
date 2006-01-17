@@ -6,7 +6,7 @@
       CHARACTER*1 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,6 +89,7 @@ C----------------------------------------------------------------------
       INTEGER NDDLK,NDDLKK,NEL,NIEL,NIGREL,NIV,NLAG,NMA,NN
       INTEGER NNOE,NS,NUMA,NUNOEL
       INTEGER ISLVK
+      LOGICAL LFETI
 
 C     NBNOM  : NOMBRE DE NOEUDS DU MAILLAGE
 C     DERLI  : NOM DE L'OBJET NU.DERLI CREE SUR 'V'
@@ -203,7 +204,15 @@ C----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
       NU = NUZ
       TYPRES = TYPREZ
-
+C --- FETI OR NOT FETI ?
+      CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
+      IF (IRET.GT.0) THEN
+        CALL INFMUE()
+        CALL INFNIV(IFM,NIV)
+        LFETI=.TRUE.
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
 
 C --- SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
 C     ----------------------------------------------------------
@@ -975,7 +984,6 @@ C     =================================
 
       IF (NIV.GE.1) THEN
 
-
 C ---   CALCUL DE NMA : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
 C       ----------------------------------------------------------------
         NMA = 0
@@ -1032,5 +1040,6 @@ C     ---------------------------------------------------
       CALL JEDETR(DERLI)
       CALL JEDETR(VSUIV)
       CALL JEDETR(DSCLAG)
+      IF (LFETI) CALL INFBAV()
 
       END

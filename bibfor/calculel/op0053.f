@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C
       INTEGER ADRECG,ADCHSE
       INTEGER NVITES,NACCE
 
-      REAL*8       TIME,ALPHA,PREC,RBID,PULS,TIMEU,TIMEV
-
+      REAL*8       TIME,ALPHA,PREC,RBID,PULS,TIMEU,TIMEV,VAL(3)
+      COMPLEX*16 CBID
       CHARACTER*4 K4BID
       CHARACTER*5 SUFFIX
       CHARACTER*8  MODELE, MATERI, TYPRUP(6)
@@ -473,6 +473,7 @@ C
             OPTIO1 = 'CALC_DG'
           ELSE IF ( TYPESE.EQ.3 ) THEN
             OPTIO1 = 'CALC_DG_E'
+            IF(OPTION.EQ.'CALC_K_G') OPTIO1 = 'CALC_DK_DG_E'
             IF(NBPASE.GE.2) THEN
               CALL UTMESS ('F', NOMPRO,
      >          'DERIVATION DE G : UN SEUL PARAMETRE SENSIBLE '//
@@ -480,6 +481,7 @@ C
             ENDIF
           ELSE IF ( TYPESE.EQ.5 ) THEN
             OPTIO1 = 'CALC_DG_FORC'
+            IF(OPTION.EQ.'CALC_K_G') OPTIO1 = 'CALC_DK_DG_FORC'
             IF(NBPASE.GE.2) THEN
               CALL UTMESS ('F', NOMPRO,
      >          'DERIVATION DE G : UN SEUL PARAMETRE SENSIBLE '//
@@ -512,8 +514,7 @@ C 3.2. ==> CREATION DE TABLE ET CALCUL
 C=======================================================================
 
       IF ( OPTIO1.EQ.'CALC_G' .OR. OPTIO1.EQ.'CALC_G_LAGR' .OR.
-     >     OPTIO1.EQ.'CALC_DG' .OR. OPTIO1.EQ.'CALC_DG_E' .OR.
-     >     OPTIO1.EQ.'CALC_DG_FORC' ) THEN
+     >     OPTIO1.EQ.'CALC_DG' ) THEN
         IF (NDEP .NE. 0 ) THEN
           NBPRUP = 1
           NOPRUP(1) = 'G'
@@ -525,6 +526,34 @@ C=======================================================================
           NOPRUP(2) = 'INST'
           TYPRUP(2) = 'R'
           NOPRUP(3) = 'G'
+          TYPRUP(3) = 'R'
+        ENDIF
+      ELSEIF ( OPTIO1 .EQ. 'CALC_DG_E' ) THEN
+        IF (NDEP .NE. 0 ) THEN
+          NBPRUP = 1
+          NOPRUP(1) = 'DG/DE'
+          TYPRUP(1) = 'R'
+        ELSE
+          NBPRUP = 3
+          NOPRUP(1) = 'NUME_ORDRE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'INST'
+          TYPRUP(2) = 'R'
+          NOPRUP(3) = 'DG/DE'
+          TYPRUP(3) = 'R'
+        ENDIF
+      ELSEIF ( OPTIO1 .EQ. 'CALC_DG_FORC' ) THEN
+        IF (NDEP .NE. 0 ) THEN
+          NBPRUP = 1
+          NOPRUP(1) = 'DG/DF'
+          TYPRUP(1) = 'R'
+        ELSE
+          NBPRUP = 3
+          NOPRUP(1) = 'NUME_ORDRE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'INST'
+          TYPRUP(2) = 'R'
+          NOPRUP(3) = 'DG/DF'
           TYPRUP(3) = 'R'
         ENDIF
       ELSEIF ( OPTION .EQ. 'K_G_MODA' ) THEN
@@ -539,7 +568,7 @@ C=======================================================================
           TYPRUP(4) = 'R'
           NOPRUP(5) = 'G_IRWIN'
           TYPRUP(5) = 'R'
-      ELSEIF ( OPTIO1 .EQ. 'CALC_K_G'    ) THEN
+      ELSEIF ( OPTIO1 .EQ. 'CALC_K_G' ) THEN
         IF ( NDEP .NE. 0 ) THEN
           NBPRUP = 4
           NOPRUP(1) = 'G'
@@ -564,6 +593,50 @@ C=======================================================================
           TYPRUP(5) = 'R'
           NOPRUP(6) = 'G_IRWIN'
           TYPRUP(6) = 'R'
+        ENDIF
+      ELSEIF ( OPTIO1 .EQ. 'CALC_DK_DG_E' ) THEN
+        IF ( NDEP .NE. 0 ) THEN
+          NBPRUP = 3
+          NOPRUP(1) = 'DG/DE'
+          TYPRUP(1) = 'R'
+          NOPRUP(2) = 'DK1/DE'
+          TYPRUP(2) = 'R'
+          NOPRUP(3) = 'DK2/DE'
+          TYPRUP(3) = 'R'
+        ELSE
+          NBPRUP = 5
+          NOPRUP(1) = 'NUME_ORDRE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'INST'
+          TYPRUP(2) = 'R'
+          NOPRUP(3) = 'DG/DE'
+          TYPRUP(3) = 'R'
+          NOPRUP(4) = 'DK1/DE'
+          TYPRUP(4) = 'R'
+          NOPRUP(5) = 'DK2/DE'
+          TYPRUP(5) = 'R'
+        ENDIF
+      ELSEIF ( OPTIO1 .EQ. 'CALC_DK_DG_FORC' ) THEN   
+        IF ( NDEP .NE. 0 ) THEN
+          NBPRUP = 2
+C          NOPRUP(1) = 'DG/DF'
+C          TYPRUP(1) = 'R'
+          NOPRUP(1) = 'DK1/DF'
+          TYPRUP(1) = 'R'
+          NOPRUP(2) = 'DK2/DF'
+          TYPRUP(2) = 'R'
+        ELSE
+          NBPRUP = 4
+          NOPRUP(1) = 'NUME_ORDRE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'INST'
+          TYPRUP(2) = 'R'
+C          NOPRUP(3) = 'DG/DF'
+C          TYPRUP(3) = 'R'
+          NOPRUP(3) = 'DK1/DF'
+          TYPRUP(3) = 'R'
+          NOPRUP(4) = 'DK2/DF'
+          TYPRUP(4) = 'R'
         ENDIF
       ELSEIF ( OPTIO1 .EQ. 'G_BILINEAIRE'
      &            .OR.OPTIO1 .EQ. 'CALC_G_MAX') THEN
@@ -718,7 +791,9 @@ C DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS.
 
 C
             IF (OPTIO1.EQ.'CALC_DG_E'
-     &      .OR. OPTIO1.EQ.'CALC_DG_FORC') THEN
+     &      .OR. OPTIO1.EQ.'CALC_DG_FORC'
+     &      .OR. OPTIO1.EQ.'CALC_DK_DG_E'
+     &      .OR. OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
               CALL RSEXC2(1,1,LERES0,'DEPL',IORD,CHDESE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
                 CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
@@ -764,7 +839,24 @@ C
           ELSE IF (OPTIO1 .EQ.'CALC_K_G') THEN
             CALL MEFICG (OPTIO1,LATAB1,MODELE,DEPLA,THETA,MATE,NCHA,
      &                   ZK8(ICHA),SYMECH,FOND,EXITIM,TIME,IORD,
-     &                   NBPRUP, NOPRUP )
+     &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
+     &                   CHEPSE,CHSISE,CHVITE,CHACCE)
+          ELSE IF (OPTIO1.EQ.'CALC_DK_DG_E') THEN 
+            OPTIO2 = 'CALC_DG_E'
+            CALL MECALG (OPTIO2,LATAB1,MODELE,DEPLA,THETA,MATE,NCHA,
+     &                   ZK8(ICHA),SYMECH,COMPOR,EXITIM,TIME,IORD,
+     &                   3,NOPRUP,NOPASE,TYPESE,CHDESE,
+     &                   CHEPSE,CHSISE,CHVITE,CHACCE)
+C
+C  LES DERIVEES DE KI ET KII SONT NULLES. ON LES AJOUTE DIRECTEMENT    
+            VAL(1) = 0.D0
+            VAL(2) = 0.D0
+            CALL TBAJLI(LATAB1,2,NOPRUP(4),IORD,VAL,CBID,K8BID,1)
+          ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN 
+            CALL MEFICG (OPTIO1,LATAB1,MODELE,DEPLA,THETA,MATE,NCHA,
+     &                   ZK8(ICHA),SYMECH,FOND,EXITIM,TIME,IORD,
+     &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
+     &                   CHEPSE,CHSISE,CHVITE,CHACCE)
           ENDIF
           CALL JEDEMA()
    34   CONTINUE

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,8 @@ C     ------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER DESC,MODE,NCMPEL
+      INTEGER DESC,MODE,NCMPEL,IRET,IFETI,ILCHL1,IIEL,IAUX1,IAUX2,IAUX0
+      LOGICAL LFETI
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -62,6 +63,18 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
       CALL JEMARQ()
+
+C     FETI PARALLELE OR NOT ?
+C     -------------------------
+      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        LFETI=.TRUE.
+        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
+        IFETI=IFETI-1
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
+
       DESC = ZI(IACHII-1+11* (IICHIN-1)+4)
 
       MODE = ZI(DESC-1+2+IGR)
@@ -77,15 +90,39 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       IF (MODE.EQ.IMODAT) THEN
         NCMPEL = DIGDE2(MODE)
         CALL JEVEUO(JEXNUM(CHIN//'.RESL',IGR),'L',IARESU)
-        CALL JACOPO(NCMPEL*NBELGR,TYPEGD,IARESU,IACHLO)
+C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
+        IF (LFETI) THEN
+          DO 10 IIEL=1,NBELGR
+            IF (ZL(IFETI+IIEL)) THEN
+              IAUX0=(IIEL-1)*NCMPEL
+              IAUX1=IARESU+IAUX0
+              IAUX2=IACHLO+IAUX0
+              CALL JACOPO(NCMPEL,TYPEGD,IAUX1,IAUX2)
+            ENDIF
+   10     CONTINUE
+        ELSE
+          CALL JACOPO(NCMPEL*NBELGR,TYPEGD,IARESU,IACHLO)
+        ENDIF
       ELSE
         CALL UTMESS('F','EXRESL','A FAIRE ...')
       END IF
 
 C     POUR L'INSTANT EXRESL TROUVE TOUJOURS TOUT :
-      DO 20,K = 1,NBELGR*NCMPEL
-        ZL(ILCHLO-1+K) = .TRUE.
-   20 CONTINUE
+      IF (LFETI) THEN
+        ILCHL1=ILCHLO-1
+        DO 20 IIEL=1,NBELGR
+          IF (ZL(IFETI+IIEL)) THEN
+            IAUX1=ILCHL1+(IIEL-1)*NCMPEL
+            DO 15 K=1,NCMPEL
+              ZL(IAUX1+K) = .TRUE.
+   15       CONTINUE
+          ENDIF
+   20   CONTINUE
+      ELSE
+        DO 30 K=1,NBELGR*NCMPEL
+          ZL(ILCHLO-1+K) = .TRUE.
+   30   CONTINUE
+      ENDIF
 
       CALL JEDEMA()
       END

@@ -7,7 +7,7 @@
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,15 +75,14 @@ C
       INTEGER      I1, I2, I3, I5, I6, I7, I8, I9, I10, I11, I12,
      +             I13, I14, I15, I16, I19
       INTEGER      II, JFFL, JIFL, IT
-      REAL*8       CGG, ROP, Q, Z0, L1, L2, L3, ROC, ROD, AC, ROTIGE,
-     +             LTIGE, ROARAI, VARAI, ROCRAY, LCRAY, DTM, MA,
-     +             PIS4, R8PI
+      REAL*8       CGG, ROP, Q, Z0, L1, L2, L3, ROC, ROD, AC, 
+     +             LTIGE, VARAI, LCRAY, DTM, PIS4, R8PI
       LOGICAL      DEBUG
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ()
-      PIS4 = 0.25D0 * R8PI()
+      PIS4 = 0.250D0 * R8PI()
       DEBUG  = .FALSE.
 CCC      DEBUG  = .TRUE.
 C
@@ -207,22 +206,18 @@ C        -----------------------------------------------
 
 C --- CALCUL DE LA MASSE APPARENTE :
 C     ----------------------------
-      ROC = ZR(JFFL-1+I3+1)
-      ROD = ZR(JFFL-1+I3+2)
-      AC   = ZR(JFFL-1+I7+8)
-      ROTIGE = ZR(JFFL-1+I9+2)
+      ROC    = ZR(JFFL-1+I3+1)
+      ROD    = ZR(JFFL-1+I3+2)
+      AC     = ZR(JFFL-1+I7+8)
       LTIGE  = ZR(JFFL-1+I9+3)
       VARAI  = ZR(JFFL-1+I9+4)
-      ROARAI = ZR(JFFL-1+I9+5)
-      ROCRAY = ZR(JFFL-1+I9+6)
       LCRAY  = ZR(JFFL-1+I9+7)
       DTM    = ZR(JFFL-1+I9+8)
 
-      MA = PIS4*DTM**2*((ROTIGE-ROD)*(LTIGE-Z) + (ROTIGE-ROP)*Z)
-      MA = MA + 24*AC*((ROCRAY-ROC)*Z + (ROCRAY-ROP)*(LCRAY-Z))
-      MA = MA + VARAI*(ROARAI-ROP)
-
-      ZR(JFFL-1+I8+2) = MA
+C --- ON CALCULE ARCHIMEDE :
+C     ----------------------
+      ZR(JFFL-1+I8+2) =   PIS4*DTM**2*(ROD*(LTIGE-Z) + ROP*Z)
+     +                  + 24*AC*(ROC*Z + ROP*(LCRAY-Z)) + VARAI*ROP
 C
       CALL JEDEMA()
 C.============================ FIN DE LA ROUTINE ======================

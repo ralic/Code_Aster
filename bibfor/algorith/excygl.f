@@ -1,0 +1,116 @@
+      SUBROUTINE EXCYGL(NMRESZ,TYPSDZ,MDCYCZ,MAILLZ,PROFNO)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C-----------------------------------------------------------------------
+C  BUT:           < RESTITUTION CYCLIQUE GLOBALE >
+C
+C   RESTITUTION EN BASE PHYSIQUE DES RESULTATS CYCLIQUE
+C    SUR UN MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
+C
+C LE MAILLAGE REQUIS EST UN MAILLAGE AU SENS ASTER PLUS
+C UN OBJET MAILLA//'.INV.SKELETON'
+C
+C-----------------------------------------------------------------------
+C
+C NMRESZ   /I/: NOM UT DU RESULTAT (TYPSD)
+C MDCYCZ   /I/: NOM UT DU MODE_CYCL AMONT
+C MAILLA   /I/: NOM UT DU MAILLAGE SQUELETTE SUPPORT
+C PROFNO   /I/: NOM K19 DU PROFNO  DU SQUELETTE
+C TYPSDZ   /I/: TYPE STRUCTURE DONNE RESULTAT (MODE_MECA,BASE_MODALE)
+C
+C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
+C
+      CHARACTER*6      PGC
+      CHARACTER*(*) NMRESZ,MDCYCZ,TYPSDZ,MAILLZ
+      CHARACTER*8 NOMRES,MAILLA,MODCYC,BASMOD,TYPINT
+      CHARACTER*16 TYPSD
+      CHARACTER*19 PROFNO
+      CHARACTER*24 INDIRF
+      CHARACTER*1 K1BID
+      INTEGER  NNO,NUMDIA,NBSEC
+C
+C-----------------------------------------------------------------------
+      DATA PGC /'EXCYGL'/
+C-----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      NOMRES = NMRESZ
+      MODCYC = MDCYCZ
+      TYPSD  = TYPSDZ
+      MAILLA = MAILLZ
+C
+      INDIRF='&&'//PGC//'.INDIR.SECT'
+C
+C-----------------ECRITURE DU TITRE-------------------------------------
+C
+      CALL TITRE
+C
+C--------------VERIFICATION SUR MAILLAGE SQUELETTE----------------------
+C
+      CALL JEEXIN(MAILLA//'.INV.SKELETON',IRET)
+      IF(IRET.EQ.0) THEN
+            CALL UTDEBM('F',PGC,
+     &                  'ARRET SUR MAILLAGE NON SKELETTE')
+            CALL UTFINM
+      ENDIF
+C
+C-----RECUPERATION DU NOMBRE DE SECTEURS--------------------------------
+      CALL GETVIS('CYCLIQUE','NB_SECTEUR',1,1,1,NBSEC,IBID)
+
+      CALL GETVIS('CYCLIQUE','NUME_DIAMETRE',1,1,1,NUMDIA,IBID)
+C
+C-----RECUPERATION NOMBRE NUMERO D'ORDRE UTILISES POUR CALCUL CYCLIQUE--
+      CALL RSUTNU(MODCYC,' ',0,'&&EXCYGL.NUME',NBMCAL,0.D0,
+     &            'ABSO',IRET)
+
+C--------------ALLOCATION DU CONCEPT MODE_MECA RESULTAT-----------------
+C
+      CALL RSCRSD(NOMRES,TYPSD,NBMCAL)
+C
+C-------------------CREATION PROF_CHAMNO ET TABLES INDIRECTION----------
+C
+      CALL CYNUPL(PROFNO,INDIRF,MODCYC,MAILLA,NBSEC,NBMCAL)
+C
+C------------------------------RESTITUTION -----------------------------
+C
+      CALL EXPHGL(NOMRES,TYPSD,MODCYC,PROFNO,INDIRF,MAILLA,NBSEC,
+     &            NUMDIA,NBMCAL)
+C
+      CALL JEDETR('&&'//PGC//'.INDIR.SECT')
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

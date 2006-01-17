@@ -4,7 +4,7 @@
      &              IFIV,NBPROC,RANG,K24IRR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -484,7 +484,7 @@ C NOEUD TARDIF LIE A UN DDL NON SITUE SUR L'INTERFACE
                         ENDIF
                       ELSE IF (IAUX1.LT.0) THEN
 C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE DE L'INTERFACE
-                        IAUX2=(ZI(IFETL5)/3)-1
+                        IF (IRET.NE.0) IAUX2=(ZI(IFETL5)/3)-1
                         DO 56 JFEL4=0,IAUX2
                           IAUX3=IFETL5+3*JFEL4+3
                           IF ((ZI(IAUX3-1).EQ.IDD).AND.

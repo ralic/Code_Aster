@@ -4,7 +4,7 @@
       CHARACTER*(*)             MODES, MASSE, AMOR, RAIDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C
       CHARACTER*1   TYPE
       CHARACTER*8   CBID
       CHARACTER*16  NOMCMD
-      CHARACTER*19 NUMDDL
+      CHARACTER*19  NUMDDL,CHAMNO
       CHARACTER*24  VALE, REFD
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
@@ -63,17 +63,25 @@ C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
       CALL JEEXIN(REFD,IER1)
       IF ( IER1 .EQ. 0 ) THEN
          IF ( ICOND .EQ. 0 ) THEN
-            NBVAL = 6
-            CALL WKVECT(REFD,'G V K24',NBVAL,LMODE)
+           NBVAL = 6
+           CALL WKVECT(REFD,'G V K24',NBVAL,LMODE)
 C On remplie le REFE avec la numerotation si elle existe
-            CALL EXISD('MATR_ASSE',RAIDE,IBID)
-            IF (IBID.NE.0) THEN
-              CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,
-     &               NUMDDL,IRET)
-              IF (IRET.EQ.0) THEN
-                ZK24(LMODE+3) = NUMDDL
-              ENDIF
-            ENDIF
+           CALL EXISD('MATR_ASSE',RAIDE,IBID)
+           IF (IBID.NE.0) THEN
+             CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,
+     &              NUMDDL,IRET)
+             ZK24(LMODE+3) = NUMDDL
+           ELSE
+             CALL RSEXCH(REFD(1:8),'DEPL',1,CHAMNO,IRET)
+             CALL DISMOI('F','NOM_NUME_DDL',CHAMNO,'CHAM_NO',
+     &                   IBID,NUMDDL,IRET)
+             CALL EXISD('NUME_DDL',NUMDDL,IBID)
+             IF (IBID.NE.0) THEN
+               ZK24(LMODE+3) = NUMDDL
+             ELSE
+               ZK24(LMODE+3) = ' '
+             ENDIF
+           ENDIF
 C On remplie les champs relatifs aux matrices assemblees            
             ZK24(LMODE) = RAIDE
             ZK24(LMODE+1) = MASSE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,13 @@ def rest_base_phys_prod(RESU_GENE,RESULTAT,**args ):
   if AsType(RESU_GENE) == mode_gene : return mode_meca
   if AsType(RESU_GENE) == mode_cycl : return mode_meca
   if AsType(RESU_GENE) == harm_gene : return dyna_harmo
-  if AsType(RESULTAT)  == mode_meca : return mode_meca
+  if AsType(RESULTAT)  == evol_elas      : return evol_elas
+  if AsType(RESULTAT)  == evol_noli      : return evol_noli
+  if AsType(RESULTAT)  == evol_char      : return evol_char
+  if AsType(RESULTAT)  == dyna_trans      : return dyna_trans
+  if AsType(RESULTAT)  == mode_meca      : return mode_meca
+  if AsType(RESULTAT)  == mode_stat_depl : return mode_stat_depl
+  if AsType(RESULTAT)  == base_modale    : return base_modale
   raise AsException("type de concept resultat non prevu")
 
 REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
@@ -39,12 +45,14 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
                 EXCLUS('NOEUD','GROUP_NO'), 
                 PRESENT_PRESENT('RESULTAT','SQUELETTE'),
                 PRESENT_PRESENT('ACCE_MONO_APPUI','DIRECTION'),),
-         RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene ) ),
-         RESULTAT        =SIMP(statut='f',typ=mode_meca ),
+         RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,evol_char,
+                                               mode_meca,mode_stat_depl,base_modale) ),
          
+         RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene ) ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
+         NUME_MODE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
          TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
@@ -64,6 +72,13 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
  
          ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
          DIRECTION       =SIMP(statut='f',typ='R',min=3,max=3 ),
+
+         CYCLIQUE    =FACT(statut='f',max='**',
+           NB_SECTEUR      =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),
+           NUME_DIAMETRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),
+           RESULTAT2       =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,evol_char,
+                                               mode_meca,mode_stat_depl,base_modale) ),
+         ),
 
          SQUELETTE       =SIMP(statut='f',typ=squelette ),
          SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),  

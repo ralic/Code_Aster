@@ -2,7 +2,7 @@
      &                  NUMSD,NEQ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,7 +110,7 @@ C NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?
         ZK24(JCHAMP+2) = METHOD
         ZK24(JCHAMP+3) = SDFETI
         IF ((METHOD(1:4).EQ.'FETI').OR.(NUMSD.GT.0)) THEN
-          CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+          CALL JEVEUO('&FETI.FINF','L',IINF)
           INFOFE=ZK24(IINF)
         ENDIF         
       ENDIF

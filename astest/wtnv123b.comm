@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,11 +76,9 @@ MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                           )
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,
                MAILLAGE=MAILLAGE,
-               CREA_GROUP_MA=(_F(NOM='ROCHE',
-                                     TOUT='OUI'),),
-               CREA_GROUP_NO=(_F(NOM='ROCHES',
-                                 CRIT_NOEUD='SOMMET',
-                                 GROUP_MA='ROCHE'),),)
+               CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI'),
+               CREA_GROUP_NO=_F(GROUP_MA='ROCHE',), )
+
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                                 MODELE=MODELE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
@@ -172,8 +170,8 @@ DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
                            )
 
 P0=AFFE_CHAR_MECA(    MODELE=MODELE,
-                               DDL_IMPO=_F(GROUP_NO='ROCHES',   
-                               PRE1 =1.,PRE2=0.,
+                      DDL_IMPO=_F(GROUP_NO='ROCHE',   
+                                  PRE1 =1.,PRE2=0.,
                                 )
                            )
 
@@ -194,11 +192,11 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
 DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
-                    AFFE=(_F(GROUP_NO='ROCHES',
+                    AFFE=(_F(GROUP_NO='ROCHE',
                              NOM_CMP='PRE1',
                              VALE=2.E5,
                               ),
-                          _F(GROUP_NO='ROCHES',
+                          _F(GROUP_NO='ROCHE',
                              NOM_CMP='PRE2',
                               VALE=0.,
                               ),    ),);

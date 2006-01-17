@@ -8,7 +8,7 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/11/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,6 +84,7 @@ C
       IER = 0
       DO 10 I = 1 , NCHAR
 C
+        IF(LCHAR(I).NE.' ') THEN      
          CALL DISMOI('F','TYPE_CHARGE',LCHAR(I),'CHARGE',IBID,K8B,IRET)
          IF ( K8B(5:7) .EQ. '_FO' ) THEN
             FONC = .TRUE.
@@ -176,6 +177,7 @@ C
          IF ( IF1D2D .NE. 0 ) THEN
            IF ( N1D2D .EQ. 0 ) THEN
              N1D2D = N1D2D + 1
+             CALL JEVEUO(LCHAR(I)//'.CHME.F1D2D.VALE','L',JVAL)
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F1D2D',CF1D2D)
              
              IF(LCHSD) THEN
@@ -412,6 +414,7 @@ C
                CALL UTFINM()
             ENDIF
          ENDIF
+       ENDIF
 C
  10   CONTINUE
 C

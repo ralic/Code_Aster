@@ -6,7 +6,7 @@
       CHARACTER*24   CNFEDO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -266,8 +266,8 @@ C
       MA = ZR(JFFL-1+I8+2)
       G  = ZR(JFFL-1+I8+3)
 C
-C      FTOT = MA*G - 24*(FPTG1+FFTG1) - (FPMEC+FFMEC) - FFPLAQ
-C     +            - 24*(FPTG2+FFTG2+FRTG2)
+C      FTOT = -MA*G - 24*(FPTG1+FFTG1) - (FPMEC+FFMEC) - FFPLAQ
+C     +             - 24*(FPTG2+FFTG2+FRTG2)
 C
       IF ( IIMPF .GT. 0 ) THEN
          IT = ZI(JIFL-1+3)
@@ -299,8 +299,8 @@ C     ----------------------------------
             XA12 = ABS ( XA2 - XA1 ) 
             DO 102 IDIM = 1, NDIM
                FF = (FARCHI*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
-               ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) + FF
-               ZR(IDVALE+IVA2+IDIM-1) = ZR(IDVALE+IVA2+IDIM-1) + FF
+               ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
+               ZR(IDVALE+IVA2+IDIM-1) = ZR(IDVALE+IVA2+IDIM-1) - FF
  102        CONTINUE
  100     CONTINUE
 C
@@ -310,7 +310,7 @@ C     --------------------------
          INO = ZI(IAPRNO+(ICDG - 1) * (NEC + 2) + 1 - 1) - 1
          DO 110 IDIM = 1, NDIM
             FF = MA*G*VDIR(IDIM)
-            ZR(IDVALE+INO+IDIM-1) = ZR(IDVALE+INO+IDIM-1) + FF
+            ZR(IDVALE+INO+IDIM-1) = ZR(IDVALE+INO+IDIM-1) - FF
  110    CONTINUE
       ENDIF
 C

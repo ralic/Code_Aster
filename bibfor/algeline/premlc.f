@@ -4,7 +4,7 @@
      +                  LBD2,RL,RL1,RL2,NRL,INVP,PERM,
      +                  LGIND,DDLMOY,NBSND)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,8 @@ C     VARIABLES LOCALES
       INTEGER I,J,T,NADJ,LMAT,IER,IFM,NIV
       INTEGER I1,I2,IDDL,IDDL1,IDDL2,NUM,ISN
       INTEGER NOUVSN(0:N1),ANCSN(*),P(*),Q(*)
-      INTEGER NRL,MAXRL,MINRL,NBSND,J1,J2,IANC,IP,IPP
+      INTEGER NRL,MAXRL,MINRL,NBSND,J1,J2,IANC,IP,IPP,IRET
+      LOGICAL LFETI
 C--------------------------------------------------------------
 C      5) POUR LES REL.LIN.,ON FAIT RL1(I)=LAMBD1,I ETANT LE
 C        DDL DE REL.LIN.
@@ -63,6 +64,15 @@ C****************************************************************
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 C
       CALL INFNIV(IFM,NIV)
+C FETI OR NOT FETI ?
+      CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL INFMUE()
+        CALL INFNIV(IFM,NIV)
+        LFETI=.TRUE.
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
 C-----------------------------------------------------------------
 
 C------------------------------- RELATIONS LINEAIRES
@@ -239,6 +249,7 @@ C       C'EST UN NOUVEAU SN (LAMBDA1)
        WRITE(IFM,*)'   --- APRES ADDITION  DES  RELATIONS LINEAIRES '
        WRITE(IFM,*)'   --- NOMBRE DE SUPERNOEUDS ',NBSND
       ENDIF
+      IF (LFETI) CALL INFBAV()
 C****************************************************************
 C      CALL UTTCPU(2,'FIN  ',6,TEMPS)
 C****************************************************************

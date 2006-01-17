@@ -6,7 +6,7 @@
       CHARACTER*24        NUMEDD, DEPMOI, VITPLU, ACCPLU, CHGRFL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,9 +50,9 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
      +             I19, II, JFFL, JIFL, JPARA,
      &             NBNO, NEC, NLILI, NDIM, INO, IVAL, IDIM, I, K, IER,
      &             IAPRNO, JDEPL, JVITE, JACC0
-      REAL*8       C7, C8, C9, PI, R8PI, UM, UA, UML, UI, UMM1, UAM1,
-     +             UMLM1, UIM1, ROC, ROD, ROP, ROML, NUML, G, MA, M, 
-     +             DTM, ROTIGE, LTIGE, VARAI, CDML, CDI, ROARAI, 
+      REAL*8       C7, C8, C9, PIS4, R8PI, UM, UA, UML, UI, UMM1, UAM1,
+     +             UMLM1, UIM1, ROC, ROD, ROP, ROML, NUML, G, MA, MA0,
+     +             DTM, LTIGE, VARAI, CDML, CDI, ROTIGE, ROARAI, 
      +             ROCRAY, LCRAY, LI, LML, ROI, NUI, A, AC, AM, AI,
      +             AML, AT, DHML, DHI, Z, DZ, D2Z, VDIR(3), R8VIDE
       CHARACTER*8  K8B, RESULT
@@ -62,7 +62,7 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL GETRES ( RESULT, K16B, CMD )
-      PI = R8PI()
+      PIS4 = 0.250D0 * R8PI()
 C
       CALL JEVEUO ( CHGRFL, 'E', JFFL ) 
       CALL JEVEUO ( '&&GFLECT.INDICE', 'E', JIFL ) 
@@ -144,27 +144,33 @@ C     ----------------------------
       ROD = ZR(JFFL-1+I3+2)
       ROP = ZR(JFFL-1+I3+3)
       AC   = ZR(JFFL-1+I7+8)
-      ROTIGE = ZR(JFFL-1+I9+2)
       LTIGE  = ZR(JFFL-1+I9+3)
       VARAI  = ZR(JFFL-1+I9+4)
-      ROARAI = ZR(JFFL-1+I9+5)
-      ROCRAY = ZR(JFFL-1+I9+6)
       LCRAY  = ZR(JFFL-1+I9+7)
       DTM    = ZR(JFFL-1+I9+8)
+      ROTIGE = ZR(JFFL-1+I9+2)
+      ROARAI = ZR(JFFL-1+I9+5)
+      ROCRAY = ZR(JFFL-1+I9+6)
 
-      MA = PI/4.0D0*DTM**2*((ROTIGE-ROD)*(LTIGE-Z) + (ROTIGE-ROP)*Z)
+C
+      A   = ZR(JFFL-1+I7+4)
+      MA0 = ZR(JFFL-1+I8+1)
+      G   = ZR(JFFL-1+I8+3)
+
+      MA =   PIS4*DTM**2*(ROD*(LTIGE-Z) + ROP*Z)
+     +     + 24*AC*(ROC*Z + ROP*(LCRAY-Z)) + VARAI*ROP
+
+      ZR(JFFL-1+I8+2) = MA
+C
+C --- 
+C
+      MA = PIS4*DTM**2*((ROTIGE-ROD)*(LTIGE-Z) + (ROTIGE-ROP)*Z)
       MA = MA + 24*AC*((ROCRAY-ROC)*Z + (ROCRAY-ROP)*(LCRAY-Z))
       MA = MA + VARAI*(ROARAI-ROP)
 C
-      ZR(JFFL-1+I8+2) = MA
-C
-      A  = ZR(JFFL-1+I7+4)
-      M  = ZR(JFFL-1+I8+1)
-      G  = ZR(JFFL-1+I8+3)
-C
 CCC       X : VITESSE ET PRESSION DU FLUIDE (TUBGUI)
 C
-      ZR(JFFL-1+I16+1) = AC/A*(DZ+MA/M*G*DT)
+      ZR(JFFL-1+I16+1) = AC/A*(DZ+MA/MA0*G*DT)
 
       LI   = ZR(JFFL-1+1)
       LML  = ZR(JFFL-1+2)
@@ -226,6 +232,8 @@ C
             CALL RSADPA(RESULT,'L',1,'GFVAG',NUME,0,JPARA,K8B)
             ZR(JFFL-1+I16+1) = ZR(JPARA)
 C
+            CALL RSADPA(RESULT,'L',1,'GFITER',NUME,0,JPARA,K8B)
+            ZI(JIFL-1+3) = ZI(JPARA)
             CALL RSADPA(RESULT,'L',1,'ITER_DASHPOT',NUME,0,JPARA,K8B)
             ZI(JIFL-1+4) = ZI(JPARA)
             CALL RSADPA(RESULT,'L',1,'GFVFD',NUME,0,JPARA,K8B)

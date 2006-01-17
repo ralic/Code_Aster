@@ -11,7 +11,7 @@
       LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      NBSAUV, NBSTOC
+      INTEGER      NBSAUV, NBSTOC,J1REFE
+      CHARACTER*8  NUMGEN,BLANC
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NBSTOC = NBMODE * NBSAUV
@@ -77,14 +78,23 @@ C     ------------------------------------------------------------------
       JADCHO= 1
       JREDC = 1
       JREDD = 1
+      BLANC =  '        '
 C
       CALL JEEXIN(NOMRES//'           .REFD',IRET)
       IF (IRET.EQ.0) THEN
+C On recupere la numerotation generalisee
+         CALL JEEXIN(RIGGEN//'           .REFA',IRET)
+         IF (IRET.NE.0) THEN
+           CALL JEVEUO(RIGGEN//'           .REFA','L',J1REFE)
+           NUMGEN = ZK24(J1REFE+1)(1:8)
+         ELSE
+           NUMGEN = BLANC
+         ENDIF
          CALL WKVECT(NOMRES//'           .REFD','G V K24',6,JREFE)
          ZK24(JREFE) = RIGGEN
          ZK24(JREFE+1) = MASGEN
          ZK24(JREFE+2) = AMOGEN
-         ZK24(JREFE+3) = ' '
+         ZK24(JREFE+3) = NUMGEN
          ZK24(JREFE+4) = ' '
          ZK24(JREFE+5) = BASEMO(1:8)
       ENDIF

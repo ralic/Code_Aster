@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTTE DE GRAPPE
 # RESPONSABLE LONGATTE E.LONGATTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -7,7 +7,7 @@
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+# (AT YOUR OPTION) ANY LATER VERSION.
 #                                                                       
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
 # WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
@@ -134,28 +134,93 @@ CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODELE,
                                    CARA=('A','IY','IZ','AY','AZ','JX',),
                                    VALE=(0.0017644,1.0323e-08,1.0323e-08,2.0,2.0,2.0646e-08,),),),)
 
+# ======================================================================
+
 MASSESTR=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CHAMPCAR,
-                        MASS_INER=_F(  GROUP_MA = 'GRAPPE', ) )
+                        MASS_INER=_F(  GROUP_MA = ('GRAPPE','TIGE','ARAIGN','CRAYON' ) ) )
 
-IMPR_TABLE( TABLE=MASSESTR, )
+IMPR_TABLE( TABLE=MASSESTR, 
+            FORMAT_R='E20.13' )
 
-FM = 100. / 11.360 
+# 
+# --- GRANDEURS CALCULEES PAR POST_ELEM
+# 
+# masse GRAPPE 
+M_GRAPP = 126.41755870000
+# masse TIGE 
+M_TIGE  =  59.07367720000
+# masse ARAIGNEE
+M_ARAIG =   3.02860800000
+# masse CRAYON
+M_CRAYO =  64.31527350000
+# 
+# --- TIGE: CALCUL DE ROTIGE
+# 
+DTIGE  = 0.0445
+LTIGE  = 7.500
+ROTIGE = M_TIGE / ( LTIGE * pi * DTIGE**2 / 4 )
+# 
+# --- ARAIGNEE: CALCUL DE RORAI
+# 
+VARAI = 4.900E-4
+RORAI = M_ARAIG / VARAI
+# 
+# --- CRAYON: CALCUL DE ROCRAY
+# 
+DCRAY  = 0.009675
+LCRAY  = 3.860
+ROCRAY = M_CRAYO / ( 24 * LCRAY * pi * DCRAY**2 / 4 )
 
-CHARGE = AFFE_CHAR_MECA(MODELE=MODELE,
+TEST_TABLE( TABLE = MASSESTR,
+            FILTRE=_F( NOM_PARA='LIEU', VALE_K='GRAPPE'),
+            NOM_PARA='MASSE',
+            VALE=M_GRAPP,
+            REFERENCE='NON_REGRESSION', )
+TEST_TABLE( TABLE = MASSESTR,
+            FILTRE=_F( NOM_PARA='LIEU', VALE_K='TIGE'),
+            NOM_PARA='MASSE',
+            VALE=M_TIGE,
+            REFERENCE='NON_REGRESSION', )
+TEST_TABLE( TABLE = MASSESTR,
+            FILTRE=_F( NOM_PARA='LIEU', VALE_K='ARAIGN'),
+            NOM_PARA='MASSE',
+            VALE=M_ARAIG,
+            REFERENCE='NON_REGRESSION', )
+TEST_TABLE( TABLE = MASSESTR,
+            FILTRE=_F( NOM_PARA='LIEU', VALE_K='CRAYON'),
+            NOM_PARA='MASSE',
+            VALE=M_CRAYO,
+            REFERENCE='NON_REGRESSION', )
 
-                       DDL_IMPO = _F( GROUP_NO='GRAPPE',
-                                      DX=0.0,
-                                      DZ=0.0, 
-                                      DRX=0.0,
-                                      DRY=0.0,
-                                      DRZ=0.0,),
+# ======================================================================
+# 
+# --- deplacement suivant Y
+# 
+CHARG0 = AFFE_CHAR_MECA( MODELE=MODELE,
+                         DDL_IMPO = _F( GROUP_NO='GRAPPE',
+                                         DX=0.0,           DZ=0.0, 
+                                        DRX=0.0, DRY=0.0, DRZ=0.0,),  ) ;
 
-                       FORCE_POUTRE = _F( GROUP_MA='GRAPPE',
-                                          FY= FM  ),
-                      ) ;
+# 
+# --- charge due au frottement 
+# 
+FM = 100. / ( LTIGE + LCRAY )
 
+CHARG1 = AFFE_CHAR_MECA( MODELE=MODELE,
+                         FORCE_POUTRE = _F( GROUP_MA='GRAPPE',
+                                            FY= FM  ), ) ;
+# 
+# --- poids propre 
+# 
+
+CHARG2 = AFFE_CHAR_MECA( MODELE=MODELE,
+                         PESANTEUR = ( 9.81,  0., -1., 0.  ), ) ;
+
+# ======================================================================
+# 
 # --- LECTURE DES DONNESS GRAPPE_900 ---
+# 
 INCLUDE(   UNITE= 33,   INFO=1  )
 
 F_FLUIDE=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -180,17 +245,20 @@ F_FLUIDE=AFFE_CHAR_MECA(MODELE=MODELE,
                                       ),
                                     _F( APPL_FORC_FMEC  = 'REPARTIE',
                                         APPL_FORC_FPLAQ = 'REPARTIE',
-                                        APPL_FORC_ARCHI = 'CDG',
                                         APPL_FORC_FTG   = 'REPARTIE',
-                                        MASS_INER = MASSESTR,
-                                        CARA_GRAPPE = 'M' ,
-                                        VALE_GRAPPE = 126.418 ,
+                                        APPL_FORC_ARCHI = 'REPARTIE',
+#                                        APPL_FORC_ARCHI = 'CDG',
+#                                        MASS_INER = MASSESTR,
+                                        CARA_GRAPPE = ('M'    ,'ROTIGE','ROCRAY','RORAI'),
+                                        VALE_GRAPPE = (M_GRAPP, ROTIGE , ROCRAY , RORAI ),
                                         UNITE_IMPR_FORCE = 38 ,
                                         UNITE_IMPR_NOEUD = 37 ,
                                       ),
                                    ),
                         ) ;
 
+
+# ======================================================================
 
 TFIN = 1.790     # Temps fin pour le calcul
 
@@ -201,19 +269,20 @@ L_INST=DEFI_LIST_REEL( DEBUT=0.0,
                      ) ;
 
 #
-#
 DEFI_FICHIER( UNITE=37 );
 DEFI_FICHIER( UNITE=38 );
 
 RESU=DYNA_NON_LINE( MODELE=MODELE,
                 CHAM_MATER=CHAMPMAT,
                 CARA_ELEM=CHAMPCAR,
-                EXCIT=(_F(CHARGE=F_FLUIDE,),
-                       _F(CHARGE=CHARGE,),),
+                EXCIT=(_F(CHARGE=CHARG0 ),
+                       _F(CHARGE=CHARG1 ),
+                       _F(CHARGE=CHARG2 ),
+                       _F(CHARGE=F_FLUIDE,),),
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,
-###                             INST_FIN = TFIN,
+#                            INST_FIN = TFIN,
                              NUME_INST_FIN   = 3 ,
                             ),
                  NEWMARK=_F(),
@@ -224,12 +293,15 @@ RESU=DYNA_NON_LINE( MODELE=MODELE,
 RESU=DYNA_NON_LINE( reuse=RESU, MODELE=MODELE,
                 CHAM_MATER=CHAMPMAT,
                 CARA_ELEM=CHAMPCAR,
-                EXCIT=(_F(CHARGE=F_FLUIDE,),
-                       _F(CHARGE=CHARGE,),),
+                EXCIT=(_F(CHARGE=CHARG0 ),
+                       _F(CHARGE=CHARG1 ),
+                       _F(CHARGE=CHARG2 ),
+                       _F(CHARGE=F_FLUIDE,),),
                 ETAT_INIT=_F( EVOL_NOLI = RESU ),
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,
+#                            NUME_INST_FIN   = 6 ,
                              INST_FIN = 1.78500000,
                             ),
                  NEWMARK=_F(),
@@ -329,13 +401,13 @@ TEST_RESU(RESU=(
           # ACCELERATION DU NOEUD INFERIEUR DU CRAYON
         
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.150, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.350, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
         REFERENCE = 'SOURCE_EXTERNE',   PRECISION = ( 0.060, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.700, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 1.700, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
 
         )       )
@@ -343,40 +415,40 @@ TEST_RESU(RESU=(
 #######################################################################
 #                      TEST de NON REGRESSION
 #######################################################################
-# -3.6108930296854E+00 sur clpaster
-# -3.6108930296853E+00 sur clp50a8
-# -3.6108930659582D+00 sur clayastr
+# -3.6104090071085E+00 sur clpaster
+# -3.6104090071087E+00 sur clp50a8
+# -3.6104090440009D+00 sur clayastr
 #
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
         
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'DEPL',
         REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-8,
-        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -3.6108930478218 ),
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -3.6104090194060 ),
         )       )
 
-# -7.2637884125790E-01 sur clpaster
-# -7.2637884125762E-01 sur clp50a8
-# -7.2637883847989D-01 sur clayastr
+# -7.2647453926285E-01 sur clpaster
+# -7.2647453926300E-01 sur clp50a8
+# -7.2647453633216D-01 sur clayastr
 #
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
         
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'VITE',
         REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-8,
-        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -0.72637883986876 ),
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -7.2647453828600E-01 ),
         )       )
 
-#  4.8937207924554E-01 sur clpaster
-#  4.8937232246381E-01 sur clp50a8
-#  4.8937325064298D-01 sur clayastr
+# -2.0604017675623E-01 sur clpaster
+# -2.0604011707321E-01 sur clp50a8
+# -2.0604134831092D-01 sur clayastr
 #
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
         
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'ACCE',
         REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
-        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE =  0.48937255081730 ),
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE =  -2.0604054738012E-01 ),
         )       )
 
 FIN();

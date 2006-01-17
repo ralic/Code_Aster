@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco scotch  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE */
+/* MODIF fetsco scotch  DATE 17/01/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -38,38 +38,33 @@ void __stdcall FETSCO ( int *nbmato, int *nblien, int *connect, int *idconnect, 
 
   err = SCOTCH_graphInit (&grafdat);
   
-  if ( err == 0 ) 
+  if ( err == 0 )
     err = SCOTCH_graphBuild(&grafdat,1,*nbmato,idconnect,NULL,velo,NULL,*nblien,connect,edlo);
 
   if ( err == 0 ) 
     err = SCOTCH_graphCheck (&grafdat);
-  
+
   if ( err == 0 ) 
     err = SCOTCH_archInit (&archdat);                     
-  
+
   if ( err == 0 ) 
     err = SCOTCH_archCmplt (&archdat,*nbpart);   
-  
+
   if ( err == 0 ) 
     err = SCOTCH_stratInit (&mapstrat);                     
 
   if ( err == 0 ) 
     err = SCOTCH_graphMapInit (&grafdat, &mapdat, &archdat,mapsd);
- 
+
   if ( err == 0 ) 
     err =  SCOTCH_graphMapCompute (&grafdat, &mapdat, &mapstrat);
-  
-  if ( err == 0 ) 
+
+  if ( err == 0 ) {
     SCOTCH_stratExit (&mapstrat);
+    SCOTCH_graphMapExit (&grafdat, &mapdat);
+    SCOTCH_archExit     (&archdat);
+    SCOTCH_graphExit    (&grafdat);
+  }
 
-  if ( err == 0 ) 
-    SCOTCH_archExit (&archdat);
-
-  if ( err == 0 ) 
-    SCOTCH_graphExit (&grafdat);
-  
-  if ( err == 0 ) 
-    SCOTCH_mapExit (&mapdat);
-  
 }
 

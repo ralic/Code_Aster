@@ -3,7 +3,7 @@
       CHARACTER*8       CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -668,7 +668,7 @@ C     L1
 C     L2
       ZR(JGEO+8-1) = ZR(JVTG-1+4)
 C
-      CALL CAGRF1 ( CHAR, NOMA, Z0, CDG, Z2, VDIR )
+      CALL CAGRF1 ( CHAR, NOMA, Z0, CDG, Z2, VDIR, ZR(JVGR), FFGR, NGR )
 C
  9999 CONTINUE
 C

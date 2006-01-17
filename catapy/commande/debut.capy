@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,12 +25,12 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
                            into=("OUI","NON"),defaut="OUI"),
          IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
                            statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
-         FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
-                               typ='TXM',defaut="NON",into=("OUI","NON",) ), 
+#         FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
+#                               typ='TXM',defaut="NON",into=("OUI","NON",) ), 
          BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",
-                               statut='f',min=1,max=3,
+                               statut='f',min=1,max=2,
            FICHIER         =SIMP(fr="nom de la base",statut='o',typ='TXM',
-                                 into=('GLOBALE','VOLATILE','LOCALE'),),
+                                 into=('GLOBALE','VOLATILE'),),
            TITRE           =SIMP(statut='f',typ='TXM'),
            CAS             =SIMP(statut='f',typ='TXM'),
            NMAX_ENRE       =SIMP(fr="nombre maximum d enregistrements",statut='f',typ='I'),

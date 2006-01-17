@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,11 +59,9 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                      )
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
-                          CREA_GROUP_MA=(_F(NOM='ROCHE',
-                                            TOUT='OUI',)),
-                          CREA_GROUP_NO=(_F(NOM='ROCHES',
-                                            CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE'),),);
+                          CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI',),
+                          CREA_GROUP_NO=_F(GROUP_MA='ROCHE',), );
+
 SOL=DEFI_MATERIAU(    ELAS=_F(  E = 22.4E6,    NU = 0.3,  
                                      RHO = 2500.,  
                                      ALPHA = 1.E-5,  
@@ -143,7 +141,7 @@ DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
                            )
 
 P0=AFFE_CHAR_MECA(    MODELE=MODELE,
-                               DDL_IMPO=_F(GROUP_NO='ROCHES',   PRE1 = 0.,  )
+                               DDL_IMPO=_F(GROUP_NO='ROCHE',   PRE1 = 0.,  )
                            )
 
 EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',

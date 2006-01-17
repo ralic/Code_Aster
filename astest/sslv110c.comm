@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -238,14 +238,14 @@ TEST_TABLE(       TABLE=G2,
 TEST_TABLE(       TABLE=DGE,
               SENSIBILITE = (YOUNG,), 
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                            VALE=-6.857E-09,
                       PRECISION=5.E-2   )
 
 TEST_TABLE(       TABLE=DGF,
               SENSIBILITE = (FZ,), 
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                            VALE=3.599E+00,
                       PRECISION=5.E-2   )
 
@@ -256,14 +256,14 @@ TEST_TABLE(       TABLE=DGF,
 TEST_TABLE(       TABLE=DGE1,
               SENSIBILITE = (YOUNG,), 
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                            VALE=-6.857E-09,
                       PRECISION=5.E-2   )
 
 TEST_TABLE(       TABLE=DGF1,
               SENSIBILITE = (FZ,), 
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                            VALE=3.599E+00,
                       PRECISION=5.E-2   )
 
@@ -274,14 +274,14 @@ TEST_TABLE(       TABLE=DGF1,
 TEST_TABLE(       TABLE=DGE2,
               SENSIBILITE = (YOUNG,), 
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DE',
                            VALE=-6.857E-09,
                       PRECISION=5.E-2   )
 
 TEST_TABLE(       TABLE=DGF2,
               SENSIBILITE = (FZ,), 
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                            VALE=3.599E+00,
                       PRECISION=5.E-2   )
 

@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*24 LCHARG,LLIGR,NOMLIG,SDFETI,NOMSDA,K24B,
      &             KSOLVF,LLIGRS,INFOFE,NOOBJ
       CHARACTER*32 JEXNUM,JEXNOM
-      LOGICAL      LFETI,LOBID,LOMPI
+      LOGICAL      LFETI,LOBID,LOMPI,LFETIC
 
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
@@ -115,16 +115,20 @@ C SOLVEUR FETI ?
       CALL JEVEUO(SOLVEU(1:19)//'.SLVK','L',ISLVK)
       METHOD=ZK24(ISLVK)
       NIVMPI=1
+      LFETIC=.FALSE.
       IF (METHOD(1:4).EQ.'FETI') THEN
         LFETI=.TRUE.
         NUPOSB=' '
+        CALL JEVEUO('&FETI.FINF','L',IINF)
+        INFOFE=ZK24(IINF)
+        IF (INFOFE(11:11).EQ.'T') LFETIC=.TRUE.
       ELSE
         LFETI=.FALSE.
         INFOFE='FFFFFFFFFFFFFFFFFFFFFFFF'
       ENDIF
 
 C CALCUL TEMPS
-      IF ((NIV.GE.2).OR.(LFETI)) THEN
+      IF ((NIV.GE.2).OR.(LFETIC)) THEN
         CALL UTTCPU(50,'INIT ',6,TEMPS)
         CALL UTTCPU(50,'DEBUT',6,TEMPS)
       ENDIF
@@ -134,11 +138,12 @@ C --------------------------------------------------------------
 
       CALL NUMER2(NUPOSS,NBLIG,ZK24(JLLIGR),' ',SOLVEU,BASE,NU,NEQUA)
 
-      IF ((NIV.GE.2).OR.(LFETI)) THEN
+      IF ((NIV.GE.2).OR.(LFETIC)) THEN
         CALL UTTCPU(50,'FIN  ',6,TEMPS)
-        WRITE(IFM,*)'TEMPS CPU/SYS FACT SYMB: ',TEMPS(5),
-     &   TEMPS(6)
-        IF (LFETI) THEN
+        IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D11.4)')
+     &    'TEMPS CPU/SYS FACT SYMB                   : ',TEMPS(5),
+     &     TEMPS(6)
+        IF (LFETIC) THEN
           CALL JEVEUO('&FETI.INFO.CPU.FACS','E',IFCPU)
           ZR(IFCPU)=TEMPS(5)+TEMPS(6)
         ENDIF
@@ -151,8 +156,6 @@ C STRUCTURE DE DONNEES DE TYPE SD_FETI
         SDFETI=' '
         SDFETI(1:8)=ZK24(ISLVK+5)
         VERIF=ZK24(ISLVK+2)
-        CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
-        INFOFE=ZK24(IINF)
 
 C MONITORING
         IF (INFOFE(1:1).EQ.'T')
@@ -237,7 +240,7 @@ C========================================
         DO 30 I=1,NBSD
           IF (ZI(ILIMPI+I).EQ.1) THEN
           
-            IF ((NIV.GE.2).OR.(LFETI)) THEN
+            IF ((NIV.GE.2).OR.(LFETIC)) THEN
               CALL UTTCPU(50,'INIT ',6,TEMPS)
               CALL UTTCPU(50,'DEBUT',6,TEMPS)
             ENDIF
@@ -290,10 +293,12 @@ C MONITORING
      &        WRITE(IFM,*)'<FETI/NUMERO> SD ',I,' ',NOMFE2
             IF (INFOFE(2:2).EQ.'T')
      &        CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMFE2,1,' ')
-            IF ((NIV.GE.2).OR.(LFETI)) THEN
+            IF ((NIV.GE.2).OR.(LFETIC)) THEN
               CALL UTTCPU(50,'FIN  ',6,TEMPS)
-              WRITE(IFM,*)'TEMPS CPU/SYS FACT SYMB: ',TEMPS(5),TEMPS(6)
-              ZR(IFCPU+I)=TEMPS(5)+TEMPS(6)
+              IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D14.4)')
+     &          'TEMPS CPU/SYS FACT SYMB                   : ',TEMPS(5),
+     &          TEMPS(6)
+              IF (LFETIC) ZR(IFCPU+I)=TEMPS(5)+TEMPS(6)
             ENDIF
             CALL JEDEMA()
 

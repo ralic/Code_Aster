@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,10 +114,9 @@ C
 C
       IF ( MODE .EQ. BLANC ) THEN
          CALL JEVEUO(TRANGE//'.REFD','L',IAREFE)
+         MATGEN = ZK24(IAREFE)(1:8)
          BASEMO = ZK24(IAREFE+5)(1:8)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
-         CALL JEVEUO(NOMIN//'           .REFD','L',J1REFE)
-         MATGEN = ZK24(J1REFE)
          IF (MATGEN(1:8) .NE. BLANC) THEN
            CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
            NUMGEN = ZK24(J2REFE+1)(1:14)
@@ -208,7 +207,6 @@ C
          CALL JELIRA(TRANGE//'.FDEP','LONMAX',NBEXCI,K8B)
          NBEXCI = NBEXCI/2
          IF ( TOUSNO ) THEN
-C            CALL VTCREM(CHAMN2,MATRIC,'V','R')
             CALL VTCREB(CHAMN2,NUMDDL,'V','R',NEQ)
             CHAMN2(20:24) = '.VALE'
             CALL JEVEUO(CHAMN2,'E',LVAL2)
@@ -283,351 +281,205 @@ C
 C
 C     --- RESTITUTION SUR LA BASE REELLE ---
 C
-      IF (INTERP(1:3).NE.'NON') THEN
-
 C VERIFICATION QU'IL Y UN DE CES MOTS CLEFS :
 C  'LIST_INST', 'LIST_FREQ', 'INST' ou 'FREQ'
 C A MOINS QUE L'ON NE SOIT DANS UN CAS DE DOUBLE RESTITUTION
 C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
-         FOCI = 0
-         FOCF = 0
-         FOMI = 0
-         FOMF = 0
-         FOMO = 0
-         CALL GETVID(' ','LIST_INST',0,1,1,K8B,FOCI)
-         CALL GETVID(' ','LIST_FREQ',0,1,1,K8B,FOCF)
-         CALL GETVR8(' ','INST',0,1,1,R8B,FOMI)
-         CALL GETVR8(' ','FREQ',0,1,1,R8B,FOMF)
-         CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
-         IF (FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
-     &       FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 ) THEN
-            CALL UTMESS('F',NOMCMD,'POUR INTERPOLER IL FAUT FOURNIR'//
-     &                  ' UNE LISTE DE FREQUENCES OU INSTANTS.')
-         ENDIF
+       FOCI = 0
+       FOCF = 0
+       FOMI = 0
+       FOMF = 0
+       FOMO = 0
+       CALL GETVID(' ','LIST_INST',0,1,1,K8B,FOCI)
+       CALL GETVID(' ','LIST_FREQ',0,1,1,K8B,FOCF)
+       CALL GETVR8(' ','INST',0,1,1,R8B,FOMI)
+       CALL GETVR8(' ','FREQ',0,1,1,R8B,FOMF)
+       CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
+       IF ((INTERP(1:3).NE.'NON').AND.(FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
+     &     FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 )) THEN
+          CALL UTMESS('F',NOMCMD,'POUR INTERPOLER IL FAUT FOURNIR'//
+     &                ' UNE LISTE DE FREQUENCES OU INSTANTS.')
+       ENDIF
 
-         CALL JEVEUO(TRANGE//'.INST','L',IDINSG)
-         CALL JELIRA(TRANGE//'.INST','LONMAX',NBINSG,K8B)
-         CALL WKVECT('&&TRAN75.VECTGENE','V V R',NBMODE,IDVECG)
-         DO 210 ICH = 1,NBCHAM
-            LEFFOR=.TRUE.
-            IF (TYPE(ICH).EQ.'DEPL'.OR.TYPE(ICH).EQ.'VITE'.OR.
-     &          TYPE(ICH).EQ.'ACCE'.OR.TYPE(ICH).EQ.'ACCE_ABSOLU')
-     &        LEFFOR=.FALSE.
+       CALL JEVEUO(TRANGE//'.INST','L',IDINSG)
+       CALL JELIRA(TRANGE//'.INST','LONMAX',NBINSG,K8B)
+       CALL WKVECT('&&TRAN75.VECTGENE','V V R',NBMODE,IDVECG)
+       DO 210 ICH = 1,NBCHAM
+          LEFFOR=.TRUE.
+          IF (TYPE(ICH).EQ.'DEPL'.OR.TYPE(ICH).EQ.'VITE'.OR.
+     &        TYPE(ICH).EQ.'ACCE'.OR.TYPE(ICH).EQ.'ACCE_ABSOLU')
+     &      LEFFOR=.FALSE.
 C
 C            --- RECUPERATION DES DEFORMEES MODALES ---
 C
-            TYPCHA = TYPBAS(ICH)
-            CALL RSEXCH(BASEMO,TYPCHA,1,NOMCHA,IRET)
+          TYPCHA = TYPBAS(ICH)
+          CALL RSEXCH(BASEMO,TYPCHA,1,NOMCHA,IRET)
+          NOMCHA = NOMCHA(1:19)//'.VALE'
+          CALL JEEXIN(NOMCHA,IBID)
+          IF (IBID.GT.0) THEN
+            NOMCHA(20:24)='.VALE'
+          ELSE
+            NOMCHA(20:24)='.CELV'
+          END IF
+          IF (INTERP(1:3).NE.'NON') THEN
             NOMCHA = NOMCHA(1:19)//'.VALE'
-            CALL JEEXIN(NOMCHA,IBID)
-            IF (IBID.GT.0) THEN
-              NOMCHA(20:24)='.VALE'
-            ELSE
-              NOMCHA(20:24)='.CELV'
-            END IF
-
-            NOMCHA = NOMCHA(1:19)//'.VALE'
-            IF (LEFFOR)
-     &       CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
-            CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
-            IF ( TOUSNO ) THEN
-              IF (MODE.EQ.BLANC.AND.MATRIC.EQ.BLANC.AND.
-     &           TYPCHA.EQ.'DEPL') THEN
-               CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
-              ELSE      
-               CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
-              ENDIF
-            ELSE
-               DO 110 J = 1,NBMODE
-                  CALL RSEXCH(BASEMO,TYPCHA,J,NOMCHA,IRET)
-                  CALL JEEXIN(NOMCHA,IBID)
-                  IF (IBID.GT.0) THEN
-                    NOMCHA(20:24)='.VALE'
-                  ELSE
-                    NOMCHA(20:24)='.CELV'
-                  END IF
-
-                  NOMCHA = NOMCHA(1:19)//'.VALE'
-                  CALL JEVEUO(NOMCHA,'L',IDEFM)
-                  IDECJ = NEQ * ( J - 1 )
-                  DO 120 I = 1,NBNOEU
-                     IDECI = 6 * ( I - 1 )
-                     IDECJI = IDECJ + IDECI
-                    ZR(IDBASE+IDECJI  ) = ZR(IDEFM+ZI(INUDDL+IDECI  )-1)
-                    ZR(IDBASE+IDECJI+1) = ZR(IDEFM+ZI(INUDDL+IDECI+1)-1)
-                    ZR(IDBASE+IDECJI+2) = ZR(IDEFM+ZI(INUDDL+IDECI+2)-1)
-                    ZR(IDBASE+IDECJI+3) = ZR(IDEFM+ZI(INUDDL+IDECI+3)-1)
-                    ZR(IDBASE+IDECJI+4) = ZR(IDEFM+ZI(INUDDL+IDECI+4)-1)
-                    ZR(IDBASE+IDECJI+5) = ZR(IDEFM+ZI(INUDDL+IDECI+5)-1)
- 120              CONTINUE
- 110           CONTINUE
-               CALL JEDETR ( OBJVE1 )
+          ENDIF
+          IF (LEFFOR)
+     &     CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
+          CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
+          IF ( TOUSNO ) THEN
+            IF (MODE.EQ.BLANC.AND.MATRIC.EQ.BLANC.AND.
+     &         TYPCHA.EQ.'DEPL') THEN
+             CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+            ELSE      
+             CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
             ENDIF
-            IDRESU = ITRESU(ICH)
-            IARCHI = 0
-            DO 200 I = 0,NBINST-1
-               IARCHI = IARCHI + 1
-               CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
-               IF ( IRET .EQ. 0 ) THEN
-                 CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
-               ELSEIF ( IRET .EQ. 100 ) THEN
-                 IF ( TOUSNO ) THEN
-                   IF (MODE.EQ.BLANC) THEN
-                     IF (LEFFOR) THEN
-                       CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
-                     ELSE
-                       CALL VTCREB(CHAMNO,NUMDDL,'G','R',NEQ)
-                     ENDIF
-                   ELSE
-                     CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
-                   ENDIF
-                 ELSE
-                   IF ( (I.EQ.0).AND.(ICH.EQ.1) ) THEN
-                      CALL CRCHNO(CHAMNO,CHAMNO,GRAN,MAILLA,'G','R',
-     +                            NBNOMA,NEQ)
-                      PRCHNO = CHAMNO
-                      CALL CRPRNO(PRCHNO,'G',NBNOMA,NEQ)
-                      CALL JEVEUO(PRCHNO//'.PRNO','E',JPRNO)
-                      II = 0
-                      IDEC = 1
-                      DO 220 INO = 1,NBNOMA
-                         ZI(JPRNO-1+(NEC+2)*(INO-1)+1) = IDEC
-                         ZI(JPRNO-1+(NEC+2)*(INO-1)+2) = ZI(JNBCA+INO-1)
-                         DO 230 INEC = 1,NEC
-                            II = II + 1
-                            ZI(JPRNO-1+(NEC+2)*(INO-1)+2+INEC) =
-     +                                                    ZI(JDESC+II-1)
- 230                     CONTINUE
-                         IDEC = IDEC + ZI(JNBCA+INO-1)
- 220                  CONTINUE
-                      CALL JELIBE(PRCHNO//'.PRNO')
-                      CALL PTEEQU(PRCHNO,NEQ,NUMGD)
-                      CALL JEDETR( OBJVE2 )
-                      CALL JEDETR('&&TRAN75.DESC_NOEUD')
-                      CALL JEDETR('&&TRAN75.NBCOMP_AFFE')
-                   ELSE
-                      CALL CRCHNO(CHAMNO,PRCHNO,GRAN,MAILLA,'G','R',
-     +                            NBNOMA,NEQ)
-                   ENDIF
-                 ENDIF
-               ELSE
-                  CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
-               ENDIF
-               CHAMNO(20:24) = '.VALE'
-               CALL JEVEUO(CHAMNO,'E',LVALE)
-               IF (LEFFOR .OR. .NOT.TOUSNO) 
-     +           CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
-               CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),
-     +                 ZR(JINST+I),ZR(IDRESU),NBMODE,ZR(IDVECG), IBID)
-               CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(IDVECG),ZR(LVALE))
-               IF ( MULTAP ) THEN
-                  IF (TYPE(ICH).EQ.'DEPL')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNODEP),ZR(LVAL2))
-                  IF (TYPE(ICH).EQ.'VITE')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNOVIT),ZR(LVAL2))
-                  IF (TYPE(ICH).EQ.'ACCE')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
-                  IF (TYPE(ICH).EQ.'ACCE_ABSOLU')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
-                  DO 240 IE =1,NEQ
-                     ZR(LVALE+IE-1)=ZR(LVALE+IE-1)+ZR(LVAL2+IE-1)
- 240              CONTINUE
-               ENDIF
-C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
-               IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
-                  IRET = 0
-                  CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
-C                 --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
-C
-                  CALL WKVECT('&&TRAN75.VECTEUR','V V R',NEQ,JVEC)
-                  CALL WKVECT('&&TRAN75.DDL','V V I',NEQ*NBDIR,JDDL)
-                CALL PTEDDL('NUME_DDL',NUMDDL,NBDIR,NOMCMP,NEQ,ZI(JDDL))
-                  DO 250 ID = 1 , NBDIR
-                     DO 252 IE = 0 , NEQ-1
-                        ZR(JVEC+IE) =  ZR(JVEC+IE) +
-     +                           ZI(JDDL+NEQ*(ID-1)+IE)*ALPHA*DEPL(ID)
- 252                 CONTINUE
- 250              CONTINUE
-                  DO 254 IE = 0 , NEQ-1 
-                     ZR(LVALE+IE) = ZR(LVALE+IE) + ZR(JVEC+IE)
- 254              CONTINUE
-                  CALL JEDETR ('&&TRAN75.VECTEUR')
-                  CALL JEDETR ('&&TRAN75.DDL')
-               ENDIF
-               CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI,' ')
-               CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
-               ZR(LINST) = ZR(JINST+I)
- 200        CONTINUE
-            CALL JEDETR ( '&&TRAN75.BASE' )
- 210     CONTINUE
-C
-      ELSE
-         DO 310 ICH = 1,NBCHAM
-            LEFFOR=.TRUE.
-            IF (TYPE(ICH).EQ.'DEPL'.OR.TYPE(ICH).EQ.'VITE'.OR.
-     &          TYPE(ICH).EQ.'ACCE'.OR.TYPE(ICH).EQ.'ACCE_ABSOLU')
-     &        LEFFOR=.FALSE.
-C
-C            --- RECUPERATION DES DEFORMEES MODALES ---
-C
-            TYPCHA = TYPBAS(ICH)
-            CALL RSEXCH(BASEMO,TYPCHA,1,NOMCHA,IRET)
-            NOMCHA = NOMCHA(1:19)//'.VALE'
-            CALL JEEXIN(NOMCHA,IBID)
-            IF (IBID.GT.0) THEN
-              NOMCHA(20:24)='.VALE'
-            ELSE
-              NOMCHA(20:24)='.CELV'
-            END IF
-            IF (LEFFOR)
-     &       CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
-            CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
-            IF ( TOUSNO ) THEN
-              IF (MODE.EQ.BLANC.AND.MATRIC.EQ.BLANC.AND.
-     &           TYPCHA.EQ.'DEPL') THEN
-               CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
-              ELSE      
-               CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
-              ENDIF
-            ELSE
-               DO 130 J = 1,NBMODE
-                  CALL RSEXCH(BASEMO,TYPCHA,J,NOMCHA,IRET)
+          ELSE
+             DO 110 J = 1,NBMODE
+                CALL RSEXCH(BASEMO,TYPCHA,J,NOMCHA,IRET)
+                CALL JEEXIN(NOMCHA,IBID)
+                IF (IBID.GT.0) THEN
+                  NOMCHA(20:24)='.VALE'
+                ELSE
+                  NOMCHA(20:24)='.CELV'
+                END IF
+                IF (INTERP(1:3).NE.'NON') THEN
                   NOMCHA = NOMCHA(1:19)//'.VALE'
-                  CALL JEEXIN(NOMCHA,IBID)
-                  IF (IBID.GT.0) THEN
-                    NOMCHA(20:24)='.VALE'
-                  ELSE
-                    NOMCHA(20:24)='.CELV'
-                  END IF
-
-                  CALL JEVEUO(NOMCHA,'L',IDEFM)
-                  IDECJ = NEQ * ( J - 1 )
-                  DO 170 I = 1,NBNOEU
-                     IDECI = 6 * ( I - 1 )
-                     IDECJI = IDECJ + IDECI
-                    ZR(IDBASE+IDECJI  ) = ZR(IDEFM+ZI(INUDDL+IDECI  )-1)
-                    ZR(IDBASE+IDECJI+1) = ZR(IDEFM+ZI(INUDDL+IDECI+1)-1)
-                    ZR(IDBASE+IDECJI+2) = ZR(IDEFM+ZI(INUDDL+IDECI+2)-1)
-                    ZR(IDBASE+IDECJI+3) = ZR(IDEFM+ZI(INUDDL+IDECI+3)-1)
-                    ZR(IDBASE+IDECJI+4) = ZR(IDEFM+ZI(INUDDL+IDECI+4)-1)
-                    ZR(IDBASE+IDECJI+5) = ZR(IDEFM+ZI(INUDDL+IDECI+5)-1)
- 170              CONTINUE
- 130           CONTINUE
-               CALL JEDETR ( OBJVE1 )
-            ENDIF
-            IARCH = 0
+                ENDIF
+                CALL JEVEUO(NOMCHA,'L',IDEFM)
+                IDECJ = NEQ * ( J - 1 )
+                DO 120 I = 1,NBNOEU
+                  IDECI = 6 * ( I - 1 )
+                  IDECJI = IDECJ + IDECI
+                  ZR(IDBASE+IDECJI  ) = ZR(IDEFM+ZI(INUDDL+IDECI  )-1)
+                  ZR(IDBASE+IDECJI+1) = ZR(IDEFM+ZI(INUDDL+IDECI+1)-1)
+                  ZR(IDBASE+IDECJI+2) = ZR(IDEFM+ZI(INUDDL+IDECI+2)-1)
+                  ZR(IDBASE+IDECJI+3) = ZR(IDEFM+ZI(INUDDL+IDECI+3)-1)
+                  ZR(IDBASE+IDECJI+4) = ZR(IDEFM+ZI(INUDDL+IDECI+4)-1)
+                  ZR(IDBASE+IDECJI+5) = ZR(IDEFM+ZI(INUDDL+IDECI+5)-1)
+ 120            CONTINUE
+ 110         CONTINUE
+             CALL JEDETR ( OBJVE1 )
+          ENDIF
+          IARCHI = 0
+          IF (INTERP(1:3).EQ.'NON') THEN
             CALL JEEXIN(TRANGE//'.ORDR',IRET)
-            IF (IRET.NE.0 .AND. ZI(JNUME).EQ.1) IARCH = -1
-            IDRESU = ITRESU(ICH)
-            DO 300 I = 0,NBINST-1
-               IARCH = IARCH + 1
-               CALL RSEXCH(NOMRES,TYPE(ICH),IARCH,CHAMNO,IRET)
-               IF ( IRET .EQ. 0 ) THEN
-                 CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
-               ELSEIF ( IRET .EQ. 100 ) THEN
-                 IF ( TOUSNO ) THEN
-                   IF (MODE.EQ.BLANC) THEN
-                     IF (LEFFOR) THEN
-                       CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
-                     ELSE
-                       CALL VTCREB(CHAMNO,NUMDDL,'G','R',NEQ)
-                     ENDIF
+            IF (IRET.NE.0 .AND. ZI(JNUME).EQ.1) IARCHI = -1
+          ENDIF
+          IDRESU = ITRESU(ICH)
+          DO 200 I = 0,NBINST-1
+             IARCHI = IARCHI + 1
+             CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
+             IF ( IRET .EQ. 0 ) THEN
+               CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
+             ELSEIF ( IRET .EQ. 100 ) THEN
+               IF ( TOUSNO ) THEN
+                 IF (MODE.EQ.BLANC) THEN
+                   IF (LEFFOR) THEN
+                     CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
                    ELSE
-                     CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
+                     CALL VTCREB(CHAMNO,NUMDDL,'G','R',NEQ)
                    ENDIF
                  ELSE
-                   IF ( (I.EQ.0).AND.(ICH.EQ.1) ) THEN
-                      CALL CRCHNO(CHAMNO,CHAMNO,GRAN,MAILLA,'G','R',
-     +                            NBNOMA,NEQ)
-                      PRCHNO = CHAMNO
-                      CALL CRPRNO(PRCHNO,'G',NBNOMA,NEQ)
-                      CALL JEVEUO(PRCHNO//'.PRNO','E',JPRNO)
-                      II = 0
-                      IDEC = 1
-                      DO 320 INO = 1,NBNOMA
-                         ZI(JPRNO-1+(NEC+2)*(INO-1)+1) = IDEC
-                         ZI(JPRNO-1+(NEC+2)*(INO-1)+2) = ZI(JNBCA+INO-1)
-                         DO 330 INEC = 1,NEC
-                            II = II + 1
-                            ZI(JPRNO-1+(NEC+2)*(INO-1)+2+INEC) =
-     +                                                    ZI(JDESC+II-1)
- 330                     CONTINUE
-                         IDEC = IDEC + ZI(JNBCA+INO-1)
- 320                  CONTINUE
-                      CALL JELIBE(PRCHNO//'.PRNO')
-                      CALL PTEEQU(PRCHNO,NEQ,NUMGD)
-                      CALL JEDETR( OBJVE2 )
-                      CALL JEDETR('&&TRAN75.DESC_NOEUD')
-                      CALL JEDETR('&&TRAN75.NBCOMP_AFFE')
-                   ELSE
-                      CALL CRCHNO(CHAMNO,PRCHNO,GRAN,MAILLA,'G','R',
-     +                            NBNOMA,NEQ)
-                   ENDIF
+                   CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
                  ENDIF
                ELSE
-                  CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+                 IF ( (I.EQ.0).AND.(ICH.EQ.1) ) THEN
+                    CALL CRCHNO(CHAMNO,CHAMNO,GRAN,MAILLA,'G','R',
+     +                          NBNOMA,NEQ)
+                    PRCHNO = CHAMNO
+                    CALL CRPRNO(PRCHNO,'G',NBNOMA,NEQ)
+                    CALL JEVEUO(PRCHNO//'.PRNO','E',JPRNO)
+                    II = 0
+                    IDEC = 1
+                    DO 220 INO = 1,NBNOMA
+                       ZI(JPRNO-1+(NEC+2)*(INO-1)+1) = IDEC
+                       ZI(JPRNO-1+(NEC+2)*(INO-1)+2) = ZI(JNBCA+INO-1)
+                       DO 230 INEC = 1,NEC
+                          II = II + 1
+                          ZI(JPRNO-1+(NEC+2)*(INO-1)+2+INEC) =
+     +                                                  ZI(JDESC+II-1)
+ 230                   CONTINUE
+                       IDEC = IDEC + ZI(JNBCA+INO-1)
+ 220                CONTINUE
+                    CALL JELIBE(PRCHNO//'.PRNO')
+                    CALL PTEEQU(PRCHNO,NEQ,NUMGD)
+                    CALL JEDETR( OBJVE2 )
+                    CALL JEDETR('&&TRAN75.DESC_NOEUD')
+                    CALL JEDETR('&&TRAN75.NBCOMP_AFFE')
+                 ELSE
+                    CALL CRCHNO(CHAMNO,PRCHNO,GRAN,MAILLA,'G','R',
+     +                          NBNOMA,NEQ)
+                 ENDIF
                ENDIF
-               CHAMNO(20:24) = '.VALE'
+             ELSE
+                CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+             ENDIF
+             CHAMNO(20:24) = '.VALE'
+             IF (INTERP(1:3).EQ.'NON') THEN
                CALL JEEXIN(CHAMNO,IBID)
                IF (IBID.GT.0) THEN
                  CHAMNO(20:24) = '.VALE'
                ELSE
                  CHAMNO(20:24) = '.CELV'
-               END IF
+               END IF             
+             END IF             
+             CALL JEVEUO(CHAMNO,'E',LVALE)
 
-               CALL JEVEUO(CHAMNO,'E',LVALE)
-               IF (LEFFOR .OR. .NOT.TOUSNO) 
-     +           CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
+             IF (LEFFOR .OR. .NOT.TOUSNO) 
+     +         CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
+             IF (INTERP(1:3).NE.'NON') THEN
+               CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),
+     +               ZR(JINST+I),ZR(IDRESU),NBMODE,ZR(IDVECG), IBID)
+               CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(IDVECG),ZR(LVALE))
+             ELSE
                CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
      +                     ZR(IDRESU+(ZI(JNUME+I)-1)*NBMODE),ZR(LVALE))
-               IF ( MULTAP ) THEN
-                  IF (TYPE(ICH).EQ.'DEPL')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNODEP),ZR(LVAL2))
-                  IF (TYPE(ICH).EQ.'VITE')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNOVIT),ZR(LVAL2))
-                  IF (TYPE(ICH).EQ.'ACCE')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
-                  IF (TYPE(ICH).EQ.'ACCE_ABSOLU')
-     +             CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                         ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
-                  DO 340 IE =1,NEQ
-                     ZR(LVALE+IE-1)=ZR(LVALE+IE-1)+ZR(LVAL2+IE-1)
- 340              CONTINUE
-               ENDIF
-C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
-               IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
-                  IRET = 0
-                  CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
-C                 --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
-                  CALL WKVECT('&&TRAN75.VECTEUR','V V R',NEQ,JVEC)
-                  CALL WKVECT('&&TRAN75.DDL','V V I',NEQ*NBDIR,JDDL)
+             ENDIF
+             IF ( MULTAP ) THEN
+                IF (TYPE(ICH).EQ.'DEPL')
+     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     +                       ZR(JINST+I),ZK8(JNODEP),ZR(LVAL2))
+                IF (TYPE(ICH).EQ.'VITE')
+     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     +                       ZR(JINST+I),ZK8(JNOVIT),ZR(LVAL2))
+                IF (TYPE(ICH).EQ.'ACCE')
+     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     +                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
+                IF (TYPE(ICH).EQ.'ACCE_ABSOLU')
+     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     +                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
+                DO 240 IE =1,NEQ
+                   ZR(LVALE+IE-1)=ZR(LVALE+IE-1)+ZR(LVAL2+IE-1)
+ 240            CONTINUE
+             ENDIF
+C            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
+             IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
+                IRET = 0
+                CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
+C               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
+                CALL WKVECT('&&TRAN75.VECTEUR','V V R',NEQ,JVEC)
+                CALL WKVECT('&&TRAN75.DDL','V V I',NEQ*NBDIR,JDDL)
                 CALL PTEDDL('NUME_DDL',NUMDDL,NBDIR,NOMCMP,NEQ,ZI(JDDL))
-                  DO 350 ID = 1 , NBDIR
-                     DO 352 IE = 0 , NEQ-1
-                        ZR(JVEC+IE) =  ZR(JVEC+IE) +
-     +                           ZI(JDDL+NEQ*(ID-1)+IE)*ALPHA*DEPL(ID)
- 352                 CONTINUE
- 350              CONTINUE
-                  DO 354 IE = 0 , NEQ-1 
-                     ZR(LVALE+IE) = ZR(LVALE+IE) + ZR(JVEC+IE)
- 354              CONTINUE
-                  CALL JEDETR ('&&TRAN75.VECTEUR')
-                  CALL JEDETR ('&&TRAN75.DDL')
-               ENDIF
-               CALL RSNOCH(NOMRES,TYPE(ICH),IARCH,' ')
-               CALL RSADPA(NOMRES,'E',1,'INST',IARCH,0,LINST,K8B)
-               ZR(LINST) = ZR(JINST+I)
- 300        CONTINUE
-            CALL JEDETR ( '&&TRAN75.BASE' )
- 310     CONTINUE
-      ENDIF
+                DO 250 ID = 1 , NBDIR
+                   DO 252 IE = 0 , NEQ-1
+                      ZR(JVEC+IE) =  ZR(JVEC+IE) +
+     +                         ZI(JDDL+NEQ*(ID-1)+IE)*ALPHA*DEPL(ID)
+ 252               CONTINUE
+ 250            CONTINUE
+                DO 254 IE = 0 , NEQ-1 
+                   ZR(LVALE+IE) = ZR(LVALE+IE) + ZR(JVEC+IE)
+ 254            CONTINUE
+                CALL JEDETR ('&&TRAN75.VECTEUR')
+                CALL JEDETR ('&&TRAN75.DDL')
+             ENDIF
+             CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI,' ')
+             CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
+             ZR(LINST) = ZR(JINST+I)
+ 200      CONTINUE
+          CALL JEDETR ( '&&TRAN75.BASE' )
+ 210   CONTINUE
+C
 C
       KREFE  = NOMRES
       CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
@@ -638,23 +490,14 @@ C
         ZK24(LREFE+3  ) = ZK24(IADRIF+3)
         ZK24(LREFE+4  ) = ZK24(IADRIF+4)
         ZK24(LREFE+5  ) = ZK24(IADRIF+5)
-C A VIRER
-C
-C         IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
-C             ZK24(LREFE  ) = ZK24(IADRIF+3)
-C         ELSEIF (TYPREP(1:9).EQ.'MODE_STAT') THEN
-C           ZK24(LREFE) = ZK24(IADRIF+3)
-C           IF (ZK24(IADRIF)(1:8).EQ.BLANC) ZK24(LREFE)=ZK24(IADRIF+2)
-C         ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
-C             ZK24(LREFE  ) = ZK24(IADRIF+3)
-C         ENDIF
-C A VIRER
 C
       ELSE
          ZK24(LREFE  ) = '  '
          ZK24(LREFE+1) = '  '
          ZK24(LREFE+2) = '  '
          ZK24(LREFE+3) = ZK24(LLCHA+1)
+         ZK24(LREFE+4) = '  '
+         ZK24(LREFE+5) = '  '
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

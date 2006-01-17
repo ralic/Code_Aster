@@ -5,7 +5,7 @@
       CHARACTER*24        NUMEDD, ACCMOI, CHGRFL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,9 +46,9 @@ C
       INTEGER  JFFL, JIFL, II, I1, I3, I5, I7, I8, I9, I11, I12, I16,
      &         I18, NBNO, NEC, NLILI, NDIM, INO, IVAL, IDIM, I, K, IER,
      &         IAPRNO, JACC0, IT
-      REAL*8   ROC, ROD, AC, ROTIGE, LTIGE, VARAI, ROARAI, ROCRAY, 
-     +         LCRAY, DTM, MA, PIS4, R8PI, ROP, Q, CGG, FFPLAQ, Z0,
-     +         FTOT, FPTG1, FFTG1, M, G, D2Z, VDIR(3)
+      REAL*8   ROC, ROD, AC, LTIGE, VARAI, LCRAY, DTM, MA0, MA, PIS4, 
+     &         R8PI, ROP, Q, CGG, FFPLAQ, Z0, FTOT, FPTG1, FFTG1, M, 
+     +         G, D2Z, VDIR(3)
       CHARACTER*8   K8B
       CHARACTER*24  NOLILI
 C     ------------------------------------------------------------------
@@ -73,22 +73,22 @@ C --- CALCUL DE LA MASSE APPARENTE :
 C     ----------------------------
 C
       PIS4 = 0.25D0 * R8PI()
-      ROC = ZR(JFFL-1+I3+1)
-      ROD = ZR(JFFL-1+I3+2)
-      ROP = ZR(JFFL-1+I3+3)
+      ROC  = ZR(JFFL-1+I3+1)
+      ROD  = ZR(JFFL-1+I3+2)
+      ROP  = ZR(JFFL-1+I3+3)
       AC   = ZR(JFFL-1+I7+8)
       G    = ZR(JFFL-1+I8+3)
-      ROTIGE = ZR(JFFL-1+I9+2)
       LTIGE  = ZR(JFFL-1+I9+3)
       VARAI  = ZR(JFFL-1+I9+4)
-      ROARAI = ZR(JFFL-1+I9+5)
-      ROCRAY = ZR(JFFL-1+I9+6)
       LCRAY  = ZR(JFFL-1+I9+7)
       DTM    = ZR(JFFL-1+I9+8)
 
-      MA = PIS4*DTM**2*((ROTIGE-ROD)*(LTIGE-Z) + (ROTIGE-ROP)*Z)
-      MA = MA + 24*AC*((ROCRAY-ROC)*Z + (ROCRAY-ROP)*(LCRAY-Z))
-      MA = MA + VARAI*(ROARAI-ROP)
+C --- RECUPERATION DE LA MASSE DE LA GRAPPE :
+C     ---------------------------------------
+      MA0  = ZR(JFFL-1+I8+1)
+
+      MA =   PIS4*DTM**2*(ROD*(LTIGE-Z) + ROP*Z)
+     +     + 24*AC*(ROC*Z + ROP*(LCRAY-Z)) + VARAI*ROP
 
 C
 C --- FORCE DE PLAQUAGE DANS LE GUIDAGE CONTINU :
@@ -107,14 +107,12 @@ C
       IT = 0
 C
       CALL GFGUID ( IT, Z, DZ, FPTG1, FFTG1, ZR(JFFL-1+I3+1),
-     +             ZR(JFFL-1+I7+1), ZR(JFFL-1+I1+1),
-     +             ZI(JIFL-1+1), ZR(JFFL-1+I12+1), ZR(JFFL-1+I16+1),
-     +             Z0 ) 
+     +             ZR(JFFL-1+I7+1), ZR(JFFL-1+I1+1), ZI(JIFL-1+1),
+     +             ZR(JFFL-1+I12+1), ZR(JFFL-1+I16+1), Z0 ) 
 
 C
-      M  = ZR(JFFL-1+I8+1)
-      FTOT = MA*G - 24*(FPTG1+FFTG1) - FFPLAQ
-      D2Z = FTOT / M
+      FTOT = -MA*G - 24*(FPTG1+FFTG1) - FFPLAQ
+      D2Z = FTOT / MA0
 C
       CALL JEVEUO(ACCMOI(1:19)//'.VALE', 'E', JACC0)
 
@@ -143,8 +141,8 @@ C
          INO  = ZI(JIFL-1+5+I)
          IVAL = ZI(IAPRNO+(INO-1)*(NEC+2)+1-1) - 1
          DO 22 IDIM = 1, NDIM
-            ZR(JACC0+IVAL+IDIM-1) = ZR(JACC0+IVAL+IDIM-1) +
-     +                                                  D2Z*VDIR(IDIM)
+            ZR(JACC0+IVAL+IDIM-1) = ZR(JACC0-1+IVAL+IDIM)
+     +                                   + D2Z*VDIR(IDIM)
  22      CONTINUE
  20   CONTINUE
 C

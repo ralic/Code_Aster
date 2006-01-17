@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,18 +64,29 @@ C     ------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER JCELD,MODE,DEBUGR,LGGREL
+      INTEGER JCELD,MODE,DEBUGR,LGGREL,ILCHL1,IIEL,IAUX1,IAUX2,IACHL1
       INTEGER ITYPL1,MODLO1,NBPOI1,LGCATA
       INTEGER ITYPL2,MODLO2,NBPOI2
       INTEGER ILOPMO,IAOPMO,ILOPNO,IAOPDS,IAOPPA,NPARIO,NPARIN,IAMLOC
       INTEGER ILMLOC,IADSGD,IEL,IGD,NEC
       INTEGER NCMPMX,IACHIN,IACHLO,IICHIN,IANUEQ,LPRNO,ILCHLO,IACHII
       INTEGER IACHIK,IACHIX,IAOPTT,LGCO,IAOPNO
-      INTEGER JEC,NCMP,JAD1,JAD2,JEL,IPT2,K,IPT1,LONG2,DIGDE2
-      LOGICAL ETENDU
+      INTEGER JEC,NCMP,JAD1,JAD2,JEL,IPT2,K,IPT1,LONG2,DIGDE2,IFETI,IRET
+      LOGICAL ETENDU,LFETI
       CHARACTER*8 TYCH
 C DEB-------------------------------------------------------------------
 
+C     FETI PARALLELE OR NOT ?
+C     -------------------------
+      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        LFETI=.TRUE.
+        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
+        IFETI=IFETI-1
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
+      
       TYCH = ZK8(IACHIK-1+2* (IICHIN-1)+1)
       IF (TYCH(1:4).NE.'CHML') CALL UTMESS('F','EXCHML','STOP 1')
 
@@ -88,9 +99,22 @@ C DEB-------------------------------------------------------------------
 
 C     -- SI MODE=0 : IL FAUT METTRE CHAMP_LOC.EXIS A .FALSE.
       IF (MODE.EQ.0) THEN
-        DO 77,K=1,LONG2
-          ZL(ILCHLO-1+K) = .FALSE.
-77      CONTINUE
+        IF (LFETI) THEN
+          ILCHL1=ILCHLO-1
+          IAUX2=DIGDE2(IMODAT)
+          DO 76 IIEL=1,NBELGR
+            IF (ZL(IFETI+IIEL)) THEN
+              IAUX1=ILCHL1+(IIEL-1)*IAUX2
+              DO 75 K=1,IAUX2
+                ZL(IAUX1+K) = .FALSE.
+   75         CONTINUE
+            ENDIF
+   76     CONTINUE
+        ELSE
+          DO 77,K=1,LONG2
+            ZL(ILCHLO-1+K) = .FALSE.
+   77     CONTINUE
+        ENDIF
         GO TO 9999
       END IF
 
@@ -137,6 +161,11 @@ C         -- CAS "EXPAND" :
 C         ------------------------
           IF (NBPOI1.EQ.1) THEN
             DO 11, JEL=1,NBELGR
+C           SI FETI ON REGARDE SI LA MAILLE IEL EST CONCERNEE
+C           PAR LE PROC COURANT
+              IF (LFETI) THEN
+                IF (.NOT.ZL(IFETI+JEL)) GOTO 11
+              ENDIF
               JAD1=IACHIN-1+DEBUGR+(JEL-1)*NCMP
               DO 12, IPT2=1,NBPOI2
                 JAD2=IACHLO+((JEL-1)*NBPOI2+IPT2-1)*NCMP
@@ -149,18 +178,51 @@ C         ------------------------
           ELSE IF (NBPOI2.EQ.1) THEN
 
             IF (TYPEGD.EQ.'R') THEN
-              DO 171,K=1,NBELGR *NCMP
-                ZR(IACHLO-1+K) = 0.D0
-171           CONTINUE
+C            -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC
+C               COURANT
+              IF (LFETI) THEN
+                IACHL1=IACHLO-1
+                DO 170 IIEL=1,NBELGR
+                  IF (ZL(IFETI+IIEL)) THEN
+                    IAUX1=IACHL1+(IIEL-1)*NCMP
+                    DO 169 K=1,NCMP
+                      ZR(IAUX1+K) = 0.D0
+  169               CONTINUE
+                  ENDIF
+  170           CONTINUE
+              ELSE
+                DO 171,K=1,NBELGR *NCMP
+                  ZR(IACHLO-1+K) = 0.D0
+  171           CONTINUE
+              ENDIF
             ELSE IF (TYPEGD.EQ.'C') THEN
-              DO 172,K=1,NBELGR *NCMP
-                ZC(IACHLO-1+K) = (0.D0,0.D0)
-172           CONTINUE
+C            -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC
+C               COURANT
+              IF (LFETI) THEN
+                IACHL1=IACHLO-1
+                DO 174 IIEL=1,NBELGR
+                  IF (ZL(IFETI+IIEL)) THEN
+                    IAUX1=IACHL1+(IIEL-1)*NCMP
+                    DO 173 K=1,NCMP
+                      ZC(IAUX1+K) = (0.D0,0.D0)
+  173               CONTINUE
+                  ENDIF
+  174           CONTINUE
+              ELSE
+                DO 172,K=1,NBELGR *NCMP
+                  ZC(IACHLO-1+K) = (0.D0,0.D0)
+  172           CONTINUE
+              ENDIF
             ELSE
               CALL ASSERT(.FALSE.)
             END IF
 
             DO 21, JEL=1,NBELGR
+C           SI FETI ON REGARDE SI LA MAILLE IEL EST CONCERNEE
+C           PAR LE PROC COURANT
+              IF (LFETI) THEN
+                IF (.NOT.ZL(IFETI+JEL)) GOTO 21
+              ENDIF
               JAD2=IACHLO+(JEL-1)*NCMP
               DO 22, IPT1=1,NBPOI1
                 JAD1=IACHIN-1+DEBUGR+((JEL-1)*NBPOI1+IPT1-1)*NCMP
@@ -181,9 +243,10 @@ C         -- AUTRES CAS PAS ENCORE PROGRAMMES :
         END IF
       END IF
 
+C     -- SI FETI ON NE FAIT RIEN CAR LONG2 PEUT PROVENIR DE DIFFERENTES
+C        SOURCES
       DO 10,K = 1,LONG2
         ZL(ILCHLO-1+K) = .TRUE.
    10 CONTINUE
-
 9999  CONTINUE
       END

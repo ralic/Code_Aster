@@ -5,7 +5,7 @@
      +     NRL,DEB,VOIS,SUIT,IER,NEC,PRNO,DEEQ,
      &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,7 @@ C     VARIABLES LOCALES
       CHARACTER*80 TXT80(4)
       CHARACTER*128 REP,LOGIEL
       INTEGER NEC,PRNO(*),DEEQ(*),INO,NBCMP,ULNUME,IULM1,IULM2
+      LOGICAL LFETI
 C--------------------------------------------------------------
 C
 C     VERSION RENUMEROTATION PAR NOEUD
@@ -69,12 +70,22 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
 C****************************************************************
 C     CALL UTTCPU(2,'DEBUT',6,TEMPS)
 C****************************************************************
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 C
       CALL INFNIV(IFM,NIV)
+C FETI OR NOT FETI ?
+      CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL INFMUE()
+        CALL INFNIV(IFM,NIV)
+        LFETI=.TRUE.
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
 C--------------------------------------------------------------
 C     LA RENUMEROTATION VA ETRE FAITE AVEC LA CONNECTIVITE NODALE
 C     ET NON PLUS LA CONNECTIVITE PAR DDL COMME AVANT
@@ -237,7 +248,7 @@ C----------------------------------METIS 4 : METHODE DE BISSECTION
          IF ( IULM2 .EQ. -1 ) THEN
            CALL UTMESS('F','PREML1',' ERREUR A L''APPEL DE METIS '//
      >                 'PLUS AUCUNE UNITE LOGIQUE LIBRE !')
-         ENDIF 
+         ENDIF
          WRITE(IULM1,1001) NBND,INT(NADJ)/2,NIV,IFM
          WRITE(IULM1,1001) (XADJD(I),I=1,NBND+1)
          DO 510 I=1,NBND
@@ -329,8 +340,7 @@ C     *  ' + TEMPS CPU SYSTEME ',TEMPS(6)
 
 C STOCKAGE INFO SI FETI
        ENDIF
-       CALL JEEXIN('&FETI.INFO.STOCKAGE.FIDD',IRET)
-       IF (IRET.NE.0) THEN
+       IF (LFETI) THEN
 C INTRODUIT POUR PRENDRE EN COMPTE LES TROUS DANS LA LISTE DES SOUS
 C -DOMAINES TRAITES EN PARALLELE PAR UN PROCESSEUR
          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
@@ -358,7 +368,8 @@ C PAR LE PROCESSUS
          ZI(IFET4+IFET2)=NBND
 C MISE A JOUR DES SOMMES FINALES
          ZI(IFET3+NBSD)=ZI(IFET3+NBSD)+DIAG(NEQ)
-         ZI(IFET4+NBSD)=ZI(IFET4+NBSD)+NBND        
+         ZI(IFET4+NBSD)=ZI(IFET4+NBSD)+NBND
+         CALL INFBAV()        
        ENDIF
       
  999  CONTINUE

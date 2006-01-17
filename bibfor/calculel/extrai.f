@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
-      INTEGER NIN,IEL
+      INTEGER NIN
       CHARACTER*(*) LCHIN(*)
       CHARACTER*8 LPAIN(*)
       CHARACTER*19 LIGREL
@@ -54,7 +54,9 @@ C     -------------------
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*19 CHIN
-      CHARACTER*4 TYPE
+      CHARACTER*4  TYPE
+      INTEGER      IFETI,IRET,IIEL,IAUX1,ILCHL1,K
+      LOGICAL      LFETI
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -109,16 +111,39 @@ C     -- MISE A JOUR DES COMMON CAII01 ET CAKK02:
       TYPE = ZK8(IACHIK-1+2* (I-1)+1) (1:4)
       TYPEGD = ZK8(IACHIK-1+2* (I-1)+2)
 
+C     -- FETI PARALLELE OR NOT ?
+      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        LFETI=.TRUE.
+        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
+        IFETI=IFETI-1
+        ILCHL1=ILCHLO-1
+      ELSE
+        LFETI=.FALSE.
+      ENDIF
 
 
 C     1- MISE A .FALSE. DU CHAMP_LOC.EXIS
 C       (SAUF POUR CHML QUI LE FAIT LUI-MEME):
 C     -----------------------------------------------------
       IF (TYPE.NE.'CHML') THEN
-        DO 10,K = 1,NBELGR*LGCATA
-          ZL(ILCHLO-1+K) = .FALSE.
-   10   CONTINUE
+C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
+        IF (LFETI) THEN
+          DO 8 IIEL=1,NBELGR
+            IF (ZL(IFETI+IIEL)) THEN
+              IAUX1=ILCHL1+(IIEL-1)*LGCATA
+              DO 6 K=1,LGCATA
+                ZL(IAUX1+K) = .FALSE.
+    6         CONTINUE
+            ENDIF
+    8     CONTINUE
+        ELSE
+          DO 10,K = 1,NBELGR*LGCATA
+            ZL(ILCHLO-1+K) = .FALSE.
+   10     CONTINUE
+        ENDIF
       END IF
+
 
 C     2- ON LANCE L'EXTRACTION:
 C     -------------------------------------------

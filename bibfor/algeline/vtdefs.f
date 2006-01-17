@@ -1,7 +1,7 @@
       SUBROUTINE VTDEFS(CHPOUT,CHPIN,BASE,TYPC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C FETI OR NOT ?
           CALL JEVEUO(CH19//'.FETC','L',IFETC)
           CALL WKVECT(CHPOUT(1:19)//'.FETC','V V K24',NBSD,KFETC)
           LFETI=.TRUE.
-          CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+          CALL JEVEUO('&FETI.FINF','L',IINF)
           INFOFE=ZK24(IINF)
           CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
         ENDIF  
