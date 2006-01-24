@@ -5,7 +5,7 @@
       CHARACTER*(*) NOMJV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
       INTEGER    NBPGMX,    NBNOMX,    NBFAMX
-      PARAMETER (NBPGMX=27, NBNOMX=27, NBFAMX=10)
+      PARAMETER (NBPGMX=27, NBNOMX=27, NBFAMX=20)
 C
       INTEGER      NBPG(NBFAMX), NDIM, NNOS, NBFPG
       INTEGER      IFAM, DECAL, IPG, INO, JVR

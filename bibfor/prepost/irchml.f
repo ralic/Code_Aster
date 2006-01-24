@@ -11,7 +11,7 @@ C
      +                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ C     ----------------------------------------------------------
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
       CALL WKVECT('&&IRCHML.NUM_CMP','V V I',NCMPMX,JNCMP)
       IF ( NBCMP.NE.0 .AND. NOMGD.NE.'VARI_R' ) THEN
-         CALL IRCCMP(NOMGD,NCMPMX,ZK8(IAD),NBCMP,NOMCMP,NBCMPT,JNCMP)
+        CALL IRCCMP(' ',NOMGD,NCMPMX,ZK8(IAD),NBCMP,NOMCMP,NBCMPT,JNCMP)
       ENDIF
       CALL JEVEUO(CHAME//'.CELK','L',IACELK)
       NOLILI = ZK24(IACELK)

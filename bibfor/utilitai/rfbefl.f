@@ -3,7 +3,7 @@
       CHARACTER*(*)       BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      IFM,NIV
       CHARACTER*4  INTERP(2)
       CHARACTER*8  K8B, BASEFL, PARAY, TTORDR
       CHARACTER*16 NOMCMD, TYPCON
@@ -48,6 +49,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+C
       CALL GETRES ( NOMFON , TYPCON , NOMCMD )
       BASEFL = BASE
       NBV = 0
@@ -176,5 +181,14 @@ C---------2.3 REMPLISSAGE
 C
       ENDIF
 C
+      CALL FOATTR(' ',1,NOMFON)
+C
+C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
+C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
+      CALL ORDONN(NOMFON,NOMCMD,0)
+C 
+      CALL TITRE
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
+
       CALL JEDEMA()
       END

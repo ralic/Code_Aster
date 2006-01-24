@@ -1,0 +1,849 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 23/01/2006 - 18:36:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008868 DU 2005-07-13 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   MACR_RECAL et usage de Gnuplot
+FONCTIONNALITE
+   Cette fiche est soldee depuis la restitution en 8.1.22 du format XMGRACE dans MACR_RECAL
+   (Gnuplot n'est plus un pre-requis de Macr_recal puisque XMgrace est le nouveau defaut,
+   mais il reste utilisable).
+
+   Concernant les autres tests Aster qui utilisent Gnuplot, on corrige le forma11a (mais
+   l'import etait en commentaire...). Il reste un certain nombre de tests qui seront traites
+   dans le cadre de la fiche 9219 (menage dans les PAR_LOT='NON').
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   forma11a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 23/01/2006 - 14:27:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009156 DU 2005-10-31 00:00:00
+TYPE aide utilisation concernant Code_Aster (VERSION 8.1)
+TITRE
+   AOM DYNA_NON_LINE
+FONCTIONNALITE
+   L'utilisateur cherche a modeliser la reponse d'une poutre encastree libre excitee
+   par un
+   bref creneau en force (de 10 a 50 micro-secondes) sur le bord libre.
+   Il s'inquiete de la possibilite de retrouver la propagation de l'onde d'excitation, en
+   particulier a proximite de l'encastrement.
+
+   Preliminaire : le maillage fourni et produit avec GIBI presente de nombreux noeuds
+   orphelins et donne des resultats suspects avec DYNA_NON_LINE. Un nouveau maillage a,
+   d'emblee, donne de meilleurs resultats.
+
+   1/ Le point essentiel pour l'etude d'un phenomene de propagation d'ondes est le choix
+   d'un
+   pas de temps adapte, a savoir, en integration temporelle implicite, un pas de temps
+   suffisamment fin pour echantillonner l'excitation et legerement superieur a la
+   condition
+   de Courant (taille de maille/celerite de l'onde).
+   Pour eviter un amortissement artificiel trop important de la reponse, il convient de
+   choisir une valeur faible du parametre ALPHA de HHT (<-0.05). En contrepartie on est
+   contraint a accepter des oscillations dues au schema numerique autour du creneau.
+
+   2/ Pour ce type de phenomene qui necessite un pas de temps fin, on peut preconiser un
+   schema d'integration temporelle explicite, en l'occurrence le schema des differences
+   centrees dans DYNA_TRAN_EXPLI.
+   La precision des resultats est nettement meilleure que celle obtenue avec DYNA_NON_LINE
+   et
+   ne presente pas le phenomene d'oscillations parasites.
+
+   3/ On a aussi etudie la possibilite de traiter le probleme avec DYNA_TRAN_MODAL. La
+   presence de hautes frequences dans le spectre d'excitation impose un tres grand nombre
+   de
+   modes dans la reduction modale pour obtenir une forme de creneau dans la reponse, ce
+   qui
+   reduit l'interet de l'operateur. Pour une estimation de l'amplitude (a 10%) de l'onde
+   d'excitation et de sa propagation, une trentaine de modes suffit.
+
+   Un rapport plus complet a ete redige et est disponible.
+
+   Xavier Epiard, Emmanuel Boyere
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008526 DU 2005-03-29 00:00:00
+TYPE aide utilisation concernant Code_Aster (VERSION 8.2)
+TITRE
+   AOM  POST_USURE et finesse de la liste d'instants
+FONCTIONNALITE
+   Les resultats d'usure dependent de l'archivage durant l'analyse transitoire. L'usure
+   etant
+   calculee sur une moyenne, c'est parfaitement logique. Par exemple si on essaie de
+   calculer
+   l'usure provoquees par de brefs chocs ponctuels, il est important que l'archivage soit
+   assez fin pour les capter. Mais dire cela revient a dire qu'il faut verifier a l'issue
+   d'une etude transitoire l'independance des calculs au pas de temps (i.e. la convergence
+   en
+   temps). Mais dans les problemes de chocs cela n'est pas suffisant, il peut y avoir
+   instabilite! (cf l'expose de ce matin au LamSID auquel je n'ai pas pu assister).
+   Premiere conclusion : dans toute etude transitoire non lineaire il est prudent de
+   verifier
+   la convergence et la stabilite de la solution.
+
+   Ensuite, si on constate que la finesse des instants de contact necessite un archivage
+   complet sur de tres petits pas de temps, on peut etre confronte a une inflation de
+   taille
+   de la base qui empeche de realiser le calcul sur de grands intervalles temporels.
+   Or l'usure est moyennee sur des blocs de temps. Je preconise donc, dans ce cas, de
+   decouper le calcul et le post-traitement sur ces memes blocs de temps. Les valeurs
+   post-traitees sont sauvees a la fin de chaque bloc tandis que les calculs transitoires
+   sont detruits. On peut ainsi s'extraire de la limite en taille de la base. Ne reste plus
+   que la contrainte en temps de calcul.
+   Il reste a verifier que la methode est applicable avec le schema ITMI employe en
+   calcul
+   d'interaction fluide/structure dans les GV. En effet la reprise est en effet actuellement
+   impossible avec ce schema.
+
+   eb
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 24/01/2006 - 19:17:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009245 DU 2005-11-29 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TMA : CS
+TITRE
+   Vraies-fausses alarmes d'IMPR_RESU
+FONCTIONNALITE
+   Lorsque l'on fait
+   IMPR_RESU ( RESU=_F( RESULTAT=STATIQU1, NUME_ORDRE=1,NOEUD='N01',
+   NOM_CHAM=('DEPL','EFGE_ELNO_DEPL'),
+   NOM_CMP=('DY','N','TOTO'), ), )
+
+   On obtient comme messages d'alarme pour le champ DEPL:
+   <A> <IMPR_RESU> <IRCCMP>  ON NE TROUVE PAS LA COMPOSANTE >N       <  DANS LA GRANDEUR
+   >DEPL_R  <
+   <A> <IMPR_RESU> <IRCCMP>  ON NE TROUVE PAS LA COMPOSANTE >TOTO    <  DANS LA GRANDEUR
+   >DEPL_R  <
+   et comme messages d'alarme pour le champ EFGE_ELNO_DEPL:
+   <A> <IMPR_RESU> <IRCCMP>  ON NE TROUVE PAS LA COMPOSANTE >DY      <  DANS LA GRANDEUR
+   >SIEF_R  <
+   <A> <IMPR_RESU> <IRCCMP>  ON NE TROUVE PAS LA COMPOSANTE >N       <  DANS LA GRANDEUR
+   >DEPL_R  <
+
+   Maintenant, on emet une alarme uniquement si une composante n'est trouvee dans aucuns
+   des
+   champs.
+
+   Donc dans cet exemple, on n'emettra une alarme que pour TOTO, rien pour N, DY...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   ssll12a en imprimant DEPL et SIEF : pas d'alarme
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009207 DU 2005-11-16 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TMA : CS
+TITRE
+   astk, CALC_ELEM ou rcp ?
+FONCTIONNALITE
+   Dans les routines mecalm.f et thaclm.f ajout de l'instruction:
+   CALL GETRES(K8B,K16B,NOMCMD)
+   afin d'initialiser la variable NOMCMD.
+   Cette variable est utilisee dans les appels a UTMESS et UTDEBM.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   RAS
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques.        DATE 24/01/2006 - 19:17:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009350 DU 2006-01-12 09:03:45
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW8.2.3, les tests sslv111a,c et sslv130c s'arretent en ERREUR
+FONCTIONNALITE
+   modification du parametre NBFAMX de 10 a 20 dans les routines
+   manopg et utelvf
+   verification que tous les NBFAMX sont dimensionnes a 20
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   passage des tests
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR d6bhhjp      LEFEBVRE J.P.          DATE 24/01/2006 - 10:26:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009236 DU 2005-11-24 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   solveur multi-frontal et OpenMP
+FONCTIONNALITE
+   Suite aux obsvervations de Christian Rose et apres suppression des directives OpenMP dans
+   les routines mlfmlt.f et mltdrb.f, le resultat du test yyyy106b est le suivant :
+
+   --- Fin de tous les cas tests       :  le 20/01/2006 a 13:20:01
+   --- Voici les resultats :
+
+   Temps CPU   Temps SYS   Temps Total Temps Job
+   yyyy106a  OK_ALARME                       641.00       19.90      660.90      662.47
+   --------  ---------  ----------------  ---------   ---------   ---------   ---------
+   1      1          0                641.00       19.90      660.90      662.47
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   yyyy106a sur AlphaServer
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009375 DU 2006-01-19 10:39:34
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   catalogue de la commande CREA_RESU
+FONCTIONNALITE
+   Il faut utiliser l'attribut "position='global'" pour le mot cle TYPE_RESU.
+   Le catalogue est modifie comme suit :
+   ...
+   b_mult_elas     =BLOC(condition = "TYPE_RESU == 'MULT_ELAS' ",
+   NOM_CAS         =SIMP(statut='f',typ='TXM' ),
+   ),
+   b_evol          =BLOC(condition = "((TYPE_RESU=='EVOL_ELAS') or
+   (TYPE_RESU=='EVOL_NOLI') or (TYPE_RESU=='EVOL_THER') or\
+   (TYPE_RESU=='EVOL_VARC') or
+   (TYPE_RESU=='EVOL_CHAR'))",
+   regles=(UN_PARMI('INST','LIST_INST'),),
+   INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+   LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+   NUME_INIT       =SIMP(statut='f',typ='I', val_min=1),
+   NUME_FIN        =SIMP(statut='f',typ='I', val_min=1),
+   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
+   CRITERE
+   =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+   ),
+   b_fourier       =BLOC(condition = "TYPE_RESU == 'FOURIER_ELAS' ",
+   NUME_MODE       =SIMP(statut='f',typ='I'),
+   TYPE_MODE
+   =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
+   ),
+   ...
+
+   Les fichiers de commandes des tests yyyy106a et yyyy106b sont modifies pour supprimer le
+   mot cle TYPE_MODE present a tort dans CREA_RESU (modele 3D)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   tous les tests contenant CREA_RESU
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009363 DU 2006-01-16 09:10:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   menage dans les fichiers de tests
+FONCTIONNALITE
+   Les fichiers .msup ont ete supprimes avec le compte d'administration sous les
+   repertoire
+   /aster/v7/NEW7/astest et /aster/v8/NEW8/astest le 19/01/06.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 23/01/2006 - 13:43:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009319 DU 2006-01-03 13:32:10
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests sslv134g sous linux Calibre 3 en version NEW8.2.1
+FONCTIONNALITE
+   Ajout d'un peu de temps pour le cas test sslv134g (introduit en 8.2.1) qui plantait sous
+   Linux (60s -> 100s).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   sslv134g
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 23/01/2006 - 15:52:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009052 DU 2005-09-27 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   ssnv128e en mode debugjeveux
+FONCTIONNALITE
+   Le cas test ssnv128e plante en mode dbgjeveux en version 8.1.15 sur
+   alphaserveur avec le
+   message :
+   <STAT_NON_LINE> <TLLLGG> MATRICE NON FACTORISABLE.
+
+   Un objet libere trop tot dans mltpre (preparation de la factoriasation
+   pour la combinaison lineaire en MULT_FRONT):
+
+   CALL JELIBE(NUZ(1:14)//'.NUME.DELG')
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Lui-meme
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 004375 DU 2000-07-19 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 5.x)
+TITRE
+   Gestion des codes retour de l'integration des LDC
+FONCTIONNALITE
+   PB+CD le 24/04/05 :
+   fiche a solder sans suite. Et en re-emettre deux nouvelles :
+
+   - une pour TMA : tracer et exploiter tous les codes retours de type
+   "nb max
+   d'iterations
+   internes atteint"
+
+   - valider la remontee des codes retours et rendre coherente leur
+   gestion
+
+
+   --> Correspond a la fiche 8680, realisee en 8.1.14
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008977 DU 2005-09-09 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 7.5)
+TITRE
+   test ssnv166b et memoire
+FONCTIONNALITE
+   Ce test fonctionne tres bien sur toutes plate-formes avec 1Go
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009371 DU 2006-01-19 08:27:48
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   Changement responsable STAT_NON_LINE
+FONCTIONNALITE
+   Changement des cartes RESPONSABLES sur les routines lies a
+   STAT_NON_LINE: fortran et catalogue STAT_NON_LINE:
+   algorith/agglom.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/desagg.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/diarch.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/dideco.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/didern.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/diincl.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/diinit.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/diinst.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/dinins.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/dinit.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/dinuar.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/lister.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/merimo.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/ndlect.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmarch.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmchar.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmcomp.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmconv.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmcoup.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmdidi.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmdocn.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmdoet.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmdome.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmdomt.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmdopi.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmfext.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmfint.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmible.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmimpr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmini0.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nminit.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmiret.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmlect.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmmatr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmnoli.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmpila.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmpilo.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmprdc.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmpred.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmprex.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmprta.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmrech.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmreso.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmtble.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmvcfo.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmvcpr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/op0070.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/optili.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/pipepe.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/vebtla.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/vebume.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmgp2d.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmgp3d.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmpl2d.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/nmpl3d.f:C RESPONSABLE PBADEL P.BADEL
+
+   Les routines suivantes restent sous la responsabilite de Pierre:
+   algorith/caldtp.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/cletdr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/delagl.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/delagr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/delalo.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/delanr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/delapr.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/delect.f:C RESPONSABLE PBADEL P.BADEL
+   algorith/deloca.f:C RESPONSABLE PBADEL P.BADEL
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   Neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 23/01/2006 - 13:55:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009367 DU 2006-01-18 09:27:55
+TYPE express concernant Code_Aster (VERSION 8.0)
+TITRE
+   Compilation de aniver
+FONCTIONNALITE
+   Programmation hors norme dans aniver.f, gfortran refuse de compiler :
+
+   IF ... THEN
+   xx
+   10   BLOC
+   ELSEIF ... THEN
+   xx
+   GOTO 10
+   xx
+   ENDIF
+
+   Je recopie les lignes du bloc a la place du GOTO.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009314 DU 2006-01-03 10:25:44
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests ssnp110a et b
+FONCTIONNALITE
+   J'ajoute 1 minute a chacun des tests.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   tests eux-memes sur clp50a8
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007504 DU 2004-01-26 00:00:00
+TYPE evolution concernant Rex (VERSION 7.2)
+TITRE
+   refonte du rex, accessible en intranet
+FONCTIONNALITE
+   Mise a disposition du REX mi-decembre.
+
+   Realise sur la base de l'outil Roundup.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   RAS
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009276 DU 2005-12-19 09:53:10
+TYPE evolution concernant Rex (VERSION )
+TITRE
+   Fenetre message
+FONCTIONNALITE
+   Taille de la fenetre "Message" agrandie : fait
+
+   On ne peut joindre qu'un fichier a la fois... mais on peut le faire plusieurs fois
+   (apres
+   avoir clique sur "Submit Changes") !!!
+   Pour joindre une etude, emettre la fiche depuis astk.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nicolas      NICOLAS O.             DATE 23/01/2006 - 14:20:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009369 DU 2006-01-19 06:43:44
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   erreur generique sur la SD a MODE_ITER_INV
+FONCTIONNALITE
+   Le test exisd qui permet de tester l'existence d'une matrice etait faux suite a une
+   mauvaise correction de ma part (entier non initialise).
+   Je corrige donc le test en consequence.
+
+   Je modifie du meme coup la routine vpcrea qui etait a l'origine de ce test. Jusqu'a
+   maintenant celle-ci remplissait l'objet .REFD des structures MODE_MECA a l'aide des
+   matrices passees en argument.
+   Je passe en nouvel argument la numerotation que l'on suppose associee au mode. Je rajoute
+   plein de test pour tester :
+   1/ l'existence de tous les arguments (exisd sur matrice et numerotation)
+   2/ la coherence entre les numerotations des matrices et la numerotation fournie.
+
+   Si la numerotation fournie n'existe pas et qu'il existe des matrices, je prend la
+   numerotation de la permiere matrice qui en possede une.
+
+   Impact sur fortran : exisd, vpcrea, mdallr, nmop0045, op0044, op0045, op0037, op0093,
+   op0168 et pjefpr.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   base complete et liste sur Rocks
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009365 DU 2006-01-17 08:45:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   PRE_IDEAS et groupe de noeud
+FONCTIONNALITE
+   Jusqu'a maintenant l'operateur PRE_IDEAS permettait de creer automatiquement des groupes
+   de mailles en se basant sur leur couleur, caracteristique definie dans Ideas.
+   Je modifie presup et j'ajoute la routine snecol de maniere a ce que le mot cle
+   CREA_GROUP_COL declenche la creation de groupe de maille ET de noeud.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.01.01
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009307 DU 2005-12-29 09:58:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   RECU_FONCTION et SENSIBILITE
+FONCTIONNALITE
+   Je souhaitai disposer des derives aux points de Gauss ce qui est impossible via
+   POST_RELEVE_T.
+
+   J'introduit donc le mot cle SENSIBILITE dans l'operateur RECU_FONCTION afin de recuperer
+   dans une SD fonction la derive d'un resultat (et uniquement un resultat) en un point (ou
+   noeud...).
+   Du coup, j'en profite pour faire un menage dans RECU_FONCTION : j'eclate l'op0090 qui
+   etait un peu gros et peu lisible en plusieurs fortran suivant la SD surlaquelle on fait le
+   recu_fonction. J'ajoute donc les routines rfrcha (pour les CHAM_GD) et rfresu (pour les
+   RESU).
+   Compte tenu de l'impossibilite de faire un GETTCO sur un concept derive je modifie la
+   routine focrr0 en remplacant le GETTCO par un DISMOI. Je corrige un bug dans RSUTNU1 et
+   RSUTNU2 qui oubliaient la destruction d'un objet.
+
+   Pour tester j'ai du introduire le mot cle SENSIBILITE dans l'operateur TEST_FONCTION afin
+   de tester la derivee.
+
+   Pour exploiter cela en vue du chantier sur MACR_RECAL, j'ai introduit le mot cle
+   SENSIBILITE dans l'operateur CALC_TABLE uniquement sur la creation d'une table a partir de
+   fonctions.
+
+   PS : pour etre exhaustif il faudrait encore faire IMPR_FONCTION, CALC_FONCTION et la
+   methode Python EXTR_TABLE. J'emets une fiche en consequence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.03, U4.92.02, U4.33.02
+VALIDATION
+   sensd01a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009045 DU 2005-09-26 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   Methode RECU_MATR_GENE
+FONCTIONNALITE
+   Apres verification, je n'ai pas trouve d'erreur.
+   J'ajoute une validation dans zzzz208a afin de tester cette fonctionnalite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   zzzz208a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007713 DU 2004-04-02 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.2)
+TITRE
+   DEFI_BASE_MODALE
+FONCTIONNALITE
+   L'alarme qui previent de la presence de modes de corps rigides a ete integree en
+   7.1.x.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE :
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF forma11a                       assire A.ASSIRE           204      1      5
+ CASTEST MODIF sensd01a                      nicolas O.NICOLAS          241     50      2
+ CASTEST MODIF ssll12a                       cibhhlv L.VIVAN            743     19     25
+ CASTEST MODIF sslv111a                      cibhhlv L.VIVAN            285      1      1
+ CASTEST MODIF sslv111c                      cibhhlv L.VIVAN            236      1      1
+ CASTEST MODIF sslv130c                      cibhhlv L.VIVAN            348      1      1
+ CASTEST MODIF sslv134g                      galenne E.GALENNE         1143      1      1
+ CASTEST MODIF ssnp110a                     mcourtoi M.COURTOIS         281      1      1
+ CASTEST MODIF ssnp110b                     mcourtoi M.COURTOIS         281      1      1
+ CASTEST MODIF yyyy106a                      d6bhhjp J.P.LEFEBVRE       901      8     23
+ CASTEST MODIF yyyy106b                      d6bhhjp J.P.LEFEBVRE       738      7     16
+ CASTEST MODIF zzzz208a                      nicolas O.NICOLAS          422     26     12
+CATALOPY MODIF commande/crea_resu            d6bhhjp J.P.LEFEBVRE       133      9     15
+CATALOPY MODIF commande/crea_table           nicolas O.NICOLAS           49      9      3
+CATALOPY MODIF commande/recu_fonction        nicolas O.NICOLAS          239      9      2
+CATALOPY MODIF commande/stat_non_line         mabbas M.ABBAS            322      2      2
+CATALOPY MODIF commande/test_fonction        nicolas O.NICOLAS           90      4      1
+ FORTRAN AJOUT prepost/irvcmp                cibhhlv L.VIVAN             42     42      0
+ FORTRAN AJOUT stbtrias/snecol               nicolas O.NICOLAS          122    122      0
+ FORTRAN AJOUT utilitai/rfrcha               nicolas O.NICOLAS          186    186      0
+ FORTRAN AJOUT utilitai/rfresu               nicolas O.NICOLAS          180    180      0
+ FORTRAN MODIF algeline/mlfmlt               d6bhhjp J.P.LEFEBVRE        71      1      3
+ FORTRAN MODIF algeline/mltdrb               d6bhhjp J.P.LEFEBVRE       214      1      3
+ FORTRAN MODIF algeline/mltpre                mabbas M.ABBAS            490      2      2
+ FORTRAN MODIF algeline/nmop45               nicolas O.NICOLAS          451      7      3
+ FORTRAN MODIF algeline/op0037               nicolas O.NICOLAS          599      4      3
+ FORTRAN MODIF algeline/op0044               nicolas O.NICOLAS          784     11      4
+ FORTRAN MODIF algeline/op0045               nicolas O.NICOLAS         1072     10      3
+ FORTRAN MODIF algeline/op0093               nicolas O.NICOLAS          510     10      3
+ FORTRAN MODIF algeline/op0168               nicolas O.NICOLAS          480      4      2
+ FORTRAN MODIF algeline/vpcrea               nicolas O.NICOLAS          138     49     25
+ FORTRAN MODIF algorith/agglom                mabbas M.ABBAS             51      2      3
+ FORTRAN MODIF algorith/caldtp                mabbas M.ABBAS             48      2      2
+ FORTRAN MODIF algorith/desagg                mabbas M.ABBAS             44      2      2
+ FORTRAN MODIF algorith/diarch                mabbas M.ABBAS             86      2      2
+ FORTRAN MODIF algorith/dideco                mabbas M.ABBAS            184      2      2
+ FORTRAN MODIF algorith/didern                mabbas M.ABBAS             63      2      2
+ FORTRAN MODIF algorith/diincl                mabbas M.ABBAS             89      2      2
+ FORTRAN MODIF algorith/diinit                mabbas M.ABBAS            467      2      2
+ FORTRAN MODIF algorith/diinst                mabbas M.ABBAS             62      2      2
+ FORTRAN MODIF algorith/dinins                mabbas M.ABBAS             61      2      3
+ FORTRAN MODIF algorith/dinit                 mabbas M.ABBAS            264      2      2
+ FORTRAN MODIF algorith/dinuar                mabbas M.ABBAS             60      2      2
+ FORTRAN MODIF algorith/lister                mabbas M.ABBAS             48      2      2
+ FORTRAN MODIF algorith/mdallr               nicolas O.NICOLAS          149      2      2
+ FORTRAN MODIF algorith/merimo                mabbas M.ABBAS            469      2      2
+ FORTRAN MODIF algorith/ndlect                mabbas M.ABBAS            221      2      2
+ FORTRAN MODIF algorith/nmarch                mabbas M.ABBAS            309      2      2
+ FORTRAN MODIF algorith/nmchar                mabbas M.ABBAS            455      2      2
+ FORTRAN MODIF algorith/nmcomp                mabbas M.ABBAS            734      2      2
+ FORTRAN MODIF algorith/nmconv                mabbas M.ABBAS            675      2      2
+ FORTRAN MODIF algorith/nmcoup                mabbas M.ABBAS            192      2      2
+ FORTRAN MODIF algorith/nmdidi                mabbas M.ABBAS            161      2      2
+ FORTRAN MODIF algorith/nmdocn                mabbas M.ABBAS            124      2      2
+ FORTRAN MODIF algorith/nmdoet                mabbas M.ABBAS            388      2      2
+ FORTRAN MODIF algorith/nmdome                mabbas M.ABBAS            845      2      2
+ FORTRAN MODIF algorith/nmdomt                mabbas M.ABBAS            118      2      2
+ FORTRAN MODIF algorith/nmdopi                mabbas M.ABBAS            275      2      2
+ FORTRAN MODIF algorith/nmfext                mabbas M.ABBAS            104      2      3
+ FORTRAN MODIF algorith/nmfint                mabbas M.ABBAS            182      2      2
+ FORTRAN MODIF algorith/nmgp2d                mabbas M.ABBAS            312      2      2
+ FORTRAN MODIF algorith/nmgp3d                mabbas M.ABBAS            262      2      2
+ FORTRAN MODIF algorith/nmible                mabbas M.ABBAS            175      2      2
+ FORTRAN MODIF algorith/nmimpr                mabbas M.ABBAS            127      2      2
+ FORTRAN MODIF algorith/nmini0                mabbas M.ABBAS            133      2      2
+ FORTRAN MODIF algorith/nminit                mabbas M.ABBAS            550      2      2
+ FORTRAN MODIF algorith/nmiret                mabbas M.ABBAS            112      2      2
+ FORTRAN MODIF algorith/nmlect                mabbas M.ABBAS            156      2      2
+ FORTRAN MODIF algorith/nmmatr                mabbas M.ABBAS            439      2      2
+ FORTRAN MODIF algorith/nmnoli                mabbas M.ABBAS            138      2      2
+ FORTRAN MODIF algorith/nmpila                mabbas M.ABBAS             91      2      2
+ FORTRAN MODIF algorith/nmpilo                mabbas M.ABBAS            213      2      2
+ FORTRAN MODIF algorith/nmpl2d                mabbas M.ABBAS            331      2      2
+ FORTRAN MODIF algorith/nmpl3d                mabbas M.ABBAS            345      2      2
+ FORTRAN MODIF algorith/nmprdc                mabbas M.ABBAS            216      2      2
+ FORTRAN MODIF algorith/nmpred                mabbas M.ABBAS            125      2      2
+ FORTRAN MODIF algorith/nmprex                mabbas M.ABBAS            208      2      2
+ FORTRAN MODIF algorith/nmprta                mabbas M.ABBAS            309      2      2
+ FORTRAN MODIF algorith/nmrech                mabbas M.ABBAS            279      2      2
+ FORTRAN MODIF algorith/nmreso                mabbas M.ABBAS            159      2      2
+ FORTRAN MODIF algorith/nmtble                mabbas M.ABBAS            247      2      2
+ FORTRAN MODIF algorith/nmvcfo                mabbas M.ABBAS            225      2      2
+ FORTRAN MODIF algorith/nmvcpr                mabbas M.ABBAS            346      2      2
+ FORTRAN MODIF algorith/op0070                mabbas M.ABBAS            816      2      2
+ FORTRAN MODIF algorith/optili                mabbas M.ABBAS            357      2      2
+ FORTRAN MODIF algorith/pipepe                mabbas M.ABBAS            249      2      2
+ FORTRAN MODIF algorith/vebtla                mabbas M.ABBAS            114      2      2
+ FORTRAN MODIF algorith/vebume                mabbas M.ABBAS            121      2      2
+ FORTRAN MODIF calculel/eclaty               cibhhlv L.VIVAN            108      6      4
+ FORTRAN MODIF calculel/elref6               cibhhlv L.VIVAN            204      7      5
+ FORTRAN MODIF calculel/manopg               cibhhlv L.VIVAN            245      5      5
+ FORTRAN MODIF calculel/mecalm               cibhhlv L.VIVAN           2572      3      2
+ FORTRAN MODIF calculel/pj1dtr               cibhhlv L.VIVAN            168      6      4
+ FORTRAN MODIF calculel/pj2dtr               cibhhlv L.VIVAN            210      6      4
+ FORTRAN MODIF calculel/pj3dtr               cibhhlv L.VIVAN            281      6      4
+ FORTRAN MODIF calculel/pjefpr               nicolas O.NICOLAS          194      3      3
+ FORTRAN MODIF calculel/thaclm               cibhhlv L.VIVAN            891      3      2
+ FORTRAN MODIF calculel/trresu               nicolas O.NICOLAS          216      1      2
+ FORTRAN MODIF elements/aniver              mcourtoi M.COURTOIS         343     16      3
+ FORTRAN MODIF elements/dffno                cibhhlv L.VIVAN             51      6      4
+ FORTRAN MODIF elements/inmat6               cibhhlv L.VIVAN            120     10      8
+ FORTRAN MODIF elements/jni079               cibhhlv L.VIVAN            221      6      4
+ FORTRAN MODIF elements/utelvf               cibhhlv L.VIVAN             94      2      2
+ FORTRAN MODIF prepost/irccmp                cibhhlv L.VIVAN             72      6      4
+ FORTRAN MODIF prepost/irchml                cibhhlv L.VIVAN            337      2      2
+ FORTRAN MODIF prepost/irdepl                cibhhlv L.VIVAN            416      2      2
+ FORTRAN MODIF prepost/op0039                cibhhlv L.VIVAN            885     44      5
+ FORTRAN MODIF prepost/op0135                nicolas O.NICOLAS          510     54     10
+ FORTRAN MODIF stbtrias/presup               nicolas O.NICOLAS          197      2      1
+ FORTRAN MODIF utilitai/exisd                nicolas O.NICOLAS          226      2      3
+ FORTRAN MODIF utilitai/focrr0               nicolas O.NICOLAS          201      4      2
+ FORTRAN MODIF utilitai/op0036               nicolas O.NICOLAS          290     60     14
+ FORTRAN MODIF utilitai/op0090               nicolas O.NICOLAS           99     16    203
+ FORTRAN MODIF utilitai/pecag2               d6bhhjp J.P.LEFEBVRE       237     13      2
+ FORTRAN MODIF utilitai/rfbefl               nicolas O.NICOLAS          194     15      1
+ FORTRAN MODIF utilitai/rfnoch               nicolas O.NICOLAS          102     15      2
+ FORTRAN MODIF utilitai/rfobst               nicolas O.NICOLAS          109     14      1
+ FORTRAN MODIF utilitai/rfrgen               nicolas O.NICOLAS          301     16      2
+ FORTRAN MODIF utilitai/rftabl               nicolas O.NICOLAS          109     14      1
+ FORTRAN MODIF utilitai/rsutn1               nicolas O.NICOLAS          125      3      1
+ FORTRAN MODIF utilitai/rsutn2               nicolas O.NICOLAS          104      3      1
+ FORTRAN MODIF utilitai/utlicm               cibhhlv L.VIVAN            150      2      2
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES    nicolas O.NICOLAS          237      3      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         530       530              +530
+ MODIF :  119       36367       739     596      +143
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  123       36897      1269     596      +673 

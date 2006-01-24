@@ -5,7 +5,7 @@
       INTEGER NUTM2D(5)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,11 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      CHARACTER*8  M1, M2, KB, ELREFA, FAPG(10)
-      INTEGER      NBPG(10), CNQUAD(3,2)
-      REAL*8       CRREFE(81), KSI, ETA, X(2), FF(27)
+      INTEGER        NBNOMX,    NBFAMX
+      PARAMETER    ( NBNOMX=27, NBFAMX=20)
+      CHARACTER*8  M1, M2, KB, ELREFA, FAPG(NBFAMX)
+      INTEGER      NBPG(NBFAMX), CNQUAD(3,2)
+      REAL*8       CRREFE(3*NBNOMX), KSI, ETA, X(2), FF(NBNOMX)
 C --- DEB --------------------------------------------------------------
 
       CALL JEMARQ()

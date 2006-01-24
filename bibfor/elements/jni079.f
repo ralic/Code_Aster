@@ -5,7 +5,7 @@
       CHARACTER*24        LIOBJ(NMAXOB)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,10 +44,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
-      INTEGER       NNO, NC, IRET, NDIM, NNOS, NBFPG, NBPG(27)
+      INTEGER    NBPGMX,    NBNOMX,    NBFAMX
+      PARAMETER (NBPGMX=27, NBNOMX=27, NBFAMX=20)
+      INTEGER       NNO, NC, IRET, NDIM, NNOS, NBFPG, NBPG(NBPGMX)
       INTEGER       LZR, LQSI, LETA, LWGT, IND, NUFL, LDESR, INDIK8
-      REAL*8        X(3*27), VOL
-      CHARACTER*8   ELREF0, FAMILL, FAPG(27)
+      REAL*8        X(3*NBNOMX), VOL
+      CHARACTER*8   ELREF0, FAMILL, FAPG(NBFAMX)
       CHARACTER*24  DESR
 C DEB ------------------------------------------------------------------
 

@@ -3,7 +3,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -140,7 +140,7 @@ C        --- VECTEUR PROPRE ---
 
  100  CONTINUE
 
-      CALL VPCREA(0,NOMRES,' ',' ',' ',IER)
+      CALL VPCREA(0,NOMRES,' ',' ',' ',' ',IER)
       CALL JEDETC (' ',NUMGEN,1)
       CALL JEDETC (' ',MATGEN,1)
 

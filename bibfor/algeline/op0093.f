@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGELINE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 NOSIMP, NOPASE
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
-      CHARACTER*19 CHAMNO, RAIDE, RAILDL, MASSE, AMOR
+      CHARACTER*19 CHAMNO, RAIDE, RAILDL, MASSE, AMOR,NUMEDD
       CHARACTER*24  VALE
       LOGICAL      DEPLIM, FORCIM, ACCUNI, ACCDDL, DIRECT
       LOGICAL      LMOD,LBID
@@ -84,7 +84,14 @@ C
       ENDIF
 C
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
-      CALL VPCREA(0,RESU,MASSE,AMOR,RAIDE,IBID)
+      CALL EXISD('MATR_ASSE',RAIDE,IBID)
+      IF (IBID.NE.0) THEN
+        CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,
+     &              NUMEDD,IRET)
+      ELSE
+        NUMEDD=' '
+      ENDIF
+      CALL VPCREA(0,RESU,MASSE,AMOR,RAIDE,NUMEDD,IBID)
 C
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)

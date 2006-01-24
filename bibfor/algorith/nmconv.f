@@ -8,7 +8,7 @@
      &                   FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C TOLE CRP_20
-C RESPONSABLE PBADEL P.BADEL
+C RESPONSABLE MABBAS M.ABBAS
 C ======================================================================
       IMPLICIT     NONE
       INTEGER      ZFON

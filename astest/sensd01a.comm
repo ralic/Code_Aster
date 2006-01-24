@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 # RESPONSABLE S.CAMBIER
 # TITRE Sensibilite au chargement/condition limite dans DYNA_LYNE_HARM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,6 +27,7 @@
 # ----------------------------------------------------------------------
 
 DEBUT( CODE=_F(  NOM = 'sensd01a',NIV_PUB_WEB='INTERNET') )
+
 
 # 1. Definition des parametres sensibles
 #
@@ -111,11 +112,58 @@ DYHA=DYNA_LINE_HARM( MODELE=MO, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT,
                               TOUT_CHAM='OUI',
                               EXCIT=(_F( COEF_MULT_C = 1.+0.j, CHARGE = CLIM2),                                                           
                                           _F(FONC_MULT_C = FC, CHARGE = CH)),                             
-                              SENSIBILITE=(F1,F2,D1),)                              
+                              SENSIBILITE=(F1,F2,D1),
+)                              
+
+
+DTZ2=RECU_FONCTION(RESULTAT=DYHA,
+                   SENSIBILITE=(F1,F2,D1),
+                   NOM_CHAM='DEPL',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='DX',
+                   NOEUD='NO5',);
+
+RLTH=POST_RELEVE_T(ACTION=(_F(RESULTAT = DYHA,
+                              INTITULE='BIDON',
+                              SENSIBILITE=(F1),
+                              NOM_CHAM='DEPL',
+                              OPERATION='EXTRACTION',
+                              NOEUD='NO5',
+                              NOM_CMP='DX',),),);
+
+TINCA=CREA_TABLE(FONCTION=_F(FONCTION=DTZ2,
+                             SENSIBILITE=(F1,F2,D1),
+                             ),
+                 );
+
 #
 # 7. Test
 #----------------------------------------------------------
+TEST_FONCTION(VALEUR=(
+    _F(FONCTION=DTZ2,
+       SENSIBILITE=(F1),
+       NOM_PARA='FREQ',VALE_PARA=40.,PRECISION = 1.E-3,
+       VALE_REFE_C=-2.5695869E-06-2.7550424E-07j,REFERENCE='ANALYTIQUE'),
+       ));
+
+TEST_TABLE(TABLE=TINCA,
+           NOM_PARA='DX',
+           SENSIBILITE=(F1),
+           FILTRE          =_F(
+                 NOM_PARA='FREQ',
+                 CRIT_COMP='EQ',
+                 VALE=40.,
+                               ),
+           VALE_C=-2.5695869E-06-2.7550424E-07j,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',);
 #
+TEST_RESU(RESU=(
+      _F( RESULTAT = DYHA,    NUME_ORDRE = 2, PARA = 'FREQ',
+          SENSIBILITE=(F1),
+          CRITERE = 'ABSOLU', VALE = 40., PRECISION = 1.E-8, REFERENCE = 'ANALYTIQUE',),
+               ),
+         );
 #
 TEST_RESU(RESU=(
       _F( RESULTAT = DYHA,    NUME_ORDRE = 2, PARA = 'FREQ',

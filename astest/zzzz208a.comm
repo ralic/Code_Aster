@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,6 +141,29 @@ FDIAGC=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMDIAG,
                     VECT_ASSE=FASC,);
                     
+# EXTRACTION DES MATRICES & VECTEURS GENERALISES VERS PYTHON
+#-----------------------------------------------------------
+KPYD=KDIAG.EXTR_MATR_GENE()                  
+KPYDC=KDIAGC.EXTR_MATR_GENE()                  
+MPYD=MDIAG.EXTR_MATR_GENE()                  
+FPYD=FDIAG.EXTR_VECT_GENE()                  
+FPYDC=FDIAGC.EXTR_VECT_GENE()                  
+
+# MODIFICATION DES MATRICES & VECTEURS GENERALISES DANS PYTHON
+#-------------------------------------------------------------
+KPYD2=KPYD*2
+KPYDC2=KPYDC*2
+FPYDC2=FPYDC*0.5
+
+# RECUPERATION DES MATRICES & VECTEURS GENERALISES MODIFIES DANS ASTER
+#---------------------------------------------------------------------
+# On ecrase donc les anciennes valeurs !!
+KDIAG.RECU_MATR_GENE(KPYD2)
+KDIAGC.RECU_MATR_GENE(KPYDC2)
+FDIAGC.RECU_VECT_GENE(FPYDC2)
+
+# CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
+#-----------------------------------------------------------
 # calcul des modes propres generalises
 MODEGD=MODE_ITER_SIMULT(MATR_A=KDIAG,
                        MATR_B=MDIAG,
@@ -156,26 +179,17 @@ DYNDIAG=DYNA_LINE_HARM(MATR_MASS=MDIAG,
                     EXCIT=_F(VECT_ASSE=FDIAGC,
                              COEF_MULT=1.0,),);
 
-
-# EXTRACTION DES MATRICES & VECTEURS GENERALISES VERS PYTHON
-#-----------------------------------------------------------
-KPYD=KDIAG.EXTR_MATR_GENE()                  
-KPYDC=KDIAGC.EXTR_MATR_GENE()                  
-MPYD=MDIAG.EXTR_MATR_GENE()                  
-FPYD=FDIAG.EXTR_VECT_GENE()                  
-FPYDC=FDIAGC.EXTR_VECT_GENE()                  
-
 # CALCUL PAR NUMERICAL PYTHON
 #----------------------------
 # inversion de la matrice de masse
 MPYDI=LinearAlgebra.inverse(MPYD)
 # calcul des valeurs propres generalises par Numerical Python sur K*inv(M)
-frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYD,MPYDI))
+frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYD2,MPYDI))
 # tri des valeurs propres
 frequence=Numeric.sort(Numeric.sqrt(frequence)/2/Numeric.pi)
 
 # resolution du systeme lineaire par Numerical Python
-DYNPYD=LinearAlgebra.solve_linear_equations(KPYDC-((2*Numeric.pi*500.)**2)*MPYD, FPYDC)
+DYNPYD=LinearAlgebra.solve_linear_equations(KPYDC2-((2*Numeric.pi*500.)**2)*MPYD, FPYDC2)
 # calcul de la somme des composantes generalisees
 VALDYND=(Numeric.sum(DYNPYD).real)+(Numeric.sum(DYNPYD).imag)
 

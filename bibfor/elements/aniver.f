@@ -1,6 +1,6 @@
       SUBROUTINE  ANIVER(MATER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/01/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -259,8 +259,8 @@ C             ----------------------------------------------
 C
 C ---         TRAITEMENT DU CAS DES CONTRAINTES PLANES :
 C             ----------------------------------------
-  100         CONTINUE
-C
+ 100          CONTINUE
+C              
               DO 30 I = 1, 6
               DO 30 J = 1, 6
                 DORTH(I,J) = ZERO
@@ -275,7 +275,6 @@ C
               DORTH(2,1) = DORTH(1,2)
 C
               DORTH(4,4) = G12
-C
 C ---         CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
 C             ----------------------------------------------
               CALL DORTVP(NDIM,NOMRC,DORTH,'CP')
@@ -289,7 +288,21 @@ C           --------------------
               IF (E3.EQ.ZERO) GOTO 20
               IF (IEN.EQ.0) THEN
                 NDIM = 2
-                GOTO 100
+                DO 31 I = 1, 6
+                DO 31 J = 1, 6
+                  DORTH(I,J) = ZERO
+31              CONTINUE
+C
+                NU21  = E2*NU12/E1
+                DELTA = UN-NU12*NU21
+C
+                DORTH(1,1) = E1/DELTA
+                DORTH(1,2) = NU12*E2/DELTA
+                DORTH(2,2) = E2/DELTA
+                DORTH(2,1) = DORTH(1,2)
+                DORTH(4,4) = G12
+C ---           CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
+                CALL DORTVP(NDIM,NOMRC,DORTH,'CP')
               ENDIF           
 C
               NU21  = E2*NU12/E1

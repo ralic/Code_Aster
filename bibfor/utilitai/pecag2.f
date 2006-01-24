@@ -5,7 +5,7 @@
       LOGICAL  NSYMX, NSYMY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/12/2001   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILITAI  DATE 24/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,8 +114,8 @@ C
 C
 C     TRAITEMENT DE ORIG_INER
 C
-      IF ( NP .NE. 0 ) THEN
-         IF ( NDIM .EQ. 2 ) THEN
+      IF ( NDIM .EQ. 2 ) THEN
+         IF ( NP .NE. 0 ) THEN
             XP = XYP(1)
             YP = XYP(2)
             XGP = XP - CDGX
@@ -129,6 +129,17 @@ C
      +               - AIRE*XGP*(XGP*XGP+YGP*YGP) - 2.0D0*YGP*IXY
             VALPAR(21) = XP
             VALPAR(22) = YP
+            VALPAR(23) = IXXP
+            VALPAR(24) = IYYP
+            VALPAR(25) = IXYP
+         ELSE
+            IXXP = IXX 
+            IYYP = IYY
+            IXYP = IXY
+            IXPR2P = IXR2
+            IYPR2P = IYR2
+            VALPAR(21) = CDGX
+            VALPAR(22) = CDGY
             VALPAR(23) = IXXP
             VALPAR(24) = IYYP
             VALPAR(25) = IXYP

@@ -3,7 +3,7 @@
       LOGICAL             LGRCOU
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,6 +142,7 @@ C  -->   LECTURE ET ECRITURE DES  NOEUDS
      &               DATSET)
          LARRET=.FALSE.
          CALL ECRNEU(NBNODE,AMA,BMA,CMA,AMI,BMI,CMI,MIN,MAN,ITES)
+         IF ( LGRCOU )  CALL SNECOL(NBNODE)
 C
 C
       ELSE IF ((DATSET.EQ.71).OR.(DATSET.EQ.780)

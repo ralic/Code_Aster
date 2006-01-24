@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,14 +40,21 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JLNG
       INTEGER NBLIGN
       REAL*8  RBID,VR(2)
-      COMPLEX*16 CBID 
+      COMPLEX*16 CBID,VC(2)
       CHARACTER*1 KBID
       CHARACTER*3 NTYP
-      CHARACTER*8  RESULT,TYPARA(2)
+      CHARACTER*8  RESULT,TYPARR(2),TYPARC(2)
       CHARACTER*16 CONCEP,NOMCMD,NMPAR,NMPAR1,NMPARF(2)
       CHARACTER*19 NFCT
       CHARACTER*24 TRAV,LDBL,INDIC,LTYP,WORK
-      DATA TYPARA / 'R'       , 'R'       /   
+C SENSIBILITE
+      INTEGER      NRPASS,NBPASS,ADRECG,IAUX,IRET
+      CHARACTER*19 LATAB1,NOPASE,LERES0
+      CHARACTER*24 NORECG
+      CHARACTER*38 TITRES
+C SENSIBILITE
+      DATA TYPARR / 'R'       , 'R'       /   
+      DATA TYPARC / 'R'       , 'C'       /   
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -62,6 +69,9 @@ C     ------------------------------------------------------------------
       LDBL='&&OP0036.DBL'
       LTYP='&&OP0036.TYP'
       WORK='&&OP0036.WOR'
+C
+      NORECG = '&&'//'OP0135'//'_RESULTA_GD     '
+C
 C
 C     ==========
 C --- CAS: LISTE 
@@ -211,31 +221,67 @@ C --- CAS : FONCTION
 C     ==============
 
       ELSEIF(NOCC2.NE.0)THEN
-         CALL TBCRSD(RESULT,'G')
-         CALL GETVID('FONCTION','FONCTION',1,1,1,NFCT,IR)
-         CALL JEVEUO(NFCT//'.PROL','L',JPROL)
-         IF(ZK16(JPROL).NE.'FONCTION' .AND.
-     &      ZK16(JPROL).NE.'CONSTANT')
+C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
+C
+        CALL PSRESE ( 'FONCTION', 1, 1, RESULT, 1,
+     >              NBPASS, NORECG, IRET )
+C
+        IF ( IRET.EQ.0 ) THEN
+          CALL JEVEUO ( NORECG, 'L', ADRECG )
+        ENDIF
+C
+        DO 60 , NRPASS = 1 , NBPASS
+          LATAB1 = '                   '
+          LATAB1(1:8) = ZK24(ADRECG+2*NRPASS-2)(1:8)
+          NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
+          CALL GETVID('FONCTION','FONCTION',1,1,1,NFCT,IR)
+          IF (NOPASE.EQ.' ') THEN
+            LERES0 = NFCT
+          ELSE
+            CALL PSRENC ( NFCT, NOPASE, LERES0, IRET )
+            IF ( IRET.NE.0 ) THEN
+              CALL UTMESS ('F', 'OP0036','IMPOSSIBLE DE TROUVER'//
+     >   ' LE RESULTAT DERIVE ASSOCIE A LA FONCTION '//
+     >  NFCT//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+            ENDIF
+          ENDIF
+
+          CALL TBCRSD(LATAB1,'G')
+          CALL JEVEUO(LERES0//'.PROL','L',JPROL)
+          IF(ZK16(JPROL).NE.'FONCTION' .AND.
+     &      ZK16(JPROL).NE.'CONSTANT'.AND.
+     &      ZK16(JPROL).NE.'FONCT_C')
      &      CALL UTMESS('F','OP0036','FONCTION'//
      &        ' INCOMPATIBLE AVEC '//NOMCMD)  
-         CALL GETVTX('FONCTION','PARA',1,1,2,NMPARF,IR)
-         IF(IR.EQ.0)THEN
+          CALL GETVTX('FONCTION','PARA',1,1,2,NMPARF,IR)
+          IF(IR.EQ.0)THEN
             NMPARF(1)=ZK16(JPROL+2)
             NMPARF(2)=ZK16(JPROL+3) 
-         ENDIF
-         IF(NMPARF(1).EQ.NMPARF(2)) CALL UTMESS('F','OP0036',
-     &   'LES NOMS DE CHAQUE PARAMETRE DOIVENT ETRE DIFFERENTS') 
-         CALL TBAJPA(RESULT,2,NMPARF,TYPARA)
-         CALL JELIRA(NFCT//'.VALE','LONMAX',NDIM,KBID)
-         CALL JEVEUO(NFCT//'.VALE','L',JJJ)
-         DO 300 I=1,NDIM/2
-C NON, LES ORDONNEES SONT A LA FIN       VR(2)=ZR(JJJ+2*I-1)
-C            VR(1)=ZR(JJJ+2*I-2)
-C            VR(2)=ZR(JJJ+2*I-1)
-            VR(1)=ZR(JJJ-1+I)
-            VR(2)=ZR(JJJ-1+NDIM/2+I)
-            CALL TBAJLI(RESULT,2,NMPARF,IBID,VR,CBID,KBID,0)
- 300  CONTINUE
+          ENDIF
+          IF(NMPARF(1).EQ.NMPARF(2)) CALL UTMESS('F','OP0036',
+     &    'LES NOMS DE CHAQUE PARAMETRE DOIVENT ETRE DIFFERENTS') 
+          IF (ZK16(JPROL).EQ.'FONCT_C') THEN
+            CALL TBAJPA(LATAB1,2,NMPARF,TYPARC)
+          ELSE
+            CALL TBAJPA(LATAB1,2,NMPARF,TYPARR)
+          ENDIF
+          CALL JELIRA(LERES0//'.VALE','LONMAX',NDIM,KBID)
+          CALL JEVEUO(LERES0//'.VALE','L',JJJ)
+          IF (ZK16(JPROL).EQ.'FONCT_C') THEN
+            DO 301 I=1,NDIM/3
+              VR(1)=ZR(JJJ-1+I)
+              VC(1)=DCMPLX(ZR(JJJ-1+NDIM/3+2*I-1),ZR(JJJ-1+NDIM/3+2*I))
+              CALL TBAJLI(LATAB1,2,NMPARF,IBID,VR,VC,KBID,0)
+ 301        CONTINUE
+          ELSE
+            DO 300 I=1,NDIM/2
+              VR(1)=ZR(JJJ-1+I)
+              VR(2)=ZR(JJJ-1+NDIM/2+I)
+              CALL TBAJLI(LATAB1,2,NMPARF,IBID,VR,CBID,KBID,0)
+ 300        CONTINUE
+          ENDIF
+  60    CONTINUE
+        CALL JEDETR ( NORECG )
       ENDIF
 
       CALL TITRE

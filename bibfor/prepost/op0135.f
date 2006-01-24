@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE MCOURTOI M.COURTOIS
+C TOLE CRP_20
 C
 C     COMMANDE:  TEST_FONCTION
 C
@@ -54,10 +55,19 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*50 TEXTE
       COMPLEX*16   REFC, VALC , ZEROC
       LOGICAL      LOK, ULEXIS
+C SENSIBILITE
+      INTEGER NRPASS,NBPASS,ADRECG,IAUX
+      CHARACTER*19 LAFONC,NOPASE
+      CHARACTER*24 NORECG
+      CHARACTER*38 TITRES
+C SENSIBILITE
 C     ------------------------------------------------------------------
 C
+
       CALL JEMARQ()
       CALL INFMAJ()
+C
+      NORECG = '&&'//'OP0135'//'_RESULTA_GD     '
 C
       ZERO   = 0.D0
       ZEROC  = DCMPLX(0.D0,0.D0)
@@ -77,6 +87,7 @@ C
       WRITE(IFIC,1000)
 C
       CALL GETVTX(' ','TEST_NOOK',0,1,1,OUINON,N1)
+
 C
 C     --- TRAITEMENT DU MOT CLE FACTEUR "VALEUR" -----------------------
 C
@@ -87,246 +98,279 @@ C
          CALL GETVTX('VALEUR','CRITERE'  ,IOCC,1,1,CRIT  ,N2)
          CALL GETVID('VALEUR','FONCTION' ,IOCC,1,1,NOMFON,N3)
 C
-         CHPROL = NOMFON//'.PROL'
-         CALL JEVEUO(CHPROL,'L',LPROL)
-         CALL GETVTX('VALEUR','NOM_PARA'  ,IOCC,1,0,K8B  ,N4)
-         IF (N4.NE.0) THEN
-            NBPU = -N4
-            CALL GETVTX('VALEUR','NOM_PARA',IOCC,1,NBPU,NOMPU,N4)
-         ELSE
-            IF (ZK16(LPROL).EQ.'INTERPRE') THEN
-              CALL FONBPA(NOMFON,ZK16(LPROL),CBID,2,NBPU,NOMPU)
-            ELSE
-              NBPU = 1
-              NOMPU(1) = ZK16(LPROL+2)
-            ENDIF
+C=======================================================================
+C -- SENSIBILITE : NOMBRE DE PASSAGES
+C=======================================================================
+         IAUX = IOCC
+         CALL PSRESE('VALEUR',IAUX,1,NOMFON,1,NBPASS,NORECG,IRET)
+         IF ( IRET.EQ.0 ) THEN
+           CALL JEVEUO ( NORECG, 'L', ADRECG )
          ENDIF
-         IF (ZK16(LPROL).EQ.'NAPPE   ' .AND. NBPU.EQ.1) THEN
-            CALL UTMESS('A','TEST_FONCTION','IL FAUT DEFINIR DEUX PAR'//
-     +                                        'AMETRES POUR UNE NAPPE.')
-            GOTO 10
-         ENDIF
+C=======================================================================
 C
-         IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
-           CALL GETVR8('VALEUR','VALE_PARA'  ,IOCC,1,1,VALPU,N5)
-           CALL GETVC8('VALEUR','VALE_REFE_C',IOCC,1,1,REFC,N7)
-         ELSE
-           CALL GETVR8('VALEUR','VALE_PARA' ,IOCC,1,NBPU,VALPU,N5)
-           CALL GETVR8('VALEUR','VALE_REFE' ,IOCC,1,1   ,REFR ,N6)
-         ENDIF
-C
-         IF (ZK16(LPROL).EQ.'NAPPE   ') THEN
-            L1 = MAX(1,LXLGUT(NOMFON))
-            L2 = MAX(1,LXLGUT(NOMPU(1)))
-            WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
-     +                ', NOM_PARA: ',NOMPU(1)(1:L2),', PARA: ',VALPU(1)
-         ELSE
-            WRITE(IFIC,*)'---- FONCTION: ',NOMFON
-         ENDIF
-         CALL UTEST3 ( IFIC, 'VALEUR', IOCC )
-         LABEL = ' '
-         WRITE(LABEL(6:17),'(1P,E12.5)' ) VALPU(NBPU)
-C
-         IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
-           CALL FOINTC(NOMFON,0,' ',VALPU(1),RESURE,RESUIM,IRET)
-           IF ( OUINON .EQ. 'OUI' ) THEN
-              K12 = ZK16(LPROL+2)
-              TESTOK = ' OK '
-              IF ( IRET .EQ. 0 ) THEN
-                VALC = DCMPLX(RESURE,RESUIM)
-                IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
-                  LOK = ( ABS(VALC-REFC) .LE. EPSI * ABS(REFC))
-                  IF ( ABS(REFC) .NE. ZEROC ) THEN
-                    ERR = ABS(VALC - REFC) /  ABS(REFC)
-                  ELSE
-                    ERR = 999.999999D0
-                  ENDIF
-                  IF ( LOK ) THEN
-                    TESTOK = 'NOOK'
-                    TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
-                    WRITE(IFIC,1300) TESTOK, TEXTE
-                  ELSE
-                    TESTOK = ' OK '
-                    WRITE(IFIC,3000) TESTOK, K12, CRIT(1:4), ERR, VALC
-                    WRITE(IFIC,3100) LABEL, EPSI, REFC
-                  ENDIF
-                ELSE
-                  LOK = ( ABS(VALC - REFC) .LE. EPSI )
-                  ERR =   ABS(VALC - REFC)
-                  IF ( LOK ) THEN
-                    TESTOK = 'NOOK'
-                    TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
-                    WRITE(IFIC,1300) TESTOK, TEXTE
-                  ELSE
-                    TESTOK = ' OK '
-                    WRITE(IFIC,3200) TESTOK, K12, CRIT(1:4), ERR, VALC
-                    WRITE(IFIC,3210) LABEL, EPSI, REFC
-                  ENDIF
-                ENDIF
-              ELSEIF ( IRET .EQ. 10 ) THEN
-                 TEXTE = ' MOINS DE 1 POINT POUR DEFINIR LA FONCTION'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 20 ) THEN
-                 TEXTE = ' EXTRAPOLATION NON PERMISE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 30 ) THEN
-                 TEXTE = ' DEBORDEMENT A GAUCHE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 40 ) THEN
-                 TEXTE = ' DEBORDEMENT A DROITE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 200 ) THEN
-                 TEXTE = ' INTERPOLATION NON PERMISE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 210 ) THEN
-                 TEXTE = ' PARAMETRE EN DOUBLE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 220 ) THEN
-                 TEXTE = ' PARAMETRE NON CORRECT'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 230 ) THEN
-                 TEXTE = ' TYPE INTERPOLATION INCONNU'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 240 ) THEN
-                 TEXTE = ' RECHERCHE DE LA VALEUR INCONNUE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 100 ) THEN
-                 TEXTE = ' TYPE DE FONCTION NON VALIDE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 110 ) THEN
-                 TEXTE = ' PAS ASSEZ DE PARAMETRES'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 120 ) THEN
-                 TEXTE = ' PARAMETRE EN DOUBLE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 130 ) THEN
-                 TEXTE = ' PARAMETRE NON CORRECT'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 140 ) THEN
-                 TEXTE = ' TYPE INTERPOLATION PARA NAPPE INCONNU'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 150 ) THEN
-                 TEXTE = ' TYPE DE FONCTION NON TRAITE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 160 ) THEN
-                 TEXTE = ' PAS ASSEZ DE PARAMETRES'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 170 ) THEN
-                 TEXTE = ' INTERPOLATION PARA NAPPE NON PERMISE'
-                 WRITE(IFIC,1300) TESTOK, TEXTE
-              ENDIF
+         DO 60,NRPASS = 1,NBPASS
+
+C      POUR LE PASSAGE NUMERO NRPASS :
+C      . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
+C      . NOM DU PARAMETRE DE SENSIBILITE
+
+           LAFONC = ZK24(ADRECG+2*NRPASS-2) (1:8)
+           NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
+           IF (NOPASE.EQ.' ') THEN
+C                      12345678901234567890123456789012345678
+             TITRES = '                                      '
            ELSE
-             IF (IRET.NE. 0) THEN
-               RVAL = R8NNEM()
-               VALC = DCMPLX(RVAL,RVAL)
-               TESTOK = 'NOOK'
-               TEXTE = ' PB INTERPOLATION. VOIR MESSAGE CI-DESSUS'
-               WRITE(IFIC,1300) TESTOK, TEXTE
+             TITRES = ' ... SENSIBILITE AU PARAMETRE '//NOPASE
+           END IF
+ 
+           CHPROL = LAFONC//'.PROL'
+           CALL JEEXIN(CHPROL,IRET)
+           IF (IRET.NE.0)THEN
+           CALL JEVEUO(CHPROL,'L',LPROL)
+           ELSE
+             CALL UTMESS('F','TEST_FONCTION','LA FONCTION '//
+     +                       'N''EXISTE PAS.')
+           ENDIF
+           CALL GETVTX('VALEUR','NOM_PARA'  ,IOCC,1,0,K8B  ,N4)
+           IF (N4.NE.0) THEN
+             NBPU = -N4
+             CALL GETVTX('VALEUR','NOM_PARA',IOCC,1,NBPU,NOMPU,N4)
+           ELSE
+             IF (ZK16(LPROL).EQ.'INTERPRE') THEN
+               CALL FONBPA(LAFONC,ZK16(LPROL),CBID,2,NBPU,NOMPU)
              ELSE
-               VALC = DCMPLX(RESURE,RESUIM)
-               CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
-     +                            VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+               NBPU = 1
+               NOMPU(1) = ZK16(LPROL+2)
              ENDIF
            ENDIF
-         ELSE
-           CALL FOINTE (' ',NOMFON,NBPU,NOMPU,VALPU,VALR,IRET)
-           IF ( OUINON .EQ. 'OUI' ) THEN
-              K12 = NOMPU(NBPU)
-              TESTOK = ' OK '
-              IF ( IRET .EQ. 0 ) THEN
-                IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
-                  LOK = ( ABS(VALR-REFR) .LE. EPSI * ABS(REFR) )
-                  IF ( ABS(REFR) .NE. ZERO ) THEN
-                    ERR = (VALR - REFR) / REFR
-                  ELSE
-                    ERR = 999.999999D0
-                  ENDIF
-                  IF ( LOK ) THEN
-                    TESTOK = 'NOOK'
-                    TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
-                    WRITE(IFIC,1300) TESTOK, TEXTE
-                  ELSE
-                    TESTOK = ' OK '
-                    WRITE(IFIC,2000) TESTOK, K12, CRIT(1:4), ERR, VALR
-                    WRITE(IFIC,2100) LABEL, EPSI, REFR
-                  ENDIF
-                ELSE
-                  LOK = ( ABS(VALR - REFR) .LE. EPSI )
-                  ERR =       VALR - REFR
-                  IF ( LOK ) THEN
-                    TESTOK = 'NOOK'
-                    TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
-                    WRITE(IFIC,1300) TESTOK, TEXTE
-                  ELSE
-                    TESTOK = ' OK '
-                    WRITE(IFIC,2200) TESTOK, K12, CRIT(1:4), ERR, VALR
-                    WRITE(IFIC,2210) LABEL, EPSI, REFR
-                  ENDIF
-                ENDIF
-              ELSEIF ( IRET .EQ. 10 ) THEN
+           IF (ZK16(LPROL).EQ.'NAPPE   ' .AND. NBPU.EQ.1) THEN
+             CALL UTMESS('A','TEST_FONCTION','IL FAUT DEFINIR DEUX '//
+     +                       'PARAMETRES POUR UNE NAPPE.')
+             GOTO 10
+           ENDIF
+C
+           IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
+             CALL GETVR8('VALEUR','VALE_PARA'  ,IOCC,1,1,VALPU,N5)
+             CALL GETVC8('VALEUR','VALE_REFE_C',IOCC,1,1,REFC,N7)
+           ELSE
+             CALL GETVR8('VALEUR','VALE_PARA' ,IOCC,1,NBPU,VALPU,N5)
+             CALL GETVR8('VALEUR','VALE_REFE' ,IOCC,1,1   ,REFR ,N6)
+           ENDIF
+C
+           IF (ZK16(LPROL).EQ.'NAPPE   ') THEN
+             L1 = MAX(1,LXLGUT(LAFONC))
+             L2 = MAX(1,LXLGUT(NOMPU(1)))
+             WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
+     +                ', NOM_PARA: ',NOMPU(1)(1:L2),', PARA: ',VALPU(1)
+           ELSE
+             WRITE(IFIC,*)'---- FONCTION: ',NOMFON,TITRES
+           ENDIF
+           CALL UTEST3 ( IFIC, 'VALEUR', IOCC )
+           LABEL = ' '
+           WRITE(LABEL(6:17),'(1P,E12.5)' ) VALPU(NBPU)
+C
+           IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
+             CALL FOINTC(LAFONC,0,' ',VALPU(1),RESURE,RESUIM,IRET)
+             IF ( OUINON .EQ. 'OUI' ) THEN
+               K12 = ZK16(LPROL+2)
+               TESTOK = ' OK '
+               IF ( IRET .EQ. 0 ) THEN
+                 VALC = DCMPLX(RESURE,RESUIM)
+                 IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
+                   LOK = ( ABS(VALC-REFC) .LE. EPSI * ABS(REFC))
+                   IF ( ABS(REFC) .NE. ZEROC ) THEN
+                     ERR = ABS(VALC - REFC) /  ABS(REFC)
+                   ELSE
+                     ERR = 999.999999D0
+                   ENDIF
+                   IF ( LOK ) THEN
+                     TESTOK = 'NOOK'
+                     TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
+                     WRITE(IFIC,1300) TESTOK, TEXTE
+                   ELSE
+                     TESTOK = ' OK '
+                     WRITE(IFIC,3000) TESTOK, K12, CRIT(1:4), ERR, VALC
+                     WRITE(IFIC,3100) LABEL, EPSI, REFC
+                   ENDIF
+                 ELSE
+                   LOK = ( ABS(VALC - REFC) .LE. EPSI )
+                   ERR =   ABS(VALC - REFC)
+                   IF ( LOK ) THEN
+                     TESTOK = 'NOOK'
+                     TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
+                     WRITE(IFIC,1300) TESTOK, TEXTE
+                   ELSE
+                     TESTOK = ' OK '
+                     WRITE(IFIC,3200) TESTOK, K12, CRIT(1:4), ERR, VALC
+                     WRITE(IFIC,3210) LABEL, EPSI, REFC
+                   ENDIF
+                 ENDIF
+               ELSEIF ( IRET .EQ. 10 ) THEN
                  TEXTE = ' MOINS DE 1 POINT POUR DEFINIR LA FONCTION'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 20 ) THEN
+               ELSEIF ( IRET .EQ. 20 ) THEN
                  TEXTE = ' EXTRAPOLATION NON PERMISE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 30 ) THEN
+               ELSEIF ( IRET .EQ. 30 ) THEN
                  TEXTE = ' DEBORDEMENT A GAUCHE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 40 ) THEN
+               ELSEIF ( IRET .EQ. 40 ) THEN
                  TEXTE = ' DEBORDEMENT A DROITE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 200 ) THEN
+               ELSEIF ( IRET .EQ. 200 ) THEN
                  TEXTE = ' INTERPOLATION NON PERMISE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 210 ) THEN
+               ELSEIF ( IRET .EQ. 210 ) THEN
                  TEXTE = ' PARAMETRE EN DOUBLE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 220 ) THEN
+               ELSEIF ( IRET .EQ. 220 ) THEN
                  TEXTE = ' PARAMETRE NON CORRECT'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 230 ) THEN
+               ELSEIF ( IRET .EQ. 230 ) THEN
                  TEXTE = ' TYPE INTERPOLATION INCONNU'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 240 ) THEN
+               ELSEIF ( IRET .EQ. 240 ) THEN
                  TEXTE = ' RECHERCHE DE LA VALEUR INCONNUE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 100 ) THEN
+               ELSEIF ( IRET .EQ. 100 ) THEN
                  TEXTE = ' TYPE DE FONCTION NON VALIDE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 110 ) THEN
+               ELSEIF ( IRET .EQ. 110 ) THEN
                  TEXTE = ' PAS ASSEZ DE PARAMETRES'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 120 ) THEN
+               ELSEIF ( IRET .EQ. 120 ) THEN
                  TEXTE = ' PARAMETRE EN DOUBLE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 130 ) THEN
+               ELSEIF ( IRET .EQ. 130 ) THEN
                  TEXTE = ' PARAMETRE NON CORRECT'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 140 ) THEN
+               ELSEIF ( IRET .EQ. 140 ) THEN
                  TEXTE = ' TYPE INTERPOLATION PARA NAPPE INCONNU'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 150 ) THEN
+               ELSEIF ( IRET .EQ. 150 ) THEN
                  TEXTE = ' TYPE DE FONCTION NON TRAITE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 160 ) THEN
+               ELSEIF ( IRET .EQ. 160 ) THEN
                  TEXTE = ' PAS ASSEZ DE PARAMETRES'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSEIF ( IRET .EQ. 170 ) THEN
+               ELSEIF ( IRET .EQ. 170 ) THEN
                  TEXTE = ' INTERPOLATION PARA NAPPE NON PERMISE'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ENDIF
-           ELSE
-              IF (IRET.NE.0) THEN
+               ENDIF
+             ELSE
+               IF (IRET.NE. 0) THEN
+                 RVAL = R8NNEM()
+                 VALC = DCMPLX(RVAL,RVAL)
                  TESTOK = 'NOOK'
                  TEXTE = ' PB INTERPOLATION. VOIR MESSAGE CI-DESSUS'
                  WRITE(IFIC,1300) TESTOK, TEXTE
-              ELSE
+               ELSE
+                 VALC = DCMPLX(RESURE,RESUIM)
+                 CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
+     +                       VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+               ENDIF
+             ENDIF
+           ELSE
+             CALL FOINTE (' ',LAFONC,NBPU,NOMPU,VALPU,VALR,IRET)
+             IF ( OUINON .EQ. 'OUI' ) THEN
+               K12 = NOMPU(NBPU)
+               TESTOK = ' OK '
+               IF ( IRET .EQ. 0 ) THEN
+                 IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
+                   LOK = ( ABS(VALR-REFR) .LE. EPSI * ABS(REFR) )
+                   IF ( ABS(REFR) .NE. ZERO ) THEN
+                     ERR = (VALR - REFR) / REFR
+                   ELSE
+                     ERR = 999.999999D0
+                   ENDIF
+                   IF ( LOK ) THEN
+                     TESTOK = 'NOOK'
+                     TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
+                     WRITE(IFIC,1300) TESTOK, TEXTE
+                   ELSE
+                     TESTOK = ' OK '
+                     WRITE(IFIC,2000) TESTOK, K12, CRIT(1:4), ERR, VALR
+                     WRITE(IFIC,2100) LABEL, EPSI, REFR
+                   ENDIF
+                 ELSE
+                   LOK = ( ABS(VALR - REFR) .LE. EPSI )
+                   ERR =       VALR - REFR
+                   IF ( LOK ) THEN
+                     TESTOK = 'NOOK'
+                     TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
+                     WRITE(IFIC,1300) TESTOK, TEXTE
+                   ELSE
+                     TESTOK = ' OK '
+                     WRITE(IFIC,2200) TESTOK, K12, CRIT(1:4), ERR, VALR
+                     WRITE(IFIC,2210) LABEL, EPSI, REFR
+                   ENDIF
+                 ENDIF
+               ELSEIF ( IRET .EQ. 10 ) THEN
+                 TEXTE = ' MOINS DE 1 POINT POUR DEFINIR LA FONCTION'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 20 ) THEN
+                 TEXTE = ' EXTRAPOLATION NON PERMISE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 30 ) THEN
+                 TEXTE = ' DEBORDEMENT A GAUCHE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 40 ) THEN
+                 TEXTE = ' DEBORDEMENT A DROITE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 200 ) THEN
+                 TEXTE = ' INTERPOLATION NON PERMISE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 210 ) THEN
+                 TEXTE = ' PARAMETRE EN DOUBLE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 220 ) THEN
+                 TEXTE = ' PARAMETRE NON CORRECT'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 230 ) THEN
+                 TEXTE = ' TYPE INTERPOLATION INCONNU'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 240 ) THEN
+                 TEXTE = ' RECHERCHE DE LA VALEUR INCONNUE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 100 ) THEN
+                 TEXTE = ' TYPE DE FONCTION NON VALIDE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 110 ) THEN
+                 TEXTE = ' PAS ASSEZ DE PARAMETRES'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 120 ) THEN
+                 TEXTE = ' PARAMETRE EN DOUBLE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 130 ) THEN
+                 TEXTE = ' PARAMETRE NON CORRECT'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 140 ) THEN
+                 TEXTE = ' TYPE INTERPOLATION PARA NAPPE INCONNU'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 150 ) THEN
+                 TEXTE = ' TYPE DE FONCTION NON TRAITE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 160 ) THEN
+                 TEXTE = ' PAS ASSEZ DE PARAMETRES'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSEIF ( IRET .EQ. 170 ) THEN
+                 TEXTE = ' INTERPOLATION PARA NAPPE NON PERMISE'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ENDIF
+             ELSE
+               IF (IRET.NE.0) THEN
+                 TESTOK = 'NOOK'
+                 TEXTE = ' PB INTERPOLATION. VOIR MESSAGE CI-DESSUS'
+                 WRITE(IFIC,1300) TESTOK, TEXTE
+               ELSE
 C
                  CALL UTITES(NOMPU(NBPU),LABEL,'R',REFI,REFR,REFC,
-     +                            VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
-              ENDIF
+     +                       VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+               ENDIF
+             ENDIF
            ENDIF
-         ENDIF
+ 60     CONTINUE
+        CALL JEDETR ( NORECG )
  10   CONTINUE
 C
 C     --- TRAITEMENT DU MOT CLE FACTEUR "ATTRIBUT" ---------------------
@@ -408,7 +452,7 @@ C
             WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
      +            ', NOM_PARA: ',ZK16(LPROL+2)(1:L2),', PARA: ',PARA
          ELSE
-            WRITE(IFIC,*)'---- FONCTION: ',NOMFON
+            WRITE(IFIC,*)'---- FONCTION: ',NOMFON,TITRES
          ENDIF
          CALL UTEST3 ( IFIC, 'ATTRIBUT', IOCC )
          WRITE(IFIC,1100) TESTOK, ATT, NOMPU(1)

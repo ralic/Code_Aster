@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*3   OUINON
       CHARACTER*8   K8B, MODEOU, MODEIN
       CHARACTER*16  TYPCON, NOMCMD, CRITFI, NOMPAR(3), NOMSY, NOMPAV
+      CHARACTER*19  NUMEDD
       CHARACTER*24  MASSE, AMOR, RAIDE, REFD, MASSI, AMORI, RAIDI, KMODE
       CHARACTER*24  KVEC, KVALI, KVALR, KVALK, NOPARA(NBPARA)
       COMPLEX*16    C16B
@@ -104,7 +105,8 @@ C      --- MATRICES DE REFERENCE DES MODES ---
                RAIDE = ZK24(LMODE)
                MASSE = ZK24(LMODE+1)
                AMOR  = ZK24(LMODE+2)
-               CALL VPCREA ( 0,MODEOU, MASSE, AMOR, RAIDE,IBID )
+               NUMEDD  = ZK24(LMODE+3)
+               CALL VPCREA ( 0,MODEOU, MASSE, AMOR, RAIDE,NUMEDD,IBID )
             ENDIF
 C
             ZK8(JNOM+NBMR-1) = MODEIN

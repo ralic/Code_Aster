@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,6 +75,8 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
                                      'EXTR_RESU',
                                      'PROJ_CHAMP',
                                      'CALC_G_THETA_T',
+                                     'RECU_FONCTION',
+                                     'CREA_TABLE',
                                      'POST_RELEVE_T']
        l_commandes_a_deriver_defaut=['AFFE_MATERIAU',
                                      'AFFE_CHAR_MECA_F',

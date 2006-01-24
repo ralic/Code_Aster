@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 10/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,9 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL GETRES(K8B,TYPCON,NOMCMD)
-      CALL GETTCO(RESU,TYPRES)
+C GETTCO ne fonctionne pas avec les noms compose issus de sensibilite
+C      CALL GETTCO(RESU,TYPRES)
+      CALL DISMOI('F','TYPE_RESU',RESU(1:8),'RESULTAT',IBID,TYPRES,IERD)
 
       CALL RSNOPA(RESU,0,'&&FOCRR0.VAR.ACCES',NBACC,IBID)
       CALL JEEXIN('&&FOCRR0.VAR.ACCES',IRET)

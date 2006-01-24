@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 23/01/2006   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TP ANALYSE MODALE TPAM1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,10 +26,6 @@
 #-------------------------------------------------------------------
 # IMPORT PYTHON
 #import os
-#import string
-#import copy
-#import Gnuplot
-#import Numeric
 #directory = "/home/xxx/ASTER/TP_MODAL/TPAM1/"
 
 #-------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 24/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -379,22 +379,13 @@ T286=CREA_CHAMP(INFO=1,
 THERCST=CREA_RESU(OPERATION='AFFE', NOM_CHAM='TEMP',
                   TYPE_RESU='EVOL_THER',
                   AFFE=(
-                  _F( INST = -2.0,
-                           TYPE_MODE = 'SYME',
-                           CHAM_GD = T20,),
-                  _F( INST = -1.0,
-                           TYPE_MODE = 'SYME',
-                           CHAM_GD = T20,),
-                  _F( INST = 0.0,
-                           TYPE_MODE = 'SYME',
-                           CHAM_GD = T20,),
-                  _F( INST = 1.0,
-                           TYPE_MODE = 'SYME',
-                           CHAM_GD = T286,),
-                  _F( INST = 2.0,
-                           TYPE_MODE = 'SYME',
-                           CHAM_GD = T286,)),
-                  )
+                  _F( INST = -2.0,CHAM_GD = T20,),
+                  _F( INST = -1.0,CHAM_GD = T20,),
+                  _F( INST =  0.0,CHAM_GD = T20,),
+                  _F( INST =  1.0,CHAM_GD = T286,),
+                  _F( INST =  2.0,CHAM_GD = T286,)
+                   ),
+                 )
 
 CHT286=AFFE_CHAR_MECA(VERI_NORM='OUI',
                       INFO=1,

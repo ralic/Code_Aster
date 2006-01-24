@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,7 +89,6 @@ C     ------------------------------------------------------------------
         IF (N3.NE.0) TYPRES = 'C'
 
         DO 60,NRPASS = 1,NBPASS
-
 C        POUR LE PASSAGE NUMERO NRPASS :
 C        . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
 C        . NOM DU PARAMETRE DE SENSIBILITE

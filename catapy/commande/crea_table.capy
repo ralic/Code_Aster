@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
                 fr="Création d'une table à partir d'une fonction ou de deux listes",
-                reentrant='n',UIinfo={"groupes":("Table",)},
+                reentrant='f',UIinfo={"groupes":("Table",)},
 
            regles=(EXCLUS('FONCTION','LISTE')),
 
@@ -34,7 +34,13 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
                         LISTE_K=SIMP(statut='f',typ='TXM', max='**')),
            FONCTION=FACT(statut='f',min=1,max=1,
                     fr="Creation d'une table a partir d'une fonction",
-                        FONCTION=SIMP(statut='o',typ=fonction_sdaster),
+                        FONCTION=SIMP(statut='o',typ=(fonction_c,fonction_sdaster)),
+                b_sensibilite   =BLOC(condition="FONCTION != None",
+                                 fr="Définition des paramètres de sensibilité",
+                                 ang="Definition of sensitivity parameters",
+                SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
+                                   fr="Liste des paramètres de sensibilité.",
+                                   ang="List of sensitivity parameters"),),
                         PARA=SIMP(statut='f',typ='TXM',min=2,max=2)),  
            TITRE=SIMP(statut='f',typ='TXM',max='**'),
 )  ;

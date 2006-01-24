@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/11/2005   AUTEUR BOYERE E.BOYERE 
+C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, LREFE1, LREFE2
+      INTEGER      IFM,NIV
       CHARACTER*1  TYPE,COLI,K1BID
       CHARACTER*4  INTERP(2), INTRES
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, NOMACC,  BASEMO
@@ -52,6 +53,11 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+
+      CALL GETRES ( NOMFON , TYPCON , NOMCMD )
+
       CALL GETTCO ( TRANGE, TYSD )
       IF ( TYSD .EQ. 'MODE_GENE' ) THEN
          CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,1,1, K8B,  N1 )
@@ -73,7 +79,6 @@ C
          GOTO 9999
       ENDIF
 C
-      CALL GETRES ( NOMFON , TYPCON , NOMCMD )
       RESU = TRANGE
       INTERP(1) = 'NON '
       INTERP(2) = 'NON '
@@ -283,5 +288,14 @@ C     ---------------------------------------------------------------
       CALL JEDETR( KINST )
  9999 CONTINUE
 C
+      CALL FOATTR(' ',1,NOMFON)
+C
+C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
+C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
+      CALL ORDONN(NOMFON,NOMCMD,0)
+C 
+      CALL TITRE
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
+
       CALL JEDEMA()
       END

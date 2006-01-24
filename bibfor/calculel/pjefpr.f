@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF CALCULEL  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,7 +161,7 @@ C       -- PROJECTION DU CHAMP SI POSSIBLE :
 C       -- Attribution des attributs du concept resultat
           IF ((TYPRES(1:9).EQ.'MODE_MECA').OR.
      &     (TYPRES(1:4).EQ.'BASE')) THEN
-              CALL VPCREA(0,RESU2,K8B,K8B,K8B,IER)
+              CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
               CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
               ZR(IAINS2)=ZR(IAINS1)
@@ -173,7 +173,7 @@ C             Recuperation de nume_mode
                 ZI(IAINS2+IORDR-1)=ZI(IAINS1+IORDR-1)
               ENDIF
           ELSEIF (TYPRES(1:9).EQ.'MODE_STAT') THEN
-              CALL VPCREA(0,RESU2,K8B,K8B,K8B,IER)
+              CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
               CALL RSADPA ( RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'NOEUD_CMP',IORDR,0,IAINS2,KB)
               ZK16(IAINS2)=ZK16(IAINS1)

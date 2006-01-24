@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,13 +38,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER       IFM,NIV
       INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE1, 
      &              JREFE2 
-      CHARACTER*8   NOMA, SST, BASEMO, RAIDE, NOEUD, INTITU, NOGNO
+      CHARACTER*8   K8B,NOMA, SST, BASEMO, RAIDE, NOEUD, INTITU, NOGNO
       CHARACTER*16  PARAX,PARAY, NOMCMD, TYPCON
       CHARACTER*19  LISTR, NOMFON, RESU
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+C
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
 C
       CALL GETRES ( NOMFON, TYPCON, NOMCMD )
 C
@@ -85,5 +89,14 @@ C
      +                 INTITU, IND, LISTR, SST, NSST, IRET )
       ENDIF
 C
+      CALL FOATTR(' ',1,NOMFON)
+C
+C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
+C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
+      CALL ORDONN(NOMFON,NOMCMD,0)
+C 
+      CALL TITRE
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
+
       CALL JEDEMA()
       END

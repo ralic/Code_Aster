@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 24/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAPET 3D, CONTACT, TEMPERATURE MED, METIS, INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -460,29 +460,14 @@ T286=CREA_CHAMP( TYPE_CHAM='NOEU_TEMP_R',
 
 THERCST=CREA_RESU(    OPERATION='AFFE',
                       TYPE_RESU='EVOL_THER',
-                      NOM_CHAM='TEMP',AFFE=(
-
-                              _F(
-                      CHAM_GD = T20,
-                      INST = -2.,
-                      TYPE_MODE = 'SYME'),
-                              _F(
-                      CHAM_GD = T20,
-                      INST = -1.,
-                      TYPE_MODE = 'SYME'),
-                              _F(
-                      CHAM_GD = T20,
-                      INST = 0.E+0,
-                      TYPE_MODE = 'SYME'),
-                              _F(
-                      CHAM_GD = T286,
-                      INST = 1.,
-                      TYPE_MODE = 'SYME'),
-                              _F(
-                      CHAM_GD = T286,
-                      INST = 2.,
-                      TYPE_MODE = 'SYME')),
-                       )
+                      NOM_CHAM='TEMP',
+                      AFFE=( _F(CHAM_GD = T20, INST = -2.),
+                             _F(CHAM_GD = T20, INST = -1.),
+                             _F(CHAM_GD = T20, INST = 0.E+0,),
+                             _F(CHAM_GD = T286,INST = 1.),
+                             _F(CHAM_GD = T286,INST = 2.) 
+                           ),
+                  )
 
 CHT286=AFFE_CHAR_MECA(
                               MODELE=MODMECA,

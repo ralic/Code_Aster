@@ -1,6 +1,6 @@
       SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,11 +50,13 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+      INTEGER        NBNOMX,    NBFAMX
+      PARAMETER    ( NBNOMX=27, NBFAMX=20)
       INTEGER     CNTETR(4,1),CNPENT(4,3),CNHEXA(4,6),CNPYRA(4,2)
-      INTEGER     NBPG(10)
+      INTEGER     NBPG(NBFAMX)
       REAL*8      KSI,ETA,DZETA,X1,X2,X3
-      REAL*8      CRREFE(81), X(3), FF(27)
-      CHARACTER*8 ELREFA, M1, M2, KB, FAPG(10)
+      REAL*8      CRREFE(3*NBNOMX), X(3), FF(NBNOMX)
+      CHARACTER*8 ELREFA, M1, M2, KB, FAPG(NBFAMX)
 C --- DEB --------------------------------------------------------------
 
       CALL JEMARQ()

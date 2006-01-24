@@ -5,7 +5,7 @@
       CHARACTER*(*)    RESU, MOTCLE, OBJVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -118,6 +118,8 @@ C
             ZI(JORDR+NBORDR-1) = ZI(LORDR+IORDR-1)
          ENDIF
  30   CONTINUE
+C
+      CALL JEDETR('&&RSUTN1.NUME_ORDR')
 C
       CALL JEDEMA()
       END

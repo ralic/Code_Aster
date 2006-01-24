@@ -10,7 +10,7 @@
       CHARACTER*16  NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,9 +71,11 @@ C                    (1<= INO2 <= NNO2(IPG))
 C                    (1<= IPOINI <= NPOINI)
 C
 C ---------------------------------------------------------------------
-      INTEGER      NNO, NNOS, NBFPG, NBPG(20), NUFPG, INDIK8
-      REAL*8       VOL, X(3*27)
-      CHARACTER*8  FAMG(20)
+      INTEGER        NBNOMX,    NBFAMX
+      PARAMETER    ( NBNOMX=27, NBFAMX=20)
+      INTEGER      NNO, NNOS, NBFPG, NBPG(NBFAMX), NUFPG, INDIK8
+      REAL*8       VOL, X(3*NBNOMX)
+      CHARACTER*8  FAMG(NBFAMX)
 C ---------------------------------------------------------------------
       CALL JEMARQ()
 C
