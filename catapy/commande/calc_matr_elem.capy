@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 30/01/2006   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +32,7 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "AMOR_MECA"        : return matr_elem_depl_r
   if OPTION == "IMPE_MECA"        : return matr_elem_depl_r
   if OPTION == "ONDE_FLUI"        : return matr_elem_depl_r
+  if OPTION == "AMOR_MECA_ABSO"   : return matr_elem_depl_r
   if OPTION == "RIGI_MECA_HYST"   : return matr_elem_depl_c
   if OPTION == "RIGI_THER"        : return matr_elem_temp_r
   if OPTION == "MASS_THER"        : return matr_elem_temp_r
@@ -48,7 +49,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          OPTION          =SIMP(statut='o',typ='TXM',
                                into=("RIGI_MECA","MASS_MECA","RIGI_GEOM",
                                      "AMOR_MECA","RIGI_THER","MASS_THER","IMPE_MECA",
-                                     "ONDE_FLUI","MASS_FLUI_STRU","RIGI_FLUI_STRU",
+                                     "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
                                      "RIGI_ROTA","MASS_MECA_DIAG","RIGI_ACOU",
                                      "MASS_ID_MDEP_R","MASS_ID_MDNS_R","MASS_ID_MTEM_R","MASS_ID_MTNS_R",
                                      "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST",
@@ -119,7 +120,18 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            MASS_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
            CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
          ),
-
+         
+         b_amor_meca_abso  =BLOC(condition = "OPTION=='AMOR_MECA_ABSO'",
+           regles=(AU_MOINS_UN('CARA_ELEM','RIGI_MECA'),
+                   ENSEMBLE('RIGI_MECA','MASS_MECA','CHAM_MATER'), ),
+           MODELE            =SIMP(statut='o',typ=modele_sdaster ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           RIGI_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
+           MASS_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
+           CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+         ),
+         
          b_rigi_meca_hyst  =BLOC( condition = "OPTION=='RIGI_MECA_HYST'",
            MODELE            =SIMP(statut='o',typ=modele_sdaster ),
            CHARGE            =SIMP(statut='f',typ=char_meca ,validators=NoRepeat(),max='**' ),

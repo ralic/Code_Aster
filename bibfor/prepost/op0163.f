@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,7 +178,7 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
          DO 92 ICH = 1,NBCHAM
             CALL RSEXCH(NOMRES,TYPE(ICH),IARCH,CHAMNO,IRET)
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
+             CALL UTMESS('A','OP0163',CHAMNO//'CHAM_NO DEJA EXISTANT')
             ELSEIF ( IRET .EQ. 100 ) THEN
               IF (TYPRES.EQ.'DYNA_HARMO') THEN
                CALL VTCREM(CHAMNO,MATRM,'G','C')
@@ -186,7 +186,7 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
                CALL VTCREM(CHAMNO,MATRM,'G','R')
               ENDIF
             ELSE
-               CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+               CALL UTMESS('F','OP0163','APPEL ERRONE')
             ENDIF
             IDRESR = ITRESR(ICH)
             CHAMNO(20:24) = '.VALE'

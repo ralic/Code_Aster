@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C
       CALL GETVID('  ','MODE',1,1,1,MODEIN,L)
       IF ( IEX .GT. 0 ) THEN
          IF ( MODEOU .NE. MODEIN ) THEN
-            CALL UTDEBM('F',NOMCMD,'LE CONCEPT PRODUIT ETANT '//
+            CALL UTDEBM('F','OP0037','LE CONCEPT PRODUIT ETANT '//
      +                  'DEJA EXISTANT, LA NORMALISATION DOIT SE '//
      +                  'FAIRE EN PLACE ET DONC IL EST IMPOSSIBLE D')
             CALL UTIMPK('S','"AVOIR COMME CONCEPT PRODUIT ',1,MODEOU)
@@ -130,7 +130,7 @@ C
             NOPARA(I) = NOPARF(I)
  3       CONTINUE
       ELSE
-         CALL UTMESS('F',NOMCMD,'TYPE DE MODE INCONNU: '//TYPCON)
+         CALL UTMESS('F','OP0037','TYPE DE MODE INCONNU: '//TYPCON)
       ENDIF
 C
 C
@@ -164,7 +164,7 @@ C
         IF (IRET.NE.0) THEN
           CALL JELIRA(K19B//'.PAPA','LONUTI',IVAL,K8B)
           IF (IVAL.NE.0) THEN
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','OP0037',
      +                'IL N''EST PAS PERMIS DE MODIFIER UN OBJET PERE')
           ENDIF
         ENDIF
@@ -246,7 +246,7 @@ C     --- OPTION DE NORMALISATION  ---
       CALL GETVTX(' ','NORME',1,1,1,NORM,L)
       IF ( L .NE. 0 ) THEN
          IF      ( NORM .EQ. 'MASS_GENE'      ) THEN
-            IF (.NOT.LREFE) CALL UTMESS('F',NOMCMD,
+            IF (.NOT.LREFE) CALL UTMESS('F','OP0037',
      +       'MODE NON CALCULE A PARTIR DE MATRICES ASSEMBLEES')
             METHOD(1:9) = 'MASS_GENE'
             CALL MTDSCR(MASSE)
@@ -256,7 +256,7 @@ C     --- OPTION DE NORMALISATION  ---
                CALL JEVEUO(AMOR(1:19)//'.&INT','E',LMAT(2))
             END IF
          ELSE IF ( NORM .EQ. 'RIGI_GENE'  ) THEN
-            IF (.NOT.LREFE) CALL UTMESS('F',NOMCMD,
+            IF (.NOT.LREFE) CALL UTMESS('F','OP0037',
      +       'MODE NON CALCULE A PARTIR DE MATRICES ASSEMBLEES')
             METHOD(1:9) = 'RAID_GENE'
             CALL MTDSCR(RAIDE)
@@ -305,7 +305,7 @@ C     --- OPTION DE NORMALISATION  ---
             ZK8(LCMP+5) = NOMCMP(7)
             NORM   = 'AVEC_CMP'
          ELSE
-            CALL UTDEBM('F',NOMCMD,'L''OPTION DE NORMALISATION')
+            CALL UTDEBM('F','OP0037','L''OPTION DE NORMALISATION')
             CALL UTIMPK('S',' ',1,NORM)
             CALL UTIMPI('S',' N''EST PAS IMPLANTEE.',0,IBID)
             CALL UTFINM()
@@ -325,12 +325,12 @@ C
          CALL GETVTX(' ','NOM_CMP',1,1,1,ZK8(LCMP),L)
          CALL POSDDL('NUME_DDL', NUME,NOEUD,ZK8(LCMP),NUMNOE,NUMDDL)
          IF (NUMNOE.EQ.0) THEN
-            CALL UTMESS('F',NOMCMD//' (ERREUR.1)',
+            CALL UTMESS('F','OP0037'//' (ERREUR.1)',
      +                     'NORMALISATION IMPOSSIBLE, LE POINT N''EST'//
      +                     ' PAS PRESENT DANS LE MODELE.')
          ENDIF
          IF (NUMDDL.EQ.0) THEN
-            CALL UTMESS('F',NOMCMD//' (ERREUR.1)',
+            CALL UTMESS('F','OP0037'//' (ERREUR.1)',
      +                     'NORMALISATION IMPOSSIBLE, LA COMPOSANTE '//
      +                     'N''EST PAS PRESENTE DANS LE MODELE.')
          ENDIF
@@ -405,13 +405,13 @@ C     --- RECUPERATION DES VECTEURS PROPRES ET DES GRANDEURS MODALES ---
      +              NBPARA, NOPARA, KVALI, KVALR, KVALK,
      +              NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
       IF (NPARI.NE.NBPARI) THEN
-         CALL UTMESS('F',NOMCMD,'MANQUE DES PARAMETRES ENTIERS')
+         CALL UTMESS('F','OP0037','MANQUE DES PARAMETRES ENTIERS')
       ENDIF
       IF (NPARR.NE.NBPARR) THEN
-         CALL UTMESS('F',NOMCMD,'MANQUE DES PARAMETRES REELS')
+         CALL UTMESS('F','OP0037','MANQUE DES PARAMETRES REELS')
       ENDIF
       IF (NPARK.NE.NBPARK) THEN
-         CALL UTMESS('F',NOMCMD,'MANQUE DES PARAMETRES CARACTERES')
+         CALL UTMESS('F','OP0037','MANQUE DES PARAMETRES CARACTERES')
       ENDIF
       CALL JEVEUO ( KVEC , 'E', LMOD  )
       CALL JEVEUO ( KVALI, 'E', LVALI )
@@ -448,7 +448,7 @@ C     --- CALCUL DU NOMBRE DE COMPOSANTES ACTIVES ---
             NCMPAC = NCMPAC + ZI(LDDL+IEQ)
  120     CONTINUE
          IF (NCMPAC .LT. 1 ) THEN
-            CALL UTMESS('F',NOMCMD//' (ERREUR.1)',
+            CALL UTMESS('F','OP0037'//' (ERREUR.1)',
      +                     'NORMALISATION IMPOSSIBLE,  AUCUNE COMPOSANT'
      +                   //'E N''EST PRESENTE DANS LE MODELE.')
          ENDIF
@@ -463,12 +463,12 @@ C     --- SIGNE DES MODES ---
          CALL GETVTX('MODE_SIGNE','NOM_CMP',1,1,1,CMP  ,L)
          CALL POSDDL('NUME_DDL', NUME,NOEUD,CMP,NUMNOE,NUMDDL)
          IF (NUMNOE.EQ.0) THEN
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','OP0037',
      +                     'NORMALISATION IMPOSSIBLE, LE NOEUD N''EST'//
      +                     ' PAS PRESENT DANS LE MODELE.')
          ENDIF
          IF (NUMDDL.EQ.0) THEN
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','OP0037',
      +                     'NORMALISATION IMPOSSIBLE, LA COMPOSANTE '//
      +                     'N''EST PAS PRESENTE DANS LE MODELE.')
          ENDIF
@@ -477,7 +477,7 @@ C     --- SIGNE DES MODES ---
          IF ( K8B(1:7) .EQ. 'NEGATIF' ) ISIGN = -1
          IF ( TYPMOD .EQ. 'C' ) THEN
             ISIGN = 0
-            CALL UTMESS('A',NOMCMD,'ON NE TIENT PAS COMPTE DU MOT '//
+            CALL UTMESS('A','OP0037','ON NE TIENT PAS COMPTE DU MOT '//
      +              'CLE FACTEUR "MODE_SIGNE" POUR DES "MODE_MECA_C"')
          ENDIF
       ENDIF
@@ -572,7 +572,7 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
      +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
          ENDIF
         ELSE
-          CALL UTMESS('F',NOMCMD,'"'//TYPMOD//
+          CALL UTMESS('F','OP0037','"'//TYPMOD//
      +                                '"  TYPE DE MODE NON TRAITE')
         ENDIF
 C

@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -201,7 +201,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
          AEFOCO = 'EXCORP1'
          ATORCO = 'P1_CORP'
          LINTC  = 'L_INT_C1'
-  __conlim = AFFE_CHAR_MECA( MODELE   = modele ,
+  _conlim = AFFE_CHAR_MECA(  MODELE   = modele ,
                              LIAISON_ELEM  = ( _F( OPTION    ='3D_POU'  ,
                                                    GROUP_MA_1='EXCORP1',
                                                    GROUP_NO_2='P1_CORP'),
@@ -234,13 +234,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                               _F(GROUP_MA    =AEFOCO,
                                  GROUP_MA_INT=LINTC,
                                  PRES        =PRES_REP['PRES']))
-  __chpres = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
+  _chpres = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
 #         chargement mecanique : torseur sur le corps
 #
   if TORS_CORP!=None:
-     __chtrc = [None]*6
+     _chtrc = [None]*6
      i=0
      for tors in TORS_CORP :
        mcsimp={}
@@ -251,7 +251,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        if tors['MY']!=None : mcsimp['MY']=tors['MY']
        if tors['MZ']!=None : mcsimp['MZ']=tors['MZ']
        mcfact=_F(GROUP_NO=ATORCO,**mcsimp)
-       __chtrc[i] = AFFE_CHAR_MECA( MODELE       = modele ,
+       _chtrc[i] = AFFE_CHAR_MECA(  MODELE       = modele ,
                                     FORCE_NODALE = mcfact , )
        i=i+1
 #
@@ -259,7 +259,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #         chargement mecanique : torseur sur la tubulure
 #
   if TORS_TUBU!=None:
-     __chtrt = [None]*6
+     _chtrt = [None]*6
      i=0
      for tors in TORS_TUBU :
        mcsimp={}
@@ -270,7 +270,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        if tors['MY']!=None : mcsimp['MY']=tors['MY']
        if tors['MZ']!=None : mcsimp['MZ']=tors['MZ']
        mcfact=_F(GROUP_NO='P_TUBU  ',**mcsimp)
-       __chtrt[i] = AFFE_CHAR_MECA( MODELE       = modele ,
+       _chtrt[i] = AFFE_CHAR_MECA( MODELE       = modele ,
                                     FORCE_NODALE = mcfact , )
        i=i+1
 #
@@ -279,28 +279,28 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   motscles={}
 #
   mcfex=[]  # mot clé facteur EXCIT
-  mcfex.append(_F(CHARGE=__conlim,))
+  mcfex.append(_F(CHARGE=_conlim,))
   if ECHANGE!=None :
      mcfex.append(_F(CHARGE=chmeth,))
   if PRES_REP['FONC_MULT']!=None :
-     mcfex.append(_F(CHARGE=__chpres,FONC_MULT=PRES_REP['FONC_MULT']))
+     mcfex.append(_F(CHARGE=_chpres,FONC_MULT=PRES_REP['FONC_MULT']))
   else :
-     mcfex.append(_F(CHARGE=__chpres,))
+     mcfex.append(_F(CHARGE=_chpres,))
   if TORS_CORP!=None:
      i=0
      for tors in TORS_CORP :
        if tors['FONC_MULT']!=None :
-          mcfex.append(_F(CHARGE=__chtrc[i],FONC_MULT=tors['FONC_MULT']))
+          mcfex.append(_F(CHARGE=_chtrc[i],FONC_MULT=tors['FONC_MULT']))
        else :
-          mcfex.append(_F(CHARGE=__chtrc[i],))
+          mcfex.append(_F(CHARGE=_chtrc[i],))
        i=i+1
   if TORS_TUBU!=None:
      i=0
      for tors in TORS_TUBU :
        if tors['FONC_MULT']!=None :
-          mcfex.append(_F(CHARGE=__chtrt[i],FONC_MULT=tors['FONC_MULT']))
+          mcfex.append(_F(CHARGE=_chtrt[i],FONC_MULT=tors['FONC_MULT']))
        else :
-          mcfex.append(_F(CHARGE=__chtrt[i],))
+          mcfex.append(_F(CHARGE=_chtrt[i],))
        i=i+1
   motscles['EXCIT'] =mcfex
 #

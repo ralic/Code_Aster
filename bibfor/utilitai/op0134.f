@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C
 C         
       ELSE
 C      
-         CALL UTMESS('F',NOMCMD,'FONCTION A UNE OU DEUX VARIABLES 
+         CALL UTMESS('F','OP0134','FONCTION A UNE OU DEUX VARIABLES 
      +                                 ADMISE')
 C     
       ENDIF

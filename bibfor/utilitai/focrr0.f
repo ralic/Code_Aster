@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,12 +102,12 @@ C     --- REMPLISSAGE DU .PROL ---
         CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
         IF (INOEUD.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
-          CALL UTMESS('F',NOMCMD,'LE NOEUD "'//NOEUD(1:LG1)//
+          CALL UTMESS('F','FOCRR0','LE NOEUD "'//NOEUD(1:LG1)//
      &                '" N''EXISTE PAS.')
         ELSE IF (IDDL.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
           LG2 = LXLGUT(CMP)
-          CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//'" '//
+        CALL UTMESS('F','FOCRR0','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
      &                'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
         END IF
         II = 0
@@ -123,12 +123,12 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
               CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
               IF (INOEUD.EQ.0) THEN
                 LG1 = LXLGUT(NOEUD)
-                CALL UTMESS('F',NOMCMD,'LE NOEUD "'//NOEUD(1:LG1)//
+                CALL UTMESS('F','FOCRR0','LE NOEUD "'//NOEUD(1:LG1)//
      &                      '" N''EXISTE PAS.')
               ELSE IF (IDDL.EQ.0) THEN
                 LG1 = LXLGUT(NOEUD)
                 LG2 = LXLGUT(CMP)
-                CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//
+              CALL UTMESS('F','FOCRR0','LA COMPOSANTE "'//CMP(1:LG2)//
      &                      '" DU '//'NOEUD "'//NOEUD(1:LG1)//
      &                      '" N''EXISTE PAS.')
               END IF
@@ -159,7 +159,7 @@ C        -------------------------------------------------------------
         NVERI2 = NOEUD .EQ. ' '
         NVERI3 = NPOINT .EQ. 0
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-          CALL UTDEBM('F',NOMCMD,'POUR UN "NOM_CHAM",IL FAUT DONNER :')
+        CALL UTDEBM('F','FOCRR0','POUR UN "NOM_CHAM",IL FAUT DONNER :')
           CALL UTIMPK('L','   - UNE MAILLE OU UN GROUP_MA',0,K8B)
           CALL UTIMPK('L','   - UN NOEUD OU UN GROUP_NO OU UN POINT.',0,
      &                K8B)
@@ -193,7 +193,7 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
           CALL JEDEMA()
    20   CONTINUE
       ELSE
-        CALL UTMESS('F',NOMCMD,'TYPE DE CHAMP INCONNU '//TYPCHA)
+        CALL UTMESS('F','FOCRR0','TYPE DE CHAMP INCONNU '//TYPCHA)
       END IF
       CALL JEDETR('&&FOCRR0.VAR.ACCES')
 

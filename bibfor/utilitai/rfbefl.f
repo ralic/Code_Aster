@@ -3,7 +3,7 @@
       CHARACTER*(*)       BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C
             IF ( ID .GT. 0 ) MIN = ZI(INUMEO + I - 1)
  10      CONTINUE
          IF ( MIN .GT. NPV ) THEN
-            CALL UTMESS('F',NOMCMD,'LES NUMEROS D''ORDRE DES '//
+            CALL UTMESS('F','RFBEFL','LES NUMEROS D''ORDRE DES '//
      &       'VITESSES DONNES SOUS LE MOT-CLE "NUME_ORDRE" NE '//
      &       'SONT PAS VALIDES.')
          ENDIF
@@ -112,7 +112,7 @@ C
          ID = NUMMOD - ZI(LNUMO + IMOD - 1)
          IF ( ID .EQ. 0 ) GOTO 30
  20   CONTINUE
-      CALL UTMESS('F',NOMCMD,'LE MODE DEMANDE N''EST PAS UN '//
+      CALL UTMESS('F','RFBEFL','LE MODE DEMANDE N''EST PAS UN '//
      &                          'MODE COUPLE.')
  30   CONTINUE
 C

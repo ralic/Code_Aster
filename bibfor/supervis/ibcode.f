@@ -3,7 +3,7 @@ C TOLE CRS_513 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C        EXECUTION OU VERIFICATION DE SYNTAXE
                ZK8(LCODE)='VERIFSYN'
                ILONG=8
             ENDIF
-            IF ( ILONG .GT. 8 ) CALL UTMESS('A',NOMCMD,'L''ARGUMENT '
+            IF ( ILONG .GT. 8 ) CALL UTMESS('A','IBCODE','L''ARGUMENT '
      +              //'DU MOT CLE "NOM" SOUS LE MOT CLE FACTEUR "CODE" '
      +              //'EST TRONQUE A 8 CARACTERES. LE NOM DE CODE '
      +              //'EST DONC "'//ZK8(LCODE)//'".' )

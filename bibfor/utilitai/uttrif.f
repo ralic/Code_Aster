@@ -5,7 +5,7 @@
       CHARACTER*(*) TYPFON
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -113,7 +113,7 @@ C                     --- PERMUTATION DES PARTIES IMAGINAIRES ---
          ENDIF
       ELSE
          CALL GETRES(K16B1,K16B2,NOMCMD)
-         CALL UTMESS('F',NOMCMD,'(UTTRIF) TYPE DE FONCTION NON CONNU.')
+       CALL UTMESS('F','UTTRIF','(UTTRIF) TYPE DE FONCTION NON CONNU.')
       ENDIF
 C
       END

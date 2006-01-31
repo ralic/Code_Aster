@@ -4,7 +4,7 @@
       INTEGER                NBIN,            NBOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/11/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C       --- VERIFICATION DE L'EXISTANCE DU PARAMETRE
            CALL RSEXPA(RESU8,2,PARIN(I),IRET)
            IF (IRET.EQ.0) THEN
               CALL GETRES(CBID,CBID,NOMCMD)
-              CALL UTDEBM('A',NOMCMD,' ')
+              CALL UTDEBM('A','IRPARB',' ')
               CALL UTIMPK('S','LE PARAMETRE ',1,PARIN(I))
               CALL UTIMPK('S','N''EXISTE PAS',0,' ')
               CALL UTFINM()

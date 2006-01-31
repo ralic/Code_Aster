@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,19 +68,19 @@ C
 C --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
       CALL GETVTX(' ','NOM_CHAM',1,1,4,CHAMP,NBCHAM)
       IF (NBCHAM .LT.0 ) THEN
-         CALL UTMESS('E',NOMCMD,'TROP D''ARGUMENTS POUR "NOM_CHAM"')
+         CALL UTMESS('E','OP0075','TROP D''ARGUMENTS POUR "NOM_CHAM"')
       ELSE
          DO 1 I=1,NBCHAM
             DO 2 J=I+1,NBCHAM
                IF ( CHAMP(I).EQ. CHAMP(J) ) THEN
-                  CALL UTMESS('E',NOMCMD,'ARGUMENT EN DOUBLE POUR'//
+                  CALL UTMESS('E','OP0075','ARGUMENT EN DOUBLE POUR'//
      +                                    ' "NOM_CHAM"')
                ENDIF
     2       CONTINUE
             IF ( CHAMP(I).EQ. 'ACCE_ABSOLU' ) THEN
                CALL GETVID(' ','ACCE_MONO_APPUI',1,1,1,K8B,N1)
                IF ( N1 .EQ. 0 ) THEN
-                  CALL UTMESS('E',NOMCMD,'POUR CALCULER UNE '//
+                  CALL UTMESS('E','OP0075','POUR CALCULER UNE '//
      +                    'ACCE_ABSOLU, IL FAUT "ACCE_MONO_APPUI"')
                ENDIF
             ENDIF
@@ -123,7 +123,7 @@ C      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
              CONCEP(1:9) = '         '
              GO TO 9999
            ELSE
-             CALL UTMESS('E',NOMCMD,'POUR RESTITUER SUR '//
+             CALL UTMESS('E','OP0075','POUR RESTITUER SUR '//
      +          'UN SQUELETTE, IL FAUT "MODE_MECA"')
            ENDIF
          ENDIF
@@ -184,12 +184,12 @@ C
             CALL GETVTX(' ','SOUS_STRUC',1,1,1,NOMSST,N1)
             CALL GETVID(' ','SQUELETTE',1,1,1,MAILSK,N2)
             IF ((N1.NE.0.AND.N2.NE.0).OR.(N1.NE.0).OR.(N2.NE.0)) THEN
-              CALL UTMESS('F',NOMCMD,'MOTS-CLES''SOUS_STRUC'' '//
+              CALL UTMESS('F','OP0075','MOTS-CLES''SOUS_STRUC'' '//
      +                    'ET''SQUELETTE''INTERDITS')
             ENDIF
             CALL GETVID(' ','MODE_MECA',1,1,1,MODE,IBID)
             IF (IBID.EQ.0) THEN
-              CALL UTMESS('F',NOMCMD,'MOTS-CLE''MODE_MECA'' '//
+              CALL UTMESS('F','OP0075','MOTS-CLE''MODE_MECA'' '//
      +                    'DOIT ETRE PRESENT')
             ENDIF
             CALL TRAN75(NOMRES,TYPRES,RESIN,NOMCMD,MODE)
@@ -270,12 +270,12 @@ C     --- CALCUL HARMONIQUE SANS SOUS-STRUCTURATION ---
             CALL GETVTX(' ','SOUS_STRUC',1,1,1,NOMSST,N1)
             CALL GETVID(' ','SQUELETTE',1,1,1,MAILSK,N2)
             IF ((N1.NE.0.AND.N2.NE.0)) THEN
-              CALL UTMESS('F',NOMCMD,'MOTS-CLES''SOUS_STRUC'' '//
+              CALL UTMESS('F','OP0075','MOTS-CLES''SOUS_STRUC'' '//
      +                    'ET''SQUELETTE''INTERDITS')
             ENDIF
             CALL GETVID(' ','MODE_MECA',1,1,1,MODE,IBID)
             IF (IBID.EQ.0) THEN
-              CALL UTMESS('F',NOMCMD,'MOTS-CLE''MODE_MECA'' '//
+              CALL UTMESS('F','OP0075','MOTS-CLE''MODE_MECA'' '//
      +                'DOIT ETRE PRESENT')
             ENDIF
             CALL HARM75(NOMRES,TYPRES,RESIN,NOMCMD,MODE)

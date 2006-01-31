@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
             CALL GETVID('CONCEPT','NOM',IOCC,1,NCON,ZK8(LCON),LBID)
             DO 300 II=1,NCON
                CALL JEDETC('G',ZK8(LCON-1+II),1)
-               CALL GCDETC(ICMD,ZK8(LCON-1+II))
+               CALL GCDETC(ZK8(LCON-1+II))
 C
                CALL GCUCON(ZK8(LCON-1+II),' ',IEX)
                IF ( IEX.EQ.0 .AND. ALARME.NE.'NON' ) THEN

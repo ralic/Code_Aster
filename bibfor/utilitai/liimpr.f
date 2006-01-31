@@ -4,7 +4,7 @@
       INTEGER                IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/11/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ------------------------------------------------------------------
       IF ( IUL .LE. 0 ) THEN
          CALL GETRES(K8BID,K8BID,NOMCMD)
          LG = MAX(1,LXLGUT(FILE))
-         CALL UTMESS('A',NOMCMD//' (ERREUR 01)',
+         CALL UTMESS('A','LIIMPR'//' (ERREUR 01)',
      +                   'LE FICHIER "'//FILE(1:LG)//'" N''EST RELIE '//
      +                   'A AUCUNE UNITE LOGIQUE.')
          GOTO 9999

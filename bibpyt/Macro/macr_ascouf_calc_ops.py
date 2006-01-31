@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,7 +223,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                 COEF_MULT = COEFB1 ,
                                 COEF_IMPO = 0.0    , )
 
-  __conlim = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
+  _conlim = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
 #         chargement mecanique :  pres_rep, effet de fond 
@@ -241,13 +241,13 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                 GROUP_MA      = 'EXTUBE'  ,
                                 PRES          = PRES_REP['PRES'] ,)
 #
-    __chpres = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
+    _chpres = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
 #         chargement mecanique : torseur d efforts 
 #
   if TORS_P1!=None :
-    __chtor = [None]*6
+    _chtor = [None]*6
     i=0
     for tors in TORS_P1:
       mcsimp={}
@@ -258,8 +258,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
       if tors['MY']!=None : mcsimp['MY']=tors['MY']
       if tors['MZ']!=None : mcsimp['MZ']=tors['MZ']
       mcfact=_F(GROUP_NO='P1',**mcsimp)
-      __chtor[i] = AFFE_CHAR_MECA( MODELE       = modele ,
-                                   FORCE_NODALE = mcfact , )
+      _chtor[i] = AFFE_CHAR_MECA( MODELE       = modele ,
+                                  FORCE_NODALE = mcfact , )
       i=i+1
 #
 #     --- commande STAT_NON_LINE ---
@@ -267,21 +267,21 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   motscles={}
 #
   mcfex=[]  # mot clé facteur EXCIT
-  mcfex.append(_F(CHARGE=__conlim,))
+  mcfex.append(_F(CHARGE=_conlim,))
   if ECHANGE!=None :
      mcfex.append(_F(CHARGE=chmeth,))
   if PRES_REP!=None:
     if PRES_REP['FONC_MULT']!=None :
-      mcfex.append(_F(CHARGE=__chpres,FONC_MULT=PRES_REP['FONC_MULT']))
+      mcfex.append(_F(CHARGE=_chpres,FONC_MULT=PRES_REP['FONC_MULT']))
     else :
-      mcfex.append(_F(CHARGE=__chpres,))
+      mcfex.append(_F(CHARGE=_chpres,))
   if TORS_P1!=None:
      i=0
      for tors in TORS_P1 :
        if tors['FONC_MULT']!=None :
-          mcfex.append(_F(CHARGE=__chtor[i],FONC_MULT=tors['FONC_MULT']))
+          mcfex.append(_F(CHARGE=_chtor[i],FONC_MULT=tors['FONC_MULT']))
        else :
-          mcfex.append(_F(CHARGE=__chtor[i],))
+          mcfex.append(_F(CHARGE=_chtor[i],))
        i=i+1
   motscles['EXCIT'] =mcfex
 #

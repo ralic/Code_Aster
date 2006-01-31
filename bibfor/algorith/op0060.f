@@ -1,6 +1,6 @@
       SUBROUTINE OP0060(IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,11 +156,11 @@ C On verifie si le concept est reentrant
             NEWCAL = .FALSE.
             IF (CONCEP.NE.RESUCO) THEN
 C Le concept est reentrant et la sortie est identique a l'entree
-              CALL UTMESS('F',NOMCMD,'CONCEPT REENTRANT : '//
+              CALL UTMESS('F','OP0060','CONCEPT REENTRANT : '//
      &             '"RESULTAT" DOIT PORTER LE MEME NOM QUE LA SORTIE')
             ENDIF
           ELSE
-            CALL UTMESS('F',NOMCMD,'CONCEPT REENTRANT : '//
+            CALL UTMESS('F','OP0060','CONCEPT REENTRANT : '//
      &                  '"RESULTAT" EST D''UN TYPE DIFFERENT')
           ENDIF  
         ELSE
@@ -177,7 +177,7 @@ C====
            DO 12 J=I+1,NBSYM
              IF ( NOMSYM(I).EQ. NOMSYM(J) ) THEN
                IERR = IERR + 1
-               CALL UTMESS('F',NOMCMD,'ARGUMENT EN DOUBLE POUR '//
+               CALL UTMESS('F','OP0060','ARGUMENT EN DOUBLE POUR '//
      &                                    '"NOM_CHAM"')
              ENDIF
   12      CONTINUE
@@ -192,9 +192,9 @@ C====
      &                NBPASE, INPSCO, IRET )
 
       IF (TYPCON.EQ.'HARM_GENE' .AND. NBPASE.GT.0 ) THEN
-        CALL UTMESS('F',NOMCMD,'POUR L''INSTANT, ON NE PEUT PAS'//
+        CALL UTMESS('F','OP0060','POUR L''INSTANT, ON NE PEUT PAS'//
      &   ' DERIVER SUR BASE MODALE DANS DYNA_LINE_HARM ')
-        CALL UTMESS('F',NOMCMD,'LES CONCEPTS D''ENTREE ET '//
+        CALL UTMESS('F','OP0060','LES CONCEPTS D''ENTREE ET '//
      &   ' SORTIE NE DOIVENT PAS ETRE DE TYPE GENE SI SENSI.')
       ENDIF
 
@@ -252,7 +252,7 @@ C   SENSCH = .TRUE. SI IL Y A UN CALCUL DE SENSIBILITE SUR 1 CHARGEMENT
  251  CONTINUE
 
       IF (LVECAS .AND. SENSCH) THEN
-        CALL UTMESS('F',NOMCMD,'POUR L''INSTANT, ON NE PEUT PAS'//
+        CALL UTMESS('F','OP0060','POUR L''INSTANT, ON NE PEUT PAS'//
      &      ' DERIVER AVEC UN VECT_ASSE EN ENTREE DE DYNA_LINE_HARM.')
       ENDIF 
 C
@@ -343,7 +343,7 @@ C ---------------------------------------------------------------
       ENDIF
       IF ((NUMDL1.NE.NUMDL2).OR.(NUMDL1.NE.NUMDL3).OR.
      & (NUMDL2.NE.NUMDL3)) THEN
-        CALL UTMESS('F',NOMCMD,'LES MATRICES NE POSSEDENT PAS TOUTES' 
+      CALL UTMESS('F','OP0060','LES MATRICES NE POSSEDENT PAS TOUTES' 
      &   //' LA MEME NUMEROTATION ')
       ELSE
          NUMDDL=NUMDL2 
@@ -481,7 +481,7 @@ C
      &                                 CALPHA*ZC(IADR+IEQ)
   123           CONTINUE
               ELSE
-                CALL UTMESS('F',NOMCMD,' UN VECT_ASSE N''EST '//
+                CALL UTMESS('F','OP0060',' UN VECT_ASSE N''EST '//
      &               'NI A VALEURS REELLES, NI A VALEURS COMPLEXES.')
               ENDIF
   124       CONTINUE
@@ -507,7 +507,7 @@ C 4.2.4     --- FACTORISATION DE LA MATRICE DYNAMIQUE ---
 C
         CALL TLDLGG(2,LDYNAM,1,NEQ,0,NDECI,ISINGU,NPVNEG,ICODE)
         IF (ICODE.GT.0) THEN
-          CALL UTDEBM('I',NOMCMD,'MATRICE SINGULIERE')
+          CALL UTDEBM('I','OP0060','MATRICE SINGULIERE')
           CALL UTIMPR('S','LA FREQUENCE',1,FREQ)
           CALL UTIMPK('S','EST UNE FREQUENCE PROPRE DU '//
      &                                                'SYSTEME',0,BL)
@@ -566,11 +566,11 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
           DO 130 INOM =1, NBSYM
             CALL RSEXCH(RESULT,NOMSYM(INOM),IFREQ+NBOLD,CHAMNO,IER)
             IF ( IER .EQ. 0 ) THEN
-               CALL UTMESS('A',NOMCMD,CHAMNO//' CHAM_NO DEJA EXISTANT')
+             CALL UTMESS('A','OP0060',CHAMNO//' CHAM_NO DEJA EXISTANT')
             ELSEIF ( IER .EQ. 100 ) THEN
                CALL VTCREM(CHAMNO,MASSE,'G',TYPRES)
             ELSE
-               CALL UTMESS('F',NOMCMD,'APPEL ERRONE A RSEXCH')
+               CALL UTMESS('F','OP0060','APPEL ERRONE A RSEXCH')
             ENDIF
             CALL JEVEUO(CHAMNO//'.VALE','E',LVALE)
 C

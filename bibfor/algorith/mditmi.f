@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,11 +116,11 @@ C     ---------------------------------------------------
       ICOUPL = ZI(KFSIC+1)
 C
       IF ( (ITYPFL.NE.1).AND.(ITYPFL.NE.2) )
-     &   CALL UTMESS('F',NOMCMD,'LE CALCUL DE LA REPONSE TEMPORELLE '//
+     & CALL UTMESS('F','MDITMI','LE CALCUL DE LA REPONSE TEMPORELLE '//
      &   'N''EST PAS POSSIBLE POUR LE TYPE DE STRUCTURE ETUDIEE.')
 C
       IF ( ICOUPL.NE.1 )
-     &   CALL UTMESS('A',NOMCMD,'LE COUPLAGE FLUIDE-STRUCTURE '//
+     &   CALL UTMESS('A','MDITMI','LE COUPLAGE FLUIDE-STRUCTURE '//
      &   'N''A PAS ETE PRIS EN COMPTE EN AMONT.')
 C
 C
@@ -156,7 +156,7 @@ C
       ELSE IF ( NBMODE.GT.NBM0 ) THEN
          NBMODE = NBM0
          WRITE(K4B,'(I4)') NBM0
-         CALL UTMESS('A',NOMCMD,'NB_MODE EST SUPERIEUR AU NOMBRE DE '//
+       CALL UTMESS('A','MDITMI','NB_MODE EST SUPERIEUR AU NOMBRE DE '//
      &               'MODES DU CONCEPT '//NOMBM//'. ON IMPOSE DONC '//
      &               'NB_MODE = '//K4B//', I.E. EGAL AU NOMBRE DE '//
      &               'MODES DU CONCEPT '//NOMBM//'.')
@@ -169,7 +169,7 @@ C
          IF (NBMD.NE.NBMODE) THEN
          NBMD = NBMODE
          WRITE(K4B,'(I4)') NBMODE
-         CALL UTMESS('F',NOMCMD,'NB_MODE_DIAG EST DIFFERENT DE '//
+         CALL UTMESS('F','MDITMI','NB_MODE_DIAG EST DIFFERENT DE '//
      &               'NB_MODE NOMBRE DE MODES DE LA BASE MODALE . '//
      &               'COMPLETE L''OPTION BASE REDUITE N''EST PLUS '//
      &               'DISPONIBLE.')
@@ -212,7 +212,7 @@ C
             CALL JELIRA(LISTAM//'           .VALE','LONMAX',NBAMOR,K8B)
          ENDIF
          IF ( NBAMOR.GT.NBMODE ) THEN
-            CALL UTDEBM('A',NOMCMD,
+            CALL UTDEBM('A','MDITMI',
      &         'LE NOMBRE D''AMORTISSEMENTS REDUITS EST TROP GRAND')
             CALL UTIMPI('L','LE NOMBRE DE MODES RETENUS VAUT ',1,NBMODE)
             CALL UTIMPI('L','ET LE NOMBRE DE COEFFICIENTS : ',1,NBAMOR)
@@ -231,7 +231,7 @@ C
             ENDIF
          ELSE
             IDIFF = NBMODE - NBAMOR
-            CALL UTDEBM('I',NOMCMD,
+            CALL UTDEBM('I','MDITMI',
      &         'LE NOMBRE D''AMORTISSEMENTS REDUITS EST INSUFFISANT')
             CALL UTIMPI('L','IL EN MANQUE : ',1,IDIFF)
             CALL UTIMPI('L','CAR LE NOMBRE DE MODES VAUT : ',1,NBMODE)
@@ -279,7 +279,7 @@ C
             IF ( ZR(KFREQ+2*(J-1)+2*NBMCFC*(NUMVIF-1)).LT.0.0D0 ) THEN
                WRITE(K3IV,'(I3)') NUMVIF
                WRITE(K3IM,'(I3)') IM
-               CALL UTMESS('F',NOMCMD,'LE CALCUL DES PARAMETRES DU '//
+             CALL UTMESS('F','MDITMI','LE CALCUL DES PARAMETRES DU '//
      &                     'MODE NO'//K3IM//' PAR L''OPERATEUR '//
      &                     '<CALC_FLUI_STRU> N''A PAS CONVERGE POUR '//
      &                     'LA VITESSE NO'//K3IV//'. LE CALCUL DE LA '//
@@ -363,7 +363,7 @@ C
          NBMP = NBMCFC
          IF ( ICOUPL.EQ.1 ) THEN
             WRITE(K4B,'(I4)') NBMP
-            CALL UTMESS('A',NOMCMD,'PAS DE MOT-CLE <NB_MODE_FLUI>. '//
+          CALL UTMESS('A','MDITMI','PAS DE MOT-CLE <NB_MODE_FLUI>. '//
      &         'LES '//K4B//' MODES DU CONCEPT '//BASEFL(1:8)//' '//
      &         'SONT PRIS EN COMPTE POUR LE CALCUL DU SAUT DE FORCE '//
      &         'FLUIDELASTIQUE D''AMORTISSEMENT AU COURS DES PHASES '//
@@ -373,7 +373,7 @@ C
          NBMP = NBMCFC
          IF ( ICOUPL.EQ.1 ) THEN
             WRITE(K4B,'(I4)') NBMP
-            CALL UTMESS('A',NOMCMD,'NB_MODE_FLUI EST PLUS GRAND QUE '//
+          CALL UTMESS('A','MDITMI','NB_MODE_FLUI EST PLUS GRAND QUE '//
      &         'LE NOMBRE DE MODES DU CONCEPT '//BASEFL(1:8)//'. '//
      &          K4B//' MODES SONT PRIS EN COMPTE POUR LE CALCUL '//
      &         'DU SAUT DE FORCE FLUIDELASTIQUE D''AMORTISSEMENT AU '//

@@ -15,7 +15,7 @@
       INTEGER   INUMEX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/11/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,15 +64,15 @@ C ----------------------------------------------------------------------
          IRETG=10000
       ENDIF
       IF (IPREC.NE.0.AND.NB.NE.I2) THEN
-         CALL UTDEBM('F',NOMCMD,'ERREUR DE PROGRAMMATION')
+         CALL UTDEBM('F','RSEXC2','ERREUR DE PROGRAMMATION')
          CALL UTFINM
       ENDIF
       IF (IPREC+1.NE.I1) THEN
-         CALL UTDEBM('F',NOMCMD,'ERREUR DE PROGRAMMATION')
+         CALL UTDEBM('F','RSEXC2','ERREUR DE PROGRAMMATION')
          CALL UTFINM
       ENDIF
       IF (I2.GT.NMAX) THEN
-         CALL UTDEBM('F',NOMCMD,'TROP GRANDE VALEUR POUR I2')
+         CALL UTDEBM('F','RSEXC2','TROP GRANDE VALEUR POUR I2')
          CALL UTFINM
       ENDIF
       IPREC=I1
@@ -84,7 +84,7 @@ C ----------------------------------------------------------------------
       ALARME=ALARME.AND.ICODE.GT.0
       IF ( ALARME.AND.I1.EQ.I2) THEN
          CALL GETRES(CONCEP,TYPCON,NOMCMD)
-         CALL UTDEBM('A',NOMCMD,'CHAMP ')
+         CALL UTDEBM('A','RSEXC2','CHAMP ')
          CALL UTIMPK('S',' INEXISTANT ',1,NOMS(1))
          DO 10 J=2,I2
             CALL UTIMPK('S',' OU ',1,NOMS(J))

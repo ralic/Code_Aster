@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/05/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     --- ON NORMALISE LE VECTEUR ---
  10   CONTINUE
       XNORM = SQRT(XNORM)
       IF (XNORM.LT.0.D0) THEN
-         CALL UTMESS('F',NOMCMD,'LE VECTEUR DIRECTEUR EST NUL.')
+         CALL UTMESS('F','SIMULT','LE VECTEUR DIRECTEUR EST NUL.')
       ENDIF
       DO 12 I = 1,NBDIR
          DEPL(I) = DEPL(I) / XNORM

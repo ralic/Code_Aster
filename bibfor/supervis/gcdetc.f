@@ -1,20 +1,18 @@
-      SUBROUTINE GCDETC(ICMD, CONCEP)
+      SUBROUTINE GCDETC(CONCEP)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER ICMD
       CHARACTER*(*)     CONCEP
 C
 C     ------------------------------------------------------------------
 C     MARQUAGE A &DETRUIT DU CONCEPT : CONCEP DANS LES
-C     DECLARATIONS PRECEDENTES (IE JUSQU'A L'ORDRE ICMD-1)
+C     DECLARATIONS PRECEDENTES
 C     ------------------------------------------------------------------
-C IN  ICMD  : IS   : NUMERO D'ORDRE DE LA COMMANDE
 C OUT IER   : IS   : CODE RETOUR
 C          > 0  NUMERO DE LA COMMANDE AYANT CREE LE COUPLE
 C          = 0  RESUL ABSENT
 C          < 0  RESUL PRESENT MAIS PAS DU BON CONCEPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +55,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
+      INTEGER         ICMD
       CHARACTER*24    KINFO , KRESU, KSTAT
       COMMON /GCUCC1/ KINFO , KRESU, KSTAT
 C     ------------------------------------------------------------------
@@ -67,6 +66,7 @@ C
 C     --- ALLOCATION DE LA TABLE DES RESULTATS ---
       CALL JEMARQ()
       CALL JEVEUO ( KRESU , 'E' ,  LGRESU )
+      CALL GCUOPR( -1 ,ICMD)
 C
 C     DESCRIPTION DE KRESU :
 C          ZK80(JCMD)( 1: 8) = NOM UTILISATEUR DU RESULTAT
@@ -75,7 +75,7 @@ C          ZK80(JCMD)(25:40) = NOM DE L'OPERATEUR
 C          ZK80(JCMD)(41:48) = STATUT DE L'OBJET
 C
 C     --- NOM UTILISATEUR DU RESULTAT ---
-      DO 10 I = 1 , ICMD-1
+      DO 10 I = 1 , ICMD
          IF(ZK80(LGRESU-1+I)(1:8) .EQ. CONCEP ) THEN
             ZK80(LGRESU-1+I)(41:48) = '&DETRUIT'
          ENDIF

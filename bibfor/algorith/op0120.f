@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C    --- VERIFICATION DU NOMBRE DE POINTS ---
       PTS2 = ABS(PTS1-PTS)
       PTS3 = ABS(1.D0-PTS2)
       IF (PTS2.GE.1.D-06 .AND. PTS3.GE.1.D-06) THEN
-        CALL UTMESS('F',NOMCMD//'(ERREUR 02)',
+        CALL UTMESS('F','OP0120'//'(ERREUR 02)',
      +              'LE "NOMB_PTS" DOIT ETRE UNE PUISSANCE DE 2.')
       END IF
 C

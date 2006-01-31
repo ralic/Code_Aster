@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_ASSD Noyau  DATE 31/01/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,6 +110,17 @@ class ASSD:
       for key in d.keys():
           if key[0]=='_':del d[key]
       return d
+
+   def par_lot(self):
+      """
+           Retourne True si l'ASSD est créée en mode PAR_LOT='OUI'.
+      """
+      if not hasattr(self, 'jdc') or self.jdc == None:
+         val = None
+      else:
+         val = self.jdc.par_lot
+      return val == 'OUI'
+
 
 class assd(ASSD):
    def is_object(valeur):

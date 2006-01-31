@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF reca_algo Macro  DATE 31/01/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 
 import Numeric
-from Numeric import take
+from Numeric import take, size
 import copy,os
 import LinearAlgebra 
 from Cata.cata import INFO_EXEC_ASTER
@@ -175,8 +175,15 @@ def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out
             dval[i]=borne_inf[i]-val[i]
             s[i]=-1.
       if (len(I)!=0):
-         # xi=-Q(I)-1.(d(I)+Q(I,Act).dval(Act))
-          xi=-LinearAlgebra.solve_linear_equations(take(take(Q,I),I,1),(take(d,I)+Numeric.dot(take(take(Q,I),Act,1),take(Dim.adim(dval),Act))))
+          # xi=-Q(I)-1.(d(I)+Q(I,Act).dval(Act))
+          t_QI = take(Q, I)
+          t_tQI_Act = take(t_QI, Act, 1)
+          t_adim_Act = take(Dim.adim(dval), Act)
+          if size(t_tQI_Act) > 0 and size(t_adim_Act) > 0:
+             smemb = take(d, I) + Numeric.dot(t_tQI_Act, t_adim_Act)
+          else:
+             smemb = take(d, I)
+          xi=-LinearAlgebra.solve_linear_equations(take(t_QI, I, 1), smemb)
           for i in Numeric.arange(len(I)):
              dval[I[i]]=xi[i]*val_init[I[i]]
       if (len(Act)!=0):

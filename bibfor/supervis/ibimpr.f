@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
          CALL GETVTX(MOTFAC,'FICHIER' ,IOCC,IUN,MXIMPR,PRNOM,NBNOM)
          IF ( NBNOM.LT.0 ) THEN
             IER = IER + 1
-            CALL UTMESS('F',NOMCMD,'TROP DE NOMS DEFINIS DANS LA LISTE'
+          CALL UTMESS('F','IBIMPR','TROP DE NOMS DEFINIS DANS LA LISTE'
      +                            //' ARGUMENT DE "FICHIER"')
          ENDIF
          DO 15 INOM = 1, NBNOM
@@ -84,7 +84,7 @@ C
             CALL UTREMT( PRNOM(INOM), NOMPR , MXIMPR, PLACE )
             IF (PLACE.EQ.0) THEN
                IER = IER + 1
-               CALL UTDEBM('E',NOMCMD,'NOM SYMBOLIQUE ERRONE '//
+               CALL UTDEBM('E','IBIMPR','NOM SYMBOLIQUE ERRONE '//
      +                         'POUR UN FICHIER DE SORTIE.')
      +
                CALL UTIMPK('L','VALEUR LUE',1,PRNOM(INOM))
@@ -92,7 +92,7 @@ C
                CALL UTFINM()
             ELSEIF ( PRESPR(PLACE) .NE. 0 ) THEN
                IER = IER + 1
-               CALL UTMESS('E',NOMCMD,
+               CALL UTMESS('E','IBIMPR',
      +                          PRNOM(INOM)//' EST DEJA (RE-) DEFINI')
                PRNOM(INOM) = '::'
             ELSE

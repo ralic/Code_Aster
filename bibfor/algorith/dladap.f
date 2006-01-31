@@ -15,7 +15,7 @@
       INTEGER      NBPASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,7 +225,7 @@ C
       ENDIF
 C    
       IF ( NBEXCL .EQ. NBSORT )
-     +   CALL UTMESS('F',NOMCMD,'ON ARCHIVE AU MOINS UN CHAMP.')
+     +   CALL UTMESS('F','DLADAP','ON ARCHIVE AU MOINS UN CHAMP.')
       DO 50 I = 1,NBEXCL
          IF (TYP1(I).EQ.'DEPL') THEN
             TYPE(1) = '    '
@@ -300,11 +300,11 @@ C
             IF ( TYPE(ITYPE) .EQ. '    ' ) GOTO 30
             CALL RSEXCH(RESULT,TYPE(ITYPE),IARCHI,CHAMNO,IER)
             IF ( IER .EQ. 0 ) THEN
-            CALL UTMESS('A',NOMCMD,'CHAMP "'//CHAMNO//'" DEJA EXISTANT')
+          CALL UTMESS('A','DLADAP','CHAMP "'//CHAMNO//'" DEJA EXISTANT')
             ELSE IF ( IER .EQ. 100 ) THEN
                CALL VTCREM(CHAMNO,MASSE,'G','R')
             ELSE
-               CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+               CALL UTMESS('F','DLADAP','APPEL ERRONE')
             ENDIF
             CHAMNO(20:24)  = '.VALE'
             CALL JEVEUO(CHAMNO,'E',LVALE)
@@ -510,7 +510,7 @@ C
       ELSEIF ( IER .EQ. 0 ) THEN
          GOTO 70
       ELSE
-         CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+         CALL UTMESS('F','DLADAP','APPEL ERRONE')
       ENDIF
       CHAMNO(20:24)  = '.VALE'
       CALL JEVEUO(CHAMNO,'E',LVALE)
@@ -526,7 +526,7 @@ C
       ELSEIF ( IER .EQ. 0 ) THEN
          GOTO 74
       ELSE
-         CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+         CALL UTMESS('F','DLADAP','APPEL ERRONE')
       ENDIF
       WRITE(IFM,1001) ' ','VITE',' ', IARCHI, TEMPS
       CHAMNO(20:24)  = '.VALE'
@@ -543,7 +543,7 @@ C
       ELSEIF ( IER .EQ. 0 ) THEN
          GOTO 78
       ELSE
-         CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+         CALL UTMESS('F','DLADAP','APPEL ERRONE')
       ENDIF
       WRITE(IFM,1001) ' ',' ','ACCE', IARCHI, TEMPS
       CHAMNO(20:24)  = '.VALE'

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
  10      CONTINUE
          XNORM = SQRT(XNORM)
          IF (XNORM.LT.R8PREM()) THEN
-            CALL UTMESS('F',NOMCMD,'LE VECTEUR DIRECTEUR EST NUL.')
+            CALL UTMESS('F','TRAN75','LE VECTEUR DIRECTEUR EST NUL.')
          ENDIF
          DO 12 ID = 1,NBDIR
             DEPL(ID) = DEPL(ID) / XNORM
@@ -237,7 +237,7 @@ C
       KINST = '&&TRAN75.INSTANT'
       CALL RSTRAN(INTERP,TRANGE,' ',1,KINST,KNUME,NBINST,IRETOU)
       IF ( IRETOU .NE. 0 ) THEN
-         CALL UTMESS('F',NOMCMD,'PROBLEME(S) RENCONTRE(S) LORS'//
+         CALL UTMESS('F','TRAN75','PROBLEME(S) RENCONTRE(S) LORS'//
      +                          ' DE LA LECTURE DES INSTANTS.' )
       ENDIF
       CALL JEEXIN ( KINST, IRET )
@@ -297,7 +297,7 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
        CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
        IF ((INTERP(1:3).NE.'NON').AND.(FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
      &     FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 )) THEN
-          CALL UTMESS('F',NOMCMD,'POUR INTERPOLER IL FAUT FOURNIR'//
+          CALL UTMESS('F','TRAN75','POUR INTERPOLER IL FAUT FOURNIR'//
      &                ' UNE LISTE DE FREQUENCES OU INSTANTS.')
        ENDIF
 
@@ -371,7 +371,7 @@ C
              IARCHI = IARCHI + 1
              CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
              IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
+             CALL UTMESS('A','TRAN75',CHAMNO//'CHAM_NO DEJA EXISTANT')
              ELSEIF ( IRET .EQ. 100 ) THEN
                IF ( TOUSNO ) THEN
                  IF (MODE.EQ.BLANC) THEN
@@ -413,7 +413,7 @@ C
                  ENDIF
                ENDIF
              ELSE
-                CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+                CALL UTMESS('F','TRAN75','APPEL ERRONE')
              ENDIF
              CHAMNO(20:24) = '.VALE'
              IF (INTERP(1:3).EQ.'NON') THEN

@@ -9,7 +9,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C     ---------------------------------------------------------------
       CALL MEMARE('G',MATEL(1:8),MODELE(1:8),MATE,CARA(1:8),'AMOR_MECA')
       CALL WKVECT(MATEL(1:8)//'.LISTE_RESU','G V K24',NCHAR+1,JLIRES)
 
-      IF (OPTIO2.EQ.'AMOR_MECA') THEN
+      IF (OPTIO2(1:9).EQ.'AMOR_MECA') THEN
         LPAOUT(1) = 'PMATUUR'
       ELSE IF (OPTIO2.EQ.'RIGI_MECA_HYST') THEN
         LPAOUT(1) = 'PMATUUC'
@@ -156,7 +156,12 @@ C     ---------------------------------------------------------------
       LCHIN(9) = MASSCH
       LPAIN(10) = 'PCADISK'
       LCHIN(10) = CHCARA(2)
-      CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+      IF (OPTIO2.EQ.'AMOR_MECA_ABSO') THEN
+        NOP = 2      
+      ELSE
+        NOP = 10
+      ENDIF
+      CALL CALCUL('S',OPTIO2,LIGRMO,NOP,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
       CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
       IF (IRET.NE.0) THEN
         ILIRES = ILIRES + 1

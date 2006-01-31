@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 30/01/2006   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,7 @@ DG0=CALC_G_THETA_T(     RESULTAT=DEP,
                       )
 
 TEST_TABLE(       TABLE=DG0,
-                       NOM_PARA='G',
+                       NOM_PARA='DG/DF',
                           SENSIBILITE = (FORC), 
                            VALE=1.06E-2,
                       REFERENCE='ANALYTIQUE',

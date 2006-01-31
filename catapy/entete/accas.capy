@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF ENTETE  DATE 31/01/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,10 +54,7 @@ class grno(GEOM):pass
 class ma  (GEOM):pass
 class grma(GEOM):pass
 
-
-
 # Autres
-
 class cabl_precont    (ASSD):pass
 class cara_elem       (ASSD):pass
 class cham_mater      (ASSD):pass
@@ -92,6 +89,8 @@ class modele_gene     (ASSD):
   def LIST_SOUS_STRUCT(self) :
     """ retourne la liste des sous structures du modele generalise
         la liste des macro-elements sous-jacents"""
+    if self.par_lot():
+      raise Accas.AsException("Erreur dans modele_gene.LIST_SOUS_STRUCT en PAR_LOT='OUI'")
     nommodgen=self.get_name()
     ncham=nommodgen+(8-len(nommodgen))*' '
     ssno=aster.getvectjev(ncham+(14-len(ncham))*' '+'.MODG.SSNO')
@@ -100,6 +99,8 @@ class modele_gene     (ASSD):
   def LIST_LIAIS_STRUCT(self) :
     """ retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
         [ (ss1, nom_liais1,  ss2 , nom_liais2), ...] """
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans modele_gene.LIST_LIAIS_STRUCT en PAR_LOT='OUI'")
     nommodgen=self.get_name()
     ncham=nommodgen+(8-len(nommodgen))*' '
     lidf=aster.getcolljev(ncham+(14-len(ncham))*' '+'.MODG.LIDF')
@@ -111,6 +112,8 @@ class modele_gene     (ASSD):
 class macr_elem_dyna  (ASSD):
   def NBRE_MODES(self) :
     """ retourne le nombre de modes total, dynamiques et d'interface """
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans macr_elem_dyna.NBRE_MODES en PAR_LOT='OUI'")
     nommacr=self.get_name()
     ncham=nommacr+(8-len(nommacr))*' '
     ncham=nommacr+(8-len(nommacr))*' '+'.MAEL'
@@ -129,6 +132,8 @@ class macr_elem_dyna  (ASSD):
         typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
     nommacr=self.get_name()
     if (typmat=='MASS_GENE') :
@@ -166,6 +171,8 @@ class macr_elem_dyna  (ASSD):
         typmat='RIGI_GENE' pour obtenir la matrice de raideur generalisee
         typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
         Attributs ne retourne rien """
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
 # avertissement generique
@@ -220,8 +227,11 @@ class listr8_sdaster   (ASSD):
     """
     Retourne la liste des valeurs : [val1, ..., valN]
     """
-    vale=string.ljust(self.get_name(),19)+'.VALE'
-    return list(aster.getvectjev(vale))
+    if not self.par_lot():
+       vale='%-19s.VALE' % self.get_name()
+       return list(aster.getvectjev(vale))
+    else:
+       raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")
 
 
 # post-traitement :
@@ -242,25 +252,29 @@ class post_comp_cham_no :
 #--------------------------------
 class maillage_sdaster(ASSD):
   def LIST_GROUP_NO(self) :
-    """ retourne la liste des groupes de noeuds sous la forme :
+      """ retourne la liste des groupes de noeuds sous la forme :
         [ (gno1, nb noeuds  gno1), ...] """
-    nommail=self.get_name()
-    dic_gpno=aster.getcolljev(nommail.ljust(8)+".GROUPENO")
-    return [(gpno.strip(),len(dic_gpno[gpno])) for gpno in dic_gpno]
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans maillage.LIST_GROUP_NO en PAR_LOT='OUI'")
+      nommail=self.get_name()
+      dic_gpno=aster.getcolljev(nommail.ljust(8)+".GROUPENO")
+      return [(gpno.strip(),len(dic_gpno[gpno])) for gpno in dic_gpno]
   def LIST_GROUP_MA(self) :
-    """ retourne la liste des groupes de mailles sous la forme :
+      """ retourne la liste des groupes de mailles sous la forme :
         [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
-    nommail=self.get_name()
-    nommail=nommail.ljust(8)
-    ngpma=[]
-    ltyma =aster.getvectjev("&CATA.TM.NOMTM")
-    catama=aster.getcolljev("&CATA.TM.TMDIM")
-    dic_gpma=aster.getcolljev(nommail+".GROUPEMA")
-    dimama=[catama[ltyma[ma-1]][0] for ma in aster.getvectjev(nommail+".TYPMAIL")]
-    for grp in dic_gpma.keys():
-        dim=max([dimama[ma-1] for ma in dic_gpma[grp]])
-        ngpma.append((grp.strip(),len(dic_gpma[grp]),dim))
-    return ngpma
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans maillage.LIST_GROUP_MA en PAR_LOT='OUI'")
+      nommail=self.get_name()
+      nommail=nommail.ljust(8)
+      ngpma=[]
+      ltyma =aster.getvectjev("&CATA.TM.NOMTM")
+      catama=aster.getcolljev("&CATA.TM.TMDIM")
+      dic_gpma=aster.getcolljev(nommail+".GROUPEMA")
+      dimama=[catama[ltyma[ma-1]][0] for ma in aster.getvectjev(nommail+".TYPMAIL")]
+      for grp in dic_gpma.keys():
+         dim=max([dimama[ma-1] for ma in dic_gpma[grp]])
+         ngpma.append((grp.strip(),len(dic_gpma[grp]),dim))
+      return ngpma
 
 
 class squelette     (maillage_sdaster):pass
@@ -309,7 +323,7 @@ class carte_corr_r   (carte_sdaster):pass
 class cham_elem_sdaster(cham_gd_sdaster):
 
   def EXTR_COMP(self,comp,lgma,topo=0) :
-    """ retourne les valeurs de la composante comp du champ sur la liste
+      """ retourne les valeurs de la composante comp du champ sur la liste
         de groupes de mailles lgma avec eventuellement l'info de la
         topologie si topo>0. Si lgma est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
@@ -319,29 +333,30 @@ class cham_elem_sdaster(cham_gd_sdaster):
           - self.maille  : numero de mailles
           - self.point   : numero du point dans la maille
           - self.sous_point : numero du sous point dans la maille """
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans cham_elem.EXTR_COMP en PAR_LOT='OUI'")
 
-
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    nchams=ncham[0:7]+'S'
-    ncmp=comp+(8-len(comp))*' '
-
-    aster.prepcompcham(ncham,nchams,ncmp,"EL      ",topo,lgma)
-
-    valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
-
-    if (topo>0) :
-      maille=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.M'))
-      point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.P'))
-      sous_point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.SP'))
-    else :
-      maille=None
-      point=None
-      sous_point=None
-
-    aster.prepcompcham("__DETR__",nchams,ncmp,"EL      ",topo,lgma)
-
-    return post_comp_cham_el(valeurs,maille,point,sous_point)
+      ncham=self.get_name()
+      ncham=ncham+(8-len(ncham))*' '
+      nchams=ncham[0:7]+'S'
+      ncmp=comp+(8-len(comp))*' '
+   
+      aster.prepcompcham(ncham,nchams,ncmp,"EL      ",topo,lgma)
+   
+      valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
+   
+      if (topo>0) :
+         maille=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.M'))
+         point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.P'))
+         sous_point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.SP'))
+      else :
+         maille=None
+         point=None
+         sous_point=None
+   
+      aster.prepcompcham("__DETR__",nchams,ncmp,"EL      ",topo,lgma)
+   
+      return post_comp_cham_el(valeurs,maille,point,sous_point)
 
 class cham_elem_crit_r(cham_elem_sdaster):pass
 class cham_elem_dbel_r(cham_elem_sdaster):pass
@@ -381,7 +396,7 @@ class cham_elem_vnor_c(cham_elem_sdaster):pass
 class cham_no_sdaster(cham_gd_sdaster):
 
   def EXTR_COMP(self,comp,lgno,topo=0) :
-    """ retourne les valeurs de la composante comp du champ sur la liste
+      """ retourne les valeurs de la composante comp du champ sur la liste
         de groupes de noeuds lgno avec eventuellement l'info de la
         topologie si topo>0. Si lgno est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
@@ -389,25 +404,26 @@ class cham_no_sdaster(cham_gd_sdaster):
           - self.valeurs : Numeric.array contenant les valeurs
         Si on a demande la topo (i.e. self.topo = 1) :
           - self.noeud  : numero de noeud """
-
-
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    nchams=ncham[0:7]+'S'
-    ncmp=comp+(8-len(comp))*' '
-
-    aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
-
-    valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
-
-    if (topo>0) :
-      noeud=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.N'))
-    else :
-      noeud=None
-
-    aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
-
-    return post_comp_cham_no(valeurs,noeud)
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
+      
+      ncham=self.get_name()
+      ncham=ncham+(8-len(ncham))*' '
+      nchams=ncham[0:7]+'S'
+      ncmp=comp+(8-len(comp))*' '
+   
+      aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
+   
+      valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
+   
+      if (topo>0) :
+         noeud=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.N'))
+      else :
+         noeud=None
+   
+      aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
+   
+      return post_comp_cham_no(valeurs,noeud)
 
 class cham_no_corr_r   (cham_no_sdaster):pass
 class cham_no_dbel_r   (cham_no_sdaster):pass
@@ -450,12 +466,20 @@ class cham_no_vnor_c   (cham_no_sdaster):pass
 
 class resultat_sdaster(ASSD):
   def LIST_CHAMPS (self) :
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans resultat.LIST_CHAMPS en PAR_LOT='OUI'")
     return aster.GetResu(self.get_name(), "CHAMPS")
   def LIST_NOM_CMP (self) :
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans resultat.LIST_NOM_CMP en PAR_LOT='OUI'")
     return aster.GetResu(self.get_name(), "COMPOSANTES")
   def LIST_VARI_ACCES (self) :
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans resultat.LIST_VARI_ACCES en PAR_LOT='OUI'")
     return aster.GetResu(self.get_name(), "VARI_ACCES")
   def LIST_PARA (self) :
+    if self.par_lot() :
+      raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
     return aster.GetResu(self.get_name(), "PARAMETRES")
 
 class acou_harmo    (resultat_sdaster):pass
@@ -505,7 +529,17 @@ class fonction_class(ASSD):
       le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
       le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
       """
-      if hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
+      if not self.par_lot():
+        TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
+        prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
+        dico={
+         'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
+         'NOM_PARA'    : string.strip(prol[2][0:16]),
+         'NOM_RESU'    : string.strip(prol[3][0:16]),
+         'PROL_DROITE' : TypeProl[prol[4][1]],
+         'PROL_GAUCHE' : TypeProl[prol[4][0]],
+        }
+      elif hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
         dico={
          'INTERPOL'    : self.etape['INTERPOL'],
          'NOM_PARA'    : self.etape['NOM_PARA'],
@@ -519,19 +553,13 @@ class fonction_class(ASSD):
                   dico['INTERPOL']=[dico['INTERPOL'],]
         if len(dico['INTERPOL'])==1 :
            dico['INTERPOL']=dico['INTERPOL']*2
-      else :
-        TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-        prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
-        dico={
-         'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'    : string.strip(prol[2][0:16]),
-         'NOM_RESU'    : string.strip(prol[3][0:16]),
-         'PROL_DROITE' : TypeProl[prol[4][1]],
-         'PROL_GAUCHE' : TypeProl[prol[4][0]],
-        }
+      else:
+         raise Accas.AsException("Erreur dans fonction.Parametres en PAR_LOT='OUI'")
       return dico
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction"""
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans fonction.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
@@ -556,7 +584,14 @@ class fonction_sdaster(fonction_class):
       """
       Retourne deux listes de valeurs : abscisses et ordonnees
       """
-      if hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
+      if not self.par_lot():
+        vale=string.ljust(self.get_name(),19)+'.VALE'
+        lbl=list(aster.getvectjev(vale))
+        dim=len(lbl)/2
+        lx=lbl[0:dim]
+        ly=lbl[dim:2*dim]
+        return [lx,ly]
+      elif hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
         if self.etape['VALE']!=None:
            lbl=list(self.etape['VALE'])
            dim=len(lbl)
@@ -566,12 +601,7 @@ class fonction_sdaster(fonction_class):
         elif self.etape['VALE_PARA']!=None:
            return [self.etape['VALE_PARA'].Valeurs(),self.etape['VALE_FONC'].Valeurs()]
       else :
-        vale=string.ljust(self.get_name(),19)+'.VALE'
-        lbl=list(aster.getvectjev(vale))
-        dim=len(lbl)/2
-        lx=lbl[0:dim]
-        ly=lbl[dim:2*dim]
-        return [lx,ly]
+         raise Accas.AsException("Erreur dans fonction.Valeurs en PAR_LOT='OUI'")
    def Absc(self):
       """Retourne la liste des abscisses"""
       return self.Valeurs()[0]
@@ -620,14 +650,7 @@ class fonction_c(fonction_class):
       """
       Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
       """
-      if self.etape.nom=='DEFI_FONCTION' :
-        lbl=list(self.etape['VALE_C'])
-        dim=len(lbl)
-        lx=[lbl[i] for i in range(0,dim,3)]
-        lr=[lbl[i] for i in range(1,dim,3)]
-        li=[lbl[i] for i in range(2,dim,3)]
-        return [lx,lr,li]
-      else :
+      if not self.par_lot():
         vale=string.ljust(self.get_name(),19)+'.VALE'
         lbl=list(aster.getvectjev(vale))
         dim=len(lbl)/3
@@ -638,6 +661,15 @@ class fonction_c(fonction_class):
            lr.append(lbl[dim+2*i])
            li.append(lbl[dim+2*i+1])
         return [lx,lr,li]
+      if self.etape.nom=='DEFI_FONCTION' :
+        lbl=list(self.etape['VALE_C'])
+        dim=len(lbl)
+        lx=[lbl[i] for i in range(0,dim,3)]
+        lr=[lbl[i] for i in range(1,dim,3)]
+        li=[lbl[i] for i in range(2,dim,3)]
+        return [lx,lr,li]
+      else :
+         raise Accas.AsException("Erreur dans fonction_c.Valeurs en PAR_LOT='OUI'")
    def Absc(self):
       """Retourne la liste des abscisses"""
       return self.Valeurs()[0]
@@ -649,6 +681,8 @@ class fonction_c(fonction_class):
       return self.Valeurs()[2]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction complexe"""
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans fonction_c.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
@@ -689,6 +723,8 @@ class nappe_sdaster(fonction_class):
       Retourne la liste des valeurs du parametre,
       et une liste de couples (abscisses,ordonnees) de chaque fonction.
       """
+      if self.par_lot():
+         raise Accas.AsException("Erreur dans nappe.Valeurs en PAR_LOT='OUI'")
       nsd=string.ljust(self.get_name(),19)
       dicv=aster.getcolljev(nsd+'.VALE')
       # les cles de dicv sont 1,...,N (indice du parametre)
@@ -706,6 +742,8 @@ class nappe_sdaster(fonction_class):
       le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel,
       et une liste de dictionnaire des parametres de chaque fonction.
       """
+      if self.par_lot():
+         raise Accas.AsException("Erreur dans nappe.Parametres en PAR_LOT='OUI'")
       TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
       prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
       dico={
@@ -731,6 +769,8 @@ class nappe_sdaster(fonction_class):
       return self.Valeurs()[0]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une nappe"""
+      if self.par_lot():
+         raise Accas.AsException("Erreur dans nappe.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
       gr=Graph()
       lv=self.Valeurs()[1]
@@ -750,6 +790,8 @@ class matr_asse_gene_r(matr_asse_gene):
     dans un format Numerical Array
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
@@ -784,6 +826,8 @@ class matr_asse_gene_r(matr_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans des matrices
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
 # avertissement generique
@@ -836,6 +880,8 @@ class matr_asse_gene_c(matr_asse_gene):
     dans un format Numerical Array
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
@@ -869,6 +915,8 @@ class matr_asse_gene_c(matr_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans des matrices
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
 # avertissement generique
@@ -943,8 +991,10 @@ class matr_elem_temp_r(matr_elem):pass
 #--------------------------------
 class table_sdaster(ASSD):
   def __getitem__(self,key):
-      requete=string.ljust(key[0],24)
-      tblp=string.ljust(self.get_name(),19)+'.TBLP'
+      if self.par_lot():
+         raise Accas.AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
+      requete = '%-24s' % key[0]
+      tblp = '%-19s.TBLP' % self.get_name()
       tabnom=list(aster.getvectjev(tblp))
       for i in range(len(tabnom)) :
          if tabnom[i]==requete: break
@@ -960,6 +1010,8 @@ class table_sdaster(ASSD):
       def Nonefy(l1,l2) :
           if l2==0 : return None
           else     : return l1
+      if self.par_lot():
+         raise Accas.AsException("Erreur dans table.EXTR_TABLE en PAR_LOT='OUI'")
       from Utilitai.Table import Table
       tblp=string.ljust(self.get_name(),19)+'.TBLP'
       tabnom=list(aster.getvectjev(tblp))
@@ -1006,6 +1058,8 @@ class vect_asse_gene_r(vect_asse_gene):
     dans un format Numerical Array
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
@@ -1017,6 +1071,8 @@ class vect_asse_gene_r(vect_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
     reel definie dans jeveux
         Attributs ne retourne rien """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
 # avertissement generique
@@ -1044,6 +1100,8 @@ class vect_asse_gene_c(vect_asse_gene):
     dans un format Numerical Array
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans vect_asse_gene_c.EXTR_VECT_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
@@ -1055,6 +1113,8 @@ class vect_asse_gene_c(vect_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
     complexe definie dans jeveux
         Attributs ne retourne rien """
+    if self.par_lot():
+       raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
 # avertissement generique

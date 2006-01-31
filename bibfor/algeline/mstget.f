@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,7 @@ C
             III   = ZI(JIND2+IEQ) * IMODE
             IF (III.NE.0) THEN
             CALL RGNDAS('NUME_DDL',NUME,II,NOMNOE,NOMCMP,KBID,KBID,KBID)
-               CALL UTDEBM('E',NOMCMD,TEXTE)
+               CALL UTDEBM('E','MSTGET',TEXTE)
                CALL UTIMPK('L','   POUR LE MOT CLE : ',1,MOTFAC)
                CALL UTIMPK('L','             NOEUD : ',1,NOMNOE)
                CALL UTIMPK('L','        COMPOSANTE : ',1,NOMCMP)

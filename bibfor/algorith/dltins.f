@@ -3,7 +3,7 @@
       CHARACTER*24  LISPAS, LIBINT, LINBPA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
      +                                         PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.NE.1) THEN
-                  CALL UTMESS('F',NOMCMD,'ON N''A PAS PU TROUVE LE '//
+                CALL UTMESS('F','DLTINS','ON N''A PAS PU TROUVE LE '//
      +                                   'DERNIER INSTANT SAUVE.')
                ENDIF
             ELSE
@@ -73,14 +73,14 @@ C
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
      +                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'PLUSIEURS CHAMPS '
+                  CALL UTDEBM('F','DLTINS','PLUSIEURS CHAMPS '
      +                           //'CORRESPONDANT A L''ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
                   CALL UTIMPI('S',', NOMBRE :',1,-NBTROU)
                   CALL UTFINM()
                ELSEIF (NBTROU.EQ.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'PAS DE CHAMP '//
+                  CALL UTDEBM('F','DLTINS','PAS DE CHAMP '//
      +                             'CORRESPONDANT A UN ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
@@ -97,7 +97,7 @@ C           --- VERIFICATION QUE NUME EXISTE ---
             DO 10 I = 1,NBORDR
                IF (ZI(JORDR+I-1).EQ.NUME) GOTO 12
  10         CONTINUE
-            CALL UTMESS('F',NOMCMD,'NUME_INIT: ON N''A PAS TROUVER'//
+            CALL UTMESS('F','DLTINS','NUME_INIT: ON N''A PAS TROUVER'//
      +                  ' LE NUME_INIT DANS LE RESULTAT '//DYNA)
  12         CONTINUE
          ENDIF
@@ -127,7 +127,7 @@ C           --- DANS QUEL INTERVALLE SE SITUE LE TEMPS ---
             DO 100 IINT = 1,NBGRPA
                IF (TEMPS.LT.ZR(JBINT+IINT)) GOTO 102
  100        CONTINUE
-            CALL UTDEBM('F',NOMCMD,
+            CALL UTDEBM('F','DLTINS',
      +         'INSTANT DE REPRISE SUPERIEUR A LA LISTE DES INSTANTS')
             CALL UTIMPR('L','   INSTANT DE REPRISE: ',1,TEMPS)
             CALL UTIMPR('L','   INSTANT MAX: ',1,ZR(JBINT+NBGRPA))
@@ -166,7 +166,7 @@ C           --- POUR LE PREMIER INTERVALLE ---
             DO 120 IV = NBPD,NBPF
                IF (ABS(ZR(JVALE+IV)-TEMPS).LT.EPS) GOTO 122
  120        CONTINUE
-            CALL UTDEBM('F',NOMCMD,'ON N''A PAS TROUVE L''INSTANT')
+            CALL UTDEBM('F','DLTINS','ON N''A PAS TROUVE L''INSTANT')
             CALL UTIMPR('L','   INSTANT DE REPRISE: ',1,TEMPS)
             CALL UTIMPR('L','   PAS DE TEMPS: ',1, ZR(JLPAS+IINT-1))
             CALL UTIMPR('L','   BORNE MIN: ',1,ZR(JBINT+IINT-1))
@@ -215,7 +215,7 @@ C
          ENDIF
 C
          IF (TFIN.LT.ZR(JBINT)) THEN
-            CALL UTDEBM('F',NOMCMD,
+            CALL UTDEBM('F','DLTINS',
      +           'INSTANT FINAL INFERIEUR A LA LISTE DES INSTANTS')
             CALL UTIMPR('L','   INSTANT FINAL: ',1,TFIN)
             CALL UTIMPR('L','   INSTANT MIN  : ',1,ZR(JBINT))
@@ -251,7 +251,7 @@ C        --- POUR LE DERNIER INTERVALLE ---
          DO 230 IV = NBPD,NBPF
             IF (ABS(ZR(JVALE+IV)-TFIN).LT.EPS) GOTO 232
  230     CONTINUE
-         CALL UTDEBM('F',NOMCMD,'ON N''A PAS TROUVE L''INSTANT')
+         CALL UTDEBM('F','DLTINS','ON N''A PAS TROUVE L''INSTANT')
          CALL UTIMPR('L','   INSTANT FINAL: ',1,TFIN)
          CALL UTIMPR('L','   PAS DE TEMPS: ',1, ZR(JLPAS+IINT-1))
          CALL UTIMPR('L','   BORNE MIN: ',1,ZR(JBINT+IINT-1))
@@ -282,7 +282,7 @@ C
      +             'DONNEE DE LIST_INST OU FONC_INST EST OBLIGATOIRE ')
        CALL GETVIS('INCREMENT','PAS_CALCUL',1,1,1,IPC,N3)
       CALL JEVEUO(LI//'           .PROL','L',LPROL)
-      IF (ZK16(LPROL).NE.'FONCTION') CALL UTMESS('F',NOMCMD,
+      IF (ZK16(LPROL).NE.'FONCTION') CALL UTMESS('F','DLTINS',
      +                     'FONC_INST: ON ATTEND UNE FONCTION.')
       CALL JEVEUO(LI//'           .VALE','L',LVAR)
       CALL JELIRA(LI//'           .VALE','LONUTI',NBVAL,K8B)
@@ -293,7 +293,7 @@ C
       DO 20 I = 0,NBINST-2
          DTI = ZR(LVAR+I+1) - ZR(LVAR+I)
          IF (ABS(DTI-DT).GT.EPSI) THEN
-            CALL UTMESS('F',NOMCMD,'FONC_INST: IL FAUT UNE FONC'//
+            CALL UTMESS('F','DLTINS','FONC_INST: IL FAUT UNE FONC'//
      +                                'TION A PAS CONSTANT.')
          ENDIF
  20   CONTINUE
@@ -303,7 +303,7 @@ C     --- SI REPRISE, IL FAUT SE RECALER ---
          DO 22 I = 1, NBINST
             IF (ABS(ZR(LVAR+I-1)-TEMPS).LE.EPSI) GOTO 24
  22      CONTINUE
-         CALL UTMESS('F',NOMCMD,'FONC_INST: TEMPS DE REPRISE '//
+         CALL UTMESS('F','DLTINS','FONC_INST: TEMPS DE REPRISE '//
      +                          'SUPERIEUR A LA FONCTION.')
  24      CONTINUE
          INUME = I

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,7 @@ C             -- CREATION D'UN INTERVALLE SUPPLEMENTAIRE:
               ZR(JBOR-1+IINTER+1) = FIN
               NBVAL = NBVAL + 1
 
-              CALL UTDEBM('A',NOMCMD,'LA DISTANCE ENTRE LES '//
+              CALL UTDEBM('A','OP0024','LA DISTANCE ENTRE LES '//
      &                    'DEUX DERNIERS REELS NE SERA PAS EGAL')
               CALL UTIMPR('S',' AU PAS COURANT : ',1,PAS)
               CALL UTIMPI('S',', POUR L''INTERVALLE ',1,IOCC)

@@ -3,7 +3,7 @@
       INTEGER           IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C       --- POUR UNE MATRICE HERMITIENNE ---
 C
       DIMH = (DIM*(DIM+1))/2
       IF (DIMH .NE. NFNTOT) THEN
-        CALL UTMESS('F',NOMCMD//'ERREUR.02)',
+        CALL UTMESS('F','OP0115'//'ERREUR.02)',
      +    'NOMBRE DE FONCTIONS ERRONE POUR UNE MATRICE HERMITIENNE')
         ENDIF
 C
@@ -106,7 +106,7 @@ C
         CALL GETVR8(K16TST,'FREQ_MIN',IFONC1,1,1,FRQMIN,IBID)
         CALL GETVR8(K16TST,'FREQ_MAX',IFONC1,1,1,FRQMAX,IBID)
         IF(FRQMIN.GE.FRQMAX)THEN
-          CALL UTMESS('F',NOMCMD//K16TST//'ERREUR.04',
+          CALL UTMESS('F','OP0115'//K16TST//'ERREUR.04',
      &                  'FREQ_MIN < FREQ_MAX')
         ENDIF
         ENDIF
@@ -127,7 +127,7 @@ C
           JH = JH + K*K
    40   CONTINUE
         IF (IS.NE.IH .OR. JS.NE.JH) THEN
-          CALL UTMESS('F',NOMCMD//'ERREUR.03',
+          CALL UTMESS('F','OP0115'//'ERREUR.03',
      +            'ERREUR SUR LES INDICES')
         ENDIF
       CALL INFMAJ

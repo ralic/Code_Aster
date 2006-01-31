@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,12 +104,12 @@ C       ----------------------------------
           CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
           IF (INOEUD.EQ.0) THEN
             LG1 = LXLGUT(NOEUD)
-            CALL UTMESS('F',NOMCMD,'LE NOEUD "'//NOEUD(1:LG1)//
+            CALL UTMESS('F','RFRCHA','LE NOEUD "'//NOEUD(1:LG1)//
      &                  '" N''EXISTE PAS.')
           ELSE IF (IDDL.EQ.0) THEN
             LG1 = LXLGUT(NOEUD)
             LG2 = LXLGUT(CMP)
-            CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//
+            CALL UTMESS('F','RFRCHA','LA COMPOSANTE "'//CMP(1:LG2)//
      &        '" '//'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
           END IF
           CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
@@ -120,7 +120,7 @@ C     -----------------------------------
 C ---  VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
           IF (NVERI1.EQ.0 .OR. NVERI2.EQ.0) THEN
-            CALL UTDEBM('F',NOMCMD,'POUR UN "NOM_CHAM",
+            CALL UTDEBM('F','RFRCHA','POUR UN "NOM_CHAM",
      &              IL FAUT DONNER :')
             CALL UTIMPK('L','   - UNE MAILLE OU UN GROUP_MA',0,K8B)
             CALL UTIMPK('L','   - UN NOEUD OU UN GROUP_NO 
@@ -154,7 +154,7 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
           CALL DISMOI('F','NOM_GD',CHAM19,'CHAM_ELEM',IBID,NOMGD,IE)
           CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TYPE,IE)
           IF (TYPE.NE.'R') THEN
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','RFRCHA',
      &          'ON NE TRAITE QUE LES CHAMPS PAR ELEMENTS DE 
      &           TYPE REEL.' )
           END IF
@@ -166,7 +166,7 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
           END IF
           GO TO 10
         ELSE
-          CALL UTMESS('F',NOMCMD,'ON NE TRAITE PAS CE TYPE 
+          CALL UTMESS('F','RFRCHA','ON NE TRAITE PAS CE TYPE 
      &                DE CHAMP:'//TYPCHA)
         END IF
       END IF

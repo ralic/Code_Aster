@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,7 @@ C
       KINST = '&&RFHGE2.FREQUENCE'
       CALL RSHARM ( INTRES, RESU, ' ', 1, KINST, KNUME, NBORDR, IE )
       IF (IE.NE.0) THEN
-         CALL UTMESS('F',NOMCMD,'PROBLEME(S) RENCONTRE(S) LORS'//
+         CALL UTMESS('F','RFHGE2','PROBLEME(S) RENCONTRE(S) LORS'//
      +                        ' DE LA LECTURE DES FREQUENCES.' )
       ENDIF
       CALL JEEXIN(KINST,IRET)
@@ -114,7 +114,7 @@ C
      +                NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
         CALL JEVEUO('&&RFHGE2.VECT.PROPRE','L',IDBASE)
         IF ( TYPE .NE. 'R' ) THEN
-           CALL UTMESS('F',NOMCMD,
+           CALL UTMESS('F','RFHGE2',
      +            ' ON NE TRAITE PAS LE TYPE DE MODES "'//TYPE//'".')
         ENDIF
 C
@@ -139,12 +139,12 @@ C
       CALL POSDDL('NUME_DDL',NUME,NOEUD,CMP,INOEUD,IDDL)
       IF ( INOEUD .EQ. 0 ) THEN
          LG1 = LXLGUT(NOEUD)
-         CALL UTMESS('F',NOMCMD,
+         CALL UTMESS('F','RFHGE2',
      +               'LE NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
       ELSEIF ( IDDL .EQ. 0 ) THEN
          LG1 = LXLGUT(NOEUD)
          LG2 = LXLGUT(CMP)
-         CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//'" '//
+         CALL UTMESS('F','RFHGE2','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
      +               'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
       ENDIF
 C

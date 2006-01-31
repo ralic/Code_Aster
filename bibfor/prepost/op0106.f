@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 31/01/2006   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,6 +191,7 @@ C TRI DES OPTIONS SUIVANT TYSD
               CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT)
             END IF
           END IF
+          IF (TYSD.EQ.'DYNA_TRANS') EXITIM = .TRUE.
         ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
           DO 10 IOPT = 1,NBOPT
             OPTION = ZK16(JOPT+IOPT-1)
@@ -764,7 +765,7 @@ C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
                   CALL JEVEUO(VARENO,'L',JRE)
                   CALL JEVEUO(ZK24(JRE) (1:19)//'.VALE','L',JRENO)
                   DO 210 J = 0,LONCH - 1
-                    ZR(JNOCH+J) = ZR(JNOCH+J) - ZR(JRENO+J)
+                    ZR(JNOCH+J) = ZR(JNOCH+J) + ZR(JRENO+J)
   210             CONTINUE
                 END IF
               END IF

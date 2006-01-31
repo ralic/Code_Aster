@@ -3,7 +3,7 @@
       INTEGER           ICHPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/01/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
       DO 20 IOCC = 0,NBOCC - 1
          IF (CHPRES.EQ.ZK8(LNOM+IOCC)) THEN
             CALL CODENT(IOCC+1,'D',K8B(1:3))
-            CALL UTMESS('F',NOMCMD,K8B(1:3)//
+            CALL UTMESS('F','RECFOU',K8B(1:3)//
      +             '-EME OCCURRENCE DU MOT-CLE FACTEUR MODE_FOURIER'
      +              //' LE CHAM_NO RESULTAT NE DOIT PAS APPARAITRE'
      +              //' DANS LES ARGUMENTS.')
@@ -100,7 +100,7 @@ C
       DO 22 IOCC = 1,NBOCC-1
          CALL DISMOI('F','NOM_GD',ZK8(LNOM+IOCC),'CHAMP',IBID,REP2,IE)
          IF (REP2.NE.REP) THEN
-            CALL UTMESS('F',NOMCMD,'ERREUR MOT-CLE FACTEUR MODE_FOURIER'
+          CALL UTMESS('F','RECFOU','ERREUR MOT-CLE FACTEUR MODE_FOURIER'
      +                 //': DANS 2 OCCURENCES DIFFERENTES ON TROUVE'
      +                 //' DES CHAMPS ASSOCIES A DES GRANDEURS DIFF'
      +                 //'ERENTES. LA RECOMBINAISON EST IMPOSSIBLE')
@@ -112,7 +112,7 @@ C     --- CONTROLE DES REFERENCES ---
          DO 30 IOCC = 0,NBOCC-2
             CALL VRREFE(ZK8(LNOM+IOCC),ZK8(LNOM+IOCC+1),IRET)
             IF (IRET.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,
+               CALL UTMESS('F','RECFOU',
      +                     'LES "CHAM_NO" "'//ZK8(LNOM+IOCC)//
      +                     '"  ET  "'//ZK8(LNOM+IOCC+1)//
      +                     '"  N''ONT PAS LA MEME NUMEROTATION.')
@@ -124,7 +124,7 @@ C     --- CONTROLE DES REFERENCES ---
             CALL VRNOLI(ZK8(LNOM+IOCC),ZK8(LNOM+IOCC+1),IRE2)
             IRET = IRE1 + IRE2
             IF (IRET.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'LES "CHAM_ELEM" "'//
+               CALL UTMESS('F','RECFOU','LES "CHAM_ELEM" "'//
      +                      ZK8(LNOM+IOCC)//'"  ET  "'//ZK8(LNOM+IOCC+1)
      +                        //'"  N''ONT PAS LES MEMES LIGRELS.')
             ENDIF
@@ -141,7 +141,7 @@ C        --- ON VERIFIE ---
          IF (ICHPT.EQ.1) THEN
             CALL VRREFE(CHPRES,ZK8(LNOM),IRET)
             IF (IRET.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'LE "CHAM_NO" RESULTAT "'//
+               CALL UTMESS('F','RECFOU','LE "CHAM_NO" RESULTAT "'//
      +                         CHPRES//'"  ET  "'//ZK8(LNOM)//
      +                         '"  N''ONT PAS LA MEME NUMEROTATION.')
             ENDIF
@@ -150,7 +150,7 @@ C        --- ON VERIFIE ---
             CALL VRNOLI(CHPRES,ZK8(LNOM),IRE2)
             IRET = IRE1 + IRE2
             IF (IRET.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'LE "CHAM_ELEM" RESULTAT "'//
+               CALL UTMESS('F','RECFOU','LE "CHAM_ELEM" RESULTAT "'//
      +                         CHPRES//'"  ET  "'//ZK8(LNOM)//
      +                         '"  N''ONT PAS LES MEMES LIGRELS.')
             ENDIF

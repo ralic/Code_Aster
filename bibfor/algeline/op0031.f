@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C
       CALL GETVTX(' ','SANS_CMP',1,1,1,NOMDDL,NNOMDL)
       IF (NNOMDL.NE.0) THEN
            IF (NOMDDL(1:4).NE.'LAGR') THEN
-              CALL UTMESS('F',NOMCMD,
+              CALL UTMESS('F','OP0031',
      &                  'LES SEULS DDLS QUE L"ON PEUT EXCLURE '//
      &                  'D"UNE COMBINAISON LINEAIRE DE MATRICE '//
      &                  'SONT DE TYPE "LAGR" ET NON DE TYPE : '//
@@ -174,14 +174,14 @@ C     ------------------------------------------------------------------
             ELSE
                CALL GETVTX(COMBRC,'PARTIE',1,1,0,ZK8(LTYPEC+IMAT),L)
                IF ( L .NE. 0) THEN
-                  CALL UTMESS('A',NOMCMD,'ON NE TIENT PAS COMPTE DE '//
+                CALL UTMESS('A','OP0031','ON NE TIENT PAS COMPTE DE '//
      +                  'L''INFORMATION "PARTIE" POUR UNE MATRICE '//
      +                  'REELLE.')
                ENDIF
             ENDIF
  91      CONTINUE
          IF ( IRET .GT. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE TYPE DE LA MATRICE RESULTAT'//
+            CALL UTMESS('F','OP0031','LE TYPE DE LA MATRICE RESULTAT'//
      +                  ' NE PEUT ETRE REEL PUISQU''IL Y A UNE (OU '//
      +                  'DES)  MATRICE(S) A COEFFICIENTS COMPLEXES '//
      +                  'ET QUE L''ON EN EXTRAIT NI PARTIE REELLE '//
@@ -198,7 +198,7 @@ C        --- ON CREE ---
 C        --- ON VERIFIE ---
          CALL VRREFE(MATRES,ZK8(LNOM),IRET)
          IF (IRET.NE.0) THEN
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','OP0031',
      +                  'LA "MATASS" RESULAT "'//MATRES//'"  ET  "'//
      +                  ZK8(LNOM)//
      +                  '"  N''ONT LE MEME DOMAINE DE DEFINITION.')

@@ -4,7 +4,7 @@
       REAL*8     DELTA, MATMOY(*), MAT(*), MAT1(*), MAT2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C
 C --- VERIFICATION BORNE SUR DELTA
       BORNE=SQRT(DBLE(N+1)/DBLE(N+5))
       IF (DELTA.GT.BORNE) THEN
-                  CALL UTMESS('F',NOMCMD,
+                  CALL UTMESS('F','GEMATG',
      &       'COEFFICIENT DE DISPERSION TROP GRAND, CF. DOC. U')
       ENDIF
       
@@ -102,7 +102,7 @@ C
 111         CONTINUE
             IF(I.EQ.J) THEN
                IF(SUM.LE.0.D0) THEN
-                  CALL UTMESS('F',NOMCMD,
+                  CALL UTMESS('F','GEMATG',
      &                      'MATRICE MOYENNE NON DEFINIE POSITIVE')
                ENDIF
                TLII = SQRT(SUM)

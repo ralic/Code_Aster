@@ -12,7 +12,7 @@
      +                    COORXI, COORYI, COORZI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/08/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,9 @@ C
      +             JCOXS, JCOYS, JCOZS, JCOXI, JCOYI, JCOZI, JDZS, JDZI
       REAL*8       RMAXN,  RMAXEM, PRECN, D
       CHARACTER*8  K8B
-      CHARACTER*16 NOMCMD
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-      NOMCMD = 'POST_K1_K2_K3'
 C
 C --- LEVRE SUPERIEURE
 C
@@ -113,14 +111,14 @@ C        --- ON VERIFIE QUE LES "ABSC_CURV" SONT CROISSANTES ---
 C
       DO 30 I = 1 , NBS-1
          IF ( ZR(JABSCS+I-1) .GT. ZR(JABSCS+I) ) THEN
-               CALL UTMESS('F',NOMCMD,'LES "ABSC_CURV" DE LA TABLE '//
+             CALL UTMESS('F','PKRECU','LES "ABSC_CURV" DE LA TABLE '//
      +                          DEPSUP(1:8)//'NE SONT PAS CROISSANTES')
          ENDIF
  30   CONTINUE
 C
       DO 32 I = 1 , NBI-1
          IF ( ZR(JABSCI+I-1) .GT. ZR(JABSCI+I) ) THEN
-            CALL UTMESS('F',NOMCMD,'LES "ABSC_CURV" DE LA TABLE '//
+            CALL UTMESS('F','PKRECU','LES "ABSC_CURV" DE LA TABLE '//
      +                          DEPINF(1:8)//'NE SONT PAS CROISSANTES')
          ENDIF
  32   CONTINUE
@@ -142,7 +140,7 @@ C
  40   CONTINUE
  42   CONTINUE
       IF ( NBRS .LT. 3 ) THEN
-         CALL UTMESS('F',NOMCMD,
+         CALL UTMESS('F','PKRECU',
      +             'IL FAUT AU MOINS 3 NOEUDS SUR LA LEVRE SUPERIEURE')
       ENDIF
 C
@@ -161,11 +159,11 @@ C
  44   CONTINUE
  46   CONTINUE
       IF ( NBRI .LT. 3 ) THEN
-         CALL UTMESS('F',NOMCMD,
+         CALL UTMESS('F','PKRECU',
      +             'IL FAUT AU MOINS 3 NOEUDS SUR LA LEVRE INFERIEURE')
       ENDIF
       IF ( NBRS .NE. NBRI ) THEN
-         CALL UTMESS('A',NOMCMD,'PAS LE MEME NOMBRE DE NOEUDS '//
+         CALL UTMESS('A','PKRECU','PAS LE MEME NOMBRE DE NOEUDS '//
      +              'ENTRE LA LEVRE SUPERIEURE ET LA LEVRE INFERIEURE')
       ENDIF
       NBVAL = MIN(NBRS,NBRI)
@@ -178,7 +176,7 @@ C
      +             + ( ZR(JCOYS+I-1) - ZR(JCOYI+I-1) ) ** 2
      +             + ( ZR(JCOZS+I-1) - ZR(JCOZI+I-1) ) ** 2  )
          IF ( D .GT. PRECN ) THEN
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','PKRECU',
      +                     'LES NOEUDS NE SONT PAS EN VIS_A_VIS')
          ENDIF
  50   CONTINUE

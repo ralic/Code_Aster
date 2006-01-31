@@ -3,7 +3,7 @@
       INTEGER            ICHPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C     --- VERIFICATION DE NON PRESENCE DU RESULTAT EN ARGUMENT ---
       DO 20 IOCC = 0 , NBOCC-1
          IF ( CHPRES .EQ. ZK24(LNOM+IOCC) ) THEN
             CALL CODENT(IOCC+1,'D0',K8B(1:4))
-            CALL UTMESS('F',NOMCMD,K8B(1:4)//'-IEME OCCURRENCE DE "'
+            CALL UTMESS('F','COCHGD',K8B(1:4)//'-IEME OCCURRENCE DE "'
      +                     //COMBRC//'"  LE CHAMP RESULTAT NE '//
      +                    'DOIT PAS  APPARAITRE DANS LES ARGUMENTS.')
          ENDIF
@@ -146,13 +146,13 @@ C
             ELSE
                CALL GETVTX(COMBRC,'PARTIE',1,1,0,ZK8(LTYPEC+IMAT),L)
                IF ( L .NE. 0) THEN
-                  CALL UTMESS('A',NOMCMD,'ON NE TIENT PAS COMPTE DE '//
+                CALL UTMESS('A','COCHGD','ON NE TIENT PAS COMPTE DE '//
      +                   'L''INFORMATION "PARTIE" POUR UN CHAMP REEL.')
                ENDIF
             ENDIF
  60      CONTINUE
          IF (IRET.NE.0) THEN
-            CALL UTMESS('F',NOMCMD,  'LE TYPE DU CHAMP RESULTAT NE '//
+          CALL UTMESS('F','COCHGD',  'LE TYPE DU CHAMP RESULTAT NE '//
      +                         'PEUT ETRE REEL PUISQU''IL Y A UN (OU'//
      +                    ' DES)  CHAMP(S) A COEFFICIENTS COMPLEXES.')
          ENDIF
@@ -168,7 +168,7 @@ C        --- ON VERIFIE ---
          IF (ICHPT.EQ.1) THEN
             CALL VRREFE(CHPRES,ZK24(LNOM),IRET)
             IF (IRET.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'LES "CHAM_NO" RESULTAT "'//
+               CALL UTMESS('F','COCHGD','LES "CHAM_NO" RESULTAT "'//
      +                                 CHPRES//'"  ET  "'//ZK24(LNOM)//
      +                      '"  N''ONT LE MEME DOMAINE DE DEFINITION.')
             ENDIF
@@ -177,7 +177,7 @@ C        --- ON VERIFIE ---
             CALL VRNOLI(CHPRES,ZK24(LNOM),IRE2)
             IRET = IRE1 + IRE2
             IF (IRET.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'LES "CHAM_ELEM" RESULTAT "'//
+               CALL UTMESS('F','COCHGD','LES "CHAM_ELEM" RESULTAT "'//
      +                                 CHPRES//'"  ET  "'//ZK24(LNOM)//
      +                      '"  N''ONT LE MEME DOMAINE DE DEFINITION.')
             ENDIF
@@ -209,7 +209,7 @@ C             CALL VTCREA (CHAMN2,ZK24(JREFE),'V',ZK8(LTYPEM+IOCC),NEQ)
             CALL VRNOLI(ZK24(LNOM+IOCC),ZK24(LNOM+IOCC+1),IRE2)
             IRET = IRE1 + IRE2
             IF (IRET.NE.0) THEN
-             CALL UTMESS('F',NOMCMD,'LES "CHAM_ELEM" "'//ZK24(LNOM+IOCC)
+           CALL UTMESS('F','COCHGD','LES "CHAM_ELEM" "'//ZK24(LNOM+IOCC)
      +                               //'"  ET  "'//ZK24(LNOM+IOCC+1)//
      +                      '"  N''ONT LE MEME DOMAINE DE DEFINITION.')
             ENDIF

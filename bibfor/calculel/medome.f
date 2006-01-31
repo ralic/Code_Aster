@@ -7,7 +7,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,8 +204,8 @@ C        TOUTES SUR LE MEME MODELE
          DO 60 I = 1,NCHA
             CALL DISMOI('F','NOM_MODELE',ZK8(ICHA+I-1),'CHARGE',
      &           IBID,NOMO,IE)
-            IF(NOMO.NE.MODELE)CALL UTMESS('F',NOMCMD,'LES CHARGES NE '//
-     &           'S''APPUIENT PAS TOUTES SUR LE MEME MODELE')
+            IF(NOMO.NE.MODELE)CALL UTMESS('F','MEDOME','LES CHARGES '//
+     &           'NE S''APPUIENT PAS TOUTES SUR LE MEME MODELE')
  60      CONTINUE
       ENDIF
 C

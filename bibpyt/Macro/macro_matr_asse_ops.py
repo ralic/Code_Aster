@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_asse_ops Macro  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,22 +128,22 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
 
     try : motscles['PROPAGATION']   =m['PROPAGATION']
     except IndexError : pass
-    __a=CALC_MATR_ELEM(MODELE=MODELE,**motscles)
+    _a=CALC_MATR_ELEM(MODELE=MODELE,**motscles)
 
     if option == 'RIGI_MECA':
-      rigel  = __a
+      rigel  = _a
       lrigel = 1
     if option == 'MASS_MECA':
-      masel  = __a
+      masel  = _a
       lmasel = 1
 
     if lnume and option in ('RIGI_MECA','RIGI_THER','RIGI_ACOU','RIGI_MECA_LAGR'):
       self.DeclareOut('num',numeddl)
       # On peut passer des mots cles egaux a None. Ils sont ignores
-      num=NUME_DDL(MATR_RIGI=__a,METHODE=methode,RENUM=renum)
+      num=NUME_DDL(MATR_RIGI=_a,METHODE=methode,RENUM=renum)
     else:
       num=numeddl
 
     self.DeclareOut('mm',m['MATRICE'])
-    mm=ASSE_MATRICE(MATR_ELEM=__a,NUME_DDL=num)
+    mm=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=num)
   return ier

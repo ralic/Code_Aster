@@ -6,7 +6,7 @@
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
      +                                              K8B,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+                  CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                   CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
                  CALL UTIMPK('L','   IL MANQUE LE CHAMP : ',1,ACCES(ID))
                   CALL UTFINM( )
@@ -73,7 +73,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                CALL RSVPAR(PSMO,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+                  CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                   CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
                   CALL UTIMPK('L','   POUR LE CHAMP : ',1,ACCES(ID))
                   CALL UTIMPK('L','   LE TYPE N''EST PAS ',1,MONPAR)
@@ -93,7 +93,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
      +                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                      CALL UTIMPK('L','   POUR LES STATIQUES : ',1,STAT)
                     CALL UTIMPK('L','   IL MANQUE LE CHAMP : ',1,MONACC)
                      CALL UTFINM( )
@@ -103,7 +103,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                   CALL RSVPAR(STAT,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                   IF (IRET.NE.100) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                      CALL UTIMPK('L','   POUR LES STATIQUES : ',1,STAT)
                      CALL UTIMPK('L','   POUR LE CHAMP : ',1,MONACC)
                      CALL UTIMPK('L','   LE TYPE N''EST PAS ',1,MONPAR)
@@ -115,7 +115,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
      +                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                      CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
                     CALL UTIMPK('L','   IL MANQUE LE CHAMP : ',1,MONACC)
                      CALL UTFINM( )
@@ -125,7 +125,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                   CALL RSVPAR(PSMO,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                   IF (IRET.NE.100) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                      CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
                      CALL UTIMPK('L','   POUR LE CHAMP : ',1,MONACC)
                      CALL UTIMPK('L','   LE TYPE N''EST PAS ',1,MONPAR)
@@ -141,7 +141,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
       DO 20 IN = 1,NBOPT
          NOMSY = KNOMSY(IN)
          IF (NOMSY(1:4).EQ.'VITE' .AND. .NOT.MONOAP) THEN
-            CALL UTDEBM('E',NOMCMD,'ON NE SAIT PAS BIEN TRAITER ')
+            CALL UTDEBM('E','ASVERI','ON NE SAIT PAS BIEN TRAITER ')
             CALL UTIMPK('S','L''OPTION DE CALCUL DEMANDEE : ',1,NOMSY)
             CALL UTFINM( )
             IER = IER + 1
@@ -151,7 +151,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
          CALL RSUTNC(MECA,NOMSY,0,K8B,IBID,NBTROU)
          IF (NBTROU.EQ.0) THEN
             IER = IER + 1
-            CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+            CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
             CALL UTIMPK('L','   POUR LES MODES MECANIQUES : ',1,MECA)
             CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
             CALL UTFINM( )
@@ -162,7 +162,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
             IF (IRET.NE.0) THEN
                INUM = NORDR(IM)
                IER = IER + 1
-               CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+               CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                CALL UTIMPK('L','   POUR LES MODES MECANIQUES : ',1,MECA)
                CALL UTIMPK('L','   POUR L''OPTION : ',1,NOMSY)
                CALL UTIMPI('L','   IL MANQUE LE CHAMP D''ORDRE ',1,INUM)
@@ -173,7 +173,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
             CALL RSUTNC(PSMO,NOMSY,0,K8B,IBID,NBTROU)
             IF (NBTROU.EQ.0) THEN
                IER = IER + 1
-               CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+               CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
                CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
                CALL UTFINM( )
@@ -183,7 +183,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
             CALL RSUTNC(STAT,NOMSY,0,K8B,IBID,NBTROU)
             IF (NBTROU.EQ.0) THEN
                IER = IER + 1
-               CALL UTDEBM('E',NOMCMD,'DONNEES INCOMPATIBLES :')
+               CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
                CALL UTIMPK('L','   POUR LES MODES STATIQUES : ',1,STAT)
                CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
                CALL UTFINM( )
@@ -213,7 +213,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
             ENDIF
             IF (IRT.NE.0) THEN
                IER = IER + 1
-               CALL UTMESS('E',NOMCMD,'LES CHAMPS "'//CHEXTR//
+               CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
      +                                   '" ET "'//CHEXT2//'" N''ONT'//
      +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
             ENDIF
@@ -235,7 +235,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                         ENDIF
                         IF (IRT.NE.0) THEN
                            IER = IER + 1
-                        CALL UTMESS('E',NOMCMD,'LES CHAMPS "'//CHEXTR//
+                      CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
      +                                   '" ET "'//CHEXT2//'" N''ONT'//
      +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
                         ENDIF
@@ -263,7 +263,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                         ENDIF
                         IF (IRT.NE.0) THEN
                            IER = IER + 1
-                        CALL UTMESS('E',NOMCMD,'LES CHAMPS "'//CHEXTR//
+                      CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
      +                                   '" ET "'//CHEXT2//'" N''ONT'//
      +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
                         ENDIF
@@ -282,7 +282,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                            ENDIF
                            IF (IRT.NE.0) THEN
                               IER = IER + 1
-                        CALL UTMESS('E',NOMCMD,'LES CHAMPS "'//CHEXTR//
+                      CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
      +                                   '" ET "'//CHEXT2//'" N''ONT'//
      +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
                            ENDIF
@@ -294,6 +294,6 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
          ENDIF
  30   CONTINUE
 C
-      IF (IER.NE.0) CALL UTMESS('F',NOMCMD,'DONNEES INCOMPATIBLES.')
+      IF (IER.NE.0) CALL UTMESS('F','ASVERI','DONNEES INCOMPATIBLES.')
 C
       END

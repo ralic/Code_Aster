@@ -7,7 +7,7 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
       CALL RELIEM ( ' ', NOMAIL, 'NO_MAILLE', MOTFAC, IOCC, NBMC,
      +                                  MOTCLE, TYPMCL, MESMAI, NBTM )
       IF ( NBTM .EQ. 0 ) THEN
-        CALL UTMESS('F',NOMCMD,'SI NOEUD_ORIG : DONNER UN GROUP_MA '//
+      CALL UTMESS('F','FONFIS','SI NOEUD_ORIG : DONNER UN GROUP_MA '//
      &              'OU UNE LISTE DE MAILLES. ON NE REORDONNE PAS '//
      &              'LES GROUP_NO ET LES LISTES DE NOEUDS. ')
       ENDIF

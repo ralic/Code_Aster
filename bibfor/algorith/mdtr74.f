@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,6 +145,7 @@ C     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
       NTERM = ZI(LMAT+14)
       TYPBA2 = TYPBAS
       IF ((TYPBAS.EQ.'MODE_MECA'.AND.NTERM.GT.NBMODE).OR.
+     +    (TYPBAS.EQ.'MODE_GENE'.AND.NTERM.GT.NBMODE).OR.
      +    (TYPBAS.EQ.'MODE_STAT'.AND.NTERM.GT.NBMODE)) THEN 
          TYPBAS = 'BASE_MODA'
       ENDIF
@@ -178,7 +179,7 @@ C     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
         NEQ = ZI(LLNEQU)
         NBMOD2 = NBMODE
       ELSE
-        CALL UTMESS('F',NOMCMD,'TYPE DE BASE INCONNU.')
+        CALL UTMESS('F','MDTR74','TYPE DE BASE INCONNU.')
       END IF
 
 C     --- RECOPIE DES MATRICES DANS DES VECTEURS DE TRAVAIL ---
@@ -225,7 +226,7 @@ C     ... RECUPERATION D'UNE LISTE D'AMORTISSEMENTS REDUITS ...
           END IF
           IF (NBAMOR.GT.NBMODE) THEN
 
-            CALL UTDEBM('A',NOMCMD,
+            CALL UTDEBM('A','MDTR74',
      &              'LE NOMBRE D''AMORTISSEMENTS REDUITS EST TROP GRAND'
      &                  )
             CALL UTIMPI('L','LE NOMBRE DE MODES PROPRES VAUT ',1,NBMODE)
@@ -254,7 +255,7 @@ C     ... RECUPERATION D'UNE LISTE D'AMORTISSEMENTS REDUITS ...
    40         CONTINUE
             END IF
             IDIFF = NBMODE - NBAMOR
-            CALL UTDEBM('I',NOMCMD,
+            CALL UTDEBM('I','MDTR74',
      &             'LE NOMBRE D''AMORTISSEMENTS REDUITS EST INSUFFISANT'
      &                  )
             CALL UTIMPI('L','IL EN MANQUE : ',1,IDIFF)
@@ -455,10 +456,10 @@ C     --- CHOC  ET  ANTI_SISM ---
             NIV = 'A'
             CALL GETVTX('VERI_CHOC','STOP_CRITERE',1,1,1,K8B,N1)
             IF (K8B.EQ.'OUI') NIV = 'F'
-            CALL UTDEBM('I',NOMCMD,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            CALL UTDEBM('I','MDTR74','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             CALL UTIMPR('L',' TAUX DE SOUPLESSE NEGLIGEE :',1,SEUIL)
             CALL UTFINM()
-            CALL UTMESS(NIV,NOMCMD,
+            CALL UTMESS(NIV,'MDTR74',
      &        'LE TAUX DE SOUPLESSE NEGLIGEE EST SUPERIEUR AU SEUIL.'
      &                  )
           END IF
@@ -542,7 +543,7 @@ C       DANS LE CAS ITMI, NBSAUV NE SERA CONNU QUE DANS MDITM2
         CALL COPMAT(MASGEN,NUMGEM,ZR(JMASG))       
         CALL COPMAT(RIGGEN,NUMGEK,ZR(JRAIG))
 C        CALL TRLDS(ZR(JMASG),NBMODE,NBMODE,IRET)
-C        IF (IRET.NE.0) CALL UTMESS('F',NOMCMD,
+C        IF (IRET.NE.0) CALL UTMESS('F','MDTR74',
 C     &                   'LA MATRICE MASSE GENERALISEE EST SINGULIERE.'
 C     &                             )
       END IF     
@@ -696,7 +697,7 @@ C
 
   120 CONTINUE
       CALL JEDETC('V','&&',1)
-      IF (IRET.NE.0) CALL UTMESS('F',NOMCMD,'DONNEES ERRONEES.')
+      IF (IRET.NE.0) CALL UTMESS('F','MDTR74','DONNEES ERRONEES.')
 
       CALL JEDEMA()
       END

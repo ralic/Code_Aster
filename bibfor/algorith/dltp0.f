@@ -3,7 +3,7 @@
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
      +                                         PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.NE.1) THEN
-                  CALL UTMESS('F',NOMCMD,'ON N''A PAS PU TROUVER LE '//
+                CALL UTMESS('F','DLTP0','ON N''A PAS PU TROUVER LE '//
      +                                   'DERNIER INSTANT SAUVE.')
                ENDIF
             ELSE
@@ -68,14 +68,14 @@ C
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
      +                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'PLUSIEURS CHAMPS '
+                  CALL UTDEBM('F','DLTP0','PLUSIEURS CHAMPS '
      +                           //'CORRESPONDANT A L''ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
                   CALL UTIMPI('S',', NOMBRE :',1,-NBTROU)
                   CALL UTFINM()
                ELSEIF (NBTROU.EQ.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'PAS DE CHAMP '//
+                  CALL UTDEBM('F','DLTP0','PAS DE CHAMP '//
      +                             'CORRESPONDANT A UN ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
@@ -92,7 +92,7 @@ C           --- VERIFICATION QUE NUME EXISTE ---
             DO 10 I = 1,NBORDR
                IF (ZI(JORDR+I-1).EQ.NUME) GOTO 12
  10         CONTINUE
-            CALL UTMESS('F',NOMCMD,'NUME_INIT: ON N''A PAS TROUVE'//
+            CALL UTMESS('F','DLTP0','NUME_INIT: ON N''A PAS TROUVE'//
      +                  ' LE NUME_INIT DANS LE RESULTAT '//DYNA)
  12         CONTINUE
          ENDIF
@@ -116,7 +116,7 @@ C
             IF (N2.NE.0) THEN
               CALL GETVIS('INCREMENT','PAS_CALCUL',1,1,1,IPC,N3)
               CALL JEVEUO(LI//'           .PROL','L',LPROL)
-              IF (ZK16(LPROL).NE.'FONCTION') CALL UTMESS('F',NOMCMD,
+              IF (ZK16(LPROL).NE.'FONCTION') CALL UTMESS('F','DLTP0',
      +                     'FONC_INST: ON ATTEND UNE FONCTION.')
               CALL JEVEUO(LI//'           .VALE','L',LVAR)
      

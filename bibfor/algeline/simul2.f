@@ -6,7 +6,7 @@
       CHARACTER*19      MASS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
      +                     CRIT,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E',NOMCMD,'PAS DE MODE STATIQUE POUR')
+                  CALL UTDEBM('E','SIMUL2','PAS DE MODE STATIQUE POUR')
                   CALL UTIMPK('L','         LE NOEUD : ',1,ACCES(1:8))
                   CALL UTIMPK('L',' ET SA COMPOSANTE : ',1,ACCES(9:16))
                   CALL UTFINM( )
@@ -100,7 +100,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
      +                                  'DEPL_IMPO',IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E',NOMCMD,'POUR LES MODES STATIQUES.')
+                  CALL UTDEBM('E','SIMUL2','POUR LES MODES STATIQUES.')
                   CALL UTIMPK('L','ON ATTEND UN : ',1,'MODE_STAT')
                   CALL UTIMPK('L','   NOEUD : ',1,ACCES(1:8))
                   CALL UTIMPK('L','     CMP : ',1,ACCES(9:16))
@@ -110,7 +110,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
                IF (IRET.NE.0) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E',NOMCMD,'CHAMP INEXISTANT.')
+                  CALL UTDEBM('E','SIMUL2','CHAMP INEXISTANT.')
                   CALL UTIMPK('L','PB CHAMP : ',1,CHAMNO)
                   CALL UTIMPK('L','   NOEUD : ',1,ACCES(1:8))
                   CALL UTIMPK('L','     CMP : ',1,ACCES(9:16))
@@ -130,7 +130,7 @@ C                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
          ENDIF
  10   CONTINUE
       IF (IER.NE.0) THEN
-         CALL UTDEBM('F',NOMCMD,'DONNEES ERRONEES.')
+         CALL UTDEBM('F','SIMUL2','DONNEES ERRONEES.')
       ENDIF
 C
       CALL WKVECT('&&SIMUL2.DDL.BLOQUE','V V I',NEQ,IDDL)

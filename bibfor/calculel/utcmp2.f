@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMGD, MCFAC, NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
 C     CALL GETVIS ( MCFAC, 'NUME_CMP', IOCC,1,0, IBID, N1)
       N1=0
       IF ( N1 .NE. 0 ) THEN
-         CALL UTMESS('A',NOMCMD,'LE MOT CLE "NUME_CMP" DOIT ETRE '//
+         CALL UTMESS('A','UTCMP2','LE MOT CLE "NUME_CMP" DOIT ETRE '//
      &                          'SUPPRIME EN STA 5.5')
          NBNUCP = -N1
          CALL WKVECT ('&&UTCMP2.NUME_CMP', 'V V I', NBNUCP, JNUCP )
@@ -79,7 +79,7 @@ C
                MULT = .TRUE.
             ELSE
                IF ( NBNOCP .NE. NBNUCP ) THEN
-                  CALL UTDEBM('F',NOMCMD,'ERREURS DONNEES')
+                  CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
                   CALL UTIMPI('L','NOMBRE DE NUME_CMP ',1,NBNUCP)
                 CALL UTIMPI('S',' DOIT ETRE EGAL AU NOMBRE DE NOM_CMP ',
      +                           1,NBNOCP)
@@ -96,7 +96,7 @@ C
          DO 10 I = 1 , NBNOCP
             IF ( ZK8(JNOCP+I-1)(1:5) .EQ. 'VARI_' ) THEN
                IF ( NBNUCP .NE. 0 ) THEN
-                  CALL UTDEBM('F',NOMCMD,'ERREURS DONNEES')
+                  CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
                CALL UTIMPK('L','ON NE PEUT PAS AVOIR ',1,ZK8(JNOCP+I-1))
                 CALL UTIMPK('S',' ET UTILISER LE MOT CLE ',1,'NUME_CMP')
                   CALL UTFINM()
@@ -121,21 +121,21 @@ C
                GOTO 12
             ELSEIF ( ZK8(JNOCP+I-1)(1:1) .EQ. 'V' ) THEN
                IF ( NBNUCP .NE. 0 ) THEN
-                  CALL UTDEBM('F',NOMCMD,'ERREURS DONNEES')
+                  CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
                CALL UTIMPK('L','ON NE PEUT PAS AVOIR ',1,ZK8(JNOCP+I-1))
                 CALL UTIMPK('S',' ET UTILISER LE MOT CLE ',1,'NUME_CMP')
                   CALL UTFINM()
                ENDIF
                K8B = ZK8(JNOCP+I-1)(2:8)//' '
             ELSE
-               CALL UTDEBM('F',NOMCMD,'ERREURS DONNEES')
+               CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
                CALL UTIMPK('L','COMPOSANTE INCONNUE ',1,ZK8(JNOCP+I-1))
                CALL UTIMPK('S',' POUR LA GRANDEUR ',1,'VARI_R')
                CALL UTFINM()
             ENDIF
             CALL LXLIIS ( K8B, IVAL, IRET )
             IF ( IRET .NE. 0 ) THEN
-               CALL UTDEBM('F',NOMCMD,'ERREURS DONNEES')
+               CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
                CALL UTIMPK('L','COMPOSANTE INCONNUE ',1,ZK8(JNOCP+I-1))
                CALL UTFINM()
             ENDIF
@@ -169,7 +169,7 @@ C
       ENDIF
 C
       IF ( NBNOCP .GT. 50 ) THEN
-         CALL UTMESS('F',NOMCMD,'NBNOCP TROP GRAND, '//
+         CALL UTMESS('F','UTCMP2','NBNOCP TROP GRAND, '//
      +                          'CONTACTER L''ASISTANCE')
       ENDIF
 C

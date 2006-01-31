@@ -2,7 +2,7 @@
      &                    PHI,RMESU,COEF,XABS, 
      &                    LFONCT,RETA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,10 +67,9 @@ C
       CHARACTER*3   METHOD
       CHARACTER*6   NOMROU
       CHARACTER*8   REGUL
-      CHARACTER*16  NOMCMD,NOMCHA
+      CHARACTER*16  NOMCHA
       CHARACTER*16  SECMB,WKS,PHIPHT,PHITPH,MATSYS,WORK,ETA,VALS,U,V
 C
-      DATA NOMCMD/'PROJ_MESU_MODAL'/
       DATA NOMROU/'MPINVR'/
 C
 C ----------------------------------------------------------------------
@@ -244,7 +243,7 @@ C
               CALL RSLSVD (NBMODE, NBMESU, NBMESU,ZR(LMATSY),ZR(LVALS),
      &                   ZR(LU),ZR(LV),1,ZR(LETA),EPS,IERR,ZR(LWORK) )
               IF ( IERR . NE. 0 ) THEN
-                CALL UTDEBM('F',NOMCMD,'PB CALCUL VALEURS SINGULIERES')
+              CALL UTDEBM('F','MPINVR','PB CALCUL VALEURS SINGULIERES')
                 CALL UTIMPI('S', ' PAS =  ',1, IABS )
                 CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
                 CALL UTFINM
@@ -255,7 +254,7 @@ C METHODE DE CROUT
               CALL MTCROG (ZR(LMATSY), ZR(LSECMB), NBMODE, NBMESU, 1,
      &                           ZR(LETA), ZR(LWKS), IERR)
               IF ( IERR . NE. 0 ) THEN
-                CALL UTDEBM('F',NOMCMD,' MATRICE (PHI)T*PHI + ALPHA '//
+              CALL UTDEBM('F','MPINVR',' MATRICE (PHI)T*PHI + ALPHA '//
      &             'N EST PAS INVERSIBLE ' )
                 CALL UTIMPI('S', ' PAS =  ',1, IABS )
                 CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
@@ -287,7 +286,7 @@ C
           CALL RSLSVD ( NBMODE, NBMODE, NBMODE, ZR(LMATSY), ZR(LVALS), 
      &                  ZR(LU),ZR(LV),1,ZR(LETA),EPS,IERR,ZR(LWORK) )
           IF ( IERR . NE. 0 ) THEN
-            CALL UTDEBM('F', NOMCMD , ' PB CALCUL VALEURS SINGULIERES')
+          CALL UTDEBM('F', 'MPINVR' , ' PB CALCUL VALEURS SINGULIERES')
             CALL UTIMPI('S', ' PAS =  ',1, IABS )
             CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
             CALL UTFINM
@@ -298,7 +297,7 @@ C METHODE DE CROUT
           CALL MTCROG ( ZR(LMATSY), ZR(LSECMB), NBMODE, NBMODE, 1,
      &                           ZR(LETA), ZR(LWKS), IERR )
           IF ( IERR . NE. 0 ) THEN
-            CALL UTDEBM('F', NOMCMD , ' MATRICE (PHI)T*PHI + ALPHA ' //
+          CALL UTDEBM('F', 'MPINVR' , ' MATRICE (PHI)T*PHI + ALPHA ' //
      &         'N EST PAS INVERSIBLE ' )
             CALL UTIMPI('S', ' PAS =  ',1, IABS )
             CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )

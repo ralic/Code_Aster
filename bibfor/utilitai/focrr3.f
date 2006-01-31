@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C
 C
       ILON = LXLGUT( NOPARA )
       IF ( ILON .GT. 16 ) THEN
-         CALL UTDEBM('A',NOMCMD,'PARAMETRE TROP LONG, IL SERA ')
+         CALL UTDEBM('A','FOCRR3','PARAMETRE TROP LONG, IL SERA ')
          CALL UTIMPK('S','TRONQUE: ', 1, NOPARA(1:16) )
          CALL UTFINM
       ENDIF
@@ -81,7 +81,7 @@ C
          CALL JEVEUO ( '&&FOCRR3.VAR.ACCES', 'L', LACCE )
          NOMACC = ZK16(LACCE)
       ELSE
-         CALL UTMESS('F',NOMCMD,
+         CALL UTMESS('F','FOCRR3',
      +               'PROBLEME POUR RECUPERER LES VARIABLES D''ACCES')
       ENDIF
       CALL JEDETR ( '&&FOCRR3.VAR.ACCES' )
@@ -106,7 +106,7 @@ C
          IF ( TYPE(1:1) .EQ. 'R' ) THEN
             ZR(LVAR+IORDR-1) = ZR(LACCE)
          ELSE
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','FOCRR3',
      +               'ON NE TRAITE QUE DES VARIABLES D''ACCES REELLES')
          ENDIF
 C
@@ -114,7 +114,7 @@ C
          IF ( TYPE(1:1) .EQ. 'R' ) THEN
             ZR(LFON+IORDR-1) = ZR(LACCE)
          ELSE
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','FOCRR3',
      +                      'ON NE TRAITE QUE DES PARAMETRES REELS')
          ENDIF
 C

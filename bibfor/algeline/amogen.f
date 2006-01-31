@@ -1,6 +1,6 @@
       SUBROUTINE AMOGEN(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/09/2002   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CALL JELIRA(MASSE//'           .VALE','LONMAX',M,K8BID)
       CALL JELIRA(RAID//'           .VALE','LONMAX',M2,K8BID)
       IF (M2.NE.M) THEN
-        CALL UTDEBM('F',NOMCMD,
+        CALL UTDEBM('F','AMOGEN',
      &   'LES NOMBRES DE TERMES DES MATRICES RIGI ET MASSE DIFFERENT')
         CALL UTIMPI('L','CELUI DE LA MATRICE MASSE VAUT : ',1,M)
         CALL UTIMPI('L','CELUI DE LA MATRICE RIGI VAUT : ',1,M2)
@@ -71,7 +71,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       
       IF (NBAMOR.GT.N) THEN
 
-        CALL UTDEBM('A',NOMCMD,
+        CALL UTDEBM('A','AMOGEN',
      &          'LE NOMBRE D''AMORTISSEMENTS REDUITS EST TROP GRAND'
      &              )
         CALL UTIMPI('L','LE NOMBRE DE MODES PROPRES VAUT ',1,N)
@@ -104,7 +104,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 41         CONTINUE
  
            IDIFF = N - NBAMOR
-           CALL UTDEBM('I',NOMCMD,
+           CALL UTDEBM('I','AMOGEN',
      &            'LE NOMBRE D''AMORTISSEMENTS REDUITS EST INSUFFISANT'
      &                 )
            CALL UTIMPI('L','IL EN MANQUE : ',1,IDIFF)

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C     /* QUANTITE (IE : SOMME) */
             N2 = -N2
             IF ( N2 .NE. 0 ) THEN
                IF (((N1.NE.2).AND.(N1.NE.3)) .OR. (N1.NE.N2)) THEN
-                  CALL UTDEBM('E',NOMCMD,'MOTS CLES RESULTANTE SOMME')
+                CALL UTDEBM('E','RVVSUP','MOTS CLES RESULTANTE SOMME')
                   CALL UTIMPI('L','OCCURENCE DE "ACTION" NUMERO : ',
      +                         1,IOCC)
                   CALL UTIMPK('L','LES LISTES ARGUMENTS DES MOTS CLES'
@@ -78,7 +78,7 @@ C     /* QUANTITE (IE : SOMME) */
                CALL GETVR8('ACTION','POINT',IOCC,1,0,R8B,N1)
                N1 = -N1
                IF ( (N1.NE.2) .AND. (N1.NE.3) ) THEN
-                  CALL UTDEBM('E',NOMCMD,'MOTS CLES RESULTANTE SOMME')
+                CALL UTDEBM('E','RVVSUP','MOTS CLES RESULTANTE SOMME')
                   CALL UTIMPI('L','OCCURENCE DE "ACTION" NUMERO : ',
      +                         1,IOCC)
                   CALL UTIMPI('L','LA LISTE ARGUMENTS DU MOT CLE'
@@ -110,7 +110,7 @@ C     /* COHERENCE ACCES DANS RESULTAT */
      +             ((TYPRES(1:4) .EQ. 'EVOL') .OR.
      +              (TYPRES(6:10) .EQ. 'TRANS') .OR.
      +              (TYPRES(11:15) .EQ. 'TRANS') ) ) THEN
-                  CALL UTDEBM('E',NOMCMD,'ACCES INCOHERENT')
+                  CALL UTDEBM('E','RVVSUP','ACCES INCOHERENT')
                   CALL UTIMPI('L','"ACTION" OCCURENCE : ',1,IOCC)
                   CALL UTIMPK('L','LE CONCEPT ARGUMENT DE '
      +                             //'NOM : ',1,NOMRES)
@@ -125,7 +125,7 @@ C     /* COHERENCE ACCES DANS RESULTAT */
      +              (TYPRES(1:4)   .EQ. 'BASE' ) .OR.
      +              (TYPRES(6:10)  .EQ. 'HARMO') .OR.
      +              (TYPRES(11:15) .EQ. 'HARMO') ) ) THEN
-                  CALL UTDEBM('E',NOMCMD,'ACCES INCOHERENT')
+                  CALL UTDEBM('E','RVVSUP','ACCES INCOHERENT')
                   CALL UTIMPI('L','"ACTION" OCCURENCE : ',1,IOCC)
                   CALL UTIMPK('L','LE CONCEPT ARGUMENT DE '
      +                             //'NOM : ',1,NOMRES)

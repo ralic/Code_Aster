@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,13 +179,13 @@ C              LES ANGLES SONT CROISSANTS ENTRE -180. ET +180. :
 C              -----------------------------------------------
                IF ( (ZR(IDANGT).LT.(-180.D0-EPSIL)) .OR.
      +              (ZR(IDANGT).GT.(-180.D0+EPSIL)) ) THEN
-                  CALL UTMESS('F',NOMCMD,'ANGLE INITIAL DIFFERENT '//
+                  CALL UTMESS('F','OP0153','ANGLE INITIAL DIFFERENT '//
      +                                    'DE -180. DEGRES.')
                ENDIF
             ENDIF
             CALL GETVR8('SECTEUR','ANGL_FIN',I,1,1,ZR(IDANGT+I),NA)
             IF ( ZR(IDANGT+I) .LT. ZR(IDANGT+I-1) ) THEN
-           CALL UTMESS('F',NOMCMD,'LES ANGLES NE SONT PAS CROISSANTS.')
+         CALL UTMESS('F','OP0153','LES ANGLES NE SONT PAS CROISSANTS.')
             ENDIF
             IF ( I .EQ. NBSECT ) THEN
                IF ( (ZR(IDANGT+I).LT.(180.D0-EPSIL)) .OR.
@@ -331,7 +331,7 @@ C
          CALL TBAJPA(RESU,NBPAR,NOPAR,TYPAR)
       ELSE
          IF (TABPUS.NE.RESU) THEN
-            CALL UTMESS('F',NOMCMD,'LA TABLE USURE EN SORTIE EST '//
+            CALL UTMESS('F','OP0153','LA TABLE USURE EN SORTIE EST '//
      &                             'DIFFERENTE DE CELLE EN ENTREE')
          ENDIF
 C   ON REPREND UNE TABLE EXISTANTE
@@ -347,7 +347,7 @@ C   ON REPREND UNE TABLE EXISTANTE
          CALL JEVEUO('&&OP0153.SECT','L',JSECT)
          NBSEC2 = ZI(JSECT+NBVPU-1)
          IF (NBSEC2.NE.NBSECT) THEN
-            CALL UTMESS('F',NOMCMD,'LE NOMBRE DE SECTEURS EN SORTIE '//
+          CALL UTMESS('F','OP0153','LE NOMBRE DE SECTEURS EN SORTIE '//
      &               'EST DIFFERENT DE CELUI EN ENTREE')
          ENDIF
          CALL GETVR8 ( 'ETAT_INIT', 'INST_INIT', 1,1,1, DINST, NIS )
@@ -378,7 +378,7 @@ C
             CALL TBLIVA(NOMTA,2,VALEK,I,DINST,C16B,K8B,'RELA',1.D-03,
      &         'V_USUR_OBST_CUMU',K8B,IBID,ZR(IVUSO+I-1),C16B,K8B,IRE2)
             IF ((IRE1+IRE2).GT.0) THEN
-               CALL UTMESS('F',NOMCMD,'PROBLEME EXTRACTION POUR '//
+               CALL UTMESS('F','OP0153','PROBLEME EXTRACTION POUR '//
      &                                'LA TABLE '//NOMTA)
             ENDIF
  1       CONTINUE

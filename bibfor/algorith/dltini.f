@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
      +                                         PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.NE.1) THEN
-                  CALL UTMESS('F',NOMCMD,'ON N''A PAS PU TROUVE LE '//
+                CALL UTMESS('F','DLTINI','ON N''A PAS PU TROUVE LE '//
      +                                   'DERNIER INSTANT SAUVE.')
                ENDIF
             ELSE
@@ -92,14 +92,14 @@ C     NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
      +                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'PLUSIEURS CHAMPS '
+                  CALL UTDEBM('F','DLTINI','PLUSIEURS CHAMPS '
      +                           //'CORRESPONDANT A L''ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
                   CALL UTIMPI('S',', NOMBRE :',1,-NBTROU)
                   CALL UTFINM()
                ELSEIF (NBTROU.EQ.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'PAS DE CHAMP '//
+                  CALL UTDEBM('F','DLTINI','PAS DE CHAMP '//
      +                             'CORRESPONDANT A UN ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
@@ -111,7 +111,7 @@ C
 C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          CALL RSEXCH(DYNA1,'DEPL',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE CHAMP "DEPL" N''EST PAS '//
+            CALL UTMESS('F','DLTINI','LE CHAMP "DEPL" N''EST PAS '//
      &                      'TROUVE DANS LE CONCEPT DYNA_TRANS '//DYNA1)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
@@ -119,7 +119,7 @@ C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          ENDIF
          CALL RSEXCH(DYNA1,'VITE',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE CHAMP "VITE" N''EST PAS '//
+            CALL UTMESS('F','DLTINI','LE CHAMP "VITE" N''EST PAS '//
      &                      'TROUVE DANS LE CONCEPT DYNA_TRANS '//DYNA1)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
@@ -127,7 +127,7 @@ C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          ENDIF
          CALL RSEXCH(DYNA1,'ACCE',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE CHAMP "ACCE" N''EST PAS '//
+            CALL UTMESS('F','DLTINI','LE CHAMP "ACCE" N''EST PAS '//
      &                      'TROUVE DANS LE CONCEPT DYNA_TRANS '//DYNA1)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
@@ -163,14 +163,14 @@ C
               DO 10 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 10            CONTINUE
-              CALL UTDEBM('A',NOMCMD,
+              CALL UTDEBM('A','DLTINI',
      &          'DEPLACEMENTS INITIAUX IMPOSES NULS POUR LES '//
      &          'CALCULS DE SENSIBILITE')
               CALL UTFINM()
             ENDIF
             CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
-            CALL UTMESS('I',NOMCMD,'DEPLACEMENTS INITIAUX NULS.')
+            CALL UTMESS('I','DLTINI','DEPLACEMENTS INITIAUX NULS.')
          ENDIF
 C
          CALL GETVID('ETAT_INIT','VITE_INIT',1,1,1,CHAMP,NVI)
@@ -186,14 +186,14 @@ C
               DO 20 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 20            CONTINUE
-              CALL UTDEBM('A',NOMCMD,
+              CALL UTDEBM('A','DLTINI',
      &          'VITESSES INITIALES IMPOSEES NULLES POUR LES '//
      &          'CALCULS DE SENSIBILITE')
               CALL UTFINM()
             ENDIF
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE
-            CALL UTMESS('I',NOMCMD,'VITESSES INITIALES NULLES.')
+            CALL UTMESS('I','DLTINI','VITESSES INITIALES NULLES.')
          ENDIF
 
          CALL GETVID('ETAT_INIT','ACCE_INIT',1,1,1,CHAMP,NAI)

@@ -5,7 +5,7 @@
      >                    NBNOEU, NBMAIL, NBCOOR )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +24,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
-C     LECTURE DU MAILLAGE - FORMAT MED
-C     -    -     -                 ---
+C     LECTURE DU MAILLAGE - FORMAT MED/HDF
+C     -    -                       -   ---
 C-----------------------------------------------------------------------
 C     ENTREES :
 C        NOMAMD : NOM MED DU MAILLAGE A LIRE
@@ -64,13 +64,15 @@ C
 C
       INTEGER NTYMAX
       PARAMETER (NTYMAX = 48)
+      INTEGER NNOMAX
+      PARAMETER (NNOMAX=27)
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
 C
       INTEGER IAUX
       INTEGER NMATYP(NTYMAX)
-      INTEGER NNOTYP(NTYMAX), TYPGEO(NTYMAX)
-      INTEGER RENUMD(NTYMAX)
+      INTEGER NNOTYP(NTYMAX), TYPGEO(NTYMAX), NUANOM(NTYMAX,NNOMAX)
+      INTEGER RENUMD(NTYMAX),MODNUM(NTYMAX),NUMNOA(NTYMAX,NNOMAX)
       INTEGER NBTYP
       INTEGER NDIM, FID, CODRET
       INTEGER NBNOMA
@@ -110,7 +112,9 @@ C
          NOFIMD = KFIC(1:200)
       ENDIF
 C
-      WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+      IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+      ENDIF
 C
 C 1.2. ==> VERIFICATION DU FICHIER MED
 C
@@ -211,7 +215,8 @@ C          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 C          . VERIF COHERENCE AVEC LE CATALOGUE
 C
       CALL LRMTYP ( NBTYP, NOMTYP,
-     >              NNOTYP, TYPGEO, RENUMD )
+     >              NNOTYP, TYPGEO, RENUMD,
+     >              MODNUM, NUANOM, NUMNOA )
 C
 C====
 C 3. DESCRIPTION
@@ -235,7 +240,8 @@ C 5. LES NOEUDS
 C====
 C
       CALL LRMMNO ( FID, NOMAMD, NDIM, NBNOEU,
-     >              NOMU, NOMNOE, COOVAL, COODSC, COOREF )
+     >              NOMU, NOMNOE, COOVAL, COODSC, COOREF,
+     >              IFM, INFMED )
 C
 C====
 C 6. LES MAILLES
@@ -248,7 +254,7 @@ C
      >              NMATYP,
      >              NOMMAI, CONNEX, TYPMAI,
      >              SAUX06,
-     >              INFMED )
+     >              INFMED, MODNUM, NUMNOA )
 C
 C====
 C 7. LES FAMILLES
@@ -286,14 +292,7 @@ C
         CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A LA FERMETURE DU FICHIER')
       ENDIF
 C
-C 9.2. ==> IMPRESSION DES OBJETS SUR LES FICHIERS RESULTAT ET MESSAGE
-C
-      CALL LRMIMP ( IFM, NIVINF, NDIM, NOMU, TITRE,
-     >              GRPNOE, GRPMAI, NOMNOE, NOMMAI, CONNEX, COOVAL,
-     >              NBLTIT, NBNOEU, NBMAIL, NBGRNO, NBGRMA,
-     >              TYPMAI, NBTYP, NNOTYP, NOMTYP, NMATYP )
-C
-C 9.3. ==> MENAGE
+C 9.2. ==> MENAGE
 C
       CALL JEDETC ('V','&&'//NOMPRO,1)
 C

@@ -1,9 +1,7 @@
-      SUBROUTINE IRCMPF ( NOFIMD,
-     >                    NVALTY, PROFIL, NRTY,
-     >                    NOPFTY )
+      SUBROUTINE IRCMPF ( NOFIMD, NVALTY, PROFIL, NOPROF )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,19 +27,18 @@ C     ENTREES :
 C       NOFIMD : NOM DU FICHIER MED
 C       NVALTY : NOMBRE DE VALEURS DU TYPE
 C       PROFIL : PROFIL ENTIER
-C       NRTY   : NUMERO DU TYPE A EXAMINER
 C     SORTIES :
-C       NOPFTY : NOM DES PROFILS AU SENS MED
+C       NOPROF : NOM DU PROFIL AU SENS MED
 C_______________________________________________________________________
 C
       IMPLICIT NONE
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER NVALTY, PROFIL(NVALTY), NRTY
+      INTEGER NVALTY, PROFIL(NVALTY)
 C
       CHARACTER*(*) NOFIMD
-      CHARACTER*32 NOPFTY(0:*)
+      CHARACTER*32 NOPROF
 C
 C 0.2. ==> COMMUNS
 C
@@ -75,7 +72,6 @@ C
       CHARACTER*8 SAUX08
       CHARACTER*24 NTPROF, NTNOPF
       CHARACTER*24 SAUX24
-      CHARACTER*32 NOPROF
 C
 C====
 C 1. PREALABLES
@@ -87,7 +83,7 @@ C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
       ENDIF
- 1001 FORMAT(/,10('='),A,10('='),/)
+ 1001 FORMAT(/,4X,10('='),A,10('='),/)
 C
 C 1.2. ==> NOMS DES TABLEAUX
 C               12   345678   9012345678901234
@@ -126,7 +122,7 @@ C
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
-        WRITE (IFM,*) '. NOMBRE DE PROFILS DANS LE FICHIER : ',NBPROF
+        WRITE (IFM,*) '   NOMBRE DE PROFILS DANS LE FICHIER : ',NBPROF
       ENDIF
 C
       IF ( NBPROF.NE.0 ) THEN
@@ -155,9 +151,9 @@ C
         IF ( NIVINF.GT.1 ) THEN
           WRITE (IFM,4101) IAUX, NOPROF, LGPROF
         ENDIF
- 4101   FORMAT('. LECTURE DU PROFIL NUMERO',I8,
-     >          /,'...NOM : ',A,
-     >          /,'... LONGUEUR : ',I8)
+ 4101   FORMAT(5X,'LECTURE DU PROFIL NUMERO',I8,
+     >       /,5X,'...NOM       : ',A,
+     >       /,5X,'... LONGUEUR : ',I8)
 C
         ZK32(ADNOPF+IAUX-1) = NOPROF
 C
@@ -183,7 +179,7 @@ C
           IF ( NIVINF.GT.1 ) THEN
             WRITE (IFM,4201) ZI(ADPROF),ZI(ADPROF+LGPROF-1)
           ENDIF
- 4201     FORMAT('... 1ERE ET DERNIERE VALEURS : ',2I8)
+ 4201     FORMAT(5X,'... 1ERE ET DERNIERE VALEURS : ',2I8)
 C
 C 4.2.2. ==> ON COMPARE TERME A TERME.
 C            DES QU'UNE VALEUR DIFFERE, ON PASSE AU PROFIL SUIVANT.
@@ -271,9 +267,10 @@ CGN      PRINT 1789,(PROFIL(IAUX),IAUX=1,NVALTY)
 CGN 1789  FORMAT(10I5)
         IF ( NIVINF.GT.1 ) THEN
           WRITE (IFM,6301) NOPROF, NVALTY, PROFIL(1), PROFIL(NVALTY)
- 6301     FORMAT('. PROFIL A CREER : NOM      = ',A,
-     >         /,'                   LONGUEUR = ',I8,
-     >         /,'   1ERE ET DERNIERE VALEURS = ',2I8)
+ 6301     FORMAT(4X,'PROFIL A CREER :',
+     >         /,4X,'. NOM                      = ',A,
+     >         /,4X,'. LONGUEUR                 = ',I8,
+     >         /,4X,'. 1ERE ET DERNIERE VALEURS = ',2I8)
         ENDIF
         CALL EFPFLE ( IDFIMD, PROFIL, NVALTY, NOPROF, CODRET )
         IF ( CODRET.NE.0 ) THEN
@@ -292,10 +289,8 @@ C
       ENDIF
 C
 C====
-C 7. ON TERMINE EN RETOURNANT LE NOM DU PROFIL AU SENS MED
+C 7. LA FIN
 C====
-C
-      NOPFTY(NRTY) = NOPROF
 C
       CALL JEDETC('V','&&'//NOMPRO,1)
 C

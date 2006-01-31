@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,13 +108,13 @@ C        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
          IF ( INDBAS .EQ. 0 ) THEN
             INDBAS = 1
             IER    = IER + 1
-            CALL UTDEBM('E',NOMCMD,'"'//NOM//'" NOM SYMBOLIQUE INCONNU')
+          CALL UTDEBM('E','IBBASE','"'//NOM//'" NOM SYMBOLIQUE INCONNU')
             CALL UTIMPK('L','VALEURS ATTENDUES',MXBASE,NOMBA)
             CALL UTFINM()
          ELSE
             IF ( PRESBA(INDBAS) .NE. 0 ) THEN
                IER = IER + 1
-               CALL UTMESS('E',NOMCMD,NOM//' NOM DE BASE DEJA DEFINIE')
+             CALL UTMESS('E','IBBASE',NOM//' NOM DE BASE DEJA DEFINIE')
             ELSE
                PRESBA(INDBAS) = 1
             ENDIF
@@ -128,7 +128,7 @@ C
             IF ( INDCAS .EQ. 0 ) THEN
                INDCAS = 1
                IER = IER + 1
-               CALL UTDEBM('E',NOMCMD,'L''ARGUMENT DU MOT CLE '//
+               CALL UTDEBM('E','IBBASE','L''ARGUMENT DU MOT CLE '//
      +                            '"CAS"  EST ERRONE ')
                CALL UTIMPK('L','VALEUR LUE',1,CAS)
                CALL UTIMPK('L','VALEURS ATTENDUES',MXCAS,CASCA)
@@ -147,7 +147,7 @@ C
          LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LOISEM()         
          IF ( LTT .GT. MOFIEM() ) THEN
             IER = IER + 1
-            CALL UTDEBM('E',NOMCMD,'LE NOMBRE D''ENREGISTREMENTS '
+            CALL UTDEBM('E','IBBASE','LE NOMBRE D''ENREGISTREMENTS '
      +        //'(NMAX_ENRE) ET LEURS LONGUEURS (LONG_ENRE) CONDUISENT'
      +        //' A UN FICHIER DONT LA TAILLE MAXIMALE EN OCTETS EST')
             CALL UTIMPI('S',' : ',1,LTT)
@@ -172,7 +172,7 @@ C     --- QUELQUES CONTROLES SUPPLEMENTAIRES SUR LA GLOBALE EN POURSUITE
          IF ( INDBAS .GT. 0 ) THEN
             IF ( STIN(INDBAS).NE. 'POURSUITE' ) THEN
                IER = IER + 1
-               CALL UTMESS('E',NOMCMD,STIN(INDBAS)//
+               CALL UTMESS('E','IBBASE',STIN(INDBAS)//
      +                       ' STATUT IMPOSSIBLE POUR LA BASE GLOBALE')
             ENDIF
          ENDIF
@@ -204,7 +204,7 @@ C               TARD AVEC UNE EVENTUELLE BASE HDF EN RESULTAT ---
   300    CONTINUE
       ELSE
 C
-         CALL UTMESS('E',NOMCMD,
+         CALL UTMESS('E','IBBASE',
      +                   'PROBLEME D''ALLOCATION DES BASES DE DONNEES')
       ENDIF
 C

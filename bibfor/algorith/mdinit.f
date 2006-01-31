@@ -5,7 +5,7 @@
       CHARACTER*8        BASEMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IM, JDEPI, JVITI
-      CHARACTER*16  NOMCMD
       CHARACTER*19  NOMDEP, NOMVIT
       CHARACTER*8   TRAN,CRIT,INTER
       CHARACTER*1   K1BID
@@ -59,7 +58,6 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IER = 0
-      NOMCMD = 'DYNA_TRAN_MODAL'
 C
 C     --- DEPLACEMENT ---
       CALL GETVID('ETAT_INIT','DEPL_INIT_GENE',1,1,1,NOMDEP,N1)
@@ -70,13 +68,13 @@ C        --- VERIF COMPATIBILITE DES BASES DE PROJECTION
          CALL JEVEUO(NOMDEP//'.REFE','L',JREFE)
          IF (ZK24(JREFE)(1:8).NE.BASEMO) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES POUR LA '//
+            CALL UTMESS('E','MDINIT','LES BASES UTILISEES POUR LA '//
      +                             'PROJECTION SONT DIFFERENTES.')
          ENDIF
          CALL JEVEUO(NOMDEP//'.DESC','L',JDESC)
          IF (ZI(JDESC+1).NE.NBMODE) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES N''ONT PAS '//
+          CALL UTMESS('E','MDINIT','LES BASES UTILISEES N''ONT PAS '//
      +                             'LE MEME NOMBRE DE VECTEURS.')
          ENDIF
          DO 10 IM = 1,NBMODE
@@ -93,13 +91,13 @@ C        --- VERIF COMPATIBILITE DES BASES DE PROJECTION
          CALL JEVEUO(NOMVIT//'.REFE','L',JREFE)
          IF (ZK24(JREFE)(1:8).NE.BASEMO) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES POUR LA '//
+            CALL UTMESS('E','MDINIT','LES BASES UTILISEES POUR LA '//
      +                             'PROJECTION SONT DIFFERENTES.')
          ENDIF
          CALL JEVEUO(NOMVIT//'.DESC','L',JDESC)
          IF (ZI(JDESC+1).NE.NBMODE) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES N''ONT PAS '//
+          CALL UTMESS('E','MDINIT','LES BASES UTILISEES N''ONT PAS '//
      +                             'LE MEME NOMBRE DE VECTEURS.')
          ENDIF
          DO 20 IM = 1,NBMODE
@@ -122,7 +120,7 @@ C     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          CALL EXTRAC(INTER,PREC,CRIT,NBINST,ZR(JINST),TINIT,
      +               ZR(JDEPLT),NBMODE,DEPGEN,IER)
          IF (IER.NE.0) THEN
-            CALL UTMESS('F',NOMCMD,'ON N''A PAS PU TROUVE LES '//
+            CALL UTMESS('F','MDINIT','ON N''A PAS PU TROUVE LES '//
      +                  'DEPLACEMENTS INITIAUX ')
          ENDIF
          CALL JEVEUO(TRAN//'           .VITE' ,'E',JVITET)
@@ -130,7 +128,7 @@ C     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          CALL EXTRAC(INTER,PREC,CRIT,NBINST,ZR(JINST),TINIT,
      +               ZR(JVITET),NBMODE,VITGEN,IER)
          IF (IER.NE.0) THEN
-            CALL UTMESS('F',NOMCMD,'ON N''A PAS PU TROUVE LES '//
+            CALL UTMESS('F','MDINIT','ON N''A PAS PU TROUVE LES '//
      +                  'VITESSES INITIALES ')
          ENDIF
          IF (NBCHOC .GT. 0) THEN
@@ -139,7 +137,7 @@ C     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
             CALL EXTRAC(INTER,PREC,CRIT,NBINST,ZR(JINST),TINIT,
      +                  ZR(JVINT),NBCHOC,VINT,IER)
             IF (IER.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'ON N''A PAS PU TROUVE LES '//
+               CALL UTMESS('F','MDINIT','ON N''A PAS PU TROUVE LES '//
      +                     'VARIABLES INTERNES INITIALES : REPRISE '//
      +                     ' CHOC AVEC FLAMBAGE ')
             ENDIF

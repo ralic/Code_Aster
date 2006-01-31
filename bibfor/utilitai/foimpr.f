@@ -4,7 +4,7 @@
       INTEGER                IMPR,IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ------------------------------------------------------------------
       IF ( IMPR .LE. 0) GOTO 9999
       IF ( IUL .LE. 0 ) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
-         CALL UTMESS('A',NOMCMD,'UNITE LOGIQUE INEXISTANTE')
+         CALL UTMESS('A','FOIMPR','UNITE LOGIQUE INEXISTANTE')
          GOTO 9999
       ENDIF
       LISTR = FONINS
@@ -209,13 +209,13 @@ C
 C
       ELSEIF (ZK16(LPROL).EQ.'INTERPRE' ) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
-         CALL UTMESS('A',NOMCMD//' (ALARME 01)',
+         CALL UTMESS('A','FOIMPR'//' (ALARME 01)',
      +               'ON N''IMPRIME PAS ENCORE DE FONCTION DE TYPE "'//
      +               ZK16(LPROL)//'"      DESOLE. ')
 C
       ELSE
          CALL GETRES(K8B,K8B,NOMCMD)
-         CALL UTMESS('A',NOMCMD//' (ALARME 01)',
+         CALL UTMESS('A','FOIMPR'//' (ALARME 01)',
      +               'ON NE SAIT PAS IMPRIMER UNE FONCTION DE TYPE "'//
      +               ZK16(LPROL)//'"      DESOLE. ')
 C

@@ -6,7 +6,7 @@
       CHARACTER*24        TCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       CALL GETVID ( ' ', 'MATER', 1,1,1, NOMMAT, N1 )
       CALL RCCOME ( NOMMAT, 'ELAS', PHENOM, CODRET )
       IF ( CODRET(1) .EQ. 'NO' ) THEN
-         CALL UTMESS('F',NOMCMD,'IL FAUT DEFINIR LE '//
+         CALL UTMESS('F','PKMATE','IL FAUT DEFINIR LE '//
      +                   'COMPORTEMENT "ELAS" DANS DEFI_MATERIAU')
       ENDIF
 C
@@ -132,21 +132,21 @@ C
          COEFG = UNMNU2 / E
          COEFG3 = UNPNU / E
       ELSEIF ( MODELI .EQ. 'D_PLAN' ) THEN
-         CALL UTMESS('I',NOMCMD,'L''OPERATEUR CALC_G_THETA_T CALCULE '//
+       CALL UTMESS('I','PKMATE','L''OPERATEUR CALC_G_THETA_T CALCULE '//
      +                          'PLUS PRECISEMENT LES K1 K2')
          NDIM = 2
          COEFD = COEFD / ( 8.D0 * UNMNU2 )
          COEFG = UNMNU2 / E
          COEFG3 = UNPNU / E
       ELSEIF ( MODELI .EQ. 'C_PLAN' ) THEN
-         CALL UTMESS('I',NOMCMD,'L''OPERATEUR CALC_G_THETA_T CALCULE '//
+       CALL UTMESS('I','PKMATE','L''OPERATEUR CALC_G_THETA_T CALCULE '//
      +                          'PLUS PRECISEMENT LES K1 K2')
          NDIM = 2
          COEFD = COEFD / 8.D0
          COEFG = 1.D0 / E
          COEFG3 = UNPNU / E
       ELSE
-         CALL UTMESS('F',NOMCMD,'MODELISATION '//MODELI//
+         CALL UTMESS('F','PKMATE','MODELISATION '//MODELI//
      +                          ' NON IMPLANTEE')
       ENDIF
 C

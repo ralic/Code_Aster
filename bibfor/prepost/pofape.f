@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
       DO 20 I = 2 , NBF
          FVALE(I) = NOMTEN(I)//'           .VALE'
          CALL JELIRA ( FVALE(I), 'LONMAX', NBPTS, K8B )
-         IF ( NBPTS .NE. NBPTOT ) CALL UTMESS('F',NOMCMD,
+         IF ( NBPTS .NE. NBPTOT ) CALL UTMESS('F','POFAPE',
      +                 'L''HISTOIRE DE CHARGEMENT DOIT AVOIR MEME '//
      +                 'DISCRETISATION POUR TOUTES LES COMPOSANTES')
   20  CONTINUE
@@ -95,9 +95,11 @@ C
       DO 30 I = 2 , NBF
          CALL JEVEUO ( FVALE(I), 'L', IFONC )
          DO 35 J = 1 , NBPTOT/2
-            IF(ZR(IFONC+J-1).NE.ZR(IFONC1+J-1)) CALL UTMESS('F',NOMCMD,
+            IF(ZR(IFONC+J-1).NE.ZR(IFONC1+J-1)) THEN
+               CALL UTMESS('F','POFAPE',
      +                   'L''HISTOIRE DE CHARGEMENT DOIT AVOIR MEME '//
      +                   'DISCRETISATION POUR TOUTES LES COMPOSANTES')
+            ENDIF
             ZR(IORDO+(J-1)*NBF+I-1) = ZR(IFONC+NBPTOT/2+J-1)
   35     CONTINUE
   30  CONTINUE
@@ -174,7 +176,7 @@ C         ---------------------------------------
       IF ( KDOMM .EQ. 'WOHLER' ) THEN
          PHENO = 'FATIGUE'
          CALL RCCOME ( NOMMAT, PHENO, PHENOM, CODRET(1) )
-         IF ( CODRET(1) .EQ. 'NO' ) CALL UTMESS('F',NOMCMD,
+         IF ( CODRET(1) .EQ. 'NO' ) CALL UTMESS('F','POFAPE',
      +                 'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '//
      +                 'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU')
          CARA = 'WOHLER'
@@ -198,7 +200,7 @@ C
 C
       ELSEIF ( KDOMM .EQ. ' ' ) THEN
       ELSE
-         CALL UTMESS('F',NOMCMD,'LOI DE DOMMAGE NON COMPATIBLE')
+         CALL UTMESS('F','POFAPE','LOI DE DOMMAGE NON COMPATIBLE')
       ENDIF
 C
       CALL JEDETR ( '&&POFAPE.ORDO' )

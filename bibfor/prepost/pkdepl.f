@@ -4,7 +4,7 @@
       CHARACTER*24        DEPSUP, DEPINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,7 +89,7 @@ C     ------------------------------------------------------------------
       KNUM = '&&PKDEPL.NUME_ORDRE'
       CALL RSUTNU ( RESU, ' ', 1, KNUM, NBORDR, PREC, CRIT, IRET )
       IF (IRET.NE.0) THEN
-         CALL UTMESS('F',NOMCMD,'ERREUR(S) DANS LES DONNEES')
+         CALL UTMESS('F','PKDEPL','ERREUR(S) DANS LES DONNEES')
       ENDIF
       CALL JEVEUO ( KNUM, 'L', JORDR )
 
@@ -152,7 +152,7 @@ C
 
          CALL RSEXCH ( RESU, 'DEPL', NORDR, CHAMP, IRET )
          IF (IRET.NE.0) THEN
-            CALL UTMESS('F',NOMCMD,'PB RECUP CHAMP DANS RESULTAT')
+            CALL UTMESS('F','PKDEPL','PB RECUP CHAMP DANS RESULTAT')
          ENDIF
 
          CALL RSADPA ( RESU, 'L', 1, 'INST', NORDR, 0, IAD, K8B )
@@ -192,19 +192,19 @@ C
                ENDIF
  321        CONTINUE
             IF ( .NOT. LDX ) THEN
-               CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DX" '//
+               CALL UTMESS('F','PKDEPL','MANQUE LA COMPOSANTE "DX" '//
      +                                ' POUR LE NOEUD '//NOEUD)
             ELSE
                VALE(2) = DX
             ENDIF
             IF ( .NOT. LDY ) THEN
-               CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DY" '//
+               CALL UTMESS('F','PKDEPL','MANQUE LA COMPOSANTE "DY" '//
      +                                ' POUR LE NOEUD '//NOEUD)
             ELSE
                VALE(3) = DY
             ENDIF
             IF ( .NOT. LDZ ) THEN
-               CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DZ" '//
+               CALL UTMESS('F','PKDEPL','MANQUE LA COMPOSANTE "DZ" '//
      +                                ' POUR LE NOEUD '//NOEUD)
             ELSE
                VALE(4) = DZ
@@ -240,19 +240,19 @@ C
                  ENDIF
  341          CONTINUE
               IF ( .NOT. LDX ) THEN
-               CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DX" '//
+               CALL UTMESS('F','PKDEPL','MANQUE LA COMPOSANTE "DX" '//
      +                                ' POUR LE NOEUD '//NOEUD)
               ELSE
                VALE(2) = DX
               ENDIF
               IF ( .NOT. LDY ) THEN
-               CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DY" '//
+               CALL UTMESS('F','PKDEPL','MANQUE LA COMPOSANTE "DY" '//
      +                                ' POUR LE NOEUD '//NOEUD)
               ELSE
                VALE(3) = DY
               ENDIF
               IF ( .NOT. LDZ ) THEN
-               CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DZ" '//
+               CALL UTMESS('F','PKDEPL','MANQUE LA COMPOSANTE "DZ" '//
      +                                ' POUR LE NOEUD '//NOEUD)
               ELSE
                VALE(4) = DZ

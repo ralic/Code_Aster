@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,7 @@ C
       CALL GETFAC('PSEUDO_MODE',NBPSMO)
       IF (NBPSMO.NE.0) THEN
          IF (NMA.EQ.0) THEN
-            CALL UTMESS('F',NOMCMD,'POUR LE MOT CLE FACTEUR '//
+            CALL UTMESS('F','OP0093','POUR LE MOT CLE FACTEUR '//
      >        ' "PSEUDO_MODE", IL FAUT DONNER LA MATRICE DE MASSE.')
          ENDIF
       ENDIF
@@ -107,7 +107,7 @@ C
       CALL JEVEUO(RAILDL(1:19)//'.&INT','E',LMATR)
       CALL TLDLGG(1,LMATR,1,NEQ,0,NDECI,ISINGU,NPVNEG,IRET)
       IF (IRET.EQ.2) THEN
-         CALL UTDEBM('F',NOMCMD,'PROBLEME(S) RENCONTRE(S) LORS DE LA')
+       CALL UTDEBM('F','OP0093','PROBLEME(S) RENCONTRE(S) LORS DE LA')
          CALL UTIMPK('S',' FACTORISATION DE LA MATRICE :',1,RAIDE)
          CALL UTFINM()
       ENDIF
@@ -211,7 +211,7 @@ C              --- ON NORME LA DIRECTION ---
                   XNORM = XNORM + COEF(ID)*COEF(ID)
  36            CONTINUE
                IF (XNORM.LE.ZERO) THEN
-                  CALL UTMESS('F',NOMCMD,'LA DIRECTION EST NULLE.')
+                  CALL UTMESS('F','OP0093','LA DIRECTION EST NULLE.')
                ENDIF
                XNORM = UN / SQRT(XNORM)
                DO 38 ID = 1,3
@@ -262,7 +262,7 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F',NOMCMD,'APPEL ERRONE :')
+                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
                   CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
                   CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
                   CALL UTFINM()
@@ -300,7 +300,7 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F',NOMCMD,'APPEL ERRONE :')
+                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
                   CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
                   CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
                   CALL UTFINM()
@@ -338,7 +338,7 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F',NOMCMD,'APPEL ERRONE :')
+                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
                   CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
                   CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
                   CALL UTFINM()
@@ -425,7 +425,7 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F',NOMCMD,'APPEL ERRONE :')
+                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
                   CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
                   CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
                   CALL UTFINM()

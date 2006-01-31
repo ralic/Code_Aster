@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,7 +185,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
               IF (NBTROU.EQ.1) THEN
                 CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
               ELSE IF (NBTROU.GT.1) THEN
-                CALL UTDEBM('A',NOMCMD,'PLUSIEURS CHAMPS '//
+                CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
      &                      'CORRESPONDANT A L''ACCES DEMANDE.')
                 CALL UTIMPK('L','RESULTAT ',1,RESU)
                 LG = MAX(1,LXLGUT(ZK16(JPARA-1+IACC)))
@@ -223,7 +223,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
                 CALL UTFINM()
                 CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
               ELSE IF (NBTROU.EQ.0) THEN
-                CALL UTDEBM('A',NOMCMD,'PAS DE CHAMP '//
+                CALL UTDEBM('A','RSUTNU','PAS DE CHAMP '//
      &                      'CORRESPONDANT A UN ACCES DEMANDE.')
                 CALL UTIMPK('L','RESULTAT ',1,RESU)
                 LG = MAX(1,LXLGUT(ZK16(JPARA-1+IACC)))
@@ -259,7 +259,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
                 CALL UTFINM()
                 IER = IER + 10
               ELSE IF (NBTROU.LT.0) THEN
-                CALL UTMESS('F',NOMCMD,'Y A UN BUG ')
+                CALL UTMESS('F','RSUTNU','Y A UN BUG ')
               END IF
    20       CONTINUE
             NBORDR = NBORDR - 1
@@ -293,15 +293,15 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
      &                  CRIT,ZI(JORD2),NBORDT,NBTROU)
             IF (NBTROU.EQ.0) THEN
               IER = IER + 1
-              CALL UTDEBM('A',NOMCMD,'PAS DE CHAMPS ')
+              CALL UTDEBM('A','RSUTNU','PAS DE CHAMPS ')
               CALL UTIMPK('S','POUR L''ACCES ',1,NOMACC)
               CALL UTIMPR('S','DE VALEUR ',1,ZR(LACCR+IORD))
               CALL UTFINM()
             ELSE IF (NBTROU.LT.0) THEN
-              CALL UTMESS('F',NOMCMD,'Y A UN BUG ')
+              CALL UTMESS('F','RSUTNU','Y A UN BUG ')
             ELSE
               IF (NBTROU.GT.1) THEN
-                CALL UTDEBM('A',NOMCMD,'PLUSIEURS CHAMPS '//
+                CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
      &                      'CORRESPONDANT A L''ACCES DEMANDE.')
                 CALL UTIMPK('L','RESULTAT ',1,RESU)
                 CALL UTIMPR('S',', ACCES "INST" :',1,ZR(LACCR+IORD))
@@ -341,15 +341,15 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
      &                  CRIT,ZI(JORD2),NBORDT,NBTROU)
             IF (NBTROU.EQ.0) THEN
               IER = IER + 1
-              CALL UTDEBM('A',NOMCMD,'PAS DE CHAMPS ')
+              CALL UTDEBM('A','RSUTNU','PAS DE CHAMPS ')
               CALL UTIMPK('S','POUR L''ACCES ',1,NOMACC)
               CALL UTIMPR('S','DE VALEUR ',1,ZR(LACCR+IORD))
               CALL UTFINM()
             ELSE IF (NBTROU.LT.0) THEN
-              CALL UTMESS('F',NOMCMD,'Y A UN BUG ')
+              CALL UTMESS('F','RSUTNU','Y A UN BUG ')
             ELSE
               IF (NBTROU.GT.1) THEN
-                CALL UTDEBM('A',NOMCMD,'PLUSIEURS CHAMPS '//
+                CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
      &                      'CORRESPONDANT A L''ACCES DEMANDE.')
                 CALL UTIMPK('L','RESULTAT ',1,RESU)
                 CALL UTIMPR('S',', ACCES "FREQ" :',1,ZR(LACCR+IORD))

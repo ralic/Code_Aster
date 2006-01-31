@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -311,7 +311,7 @@ C
 C
          IF ( .NOT. TROUVE ) THEN
 C
-            CALL UTDEBM('F',NOMCMD,'****************************')
+            CALL UTDEBM('F','OP0051','****************************')
             CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
             CALL UTIMPK('L','* INEXISTENCE DES CHAMP-GD',0,' ')
             CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
@@ -325,7 +325,7 @@ C
 C
             IF ( IRET .EQ. 0 ) THEN
 C
-               CALL UTDEBM('F',NOMCMD,
+               CALL UTDEBM('F','OP0051',
      +                  '****************************************')
                CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
                CALL UTIMPK('L','* AUCUNES MAILLES NE CORRESPONDENT'//

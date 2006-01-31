@@ -1,5 +1,5 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
-# TITRE ABSORPTION D'UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
+# MODIF  DATE 30/01/2006   AUTEUR ACBHHCD G.DEVESA 
+# TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,8 +19,8 @@
 # ======================================================================
 # CAS_TEST__: SDLV120A
 #
-# PROPAGATION D'UNE ONDE DE COMPRESSION DANS UN BARREAU
-# ELASTIQUE INFINI - ABSORPTION DE L'ONDE A LA FRONTIERE DU MAILLAGE 
+# PROPAGATION D UNE ONDE DE COMPRESSION DANS UN BARREAU
+# ELASTIQUE INFINI - ABSORPTION DE L ONDE A LA FRONTIERE DU MAILLAGE 
 # ELEMENTS FINIS
 # CAS 3D
 #=======================================================================
@@ -33,9 +33,15 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
                        CREA_GROUP_NO=_F(  GROUP_MA = 'IIMPO')
                      )
 
-MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2)
+MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2,
+                             AMOR_ALPHA=0., AMOR_BETA=0.,)
                     )
-
+                    
+                    
+MAT2=DEFI_MATERIAU( ELAS=_F(  E = 0.E+9, RHO = 2400.,  NU = 0.2,
+                             AMOR_ALPHA=0., AMOR_BETA=0.,)
+                    )
+                                        
 MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
                          _F(  GROUP_MA = 'SOLIDE',
                                 PHENOMENE = 'MECANIQUE',
@@ -49,7 +55,17 @@ CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
                    AFFE=_F(  GROUP_MA = ('SOLIDE', 'IABSO',),
                           MATER = MAT1)
                            )
-
+                           
+CHAMPMA2=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                   AFFE=(
+                       _F(  GROUP_MA = ('SOLIDE',),
+                          MATER = MAT1),
+                       _F(  GROUP_MA = ('IABSO',),
+                          MATER = MAT2),
+                        ),
+                           )
+                           
+                                                      
 COND_LIM=AFFE_CHAR_MECA(    MODELE=MODELE,
                    DDL_IMPO=_F(  GROUP_NO = 'IIMPO',
                               DX = 1.E-3)
@@ -60,34 +76,71 @@ RIGI_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=COND_LIM
                             )
-
+                            
+RIGI_EL2=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMA2,
+                              CHARGE=COND_LIM
+                            )
+                            
 MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               OPTION='MASS_MECA',
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=COND_LIM
                             )
-
+                                                        
+MASS_EL2=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMA2,
+                              CHARGE=COND_LIM
+                            )
+                            
+AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='AMOR_MECA_ABSO',
+                              CHAM_MATER=CHAMPMAT,
+                              RIGI_MECA = RIGI_EL2,
+                              MASS_MECA = MASS_EL2,                              
+                              CHARGE=COND_LIM
+                            )
+                            
 VECTELEM=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=COND_LIM
                             )
 
-NUME_DDL=NUME_DDL(    MATR_RIGI=RIGI_ELE )
-#METHODE : 'LDLT');
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE )
 
-RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUME_DDL
+NUMEDD2=NUME_DDL(    MATR_RIGI=RIGI_EL2 )
+
+RIGID=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
+                         NUME_DDL=NUMEDDL
+                          )
+                          
+RIGID2=ASSE_MATRICE(    MATR_ELEM=RIGI_EL2,
+                         NUME_DDL=NUMEDD2
                           )
 
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
-                         NUME_DDL=NUME_DDL
+                         NUME_DDL=NUMEDDL
                        )
-
+                       
+MASSE2=ASSE_MATRICE(    MATR_ELEM=MASS_EL2,
+                         NUME_DDL=NUMEDD2
+                       )
+                       
+AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
+                         NUME_DDL=NUMEDD2
+                       )
+                       
 VECTASS=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
-                           NUME_DDL=NUME_DDL
+                           NUME_DDL=NUMEDDL
                          )
-
-# --- LECTURE DE LA FONCTION D'EXCITATION ---
+                         
+VECTAS2=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
+                           NUME_DDL=NUMEDD2
+                         )
+                         
+# --- LECTURE DE LA FONCTION D EXCITATION ---
 INCLUDE(   UNITE=11,   INFO=1 )
 
 TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.8, NOMBRE = 3600))
@@ -95,12 +148,11 @@ TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.8, NOMBRE = 3600))
 INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 3601, PAS = 1))
 
 DYN=DYNA_LINE_TRAN(      MATR_MASS=MASSE, 
-                         MATR_RIGI=RIGIDITE,
-                        #IMPED : 'OUI'
+                         MATR_RIGI=RIGID,
+                         # MATR_AMOR=AMORT,
                          EXCIT=_F(  VECT_ASSE = VECTASS,
                                     FONC_MULT = FONC),
 ####CDURAND              ETAT_INIT=_F(  INST_INIT = 0.),
-                                     #DEPL_INIT : PRESINI )
                          INCREMENT=_F( LIST_INST = TEMPLI),
 ####CDURAND              ARCHIVAGE=_F(  LIST_ARCH = INTLI),
                          NEWMARK=_F() 
@@ -124,13 +176,14 @@ DXN43=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='DX'
                       )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   
+                  _F( 
                    FONCTION = DXN16,
-                   VALE_PARA = 5.39500E-01,
-                   VALE_REFE = 9.91869E-04,
+                   VALE_PARA = 5.40000E-01,
+                   VALE_REFE = 9.91868E-04,
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3, 
-                   REFERENCE = 'NON_REGRESSION'),
+                   REFERENCE = 'NON_REGRESSION'),                   
                   _F( 
                    FONCTION = DXN16,
                    VALE_PARA = 1.20000E+00,
@@ -155,7 +208,68 @@ TEST_FONCTION(VALEUR=(   _F(
                    PRECISION = 1.E-3,
                    REFERENCE = 'ANALYTIQUE'))
                 )
+DYN2=DYNA_LINE_TRAN(     MATR_MASS=MASSE2, 
+                         MATR_RIGI=RIGID2,
+                         MATR_AMOR=AMORT,
+                         EXCIT=_F(  VECT_ASSE = VECTAS2,
+                                    FONC_MULT = FONC),
+####CDURAND              ETAT_INIT=_F(  INST_INIT = 0.),
+                         INCREMENT=_F( LIST_INST = TEMPLI),
+####CDURAND              ARCHIVAGE=_F(  LIST_ARCH = INTLI),
+                         NEWMARK=_F() 
+                        )
 
+DX2N16=RECU_FONCTION(   LIST_INST=TEMPLI,   PRECISION=1.E-4,
+                        RESULTAT=DYN2,   NOEUD='N16',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+DX2N18=RECU_FONCTION(   LIST_INST=TEMPLI,   PRECISION=1.E-4,
+                        RESULTAT=DYN2,   NOEUD='N18',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+DX2N43=RECU_FONCTION(   LIST_INST=TEMPLI,   PRECISION=1.E-4,
+                        RESULTAT=DYN2,   NOEUD='N43',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+TEST_FONCTION(VALEUR=(   
+                  _F( 
+                   FONCTION = DX2N16,
+                   VALE_PARA = 5.40000E-01,
+                   VALE_REFE = 9.91868E-04,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3, 
+                   REFERENCE = 'AUTRE_ASTER'),                   
+                  _F( 
+                   FONCTION = DX2N16,
+                   VALE_PARA = 1.20000E+00,
+                   VALE_REFE = 0.E0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION = 1.E-7,
+                   REFERENCE = 'ANALYTIQUE'))
+                )
+
+TEST_FONCTION(VALEUR=(   _F( 
+                   FONCTION = DX2N18,
+                   VALE_PARA = 5.40000E-01,
+                   VALE_REFE = 9.91393E-04,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3,
+                   REFERENCE = 'AUTRE_ASTER'),
+                  _F( 
+                   FONCTION = DX2N43,
+                   VALE_PARA = 5.00000E-01,
+                   VALE_REFE = 1.00000E-03,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3,
+                   REFERENCE = 'ANALYTIQUE'))
+                )
+                
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 600))
 
 TEMLI2=DEFI_LIST_REEL(DEBUT=0.002, 
@@ -170,10 +284,13 @@ DYNA=DYNA_NON_LINE(    MODELE=MODELE,
 #                      ETAT_INIT=_F( INST_INIT = 0.),
                        COMP_INCR=_F( RELATION = 'ELAS',
                                      TOUT = 'OUI'),
-                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4),
+                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6),
                        INCREMENT=_F( LIST_INST = TEMLI),
 ####CDURAND            ARCHIVAGE=_F(  LIST_ARCH = INLI),
-                       NEWMARK=_F() 
+                       NEWTON=_F(REAC_INCR=0,
+                                 MATRICE='ELASTIQUE',
+                                 ),
+                       NEWMARK=_F(), 
                         )
 
 DXNA16=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
@@ -197,7 +314,7 @@ DXNA43=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
 TEST_FONCTION(VALEUR=(   _F( 
                    FONCTION = DXNA16,
                    VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.92640E-04,
+                   VALE_REFE = 9.92620E-04,
                    CRITERE = 'RELATIF',
                    PRECISION = 3.E-3, 
                    REFERENCE = 'NON_REGRESSION'),
@@ -213,7 +330,7 @@ TEST_FONCTION(VALEUR=(   _F(
 TEST_FONCTION(VALEUR=(   _F( 
                    FONCTION = DXNA18,
                    VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.92182E-04,
+                   VALE_REFE = 9.92161E-04,
                    CRITERE = 'RELATIF',
                    PRECISION = 3.E-3, 
                    REFERENCE = 'NON_REGRESSION'),

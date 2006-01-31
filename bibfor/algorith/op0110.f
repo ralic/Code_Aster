@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C
          CALL PALIM2 ( ' ', 1, NOMA, NOMVEI, NOMVEK, NBMA )
          NBMA = NBMA - 1
          IF ( NBMA .EQ. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'PAS DE MAILLES FOURNIES')
+            CALL UTMESS('F','OP0110','PAS DE MAILLES FOURNIES')
          ENDIF
          CALL SQU110 ( NOMRES,NOMA,NBMA,ZK8(JNOM),TRANS,ANGL)
       ENDIF

@@ -4,7 +4,7 @@
      >                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,6 +67,8 @@ C
 C
       INTEGER NTYMAX
       PARAMETER (NTYMAX = 48)
+      INTEGER NNOMAX
+      PARAMETER (NNOMAX=27)
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
       INTEGER EDLEAJ
@@ -79,8 +81,8 @@ C
       INTEGER EDMODE, CODRET
       INTEGER NBTYP,  FID 
       INTEGER NMATYP(NTYMAX), NNOTYP(NTYMAX), TYPGEO(NTYMAX)
-      INTEGER RENUMD(NTYMAX)
-      INTEGER IAUX, JAUX
+      INTEGER RENUMD(NTYMAX),MODNUM(NTYMAX),NUMNOA(NTYMAX,NNOMAX)
+      INTEGER IAUX, JAUX, NUANOM(NTYMAX,NNOMAX)
       INTEGER LNOMAM
       INTEGER IFM, NIVINF
 C
@@ -117,7 +119,9 @@ C
          NOFIMD = KFIC(1:200)
       ENDIF
 C
-      WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+      IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+      ENDIF
 C
 C 1.3. ==> NOM DU MAILLAGE
 C
@@ -207,16 +211,19 @@ C          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 C          . VERIF COHERENCE AVEC LE CATALOGUE
 C
       CALL LRMTYP ( NBTYP, NOMTYP,
-     >              NNOTYP, TYPGEO, RENUMD )
+     >              NNOTYP, TYPGEO, RENUMD,
+     >              MODNUM, NUANOM, NUMNOA )
 C
 C====
 C 3. LA DESCRIPTION
 C====
 C
       IF ( EDMODE.EQ.EDCREA ) THEN
+C
       CALL IRMDES ( FID,
      >              TITRE, NBTITR,
      >              INFMED )
+C
       ENDIF
 C
 C====
@@ -239,7 +246,7 @@ C
      >              SAUX06,
      >              NBTYP, TYPGEO, NOMTYP, NNOTYP, RENUMD,
      >              NMATYP,
-     >              INFMED )
+     >              INFMED, MODNUM, NUANOM ) 
 C
 C====
 C 6. LES FAMILLES

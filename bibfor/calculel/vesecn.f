@@ -4,7 +4,7 @@ C     VERIFICATION DE LA SENSIBILITE POUR CALC_NO
 C     **                 **               *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/12/2001   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C
 C
 C    ------------------------------------------------------------------
       ELSE
-        CALL UTMESS ( 'A', NOMCMD, 'PROGRAMME '//NOMPRO )
-        CALL UTMESS ( 'F', NOMCMD, 'OPTION INEXISTANTE : '//OPTION )
+        CALL UTMESS ( 'A', 'VESECN', 'PROGRAMME '//NOMPRO )
+        CALL UTMESS ( 'F', 'VESECN', 'OPTION INEXISTANTE : '//OPTION )
       ENDIF
 C
 C====
@@ -89,14 +89,14 @@ C====
 C
       IF ( CODRET.NE.0 ) THEN
 C
-      CALL UTMESS ( 'A', NOMCMD, 'OPTION : '//OPTION )
+      CALL UTMESS ( 'A', 'VESECN', 'OPTION : '//OPTION )
       IF ( NOPASE.NE.' ' ) THEN
-        CALL UTMESS ('A', NOMCMD, 'PARAMETRE SENSIBLE '//NOPASE)
+        CALL UTMESS ('A', 'VESECN', 'PARAMETRE SENSIBLE '//NOPASE)
       ENDIF
 C
       IF ( CODRET.EQ.1 ) THEN
 C
-        CALL UTMESS ('A', NOMCMD, 'CALCUL NON DISPONIBLE' )
+        CALL UTMESS ('A', 'VESECN', 'CALCUL NON DISPONIBLE' )
 C
       ENDIF
 C

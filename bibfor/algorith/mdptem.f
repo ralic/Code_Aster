@@ -8,7 +8,7 @@
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
          IF (NT.EQ.0) THEN
             CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1, TRAN,NR)
             IF (NR.EQ.0) THEN
-               CALL UTMESS('I',NOMCMD,' INSTANT INITIAL NON TROUVE '//
+             CALL UTMESS('I','MDPTEM',' INSTANT INITIAL NON TROUVE '//
      +                                ' VALEUR PRISE : 0 ')
             ELSE
                CALL JEVEUO(TRAN//'           .INST' ,'E',JINST)

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,12 +73,12 @@ C
          CALL RSORAC ( RESU1, 'INST', IBID, INST1, K8B, CBID, PREC,
      +                 CRIT, IORD1, 1, NBTROU )
          IF ( NBTROU .EQ. 0 ) THEN
-            CALL UTDEBM('F',NOMCMD,'L''INSTANT ')
+            CALL UTDEBM('F','CRPERM','L''INSTANT ')
             CALL UTIMPR('S',' DE CALCUL ', 1, INST1 )
             CALL UTIMPK('S',' N''EXISTE PAS DANS ', 1, RESU1 )
             CALL UTFINM()
          ELSEIF ( NBTROU .NE. 1 ) THEN
-            CALL UTDEBM('F',NOMCMD,'PLUSIEURS NUMEROS D''ORDRE ')
+            CALL UTDEBM('F','CRPERM','PLUSIEURS NUMEROS D''ORDRE ')
             CALL UTIMPR('S','TROUVES POUR L''INSTANT ', 1, INST1 )
             CALL UTFINM()
          ENDIF
@@ -104,7 +104,7 @@ C --- VERIFICATIONS SUPPLEMENTAIRES :
 C     -----------------------------
 C
       IF ( RESU2 .NE. RESU3 ) THEN
-         CALL UTDEBM('F',NOMCMD,'CETTE COMMANDE EST REENTRANTE :')
+         CALL UTDEBM('F','CRPERM','CETTE COMMANDE EST REENTRANTE :')
          CALL UTIMPK('L','   SD RESULTAT EN SORTIE    ', 1, RESU3 )
          CALL UTIMPK('L','   SD RESULTAT "RESU_FINAL" ', 1, RESU2 )
          CALL UTFINM()
@@ -112,7 +112,7 @@ C
 C
       CALL JELIRA ( RESU2//'           .ORDR', 'LONUTI', IBID, K8B)
       IF ( IBID .NE. 1 ) THEN
-         CALL UTDEBM('F',NOMCMD,'LA SD ')
+         CALL UTDEBM('F','CRPERM','LA SD ')
          CALL UTIMPK('S','RESULTAT EN SORTIE ', 1, RESU2 )
          CALL UTIMPK('S',' DOIT CONTENIR QU''UN SEUL NUME_ORDRE',0,K8B)
          CALL UTFINM()
@@ -121,7 +121,7 @@ C
       DO 100 IC = 1 , NBCHAM
          CALL RSEXCH ( RESU1, CHAM(IC), IORD1, CH1, IRET )
          IF ( IRET .NE. 0 ) THEN
-            CALL UTDEBM('F',NOMCMD,'MANQUE ')
+            CALL UTDEBM('F','CRPERM','MANQUE ')
             CALL UTIMPK('S','LE CHAMP ', 1, CHAM(IC) )
             CALL UTIMPK('S',' DANS LA SD RESULTAT ', 1, RESU1 )
             CALL UTIMPI('S',' POUR LE NUME_ORDRE ', 1, IORD1 )
@@ -129,7 +129,7 @@ C
          ENDIF
          CALL RSEXCH ( RESU2, CHAM(IC), IORD2, CH2, IRET )
          IF ( IRET .NE. 0 ) THEN
-            CALL UTDEBM('F',NOMCMD,'MANQUE ')
+            CALL UTDEBM('F','CRPERM','MANQUE ')
             CALL UTIMPK('S','LE CHAMP ', 1, CHAM(IC) )
             CALL UTIMPK('S',' DANS LA SD RESULTAT ', 1, RESU2 )
             CALL UTIMPI('S',' POUR LE NUME_ORDRE ', 1, IORD2 )

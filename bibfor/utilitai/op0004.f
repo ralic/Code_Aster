@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2005   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       ENDIF
 C
       IF (NBPARA.NE.NBFONC) THEN
-         CALL UTDEBM('F',NOMCMD//'(ERREUR.01)',' ')
+         CALL UTDEBM('F','OP0004'//'(ERREUR.01)',' ')
          CALL UTIMPI('L','LE NOMBRE DE PARAMETRES ',1,NBPARA)
          CALL UTIMPI('S',' EST DIFFERENT DU NOMBRE DE FONCTIONS ',
      +                                                     1,NBFONC)
@@ -79,7 +79,7 @@ C        VERIF QUE LES PARA SONT STRICT CROISSANTS
          IRET=2
          CALL FOVERF(ZR(LPAR),NBPARA,IRET)
          IF(IRET.NE.2)THEN
-            CALL UTMESS('F',NOMCMD,'PARAMETRES NON CROISSANTS')
+            CALL UTMESS('F','OP0004','PARAMETRES NON CROISSANTS')
          ENDIF
          CALL JEDETR('&&OP0004.TEMP.PARA')
       ENDIF
@@ -89,7 +89,7 @@ C
             CALL GETVR8('DEFI_FONCTION','VALE',IOCC,1,0,RBID,NV)
             NV = -NV
             IF (MOD(NV,2) .NE. 0 ) THEN
-               CALL UTDEBM('F',NOMCMD//'(ERREUR.04)',
+               CALL UTDEBM('F','OP0004'//'(ERREUR.04)',
      +                  'IL N''Y A PAS UN NOMBRE PAIR DE VALEURS')
                CALL UTIMPI('S',', "DEFI_FONCTION" OCCURENCE ',1,IOCC)
                CALL UTFINM()
@@ -107,7 +107,7 @@ C              VERIF QUE LES PARA SONT STRICT CROISSANTS
                IRET=2
                CALL FOVERF(ZR(LPAR2),NBCOUP,IRET)
                IF(IRET.NE.2) THEN
-                  CALL UTMESS('F',NOMCMD,'PARAMETRES NON CROISSANTS')
+                  CALL UTMESS('F','OP0004','PARAMETRES NON CROISSANTS')
                ENDIF
                CALL JEDETR('&&OP0004.TEMP.PARA')
                CALL JEDETR('&&OP0004.TEMP.PAR2')
@@ -169,13 +169,13 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
                IF(IRET2.EQ.0)THEN
                   TYPFON='FONCTION'
                   CALL UTTRIF(ZR(LVAL),NBCOUP,TYPFON)
-                  CALL UTDEBM('A',NOMCMD,'LES ABSCISSES DE LA FONCTION')
+                CALL UTDEBM('A','OP0004','LES ABSCISSES DE LA FONCTION')
                   CALL UTIMPK('S',' ',1,NOMFON)
                   CALL UTIMPK('L','ONT ETE REORDONNEES.',0,K8B)
                   CALL UTFINM()
                ELSEIF(IRET2.LT.0)THEN
                   CALL ORDON1(ZR(LVAL),NBCOUP)
-          CALL UTDEBM('A',NOMCMD,'L ORDRE DES ABSCISSES DE LA FONCTION')
+        CALL UTDEBM('A','OP0004','L ORDRE DES ABSCISSES DE LA FONCTION')
                   CALL UTIMPI('S',' NUMERO ',1,IFONC)
                   CALL UTIMPK('L','A ETE INVERSE .',0,K8B)
                   CALL UTFINM()
@@ -201,11 +201,11 @@ C     --- ON ORDONNE LA NAPPE SUIVANT LES PARAMETRES CROISSANTS ---
           IRET=0
           CALL FOORDN(ZR(LPAR),ZK24(LNOMF),NBPARA,NBFONC,IRET)
           IF (IRET.NE.0 .AND. .NOT. DEFONC) THEN
-             CALL UTMESS('F',NOMCMD//'(ERREUR.05)',
+             CALL UTMESS('F','OP0004'//'(ERREUR.05)',
      +                       'DEUX FONCTIONS DIFFERENTES '//
      +                       'AFFECTEE A LA MEME VALEUR DE PARAMETRE.')
           ELSEIF (IRET.NE.0 ) THEN
-             CALL UTMESS('F',NOMCMD//'(ERREUR.06)',
+             CALL UTMESS('F','OP0004'//'(ERREUR.06)',
      +                       'DEUX LISTES DE VALEURS DIFFERENTES '//
      +                       'AFFECTEE A LA MEME VALEUR DE PARAMETRE.')
           ENDIF

@@ -13,7 +13,7 @@
       LOGICAL            LAMOR,LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,7 +158,7 @@ C
       CHARACTER*8   NOMGR1,NOMGR2,REPERE,NOEUD(3),KBID,MAMAI
       CHARACTER*10  MOTFAC
       CHARACTER*14  NUME1,NUME2
-      CHARACTER*16  NOMCMD,TYPNUM,K16B
+      CHARACTER*16  TYPNUM,K16B
       CHARACTER*24  K24REP,MDGENE,MDSSNO,NUMERO,K24DIS
       CHARACTER*32  JEXNUM,JEXNOM
 C
@@ -419,7 +419,6 @@ C
       IER = 0
       RAD = R8DGRD()
       ZERO = 0.D0
-      NOMCMD = 'MDCHOC'
 C
       CALL WKVECT('&&MDCHOC.DDLCHO','V V I',NBNLI*6,JDDL)
 C
@@ -437,26 +436,26 @@ C
         CALL POSDDL('NUME_DDL',NOECHO(I,3),NOECHO(I,1),'DX',NUNOE,NUDDL)
         IF (NUNOE.EQ.0) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LE NOEUD '//NOECHO(I,1)//
+          CALL UTMESS('E','MDCHOC','LE NOEUD '//NOECHO(I,1)//
      +           ' N''EST PAS UN NOEUD DU MAILLAGE '//NOECHO(I,4))
         ENDIF
         IF (NUDDL.EQ.0) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'ON N''A PAS TROUVE LE DDL "DX" '//
+          CALL UTMESS('E','MDCHOC','ON N''A PAS TROUVE LE DDL "DX" '//
      +                           'POUR LE NOEUD '//NOECHO(I,1))
         ENDIF
         ZI(JDDL-1+6*(I-1)+1) = NUDDL
         CALL POSDDL('NUME_DDL',NOECHO(I,3),NOECHO(I,1),'DY',NUNOE,NUDDL)
         IF (NUDDL.EQ.0) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'ON N''A PAS TROUVE LE DDL "DY" '//
+          CALL UTMESS('E','MDCHOC','ON N''A PAS TROUVE LE DDL "DY" '//
      +                           'POUR LE NOEUD '//NOECHO(I,1))
         ENDIF
         ZI(JDDL-1+6*(I-1)+2) = NUDDL
         CALL POSDDL('NUME_DDL',NOECHO(I,3),NOECHO(I,1),'DZ',NUNOE,NUDDL)
         IF (NUDDL.EQ.0) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'ON N''A PAS TROUVE LE DDL "DZ" '//
+          CALL UTMESS('E','MDCHOC','ON N''A PAS TROUVE LE DDL "DZ" '//
      +                           'POUR LE NOEUD '//NOECHO(I,1))
         ENDIF
         ZI(JDDL-1+6*(I-1)+3) = NUDDL
@@ -485,12 +484,12 @@ C
      &       NUNOE,NUDDL)
           IF (NUNOE.EQ.0) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LE NOEUD '//NOECHO(I,5)//
+            CALL UTMESS('E','MDCHOC','LE NOEUD '//NOECHO(I,5)//
      +          ' N''EST PAS UN NOEUD DU MAILLAGE '//NOECHO(I,8))
           ENDIF
           IF (NUDDL.EQ.0) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'ON N''A PAS TROUVE LE DDL '//
+            CALL UTMESS('E','MDCHOC','ON N''A PAS TROUVE LE DDL '//
      +                         '"DX" POUR LE NOEUD '//NOECHO(I,5))
           ENDIF
           ZI(JDDL-1+6*(I-1)+4) = NUDDL
@@ -498,7 +497,7 @@ C
      &                 NUNOE,NUDDL)
           IF (NUDDL.EQ.0) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'ON N''A PAS TROUVE LE DDL '//
+            CALL UTMESS('E','MDCHOC','ON N''A PAS TROUVE LE DDL '//
      +                         '"DY" POUR LE NOEUD '//NOECHO(I,5))
           ENDIF
           ZI(JDDL-1+6*(I-1)+5) = NUDDL
@@ -506,7 +505,7 @@ C
      &                NUNOE,NUDDL)
           IF (NUDDL.EQ.0) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'ON N''A PAS TROUVE LE DDL '//
+            CALL UTMESS('E','MDCHOC','ON N''A PAS TROUVE LE DDL '//
      +                         '"DZ" POUR LE NOEUD '//NOECHO(I,5))
           ENDIF
           ZI(JDDL-1+6*(I-1)+6) = NUDDL
@@ -918,7 +917,7 @@ C          DETERMINATION DES AXES LOCAUX
         SING = PARCHO(I,20)
         COSG = PARCHO(I,21)
         IF (INFO.EQ.2) THEN
-          CALL UTDEBM('I',NOMCMD,' INFOS NOEUDS DE CHOC')
+          CALL UTDEBM('I','MDCHOC',' INFOS NOEUDS DE CHOC')
           CALL UTIMPI('L','LIEU DE CHOC  : ',1,I)
           CALL UTIMPK('L','NOEUD DE CHOC  : ',1,NOECHO(I,1))
           IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
@@ -1069,7 +1068,7 @@ C
 C ----- CALCUL PAR SOUS-STRUCTURATION
         ELSEIF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LE MULTI-APPUI + SOUS-'//
+          CALL UTMESS('E','MDCHOC','LE MULTI-APPUI + SOUS-'//
      +   'STRUCTURATION N''EST PAS DEVELOPPE - BON COURAGE')
         ENDIF
 C
@@ -1084,7 +1083,7 @@ C ---- VERIFICATION DE COHERENCE ENTRE CHOC ET FLAMBAGE ---
             IF (J.LE. NBNLI) THEN
                IF (NOECHO(I,1).NE.NOECHO(J,1)) GOTO 130
                IF (NOECHO(I,5).NE.NOECHO(J,5)) GOTO 130
-               CALL UTMESS('A',NOMCMD,'CONFLIT ENTRE CHOC ET '//
+               CALL UTMESS('A','MDCHOC','CONFLIT ENTRE CHOC ET '//
      &                    'FLAMBAGE AU MEME LIEU DE CHOC : LE '//
      &                    'CALCUL SERA DE TYPE FLAMBAGE')
                PARCHO(I,2) = 0.D0

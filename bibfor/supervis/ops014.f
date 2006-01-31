@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,6 @@ C ======================================================================
 C     PROCEDURE "INCLUDE_MATERIAU" PERMET LE DEBRANCHEMENT DE LA LECTURE
 C     VERS UNE AUTRE UNITE LOGIQUE VERS UN FICHIER DU CATALOGUE MATERIAU
 C     ASTER.
-C     ------------------------------------------------------------------
-C     ATTENTION : CETTE OPS EST A FAIRE EVOLUER EN PARALLELE 
-C                 AVEC INCLUDE (OPS001)
 C     ------------------------------------------------------------------
       CHARACTER*16     CBID, NOMCMD
       CHARACTER*32     NAME

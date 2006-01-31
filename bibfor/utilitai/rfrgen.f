@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
 C
       CALL JEEXIN(RESU//'.'//NOMCHA(1:4),IRET)
       IF (IRET.EQ.0)  THEN
-         CALL UTMESS('F',NOMCMD,'LE CHAMP '//NOMCHA//' N''EXISTE'//
+         CALL UTMESS('F','RFRGEN','LE CHAMP '//NOMCHA//' N''EXISTE'//
      +                                       ' PAS DANS LE RESU_GENE.')
       ENDIF
       CALL JEVEUO(RESU//'.'//NOMCHA(1:4),'L',ITRESU)
@@ -108,7 +108,7 @@ C
       KINST = '&&RFRGEN.INSTANT'
       CALL RSTRAN (INTRES,RESU,' ',1,KINST,KNUME,NBORDR,IE)
       IF (IE.NE.0) THEN
-         CALL UTMESS('F',NOMCMD,'PROBLEME(S) RENCONTRE(S) LORS'//
+         CALL UTMESS('F','RFRGEN','PROBLEME(S) RENCONTRE(S) LORS'//
      +                                ' DE LA LECTURE DES INSTANTS.' )
       ENDIF
       CALL JEEXIN(KINST,IRET)
@@ -134,7 +134,7 @@ C
          CALL JEVEUO(RESU//'.PTEM','L',IPAS)
          CALL JELIRA(RESU//'.PTEM','LONMAX',NBPAS,K8B)
          IF (NBPAS.LE.1) THEN
-            CALL UTMESS('F',NOMCMD,'PROBLEME RECUP DE PTEM'//
+            CALL UTMESS('F','RFRGEN','PROBLEME RECUP DE PTEM'//
      +                           ' UNIQUEMENT POUR METHODE ADAPT' )
          ENDIF
          CALL WKVECT('&&RFRGEN.DT','V V R',NBPAS,LPAS)
@@ -180,7 +180,7 @@ C
      +                   NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
            CALL JEVEUO('&&RFRGEN.VECT.PROPRE','L',IDBASE)
            IF ( TYPE .NE. 'R' ) THEN
-              CALL UTMESS('F',NOMCMD,
+              CALL UTMESS('F','RFRGEN',
      +               ' ON NE TRAITE PAS LE TYPE DE MODES "'//TYPE//'".')
            ENDIF
 C
@@ -208,12 +208,12 @@ C
          CALL POSDDL('NUME_DDL',NUME,NOEUD,CMP,INOEUD,IDDL)
          IF ( INOEUD .EQ. 0 ) THEN
             LG1 = LXLGUT(NOEUD)
-            CALL UTMESS('F',NOMCMD,
+            CALL UTMESS('F','RFRGEN',
      +                  'LE NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
          ELSEIF ( IDDL .EQ. 0 ) THEN
             LG1 = LXLGUT(NOEUD)
             LG2 = LXLGUT(CMP)
-            CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//'" '//
+          CALL UTMESS('F','RFRGEN','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
      +                  'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
          ENDIF
 C
@@ -223,7 +223,7 @@ C        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
          IF (NFONCT.NE.0) THEN
             IF (NOMCHA(1:4).NE.'ACCE') THEN
 C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
-              CALL UTMESS('F',NOMCMD,'ACCE_MONO_APPUI EST COMPATIBLE '//
+            CALL UTMESS('F','RFRGEN','ACCE_MONO_APPUI EST COMPATIBLE '//
      +                    'UNIQUEMENT AVEC UN CHAMP DE TYPE : ACCE ')
                GOTO 9999
             ENDIF

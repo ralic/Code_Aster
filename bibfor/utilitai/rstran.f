@@ -4,7 +4,7 @@
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C     ------------------------------------------------------------------
       CALL JEEXIN(RESU//'.INST',IRET)
       IF (IRET.EQ.0) THEN
         IER = IER + 1
-        CALL UTMESS('E',NOMCMD,'PAS DE LISTE D''INSTANTS '//
+        CALL UTMESS('E','RSTRAN','PAS DE LISTE D''INSTANTS '//
      &              'DANS LE RESU_GENE.')
         GO TO 100
       END IF
@@ -109,7 +109,7 @@ C     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
             IF (ZI(JBID+I).EQ.ZI(JORDR+IORD)) GO TO 30
    20     CONTINUE
           IER = IER + 110
-          CALL UTDEBM('A',NOMCMD,'PAS NUME_ORDRE TROUVE POUR ')
+          CALL UTDEBM('A','RSTRAN','PAS NUME_ORDRE TROUVE POUR ')
           CALL UTIMPI('S','LE NUMERO ',1,ZI(JBID+I))
           CALL UTFINM()
           GO TO 40
@@ -149,13 +149,13 @@ C     --- RECHERCHE A PARTIR D'UN INSTANT ---
      &              NBORDR,NBTROU,NUTROU,1)
         IF (NBTROU.EQ.0) THEN
           IER = IER + 110
-          CALL UTDEBM('A',NOMCMD,'PAS DE CHAMPS TROUVE POUR ')
+          CALL UTDEBM('A','RSTRAN','PAS DE CHAMPS TROUVE POUR ')
           CALL UTIMPR('S','L''INSTANT ',1,TUSR)
           CALL UTFINM()
           GO TO 70
         ELSE IF (NBTROU.NE.1) THEN
           IER = IER + 100
-          CALL UTDEBM('F',NOMCMD,'  PLUSIEURS PAS DE TEMPS TROUVES ')
+          CALL UTDEBM('F','RSTRAN','  PLUSIEURS PAS DE TEMPS TROUVES ')
           CALL UTIMPI('L',' DANS L''INTERVALLE DE PRECISION',0,I)
           CALL UTIMPR('S',' AUTOUR DE L''INSTANT ',1,TUSR)
           CALL UTIMPI('L','NOMBRE DE PAS DE TEMPS TROUVES ',1,-NBTROU)

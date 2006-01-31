@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,7 @@ C     --- STURM AVEC LA BORNE MINIMALE ---
            ENDIF
            ICOMP = ICOMP + 1
            IF (ICOMP.GT.NBRSS) THEN
-              CALL UTMESS('A',NOMCMD,'TROP DE RE-AJUSTEMENT '//
+              CALL UTMESS('A','OP0032','TROP DE RE-AJUSTEMENT '//
      +        'DE LA BORNE MINIMALE.')
            ELSE
               IF (TYPRES.EQ.'DYNAMIQUE') THEN
@@ -189,7 +189,7 @@ C     --- STURM AVEC FREQ_MAX ---
             ENDIF
             ICOMP = ICOMP + 1
             IF (ICOMP.GT.NBRSS) THEN
-               CALL UTMESS('A',NOMCMD,'TROP DE RE-AJUSTEMENT '//
+               CALL UTMESS('A','OP0032','TROP DE RE-AJUSTEMENT '//
      +         'DE LA BORNE MAXIMALE.')
             ELSE
                IF (TYPRES.EQ.'DYNAMIQUE') THEN

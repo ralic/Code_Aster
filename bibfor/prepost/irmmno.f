@@ -2,7 +2,7 @@
      >                    NBNOEU, COORDO, NOMNOE,
      >                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,17 +114,16 @@ C
       UNICOO(3) = 'INCONNUE        '
 C
       IF ( INFMED.GT.1 ) THEN
-        CALL UTMESS ('I',NOMPRO,
-     >               'COORDONNEE 1 : '//NOMCOO(1)//', '//UNICOO(1))
+        WRITE (IFM,2001) 1, NOMCOO(1), UNICOO(1)
         IF ( NDIM.GE.2 ) THEN
-          CALL UTMESS ('I',NOMPRO,
-     >                 'COORDONNEE 2 : '//NOMCOO(2)//', '//UNICOO(2))
+          WRITE (IFM,2001) 2, NOMCOO(2), UNICOO(2)
         ENDIF
         IF ( NDIM.GE.3 ) THEN
-          CALL UTMESS ('I',NOMPRO,
-     >                 'COORDONNEE 3 : '//NOMCOO(3)//', '//UNICOO(3))
+          WRITE (IFM,2001) 3, NOMCOO(3), UNICOO(3)
         ENDIF
+        WRITE (IFM,*) ' '
       ENDIF
+ 2001 FORMAT('COORDONNEE',I2,' : ',A16,', ',A16)
 C
 C 2.2. ==> ECRITURE
 C 2.2.1. ==> EN DIMENSION 3, ON PASSE LE TABLEAU DES COORDONNEES

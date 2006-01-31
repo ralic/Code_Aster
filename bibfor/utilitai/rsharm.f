@@ -4,7 +4,7 @@
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/08/2002   AUTEUR BOYERE E.BOYERE 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C     ------------------------------------------------------------------
       CALL JEEXIN(RESU//'.FREQ',IRET)
       IF (IRET.EQ.0) THEN
         IER = IER + 1
-        CALL UTMESS('E',NOMCMD,'PAS DE LISTE DE FREQUENCES '//
+        CALL UTMESS('E','RSHARM','PAS DE LISTE DE FREQUENCES '//
      &              'DANS LE RESU_GENE.')
         GO TO 60
       END IF
@@ -124,13 +124,13 @@ C     --- RECHERCHE A PARTIR D'UNE FREQUENCE ---
      &              NBORDR,NBTROU,NUTROU,1)
         IF (NBTROU.EQ.0) THEN
           IER = IER + 110
-          CALL UTDEBM('A',NOMCMD,'PAS DE CHAMPS TROUVE POUR ')
+          CALL UTDEBM('A','RSHARM','PAS DE CHAMPS TROUVE POUR ')
           CALL UTIMPR('S','LA FREQUENCE ',1,TUSR)
           CALL UTFINM()
           GO TO 40
         ELSE IF (NBTROU.NE.1) THEN
           IER = IER + 100
-          CALL UTDEBM('F',NOMCMD,'PLUSIEURS CHAMPS TROUVES ')
+          CALL UTDEBM('F','RSHARM','PLUSIEURS CHAMPS TROUVES ')
           CALL UTIMPR('S','POUR LA FREQUENCE ',1,TUSR)
           CALL UTIMPI('L','NOMBRE DE CHAMPS TROUVES ',1,-NBTROU)
           CALL UTFINM()

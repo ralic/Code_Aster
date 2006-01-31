@@ -3,7 +3,7 @@
       CHARACTER*(*)       SPECTR, SORTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -88,7 +88,7 @@ C
             IF ( ABS(ACLI-ACBR) .LT. 1.D-09 ) GOTO 10
             IF ( ACLI .LT. ACBR ) THEN
                IF (.NOT.BUG) THEN
-                  CALL UTDEBM('A',NOMCMD,
+                  CALL UTDEBM('A','FOLIE5',
      +            '*** SPECTRE LISSE INFERIEUR AU SPECTRE BRUT ***')
                ENDIF
                CALL UTIMPR('L','POUR LA FREQUENCE ',1,FR)
@@ -138,7 +138,7 @@ C
                IF ( ABS(ACLI-ACBR) .LT. 1.D-09 ) GOTO 22
                IF ( ACLI .LT. ACBR ) THEN
                   IF (.NOT.BUG) THEN
-                     CALL UTDEBM('A',NOMCMD,
+                     CALL UTDEBM('A','FOLIE5',
      +            '*** SPECTRE LISSE INFERIEUR AU SPECTRE BRUT ***')
                      CALL UTIMPR('S',' AMORTISSEMENT: ',1,VALEP(1))
                   ENDIF

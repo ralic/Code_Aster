@@ -9,7 +9,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     --- CONTROLE PREALABLE ---
       DO 10 IMODE = 1, NBMODE
          JMODE = RESUFI(IMODE,1)
          IF ( JMODE .LT. 1 .AND. INEG .GT. 0 ) THEN
-            CALL UTMESS('A',NOMCMD//'.VPSTOR',
+            CALL UTMESS('A','VPSTOR'//'.VPSTOR',
      +                  'LA POSITION MODALE D''UNE DES FREQUENCES'//
      +                  ' EST NEGATIVE OU NULLE, VOTRE SYSTEME '//
      +                  'MATRICIEL EST SUREMENT FORTEMENT '//
@@ -149,7 +149,7 @@ C        --- VECTEUR PROPRE ---
         ELSEIF ( IER .EQ. 100 .AND. LREFD ) THEN
           CALL VTCREM (CHAMNO, RAIDE, 'G', TYPE(1:1) )
         ELSE
-          CALL UTDEBM('F',NOMCMD//'.VPSTOR','APPEL ERRONE')
+          CALL UTDEBM('F','VPSTOR'//'.VPSTOR','APPEL ERRONE')
           CALL UTIMPI('L','MODE NUMERO',1,KMODE)
           CALL UTIMPI('L','POSITION MODALE',1,JMODE)
           CALL UTIMPI('L','CODE RETOUR DE RSEXCH :',1,IER)

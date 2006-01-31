@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,14 +87,14 @@ C
          CALL GETVTX(' ','NOM_CMP_I',1,1,0,K8B,NBCMPI)
          CALL GETVTX(' ','NOM_CMP_J',1,1,0,K8B,NBCMPJ)
          IF ( NBCMPI .NE. NBCMPJ ) THEN
-            CALL UTMESS('F',NOMCMD,'IL FAUT AUTANT DE CMP EN I ET J')
+            CALL UTMESS('F','OP0132','IL FAUT AUTANT DE CMP EN I ET J')
          ENDIF
          IF ( NBCMPI .NE. NBINDI ) THEN
-         CALL UTMESS('F',NOMCMD,'IL FAUT AUTANT DE CMP QUE DE NOEUD')
+         CALL UTMESS('F','OP0132','IL FAUT AUTANT DE CMP QUE DE NOEUD')
          ENDIF
       ENDIF
       IF ( NBINDJ .NE. NBINDI ) THEN
-         CALL UTMESS('F',NOMCMD,'IL FAUT AUTANT D INDICES EN I ET J')
+         CALL UTMESS('F','OP0132','IL FAUT AUTANT D INDICES EN I ET J')
       ENDIF
 C
       CALL INFMAJ
@@ -416,7 +416,7 @@ C
                INDJ = ZI(IAINDJ-1+I2)
                IF ( INDI .GT. INDJ ) THEN
           CMESS='LA MATRICE EST TRIANGULAIRE SUPERIEUR-INVERSION INDICE'
-                 CALL UTMESS ('A',NOMCMD,CMESS)
+                 CALL UTMESS ('A','OP0132',CMESS)
                   IPASS = INDI
                   INDI  = INDJ
                   INDJ  = IPASS

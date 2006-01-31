@@ -20,7 +20,7 @@
       LOGICAL      FONACT(ZFON)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 31/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,7 +96,24 @@ C -- INITIALISATIONS UTILES
       K13BID = ' '   
       K24BID = ' '   
 
-C -- INITIALISATION DES INDICATEURS DE CONVERGENCE DU CONTACT
+C -- INITIALISATION DES INDICATEURS DE CONVERGENCE 
+C              LICCVG(1) : PILOTAGE
+C                        =  0 CONVERGENCE
+C                        =  1 PAS DE CONVERGENCE
+C                        = -1 BORNE ATTEINTE
+C              LICCVG(2) : INTEGRATION DE LA LOI DE COMPORTEMENT
+C                        = 0 OK
+C                        = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
+C                        = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
+C              LICCVG(3) : TRAITEMENT DU CONTACT 
+C                        = 0 OK
+C                        = 1 ECHEC (ITER > 2*NBLIAI+1)
+C              LICCVG(4) : MATRICE DE CONTACT
+C                        = 0 OK
+C                        = 1 MATRICE DE CONTACT SINGULIERE
+C              LICCVG(5) : MATRICE DU SYSTEME (MATASS)
+C                        = 0 OK
+C                        = 1 MATRICE SINGULIERE
       LICCVG(1) = 0
       LICCVG(2) = 0
       LICCVG(3) = 0

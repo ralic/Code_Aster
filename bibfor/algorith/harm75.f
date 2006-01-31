@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,7 +190,7 @@ C
             DO 32 ICH = 1,NBCHAM
                CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
                IF ( IRET .EQ. 0 ) THEN
-                 CALL UTMESS('A',NOMCMD,CHAMNO//'CHAM_NO DEJA EXISTANT')
+               CALL UTMESS('A','HARM75',CHAMNO//'CHAM_NO DEJA EXISTANT')
                ELSEIF ( IRET .EQ. 100 ) THEN
                  IF (MODE.EQ.K8BID) THEN
                    CALL VTCREB(CHAMNO,NUMDDL,'G','C',NEQ)
@@ -198,7 +198,7 @@ C
                    CALL VTCREA(CHAMNO,CREFE,'G','C',NEQ)
                  ENDIF
                ELSE
-                  CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+                  CALL UTMESS('F','HARM75','APPEL ERRONE')
                ENDIF
                CHAMNO(20:24) = '.VALE'
                CALL JEVEUO(CHAMNO,'E',LVALE)

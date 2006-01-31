@@ -8,7 +8,7 @@
       REAL*8        DEP0(*),VIT0(*),ACC0(*),TEMPS                 
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,12 +78,12 @@ C
              IF ( TYPE(ITYPE) .EQ. '    ' ) GOTO 44
              CALL RSEXCH(NOMRES,TYPE(ITYPE),IARCHI,CHAMNO,IER)
              IF ( IER .EQ. 0 ) THEN
-                CALL UTMESS('A',NOMCMD,
+                CALL UTMESS('A','DLARCH',
      &                           CHAMNO//'CHAM_NO DEJA EXISTANT')
              ELSE IF ( IER .EQ. 100 ) THEN
                 CALL VTCREM(CHAMNO,MASSE,'G','R')
              ELSE
-                CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+                CALL UTMESS('F','DLARCH','APPEL ERRONE')
              ENDIF
              CHAMNO(20:24)  = '.VALE'
              CALL JEVEUO(CHAMNO,'E',LVALE)

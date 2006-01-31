@@ -4,7 +4,7 @@
       CHARACTER*(*)                       CHAMNO(*) , NOMSYM
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
           ITYPE = 2
       ELSE
           CALL GETRES(K8B,K8B,NOMCMD)
-          CALL UTMESS('A',NOMCMD//'.IRMAD0',
+          CALL UTMESS('A','IRMAD0'//'.IRMAD0',
      +                'ON NE SAIT PAS IMPRIMER LES CHAMPS DE TYPE '//
      +                TYPE(1:1)//'   ON EST VRAIMENT DESOLE.')
           GOTO 9999
@@ -131,7 +131,7 @@ C
      +                 ZK8(IAD),NOMSYM,ZI(JNU) )
       ELSE
          CALL GETRES(K8B,K8B,NOMCMD)
-         CALL UTMESS('E',NOMCMD//'.IRMAD0','  DESOLE ON NE SAIT PAS '
+         CALL UTMESS('E','IRMAD0'//'.IRMAD0','  DESOLE ON NE SAIT PAS '
      +          //'ECRIRE LES CHAMPS AUX NOEUDS DE REPRESENTATION '
      +          //'CONSTANTE AU FORMAT IDEAS' )
       ENDIF

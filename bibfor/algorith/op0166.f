@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C
 C
           CALL PSRENC ( RESUIN, NOPASE, LERES0, IRET )
           IF ( IRET.NE.0 ) THEN
-            CALL UTMESS ('A', NOMCMD,
+            CALL UTMESS ('A', 'OP0166',
      >  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      >  //RESUIN//' ET AU PARAMETRE SENSIBLE '//NOPASE)
             GOTO 30

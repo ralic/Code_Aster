@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       NOCH19 = CHOU
 
       CALL GETVTX(' ','NOEUD_CMP',0,1,0,K8BID,N1)
-      IF (N1.NE.0 .AND. N1.NE.-2) CALL UTMESS('F',NOMCMD,
+      IF (N1.NE.0 .AND. N1.NE.-2) CALL UTMESS('F','CHPREC',
      &    'AVEC "NOEUD_CMP", IL FAUT DONNER '//
      &    'UN NOM ET UNE COMPOSANTE.')
       CALL GETVTX(' ','NOM_CHAM',0,1,1,NOMCH,N2)
@@ -191,7 +191,7 @@ C         ===============================
             CALL RSUTNU(LERESU,' ',0,KNUM,NBORDR,EPSI,CRIT,IRET)
             IF ((IRET.NE.0) .OR. (NBORDR.GT.1)) GO TO 10
             IF (NBORDR.EQ.0) THEN
-              CALL UTMESS('F',NOMCMD,'ON NE TROUVE AUCUN CHAMP.')
+              CALL UTMESS('F','CHPREC','ON NE TROUVE AUCUN CHAMP.')
             END IF
             CALL JEVEUO(KNUM,'L',JORDR)
             CALL RSEXCH(LERESU,NOMCH,ZI(JORDR),CHEXTR,IRET)
@@ -211,10 +211,10 @@ C
 
               CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
             ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
-              CALL UTMESS('F',NOMCMD,'LE NOM SYMBOLIQUE : '//NOMCH//
+              CALL UTMESS('F','CHPREC','LE NOM SYMBOLIQUE : '//NOMCH//
      &                    ' EST ILLICITE POUR CE RESULTAT')
             ELSE
-              CALL UTMESS('F',NOMCMD,'LE CHAMP CHERCHE N''A PAS '//
+              CALL UTMESS('F','CHPREC','LE CHAMP CHERCHE N''A PAS '//
      &                    'ENCORE ETE CALCULE.')
             END IF
             CALL JEDETR(KNUM)
@@ -225,7 +225,7 @@ C     --- ON NE FAIT QU'UNE EXTRACTION ---
 C         ===========================
       ELSE
         IF (INTERP(1:3).EQ.'LIN') THEN
-          CALL UTDEBM('F',NOMCMD,'INTERPOLATION INTERDITE')
+          CALL UTDEBM('F','CHPREC','INTERPOLATION INTERDITE')
           CALL UTIMPK('L','POUR UN RESULTAT DE TYPE : ',1,TYSD)
           CALL UTFINM()
         ELSE
@@ -235,7 +235,7 @@ C         ===========================
           CALL RSUTNU(LERESU,' ',0,KNUM,NBORDR,EPSI,CRIT,IRET)
           IF ((IRET.NE.0) .OR. (NBORDR.GT.1)) GO TO 10
           IF (NBORDR.EQ.0) THEN
-            CALL UTMESS('F',NOMCMD,'ON NE TROUVE AUCUN CHAMP.')
+            CALL UTMESS('F','CHPREC','ON NE TROUVE AUCUN CHAMP.')
           END IF
           CALL JEVEUO(KNUM,'L',JORDR)
           CALL RSEXCH(LERESU,NOMCH,ZI(JORDR),CHEXTR,IRET)
@@ -251,10 +251,10 @@ C         ===========================
 
             CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
           ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
-            CALL UTMESS('F',NOMCMD,'LE NOM SYMBOLIQUE : '//NOMCH//
+            CALL UTMESS('F','CHPREC','LE NOM SYMBOLIQUE : '//NOMCH//
      &                  ' EST ILLICITE POUR CE RESULTAT')
           ELSE
-            CALL UTMESS('F',NOMCMD,'LE CHAMP CHERCHE N''A PAS '//
+            CALL UTMESS('F','CHPREC','LE CHAMP CHERCHE N''A PAS '//
      &                  'ENCORE ETE CALCULE.')
           END IF
           CALL JEDETR(KNUM)
@@ -266,7 +266,7 @@ C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
 
       GO TO 20
    10 CONTINUE
-      CALL UTMESS('F',NOMCMD,'ON NE PEUT EXTRAIRE QU''1 NUMERO'
+      CALL UTMESS('F','CHPREC','ON NE PEUT EXTRAIRE QU''1 NUMERO'
      &//' D''ORDRE. VOUS EN AVEZ SPECIFIE PLUSIEURS.' )
 
    20 CONTINUE

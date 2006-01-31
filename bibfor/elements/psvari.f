@@ -5,7 +5,7 @@
       INTEGER            IPOP1,IPOP2,NBVARI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ELEMENTS  DATE 31/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,14 +43,14 @@ C
 C     ------------------------------------------------------------------
 C
 C
-      IF (     (COMPOR(1:16).EQ.'VMIS_ISOT_TRAC')
-     &     .OR.(COMPOR(1:16).EQ.'VMIS_ISOT_LINE')
-     &     .OR.(COMPOR(1:16).EQ.'VISC_ISOT_TRAC')
-     &     .OR.(COMPOR(1:16).EQ.'LEMAITRE')
-     &     .OR.(COMPOR(1:16).EQ.'VMIS_ECMI_TRAC')
-     &     .OR.(COMPOR(1:16).EQ.'VMIS_ECMI_LINE')
-     &     .OR.(COMPOR(1:16).EQ.'VISC_CIN1_CHAB')
-     &     .OR.(COMPOR(1:16).EQ.'VISC_CIN2_CHAB') ) THEN
+      IF (     (COMPOR.EQ.'VMIS_ISOT_TRAC')
+     &     .OR.(COMPOR.EQ.'VMIS_ISOT_LINE')
+     &     .OR.(COMPOR.EQ.'VISC_ISOT_TRAC')
+     &     .OR.(COMPOR.EQ.'LEMAITRE'      )
+     &     .OR.(COMPOR.EQ.'VMIS_ECMI_TRAC')
+     &     .OR.(COMPOR.EQ.'VMIS_ECMI_LINE')
+     &     .OR.(COMPOR.EQ.'VISC_CIN1_CHAB')
+     &     .OR.(COMPOR.EQ.'VISC_CIN2_CHAB') ) THEN
         IPOP1  = 1
         IPOP2  = 2
       ELSE IF  (COMPOR.EQ.'ROUSS_PR')  THEN
@@ -60,7 +60,7 @@ C
         IPOP1  = 1
         IPOP2  = 9
       ELSE IF  (COMPOR.EQ.'ROUSS_VISC')  THEN
-        IPOP2  = 1
+        IPOP1  = 1
         IPOP2  = NBVARI
       ELSE IF  (COMPOR.EQ.'CHABOCHE') THEN
         IF(DIMENS.EQ.'2D') THEN
@@ -79,7 +79,7 @@ C
         IPOP2 = NBVARI
       ELSE
 C
-        CALL UTMESS('F','TE0338','ON N''A PAS TROUVER DE VARIABLE '//
+        CALL UTMESS('F','PSVARI','ON N''A PAS TROUVER DE VARIABLE '//
      &          'INTERNE CORRESPONDANTE A LA DEFORMATION PLASTIQUE'//
      &          'EQUIVALENTE CUMULEE ') 
 

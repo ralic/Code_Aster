@@ -8,7 +8,7 @@
       INTEGER           NBPARI, NBPARR, NBPARK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C     --- RECUPERATION DE NEQ ---
       CALL RSEXCH(MODES,NOMSY,ZI(LNUMOR),VALE(1:19),IRET)
       IF (IRET.NE.0) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
-         CALL UTDEBM('F',NOMCMD//'.VPRECU','CHAMP INEXISTANT')
+         CALL UTDEBM('F','VPRECU'//'.VPRECU','CHAMP INEXISTANT')
          CALL UTIMPK('S',' ',1,VALE(1:19))
          CALL UTIMPK('L','IMPOSSIBLE DE RECUPERER NEQ',0,' ')
          CALL UTFINM()
@@ -158,7 +158,7 @@ C        --- VECTEUR PROPRE ---
          CALL RSEXCH ( MODES, NOMSY, NORDR, VALE(1:19), IRET)
          IF (IRET.NE.0) THEN
             CALL GETRES(K8B,K8B,NOMCMD)
-            CALL UTDEBM('E',NOMCMD//'.VPRECU','CHAMP INEXISTANT')
+            CALL UTDEBM('E','VPRECU'//'.VPRECU','CHAMP INEXISTANT')
             CALL UTIMPK('L','PB CHAMP  ',1,VALE(1:19))
             CALL UTFINM()
          ELSE
@@ -173,7 +173,7 @@ C        --- VECTEUR PROPRE ---
             CALL JELIRA(VALE,'LONMAX',NEQ1,K8B)
             CALL JELIRA(VALE,'TYPE',IBID,K8B)
             IF ( TYPMOD(1:1) .NE. K8B(1:1) ) THEN
-               CALL UTMESS('F',NOMCMD//'.VPRECU','TYPE DES VALEURS '//
+             CALL UTMESS('F','VPRECU'//'.VPRECU','TYPE DES VALEURS '//
      +                         ' VARIABLE D''UN MODE A L''AUTRE,  '//
      +                         'RECUPERATION IMPOSSIBLE.')
             ELSEIF ( NEQ .EQ. NEQ1 ) THEN
@@ -188,7 +188,7 @@ C        --- VECTEUR PROPRE ---
                ENDIF
                CALL JELIBE(VALE)
             ELSE
-               CALL UTMESS('F',NOMCMD//'.VPRECU','NOMBRE D''EQUATION'//
+             CALL UTMESS('F','VPRECU'//'.VPRECU','NOMBRE D''EQUATION'//
      +                         'S VARIABLE D''UN MODE A L''AUTRE,  '//
      +                         'RECUPERATION IMPOSSIBLE.')
             ENDIF

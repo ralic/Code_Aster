@@ -1,7 +1,7 @@
       SUBROUTINE OP0076( IERR )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
       CALL EXTRAC(INTERP,PREC,CRIT,NBINST,ZR(IDINST),TEMPS,ZR(IDCHAM),
      +                                           NBMODE,ZR(IDVECG),IERD)
       IF ( IERD.NE.0) THEN
-         CALL UTMESS('E',NOMCMD,'L''INSTANT DE RECUPERATION EST EN '//
+       CALL UTMESS('E','OP0076','L''INSTANT DE RECUPERATION EST EN '//
      +                                  'DEHORS DU DOMAINE DE CALCUL.')
       ENDIF
 C

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
       DO 20 I = 2 , NBF
          FVALE(I) = NOMTEN(I)//'           .VALE'
          CALL JELIRA ( FVALE(I), 'LONMAX', NBPTS, K8B )
-         IF ( NBPTS .NE. NBPTOT ) CALL UTMESS('F',NOMCMD,
+         IF ( NBPTS .NE. NBPTOT ) CALL UTMESS('F','POFAQU',
      +                 'L''HISTOIRE DE CHARGEMENT DOIT AVOIR MEME '//
      +                 'DISCRETISATION POUR TOUTES LES COMPOSANTES')
   20  CONTINUE
@@ -89,9 +89,11 @@ C
       DO 30 I = 2 , NBF
          CALL JEVEUO ( FVALE(I), 'L', IFONC )
          DO 35 J = 1 , NBPTOT/2
-            IF (ZR(IFONC+J-1).NE.ZR(IFONC1+J-1)) CALL UTMESS('F',NOMCMD,
+            IF (ZR(IFONC+J-1).NE.ZR(IFONC1+J-1)) THEN
+                CALL UTMESS('F','POFAQU',
      +                   'L''HISTOIRE DE CHARGEMENT DOIT AVOIR MEME '//
      +                   'DISCRETISATION POUR TOUTES LES COMPOSANTES')
+            ENDIF
             ZR(IORDO+(J-1)*NBF+I-1) = ZR(IFONC+NBPTOT/2+J-1)
   35     CONTINUE
   30  CONTINUE
@@ -102,14 +104,14 @@ C
 C
       FVALE(1) = NOMP//'           .VALE'
       CALL JELIRA ( FVALE(1), 'LONMAX', NBPTS, K8B )
-      IF ( NBPTS .NE. NBPTOT*2 ) CALL UTMESS('F',NOMCMD,
+      IF ( NBPTS .NE. NBPTOT*2 ) CALL UTMESS('F','POFAQU',
      +              'L''HISTOIRE DE LA DEFORMATION PLASTIQUE CUMULEE'//
      +              ' DOIT AVOIR MEME DISCRETISATION QUE L''HISTOIRE'//
      +              ' DES CONTRAINTES')
       CALL WKVECT ( '&&POFAQU.DEFPLA', 'V V R', NBPTOT, IDEFP )
       CALL JEVEUO ( FVALE(1), 'L', IFONC )
       DO 45 J = 0 , NBPTOT-1
-         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL UTMESS('F',NOMCMD,
+         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL UTMESS('F','POFAQU',
      +                   'L''HISTOIRE DE LA DEFORMATION PLASTIQUE '//
      +                   'CUMULEE DOIT AVOIR MEME DISCRETISATION '//
      +                   'QUE L''HISTOIRE DES CONTRAINTES')
@@ -118,13 +120,13 @@ C
 C
       FVALE(1) = NOMT//'           .VALE'
       CALL JELIRA ( FVALE(1), 'LONMAX', NBPTS, K8B )
-      IF ( NBPTS .NE. NBPTOT*2 ) CALL UTMESS('F',NOMCMD,
+      IF ( NBPTS .NE. NBPTOT*2 ) CALL UTMESS('F','POFAQU',
      +               'L''HISTOIRE DE LA TEMPERATURE DOIT AVOIR MEME '//
      +               'DISCRETISATION QUE L''HISTOIRE DES CONTRAINTES')
       CALL WKVECT ( '&&POFAQU.TEMP', 'V V R', NBPTOT, ITEMP )
       CALL JEVEUO ( FVALE(1), 'L', IFONC )
       DO 46 J = 0 , NBPTOT-1
-         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL UTMESS('F',NOMCMD,
+         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL UTMESS('F','POFAQU',
      +                  'L''HISTOIRE DE LA TEMPERATURE DOIT AVOIR '//
      +           'MEME DISCRETISATION QUE L''HISTOIRE DES CONTRAINTES')
          ZR(ITEMP+J) = ZR(IFONC+NBPTOT+J)
@@ -150,7 +152,7 @@ C         -----------------------------------------------------
          CALL FGLEMA ( NBF, NBPTOT, ZR(IORDO), ZR(IDEFP), ZR(ITEMP),
      +                 NOMMAT, ZR(IVDOME) )
       ELSE
-         CALL UTMESS('F',NOMCMD,'LOI DE DOMMAGE NON COMPATIBLE')
+         CALL UTMESS('F','POFAQU','LOI DE DOMMAGE NON COMPATIBLE')
       ENDIF
 C
       DO 50 I = 1 , NBPTOT

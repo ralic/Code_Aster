@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,7 +178,7 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
             CALL JEVEUO(LISTAM//'           .VALE','L',JAMOR)
          ENDIF
          IF (NBAMOR.GT.NBMODE) THEN
-            CALL UTDEBM('F',NOMCMD,'TROP D''AMORTISSEMENTS MODAUX')
+            CALL UTDEBM('F','IREDMI','TROP D''AMORTISSEMENTS MODAUX')
             CALL UTIMPI('L','   NOMBRE D''AMORTISSEMENTS : ',1,NBAMOR)
             CALL UTIMPI('L','   NOMBRE DE MODES : ',1,NBMODE)
             CALL UTFINM( )

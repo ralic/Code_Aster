@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,6 +219,22 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          self.reset_current_step()
          raise
 
+      # Destruction des concepts temporaires internes à la macro
+      # préfixés par '.' dans la base jeveux
+      # Pour ne pas avoir l'affichage en cas de IMPR_MACRO='NON'
+      # on déclare l'étape DETRUIRE fille de la macro en cours
+      # par set_current_step
+      if self.nom!='DETRUIRE' :
+         l_obj=[]
+         for etape in self.etapes :
+             if etape.sd!=None :
+                if etape.sd.nom[:1]=='.' :l_obj.append(etape.sd.nom)
+         if self.sd!=None : 
+                if self.sd.nom in l_obj  :l_obj.remove(self.sd.nom)
+         if l_obj!=[] :
+             l_detr=dict([(i,0) for i in l_obj]).keys()
+             DETRUIRE=self.get_cmd('DETRUIRE')
+             DETRUIRE(CONCEPT=_F(NOM=l_detr),ALARME='NON',INFO=1)
       self.reset_current_step()
 
    def get_liste_etapes(self,liste):

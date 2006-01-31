@@ -8,7 +8,7 @@
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,13 +31,12 @@ C               TRAITEMENT DES MOTS CLES "TOUT_CHAM" ET "NOM_CHAM"
 C     ------------------------------------------------------------------
       INTEGER       N1, I, IRET
       CHARACTER*8   BLANC, MODE
-      CHARACTER*16  CHAMP(8), NOMCMD
+      CHARACTER*16  CHAMP(8)
       CHARACTER*19  NOMCHA
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
 C     ------------------------------------------------------------------
 C
-      NOMCMD = 'REST_BASE_PHYS'
       MODE = BASEMO
 C
       CALL GETVTX ( ' ', 'TOUT_CHAM', 1,1,1, CHAMP, N1 )
@@ -49,21 +48,21 @@ C
          TYPE(3) = 'ACCE            '
          CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE CHAMP DE DEPLACEMENT N''A '//
+            CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A '//
      +                             'PAS ETE CALCULE.')
          ELSE
             CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(1) )
          ENDIF
          CALL JEEXIN ( TRANGE//'.VITE' , IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE CHAMP DE VITESSE N''A '//
+            CALL UTMESS('F','RBPH01','LE CHAMP DE VITESSE N''A '//
      +                             'PAS ETE CALCULE.')
          ELSE
             CALL JEVEUO ( TRANGE//'.VITE', 'L', ITRESU(2) )
          ENDIF
          CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F',NOMCMD,'LE CHAMP D''ACCELERATION N''A '//
+            CALL UTMESS('F','RBPH01','LE CHAMP D''ACCELERATION N''A '//
      +                             'PAS ETE CALCULE.')
          ELSE
             CALL JEVEUO ( TRANGE//'.ACCE', 'L', ITRESU(3) )
@@ -101,7 +100,7 @@ C
             TYPE(I) = 'DEPL'
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F',NOMCMD,'LE CHAMP DE DEPLACEMENT N''A'//
+             CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A'//
      +                               ' PAS ETE CALCULE.')
             ELSE
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
@@ -118,7 +117,7 @@ C
             TYPE(I) = 'VITE'
             CALL JEEXIN ( TRANGE//'.VITE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F',NOMCMD,'LE CHAMP DE VITESSE N''A'//
+               CALL UTMESS('F','RBPH01','LE CHAMP DE VITESSE N''A'//
      +                               ' PAS ETE CALCULE.')
             ELSE
                CALL JEVEUO ( TRANGE//'.VITE', 'L', ITRESU(I) )
@@ -135,7 +134,7 @@ C
             TYPE(I) = 'ACCE'
             CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F',NOMCMD,'LE CHAMP D''ACCELERATION N''A'//
+             CALL UTMESS('F','RBPH01','LE CHAMP D''ACCELERATION N''A'//
      +                               ' PAS ETE CALCULE.')
             ELSE
                CALL JEVEUO ( TRANGE//'.ACCE', 'L', ITRESU(I) )
@@ -152,7 +151,7 @@ C
             TYPE(I) = 'ACCE_ABSOLU'
             CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F',NOMCMD,'LE CHAMP D''ACCELERATION N''A'//
+             CALL UTMESS('F','RBPH01','LE CHAMP D''ACCELERATION N''A'//
      +                               ' PAS ETE CALCULE.')
             ELSE
                CALL JEVEUO ( TRANGE//'.ACCE', 'L', ITRESU(I) )
@@ -170,22 +169,22 @@ C
             TYPE(I) = CHAMP(I)
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F',NOMCMD,'LE CHAMP DE DEPLACEMENT N''A'//
+             CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A'//
      +                               ' PAS ETE CALCULE.')
             ELSE
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
             ENDIF
             IF ( MULTAP ) THEN 
-               CALL UTMESS('F',NOMCMD,'DEVELOPPEMENT NON PREVU POUR '//
+             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
      +                                'LE MULT_APPUI OU CORR_STAT.')
             ENDIF
             IF ( MODE .EQ. BLANC ) THEN
-               CALL UTMESS('F',NOMCMD,'DEVELOPPEMENT NON PREVU POUR '//
+             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
      +                                'LA SOUS-STRUCTURATION.')
             ELSE
                CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
-                  CALL UTMESS('F',NOMCMD,'LE CHAMP '//TYPE(I)//' N''A'//
+                CALL UTMESS('F','RBPH01','LE CHAMP '//TYPE(I)//' N''A'//
      +                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
                ENDIF
                TYPREF(I) = NOMCHA
@@ -196,26 +195,26 @@ C
             TYPE(I) = CHAMP(I)
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F',NOMCMD,'LE CHAMP DE DEPLACEMENT N''A'//
+             CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A'//
      +                               ' PAS ETE CALCULE.')
             ELSE
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
             ENDIF
             IF ( .NOT. TOUSNO ) THEN 
-               CALL UTMESS('F',NOMCMD,'L''OPTION '//TYPE(I)//
+               CALL UTMESS('F','RBPH01','L''OPTION '//TYPE(I)//
      +                            ' S''APLIQUE SUR TOUTE LA STRUCTURE')
             ENDIF
             IF ( MULTAP ) THEN 
-               CALL UTMESS('F',NOMCMD,'DEVELOPPEMENT NON PREVU POUR '//
+             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
      +                                'LE MULT_APPUI OU CORR_STAT.')
             ENDIF
             IF ( MODE .EQ. BLANC ) THEN
-               CALL UTMESS('F',NOMCMD,'DEVELOPPEMENT NON PREVU POUR '//
+             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
      +                                'LA SOUS-STRUCTURATION.')
             ELSE
                CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
-                  CALL UTMESS('F',NOMCMD,'LE CHAMP '//TYPE(I)//' N''A'//
+                CALL UTMESS('F','RBPH01','LE CHAMP '//TYPE(I)//' N''A'//
      +                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
                ENDIF
                TYPREF(I) = NOMCHA

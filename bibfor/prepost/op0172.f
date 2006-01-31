@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -407,7 +407,7 @@ C
          AMOMO = ZR(IAMOMO+IMOD-1)
          IF ( AMOMO .GT. SEUIL ) THEN
             ZR(IAMOMO+IMOD-1) = SEUIL
-            CALL UTDEBM('I',NOMCMD,
+            CALL UTDEBM('I','OP0172',
      +              'LA VALEUR D''AMORTISSEMENT REDUIT EST TROP GRANDE')
             CALL UTIMPR('L','LA VALEUR D''AMORTISSEMENT : ',1,AMOMO)
             CALL UTIMPI('L',' DU MODE PROPRE ',1,IMOD)

@@ -7,7 +7,7 @@
       CHARACTER*16                    TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,6 @@ C
       CHARACTER*1   COLI
       CHARACTER*8   K8B
       CHARACTER*16  INTERP, PROLGD
-      CHARACTER*16  NOMCMD
       CHARACTER*19  CHANNO, FONCT
       LOGICAL       LFORC
       CHARACTER*1 K1BID
@@ -72,7 +71,6 @@ C
       CALL JEMARQ()
       IER = 0
       LFORC = .FALSE.
-      NOMCMD = 'DYNA_TRAN_MODAL'
       CALL GETVIS('EXCIT','NUME_MODE',1,1,0,IBID,NF)
       LFORC = NF .NE. 0
 C
@@ -84,13 +82,13 @@ C
           CALL JEVEUO(CHANNO//'.REFE','L',JREF1)
           IF (ZK24(JREF1)(1:8).NE.BASEMO) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES POUR LA '//
+            CALL UTMESS('E','MDFEXT','LES BASES UTILISEES POUR LA '//
      +                             'PROJECTION SONT DIFFERENTES.')
           ENDIF
           CALL JEVEUO(CHANNO//'.DESC','L',JDES1)
           IF (ZI(JDES1+1).NE.NEQGEN) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES N''ONT PAS '//
+          CALL UTMESS('E','MDFEXT','LES BASES UTILISEES N''ONT PAS '//
      +                             'LE MEME NOMBRE DE VECTEURS.')
           ENDIF
   10    CONTINUE

@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       CALL GETVIS('INTERVALLE','JUSQU_A',IOCC,1,1,ZI(JBOR+IOCC),N1)
          III = ZI(JBOR+IOCC) - ZI(JBOR-1+IOCC)
          IF (III.LE.0) THEN
-            CALL UTDEBM('F',NOMCMD,
+            CALL UTDEBM('F','OP0022',
      +                   'LES INTERVALLES DOIVENT ETRE CROISSANTS.')
             CALL UTIMPI('L',
      +      '   VALEUR DE LA BORNE PRECEDENTE : ',1,ZI(JBOR+IOCC-1))
@@ -87,7 +87,7 @@ C
             JNBP = INT( III / JPAS )
             IREST = III - JNBP * JPAS
             IF (IREST.NE.0) THEN
-               CALL UTDEBM('F',NOMCMD,'L''INTERVALLE ENTRE LES '//
+               CALL UTDEBM('F','OP0022','L''INTERVALLE ENTRE LES '//
      +                     'DEUX DERNIERS INSTANTS NE SERA PAS EGAL')
                CALL UTIMPI('S',' AU PAS COURANT : ',1,JPAS)
                CALL UTIMPI('S',', POUR L''INTERVALLE ',1,IOCC)
@@ -99,7 +99,7 @@ C
                IPDT = INT( III / JNBP )
                IREST = III - JNBP * IPDT
                IF (IREST.NE.0) THEN
-                  CALL UTDEBM('F',NOMCMD,'LE NOMBRE DE PAS EST')
+                  CALL UTDEBM('F','OP0022','LE NOMBRE DE PAS EST')
                   CALL UTIMPI('S',' TROP GRAND : ',1,JNBP)
                   CALL UTIMPI('S',', POUR L''INTERVALLE ',1,IOCC)
                   CALL UTFINM( )
@@ -123,7 +123,7 @@ C
          CALL GETVIS(' ','VALE' ,0,1,NBVALE,ZI(KVAL),NV)
          DO 4 I = 1,NBVALE-1
             IF (ZI(KVAL+I-1).GE.ZI(KVAL+I)) THEN
-               CALL UTDEBM('F',NOMCMD,
+               CALL UTDEBM('F','OP0022',
      +                     'LES VALEURS DOIVENT ETRE CROISSANTES.')
                CALL UTIMPI('L',
      +                     '  VALEUR PRECEDENTE : ',1,ZI(KVAL+I-1))

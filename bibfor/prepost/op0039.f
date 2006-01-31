@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -104,7 +104,7 @@ C
        IF(NMO.NE.0) THEN
          NN = NMO / 2
          IF(2*NN.NE.NMO) THEN
-           CALL UTMESS('F',NOMCMD,'POUR LA VARIABLE D''ACCES "'//
+           CALL UTMESS('F','OP0039','POUR LA VARIABLE D''ACCES "'//
      >          'NOEUD_CMP", IL FAUT UN NOMBRE PAIR DE VALEURS.')
          ENDIF
        ENDIF
@@ -188,7 +188,7 @@ C           ---  IMPRESSION DU MAILLAGE -----
                   CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,
      >                                                 NOMAB,IRET)
                   IF (NOMA.NE.NOMAB) THEN
-                    CALL UTMESS('F',NOMCMD,'LE MODELE ET LE MAILLAGE'
+                    CALL UTMESS('F','OP0039','LE MODELE ET LE MAILLAGE'
      >                          //' INTRODUITS NE SONT PAS COHERENTS')
                   ENDIF
                ENDIF
@@ -199,7 +199,7 @@ C           ---  IMPRESSION DU MAILLAGE -----
  200     CONTINUE
 
          IF ( NUMEMO .LE. 1 ) THEN
-            CALL UTMESS('F',NOMCMD,'IL FAUT DONNER LE MAILLAGE POUR '//
+          CALL UTMESS('F','OP0039','IL FAUT DONNER LE MAILLAGE POUR '//
      &                            'UNE IMPRESSION AU FORMAT "CASTEM".')
          ENDIF
 C
@@ -284,7 +284,7 @@ C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
            IF (SAUX03.EQ.'OUI'.AND.FORM.EQ.'MED') THEN
              INFMAI = 2
            ELSEIF (SAUX03.EQ.'OUI'.AND.FORM.NE.'MED') THEN
-             CALL UTMESS('A',NOMCMD,'LE MOT CLE "INFO_MAILLAGE" '
+             CALL UTMESS('A','OP0039','LE MOT CLE "INFO_MAILLAGE" '
      >               //'EST RESERVE AU FORMAT MED')
            ENDIF
          ENDIF
@@ -318,7 +318,7 @@ C
          IF ( LMOD .AND. NM.NE.0 ) THEN
           CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,NOMAB,IRET)
           IF (NOMA.NE.NOMAB) THEN
-               CALL UTMESS('F',NOMCMD,'LE MODELE ET LE MAILLAGE'
+               CALL UTMESS('F','OP0039','LE MODELE ET LE MAILLAGE'
      >               //' INTRODUITS NE SONT PAS COHERENTS')
           ENDIF
          ENDIF
@@ -373,7 +373,7 @@ C          --- TEST PRESENCE DU MOT CLE INFO_RESU (FORMAT 'RESULTAT')
                CALL RSINFO(LERESU,IFI)
                GOTO 10
              ELSEIF(INFRES.EQ.'OUI'.AND.FORM.NE.'RESULTAT') THEN
-               CALL UTMESS('A',NOMCMD,'LE MOT CLE "INFO_RESU" EST '
+               CALL UTMESS('A','OP0039','LE MOT CLE "INFO_RESU" EST '
      >               //'RESERVE AU FORMAT RESULTAT')
              ENDIF
            ENDIF
@@ -438,7 +438,7 @@ C
                CALL RSEXCH (LERESU,ZK16(JNOSY+I),ZI(JORDR+J),
      >                      NOCH19,IRET)
                IF ( IRET .NE. 0 ) THEN
-                  CALL UTDEBM('A',NOMCMD,'CHAMP INEXISTANT')
+                  CALL UTDEBM('A','OP0039','CHAMP INEXISTANT')
                   CALL UTIMPK('L',' NOM_CHAM ',1,ZK16(JNOSY+I))
                   CALL UTIMPI('S',' NUME_ORDRE ',1,ZI(JORDR+J))
                   CALL UTFINM
@@ -464,7 +464,7 @@ C                   TRAITEMENT PARTICULIER POUR LA GRANDEUR VARI_R
                ENDIF
  17          CONTINUE
              IF ( NBCMPT .EQ. 0 ) THEN
-               CALL UTDEBM('A',NOMCMD,'LA COMPOSANTE')
+               CALL UTDEBM('A','OP0039','LA COMPOSANTE')
                CALL UTIMPK('S',' ',1,ZK8(JVCMP+ICMP))
              CALL UTIMPK('S',' N''EXISTE DANS AUCUN DES CHAMPS',0,K1BID)
                CALL UTFINM
@@ -510,14 +510,14 @@ C              (OPERANDE DE SELECTION SUR DES ENTITES TOPOLOGIQUES)
            CALL GETVID('RESU','GROUP_MA',IOCC,1,0,K8B,N4)
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
      >          .AND. (FORM(1:7).EQ.'ENSIGHT')) THEN
-             CALL UTMESS('A',NOMCMD,'L''IMPRESSION AVEC'//
+             CALL UTMESS('A','OP0039','L''IMPRESSION AVEC'//
      >         ' SELECTION SUR DES ENTITES TOPOLOGIQUES N''A PAS'//
      >         ' DE SENS AU FORMAT ENSIGHT : LES VALEURS DE TOUS'//
      >         ' LES NOEUDS DU MAILLAGE SERONT DONC IMPRIMEES.')
            ENDIF
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
      >          .AND. (FORM(1:6).EQ.'CASTEM')) THEN
-             CALL UTMESS('A',NOMCMD,'L''IMPRESSION AVEC'//
+             CALL UTMESS('A','OP0039','L''IMPRESSION AVEC'//
      >         ' SELECTION SUR DES ENTITES TOPOLOGIQUES N''A PAS'//
      >         ' DE SENS AU FORMAT CASTEM  : TOUTES LES VALEURS'//
      >         ' SUR TOUT LE MAILLAGE SERONT DONC IMPRIMEES.')

@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C
             CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
      +                                                        K8B,IE)
             IF ( K8B .NE. NOMO ) THEN
-               CALL UTMESS('F',NOMCMD,'LES CHARGES NE S''APPUIENT PAS'
+             CALL UTMESS('F','MEDOM1','LES CHARGES NE S''APPUIENT PAS'
      +                                 //' TOUTES SUR LE MEME MODELE.')
             ENDIF
  30       CONTINUE
@@ -165,7 +165,7 @@ C
 C        --- ON VERIFIE QUE LES CHARGES PORTENT SUR LE MODELE
 C                               EVENTUELEMENT DONNE EN ARGUMENT ---
           IF ( N1.NE.0 .AND. MODELE.NE.NOMO ) THEN
-            CALL UTMESS('F',NOMCMD,'LES CHARGES NE S''APUIENT PAS'//
+            CALL UTMESS('F','MEDOM1','LES CHARGES NE S''APUIENT PAS'//
      +                           ' SUR LE MODELE DONNE EN ARGUMENT.')
           ENDIF
 C
@@ -175,7 +175,7 @@ C        --- VERIFICATION DU TYPE DE CHARGEMENT ---
             CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+I),'CHARGE',IBID,
      +                  K8B,IE)
             IF (K8B(1:4).NE.CTYP) THEN
-               CALL UTMESS('F',NOMCMD,'LES CHARGES SONT DE TYPE '//
+               CALL UTMESS('F','MEDOM1','LES CHARGES SONT DE TYPE '//
      +                                 'DIFFERENT.')
             ENDIF
  40       CONTINUE

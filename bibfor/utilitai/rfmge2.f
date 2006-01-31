@@ -3,7 +3,7 @@
       CHARACTER*(*)        MODGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,7 +53,7 @@ C-----------------------------------------------------------------------
 C
       CALL GETRES ( NOMFON , TYPCON , NOMCMD )
 C
-      CALL UTMESS('F',NOMCMD,'FONCTIONNALITE NON DEVELOPPEE' )
+      CALL UTMESS('F','RFMGE2','FONCTIONNALITE NON DEVELOPPEE' )
 C
       INTERP(1) = 'NON '
       INTERP(2) = 'NON '
@@ -66,7 +66,7 @@ C
       KNUME = '&&RFMGE2.NUME_ORDR'
       CALL RSUTNU ( MODGEN, ' ', 1, KNUME, NBORDR, EPSI, CRIT, IRET )
       IF (IRET.NE.0) THEN
-         CALL UTMESS('F',NOMCMD,'PROBLEME(S) RENCONTRE(S) LORS DE '//
+         CALL UTMESS('F','RFMGE2','PROBLEME(S) RENCONTRE(S) LORS DE '//
      +                          'L''ACCES AU RESU_GENE' )
       ENDIF
       CALL JEVEUO ( KNUME, 'L', JORDR )

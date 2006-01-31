@@ -9,7 +9,7 @@
       CHARACTER*19        NOMFON, RESU,                   LISTR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
          DO 2 ICHOC = 1,NBCHOC
             IF (ZK8(JINTI+ICHOC-1).EQ.INTITU) GOTO 4
  2       CONTINUE
-         CALL UTMESS('A',NOMCMD,'L''INTITULE "'//INTITU//
+         CALL UTMESS('A','FOCRCH','L''INTITULE "'//INTITU//
      +                       '" N''EST PAS CORRECT.')
          GOTO 9999
  4       CONTINUE
@@ -89,20 +89,20 @@ C
            IC = 2
            IF (ZK8(JNCHO+NBCHOC+ICHOC-1).EQ.NOEUD) GOTO 16
            LG = MAX(1,LXLGUT(NOEUD))
-           CALL UTMESS('A',NOMCMD,'LE NOEUD "'//NOEUD(1:LG)//
+           CALL UTMESS('A','FOCRCH','LE NOEUD "'//NOEUD(1:LG)//
      +                         '" N''EST PAS UN NOEUD DE CHOC.')
            GOTO 9999
          ELSE
            IF (ZK8(JSST+ICHOC-1).EQ.SST) GOTO 116
            IF (ZK8(JSST+NBCHOC+ICHOC-1).EQ.SST) GOTO 116
-           CALL UTMESS('A',NOMCMD,'NOM DE SOUS-STRUCTURE ET '//
+           CALL UTMESS('A','FOCRCH','NOM DE SOUS-STRUCTURE ET '//
      +                         'D''INTITULE INCOMPATIBLE')
            GOTO 9999
 116        CONTINUE
            IF (ZK8(JNCHO+ICHOC-1).NE.NOEUD.AND.
      +         ZK8(JNCHO+NBCHOC+ICHOC-1).NE.NOEUD) THEN
               LG = MAX(1,LXLGUT(NOEUD))
-              CALL UTMESS('A',NOMCMD,'LE NOEUD "'//NOEUD(1:LG)//
+              CALL UTMESS('A','FOCRCH','LE NOEUD "'//NOEUD(1:LG)//
      +            '" N''EST PAS UN NOEUD DE CHOC DE L''INTITULE.')
               GOTO 9999
            ENDIF
@@ -112,7 +112,7 @@ C
            IF (ZK8(JNCHO+NBCHOC+ICHOC-1).EQ.NOEUD.AND.
      +         ZK8(JSST+NBCHOC+ICHOC-1).EQ.SST) GOTO 16
            LG = MAX(1,LXLGUT(NOEUD))
-           CALL UTMESS('A',NOMCMD,'LE NOEUD "'//NOEUD(1:LG)//
+           CALL UTMESS('A','FOCRCH','LE NOEUD "'//NOEUD(1:LG)//
      +  '" N''EST PAS COMPATIBLE AVEC LE NOM DE LA SOUS-STRUCTURE.')
            GOTO 9999
         ENDIF
@@ -127,7 +127,7 @@ C     --- RECHERCHE DU NOEUD_2 DE CHOC ---
          IF (ZK8(JNCHO+NBCHOC+ICHOC-1).EQ.NOEUD) GOTO 16
  12   CONTINUE
       LG = MAX(1,LXLGUT(NOEUD))
-      CALL UTMESS('A',NOMCMD,'LE NOEUD "'//NOEUD(1:LG)//
+      CALL UTMESS('A','FOCRCH','LE NOEUD "'//NOEUD(1:LG)//
      +                       '" N''EST PAS UN NOEUD DE CHOC.')
       GOTO 9999
  16   CONTINUE
@@ -176,7 +176,7 @@ C
          ENDIF
       ELSE
          LG = MAX(1,LXLGUT(PARAX(1:8)))
-         CALL UTMESS('A',NOMCMD,'LE PARAMETRE "'//PARAX(1:LG)//
+         CALL UTMESS('A','FOCRCH','LE PARAMETRE "'//PARAX(1:LG)//
      +                          '" N''EST PAS UN PARAMETRE DE CHOC.')
          GOTO 9999
       ENDIF
@@ -228,7 +228,7 @@ C
          ENDIF
       ELSE
          LG = MAX(1,LXLGUT(PARAY(1:8)))
-         CALL UTMESS('A',NOMCMD,'LE PARAMETRE "'//PARAY(1:LG)//
+         CALL UTMESS('A','FOCRCH','LE PARAMETRE "'//PARAY(1:LG)//
      +                          '" N''EST PAS UN PARAMETRE DE CHOC.')
          GOTO 9999
       ENDIF

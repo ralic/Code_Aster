@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +77,7 @@ C     ------------------------------------------------------------------
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
         NOMACC = 'FREQ    '
         IF (N1+N2.NE.0) THEN
-          CALL UTMESS('F','NOMCMD',
+          CALL UTMESS('F','FOCRR2',
      &        '"INTERP_NUME" ET ("INST" OU "LIST_INST") NON COMPATIBLES'
      &                )
         END IF
@@ -98,7 +98,7 @@ C     ------------------------------------------------------------------
       ELSE
         NOMACC = 'INST    '
         IF (N3+N4.NE.0) THEN
-          CALL UTMESS('F','NOMCMD',
+          CALL UTMESS('F','FOCRR2',
      &        '"INTERP_NUME" ET ("FREQ" OU "LIST_FREQ") NON COMPATIBLES'
      &                )
         END IF
@@ -172,12 +172,12 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
         CALL POSDDL('CHAM_NO',CH1,NOEUD,CMP,INOEUD,IDDL1)
         IF (INOEUD.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
-          CALL UTMESS('F',NOMCMD,'LE NOEUD "'//NOEUD(1:LG1)//
+          CALL UTMESS('F','FOCRR2','LE NOEUD "'//NOEUD(1:LG1)//
      &                '" N''EXISTE PAS.')
         ELSE IF (IDDL1.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
           LG2 = LXLGUT(CMP)
-          CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//'" '//
+        CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
      &                'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
         END IF
         IDDL2 = IDDL1
@@ -188,14 +188,14 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
      &                IPOSIT)
           IF (IPOSIT.EQ.-2) THEN
-            CALL UTDEBM('F',NOMCMD,'INTERPOLATION IMPOSSIBLE ')
+            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
             CALL UTIMPR('L','INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTFINM()
 
 C           -- PROLONGEMENT A GAUCHE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.-1) THEN
-            CALL UTDEBM('F',NOMCMD,'INTERPOLATION IMPOSSIBLE ')
+            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
             CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTIMPR('L',' BORNE INFERIEURE: ',1,ZR(KINST))
             CALL UTFINM()
@@ -203,7 +203,7 @@ C           -------------------------
 C           -- PROLONGEMENT A DROITE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.1) THEN
-            CALL UTDEBM('F',NOMCMD,'INTERPOLATION IMPOSSIBLE ')
+            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
             CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTIMPR('L',' BORNE SUPERIEURE:',1,ZR(KINST+NBORDR-1))
             CALL UTFINM()
@@ -220,7 +220,7 @@ C           -------------------------
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
           CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
           IF (L1.GT.0) THEN
-            CALL UTDEBM('F',NOMCMD,'CHAM_NO INEXISTANT ')
+            CALL UTDEBM('F','FOCRR2','CHAM_NO INEXISTANT ')
             CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
             CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
             CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP1)
@@ -228,7 +228,7 @@ C           -------------------------
             CALL UTFINM()
           END IF
           IF (L2.GT.0) THEN
-            CALL UTDEBM('F',NOMCMD,'CHAM_NO INEXISTANT ')
+            CALL UTDEBM('F','FOCRR2','CHAM_NO INEXISTANT ')
             CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
             CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
             CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP2)
@@ -242,12 +242,12 @@ C           -------------------------
             CALL POSDDL('CHAM_NO',CH1,NOEUD,CMP,INOEUD,IDDL1)
             IF (INOEUD.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
-              CALL UTMESS('F',NOMCMD,'LE NOEUD "'//NOEUD(1:LG1)//
+              CALL UTMESS('F','FOCRR2','LE NOEUD "'//NOEUD(1:LG1)//
      &                    '" N''EXISTE PAS.')
             ELSE IF (IDDL1.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
               LG2 = LXLGUT(CMP)
-              CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//
+              CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//
      &                    '" DU '//'NOEUD "'//NOEUD(1:LG1)//
      &                    '" N''EXISTE PAS.')
             END IF
@@ -269,12 +269,12 @@ C           -------------------------
             CALL POSDDL('CHAM_NO',CH2,NOEUD,CMP,INOEUD,IDDL2)
             IF (INOEUD.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
-              CALL UTMESS('F',NOMCMD,'LE NOEUD "'//NOEUD(1:LG1)//
+              CALL UTMESS('F','FOCRR2','LE NOEUD "'//NOEUD(1:LG1)//
      &                    '" N''EXISTE PAS.')
             ELSE IF (IDDL2.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
               LG2 = LXLGUT(CMP)
-              CALL UTMESS('F',NOMCMD,'LA COMPOSANTE "'//CMP(1:LG2)//
+              CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//
      &                    '" DU '//'NOEUD "'//NOEUD(1:LG1)//
      &                    '" N''EXISTE PAS.')
             END IF
@@ -301,7 +301,7 @@ C        -------------------------------------------------------------
         NVERI2 = NOEUD .EQ. ' '
         NVERI3 = NPOINT .EQ. 0
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-          CALL UTDEBM('F',NOMCMD,'POUR UN "NOM_CHAM",IL FAUT DONNER :')
+        CALL UTDEBM('F','FOCRR2','POUR UN "NOM_CHAM",IL FAUT DONNER :')
           CALL UTIMPK('L','   - UNE MAILLE OU UN GROUP_MA',0,K8B)
           CALL UTIMPK('L','   - UN NOEUD OU UN GROUP_NO OU UN POINT.',0,
      &                K8B)
@@ -319,14 +319,14 @@ C        -------------------------------------------------------------
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
      &                IPOSIT)
           IF (IPOSIT.EQ.-2) THEN
-            CALL UTDEBM('F',NOMCMD,'INTERPOLATION IMPOSSIBLE ')
+            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
             CALL UTIMPR('L','INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTFINM()
 
 C           -- PROLONGEMENT A GAUCHE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.-1) THEN
-            CALL UTDEBM('F',NOMCMD,'INTERPOLATION IMPOSSIBLE ')
+            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
             CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTIMPR('L',' BORNE INFERIEURE: ',1,ZR(KINST))
             CALL UTFINM()
@@ -334,7 +334,7 @@ C           -------------------------
 C           -- PROLONGEMENT A DROITE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.1) THEN
-            CALL UTDEBM('F',NOMCMD,'INTERPOLATION IMPOSSIBLE ')
+            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
             CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTIMPR('L',' BORNE SUPERIEURE:',1,ZR(KINST+NBORDR-1))
             CALL UTFINM()
@@ -351,7 +351,7 @@ C           -------------------------
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
           CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
           IF (L1.GT.0) THEN
-            CALL UTDEBM('F',NOMCMD,'CHAM_ELEM INEXISTANT ')
+            CALL UTDEBM('F','FOCRR2','CHAM_ELEM INEXISTANT ')
             CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
             CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
             CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP1)
@@ -359,7 +359,7 @@ C           -------------------------
             CALL UTFINM()
           END IF
           IF (L2.GT.0) THEN
-            CALL UTDEBM('F',NOMCMD,'CHAM_ELEM INEXISTANT ')
+            CALL UTDEBM('F','FOCRR2','CHAM_ELEM INEXISTANT ')
             CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
             CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
             CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP2)

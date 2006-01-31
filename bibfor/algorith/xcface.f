@@ -8,7 +8,7 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       REAL*8          A(3),B(3),C(3),LSNA,LSNB,PADIST,LONGAR,TAMPOR(4)
       REAL*8          ALPHA,BAR(3),OA(3),M(3),AM(3),ND(3),PS,PS1,LAMBDA
       REAL*8          H(3),OH(3),NOH,COS,NOA,TRIGOM,R3(3),THETA(6),EPS
-      REAL*8          R8PI,DDOT,AB(2),LSTA,LSTB,LSTC
+      REAL*8          R8PI,DDOT,AB(2),LSTA,LSTB,LSTC,ABPRIM(2)
       INTEGER         J,AR(12,2),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
       INTEGER         IA,I,IPT,IBID,PP,PD,TAMPOI,NNO,K
       INTEGER         IADZI,IAZK24,NDIM,PTMAX
@@ -306,7 +306,10 @@ C     NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
           AB(J)=B(J)-A(J)
  841   CONTINUE
        
-       IF (DDOT(2,AB,1,ND,1) .LT. 0.D0) THEN
+       ABPRIM(1)=-AB(2)
+       ABPRIM(2)=AB(1)
+       
+       IF (DDOT(2,ABPRIM,1,ND,1) .LT. 0.D0) THEN
        DO 852 K=1,2
           TAMPOR(K)=ZR(JPTINT-1+K)
           ZR(JPTINT-1+K)=ZR(JPTINT-1+2+K)

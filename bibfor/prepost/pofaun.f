@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,9 +135,9 @@ C     ---RECUPERATION DE LA LOI DE COMPTAGES DE CYCLES
       ELSE IF (METHOD.EQ.'NATUREL') THEN
         CALL FGCOTA(NBPOIN,ZR(IVPOIN),NBCYCL,ZR(IVMIN),ZR(IVMAX))
       ELSE
-        CALL UTMESS('F',NOMCMD,'METHODE DE COMPTAGE INCONNUE')
+        CALL UTMESS('F','POFAUN','METHODE DE COMPTAGE INCONNUE')
       END IF
-      IF (NBCYCL.EQ.0) CALL UTMESS('F',NOMCMD,'NOMBRE DE CYCLES NUL')
+      IF (NBCYCL.EQ.0) CALL UTMESS('F','POFAUN','NOMBRE DE CYCLES NUL')
 
 C     --- CORRECTION ELASTO-PLASTIQUE ---
 
@@ -185,7 +185,7 @@ C        ---CORRECTION DE HAIG (GOODMANN OU GERBER)
 
         PHENO = 'FATIGUE'
         CALL RCCOME(NOMMAT,PHENO,PHENOM,CODRET(1))
-        IF (CODRET(1).EQ.'NO') CALL UTMESS('F',NOMCMD,
+        IF (CODRET(1).EQ.'NO') CALL UTMESS('F','POFAUN',
      &                    'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '
      &                              //
      &                       'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU'
@@ -211,13 +211,13 @@ C     --- CALCUL DU DOMMAGE ELEMENTAIRE DE MANSON_COFFIN ----
 C         ----------------------------------------------
       ELSE IF (KDOMM.EQ.'MANSON_COFFIN') THEN
         IF (.NOT.FATEPS) THEN
-          CALL UTMESS('F',NOMCMD,'L''UTILISATION DE MANSON_COFFIN '//
+          CALL UTMESS('F','POFAUN','L''UTILISATION DE MANSON_COFFIN '//
      &                'EST RESERVE A DES HISTOIRES DE '//
      &                'CHARGEMENTS EN DEFORMATIONS')
         END IF
         PHENO = 'FATIGUE'
         CALL RCCOME(NOMMAT,PHENO,PHENOM,CODRET(1))
-        IF (CODRET(1).EQ.'NO') CALL UTMESS('F',NOMCMD,
+        IF (CODRET(1).EQ.'NO') CALL UTMESS('F','POFAUN',
      &                    'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '
      &                              //
      &                       'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU'
@@ -227,7 +227,7 @@ C         ----------------------------------------------
         IF (CODMA.EQ.'OK') THEN
           CALL FGDOMA(NOMMAT,NBCYCL,ZR(IVMIN),ZR(IVMAX),ZR(IVDOME))
         ELSE
-          CALL UTMESS('F',NOMCMD,'LA COURBE DE MANSON_COFFIN '//
+          CALL UTMESS('F','POFAUN','LA COURBE DE MANSON_COFFIN '//
      &                'DOIT ETRE DONNEE DANS DEFI_MATERIAU')
         END IF
 
@@ -237,13 +237,13 @@ C         ---------------------------------------
         IF (FATEPS) THEN
           CALL FGTAHE(KDOMM,NBCYCL,ZR(IVMIN),ZR(IVMAX),ZR(IVDOME))
         ELSE
-          CALL UTMESS('F',NOMCMD,'LES LOIS DE TAHERI SONT '//
+          CALL UTMESS('F','POFAUN','LES LOIS DE TAHERI SONT '//
      &                'RESERVEES POUR DES CHARGEMENTS EN DEFORMATIONS')
         END IF
 
       ELSE IF (KDOMM.EQ.' ') THEN
       ELSE
-        CALL UTMESS('F',NOMCMD,'LOI DE DOMMAGE NON COMPATIBLE')
+        CALL UTMESS('F','POFAUN','LOI DE DOMMAGE NON COMPATIBLE')
       END IF
 
 C     --- CREATION DE LA TABLE ---

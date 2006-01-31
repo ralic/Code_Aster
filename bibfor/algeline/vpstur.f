@@ -5,7 +5,7 @@
       INTEGER           LMATK,       LMATM,LMATSH,       EXPO,PIVOT,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/03/98   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       ENDIF
       IF (IRET.GT.1) THEN
           CALL GETRES(RBID,RBID,NOMCMD)
-          CALL UTDEBM('A',NOMCMD//'.SHIFT','LA VALEUR DU ')
+          CALL UTDEBM('A','VPSTUR'//'.SHIFT','LA VALEUR DU ')
           CALL UTIMPR('S','SHIFT',1,FREQOM(VALSHI))
           CALL UTIMPI('S',' EST UNE FREQUENCE PROPRE',0,1)
           CALL UTFINM()

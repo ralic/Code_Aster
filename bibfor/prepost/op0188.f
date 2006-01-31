@@ -5,7 +5,7 @@
 C RESPONSABLE GALENNE E.GALENNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,7 +184,7 @@ C
       CALL GETVID ( ' ', 'TABL_DEPL_INF', 1,1,1, DEPINF, N2 )
 C
       IF ( N1*N2 .EQ. 0 ) THEN
-         CALL UTMESS('F',NOMCMD,'LES MOTS CLES "TABL_DEPL_SUP" ET '//
+         CALL UTMESS('F','OP0188','LES MOTS CLES "TABL_DEPL_SUP" ET '//
      +                    '"TABL_DEPL_INF" SONT OBLIGATOIRES')
       ENDIF
 C

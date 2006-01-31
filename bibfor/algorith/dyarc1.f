@@ -6,7 +6,7 @@
       CHARACTER*8         CRIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
                   TROUVE = .FALSE.
                ENDIF
             ELSE
-               CALL UTMESS('F',NOMCMD,'CRITERE INCONNU : '//CRIT)
+               CALL UTMESS('F','DYARC1','CRITERE INCONNU : '//CRIT)
             ENDIF
             IF ( TROUVE ) THEN
                NBTROU = NBTROU + 1
@@ -74,12 +74,12 @@ C               ENDIF
             ENDIF
  20      CONTINUE
          IF ( NBTROU .EQ. 0 ) THEN
-            CALL UTDEBM ( 'F', NOMCMD, 'DONNEES ERRONEES' )
+            CALL UTDEBM ( 'F', 'DYARC1', 'DONNEES ERRONEES' )
             CALL UTIMPR ( 'L','PAS D''INSTANT DE CALCUL POUR '//
      +                    'L''INSTANT D''ARCHIVAGE: ', 1, RVAL )
             CALL UTFINM ( )
          ELSEIF ( NBTROU .NE. 1 ) THEN
-            CALL UTDEBM ( 'F', NOMCMD, 'DONNEES ERRONEES' )
+            CALL UTDEBM ( 'F', 'DYARC1', 'DONNEES ERRONEES' )
             CALL UTIMPR ( 'L','PLUSIEURS INSTANTS DE CALCUL POUR '//
      +                    'L''INSTANT D''ARCHIVAGE: ',  1, RVAL )
             CALL UTFINM ( )

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/01/2006   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2730,7 +2730,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              GC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              SIGM_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              PENA_ADHERENCE  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             PENA_CONTACT    =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),defaut=1.),
+             PENA_CONTACT    =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            RCCM            =FACT(statut='f',

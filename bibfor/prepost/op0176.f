@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C
           NOSIMP = RESUOU(1:8)
           CALL PSRENC ( RESUIN, NOPASE, LERES0, IRET )
           IF ( IRET.NE.0 ) THEN
-            CALL UTMESS ('A', NOMCMD,
+            CALL UTMESS ('A', 'OP0176',
      >  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      >  //RESUIN//' ET AU PARAMETRE SENSIBLE '//NOPASE)
             GOTO 30

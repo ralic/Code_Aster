@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,12 +53,13 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (NOMPRO='OP0150')
       INTEGER NTYMAX
       PARAMETER (NTYMAX=48)
-
+      INTEGER NNOMAX
+      PARAMETER (NNOMAX=27)
       INTEGER LXLGUT
       INTEGER NDIM,TYPGEO(NTYMAX),LETYPE
       INTEGER NBTYP,NNOTYP(NTYMAX)
-      INTEGER RENUMD(NTYMAX)
-
+      INTEGER RENUMD(NTYMAX),NUANOM(NTYMAX,NNOMAX)
+      INTEGER MODNUM(NTYMAX),NUMNOA(NTYMAX,NNOMAX)
       INTEGER NTO,NNU,JLIST,NBORDR,NBNOCH,NVAR
       INTEGER NBVARI,JNUME,NP,ICH,NIS,NPAS
       INTEGER IRET,NFOR,NBTITR,JTITR,LL
@@ -71,7 +72,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER IBID,NBV,NBTROU,NSTAR,J,IREST
       INTEGER TE,TYPELE,NBGREL,NFIC,NBELEM,IGR
       INTEGER MFICH,N1,PRECIS,JINST,ITPS
-      INTEGER LNOMA,IFM,NIV,ULISOP,I0,JREFE
+      INTEGER LNOMA,IFM,NIVINF,ULISOP,I0,JREFE
       REAL*8 EPSI
       CHARACTER*1 KBID
       CHARACTER*4 ACCE
@@ -135,7 +136,7 @@ C     -----------------------------------------------------------------
       NOMPRN = RESU//'.PRFCN00000.PRNO'
 
       CALL INFMAJ
-      CALL INFNIV(IFM,NIV)
+      CALL INFNIV(IFM,NIVINF)
 
 
 C     --- FORMAT ---
@@ -698,8 +699,10 @@ C         --- NOM DU FICHIER MED
             NOFIMD = KFIC(1:200)
           ENDIF
 C
-          WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
-C                    12   345678   90123456789
+          IF ( NIVINF.GT.1 ) THEN
+            WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+          ENDIF
+C                   12   345678   90123456789
           PREFIX = '&&'//NOMPRO//'.MED'
           CALL JEDETC('V',PREFIX,1)
 
@@ -720,7 +723,8 @@ C     --------------------------------------------
 
           ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
             CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
-            CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD)
+            CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
+     >              MODNUM, NUANOM, NUMNOA )
             TYPENT = EDMAIL
             DO 230,LETYPE = 1,NBTYP
               IAUX = RENUMD(LETYPE)
@@ -852,13 +856,13 @@ C     --------------------------------------------
 
 C     -- MESSAGE D'INFORMATION SUR CE QU'ON A LU :
 C     --------------------------------------------
-      IF (NIV.GE.1) THEN
+      IF (NIVINF.GE.2) THEN
         WRITE (IFM,*) ' LECTURE DES CHAMPS:'
         DO 270 ICH = 1,NBNOCH
           WRITE (IFM,*) '    CHAMP : ',LINOCH(ICH)
   270   CONTINUE
 
-        IF (NIV.GE.2) THEN
+        IF (NIVINF.GE.2) THEN
           DO 280 IORD = 1,NBORDR
             CALL RSADPA(RESU,'L',1,ACCE,ZI(LORDR+IORD-1),0,JINST,K8B)
             WRITE (IFM,*) '    NUMERO D''ORDRE : ',ZI(LORDR+IORD-1),

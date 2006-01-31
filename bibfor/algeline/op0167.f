@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -358,7 +358,7 @@ C
         CALL JEVEUO(MOMOTO,'L',JMOMTO)
         NBNOAJ = IAD - 1
         IF (NBNOAJ.EQ.0) THEN
-          CALL UTMESS('F',NOMCMD,'PAS DE MAILLE A MODIFIER')
+          CALL UTMESS('F','OP0167','PAS DE MAILLE A MODIFIER')
         END IF
       END IF
 
@@ -450,7 +450,7 @@ C        --- VERIFICATION QUE LE NOM N'EXISTE PAS ET COMPTAGE---
             NBMAJ3 = NBMAJ3 + 1
             ZK8(JNONO-1+NBMAJ3) = NEWMAI
           ELSE
-            CALL UTDEBM('A',NOMCMD,'LA MAILLE')
+            CALL UTDEBM('A','OP0167','LA MAILLE')
             CALL UTIMPK('S',' DE NOM ',1,NEWMAI)
             CALL UTIMPK('S',' EXISTE DEJA',0,NEWMAI)
             CALL UTFINM()
@@ -821,7 +821,7 @@ C ----------------------------------------------------------------------
             IF (N1.NE.0) THEN
               CALL GETVID('CREA_POI1','NOM_GROUP_MA',IOCC,1,1,NOGMA,N1)
               CALL JENONU(JEXNOM(GRPMAI,NOGMA),IBID)
-              IF (IBID.GT.0) CALL UTMESS('F',NOMCMD,
+              IF (IBID.GT.0) CALL UTMESS('F','OP0167',
      &                                   ' LE GROUP_MA : '//NOGMA//
      &                                   ' EXISTE DEJA.')
               CALL RELIEM(' ',NOMAIN,'NO_NOEUD',MOTFAC,IOCC,NBMC,

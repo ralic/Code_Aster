@@ -6,7 +6,7 @@
       CHARACTER*14                     NUMGEN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/09/98   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,6 @@ C
       INTEGER       NVEC1, NVEC2
       CHARACTER*8   BASE1, BASE2,K8B,VECGEN
       CHARACTER*14  NU1GEN,NU2GEN,NU3GEN,NU4GEN,K14B
-      CHARACTER*16  NOMCMD
 C
 C-----------------------------------------------------------------------
       DATA K8B /'        '/
@@ -67,7 +66,6 @@ C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
       IER = 0
-      NOMCMD = 'DYNA_TRAN_MODAL'
 C
       IF (NUMGEN.EQ.K14B) THEN
 C
@@ -79,12 +77,12 @@ C
         BASE2 = ZK24(JREF2)(1:8)
         IF (BASE1.NE.BASEMO) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES POUR LA '//
+          CALL UTMESS('E','MDGENE','LES BASES UTILISEES POUR LA '//
      +                           'PROJECTION SONT DIFFERENTES.')
         ENDIF
         IF (BASE2.NE.BASEMO) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES POUR LA '//
+          CALL UTMESS('E','MDGENE','LES BASES UTILISEES POUR LA '//
      +                           'PROJECTION SONT DIFFERENTES.')
         ENDIF
 C
@@ -94,12 +92,12 @@ C
         NVEC2 = ZI(JDES2+1)
         IF (NVEC1.NE.NBMODE) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES N''ONT PAS LE '//
+        CALL UTMESS('E','MDGENE','LES BASES UTILISEES N''ONT PAS LE '//
      +                           'MEME NOMBRE DE VECTEURS.')
         ENDIF
         IF (NVEC2.NE.NBMODE) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES N''ONT PAS LE '//
+        CALL UTMESS('E','MDGENE','LES BASES UTILISEES N''ONT PAS LE '//
      +                           'MEME NOMBRE DE VECTEURS.')
         ENDIF
 C
@@ -108,14 +106,14 @@ C
           BASE1 = ZK24(JREF1)(1:8)
           IF (BASE1.NE.BASEMO) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES POUR LA '//
+            CALL UTMESS('E','MDGENE','LES BASES UTILISEES POUR LA '//
      +                             'PROJECTION SONT DIFFERENTES.')
           ENDIF
           CALL JEVEUO(AMOGEN//'           .DESC','L',JDES1)
           NVEC1 = ZI(JDES1+1)
           IF (NVEC1.NE.NBMODE) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES BASES UTILISEES N''ONT PAS '//
+          CALL UTMESS('E','MDGENE','LES BASES UTILISEES N''ONT PAS '//
      +                             'LE MEME NOMBRE DE VECTEURS.')
           ENDIF
         ENDIF
@@ -130,12 +128,12 @@ C
         NU2GEN = ZK24(JREF2+1)(1:14)
         IF (NU1GEN.NE.NUMGEN) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LES NUMEROTATIONS DES MATRICES'//
+          CALL UTMESS('E','MDGENE','LES NUMEROTATIONS DES MATRICES'//
      +                          ' SONT DIFFERENTES.')
         ENDIF
         IF (NU2GEN.NE.NUMGEN) THEN
           IER = IER + 1
-          CALL UTMESS('E',NOMCMD,'LES NUMEROTATIONS DES MATRICES'//
+          CALL UTMESS('E','MDGENE','LES NUMEROTATIONS DES MATRICES'//
      +                          ' SONT DIFFERENTES.')
         ENDIF
 C
@@ -144,7 +142,7 @@ C
           NU3GEN = ZK24(JREF1+1)(1:14)
           IF (NU3GEN.NE.NUMGEN) THEN
             IER = IER + 1
-            CALL UTMESS('E',NOMCMD,'LES NUMEROTATIONS DES MATRICES'//
+            CALL UTMESS('E','MDGENE','LES NUMEROTATIONS DES MATRICES'//
      +                            ' SONT DIFFERENTES.')
           ENDIF
         ENDIF
@@ -156,7 +154,7 @@ C
             NU4GEN = ZK24(JREF1+1)(1:14)
             IF (NU4GEN.NE.NUMGEN) THEN
               IER = IER + 1
-              CALL UTMESS('E',NOMCMD,'LES NUMEROTATIONS DES VECTEURS'//
+            CALL UTMESS('E','MDGENE','LES NUMEROTATIONS DES VECTEURS'//
      +                            ' D''EXCITATION SONT DIFFERENTES.')
             ENDIF
 10        CONTINUE

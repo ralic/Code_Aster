@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C
             MASSI = ZK24(LMODE+1)
             AMORI = ZK24(LMODE+2)
             IF ( MASSI.NE.MASSE .OR. AMORI.NE.AMOR .OR. RAIDI.NE.RAIDE )
-     +           CALL UTMESS('F',NOMCMD,'MODE NON COMPATIBLE.')
+     +           CALL UTMESS('F','OP0168','MODE NON COMPATIBLE.')
 C
             CALL RSORAC(MODEIN,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
      +                                                  NBMODT,1,IBID)
@@ -155,7 +155,7 @@ C
                         GOTO 20
                      ENDIF
  22               CONTINUE
-              CALL UTDEBM('A',NOMCMD,'***** ALARME *****')
+              CALL UTDEBM('A','OP0168','***** ALARME *****')
               CALL UTIMPK('L','PAS D''EXTRACTION POUR ',1,MODEIN)
               CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,ZI(JME+J-1))
               CALL UTFINM
@@ -256,7 +256,7 @@ C
                    DY = ZR(LPAR(2))
                    DZ = ZR(LPAR(3))
                    IF (DX.EQ.UNDF.OR.DY.EQ.UNDF.OR.DZ.EQ.UNDF) THEN
-                     CALL UTMESS('F',NOMCMD,'MASSES EFFECTIVES '
+                     CALL UTMESS('F','OP0168','MASSES EFFECTIVES '
      +                //'UNITAIRES NON CALCULEES PAR NORM_MODE')
                    ENDIF
                    IF (N7.NE.0) THEN
@@ -312,7 +312,9 @@ C
 C
 C     --- STOCKAGE ---
 C
-      IF (NDIMT.EQ.0) CALL UTMESS('F',NOMCMD,'STRUCTURE RESULTAT VIDE')
+      IF (NDIMT.EQ.0) THEN
+         CALL UTMESS('F','OP0168','STRUCTURE RESULTAT VIDE')
+      ENDIF
       CALL RSCRSD ( MODEOU, TYPCON, NDIMT )
       IPREC = 0
       NOMSY = 'DEPL'
@@ -322,7 +324,7 @@ C
          MODEIN = ZK8(JNOM+I-1)
          CALL JELIRA(JEXNUM(KMODE,I),'LONUTI',NBMODE,K1B)
          IF ( NBMODE .EQ. 0 ) THEN
-            CALL UTDEBM('A',NOMCMD,'***** ALARME *****')
+            CALL UTDEBM('A','OP0168','***** ALARME *****')
             CALL UTIMPK('L','PAS DE MODE EXTRAIT POUR ',1,MODEIN)
             CALL UTFINM
             GOTO 102
@@ -347,7 +349,7 @@ C
      +                 ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
      +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSE
-            CALL UTMESS('F',NOMCMD,'"'//TYPMOD//
+            CALL UTMESS('F','OP0168','"'//TYPMOD//
      +                                '"  TYPE DE MODE NON TRAITE')
          ENDIF
          IPREC = IPREC + NBMODE
@@ -375,7 +377,7 @@ C
             CALL RSADPA(MODEOU,'L',1,'NUME_MODE',IORD,0,JADR,K8B)
             NUME2 = ZI(JADR)
             IF ( NUME1 .EQ. NUME2 ) THEN
-               CALL UTDEBM('A',NOMCMD,'***** ALARME *****')
+               CALL UTDEBM('A','OP0168','***** ALARME *****')
                CALL UTIMPI('L','NUME_MODE IDENTIQUE POUR LE',0,IBID)
                CALL UTIMPI('S',' MODE D''ORDRE ',1,IORD)
                CALL UTFINM
@@ -412,7 +414,7 @@ C
                DY = ZR(LPAR(2))
                DZ = ZR(LPAR(3))
                IF (DX.EQ.UNDF.OR.DY.EQ.UNDF.OR.DZ.EQ.UNDF) THEN
-                  CALL UTMESS('F',NOMCMD,'MASSES EFFECTIVES '
+                  CALL UTMESS('F','OP0168','MASSES EFFECTIVES '
      +             //'UNITAIRES NON CALCULEES PAR NORM_MODE')
                ENDIF
                CUMULX = CUMULX + DX

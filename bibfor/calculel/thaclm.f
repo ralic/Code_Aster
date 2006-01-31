@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -170,7 +170,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         IOCC = 0
         CALL COCHRE(ZK8(JCHA),NCHAR,NBCHRE,IOCC)
         IF (NBCHRE.GT.1) THEN
-          CALL UTMESS('A',NOMCMD,'VOTRE CHARGEMENT CONTIENT PLUS '//
+          CALL UTMESS('A','THACLM','VOTRE CHARGEMENT CONTIENT PLUS '//
      &                'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS '//
      &                'POSSIBLE POUR LES MODELES DE POUTRE.')
           GO TO 530
@@ -185,7 +185,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
           IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
      &        L5.NE.0 .OR. L6.NE.0) THEN
             IF (NBCHRE.EQ.0) THEN
-              CALL UTMESS('A',NOMCMD,
+              CALL UTMESS('A','THACLM',
      &                    'VOUS AVEZ RENSEIGNE UN DES MOTS-CLES'//
      &                ' FONC_MULT_*, COEF_MULT_*, PHAS_DEG, PUIS_PULS, '
      &                    //
@@ -213,7 +213,7 @@ C=======================================================================
         CALL GETVIS(' ','NUME_COUCHE',1,1,1,IBID,N2)
         CALL GETVTX(' ','NIVE_COUCHE',1,1,1,K8B,N3)
         IF (N1.EQ.0.AND.CARA.EQ.' ') THEN
-          CALL UTMESS('A',NOMCMD,'POUR UN MODELE COMPORTANT DES '//
+          CALL UTMESS('A','THACLM','POUR UN MODELE COMPORTANT DES '//
      &          'ELEMENTS DE PLAQUE OU DE COQUE, IL FAUT LE "CARA_ELEM"'
      &                )
           GO TO 530
@@ -283,7 +283,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
               CALL NTDOTH(MODEL2,MATE2,CARA2,K24B,LBID,LBID,INFCHA,
      &                    NBPASE,INPSCO,RESUCO,IBID)
             ELSE
-              CALL UTMESS('A',NOMCMD,'IMPOSSIBLE DE CALCULER'//
+              CALL UTMESS('A','THACLM','IMPOSSIBLE DE CALCULER'//
      &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
               GO TO 480
             END IF
@@ -293,7 +293,7 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
 
           CALL PSRENC(RESUCO,NOPASE,LERES0,IRET)
           IF (IRET.NE.0) THEN
-            CALL UTMESS('A',NOMCMD,
+            CALL UTMESS('A','THACLM',
      &   'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &                  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
             GO TO 480
@@ -304,7 +304,7 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
           IF (TYSD.EQ.'EVOL_THER') THEN
             CALL NTTYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE
-            CALL UTMESS('A',NOMCMD,
+            CALL UTMESS('A','THACLM',
      &         'IMPOSSIBLE DE CALCULER UN RESULTAT DERIVE POUR LE TYPE '
      &                  //TYSD)
             GO TO 480
@@ -356,7 +356,7 @@ C RECUPERATION NIVEAU AFFICHAGE
 
 C VERIFICATION DU PERIMETRE D'UTILISATION
             CALL GETVTX(' ','TOUT',1,1,1,BUFCH,BUFIN1)
-            IF (BUFCH.NE.'OUI') CALL UTMESS('A',NOMCMD,
+            IF (BUFCH.NE.'OUI') CALL UTMESS('A','THACLM',
      &                               '! TOUT = OUI OBLIGATOIRE AVEC '//
      &                               OPTION//'!')
 
@@ -417,7 +417,7 @@ C RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
      &                    'PARM_THETA'),IAD)
               IF (IAD.EQ.0) THEN
                 VALTHE = 0.57D0
-                CALL UTMESS('A',NOMCMD,'ATTENTION : ON N''A PAS PU '//
+              CALL UTMESS('A','THACLM','ATTENTION : ON N''A PAS PU '//
      &                      'RECUPERER LE PARAMETRE THETA DANS LE '//
      &                      'RESULTAT '//RESUCO//
      &                      ', VALEUR PRISE POUR THETA: 0.57 ')
@@ -426,7 +426,7 @@ C RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
                 VALTHE = ZR(IAD)
                 IF ((VALTHE.GT.1.D0) .OR. (VALTHE.LT.0.D0)) THEN
                   VALTHE = 1.D0
-                  CALL UTMESS('A',NOMCMD,'ATTENTION : RECUPERATION '//
+                CALL UTMESS('A','THACLM','ATTENTION : RECUPERATION '//
      &                        'D''UNE VALEUR DE THETA ILLICITE '//
      &                        'DANS LE RESULTAT '//RESUCO//
      &                        'VALEUR PRISE POUR THETA: 1. ')
@@ -458,14 +458,14 @@ C DANS CHFLUM/CHTEMM DEPUIS LA DERNIERE ITERATION.
 C RESUCO = NOM USER DE LA SD DESIGNEE PAR LE MOT-CLE RESULTAT
               CALL RSEXC2(1,1,RESUCO,'TEMP',IORDR,CHTEMP,OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTDEBM('F',NOMCMD,'! CHAMP TEMPERATURE !')
+                CALL UTDEBM('F','THACLM','! CHAMP TEMPERATURE !')
                 CALL UTIMPI('L','! VIDE POUR NUMERO ORDRE !',1,IORDR)
                 CALL UTFINM()
               END IF
               CALL RSEXC2(1,1,RESUCO,'FLUX_ELNO_TEMP',IORDR,CHFLUP,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTDEBM('F',NOMCMD,'! CHAMP FLUX_ELNO_TEMP !')
+                CALL UTDEBM('F','THACLM','! CHAMP FLUX_ELNO_TEMP !')
                 CALL UTIMPI('L','! VIDE POUR NUMERO ORDRE !',1,IORDR)
                 CALL UTFINM()
               END IF
@@ -559,7 +559,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
 
             IF (.NOT.EXITIM) THEN
-              CALL UTMESS('A',NOMCMD,
+              CALL UTMESS('A','THACLM',
      &    'POUR LES OPTIONS DE THERMIQUE, IL Y A ENCORE A TRAVAILLER !!'
      &                    )
               GO TO 440
@@ -608,19 +608,19 @@ C T= RESUCO('TEMP',IAUX) --> CHTEMP
                 IF (IRET.GT.0) GO TO 282
               ELSE IF (TYPESE.EQ.-1) THEN
 C DERIVEE LAGRANGIENNE
-                CALL UTMESS('A',NOMCMD,'!! OPTION INDISPONIBLE EN'//
+                CALL UTMESS('A','THACLM','!! OPTION INDISPONIBLE EN'//
      &                      'SENSIBILITE LAGRANGIENNE !!')
                 GO TO 282
               ELSE IF (TYPESE.EQ.1) THEN
 C CALCUL INSENSIBLE: CREATION D'UN CHAM_ELEM NUL
-                CALL UTDEBM('A',NOMCMD,'CALCUL INSENSIBLE')
+                CALL UTDEBM('A','THACLM','CALCUL INSENSIBLE')
                 CALL UTIMPK('L','VARIABLE SENSIBLE:',1,NOPASE)
                 CALL UTFINM()
                 NOMPA1 = 'PFLUX_R'
                 DCEL = ' '
                 CALL ALCHML(LIGREL,OPTION,NOMPA1,BASE,CHELEM,IRET,DCEL)
                 IF (IRET.NE.0) THEN
-                  CALL UTMESS('A',NOMCMD,'!! PROBLEME'//
+                  CALL UTMESS('A','THACLM','!! PROBLEME'//
      &                        'CREATION CHAM_ELEM NUL DANS ALCHML !!')
                   GO TO 282
                 END IF
@@ -756,7 +756,7 @@ C ---- VERIF SENSIBILITE FIN
   350       CONTINUE
 C    ------------------------------------------------------------------
          ELSE
-             CALL UTMESS('A',NOMCMD,' OPTION INEXISTANTE:'//OPTION)
+             CALL UTMESS('A','THACLM',' OPTION INEXISTANTE:'//OPTION)
          ENDIF
 
 C     ------------------------------------------------------------------
@@ -764,14 +764,14 @@ C     -- ERREUR SENSIBILITE
 C     ------------------------------------------------------------------
   123     CONTINUE
           IF ( CODSEN.NE.0 ) THEN
-            CALL UTMESS ( 'A', NOMCMD, 'OPTION : '//OPTION )
+            CALL UTMESS ( 'A', 'THACLM', 'OPTION : '//OPTION )
             IF ( NOPASE.NE.' ' ) THEN
-               CALL UTMESS ('A', NOMCMD, 'PARAMETRE SENSIBLE '//NOPASE)
+             CALL UTMESS ('A', 'THACLM', 'PARAMETRE SENSIBLE '//NOPASE)
             ENDIF
             IF ( CODSEN.EQ.1 ) THEN
-               CALL UTMESS ('A', NOMCMD, 'CALCUL NON DISPONIBLE' )
+               CALL UTMESS ('A', 'THACLM', 'CALCUL NON DISPONIBLE' )
             ELSEIF ( CODSEN.EQ.2 ) THEN
-               CALL UTMESS ( 'A', NOMCMD,
+               CALL UTMESS ( 'A', 'THACLM',
      >         'LE PARAMETRE DE SENSIBILITE DOIT ETRE UN CHAMP THETA' )
             ENDIF
           ENDIF
@@ -877,7 +877,7 @@ C    ------------------------------------------------------------------
   772       CONTINUE
 
            ELSE
-             CALL UTMESS('A',NOMCMD,' OPTION INEXISTANTE:'//OPTION)
+             CALL UTMESS('A','THACLM',' OPTION INEXISTANTE:'//OPTION)
            ENDIF
 C
 

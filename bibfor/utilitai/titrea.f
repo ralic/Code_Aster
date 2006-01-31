@@ -5,7 +5,7 @@
       INTEGER                                              IOCC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
          CALL GETFAC(MOTFAC, NBOCC)
          IF ( IOCC .GT. NBOCC .OR. IOCC .LT. 1 ) THEN
             CALL GETRES(NOMRES,CONCEP,NOMCMD)
-            CALL UTDEBM('A',NOMCMD//'.TITRE (ERREUR 01)',
+            CALL UTDEBM('A','TITREA'//'.TITRE (ERREUR 01)',
      +                     ' NUMERO D''OCCURRENCE INVALIDE ')
             CALL UTIMPI('S',' ',1,IOCC)
             CALL UTIMPK('S','POUR LE MOT CLE FACTEUR',1,MOTFAC)

@@ -6,7 +6,7 @@
      >                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,18 @@ C     SORTIES:
 C        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C_______________________________________________________________________
 C
+C     ARBORESCENCE DE L'ECRITURE DES CHAMPS AU FORMAT MED :
+C  IRCH19
+C  IRCHME
+C  MDNOCH RSADPA  IRCNME IRCEME
+C                   .    .
+C                    .  .
+C                   IRCAME
+C                    .  .
+C                   .    .
+C  MDNOMA MDEXMA IRMAIL UTLICM LRMTYP IRCMPR MDEXCH EFOUVR ...
+C                   ... IRCMCC IRCMPG IRCMVA IRCMEC EFFERM
+C
       IMPLICIT NONE
 C
 C 0.1. ==> ARGUMENTS
@@ -66,8 +78,16 @@ C
 C
 C 0.2. ==> COMMUNS
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      ZI
       REAL*8       ZR
+      CHARACTER*8  ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
@@ -86,12 +106,10 @@ C
       INTEGER IAUX
 C
       CHARACTER*8 SAUX08
-      CHARACTER*8 UNIINS
+      CHARACTER*8 UNIINS, MODELE
       CHARACTER*32 NOCHMD
 C
       REAL*8 INSTAN
-C
-      CALL INFNIV ( IFM, NIVINF )
 C
 C====
 C 1. PREPARATIFS
@@ -99,10 +117,12 @@ C====
 C
       CALL INFNIV ( IFM, NIVINF )
 C
+10000 FORMAT(/,81('='),/,81('='),/)
+10001 FORMAT(81('-'),/)
       IF ( NIVINF.GT.1 ) THEN
         CALL UTFLSH (CODRET)
-        WRITE (IFM,*) '================================================'
-        WRITE (IFM,*) NOMPRO, ' : ECRITURE MED DE ', CHANOM
+        WRITE (IFM,10000)
+        CALL UTMESS ('I',NOMPRO,'DEBUT DE L''ECRITURE MED DE '//CHANOM)
       ENDIF
 C
 C 1.1. ==> NOM DU CHAMP DANS LE FICHIER MED
@@ -122,7 +142,10 @@ C
         IF ( NOPASE.NE.'        ' ) THEN
           WRITE (IFM,11002) NOPASE
         ENDIF
-        WRITE (IFM,11003) NOCHMD
+        IF ( NIVINF.GT.1 ) THEN
+          WRITE (IFM,11003) TYPECH
+        ENDIF
+        WRITE (IFM,11004) NOCHMD
       ELSE
          CALL UTMESS
      > ( 'A' , NOMPRO, 'IMPOSSIBLE DE DETERMINER UN NOM DE CHAMP MED.' )
@@ -130,10 +153,11 @@ C
          CALL UTMESS ( 'A' , NOMPRO, 'ISSU DE '//NORESU )
       ENDIF
 C
-11000 FORMAT(/,2X,'RESULTAT   : ',A8)
-11001 FORMAT(  2X,'CHAMP      : ',A16)
-11002 FORMAT(  2X,'PARAMETRE  : ',A8)
-11003 FORMAT(  5X,'==> NOM MED DU CHAMP : ',A32,/)
+11000 FORMAT(1X,'RESULTAT           : ',A8)
+11001 FORMAT(1X,'CHAMP              : ',A16)
+11002 FORMAT(1X,'PARAMETRE SENSIBLE : ',A8)
+11003 FORMAT(1X,'TYPE DE CHAMP      : ',A)
+11004 FORMAT(3X,'==> NOM MED DU CHAMP : ',A32,/)
 C
 C 1.2. ==> INSTANT CORRESPONDANT AU NUMERO D'ORDRE
 C          REMARQUE : COMME ON NE SAIT PAS FAIRE MIEUX, ON IDENTIFIE
@@ -147,13 +171,13 @@ C
 C
       IF ( LRESU ) THEN
          CALL JEEXIN ( NORESU(1:8)//'           .INST', IRET )
-         IF ( IRET .NE. 0 ) THEN
+         IF ( IRET.NE.0 ) THEN
            CALL RSADPA ( NORESU, 'L', 1, 'INST', NUMORD, 0, IAUX, 
      &                   SAUX08 )
            INSTAN = ZR(IAUX)
          ENDIF
          CALL JEEXIN ( NORESU(1:8)//'           .FREQ', IRET )
-         IF ( IRET .NE. 0 ) THEN
+         IF ( IRET.NE.0 ) THEN
            CALL RSADPA ( NORESU, 'L', 1, 'FREQ', NUMORD, 0, IAUX, 
      &                   SAUX08 )
            INSTAN = ZR(IAUX)
@@ -171,6 +195,29 @@ C
 
       ENDIF
 C
+C 1.3. ==> NOM DU MODELE ASSOCIE, DANS LE CAS D'UNE STRUCTURE RESULTAT
+C
+      IF ( CODRET.EQ.0 ) THEN
+C
+      IF ( LRESU ) THEN
+C
+        CALL RSADPA ( NORESU, 'L', 1, 'MODELE', NUMORD, 0, IAUX,
+     &                SAUX08 )
+        MODELE = ZK8(IAUX)
+C
+      ELSE
+C
+        MODELE = '        '
+C                 12345678
+C
+      ENDIF
+C
+      IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,13001) MODELE
+13001 FORMAT(2X,'MODELE ASSOCIE AU CHAMP : ',A)
+      ENDIF
+      ENDIF
+C
 C====
 C 2. ECRITURE DANS LE FICHIER MED
 C====
@@ -178,13 +225,13 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
       IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
-        CALL IRCNME ( IFI, NOCHMD, CHANOM,
+        CALL IRCNME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
      >                NBCMP, NOMCMP,
      >                NUMPT, INSTAN, UNIINS, NUMORD,
      >                NBNOEC, LINOEC,
      >                CODRET )
       ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
-        CALL IRCEME ( IFI, NOCHMD, CHANOM,
+        CALL IRCEME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
      >                NBCMP, NOMCMP,
      >                NUMPT, INSTAN, UNIINS, NUMORD,
      >                NBMAEC, LIMAEC,
@@ -208,8 +255,11 @@ C
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
-        WRITE (IFM,*) '================================================'
+        CALL UTMESS ('I',NOMPRO,'FIN DE L''ECRITURE MED DE '//CHANOM)
+        WRITE (IFM,10000)
         CALL UTFLSH (CODRET)
+      ELSE
+        WRITE (IFM,10001)
       ENDIF
 C
       END

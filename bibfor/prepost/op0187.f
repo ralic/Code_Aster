@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -335,6 +335,13 @@ C --- CREATION DES OBJETS : '.NOMMAI','.TYPMAIL','.CONNEX'
            CALL JECROC(JEXNUM(CONNEX,J))
            CALL JEVEUO(JEXNUM(MA//'.CONNEX',I),'L',JCO)
            IF(ZI(JH20M+I-1).NE.0)THEN
+               IF(ZI(JTYP+I-1).EQ.25)THEN
+                 NBNOSO=8
+               ELSEIF(ZI(JTYP+I-1).EQ.21)THEN
+                 NBNOSO=6
+               ELSEIF(ZI(JTYP+I-1).EQ.19)THEN
+                 NBNOSO=4
+               ENDIF
               NBCO=NBNOSO
               ZI(JTYPF+J-1)=ZI(JH20M+I-1)
            ELSE

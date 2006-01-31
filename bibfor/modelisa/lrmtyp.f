@@ -1,8 +1,8 @@
-      SUBROUTINE LRMTYP ( NBTYP, NOMTYP,
-     >                    NNOTYP, TYPGEO, RENUMD )
+      SUBROUTINE LRMTYP ( NBTYP, NOMTYP, NNOTYP, TYPGEO, RENUMD, 
+     >                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,17 +19,37 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
 C     RECUP DES NOMS/NBNO DES TYPES DE MAILLES DANS LE CATALOGUE
 C     ET RECUP DES TYPE GEO CORRESPONDANT POUR MED
-C_____________________________________________________________________
-C
+C    
+C     SORTIE:
+C       MODNUM : INDICATEUR SI LA SPECIFICATION DE NUMEROTATION DES
+C                NOEUDS DES MAILLES EST DIFFERENTES ENTRE ASTER ET MED:
+C                     MODNUM = 0 : NUMEROTATION IDENTIQUE
+C                     MODNUM = 1 : NUMEROTATION DIFFERENTE
+C       NUANOM : TABLEAU DE CORRESPONDANCE DES NOEUDS (MED/ASTER).
+C                NUANOM(ITYP,J): NUMERO DANS ASTER DU J IEME NOEUD 
+C                DE LA MAILLE DE TYPE ITYP DANS MED.
+C       NUMNOA : TABLEAU DE CORRESPONDANCE DES NOEUDS (MED/ASTER).
+C                NUMNOA(ITYP,J) : NUMERO DANS MED DU J IEME NOEUD
+C                DE LA MAILLE DE TYPE ITYP D'ASTER
+
+C ---------------------------------------------------------------------
       IMPLICIT NONE
+C
+      INTEGER NTYMAX
+      PARAMETER (NTYMAX = 48)
+      INTEGER NNOMAX
+      PARAMETER (NNOMAX=27)
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER         NBTYP
-      INTEGER         NNOTYP(*), TYPGEO(*), RENUMD(*)
-      CHARACTER*8     NOMTYP(*)        
+      INTEGER NBTYP
+      INTEGER NNOTYP(NTYMAX), TYPGEO(NTYMAX), RENUMD(NTYMAX)
+      INTEGER MODNUM(NTYMAX)
+      INTEGER NUANOM(NTYMAX,NNOMAX), NUMNOA(NTYMAX,NNOMAX) 
+      CHARACTER*8 NOMTYP(NTYMAX)        
 C
 C 0.2. ==> COMMUNS
 C
@@ -53,16 +73,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      INTEGER         ITYP, J, NBTMAX
-      PARAMETER       (NBTMAX = 48)
-C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRMTYP' )
 C
-      INTEGER         NUMMED(NBTMAX)
-      INTEGER         IAUX, JAUX
-      CHARACTER*8     NOMAST(NBTMAX)
-      CHARACTER*1     K1
+      INTEGER NUMMED(NTYMAX)
+      INTEGER IAUX, JAUX
+      INTEGER ITYP
+      CHARACTER*8 NOMAST(NTYMAX)
+      CHARACTER*1 K1
 C
 C 0.4. ==> INITIALISATIONS
 C
@@ -100,27 +118,27 @@ C
 C     VERIFICATION QUE LE CATALOGUE EST ENCORE COHERENT AVEC LE FORTRAN
 C
       CALL JELIRA('&CATA.TM.NOMTM','NOMMAX',IAUX,K1)
-      IF ( NBTMAX .NE. IAUX ) THEN
+      IF ( NTYMAX .NE. IAUX ) THEN
          CALL UTMESS ( 'F',NOMPRO,'INCOHERENCE CATALOGUE - FORTRAN '//
      &                 '(NBTYP FORTRAN DIFFERENT DE NBTYP CATALOGUE)')
       ENDIF
 C
 C     NOM / NBNO PAR TYPE DE MAILLE
 C      
-      DO 1 ITYP = 1,NBTMAX
+      DO 1 ITYP = 1,NTYMAX
          CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',ITYP),NOMTYP(ITYP))
          IF ( NOMAST(ITYP) .NE. NOMTYP(ITYP) ) THEN
            CALL UTMESS('F',NOMPRO,'INCOHERENCE CATALOGUE - FORTRAN '//
      &                 '(NOMTYP FORTRAN DIFFERENT DE NOMTYP CATALOGUE)')
          ENDIF
-         CALL JEVEUO (JEXNUM('&CATA.TM.NBNO' ,ITYP),'L',J)
-         NNOTYP(ITYP) = ZI(J)
+         CALL JEVEUO (JEXNUM('&CATA.TM.NBNO' ,ITYP),'L',JAUX)
+         NNOTYP(ITYP) = ZI(JAUX)
          TYPGEO(ITYP) = NUMMED(ITYP)
 C       
   1   CONTINUE
 C
       NBTYP = 0
-      DO 21 , ITYP = 1 , NBTMAX
+      DO 21 , ITYP = 1 , NTYMAX
         IF ( NUMMED(ITYP).NE.0 ) THEN
           DO 211 , IAUX = 1 , NBTYP
             IF ( NUMMED(ITYP).LT.NUMMED(RENUMD(IAUX)) ) THEN
@@ -138,5 +156,231 @@ C
         ENDIF
    21 CONTINUE
 C
+C====
+C 3. CHANGEMENT DE CONVENTION DANS LES CONNECTIVITES ENTRE ASTER ET MED
+C====
+C
+C 3.1. ==> PAR DEFAUT, LES DEUX NUMEROTATIONS SONT IDENTIQUES
+C
+      DO 311 , IAUX = 1 , NTYMAX
+C
+        MODNUM(IAUX) = 0
+C
+        DO 312 , JAUX = 1 , NNOMAX
+          NUANOM(IAUX,JAUX) = 0
+          NUMNOA(IAUX,JAUX) = 0
+  312 CONTINUE
+C
+  311 CONTINUE
+C
+C 3.2. ==> MODIFICATIONS POUR LES TETRAEDRES
+C       ------ TETRA4 -------
+C
+      MODNUM(18)=1
+C
+      NUANOM(18,1)=1
+      NUMNOA(18,1)=1
+      NUANOM(18,2)=3
+      NUMNOA(18,2)=3
+      NUANOM(18,3)=2
+      NUMNOA(18,3)=2
+      NUANOM(18,4)=4
+      NUMNOA(18,4)=4
+
+C       ------ TETRA10 -------
+C
+      MODNUM(19)=1
+C
+      NUANOM(19,1)=1
+      NUMNOA(19,1)=1
+      NUANOM(19,2)=3
+      NUMNOA(19,2)=3
+      NUANOM(19,3)=2
+      NUMNOA(19,3)=2
+      NUANOM(19,4)=4
+      NUMNOA(19,4)=4
+      NUANOM(19,5)=7
+      NUMNOA(19,5)=7
+      NUANOM(19,6)=6
+      NUMNOA(19,6)=6
+      NUANOM(19,7)=5
+      NUMNOA(19,7)=5
+      NUANOM(19,8)=8
+      NUMNOA(19,8)=8
+      NUANOM(19,9)=10
+      NUMNOA(19,9)=10
+      NUANOM(19,10)=9
+      NUMNOA(19,10)=9
+C
+C 3.3. ==> MODIFICATIONS POUR LES PENTAEDRES
+C       ------ PENTA6 -------
+C
+      MODNUM(20)=1
+C
+      NUANOM(20,1)=1
+      NUMNOA(20,1)=1
+      NUANOM(20,2)=3
+      NUMNOA(20,2)=3
+      NUANOM(20,3)=2
+      NUMNOA(20,3)=2
+      NUANOM(20,4)=4
+      NUMNOA(20,4)=4
+      NUANOM(20,5)=6
+      NUMNOA(20,5)=6
+      NUANOM(20,6)=5
+      NUMNOA(20,6)=5
+
+C       ------ PENTA15 -------
+C
+      MODNUM(21)=1
+C
+      NUANOM(21,1)=1
+      NUMNOA(21,1)=1
+      NUANOM(21,2)=3
+      NUMNOA(21,2)=3
+      NUANOM(21,3)=2
+      NUMNOA(21,3)=2
+      NUANOM(21,4)=4
+      NUMNOA(21,4)=4
+      NUANOM(21,5)=6
+      NUMNOA(21,5)=6
+      NUANOM(21,6)=5
+      NUMNOA(21,6)=5
+      NUANOM(21,7)=9
+      NUMNOA(21,7)=9
+      NUANOM(21,8)=8
+      NUMNOA(21,8)=8
+      NUANOM(21,9)=7
+      NUMNOA(21,9)=7
+      NUANOM(21,10)=15
+      NUMNOA(21,10)=13
+      NUANOM(21,11)=14
+      NUMNOA(21,11)=15
+      NUANOM(21,12)=13
+      NUMNOA(21,12)=14
+      NUANOM(21,13)=10
+      NUMNOA(21,13)=12
+      NUANOM(21,14)=12
+      NUMNOA(21,14)=11
+      NUANOM(21,15)=11
+      NUMNOA(21,15)=10
+
+C
+C 3.4. ==> MODIFICATIONS POUR LES PYRAMIDES
+C       ------ PYRAM5 -------
+C
+      MODNUM(22)=1
+C
+      NUANOM(22,1)=1
+      NUMNOA(22,1)=1
+      NUANOM(22,2)=4
+      NUMNOA(22,2)=4
+      NUANOM(22,3)=3
+      NUMNOA(22,3)=3
+      NUANOM(22,4)=2
+      NUMNOA(22,4)=2
+      NUANOM(22,5)=5
+      NUMNOA(22,5)=5
+
+C       ------ PYRAM13 -------
+      MODNUM(23)=1
+C
+      NUANOM(23,1)=1
+      NUMNOA(23,1)=1
+      NUANOM(23,2)=4
+      NUMNOA(23,2)=4
+      NUANOM(23,3)=3
+      NUMNOA(23,3)=3
+      NUANOM(23,4)=2
+      NUMNOA(23,4)=2
+      NUANOM(23,5)=5
+      NUMNOA(23,5)=5
+      NUANOM(23,6)=9
+      NUMNOA(23,6)=9
+      NUANOM(23,7)=8
+      NUMNOA(23,7)=8
+      NUANOM(23,8)=7
+      NUMNOA(23,8)=7
+      NUANOM(23,9)=6
+      NUMNOA(23,9)=6
+      NUANOM(23,10)=10
+      NUMNOA(23,10)=10
+      NUANOM(23,11)=13
+      NUMNOA(23,11)=13
+      NUANOM(23,12)=12
+      NUMNOA(23,12)=12
+      NUANOM(23,13)=11
+      NUMNOA(23,13)=11
+C
+C
+C 3.2. ==> MODIFICATIONS POUR LES HEXAEDRES
+C
+C       ------ HEXA8 -------
+C
+      MODNUM(24)=1
+C
+      NUANOM(24,1)=1
+      NUMNOA(24,1)=1
+      NUANOM(24,2)=4
+      NUMNOA(24,2)=4
+      NUANOM(24,3)=3
+      NUMNOA(24,3)=3
+      NUANOM(24,4)=2
+      NUMNOA(24,4)=2
+      NUANOM(24,5)=5
+      NUMNOA(24,5)=5
+      NUANOM(24,6)=8
+      NUMNOA(24,6)=8
+      NUANOM(24,7)=7
+      NUMNOA(24,7)=7
+      NUANOM(24,8)=6
+      NUMNOA(24,8)=6
+C
+C       ------ HEXA20 -------
+C
+      MODNUM(25)=1
+C
+      NUANOM(25,1)=1
+      NUMNOA(25,1)=1
+      NUANOM(25,2)=4
+      NUMNOA(25,2)=4
+      NUANOM(25,3)=3
+      NUMNOA(25,3)=3
+      NUANOM(25,4)=2
+      NUMNOA(25,4)=2
+      NUANOM(25,5)=5
+      NUMNOA(25,5)=5
+      NUANOM(25,6)=8
+      NUMNOA(25,6)=8
+      NUANOM(25,7)=7
+      NUMNOA(25,7)=7
+      NUANOM(25,8)=6
+      NUMNOA(25,8)=6
+      NUANOM(25,9)=12
+      NUMNOA(25,9)=12
+      NUANOM(25,10)=11
+      NUMNOA(25,10)=11
+      NUANOM(25,11)=10
+      NUMNOA(25,11)=10
+      NUANOM(25,12)=9
+      NUMNOA(25,12)=9
+      NUANOM(25,13)=20
+      NUMNOA(25,13)=17
+      NUANOM(25,14)=19
+      NUMNOA(25,14)=20
+      NUANOM(25,15)=18
+      NUMNOA(25,15)=19
+      NUANOM(25,16)=17
+      NUMNOA(25,16)=18
+      NUANOM(25,17)=13
+      NUMNOA(25,17)=16
+      NUANOM(25,18)=16
+      NUMNOA(25,18)=15
+      NUANOM(25,19)=15
+      NUMNOA(25,19)=14
+      NUANOM(25,20)=14
+      NUMNOA(25,20)=13
+C
       CALL JEDEMA ( )
+C
       END

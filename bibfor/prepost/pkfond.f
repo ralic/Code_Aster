@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C DEB ------------------------------------------------------------------
 
       FONNOE = FOND//'.FOND      .TYPE'
       CALL JEEXIN ( FONNOE, IRET )
-      IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .TYPE')
+      IF (IRET.EQ.0) CALL UTMESS('F','PKFOND','BUG: MANQUE .TYPE')
       CALL JEVEUO ( FONNOE, 'L', JTYPM )
       TYPM = ZK8(JTYPM)
       IF ( TYPM(1:4) .EQ. 'SEG2' ) THEN
@@ -98,7 +98,7 @@ C DEB ------------------------------------------------------------------
       ELSEIF ( TYPM(1:4) .EQ. 'SEG4' ) THEN
          IPAS = 3
       ELSE
-         CALL UTMESS('F',NOMCMD,'TYPE DE MAILLE INCONNU : VERIFIER '//
+       CALL UTMESS('F','PKFOND','TYPE DE MAILLE INCONNU : VERIFIER '//
      &        'LES ARGUMENTS DE L OPERATEUR DEFI_FOND_FISS '//TYPM )
       ENDIF
       CALL GETVTX ( ' ', 'TOUT', 1,1,1, K8B, N1 )
@@ -110,7 +110,7 @@ C DEB ------------------------------------------------------------------
       IF (IRET.EQ.0) THEN
           CALL JEEXIN (FOND//'.FOND_INF  .NOEU', IRET )
            IF (IRET.EQ.0) THEN
-               CALL UTMESS('F',NOMCMD,'BUG: MANQUE .NOEU')
+               CALL UTMESS('F','PKFOND','BUG: MANQUE .NOEU')
            ELSE
                LFOINF=.TRUE.
                FONNOE =FOND//'.FOND_INF  .NOEU'
@@ -121,12 +121,12 @@ C DEB ------------------------------------------------------------------
 
       FONLSU = FOND//'.LEVRESUP  .MAIL'
       CALL JEEXIN ( FONLSU, IRET )
-      IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .LEV_SUP')
+      IF (IRET.EQ.0) CALL UTMESS('F','PKFOND','BUG: MANQUE .LEV_SUP')
 
       IF (SYMECH .EQ. 'SANS' ) THEN
         FONLIN = FOND//'.LEVREINF  .MAIL'
         CALL JEEXIN ( FONLIN, IRET )
-        IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .LEV_INF')
+        IF (IRET.EQ.0) CALL UTMESS('F','PKFOND','BUG: MANQUE .LEV_INF')
       ENDIF
 
       FONTOR = FOND//'.DTAN_ORIGINE'
@@ -179,7 +179,7 @@ C     ------------------------------------------------------------------
       CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3, TCOEF, ITCOEF )
 C
       IF ( NDIM .NE. 3 ) THEN
-         CALL UTMESS('F',NOMCMD,'LA MODELISATION DOIT ETRE "3D"')
+         CALL UTMESS('F','PKFOND','LA MODELISATION DOIT ETRE "3D"')
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -473,7 +473,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
          RMPREC = RMAX*(1+PRECV/10)
          
          IF ( NBTRLS .LT. 3 ) THEN
-            CALL UTDEBM('A',NOMCMD,'IL MANQUE DES POINTS DANS LE PLAN'//
+          CALL UTDEBM('A','PKFOND','IL MANQUE DES POINTS DANS LE PLAN'//
      +    ' DEFINI PAR LA LEVRE SUPERIEURE ET PERPENDICULAIRE AU NOEUD')
             CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
             CALL UTIMPK('L',' AUGMENTER ',1,'PREC_VIS_A_VIS')
@@ -541,7 +541,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
          
          IF (SYMECH .NE. 'SYME' ) THEN
            IF ( NBTRLI .LT. 3 ) THEN
-              CALL UTDEBM('A',NOMCMD,'IL MANQUE DES POINTS DANS LE '//
+            CALL UTDEBM('A','PKFOND','IL MANQUE DES POINTS DANS LE '//
      +      'PLAN DEFINI PAR LA LEVRE INFERIEURE ET PERPENDICULAIRE '//
      +      'AU NOEUD')
               CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
@@ -602,7 +602,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
  124       CONTINUE
 
            IF ( NBVAS .NE. NBVAI ) THEN
-              CALL UTDEBM('A',NOMCMD,'DIFFERENCE DE POINTS ENTRE LA '//
+            CALL UTDEBM('A','PKFOND','DIFFERENCE DE POINTS ENTRE LA '//
      +          ' LEVRE INFERIEURE ET SUPERIEURE POUR TRAITER LE NOEUD')
               CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
               CALL UTIMPI('L',' NOMBRE DE POINTS SUPERIEURE ',1,NBVAS)
@@ -614,7 +614,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
          ENDIF
          
          IF ( NBVAL .LT. 3 ) THEN
-            CALL UTDEBM('A',NOMCMD,'IL FAUT AU MOINS TROIS NOEUDS '//
+            CALL UTDEBM('A','PKFOND','IL FAUT AU MOINS TROIS NOEUDS '//
      +    'DANS LE PLAN DEFINI PAR LES LEVRES ET PERPENDICULAIRE '//
      +    'AU NOEUD')
             CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
@@ -636,7 +636,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
      +                    ZK8(KNOLS+IN-1), 'RELATIF', EPSI, 'DX', K8B,
      +                    IBID, ZR(JDXS+IN-1), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
+               CALL UTDEBM('A','PKFOND','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DX')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLS+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPSUP)
@@ -647,7 +647,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
      +                    ZK8(KNOLS+IN-1), 'RELATIF', EPSI, 'DY', K8B,
      +                    IBID, ZR(JDYS+IN-1), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
+               CALL UTDEBM('A','PKFOND','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DY')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLS+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPSUP)
@@ -658,7 +658,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
      +                    ZK8(KNOLS+IN-1), 'RELATIF', EPSI, 'DZ', K8B,
      +                    IBID, ZR(JDZS+IN-1), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
+               CALL UTDEBM('A','PKFOND','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DZ')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLS+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPSUP)
@@ -674,7 +674,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
      +                    ZK8(KNOLI+IN-1), 'RELATIF', EPSI, 'DX', K8B,
      +                    IBID, ZR(JDXI+IN-1), CBID, K8B, IRET )
              IF (IRET.NE.0) THEN
-               CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
+               CALL UTDEBM('A','PKFOND','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DX')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLI+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPINF)
@@ -685,7 +685,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
      +                    ZK8(KNOLI+IN-1), 'RELATIF', EPSI, 'DY', K8B,
      +                    IBID, ZR(JDYI+IN-1), CBID, K8B, IRET )
              IF (IRET.NE.0) THEN
-               CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
+               CALL UTDEBM('A','PKFOND','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DY')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLI+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPINF)
@@ -696,7 +696,7 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
      +                    ZK8(KNOLI+IN-1), 'RELATIF', EPSI, 'DZ', K8B,
      +                    IBID, ZR(JDZI+IN-1), CBID, K8B, IRET )
              IF (IRET.NE.0) THEN
-               CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
+               CALL UTDEBM('A','PKFOND','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DZ')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLI+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPINF)
@@ -716,7 +716,7 @@ C        --- ON VERIFIE QUE LES NOEUDS SONT EN VIS_A_VIS ---
              D = D + ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) -
      +                ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3) ) ** 2
              IF ( SQRT(D) .GT. PRECN ) THEN
-               CALL UTMESS('A',NOMCMD,
+               CALL UTMESS('A','PKFOND',
      +                     'LES NOEUDS NE SONT PAS EN VIS_A_VIS')
                GOTO 202
              ENDIF

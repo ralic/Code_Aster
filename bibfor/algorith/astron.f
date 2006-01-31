@@ -9,7 +9,7 @@
       LOGICAL           MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       IF (NOMSY(1:4).NE.'ACCE') THEN
          NOMSY2 = NOMSY
          IF (NOMSY(1:4).EQ.'VITE') THEN
-            CALL UTDEBM('A',NOMCMD,
+            CALL UTDEBM('A','ASTRON',
      +                      'CORRECTION STATIQUE NON PRISE EN COMPTE')
             CALL UTIMPK('L','   POUR L''OPTION : ',1,NOMSY2)
             CALL UTFINM( )

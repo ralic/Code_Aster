@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,14 @@ C
          SOMM = SOMM + VALE(4)
          TOLE = MIN ( TOLE , VALE(4)*0.01D0 )
          IF ( N1 .NE. 3 ) THEN
-            CALL UTDEBM('F',NOMCMD,'ERREUR DONNEE: ')
+            CALL UTDEBM('F','OP0181','ERREUR DONNEE: ')
             CALL UTIMPI('L','  OCCURRENCE ',1,IOCC)
             CALL UTIMPK('S','  ON ATTEND 3 VALEURS POUR LE MOT CLE ',
      +                      1,'ANGL_NAUT')
             CALL UTFINM
          ENDIF
          IF ( VALE(4) .LE. 0.D0  .OR.  VALE(4) .GT. 1.D0 ) THEN
-            CALL UTDEBM('F',NOMCMD,'ERREUR DONNEE: ')
+            CALL UTDEBM('F','OP0181','ERREUR DONNEE: ')
             CALL UTIMPI('L','  OCCURRENCE ',1,IOCC)
             CALL UTIMPR('L','  VALEUR RECUPEREE ',1,VALE(4))
          CALL UTIMPK('L','  LA VALEUR DE DU MOT CLE ',1,'PROPORTION')
@@ -72,7 +72,7 @@ C
          ENDIF
  100  CONTINUE
       IF ( ABS(SOMM-1.D0) .GE. TOLE*ABS(1.D0) ) THEN
-         CALL UTDEBM('F',NOMCMD,'ERREUR DONNEE: ')
+         CALL UTDEBM('F','OP0181','ERREUR DONNEE: ')
          CALL UTIMPR('L',' VALEUR CALCULEE ',1,SOMM)
          CALL UTIMPK('L',' LA SOMME DES ',1,'PROPORTION')
          CALL UTIMPR('S',' EST DIFFERENTE DE ',1,1.D0)
@@ -83,13 +83,13 @@ C
          CALL GETVR8 ( 'SYST_GLISSEMENT', 'N', IOCC,1,0, ZN1, N1 )
          CALL GETVR8 ( 'SYST_GLISSEMENT', 'L', IOCC,1,0, ZL1, N2 )
          IF ( N1 .NE. N2 ) THEN
-            CALL UTDEBM('F',NOMCMD,'ERREUR DONNEE: ')
+            CALL UTDEBM('F','OP0181','ERREUR DONNEE: ')
             CALL UTIMPI('L','  OCCURRENCE ',1,IOCC)
             CALL UTIMPK('S','  AUTANT DE VALEURS POUR N ET L',0,' ')
             CALL UTFINM
          ENDIF
          IF ( N1 .NE. N0 ) THEN
-            CALL UTDEBM('F',NOMCMD,'ERREUR DONNEE: ')
+            CALL UTDEBM('F','OP0181','ERREUR DONNEE: ')
             CALL UTIMPI('L','  OCCURRENCE ',1,IOCC)
             CALL UTIMPI('S','  ON ATTENDAIT POUR N ',1,-N0)
             CALL UTFINM

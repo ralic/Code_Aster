@@ -6,7 +6,7 @@
       CHARACTER*24        OBJVE1 , OBJVE2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,6 @@ C     ------------------------------------------------------------------
      +              INOMNO, INUMNO, IDEC, J, IINO, NUNO, NUMIN, IMIN,
      +              INUDDL, NUNOE
       CHARACTER*8   K8B, NNOE, NOMCMP(6), GRNO
-      CHARACTER*16  NOMCMD
       CHARACTER*24  GRPNOE, NOMNOE
 C     ------------------------------------------------------------------
       DATA NOMCMP   /'DX      ','DY      ','DZ      ',
@@ -58,7 +57,6 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C
-      NOMCMD = 'REST_BASE_PHYS'
       NOMNOE = MAILLA//'.NOMNOE'
       GRPNOE = MAILLA//'.GROUPENO'
 C
@@ -76,7 +74,7 @@ C
          DO 20 I = 1 , NBGRNO
             GRNO = ZK8(INOMGR+I-1)
             CALL JEEXIN(JEXNOM(GRPNOE,GRNO),IRET)
-            IF ( IRET.EQ.0 ) CALL UTMESS('F',NOMCMD,'LE GROUPE DE '//
+            IF ( IRET.EQ.0 ) CALL UTMESS('F','RBPH02','LE GROUPE DE '//
      +            'NOEUDS '//GRNO//' NE FAIT PAS PARTIE DU MAILLAGE '//
      +             MAILLA)
             CALL JELIRA(JEXNOM(GRPNOE,GRNO),'LONMAX',NB,K8B)
@@ -115,7 +113,7 @@ C
          DO 50 I = 1,NBNOEU
             NNOE = ZK8(INOMNO+I-1)
             CALL JEEXIN ( JEXNOM(NOMNOE,NNOE) , IRET )
-            IF ( IRET.EQ.0 ) CALL UTMESS('F',NOMCMD,'LE NOEUD '//
+            IF ( IRET.EQ.0 ) CALL UTMESS('F','RBPH02','LE NOEUD '//
      +             NNOE//' NE FAIT PAS PARTIE DU MAILLAGE '//MAILLA)
             CALL JENONU ( JEXNOM(NOMNOE,NNOE), ZI(INUMNO+I-1) )
   50     CONTINUE

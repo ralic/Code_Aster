@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,LIGRMZ,NDIM,FONREE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/09/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 31/01/2006   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_20
 C ======================================================================
@@ -391,6 +391,12 @@ C ======================================================================
 
       CALL DIMECO(CHAR,NOMA,NDIM,NZOCO,NSUCO,NMACO,NNOCO,
      &                  NMANO,NNOMA,NMAMA) 
+
+C ======================================================================
+C --- RECUPERATION DES CARACTERISTIQUES DE POUTRE 
+C ======================================================================
+
+      CALL CAPOCO ( CHAR, MOTFAC, NOMA )
 
 C ======================================================================
 C --- RELATIONS LINEAIRES POUR MAILLES QUADRATIQUES SURFACIQUES 

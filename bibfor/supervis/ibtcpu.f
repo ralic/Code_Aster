@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 23/05/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,7 @@ C
         LCPU = MIN ( IBORNE , LCPU )
         IF ( LCPU .GT. TPMAX ) THEN
           CALL GETRES(CBID,CBID,NOMCMD)
-          CALL UTMESS ('F',NOMCMD,'VALEUR INVALIDE POUR LE MOT CLE'
+          CALL UTMESS ('F','IBTCPU','VALEUR INVALIDE POUR LE MOT CLE'
      &                 //'RESERVE_CPU')
           IER = 1
         ENDIF
