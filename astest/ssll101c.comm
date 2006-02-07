@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 27/06/2000
 # AUTEUR : F. LEBOUVIER (DELATCAD)
@@ -37,19 +37,19 @@ MAILLAGE=LIRE_MAILLAGE( )
 
 #
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,  MAILLAGE=MAILLAGE,CREA_GROUP_NO=(
-                          _F( NOM = 'ND2',  NOEUD = 'NO42'),
-                          _F( NOM = 'ND3',  NOEUD = 'NO31'),
-                          _F( NOM = 'ND4',  NOEUD = 'NO36'),
-                          _F( NOM = 'ND5',  NOEUD = 'NO22'),
-                          _F( NOM = 'ND6',  NOEUD = 'NO28'),
-                          _F( NOM = 'ND7',  NOEUD = 'NO26'),
-                          _F( NOM = 'ND8',  NOEUD = 'NO24'),
-                          _F( NOM = 'ND9',  NOEUD = 'NO11'),
-                          _F( NOM = 'ND10', NOEUD = 'NO16'),
-                          _F( NOM = 'ND11', NOEUD = 'NO2'),
-                          _F( NOM = 'ND12', NOEUD = 'NO8'),
-                          _F( NOM = 'ND13', NOEUD = 'NO6'),
-                          _F( NOM = 'ND14', NOEUD = 'NO4'))
+                          _F( NOM = 'ND2',  NOEUD = 'N42'),
+                          _F( NOM = 'ND3',  NOEUD = 'N31'),
+                          _F( NOM = 'ND4',  NOEUD = 'N36'),
+                          _F( NOM = 'ND5',  NOEUD = 'N22'),
+                          _F( NOM = 'ND6',  NOEUD = 'N28'),
+                          _F( NOM = 'ND7',  NOEUD = 'N26'),
+                          _F( NOM = 'ND8',  NOEUD = 'N24'),
+                          _F( NOM = 'ND9',  NOEUD = 'N11'),
+                          _F( NOM = 'ND10', NOEUD = 'N16'),
+                          _F( NOM = 'ND11', NOEUD = 'N2'),
+                          _F( NOM = 'ND12', NOEUD = 'N8'),
+                          _F( NOM = 'ND13', NOEUD = 'N6'),
+                          _F( NOM = 'ND14', NOEUD = 'N4'))
                         )
 
 #

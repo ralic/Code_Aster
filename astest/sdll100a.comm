@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE REPONSE TRANSITOIRE PAR INTEGRATION DIRECTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,8 +51,8 @@ CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,
 
 #----------------------------------------------------------------------
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
-                FORCE_NODALE=_F( NOEUD = 'NO2', FX = 1.0),
-               DDL_IMPO=_F( NOEUD = 'NO1', DX = 0.0, DY = 0.0, DZ = 0.0,
+                FORCE_NODALE=_F( NOEUD = 'N2', FX = 1.0),
+               DDL_IMPO=_F( NOEUD = 'N1', DX = 0.0, DY = 0.0, DZ = 0.0,
                                       DRX = 0.0, DRY = 0., DRZ = 0.0))
 
 #
@@ -128,13 +128,13 @@ WILAMOR=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
 
 TEST_RESU(RESU=( 
           _F(  RESULTAT = NEWNONA,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'NO2', NOM_CMP = 'DX', VALE = 2.58E-3, PRECISION = 1.E-2),
+            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.58E-3, PRECISION = 1.E-2),
           _F(  RESULTAT = WILNONA,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'NO2', NOM_CMP = 'DX', VALE = 2.58E-3, PRECISION = 1.E-2),
+            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.58E-3, PRECISION = 1.E-2),
           _F(  RESULTAT = NEWAMOR,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'NO2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2),
+            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2),
           _F(  RESULTAT = WILAMOR,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'NO2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2))
+            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2))
           )
 
 #
@@ -173,7 +173,7 @@ WILAMOR2=LIRE_RESU(       MAILLAGE=POUTRE,
 TEST_RESU( 
           RESU=_F(  RESULTAT = WILAMOR2,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
             REFERENCE = 'AUTRE_ASTER',
-            NOEUD = 'NO2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2)
+            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2)
           )
 
 # ON AFFECTE A UN CHAMP DE VITESSE LA COMPOSANTE 'DX' DU CHAMP
@@ -197,7 +197,7 @@ WILAMOR3=LIRE_RESU(       MAILLAGE=POUTRE,
 TEST_RESU( 
           RESU=_F(  RESULTAT = WILAMOR3,  NOM_CHAM = 'VITE',  NUME_ORDRE = 5,
             REFERENCE = 'AUTRE_ASTER',
-            NOEUD = 'NO2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2)
+            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2)
           )
 
 FIN( )

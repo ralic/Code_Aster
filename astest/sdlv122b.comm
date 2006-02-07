@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,7 +178,7 @@ REPGENE=PROJ_MESU_MODAL(
 #                                       NOM_PARA = 'INST', 
                                     NOM_CHAM = 'SIEF_NOEU',),
                          CORR_MANU=_F( NOEU_MESURE = 'N4',
-                                    NOEU_CALCUL = 'NO75',),)
+                                    NOEU_CALCUL = 'N75',),)
 
 #
 # RESTITUTION DES RESULTATS 

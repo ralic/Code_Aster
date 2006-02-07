@@ -1,6 +1,6 @@
       SUBROUTINE VRCOM2(COMPOM,COMPOP,VARMOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,8 +118,8 @@ C     ----------------------------------------------------------
 C     3- ON RECOPIE DE CESV1 VERS CESV2 :
 C     -----------------------------------
       CALL JEVEUO(CESV2//'.CESD','L',JCEV2D)
-      CALL JEVEUO(CESV2//'.CESV','L',JCEV2V)
-      CALL JEVEUO(CESV2//'.CESL','L',JCEV2L)
+      CALL JEVEUO(CESV2//'.CESV','E',JCEV2V)
+      CALL JEVEUO(CESV2//'.CESL','E',JCEV2L)
 
       COTO = '&&VRCOM2.COTO'
       COPM = '&&VRCOM2.COPM'

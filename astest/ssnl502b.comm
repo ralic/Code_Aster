@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -47,7 +47,7 @@ MAIL=CREA_MAILLAGE(     MAILLAGE=MA,
                      )
 
 MAIL=DEFI_GROUP(reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
-                   _F( NOM = 'C', NOEUD = 'NO81'),
+                   _F( NOM = 'C', NOEUD = 'N81'),
                     ))
 
 #

@@ -6,7 +6,7 @@
       CHARACTER*8         CHAR, NOMA, FFGR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -159,7 +159,7 @@ C
 C
 C --- RECHERCHE DU NOEUD LE PLUS PROCHE DU CDG
 C
-      CALL JEVEUO(CHAR//'.CHME.GRFLU.APPL','L',IAPL)
+      CALL JEVEUO(CHAR//'.CHME.GRFLU.APPL','E',IAPL)
       IF (((ZI(IAPL-1+1)).EQ.2).OR.
      +    ((ZI(IAPL-1+2)).EQ.2).OR.
      +    ((ZI(IAPL-1+3)).EQ.2).OR.

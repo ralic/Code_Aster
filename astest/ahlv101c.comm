@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE GUIDE D'ONDE INCIDENTE A SORTIE ANECHOIQUE EN U,P,PHI-CAS AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,13 +94,13 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASM,  MATR_RIGI=MATASK,
 
 TEST_RESU(RESU=(
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO1',  NOM_CMP = 'PRES',  VALE_C = 0.50000+0.0j),
+              NOEUD = 'N1',  NOM_CMP = 'PRES',  VALE_C = 0.50000+0.0j),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO3',  NOM_CMP = 'PRES',  VALE_C = 0.50000+0.0j),
+              NOEUD = 'N3',  NOM_CMP = 'PRES',  VALE_C = 0.50000+0.0j),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO151', NOM_CMP = 'PRES',  VALE_C = -0.4825-0.1313j),
+              NOEUD = 'N151', NOM_CMP = 'PRES',  VALE_C = -0.4825-0.1313j),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO153',  NOM_CMP = 'PRES',  VALE_C = -0.4825-0.1313j))
+              NOEUD = 'N153',  NOM_CMP = 'PRES',  VALE_C = -0.4825-0.1313j))
              )
 
 FIN()

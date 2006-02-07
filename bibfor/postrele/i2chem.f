@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,10 +42,10 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
 C     ------------------------------------------------------------------
-      INTEGER N1,N2,NBTNOE,IFM,NIV,IER,NBTM,OCC,IM,IG
+      INTEGER N1,N2,NBTNOE,IFM,NIV,IER,NBTM,OCC,IM,IG,JGRM1,JGRM2
       INTEGER EXISTE,NUMM,JTYPM,NBM,JGRMA,JMAIL,IN,MI
       INTEGER LIBR1,ALSTOT,JNOE,NIG,NID,KMAIL1,KMAIL2
-      INTEGER ASTRCT,JMAIL1,JMAIL2,APTSTR,NBCNX,KCHM,SGCOUR
+      INTEGER ASTRCT,JMAIL1,JMAIL2,JMAIL3,APTSTR,NBCNX,KCHM,SGCOUR
       INTEGER KTYPCB,KNOMMA,CHM,DEBCHM,FINCHM,IND,IATYMA
       INTEGER NUMSE,NUMM1,NUMM2,IBID,NUMNO,IRET,IDEB,TROUVE
       REAL*8 EPSI
@@ -131,10 +131,10 @@ C----------------------------------------------------------------------
               CALL UTFINM
             ELSE
               CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONMAX',NBM,K1B)
-              CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JMAIL)
+              CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JGRM1)
               DO 20,IM = 1,NBM,1
                 CALL JEVEUO(TYPE,'L',IATYMA)
-                JTYPM = IATYMA - 1 + ZI(JMAIL+IM-1)
+                JTYPM = IATYMA - 1 + ZI(JGRM1+IM-1)
                 CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JTYPM)),TYPM)
                 IF (TYPM.NE.'SEG2' .AND. TYPM.NE.'SEG3') THEN
                   IER = IER + 1
@@ -169,10 +169,10 @@ C----------------------------------------------------------------------
         CALL GETVID('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
         IF (N1.NE.0) THEN
           N1 = -N1
-          CALL WKVECT('&&OP0050.MAILLE','V V K8',N1,JMAIL)
-          CALL GETVID('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL),N2)
+          CALL WKVECT('&&OP0050.MAILLE','V V K8',N1,JMAIL3)
+          CALL GETVID('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL3),N2)
           DO 50,IM = 1,N1,1
-            CALL JENONU(JEXNOM(NOMMAI,ZK8(JMAIL+IM-1)),NUMM)
+            CALL JENONU(JEXNOM(NOMMAI,ZK8(JMAIL3+IM-1)),NUMM)
             CALL I2RDLI(NUMM,ZI(ALSTOT),LIBR1)
    50     CONTINUE
           CALL JEDETR('&&OP0050.MAILLE')
@@ -183,9 +183,9 @@ C----------------------------------------------------------------------
           DO 70,IG = 1,N2,1
             NOMGR = ZK8(JGRMA+IG-1)
             CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONMAX',NBM,K1B)
-            CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JMAIL)
+            CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JGRM2)
             DO 60,IM = 1,NBM,1
-              NUMM = ZI(JMAIL+IM-1)
+              NUMM = ZI(JGRM2+IM-1)
               CALL I2RDLI(NUMM,ZI(ALSTOT),LIBR1)
    60       CONTINUE
    70     CONTINUE

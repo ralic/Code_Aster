@@ -1,0 +1,110 @@
+      SUBROUTINE MEDOM2(MODELE,MATE,CARA,KCHA,NCHA,CTYP,
+     &                  RESULT,NUORD,NBORDR,NPASS,LIGREL)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER                                 NCHA
+      INTEGER                  NUORD
+      CHARACTER*4                                       CTYP
+      CHARACTER*8       MODELE, CARA 
+      CHARACTER*8       RESULT
+      CHARACTER*24      MATE
+      CHARACTER*(*)                      KCHA
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ======================================================================
+C     CHAPEAU DE LA ROUTINE MEDOM1
+C     ON DETERMINE LE BON LIGREL DANS LE CAS OU ON PASSE POUR LA 
+C     PREMIERE FOIS
+C ----------------------------------------------------------------------
+C OUT : MODELE : NOM DU MODELE
+C OUT : MATE   : CHAMP MATERIAU
+C OUT : CARA   : NOM DU CHAMP DE CARACTERISTIQUES
+C IN  : KCHA   : NOM JEVEUX POUR STOCKER LES CHARGES
+C OUT : NCHA   : NOMBRE DE CHARGES
+C OUT : CTYP   : TYPE DE CHARGE
+C IN  : RESULT : NOM DE LA SD RESULTAT
+C IN  : NUORD  : NUMERO D'ORDRE
+C IN  : NBORDR : NOMBRE TOTAL DE NUMEROS D'ORDRE
+C IN/OUT : NPASS  : NOMBRE DE PASSAGE DANS LA ROUTINE
+C OUT : LIGREL   : NOM DU LIGREL
+
+C ----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
+C     ------------------------------------------------------------------
+      INTEGER     NBORDR, NPASS, NBLIGR, I, KMOD, ILIGRS, IMODLS
+      REAL*8      PREC
+      CHARACTER*24 LIGREL, LIGR1
+
+C PERSISTANCE PAR RAPPORT A OP0058
+      SAVE NBLIGR, ILIGRS, IMODLS
+C
+      CALL JEMARQ()
+
+C     RECUPERATION DU MODELE, CARA, CHARGES A PARTIR DU RESULTAT ET DU
+C     NUMERO ORDRE
+      CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHA,CTYP,
+     &                    RESULT,NUORD)
+
+C     RECUPERATION DU LIGREL DU MODELE
+
+C     POUR LE PREMIER PASSAGE ON INITIALISE LES TABLEAUX SAUVES
+      IF (NPASS.EQ.0) THEN
+        NPASS=NPASS+1
+        NBLIGR=0
+        CALL JEDETR('&&MEDOM2.LIGRS    ')
+        CALL JEDETR('&&MEDOM2.MODELS   ')
+        CALL WKVECT('&&MEDOM2.LIGRS    ','V V K24',NBORDR,ILIGRS)
+        CALL WKVECT('&&MEDOM2.MODELS   ','V V K8',NBORDR,IMODLS)
+      END IF
+
+C     ON REGARDE SI LE MODELE A DEJA ETE RENCONTRE
+      KMOD=INDIK8(ZK8(IMODLS-1),MODELE,1,NBLIGR+1)
+      DO 10,I = 1,NBLIGR
+        IF (ZK8(IMODLS-1+I).EQ.MODELE) KMOD=1
+   10 CONTINUE
+
+C     SI OUI ALORS ON REPREND LE BON LIGREL
+      IF (KMOD.GT.0) THEN
+        LIGREL=ZK24(ILIGRS-1+NBLIGR)
+
+C     SI NON ON CREE UN NOUVEAU LIGREL
+      ELSE
+        CALL EXLIMA(' ','G',MODELE,'        ',LIGR1)
+        NBLIGR=NBLIGR+1
+        ZK24(ILIGRS-1+NBLIGR)=LIGR1
+        ZK8(IMODLS-1+NBLIGR)=MODELE
+        LIGREL=LIGR1
+      END IF
+C
+      CALL JEDEMA()
+      END

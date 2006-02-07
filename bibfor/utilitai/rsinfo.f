@@ -4,7 +4,7 @@ C     RESULTAT - INFORMATION
 C     * *        ****
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       PARAMETER ( NOMPRO = 'RSINFO' )
 C
       INTEGER       IFI, IBID, NBNOSY, LRES, INOMSY, I, J, K, ISY, II
-      INTEGER       IATACH, LNOSY, LATAC, LG, LXLGUT, LB
+      INTEGER       IATACH, LNOSY, LNOPA, LNUPA, LATAC, LG, LXLGUT, LB
       INTEGER       IRET, LTIRT, NBAC, NBPA, IAC, IPAR, IAD, JPA
       INTEGER       NBORDT, IPCD, IPCF, LPOIN, LONGT
       INTEGER NBSTSE, NBSTRU, NRSTRU, ADSTDE
@@ -359,8 +359,8 @@ C
 C 2.6. ==>          --- LES NOMS DES PARAMETRES ---
 C
       IF ( NBPA .NE. 0 ) THEN
-         CALL WKVECT('&&'//NOMPRO//'.NOM_PARA','V V K16',NBPA,LNOSY)
-         CALL WKVECT('&&'//NOMPRO//'.NUM_PARA','V V K16',NBPA,LATAC)
+         CALL WKVECT('&&'//NOMPRO//'.NOM_PARA','V V K16',NBPA,LNOPA)
+         CALL WKVECT('&&'//NOMPRO//'.NUM_PARA','V V K16',NBPA,LNUPA)
          IPAR   = 0
          DO 261 I = 1,NBORDT
             DO 2611 J = 1,NBPA
@@ -377,11 +377,11 @@ C
                LB = ( 16 - LG ) / 2
                NOPAR2 = BLANC(1:LB)//NOPARA
                DO 2612 K = 1 , IPAR
-                  IF ( ZK16(LNOSY+K-1) .EQ. NOPAR2 ) GOTO 2611
+                  IF ( ZK16(LNOPA+K-1) .EQ. NOPAR2 ) GOTO 2611
  2612          CONTINUE
                IPAR = IPAR + 1
-               ZK16(LNOSY+IPAR-1) = NOPAR2
-               ZK16(LATAC+IPAR-1) = NOPARA
+               ZK16(LNOPA+IPAR-1) = NOPAR2
+               ZK16(LNUPA+IPAR-1) = NOPARA
  2611       CONTINUE
   261    CONTINUE
 C
@@ -400,7 +400,7 @@ C
 C
          WRITE (IFI,'(/,1X,A)') 'LISTE DES NOMS DE PARAMETRES:'
          WRITE (IFI,FORM1) '----------', ( ZK16(LTIRT+J-1), J=1,IPAR )
-         WRITE (IFI,FORM1) 'NUME_ORDRE', ( ZK16(LNOSY+J-1), J=1,IPAR )
+         WRITE (IFI,FORM1) 'NUME_ORDRE', ( ZK16(LNOPA+J-1), J=1,IPAR )
          WRITE (IFI,FORM1) '----------', ( ZK16(LTIRT+J-1), J=1,IPAR )
 C
          CHAIN1 = ' '
@@ -411,7 +411,7 @@ C
             IPCD = 1
             DO 2631 J = 1,IPAR
                IPCF = IPCD + 15
-               NOPARA = ZK16(LATAC+J-1)
+               NOPARA = ZK16(LNUPA+J-1)
                CALL RSADPA(NOMSTR,'L',1,NOPARA,ZI(LRES+I-1),1,IAD,CTYPE)
                IF (CTYPE(1:1).EQ.'I') THEN
                   CHAIN2(IPCD:IPCF) = '       I        '

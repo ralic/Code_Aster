@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
      +                                         PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.NE.1) THEN
-                CALL UTMESS('F','DLTINI','ON N''A PAS PU TROUVE LE '//
+                  CALL UTMESS('F','DLTINI','ON N''A PAS PU TROUVE LE '//
      +                                   'DERNIER INSTANT SAUVE.')
                ENDIF
             ELSE
@@ -159,7 +159,7 @@ C
               CALL VTCOPY(CHAMP,CHAM2,IRET)
               CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             ELSE
-              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+              CALL JEVEUO(CHAM2//'.VALE','E',JVALE)
               DO 10 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 10            CONTINUE
@@ -182,7 +182,7 @@ C
               CALL VTCOPY(CHAMP,CHAM2,IRET)
               CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             ELSE
-              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+              CALL JEVEUO(CHAM2//'.VALE','E',JVALE)
               DO 20 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 20            CONTINUE

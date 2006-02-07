@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,8 +48,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      N1, NBSITU, IOCC, IBID, JMOMEA, JMOMEB, II, NOCC,
-     +             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR,
+      INTEGER      N1, NBSITU, IOCC, IBID, JMOMEA,JMOMEB,II,NOCC,JRETH,
+     +             JNBOCC, JNUMGR, JPRESA, JPRESB,NBCHAR,JCHAR1,JCHAR2,
      +             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2), NSCY,
      +             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR,JCHTH
       LOGICAL      LSEISM
@@ -164,12 +164,12 @@ C        ----------------------------
 C
          CALL GETVIS ( MOTCLF, 'CHAR_ETAT_A', IOCC,1,0, IBID, N1 )
          NBCHAR = -N1
-         CALL WKVECT ( '&&RC36SI.CHAR_ETAT', 'V V I', NBCHAR, JCHAR )
-         CALL GETVIS ( MOTCLF,'CHAR_ETAT_A',IOCC,1,NBCHAR,ZI(JCHAR),N1)
+         CALL WKVECT ( '&&RC36SI.CHAR_ETAT', 'V V I', NBCHAR, JCHAR1 )
+         CALL GETVIS ( MOTCLF,'CHAR_ETAT_A',IOCC,1,NBCHAR,ZI(JCHAR1),N1)
 C
          CHMOME = '&&RC36SI_A'//K8B
          CALL RC36CM ( IOCC, 'A', NBMA, LISTMA,
-     +                                     NBCHAR, ZI(JCHAR), CHMOME )
+     +                                     NBCHAR, ZI(JCHAR1), CHMOME )
          ZK24(JMOMEA+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_ETAT' )
 C
@@ -179,12 +179,12 @@ C        ----------------------------
 C
          CALL GETVIS ( MOTCLF, 'CHAR_ETAT_B', IOCC,1,0, IBID, N1 )
          NBCHAR = -N1
-         CALL WKVECT ( '&&RC36SI.CHAR_MECA', 'V V I', NBCHAR, JCHAR )
-         CALL GETVIS ( MOTCLF,'CHAR_ETAT_B',IOCC,1,NBCHAR,ZI(JCHAR),N1)
+         CALL WKVECT ( '&&RC36SI.CHAR_MECA', 'V V I', NBCHAR, JCHAR2 )
+         CALL GETVIS ( MOTCLF,'CHAR_ETAT_B',IOCC,1,NBCHAR,ZI(JCHAR2),N1)
 C
          CHMOME = '&&RC36SI_B'//K8B
          CALL RC36CM ( IOCC, 'B', NBMA, LISTMA,
-     +                                     NBCHAR, ZI(JCHAR), CHMOME )
+     +                                     NBCHAR, ZI(JCHAR2), CHMOME )
          ZK24(JMOMEB+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_MECA' )
 C
@@ -205,14 +205,14 @@ C
             CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',IOCC),
      +                                              'LONUTI', NBTH,' ')
             CALL JEVEUO (JEXNUM('&&RC3600.SITU_THERMIQUE',IOCC),'E',
-     +                                                          JCHAR )
+     +                                                          JRETH )
             CALL GETVIS ( MOTCLF, 'NUME_RESU_THER', IOCC,1,
-     +                                            NBTH,ZI(JCHAR), N1 )
+     +                                            NBTH,ZI(JRETH), N1 )
 C     ------------------------------------------------------------------
 C                   RESULTATS DES CALCULS THERMIQUES
 C     ------------------------------------------------------------------
 C
-          CALL RC36TH (NOMA,NBMA,LISTMA,ZK24(JCHTH),IOCC,NBTH,ZI(JCHAR))
+          CALL RC36TH (NOMA,NBMA,LISTMA,ZK24(JCHTH),IOCC,NBTH,ZI(JRETH))
          ENDIF
 C
  10   CONTINUE

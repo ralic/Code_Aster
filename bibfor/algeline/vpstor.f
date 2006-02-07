@@ -9,7 +9,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/02/2006   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,11 +52,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER       JREFD, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, J, LADPA, LMODE, LVALE
-      CHARACTER*8   RES ,RAIDE, K8B
+      CHARACTER*8   RES ,K8B, RAIDE
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO
-      CHARACTER*24  REFD
-      LOGICAL       LREFD
+      CHARACTER*24  REFD,NUME
+      LOGICAL       LREFD, LNUME
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
@@ -76,13 +76,25 @@ C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
         NOSY = 'DEPL'
       ENDIF
       LREFD = .TRUE.
+      LNUME = .TRUE.
       REFD(1:8) = MODES
+C On teste l'existence du REFD
       CALL JEEXIN(REFD,IER)
       IF (IER.EQ.0) THEN
          LREFD = .FALSE.
       ELSE
          CALL JEVEUO (REFD, 'L', JREFD )
-         RAIDE = ZK24(JREFD)
+C On recupere la matrice du REFD
+         RAIDE=ZK24(JREFD)(1:8)
+         CALL EXISD('MATR_ASSE',RAIDE,IER)
+         IF (IER.EQ.0) THEN
+C On recupere la numerotation du REFD si la matrice n'existe pas
+           NUME = ZK24(JREFD+3)
+           LNUME = .FALSE.
+         ELSE
+           LNUME = .TRUE.
+         ENDIF
+C Si elle existe on prend la numerotation associee
       ENDIF
 C
 C
@@ -147,7 +159,11 @@ C        --- VECTEUR PROPRE ---
         CALL RSEXCH (MODES, NOSY, NORDR, CHAMNO, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 .AND. LREFD ) THEN
-          CALL VTCREM (CHAMNO, RAIDE, 'G', TYPE(1:1) )
+          IF (LNUME) THEN
+            CALL VTCREM (CHAMNO, RAIDE, 'G', TYPE(1:1) )
+          ELSE
+            CALL VTCREB(CHAMNO,NUME,'G',TYPE(1:1),NEQ)
+          ENDIF
         ELSE
           CALL UTDEBM('F','VPSTOR'//'.VPSTOR','APPEL ERRONE')
           CALL UTIMPI('L','MODE NUMERO',1,KMODE)

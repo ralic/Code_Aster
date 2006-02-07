@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,24 +122,24 @@ RESULTAT=INIT0, NUME_ORDRE=1,
 CHDEP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', MAILLAGE=M,AFFE=(
                             
    _F(  TOUT = 'OUI', NOM_CMP = ('DX','DY','DZ',), VALE = ( 0., 0., 0., )),
-   _F(  NOM_CMP = 'DX',  NOEUD = ('NO1', 'NO3', 'NO5', 'NO7',), VALE = -6.02608E-04),
-   _F(  NOM_CMP = 'DY',  NOEUD = ('NO1', 'NO5', ),        VALE = -1.09170E-03),
-   _F(  NOM_CMP = 'DY',  NOEUD = ('NO3', 'NO7', ),        VALE = -9.07977E-04),
-   _F(  NOM_CMP = 'DY',  NOEUD = ('NO2', 'NO6', ),        VALE = -1.83723E-04),
-   _F(  NOM_CMP = 'DZ',  NOEUD = ('NO1', 'NO2', 'NO3', 'NO4',), VALE = 1.83723E-04))
+   _F(  NOM_CMP = 'DX',  NOEUD = ('N1', 'N3', 'N5', 'N7',), VALE = -6.02608E-04),
+   _F(  NOM_CMP = 'DY',  NOEUD = ('N1', 'N5', ),        VALE = -1.09170E-03),
+   _F(  NOM_CMP = 'DY',  NOEUD = ('N3', 'N7', ),        VALE = -9.07977E-04),
+   _F(  NOM_CMP = 'DY',  NOEUD = ('N2', 'N6', ),        VALE = -1.83723E-04),
+   _F(  NOM_CMP = 'DZ',  NOEUD = ('N1', 'N2', 'N3', 'N4',), VALE = 1.83723E-04))
                        )
 
 CH1=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-              _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
-                       _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
-                       _F( NOEUD = 'NO2', DX = 0.),
-                       _F( NOEUD = 'NO6', DX = 0.))   )
+              _F( NOEUD = 'N4', DX = 0.,DY = 0.),
+                       _F( NOEUD = 'N8', DX = 0.,DY = 0.,DZ = 0.),
+                       _F( NOEUD = 'N2', DX = 0.),
+                       _F( NOEUD = 'N6', DX = 0.))   )
 
 CH2=AFFE_CHAR_MECA_F(   MODELE=MO,FORCE_NODALE=(
-           _F( NOEUD = ('NO1', 'NO5',), FX = M52P30,  FY = M30),
-                        _F( NOEUD = ('NO2', 'NO6',), FX = P30,     FY = P30),
-                        _F( NOEUD = ('NO3', 'NO7',), FX = M52M30,  FY = M30),
-                        _F( NOEUD = ('NO4', 'NO8',), FX = M30,     FY = P30))  )
+           _F( NOEUD = ('N1', 'N5',), FX = M52P30,  FY = M30),
+                        _F( NOEUD = ('N2', 'N6',), FX = P30,     FY = P30),
+                        _F( NOEUD = ('N3', 'N7',), FX = M52M30,  FY = M30),
+                        _F( NOEUD = ('N4', 'N8',), FX = M30,     FY = P30))  )
 
 CH3=AFFE_CHAR_MECA(   MODELE=MO,
                             EPSA_CALCULEE=ANEL   )
@@ -180,28 +180,28 @@ U=CALC_ELEM( reuse=U,             RESULTAT=U,
                           OPTION=( 'EPSI_ELNO_DEPL', 'EPSP_ELNO', )  )
 
 TEST_RESU(RESU=(
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 20,NOM_CMP = 'EPXX',VALE = 2.465E-04,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 20,NOM_CMP = 'EPXY',VALE = 2.135E-04,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 35,NOM_CMP = 'EPXX',VALE = 2.867E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 35,NOM_CMP = 'EPXY',VALE = 2.483E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 38,NOM_CMP = 'EPXX',VALE = 2.879E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 38,NOM_CMP = 'EPXY',VALE = 2.565E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 39,NOM_CMP = 'EPXX',VALE = 2.879E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    NUME_ORDRE = 39,NOM_CMP = 'EPXY',VALE = 3.272E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'))
            )
@@ -244,13 +244,13 @@ U2=CALC_ELEM( reuse=U2,             RESULTAT=U2,
                           OPTION=( 'EPSI_ELNO_DEPL', 'EPSP_ELNO', )  )
 
 TEST_RESU(RESU=(
-     _F( RESULTAT = U2,NOM_CHAM = 'DEPL',NOEUD = 'NO3',
+     _F( RESULTAT = U2,NOM_CHAM = 'DEPL',NOEUD = 'N3',
    INST = 16.5,NOM_CMP = 'DX',VALE = -7.68371E-04,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U2,NOM_CHAM = 'DEPL',NOEUD = 'NO3',
+     _F( RESULTAT = U2,NOM_CHAM = 'DEPL',NOEUD = 'N3',
    INST = 16.5,NOM_CMP = 'DY',VALE = -3.00831E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U2,NOM_CHAM = 'EPSI_ELNO_DEPL',MAILLE = 'MA1',NOEUD = 'NO3',
+     _F( RESULTAT = U2,NOM_CHAM = 'EPSI_ELNO_DEPL',MAILLE = 'M1',NOEUD = 'N3',
    INST = 16.5,NOM_CMP = 'EPXY',VALE = 1.504E-03,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
 #
@@ -258,10 +258,10 @@ TEST_RESU(RESU=(
 # ANELASTIQUES SOIENT PRISES EN COMPTE PAR CALC_ELEM
 # (VOIR HISTOR DE P. DE BONNIERES DU 10/02/97)
 #
-     _F( RESULTAT = U2,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U2,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    INST = 30.,NOM_CMP = 'EPXX',VALE = 2.465E-04,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'),
-     _F( RESULTAT = U2,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA1',NOEUD = 'NO2',
+     _F( RESULTAT = U2,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'M1',NOEUD = 'N2',
    INST = 30.,NOM_CMP = 'EPXY',VALE = 2.135E-04,PRECISION = 0.005,
    REFERENCE = 'AUTRE_ASTER'))
            )

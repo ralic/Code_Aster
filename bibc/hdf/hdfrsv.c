@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrsv hdf  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfrsv hdf  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,7 +33,7 @@
 #elif defined HPUX
    long hdfrsv ( long *idat, long *lsv, void *sv, long *icv)
 #elif defined PPRO_NT
-   extern long __stdcall HDFRSV(long *idat, long *lsv, void *sv, long *icv)
+   extern long __stdcall HDFRSV(long *idat, long *lsv, char *sv, unsigned long toto, long *icv)
 #endif
 {
   hid_t ida,datatype,dasp,bidon=0;

@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,8 @@ C
       CHARACTER*4  TYPECH
       CHARACTER*1  K1BID
       LOGICAL      EXISTE
-      INTEGER      ANOMCP,ANUMCP,ANCPU,ADESC,ACPGD,AVCHEF,AVCODO
-      INTEGER      N1,N2,I,IOCC,GD,N3,ADR,NBELP,NBINV,IBID,IE
+      INTEGER      ANOMCP,ANUMCP,ANCPU1,ANCPU2,ADESC,ACPGD,AVCHEF
+      INTEGER      N1,N2,I,IOCC,GD,N3,ADR,NBELP,NBINV,IBID,IE,AVCODO
       INTEGER      NBPOST,NBCHGD,NBCPGD,NBCMP,NBRESU,NBTCP,NBSOM
       INTEGER      IFR,IUNIFI,J,JORDR,JXVAR,N4,NBC,NNC,NBNC,NUMECP(50)
       REAL*8       RBID
@@ -193,9 +193,9 @@ C           /* PASSAGE D' UNE OU DEUX LISTE DE NOM DE CMPS    */
 C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                IF ( NBCMP .NE. 0 ) THEN
                   CALL WKVECT('&&OP0051.NOMCMP.USER','V V K8',NBCMP,
-     +                         ANCPU)
+     +                         ANCPU1)
                   CALL GETVTX('ACTION','NOM_CMP',IOCC,1,
-     +                        NBCMP,ZK8(ANCPU),N1)
+     +                        NBCMP,ZK8(ANCPU1),N1)
                ELSE
                   IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
                     CALL UTMESS('F','RVGARG','ON NE TRAITE PAS CE CAS')
@@ -206,11 +206,11 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                   N2    = -N2
                   NBCMP =  N1+N2
                   CALL WKVECT('&&OP0051.NOMCMP.USER','V V K8',NBCMP,
-     +                         ANCPU)
+     +                         ANCPU1)
                   CALL GETVTX('ACTION','RESULTANTE',IOCC,1,
-     +                        N1,ZK8(ANCPU),N1)
+     +                        N1,ZK8(ANCPU1),N1)
                   CALL GETVTX('ACTION','MOMENT',IOCC,1,
-     +                        N2,ZK8(ANCPU+N1),N2)
+     +                        N2,ZK8(ANCPU1+N1),N2)
                ENDIF
                IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
                   CALL UTCMP2 ( GRANCH, 'ACTION', IOCC, NOMCP, NBCMP, 
@@ -222,7 +222,7 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                      ZI(JXVAR+I-1) = NUMECP(I)
  112              CONTINUE
                   NBCMP      = 1
-                  ZK8(ANCPU) = 'VARI'
+                  ZK8(ANCPU1) = 'VARI'
                ELSE
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONMAX',NBCMP,' ')
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONUTI',0,' ')
@@ -232,7 +232,7 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                CALL JEECRA(JEXNUM(NXDNUM,IOCC),'LONMAX',NBCMP,' ')
                CALL JEVEUO(JEXNUM(NXDNUM,IOCC),'E',ANUMCP)
                DO 110, I = 1, NBCMP, 1
-                  ZK8(ANOMCP + I-1) = ZK8(ANCPU + I-1)
+                  ZK8(ANOMCP + I-1) = ZK8(ANCPU1 + I-1)
 110            CONTINUE
                CALL NUMEK8(ZK8(ACPGD),ZK8(ANOMCP),NBCPGD,NBCMP,
      +                    ZI(ANUMCP))
@@ -242,13 +242,13 @@ C
                NOMOBJ = '&&OP0051.NOMCMP.USER'
                CALL UTNCMP ( NCHP19, NBC, NOMOBJ )
                IF (NBC.EQ.0) CALL UTMESS('F','RVGARG','Y A UN BUG')
-               CALL JEVEUO ( NOMOBJ, 'L', ANCPU )
+               CALL JEVEUO ( NOMOBJ, 'L', ANCPU2 )
                CALL JEECRA(JEXNUM(NXDNOM,IOCC),'LONMAX',NBC,' ')
                CALL JEVEUO(JEXNUM(NXDNOM,IOCC),'E',ANOMCP)
                CALL JEECRA(JEXNUM(NXDNUM,IOCC),'LONMAX',NBC,' ')
                CALL JEVEUO(JEXNUM(NXDNUM,IOCC),'E',ANUMCP)
                DO 120, I = 1, NBC, 1
-                  ZK8(ANOMCP + I-1) = ZK8(ANCPU + I-1)
+                  ZK8(ANOMCP + I-1) = ZK8(ANCPU2 + I-1)
 120            CONTINUE
                CALL NUMEK8( ZK8(ACPGD), ZK8(ANOMCP), NBCPGD, NBC,
      +                      ZI(ANUMCP) )

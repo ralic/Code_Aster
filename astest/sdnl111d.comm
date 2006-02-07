@@ -1,4 +1,5 @@
-# MODIF  DATE 08/03/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+
+# MODIF  DATE 06/02/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,165 +18,133 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
 # Etude du choc de deux poutres maillees 3D
 # en traction compression.
-#
-DEBUT( CODE=_F( NOM ='SDNL111D',NIV_PUB_WEB='INTERNET'),)
 
-MAIL=LIRE_MAILLAGE()
+DEBUT(CODE=_F(NOM='SDNL111D',
+              NIV_PUB_WEB='INTERNET',),);
 
-MAIL=DEFI_GROUP( reuse=MAIL,
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),
-               )
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-       AFFE=(
-             _F(GROUP_MA=('POU1','POU2'),
-                PHENOMENE='MECANIQUE',
-                MODELISATION='3D',),
-             ),)
+                   AFFE=_F(GROUP_MA=('POU1','POU2',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
 
-
-MAIL=MODI_MAILLAGE(reuse=MAIL,
+MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='CNT_POU1',),
+                                 _F(GROUP_MA='CNT_POU2',),),
                    MODELE=MODELE,
-                   ORIE_PEAU_3D=(
-                                 _F(GROUP_MA='CNT_POU1',),
-                                 _F(GROUP_MA='CNT_POU2',),
-                                  ),)
-             
+                   INFO=2,);
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=7800.,),)
+MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=(
-                          _F(GROUP_MA=('POU1'), 
+                    AFFE=(_F(GROUP_MA='POU1',
                              MATER=MATER,),
-                          _F(GROUP_MA=('POU2'), 
-                             MATER=MATER,),
-                          ),)
-
-
+                          _F(GROUP_MA='POU2',
+                             MATER=MATER,),),);
 # *******************************************
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=(
-                                 _F(TOUT='OUI',
-                                    DX=0.,DY=0.),
-                                  _F(GROUP_NO='CL_POU2',
-                                     DZ=0.,),),
-                                 )
+                       DDL_IMPO=(_F(TOUT='OUI',
+                                    DX=0.,
+                                    DY=0.,),
+                                 _F(GROUP_NO='CL_POU2',
+                                    DZ=0.,),),);
 
-VITINI=CREA_CHAMP(   OPERATION='AFFE', 
-                     TYPE_CHAM='NOEU_DEPL_R',
-                     MAILLAGE=MAIL,
-                     AFFE=(_F( GROUP_NO = 'POU1',
-                               NOM_CMP = 'DZ',
-                               VALE = -1.0),
-                           _F( GROUP_NO = 'POU2',
-                                NOM_CMP = 'DZ',
-                                VALE = 0.0),
-                                ),)
-
-
-
-                                    
+VITINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=(
+                  _F(GROUP_NO='POU1',
+                     NOM_CMP='DZ',
+                     VALE=-1.0,),
+                  _F(GROUP_NO='POU2',
+                     NOM_CMP='DZ',
+                     VALE=0.0,),),);
 # *******************************************
-CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
-                       CONTACT=(
-                                 _F(
-                                    METHODE='LAGRANGIEN',   
-                                    GROUP_MA_MAIT='CNT_POU1',
-                                    GROUP_MA_ESCL='CNT_POU2',),
-                        ),)
 
-                        
+CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
+                       CONTACT=_F(METHODE='LAGRANGIEN',
+                                  MAILLE_MAIT='M101',
+                                  MAILLE_ESCL='M103',
+                                  ),);
 # ************************************************************
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=1.E-3,
-                                    PAS=1.E-6,
-                                    ),)
-
+                                    PAS=1.E-6,),);
 
 RESU=DYNA_NON_LINE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                EXCIT=(
-                       _F(CHARGE=CONTACT,),
-                       _F(CHARGE=CONDLIM,),
-                       ),
-                ETAT_INIT=_F(VITE= VITINI),       
-                COMP_INCR=_F(RELATION='ELAS',
-                             DEFORMATION='PETIT_REAC',),                
-                INCREMENT=_F(LIST_INST=L_INST,
-                             SUBD_PAS=3,
-                             SUBD_PAS_MINI=1.E-8,),
-                HHT=_F(ALPHA=-0.1,),
-                NEWTON=_F(MATRICE='TANGENTE',),
-                SOLVEUR=_F(METHODE='MULT_FRONT',),)
-
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CONTACT,),
+                          _F(CHARGE=CONDLIM,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                DEFORMATION='PETIT_REAC',),
+                   ETAT_INIT=_F(
+                   VITE=VITINI,),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                SUBD_PAS=3,
+                                SUBD_PAS_MINI=1.E-8,),
+                   HHT=_F(ALPHA=-0.1,),
+                   NEWTON=_F(MATRICE='TANGENTE',),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',),);
 #
-##############################################
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
-##############################################
 
-
-TEST_RESU(
-      RESU=(
-            _F(
-                  RESULTAT = RESU,
-                  INST = 2.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = -1.05E-4,
-                  PRECISION = (0.05, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 4.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = -1.55E-4,
-                  PRECISION = (0.05, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 6.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = -5.54E-5,
-                  PRECISION = (0.05, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 8.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = 9.92E-5,
-                  PRECISION = (0.05, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 10.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = 2.99E-4,
-                  PRECISION = (0.05, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),),)
-
-
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=0.0002,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='N1',
+                   VALE=-0.000105,
+                   CRITERE='RELATIF',
+                   PRECISION=(0.05,1e-07,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   INST=0.0004,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='N1',
+                   VALE=-0.000155,
+                   CRITERE='RELATIF',
+                   PRECISION=(0.05,1e-07,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   INST=0.0006,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='N1',
+                   VALE=-5.54e-05,
+                   CRITERE='RELATIF',
+                   PRECISION=(0.05,1e-07,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   INST=0.0008,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='N1',
+                   VALE=9.92e-05,
+                   CRITERE='RELATIF',
+                   PRECISION=(0.05,1e-07,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   INST=0.001,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='N1',
+                   VALE=0.000299,
+                   CRITERE='RELATIF',
+                   PRECISION=(0.05,1e-07,),
+                   REFERENCE='ANALYTIQUE',),),);
 
 FIN();
 #

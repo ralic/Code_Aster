@@ -2,7 +2,7 @@
      &                   IWRITE,JSUMA,JSUNO,JNOQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 06/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -82,11 +82,11 @@ C
       CALL JEMARQ()
 
       CALL GETVTX (MOTFAC,'PROJECTION',IREAD,1,1,PROJ,NOC)   
-        IF (PROJ.EQ.'QUADRATIQUE') THEN
-           INPROJ = 2
-        ELSE
-           INPROJ = 1
-        ENDIF
+      IF (PROJ.EQ.'QUADRATIQUE') THEN
+         INPROJ = 2
+      ELSE
+         INPROJ = 1
+      ENDIF
 
       IF (MOTCLE(1:6).EQ.'MAILLE') THEN
          TYPENT = 'MAILLE'    
@@ -98,7 +98,7 @@ C
       ENDIF
 
       CALL GETVEM(NOMA,TYPENT,MOTFAC,MOTCLE,
-     +               IREAD,1,0,K8BID,NBENT)
+     +            IREAD,1,0,K8BID,NBENT)
 
       IF (NBENT.NE.0) THEN
           NBENT   = -NBENT        
@@ -107,7 +107,8 @@ C
      +           IREAD,1,NBENT,ZK8(JTRAV),NB)
           IF (TYPENT.EQ.'MAILLE') THEN
             CALL NBNOEL(CHAR,NOMA,TYPENT,0,ZK8(JTRAV),INDQUA,
-     +                INPROJ,NBMA,NBNO,NBNOQU)
+     +                INPROJ,NB,NBNO,NBNOQU)
+            NBMA = NB
           ELSE
             CALL NBNOEL(CHAR,NOMA,TYPENT,NB,ZK8(JTRAV),INDQUA,
      +                INPROJ,NBMA,NBNO,NBNOQU)

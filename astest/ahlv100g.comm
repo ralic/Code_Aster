@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,16 +104,16 @@ HARMO=DYNA_LINE_HARM(
 
 TEST_RESU(RESU=(
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO69', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
+           NOEUD = 'N69', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
            PRECISION = 3.E-03),
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO95', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
+           NOEUD = 'N95', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
            PRECISION = 3.E-03),
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO65', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
+           NOEUD = 'N65', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
            PRECISION = 4.E-02),
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO876', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
+           NOEUD = 'N876', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
            PRECISION = 4.E-02)) 
           )
 
@@ -126,16 +126,16 @@ HARMO=CALC_ELEM( reuse=HARMO, MODELE=MO,
 
 TEST_RESU(RESU=(
           _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'MA4', NOEUD = 'NO69', NOM_CMP = 'INTX', VALE = 0.04370,
+           MAILLE = 'M4', NOEUD = 'N69', NOM_CMP = 'INTX', VALE = 0.04370,
            PRECISION = 3.E-2),  
           _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'MA6', NOEUD = 'NO95', NOM_CMP = 'INTX', VALE = 0.04370,
+           MAILLE = 'M6', NOEUD = 'N95', NOM_CMP = 'INTX', VALE = 0.04370,
            PRECISION = 3.E-2),  
           _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'MA468', NOEUD = 'NO65', NOM_CMP = 'INTX', VALE = 0.04370,
+           MAILLE = 'M468', NOEUD = 'N65', NOM_CMP = 'INTX', VALE = 0.04370,
            PRECISION = 3.E-2),  
           _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'MA470', NOEUD = 'NO876', NOM_CMP = 'INTX', VALE = 0.04370,
+           MAILLE = 'M470', NOEUD = 'N876', NOM_CMP = 'INTX', VALE = 0.04370,
            PRECISION = 3.E-2))  
           )
 

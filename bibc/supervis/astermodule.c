@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 21/11/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 06/02/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2428,6 +2428,17 @@ PyObject * get_active_command()
    return commande;
 }
 
+/* -------------------- appels aux routines JEVEUX -------------------- */
+#define CALL_JEMARQ() STDCALL(JEMARQ, jemarq)()
+void CALL_JEMARQ();
+
+#define CALL_JEDEMA() STDCALL(JEDEMA, jedema)()
+void CALL_JEDEMA();
+
+#define CALL_JEDETR(nom) CALLS(JEDETR, jedetr, nom)
+void DEFS(JEDETR, jedetr, char *, int);
+/* -------------------------------------------------------------------- */
+
 #define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
 void DEFSSSSPPS(PRCOCH,prcoch,char *,int,char *,int,char *,int,char *,int,INTEGER *,INTEGER *,char *,int);
 
@@ -2469,6 +2480,7 @@ PyObject *args;
 
 
         try(1){
+          CALL_JEMARQ();
                                 SSCRUTE(nomce);
                                 SSCRUTE(nomcs);
                                 SSCRUTE(nomcmp);
@@ -2478,6 +2490,7 @@ PyObject *args;
                                 FSSCRUTE(groups,nval*long_nomcham);
           CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,&itopo,&nval,groups);
           Py_INCREF( Py_None ) ;
+          CALL_JEDEMA();
           _FIN(aster_prepcompcham) ;
           free(groups);
           return Py_None;
@@ -2485,6 +2498,7 @@ PyObject *args;
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          CALL_JEDEMA();
           _FIN(aster_prepcompcham) ;
           return NULL;
         }
@@ -2492,17 +2506,6 @@ PyObject *args;
 
 #define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
 void DEFSPPPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
-
-/* -------------------- appels aux routines JEVEUX -------------------- */
-#define CALL_JEMARQ() STDCALL(JEMARQ, jemarq)()
-void CALL_JEMARQ();
-
-#define CALL_JEDEMA() STDCALL(JEDEMA, jedema)()
-void CALL_JEDEMA();
-
-#define CALL_JEDETR(nom) CALLS(JEDETR, jedetr, nom)
-void DEFS(JEDETR, jedetr, char *, int);
-/* -------------------------------------------------------------------- */
 
 static char getvectjev_doc[]=
 "getvectjev(nomsd)->valsd      \n\
@@ -3443,16 +3446,18 @@ PyObject *args;
         PyObject *temp = (PyObject*)0 ;
         INTEGER lnomam=0;
         INTEGER codret=0;
+	int lon1;
         char *nomast;
-        char nomamd[33];
+        char nomamd[33],n1[9];
 
         _DEBUT(aster_mdnoma) ;
-        if (!PyArg_ParseTuple(args, "s",&nomast)) return NULL;
+        if (!PyArg_ParseTuple(args, "s#",&nomast,&lon1)) return NULL;
                                                        SSCRUTE(nomast);
         BLANK(nomamd,32);
         nomamd[32]='\0';
+	BLANK(n1,8);strncpy(n1,nomast,lon1);
                                                        SSCRUTE(nomamd);
-        CALL_MDNOMA (nomamd,&lnomam,nomast,&codret);
+        CALL_MDNOMA (nomamd,&lnomam,n1,&codret);
                                                        ISCRUTE(lnomam);
                                                        FSSCRUTE(nomamd,32);
 
@@ -3476,18 +3481,22 @@ PyObject *args;
         char *nomsym;
         char *nopase;
         INTEGER codret=0;
-        char nochmd[33];
+	int lon1,lon2,lon3;
+        char nochmd[33],n1[33],n2[17],n3[9];
 
         _DEBUT(aster_mdnoch) ;
-        if (!PyArg_ParseTuple(args, "lsss",&lresu,&noresu,&nomsym,&nopase)) return NULL;
+        if (!PyArg_ParseTuple(args, "ls#s#s#",&lresu,&noresu,&lon1,&nomsym,&lon2,&nopase,&lon3)) return NULL;
                                                        ISCRUTE(lresu);
                                                        SSCRUTE(noresu);
                                                        SSCRUTE(nomsym);
                                                        SSCRUTE(nopase);
         BLANK(nochmd,32);
         nochmd[32]='\0';
+	BLANK(n1,32);strncpy(n1,noresu,lon1);
+	BLANK(n2,16);strncpy(n2,nomsym,lon2);
+	BLANK(n3,8); strncpy(n3,nopase,lon3);
                                                        SSCRUTE(nochmd);
-        CALL_MDNOCH (nochmd,&lnochm,&lresu,noresu,nomsym,nopase,&codret);
+        CALL_MDNOCH (nochmd,&lnochm,&lresu,n1,n2,n3,&codret);                 
                                                        ISCRUTE(lnochm);
                                                        FSSCRUTE(nochmd,32);
         temp= PyString_FromStringAndSize(nochmd,FindLength(nochmd,lnochm));

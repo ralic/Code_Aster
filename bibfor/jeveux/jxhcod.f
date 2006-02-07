@@ -1,7 +1,7 @@
       FUNCTION JXHCOD ( CHAIN , LREP )
 C TOLE CRP_4
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER  JXHCOD ,         LREP
+      INTEGER  I1
       CHARACTER*(*)     CHAIN
 C ----------------------------------------------------------------------
       INTEGER*4          I(8)
@@ -32,5 +33,6 @@ C
       DO 1 K = 2,8
          I(1) = XOR ( I(1) , I(K) )
  1    CONTINUE
-      JXHCOD = 1 + MOD(I(1),LREP)
+      I1=I(1)
+      JXHCOD = 1 + MOD(I1,LREP)
       END

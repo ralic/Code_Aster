@@ -1,0 +1,192 @@
+      SUBROUTINE PREXEL ( CHAMP, IOC, 
+     &                    MAMAX, NOMAX, ISPMAX, CMPMAX, VALMAX,
+     &                    MAMIN, NOMIN, ISPMIN, CMPMIN, VALMIN,
+     &                    MAAMAX, NOAMAX, ISAMAX, CMAMAX, VAAMAX,
+     &                    MAAMIN, NOAMIN, ISAMIN, CMAMIN, VAAMIN )
+      IMPLICIT   NONE
+      INTEGER             IOC, ISPMAX, ISPMIN, ISAMAX, ISAMIN
+      REAL*8              VALMIN, VALMAX, VAAMIN, VAAMAX
+      CHARACTER*8         MAMAX, NOMAX, CMPMAX, MAMIN, NOMIN, CMPMIN
+      CHARACTER*8         MAAMAX, NOAMAX, CMAMAX, MAAMIN, NOAMIN, CMAMIN
+      CHARACTER*(*)       CHAMP
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRP_21
+C
+C     COMMANDE : POST_RELEVE_T
+C                DETERMINE LES EXTREMA POUR UN CHAM_ELNO
+C
+C ----------------------------------------------------------------------
+C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
+      INTEGER           ZI
+      COMMON / IVARJE / ZI(1)
+      REAL*8            ZR
+      COMMON / RVARJE / ZR(1)
+      COMPLEX*16        ZC
+      COMMON / CVARJE / ZC(1)
+      LOGICAL           ZL
+      COMMON / LVARJE / ZL(1)
+      CHARACTER*8       ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                       ZK24
+      CHARACTER*32                                ZK32
+      CHARACTER*80                                         ZK80
+      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32      JEXNUM, JEXNOM
+C ----- FIN COMMUNS NORMALISES  JEVEUX  -------------------------------
+C
+      INTEGER      JCESK, JCESD, JCESV, JCESL, JCESC, NBMA, NCMP, NBM
+      INTEGER      IBID, NBMAIL, INDIK8, IDMAIL, NBC, NBCMP, JCMP
+      INTEGER      I100, I110, ICP, IMAI, NBPT, NBSP, IPT, ISP, IAD
+      INTEGER      IMAMAX, IPTMAX, IMAMIN, IPTMIN, JCONE
+      INTEGER      IMAAAX, IPAMAX, IMAAIN, IPAMIN
+      REAL*8       X, R8VIDE
+      CHARACTER*8  K8B, NOCMP, MA
+      CHARACTER*16 MOTCLE(2), TYPMCL(2)
+      CHARACTER*19 CHAMS1
+      CHARACTER*24 MESMAI
+C ---------------------------------------------------------------------
+C
+      MOTCLE(1) = 'GROUP_MA'
+      TYPMCL(1) = 'GROUP_MA'
+      MOTCLE(2) = 'MAILLE'
+      TYPMCL(2) = 'MAILLE'
+      MESMAI = '&&PREXEL.MES_MAILLES'
+C
+      CHAMS1 = '&&PREXEL.CHAMS1'
+      CALL CELCES ( CHAMP, 'V', CHAMS1 )
+C
+      CALL JEVEUO ( CHAMS1//'.CESK', 'L', JCESK )
+      CALL JEVEUO ( CHAMS1//'.CESD', 'L', JCESD )
+      CALL JEVEUO ( CHAMS1//'.CESV', 'L', JCESV )
+      CALL JEVEUO ( CHAMS1//'.CESL', 'L', JCESL )
+      CALL JEVEUO ( CHAMS1//'.CESC', 'L', JCESC )
+      MA    = ZK8(JCESK-1+1)
+      NBMA  =  ZI(JCESD-1+1)
+      NCMP  =  ZI(JCESD-1+2)
+C
+      CALL RELIEM(' ',MA,'NU_MAILLE','ACTION',IOC,2,MOTCLE,TYPMCL,
+     +                                                   MESMAI,NBM)
+      IF (NBM.GT.0) THEN
+        NBMAIL = NBM
+        CALL JEVEUO ( MESMAI, 'L', IDMAIL )
+      ELSE
+        NBMAIL = NBMA
+      ENDIF
+C
+      CALL GETVTX ( 'ACTION', 'NOM_CMP', IOC,1,0,K8B, NBC )
+      IF (NBC.NE.0) THEN
+         NBCMP = -NBC
+         CALL WKVECT('&&PREXEL.NOM_CMP','V V K8',NBCMP,JCMP)
+         CALL GETVTX('ACTION','NOM_CMP',IOC,1,NBCMP,ZK8(JCMP),IBID)
+      ELSE
+         NBCMP = NCMP
+      ENDIF
+C
+      IMAMAX = 0
+      IPTMAX = 0
+      ISPMAX = 0
+      VALMAX = -R8VIDE()
+      IMAMIN = 0
+      IPTMIN = 0
+      ISPMIN = 0
+      VALMIN =  R8VIDE()
+C
+      IMAAAX = 0
+      IPAMAX = 0
+      ISAMAX = 0
+      VAAMAX = -R8VIDE()
+      IMAAIN = 0
+      IPAMIN = 0
+      ISAMIN = 0
+      VAAMIN =  R8VIDE()
+C
+      DO 100 I100 = 1 , NBCMP
+         IF (NBC.NE.0) THEN
+            NOCMP = ZK8(JCMP+I100-1)
+            ICP = INDIK8( ZK8(JCESC), NOCMP, 1, NCMP )
+            IF (ICP.EQ.0) GOTO 100
+         ELSE
+            ICP = I100
+            NOCMP = ZK8(JCESC+I100-1)
+         ENDIF
+C
+         DO 110 I110 = 1 , NBMAIL
+            IF (NBM.NE.0) THEN
+               IMAI = ZI(IDMAIL+I110-1)
+            ELSE
+               IMAI = I110
+            ENDIF
+            NBPT = ZI(JCESD-1+5+4*(IMAI-1)+1)
+            NBSP = ZI(JCESD-1+5+4*(IMAI-1)+2)
+            CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMAI), 'L', JCONE )
+            DO 120,IPT = 1,NBPT
+               DO 130,ISP = 1,NBSP
+                  CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,ICP,IAD)
+                  IF (IAD.GT.0) THEN
+                     X = ZR(JCESV-1+IAD)
+                     IF ( X .GT. VALMAX ) THEN
+                        IMAMAX = IMAI
+                        IPTMAX = ZI(JCONE+IPT-1)
+                        ISPMAX = ISP
+                        CMPMAX = NOCMP
+                        VALMAX = X
+                     ENDIF
+                     IF ( ABS(X) .GT. VAAMAX ) THEN
+                        IMAAAX = IMAI
+                        IPAMAX = ZI(JCONE+IPT-1)
+                        ISAMAX = ISP
+                        CMAMAX = NOCMP
+                        VAAMAX = ABS(X)
+                     ENDIF
+                     IF ( X .LT. VALMIN ) THEN
+                        IMAMIN = IMAI
+                        IPTMIN = ZI(JCONE+IPT-1)
+                        ISPMIN = ISP
+                        CMPMIN = NOCMP
+                        VALMIN = X
+                     ENDIF
+                     IF ( ABS(X) .LT. VAAMIN ) THEN
+                        IMAAIN = IMAI
+                        IPAMIN = ZI(JCONE+IPT-1)
+                        ISAMIN = ISP
+                        CMAMIN = NOCMP
+                        VAAMIN = ABS(X)
+                     ENDIF
+                  ENDIF
+ 130           CONTINUE
+ 120        CONTINUE
+ 110     CONTINUE
+ 100  CONTINUE
+C
+      CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMAMAX),MAMAX)
+      CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMAMIN),MAMIN)
+      CALL JENUNO(JEXNUM(MA//'.NOMNOE',IPTMAX),NOMAX)
+      CALL JENUNO(JEXNUM(MA//'.NOMNOE',IPTMIN),NOMIN)
+C
+      CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMAAAX),MAAMAX)
+      CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMAAIN),MAAMIN)
+      CALL JENUNO(JEXNUM(MA//'.NOMNOE',IPAMAX),NOAMAX)
+      CALL JENUNO(JEXNUM(MA//'.NOMNOE',IPAMIN),NOAMIN)
+C
+      CALL JEDETR ( MESMAI )
+      CALL DETRSD ( 'CHAM_ELEM_S', CHAMS1 )
+C
+      END

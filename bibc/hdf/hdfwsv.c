@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfwsv hdf  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -34,7 +34,8 @@
 #elif defined HPUX
    long hdfwsv ( long *idf, char *nomg, char *nomdts, char *type, long *ltype, void *sv, long *lsv, long lg, long ln, long lt )
 #elif defined PPRO_NT
-   extern long __stdcall HDFWSV(long *idf, char *nomg, unsigned long lg, char *nomdts, unsigned long ln, char *type, long *ltype, unsigned long lt, void *sv, long *lsv )
+  /* extern long __stdcall HDFWSV(long *idf, char *nomg, unsigned long lg, char *nomdts, unsigned long ln, char *type, long *ltype, unsigned long lt, void *sv, long *lsv ) */
+   extern long __stdcall HDFWSV(long *idf, char *nomg, unsigned long lg, char *nomdts, unsigned long ln, char *type, unsigned long lt, long *ltype, char *sv, unsigned long toto, long *lsv )
 #endif
 {
   hid_t idfic,datatype,dataspace,dataset,type_id;

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ GUIDAGED=AFFE_CHAR_MECA(   MODELE=BARRED,
                            DDL_IMPO=(
                              _F( GROUP_NO = 'NOEUDDL',
                                        DY = 0., DZ = 0.),
-                             _F( NOEUD = 'NO1', DX = 0.)),
+                             _F( NOEUD = 'N1', DX = 0.)),
                             PESANTEUR =(9.81,0.,-1.,0.))
 #
 MATELD_K=CALC_MATR_ELEM(  MODELE=BARRED,
@@ -127,7 +127,7 @@ AMOPROD=PROJ_MATR_BASE( BASE=MODESD,
 
 #
 CHARHARD=AFFE_CHAR_MECA(   MODELE=BARRED,
-                           FORCE_NODALE=_F( NOEUD = 'NO11', FX = -100.))
+                           FORCE_NODALE=_F( NOEUD = 'N11', FX = -100.))
 
 #
 VECTELD=CALC_VECT_ELEM( OPTION='CHAR_MECA',
@@ -159,7 +159,7 @@ TEST_RESU( RESU=_F( RESULTAT = HARMDIR,
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
                   PRECISION = 2.E-3,
-                  NOEUD = 'NO11',
+                  NOEUD = 'N11',
                   NOM_CMP = 'DX',
                   VALE_C = -7.00E-11+5.07E-9j))
 
@@ -202,14 +202,14 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARD,
                     NUME_ORDRE = 01,
                     CRITERE = 'RELATIF',
                     PRECISION = 2.E-3,
-                    NOEUD = 'NO11',
+                    NOEUD = 'N11',
                     NOM_CMP = 'DX',
                     VALE_C = -7.00E-11+5.07E-9j))
 
 #
 HFX_NO11 = RECU_FONCTION ( RESU_GENE = DYNPROD,
                            NOM_CHAM = 'DEPL', 
-                           NOEUD = 'NO11',
+                           NOEUD = 'N11',
                            NOM_CMP = 'DX',  ) ;
 
 IMPR_FONCTION ( COURBE = _F( FONCTION = HFX_NO11 ) ) ;
@@ -686,7 +686,7 @@ TEST_RESU( RESU=_F( RESULTAT = HARM,
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
                   PRECISION = 2.E-3,
-                  NOEUD = 'NO11',
+                  NOEUD = 'N11',
                   NOM_CMP = 'DX',
                   VALE_C = -7.00E-11+5.07E-9j,
                   REFERENCE = 'AUTRE_ASTER'))

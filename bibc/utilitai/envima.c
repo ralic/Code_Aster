@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF ENVIMA UTILITAI  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -321,8 +321,10 @@ int lofiem_ () {return 2000*1024;}
 int lofiem_ () {return 12582912;}
 #elif defined HPUX
 int lofiem ()  {return 2000*1024;}
-#elif defined PPRO_NT|| P_LINUX
+#elif defined P_LINUX
 int lofiem_ () {return 2000*1024;}
+#elif defined PPRO_NT
+int __stdcall LOFIEM () {return 2000*1024;}
 #endif
 
 /* ----------------------------------  TAILLE MAXIMUM DE FICHIER */

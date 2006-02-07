@@ -1,6 +1,6 @@
       SUBROUTINE DEFDDA(NBEC,NBCMP,NUMGD,IOC,MOTCLE,IOPT,ICOD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/11/98   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,16 +57,13 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6 PGC
-      CHARACTER*8 NOMCOU
+      CHARACTER*8   NOMCOU
       CHARACTER*(*) MOTCLE
-      CHARACTER*24 TEMDDL,TEMIDC
-      CHARACTER*80 KAR80
-      INTEGER ICOD(NBEC)
-      LOGICAL OK,OKG
-C
+      CHARACTER*24  TEMDDL,TEMIDC
+      CHARACTER*80  KAR80
+      INTEGER       ICOD(NBEC)
+      LOGICAL       OK, OKG
 C-----------------------------------------------------------------------
-      DATA PGC/'DEFDDA'/
       DATA OKG/.FALSE./
 C-----------------------------------------------------------------------
 C
@@ -76,76 +73,66 @@ C
 C
 C----------ALLOCATION DU VECTEUR DES ENTIERS DE DECODAGE----------------
 C
-      TEMIDC = '&&'//PGC//'.IDEC'
+      TEMIDC = '&&DEFDDA.IDEC'
       CALL WKVECT(TEMIDC,'V V I',NBCMP,LTIDEC)
 C
 C--------------TRAITEMENT DES EXCEPTIONS: PAS DE MOT CLE----------------
 C
       IF (NBVAL.EQ.0 .AND. IOPT.EQ.1) THEN
-        DO 30 I = 1,NBCMP
-          ZI(LTIDEC+I-1) = 1
-   30   CONTINUE
-        CALL ISCODE(ZI(LTIDEC),ICOD,NBCMP)
-        CALL JEDETR(TEMIDC)
-        GOTO 9999
-
+         DO 30 I = 1,NBCMP
+            ZI(LTIDEC+I-1) = 1
+   30    CONTINUE
+         CALL ISCODE(ZI(LTIDEC),ICOD,NBCMP)
+         GOTO 9999
       END IF
 C
       IF (NBVAL.EQ.0 .AND. IOPT.EQ.0) THEN
-        DO 40 IEC = 1, NBEC
-          ICOD(IEC) = 0
- 40     CONTINUE
-        CALL JEDETR(TEMIDC)
-        GOTO 9999
-
+         DO 40 IEC = 1, NBEC
+            ICOD(IEC) = 0
+ 40      CONTINUE
+         GOTO 9999
       END IF
-C
 C
 C---------RECUPERATION DU VECTEUR DES NOMS DE COMPOSANTES---------------
 C
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',LLNCMP)
 C
-C
-      TEMDDL = '&&'//PGC//'.DDL.DON'
+      TEMDDL = '&&DEFDDA.DDL.DON'
       CALL WKVECT(TEMDDL,'V V K80',NBVAL,LTDDL)
 C
       CALL GETVTX('INTERFACE',MOTCLE,IOC,1,NBVAL,ZK80(LTDDL),IBID)
 C
       DO 10 I = 1,NBVAL
-        NOMCOU = ZK80(LTDDL+I-1)
-        OK = .TRUE.
-        DO 20 J = 1,NBCMP
-          IF (NOMCOU.EQ.ZK8(LLNCMP+J-1)) THEN
-            ZI(LTIDEC+J-1) = 1
-            OK = .FALSE.
-          END IF
-
-   20   CONTINUE
+         NOMCOU = ZK80(LTDDL+I-1)
+         OK = .TRUE.
+         DO 20 J = 1,NBCMP
+            IF (NOMCOU.EQ.ZK8(LLNCMP+J-1)) THEN
+               ZI(LTIDEC+J-1) = 1
+               OK = .FALSE.
+            END IF
+   20    CONTINUE
 C
-        IF (OK) THEN
-          OKG = .TRUE.
-          CALL UTDEBM('E',PGC,'CMP EST UNE COMPOSANTE INDEFINIE')
-          CALL UTIMPK('L','CMP=',1,NOMCOU)
-          CALL UTSAUT
-          CALL UTFINM
-        END IF
+         IF (OK) THEN
+            OKG = .TRUE.
+            CALL UTDEBM('E','DEFDDA','CMP EST UNE COMPOSANTE INDEFINIE')
+            CALL UTIMPK('L','CMP=',1,NOMCOU)
+            CALL UTSAUT
+            CALL UTFINM
+         END IF
 C
    10 CONTINUE
 C
       IF (OKG) THEN
-        CALL UTDEBM('F',PGC,'ARRET SUR TYPE DE DDL NON DEFINI')
-        CALL UTFINM
+         CALL UTDEBM('F','DEFDDA','ARRET SUR TYPE DE DDL NON DEFINI')
+         CALL UTFINM
       END IF
 C
       CALL ISCODE(ZI(LTIDEC),ICOD,NBCMP)
 C
-C
       CALL JEDETR(TEMDDL)
+C
+ 9999 CONTINUE
       CALL JEDETR(TEMIDC)
 C
-C
-      GOTO 9999
-
- 9999 CONTINUE
       CALL JEDEMA()
       END

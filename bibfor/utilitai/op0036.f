@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,13 +36,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER IOCC,JF,IBID,NI,NR,NK,I,J,IR,JJJ,JP,NDIM,NDIM1,JT,JPROL,JD
-      INTEGER NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JLNG
-      INTEGER NBLIGN
-      REAL*8  RBID,VR(2)
-      COMPLEX*16 CBID,VC(2)
-      CHARACTER*1 KBID
-      CHARACTER*3 NTYP
+      INTEGER      IOCC,JF,IBID,NI,NR,NK,I,J,IR,JVALE,JP,NDIM,NDIM1,JT
+      INTEGER      NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JLNG,JPROL,JD
+      INTEGER      NBLIGN,JTRAV1,JTRAV2,JTRAV3,JTRAV4,JTRAV5
+      REAL*8       RBID,VR(2)
+      COMPLEX*16   CBID,VC(2)
+      CHARACTER*1  KBID
+      CHARACTER*3  NTYP
       CHARACTER*8  RESULT,TYPARR(2),TYPARC(2)
       CHARACTER*16 CONCEP,NOMCMD,NMPAR,NMPAR1,NMPARF(2)
       CHARACTER*19 NFCT
@@ -164,26 +164,24 @@ C        ---CREATION DE LA TABLE
  175           CONTINUE       
             ENDIF
             
-
-
 C           LISTE D'ENTIERS :
 C           ---------------
             IF (NI.NE.0)THEN
                NI=-NI
-               CALL WKVECT(TRAV,'V V I',NI,JJJ)
-               CALL GETVIS('LISTE','LISTE_I',IOCC,1,NI,ZI(JJJ),IR)
-               CALL TBAJCO(RESULT,NMPAR,'I',NI,ZI(JJJ),
-     &         RBID,CBID,KBID,'R',ZI(III))
+               CALL WKVECT(TRAV,'V V I',NI,JTRAV1)
+               CALL GETVIS('LISTE','LISTE_I',IOCC,1,NI,ZI(JTRAV1),IR)
+               CALL TBAJCO(RESULT,NMPAR,'I',NI,ZI(JTRAV1),
+     &                     RBID,CBID,KBID,'R',ZI(III))
             ENDIF
 
 C           LISTE DE REELS :
 C           --------------
             IF (NR.NE.0)THEN
                NR=-NR
-               CALL WKVECT(TRAV,'V V R',NR,JJJ)
-               CALL GETVR8('LISTE','LISTE_R',IOCC,1,NR,ZR(JJJ),IR)
-               CALL TBAJCO(RESULT,NMPAR,'R',NR,IBID,ZR(JJJ),
-     &         CBID,KBID,'R',ZI(III))
+               CALL WKVECT(TRAV,'V V R',NR,JTRAV2)
+               CALL GETVR8('LISTE','LISTE_R',IOCC,1,NR,ZR(JTRAV2),IR)
+               CALL TBAJCO(RESULT,NMPAR,'R',NR,IBID,ZR(JTRAV2),
+     &                     CBID,KBID,'R',ZI(III))
             ENDIF
 
 C           LISTE DE CHAINE DE CARACTERES :
@@ -193,24 +191,24 @@ C           -----------------------------
                CALL GETVTX('LISTE','TYPE_K',IOCC,1,1,NTYP,JT)
 C              CHAINES DE 8 CARACTERES
                IF(NTYP(2:2).EQ.'8')THEN
-                  CALL WKVECT(TRAV,'V V K8',NK,JJJ)
-                  CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK8(JJJ),IR)
+                  CALL WKVECT(TRAV,'V V K8',NK,JTRAV3)
+                 CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK8(JTRAV3),IR)
                   CALL TBAJCO(RESULT,NMPAR,'K8',NK,IBID,RBID,CBID,
-     &                 ZK8(JJJ),'R',ZI(III))
+     &                        ZK8(JTRAV3),'R',ZI(III))
 
 C              CHAINES DE 16 CARACTERES
                ELSEIF(NTYP(2:2).EQ.'1')THEN
-                  CALL WKVECT(TRAV,'V V K16',NK,JJJ)
-                  CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK16(JJJ),IR)
+                  CALL WKVECT(TRAV,'V V K16',NK,JTRAV4)
+                CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK16(JTRAV4),IR)
                   CALL TBAJCO(RESULT,NMPAR,'K16',NK,IBID,RBID,CBID,
-     &                 ZK16(JJJ),'R',ZI(III))
+     &                        ZK16(JTRAV4),'R',ZI(III))
 
 C              CHAINES DE 24 CARACTERES
                ELSEIF(NTYP(2:2).EQ.'2')THEN
-                  CALL WKVECT(TRAV,'V V K24',NK,JJJ)
-                  CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK24(JJJ),IR)
+                  CALL WKVECT(TRAV,'V V K24',NK,JTRAV5)
+                CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK24(JTRAV5),IR)
                   CALL TBAJCO(RESULT,NMPAR,'K24',NK,IBID,RBID,CBID,
-     &                 ZK24(JJJ),'R',ZI(III))
+     &                        ZK24(JTRAV5),'R',ZI(III))
                ENDIF
             ENDIF
             CALL JEDETR(TRAV) 
@@ -266,17 +264,17 @@ C
             CALL TBAJPA(LATAB1,2,NMPARF,TYPARR)
           ENDIF
           CALL JELIRA(LERES0//'.VALE','LONMAX',NDIM,KBID)
-          CALL JEVEUO(LERES0//'.VALE','L',JJJ)
+          CALL JEVEUO(LERES0//'.VALE','L',JVALE)
           IF (ZK16(JPROL).EQ.'FONCT_C') THEN
             DO 301 I=1,NDIM/3
-              VR(1)=ZR(JJJ-1+I)
-              VC(1)=DCMPLX(ZR(JJJ-1+NDIM/3+2*I-1),ZR(JJJ-1+NDIM/3+2*I))
+              VR(1)=ZR(JVALE-1+I)
+           VC(1)=DCMPLX(ZR(JVALE-1+NDIM/3+2*I-1),ZR(JVALE-1+NDIM/3+2*I))
               CALL TBAJLI(LATAB1,2,NMPARF,IBID,VR,VC,KBID,0)
  301        CONTINUE
           ELSE
             DO 300 I=1,NDIM/2
-              VR(1)=ZR(JJJ-1+I)
-              VR(2)=ZR(JJJ-1+NDIM/2+I)
+              VR(1)=ZR(JVALE-1+I)
+              VR(2)=ZR(JVALE-1+NDIM/2+I)
               CALL TBAJLI(LATAB1,2,NMPARF,IBID,VR,CBID,KBID,0)
  300        CONTINUE
           ENDIF

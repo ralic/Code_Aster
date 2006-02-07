@@ -15,7 +15,7 @@
       INTEGER      NBPASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -268,18 +268,18 @@ C
                CALL UTMESS('F','DLDIFF','APPEL ERRONE')
             ENDIF
             CHAMNO(20:24)  = '.VALE'
-            CALL JEVEUO(CHAMNO,'E',LVALE)
+            CALL JEVEUO(CHAMNO,'E',LVALE1)
             IF (ITYPE.EQ.1) THEN
                 DO 32 IEQ = 1, NEQ
-                   ZR(LVALE+IEQ-1) = DEP0(IEQ+NEQ*NRPASE)
+                   ZR(LVALE1+IEQ-1) = DEP0(IEQ+NEQ*NRPASE)
  32             CONTINUE
             ELSE IF (ITYPE.EQ.2) THEN
                 DO 33 IEQ = 1, NEQ
-                   ZR(LVALE+IEQ-1) = VIT0(IEQ+NEQ*NRPASE)
+                   ZR(LVALE1+IEQ-1) = VIT0(IEQ+NEQ*NRPASE)
  33             CONTINUE 
             ELSE 
                 DO 34 IEQ = 1, NEQ
-                   ZR(LVALE+IEQ-1) = ACC0(IEQ+NEQ*NRPASE)
+                   ZR(LVALE1+IEQ-1) = ACC0(IEQ+NEQ*NRPASE)
  34             CONTINUE
             ENDIF  
             CALL JELIBE(CHAMNO)
@@ -356,9 +356,9 @@ C
             CALL PSNSLE ( INPSCO, JSTD, JAUX, VAPRIN )
             CALL JEEXIN(VAPRIN(1:19)//'.REFE',IRESOL)
             IF (IRESOL.EQ.0) CALL VTCREM(VAPRIN(1:19),MASSE,'V',TYPSOL)
-            CALL JEVEUO(VAPRIN(1:19)//'.VALE','E',LVALE)
+            CALL JEVEUO(VAPRIN(1:19)//'.VALE','E',LVALE2)
             DO 426 IEQ = 1, NEQ
-              ZR(LVALE-1 +IEQ) = ZR(IDEPL1-1 +IEQ)
+              ZR(LVALE2-1 +IEQ) = ZR(IDEPL1-1 +IEQ)
   426       CONTINUE
          END IF
 
@@ -412,9 +412,9 @@ C ------------- ARCHIVAGE DU DERNIER INSTANT DE CALCUL
          ENDIF
          WRITE(IFM,1000) 'DEPL',' ',' ', IARCHI, TEMPS
          CHAMNO(20:24)  = '.VALE'
-         CALL JEVEUO(CHAMNO,'E',LVALE)
+         CALL JEVEUO(CHAMNO,'E',LVALE3)
          DO 72 IEQ = 1,NEQ
-            ZR(LVALE+IEQ-1) = ZR(IDEPL1-1+IEQ)
+            ZR(LVALE3+IEQ-1) = ZR(IDEPL1-1+IEQ)
  72      CONTINUE
          CALL JELIBE(CHAMNO)
          CALL RSNOCH(RESULT,'DEPL',IARCHI,' ')
@@ -429,9 +429,9 @@ C ------------- ARCHIVAGE DU DERNIER INSTANT DE CALCUL
          ENDIF
          WRITE(IFM,1000) ' ','VITE',' ', IARCHI, TEMPS
          CHAMNO(20:24)  = '.VALE'
-         CALL JEVEUO(CHAMNO,'E',LVALE)
+         CALL JEVEUO(CHAMNO,'E',LVALE4)
          DO 76 IEQ = 1,NEQ
-            ZR(LVALE+IEQ-1) = ZR(IVITE1-1+IEQ)
+            ZR(LVALE4+IEQ-1) = ZR(IVITE1-1+IEQ)
  76      CONTINUE
          CALL JELIBE(CHAMNO)
          CALL RSNOCH(RESULT,'VITE',IARCHI,' ')
@@ -446,9 +446,9 @@ C ------------- ARCHIVAGE DU DERNIER INSTANT DE CALCUL
          ENDIF
          WRITE(IFM,1000) ' ',' ','ACCE', IARCHI, TEMPS
          CHAMNO(20:24)  = '.VALE'
-         CALL JEVEUO(CHAMNO,'E',LVALE)
+         CALL JEVEUO(CHAMNO,'E',LVALE5)
          DO 80 IEQ = 1,NEQ
-            ZR(LVALE+IEQ-1) = ZR(IACCE1-1+IEQ)
+            ZR(LVALE5+IEQ-1) = ZR(IACCE1-1+IEQ)
  80      CONTINUE
          CALL JELIBE(CHAMNO)
          CALL RSNOCH(RESULT,'ACCE',IARCHI,' ')

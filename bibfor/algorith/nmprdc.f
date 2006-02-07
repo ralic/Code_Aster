@@ -5,7 +5,7 @@
      &                  LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,8 +165,8 @@ C -- REASSEMBLAGE EVENTUEL DE LA MATRICE DE PROJECTION
      &                  NUMINS, 0     , VALMOI, POUGD , ' '   ,
      &                  VALPLU, MATRIX, K16BID, K24BID, K24BID,
      &                  LBID,   K16BID, K24BID, K24BID, LBID,
-     &                  K24BID, K24BID, K24BID, R8BID,  R8BID,
-     &                  LICCVG(5))
+     &                  K24BID, K24BID, K24BID, 1.D0,  0.D0,
+     &                  0.D0, LICCVG(5))
 
       IF (LICCVG(5).NE.0) GOTO 9999
 

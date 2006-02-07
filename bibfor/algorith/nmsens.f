@@ -5,7 +5,7 @@
      &                    NUMINS,SECMBR,NBPASE,INPSCO)
  
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -134,7 +134,8 @@ C -- CAS STATIQUE
      &             K24BID, K24BID, K24BID, IBID,   K24BID, 
      &             K24BID, IBID,   LBID,   LBID,   0,
      &             K24BID, K24BID, NRPASE, NBPASE, INPSCO,
-     &             NOPASE, SECMBR)
+     &             NOPASE, 1,      K24BID, K19BID, .FALSE.,
+     &             SECMBR)
       ELSE
 C -- CALCUL DES CHARGEMENTS EXTERIEURS DE SENSIBILITE
 C -- CAS DYNAMIQUE
@@ -156,7 +157,8 @@ C -- CAS DYNAMIQUE
      &                AMORT,  K24BID, VITENT ,NMODAM ,VALMOD ,
      &                BASMOD, IBID, LIMPED, LBID,  0,
      &                K24BID, K24BID, NRPASE, NBPASE, INPSCO,
-     &                NOPASE, SECMBR)
+     &                NOPASE, 1,      K24BID, K19BID, .FALSE.,
+     &                SECMBR)
       END IF
 
       CALL DESAGG(SECMBR,CNFEDO,K24BID,CNDIDO,K24BID,K24BID,K24BID,

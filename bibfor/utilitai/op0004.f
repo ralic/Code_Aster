@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,11 +73,11 @@ C
 C
 C     --- VERIFICATION DE LA CROISSANCE DES PARAMETRES ---
       IF ( VERIF .EQ. 'CROISSANT' ) THEN
-         CALL WKVECT('&&OP0004.TEMP.PARA','V V R',NBPARA,LPAR)
-         CALL GETVR8(' ','PARA',0,1,NBPARA,ZR(LPAR),N)
+         CALL WKVECT('&&OP0004.TEMP.PARA','V V R',NBPARA,LPARC)
+         CALL GETVR8(' ','PARA',0,1,NBPARA,ZR(LPARC),N)
 C        VERIF QUE LES PARA SONT STRICT CROISSANTS
          IRET=2
-         CALL FOVERF(ZR(LPAR),NBPARA,IRET)
+         CALL FOVERF(ZR(LPARC),NBPARA,IRET)
          IF(IRET.NE.2)THEN
             CALL UTMESS('F','OP0004','PARAMETRES NON CROISSANTS')
          ENDIF
@@ -169,13 +169,15 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
                IF(IRET2.EQ.0)THEN
                   TYPFON='FONCTION'
                   CALL UTTRIF(ZR(LVAL),NBCOUP,TYPFON)
-                CALL UTDEBM('A','OP0004','LES ABSCISSES DE LA FONCTION')
+                  CALL UTDEBM('A','OP0004',
+     +                            'LES ABSCISSES DE LA FONCTION')
                   CALL UTIMPK('S',' ',1,NOMFON)
                   CALL UTIMPK('L','ONT ETE REORDONNEES.',0,K8B)
                   CALL UTFINM()
                ELSEIF(IRET2.LT.0)THEN
                   CALL ORDON1(ZR(LVAL),NBCOUP)
-        CALL UTDEBM('A','OP0004','L ORDRE DES ABSCISSES DE LA FONCTION')
+                  CALL UTDEBM('A','OP0004',
+     +                        'L ORDRE DES ABSCISSES DE LA FONCTION')
                   CALL UTIMPI('S',' NUMERO ',1,IFONC)
                   CALL UTIMPK('L','A ETE INVERSE .',0,K8B)
                   CALL UTFINM()

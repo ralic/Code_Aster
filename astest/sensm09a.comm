@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (PLAST VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -331,6 +331,11 @@ U=CALC_ELEM( reuse=U,
                           RESULTAT=U,
               )
 
+U=CALC_ELEM( reuse=U,
+             OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+             SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY,PS_DY),
+             RESULTAT=U,
+              )
 
 U=CALC_ELEM(reuse=U,         RESULTAT=U,
                 OPTION='EPSI_ELNO_DEPL')
@@ -374,6 +379,25 @@ TEST_RESU(RESU=(
       VALE = 1.08096E-6, REFERENCE = 'AUTRE_ASTER' ),
       ));
 
+TEST_RESU(RESU=(
+   _F(RESULTAT = U,
+      INST = 60.,
+      NOEUD = 'N221',
+      MAILLE = 'M75',
+      NOM_CHAM = 'SIEF_ELNO_ELGA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+      NOM_CMP = 'SIXX',   SENSIBILITE = PS_E,
+      VALE = -3.4027E-08, REFERENCE = 'AUTRE_ASTER' ),
+   _F(RESULTAT = U,
+      INST = 60.,
+      NOEUD = 'N212',
+      MAILLE = 'M75',
+      NOM_CHAM = 'SIEF_ELNO_ELGA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+      NOM_CMP = 'SIZZ',   SENSIBILITE = PS_E,
+      VALE = 3.15789E-07, REFERENCE = 'AUTRE_ASTER' ),
+      ));
+
 # SENSIBILITE PAR RAPPORT A E_T (D_SIGM_EPSI)
 
 TEST_RESU(RESU=(
@@ -412,23 +436,28 @@ TEST_RESU(RESU=(
       VALE = -4.50133E-4, REFERENCE = 'AUTRE_ASTER' ),
       ));
 
+TEST_RESU(RESU=(
+   _F(RESULTAT = U,
+      INST = 60.,
+      NOEUD = 'N221',
+      MAILLE = 'M75',
+      NOM_CHAM = 'VARI_ELNO_ELGA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+      NOM_CMP = 'V1',   SENSIBILITE = PS_SIGY,
+      VALE = -4.5622E-4, REFERENCE = 'AUTRE_ASTER' ),
+   _F(RESULTAT = U,
+      INST = 60.,
+      NOEUD = 'N212',
+      MAILLE = 'M75',
+      NOM_CHAM = 'VARI_ELNO_ELGA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+      NOM_CMP = 'V1',   SENSIBILITE = PS_SIGY,
+      VALE = -4.50133E-4, REFERENCE = 'AUTRE_ASTER' ),
+      ));
+
 # SENSIBILITE PAR RAPPORT A PS_DY
 
 TEST_RESU(RESU=(
-#   _F(RESULTAT = U,
-#      INST = 60.,
-#      NOEUD = 'N213',
-#      NOM_CHAM = 'DEPL',
-#      CRITERE = 'RELATIF', PRECISION = 1.E-4,
-#      NOM_CMP = 'DX',
-#      VALE = -2.28851E-8, REFERENCE = 'AUTRE_ASTER' ),
-#   _F(RESULTAT = U,
-#      INST = 60.,
-#      NOEUD = 'N213',
-#      NOM_CHAM = 'DEPL',
-#      CRITERE = 'RELATIF', PRECISION = 1.E-4,
-#      NOM_CMP = 'DY',
-#      VALE = -2.28851E-8, REFERENCE = 'AUTRE_ASTER' ),
    _F(RESULTAT = U,
       INST = 60.,
       NOEUD = 'N213',

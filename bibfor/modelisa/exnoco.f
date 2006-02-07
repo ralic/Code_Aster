@@ -4,7 +4,7 @@
      &                   LISTMA,LISTNO,LISTQU) 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 06/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,15 +103,15 @@ C
       IF (NG.NE.0) THEN
          NG = - NG
          CALL GETVEM(NOMA,TYPENT,MOTFAC,MOTCLE,
-     &               IREAD,1,NG,ZK8(JTRAV),NGR)
-     
+     &               IREAD,1,NG,ZK8(JTRAV),NGR)    
          IF (TYPENT.EQ.'MAILLE') THEN
-            NGR = 0
+            NBMA = NGR
+            NGR  = 0
          ENDIF
-         CALL EXNOEL(CHAR,NOMA,MOTCLE(1:8),NGR,ZK8(JTRAV),
-     &                   NBMA,NBNO,NBNOQU,
-     &                   LISTMA,LISTNO,LISTQU,
-     &                   IPMA,IPNO,IPNOQU)
+         CALL EXNOEL(CHAR,NOMA,TYPENT,NGR,ZK8(JTRAV),
+     &               NBMA,NBNO,NBNOQU,
+     &               LISTMA,LISTNO,LISTQU,
+     &               IPMA,IPNO,IPNOQU)
       END IF
 
 C

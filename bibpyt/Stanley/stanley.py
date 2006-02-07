@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 21/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1166,16 +1166,19 @@ class STANLEY :
       Creation interactive d'un point de post-traitement
     """
 
-   # Lecture des caracteristiques du chemin    
+    # Lecture des caracteristiques du chemin    
     (nom,x0,y0,z0) = self.interface.Requete_point()
+    if not nom: return
 
-   # definition des nouvelles entites geometriques
-    driver = DRIVER_SUP_GMSH(self)
-    geom = driver.Importer_point(nom,x0,y0,z0)
-    if not geom: return
-    
-   # Incorporation du nouveau point 
-    self.etat_geom.Fusion(geom)
+    try:
+      # definition des nouvelles entites geometriques
+      driver = DRIVER_SUP_GMSH(self)
+      geom = driver.Importer_point(nom,x0,y0,z0)
+      if not geom: return
+      
+      # Incorporation du nouveau point 
+      self.etat_geom.Fusion(geom)
+    except: pass
     self.selection.Refresh()
 
 
@@ -1185,17 +1188,19 @@ class STANLEY :
       Creation interactive d'un chemin de post-traitement
     """
 
-   # Lecture des caracteristiques du chemin    
+    # Lecture des caracteristiques du chemin    
     (nom,x0,y0,z0,x1,y1,z1,nbr) = self.interface.Requete_chemin()
+    if not nom: return
 
-   # definition des nouvelles entites geometriques
-    driver = DRIVER_SUP_GMSH(self)
-    geom = driver.Importer_chemin (nom,x0,y0,z0,x1,y1,z1,nbr)
-    if not geom: return
+    try:
+      # definition des nouvelles entites geometriques
+      driver = DRIVER_SUP_GMSH(self)
+      geom = driver.Importer_chemin (nom,x0,y0,z0,x1,y1,z1,nbr)
+      if not geom: return
 
-    
-   # Incorporation du nouveau chemin 
-    self.etat_geom.Fusion(geom)
+      # Incorporation du nouveau chemin 
+      self.etat_geom.Fusion(geom)
+    except: pass
     self.selection.Refresh()
 
 
@@ -1660,12 +1665,15 @@ class DRIVER :
     if __MA == contexte.maillage :
       return contexte, []
 
+    if selection.geom[0] == 'POINT': type_modelisation = 'DIS_T'
+    else:                            type_modelisation = 'BARRE'
+
     try:
       __MO_P = AFFE_MODELE(MAILLAGE = __MA,
                            AFFE = _F(GROUP_MA = selection.geom[1],
   #                                   TOUT         = 'OUI',
                                      PHENOMENE    = 'MECANIQUE',   # sans doute faire qchose de plus fin
-                                     MODELISATION = 'BARRE',       # a ce niveau ...
+                                     MODELISATION = type_modelisation,       # a ce niveau ...
                                     )
                           )
     except aster.error,err:

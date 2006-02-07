@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE   SUIVI PERFORMANCE : 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,7 +159,7 @@ CLDEP=AFFE_CHAR_MECA(
                     GROUP_NO = 'BAS',
                     DZ = 0.),
             _F( 
-                    NOEUD = 'NO1528',
+                    NOEUD = 'N1528',
                     DX = 0.,
                     DY = 0.),
             _F( 
@@ -200,17 +200,17 @@ U=STAT_NON_LINE(
 TEST_RESU( RESU=( 
          _F( RESULTAT = U,
              NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-             NOEUD = 'NO1123',    NOM_CMP = 'DX',
+             NOEUD = 'N1123',    NOM_CMP = 'DX',
              REFERENCE = 'NON_REGRESSION',
              VALE = 2.11630E-04,  PRECISION = 1.E-4 ),
          _F( RESULTAT = U,
              NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-             NOEUD = 'NO1594',    NOM_CMP = 'DY',
+             NOEUD = 'N1594',    NOM_CMP = 'DY',
              REFERENCE = 'NON_REGRESSION',
              VALE = 0.,  CRITERE = 'ABSOLU',  PRECISION = 1.E-10 ),
          _F( RESULTAT = U,
              NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-             NOEUD = 'NO1044',    NOM_CMP = 'DZ',
+             NOEUD = 'N1044',    NOM_CMP = 'DZ',
              REFERENCE = 'NON_REGRESSION',
              VALE = 1.41895E-02,  PRECISION = 1.E-4 )
                 )  

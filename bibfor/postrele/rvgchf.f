@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,7 +165,6 @@ C        /* CAS D' UNE LISTE DE NUMERO ORDRE */
                   ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
                ENDIF
 410         CONTINUE
-            CALL JEDETR('&&OP0051.LISTE.IS')
          ELSE IF ( CAR2 .EQ. 'M' ) THEN
 C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
             CALL WKVECT(NVALAC,'V V I',NBORDR,AVALAC)
@@ -205,7 +204,6 @@ C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
                   CALL JEDETR('&&OP0051.LISTE.ORDRE')
                ENDIF
 800         CONTINUE
-            CALL JEDETR('&&OP0051.LISTE.IS')
          ELSE
 C        /* CAS D' UNE LISTE DE REELS */
             CALL WKVECT(NVALAC,'V V R8',NBORDR,AVALAC)
@@ -251,8 +249,9 @@ C        /* CAS D' UNE LISTE DE REELS */
                   CALL JEDETR('&&OP0051.LISTE.ORDRE')
                ENDIF
 600         CONTINUE
-            CALL JEDETR('&&OP0051.LISTE.R8')
          ENDIF
+         CALL JEDETR('&&OP0051.LISTE.IS')
+         CALL JEDETR('&&OP0051.LISTE.R8')
       ENDIF
       CALL JEDEMA()
       END

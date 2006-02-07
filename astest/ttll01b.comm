@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8 - TEMP_INIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,40 +85,40 @@ RESULTAT=TEMPE, NOM_CHAM='TEMP',
 
 TEST_RESU(CHAM_NO=(
    # VALEURS DE REFERENCE:
-      _F( CHAM_GD = TEMP_1, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_1, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                             VALE = 65.48, PRECISION = 1.E-2),
-      _F( CHAM_GD = TEMP_2, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_2, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                             VALE = 75.58, PRECISION = 1.E-2),
-      _F( CHAM_GD = TEMP_3, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_3, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                             VALE = 93.01, PRECISION = 1.E-2),
-      _F( CHAM_GD = TEMP_4, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_4, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                             VALE = 99.72, PRECISION = 1.E-2),
 
-      _F( CHAM_GD = TEMP_1, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_1, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                             VALE = 8.09, PRECISION = 1.E-2),
-      _F( CHAM_GD = TEMP_2, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_2, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                             VALE = 26.37, PRECISION = 3.E-2),
-      _F( CHAM_GD = TEMP_3, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_3, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                             VALE = 78.47, PRECISION = 1.E-2),
-      _F( CHAM_GD = TEMP_4, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+      _F( CHAM_GD = TEMP_4, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                             VALE = 99.13, PRECISION = 1.E-2),
    # VALEURS TROUVEES JUSQU'A PRESENT:
- _F( CHAM_GD = TEMP_1, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_1, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                           VALE = 65.368,  PRECISION = 1.E-4),
- _F( CHAM_GD = TEMP_2, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_2, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                           VALE = 75.841,  PRECISION = 1.E-4),
- _F( CHAM_GD = TEMP_3, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_3, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                           VALE = 92.874,  PRECISION = 1.E-4),
- _F( CHAM_GD = TEMP_4, NOEUD = 'NO9', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_4, NOEUD = 'N9', NOM_CMP = 'TEMP',
                                           VALE = 99.700,  PRECISION = 1.E-4),
 
- _F( CHAM_GD = TEMP_1, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_1, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                            VALE = 8.113, PRECISION = 1.E-4),
- _F( CHAM_GD = TEMP_2, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_2, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                            VALE = 25.871, PRECISION = 1.E-4),
- _F( CHAM_GD = TEMP_3, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_3, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                            VALE = 78.071, PRECISION = 1.E-4),
- _F( CHAM_GD = TEMP_4, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+ _F( CHAM_GD = TEMP_4, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                            VALE = 99.077, PRECISION = 1.E-4))
     )
 
@@ -132,7 +132,7 @@ TEST_RESU(CHAM_NO=(
 
 CHTH2=AFFE_CHAR_THER_F(MODELE=MOTH,TEMP_IMPO=(
           _F( GROUP_NO = 'GRNM14', TEMP = TIMPVAR),
-          _F( GROUP_MA = 'GRMA12', NOEUD = ('NO67','NO68','NO69',),
+          _F( GROUP_MA = 'GRMA12', NOEUD = ('N67','N68','N69',),
                      EVOL_THER = TEMPE))
          )
 
@@ -144,9 +144,9 @@ TEMPE2=THER_LINEAIRE(        MODELE=MOTH,
 
 TEST_RESU(RESU=(
 _F( RESULTAT = TEMPE2,  INST = 0.1,  NOM_CHAM = 'TEMP',
- NOEUD = 'NO9', NOM_CMP = 'TEMP', VALE = 65.48, PRECISION = 1.E-2),
+ NOEUD = 'N9', NOM_CMP = 'TEMP', VALE = 65.48, PRECISION = 1.E-2),
 _F( RESULTAT = TEMPE2,  INST = 0.1,  NOM_CHAM = 'TEMP',
- NOEUD = 'NO33', NOM_CMP = 'TEMP', VALE = 8.09, PRECISION = 1.E-2))
+ NOEUD = 'N33', NOM_CMP = 'TEMP', VALE = 8.09, PRECISION = 1.E-2))
 )
 
 #----------------------------------------------------------
@@ -175,7 +175,7 @@ TEMP_1E=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
                     RESULTAT=TEMPEE, NOM_CHAM='TEMP', INST=.7 )
 
 TEST_RESU(
-       CHAM_NO=_F( CHAM_GD = TEMP_1E, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+       CHAM_NO=_F( CHAM_GD = TEMP_1E, NOEUD = 'N33', NOM_CMP = 'TEMP',
                          VALE = 78.47, PRECISION = 3.E-2,
                          REFERENCE = 'AUTRE_ASTER'))
 
@@ -207,7 +207,7 @@ TEMP_2E=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
                     RESULTAT=TEMPAE, NOM_CHAM='TEMP', INST=2. )
 
 TEST_RESU(
-      CHAM_NO=_F( CHAM_GD = TEMP_2E, NOEUD = 'NO33', NOM_CMP = 'TEMP',
+      CHAM_NO=_F( CHAM_GD = TEMP_2E, NOEUD = 'N33', NOM_CMP = 'TEMP',
                                       VALE = 99.13, PRECISION = 3.E-2,
                                       REFERENCE = 'AUTRE_ASTER')
    )

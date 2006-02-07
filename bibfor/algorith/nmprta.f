@@ -5,14 +5,15 @@
      &                   SECMBR, DEPPIL, LICCVG, STADYN,
      &                   LAMORT, VITPLU, ACCPLU, MASSE,  AMORT,
      &                   CMD,    PREMIE, MEMASS, DEPENT, VITENT,
-     &                   COEVIT, COEACC, VITKM1, NMODAM, VALMOD,
+     &                   COEDEP,COEVIT, COEACC, VITKM1, NMODAM, VALMOD,
      &                   BASMOD, NREAVI, LIMPED, LONDE,  NONDP,
      &                   CHONDP, MODEDE, NUMEDE, SOLVDE, PARCRI,
      &                   RESOCO, CONV,   CNRESI, CNDIRI, MASGEN,
-     &                   BASMOI, LMODAL, DEPDEL)
+     &                   BASMOI, LMODAL, DEPDEL,IALGO,SECOLD,CNFOLD,
+     &                   FOPREC)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,18 +34,19 @@ C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_21
 
       IMPLICIT NONE
-      LOGICAL      LAMORT, PREMIE, LBID, LIMPED, LONDE, LMODAL
+      LOGICAL      LAMORT, PREMIE, LBID, LIMPED, LONDE, LMODAL, FOPREC
       INTEGER      NUMINS, LICCVG(*)
-      INTEGER      NMODAM, NREAVI, NONDP      
-      REAL*8       PARMET(*), INST(3), COEVIT, COEACC
+      INTEGER      NMODAM, NREAVI, NONDP, IALGO     
+      REAL*8       PARMET(*), INST(3), COEVIT, COEACC, COEDEP
       REAL*8       PARCRI(11), CONV(21)
       CHARACTER*8  MODEDE
+      CHARACTER*13 SCHEMA
       CHARACTER*14 PILOTE
       CHARACTER*16 METHOD(*), CMD
       CHARACTER*19 LISCHA, SOLVEU, PARTPS
-      CHARACTER*19 SOLVDE, CNRESI, CNDIRI
+      CHARACTER*19 SOLVDE, CNRESI, CNDIRI,CNFOLD
       CHARACTER*24 MODELE, NUMEDD, MATE, CARELE, COMREF, COMPOR
-      CHARACTER*24 CARCRI, VALMOI, VALPLU, POUGD, SECMBR
+      CHARACTER*24 CARCRI, VALMOI, VALPLU, POUGD, SECMBR,SECOLD(8)
       CHARACTER*24 DEPPIL(2), MEDIRI
       CHARACTER*24 VITPLU, ACCPLU, MASSE, AMORT, MEMASS
       CHARACTER*24 DEPENT, VITENT, STADYN
@@ -139,7 +141,6 @@ C -- INITIALISATION
       INSTAP = DIINST(PARTPS, NUMINS)
       DEPDE0 = '&&CNPART.ZERO'
 
-
 C ======================================================================
 C                   REASSEMBLAGE EVENTUEL DES MATRICES
 C ======================================================================
@@ -159,10 +160,9 @@ C ======================================================================
      &                  NUMINS, 0     , VALMOI, POUGD ,  ' '  ,
      &                  VALPLU, MATRIX, K16BID, K24BID, STADYN,
      &                  PREMIE, CMD,    DEPENT, VITENT, LAMORT,
-     &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC,
+     &                  MEMASS, MASSE,  AMORT,  COEDEP, COEVIT, COEACC,
      &                  LICCVG(5))
       ENDIF
-      
       IF (LICCVG(5).NE.0) GOTO 9999
 
 
@@ -191,7 +191,6 @@ C    CALCUL DE L'OPTION FORC_NODA
 
 
 C -- DIRICHLET : BT.LAMBDA ET B.U
-
       CALL VEBUME (MODELE, DEPMOI, LISCHA, VEBUDI)
       CALL ASSVEC ('V',CNBUDI,1,VEBUDI,1.D0,NUMEDD,' ','ZERO',1)
 
@@ -205,7 +204,8 @@ C -- CALCUL DES FORCES EXTERIEURES SUIVEUSES (EN U- ET T+)
      &             LAMORT, VITPLU, ACCPLU, K24BID, K24BID,
      &             K24BID, K24BID, IBID, K24BID, K24BID, IBID,
      &             LBID, LBID, IBID, K24BID,     
-     &             TEMPLU,IBID,IBID,K13BID,K8BID,SECMBR)
+     &             TEMPLU, IBID, IBID, K13BID, K8BID, IALGO,
+     &             SECOLD, CNFOLD, FOPREC, SECMBR)
        
       IF (CMD.EQ.'DYNA_NON_LINE') THEN
         CALL NMCHAR ('INER', MODELE, NUMEDD, MATE  , CARELE,
@@ -214,7 +214,8 @@ C -- CALCUL DES FORCES EXTERIEURES SUIVEUSES (EN U- ET T+)
      &               LAMORT, VITPLU, ACCPLU, MASSE, AMORT,
      &               VITKM1,VITENT,NMODAM,VALMOD,BASMOD,NREAVI,
      &               LIMPED,LONDE,NONDP,CHONDP,      
-     &               TEMPLU,IBID,IBID,K13BID,K8BID,SECMBR)
+     &               TEMPLU,IBID,IBID,K13BID,K8BID,IALGO,
+     &               SECOLD,CNFOLD,FOPREC,SECMBR)
       ELSE IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
         CALL NMCHAR ('EXPL', MODELE, NUMEDD, MATE  , CARELE,
      &             COMPOR, LISCHA, CARCRI, INST  , DEPMOI,
@@ -222,7 +223,8 @@ C -- CALCUL DES FORCES EXTERIEURES SUIVEUSES (EN U- ET T+)
      &             LAMORT, VITPLU, ACCPLU, MASSE, AMORT,
      &             VITKM1,VITENT,NMODAM,VALMOD,BASMOD,NREAVI,
      &             LIMPED,LONDE,NONDP,CHONDP,      
-     &             TEMPLU, 0, 0, K13BID, K8BID, SECMBR)
+     &             TEMPLU, 0, 0, K13BID, K8BID,IALGO,
+     &             SECOLD,CNFOLD,FOPREC,SECMBR)
       
       ENDIF
 
@@ -292,12 +294,12 @@ C -- PREPARATION DU SECOND MEMBRE
         COPILO(3) = 1
 
 
+
 C ======================================================================
 C             CALCUL DE L'INCREMENT DE DEPLACEMENT
 C ======================================================================
 
 C -- RESOLUTION EN TENANT COMPTE DU PILOTAGE
-
         CALL NMRESO (PILOTE, 6     , CODONN, CNDONN, 3     ,
      &             COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
      &             DEPPIL)

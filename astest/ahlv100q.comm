@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,16 +137,16 @@ HARMO=DYNA_LINE_HARM(
 
 TEST_RESU(RESU=(
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO1', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
+           NOEUD = 'N1', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
            PRECISION = 3.E-03),
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO237', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
+           NOEUD = 'N237', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
            PRECISION = 3.E-03),
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO2', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
+           NOEUD = 'N2', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
            PRECISION = 4.E-02),
           _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'NO205', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
+           NOEUD = 'N205', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
            PRECISION = 4.E-02)) 
           )
 

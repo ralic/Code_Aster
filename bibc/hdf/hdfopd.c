@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfopd hdf  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -32,7 +32,7 @@
 #elif defined HPUX
    long hdfopd ( long *idf, char *nomg, char *nomd, long lg, long ln )
 #elif defined PPRO_NT
-   extern long __stdcall hdfopd( long *idf, char *nomg, unsigned long lg, char *nomd, unsigned long ln )
+   extern long __stdcall HDFOPD ( long *idf, char *nomg, unsigned long lg, char *nomd, unsigned long ln )
 #endif
 {
   hid_t id,idfic; 

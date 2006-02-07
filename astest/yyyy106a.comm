@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAPET 3D, CONTACT, TEMPERATURE MED, METIS, INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -660,7 +660,7 @@ DEP=CALC_ELEM(       reuse=DEP,
 SIG0=POST_RELEVE_T(
 
                               ACTION=_F(
-                      NOEUD = 'NO5495',
+                      NOEUD = 'N5495',
                       RESULTAT = DEP,
                       FORMAT_C = 'MODULE',
                       NOM_CHAM = 'SIEF_ELNO_ELGA',
@@ -678,7 +678,7 @@ SIG0=POST_RELEVE_T(
 SIG1=POST_RELEVE_T(
 
                               ACTION=_F(
-                      NOEUD = 'NO5642',
+                      NOEUD = 'N5642',
                       RESULTAT = DEP,
                       FORMAT_C = 'MODULE',
                       NOM_CHAM = 'SIEF_ELNO_ELGA',
@@ -696,7 +696,7 @@ SIG1=POST_RELEVE_T(
 SIG2=POST_RELEVE_T(
 
                               ACTION=_F(
-                      NOEUD = 'NO5789',
+                      NOEUD = 'N5789',
                       RESULTAT = DEP,
                       FORMAT_C = 'MODULE',
                       NOM_CHAM = 'SIEF_ELNO_ELGA',
@@ -714,7 +714,7 @@ SIG2=POST_RELEVE_T(
 SIG3=POST_RELEVE_T(
 
                               ACTION=_F(
-                      NOEUD = 'NO5936',
+                      NOEUD = 'N5936',
                       RESULTAT = DEP,
                       FORMAT_C = 'MODULE',
                       NOM_CHAM = 'SIEF_ELNO_ELGA',
@@ -835,7 +835,7 @@ TEST_TABLE(TABLE=SIG3,
 
 TEST_TABLE(TABLE=DEP_11C,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO10172',),
+                   VALE_K = 'N10172',),
            NOM_PARA='DY',
            VALE=5.8146026417401E-04,
            REFERENCE='NON_REGRESSION',
@@ -843,7 +843,7 @@ TEST_TABLE(TABLE=DEP_11C,
 
 TEST_TABLE(TABLE=DEP_11P,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO6388',),
+                   VALE_K = 'N6388',),
            NOM_PARA='DY',
            VALE=6.6088089631847E-04,
            REFERENCE='NON_REGRESSION',
@@ -851,7 +851,7 @@ TEST_TABLE(TABLE=DEP_11P,
 
 TEST_TABLE(TABLE=DEP_12C,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO10179',),
+                   VALE_K = 'N10179',),
            NOM_PARA='DY',
            VALE=6.4277188079395E-04,
            REFERENCE='NON_REGRESSION',
@@ -859,7 +859,7 @@ TEST_TABLE(TABLE=DEP_12C,
 
 TEST_TABLE(TABLE=DEP_12P,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO6395',),
+                   VALE_K = 'N6395',),
            NOM_PARA='DY',
            VALE=6.5186680893747E-04,
            REFERENCE='NON_REGRESSION',

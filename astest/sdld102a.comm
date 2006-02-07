@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,12 +70,12 @@ PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
 #
 CHARGE_L=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=( 
          _F( TOUT = 'OUI', DY = 0.0,  DZ = 0.0, DRX = 0., DRY = 0., DRZ = 0.),
-         _F( NOEUD = 'NO1', DX = 0.0), 
-         _F( NOEUD = 'NO3', DX = 0.0)))
+         _F( NOEUD = 'N1', DX = 0.0), 
+         _F( NOEUD = 'N3', DX = 0.0)))
 
 #
 CHARTRAN=AFFE_CHAR_MECA(        MODELE=MODELE,
-                           FORCE_NODALE=_F( NOEUD = 'NO2',  FX = 1.))
+                           FORCE_NODALE=_F( NOEUD = 'N2',  FX = 1.))
 
 #
 # ----- MATRICES ET VECTEURS ELEMENTS FINIS
@@ -135,14 +135,14 @@ MODES_L=MODE_ITER_SIMULT(     MATR_A=RAID_L,
 LINT1_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_L, 
                              INTERFACE=_F( NOM = 'DROITE', 
                                         TYPE = 'CRAIGB', 
-                                        NOEUD = 'NO3',
+                                        NOEUD = 'N3',
                          MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',)))
 
 #
 LINT2_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_L, 
                              INTERFACE=_F( NOM = 'GAUCHE', 
                                         TYPE = 'CRAIGB', 
-                                        NOEUD = 'NO1',
+                                        NOEUD = 'N1',
                          MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',)))
 
 #

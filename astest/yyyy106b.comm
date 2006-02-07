@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -521,7 +521,7 @@ DEP=CALC_ELEM(reuse=DEP,NIVE_COUCHE='MOY',
                       TYPE_CHARGE = 'FIXE',)))
 
 SIG0=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'NO5495',
+                   ACTION=_F( NOEUD = 'N5495',
                            OPERATION = 'EXTRACTION',
                            FORMAT_C = 'MODULE',
                            REPERE = 'GLOBAL',
@@ -535,7 +535,7 @@ SIG0=POST_RELEVE_T(INFO=1,
                            TOUT_ORDRE = 'OUI',))
 
 SIG1=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'NO5642',
+                   ACTION=_F( NOEUD = 'N5642',
                            OPERATION = 'EXTRACTION',
                            FORMAT_C = 'MODULE',
                            REPERE = 'GLOBAL',
@@ -549,7 +549,7 @@ SIG1=POST_RELEVE_T(INFO=1,
                            TOUT_ORDRE = 'OUI',))
 
 SIG2=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'NO5789',
+                   ACTION=_F( NOEUD = 'N5789',
                            OPERATION = 'EXTRACTION',
                            FORMAT_C = 'MODULE',
                            REPERE = 'GLOBAL',
@@ -563,7 +563,7 @@ SIG2=POST_RELEVE_T(INFO=1,
                            TOUT_ORDRE = 'OUI',))
 
 SIG3=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'NO5936',
+                   ACTION=_F( NOEUD = 'N5936',
                            OPERATION = 'EXTRACTION',
                            FORMAT_C = 'MODULE',
                            REPERE = 'GLOBAL',
@@ -670,7 +670,7 @@ TEST_TABLE(TABLE=SIG3,
 
 TEST_TABLE(TABLE=DEP_11C,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO10172',),
+                   VALE_K = 'N10172',),
            NOM_PARA='DY',
            VALE=5.8142726612845E-04,
            REFERENCE='NON_REGRESSION',
@@ -678,7 +678,7 @@ TEST_TABLE(TABLE=DEP_11C,
 
 TEST_TABLE(TABLE=DEP_11P,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO6388',),
+                   VALE_K = 'N6388',),
            NOM_PARA='DY',
            VALE=6.6054802495497E-04,
            REFERENCE='NON_REGRESSION',
@@ -686,7 +686,7 @@ TEST_TABLE(TABLE=DEP_11P,
 
 TEST_TABLE(TABLE=DEP_12C,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO10179',),
+                   VALE_K = 'N10179',),
            NOM_PARA='DY',
            VALE=6.4271592695991E-04,
            REFERENCE='NON_REGRESSION',
@@ -694,7 +694,7 @@ TEST_TABLE(TABLE=DEP_12C,
 
 TEST_TABLE(TABLE=DEP_12P,
            FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'NO6395',),
+                   VALE_K = 'N6395',),
            NOM_PARA='DY',
            VALE=6.5154376165749E-04,
            REFERENCE='NON_REGRESSION',

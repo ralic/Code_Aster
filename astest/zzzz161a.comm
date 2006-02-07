@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,7 +188,7 @@ DEFI_FICHIER(UNITE=81)
 
 IMPR_RESU(UNITE=81,FORMAT='MED',
           RESU=(_F( RESULTAT=RESUTRQ2,NOM_CHAM ='DEPL',GROUP_NO='OPPOSE',),
-                _F( RESULTAT=RESUTRQ2,NOM_CHAM ='EPSI_ELNO_DEPL',GROUP_MA='TRIA',MAILLE='MA43'),),)
+                _F( RESULTAT=RESUTRQ2,NOM_CHAM ='EPSI_ELNO_DEPL',GROUP_MA='TRIA',MAILLE='M43'),),)
 
 
 UUU=LIRE_RESU(TYPE_RESU='EVOL_ELAS',
@@ -246,7 +246,7 @@ TEST_RESU(CHAM_ELEM=(
                  _F( CHAM_GD=SIGMRELU,
                      CRITERE = 'RELATIF',
                      PRECISION = 1.E-4,
-                     MAILLE='MA43',
+                     MAILLE='M43',
                      GROUP_NO='OPPOSE',
                      NOM_CMP = 'SIYY',
                      VALE =  -3.25565E+02,
@@ -254,7 +254,7 @@ TEST_RESU(CHAM_ELEM=(
                  _F( CHAM_GD=SIGMRELU,
                      CRITERE = 'RELATIF',
                      PRECISION = 1.E-4,
-                     MAILLE='MA43',
+                     MAILLE='M43',
                      GROUP_NO='OPPOSE',
                      NOM_CMP = 'SIXY',
                      VALE = -1.20895E+02,

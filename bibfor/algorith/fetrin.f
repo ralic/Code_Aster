@@ -4,7 +4,7 @@
      &              IFIV,NBPROC,RANG,K24IRR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -317,7 +317,7 @@ C PROF_CHNO DU SOUS-DOMAINE IDD
 
 C .VALE DU CHAM_NO LOCAL IDD
             CHAMLS=ZK24(IFETS+IDD1)(1:19)
-            CALL JEVEUO(CHAMLS//'.VALE','L',IVALCS)
+            CALL JEVEUO(CHAMLS//'.VALE','E',IVALCS)
                       
 C --------------------------------
 C ----  BOUCLE SUR LES DDLS PHYSIQUE DU CHAM_NO LOCAL

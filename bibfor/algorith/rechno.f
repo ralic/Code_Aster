@@ -3,7 +3,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,9 +151,9 @@ C ======================================================================
       CALL JEVEUO(DDLCO, 'L',JDDL )
       CALL JEVEUO(MANOCO,'L',JMANO)
       CALL JEVEUO(METHCO,'L',JMETH)
-      CALL JEVEUO(NDIMCO,'L',JDIM )
+      CALL JEVEUO(NDIMCO,'E',JDIM )
       CALL JEVEUO(NOMACO,'L',JNOMA )
-      CALL JEVEUO(PDDL, 'L',JPDDL )
+      CALL JEVEUO(PDDL  ,'L',JPDDL )
       CALL JEVEUO(PMANO, 'L',JPOMA)
       CALL JEVEUO(PNOMA, 'L',JPONO )
       CALL JEVEUO(PSANS, 'L',JPSANS)

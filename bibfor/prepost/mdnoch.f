@@ -2,7 +2,7 @@
      >                    LRESU, NORESU, NOMSYM, NOPASE, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 06/02/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,9 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*(*) NOCHMD
-      CHARACTER*(*) NORESU, NOMSYM, NOPASE
+      CHARACTER*32 NOCHMD
+      CHARACTER*16 NOMSYM
+      CHARACTER*8  NOPASE,NORESU
 C
       LOGICAL LRESU
 C
@@ -96,14 +97,6 @@ C 1. PREALABLES
 C====
 C
       CODRET = 0
-C
-      IAUX = LEN(NOCHMD)
-C
-      IF ( IAUX.NE.32 ) THEN
-        CODRET = 1
-        CALL UTMESS
-     >       ( 'E', NOMPRO, 'MAUVAIS DIMENSIONNEMENT DE NOCHMD.' )
-      ENDIF
 C
 C====
 C 2. CREATION DU NOM

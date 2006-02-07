@@ -5,7 +5,7 @@
      &                   THETA,  IALGO , MASGEN, BASMOI, LMODAL,
      &                   FONDEP, FONVIT, FONACC, MULTAP, PSIDEL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C      OUT IALGO  : ALGORITHME D'INTEGRATION EN TEMPS
 C                     (1) : NEWMARK
 C                     (2) : HHT
 C                     (3) : THETA-METHODE
+C                     (4) : ALPHA-METHODE
 C                     (6) : EXPLICITE
 C IN/JXVAR MASGEN : DONNEES PROJECTION MODALE (?)
 C IN/JXVAR BASMOI : DONNEES PROJECTION MODALE (?)
@@ -129,22 +130,31 @@ C -- PARAMETRES METHODE DE NEWMARK
              CALL GETVR8('NEWMARK','ALPHA',1,1,1,ALPHA,N1)
              CALL GETVR8('NEWMARK','DELTA',1,1,1,DELTA,N1)
          ELSE
-         CALL GETFAC('TETA_METHODE',NBOCCT)                  
+           CALL GETFAC('TETA_METHODE',NBOCCT)                  
            IF(NBOCCT .EQ. 1 ) THEN
              IALGO = 3
              CALL GETVR8('TETA_METHODE','TETA',1,1,1,THETA,N2)
            ELSE
-             IALGO = 2
-             CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
+             CALL GETFAC('HHT',NBOCCT)
+             IF  (NBOCCT .EQ. 1 ) THEN
+               CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
+               CALL GETVTX('HHT'    ,'MODI_EQUI',1,1,1,REP,N1)
+               IF ( REP(1:3) .EQ. 'NON' ) THEN 
+                 IALGO = 2
+               ELSE
+                 IALGO = 4
+               ENDIF
+             ENDIF
            ENDIF
          ENDIF 
-         IF (IALGO.EQ.2) THEN
+         IF ((IALGO.EQ.2) . OR. (IALGO.EQ.4)) THEN
              ALPHA0 = ALPHA
              ALPHA = (UN-ALPHA0)* (UN-ALPHA0)/QUATRE
              DELTA = UNDEMI - ALPHA0
          END IF
          
-         IF ((IALGO.EQ.1) .OR. (IALGO.EQ.2)) THEN         
+         IF ((IALGO.EQ.1) .OR. (IALGO.EQ.2) .OR. 
+     &        (IALGO.EQ.4)   ) THEN         
            V0VIT = - (DELTA-ALPHA)/ALPHA
            V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
            A0VIT = -UN/ALPHA

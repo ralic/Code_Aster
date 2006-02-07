@@ -1,6 +1,6 @@
       SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,TM,TP,SIGM,
      &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
-C MODIF MODELISA  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,6 +177,8 @@ C       SURFACE SEUIL
         IF ( OPTION(1:9).EQ.'FULL_MECA' .OR.
      &      OPTION(1:9).EQ.'RAPH_MECA' ) THEN
 
+ 889      CONTINUE
+
           IF (CRIT0.LT.0.D0 ) THEN
               PLAS=0.D0
               VIP(3)=PLAS
@@ -298,7 +300,7 @@ C SI PAS CONVERGENCE EN ENDO, RETOUR A LA PLASTICITE
              IF(.NOT.DCONV)THEN
                 PCONV=.FALSE.
                 ITD=ITD+1
-                GOTO 888
+                GOTO 889
              ENDIF
            END IF
 

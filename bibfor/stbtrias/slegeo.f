@@ -1,6 +1,6 @@
       SUBROUTINE SLEGEO
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF STBTRIAS  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
 C
 C  --> DECLARATION DES VARIABLES LOCALES
 C
-      CHARACTER*2 PRFNOE,PRFMAI
+      CHARACTER*1 PRFNOE,PRFMAI
       CHARACTER*80 CBUF
       CHARACTER*4 CT(3)
       CHARACTER*8 CHMAIL,CHNODE,NUOBJ(8)
@@ -76,8 +76,8 @@ C
       ICOMPA=0
       ICOMPV=0
 C
-      PRFNOE='NO'
-      PRFMAI='MA'
+      PRFNOE='N'
+      PRFMAI='M'
       CHFOGN='%FORMAT=(1*NOM_DE_NOEUD)'
       CHFOGM='%FORMAT=(1*NOM_DE_MAILLE)'
       CHNODE='        '
@@ -226,8 +226,8 @@ C
                 DO 20 I=1,IDIV
                   READ(IUNV,'(8I10)') (NUMENT(K),K=1,8)
                   DO 25 K=1,8
-                    CALL CODNOP(CHNODE,PRFNOE,1,2)
-                    CALL CODENT(NUMENT(K),'G',CHNODE(3:8))
+                    CALL CODNOP(CHNODE,PRFNOE,1,1)
+                    CALL CODENT(NUMENT(K),'G',CHNODE(2:8))
                     NUOBJ(K)=CHNODE
   25              CONTINUE
                   WRITE(IMOD,'(8(2X,A))') (NUOBJ(J),J=1,8)
@@ -237,8 +237,8 @@ C
               IF (IREST.NE.0) THEN
                 READ (IUNV,'(8I10)') (NUMENT(I),I=1,8)
                 DO 30 K=1,IREST
-                  CALL CODNOP(CHNODE,PRFNOE,1,2)
-                  CALL CODENT(NUMENT(K),'G',CHNODE(3:8))
+                  CALL CODNOP(CHNODE,PRFNOE,1,1)
+                  CALL CODENT(NUMENT(K),'G',CHNODE(2:8))
                   NUOBJ(K)=CHNODE
   30            CONTINUE
                 WRITE(IMOD,'(8(2X,A))') (NUOBJ(J),J=1,IREST)
@@ -252,8 +252,8 @@ C
                 DO 40 I=1,IDIV
                   READ(IUNV,'(8I10)') (NUMENT(K),K=1,8)
                   DO 45 K=1,8
-                    CALL CODNOP(CHMAIL,PRFMAI,1,2)
-                    CALL CODENT(NUMENT(K),'G',CHMAIL(3:8))
+                    CALL CODNOP(CHMAIL,PRFMAI,1,1)
+                    CALL CODENT(NUMENT(K),'G',CHMAIL(2:8))
                     NUOBJ(K)=CHMAIL
   45              CONTINUE
                   WRITE(IMOD,'(8(2X,A))') (NUOBJ(J),J=1,8)
@@ -263,8 +263,8 @@ C
               IF (IREST.NE.0) THEN
                 READ (IUNV,'(8I10)') (NUMENT(I),I=1,8)
                 DO 50 K=1,IREST
-                  CALL CODNOP(CHMAIL,PRFMAI,1,2)
-                  CALL CODENT(NUMENT(K),'G',CHMAIL(3:8))
+                  CALL CODNOP(CHMAIL,PRFMAI,1,1)
+                  CALL CODENT(NUMENT(K),'G',CHMAIL(2:8))
                   NUOBJ(K)=CHMAIL
   50            CONTINUE
                 WRITE(IMOD,'(8(2X,A))') (NUOBJ(J),J=1,IREST)

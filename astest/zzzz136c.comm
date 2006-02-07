@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TEST DE LA COMMANDE INTE_MAIL_3D ET POST_RELEVE_T
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,8 +171,8 @@ TEST_TABLE( TABLE=TN2,
 #----------------------------------------------------------------------
 C3=INTE_MAIL_3D(  MAILLAGE=MA,
                      INFO=2,
-               DEFI_SEGMENT=_F( NOEUD_ORIG = 'NO2',
-                                NOEUD_EXTR = 'NO8', ),
+               DEFI_SEGMENT=_F( NOEUD_ORIG = 'N2',
+                                NOEUD_EXTR = 'N8', ),
                ) ;
 
 TS3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS3',
@@ -324,8 +324,8 @@ TEST_TABLE( TABLE=TN5,
 #----------------------------------------------------------------------
 C6=INTE_MAIL_3D(  MAILLAGE=MA,
                      INFO=2,
-               DEFI_SEGMENT=_F( NOEUD_ORIG = 'NO7',
-                                NOEUD_EXTR = 'NO6', ),
+               DEFI_SEGMENT=_F( NOEUD_ORIG = 'N7',
+                                NOEUD_EXTR = 'N6', ),
                ) ;
 
 TS6=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS6',

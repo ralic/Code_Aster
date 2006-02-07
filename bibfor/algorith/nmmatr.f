@@ -4,11 +4,11 @@
      &                  NUMINS, ITERAT, VALMOI, POUGD,  DEPDEZ,
      &                  VALPLU, MATRIX, OPTION, DEFICO, STADYN,
      &                  PREMIE, CMD,    DEPENT, VITENT, LAMORT,
-     &                  MEMASS, MASSE,  AMORT, COEVIT,  COEACC,
-     &                  LICCVG)
+     &                  MEMASS, MASSE,  AMORT,  COEDEP, COEVIT,
+     &                  COEACC, LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C TOLE CRP_21
 
       IMPLICIT NONE
       INTEGER NUMINS,ITERAT, LICCVG,ICONTX  
-      REAL*8 PARMET(*),COEVIT,COEACC
+      REAL*8 PARMET(*),COEVIT,COEACC,COEDEP
       CHARACTER*(*) DEPDEZ,RESOCZ,PHASEZ
       CHARACTER*10 PHASE
       CHARACTER*14 RESOCO
@@ -133,20 +133,18 @@ C
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
-
       RIGID  = '&&OP0070.MRIGID'
       MATASS = '&&MATASS'
       MAPREC = '&&NMMATR.MAPREC'
       PHASE  = PHASEZ
       RESOCO = RESOCZ
       DEPDEL = DEPDEZ
-
       LICCVG = 0
 
       UN       = 1.D0
       COEF2(1) = UN
-      COEF2(2) = COEACC
-      COEF2(3) = COEVIT
+      COEF2(2) = COEACC/COEDEP
+      COEF2(3) = COEVIT/COEDEP
       TYPE(1) = 'R'
       TYPE(2) = 'R'
       TYPE(3) = 'R'
@@ -155,7 +153,6 @@ C ----------------------------------------------------------------------
 C -- TRAITEMENT DE L'ADHERENCE CONTACT / NEWTON
 C -- SI PAS DE FROTTEMENT->MATRIX(1) = '&&MATASS'
 C -- SI FROTTEMENT       ->MATRIX(1) = '&&NMASFR.MATANG'
-      
       IF(PHASE.EQ.'FLAMBEMENT') THEN
          PHASE='PREDICTION'
       ENDIF
@@ -203,7 +200,6 @@ C PREMIERE ITERATION
         IF (MATTAN.EQ.1) THEN
              REASMA = .TRUE.   
         ENDIF
-
 C      CORRECTION ELASTIQUE
         ELSE
           REASMA = .FALSE.

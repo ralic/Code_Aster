@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -112,12 +112,12 @@ TEST_RESU(RESU=(
            PRECISION = 0.02,          CRITERE = 'RELATIF'),
 
      _F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO_DEPL',
-           NUME_ORDRE = 1,             MAILLE = 'MA32',
+           NUME_ORDRE = 1,             MAILLE = 'M32',
            GROUP_NO = 'A',
            NOM_CMP = 'NXX',           VALE = 0.0,
            PRECISION = 0.2,          CRITERE = 'ABSOLU'), 
 _F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO_DEPL',
-           NUME_ORDRE = 1,             MAILLE = 'MA32',
+           NUME_ORDRE = 1,             MAILLE = 'M32',
            GROUP_NO = 'A',
            NOM_CMP = 'MXX',          VALE = -0.477,  
            PRECISION = 0.02,          CRITERE = 'RELATIF'))

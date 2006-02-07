@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,17 +65,18 @@ C
       INTEGER NRPASS, NBPASS, ADRECG
       INTEGER       JCHEM, JCHAM, JRESU, JNCMP, NCMP, I,
      >              JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD,
-     >              JTRAN, N1, N2, N3, JCMP, NBC, NUME, JFREQ,
-     >              IRET, NBP, JINST, JORDR, JMODE, JABSC,
+     >              JTRAN, N1, N2, N3, JCMP1, JCMP2, JCMP3, NBC, NUME,
+     >              IRET, NBP, JINST, JORDR, JMODE, JABSC, JFREQ,
      >              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18,
      >              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
       REAL*8        R8B
+      LOGICAL       LMIMA, LMOYE, LEXTR
       COMPLEX*16    C16B
       CHARACTER*8   K8B, RESU, NOCMP(50), TYPARA(100), NOMCMP
       CHARACTER*16  K16B, NOMSY, TYSD
       CHARACTER*24  NOMOBJ, CHEXTR, NOPARA(100), KNUME
-      CHARACTER*24 NORECG
-      CHARACTER*24 K24BID
+      CHARACTER*24  NORECG
+      CHARACTER*24  K24BID
 C
       LOGICAL OK
 C     ------------------------------------------------------------------
@@ -253,13 +254,13 @@ C
                CALL UTNCMP ( CHEXTR, NBC, NOMOBJ )
             ENDIF
             IF (NBC.EQ.0) CALL UTMESS('F',NOMPRO,'Y A UN BUG 2')
-            CALL JEVEUO ( NOMOBJ, 'L', JCMP )
+            CALL JEVEUO ( NOMOBJ, 'L', JCMP1 )
             DO 10 I = 1 , NBC
                DO 12 J = 1 , NCMP
-                  IF ( NOCMP(J) .EQ. ZK8(JCMP+I-1) ) GOTO 10
+                  IF ( NOCMP(J) .EQ. ZK8(JCMP1+I-1) ) GOTO 10
  12            CONTINUE
                NCMP = NCMP + 1
-               NOCMP(NCMP) = ZK8(JCMP+I-1)
+               NOCMP(NCMP) = ZK8(JCMP1+I-1)
  10         CONTINUE
             CALL JEDETR ( NOMOBJ )
          ENDIF
@@ -276,8 +277,8 @@ C
             IF ( (N12+N14) .NE. 0 ) GOTO 24
             JNCMP = JNCMP  + 1
             NBC = -N1
-            CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP )
-            CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,NBC, ZK8(JCMP),N1)
+            CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP2 )
+            CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,NBC, ZK8(JCMP2),N1)
 C           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
             N11=0
             IF ( N11 .NE. 0 ) THEN
@@ -286,7 +287,7 @@ C           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
      >                       NUMCMP, JNUCP )
 C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
             N11=0
-               IF (ZK8(JCMP)(1:4).EQ.'VARI') THEN
+               IF (ZK8(JCMP2)(1:4).EQ.'VARI') THEN
                   IF (NBC.NE.1) CALL UTMESS('F',NOMPRO,'Y A UN BUG 3')
                   DO 120 I = 1 , NUMCMP
                      CALL CODENT ( ZI(JNUCP+I-1), 'G', K8B )
@@ -300,20 +301,20 @@ C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
                ELSE
                   DO 124 I = 1 , NBC
                      DO 126 J = 1 , NCMP
-                        IF ( NOCMP(J) .EQ. ZK8(JCMP+I-1) ) GOTO 124
+                        IF ( NOCMP(J) .EQ. ZK8(JCMP2+I-1) ) GOTO 124
  126                 CONTINUE
                      NCMP = NCMP + 1
-                     NOCMP(NCMP) = ZK8(JCMP+I-1)
+                     NOCMP(NCMP) = ZK8(JCMP2+I-1)
  124              CONTINUE
                ENDIF
                CALL JEDETR ( '&&'//NOMPRO//'.NU_CMP' )
             ELSE
                DO 20 I = 1 , NBC
                   DO 22 J = 1 , NCMP
-                     IF ( NOCMP(J) .EQ. ZK8(JCMP+I-1) ) GOTO 20
+                     IF ( NOCMP(J) .EQ. ZK8(JCMP2+I-1) ) GOTO 20
  22               CONTINUE
                   NCMP = NCMP + 1
-                  NOCMP(NCMP) = ZK8(JCMP+I-1)
+                  NOCMP(NCMP) = ZK8(JCMP2+I-1)
  20            CONTINUE
             ENDIF
             CALL JEDETR ( '&&'//NOMPRO//'.NCMP' )
@@ -329,21 +330,29 @@ C
          IF ( (N1 .NE. 0) .AND. (N2 .EQ. 0) ) THEN
             JNCMP = JNCMP  + 1
             NBC = -N1
-            CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP )
-            CALL GETVTX (MCF,'RESULTANTE',IOCC,1,NBC,ZK8(JCMP),N1)
+            CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP3 )
+            CALL GETVTX (MCF,'RESULTANTE',IOCC,1,NBC,ZK8(JCMP3),N1)
             DO 30 I = 1 , NBC
                DO 32 J = 1 , NCMP
-                  IF ( NOCMP(J) .EQ. ZK8(JCMP+I-1) ) GOTO 30
+                  IF ( NOCMP(J) .EQ. ZK8(JCMP3+I-1) ) GOTO 30
  32            CONTINUE
                NCMP = NCMP + 1
-               NOCMP(NCMP) = ZK8(JCMP+I-1)
+               NOCMP(NCMP) = ZK8(JCMP3+I-1)
  30         CONTINUE
             CALL JEDETR ( '&&'//NOMPRO//'.NCMP' )
          ENDIF
 C
+         LMIMA = .FALSE.
+         LMOYE = .FALSE.
+         LEXTR = .FALSE.
          CALL GETVTX ( MCF, 'OPERATION', IOCC,1,1, K16B, N3 )
-         IF ( K16B .EQ. 'MOYENNE' ) JMOYE = JMOYE + 1
+         IF ( K16B .EQ. 'EXTREMA' ) LMIMA = .TRUE.
+         IF ( K16B .EQ. 'MOYENNE' ) THEN
+            JMOYE = JMOYE + 1
+            LMOYE = .TRUE.
+         ENDIF
          IF ( K16B .EQ. 'EXTRACTION' ) THEN
+            LEXTR = .TRUE.
 C
             CALL GETVTX ( MCF, 'INVARIANT', IOCC,1,0, K8B, N2 )
             IF ( N2 .NE. 0 ) JINVA = JINVA + 1
@@ -387,7 +396,7 @@ C
          NOPARA(NBP) = 'CMP_CNX'
          TYPARA(NBP) = 'I'
       ENDIF
-      IF ( JNOEU .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JNOEU .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'NOEUD'
          TYPARA(NBP) = 'K8'
@@ -410,42 +419,42 @@ C
          NOPARA(NBP) = 'NUME_ORDRE'
          TYPARA(NBP) = 'I'
       ENDIF
-      IF ( JMODE .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JMODE .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'NUME_MODE'
          TYPARA(NBP) = 'I'
       ENDIF
-      IF ( JINST .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JINST .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'INST'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JFREQ .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JFREQ .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'FREQ'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JNCAS .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JNCAS .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'NOM_CAS'
          TYPARA(NBP) = 'K16'
       ENDIF
-      IF ( JNOCP .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JNOCP .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'NOEUD_CMP'
          TYPARA(NBP) = 'K16'
       ENDIF
-      IF ( JANGL .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JANGL .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'ANGL'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JMAIL .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JMAIL .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'MAILLE'
          TYPARA(NBP) = 'K8'
       ENDIF
-      IF ( JABSC .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JABSC .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'ABSC_CURV'
          TYPARA(NBP) = 'R'
@@ -459,14 +468,14 @@ C
          NOPARA(NBP) = 'COOR_Z'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JNCMP .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JNCMP .NE. 0 ) THEN
          DO 40 I = 1 , NCMP
             NBP = NBP + 1
             NOPARA(NBP) = NOCMP(I)
             TYPARA(NBP) = 'R'
  40      CONTINUE
       ENDIF
-      IF ( JINVA .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JINVA .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'VMIS'
          TYPARA(NBP) = 'R'
@@ -480,7 +489,7 @@ C
          NOPARA(NBP) = 'DETER'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JPRIN .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JPRIN .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'PRIN_1'
          TYPARA(NBP) = 'R'
@@ -518,7 +527,7 @@ C
          NOPARA(NBP) = 'VECT_3_Z'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JMOME .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JMOME .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'RESULT_X'
          TYPARA(NBP) = 'R'
@@ -538,7 +547,7 @@ C
          NOPARA(NBP) = 'MOMENT_Z'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JTRAN .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JTRAN .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'TRAC_NOR'
          TYPARA(NBP) = 'R'
@@ -552,7 +561,7 @@ C
          NOPARA(NBP) = 'TR_NOR_3'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JTRAD .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JTRAD .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'TRAC_DIR'
          TYPARA(NBP) = 'R'
@@ -566,10 +575,32 @@ C
          NOPARA(NBP) = 'TR_DIR_3'
          TYPARA(NBP) = 'R'
       ENDIF
-      IF ( JMOYE .NE. 0 ) THEN
+      IF ( (LEXTR .OR. LMOYE) .AND. JMOYE .NE. 0 ) THEN
          NBP = NBP + 1
          NOPARA(NBP) = 'QUANTITE'
          TYPARA(NBP) = 'K16'
+      ENDIF
+      IF ( LMIMA ) THEN
+         IF ( JRESU.NE.0 .AND. JORDR.EQ.0 ) THEN
+            NBP = NBP + 1
+            NOPARA(NBP) = 'NUME_ORDRE'
+            TYPARA(NBP) = 'I'
+         ENDIF
+         NBP = NBP + 1
+         NOPARA(NBP) = 'EXTREMA'
+         TYPARA(NBP) = 'K8'
+         NBP = NBP + 1
+         NOPARA(NBP) = 'MAILLE'
+         TYPARA(NBP) = 'K8'
+         NBP = NBP + 1
+         NOPARA(NBP) = 'NOEUD'
+         TYPARA(NBP) = 'K8'
+         NBP = NBP + 1
+         NOPARA(NBP) = 'CMP'
+         TYPARA(NBP) = 'K8'
+         NBP = NBP + 1
+         NOPARA(NBP) = 'VALE'
+         TYPARA(NBP) = 'R'
       ENDIF
 C
       IF ( NIV.GE.2 ) THEN

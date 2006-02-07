@@ -6,7 +6,7 @@
       REAL*8                  ANGLE,                    COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,11 +105,11 @@ C
       IF ( IRET .EQ. 0 ) THEN
         CALL WKVECT(CH19//DESC  ,BASE//' V I'  ,NBDESC,KDESC)
         CALL WKVECT(CH19//VALE  ,BASE//' V R'  ,NBVALE,KVALE)
-        CALL WKVECT(CH19//REFE,BASE//' V K24',NBREFE,KREFE)
+        CALL WKVECT(CH19//REFE,  BASE//' V K24',NBREFE,KREFE)
       ELSE
         CALL JEVEUO(CH19//DESC  ,'E',KDESC)
         CALL JEVEUO(CH19//VALE  ,'E',KVALE)
-        CALL JEVEUO(CH19//REFE,'E',KREFE)
+        CALL JEVEUO(CH19//REFE  ,'E',KREFE)
       ENDIF
 C
       CALL JEECRA(CH19//DESC,'DOCU',IBID,DOCU)

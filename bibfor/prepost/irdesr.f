@@ -11,7 +11,7 @@ C
       LOGICAL           LMASU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,7 +178,7 @@ C
               IENTE=0
             ENDIF
             IF (LMASU) THEN
-                CALL LXLIIS(NOMNOE(INNO)(3:8),INO,IER)
+                CALL LXLIIS(NOMNOE(INNO)(2:8),INO,IER)
             ENDIF
             WRITE (IFI,'(I10,5X,A,A)') INO,'% NOEUD ',NOMNOE(INNO)
             WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVAL-1+I),
@@ -309,7 +309,7 @@ C           COMPOSANTES ADMISES
             ENDIF
 
             IF (LMASU) THEN
-                CALL LXLIIS(NOMNOE(INNO)(3:8),INO,IER)
+                CALL LXLIIS(NOMNOE(INNO)(2:8),INO,IER)
              ENDIF
 
              WRITE (IFI,'(I10,5X,A,A)') INO,'% NOEUD ',NOMNOE(INNO)

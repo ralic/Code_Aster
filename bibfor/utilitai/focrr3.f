@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,16 +49,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBORDR, IRET, KORDR, NP, NC,  LPRO, LFON, LVAR, 
-     +             IORDR, LACCE, ILON, LXLGUT, NBACC, NBPAR
+     +             IORDR, LACCE, ILON, LXLGUT, NBACC, NBPAR, IAD1, IAD2
       REAL*8       EPSI
       CHARACTER*8  K8B, CRIT, TYPE
-      CHARACTER*16 NOMCMD, TYPCON, NOMACC
+      CHARACTER*16 NOMACC
       CHARACTER*19 KNUME
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IER = 0
-      CALL GETRES ( K8B, TYPCON, NOMCMD )
       KNUME = '&&FOCRR3.NUME_ORDR'
 C
 C     --- RECUPERATION DES NUME_ORDRE FOURNIS PAR L'UTILISATEUR ---
@@ -102,17 +101,17 @@ C     --- REMPLISSAGE DU .VALE ---
 C
       DO 20 IORDR = 1 , NBORDR
 C
-         CALL RSADPA (RESU,'L',1,NOMACC,ZI(KORDR+IORDR-1),1,LACCE,TYPE)
+         CALL RSADPA (RESU,'L',1,NOMACC,ZI(KORDR+IORDR-1),1,IAD1,TYPE)
          IF ( TYPE(1:1) .EQ. 'R' ) THEN
-            ZR(LVAR+IORDR-1) = ZR(LACCE)
+            ZR(LVAR+IORDR-1) = ZR(IAD1)
          ELSE
             CALL UTMESS('F','FOCRR3',
      +               'ON NE TRAITE QUE DES VARIABLES D''ACCES REELLES')
          ENDIF
 C
-         CALL RSADPA (RESU,'L',1,NOPARA,ZI(KORDR+IORDR-1),1,LACCE,TYPE)
+         CALL RSADPA (RESU,'L',1,NOPARA,ZI(KORDR+IORDR-1),1,IAD2,TYPE)
          IF ( TYPE(1:1) .EQ. 'R' ) THEN
-            ZR(LFON+IORDR-1) = ZR(LACCE)
+            ZR(LFON+IORDR-1) = ZR(IAD2)
          ELSE
             CALL UTMESS('F','FOCRR3',
      +                      'ON NE TRAITE QUE DES PARAMETRES REELS')

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -312,9 +312,8 @@ C
 C
 C     --- STOCKAGE ---
 C
-      IF (NDIMT.EQ.0) THEN
-         CALL UTMESS('F','OP0168','STRUCTURE RESULTAT VIDE')
-      ENDIF
+      IF (NDIMT.EQ.0) 
+     +   CALL UTMESS('F','OP0168','STRUCTURE RESULTAT VIDE')
       CALL RSCRSD ( MODEOU, TYPCON, NDIMT )
       IPREC = 0
       NOMSY = 'DEPL'

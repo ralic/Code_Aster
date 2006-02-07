@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,13 +84,13 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASM,  MATR_RIGI=MATASK,
 
 TEST_RESU(RESU=(
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO1',  NOM_CMP = 'PRES',  VALE_C = ('RI',-6.2426,0.,)),
+              NOEUD = 'N1',  NOM_CMP = 'PRES',  VALE_C = ('RI',-6.2426,0.,)),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO3', NOM_CMP = 'PRES',  VALE_C = ('RI',-6.2426,0.,)),
+              NOEUD = 'N3', NOM_CMP = 'PRES',  VALE_C = ('RI',-6.2426,0.,)),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO151', NOM_CMP = 'PRES',  VALE_C = ('RI',6.02368,1.6387,)),
+              NOEUD = 'N151', NOM_CMP = 'PRES',  VALE_C = ('RI',6.02368,1.6387,)),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'NO153',  NOM_CMP = 'PRES',  VALE_C = ('RI',6.02368,1.6387,)))
+              NOEUD = 'N153',  NOM_CMP = 'PRES',  VALE_C = ('RI',6.02368,1.6387,)))
              )
 
 DYNAHARM=CALC_ELEM( reuse=DYNAHARM,     MODELE=COLONNE,   CHAM_MATER=CHAMPMAT,
@@ -101,17 +101,17 @@ DYNAHARM=CALC_ELEM( reuse=DYNAHARM,     MODELE=COLONNE,   CHAM_MATER=CHAMPMAT,
 
 TEST_RESU(RESU=(
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
-              NOEUD = 'NO1',  NOM_CMP = 'DB',  VALE = 109.8867),
+              MAILLE = 'M1',
+              NOEUD = 'N1',  NOM_CMP = 'DB',  VALE = 109.8867),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
-              NOEUD = 'NO3',  NOM_CMP = 'DB',  VALE = 109.8867),
+              MAILLE = 'M1',
+              NOEUD = 'N3',  NOM_CMP = 'DB',  VALE = 109.8867),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
-              MAILLE = 'MA29',
-              NOEUD = 'NO151', NOM_CMP = 'DB',  VALE = 109.8867),
+              MAILLE = 'M29',
+              NOEUD = 'N151', NOM_CMP = 'DB',  VALE = 109.8867),
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
-              MAILLE = 'MA29',
-              NOEUD = 'NO153', NOM_CMP = 'DB',  VALE = 109.8867))
+              MAILLE = 'M29',
+              NOEUD = 'N153', NOM_CMP = 'DB',  VALE = 109.8867))
              )
 
 FIN()

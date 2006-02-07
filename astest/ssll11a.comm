@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,6 @@ MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS  )
 VECASS=RESO_LDLT( reuse=VECASS,  MATR_FACT=MATASS,       CHAM_NO=VECASS )
 
 #---------------------------------------------------------------------
-
 
 TEST_RESU(CHAM_NO=( 
             _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
@@ -157,6 +156,8 @@ RESU1=CALC_ELEM(reuse=RESU1,
 RESU1=CALC_NO(reuse=RESU1,  OPTION='SIGM_NOEU_CART',
                     RESULTAT=RESU1                               )
 
+#---------------------------------------------------------------------
+
 TEST_RESU(RESU=( 
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO_DEPL',  NUME_ORDRE = 1,
 MAILLE = 'AC', NOEUD = 'A',    NOM_CMP = 'SN',    VALE = 6.93641E+07),
@@ -186,6 +187,85 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
        NOEUD = 'B',    NOM_CMP = 'SIXZ',    VALE = 1.20101E+03))
             )
+
+#---------------------------------------------------------------------
+
+T0 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'CH1',
+                                OPERATION = 'EXTREMA',
+                                CHAM_GD = CH1,         ), )  ;
+IMPR_TABLE( TABLE = T0 )  ;
+
+T1 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'DEPL',
+                                OPERATION = 'EXTREMA',
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX','DRZ'),
+                                RESULTAT = RESU1       ), )  ;
+IMPR_TABLE( TABLE = T1 )  ;
+
+T2 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'SIGM',
+                                OPERATION = 'EXTREMA',
+                                NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                TOUT_CMP = 'OUI',
+                                RESULTAT = RESU1       ), )  ;
+IMPR_TABLE( TABLE = T2 )  ;
+
+#---------------------------------------------------------------------
+
+TEST_TABLE( TABLE=T0,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MAX'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE=  6.93641E+07   )
+
+TEST_TABLE( TABLE=T0,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MIN'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE= -1.21374E+08   )
+
+TEST_TABLE( TABLE=T0,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MAX_ABS'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE=  1.21374E+08   )
+
+TEST_TABLE( TABLE=T1,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MAX'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE=  3.47838E-03   )
+
+TEST_TABLE( TABLE=T1,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MIN'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE= -6.18920E-03   )
+
+TEST_TABLE( TABLE=T1,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MAX_ABS'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE= 6.18920E-03   )
+
+TEST_TABLE( TABLE=T2,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MAX'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE=  1.62542E+08   )
+
+TEST_TABLE( TABLE=T2,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MIN'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE= -2.17437E+08   )
+
+TEST_TABLE( TABLE=T2,
+            FILTRE=_F( NOM_PARA = 'EXTREMA',
+                       VALE_K   = 'MAX_ABS'    ),
+            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
+            VALE= 2.17437E+08   )
+
+#---------------------------------------------------------------------
 
 FIN( )
 #

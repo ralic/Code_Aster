@@ -7,7 +7,7 @@
       CHARACTER*24  MAFIS  
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,7 +75,7 @@ C ----------------------------------------------------------------------
 C     RÉCUPÉRATION DES LEVEL-SETS
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNSV)
 
-      CALL JEVEUO(MAFIS,'L',JMAFIS)
+      CALL JEVEUO(MAFIS,'E',JMAFIS)
 
       I=0
 C     BOUCLE SUR LES MAILLES DE GROUP_ENRI

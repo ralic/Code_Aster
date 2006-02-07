@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/02/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -20,7 +20,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # ILLUSTRATION  DE DYNA_NON_LINE ET DE POST_TRAITEMENT NUMERIQUE
-# TRACE DE COURBE AVEC GNUPLOT
+# TRACE DE COURBE AVEC XMGRACE
 
 ##############################################################################################
 # Ce fichier demontre les possibilites de couplage entre Python (et tous ses outils annexes)
@@ -32,7 +32,7 @@
 #  - Numeric Python: module permettant des operations numeriques de haut niveau.
 #     Dans cet exemple, on utilise les transformeee de Fourier rapides (FFT)
 #     integres dans le package mais il FAUT l'installer
-#  - Gnuplot: module permettant de creer des graphiques sur le logicel libre GNUPLOT
+#  - XMGRACE: module permettant de creer des graphiques
 ##############################################################################################
 
 ##############################################################################################
@@ -42,10 +42,8 @@
 # 2/ Un fichier post-processing au format 'universel' I-DEAS (ailette.unv)
 # 3/ Un fichier post-processing au format GMSH (le nom doit etre precise dans la variable 
 #     <fichier_GMSH>)
-# 4/ Trois courbes au format GNUPLOT (dont les noms doivent etre precises dans les variables
-#     <fichier_GNUPLOT1>,<fichier_GNUPLOT2>,<fichier_GNUPLOT3> )
-#    Il faut noter que le troisieme fichier GNUPLOT permet de generer un fichier postscript
-#   dont le nom doit etre precise dans la variable <fichier_PS>
+# 4/ Trois courbes au format XMGRACE
+#    Il faut noter que la troisieme courbe XMGRACE permet de generer un fichier postscript
 #
 ### GMSH
 #
@@ -53,11 +51,10 @@
 # <launch_GMSH>). Dans ce cas, ne pas oublier de renseigner la variable <executable_GMSH> sur
 # l'emplacement de l'executable GMSH.
 #
-### GNUPLOT
+### XMGRACE
 #
-# On peut aussi demander a executer GNUPLOT en mode interactif (variable <launch_GNUPLOT>)
-# Si GNUPLOT n'est pas en mode interactif, le fichier postscript ne sera pas genere et il 
-# faudra executer GNUPLOT avec le troisieme fichier <fichier_GNUPLOT3> en parametre.
+# On peut aussi demander a executer XMGRACE en mode interactif (variable <launch_XMGRACE>)
+# Le fichier postscript sera genere independamment de la variable <launch_XMGRACE>.
 #
 ##############################################################################################
 
@@ -79,17 +76,12 @@ launch_GMSH      = 0
 import os
 executable_GMSH  = os.path.join(aster.repout(),'gmsh')
 
-# Executer GNUPLOT en interactif: 1=OUI, 0=NON
-launch_GNUPLOT   = 0
+# Executer XMGRACE en interactif: 1=OUI, 0=NON
+launch_XMGRACE   = 0
 
 #=============================================================================================
 # Unites logiques
 #=============================================================================================
-# Unites logiques pour sortie GNUPLOT (si mode non interactif)
-unite_GNUPLOT1 = 38
-unite_GNUPLOT2 = 39
-unite_GNUPLOT3 = 40
-
 # Unite logique pour sortie POSTSCRIPT
 unite_PS       = 41
 
@@ -103,11 +95,8 @@ fichier_GMSH     = "depl.pos"
 # Importation des modules Python
 #=============================================================================================
 
-import Gnuplot
 from Numeric import *
 from FFT import *
-import os
-import shutil
 
 ##############################################################################################
 #
@@ -418,81 +407,105 @@ DEPLX2 = TAB2e.Array('INST','DY')
 #=============================================================================================
 # Calcul des transformees de Fourier
 #=============================================================================================
-
 FFT_DEPL  = fft(DEPLX[:,1])
 PUISS     = FFT_DEPL*conjugate(FFT_DEPL)
 
 FFT_DEPL2 = fft(DEPLX2[:,1])
 PUISS2    = FFT_DEPL2*conjugate(FFT_DEPL2)
 
+absc = (arange(n/2)/fin).tolist()
+
 #=============================================================================================
-# GNUPLOT
-#=============================================================================================
-
-fichier_GNUPLOT1 = "fort."+str(unite_GNUPLOT1);
-fichier_GNUPLOT2 = "fort."+str(unite_GNUPLOT2);
-fichier_GNUPLOT3 = "fort."+str(unite_GNUPLOT3);
-fichier_PS       = "fort."+str(unite_PS);                             
-
-if launch_GNUPLOT == 0:
-        graphe1 = Gnuplot.Gnuplot(fichier_GNUPLOT1)
-else:
-        graphe1 = Gnuplot.Gnuplot(persist=1)
-
-# Preferences gestion du passage des donnees de Python a Gnuplot
-Gnuplot.GnuplotOpts.prefer_inline_data=1
-
-graphe1('set data style lines')
-graphe1('set grid')
-
+# XMGRACE
+#=============================================================================================                            
 
 # Trace 1 (deplacements)
-graphe1.plot(Gnuplot.Data(DEPLX,title='Deplacement avec contact'),
-            Gnuplot.Data(DEPLX2,title='Deplacement sans contact'))
+                  
+F_TAB  = RECU_FONCTION(TABLE=TAB ,PARA_X='INST',PARA_Y='DY',)
+F_TAB2 = RECU_FONCTION(TABLE=TAB2,PARA_X='INST',PARA_Y='DY')
 
+if launch_XMGRACE == 1:
+   IMPR_FONCTION(
+        FORMAT='XMGRACE',
+        PILOTE='INTERACTIF',
+        BORNE_X=(0.,500.),
+        BORNE_Y=(-0.15,0.15),
+        GRILLE_X=50,
+        GRILLE_Y=0.05,
+        COURBE=( _F( FONCTION   = F_TAB,
+                     MARQUEUR = 1, 
+                     COULEUR  = 2,
+                     STYLE  = 1,
+                     FREQ_MARQUEUR = 2,
+                     LEGENDE  = 'Deplacement avec contact'),
+                 _F( FONCTION   = F_TAB2, 
+                     MARQUEUR = 2, 
+                     COULEUR  = 3,
+                     STYLE  = 1,
+                     FREQ_MARQUEUR = 2,
+                     LEGENDE  = 'Deplacement sans contact')
+               ),
+        TITRE='Deplacements',
+        LEGENDE_X='Instants',
+        LEGENDE_Y='Deplacement suivant Y',
+        )
 
-if launch_GNUPLOT == 1:
-        raw_input('\n\nAppuyer sur une touche pour continuer...\n\n')
-                    
 # Trace 2 (FFT des deplacements)
-if launch_GNUPLOT == 0:
-        graphe2 = Gnuplot.Gnuplot(fichier_GNUPLOT2)
-else:
-        graphe2 = Gnuplot.Gnuplot(persist=1)
 
-graphe2('set data style lines')
-graphe2('set grid')
-
-
-graphe2.plot(Gnuplot.Data(transpose(array([arange(n/2)/fin,
-                                          PUISS.real[0:n/2]])),
-                         title='FFT_DEPL avec contact'),
-            Gnuplot.Data(transpose(array([arange(n/2)/fin,
-                                          PUISS2.real[0:n/2]])),
-                         title='FFT_DEPL sans contact'))
-
+if launch_XMGRACE == 1:
+    IMPR_FONCTION(
+         FORMAT='XMGRACE',
+         PILOTE='INTERACTIF',
+         BORNE_X=(0.,0.05),
+         GRILLE_X=0.005,
+         GRILLE_Y=0.5,
+         BORNE_Y=(0.,3.),
+         COURBE=( _F( ABSCISSE = absc,
+                      ORDONNEE = PUISS.real[0:n/2].tolist(),
+                      MARQUEUR = 1,
+                      COULEUR  = 2,
+                      STYLE    = 1,
+                      FREQ_MARQUEUR = 2,
+                      LEGENDE  = 'FFT_DEPL avec contact',
+                 ),
+                  _F( ABSCISSE = absc,
+                      ORDONNEE = PUISS2.real[0:n/2].tolist(),
+                      MARQUEUR = 2,
+                      COULEUR  = 3,
+                      STYLE    = 1,
+                      FREQ_MARQUEUR = 2,
+                      LEGENDE  = 'FFT_DEPL sans contact',
+                ),
+          ),
+         )
                     
-# Sortie des courbes GNUPLOT en Postscript
-if launch_GNUPLOT == 0:
-        graphe3 = Gnuplot.Gnuplot(fichier_GNUPLOT3)
-else:
-        graphe3 = Gnuplot.Gnuplot(persist=1)
+# Trace 3 : Sortie des courbes en Postscript
 
-graphe3('set data style lines')
-graphe3('set grid')
-graphe3('set terminal postscript color')
-graphe3('set output "'+fichier_PS+'" ')
-graphe3.plot(Gnuplot.Data(DEPLX,title='Deplacement avec contact'),
-            Gnuplot.Data(DEPLX2,title='Deplacement sans contact'))
-graphe3.plot(Gnuplot.Data(transpose(array([arange(n/2)/fin,
-                                          PUISS.real[0:n/2]])),
-                         title='FFT_DEPL avec contact'),
-            Gnuplot.Data(transpose(array([arange(n/2)/fin,
-                                          PUISS2.real[0:n/2]])),
-                         title='FFT_DEPL sans contact'))
-
-
-
-
+IMPR_FONCTION(
+     UNITE = unite_PS,
+     FORMAT='XMGRACE',
+     PILOTE='POSTSCRIPT',
+     BORNE_X=(0.,0.05),
+     GRILLE_X=0.005,
+     GRILLE_Y=0.5,
+     BORNE_Y=(0.,3.),
+     COURBE=( _F( ABSCISSE = absc,
+                  ORDONNEE = PUISS.real[0:n/2].tolist(),
+                  MARQUEUR = 1,
+                  COULEUR  = 2,
+                  STYLE    = 1,
+                  FREQ_MARQUEUR = 2,
+                  LEGENDE  = 'FFT_DEPL avec contact',
+             ),
+              _F( ABSCISSE = absc,
+                  ORDONNEE = PUISS2.real[0:n/2].tolist(),
+                  MARQUEUR = 2,
+                  COULEUR  = 3,
+                  STYLE    = 1,
+                  FREQ_MARQUEUR = 2,
+                  LEGENDE  = 'FFT_DEPL sans contact',
+             ),
+      ),
+     )
 
 FIN();

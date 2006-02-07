@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF inisig utilitai  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -129,7 +129,9 @@ int ier;
 /*                          */
 /* Arret par SIGUSR1        */
 /*                          */
-#if defined PPRO_NT || IRIX || TRU64 || P_LINUX
+/* Note : l'arret par SIGUSR1 ne fonctionne pas sous MSVC,
+   il faudra essayer de trouver autre chose... */
+#if defined IRIX || TRU64 || P_LINUX
    signal(SIGUSR1,  stpusr1);
 #endif
 }
