@@ -2,7 +2,7 @@
      &                  ZTIT,ZDEF,ZFON,MOTFAC,IOCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,10 +92,17 @@ C
       CHARACTER*16 TITCOL(ZTIT)
       INTEGER      LONGR,PRECR,LONGI,LONGK
       INTEGER      NBCOL,JIMCOL
+      CHARACTER*24 SUIVCO
+      INTEGER      JIMPSU      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- NOM DE LA SD POUR LE SUIVI
+C
+      CALL JEVEUO(IMPRCO(1:14)//'SUIVI','L',JIMPSU)
+      SUIVCO = ZK24(JIMPSU-1+1)      
 C
       CALL JEVEUO(IMPTMP,'E',JIMCOL)
 C
@@ -117,7 +124,7 @@ C
       DO 45 ICOL = 1,NBCOL
         IBID = 0
         ICOD = ZI(JIMCOL-1+ICOL)
-        CALL IMPREF(ICOD,
+        CALL IMPREF(ICOD,SUIVCO,
      &              TITCOL,FORCOL)
         CALL IMPSDA(IMPRCO,'AJOU',IBID,
      &              ICOD,TITCOL,FORCOL,

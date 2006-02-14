@@ -2,7 +2,7 @@
      &                   HYDR,SECH,OPTION,EPS,SIG,VI,DSIDEP,CODRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,15 @@ C    LOI ELASTIQUE POUR METHODE ZAC
       ELSE IF (COMPOR(1)  .EQ. 'ZAC  ') THEN
         CALL LCZAC ( NDIM, TYPMOD, IMATE, TEMP, OPTION,
      &               EPS, SIG, DSIDEP)
+C    LOI ELASTIQUE POUR MODELE SIGNORINI
+      ELSEIF (COMPOR(1)(1:10).EQ. 'ELAS_HYPER') THEN
+        IF (COMPOR(3).NE.'GREEN') THEN
+          CALL UTMESS('F','NMCOMP_1',
+     &      'GREEN DEFORMATION REQUIRED FOR ELAS_HYPER MATERIAL')    
+        ENDIF      
+        CALL HYPELA(NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &              TEMP,EPS,
+     &              SIG,DSIDEP,CODRET)
 
       ELSE
         CALL UTMESS('F','NMCPEL',

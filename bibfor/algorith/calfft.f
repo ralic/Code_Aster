@@ -1,9 +1,8 @@
-      SUBROUTINE CALFFT(NP1,NP4,NBM,N,DTEXT,FEXT,REFEXT,IMFEXT,
-     &                  OMEGAF,AA,BB )
+      SUBROUTINE CALFFT(NP1,NP4,NBM,N,DTEXT,FEXT,OMEGAF,AA,BB )
 C
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/96   AUTEUR KXBADNG T.FRIOU 
+C MODIF ALGORITH  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +32,6 @@ C ARGUMENTS
 C ---------
       INTEGER NP1,NP4,NBM,N
       REAL*8 DTEXT
-      REAL*8 REFEXT(*), IMFEXT(*)
       REAL*8 FEXT(NP4,*), OMEGAF(*), AA(NP4,*), BB(NP4,*)
 C
 C VARIABLES LOCALES
@@ -42,6 +40,7 @@ C
       INTEGER I,J
       INTEGER N2M1
       REAL*8 R8DEPI,DF
+      COMPLEX*16 FCEXT(N)
 C
 C ******************   DEBUT DU CODE EXECUTABLE   **********************
 C
@@ -49,20 +48,17 @@ C
       CALL INITMA(NP4,NP1,AA)
       CALL INITMA(NP4,NP1,BB)
       CALL INITVE(NP4,OMEGAF)
-      CALL INITVE(NP4,REFEXT)
-      CALL INITVE(NP4,IMFEXT)
 C
       DF = 1.0D0 / (DBLE(N)*DTEXT)
 C
       DO 1 J=1,NBM
         DO 2 I=1,N
-          REFEXT(I) = FEXT(I,J)
-          IMFEXT(I) = 0.0D0
+          FCEXT(I)  = DCMPLX(FEXT(I,J),0.0D0)
  2      CONTINUE
-        CALL DFFT00(0, N, REFEXT, IMFEXT)
+        CALL FFT(FCEXT,N,0)
         DO 5 I=1,N2M1
-          AA(I,J) = 2.0D0 * REFEXT(I+1)
-          BB(I,J) = -2.0D0 * IMFEXT(I+1)
+          AA(I,J) =  2.0D0 *  DBLE(FCEXT(I+1))
+          BB(I,J) = -2.0D0 * DIMAG(FCEXT(I+1))
  5      CONTINUE
  1    CONTINUE
 C

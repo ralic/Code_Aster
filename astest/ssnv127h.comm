@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2005   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,7 @@
 # ======================================================================
 #       CAS_TEST SSNV127: 2D (Q8), METHODE CONTINUE
 
-import Numeric
-import Gnuplot
-
-DEBUT(CODE=_F( NOM = 'SSNV127H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F( NOM = 'SSNV127H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 
 #PRE_GIBI();
 
@@ -185,29 +182,50 @@ IMPR_TABLE(TABLE=TCONT)
 #_____________________________________________________________________ 
 #                                                       
 
-#TPRESSe = TPRESS.EXTR_TABLE()
-#coor = TPRESSe.Array('COOR_X','COOR_Y')
-#cos = Numeric.arctan(coor[:,0]/coor[:,1])*-180./Numeric.pi
-#
-#print cos
-#
-#press = TPRESSe.Array('ABSC_CURV','SIXX')
-#press[:,0]=cos
-#print press
-#
-#TCONTe = TCONT.EXTR_TABLE()
-#cont = TCONTe.Array('ABSC_CURV','CONTACT')
-#cont[:,0]=cos
-#cont[:,1]=-1.E6*cont[:,1]
+COS    = FORMULE( NOM_PARA=('COOR_X','COOR_Y'),
+                  VALE='-180.*Numeric.arctan(COOR_X/COOR_Y)/pi')
 
-#graphe = Gnuplot.Gnuplot(persist=1)
-#Gnuplot.GnuplotOpts.prefer_inline_data=1
-#graphe('set data style lines')
-#graphe('set grid')
-#graphe.xlabel('ABS')
-#graphe.ylabel('PRESS')
-#graphe.plot(Gnuplot.Data(press,title='Pression'),
-#            Gnuplot.Data(cont,title='Indicateur'))
+TPRESS = CALC_TABLE(TABLE=TPRESS,reuse=TPRESS,
+                    OPER=_F(FORMULE=COS,
+                            NOM_PARA='COS'))
+
+TPRES  = CALC_TABLE(TABLE=TPRESS,
+                    FILTRE=_F(NOM_PARA='COS',
+                              CRIT_COMP='LE',
+                              VALE=180.))
+
+IMPR_TABLE(TABLE=TPRESS)
+
+CONT  = FORMULE(NOM_PARA=('CONT'),
+                VALE='-1.E6*CONT')
+
+TCONT = CALC_TABLE(TABLE=TCONT,reuse=TCONT,
+                   OPER=(_F(FORMULE=CONT,
+                            NOM_PARA='INDICATEUR'),
+                         _F(FORMULE=COS,
+                            NOM_PARA='COS')))
+
+TCON  = CALC_TABLE(TABLE=TCONT,
+                   FILTRE=_F(NOM_PARA='COS',
+                   CRIT_COMP='LE',
+                   VALE=180.))
+
+IMPR_TABLE(TABLE=TCONT)
+
+IMPR_TABLE(
+   UNITE=30,
+   FORMAT='XMGRACE',
+   TABLE=TPRES,
+   NOM_PARA=('COS','SIXX'),
+   LEGENDE='Pression',
+   LEGENDE_X = 'ABS',
+   LEGENDE_Y = 'PRESSION',
+   BORNE_X   = (0.,90.),
+   BORNE_Y   = (2.E6,-2.E7),
+   GRILLE_X  = 10.,
+   GRILLE_Y  = 2.E6,
+   COULEUR=6,
+)
 
 #_____________________________________________________________________ 
 #                                                       

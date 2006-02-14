@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV185A',NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM='SSNV185A',NIV_PUB_WEB='INTERNET',));
 
 #----------------------------------------------
 #             MAILLAGE : hexa_cla_5_30_50.mgib
@@ -200,8 +200,8 @@ for i in range(0,nbc) :
 # POUR LE CHARGEMENT 1 : VOIR CHABOCHE P.53
 a=5
 b=10
-coef=(pi*a)/(2.*b)
-fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
+coef1=(pi*a)/(2.*b)
+fab=sqrt(tan(coef1)/coef1)*(0.752+0.37*(1.-sin(coef1))**3+2.02*a/b)/cos(coef1)
 K1REF1=-PRES*sqrt(pi*a)*fab
 
 # POUR LE CHARGEMENT 2

@@ -10,14 +10,14 @@
      &VIT0,ACC0,KMOD,CMOD,KMOD0,CMOD0,KMOD00,CMOD00,KMODCA,CMODCA,
      &CMODFA,AMFLU0,AMFLUC,VG,VD,TTR,VG0,VD0,VVG,RR,RI,RR0,MTMP1,
      &MTMP2,MTMP6,FTMP,DD,U,W,
-     &OMEGAF,AA,BB,FEXT,FEXTTS,TEXT,TEXTTS,REFEXT,IMFEXT,FEXTTR,FEXTT0,
+     &OMEGAF,AA,BB,FEXT,FEXTTS,TEXT,TEXTTS,FEXTTR,FEXTT0,
      &NOMCH,CHOC,ORIG,RC,THETA,ALPHA,BETA,GAMMA,OLD,LOCFLC,LOC,
      &S0,Z0,SR0,ZA1,ZA2,ZA3,ZA4,ZA5,ZIN,ZITR,NBCHOC,PARCHO,NOECHO)
 C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C ---------
      &              FTMP(*), DD(*), U(*), W(*)
       REAL*8        OMEGAF(*), AA(NP4,*), BB(NP4,*),
      &              FEXT(NP4,*), FEXTTS(NP4,*), TEXT(*), TEXTTS(*),
-     &              REFEXT(*), IMFEXT(*), FEXTTR(*), FEXTT0(*)
+     &              FEXTTR(*), FEXTT0(*)
       CHARACTER*8   NOMCH(*)
       REAL*8        CHOC(5,*), ORIG(6,*), RC(NP3,*), THETA(NP3,*),
      &              ALPHA(2,*), BETA(2,*), GAMMA(2,*), OLD(9,*)
@@ -205,7 +205,7 @@ C     ---------------------
       IF ( ITRANS.EQ.1 ) THEN
          CALL TRANSI ( NBM,NP2,NP3,NP4,NBMCD,NBNL,NPFMAX,NPFTS,
      &                 DTTR,TTRANS,EPST,FEXT,TEXT,FEXTTS,TEXTTS,
-     &                 REFEXT,IMFEXT,FEXTTR,FEXTT0,
+     &                 FEXTTR,FEXTT0,
      &                 MASGI,AMORI,PULSI,PHII,
      &                 TYPCH,NBSEG,RC,ALPHA,BETA,GAMMA,ORIG,THETA,
      &                 VITG,DEPG,AMOR,PULSD,OMEGAF,AA,BB,OLD,

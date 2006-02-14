@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 # A GRADIENT
 # RESPONSABLE  gjbhhel E.LORENTZ
 #
-DEBUT(CODE=_F(NOM='SSNL125A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+DEBUT(CODE=_F(NOM='SSNL125A',NIV_PUB_WEB='INTERNET'))
 
 
 # -----------------------------------------------------

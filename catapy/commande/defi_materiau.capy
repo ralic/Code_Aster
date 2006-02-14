@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
             UIinfo={"groupes":("Modélisation",)},
        regles=(EXCLUS('ELAS','ELAS_FO','ELAS_FLUI','ELAS_ISTR','ELAS_ISTR_FO','ELAS_ORTH',
                       'ELAS_ORTH_FO','ELAS_COQUE','ELAS_COQUE_FO',
+                      'ELAS_HYPER',
                       'SURF_ETAT_SATU','CAM_CLAY_THM','SURF_ETAT_NSAT'),
                EXCLUS('THER','THER_FO','THER_ORTH','THER_NL'),
                EXCLUS('ECRO_LINE','ECRO_LINE_FO'),
@@ -174,6 +175,15 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              D_KB_T          =SIMP(statut='f',typ='R'),
              ALPHA_S         =SIMP(statut='f',typ='R'),
              ALPHA_D         =SIMP(statut='f',typ='R'),
+           ),
+           ELAS_HYPER      =FACT(statut='f',
+                                 regles=(UN_PARMI('K','NU'),),
+             C10             =SIMP(statut='f',typ='R',defaut=0.0),        
+             C01             =SIMP(statut='o',typ='R'),            
+             C20             =SIMP(statut='f',typ='R',defaut=0.0),            
+             K               =SIMP(statut='f',typ='R'), 
+             RHO             =SIMP(statut='f',typ='R',defaut=0.0),  
+             NU              =SIMP(statut='f',typ='R',val_min=-1.E+0,val_max=0.5E+0),          
            ),
            SURF_ETAT_SATU  =FACT(statut='f',
              E_CHAR          =SIMP(statut='o',typ='R'),

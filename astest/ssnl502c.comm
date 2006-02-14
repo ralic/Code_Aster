@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -29,10 +29,9 @@
 #- MODELISATION AVEC DES ELEMENTS 'POU_D_T_GD' (SEG2) 
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSNL502C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON')
+DEBUT( CODE=_F( NOM = 'SSNL502C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'))
 
 #
-import aster
 
 PRE_GIBI ();
 
@@ -303,68 +302,43 @@ IMPR_FONCTION (UNITE=30,FORMAT='XMGRACE',
     TITRE='Moment MY en fonction du temps'
               )
               
+# A PARTIR DES FONCTIONS 
+#     - ETA  = F(INST,ETA_PILOTAGE), 
+#     - DEPX = F(INST,DX)
+#     - DEPZ = F(INST,DZ)
+#     - MYY  = F(INST,MYY)
+# ON CREE LES FONCTIONS 
+#     - DX  = F(ETA), 
+#     - DZ  = F(ETA),
+#     - MY  = F(ETA)
 
+T_ETA  = CREA_TABLE(FONCTION=_F(FONCTION=ETA),)
+T_DEPZ = CREA_TABLE(FONCTION=_F(FONCTION=DEPZ),)
+T_DEPX = CREA_TABLE(FONCTION=_F(FONCTION=DEPX),)
+T_MYY  = CREA_TABLE(FONCTION=_F(FONCTION=MYY,))
 
+TAB_COMB=CALC_TABLE(TABLE=T_ETA,
+                    COMB=_F(TABLE=T_DEPZ,NOM_PARA='INST'))
+TAB_COMB=CALC_TABLE(TABLE=TAB_COMB,reuse=TAB_COMB,
+                    COMB=_F(TABLE=T_DEPX,NOM_PARA='INST'))
+TAB_COMB=CALC_TABLE(TABLE=TAB_COMB,reuse=TAB_COMB,
+                    COMB=_F(TABLE=T_MYY, NOM_PARA='INST'))
 
-tupeta = aster.getvectjev('ETA                .VALE')
-tupdex = aster.getvectjev('DEPX               .VALE')
-tupdez = aster.getvectjev('DEPZ               .VALE')
-tupmyy = aster.getvectjev('MYY                .VALE')
+IMPR_TABLE(TABLE=TAB_COMB)
 
-lieta=list(tupeta)
-lidex=list(tupdex)
-lidez=list(tupdez)
-limyy=list(tupmyy)
-#print lieta
-#print lidex
-nb= len(lieta)
-nb2=nb/2
-dxeta=[0.,0.]
-dzeta=[0.,0.]
-myeta=[0.,0.]
-for i in range(5,nb2) :
-   eta=lieta[i+nb2]
-   dx=lidex[i+nb2]
-   dz=lidez[i+nb2]
-   my=limyy[i+nb2]
-   print i,eta,dx,dz,my
-   dxeta.append(eta)
-   dzeta.append(eta)
-   myeta.append(eta)
-   dxeta.append(dx)
-   dzeta.append(dz)
-   myeta.append(my)
-#print dxeta
-tdxeta=tuple(dxeta)
-tdzeta=tuple(dzeta)
-tmyeta=tuple(myeta)
-#print tdxeta
+DX_ETA = RECU_FONCTION(TABLE=TAB_COMB, PARA_X='ETA_PILO', PARA_Y='DX',INTERPOL='LIN',
+                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
+DZ_ETA = RECU_FONCTION(TABLE=TAB_COMB, PARA_X='ETA_PILO', PARA_Y='DZ',INTERPOL='LIN',
+                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
+MY_ETA = RECU_FONCTION(TABLE=TAB_COMB, PARA_X='ETA_PILO', PARA_Y='MY',INTERPOL='LIN',
+                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
-DX_ETA=DEFI_FONCTION(      NOM_PARA='META',
-                           PROL_DROITE='CONSTANT',
-                          PROL_GAUCHE='CONSTANT',
-                                 VALE=tdxeta
-                        )
-   
-DZ_ETA=DEFI_FONCTION(      NOM_PARA='META',
-                           PROL_DROITE='CONSTANT',
-                          PROL_GAUCHE='CONSTANT',
-                                 VALE=tdzeta
-                        )
-   
-MY_ETA=DEFI_FONCTION(      NOM_PARA='META',
-                           PROL_DROITE='CONSTANT',
-                          PROL_GAUCHE='CONSTANT',
-                                 VALE=tmyeta
-                        )
-   
 IMPR_FONCTION ( COURBE= _F(FONCTION=DX_ETA,),)
 
 IMPR_FONCTION ( COURBE= _F(FONCTION=DZ_ETA,),)
 
 IMPR_FONCTION ( COURBE= _F(FONCTION=MY_ETA,),)
-
-   
+  
 # 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
 TEST_FONCTION(VALEUR=(
 _F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.015, VALE_REFE=0.1100,PRECISION=0.55,),

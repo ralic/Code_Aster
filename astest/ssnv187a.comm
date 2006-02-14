@@ -1,0 +1,253 @@
+# MODIF  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+# TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SSNV187A',NIV_PUB_WEB='INTERNET') );
+
+PRE_GMSH();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='Sup',
+                                  GROUP_MA='GM3',),
+                               _F(NOM='Inf',
+                                  GROUP_MA='GM1',),
+                               _F(NOM='Sym',
+                                  GROUP_MA='GM4',),                               
+                                  
+                                  ),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),);
+
+
+
+FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
+                     PRES_REP=_F(GROUP_MA='Sup',
+                                 PRES=0.876,),);
+
+DEPL=AFFE_CHAR_MECA(MODELE=MODELE,
+                     DDL_IMPO=(_F(GROUP_MA='Inf',
+                                  DY=0.0,),
+                               _F(GROUP_MA='Sym',
+                                  DX=0.0,), 
+                               ),);
+
+LISTE=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=20,),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,0.0,1.0,1.0,),);                                 
+                                   
+
+
+# MATERIAU HYPERELASTIQUE: MOONEY-RIVLIN
+C01 = 2.3456;
+C10 = 0.709;
+C20 = 0.0;
+NU  = 0.499
+K   = (6*(C10+C01))/(3*(1-2*NU))
+
+
+RUBBER1=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
+                                   C01=C01,
+                                   C20=C20,
+                                   K=K,
+                                   RHO=1000.0),);
+                                   
+                                   
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    MODELE=MODELE,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=RUBBER1,),);
+
+RESU1=STAT_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT1,
+                   EXCIT=(
+                          _F(CHARGE=FORCE,
+                             FONC_MULT=RAMPE,),
+                          _F(CHARGE=DEPL,),),
+                   NEWTON=(_F(REAC_INCR=1,
+                              MATRICE='TANGENTE',
+                              REAC_ITER=1,)),                   
+                   COMP_ELAS=_F(RELATION='ELAS_HYPER',
+                                DEFORMATION = 'GREEN',
+                                TOUT='OUI',),
+                   CONVERGENCE=(_F(ARRET='OUI',
+                                   ITER_GLOB_MAXI=20)),                               
+                   INCREMENT=_F(LIST_INST=LISTE,),);                 
+                   
+IMPR_RESU(FORMAT='GMSH',
+          UNITE=37,
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  ),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',
+                  VALE = -3.40091E-2,
+                  PRECISION  = 0.002,),)
+                  
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  CRITERE='RELATIF',
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '8.2.6',
+                  VALE = -3.4072487756090E-02,
+                  PRECISION  = 1E-8,),)
+                  
+# MATERIAU HYPERELASTIQUE: NEO-HOOKEEN
+C01 = 1.2345;
+C10 = 0.0;
+C20 = 0.0;
+NU  = 0.499
+K   = (6*(C10+C01))/(3*(1-2*NU))
+
+
+RUBBER2=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
+                                   C01=C01,
+                                   C20=C20,
+                                   NU=NU,
+                                   RHO=1000.0),);
+                                   
+                                   
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    MODELE=MODELE,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=RUBBER2,),);
+
+RESU2=STAT_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT2,
+                   EXCIT=(
+                          _F(CHARGE=FORCE,
+                             FONC_MULT=RAMPE,),
+                          _F(CHARGE=DEPL,),),
+                   NEWTON=(_F(REAC_INCR=1,
+                              MATRICE='TANGENTE',
+                              REAC_ITER=1,)),                   
+                   COMP_INCR=_F(RELATION='ELAS_HYPER',
+                                DEFORMATION = 'GREEN',
+                                TOUT='OUI',),
+                   CONVERGENCE=(_F(ARRET='OUI',
+                                   ITER_GLOB_MAXI=20)),                               
+                   INCREMENT=_F(LIST_INST=LISTE,),);
+                   
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',
+                  VALE = -7.8175E-2,
+                  PRECISION  = 0.002,),)
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  CRITERE='RELATIF',
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '8.2.6',
+                  VALE = -7.8308330318962E-02,
+                  PRECISION  = 1E-8,),)           
+
+
+
+# MATERIAU HYPERELASTIQUE: SIGNORINI
+C01 = 1.2345;
+C10 = 0.1234;
+C20 = 0.456;
+NU  = 0.499
+K   = (6*(C10+C01))/(3*(1-2*NU))
+
+
+RUBBER3=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
+                                   C01=C01,
+                                   C20=C20,
+                                   K=K,
+                                   RHO=1000.0),);
+                                   
+                                   
+CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    MODELE=MODELE,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=RUBBER3,),);
+
+RESU3=STAT_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT3,
+                   EXCIT=(
+                          _F(CHARGE=FORCE,
+                             FONC_MULT=RAMPE,),
+                          _F(CHARGE=DEPL,),),
+                   NEWTON=(_F(REAC_INCR=1,
+                              MATRICE='TANGENTE',
+                              REAC_ITER=1,)),                   
+                   COMP_INCR=_F(RELATION='ELAS_HYPER',
+                                DEFORMATION = 'GREEN',
+                                TOUT='OUI',),
+                   CONVERGENCE=(_F(ARRET='OUI',
+                                   ITER_GLOB_MAXI=20)),                               
+                   INCREMENT=_F(LIST_INST=LISTE,),);
+                   
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESU3,
+                  NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',
+                  VALE = -7.8179915E-2,
+                  PRECISION  = 0.095,),)
+TEST_RESU(RESU=_F(RESULTAT=RESU3,
+                  NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  CRITERE='RELATIF',
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '8.2.6',
+                  VALE = -7.1058425921552E-02,
+                  PRECISION  = 1E-8,),)           
+                  
+
+FIN();
+
+

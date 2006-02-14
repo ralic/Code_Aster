@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@
 #----------------------------------------------------------------
 #
 
-DEBUT(CODE=_F( NOM = 'SDLL107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON' )
+DEBUT(CODE=_F( NOM = 'SDLL107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
 #
 POUTRE=LIRE_MAILLAGE( )

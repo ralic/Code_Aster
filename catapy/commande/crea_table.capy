@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
                 fr="Création d'une table à partir d'une fonction ou de deux listes",
-                reentrant='f',UIinfo={"groupes":("Table",)},
+                reentrant='n',UIinfo={"groupes":("Table",)},
 
            regles=(EXCLUS('FONCTION','LISTE')),
 

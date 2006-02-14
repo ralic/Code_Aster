@@ -2,7 +2,7 @@
      &                  ZTIT,ZDEF,ZFON,MOTFAC,IOCC,COLONN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,10 +91,17 @@ C
       CHARACTER*16 TITCOL(ZTIT)
       INTEGER      LONGR,PRECR,LONGI,LONGK
       CHARACTER*3  CMP
+      CHARACTER*24 SUIVCO
+      INTEGER      JIMPSU      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- NOM DE LA SD POUR LE SUIVI
+C
+      CALL JEVEUO(IMPRCO(1:14)//'SUIVI','L',JIMPSU)
+      SUIVCO = ZK24(JIMPSU-1+1)      
 C
       CALL JEVEUO(IMPTMP,'E',JIMCOL)
 C
@@ -112,11 +119,11 @@ C --- ACTIVATION DE LA COLONNE
 C
       ICOD = ZI(JIMCOL-1+IOCC)
 
-      CALL IMPREF(ICOD,
+      CALL IMPREF(ICOD,SUIVCO,
      &            TITCOL,FORCOL)
       IBID = 0
       CALL IMPSDA(IMPRCO,'AJOU',IBID,
-     &             ICOD,TITCOL,FORCOL,
+     &            ICOD,TITCOL,FORCOL,
      &            LONGR,PRECR,LONGI,LONGK)
 C
 C --- OPTION AFFICHAGE DES COMPOSANTES OU LES RESIDUS SONT EVALUES
@@ -143,7 +150,7 @@ C
           CALL IMPCOD('RELA_NOEU',ICOD)
           CALL IMPPRE(MOTFAC,IOCC,
      &                LONGR,PRECR,LONGI,LONGK)
-          CALL IMPREF(ICOD,
+          CALL IMPREF(ICOD,SUIVCO,
      &                TITCOL,FORCOL)
           CALL IMPSDA(IMPRCO,'AJOU',IBID,
      &                ICOD,TITCOL,FORCOL,
@@ -156,7 +163,7 @@ C
           CALL IMPCOD('MAXI_NOEU',ICOD)
           CALL IMPPRE(MOTFAC,IOCC,
      &                LONGR,PRECR,LONGI,LONGK)
-          CALL IMPREF(ICOD,
+          CALL IMPREF(ICOD,SUIVCO,
      &                TITCOL,FORCOL)
           CALL IMPSDA(IMPRCO,'AJOU',IBID,
      &                ICOD,TITCOL,FORCOL,
@@ -169,7 +176,7 @@ C
           CALL IMPCOD('REFE_NOEU',ICOD)
           CALL IMPPRE(MOTFAC,IOCC,
      &                LONGR,PRECR,LONGI,LONGK)
-          CALL IMPREF(ICOD,
+          CALL IMPREF(ICOD,SUIVCO,
      &                TITCOL,FORCOL)
           CALL IMPSDA(IMPRCO,'AJOU',IBID,
      &                ICOD,TITCOL,FORCOL,
@@ -182,7 +189,7 @@ C
           CALL IMPCOD('CTCD_NOEU',ICOD)
           CALL IMPPRE(MOTFAC,IOCC,
      &                LONGR,PRECR,LONGI,LONGK)
-          CALL IMPREF(ICOD,
+          CALL IMPREF(ICOD,SUIVCO,
      &                TITCOL,FORCOL)
           CALL IMPSDA(IMPRCO,'AJOU',IBID,
      &                ICOD,TITCOL,FORCOL,

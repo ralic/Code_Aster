@@ -1,16 +1,11 @@
-POURSUITE(CODE=_F(NOM='FORMA03A'),PAR_LOT='NON')
+POURSUITE(CODE=_F(NOM='FORMA03A'))
 
-#import Stanley
-#from Stanley import stanley
-#from Stanley import as_courbes
 
 #######################################################
 #
 # DEPOUILLEMENT AVEC STANLEY EN INTERACTIF
 #
 #######################################################
-
-#stanley.PRE_STANLEY()
 
                        
 #######################################################
@@ -65,13 +60,23 @@ IMPR_FONCTION(UNITE=81,
 
 # COURBES AVEC XMGRACE EN INTERACTIF
 
-#sigtheta = as_courbes.Courbe()
-#sigtheta.Lire_x(STHETA,'ABSC_CURV')
-#sigtheta.Lire_y(STHETA,'SIYY')
-
-#sigtheta.Trace(titre="Sigma Theta suivant l'arc AB " )
-
-
+#IMPR_FONCTION( FORMAT    = 'XMGRACE',
+#	       PILOTE    = 'INTERACTIF',
+#	       LEGENDE_X = 'Abscisse curviligne',
+#	       LEGENDE_Y = 'Contraine Sigma Theta-Theta',
+#               BORNE_X   = ( 0.,20.),
+#               BORNE_Y   = (-2., 5.),
+#	       TITRE     = "Sigma Theta-Theta le long de l'arc de cercle AB ",
+#	       COURBE    = (_F(FONCTION = STCALC, 
+#                               LEGENDE  = 'Aster',
+#                               MARQUEUR = 2,
+#                               STYLE    = 1),
+#                            _F(FONCTION = STTAC , 
+#                               LEGENDE = 'Analytique',
+#                               MARQUEUR = 1,
+#                               STYLE    = 1),
+#                           )
+#             )
 
 #######################################################
 #
@@ -109,18 +114,23 @@ IMPR_FONCTION(UNITE=82,
               COURBE=(_F(FONCTION=F_DY_G,
                          LEGENDE='Dy au point G',),
                       _F(FONCTION=F_SYY_G,
-                         LEGENDE='Sigma YY au  point G',),),);
+                         LEGENDE='Sigma YY au point G',),),);
 
 
 # COURBES AVEC XMGRACE EN INTERACTIF
 
-#sigG_uyG = as_courbes.Courbe()
-#sigG_uyG.Lire_x(DY_G,'DY')
-#sigG_uyG.Lire_y(SYY_G,'SIYY')
-#sigG_uyG.Trace(titre="SigmaYY en fonction de Dy au point G " )
 
-
-
+#IMPR_FONCTION( FORMAT    = 'XMGRACE',
+#	       PILOTE    = 'INTERACTIF',
+#	       LEGENDE_X = 'Déplacement DY au point G',
+#	       LEGENDE_Y = 'Contraine SIGMAYY',
+#               BORNE_X   = ( 0.,3.),
+#               BORNE_Y   = ( 0.,7.),
+#               GRILLE_X  = 0.5,
+#               GRILLE_Y  = 1.,
+#	       TITRE     = "SigmaYY en fonction de Dy au point G ",
+#	       COURBE    =(_F(FONC_X=F_DY_G,
+#			      FONC_Y=F_SYY_G,),),);
                        
 #######################################################
 #
@@ -164,12 +174,17 @@ IMPR_FONCTION(UNITE=83,
 
 # COURBES AVEC XMGRACE EN INTERACTIF
 
-#FG_uyG = as_courbes.Courbe()
-#FG_uyG.Lire_x(DY_G,'DY')
-#FG_uyG.Lire_y(FHAUT,'DY')
-#FG_uyG.Trace(titre = "Resultante de Fy(FG) fonction de Dy(G)" )
-
-                  
+#IMPR_FONCTION( FORMAT    = 'XMGRACE',
+#	       PILOTE    = 'INTERACTIF',
+#	       LEGENDE_X = 'Déplacement DY au point G',
+#	       LEGENDE_Y = 'Résultante FY sur FG',
+#               BORNE_X   = ( 0.,3.),
+#               BORNE_Y   = ( 0.,700.),
+#               GRILLE_X  = 0.5,
+#               GRILLE_Y  = 100.,
+#	       TITRE     = "Resultante de Fy(FG) fonction de Dy(G)",
+#               COURBE    = (_F(FONC_X = F_DY_G,
+#                               FONC_Y = F_FY_G,),),);
 
 #######################################################
 #

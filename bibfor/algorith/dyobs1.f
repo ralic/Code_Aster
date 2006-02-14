@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,19 +52,17 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNOM,JEXNUM
+      CHARACTER*32       JEXNOM
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      N,N1,N2,N3,N4,INO,IMA,IGNO,IOCC,NBN,JGREL,JPRNM
-      INTEGER      IBID,IRET,NCHP,NCMP,I,NBNO,NBMA,NBGN,NBMAGL,NUTYEL
-      INTEGER      JNOE,JGRN,JMAI,NBPT,J,JREP,JNO,NBMANO,ADRMA,IGREL
-      INTEGER      NBEC,JCMP,IEC,IER,ICMP,IAD,NCMPMX,INDIK8
-      LOGICAL      CHAMNO,CHAMES,CHAMEV,EXISDG
-      CHARACTER*1  KBID
-      CHARACTER*8  K8B,MO,NOMGD,NOMNO
-      CHARACTER*16 NOCHP(50),NOTYPE,PHENO
-      CHARACTER*19 CNXINV,LIGRMO
+      INTEGER      N1,N2,N3,N4,INO,IMA,IGNO,IOCC,NBN
+      INTEGER      IBID,IRET,NCHP,NCMP,I,NBNO,NBMA,NBGN
+      INTEGER      JNOE,JGRN,JMAI,NBPT
+      INTEGER      JCMP
+      LOGICAL      CHAMNO,CHAMES,CHAMEV
+      CHARACTER*8  K8B,MO
+      CHARACTER*16 NOCHP(50)
       CHARACTER*24 GRPNO,NOMNOE,NOMMAI
 C
 C ----------------------------------------------------------------------
@@ -213,62 +211,27 @@ C
 C
  16      CONTINUE
 
-
-C ---    VERIFICATION QUE LES NOEUDS SUPPORTENT
-C        LES COMPOSANTES FOURNIES
-         IF(CHAMNO)THEN
+C
+C ---    VERIFICATION QUE LES NOEUDS SUPPORTENT LES COMPOSANTES FOURNIES
+C
+       IF (CHAMNO) THEN
          CALL GETVID(' ','MODELE',0,1,1,MO,IRET)
-         CALL DISMOI('F','PHENOMENE',MO,'MODELE',IBID,PHENO,IER)
-         CALL DISMOI('F','NOM_GD',PHENO,'PHENOMENE',IBID,NOMGD,IER)
-         CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NBEC,KBID,IER)
-         CALL JENONU(JEXNOM('&CATA.GD.NOMCMP',NOMGD),IAD)
-         CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',
-     &        NCMPMX,K8B)
-         CALL JEVEUO(MO//'.MODELE    .PRNM','L',JPRNM)
-         CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',IAD)
-C
-C        GROUP_NO
-         IF(N2.NE.0)THEN
-           DO 180 IGNO = 1 , NBGN
-             CALL JELIRA (JEXNOM(GRPNO,ZK8(JGRN+IGNO-1)),'LONMAX',
-     &             NBN,K8B )
-             CALL JEVEUO(JEXNOM(GRPNO,ZK8(JGRN+IGNO-1)),'L',JNO)
-             DO 181 I=1,NBN
-                INO=ZI(JNO+I-1)
-                DO 182 J=1,NCMP
-                   ICMP=INDIK8(ZK8(IAD),ZK8(JCMP+J-1),1,NCMPMX)
-                   IF(.NOT.EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP))THEN
-                      CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',INO),NOMNO)
-                      CALL UTDEBM('F','DYOBS1',' ')
-                      CALL UTIMPK('L','LE NOEUD',1,NOMNO)
-                      CALL UTIMPK('S','NE SUPPORTE PAS LA '//
-     &                     'COMPOSANTE',1,ZK8(JCMP+J-1))
-                      CALL UTFINM()
-                   ENDIF
- 182            CONTINUE
- 181         CONTINUE
- 180      CONTINUE
-       ENDIF
-C
-C      NOEUD
-       IF(N1.NE.0)THEN
-          DO 183 I=1,NBNO
-             CALL JENONU(JEXNOM(MAILLA//'.NOMNOE',
-     &            ZK8(JNOE+I-1)),INO)
-             DO 184 J=1,NCMP
-                ICMP=INDIK8(ZK8(IAD),ZK8(JCMP+J-1),1,NCMPMX)
-                IF(.NOT.EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP))THEN
-                   CALL UTDEBM('F','DYOBS1',' ')
-                   CALL UTIMPK('L','LE NOEUD',1,ZK8(JNOE+I-1))
-                   CALL UTIMPK('S','NE SUPPORTE PAS LA '//
-     &                  'COMPOSANTE',1,ZK8(JCMP+J-1))
-                   CALL UTFINM()
-                ENDIF
- 184         CONTINUE
- 183      CONTINUE
-       ENDIF
-      ENDIF
 
+         IF (N2.NE.0) THEN
+           CALL CHKCMP(MO,MAILLA,
+     &                 NCMP,ZK8(JCMP),NBGN,ZK8(JGRN),'GROUP_NO',
+     &                 'F','DYOBS1')    
+         ENDIF
+
+         IF (N1.NE.0) THEN
+           CALL CHKCMP(MO,MAILLA,
+     &                 NCMP,ZK8(JCMP),NBNO,ZK8(JNOE),'NOEUD   ',
+     &                 'F','DYOBS1')     
+         ENDIF
+       ENDIF     
+C
+C --- NETTOYAGE
+C
       CALL JEDETR ('&&DYOBS1.LIST_CMP')
       IF ( N1 .NE. 0 )  CALL JEDETR ( '&&DYOBS1.LIST_NOEU' )
       IF ( N2 .NE. 0 )  CALL JEDETR ( '&&DYOBS1.LIST_GRNO' )

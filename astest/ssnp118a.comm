@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,9 +21,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'SSNP118A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
-
-import aster
+DEBUT(CODE=_F( NOM = 'SSNP118A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),)
 
 
 MA=LIRE_MAILLAGE( )
@@ -130,10 +128,6 @@ U=STAT_NON_LINE(
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
-l_gma = MA.LIST_GROUP_MA()
-gma = l_gma[0][0]
-
-
 STAT_NON_LINE(reuse = U,
   ETAT_INIT  = _F(EVOL_NOLI = U), 
   MODELE     = MO,
@@ -154,7 +148,7 @@ STAT_NON_LINE(reuse = U,
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             GROUP_MA = gma,),
+             GROUP_MA = 'G_CUBE',),
           ),               
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -163,40 +157,36 @@ STAT_NON_LINE(reuse = U,
   )
 
   
-# RECUPERATION DU DERNIER INSTANT  
-l_inst = L_INST.Valeurs()
-tinter = l_inst[1]
+F_DX=RECU_FONCTION( RESULTAT=U,
+              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
 
-dico_t = U.LIST_VARI_ACCES()
-tfin  = dico_t['INST'][-1]
-  
-dico_ch = U.LIST_CHAMPS()
-pos = dico_ch.keys().index('DEPL')
-depl = dico_ch.keys()[pos]
-  
-  
-l_gno = MA.LIST_GROUP_NO()
-l_gno.sort()
-gno = l_gno[1]
-print l_gno
-print aster.getcolljev("MA      .GROUPENO       ")
-    
-dico_p = U.LIST_PARA()
-nbi=0
-for i in dico_p['ITER_GLOB'] :
- nbi=nbi+i
-  
-TB2=CREA_TABLE(LISTE=(_F(LISTE_I=(1,),
-                         PARA='N1'),
-                      _F(LISTE_I=(nbi,),
-                         PARA='N2'))); 
+T_DX=CREA_TABLE(FONCTION=_F(FONCTION=F_DX))
 
-TEST_TABLE(TABLE=TB2,
-           REFERENCE='ANALYTIQUE',
-           FILTRE=_F(NOM_PARA='N1',
-                     VALE_I=1),
-           NOM_PARA='N2',
-           VALE_I=21);
+IMPR_TABLE(TABLE=T_DX)
+
+F_ETAT=RECU_FONCTION( RESULTAT=U,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+
+T_ETAT=CREA_TABLE(FONCTION=_F(FONCTION=F_ETAT))
+
+IMPR_TABLE(TABLE=T_ETAT)
+
+
+TEST_TABLE(TABLE=T_DX,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.90005,),),
+           NOM_PARA='DX',
+           VALE=2.1676,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=T_ETAT,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.90005,),),
+           NOM_PARA='ETA_PILO',
+           VALE=1.,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_RESU (
   RESU = (
@@ -222,7 +212,7 @@ TEST_RESU (
       VALE      = 0.075,
       MAILLE    = 'CUBE',
       POINT     = 1,
-      INST      = tfin,
+      INST      = 1.9005,
       ),
     )
   )

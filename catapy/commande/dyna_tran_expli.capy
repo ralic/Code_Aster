@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,10 +56,11 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
          COMP_ELAS       =FACT(statut='f',max='**',
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                  into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC",
-                                       "ELAS_POUTRE_GR","CABLE")),
+                                      "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
            ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ELAS_VMIS_LINE  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
+           ELAS_HYPER      =SIMP(statut='c',typ='I',defaut=1,into=(1,)),           
            ELAS_POUTRE_GR  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
            CABLE           =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GREEN","GREEN_GR",) ),

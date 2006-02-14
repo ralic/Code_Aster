@@ -1,0 +1,170 @@
+      SUBROUTINE HYPINC(NDIM,TYPMOD,IMATE,COMPOR,CRIT,OPTION,
+     &                  TM,EPSM,DEPS,SIGM,
+     &                  SIGP,DSIDEP,CODRET)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER      NDIM
+      INTEGER      IMATE
+      CHARACTER*16 COMPOR(*)
+      CHARACTER*16 OPTION
+      REAL*8       CRIT(*)
+      REAL*8       TM
+      REAL*8       EPSM(6)
+      REAL*8       DEPS(6)
+      REAL*8       SIGM(6)
+      REAL*8       SIGP(6)
+      REAL*8       DSIDEP(6,6)
+      CHARACTER*8  TYPMOD(*)    
+      INTEGER      CODRET         
+C-----------------------------------------------------------------------
+C
+C     LOI DE COMPORTEMENT HYPERELASTIQUE
+C     REALISE LA LOI DE SIGNORINI HYPERELASTICITE
+C         C10 (I1-3) + C01 (I2-3)+ C20 (I1-3)^2 + K/2(J-1)²
+C     POUR LES ELEMENTS ISOPARAMETRIQUES 3D, CP, et DP
+C
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  IMATE   : NATURE DU MATERIAU
+C IN  COMPOR  : COMPORTEMENT
+C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+C IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG -> SIG    DSIDEP
+C                                 FULL_MECA      -> SIG VI DSIDEP
+C                                 RAPH_MECA      -> SIG VI
+C                                 RUPTURE        -> SIG VI ENERGI
+C IN  TM      : TEMPERATURE A L'INSTANT MOINSSE
+C IN  EPSM    : DEFORMATION A L'INSTANT MOINSSE
+C                (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
+C IN  DEPS    : INCREMENT DE DEFORMATION
+C IN  SIGM    : CONTRAINTES A L'INSTANT MOINSSE
+C OUT SIGP    : CONTRAINTES LAGRANGIENNES CALCULEES
+C OUT DSIDEP  : MATRICE CARREE
+C-----------------------------------------------------------------------
+C     
+      INTEGER     I,J,L,M
+      REAL*8      C11,C22,C12,C33,C13,C23,CV(6,6),CISO(6,6)
+      REAL*8      C10,C01,C20,K,SISO(6),SV(6),EPS(6)
+C 
+C-----------------------------------------------------------------------
+C      
+C --- INITIALISATION DE LA RIGIDITE TANGENTE
+C
+      DO 2 M=1,2*NDIM
+        DO 3 L=1,2*NDIM
+          DSIDEP(M,L) = 0.D0
+ 3      CONTINUE
+ 2    CONTINUE         
+C
+C --- LECTURE DES CARACTERISTIQUES MECANIQUES
+C
+      IF ((COMPOR(1)(1:10).EQ. 'ELAS_HYPER')) THEN
+        CALL HYPMAT(IMATE,TM,
+     &              C10,C01,C20,K)
+      ELSE
+        CALL UTMESS('F','HYPINC','NO MATERIAL DATA FOR HYPERELASTIC')  
+      ENDIF 
+C
+C --- A PRIORI ON A CONVERGE
+C
+      CODRET = 0       
+C
+C --- CALCUL TENSEUR DEFORMATION DROIT      
+C
+      EPS(1)=DEPS(1)+EPSM(1)
+      EPS(2)=DEPS(2)+EPSM(2)
+      EPS(3)=DEPS(3)+EPSM(3)
+      EPS(4)=DEPS(4)+EPSM(4)
+      EPS(5)=DEPS(5)+EPSM(5)
+      EPS(6)=DEPS(6)+EPSM(6)   
+C
+C --- CALCUL CONTRAINTES ET MATRICE TANGENTE
+C      
+      IF (TYPMOD(1) .EQ. '3D'.OR.TYPMOD(1) .EQ. '3D_SI') THEN
+C --- CALCUL DES ELONGATIONS       
+        C11 = 2.D0*EPS(1)+1.D0
+        C12 = 2.D0*EPS(4)
+        C22 = 2.D0*EPS(2)+1.D0
+        C33 = 2.D0*EPS(3)+1.D0
+        C13 = 2.D0*EPS(5)
+        C23 = 2.D0*EPS(6)
+C --- CALCUL DES CONTRAINTES (ISOTROPIQUES PUIS VOLUMIQUES)     
+        CALL HYP3CI(C11,C22,C33,C12,C13,C23,
+     &              C10,C01,C20,
+     &              SISO)
+        CALL HYP3CV(C11,C22,C33,C12,C13,C23,
+     &              K,
+     &              SV)
+C --- CALCUL DE LA MATRICE TANGENTE (ISOTROPIQUE PUIS VOLUMIQUE)
+        CALL HYP3DI(C11,C22,C33,C12,C13,C23,
+     &              C10,C01,C20,
+     &              CISO)
+        CALL HYP3DV(C11,C22,C33,C12,C13,C23,
+     &              K,
+     &              CV)
+C --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE  
+        DO 40 I=1,6
+          SIGP(I)=SISO(I)+SV(I)
+          DO 30 J=1,6
+            DSIDEP(I,J) = CISO(I,J)+CV(I,J)
+C                   write(6,*) 'DSIDEP(I,J):',I,J,DSIDEP(I,J)
+
+ 30       CONTINUE
+ 40     CONTINUE
+      ELSE IF (TYPMOD(1)(1:6) .EQ. 'C_PLAN') THEN
+C --- CALCUL DES ELONGATIONS       
+        C11 = 2.D0*EPS(1)+1.D0
+        C12 = 2.D0*EPS(4)
+        C22 = 2*EPS(2)+1.D0
+        C33 = 1.D0
+C --- CALCUL DES CONTRAINTES    
+        CALL HYPCPC(C11,C22,C33,C12,
+     &              K,C10,C01,C20,INT(CRIT(1)),CRIT(3),
+     &              SIGP,CODRET)
+C --- CALCUL DE LA MATRICE TANGENTE     
+        CALL HYPCPD(C11,C22,C33,C12,
+     &              K,C10,C01,C20,
+     &              DSIDEP)
+        DO 130 K=1,2*NDIM
+          IF (K.EQ.3) GOTO 130
+          DO 140 L=1,2*NDIM
+            IF (L.EQ.3) GO TO 140
+              DSIDEP(K,L )= DSIDEP(K,L) -
+     &                    1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+ 140      CONTINUE
+ 130    CONTINUE
+      ELSE IF (TYPMOD(1)(1:6).EQ.'D_PLAN') THEN
+C --- CALCUL DES ELONGATIONS      
+        C11 = 2.D0*EPS(1)+1.D0
+        C12 = 2.D0*EPS(4)
+        C22 = 2.D0*EPS(2)+1.D0
+C --- CALCUL DES CONTRAINTES    
+        CALL HYPDPC(C11,C22,C12,
+     &              K,C10,C01,C20,
+     &              SIGP)
+C --- CALCUL DE LA MATRICE TANGENTE             
+        CALL HYPDPD(C11,C22,C12,
+     &              K,C10,C01,C20,
+     &              DSIDEP)
+      ELSE
+        CALL UTMESS('F','HYPINC',
+     &              'MODEL NOT SUPPORTED FOR HYPERELASTIC MATERIAL')
+      ENDIF
+      
+      END

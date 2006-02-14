@@ -1,0 +1,108 @@
+      SUBROUTINE HYPDPC(C11,C22,C12,
+     &                  K,C10,C01,C20,
+     &                  SIG)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE    
+      REAL*8 C11
+      REAL*8 C22
+      REAL*8 C12
+      REAL*8 K
+      REAL*8 C10
+      REAL*8 C01
+      REAL*8 C20
+      REAL*8 SIG(6)
+C      
+C-----------------------------------------------------------------------
+C
+C     LOI DE COMPORTEMENT HYPERELASTIQUE - CONTRAINTES PLANES
+C     CALCUL DES CONTRAINTES 
+C
+C IN  C11,C22,C33,C12: ELONGATIONS
+C IN  C10,C01,C20:     CARACTERISTIQUES MATERIAUX
+C IN  K     :          MODULE DE COMPRESSIBILITE
+C OUT SIG   :          CONTRAINTES 
+C-----------------------------------------------------------------------
+C 
+      REAL*8 T1,T2,T3,T4,T5,T6,T8
+      REAL*8 T12,T16,T33
+C
+C-----------------------------------------------------------------------
+C      
+      T1  = C11*C22
+      T2  = C12**2
+      T3  = T1-T2
+      IF (T3.LT.0.D0) THEN
+        CALL UTMESS('F','HYPDPC',
+     &  'ERROR OF ELONGATION FOR HYPERELASTIC MATERIAL')
+      ENDIF       
+      T4  = T3**(1.D0/3.D0)
+      IF (T4.EQ.0.D0) THEN
+        CALL UTMESS('F','HYPDPC',
+     &  'ERROR OF ELONGATION FOR HYPERELASTIC MATERIAL')
+      ENDIF 
+      T5  = 1.D0/T4
+      T6  = C11+C22+1.D0
+      T12 = T5-T6/T4/T3*C22/3.D0
+      T16 = T4**2
+      T33 = SQRT(T3)
+
+      SIG(1) = 2.D0*C10*T12+2.D0*C01*((C22+1.D0)/T16-2.D0
+     &/3.D0*(T1+C11+C22-T2)/T16/T3*C22)+
+     &4.D0*C20*(T6*T5-3.D0)*T12+K*(T33-1.D0)/T33*C22
+
+      T1  = C11*C22
+      T2  = C12**2
+      T3  = T1-T2
+      T4  = T3**(1.D0/3.D0)
+      IF ((T4.EQ.0.D0).OR.(T3.LE.0.D0)) THEN
+        CALL UTMESS('F','HYPDPC',
+     &  'ZERO ELONGATION FOR HYPERELASTIC MATERIAL')
+      ENDIF      
+      T5  = 1.D0/T4
+      T6  = C11+C22+1.D0
+      T12 = T5-T6/T4/T3*C11/3.D0
+      T16 = T4**2
+      T33 = SQRT(T3)
+      SIG(2) =2.D0*C10*T12+2.D0*C01*((C11+1.D0)/T16-2.D0
+     &/3.D0*(T1+C11+C22-T2)/T16/T3*C11)+
+     &4.D0*C20*(T6*T5-3.D0)*T12+K*(T33-1.D0)/T33*C11
+
+      T1 = C11+C22+1.D0
+      T3 = C11*C22
+      T4 = C12**2
+      T5 = T3-T4
+      T6 = T5**(1.D0/3.D0)
+      IF ((T6.EQ.0.D0).OR.(T5.LE.0.D0)) THEN
+        CALL UTMESS('F','HYPDPC',
+     &  'ZERO ELONGATION FOR HYPERELASTIC MATERIAL')
+      ENDIF 
+      T8 = 1.D0/T6/T5
+      T12 = T6**2
+      T33 = SQRT(T5)
+      SIG(4) = 4.D0/3.D0*C10*T1*T8*C12+2.D0*C01*
+     &(-2.D0*C12/T12+4.D0/3.D0*(T3+C11+C22-T4)/T12/T5*C12)
+     &+8.D0/3.D0*C20*(T1/T6-3.D0)*T1*T8*C12-2.D
+     &0*K*(T33-1.D0)/T33*C12
+
+      SIG(3) = 0.D0
+      SIG(5) = 0.D0
+      SIG(6) = 0.D0       
+
+      END

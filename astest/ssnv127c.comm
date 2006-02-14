@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,10 +29,7 @@
 # LES ELEMENTS DE BORD SONT DES SEG2
 #
 
-import Numeric
-import Gnuplot
-
-DEBUT(CODE=_F( NOM = 'SSNV127C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+DEBUT(CODE=_F( NOM = 'SSNV127C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 
 
 
@@ -210,41 +207,6 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
 
 IMPR_TABLE(TABLE=TPRESS)
 IMPR_TABLE(TABLE=TCONT)
-
-
-#_____________________________________________________________________ 
-#                                                       
-#                  TRACER DE COURBES INTERACTIF
-#_____________________________________________________________________ 
-#                                                       
-#
-
-# TPRESSe = TPRESS.EXTR_TABLE()
-# coor = TPRESSe.Array('COOR_X','COOR_Y')
-# cos = Numeric.arctan(coor[:,0]/coor[:,1])*-180./Numeric.pi
-# 
-# print cos
-# 
-# press = TPRESSe.Array('ABSC_CURV','SIXX')
-# press[:,0]=cos
-# print press
-# 
-# TCONTe = TCONT.EXTR_TABLE()
-# cont = TCONTe.Array('ABSC_CURV','CONTACT')
-# cont[:,0]=cos
-# cont[:,1]=-1.E6*cont[:,1]
-# 
-# graphe = Gnuplot.Gnuplot(persist=1)
-# Gnuplot.GnuplotOpts.prefer_inline_data=1
-# graphe('set data style linespoints')
-# graphe('set grid')
-# graphe.xlabel('ABS')
-# graphe.ylabel('PRESS')
-# graphe.plot(Gnuplot.Data(press,title='Pression'),
-#             Gnuplot.Data(cont,title='Indicateur'))
-# 
-
-
 
 
 #_____________________________________________________________________ 

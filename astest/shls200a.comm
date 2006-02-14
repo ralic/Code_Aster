@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,7 @@
 #                                                                            #
 ##############################################################################
 
-DEBUT(CODE=_F(  NOM = 'SHLS200A', NIV_PUB_WEB ='INTERNET',VISU_EFICAS='NON') ,
-      PAR_LOT='NON')
+DEBUT(CODE=_F(  NOM = 'SHLS200A', NIV_PUB_WEB ='INTERNET',VISU_EFICAS='NON'))
 
 ##############################################################################
 #                                                                            #
@@ -216,7 +215,6 @@ MODE2=MODE_ITER_SIMULT( MATR_A=MATR2,
 
 # COEFFICIENT DE RAYLEIGH
 
-from Numeric import pi
 amred=0.03
 Omin=5.2*pi
 Omax=212.8*pi

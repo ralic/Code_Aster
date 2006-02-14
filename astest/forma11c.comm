@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE TP ANALYSE MODALE TPAM3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,18 +23,9 @@
 #                            MACRO_MODE_MECA
 #
 #-------------------------------------------------------------------
-# IMPORT PYTHON
-#import os
-#import string
-#import copy
-#import Gnuplot
-#import Numeric
-#directory = "/home/xxx/ASTER/TP_MODAL/TPAM3/"
-
-#-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM ='FORMA11C',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+DEBUT(CODE=_F(NOM ='FORMA11C',NIV_PUB_WEB='INTERNET'))
 
 # LECTURE MAILLAGE ET AFFECTATION MATERIAU/MODELE
 MAYA=LIRE_MAILLAGE();

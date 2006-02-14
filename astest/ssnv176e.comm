@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE ESSAIS BIAXIAUX EN 3D - COMPORTEMENT ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@
 #----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F( NOM = 'SSNV176E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
+DEBUT( CODE=_F( NOM = 'SSNV176E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
 MA=LIRE_MAILLAGE();
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,7 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 
-DEBUT( CODE=_F( NOM = 'SSNV157H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-       PAR_LOT = 'NON');
+DEBUT( CODE=_F( NOM = 'SSNV157H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),);
 TOTO0=LIRE_MAILLAGE();
 
 TOTO = CREA_MAILLAGE(
@@ -116,21 +115,17 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                  ETA_PILO_MIN=1.,),
                        );
 
-# Recuperation du dernier numero d'ordre
-dico = EVOL1.LIST_VARI_ACCES()
-no   = dico['NUME_ORDRE'][-1]
-
 TEST_RESU(RESU=(  _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = no,
+               NUME_ORDRE = 38,
               NOEUD = 'N2',
               NOM_CHAM = 'DEPL',
               NOM_CMP = 'DX',
               VALE = 6.117411E-03), _F(
               RESULTAT = EVOL1,
               REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = no,
+              NUME_ORDRE = 38,
               MAILLE = 'M169',
               POINT = 1,
               NOM_CHAM = 'VARI_ELGA',

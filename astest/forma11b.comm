@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE TP ANALYSE MODALE TPAM2
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,18 +24,13 @@
 #
 #
 #-------------------------------------------------------------------
-# IMPORT PYTHON
-#import os
-#import string
-#import copy
-#import Gnuplot
-#import Numeric
+
 #directory = "/home/xxx/ASTER/TP_MODAL/TPAM2/"
 
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM ='FORMA11B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+DEBUT(CODE=_F(NOM ='FORMA11B',NIV_PUB_WEB='INTERNET'))
 
 # LECTURE MAILLAGE ET AFFECTATION MATERIAU/MODELE
 ACIER=DEFI_MATERIAU(ELAS=_F(E=1.E8,

@@ -1,7 +1,7 @@
-      SUBROUTINE SUIINI(SUIVCO,NBSUIV)
+      SUBROUTINE SUIINI(SUIVCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,78 +21,59 @@ C ======================================================================
 C
       IMPLICIT     NONE
       CHARACTER*24 SUIVCO
-      INTEGER      NBSUIV
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : IMPINI
+C ROUTINE APPELEE PAR : NMINIT
 C ----------------------------------------------------------------------
 C
-C SAISIE DU MOT CLE FACTEUR "SUIVI"
-C  _CETTE ROUTINE EST UNE DUPLICATION DE DYOBSE_
+C INITIALISATION DES SUIVIS
 C
-C OUT SUIVCO : SD SUIVIS EN TEMPS REEL
-C OUT NBSUIV : NOMBRE DE SUIVIS EN TEMPS REEL
+C IN  SUIVCO : NOM DE LA SD CONTENANT INFOS DE SUIVIS DDL
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      IFM,NIV
-C      INTEGER      IBID
-C      CHARACTER*8  MODELE,MAILLA
-C      CHARACTER*24 MOTFAC
+      INTEGER       NBOCC,IBID,NBSUIV
+      CHARACTER*16  MOTCLE
+      CHARACTER*8   MAILLA,MODELE
 C
 C ----------------------------------------------------------------------
-C
+C       
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)
-C /\/\/\/\/\/\/\/\/\/\
-      GOTO 999
-C    SUIVI NON ENCORE ACTIVE
-C /\/\/\/\/\/\/\/\/\/\
-
-C      MOTFAC = 'SUIVI_DDL'
 C
-C --- NOMBRE DE SUIVIS DANS LE MOT-CLEF FACTEUR: NBSUIV
+C --- INITIALISATION
 C
-
-C      CALL GETFAC(MOTFAC,NBSUIV)
-
-C      IF (NBSUIV.GT.4) THEN
-C         CALL UTMESS('F','SUIINI',
-C     &      'TROP DE SUIVIS (LIMITE A QUATRE)')
-C      ENDIF
+      MOTCLE = 'SUIVI_DDL        '      
 C
 C --- NOM DU MAILLAGE
 C
-C      CALL GETVID(' ','MODELE',0,1,1,MODELE,IBID)
-C      CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,MAILLA,IBID)
-C 
-C --- SAISIE DES DONNEES
-C --- CREATION DE LA STRUCTURE DE DONNEES SUIVCO
-C 
-C      CALL SUICMP(MOTFAC,MAILLA,NBSUIV,SUIVCO)
+      CALL GETVID(' ','MODELE',0,1,1,MODELE,IBID)
+      CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,MAILLA,IBID)
 C
-C ----------------------------------------------------------------------
+C --- LECTURE INFOS DANS 'SUIVI'
+C     
+      CALL SUILEC(SUIVCO,MAILLA,MOTCLE,
+     &            NBOCC,NBSUIV)
+C 
+C --- CREATION DE LA STRUCTURE DE DONNEES 
+C 
+      CALL SUICSD(SUIVCO,MAILLA,MOTCLE,NBOCC,NBSUIV)      
 C
-  999 CONTINUE
-
-      NBSUIV = 0
       CALL JEDEMA()
-
       END

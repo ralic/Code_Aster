@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 MAC_MODES=OPER(nom="MAC_MODES",op=  141,sd_prod=table_sdaster,
                fr="Normalisation de modes propres",
-               reentrant='f',
+               reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          BASE_1       =SIMP(statut='o',typ=(mode_meca,mode_flamb,base_modale) ),
          BASE_2       =SIMP(statut='o',typ=(mode_meca,mode_flamb,base_modale) ),

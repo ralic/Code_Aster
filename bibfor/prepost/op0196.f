@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 13/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,22 +48,23 @@ C     ------------------------------------------------------------------
 
       INTEGER IRET,IBID,JLICHA,NBSY,NBORDR,JNOCMP,IORD,JFISS,ICHA,JLON,
      &        IOR,JORD,JCNSV1,JCNSD1,JCNSK1,JNO,NUMNOE,JCNSV2,JCNSD2,
-     &        JCOR,JJCNS,IICNS,JNOLOC,IIHEA,JJHEA,JHEA,JLNNO,NBHEA,
+     &        JJCNS,IICNS,JNOLOC,IIHEA,JJHEA,JHEA,JLNNO,NBHEA,
      &        JCNSK2,NBCMP,JDIM,JCNSC2,I,JCNSL1,JCNSL2,K,KK,JCO,JCNSC1,
-     &        JINST,JCESV,JCESD,JCESK,JCESL,JCESC,IAD,NBMX,JHEAV,J,
+     &        JINST,JCESV,JCESD,JCESK,JCESL,JCESC,IAD,NBMX,J,NBCHIN,
      &        KX,KY,KZ,IDX,IDY,IDZ,JCNS,I1000,NB1000,JNIM,II,ILOC,
-     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,JCORX,
+     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,DEBXHT,
      &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS,
-     &        JTYPMA,NBNOSO
-      REAL*8  INST,EPS
-      PARAMETER(EPS=1.D-10, NBCNS=128, NBHEA=36)
+     &        JTYPMA,NBNOSO,NBHEAV,NBCTIP,NBHECT, JWXFEM, NBINMX,FINXHT,
+     &        NCESV,NBPT,NBSP,NBCP,ICP
+      REAL*8  INST,EPS,R8B,RBID
+      PARAMETER(EPS=1.D-10, NBCNS=128, NBHEA=36, NBINMX=9)
       CHARACTER*1  KBID
       CHARACTER*8  MO,RESUCO,RESUC1,MA,LDEP(3),NOMNOE,NOMNOI,
-     &             LPAIN(6),LPAOUT(1),K8B,NOMA,TYPMA
+     &             LPAIN(NBINMX),LPAOUT(1),K8B,NOMA,TYPMA,CHNUM
       CHARACTER*16 K16B,TYSD,OPTION,NOTYPE,NOMCHA
       CHARACTER*19 CHS,CHNO,CHNOS,CH,CHOUT,CHAMS
-      CHARACTER*24 ORDR,LIGREL,LCHIN(6),LCHOUT(1),HEAV,CONNEX,LIEL,
-     &             CHGEOM,COORDO,COORDX
+      CHARACTER*24 ORDR,LIGREL,LCHIN(NBINMX),LCHOUT(1),HEAV,CONNEX,LIEL,
+     &             CHGEOM,CTIP,HECT
       LOGICAL      EXIGEO,QUMAFI
       DATA LDEP/ 'DX','DY','DZ'/
 C
@@ -144,6 +145,8 @@ C             EXTRACTION DES DEPLACEMENTS
               CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,KBID)
               INST=ZR(JINST)
               CALL RSEXCH(RESUCO,NOMCHA,IORD,CHNO,IRET)
+CR
+              CALL IMPRSD('CHAMP',CHNO,8,'--- CHAMP DEPL SD_RES---')
 C
 C             PASSAGE : CHAMP --> CHAMP_S
               CALL CNOCNS(CHNO,'V',CHNOS)
@@ -231,11 +234,20 @@ C             PREPARATION AVANT L'APPEL A CALCUL
               LCHIN(5)=ZK8(JFISS)//'.TOPOSE.HEAVTO'
               LPAIN(6)='PLONCHA'
               LCHIN(6)=ZK8(JFISS)//'.TOPOSE.LONCHAM'
+              LPAIN(7)='PLSN'
+              LCHIN(7)=ZK8(JFISS)//'.LNNO'
+              LPAIN(8)='PLST'
+              LCHIN(8)=ZK8(JFISS)//'.LTNO'
+              LPAIN(9)='PBASLOR'
+              LCHIN(9)=ZK8(JFISS)//'.BASLOC'
+              NBCHIN=9
+
               LPAOUT(1)='PDEXFEM'
               LCHOUT(1)=CHOUT
 C
 C             CALCUL DES DEPLACEMENTS AUX NOEUDS X-FEM
-              CALL CALCUL('S',OPTION,LIGREL,6,LCHIN,LPAIN,1,LCHOUT,
+              CALL ASSERT(NBCHIN.LE.NBINMX)
+              CALL CALCUL('S',OPTION,LIGREL,NBCHIN,LCHIN,LPAIN,1,LCHOUT,
      &                    LPAOUT,'G')
 C
 C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
@@ -252,16 +264,38 @@ C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
               LIEL=MO//'.MODELE    .LIEL'
               CALL JELIRA(LIEL,'NMAXOC',NBGREL,KBID)
               CALL JEVEUO(ZK8(JFISS)//'.LNNO      .VALE','L',JLNNO)
+
 C             NOMBRE DE MAILLES XFEM : NBMX
               HEAV=ZK8(JFISS)//'.MAILFISS  .HEAV'
-              CALL JEVEUO(HEAV,'L',JHEAV)
-              CALL JELIRA(HEAV,'LONMAX',NBMX,KBID)
+              CALL JEEXIN(HEAV,IRET)
+              IF(IRET.NE.0)THEN
+                CALL JELIRA(HEAV,'LONMAX',NBHEAV,KBID)
+              ELSE
+                NBHEAV=0
+              ENDIF
+              CTIP=ZK8(JFISS)//'.MAILFISS  .CTIP'
+              CALL JEEXIN(CTIP,IRET)
+              IF(IRET.NE.0)THEN
+                CALL JELIRA(CTIP,'LONMAX',NBCTIP,KBID)
+              ELSE
+                NBCTIP=0
+              ENDIF
+              HECT=ZK8(JFISS)//'.MAILFISS  .HECT'
+              CALL JEEXIN(HECT,IRET)
+              IF(IRET.NE.0)THEN
+                CALL JELIRA(HECT,'LONMAX',NBHECT,KBID)
+              ELSE
+                NBHECT=0
+              ENDIF
+              NBMX=NBHEAV+NBCTIP+NBHECT
 
+C             TABLEAU DES MAILLES XFEM
+              CALL WKVECT('&&OP0196.MAIL_XFEM','V V I',NBMX,JWXFEM)
 C             TABLEAU INDICATEUR DE MAILLES FISSUREES
               CALL JEVEUO(ZK8(JCNSK1)//'.DIME','L',JDIM)
               CALL WKVECT('&&'//NOMPRO//'.IND_MAIL','V V I',
      &                    ZI(JDIM+2),JINDMF)
-C
+C            
 C             TABLEAU DE POSITION DANS '.TOPOSE.CSETTO': ZI(JJCNS)
               CALL WKVECT('&&OP0196.POSI_CNS','V V I',NBMX,JJCNS)
 C             TABLEAU DE POSITION DANS '.TOPOSE.HEAVTO': ZI(JJHEA)
@@ -275,19 +309,15 @@ C             TABLEAU DE POSITION DANS '.TOPOSE.HEAVTO': ZI(JJHEA)
               IICNS=0
               IIHEA=0
               KK=0
+
 C             BOUCLE SUR LES GRELS:
               DO 140 I=1,NBGREL
                  CALL JEVEUO(JEXNUM(LIEL,I),'L',IGREL)
                  CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
                  CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',
      &                ZI(IGREL+NBMAGL-1)),NOTYPE)
-                 IF(NOTYPE(1:13).NE.'MECA_X_HEXA20'  .AND.
-     &              NOTYPE(1:13).NE.'MECA_XH_HEXA8'  .AND.
-     &              NOTYPE(1:14).NE.'MECA_X_PENTA15' .AND.
-     &              NOTYPE(1:14).NE.'MECA_XH_PENTA6' .AND.
-     &              NOTYPE(1:14).NE.'MECA_X_TETRA10' .AND.
-     &              NOTYPE(1:14).NE.'MECA_XH_TETRA4'  ) GOTO 140
-C             BOUCLE SUR LES MAILLES DU GREL:
+                 IF(NOTYPE(1:6).NE.'MECA_X') GOTO 140              
+C                BOUCLE SUR LES MAILLES DU GREL:
                  DO 150 J=1,NBMAGL-1
                     IMA=ZI(IGREL+J-1)
                     IOCC=IOCC+1
@@ -315,6 +345,7 @@ C             BOUCLE SUR LES MAILLES DU GREL:
                           CALL JEDETR('&&OP0196.1000')
                        ENDIF
                        NBTNIM=NBTNIM+NBNIM
+                       ZI(JWXFEM+KK-1)=IMA
                        ZI(JINDMF+IMA-1)=NBNIM
                        ZI(JJCNS+KK-1)=IICNS
                        ZI(JJHEA+KK-1)=IIHEA
@@ -354,13 +385,16 @@ C
                   ENDIF
  776           CONTINUE
 C
-C             REMPLISSAGE DU CHAM_NO
-              KK=0
+C  ---        REMPLISSAGE DU CHAM_NO
+C
               CALL JEVEUO(ZK8(JCNSK1)//'.TYPMAIL','L',JTYPMA)
-              DO 777 I=1,NBMX
-                 CALL JEVEUO(JEXNUM(CONNEX,ZI(JHEAV+I-1)),'L',JCO)
+ 1000         CONTINUE
+              KK=0
+C
+             DO 777 I=1,NBMX
+                 CALL JEVEUO(JEXNUM(CONNEX,ZI(JWXFEM+I-1)),'L',JCO)
                  CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',
-     &                ZI(JTYPMA+ZI(JHEAV+I-1)-1)),TYPMA)
+     &                ZI(JTYPMA+ZI(JWXFEM+I-1)-1)),TYPMA)
                  IF(TYPMA(1:4).EQ.'HEXA')THEN
                        NBNOSO=8
                  ELSEIF(TYPMA(1:4).EQ.'PENT')THEN
@@ -373,79 +407,68 @@ C
                   DO 780 II=1,NBNOSO
                      ZI(JNOLOC+II-1)=0
  780              CONTINUE
+C                  JNOLOC: INDICE SIGNIFIANT QUE LE NOEUD EST SOMMET
                   DO 781 II=1,NBCNS
                      IF(ZI(JCNS+ZI(JJCNS+I-1)+II-1).LT.1000 .AND.
      &                  ZI(JCNS+ZI(JJCNS+I-1)+II-1).GT.0)THEN
                         ZI(JNOLOC+ZI(JCNS+ZI(JJCNS+I-1)+II-1)-1)=1
                      ENDIF
  781              CONTINUE
-                 IF(ZI(JINDMF+ZI(JHEAV+I-1)-1).NE.0)THEN
-                    DO 779 J=1,2*ZI(JINDMF+ZI(JHEAV+I-1)-1)
+                 IF(ZI(JINDMF+ZI(JWXFEM+I-1)-1).NE.0)THEN
+C
+                    DO 779 J=1,2*ZI(JINDMF+ZI(JWXFEM+I-1)-1)
                        KK=KK+1
                        NUMNOE=ZI(JLNONX+KK-1)
                        CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUMNOE),NOMNOE)
-                       ZR(JCNSV2+3*(NUMNOE-1)  )=
-     &                      ZR(JCESV+3*(J-1)+3*NBNOSO+90*(I-1))
-                       ZR(JCNSV2+3*(NUMNOE-1)+1)=
-     &                      ZR(JCESV+3*(J-1)+3*NBNOSO+90*(I-1)+1)
-                       ZR(JCNSV2+3*(NUMNOE-1)+2)=
-     &                      ZR(JCESV+3*(J-1)+3*NBNOSO+90*(I-1)+2)
-                       ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
-                       ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
-                       ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
+                       DO 800 ICP=1,3
+                         CALL CESEXI('C',JCESD,JCESL,ZI(JWXFEM+I-1),1,1,
+     &                               3*NBNOSO+3*J-3+ICP,IAD)
+                         ZR(JCNSV2+3*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
+                         ZL(JCNSL2+3*(NUMNOE-1)+ICP-1)=.TRUE.
+ 800                   CONTINUE
  779                CONTINUE
 C
                    DO 799 J=1,NBNOSO
-                      IF(ZI(JNOLOC+J-1).EQ.0)GOTO 799
-                      IF(ABS(ZR(JLNNO+ZI(JCO+J-1)-1)).LT.EPS)THEN
-                            GOTO 799
+                      IF(ZI(JNOLOC+J-1).EQ.0)THEN
+                             GOTO 799
                       ENDIF
+                      IF(ABS(ZR(JLNNO+ZI(JCO+J-1)-1)).LT.EPS)GOTO 799
                       CALL JENUNO(JEXNUM(ZK8(JCNSK1)//'.NOMNOE',
      &                     ZI(JCO+J-1)),NOMNOE)
                        CALL JENONU(JEXNOM(MA//'.NOMNOE',NOMNOE),NUMNOE)
-                       ZR(JCNSV2+3*(NUMNOE-1)  )=
-     &                      ZR(JCESV+3*(J-1)+90*(I-1))
-                       ZR(JCNSV2+3*(NUMNOE-1)+1)=
-     &                      ZR(JCESV+3*(J-1)+90*(I-1)+1)
-                       ZR(JCNSV2+3*(NUMNOE-1)+2)=
-     &                      ZR(JCESV+3*(J-1)+90*(I-1)+2)
-                       ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
-                       ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
-                       ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
+                       DO 801 ICP=1,3
+                          CALL CESEXI('C',JCESD,JCESL,ZI(JWXFEM+I-1),
+     &                                 1,1,3*J-3+ICP,IAD)
+                          ZR(JCNSV2+3*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
+                          ZL(JCNSL2+3*(NUMNOE-1)+ICP-1)=.TRUE.
+ 801                   CONTINUE
  799               CONTINUE
                    ENDIF
 C
-                  IF(ZI(JINDMF+ZI(JHEAV+I-1)-1).EQ.0 .OR. QUMAFI)THEN
+                  IF(ZI(JINDMF+ZI(JWXFEM+I-1)-1).EQ.0 .OR. QUMAFI)THEN
                     DO 778 J=1,NBNOSO
                        CALL JENUNO(JEXNUM(ZK8(JCNSK1)//'.NOMNOE',
      &                     ZI(JCO+J-1)),NOMNOE)
-                       NOMNOI='NI'//NOMNOE(2:LEN(NOMNOE))
+                       CALL CODENT(ZI(JCO+J-1),'G',CHNUM)
+                       NOMNOI='NI'//CHNUM
                        CALL JEEXIN(JEXNOM(MA//'.NOMNOE',NOMNOI),IRET)
                        IF(IRET.NE.0)THEN
-                         CALL JENONU(JEXNOM(MA//'.NOMNOE',NOMNOI),NUNOI)
-                         COORDO=ZK8(JCNSK1)//'.COORDO    .VALE'
-                         COORDX=MA//'.COORDO    .VALE'
-                        CALL JEVEUO(JEXNUM(COORDO,ZI(JCO+J-1)),'L',JCOR)
-                         CALL JEVEUO(JEXNUM(COORDX,NUNOI),'L',JCORX)
                          IF(ZI(JHEA+ZI(JJHEA+I-1)).EQ.-1)THEN
                             NOMNOE=NOMNOI
                          ENDIF
                         ENDIF
                         CALL JENONU(JEXNOM(MA//'.NOMNOE',NOMNOE),NUMNOE)
-                        ZR(JCNSV2+3*(NUMNOE-1)  )=
-     &                      ZR(JCESV+3*(J-1)+90*(I-1))
-                        ZR(JCNSV2+3*(NUMNOE-1)+1)=
-     &                      ZR(JCESV+3*(J-1)+90*(I-1)+1)
-                        ZR(JCNSV2+3*(NUMNOE-1)+2)=
-     &                      ZR(JCESV+3*(J-1)+90*(I-1)+2)
-                        ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
-                        ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
-                        ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
+                        DO 802 ICP=1,3
+                          CALL CESEXI('C',JCESD,JCESL,ZI(JWXFEM+I-1),
+     &                                 1,1,3*J-3+ICP,IAD)
+                          ZR(JCNSV2+3*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
+                          ZL(JCNSL2+3*(NUMNOE-1)+ICP-1)=.TRUE.
+ 802                    CONTINUE
   778                CONTINUE
                   ENDIF
                  CALL JEDETR('&&OP0196.NO_LOC')
  777          CONTINUE
-
+C
 C              CALL IMPRSD('CHAMP',CHS,8,'--- CHAMP DEPL ---')
               CALL CNSCNO(CHS,' ','NON','G',CH)
 C

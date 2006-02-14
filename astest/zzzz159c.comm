@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,7 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-DEBUT(CODE=_F(NOM='ZZZZ159C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON')
-
-import Numeric
-import Macro
+DEBUT(CODE=_F(NOM='ZZZZ159C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
 
 parametres =[['YOUN__',100000.,50000.,500000.],['DSDE__',1000.,500.,10000.],['SIGY__',30.,5.,500.]]

@@ -1,8 +1,8 @@
-      SUBROUTINE IMPREF(ICOD,
+      SUBROUTINE IMPREF(ICOD,SUIVCO,
      &                  TITRE,FORMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,6 +22,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       INTEGER      ICOD
+      CHARACTER*24 SUIVCO
       INTEGER      ZTIT,ZDEF
       PARAMETER    (ZTIT=3,ZDEF=30)
       CHARACTER*16 TITRE(ZTIT)
@@ -36,6 +37,7 @@ C  - LE TITRE DE LA COLONNE (SUR 3 LIGNES)
 C  - LE TYPE DE LA COLONNE
 C
 C IN  ICOD   : CODE DE LA COLONNE
+C IN  SUIVCO : NOM DE LA SD POUR SUIVI DDL 
 C OUT TITRE  : TITRES STANDARDS DE LA COLONNE
 C OUT FORMA  : TYPE DE LA COLONNE
 C              1: ENTIER
@@ -44,7 +46,7 @@ C              3: CHAINE
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER       J
+      INTEGER       J,ISUIV
       CHARACTER*16  TITCOL(ZTIT,ZDEF)
       INTEGER       FORCOL(ZDEF)
 
@@ -245,10 +247,17 @@ C
      &               'CODE COLONNE INCORRECT (DVLP)')
       ENDIF
 
-      DO 10 J = 1,ZTIT
-        TITRE(J) = TITCOL(J,ICOD)
-  10  CONTINUE
-
       FORMA    = FORCOL(ICOD)
+
+
+      IF ((ICOD.GE.24).AND.(ICOD.LE.27)) THEN
+        ISUIV = (ICOD-23)
+        CALL SUIIMP(SUIVCO,ISUIV,ZTIT,
+     &              TITRE)      
+      ELSE
+        DO 10 J = 1,ZTIT
+          TITRE(J) = TITCOL(J,ICOD)
+  10    CONTINUE         
+      ENDIF
 
       END

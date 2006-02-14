@@ -1,0 +1,110 @@
+      SUBROUTINE HYPMAT(IMATE,TM,
+     &                  C10,C01,C20,K)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER      IMATE
+      REAL*8       TM
+      REAL*8       C10
+      REAL*8       C01
+      REAL*8       C20
+      REAL*8       K    
+C-----------------------------------------------------------------------
+C
+C     LOI DE COMPORTEMENT HYPERELASTIQUE
+C     REALISE LA LOI DE SIGNORINI HYPERELASTICITE
+C         C10 (I1-3) + C01 (I2-3)+ C20 (I1-3)^2 + K/2(J-1)²
+C     RECUPERE DONNEES MATERIAUX
+C
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  IMATE   : NATURE DU MATERIAU
+C IN  COMPOR  : COMPORTEMENT
+C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+C IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG -> SIG    DSIDEP
+C                                 FULL_MECA      -> SIG VI DSIDEP
+C                                 RAPH_MECA      -> SIG VI
+C                                 RUPTURE        -> SIG VI ENERGI
+C IN  TM      : TEMPERATURE A L'INSTANT MOINSSE
+C IN  EPSM    : DEFORMATION A L'INSTANT MOINSSE
+C                (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
+C IN  DEPS    : INCREMENT DE DEFORMATION
+C IN  SIGM    : CONTRAINTES A L'INSTANT MOINSSE
+C OUT SIGP    : CONTRAINTES LAGRANGIENNES CALCULEES
+C OUT DSIDEP  : MATRICE CARREE
+C-----------------------------------------------------------------------
+C
+      INTEGER     NBRES
+      PARAMETER   ( NBRES = 3  )
+      CHARACTER*8 NOMRES(NBRES)
+      CHARACTER*2 CODRES(NBRES)
+      REAL*8      VALRES(NBRES)      
+      CHARACTER*8 BL2,FB2,AB2
+      REAL*8      NU
+      REAL*8      R8PREM,DENOM
+      LOGICAL     CMPK
+C 
+C-----------------------------------------------------------------------
+C      
+C --- INITIALISATIONS
+C
+      BL2 = '  '
+      FB2 = 'F '
+      AB2 = '  '      
+C
+C --- SOIT ON PREND LE K DONNE PAR DEFI_MATERIAU, SOIT ON LE CALCULE
+C --- A PARTIR DU NU
+C
+      NOMRES(1)='K'      
+      CALL RCVALA(IMATE,BL2,'ELAS_HYPER',1,'TEMP',TM,1,
+     +            NOMRES,VALRES,CODRES,AB2 )
+
+      IF (CODRES(1).EQ.'OK') THEN
+        K     = VALRES(1)
+        CMPK  = .FALSE.
+      ELSE
+        NOMRES(1)='NU'   
+        CALL RCVALA(IMATE,BL2,'ELAS_HYPER',1,'TEMP',TM,1,
+     +              NOMRES,VALRES,CODRES,FB2 )      
+        NU    = VALRES(1)
+        DENOM = 3.D0*(1.D0-2.D0*NU)
+        IF (DENOM.LE.R8PREM()) THEN
+          CALL UTMESS('F','HYPMAT','CHECK YOUR POISSON RATIO')
+        ENDIF
+        
+        CMPK  = .TRUE.
+        
+      ENDIF
+
+      NOMRES(1)='C10'
+      NOMRES(2)='C01'
+      NOMRES(3)='C20'      
+      CALL RCVALA(IMATE,BL2,'ELAS_HYPER',1,'TEMP',TM,NBRES,
+     +            NOMRES,VALRES,CODRES,FB2 ) 
+      C10 = VALRES(1)
+      C01 = VALRES(2)
+      C20 = VALRES(3)
+      
+      IF (CMPK) THEN
+        K = 6.D0*(C10+C01)/DENOM
+      ENDIF    
+
+
+      
+      END

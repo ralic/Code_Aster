@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE TRACTION SIMPLE EN 3D AVEC PILOTAGE- COMPORTEMENT ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,7 @@
 #
 #----------------------------------------------------------------------
 
-DEBUT( CODE=_F( NOM = 'SSNV176C',NIV_PUB_WEB='INTERNET'),
-           PAR_LOT='NON');
+DEBUT( CODE=_F( NOM = 'SSNV176C',NIV_PUB_WEB='INTERNET'),);
 
 MA=LIRE_MAILLAGE();
 
@@ -139,14 +138,10 @@ U = CALC_ELEM(
    OPTION    =('EPSI_ELGA_DEPL'),
    );
 
-# Recuperation du dernier numero d'ordre
-dico = U.LIST_VARI_ACCES()
-no   = dico['NUME_ORDRE'][-1]
-
 TEST_RESU(RESU=(  _F(
                RESULTAT = U,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = no,
+               NUME_ORDRE = 51,
               NOEUD = 'N1',
               NOM_CHAM = 'DEPL',
               NOM_CMP = 'DX',
@@ -154,7 +149,7 @@ TEST_RESU(RESU=(  _F(
               _F(
               RESULTAT = U,
               REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = no,
+              NUME_ORDRE = 51,
               NOM_CHAM='EPSI_ELGA_DEPL',
               NOM_CMP='EPXX',
               MAILLE='VOLUME',
@@ -163,7 +158,7 @@ TEST_RESU(RESU=(  _F(
               _F(
               RESULTAT = U,
               REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = no,
+              NUME_ORDRE = 51,
               MAILLE = 'VOLUME',
               POINT = 1,
               NOM_CHAM = 'SIEF_ELGA',
@@ -172,7 +167,7 @@ TEST_RESU(RESU=(  _F(
               _F(
               RESULTAT = U,
               REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = no,
+              NUME_ORDRE = 51,
               MAILLE = 'VOLUME',
               POINT = 1,
               NOM_CHAM = 'VARI_ELGA',
@@ -181,7 +176,7 @@ TEST_RESU(RESU=(  _F(
               _F(
               RESULTAT = U,
               REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = no,
+              NUME_ORDRE = 51,
               MAILLE = 'VOLUME',
               POINT = 1,
               NOM_CHAM = 'VARI_ELGA',

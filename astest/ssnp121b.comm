@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@
 
 DEBUT(CODE=_F( NOM = 'SSNP121B',NIV_PUB_WEB='INTERNET'))
 
-# DEBUT(PAR_LOT='NON',);
 
 
 PRE_GIBI();
@@ -88,9 +87,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CHA2,),),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST),);
-
-
-# STANLEY(RESU,MA,MO,CHMAT,None)
 
 
 RESU=CALC_ELEM(reuse =RESU,

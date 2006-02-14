@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,8 +22,7 @@
 
 from Outils.macro_rota_globale import MACR_ROTA_GLOBALE
 
-DEBUT( CODE=_F( NOM = 'SSNL117B',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),PAR_LOT='NON')
-
+DEBUT( CODE=_F( NOM = 'SSNL117B',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),)
 
 MOMENTMZ=1.
 
@@ -362,39 +361,75 @@ TAB1=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              NOM_CHAM='DEGE_ELNO_DEPL',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);
+ 
+# Initialisation des constantes
+
+K1 = 1.
+Lambda = EP*RC/RMOY/RMOY
+ALPHAN = 1
+ALPHAT = 1
+GAMMAD = 1
+ALPHAF = pi/4*GAMMAD
+
+# Definition des formules pour le calcul de EN, ET, EFY, EFZ et ESTAR
+
+form_EN  = FORMULE(NOM_PARA=('EPXX'),VALE='(EPXX)')
+form_ET  = FORMULE(NOM_PARA=('GAT'), VALE='(RMOY*GAT/2.)')
+form_EFY = FORMULE(NOM_PARA=('KY'),  VALE='(RMOY*KY/K1)')
+form_EFZ = FORMULE(NOM_PARA=('KZ'),  VALE='(RMOY*KZ/K1)')
+fo_ESTAR = FORMULE(NOM_PARA=('ET','EN','EFY','EFZ'),
+                   VALE='((ALPHAN*EN)**2+(ALPHAT*ET)**2+(ALPHAF*EFY)**2+(ALPHAF*EFZ)**2)**(0.5)')
+
+# Partie droite
+
+TAB1  = CALC_TABLE(TABLE=TAB1,reuse=TAB1,
+                   OPER=(_F(FORMULE=form_EN, NOM_PARA='EN' ),
+                         _F(FORMULE=form_ET, NOM_PARA='ET' ),
+                         _F(FORMULE=form_EFY,NOM_PARA='EFY'),
+                         _F(FORMULE=form_EFZ,NOM_PARA='EFZ'),
+                         _F(FORMULE=fo_ESTAR,NOM_PARA='ESTAR')
+                        )
+                   )
 
 IMPR_TABLE(TABLE=TAB1)
-TAB1e= TAB1.EXTR_TABLE()
 
-# partie droite
-K=1.
-Lambda=EP*RC/RMOY/RMOY
-EPS = TAB1e.Array('INST','EPXX')
-CX  = TAB1e.Array('INST','GAT')
-CY  = TAB1e.Array('INST','KY')
-CZ  = TAB1e.Array('INST','KZ')
-EN   = EPS
-ET   = RMOY*CX/2
-EFY  = RMOY*CY/K
-EFZ  = RMOY*CZ/K
-print 'EN=',EN
-print 'ET=',ET
-print 'EFY=',EFY
-print 'CZ=',CZ
-print 'EFZ=',EFZ
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 3.08670E+06),),
+           NOM_PARA='EN', PRECISION=0.001,VALE=-9.03590E-08,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 3.48715E+06),),
+           NOM_PARA='ET', PRECISION=0.001,VALE=2.40602E-18,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 4.28804E+06),),
+           NOM_PARA='EFY', PRECISION=0.001,VALE=-3.07996E-10,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 5.48937E+06),),
+           NOM_PARA='EFZ', PRECISION=0.001,VALE=7.19124E-04,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 5.88981E+06),),
+           NOM_PARA='ESTAR', PRECISION=0.001,VALE=6.06000E-04,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
 
-ALPHAN=1
-ALPHAT=1
-GAMMAC=8/9/(Lambda**(0.66667))
-GAMMAD=1
-ALPHAF=pi/4*GAMMAD
-ESTAR  = ((ALPHAN*EN)**2+(ALPHAT*ET)**2+(ALPHAF*EFY)**2+(ALPHAF*EFZ)**2)**(0.5)
+# Initialisation des constantes
 
-print 'Point D, E*=',ESTAR
+K2 = max(1.0,1.65/Lambda)
+GAMMAC  = 8/9*(Lambda**(-0.66667))
+GAMMA   = max(1,GAMMAC)
+ALPHAF2 = pi/4*GAMMA
 
-# coude
-K=max(1.0,1.65/Lambda)
+# Definition des formules pour le calcul de EFY, EFZ et ESTAR
+
+for_EFY = FORMULE(NOM_PARA=('KY'),  VALE='(RMOY*KY/K2)')
+for_EFZ = FORMULE(NOM_PARA=('KZ'),  VALE='(RMOY*KZ/K2)')
+f_ESTAR = FORMULE(NOM_PARA=('ET','EN','EFY','EFZ'),
+                   VALE='((ALPHAN*EN)**2+(ALPHAT*ET)**2+(ALPHAF2*EFY)**2+(ALPHAF2*EFZ)**2)**(0.5)')
+
 # A l entree C du coude
+
 TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              GROUP_NO='C',
                              RESULTAT=U1,
@@ -402,120 +437,37 @@ TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);
 
+TAB2  = CALC_TABLE(TABLE=TAB2,reuse=TAB2,
+                   OPER=(_F(FORMULE=form_EN, NOM_PARA='EN' ),
+                         _F(FORMULE=form_ET, NOM_PARA='ET' ),
+                         _F(FORMULE=for_EFY,NOM_PARA='EFY'),
+                         _F(FORMULE=for_EFZ,NOM_PARA='EFZ'),
+                         _F(FORMULE=f_ESTAR,NOM_PARA='ESTAR')
+                        )
+                   )
+
 IMPR_TABLE(TABLE=TAB2)
-TAB2e= TAB2.EXTR_TABLE()
 
-EPS = TAB2e.Array('INST','EPXX')
-CX  = TAB2e.Array('INST','GAT')
-CY  = TAB2e.Array('INST','KY')
-CZ  = TAB2e.Array('INST','KZ')
-EN   = EPS
-ET   = RMOY*CX/2
-EFY  = RMOY*CY/K
-EFZ  = RMOY*CZ/K
-print 'EN=',EN
-print 'ET=',ET
-print 'EFY=',EFY
-print 'CZ=',CZ
-print 'EFZ=',EFZ
+TEST_TABLE(TABLE=TAB2,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 3.08670E+06),),
+           NOM_PARA='EN', PRECISION=0.001,VALE=1.98289E-03,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB2,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 3.48715E+06),),
+           NOM_PARA='ET', PRECISION=0.001,VALE=1.40237E-06,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB2,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 4.28804E+06),),
+           NOM_PARA='EFY', PRECISION=0.001,VALE=6.29240E-07,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB2,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 5.48937E+06),),
+           NOM_PARA='EFZ', PRECISION=0.001,VALE=4.06858E-04,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+TEST_TABLE(TABLE=TAB2,
+           FILTRE=(_F(NOM_PARA = 'INST',VALE = 5.88981E+06),),
+           NOM_PARA='ESTAR', PRECISION=0.001,VALE=3.96866E-03,
+           REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
 
-ALPHAN=1
-ALPHAT=1
-GAMMAC=8/9*(Lambda**(-0.66667))
-GAMMA=max(1,GAMMAC)
-ALPHAF=pi/4*GAMMA
-ESTAR  = ((ALPHAN*EN)**2+(ALPHAT*ET)**2+(ALPHAF*EFY)**2+(ALPHAF*EFZ)**2)**(0.5)
-
-print 'Point C, E*=',ESTAR
-
-
-FIN( )
-
-
-#
-#
-#
-#   MZ = RECU_FONCTION(RESULTAT : U1
-#                       GROUP_NO : D
-#                       NOM_CMP : 'DRZ'
-#                       TOUT_ORDRE : 'OUI'
-#                       NOM_CHAM : 'FORC_NODA');
-#
-#   UY = RECU_FONCTION(RESULTAT : U1
-#                      GROUP_NO : D
-#                      NOM_CMP : 'DY'
-#                      TOUT_ORDRE : 'OUI'
-#                      NOM_CHAM : 'DEPL');
-#
-#
-#
-#REF3D = DEFI_FONCTION (NOM_PARA: 'DY'
-# VALE : (
-#  0.            0.
-#  1.09349E-02  3.08670E+06
-#  1.23536E-02  3.48715E+06
-#  1.37891E-02  3.88759E+06
-#  1.52727E-02  4.28804E+06
-#  1.68128E-02  4.68848E+06
-#  1.84085E-02  5.08892E+06
-#  2.01272E-02  5.48937E+06
-#  2.20836E-02  5.88981E+06
-#  2.43502E-02  6.29026E+06
-#  2.70438E-02  6.69070E+06
-#  3.04756E-02  7.09115E+06
-#        )
-#);
-#
-#REFCOQ3D = DEFI_FONCTION (NOM_PARA: 'DY'
-# VALE : (
-#0. 0.
-#1.088752986E-02 3.086610019E+06
-#1.182823657E-02 3.353566024E+06
-#1.277569342E-02 3.620519619E+06
-#1.373814230E-02 3.887474583E+06
-#1.470298286E-02 4.154429588E+06
-#       )
-#);
-#
-#REFDKT = DEFI_FONCTION (NOM_PARA: 'DY'
-# VALE : (
-# 0.0 0.0
-# 0.011143 3086700.000000
-# 0.012594 3487150.000000
-# 0.014088 3887590.000000
-# 0.015623 4288040.000000
-# 0.017193 4688480.000000
-# 0.018821 5088920.000000
-# 0.020595 5489370.000000
-# 0.022675 5889810.000000
-# 0.025078 6290260.000000
-# 0.027902 6690700.000000
-# 0.031543 7091150.000000
-#       )
-#);
-#
-#
-# #MPR_COURBE(
-#               FORMAT    : 'AGRAF'
-#          TITRE_GRAPHIQUE : '3455_CPPN4'
-#          LEGENDE_X       : 'UY(M) DU POINT D'
-#             COURBE    : (FONC_X : UY
-#                          FONC_Y : MZ
-#                 LEGENDE   :'TUYAU'
-#                 FREQ_MARQUEUR : 1    )
-#             COURBE    : (FONCTION : REF3D
-#                 LEGENDE   : 'COURBE REF'
-#                 FREQ_MARQUEUR : 1    )
-#             COURBE    : (FONCTION : REFCOQ3D
-#                 LEGENDE   : 'COURBE REF'
-#                 FREQ_MARQUEUR : 1    )
-#             COURBE    : (FONCTION : REFDKT
-#                 LEGENDE   : 'COURBE REF'
-#                 FREQ_MARQUEUR : 1    )
-#            );
-#
-#
-
-
-
+FIN()
 

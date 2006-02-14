@@ -8,7 +8,7 @@
      &                   FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,6 @@ C ======================================================================
       LOGICAL      FONACT(ZFON)
       LOGICAL      ITEMAX, CONVER, ECHLDC, FINPAS, ECHCON(2), ECHEQU
       LOGICAL      LREAC(2),MAXREL,ECHPIL
-
       INTEGER      ITERAT, LICCVG(*), NUMINS, NEQ, VECONT(2)
       REAL*8       ETA, CONV(*), PARCRI(*), PARMET(*)
       CHARACTER*19 CRITNL, CNRESI, CNDIRI, CNFEXT, CNVCFO, CNVFRE
