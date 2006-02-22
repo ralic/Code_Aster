@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,29 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE JMBHH01 J.M.PROIX
-def calc_cham_elem_prod(OPTION,**args):
 
-
-# options thermiques
-
-  if OPTION == "FLUX_ELGA_TEMP" : return cham_elem_flux_r
-  if OPTION == "FLUX_ELNO_TEMP" : return cham_elem_flux_r
-
-# options acoustiques
-
-  if OPTION == "PRES_ELNO_DBEL" : return cham_elem_dbel_r
-  if OPTION == "PRES_ELNO_REEL" : return cham_elem_pres_r
-  if OPTION == "PRES_ELNO_IMAG" : return cham_elem_pres_r
-
-# autres options
-
-  if OPTION == "COOR_ELGA" :      return cham_elem_geom_r
-
-  raise AsException("type de concept resultat non prevu")
-
-CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
-                    fr="Calculer un champ élémentaire en thermique et en accoustique à partir de champs déjà calculés"
-                        +" de type cham_no",
+CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem_sdaster,
+                    fr="Calculer un champ élémentaire en thermique et en accoustique à partir de champs déjà calculés",
                     reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
@@ -62,11 +42,11 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
                                      "COOR_ELGA"), ),
 
          b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP',)",
-           TEMP            =SIMP(statut='o',typ=(cham_no_temp_r,)),
+           TEMP            =SIMP(statut='o',typ=(cham_no_sdaster,)),
          ),
 
          b_acoustique  =BLOC(condition="OPTION in ('PRES_ELNO_DBEL','PRES_ELNO_REEL','PRES_ELNO_IMAG',)",
-           PRES            =SIMP(statut='o',typ=(cham_no_pres_c,)),
+           PRES            =SIMP(statut='o',typ=(cham_no_sdaster,)),
          ),
 
 
@@ -78,7 +58,7 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
                COEF_MULT       =SIMP(statut='f',typ='R'), ),
 
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0),
-         ACCE            =SIMP(statut='f',typ=cham_no_depl_r),
+         ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
          NUME_COUCHE     =SIMP(statut='f',typ='I',defaut= 1),
          NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY") ),
          MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0 ),

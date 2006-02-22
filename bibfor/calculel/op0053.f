@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -152,6 +152,7 @@ C=======================================================================
       CALL GETVID(' ','DEPL',0,1,1,DEPLA,NDEP)
 
       IF(NDEP.NE.0) THEN
+        CALL CHPVER('F',DEPLA(1:19),'NOEU','DEPL_R',IER)
         CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
         CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
         IF (N1.EQ.0 ) THEN
@@ -190,7 +191,9 @@ C
       CHACCE = ' '
       CALL GETVID(' ','VITE',0,1,1,CHVITE,NVITES)
       IF(NVITES.NE.0) THEN
+        CALL CHPVER('F',CHVITE(1:19),'NOEU','DEPL_R',IER)
         CALL GETVID(' ','ACCE',0,1,1,CHACCE,NACCE)
+        CALL CHPVER('F',CHACCE(1:19),'NOEU','DEPL_R',IER)
       ENDIF
 
       CALL GETVID (' ','RESULTAT',0,1,1,RESUCO,NRES)
@@ -281,7 +284,7 @@ C=======================================================================
 C 2.6. ==> THETA, SYMETRIE DU CHARGEMENT, FOND DE FISSURE
 C=======================================================================
 
-      CALL GETVID ( ' ', 'THETA'    , 0,1,1, SDTHET,IBID)
+      CALL GETVID ( ' ', 'THETA'    , 0,1,1, SDTHET,IRET)
       CALL GETVTX ( ' ', 'SYME_CHAR', 0,1,1, SYMECH,IBID)
       CALL GETVID ( ' ', 'FOND_FISS', 0,1,1, FOND,  IFOND)
       IF ( (OPTION .EQ. 'CALC_K_G') .AND. (IFOND.EQ.0) ) THEN

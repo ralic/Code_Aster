@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,6 +150,7 @@ C     2. -- CAS METHODE: 'NUAGE_DEG_0/1' :
 C     ---------------------------------
       ELSE
          CALL GETVID(' ','CHAM_NO'     ,1,1,1, CHAM1, N1 )
+         CALL CHPVER('F',CHAM1,'NOEU','*',IE)
          CALL DISMOI('F', 'NOM_MAILLA', CHAM1, 'CHAMP', IBID, NOMA1, IE)
 
 C        C'EST LE MAILLAGE MAILLA1 QUI IMPOSE LA DIMENSION D'ESPACE DES
@@ -159,6 +160,7 @@ C        DEUX NUAGES :
          IF (K8.EQ.'OUI') NX=2
 
          CALL GETVID(' ','CHAM_NO_REFE',1,1,1, CHAM2, N2 )
+         CALL CHPVER('F',CHAM2,'NOEU','*',IE)
          CALL DISMOI('F', 'NOM_MAILLA', CHAM2, 'CHAMP', IBID, NOMA2, IE)
 C
 C

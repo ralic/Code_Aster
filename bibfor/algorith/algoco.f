@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCO(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,
      &                  DEPTOT,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -673,6 +673,16 @@ C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
 C ======================================================================
       ITEX = ITER+1
       CALL CFITER(RESOCO,'E','ITER',ITEX,R8BID)
+
+C
+C      do 1 II=1,nbliai
+C        write(6,*) ZR(JMU-1+II)
+C 1    continue
+C
+C      do 2 II=1,neq
+C        write(6,*) ZR(Jresu-1+II)
+C 2    continue
+C
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES
 C ======================================================================

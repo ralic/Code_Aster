@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -224,8 +224,8 @@ C ======================================================================
         WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
-        CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
-     >              TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
+        CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, 
+     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME,RETCOM)
@@ -235,8 +235,8 @@ C ======================================================================
         WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
-        CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
-     >              TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
+        CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, 
+     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME,RETCOM)

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C     --- RECUPERATION DES NOMS DE LA MATRICE ET DU SECOND MEMBRE ---
 C     --- ET EVANTUELLEMENT D'UN CHAM_CINE                        ---
       CALL GETVID('  ','MATR_FACT',0,1,1,MATFAC,NB)
       CALL GETVID('  ','CHAM_NO',0,1,1,SECMBR,NB)
-
+      CALL CHPVER('F',SECMBR,'NOEU','*',IER)
 
 C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
 C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
@@ -89,6 +89,7 @@ C     -----------------------------------------------
 
       CALL GETVID('  ','CHAM_CINE',0,1,1,VCINE,NBCINE)
       IF (NBCINE.NE.0) THEN
+        CALL CHPVER('F',VCINE,'NOEU','*',IER)
         VCIN19 = VCINE
       ELSE
         VCIN19 = ' '

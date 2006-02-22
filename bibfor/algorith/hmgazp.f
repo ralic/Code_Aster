@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,6 +53,9 @@ C ======================================================================
       REAL*8       EPSVM,PHIM,RHO11M,UMPRHS
       REAL*8       YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CP12,SAT,N,MAMOLG
       REAL*8       R,RHO0,C0EPS,CSIGM,VARIA,ALP11,VARBIO,VARLQ,VARVP,EM
+      REAL*8       EPS
+      PARAMETER  ( EPS = 1.D-21 ) 
+      LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
@@ -75,6 +78,7 @@ C --- VARIABLES. EN REVANCHE POUR UNE MEILLEURE COMPREHENSION PAR -----
 C --- RAPPORT A LA DOC R7.01.11 ON NOTE LES INDICES 21 POUR LES -------
 C --- VARIABLES DE CALCUL ---------------------------------------------
 C =====================================================================
+      EMMAG = .FALSE.
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID6,
      +             RBID44,
@@ -114,6 +118,10 @@ C =====================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
+      IF(EM.GT.EPS)THEN 
+        EMMAG = .TRUE.
+      ENDIF
+        
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                       EPSV,DEPSV,EPSVM,MECA)
 
@@ -125,7 +133,7 @@ C *********************************************************************
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF (YAMEC.EQ.1) THEN
+         IF ((YAMEC.EQ.1).OR.EMMAG )THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
          ENDIF

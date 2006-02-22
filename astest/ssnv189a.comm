@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ chmat=AFFE_MATERIAU(MAILLAGE=maillage,
 
 encastr=AFFE_CHAR_MECA(MODELE=modmeca,
                        DDL_IMPO=(_F(GROUP_MA='S4',
-                                    DX=50,
+                                    DX=49.4142,
                                     DY=0,
                                     DZ=0,),
                                  _F(GROUP_MA='S6',
@@ -103,26 +103,36 @@ TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
 
 IMPR_TABLE(TABLE=TAB_FORC)
 
-TEST_TABLE( TABLE = TAB_FORC,
-            FILTRE=_F(NOM_PARA='INST',
-                       VALE=1.00000E+00,
-                     ),
-            NOM_PARA  = 'DX',
-            VALE      = 1.20596E+03 ,
-            REFERENCE = 'NON_REGRESSION',
-            VERSION   = '8.2.7',
-            PRECISION = 1E-5,      
-)                       
+FXA=RECU_FONCTION(TABLE=TAB_FORC,
+                  PARA_X='INST',
+                  PARA_Y='DX',);
 
-TEST_TABLE( TABLE = TAB_FORC,
-            FILTRE=_F(NOM_PARA='INST',
-                       VALE=2.00000E+00,
-                     ),
-            NOM_PARA  = 'DX',
-            VALE      = 7.84796E-11,
-            REFERENCE = 'NON_REGRESSION',
-            VERSION   = '8.2.7',
-            PRECISION = 1E-5,      
-) 
+DXA=RECU_FONCTION(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD= 'N2',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              COURBE=_F(FONC_X=DXA,
+                        FONC_Y=FXA,),);
+                        
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=FXA,
+   REFERENCE='SOURCE_EXTERNE',
+   VALE_PARA = 1.0,
+   VALE_REFE=1180.67,
+   PRECISION=0.005,
+   CRITERE='RELATIF',),
+            ),)         
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION  = FXA,
+   REFERENCE = 'NON_REGRESSION',
+   VERSION   = '8.2.9',
+   VALE_PARA = 1.0,
+   VALE_REFE = 1186.2614145140,
+   PRECISION = 1E-10,
+   CRITERE   = 'RELATIF',),
+            ),) 
 
 FIN();

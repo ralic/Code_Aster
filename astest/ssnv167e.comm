@@ -1,0 +1,212 @@
+# MODIF  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+
+# TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNV167E',NIV_PUB_WEB='INTERNET'))
+#
+
+PRE_GMSH();
+
+MA=LIRE_MAILLAGE();
+#
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=(
+                             _F(NOM='PetitCube',
+                                GROUP_MA='GM1',),
+                             _F(NOM='Esclave',
+                                GROUP_MA='GM2',),
+                                      _F(NOM='Deplacement',
+                                GROUP_MA='GM3',),
+                             _F(NOM='GrosCube',
+                                GROUP_MA='GM4',),
+                             _F(NOM='Maitre',
+                                GROUP_MA='GM5',),
+                             _F(NOM='Blocage',
+                                GROUP_MA='GM6',),
+                                                                 ),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA=('PetitCube','Esclave','Deplacement','GrosCube','Maitre','Blocage'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),),);
+#
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D=_F(GROUP_MA=('Esclave')),
+                 MODELE=MO,);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=100000.0,
+                          NU=0.3,),);
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+#
+
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_MA='Blocage',
+                                                  DX=0.,
+                                                  DY=0.,
+                                                  DZ=0.,),
+                                       _F(GROUP_MA='Deplacement',
+                                                  DX=0.,
+                                                  DY=0.,
+                                                  DZ=-0.5,),),);
+#
+
+CHA2=AFFE_CHAR_MECA(MODELE=MO,
+                    CONTACT=_F(METHODE='GCP',
+                               RESI_ABSO=1.E-8,
+                               GROUP_MA_MAIT='Maitre',
+                               GROUP_MA_ESCL='Esclave',
+                               ),
+                    INFO=2,);
+
+
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=10,),);
+#
+F=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,  0.0,
+                      1.0,  1.0),
+                      );
+
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHA1,
+                             FONC_MULT=F,
+                                   ),
+                          _F(CHARGE=CHA2,),
+                                   ),
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                ),
+                    CONVERGENCE=_F(ARRET='OUI',
+                                   ITER_GLOB_ELAS=25,
+                                   ITER_GLOB_MAXI=20,
+                                   RESI_GLOB_MAXI=1E-6,
+                                   ),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+
+                   INFO=1,);
+
+
+MATABLE=POST_RELEVE_T(ACTION=_F(INTITULE='INFOS CONTACT',
+                            NOEUD=('N1','N2','N3','N4',
+ 'N203','N204','N208','N212',
+),
+                            RESULTAT=RESU,
+                            TOUT_CMP='OUI',
+                            NOM_CHAM='DEPL',
+                            OPERATION='EXTRACTION',),);
+
+
+IMPR_TABLE(TABLE=MATABLE);
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',
+                   VALE=-2.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),
+_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N2',
+                   VALE=-2.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),
+_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N3',
+                   VALE=-2.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),
+_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   VALE=-2.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),   
+                 _F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N203',
+                   VALE=-1.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),
+_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N204',
+                   VALE=-1.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),
+_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N208',
+                   VALE=-1.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),
+_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N212',
+                   VALE=-1.33333E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.14',
+                   PRECISION = 1.0E-5,
+                   ),                                                         
+                   ),);
+FIN();

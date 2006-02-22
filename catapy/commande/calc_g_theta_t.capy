@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,10 +26,10 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=table_sdaster,
                  EXCLUS('COMP_ELAS','COMP_INCR'),),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
-         THETA           =SIMP(statut='o',typ=(theta_geom,cham_no_depl_r),),
-         DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
-         VITE            =SIMP(statut='f',typ=cham_no_depl_r),
-         ACCE            =SIMP(statut='f',typ=cham_no_depl_r),
+         THETA           =SIMP(statut='o',typ=(theta_geom,cham_no_sdaster),),
+         DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
+         VITE            =SIMP(statut='f',typ=cham_no_sdaster),
+         ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
 
          b_extrac        =BLOC(condition="RESULTAT != None",fr="extraction d un champ",
@@ -83,8 +83,8 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=table_sdaster,
                MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
          ),
          ETAT_INIT       =FACT(statut='f',
-           SIGM            =SIMP(statut='f',typ=cham_elem_sief_r),
-           DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
+           SIGM            =SIMP(statut='f',typ=cham_elem_sdaster),
+           DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
          ),
          OPTION          =SIMP(statut='f',typ='TXM',defaut="CALC_G",
                                into=("CALC_G","CALC_G_LAGR","CALC_K_G","G_BILINEAIRE","CALC_G_MAX","K_G_MODA") ),

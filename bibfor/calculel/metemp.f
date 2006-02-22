@@ -1,6 +1,6 @@
       SUBROUTINE METEMP(MAILLA,TEMPE,EXITIM,TIME,CHTREF,THVRAI,CHTEMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/12/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,18 +129,12 @@ C              ------------------------------------------------
      +                     ' NE CONTIENT AUCUN CHAMP DE TEMPERATURE.')
             END IF
 
-         ELSE IF ((TYSD(1:14).EQ.'CHAM_NO_TEMP_R') .OR.
-     +            (TYSD(1:12).EQ.'CARTE_TEMP_R') .OR.
-     +            (TYSD(1:16).EQ.'CHAM_ELEM_TEMP_R')) THEN
+         ELSE IF ((TYSD(1:8).EQ.'CHAM_NO_') .OR.
+     +            (TYSD(1:6).EQ.'CARTE_') .OR.
+     +            (TYSD(1:10).EQ.'CHAM_ELEM_')) THEN
 C           ----------------------------------------------
             CALL UTMESS('I','METEMP','LE CHAMP DE TEMPERATURE UTILISE'//
      +                  ' EST INDEPENDANT DU TEMPS.')
-            CH19 = TEMPE(1:8)
-            CALL COPISD('CHAMP_GD','V',CH19,CHTEMP(1:19))
-            CALL JEDETR(CHTEMP(1:19)//'.TITR')
-
-         ELSE IF (TYSD(1:12).EQ.'CARTE_TEMP_F') THEN
-C           ----------------------------------------------
             CH19 = TEMPE(1:8)
             CALL COPISD('CHAMP_GD','V',CH19,CHTEMP(1:19))
             CALL JEDETR(CHTEMP(1:19)//'.TITR')

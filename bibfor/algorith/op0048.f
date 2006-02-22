@@ -3,7 +3,7 @@
       INTEGER IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,6 +162,7 @@ C
                INDIC = INDIC + 1
                GOTO 12 
             ENDIF
+            CALL CHPVER('F',CHANNO,'NOEU','DEPL_R',IERR)
             CALL JEVEUO(CHANNO//'.VALE','L',ZI(IAADVE+IVEC-1))
             CALL GETVID('EXCIT','FONC_MULT',INDIC,1,1
      &                  ,ZK24(IALIFO+IVEC-1),L)

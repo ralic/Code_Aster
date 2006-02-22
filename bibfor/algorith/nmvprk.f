@@ -1,11 +1,11 @@
-         SUBROUTINE NMVPRK ( NDIM,  TYPMOD, IMAT,  COMP,  CRIT,
+         SUBROUTINE NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                       TIMED, TIMEF, TEMPD, TEMPF, TREF,
      2                       EPSDT, DEPST, SIGD,  VIND,  OPT,
      3                       ANGMAS, SIGF,  VINF,  DSDE)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,9 @@ C     ---------------------------ATTENTION----------------------------
 C
 C       ARGUMENTS
 C
-C       IN      NDIM   DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
+C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C               KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+C               NDIM   DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD TYPE DE MODELISATION
 C               IMAT   ADRESSE DU MATERIAU CODE
 C               COMP   COMPORTEMENT DE L ELEMENT
@@ -103,7 +105,8 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT,   NDIM,   NDT, NDI, NR, NVI
+C TOLE CRP_21
+        INTEGER         IMAT,   NDIM,   NDT, NDI, NR, NVI, KPG, KSP
 C
         INTEGER         I, NCHAI, ICP, NBPHAS
 C
@@ -116,6 +119,7 @@ C
         REAL*8          DEPS(6),     EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
         LOGICAL         BZ
+        CHARACTER*(*)   FAMI
 C
         REAL*8            ENDOC, MAXDOM
 C
@@ -192,9 +196,9 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-      CALL LCMATE ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF, HYDRD, HYDRF,
-     1                SECHD, SECHF, TYPMA, BZ, MATERD,MATERF,MATCST, 
-     2                NBCOMM,CPMONO,ANGMAS,PGL,NDT,NDI,NR,NVI,VIND)
+      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,HYDRD,
+     1             HYDRF,SECHD, SECHF, TYPMA, BZ, MATERD,MATERF,MATCST, 
+     2             NBCOMM,CPMONO,ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND)
 C        
       IF (OPT.EQ.'RIGI_MECA_TANG') THEN
           CALL LCINMA(0.D0,DSDE)

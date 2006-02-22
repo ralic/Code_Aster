@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +53,9 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
              ),
            ),
-           DEPL_INIT       =SIMP(statut='f',typ=(cham_no_depl_r) ),
-           VITE_INIT       =SIMP(statut='f',typ=(cham_no_depl_r) ),
-           ACCE_INIT       =SIMP(statut='f',typ=(cham_no_depl_r) ),
+           DEPL_INIT       =SIMP(statut='f',typ=cham_no_sdaster),
+           VITE_INIT       =SIMP(statut='f',typ=cham_no_sdaster),
+           ACCE_INIT       =SIMP(statut='f',typ=cham_no_sdaster),
          ),
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('CHARGE','VECT_ASSE'),
@@ -66,7 +66,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                    PRESENT_PRESENT('ACCE','VITE','DEPL'),
                    # PRESENT_ABSENT('MULT_APPUI','FONC_MULT'),
                    ),
-           VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
+           VECT_ASSE       =SIMP(statut='f',typ=cham_no_sdaster),
            CHARGE          =SIMP(statut='f',typ=char_meca ),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),

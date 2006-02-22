@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -188,7 +188,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=33,sd_prod=char_ther,
          ),
 
          CONVECTION      =FACT(statut='f',max='**',
-           VITESSE         =SIMP(statut='o',typ=(cham_no_depl_r) ),
+           VITESSE         =SIMP(statut='o',typ=cham_no_sdaster ),
          ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

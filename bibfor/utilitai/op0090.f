@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,10 @@ C     ------------------------------------------------------------------
       INTEGER NREG,NRB,NCH,NOBS,NG,IER
       INTEGER NGN,IBID,NTA,NRES,NRGEN,NC
       CHARACTER*8 K8B
-      CHARACTER*19 NOMFON,CHAM19,RESU,TABRES
+      CHARACTER*19 NOMFON,CHAM19,RESU,TABRES,TABTYP(8)
+      DATA TABTYP/'NOEU#DEPL_R','NOEU#TEMP_R','NOEU#PRES_R',
+     &            'ELXX#SIEF_R','ELXX#VARI_R','ELXX#EPSI_R',
+     &            'ELXX#FLUX_R','ELXX#PRES_R'/
 C     ------------------------------------------------------------------
 C
 C     -----------------------------------------------------------------
@@ -33,6 +36,7 @@ C                      --- CAS D'UN CHAM_GD ---
 C     -----------------------------------------------------------------
       CALL GETVID(' ','CHAM_GD',0,1,1,CHAM19,NCH)
       IF (NCH.NE.0) THEN
+        CALL CHPVE2('F',CHAM19,8,TABTYP,IER)
         CALL RFRCHA(IER)
         GO TO 10
       END IF

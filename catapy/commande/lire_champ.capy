@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,13 +21,8 @@ def lire_champ_prod(TYPE_CHAM=None,**args):
 #            homologue dans macr_adap_mail
   import string
 #  
-  if TYPE_CHAM[0:5] == "NOEU_" : return eval("cham_no_"+string.lower(TYPE_CHAM[5:]))
-  if TYPE_CHAM == "ELEM_G_DEPL_R" : return cham_elem_g_depl
-  if TYPE_CHAM[0:5] == "ELEM_" : return eval("cham_elem_"+string.lower(TYPE_CHAM[5:]))
-  if TYPE_CHAM == "ELNO_G_DEPL_R" : return cham_elem_g_depl
-  if TYPE_CHAM[0:5] == "ELNO_" : return eval("cham_elem_"+string.lower(TYPE_CHAM[5:]))
-  if TYPE_CHAM == "ELGA_G_DEPL_R" : return cham_elem_g_depl
-  if TYPE_CHAM[0:5] == "ELGA_" : return eval("cham_elem_"+string.lower(TYPE_CHAM[5:]))
+  if TYPE_CHAM[0:5] == "NOEU_" : return cham_no_sdaster
+  if TYPE_CHAM[0:2] == "EL"    : return cham_elem_sdaster
   raise AsException("type de concept resultat non prevu")
 
 LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 def calc_fatigue_prod(TYPE_CALCUL,OPTION,**args):
-  if TYPE_CALCUL == "CUMUL_DOMMAGE" : return cham_elem_dommag
-  if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_ELGA": return cham_elem_facy_r
-  if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_NOEUD": return cham_no_facy_r
+  if TYPE_CALCUL == "CUMUL_DOMMAGE" : return cham_elem_sdaster
+  if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_ELGA": return cham_elem_sdaster
+  if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_NOEUD": return cham_no_sdaster
   raise AsException("type de calcul non prevu")
 
 CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',

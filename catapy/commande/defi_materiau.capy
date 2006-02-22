@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -684,6 +684,18 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              A               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              S               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
+           ),
+          IRRAD3M=FACT(statut='f',
+                     R02      =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                     EPSILON_U=SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                     RM       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                     AI0      =SIMP(statut='o',typ='R',val_min=0.),
+                     ETAI_S   =SIMP(statut='o',typ='R',val_min=0.),
+                     R        =SIMP(statut='o',typ='R',val_min=0.),
+                     ALPHA    =SIMP(statut='o',typ='R',val_min=0.),
+                     PHI0     =SIMP(statut='o',typ='R',val_min=0.),
+                     KAPPA    =SIMP(statut='f',typ='R',val_min=0.,defaut=0.8),
+             VERI_P           =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP","IRRA") ),
            ),
            ZIRC_EPRI       =FACT(statut='f',
              FLUX_PHI        =SIMP(statut='o',typ='R'),

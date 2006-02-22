@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +90,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            SOUR            =SIMP(statut='f',typ='R'),
-           SOUR_CALCULEE   =SIMP(statut='f',typ=(cham_elem_sour_r) ),
+           SOUR_CALCULEE   =SIMP(statut='f',typ=(cham_elem_sdaster) ),
          ),
 
          GRAD_TEMP_INIT  =FACT(statut='f',max='**',
@@ -196,7 +196,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
          ),
 
          CONVECTION      =FACT(statut='f',max='**',
-           VITESSE         =SIMP(statut='o',typ=(cham_no_depl_r) ),
+           VITESSE         =SIMP(statut='o',typ=(cham_no_sdaster) ),
          ),
 
 

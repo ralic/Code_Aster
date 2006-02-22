@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,19 +16,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-def reso_grad_prod(MATR_ASSE,**args ):
-  if AsType(MATR_ASSE) == matr_asse_depl_r : return cham_no_depl_r
-  if AsType(MATR_ASSE) == matr_asse_temp_r : return cham_no_temp_r
-  if AsType(MATR_ASSE) == matr_asse_pres_r : return cham_no_pres_r
-  raise AsException("type de concept resultat non prevu")
 
-RESO_GRAD=OPER(nom="RESO_GRAD",op=  84,sd_prod=reso_grad_prod,
+RESO_GRAD=OPER(nom="RESO_GRAD",op=  84,sd_prod=cham_no_sdaster,
                fr="Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné",
                reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
-         CHAM_NO         =SIMP(statut='o',typ=(cham_no_depl_r,cham_no_temp_r,cham_no_pres_r ) ),
-         CHAM_CINE       =SIMP(statut='f',typ=(cham_no_temp_r,cham_no_depl_r,cham_no_pres_r ) ),
+         CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
+         CHAM_CINE       =SIMP(statut='f',typ=cham_no_sdaster),
          MATR_FACT       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
          NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),  
          REPRISE         =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),

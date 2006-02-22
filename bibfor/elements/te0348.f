@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C     --- LE MATERIAU ---
       ELSE
          NBPAR     = 1
          NOMPAR(1) = 'TEMP'
-         VALPAR(1) = ZR(ITEMPE)
+         VALPAR(1) = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
       ENDIF
 C
 C     ------------------------------------------------------------------
@@ -182,7 +182,7 @@ C
 C        --- TEMPERATURE EFFECTIVE ---
          CALL JEVECH('PTEMPER','L',LTEMP)
 C
-         TEMP = ZR(LTEMP) - ZR(LTREF)
+         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
 C
          F = ALPHA * TEMP
          DE(1) = -F * XL

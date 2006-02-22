@@ -2,7 +2,7 @@
      &                   INDQUA)   
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/09/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE MABBAS M.ABBAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,6 +89,8 @@ C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES
            INDQUA = 1
          ELSE IF (TYPF(1:8).EQ.'CONTINUE') THEN
            INDQUA = 1
+         ELSE IF (TYPF(1:3).EQ.'GCP') THEN
+           INDQUA = 0
          ELSE
           CALL UTMESS('F','QUADCO',
      &                'METHODE DE CONTACT INCONNUE (DVLP)') 

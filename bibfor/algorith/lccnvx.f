@@ -1,9 +1,10 @@
-        SUBROUTINE LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &               COMP, NBCOMM, CPMONO, PGL,NR,NVI,VP,VECP,SEUIL)
+        SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
+     &                TEMPF, SIGF, VIND,COMP, NBCOMM, CPMONO, PGL,NR,
+     &                NVI,VP,VECP,SEUIL)
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +24,10 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C --- BUT : CONVEXE ELASTO PLASTIQUE A T+DT POUR (SIGF , VIND) DONNES --
 C ----------------------------------------------------------------------
-C IN  : LOI    :  NOM DU MODELE DE COMPORTEMENT ------------------------
+C IN  : FAMI   :  FAMILLE DES POINTS DE GAUSS  -------------------------
+C --- : KPG    :  NUMERO DU POINT DE GAUSS  ----------------------------
+C --- : KSP    :  NUMERO DU SOUS POINT DE GAUSS ------------------------
+C --- : LOI    :  NOM DU MODELE DE COMPORTEMENT ------------------------
 C --- : SIGF   :  CONTRAINTE A T+DT ------------------------------------
 C --- : VIND   :  VARIABLES INTERNES A T -------------------------------
 C --- : IMAT   :  ADRESSE DU MATERIAU CODE -----------------------------
@@ -35,7 +39,8 @@ C OUT : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
 C OUT : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
 C ----------------------------------------------------------------------
 C ======================================================================
-        INTEGER         NMAT , IMAT, NR, NVI
+        INTEGER         NMAT , IMAT, NR, NVI, KPG, KSP
+        CHARACTER*(*)   FAMI
         REAL*8          MATERF(NMAT,2), TEMPF , SEUIL
         REAL*8          SIGF(6) , VIND(*)
         CHARACTER*16    LOI
@@ -74,6 +79,9 @@ C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
          CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, TEMPF,
      &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
+C ======================================================================
+      ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M') THEN
+         CALL IRRCVX ( FAMI, KPG, KSP, NMAT, MATERF, SIGF, VIND, SEUIL)
 C ======================================================================
       ENDIF
 C ======================================================================

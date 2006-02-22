@@ -8,7 +8,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
 C               --- IMPRESSION D'UN "VECT_ASSE_GENE" ---
 C
 C=======================================================================
-      IF ( TYPCON .EQ. 'VECT_ASSE_GENE_R' ) THEN
+      IF ( TYPCON .EQ. 'VECT_ASSE_GENE' ) THEN
 C
          CALL IRVGEN ( RESU, IFI, NBCMPG,CMPG, LHIST )
 C

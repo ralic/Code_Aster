@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C
 C     --- CHAM NO ---
 C
       CALL GETVID (' ', 'CHAM_NO', 0,1,1, CHAMNO, N1 )
+      CALL CHPVER('F',CHAMNO,'NOEU','*',IER)
       CALL JELIRA ( CHAMNO//'.VALE', 'TYPE', IBID, TYPRES )
       IF ( TYPMAT .NE. TYPRES ) THEN
          CALL UTDEBM('F','OP0156','PAS DE PRODUIT CAR LES VALEURS ')

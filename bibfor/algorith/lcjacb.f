@@ -1,11 +1,11 @@
-        SUBROUTINE LCJACB ( LOI,  MOD,  IMAT, NMAT,MATERF,TEMPF,
-     1                      TIMED,TIMEF,   YF,    DEPS,
+        SUBROUTINE LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,
+     1                      MATERF,TEMPF,TIMED,TIMEF,YF,DEPS,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      2                      EPSD,  DY,  DRDY )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
 C       CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY(DY)
-C       IN  LOI    :  MODELE DE COMPORTEMENT
+C       IN  FAMI   :  FAMILLE DES POINTS DE GAUSS
+C           KPG    :  NUMERO DU POINT DE GAUSS
+C           KSP    :  NUMERO DU SOUS POINT DE GAUSS
+C           LOI    :  MODELE DE COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
@@ -35,17 +38,19 @@ C           DEPS   :  INCREMENT DE DEFORMATION
 C           EPSD   :  DEFORMATION A T
 C           YF     :  VARIABLES A T + DT =    ( SIGF  VINF  (EPS3F)  )
 C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
-C           NR   :  DIMENSION DECLAREE DRDY
+C           NR     :  DIMENSION DECLAREE DRDY
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       ----------------------------------------------------------------
+C TOLE CRP_21
 C
-        INTEGER         IMAT, NR ,    NMAT,NVI
+        INTEGER         IMAT, NR ,    NMAT,NVI,KPG,KSP
         REAL*8          DEPS(6) , EPSD(6)
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR)
 C
         REAL*8          MATERF(NMAT,2),TEMPF
         REAL*8          TIMED, TIMEF
 C
+        CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         
@@ -79,6 +84,9 @@ C
          CALL LCMMJA ( MOD, NMAT, MATERF, TIMED, TIMEF,TEMPF,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      1                  YF,  DY,   DRDY )
+      ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
+         CALL IRRJAC ( FAMI,KPG,KSP,MOD, NMAT, MATERF,
+     1                  YF,  DY,   NR,  DRDY )
       ENDIF
 C
       END

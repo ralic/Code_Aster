@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/01/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,32 +18,22 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 def crea_champ_prod(TYPE_CHAM,**args):
-  import string
-  grandeur=string.lower(TYPE_CHAM[5:])
-
   if TYPE_CHAM[0:5] == "CART_" :
-     uu="carte_"+grandeur
+     return carte_sdaster
   elif TYPE_CHAM[0:5] == "NOEU_" :
-     uu="cham_no_"+grandeur
+     return cham_no_sdaster
   elif TYPE_CHAM[0:2] == "EL"    :
-     uu="cham_elem_"+grandeur
+     return cham_elem_sdaster
   else :
      raise AsException("type de concept resultat_sdaster non prevu")
 
-  try :
-     vv=eval(uu)
-  except :
-     raise AsException("type de concept champ non prevu : %s" % uu)
-  return vv
-
 
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
-                fr="Création d'un champ de type CHAM_NO, CARTE ou CHAM_ELEM",reentrant='n',
+                fr="Création d'un champ ",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
       # TYPE_CHAM doit etre de la forme : CART_xx, NOEU_xx, ELEM_xx, ELGA_xx ou ELNO_xx
-      # ou xx est le nom d'une grandeur définie dans le catalogue des grandeurs
-
+      # ou xx est le nom d'une grandeur définie dans le catalogue des grandeurs 
 #        SI CREATION D'UN CHAM_NO, POUR IMPOSER LA NUMEROTATION DES DDLS :
 #        ------------------------------------------------------------------
          regles=(EXCLUS('NUME_DDL','CHAM_NO',)),
@@ -92,7 +82,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                 NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                CHAM_GD         =SIMP(statut='o',typ=(cham_gd_sdaster)),
+                CHAM_GD         =SIMP(statut='o',typ=cham_gd_sdaster),
                 NOM_CMP         =SIMP(statut='f',typ='TXM',max='**' ),
                 NOM_CMP_RESU    =SIMP(statut='f',typ='TXM',max='**' ),
                 CUMUL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
@@ -100,13 +90,13 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                                     ),
                              ),
          b_eval          =BLOC(condition = "OPERATION == 'EVAL'",
-             CHAM_F          =SIMP(statut='o',typ=(cham_gd_sdaster)),
-             CHAM_PARA       =SIMP(statut='o',typ=(cham_gd_sdaster),max='**'),
+             CHAM_F          =SIMP(statut='o',typ=cham_gd_sdaster),
+             CHAM_PARA       =SIMP(statut='o',typ=cham_gd_sdaster,max='**'),
                              ),
          b_disc          =BLOC(condition = "OPERATION == 'DISC'",
              MODELE          =SIMP(statut='f',typ=(modele_sdaster) ),
              PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-             CHAM_GD         =SIMP(statut='o',typ=(cham_gd_sdaster)),
+             CHAM_GD         =SIMP(statut='o',typ=cham_gd_sdaster),
                              ),
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
              regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),),

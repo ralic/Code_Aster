@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,10 +16,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=cham_no_depl_r,reentrant='n',
+DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=cham_no_sdaster,reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
                   fr="Calculer le champ de déplacement à l'intérieur d'une sous-structure statique",
-         DEPL_GLOBAL     =SIMP(statut='o',typ=cham_no_depl_r),
+         DEPL_GLOBAL     =SIMP(statut='o',typ=cham_no_sdaster),
          MAILLE          =SIMP(statut='o',typ=ma,),
          NOM_CAS         =SIMP(statut='f',typ='TXM',defaut=" "),
 )  ;

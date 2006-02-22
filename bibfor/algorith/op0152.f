@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -224,6 +224,7 @@ C MAT152
              CALL JEVEUO('&&OP0152.VEC','E',IVALK)
              CALL GETVID(' ','CHAM_NO',0,1,N7,ZK8(IVALK),N6)
              NOCHAM = ZK8(IVALK)
+             CALL CHPVER('F',NOCHAM,'NOEU','DEPL_R',IERD)
             ENDIF
          ENDIF
 C--------------------------------------------------------------

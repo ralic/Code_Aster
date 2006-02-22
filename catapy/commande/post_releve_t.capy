@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,11 +28,8 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='n'
            OPERATION       =SIMP(statut='o',typ='TXM',into=("EXTRACTION","MOYENNE","EXTREMA"),validators=NoRepeat(),max=2),
            INTITULE        =SIMP(statut='o',typ='TXM'),  
 
-           CHAM_GD         =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_temp_r,cham_no_pres_r,cham_no_var2_r,
-                                                 cham_elem_sief_r,cham_elem_epsi_r,cham_elem_flux_r,cham_elem_crit_r,
-                                                 cham_elem_ener_r,cham_elem_dbel_r,cham_elem_pres_r,cham_elem_erreur,
-                                                 cham_elem_vari_r,cham_no_depl_c,cham_no_temp_c,cham_no_pres_c,
-                                                 cham_elem_sief_c,cham_elem_epsi_c,cham_no_facy_r)),
+           CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
+                                                 cham_elem_sdaster,),),
            RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_ther,evol_noli,dyna_trans,
                                                  mode_meca,mode_flamb,mode_acou,base_modale,mode_stat,
                                                  mult_elas,fourier_elas,dyna_harmo,acou_harmo)),

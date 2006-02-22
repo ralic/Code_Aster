@@ -1,4 +1,4 @@
-        SUBROUTINE REDECE ( NDIM, TYPMOD, IMAT, COMP, CRIT,
+        SUBROUTINE REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,ANGMAS,SIGF,VINF,DSDE,
@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,8 @@ C       LCXXXX  ROUTINES UTILITAIRES (VOIR LE DETAIL DANS PLASTI)
 C       ================================================================
 C       ARGUMENTS
 C
+C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
@@ -99,7 +101,7 @@ C       OUT     SIGF    CONTRAINTE A T+DT
 C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM   , NDT   , NDI  , NVI
+        INTEGER         IMAT,NDIM,NDT,NDI,NVI,KPG,KSP
 C
         REAL*8          CRIT(*), ANGMAS(3)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -111,6 +113,7 @@ C
 C
         CHARACTER*16    COMP(*),     OPT
         CHARACTER*8     TYPMOD(*)
+        CHARACTER*(*)   FAMI
 C
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
@@ -138,14 +141,32 @@ C
         INTEGER         RETCOM
         REAL*8          EPS(6),       DEPS(6),   SD(6)
         REAL*8          DSDELO(6,6)
-        REAL*8          TD,           TF,        DELTAT
+        REAL*8          DELTAT,TD,TF
         REAL*8          TEMD,         TEMF,      DETEMP
         REAL*8          HYDD,         HYDF,      DEHYDR
         REAL*8          SECD,         SECF,      DESECH
         CHARACTER*132   RAISON
 C       ----------------------------------------------------------------
+C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
+        INTEGER NFPGMX
+        PARAMETER (NFPGMX=10)
+        INTEGER NFPG,JFPGL,DECALA(NFPGMX),KM,KP,KR,IREDEC
+        COMMON /CAII17/NFPG,JFPGL,DECALA,KM,KP,KR,IREDEC
+        REAL*8 TIMED1,TIMEF1,TD1,TF1
+        COMMON /CARR01/TIMED1,TIMEF1,TD1,TF1
+C       ----------------------------------------------------------------
+C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
+C       ----------------------------------------------------------------
+C       -- POUR LES VARIABLES DE COMMANDE :
+        IREDEC=1
+        TIMED1=TIMED
+        TIMEF1=TIMEF
+        TD1=TIMED
+        TF1=TIMEF
+
+
         IPAL  =  INT(CRIT(5))
         RETCOM=0
         READ (COMP(2),'(I16)') NVI
@@ -177,7 +198,7 @@ C
      3                EPSDT, DEPST, SIGD,  VIND,  OPT, ELGEOM,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ELSE
-        CALL PLASTI ( TYPMOD, IMAT,  COMP,  CRIT,
+        CALL PLASTI ( FAMI,KPG,KSP, TYPMOD, IMAT,  COMP,  CRIT,
      1                TIMED, TIMEF, TEMPD, TEMPF, TREF,
      2                HYDRD, HYDRF, SECHD, SECHF, SREF,
      3                EPSDT, DEPST, SIGD,  VIND,  OPT, ANGMAS,
@@ -201,7 +222,7 @@ C
         IF ( NPAL .EQ. 0 ) THEN
             CALL UTEXCP(23,'REDECE',
      1          'REDECOUPAGE DEMANDE APRES NON CONVERGENCE '
-     2    //'LOCAL : MODIFIER ITER_INTE_PAS DANS L''OPTION CONVERGENCE')
+     2    //'LOCAL : MODIFIER ITER_INTE_PAS DANS L''OPTION COMP_INCR')
         ENDIF
 C
         IF ( ICOMP .GT. 3 ) THEN
@@ -218,8 +239,10 @@ C
 C --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
            IF ( K .EQ. 1 ) THEN
                 TD = TIMED
+                TD1 = TD
                 DELTAT = (TIMEF - TIMED) / NPAL
                 TF = TD + DELTAT
+                TF1=TF
                 TEMD = TEMPD
                 DETEMP = (TEMPF - TEMPD) / NPAL
                 TEMF = TEMD + DETEMP
@@ -240,7 +263,9 @@ C
 C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
             ELSE IF ( K .GT. 1 ) THEN
                 TD = TF
+                TD1=TD
                 TF = TF + DELTAT
+                TF1=TF
                 TEMD = TEMF
                 TEMF = TEMF + DETEMP
                 HYDD = HYDF
@@ -262,12 +287,13 @@ C
      3                    SD,  VIND,   OPT, ELGEOM, SIGF, VINF,
      4                    DSDELO,  ICOMP,   NVI,  IRTET)
             ELSE
-              CALL PLASTI ( TYPMOD,  IMAT,   COMP,   CRIT,  TD,
+              CALL PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TD,
      1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
      2                    SECD, SECF, SREF,  EPS,   DEPS,
      2                SD,    VIND,     OPT, ANGMAS,   SIGF,   VINF,
      3                    DSDELO,  ICOMP,   NVI,  IRTET)
             ENDIF
+
             IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C
             IF ( OPT .EQ. 'RIGI_MECA_TANG'
@@ -284,4 +310,5 @@ C
         GO TO 9999
 C
  9999   CONTINUE
+        IREDEC=0
         END

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +96,10 @@ C
       CALL GETVID(' ','PRES',0,1,1,PRESS,N4)
       CALL GETVR8(' ','INST',0,1,1,TIME,N6)
       CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N7)
-      IF (N3.NE.0) CHTEMP = TEMP
+      IF (N3.NE.0) THEN
+          CHTEMP = TEMP
+          CALL CHPVER('F',CHTEMP,'NOEU','TEMP_R',IERD)
+      ENDIF
       IF (N6.NE.0) EXITIM = .TRUE.
       IF (N7.EQ.0) NH = 0
 
@@ -144,6 +147,7 @@ C        ------------------------
      &         OPTION.EQ.'PRES_ELNO_REEL' .OR.
      &         OPTION.EQ.'PRES_ELNO_IMAG') THEN
 
+        CALL CHPVER('F',PRESS,'NOEU','PRES_C',IERD)
         CALL MECOAC(OPTION,MODELE,LIGREL,MATE,PRESS,CHELEM)
 
 

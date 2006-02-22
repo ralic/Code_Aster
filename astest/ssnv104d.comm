@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,14 +70,13 @@ CHA1=AFFE_CHAR_MECA(
 CHA2=AFFE_CHAR_MECA(
                      MODELE=MO,
                      CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
-                               REAC_GEOM = 'CONTROLE',
-                               NB_REAC_GEOM = 2,
+                               REAC_GEOM = 'AUTOMATIQUE',
+                               
                                RECHERCHE = 'NOEUD_BOUCLE',
                                METHODE = 'LAGRANGIEN',
                                PROJECTION = 'LINEAIRE',
                                GROUP_MA_MAIT = 'CONTBAS',
                                GROUP_MA_ESCL = 'CONTHAUT'),
-                     INFO=2
                            )
 
 #
@@ -86,13 +85,12 @@ CHA3=AFFE_CHAR_MECA(
                      MODELE=MO,
                      CONTACT=_F(  APPARIEMENT = 'NODAL',
                                RECHERCHE = 'NOEUD_BOUCLE',
-                               REAC_GEOM = 'CONTROLE',
-                               NB_REAC_GEOM = 2,
+                               REAC_GEOM = 'AUTOMATIQUE',
+                               
                                METHODE = 'LAGRANGIEN',
                                PROJECTION = 'LINEAIRE',
                                GROUP_MA_MAIT = 'CONTBAS',
                                GROUP_MA_ESCL = 'CONTHAUT'),
-                     INFO=2
                            )
 
 #
@@ -133,7 +131,6 @@ RESU=STAT_NON_LINE(
                 RESI_GLOB_MAXI = 1.E-2),
                            SOLVEUR=_F( 
                 METHODE = 'LDLT'),
-                              INFO=2
               )
 
 RESU=CALC_ELEM( reuse=RESU,
@@ -280,7 +277,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N291',
                        NOM_CMP = 'SIYY',
                        VALE = -4.4245E+03,
-                       PRECISION = 11.E-02,
+                       PRECISION = 15.E-02,
                        CRITERE = 'RELATIF'),
             _F( 
                        CHAM_GD = SIELNO5,
@@ -323,7 +320,6 @@ RESUF=STAT_NON_LINE(
                 RESI_GLOB_MAXI = 1.E-2),
                            SOLVEUR=_F( 
                 METHODE = 'LDLT'),
-                              INFO=2
               )
 
 RESUF=CALC_ELEM( reuse=RESUF,

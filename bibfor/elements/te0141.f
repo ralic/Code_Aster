@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,7 +76,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       ELSE
         NBPAR = 1
         NOMPAR = 'TEMP'
-        VALPAR = ZR(ITEMPE)
+        VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
       END IF
 
       IF (OPTION.EQ.'MASS_FLUI_STRU') THEN

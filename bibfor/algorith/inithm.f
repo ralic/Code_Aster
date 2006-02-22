@@ -5,7 +5,7 @@
       REAL*8        PHI0,EM,ALPHA0,K0,CS,BIOT,EPSVM,EPSV,DEPSV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,6 +33,8 @@ C ======================================================================
       CHARACTER*8  NCRA1(NELAS)
       CHARACTER*2  CODRET(NELAS)
       CHARACTER*16  MECA
+      REAL*8       EPS
+      PARAMETER  ( EPS = 1.D-21 ) 
 C ======================================================================
 C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
 C ======================================================================
@@ -51,15 +53,17 @@ C =====================================================================
           YOUNG  = ELAS(1)
           NU     = ELAS(2)
           ALPHA0 = ELAS(3)
-         K0     = YOUNG / 3.D0 / (1.D0-2.D0*NU)
-         CS     = (1.0D0-BIOT) / K0
+          K0     = YOUNG / 3.D0 / (1.D0-2.D0*NU)
+          CS     = (1.0D0-BIOT) / K0
       ELSE
 C =====================================================================
 C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 OU EM -----------------
 C =====================================================================
          ALPHA0 = 0.0D0
          CS     = EM
-         BIOT   = PHI0
+         IF(EM.LT.EPS)THEN 
+           BIOT   = PHI0
+         ENDIF
          K0     = 0.0D0
       ENDIF
 C =====================================================================

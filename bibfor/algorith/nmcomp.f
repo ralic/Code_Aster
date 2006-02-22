@@ -13,7 +13,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -501,9 +501,10 @@ C
      &            COMPOR(1)(1:4) .EQ. 'OHNO'       .OR.
      &            COMPOR(1)(1:5) .EQ. 'LMARC'      .OR.
      &            COMPOR(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
+     &            COMPOR(1)(1:7 ).EQ. 'IRRAD3M'    .OR.
      &            COMPOR(1)(1:7) .EQ. 'NADAI_B'        ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &           INSTAM, INSTAP, TM,   TP,    TREF,
      &           HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
      &           SIGM, VIM,OPTION, TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
@@ -514,13 +515,13 @@ C
           ENDIF
         ELSE IF ( COMPOR(1)(1:9) .EQ. 'VISCOCHAB'  ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF, EPSM, DEPS,
      &            SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
      &            CODRET)
           ELSE
-            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &          DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
@@ -529,7 +530,7 @@ C
             CALL UTMESS('F','NMCOMP_1','INTEGRATION DU COMPORTEMENT
      &      POLY_CFC UNIQUEMENT EXPLICITE')
           ELSE
-            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
+            CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM,INSTAP, TM,    TP,     TREF,
      &                    EPSM,  DEPS,   SIGM,  VIM,    OPTION,
      &                    ANGMAS, SIGP,  VIP,    DSIDEP)
@@ -537,12 +538,12 @@ C
         ELSE IF ( COMPOR(1)(1:9) .EQ. 'VENDOCHAB'  ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
 C-- INTEGRATION IMPLICITE: METHODE D'EULER
-            CALL NMVEEI (NDIM, TYPMOD, IMATE, COMPOR, CRIT,
+            CALL NMVEEI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM, INSTAP, TM, TP, TREF, EPSM,
      &                  DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
      &                  CODRET)
           ELSE
-            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL NMVPRK (FAMI,KPG,KSP, NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &         DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
@@ -612,7 +613,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL REDECE ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
+            CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE, COMPOR, CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
      &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
      &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP,
@@ -623,7 +624,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL REDECE ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
+            CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
      &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
      &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP,
@@ -688,13 +689,13 @@ C
 CCC    MONOCRISTAL
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'MONOCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
      &           SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
      &           CODRET)
           ELSE
-            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
@@ -706,7 +707,7 @@ CCC    POLYCRISTAL
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION IMPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF

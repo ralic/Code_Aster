@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,24 +17,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-def comb_cham_no_prod(COMB_R,COMB_C,COMB_FOURIER,**args):
-  if COMB_C != None:
-    type_mat = AsType(COMB_C[0]['CHAM_NO'])
-    if type_mat in  (cham_no_depl_c,cham_no_depl_r) : return cham_no_depl_c
-    if type_mat in  (cham_no_temp_c,cham_no_temp_r) : return cham_no_temp_c
-    if type_mat in  (cham_no_pres_c,cham_no_pres_r) : return cham_no_pres_c
-  elif COMB_R != None:
+def comb_cham_no_prod(COMB_R,**args):
+  typ=cham_no_sdaster
+  if COMB_R != None:
     type_mat = AsType(COMB_R[0]['CHAM_NO'])
-    if type_mat in  (cham_no_depl_c,cham_no_depl_r) : return cham_no_depl_r
-    if type_mat in  (cham_no_temp_c,cham_no_temp_r) : return cham_no_temp_r
-    if type_mat in  (cham_no_pres_c,cham_no_pres_r) : return cham_no_pres_r
-    if type_mat ==  matr_asse_gene_r : return matr_asse_gene_r
-  elif COMB_FOURIER != None:
-    type_mat = AsType(COMB_FOURIER[0]['CHAM_NO'])
-    if type_mat == cham_no_temp_r : return cham_no_temp_r
-    if type_mat == cham_no_depl_r : return cham_no_depl_r
-  raise AsException("type de concept resultat non prevu")
-
+    if type_mat ==  matr_asse_gene_r : typ= matr_asse_gene_r
+  return typ
 
 COMB_CHAM_NO=OPER(nom="COMB_CHAM_NO",op=  30,sd_prod=comb_cham_no_prod
                     ,fr="Effectuer la combinaison linéaire de champs aux noeuds",
@@ -43,19 +31,17 @@ COMB_CHAM_NO=OPER(nom="COMB_CHAM_NO",op=  30,sd_prod=comb_cham_no_prod
          regles=(UN_PARMI('COMB_R','COMB_C','COMB_FOURIER'),),
          COMB_R          =FACT(statut='f',max='**',
            PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG",) ),
-           CHAM_NO         =SIMP(statut='o',typ=(cham_no_temp_r,cham_no_temp_c,cham_no_depl_r,cham_no_depl_c
-                                                ,cham_no_pres_r,cham_no_pres_c ) ),
+           CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
            COEF_R          =SIMP(statut='o',typ='R' ),
          ),
          COMB_C          =FACT(statut='f',max='**',
            regles=(UN_PARMI('COEF_R','COEF_C' ),),
-           CHAM_NO         =SIMP(statut='o',typ=(cham_no_temp_r,cham_no_depl_r,cham_no_pres_r,cham_no_temp_c
-                                                ,cham_no_depl_c,cham_no_pres_c ) ),
+           CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
            COEF_R          =SIMP(statut='f',typ='R' ),
            COEF_C          =SIMP(statut='f',typ='C' ),
          ),
          COMB_FOURIER    =FACT(statut='f',max='**',
-           CHAM_NO         =SIMP(statut='o',typ=(cham_no_temp_r,cham_no_depl_r) ),
+           CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
            COEF_R          =SIMP(statut='f',typ='R',defaut= 1. ),
            NUME_MODE       =SIMP(statut='o',typ='I' ),
            TYPE_MODE       =SIMP(statut='o',typ='TXM',into=("SYME","ANTI") ),

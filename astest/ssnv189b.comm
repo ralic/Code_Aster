@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,27 +99,35 @@ TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
 
 IMPR_TABLE(TABLE=TAB_FORC)
 
-TEST_TABLE( TABLE = TAB_FORC,
-            FILTRE=_F(NOM_PARA='INST',
-                       VALE=1.00000E+00,
-                     ),
-            NOM_PARA  = 'DY',
-            VALE      = 2.28716E+02 ,
-            REFERENCE = 'NON_REGRESSION',
-            VERSION   = '8.2.7',
-            PRECISION = 1E-5,      
-)                       
+FYA=RECU_FONCTION(TABLE=TAB_FORC,
+                  PARA_X='INST',
+                  PARA_Y='DY',);
 
-TEST_TABLE( TABLE = TAB_FORC,
-            FILTRE=_F(NOM_PARA='INST',
-                       VALE=5.00000E-01,
-                     ),
-            NOM_PARA  = 'DY',
-            VALE      = 1.22622E+02,
-            REFERENCE = 'NON_REGRESSION',
-            VERSION   = '8.2.7',
-            PRECISION = 1E-5,      
-) 
+DYA=RECU_FONCTION(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  NOEUD='N1',);
 
+IMPR_FONCTION(FORMAT='XMGRACE',
+              COURBE=_F(FONC_X=DYA,
+                        FONC_Y=FYA,),);
+                        
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=FYA,
+   REFERENCE='SOURCE_EXTERNE',
+   VALE_PARA = 1.0,
+   VALE_REFE=229.336,
+   PRECISION=0.003,
+   CRITERE='RELATIF',),
+            ),)         
 
+TEST_FONCTION(VALEUR=(
+_F(FONCTION  = FYA,
+   REFERENCE = 'NON_REGRESSION',
+   VERSION   = '8.2.9',
+   VALE_PARA = 1.0,
+   VALE_REFE = 228.71607944155,
+   PRECISION = 1E-10,
+   CRITERE   = 'RELATIF',),
+            ),) 
 FIN();

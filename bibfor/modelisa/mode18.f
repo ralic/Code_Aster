@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -118,23 +118,14 @@ C
       ELSEIF ( TYPELE(1:3).EQ.'HM_' ) THEN
          CALL HM0018 ( TYPELE, TYPEMO )
 
-      ELSEIF ( TYPELE(1:9).EQ.'THH2_AXIS' ) THEN
-         TYPEMO = 'AXIS_THH2D'
+      ELSEIF ( TYPELE(1:5).EQ.'THH2_' ) THEN
+         CALL THH218 ( TYPELE, TYPEMO )
 
-      ELSEIF ( TYPELE(1:10).EQ.'THH2M_AXIS' ) THEN
-         TYPEMO = 'AXIS_THH2MD'
+      ELSEIF ( TYPELE(1:6).EQ.'THH2M_' ) THEN
+         CALL THH2M8 ( TYPELE, TYPEMO )
 
-      ELSEIF ( TYPELE(1:6).EQ.'THH2_D' ) THEN
-         TYPEMO = 'D_PLAN_THH2D'
-
-      ELSEIF ( TYPELE(1:7).EQ.'THH2M_D' ) THEN
-         TYPEMO = 'D_PLAN_THH2MD'
-
-      ELSEIF ( TYPELE(1:9).EQ.'HH2M_AXIS' ) THEN
-         TYPEMO = 'AXIS_HH2MD'
-
-      ELSEIF ( TYPELE(1:6).EQ.'HH2M_D' ) THEN
-         TYPEMO = 'D_PLAN_HH2MD'
+      ELSEIF ( TYPELE(1:5).EQ.'HH2M_' ) THEN
+         CALL HH2M18 ( TYPELE, TYPEMO )
 
       ELSEIF ( TYPELE(1:5).EQ.'THV_D' ) THEN
          TYPEMO = 'D_PLAN_THVD'

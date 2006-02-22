@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-ASSE_VECT_GENE=OPER(nom="ASSE_VECT_GENE",op= 140,sd_prod=vect_asse_gene_r,
+ASSE_VECT_GENE=OPER(nom="ASSE_VECT_GENE",op= 140,sd_prod=vect_asse_gene,
                     fr="Projection des chargements sur la base modale d'une sous structure",
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
@@ -25,7 +25,7 @@ ASSE_VECT_GENE=OPER(nom="ASSE_VECT_GENE",op= 140,sd_prod=vect_asse_gene_r,
          b_nume     =BLOC(condition = "METHODE == 'CLASSIQUE'",
              CHAR_SOUS_STRUC =FACT(statut='o',max='**',
              SOUS_STRUC      =SIMP(statut='o',typ='TXM' ),
-             VECT_ASSE       =SIMP(statut='o',typ=cham_no_depl_r ),
+             VECT_ASSE       =SIMP(statut='o',typ=cham_no_sdaster ),
            ),
          ),
 )  ;

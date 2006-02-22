@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2005   AUTEUR BOYERE E.BOYERE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def macro_proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,**args ):
       self.type_sdprod(m['MATRICE'],matr_asse_gene_r)
   if VECT_ASSE_GENE != None:
     for v in VECT_ASSE_GENE:
-      self.type_sdprod(v['VECTEUR'],vect_asse_gene_r)
+      self.type_sdprod(v['VECTEUR'],vect_asse_gene)
   return None
 
 MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,
@@ -46,8 +46,8 @@ MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,
            VECTEUR         =SIMP(statut='o',typ=CO,),
            regles=(UN_PARMI('VECT_ASSE','VECT_ASSE_GENE',),),
            TYPE_VECT       =SIMP(statut='f',typ='TXM',defaut="FORC"),
-           VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r),
-           VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene_r),
+           VECT_ASSE       =SIMP(statut='f',typ=cham_no_sdaster),
+           VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

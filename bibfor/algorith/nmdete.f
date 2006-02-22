@@ -3,7 +3,7 @@
      &                    TEMMOZ, EXITMP )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,10 +190,9 @@ C
 C
 C 2.3.2. ==> C'EST UNE CARTE, UN CHAM_NO OU UN CHAM_ELEM
 C
-        ELSE IF ((TYSD(1:14).EQ.'CHAM_NO_TEMP_R' ) .OR.
-     &           (TYSD(1:12).EQ.'CARTE_TEMP_R'  ) .OR.
-     &           (TYSD(1:12).EQ.'CARTE_TEMP_F'  ) .OR.
-     &           (TYSD(1:16).EQ.'CHAM_ELEM_TEMP_R')) THEN
+         ELSE IF ((TYSD(1:8).EQ.'CHAM_NO_') .OR.
+     +            (TYSD(1:6).EQ.'CARTE_') .OR.
+     +            (TYSD(1:10).EQ.'CHAM_ELEM_')) THEN
 C
 CCC        CALL UTMESS('I', NOMPRO,'ON PASSE PAR 2.3.2 ')
           CH19 = TEMPE

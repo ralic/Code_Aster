@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ IMPR_GENE=PROC(nom="IMPR_GENE",op= 157,
                    EXCLUS('TOUT_CHAM','NOM_CHAM'),
                    EXCLUS('TOUT_PARA','NOM_PARA'),),
 #  faut-il faire des blocs selon le type de RESU_GENE                   
-           RESU_GENE       =SIMP(statut='o',typ=(vect_asse_gene_r, tran_gene, mode_gene, harm_gene)),
+           RESU_GENE       =SIMP(statut='o',typ=(vect_asse_gene, tran_gene, mode_gene, harm_gene)),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster ),

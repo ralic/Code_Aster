@@ -1,9 +1,9 @@
-      SUBROUTINE NMVEEI (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+      SUBROUTINE NMVEEI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,12 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
+C TOLE CRP_21
       IMPLICIT NONE
-      INTEGER            NDIM,IMATE,IRET
+      INTEGER            NDIM,IMATE,IRET,KPG,KSP
       CHARACTER*16       COMPOR(*),OPTION
       CHARACTER*8        TYPMOD(*)
+      CHARACTER*(*)      FAMI
       REAL*8             CRIT(*),INSTAM,INSTAP,TM,TP,TREF
       REAL*8             EPSM(6),DEPS(6)
       REAL*8             SIGM(6),VIM(9),SIGP(6),VIP(9),DSIDEP(6,6)
@@ -38,6 +40,8 @@ C ----------------------------------------------------------------------
 C-- ARGUMENTS
 C------------
 C
+C IN  FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C IN  KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  IMATE   : ADRESSE DU MATERIAU CODE
@@ -164,10 +168,10 @@ C
 C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
-      CALL LCMATE (COMPOR,MOD, IMATE, NMAT, TM, TP, HYDRD, HYDRF, SECHD,
-     1              SECHF, TYPMA,  BZ, MATM, MATE,MATCST,
-     3               NBCOMM, CPMONO,  ANGMAS, PGL,
-     2               NDT, NDI, NRV, NVI, VIND )
+      CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,
+     1               HYDRD, HYDRF, SECHD,SECHF, TYPMA,  BZ, MATM,
+     3               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
+     2               TOLER, NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
 C-- 1.3. OPERATEUR DE HOOK

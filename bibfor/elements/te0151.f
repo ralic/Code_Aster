@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -80,7 +80,7 @@ C
       ELSE
          NBPAR  = 1
          NOMPAR = 'TEMP'
-         VALPAR = ZR(ITEMPE)
+         VALPAR = 0.5D0*(ZR(ITEMPE)+ZR(ITEMPE+1))
       ENDIF
 C
       BL2 = '  '

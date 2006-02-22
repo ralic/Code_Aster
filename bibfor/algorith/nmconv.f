@@ -8,7 +8,7 @@
      &                   FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,6 +155,7 @@ C
       CHARACTER*8  K8BID
       CHARACTER*16 GEONOE
       REAL*8       GEOVAL
+      LOGICAL      GEOERR
       CHARACTER*16 K16BID
       CHARACTER*24 IMPCNT,IMPCNL,IMPCNV,IMPCNA
       INTEGER      JIMPCT,JIMPCL,JIMPCV,JIMPCA
@@ -497,7 +498,7 @@ C
          
            CALL CFCONV(MAILLA,NEQ,DEPDEL,AUTOC1,AUTOC2,
      &                 VECONT,CTCGEO,CTCFIX,
-     &                 GEONOE,GEOVAL)
+     &                 GEONOE,GEOVAL,GEOERR)
 
            IF (CTCGEO) THEN
 C
@@ -525,16 +526,31 @@ C
                CTCCVG = .TRUE.
                IF (ITERAT.EQ.0) THEN
                  CALL IMPSDR(IMPRCO(1:14),
-     &                   'CTCD_INFO',' INIT_GEOM/ALGO  ',R8BID,IBID)  
+     &                       'CTCD_INFO',' INIT_GEOM/ALGO  ',R8BID,IBID)
                ELSE
                  CALL IMPSDR(IMPRCO(1:14),
-     &               'CTCD_INFO',' ALGO.          ',R8BID,IBID)
+     &                       'CTCD_INFO',' ALGO.          ',R8BID,IBID)
                ENDIF
+      
+                       
              ENDIF
-             CALL IMPSDR(IMPRCO(1:14),
-     &                   'CTCD_NOEU','                ',R8BID,IBID)
-             CALL IMPSDR(IMPRCO(1:14),
-     &                   'CTCD_GEOM',' ',R8VIDE(),IBID)
+             IF (GEOERR) THEN
+               CALL UTMESS('A',
+     &                'NMCONV',
+     &                'REAC. GEOM. DU CONTACT SUPERIEURE A 5%')     
+               
+               CALL IMPSDR(IMPRCO(1:14),
+     &                     'CTCD_NOEU',GEONOE,R8BID,IBID)
+               CALL IMPSDR(IMPRCO(1:14),
+     &                     'CTCD_GEOM',' ',GEOVAL,IBID)  
+               CALL IMPSDR(IMPRCO(1:14),
+     &                     'CTCD_INFO',' ALGO/ALARM_GEOM',R8BID,IBID)
+             ELSE
+               CALL IMPSDR(IMPRCO(1:14),
+     &                     'CTCD_NOEU','                ',R8BID,IBID)
+               CALL IMPSDR(IMPRCO(1:14),
+     &                     'CTCD_GEOM',' ',R8VIDE(),IBID)
+             ENDIF
            ENDIF
          ELSE
            CTCCVG = .FALSE.

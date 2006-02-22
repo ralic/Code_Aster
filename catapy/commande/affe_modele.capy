@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,6 +177,13 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "3D_THVS",
                                                                       "3D_THHMS",
                                                                       "3D_THMS",
+                                                                      "3D_THH2MD",
+                                                                      "3D_THH2MS",
+                                                                      "3D_HH2MD",
+                                                                      "3D_HH2MS",
+                                                                      "3D_THH2S",
+                                                                      "3D_THH2D",
+                                                                      
                                                                      )  )  ),
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -443,7 +443,7 @@ C
 C        TEMPERATURE EFFETIVE
          CALL JEVECH('PTEMPER','L',LTEMP)
 C
-         TEMP = ZR(LTEMP) - ZR(LTREF)
+         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
 C
 C        TERME DE LA MATRICE ELEMENTAIRE
          XRIG = E * A / XL

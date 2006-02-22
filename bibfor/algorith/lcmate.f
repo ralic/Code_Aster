@@ -1,12 +1,12 @@
-        SUBROUTINE LCMATE ( COMP,   MOD,   IMAT,   NMAT, TEMPD, TEMPF,
+        SUBROUTINE LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
      1                      HYDRD, HYDRF, SECHD,  SECHF,
      2                      TYPMA, BZ,    MATERD, MATERF, MATCST, 
-     3                      NBCOMM, CPMONO, ANGMAS, PGL,
+     3                      NBCOMM, CPMONO, ANGMAS, PGL, ITMAX, TOLER,
      4                      NDT, NDI,   NR,    NVI,    VIND)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,9 @@ C ======================================================================
 C TOLE CRP_21
 C       ----------------------------------------------------------------
 C       RECUPERATION DU MATERIAU A TEMPF ET TEMPD
-C       IN  COMP   :  COMPORTEMENT
+C       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C           KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
+C           COMP   :  COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION 1 DE MATER
@@ -55,14 +57,15 @@ C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I
-        INTEGER         NBCOMM(NMAT,3)
+        INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I, ITMAX
+        INTEGER         NBCOMM(NMAT,3),KPG,KSP
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF
+        REAL*8          HYDRD , HYDRF , SECHD , SECHF, TOLER
         CHARACTER*16    LOI, COMP(*), CPMONO(5*NMAT+1)
         CHARACTER*8     MOD,    TYPMA
         CHARACTER*3     MATCST
+        CHARACTER*(*)   FAMI
         LOGICAL         BZ
 C       ----------------------------------------------------------------
 C
@@ -136,6 +139,10 @@ C
          CALL LCMMAP ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,ANGMAS,PGL,
      1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
          TYPMA='COHERENT'
+      ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
+         CALL IRRMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,ITMAX,TOLER,VIND,
+     &              TEMPD,TEMPF,MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
+
       ENDIF
 C
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2005   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,7 @@
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
 
+
 from Macro.macr_adap_mail_ops import macr_adap_mail_ops
 
 def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
@@ -27,14 +28,10 @@ def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
 # Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
   for ch in MAJ_CHAM:
     t=ch['TYPE_CHAM']
-    if t[0:5] == "NOEU_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_no_"+string.lower(t[5:])))
-    if t == "ELEM_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
-    if t[0:5] == "ELEM_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_elem_"+string.lower(t[5:])))
-    if t == "ELNO_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
-    if t[0:5] == "ELNO_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_elem_"+string.lower(t[5:])))
-    if t == "ELGA_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
-    if t[0:5] == "ELGA_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_elem_"+string.lower(t[5:])))
+    if t[0:5] == "NOEU_":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sdaster)
+    if t[0:2] == "EL":   self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sdaster)
   return None
+
 
 MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_adap_mail_prod,
                      fr="Adapter un maillage avec le logiciel HOMARD.",

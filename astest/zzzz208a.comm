@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,8 +146,8 @@ FDIAGC=PROJ_VECT_BASE(BASE=MODES,
 KPYD=KDIAG.EXTR_MATR_GENE()                  
 KPYDC=KDIAGC.EXTR_MATR_GENE()                  
 MPYD=MDIAG.EXTR_MATR_GENE()                  
-FPYD=FDIAG.EXTR_VECT_GENE()                  
-FPYDC=FDIAGC.EXTR_VECT_GENE()                  
+FPYD=FDIAG.EXTR_VECT_GENE_R()                  
+FPYDC=FDIAGC.EXTR_VECT_GENE_C()                  
 
 # MODIFICATION DES MATRICES & VECTEURS GENERALISES DANS PYTHON
 #-------------------------------------------------------------
@@ -160,7 +160,7 @@ FPYDC2=FPYDC*0.5
 # On ecrase donc les anciennes valeurs !!
 KDIAG.RECU_MATR_GENE(KPYD2)
 KDIAGC.RECU_MATR_GENE(KPYDC2)
-FDIAGC.RECU_VECT_GENE(FPYDC2)
+FDIAGC.RECU_VECT_GENE_C(FPYDC2)
 
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 #-----------------------------------------------------------
@@ -284,8 +284,8 @@ DYNPLEIN=DYNA_LINE_HARM(MATR_MASS=MPLEIN,
 KPYP=KPLEIN.EXTR_MATR_GENE()                  
 KPYPC=KPLEINC.EXTR_MATR_GENE()                  
 MPYP=MPLEIN.EXTR_MATR_GENE()                  
-FPYP=FPLEIN.EXTR_VECT_GENE()                  
-FPYPC=FPLEINC.EXTR_VECT_GENE()                  
+FPYP=FPLEIN.EXTR_VECT_GENE_R()                  
+FPYPC=FPLEINC.EXTR_VECT_GENE_C()                  
 
 # MODIFICATION DES MATRICES & VECTEURS GENERALISES DANS PYTHON
 #-------------------------------------------------------------
@@ -298,7 +298,7 @@ FPYPC2=FPYPC*0.5
 # On ecrase donc les anciennes valeurs !!
 KPLEIN.RECU_MATR_GENE(KPYP2)
 KPLEINC.RECU_MATR_GENE(KPYPC2)
-FPLEINC.RECU_VECT_GENE(FPYPC2)
+FPLEINC.RECU_VECT_GENE_C(FPYPC2)
 
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 #-----------------------------------------------------------

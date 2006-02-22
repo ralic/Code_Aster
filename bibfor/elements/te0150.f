@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C
       ELSE
          NBPAR  = 1
          NOMPAR = 'TEMP'
-         VALPAR = ZR(ITEMPE)
+         VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
       ENDIF
 C
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,NBRES,
@@ -238,12 +238,12 @@ C
 C        TEMPERATURE EFFECTIVE
          CALL JEVECH('PTEMPER','L',LTEMP)
 C
-         TEMP = ZR(LTEMP) - ZR(LTREF)
+         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
 C
          F = ALPHA * TEMP
          IF ( ITYPE .NE. 10 ) THEN
             DE(1) = -F * XL
-            DE(7) = -DE(1)
+             DE(7) = -DE(1)
          ELSE
             ALONG  = 2.D0 * RAD * F * SIN(ANGS2)
             DE(1) = -ALONG * COS(ANGS2)

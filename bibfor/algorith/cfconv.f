@@ -1,9 +1,9 @@
       SUBROUTINE CFCONV(MAILLA,NEQ,DEPDEL,AUTOC1,AUTOC2,
      &                  VECONT,CTCGEO,CTCFIX,
-     &                  GEONOE,GEOVAL)
+     &                  GEONOE,GEOVAL,GEOERR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,6 +33,7 @@ C
       LOGICAL      CTCFIX
       CHARACTER*16 GEONOE
       REAL*8       GEOVAL
+      LOGICAL      GEOERR      
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : NMCONV
@@ -60,6 +61,8 @@ C OUT CTCGEO : VAUT .TRUE. SI REAC GEOM A FAIRE
 C OUT CTCFIX : VAUT .TRUE. SI ATTENTE POINT FIXE
 C OUT GEONOE : NOM DU NOEU SUR LEQUEL LE DEPLACEMENT EST MAX (REAC_GEOM)
 C OUT GEOVAL : VALEUR DE DEPLACEMENT MAX (REAC_GEOM)
+C OUT GEOERR : VAUT .TRUE. SI ON DETECTE UNE ERREUR (PLUS DE 5% SUR LA
+C              REAC. AUTO.
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C
@@ -85,7 +88,8 @@ C
       INTEGER      GEOITE
       REAL*8       AUTONO,TEMP1,TEMP2,R8PREM,GEOTOL,RMIN
       CHARACTER*8  MAXDEP,NOMNO
-      INTEGER      IFM,NIV     
+      INTEGER      IFM,NIV  
+      LOGICAL      PREMIE,ALARME   
 C
 C ----------------------------------------------------------------------
 C
@@ -98,6 +102,7 @@ C --- NOMBRE MAXI D'ITERATIONS DE REACTUALISATION GEOMETRIQUE EN AUTO
 C
       GEOTOL   = 5.0D-2
       GEOITE   = 99
+      GEOERR   = .FALSE.       
       MAXDEP   = '&&CVGCNT'
       CTCGEO   = .FALSE.
       GEONOE   = ' '
@@ -134,7 +139,9 @@ C
         CALL CNOMAX(AUTOC1,TEMP1,NUMNO1)
         CALL CNOMAX(AUTOC2,TEMP2,NUMNO2)
         CALL JEEXIN(MAXDEP,IRET)
+C       
 C ---  STOCKAGE DU MAX DE LA NORME DU DEPL
+C
         IF (IRET.EQ.0) THEN
            CALL WKVECT(MAXDEP,'V V R',1,JMAXDE)
            ZR(JMAXDE-1+1) = TEMP2
@@ -145,9 +152,12 @@ C ---  STOCKAGE DU MAX DE LA NORME DU DEPL
            RMIN           = 1.D-6*ZR(JMAXDE-1+1)
         ENDIF
 
+        PREMIE = .FALSE.
+        ALARME = .FALSE.
         IF (TEMP2.LE.RMIN) THEN
           IF (TEMP2.EQ.0.D0) THEN
             AUTONO = 10.0D0*GEOTOL
+            PREMIE = .TRUE.
           ELSE
             AUTONO = 1.D-1*GEOTOL
           ENDIF
@@ -179,9 +189,7 @@ C --- CORRESPOND A REAC_GEOM = SANS
 C     
         ELSE IF (VECONT(1).EQ.0) THEN
           IF (AUTONO.GE.GEOTOL) THEN
-            CALL UTMESS('A',
-     &                  'CFCONV',
-     &                  'REAC. GEOM. DU CONTACT SUPERIEURE A 5%')
+            ALARME = .TRUE.
           ENDIF
           CTCGEO   = .FALSE.
         ELSE
@@ -191,14 +199,23 @@ C
           IF (VECONT(2).EQ.VECONT(1)) THEN
             CTCGEO   = .FALSE.
             IF (AUTONO.GE.GEOTOL) THEN
-              CALL UTMESS('A',
-     &                    'CFCONV',
-     &                    'REAC. GEOM. DU CONTACT SUPERIEURE A 5%')
+              ALARME = .TRUE.       
+
             ENDIF
           ELSE
             CTCGEO   = .TRUE.
           END IF
         END IF
+C
+C --- SI ON DEPASSE LA TOLERANCE DE 5% DE REAC_GEOM ET SI ON N'EST
+C --- PAS AU PREMIER PAS DE TEMPS OU QU'ON N'A PAS DE CORPS RIGIDE
+C
+        IF (ALARME.AND..NOT.PREMIE) THEN
+          GEOERR = .TRUE.
+        ELSE
+          GEOERR = .FALSE.  
+        ENDIF   
+        
       END IF
 
       CALL JEDEMA()

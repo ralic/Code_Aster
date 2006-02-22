@@ -1,6 +1,6 @@
       SUBROUTINE DISMCH(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,14 +116,9 @@ C
             IF (TYPECO.EQ.'EVOL_THER') THEN
                REPK = 'EVOL'
                GO TO 9999
-            ELSE IF (TYPECO.EQ.'CHAM_NO_TEMP_R') THEN
-               REPK = 'CHGD'
-               GO TO 9999
-            ELSE IF (TYPECO.EQ.'CARTE_TEMP_R') THEN
-               REPK = 'CHGD'
-               GO TO 9999
             ELSE
-               CALL UTMESS('F','DISMCH','TYPE INCONNU: '//TYPECO)
+               REPK = 'CHGD'
+               GO TO 9999
             END IF
          ELSE
             CALL UTMESS('F','DISMCH','SUFFIXE INCONU: '//SUF)
@@ -146,14 +141,9 @@ C
             IF (TYPECO.EQ.'EVOL_THER') THEN
                REPK = 'EVOL'
                GO TO 9999
-            ELSE IF (TYPECO.EQ.'CHAM_NO_TEMP_R') THEN
+            ELSE 
                REPK = 'CHGD'
                GO TO 9999
-            ELSE IF (TYPECO.EQ.'CARTE_TEMP_R') THEN
-               REPK = 'CHGD'
-               GO TO 9999
-            ELSE
-               CALL UTMESS('F','DISMCH','TYPE INCONNU: '//TYPECO)
             END IF
          ELSE
             CALL UTMESS('F','DISMCH','SUFFIXE INCONU: '//SUF)
@@ -176,14 +166,9 @@ C
             IF (TYPECO.EQ.'EVOL_THER') THEN
                REPK = 'EVOL'
                GO TO 9999
-            ELSE IF (TYPECO.EQ.'CHAM_NO_TEMP_R') THEN
+            ELSE 
                REPK = 'CHGD'
                GO TO 9999
-            ELSE IF (TYPECO.EQ.'CARTE_TEMP_R') THEN
-               REPK = 'CHGD'
-               GO TO 9999
-            ELSE
-               CALL UTMESS('F','DISMCH','TYPE INCONNU: '//TYPECO)
             END IF
          ELSE
             CALL UTMESS('F','DISMCH','SUFFIXE INCONU: '//SUF)

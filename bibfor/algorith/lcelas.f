@@ -5,7 +5,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
      1      LOI(1:7)  .EQ. 'NADAI_B'     .OR.
      1      LOI(1:10) .EQ. 'HOEK_BROWN'  .OR.
      1      LOI(1:14) .EQ. 'HOEK_BROWN_EFF'  .OR.
+     1      LOI(1:7) .EQ. 'IRRAD3M'      .OR.
      1      LOI(1:6)  .EQ. 'LAIGLE'          ) THEN
           CALL LCELIN ( MOD, NMAT, MATERD, MATERF,
      1                  NVI, DEPS, SIGD, VIND, SIGF, VINF )

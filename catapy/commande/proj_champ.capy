@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,17 +22,11 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(RESULTAT)     == evol_elas      : return evol_elas
     if AsType(RESULTAT)     == evol_noli      : return evol_noli
     if AsType(RESULTAT)     == evol_char      : return evol_char
-    if AsType(RESULTAT)     == dyna_trans      : return dyna_trans
+    if AsType(RESULTAT)     == dyna_trans     : return dyna_trans
     if AsType(RESULTAT)     == mode_meca      : return mode_meca
     if AsType(RESULTAT)     == mode_stat_depl : return mode_stat_depl
     if AsType(RESULTAT)     == base_modale    : return base_modale
-    if AsType(CHAM_NO_REFE) == cham_no_depl_r : return cham_no_depl_r
-    if AsType(CHAM_NO_REFE) == cham_no_depl_c : return cham_no_depl_c
-    if AsType(CHAM_NO_REFE) == cham_no_pres_c : return cham_no_pres_c
-    if AsType(CHAM_NO_REFE) == cham_no_temp_r : return cham_no_temp_r
-    if AsType(CHAM_NO_REFE) == cham_no_epsi_r : return cham_no_epsi_r
-    if AsType(CHAM_NO_REFE) == cham_no_sief_r : return cham_no_sief_r
-    if AsType(CHAM_NO_REFE) == cham_no_flux_r : return cham_no_flux_r
+    if CHAM_NO_REFE         != None           : return cham_no_sdaster
     raise AsException("type de concept resultat non prevu")
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
@@ -43,10 +37,8 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                                into=("NUAGE_DEG_0","NUAGE_DEG_1","ELEM",) ),
          b_nuage         =BLOC(condition="(METHODE=='NUAGE_DEG_1') or (METHODE=='NUAGE_DEG_0')",
                                fr="Lissage d'un nuage de points",
-           CHAM_NO         =SIMP(statut='o',typ=(cham_no_depl_r,cham_no_depl_c,cham_no_pres_c,cham_no_temp_r,
-                                                 cham_no_epsi_r,cham_no_sief_r,cham_no_flux_r)),
-           CHAM_NO_REFE    =SIMP(statut='o',typ=(cham_no_depl_r,cham_no_depl_c,cham_no_pres_c,cham_no_temp_r,
-                                                 cham_no_epsi_r,cham_no_sief_r,cham_no_flux_r)),
+           CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
+           CHAM_NO_REFE    =SIMP(statut='o',typ=cham_no_sdaster),
          ),
          b_elem          =BLOC(condition="METHODE=='ELEM'",
                               fr="Utilisation des fonctions de forme du maillage initial",

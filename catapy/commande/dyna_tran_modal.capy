@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,8 +42,8 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            ),
-           DEPL_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene_r ),
-           VITE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene_r ),
+           DEPL_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene ),
+           VITE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene ),
          ),
          INCREMENT       =FACT(statut='o',max='**',
            INST_INIT       =SIMP(statut='f',typ='R' ),
@@ -75,7 +75,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                    EXCLUS('MULT_APPUI','CORR_STAT'),
                    PRESENT_ABSENT('MULT_APPUI','COEF_MULT'),
                    PRESENT_ABSENT('MULT_APPUI','FONC_MULT'),),
-           VECT_GENE       =SIMP(statut='f',typ=vect_asse_gene_r ),
+           VECT_GENE       =SIMP(statut='f',typ=vect_asse_gene ),
            NUME_MODE       =SIMP(statut='f',typ='I' ),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),

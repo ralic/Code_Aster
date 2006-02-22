@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,16 +106,7 @@ C --- CHAM_NO
       CALL GETVID(' ','CHAM_NO',0,1,1,NOCHNO,NBV)
       IF (NBV.GT.0) THEN
         ICHNO = 1
-        CALL GETTCO(NOCHNO,TYPCO)
-        IF (TYPCO(9:16).NE.GRAN) THEN
-          CALL UTDEBM('F',OPER,'LE CHAM_NO EN ENTREE NE S''APPUIE'//
-     &              ' PAS SUR LA MEME GRANDEUR QUE CELLE DE LA COMMANDE'
-     &                )
-          CALL UTIMPK('L','GRANDEUR ASSOCIEE AU CHAM_NO',1,TYPCO(9:16))
-          CALL UTIMPK('L','GRANDEUR DE LA COMMANDE : ',1,GRAN)
-          CALL UTFINM
-        END IF
-      END IF
+      ENDIF
 
 C --- AFFE
 

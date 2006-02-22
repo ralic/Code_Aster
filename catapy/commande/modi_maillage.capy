@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
 
          DEFORME         =FACT(statut='f',
            OPTION          =SIMP(statut='o',typ='TXM',into=("TRAN","TRAN_APPUI") ),
-           DEPL            =SIMP(statut='o',typ=cham_no_depl_r ),
+           DEPL            =SIMP(statut='o',typ=cham_no_sdaster ),
         b_deform        =BLOC(condition = "OPTION=='TRAN_APPUI'", 
            GROUP_NO_APPUI = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**' ),
            GROUP_NO_STRU  = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**' ),),

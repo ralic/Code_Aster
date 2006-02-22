@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,9 +28,9 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=table_sdaster,
                  PRESENT_PRESENT('R_INF','R_SUP'),
                  PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),
          FOND_FISS       =SIMP(statut='f',typ=fond_fiss),               
-         DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
-         VITE            =SIMP(statut='f',typ=cham_no_depl_r),
-         ACCE            =SIMP(statut='f',typ=cham_no_depl_r),
+         DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
+         VITE            =SIMP(statut='f',typ=cham_no_sdaster),
+         ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
     b_extrac        =BLOC(condition="RESULTAT != None",fr="extraction d un champ",
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',
@@ -85,8 +85,8 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=table_sdaster,
          ),
          
          ETAT_INIT       =FACT(statut='f',
-           SIGM            =SIMP(statut='f',typ=cham_elem_sief_r),
-           DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
+           SIGM            =SIMP(statut='f',typ=cham_elem_sdaster),
+           DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
          ),
 
          OPTION          =SIMP(statut='f',typ='TXM',defaut="CALC_G",
@@ -98,7 +98,7 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=table_sdaster,
          b_g_lglo        =BLOC(condition="OPTION=='CALC_G_LGLO'",
            PROPAGATION     =SIMP(statut='o',typ='R'),
            THETA           =SIMP(statut='o',typ=theta_geom),
-           DIRE_THETA      =SIMP(statut='f',typ=cham_no_depl_r),
+           DIRE_THETA      =SIMP(statut='f',typ=cham_no_sdaster),
            LISSAGE_THETA   =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE") ),
            LISSAGE_G       =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO",) ),
          ), 

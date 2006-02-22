@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -205,23 +205,6 @@ C ----------------------------------------------
 C 6.  AJOUT DU TITRE :
 C -----------------------------------------------------
       CALL TITRE()
-
-
-C 7.  VERIFICATIONS FINALES :
-C -----------------------------------------------------
-      CALL DISMOI('F','NOM_GD',CHOU,'CHAMP',IB,NOMGD2,IB)
-      IF (TYPCO(1:8).EQ.'CHAM_NO_') THEN
-        NOMGD = TYPCO(9:16)
-      ELSE IF (TYPCO(1:6).EQ.'CARTE_') THEN
-        NOMGD = TYPCO(7:16)
-      ELSE IF (TYPCO(1:10).EQ.'CHAM_ELEM_') THEN
-        NOMGD = TYPCO(11:16)
-      ELSE
-        CALL UTMESS('F','OP0195','STOP1')
-      END IF
-      IF (NOMGD.NE.NOMGD2) CALL UTMESS('F','OP0195',
-     &                          'GRANDEURS INCOHERENTES:'//NOMGD//
-     &                          ' ET '//NOMGD2)
 
 C
       CALL JEDEMA()

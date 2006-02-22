@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_
   self.type_sdprod(MATR_RIGI_AJOU,matr_asse_gene_r)
   if FORC_AJOU != None:
     for m in FORC_AJOU:
-      self.type_sdprod(m['VECTEUR'],vect_asse_gene_r)
+      self.type_sdprod(m['VECTEUR'],vect_asse_gene)
 
   return None
 
@@ -64,7 +64,7 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=macro_matr_ajou_ops,sd_prod=macro
            POTENTIEL       =SIMP(statut='f',typ=evol_ther),
          ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca),
-         DEPL_IMPO       =SIMP(statut='f',typ=cham_no_depl_r),
+         DEPL_IMPO       =SIMP(statut='f',typ=cham_no_sdaster),
          MODELE_GENE     =SIMP(statut='f',typ=modele_gene),
          NUME_DDL_GENE   =SIMP(statut='f',typ=nume_ddl_gene),
          DIST_REFE       =SIMP(statut='f',typ='R',defaut= 1.0E-2),

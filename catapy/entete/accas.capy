@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 31/01/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -288,35 +288,6 @@ class cham_gd_sdaster(ASSD):pass
 # cham_gd_sdaster/carte_sdaster :
 #--------------------------------
 class carte_sdaster  (cham_gd_sdaster):pass
-class carte_dbel_r   (carte_sdaster):pass
-class carte_depl_c   (carte_sdaster):pass
-class carte_depl_f   (carte_sdaster):pass
-class carte_depl_r   (carte_sdaster):pass
-class carte_durt_r   (carte_sdaster):pass
-class carte_ener_r   (carte_sdaster):pass
-class carte_epsi_c   (carte_sdaster):pass
-class carte_epsi_r   (carte_sdaster):pass
-class carte_erreur   (carte_sdaster):pass
-class carte_flux_r   (carte_sdaster):pass
-class carte_g_depl_r (carte_sdaster):pass
-class carte_geom_r   (carte_sdaster):pass
-class carte_hydr_r   (carte_sdaster):pass
-class carte_inst_r   (carte_sdaster):pass
-class carte_inte_r   (carte_sdaster):pass
-class carte_irra_r   (carte_sdaster):pass
-class carte_neut_f   (carte_sdaster):pass
-class carte_neut_r   (carte_sdaster):pass
-class carte_pres_f   (carte_sdaster):pass
-class carte_pres_r   (carte_sdaster):pass
-class carte_sief_c   (carte_sdaster):pass
-class carte_sief_r   (carte_sdaster):pass
-class carte_sour_r   (carte_sdaster):pass
-class carte_temp_f   (carte_sdaster):pass
-class carte_temp_r   (carte_sdaster):pass
-class carte_var2_r   (carte_sdaster):pass
-class carte_vnor_c   (carte_sdaster):pass
-class carte_corr_r   (carte_sdaster):pass
-
 
 # cham_gd_sdaster/cham_elem_sdaster :
 #--------------------------------
@@ -358,39 +329,6 @@ class cham_elem_sdaster(cham_gd_sdaster):
    
       return post_comp_cham_el(valeurs,maille,point,sous_point)
 
-class cham_elem_crit_r(cham_elem_sdaster):pass
-class cham_elem_dbel_r(cham_elem_sdaster):pass
-class cham_elem_depl_c(cham_elem_sdaster):pass
-class cham_elem_depl_f(cham_elem_sdaster):pass
-class cham_elem_depl_r(cham_elem_sdaster):pass
-class cham_elem_dommag(cham_elem_sdaster):pass
-class cham_elem_durt_r(cham_elem_sdaster):pass
-class cham_elem_ener_r(cham_elem_sdaster):pass
-class cham_elem_epsi_c(cham_elem_sdaster):pass
-class cham_elem_epsi_r(cham_elem_sdaster):pass
-class cham_elem_erreur(cham_elem_sdaster):pass
-class cham_elem_facy_r(cham_elem_sdaster):pass
-class cham_elem_flux_r(cham_elem_sdaster):pass
-class cham_elem_g_depl(cham_elem_sdaster):pass
-class cham_elem_geom_r(cham_elem_sdaster):pass
-class cham_elem_hydr_r(cham_elem_sdaster):pass
-class cham_elem_inst_r(cham_elem_sdaster):pass
-class cham_elem_inte_r(cham_elem_sdaster):pass
-class cham_elem_irra_r(cham_elem_sdaster):pass
-class cham_elem_neut_f(cham_elem_sdaster):pass
-class cham_elem_neut_r(cham_elem_sdaster):pass
-class cham_elem_pres_f(cham_elem_sdaster):pass
-class cham_elem_pres_r(cham_elem_sdaster):pass
-class cham_elem_sief_c(cham_elem_sdaster):pass
-class cham_elem_sief_r(cham_elem_sdaster):pass
-class cham_elem_sour_r(cham_elem_sdaster):pass
-class cham_elem_spma_r(cham_elem_sdaster):pass
-class cham_elem_temp_f(cham_elem_sdaster):pass
-class cham_elem_temp_r(cham_elem_sdaster):pass
-class cham_elem_vari_r(cham_elem_sdaster):pass
-class cham_elem_vnor_c(cham_elem_sdaster):pass
-
-
 # cham_gd/cham_no :
 #--------------------------------
 class cham_no_sdaster(cham_gd_sdaster):
@@ -424,42 +362,6 @@ class cham_no_sdaster(cham_gd_sdaster):
       aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
    
       return post_comp_cham_no(valeurs,noeud)
-
-class cham_no_corr_r   (cham_no_sdaster):pass
-class cham_no_dbel_r   (cham_no_sdaster):pass
-class cham_no_depl_c   (cham_no_sdaster):pass
-class cham_no_depl_f   (cham_no_sdaster):pass
-class cham_no_depl_r   (cham_no_sdaster):pass
-class cham_no_durt_r   (cham_no_sdaster):pass
-class cham_no_ener_r   (cham_no_sdaster):pass
-class cham_no_epsi_c   (cham_no_sdaster):pass
-class cham_no_epsi_r   (cham_no_sdaster):pass
-class cham_no_erreur   (cham_no_sdaster):pass
-class cham_no_facy_r   (cham_no_sdaster):pass
-class cham_no_flux_r   (cham_no_sdaster):pass
-class cham_no_g_depl_r (cham_no_sdaster):pass
-class cham_no_geom_r   (cham_no_sdaster):pass
-class cham_no_hydr_r   (cham_no_sdaster):pass
-class cham_no_inst_r   (cham_no_sdaster):pass
-class cham_no_inte_r   (cham_no_sdaster):pass
-class cham_no_irra_r   (cham_no_sdaster):pass
-class cham_no_neut_f   (cham_no_sdaster):pass
-class cham_no_neut_r   (cham_no_sdaster):pass
-class cham_no_neut_i   (cham_no_sdaster):pass
-class cham_no_pres_c   (cham_no_sdaster):pass
-class cham_no_pres_f   (cham_no_sdaster):pass
-class cham_no_pres_r   (cham_no_sdaster):pass
-class cham_no_sief_c   (cham_no_sdaster):pass
-class cham_no_sief_r   (cham_no_sdaster):pass
-class cham_no_sour_r   (cham_no_sdaster):pass
-class cham_no_spma_r   (cham_no_sdaster):pass
-class cham_no_temp_c   (cham_no_sdaster):pass
-class cham_no_temp_f   (cham_no_sdaster):pass
-class cham_no_temp_r   (cham_no_sdaster):pass
-class cham_no_vanl_r   (cham_no_sdaster):pass
-class cham_no_var2_r   (cham_no_sdaster):pass
-class cham_no_vnor_c   (cham_no_sdaster):pass
-
 
 # resultat_sdaster : (evol_sdaster,mode_stat,mode_meca)
 #--------------------------------------
@@ -1051,9 +953,8 @@ class table_jeveux(table_sdaster):
 # vect_asse :
 #--------------------------------
 class vect_asse(ASSD):pass
-class vect_asse_gene(vect_asse):pass
-class vect_asse_gene_r(vect_asse_gene):
-  def EXTR_VECT_GENE(self) :
+class vect_asse_gene(vect_asse):
+  def EXTR_VECT_GENE_R(self) :
     """ retourne les valeurs du vecteur generalisee
     dans un format Numerical Array
         Attributs retourne
@@ -1067,7 +968,7 @@ class vect_asse_gene_r(vect_asse_gene):
 
     return valeur
 
-  def RECU_VECT_GENE(self,vecteur) :
+  def RECU_VECT_GENE_R(self,vecteur) :
     """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
     reel definie dans jeveux
         Attributs ne retourne rien """
@@ -1093,9 +994,7 @@ class vect_asse_gene_r(vect_asse_gene):
     range(1,len(vecteur)+1))),tuple(vecteur),tuple(vecteur),1)
     return
 
-
-class vect_asse_gene_c(vect_asse_gene):
-  def EXTR_VECT_GENE(self) :
+  def EXTR_VECT_GENE_C(self) :
     """ retourne les valeurs du vecteur generalisee
     dans un format Numerical Array
         Attributs retourne
@@ -1109,7 +1008,7 @@ class vect_asse_gene_c(vect_asse_gene):
 
     return valeur
 
-  def RECU_VECT_GENE(self,vecteur) :
+  def RECU_VECT_GENE_C(self,vecteur) :
     """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
     complexe definie dans jeveux
         Attributs ne retourne rien """

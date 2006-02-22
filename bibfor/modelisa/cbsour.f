@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/06/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C ----------------------------------------------------------------------
-      INTEGER       NBET, NBCALC, ICALC, NBFAC, ISOUR, IOCC
+      INTEGER       NBET, NBCALC, ICALC, NBFAC, ISOUR, IOCC, IER
       REAL*8        R8BID
       CHARACTER*8   SCALC, TYPMCL(2)
       CHARACTER*16  MOTFAC, MOTCLS(2)
@@ -46,6 +46,7 @@ C
             CALL UTMESS('F','CBSOUR','NOMBRE D OCCURENCE DU MOT CLE '//
      +                                '"SOUR_CALCULEE"  SUPERIEUR A 1')
          ELSE IF (NBCALC.EQ.1) THEN
+            CALL CHPVER('F',CHSOUR(1:19),'ELGA','SOUR_R',IER)
             CALL COPISD ( 'CHAMP_GD', 'G', CHSOUR(1:19), CARTE(1:19) )
          ENDIF
       ENDIF

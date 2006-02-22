@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,6 +169,9 @@ C
       CALL WKVECT('&&OP0162.VECT2','V V R',NEQ,IADMO2)
       DO 70 IC = 1,NCHARB
          CALL GETVID('EXCIT','VECT_ASSE',IC,1,1,VECT,N)
+         IF(N.NE.0)THEN
+            CALL CHPVER('F',VECT,'NOEU','DEPL_R',IERD)
+         ENDIF
          VALE(1:8) = VECT
          CALL JEVEUO(VALE,'L',IDVEC1)
          DO 71 J = 1,NBMODE

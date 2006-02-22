@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
         REAL*8          DSDE(6,6)
 C
         CHARACTER*16    COMP(*),     OPT
-        CHARACTER*(*) FAMI
+        CHARACTER*(*)   FAMI
         CHARACTER*8     TYPMOD(*)
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
@@ -356,7 +356,7 @@ C
      &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
      &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
 C
-              CALL REDECE (NDIM,  TYPMOD,   IMAT,     CMP2,  CRIT,
+              CALL REDECE (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
      1                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
      2                     HYDRD, HYDRF,    SECHD,    SECHF, SREF,
      3                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,14 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-def asse_vecteur_prod(VECT_ELEM,**args):
-  if AsType(VECT_ELEM) == vect_elem_depl_r : return cham_no_depl_r
-  if AsType(VECT_ELEM) == vect_elem_temp_r : return cham_no_temp_r
-  if AsType(VECT_ELEM) == vect_elem_pres_r : return cham_no_pres_r
-  if AsType(VECT_ELEM) == vect_elem_pres_c : return cham_no_pres_c
-  raise AsException("type de concept resultat non prevu ")
 
-ASSE_VECTEUR=OPER(nom="ASSE_VECTEUR",op=13,sd_prod=asse_vecteur_prod,
+ASSE_VECTEUR=OPER(nom="ASSE_VECTEUR",op=13,sd_prod=cham_no_sdaster,
                   fr="Construire un champ aux noeuds par assemblage de vecteurs élémentaires",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          VECT_ELEM       =SIMP(statut='o',typ=vect_elem,max='**'),

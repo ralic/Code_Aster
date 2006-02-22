@@ -3,7 +3,7 @@
       INTEGER            ICHPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,10 +76,12 @@ C
       IF (ICHPT.EQ.1) THEN
          DO 10 IOCC = 0 , NBOCC-1
             CALL GETVID(COMBRC,'CHAM_NO',IOCC+1,1,1,ZK24(LNOM+IOCC),L)
+            CALL CHPVER('F',ZK24(LNOM+IOCC)(1:19),'NOEU','*',IERD)
  10      CONTINUE
       ELSEIF (ICHPT.EQ.2) THEN
          DO 12 IOCC = 0 , NBOCC-1
             CALL GETVID(COMBRC,'CHAM_ELEM',IOCC+1,1,1,ZK24(LNOM+IOCC),L)
+            CALL CHPVER('F',ZK24(LNOM+IOCC)(1:19),'ELXX','*',IERD)
  12      CONTINUE
       ENDIF
 C

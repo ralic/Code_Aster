@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,7 +92,7 @@ C
       INTEGER           IADR8,IM2,IADRCO,JMIN,IELINF,IADNUM
       INTEGER           IADRNO,NNOEU,NUM,IERD,IMODU,NBRE
       INTEGER           IRET,NUMA,NDIMTE,IDIRTH,IDEEQ,NBDIR
-      INTEGER           ITANEX,ITANOR,JGT,JGN
+      INTEGER           ITANEX,ITANOR,JGT,JGN,TMP
 C
       REAL*8            DIRX,DIRY,DIRZ,XI1,YI1,ZI1,XJ1,YJ1,ZJ1
       REAL*8            XIJ,YIJ,ZIJ,EPS,D, GRTX,GRTY,GRTZ
@@ -228,33 +228,32 @@ C               DISTANCE MN
                 ENDIF
 600           CONTINUE
 
-              GRTX=ZR(JGT-1+(I-1)*3+1)
-              GRTY=ZR(JGT-1+(I-1)*3+2)
-              GRTZ=ZR(JGT-1+(I-1)*3+3)
-
               RII = (1-SMIN)*ZR(IADRT1+JMIN-1)+SMIN*ZR(IADRT1+JMIN+1-1)
               RSI = (1-SMIN)*ZR(IADRT2+JMIN-1)+SMIN*ZR(IADRT2+JMIN+1-1)
               ALPHA = (DMIN-RII)/(RSI-RII)
-              IMODU = IADRT3+(K-1)*LNOFF+JMIN-1
 
-              VALX = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1)) * GRTX
-              VALY = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1)) * GRTY
-              VALZ = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1)) * GRTZ
-
-              IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
-                ZR(ITHETA+(I-1)*3+1-1) = VALX
-                ZR(ITHETA+(I-1)*3+2-1) = VALY
-                ZR(ITHETA+(I-1)*3+3-1) = VALZ
-              ELSE IF((ABS(ALPHA-1).LE.EPS).OR.((ALPHA-1).GT.0)) THEN
+              IF((ABS(ALPHA-1).LE.EPS).OR.((ALPHA-1).GT.0)) THEN
                 ZR(ITHETA+(I-1)*3+1-1) = 0.D0
                 ZR(ITHETA+(I-1)*3+2-1) = 0.D0
                 ZR(ITHETA+(I-1)*3+3-1) = 0.D0
               ELSE
-                ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
-                ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
-                ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                IMODU = IADRT3+(K-1)*LNOFF+JMIN-1
+                GRTX=ZR(JGT-1+(I-1)*3+1)
+                GRTY=ZR(JGT-1+(I-1)*3+2)
+                GRTZ=ZR(JGT-1+(I-1)*3+3)          
+                VALX = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTX
+                VALY = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTY
+                VALZ = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTZ
+                IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
+                  ZR(ITHETA+(I-1)*3+1-1) = VALX
+                  ZR(ITHETA+(I-1)*3+2-1) = VALY
+                  ZR(ITHETA+(I-1)*3+3-1) = VALZ
+                ELSE 
+                  ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
+                  ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
+                  ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                ENDIF
               ENDIF
-
  500      CONTINUE
         ELSE
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=table_sdaster,reentrant
          SPEC_TURB       =SIMP(statut='o',typ=spectre_sdaster,validators=NoRepeat(),max='**' ),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
-         CHAM_NO         =SIMP(statut='f',typ=cham_no_depl_r ),
+         CHAM_NO         =SIMP(statut='f',typ=cham_no_sdaster),
          FREQ_INIT       =SIMP(statut='f',typ='R',val_min=0.E+0 ),  
          FREQ_FIN        =SIMP(statut='f',typ='R',val_min=0.E+0 ),  
          NB_POIN         =SIMP(statut='f',typ='I' ),  

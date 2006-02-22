@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 30/01/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -68,6 +68,9 @@ C DEB ------------------------------------------------------------------
       CALL GETVID(' ','MASS_MECA',0,1,1,MASSEL,N2)
       CALL GETVTX(' ','OPTION',0,1,1,SUROPT,N3)
       CALL GETVID(' ','SIEF_ELGA',0,1,1,SIGG,N4)
+      IF(N4.NE.0)THEN
+        CALL CHPVER('F',SIGG,'ELGA','SIEF_R',IER)
+      ENDIF
       CALL GETVR8(' ','INST',0,1,1,TIME,N5)
       IF (N5.EQ.0) TIME = 0.D0
       CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N6)

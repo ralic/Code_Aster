@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,6 +36,10 @@ C ----------------------------------------------------------------------
 C IN  PHASE  : 'INIT' INITIALISATION
 C              'TITR' AFFICHAGE DE L'EN TETE DES PAS DE TEMPS
 C              'IMPR' IMPRESSION
+C IN  NATURE : NATURE DE L'IMPRESSION POUR PHASE 'INIT' 
+C              'DYNA_TRAN' -> CAS DE DYNA_TRAN_EXPLI (PAS DE TABLEAU
+C                             DE CONVERGENCE)
+C              ' '         -> AUTRES CAS
 C IN  NATURE : NATURE DE L'IMPRESSION
 C              'MATR_ASSE' -> ASSEMBLAGE DE LA MATRICE
 C              'ARCH_INIT' -> TITRE ARCHIVAGE ETAT INITIAL
@@ -230,28 +234,32 @@ C
           WRITE(UNITM,*)
           CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
           WRITE(UNITM,*)
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
 
-          DO 39 K = 1,TITMAX
-            CALL IMPFOK(TITRE(K),LARGE,UNITM)
- 39       CONTINUE
+          IF (NATURE(1:1).EQ.' ') THEN
+            CALL IMPFOK(LIGNE,LARGE,UNITM)        
+            DO 39 K = 1,TITMAX
+              CALL IMPFOK(TITRE(K),LARGE,UNITM)
+ 39         CONTINUE
+            CALL IMPFOK(LIGNE,LARGE,UNITM) 
+          ENDIF
 
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
+
         ELSE
           
-
           WRITE(UNITM,*)
           WRITE(UNITM,*)
 
           CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
           WRITE(UNITM,*)
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
 
-          DO 33 K = 1,TITMAX
-            CALL IMPFOK(TITRE(K),LARGE,UNITM)
- 33       CONTINUE
-  
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
+          IF (NATURE(1:1).EQ.' ') THEN
+            CALL IMPFOK(LIGNE,LARGE,UNITM)        
+            DO 33 K = 1,TITMAX
+              CALL IMPFOK(TITRE(K),LARGE,UNITM)
+ 33         CONTINUE
+            CALL IMPFOK(LIGNE,LARGE,UNITM) 
+          ENDIF
+
         ENDIF
 
         GOTO 9999

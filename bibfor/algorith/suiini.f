@@ -1,7 +1,7 @@
-      SUBROUTINE SUIINI(SUIVCO)
+      SUBROUTINE SUIINI(SUIVCO,CREASD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,7 @@ C ======================================================================
 C
       IMPLICIT     NONE
       CHARACTER*24 SUIVCO
+      LOGICAL      CREASD
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : NMINIT
@@ -29,6 +30,7 @@ C
 C INITIALISATION DES SUIVIS
 C
 C IN  SUIVCO : NOM DE LA SD CONTENANT INFOS DE SUIVIS DDL
+C IN  CREASD : VAUT .TRUE. SI ON VEUT CREER LA SD
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -68,8 +70,12 @@ C
 C
 C --- LECTURE INFOS DANS 'SUIVI'
 C     
-      CALL SUILEC(SUIVCO,MAILLA,MOTCLE,
-     &            NBOCC,NBSUIV)
+      IF (CREASD) THEN
+        CALL SUILEC(SUIVCO,MAILLA,MOTCLE,
+     &              NBOCC,NBSUIV)
+      ELSE
+        NBSUIV = 0
+      ENDIF
 C 
 C --- CREATION DE LA STRUCTURE DE DONNEES 
 C 

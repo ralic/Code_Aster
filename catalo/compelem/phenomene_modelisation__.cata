@@ -1,5 +1,5 @@
-%& MODIF COMPELEM  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
-% RESPONSABLE JMBHH01 J.M.PROIX
+%& MODIF COMPELEM  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+% ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -788,6 +788,27 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ THM_FACE8
               MAILLE__ TRIA6     ELEMENT__ THM_FACE6
 
+       MODELISATION__ '3D_THH2D'          DIM__ 3 3   CODE__ '3A1'
+              MAILLE__ TETRA10   ELEMENT__ THH2_TETRA10D
+              MAILLE__ PENTA15   ELEMENT__ THH2_PENTA15D
+              MAILLE__ HEXA20    ELEMENT__ THH2_HEXA20D
+              MAILLE__ QUAD8     ELEMENT__ THH2_FACE8
+              MAILLE__ TRIA6     ELEMENT__ THH2_FACE6
+
+       MODELISATION__ '3D_THH2MD'          DIM__ 3 3   CODE__ '3A2'
+              MAILLE__ TETRA10   ELEMENT__ THH2M_TETRA10D
+              MAILLE__ PENTA15   ELEMENT__ THH2M_PENTA15D
+              MAILLE__ HEXA20    ELEMENT__ THH2M_HEXA20D
+              MAILLE__ QUAD8     ELEMENT__ THH2M_FACE8
+              MAILLE__ TRIA6     ELEMENT__ THH2M_FACE6
+
+       MODELISATION__ '3D_HH2MD'          DIM__ 3 3   CODE__ '3A3'
+              MAILLE__ TETRA10   ELEMENT__ HH2M_TETRA10D
+              MAILLE__ PENTA15   ELEMENT__ HH2M_PENTA15D
+              MAILLE__ HEXA20    ELEMENT__ HH2M_HEXA20D
+              MAILLE__ QUAD8     ELEMENT__ HH2M_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HH2M_FACE6
+
        MODELISATION__ '3D_HHMS'          DIM__ 3 3   CODE__ '3R1'
               MAILLE__ TETRA10   ELEMENT__ HHM_TETRA10S
               MAILLE__ PENTA15   ELEMENT__ HHM_PENTA15S
@@ -829,6 +850,27 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ THM_HEXA20S
               MAILLE__ QUAD8     ELEMENT__ THM_FACE8
               MAILLE__ TRIA6     ELEMENT__ THM_FACE6
+
+       MODELISATION__ '3D_THH2S'          DIM__ 3 3   CODE__ '3R7'
+              MAILLE__ TETRA10   ELEMENT__ THH2_TETRA10S
+              MAILLE__ PENTA15   ELEMENT__ THH2_PENTA15S
+              MAILLE__ HEXA20    ELEMENT__ THH2_HEXA20S
+              MAILLE__ QUAD8     ELEMENT__ THH2_FACE8
+              MAILLE__ TRIA6     ELEMENT__ THH2_FACE6
+
+       MODELISATION__ '3D_THH2MS'          DIM__ 3 3   CODE__ '3R8'
+              MAILLE__ TETRA10   ELEMENT__ THH2M_TETRA10S
+              MAILLE__ PENTA15   ELEMENT__ THH2M_PENTA15S
+              MAILLE__ HEXA20    ELEMENT__ THH2M_HEXA20S
+              MAILLE__ QUAD8     ELEMENT__ THH2M_FACE8
+              MAILLE__ TRIA6     ELEMENT__ THH2M_FACE6
+
+       MODELISATION__ '3D_HH2MS'          DIM__ 3 3   CODE__ '3R9'
+              MAILLE__ TETRA10   ELEMENT__ HH2M_TETRA10S
+              MAILLE__ PENTA15   ELEMENT__ HH2M_PENTA15S
+              MAILLE__ HEXA20    ELEMENT__ HH2M_HEXA20S
+              MAILLE__ QUAD8     ELEMENT__ HH2M_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HH2M_FACE6
 
    PHENOMENE__  THERMIQUE       CODE__  'TH'
 

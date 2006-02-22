@@ -1,5 +1,5 @@
 
-# MODIF  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -276,7 +276,7 @@ TEST_FICHIER(UNITE=8,
              FICHIER='fort.38',
              NB_CHIFFRE=4,
              EPSILON=1.E-4,
-             VALE_K='f7cb2ce7362f8771b448230999bc22b0',
+             VALE_K='f0e1e9016f74cd228af225fc58ecd4ec',
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
              REFERENCE='NON_REGRESSION',
              VERSION='8.0.21',

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 22/02/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -419,13 +419,18 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
                   CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 
 C                 MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
-                  METR(1,1)=DDOT(3,TAU1(1,NLI),1,TAU1(1,NLJ),1)
-                  METR(1,2)=DDOT(3,TAU1(1,NLI),1,TAU2(1,NLJ),1)
-                  METR(2,1)=DDOT(3,TAU2(1,NLI),1,TAU1(1,NLJ),1)
-                  METR(2,2)=DDOT(3,TAU2(1,NLI),1,TAU2(1,NLJ),1)
-
-                  DO 152 K = 1,2
-                    DO 153 L = 1,2
+                  
+                  IF (NDIM.EQ.3) THEN
+                    METR(1,1)=DDOT(3,TAU1(1,NLI),1,TAU1(1,NLJ),1)
+                    METR(1,2)=DDOT(3,TAU1(1,NLI),1,TAU2(1,NLJ),1)
+                    METR(2,1)=DDOT(3,TAU2(1,NLI),1,TAU1(1,NLJ),1)
+                    METR(2,2)=DDOT(3,TAU2(1,NLI),1,TAU2(1,NLJ),1)
+                  ELSE
+                    METR(1,1)=DDOT(2,TAU1(1,NLI),1,TAU1(1,NLJ),1)
+                  ENDIF
+                  
+                  DO 152 K = 1,NDIM-1
+                    DO 153 L = 1,NDIM-1
                       
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &                           + FFI * FFJ * METR(K,L) * JAC * MULT

@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -79,8 +79,8 @@ C     ------------------------------------------------------------------
       CHARACTER*8  MODELE,NOMA,FORM,NOMMA,TABL
       CHARACTER*8  K8B,RESU,CRIT,TEXTE,NOMAB
       CHARACTER*8  LERESU,NOPASE,NOMGD
-      CHARACTER*16 NOMCMD,K16BID,FORMR,FICH
-      CHARACTER*19 NOCH19,KNUM
+      CHARACTER*16 NOMCMD,K16BID,FORMR,FICH,TYRES
+      CHARACTER*19 NOCH19,KNUM,RESU19
       CHARACTER*24 NOMJV
       CHARACTER*24 NORECG
       CHARACTER*80 TITRE
@@ -275,7 +275,30 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          PARTIE = ' '
          CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
          CALL GETVTX('RESU','PARTIE',IOCC,1,1,PARTIE,NP)
+         IF(NR.NE.0)THEN
+            CALL GETTCO(RESU,TYRES)
+            IF(TYRES(1:10).EQ.'DYNA_HARMO')THEN
+              IF(FORM(1:4).EQ.'GMSH' .OR. FORM(1:6).EQ.'CASTEM')THEN
+                   IF(NP.EQ.0)
+     >                  CALL UTMESS('F','OP0039','LE MOT CLE '//
+     >                  ' ''PARTIE'' EST OBLIGATOIRE.')
+                ENDIF
+            ENDIF
+         ENDIF
+
          CALL GETVID('RESU','CHAM_GD' ,IOCC,1,1,RESU,NC)
+         IF(NC.NE.0)THEN
+            RESU19=RESU
+            CALL DISMOI('A','NOM_GD',RESU19,'CHAMP',IBID,NOMGD,IER)
+            IF(NOMGD(6:6).EQ.'C')THEN
+              IF(FORM(1:4).EQ.'GMSH' .OR. FORM(1:6).EQ.'CASTEM')THEN
+                   IF(NP.EQ.0)
+     >                  CALL UTMESS('F','OP0039','LE MOT CLE '//
+     >                  ' ''PARTIE'' EST OBLIGATOIRE.')
+              ENDIF
+            ENDIF
+         ENDIF
+
          LRESU = NR.NE.0
 C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
          INFMAI = 1

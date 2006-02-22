@@ -1,10 +1,10 @@
-        SUBROUTINE LCJPLA (LOI , MOD , IMAT , NMAT , MATER , NVI , TEMP,
-     1                     DEPS , SIG , VIN   , DSDE, VIND, VP, VECP,
+        SUBROUTINE LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATER,NVI,
+     1                     TEMP,DEPS,SIGF,VIN,DSDE,SIGD,VIND,VP,VECP,
      2                     THETA, DT, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,9 @@ C ======================================================================
 C       ----------------------------------------------------------------
 C       MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT ELASTO-PLASTIQUE
 C       VISCO-PLASTIQUE EN VITESSE A T+DT OU T
-C       IN  LOI    :  MODELE DE COMPORTEMENT
+C       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C           KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
+C           LOI    :  MODELE DE COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
@@ -32,39 +34,45 @@ C           MATER  :  COEFFICIENTS MATERIAU
 C           NVI    :  NB VARIABLES INTERNES
 C           TEMP   :  TEMPERATURE
 C           DEPS   :  INCREMENT DE DEFORMATION
-C           SIG    :  CONTRAINTE
+C           SIGF    :  CONTRAINTE A L INSTANT +
 C           VIN    :  VARIABLES INTERNES
+C           SIGD    :  CONTRAINTE A L INSTANT -
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C           VP     : VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN)
 C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT , NVI
-        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIG(6),DEPS(6),DG
+C TOLE CRP_21
+        INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP
+        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIGF(6),DEPS(6),DG
         REAL*8          VIN(*), VIND(*),TEMP,THETA,DT,MATER(NMAT,2)
-        REAL*8          VP(3),VECP(3,3)
+        REAL*8          VP(3),VECP(3,3),SIGD(6)
         CHARACTER*8     MOD
         CHARACTER*16    LOI
+        CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
         IF     ( LOI(1:8) .EQ. 'ROUSS_PR' .OR. 
      1           LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN           
-          CALL  RSLJPL(LOI,IMAT,NMAT,MATER,TEMP,SIG,VIN,VIND,DEPS,
+          CALL  RSLJPL(LOI,IMAT,NMAT,MATER,TEMP,SIGF,VIN,VIND,DEPS,
      1                 THETA,DT,DSDE)
 C
         ELSEIF ( LOI(1:8) .EQ. 'CHABOCHE'    ) THEN
-          CALL  CHBJPL(MOD,NMAT,MATER,SIG,VIN,DSDE)
+          CALL  CHBJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)
 C
         ELSEIF ( LOI(1:4) .EQ. 'OHNO'      ) THEN
-          CALL  ONOJPL(MOD,NMAT,MATER,SIG,VIN,DSDE)
+          CALL  ONOJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)
 C
         ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B'    ) THEN
-          CALL  INSJPL(MOD,NMAT,MATER,SIG,VIN,DSDE)
+          CALL  INSJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)
 C
         ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
-          CALL  LGLJPL(MOD,NMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE)
+          CALL  LGLJPL(MOD,NMAT,MATER,SIGF,DEVG,DEVGII,VIN,DSDE)
 C
         ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'   ).OR.
      1          ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
-          CALL  HBRJPL(MOD,NMAT,MATER,SIG,VIN,VIND,VP,VECP,DSDE)
+          CALL  HBRJPL(MOD,NMAT,MATER,SIGF,VIN,VIND,VP,VECP,DSDE)
+        ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M'   ) THEN
+          CALL  IRRJPL(FAMI,KPG,KSP,MOD,NMAT,MATER,NR,NVI,SIGF,VIND,
+     &                 VIN,SIGD,DSDE)
         ENDIF
 C
         END

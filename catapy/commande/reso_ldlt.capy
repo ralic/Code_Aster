@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,23 +17,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-def reso_ldlt_prod(CHAM_NO,**args ):
-  if AsType(CHAM_NO) == cham_no_temp_r : return cham_no_temp_r
-  if AsType(CHAM_NO) == cham_no_depl_r : return cham_no_depl_r
-  if AsType(CHAM_NO) == cham_no_pres_r : return cham_no_pres_r
-  if AsType(CHAM_NO) == cham_no_temp_c : return cham_no_temp_c
-  if AsType(CHAM_NO) == cham_no_depl_c : return cham_no_depl_c
-  if AsType(CHAM_NO) == cham_no_pres_c : return cham_no_pres_c
-  raise AsException("type de concept resultat non prevu")
 
-RESO_LDLT=OPER(nom="RESO_LDLT",op=15,sd_prod=reso_ldlt_prod,reentrant='f',
+RESO_LDLT=OPER(nom="RESO_LDLT",op=15,sd_prod=cham_no_sdaster,reentrant='f',
                fr="Résoudre par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLT",
             UIinfo={"groupes":("Résolution",)},
          MATR_FACT       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),
-         CHAM_NO         =SIMP(statut='o',typ=(cham_no_temp_r,cham_no_depl_r,cham_no_pres_r,
-                                               cham_no_temp_c,cham_no_depl_c,cham_no_pres_c) ),
-         CHAM_CINE       =SIMP(statut='f',typ=(cham_no_temp_r,cham_no_depl_r,cham_no_pres_c) ),
+         CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
+         CHAM_CINE       =SIMP(statut='f',typ=cham_no_sdaster),
          # RESI_RELA : précision utilisée si SOLVEUR=MUMPS
          RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.e-6),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),

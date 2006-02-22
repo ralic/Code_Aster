@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER JAUX
+      INTEGER JAUX,IERR
       CHARACTER*8   K8B, NOMRES, DYNA, CRIT, DYNA1
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*19  CHAMP, CHAM2, RESULT
@@ -152,6 +152,7 @@ C
          NUME = 0
          CALL GETVID('ETAT_INIT','DEPL_INIT',1,1,1,CHAMP,NDI)
          IF (NDI.GT.0) THEN
+            CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
             CHAM2 = '&&OP0048.DEPINI'
             IF (NRPASE.EQ.0) THEN 
@@ -175,6 +176,7 @@ C
 C
          CALL GETVID('ETAT_INIT','VITE_INIT',1,1,1,CHAMP,NVI)
          IF (NVI.GT.0) THEN
+            CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
             CHAM2 = '&&OP0048.VITINI'
             IF (NRPASE.EQ.0) THEN 
@@ -198,6 +200,7 @@ C
 
          CALL GETVID('ETAT_INIT','ACCE_INIT',1,1,1,CHAMP,NAI)
          IF (NAI.GT.0 .AND. NRPASE.EQ.0) THEN
+              CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
               INCHAC = 0
               CHAM2 = '&&OP0048.ACCINI'
               CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)

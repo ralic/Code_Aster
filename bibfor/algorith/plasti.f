@@ -1,4 +1,4 @@
-         SUBROUTINE PLASTI ( TYPMOD, IMAT,  COMP,  CRIT, TIMED,
+         SUBROUTINE PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TIMED,
      1                       TIMEF, TEMPD, TEMPF, TREF, HYDRD, HYDRF,
      2                       SECHD, SECHF, SREF, EPSDT, DEPST, SIGD, 
      3                   VIND,OPT,ANGMAS,SIGF, VINF, DSDE, ICOMP, NVI, 
@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,9 @@ C
 C       ================================================================
 C       ARGUMENTS
 C
-C       IN      TYPMOD  TYPE DE MODELISATION
+C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C               KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
 C                       COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
@@ -221,13 +223,14 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDT   , NDI   , NR  , NVI
-        INTEGER         ITMAX, ICOMP  , JFIS1
+        INTEGER         IMAT , NDT   , NDI   , NR  , NVI, IRET
+        INTEGER         ITMAX, ICOMP  , JFIS1, KPG, KSP
         INTEGER         NMAT , IOPTIO , IDNR
-        INTEGER         IRTET, IRTETI, K, L
+        INTEGER         IRTET, IRTETI, K, L,I,J
         REAL*8          TOLER
         REAL*8          EPSI
         LOGICAL         BZ
+        CHARACTER*(*)   FAMI
 C
         PARAMETER       ( EPSI = 1.D-15 )
         PARAMETER       ( NMAT = 90     )
@@ -285,9 +288,9 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-        CALL LCMATE (COMP, MOD, IMAT, NMAT, TEMPD, TEMPF, HYDRD, HYDRF,
-     1                SECHD, SECHF, TYPMA, BZ, MATERD,MATERF, MATCST,
-     3                NBCOMM, CPMONO, ANGMAS, PGL,
+        CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
+     1                HYDRD,HYDRF,SECHD,SECHF,TYPMA,BZ,MATERD,MATERF,
+     3                MATCST,NBCOMM, CPMONO, ANGMAS, PGL,ITMAX, TOLER,
      2                NDT , NDI , NR, NVI, VIND)
  
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
@@ -346,8 +349,9 @@ C
 C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
-        CALL LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &     COMP, NBCOMM, CPMONO, PGL, NR, NVI,VP,VECP, SEUIL)
+        CALL LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
+     &      TEMPF, SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
+     &      VP,VECP, SEUIL)
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -355,10 +359,10 @@ C --      PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
 C
           ETATF = 'PLASTIC'
 C
-          CALL LCPLAS ( LOI, TOLER, ITMAX, MOD, IMAT, NMAT, MATERD,
-     1                  MATERF, MATCST, NR, NVI, TEMPD, TEMPF, TIMED,
-     2                  TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF, VINF,
-     3                COMP,NBCOMM, CPMONO, PGL,
+          CALL LCPLAS ( FAMI,KPG,KSP,LOI, TOLER, ITMAX, MOD, IMAT, NMAT,
+     1                  MATERD,MATERF, MATCST, NR, NVI, TEMPD, TEMPF,
+     2                  TIMED,TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF,
+     3                  VINF,COMP,NBCOMM, CPMONO, PGL,
      3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
 C
           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
@@ -398,7 +402,7 @@ C
         IF ( LOI(1:7) .NE. 'NADAI_B' .OR. JFIS1 .EQ. 0 ) THEN
         CALL LCINMA ( 0.D0 , DSDE )
         ENDIF
-C
+C          
           IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
           IF (ETATD.EQ.'ELASTIC'.OR.JFIS1.EQ.1.OR.LOI.EQ.'LAIGLE') THEN
             CALL LCJELA ( LOI  , MOD , NMAT, MATERD, VIND, DSDE)
@@ -414,8 +418,8 @@ C ------------ DEVIATEUR ELASTIQUE -------------------------------------
      1            (LOI(1:14).EQ.'HOEK_BROWN_EFF')) THEN
                   CALL LCHBVP(SIGD,VP,VECP)
                ENDIF
-               CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     2              TEMPD, DEPS, SIGD ,  VIND, DSDE, VIND,VP, VECP,
+               CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
+     2              NVI,TEMPD,DEPS,SIGD,VIND,DSDE,SIGD,VIND,VP,VECP,
      3              THETA, DT, DEVG, DEVGII)
                 ENDIF
             ENDIF
@@ -434,8 +438,8 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
      &                   DSDE )
 
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
-               CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     2              TEMPD, DEPS, SIGF ,  VINF, DSDE, VIND,VP,VECP,
+               CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
+     2              NVI,TEMPD,DEPS,SIGF,VINF,DSDE,SIGD,VIND,VP,VECP,
      3              THETA, DT, DEVG, DEVGII)
                 ENDIF
             ENDIF
@@ -470,4 +474,5 @@ C
         GOTO 9999
 C
  9999   CONTINUE
+
         END

@@ -2,7 +2,7 @@
      &                  DEPTOT,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/01/2006   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -108,7 +108,7 @@ C
       INTEGER      ZCONV
       PARAMETER    (ZCONV=4)
       INTEGER      ZTOLE
-      PARAMETER    (ZTOLE=4)
+      PARAMETER    (ZTOLE=6)
       CHARACTER*24 K24BID
       COMPLEX*16   CBID
       INTEGER      IBID

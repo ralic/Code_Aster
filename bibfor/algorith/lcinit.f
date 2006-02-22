@@ -1,12 +1,12 @@
-        SUBROUTINE LCINIT ( LOI,   TYPESS, ESSAI,  MOD, NMAT,
-     1                      MATERF,TIMED,TIMEF,
+        SUBROUTINE LCINIT ( FAMI,KPG,KSP,LOI,TYPESS, ESSAI,MOD,
+     1                      NMAT,MATERF,TIMED,TIMEF,
      2                      NR, NVI, YD,     EPSD,   DEPS, DY,
      3                      COMP,NBCOMM, CPMONO, PGL,
      4                      VIND,SIGD)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,10 @@ C       ----------------------------------------------------------------
 C       ROUTINE AIGUILLAGE
 C       ----------------------------------------------------------------
 C       CALCUL DE LA SOLUTION INITIALE ESSAI DY = ( DSIG DVIN (DEPS3) )
-C       IN  LOI    :  MODELE DE COMPORTEMENT
+C       IN  FAMI   :  FAMILLE DE POINT DE GAUSS
+C           KPG    :  NUMERO DU POINT DE GAUSS
+C           KSP    :  NUMERO DU SOUS-POINT DE GAUSS
+C           LOI    :  MODELE DE COMPORTEMENT
 C           TYPESS :  TYPE DE SOLUTION D ESSAI POUR DY(DEPEND DU MODELE)
 C                      > VOIR XXXCVG ET XXXINI
 C           ESSAI  :  SOLUTION D ESSAI
@@ -41,7 +44,8 @@ C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
-        INTEGER         TYPESS ,  NMAT, NR,NVI
+C TOLE CRP_21
+        INTEGER         TYPESS ,  NMAT, NR,NVI, KPG, KSP
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          DEPS(6), EPSD(6), ESSAI
         REAL*8          YD(*) ,  DY(*)
@@ -49,6 +53,7 @@ C       ----------------------------------------------------------------
         REAL*8          TIMED, TIMEF
         REAL*8          PGL(3,3)
         REAL*8          VIND(*),SIGD(6)
+        CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
@@ -79,6 +84,9 @@ C
          CALL LCMMIN(TYPESS,ESSAI,MOD,NMAT,MATERF,NR, NVI,YD,DEPS,DY,
      1                      COMP,NBCOMM, CPMONO, PGL,
      2                     TIMED,TIMEF,VIND,SIGD)
+      ELSEIF     ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
+         CALL IRRINI(FAMI,KPG,KSP,TYPESS,ESSAI,MOD,NMAT,MATERF,YD,
+     &               DEPS,DY)
       ENDIF
 C
       END

@@ -1,4 +1,4 @@
-        SUBROUTINE LCPLNL ( LOI,  TOLER, ITMAX, MOD,   IMAT,
+        SUBROUTINE LCPLNL ( FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
      1                      NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                      COMP,NBCOMM, CPMONO, PGL,
@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,10 @@ C       ATTENTION :     ON REACTUALISE ICI DEPS DE FACON A CE QUE
 C                       DEPS(3) = DY(NR) EN C_PLAN
 C       ----------------------------------------------------------------
 C
-C       IN  LOI    :  MODELE DE COMPORTEMENT
+C       IN  FAMI   :  FAMILLE DE POINT DE GAUSS
+C           KPG    :  NUMERO DU POINT DE GAUSS
+C           KSP    :  NUMERO DU SOUS-POINT DE GAUSS
+C           LOI    :  MODELE DE COMPORTEMENT
 C           TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
 C           ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
 C           MOD    :  TYPE DE MODELISATION
@@ -77,7 +80,7 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT,    NMOD  , ICOMP
 C
 C
-        INTEGER         TYPESS, ITMAX, IRET
+        INTEGER         TYPESS, ITMAX, IRET,KPG,KSP
         INTEGER         NR,     NDT,    NDI,    NVI,  ITER
 C
         REAL*8          TOLER,  ESSAI, RBID
@@ -94,10 +97,11 @@ C
         CHARACTER*8     MOD,  NBITER
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
+        CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-        INTEGER I, INTG, IRTET, IRTETI
+        INTEGER I, INTG, IRTET, IRTETI, J
 
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
@@ -125,7 +129,7 @@ C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
 C       ----------------------------------------------------------------
 C
 C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
-C
+C        
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         IRTETI = 0
         CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
@@ -145,7 +149,7 @@ C
 C
 C --    CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
 C
-        CALL LCINIT ( LOI,   TYPESS, ESSAI, MOD, NMAT,
+        CALL LCINIT ( FAMI,KPG,KSP,LOI,TYPESS,ESSAI,MOD,NMAT,
      &                MATERF,TIMED,TIMEF,NR, NVI, YD,
      &                EPSD,  DEPS,   DY ,
      &                COMP,NBCOMM, CPMONO, PGL,
@@ -156,7 +160,6 @@ C
 C
  1      CONTINUE
         ITER = ITER + 1
-
 C
 C --    INCREMENTATION DE  YF = YD + DY
 C
@@ -164,9 +167,9 @@ C
 C
 C --    CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
 C
-        CALL LCRESI ( LOI,   MOD,   IMAT, NMAT, MATERD,MATERF,
-     3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
-     &                TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
+        CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &                COMP,NBCOMM,CPMONO,PGL,NR,NVI,TEMPF,
+     &                TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
 
 C     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
         IF(ITER.EQ.1) THEN
@@ -175,14 +178,13 @@ C     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
 C
 C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
-        CALL LCJACB ( LOI,   MOD,   IMAT, NMAT, MATERF,TEMPF,
-     &                  TIMED,TIMEF,     YF,    DEPS,
+        CALL LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT, NMAT, MATERF,
+     &                TEMPF,TIMED,TIMEF,YF,DEPS,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
-     &                  EPSD,  DY,    DRDY )
+     &                  EPSD,  DY, DRDY )
 C
 C --    RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C
-
         CALL LCEQMN ( NR , DRDY , DRDY1 )
         CALL LCEQVN ( NR ,   R ,   DDY )
         CALL MGAUSS ( 'NFWP',DRDY1,DDY,NR,NR,1,RBID,IRET )
@@ -199,7 +201,6 @@ C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C
         CALL LCCONV( LOI,    DY,   DDY, NR, ITMAX, TOLER, ITER, INTG,
      &               R,RINI,TYPESS, ESSAI, ICOMP, IRTET)
-
 
         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 

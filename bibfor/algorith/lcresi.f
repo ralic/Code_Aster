@@ -1,11 +1,12 @@
-        SUBROUTINE LCRESI( LOI,  MOD,  IMAT, NMAT, MATERD,MATERF,
-     3                COMP,NBCOMM, CPMONO, PGL, NR, NVI,
-     1                   TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
+        SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, MOD, IMAT, NMAT, 
+     3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
+     1                     PGL, NR, NVI, TEMPF, TIMED, TIMEF, YD,
+     &                     YF, DEPS, EPSD, DY, R )
         IMPLICIT   NONE
 C TOLE CRP_21        
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,13 +42,14 @@ C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
 C       OUT R      :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
 C
-        INTEGER         IMAT, NMAT, NR, NVI
+        INTEGER         IMAT, NMAT, NR, NVI, KPG, KSP
         REAL*8          DEPS(6)  , EPSD(6)
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPF,   TIMED, TIMEF
         CHARACTER*8     MOD
         CHARACTER*16    LOI
+        CHARACTER*(*)   FAMI
         
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
@@ -83,6 +85,9 @@ C
          CALL LCMMRE ( MOD, NMAT, MATERD, MATERF,TEMPF,
      3                COMP,NBCOMM, CPMONO, PGL, NR, NVI, TIMED, TIMEF,
      1                 YD,   YF,   DEPS,   DY,     R )
+      ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
+         CALL IRRRES ( FAMI, KPG, KSP, MOD,   NMAT, MATERD, MATERF,
+     1                 YD,  YF,  DEPS,  DY,  R )
       ENDIF
 C
       END

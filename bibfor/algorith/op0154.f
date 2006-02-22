@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,6 +90,7 @@ C     ---------------------------------------
       IF ( NBOCC .NE. 0 ) THEN
          CALL GETVTX ('DEFORME','OPTION',1,1,1,OPTION,NOP)       
          CALL GETVID ( 'DEFORME', 'DEPL', 1,1,1, DEPLA, N1 )
+         CALL CHPVER('F',DEPLA,'NOEU','DEPL_R',IER)
          GEOMI = MA//'.COORDO'
          GEOMF = MA//'.COORD2'
          CALL VTGPLD ( GEOMI, 1.D0, DEPLA, 'V', GEOMF )

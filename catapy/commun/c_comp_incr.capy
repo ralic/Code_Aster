@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMUN  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,6 +80,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "LEMAITRE",
                                         "LEMAITRE_IRRA",
                                         "LEMA_SEUIL",
+                                        "IRRAD3M",
                                         "ZIRC_CYRA2",
                                         "VISC_IRRA_LOG",
                                         "GRAN_IRRA_LOG",
@@ -194,6 +195,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           NORTON_HOFF     =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           LEMAITRE        =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           LEMA_SEUIL      =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          IRRAD3M         =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LEMAITRE_IRRA   =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ZIRC_CYRA2      =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ZIRC_EPRI       =SIMP(statut='c',typ='I',defaut=2,into=(2,)),

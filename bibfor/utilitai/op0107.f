@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4  CTYP
       CHARACTER*8  K8B, MODELE, CARA, DEFORM, RESUCO, CRIT
       CHARACTER*16 CONCEP, NOMCMD
-      CHARACTER*19 RESU, KCHA, KNUM
+      CHARACTER*19 RESU, KCHA, KNUM,TABTYP(3)
       CHARACTER*24 MATE, CHDEF
 C     ------------------------------------------------------------------
 C
@@ -109,6 +109,10 @@ C                   -----------
          IF ( DEFORM .EQ. 'DEFORMEE' ) THEN
             CALL GETVID ( ' ', 'CHAM_GD', 1,1,1, CHDEF, N2 )
             IF ( N2 .EQ. 0 ) THEN
+               TABTYP(1)='NOEU#DEPL_R'
+               TABTYP(2)='NOEU#TEMP_R'
+               TABTYP(3)='ELEM#ENER_R'
+               CALL CHPVE2('F',CHDEF,3,TABTYP,IER)
                KNUM = '&&OP0107.NUME_ORDRE'
                CALL GETVID ( ' ', 'RESULTAT' , 1,1,1, RESUCO, NR )
                CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )

@@ -1,7 +1,7 @@
       SUBROUTINE NMTHMC(COMP, MODELE, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -201,6 +201,9 @@ C =====================================================================
      &                (MODELI(1:9).NE.'AXIS_THH2').AND.
      &                (MODELI(1:11).NE.'D_PLAN_HH2M').AND.
      &                (MODELI(1:11).NE.'D_PLAN_THH2').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_THH2').AND.
+     &                (MODELI(1:7).NE.'3D_HH2M').AND.
+     &                (MODELI(1:7).NE.'3D_THH2').AND.
      &                (MODELI.NE.' ')) THEN
 
 

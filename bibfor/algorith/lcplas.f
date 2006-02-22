@@ -1,14 +1,12 @@
-        SUBROUTINE LCPLAS ( LOI,  TOLER, ITMAX, MOD,   IMAT,
+        SUBROUTINE LCPLAS ( FAMI,KPG,KSP,LOI,TOLER, ITMAX, MOD,IMAT,
      1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
-     3                      SIGF, VINF, 
-     3                COMP,NBCOMM, CPMONO, PGL,
-     5               ICOMP, IRTETI, THETA,VP,VECP,
-     4                      SEUIL, DEVG, DEVGII)
+     3                      SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,ICOMP,
+     4                      IRTETI, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +53,7 @@ C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
 C           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 C       ----------------------------------------------------------------
-        INTEGER         ITMAX, ICOMP, IRTETI, IRTET
+        INTEGER         ITMAX, ICOMP, IRTETI, IRTET, KPG,KSP
         INTEGER         IMAT, NMAT,   NVI,    NR
 
 C
@@ -75,6 +73,7 @@ C
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+        CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
 C
       IRTETI = 0
@@ -92,11 +91,12 @@ C
      1         LOI(1:9) .EQ. 'VISCOCHAB'   .OR.
      1         LOI(1:4) .EQ. 'OHNO  '      .OR.    
      1         LOI(1:8) .EQ. 'MONOCRIS'    .OR.    
+     1         LOI(1:7) .EQ. 'IRRAD3M '    .OR.    
      1         LOI(1:7) .EQ. 'NADAI_B'     ) THEN
-         CALL LCPLNL ( LOI,  TOLER, ITMAX, MOD,   IMAT,
-     1                 NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
-     2                 TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
-     3                COMP,NBCOMM, CPMONO, PGL,
+         CALL LCPLNL ( FAMI, KPG, KSP, LOI,  TOLER, ITMAX, MOD,
+     1                 IMAT,NMAT, MATERD,MATERF,MATCST,NR, NVI,
+     2                 TEMPD,TEMPF,TIMED,TIMEF,DEPS,EPSD,SIGD,
+     3                 VIND,COMP,NBCOMM, CPMONO,PGL,
      3                 SIGF, VINF, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 CC

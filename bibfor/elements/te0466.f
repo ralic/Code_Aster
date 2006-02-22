@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,8 @@ C
 C
       INTEGER NNOS,NPI2
 C     ------------------------------------------------------------------
-C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM
+C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM, 
+C                           THH2M, HH2M,       THH2
 C     ------------------------------------------------------------------
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
@@ -179,7 +180,8 @@ C
 C ======================================================================
 C --- SI MODELISATION = THHM OU THH
 C
-           IF (NOMTE(1:4).EQ.'THHM'.OR.NOMTE(1:4).EQ.'THH_')THEN
+           IF (NOMTE(1:4).EQ.'THHM'.OR.NOMTE(1:4).EQ.'THH_'
+     +      .OR.NOMTE(1:4).EQ.'THH2'.OR.NOMTE(1:4).EQ.'HH2M')THEN
 C
 C --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
 C --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
@@ -221,7 +223,7 @@ C
 C
              ENDIF
 C
-             IF (NOMTE(1:4).EQ.'THHM')THEN
+             IF (NOMTE(1:4).EQ.'THHM'.OR.NOMTE(1:5).EQ.'THH2M')THEN
                DO 120 I=1,NNO2
                  L = 6 * (I-1) -1
 C
@@ -340,9 +342,9 @@ C
 C
            ENDIF
 C ======================================================================
-C SI MODELISATION = HHM
+C SI MODELISATION = HHM 
 C
-           IF (NOMTE(1:3).EQ.'HHM') THEN
+           IF (NOMTE(1:3).EQ.'HHM'.OR.NOMTE(1:4).EQ.'HH2M') THEN
 C
              NAPRE1=0
              NAPRE2=1

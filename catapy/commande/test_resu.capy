@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,8 +116,8 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
 
          GENE            =FACT(statut='f',max='**',
            regles=(UN_PARMI('VALE','VALE_I','VALE_C') ,),
-           RESU_GENE       =SIMP(statut='o',typ=(vect_asse_gene_r, tran_gene, mode_gene, harm_gene)),
-           b_vect_asse     =BLOC(condition = "AsType(RESU_GENE) == vect_asse_gene_r",
+           RESU_GENE       =SIMP(statut='o',typ=(vect_asse_gene, tran_gene, mode_gene, harm_gene)),
+           b_vect_asse     =BLOC(condition = "AsType(RESU_GENE) == vect_asse_gene",
              NUME_CMP_GENE   =SIMP(statut='o',typ='I'),
            ),
            b_mode          =BLOC(condition = "(AsType(RESU_GENE) == harm_gene) or (AsType(RESU_GENE) == mode_gene)",
