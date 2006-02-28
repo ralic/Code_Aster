@@ -1,7 +1,7 @@
       SUBROUTINE CA2MAM(MOINT,INCR,LIGRMO,LCHIN,LPAIN,LPAOUT,NUM,MADE)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C--------- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*19 MADEEL,NU19
       CHARACTER*24 LCHOUT(1),LCHIN(2),LIGRMO
       CHARACTER*24 MADE,CHGEOM
+      REAL*8  RTBLOC,JEVTBL
 
 C ----- CREATION DE LA MATR_ELEM DES DERIVEES DES DN(I)*DN(J)
 C--------------SUR LE MODELE THERMIQUE------------------------------
@@ -82,14 +83,15 @@ C--------------------D'INTERFACE -----------------------------------
 C-------------------- NUMEROTATION ----------------------------------
 
       NUM = 'NUM'//INCR
-      CALL NUMDDL(NUM,'V',1,MATEL,'RCMK','LIGN_CIEL')
-      CALL PROLCI(NUM,400.D0,'S','V')
+      CALL NUMDDL(NUM,'V',1,MATEL,'RCMK')
+      CALL PROMOR(NUM,'V')
+      CALL CRNSLV(NUM,'MULT_FRO','METIS','V')
 
 C---------------ASSEMBLAGE DES MATRICES  DES DN(I)DN(J)--------------
 
       MADE = 'MA'//INCR
 
-      CALL ASSMAT('V',MADE,1,LCHOUT,1.D0,NUM,'ZERO',1)
+      CALL ASSMAM('V',MADE,1,LCHOUT,1.D0,NUM,'ZERO',1)
 
       NU19=NUM
       CALL JEDETR(NU19//'.ADLI')

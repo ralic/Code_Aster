@@ -8,7 +8,7 @@
       CHARACTER*19        NOMNUM, NOMSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       IBID, I, J, IBLO, IADESC, IALIME, IACONL, IAREFE,
+      INTEGER       IBID, I, J, IBLO, IADESC, IALIME, IACONL, JREFA,
      +              LDBLO
       CHARACTER*8   K8B
       CHARACTER*19  MATRGE
@@ -67,21 +67,20 @@ C
          ZR(IACONL+I-1) = 1.0D0
  10   CONTINUE
 C
-      CALL WKVECT ( MATRGE//'.REFA', 'G V K24', 4, IAREFE )
-      CALL JEECRA ( MATRGE//'.REFA', 'DOCU', IBID, 'SLCS' )
-      ZK24(IAREFE)   = BASE
-      ZK24(IAREFE+1) = NOMNUM
-      ZK24(IAREFE+2) = NOMSTO
+      CALL WKVECT ( MATRGE//'.REFA', 'G V K24', 10, JREFA )
+      ZK24(JREFA-1+1)   = BASE
+      ZK24(JREFA-1+2) = NOMNUM
+      ZK24(JREFA-1+9) = 'MS'
+      ZK24(JREFA-1+10) = 'GENE'
 C
-      CALL JECREC ( MATRGE//'.VALE', 'G V R', 'NU', 'DISPERSE',
+      CALL JECREC ( MATRGE//'.UALF', 'G V R', 'NU', 'DISPERSE',
      &                                            'CONSTANT', NBLOC )
-      CALL JEECRA ( MATRGE//'.VALE', 'LONMAX', NTERM, K8B )
-      CALL JEECRA ( MATRGE//'.VALE', 'DOCU', IBID, 'MS' )
+      CALL JEECRA ( MATRGE//'.UALF', 'LONMAX', NTERM, K8B )
 C
       IBLO = 1
 C
-      CALL JECROC ( JEXNUM(MATRGE//'.VALE',IBLO) )
-      CALL JEVEUO ( JEXNUM(MATRGE//'.VALE',IBLO), 'E', LDBLO )
+      CALL JECROC ( JEXNUM(MATRGE//'.UALF',IBLO) )
+      CALL JEVEUO ( JEXNUM(MATRGE//'.UALF',IBLO), 'E', LDBLO )
 C
       NTERM = 0
       DO 20 I = 1 , NBMODE
@@ -90,9 +89,11 @@ C
             ZR(LDBLO+NTERM-1) = VALE( J + (I-1)*NBMODE )
  22      CONTINUE
  20   CONTINUE
-C
-      CALL JELIBE ( JEXNUM(MATRGE//'.VALE', IBLO) )
-C
+
+      CALL UALFVA(MATRGE,'G')
+
+C     CALL VERISD('MATRICE',MATRGE)
+
       CALL JEDEMA()
 C
       END

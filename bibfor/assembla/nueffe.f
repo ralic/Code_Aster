@@ -1,12 +1,12 @@
-      SUBROUTINE NUEFFE(LLIGR,BASE,NUZ,RENUM,TYPREZ,MOLOC,SOLVEU,NEQUA)
+      SUBROUTINE NUEFFE(LLIGR,BASE,NUZ,RENUM,MOLOC,SOLVEU,NEQUA)
       IMPLICIT NONE
       CHARACTER*19 SOLVEU
       INTEGER NEQUA
-      CHARACTER*(*) LLIGR,NUZ,RENUM,TYPREZ
+      CHARACTER*(*) LLIGR,NUZ,RENUM
       CHARACTER*1 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,9 +38,6 @@ C                   DE K24 DONT LES ELEMENTS SONT LES NOMS(TOUS DIFF)
 C                   DES S.D. DE TYPE LIGREL.
 C IN  K*4  RENUM : METHODE DE RENUMEROTATION DES NOEUDS:
 C                   SANS/RCMK/MD/MDA/METIS
-C IN  K*   TYPREZ : METHODE DE RESOLUTION : LDLT/GCPG/MULT_FRONT
-C                   CETTE INFO NE SERT QU'A DES VERIFICATIONS CONCERNANT
-C                   LA NUMEROTATION DES NOEUDS DE LAGRANGE.
 C IN  K*   MOLOC : NOM D'UNE GRANDEUR 1ERE (OU ' ')
 C                   SINON LA NUMEROTATION EST BASEE SUR CETTE GRANDEUR
 C IN K*    SOLVEU : NOM DE LA SD SOLVEUR
@@ -71,7 +68,6 @@ C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       CHARACTER*8 CBID,NOMCMP
       CHARACTER*8 MAILLA
-      CHARACTER*9 TYPRES
       CHARACTER*14 NU
       CHARACTER*16 NOMTE
       CHARACTER*24 LILI,NNLI,PSUIV,LSUIV,VSUIV,NUM21,NUNO,NOMLI,PLPRN,
@@ -203,7 +199,7 @@ C----------------------------------------------------------------------
 
       CALL INFNIV(IFM,NIV)
       NU = NUZ
-      TYPRES = TYPREZ
+
 C --- FETI OR NOT FETI ?
       CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
       IF (IRET.GT.0) THEN
@@ -399,18 +395,13 @@ C      ------------------------------------------------------------
 C ---    LE PREMIER LAGRANGE EST PLACE AVANT LE PREMIER DDL PHYSIQUE
 C ---    CONCERNE PAR LE BLOCAGE OU LA RELATION :
 C        --------------------------------------
-                IF (ZI(IDLGNS+N21-1).EQ.1 .OR. TYPRES.NE.'LDLT') THEN
+                IF (ZI(IDLGNS+N21-1).EQ.1) THEN
                   N1M1RE = N1RE - 1
 
-C ---    POUR L'INSTANT, ON N'AUTORISE LE POSITIONNEMENT DU PREMIER
-C ---    LAGRANGE APRES LE DERNIER DDL PHYSIQUE QUE POUR DES
-C ---    RESOLUTIONS LDLT, CE QUI CORRESPOND A UN STOCKAGE DE LA
-C ---    MATRICE EN LIGNE DE CIEL.
 C ---    LE PREMIER LAGRANGE EST PLACE ALORS  APRES LE DERNIER DDL
 C ---    PHYSIQUE CONCERNE PAR LE BLOCAGE OU LA RELATION :
 C        ----------------------------------------------
-                ELSE IF (ZI(IDLGNS+N21-1).EQ.-1 .AND.
-     &                   TYPRES.EQ.'LDLT') THEN
+                ELSE IF (ZI(IDLGNS+N21-1).EQ.-1) THEN
                   N1M1RE = N1RE
                 ELSE
                   CALL UTMESS('F','NUEFFE','L''ENTIER '//
@@ -505,12 +496,6 @@ C ---          PHYSIQUE CONCERNE PAR LA RELATION OU LE BLOCAGE :
 C              -----------------------------------------------
               JNULAG = 0
 
-C ---  POUR L'INSTANT, ON N'AUTORISE LE POSITIONNEMENT DU PREMIER
-C ---  LAGRANGE APRES LE DERNIER DDL PHYSIQUE QUE POUR DES
-C ---  RESOLUTIONS LDLT, CE QUI CORRESPOND A UN STOCKAGE DE LA
-C ---  MATRICE EN LIGNE DE CIEL :
-C      ------------------------
-              IF (TYPRES.EQ.'LDLT') THEN
 
 C ---  RECUPERATION DE L'INDICATEUR DE POSITION DU PREMIER LAGRANGE :
 C      ------------------------------------------------------------
@@ -534,7 +519,6 @@ C        --------------------------------------
      &                          'NE PEUT ETRE EGAL QU''A  +1  OU  -1 .')
                   END IF
                 END IF
-              END IF
 
 C ---    CAS JNULAG = 0 : ON PLACE LE PREMIER LAGRANGE AVANT LE
 C ---    PREMIER DDL PHYSIQUE :

@@ -2,7 +2,7 @@
      &                            PBOUL,KN,PTKNP,IK)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,8 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
-      REAL*8    P(3,3),SAUT(3),LAMB1(3),RHOTK,PBOUL(3),KN(3,3)
-      REAL*8    PTKNP(3,3),IK(3,3)
+      REAL*8    P(3,3),SAUT(3),LAMB1(3),RHOTK,PBOUL(3)
+      REAL*8    PTKNP(3,3),IK(3,3),KN(3,3)
           
 C ----------------------------------------------------------------------
 C                      TEST DE L'ADHÉRENCE AVEC X-FEM 
@@ -63,14 +63,16 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER    NDIM,I,J,K
+      INTEGER    NDIM,I,J,K,IBID
       REAL*8     VITANG(3),PREC,NORME,XAB(3,3),KNP(3,3),GT(3)
-      REAL*8     THETA,XIK(3,2)
-      PARAMETER  (NDIM=3,PREC=1.D-12)
+      REAL*8     THETA,XIK(3,2),P2(2,2),PTKNP2(2,2),KN2(2,2),XAB2(2,2)
+      PARAMETER  (PREC=1.D-12)
       LOGICAL    ADHER
 
 C-----------------------------------------------------------------------
 C     CALCUL DE GT = LAMDBA + RHO [[DX]]/DELTAT ET DE SA PROJECTION
+
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 
       DO 10 I=1,NDIM
         VITANG(I)=0.D0
@@ -82,19 +84,22 @@ C       "VITESSE TANGENTE" : PROJECTION DU SAUT
  10   CONTINUE
 
 C      WRITE(6,*)'GT ',GT
-      
-      NORME=SQRT(GT(1)*GT(1)+GT(2)*GT(2)+GT(3)*GT(3))
+      IF (NDIM.EQ.3) THEN
+        NORME=SQRT(GT(1)*GT(1)+GT(2)*GT(2)+GT(3)*GT(3))
+      ELSE
+        NORME=SQRT(GT(1)*GT(1)+GT(2)*GT(2))
+      ENDIF
 C      write(6,*)'norme GT ',NORME
 
 C     ADHER : TRUE SI ADHÉRENCE, FALSE SI GLISSEMENT      
       IF (NORME.LE.(1.D0+PREC)) THEN
         ADHER = .TRUE.
-        DO 21 J=1,3
+        DO 21 J=1,NDIM
           PBOUL(J)=GT(J)
  21   CONTINUE
       ELSE  
         ADHER = .FALSE.
-        DO 22 J=1,3
+        DO 22 J=1,NDIM
           PBOUL(J)=GT(J)/NORME
  22   CONTINUE
       ENDIF
@@ -126,15 +131,34 @@ C     GLISSEMENT
           KN(I,I)= KN(I,I) + 1.D0
  42     CONTINUE
 
-        CALL MATPRS(NDIM,1/NORME,KN)
+        DO 421 I = 1,NDIM
+          DO 422 J = 1,NDIM
+            KN(I,J)= KN(I,J)/NORME
+ 422      CONTINUE
+ 421    CONTINUE
 
       ENDIF
 
 C-----------------------------------------------------------------------
 
 C     CALCUL DE PT.KN.P
-      CALL UTBTAB('ZERO',NDIM,NDIM,KN,P,XAB,PTKNP)
- 
+      IF (NDIM.EQ.3) THEN
+        CALL UTBTAB('ZERO',NDIM,NDIM,KN,P,XAB,PTKNP)
+      ELSE
+        DO 43 I=1,NDIM
+          DO 44 J=1,NDIM
+            P2(I,J)=P(I,J)
+            KN2(I,J)=KN(I,J)
+ 44       CONTINUE
+ 43     CONTINUE
+        CALL UTBTAB('ZERO',NDIM,NDIM,KN2,P2,XAB2,PTKNP2)
+        DO 45 I=1,NDIM
+          DO 46 J=1,NDIM
+            PTKNP(I,J)=PTKNP2(I,J)
+ 46       CONTINUE
+ 45     CONTINUE
+      ENDIF
+      
 C     CALCUL DE Id-KN
       DO 50 I = 1,NDIM
         DO 51 J = 1,NDIM

@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_eolienne Outils  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1575,7 +1575,7 @@ CALC_CHAR_HOULE=MACRO( nom="CALC_CHAR_HOULE",op=calc_char_houle_ops,
 
 def macr_calc_eolienne_prod(self,NOM_MAIL_REF,**args):
   if NOM_MAIL_REF != None : self.type_sdprod(NOM_MAIL_REF,maillage_sdaster)
-  return champ_sdaster
+  return cham_no_sdaster
 
 
 MACR_CALC_EOLIENNE=MACRO(nom="MACR_CALC_EOLIENNE",op=macr_calc_eolienne_ops,

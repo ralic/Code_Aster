@@ -1,7 +1,7 @@
       SUBROUTINE XMAFR2(NLI,NLJ,TAU1,TAU2,B,ABC)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,35 +56,38 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER    NDIM,I,J,K
+      INTEGER    NDIM,I,J,K,IBID
       REAL*8     A(2,3),BC(3,2),C(3,2)
+
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
+
 
 C  CALCUL DE A.B.C AVEC A=(TAU1) EN NLI ET C=(TAU1 TAU2) EN NLJ
 C                         (TAU2)    
 
 C     MATRICES A ET C
-      DO 10 J=1,3
+      DO 10 J=1,NDIM
         A(1,J)=TAU1(J,NLI)
-        A(2,J)=TAU2(J,NLI)
+        IF (NDIM.EQ.3) A(2,J)=TAU2(J,NLI)
         C(J,1)=TAU1(J,NLJ)
-        C(J,2)=TAU2(J,NLJ)
+        IF (NDIM.EQ.3) C(J,2)=TAU2(J,NLJ)
  10   CONTINUE
  
 C     PRODUIT B.C
-      DO 20 I=1,3
-        DO 21 J=1,2
+      DO 20 I=1,NDIM
+        DO 21 J=1,NDIM-1
           BC(I,J)=0.D0
-          DO 22 K=1,3
+          DO 22 K=1,NDIM
             BC(I,J)=BC(I,J)+B(I,K)*C(K,J)
  22       CONTINUE
  21     CONTINUE 
  20   CONTINUE 
  
 C     PRODUIT A.BC
-      DO 30 I=1,2
-        DO 31 J=1,2
+      DO 30 I=1,NDIM-1
+        DO 31 J=1,NDIM-1
           ABC(I,J)=0.D0
-          DO 32 K=1,3
+          DO 32 K=1,NDIM
             ABC(I,J)=ABC(I,J)+A(I,K)*BC(K,J)
  32       CONTINUE
  31     CONTINUE 

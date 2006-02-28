@@ -2,7 +2,7 @@
      +                    CHASOL, CRITEZ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,6 @@ C VARIABLES LOCALES
       CHARACTER*24 METRES,SDFETI,TYREOR,PRECO,SCALIN,STOGI,ACMA,ACSM,
      &             INFOFE
       CHARACTER*19 MATAS,MAPREC,CHSOL,PCHN1,PCHN2,ARG1,ARG2,CHSECM
-      CHARACTER*4  ETAMAT
       LOGICAL      IDENSD,LFETI,IDDOK,LFETIC
 
 C CORPS DU PROGRAMME
@@ -85,6 +84,9 @@ C CORPS DU PROGRAMME
       CHSOL = CHASOL
       CHSECM = CHSECZ
       CRITER = CRITEZ
+C     CALL VERISD('MATRICE',MATAS)
+C     CALL VERISD('CHAM_NO',CHSECM)
+C     CALL VERISD('SOLVEUR',SOLVEU)
 
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       CALL JEVEUO(SOLVEU//'.SLVR','L',ISLVR)
@@ -115,18 +117,18 @@ C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
       DO 10 IDD=0,NBSD
-      
+
 C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
 C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
 C     -----------------------------------------------
 
 C TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
-C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU 
+C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU
 C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
 C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE
         IF (.NOT.LFETI) THEN
           IDDOK=.TRUE.
-        ELSE 
+        ELSE
           IF (ZI(ILIMPI+IDD).EQ.1) THEN
             IDDOK=.TRUE.
           ELSE
@@ -134,7 +136,7 @@ C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE
           ENDIF
         ENDIF
         IF (IDDOK) THEN
-        
+
           IF (IDD.EQ.0) THEN
             ARG1=MATAS
             ARG2=CHSECM
@@ -159,7 +161,7 @@ C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE
           ENDIF
 C========================================
 C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-C========================================  
+C========================================
         ENDIF
    10 CONTINUE
 
@@ -170,40 +172,6 @@ C========================================
       IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO'.OR.
      &    METRES.EQ.'FETI'.OR.METRES.EQ.'MUMPS') THEN
 
-C========================================
-C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-C======================================== 
-        DO 20 IDD=0,NBSD
-C     -- ON VERIFIE QUE CHAQUE MATRICE DE LA MATR_ASSE
-C        A BIEN ETE FACTORISEE :
-C     -----------------------------------------------
-
-          IF (.NOT.LFETI) THEN
-            IDDOK=.TRUE.
-          ELSE 
-            IF (ZI(ILIMPI+IDD).EQ.1) THEN
-              IDDOK=.TRUE.
-            ELSE
-              IDDOK=.FALSE.
-            ENDIF
-          ENDIF
-          IF (IDDOK) THEN
-            IF (IDD.EQ.0) THEN
-              ARG1=MATAS
-            ELSE
-              ARG1=ZK24(IFETM+IDD-1)
-            ENDIF
-            CALL JELIRA(ARG1//'.REFA','DOCU',IBID,ETAMAT)
-
-            IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT')
-     +        CALL UTMESS('F','RESOUD','  PAS DE RESOLUTION '//
-     +       'CAR LA MATRICE '//MATAS//' N"EST PAS DECOMPOSEE.' )
-          ENDIF
-C========================================
-C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-C========================================  
-   20   CONTINUE
-
         CALL DETRSD('CHAMP_GD',CHSOL)
         CALL VTDEFS(CHSOL,CHSECM,'V',' ')
         IF (METRES.NE.'FETI') THEN
@@ -211,7 +179,7 @@ C========================================
              CALL AMUMPS('RESOUD',SOLVEU,MATAS,CHSECM,CHSOL,CHCINE)
           ELSE
              CALL COPISD('CHAMP_GD',BASE,CHSECM,CHSOL)
-             CALL RESLDL(MATAS,CHCINE,CHSOL)
+             CALL RESLDL(SOLVEU,MATAS,CHCINE,CHSOL)
           ENDIF
 
         ELSE
@@ -252,6 +220,7 @@ C     ----------------------------------
      &       'TEMPS CPU/SYS SOLVEUR                     : ',TEMPS(5),
      &       TEMPS(6)
       ENDIF
+C     CALL VERISD('CHAM_NO',CHSOL)
 
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()

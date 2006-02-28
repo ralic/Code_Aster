@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,17 +143,17 @@ C FETI OR NOT ?
         ELSE
           LFETI=.FALSE.
         ENDIF
-        IF (LFETI) THEN             
+        IF (LFETI) THEN
           CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
           CALL JEVEUO(K24B,'L',IFETS)
-          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 10 IDD=1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
               K19B=ZK24(IFETS+IDD-1)(1:19)
               CALL DETRS2('SOLVEUR',K19B)
-            ENDIF         
+            ENDIF
    10      CONTINUE
-          CALL JEDETR(K24B)   
+          CALL JEDETR(K24B)
         ENDIF
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'LIGREL') THEN
@@ -233,18 +233,9 @@ C     --------------------------------
         IF (IRET.NE.0) CALL JEDETR(TABLE//'.TITR')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'MATR_ASSE_GENE') THEN
-C     -----------------------------------------
-        MATAS = NOMSD
-        CALL JEDETR(MATAS//'.DESC')
-        CALL JEDETR(MATAS//'.LIME')
-        CALL JEDETR(MATAS//'.CONL')
-        CALL JEDETR(MATAS//'.REFA')
-        CALL JEDETR(MATAS//'.VALE')
-
-C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'MATR_ASSE') THEN
-C     ------------------------------------
+      ELSE IF (TYP2SD.EQ.'MATR_ASSE_GENE' .OR.
+     &         TYP2SD.EQ.'MATR_ASSE') THEN
+C     ---------------------------------------
         MATAS = NOMSD
 
 C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
@@ -256,6 +247,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
               CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ')
            END IF
         ENDIF
+        CALL JEDETR(MATAS//'.DESC')
         CALL JEDETR(MATAS//'.ABLI')
         CALL JEDETR(MATAS//'.ALIG')
         CALL JEDETR(MATAS//'.COND')
@@ -274,13 +266,15 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
         CALL JEDETR(MATAS//'.REFA')
         CALL JEDETR(MATAS//'.TMP1')
         CALL JEDETR(MATAS//'.TMP2')
-        CALL JEDETR(MATAS//'.VALE')
+        CALL JEDETR(MATAS//'.VALM')
+        CALL JEDETR(MATAS//'.UALF')
         CALL JEDETR(MATAS//'.VALF')
+        CALL JEDETR(MATAS//'.WALF')
         CALL JEDETR(MATAS//'.VALI')
         CALL JEDETR(MATAS//'.&TRA')
         CALL JEDETR(MATAS//'.&VDI')
-        
-C FETI OR NOT ? 
+
+C FETI OR NOT ?
         K24B=MATAS//'.FETM'
         CALL JEEXIN(K24B,IRET)
         IF (IRET.GT.0) THEN
@@ -295,14 +289,14 @@ C FETI OR NOT ?
 
           CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
           CALL JEVEUO(K24B,'L',IFETM)
-          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 30 IDD=1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
               K19B=ZK24(IFETM+IDD-1)(1:19)
               CALL DETRS2('MATR_ASSE',K19B)
-            ENDIF         
+            ENDIF
    30     CONTINUE
-          CALL JEDETR(K24B)   
+          CALL JEDETR(K24B)
         ENDIF
 
 C     ------------------------------------------------------------------
@@ -313,7 +307,7 @@ C     ----------------------------------
         CALL JEDETR(CNO//'.DESC')
         CALL JEDETR(CNO//'.REFE')
         CALL JEDETR(CNO//'.VALE')
-C FETI OR NOT ? 
+C FETI OR NOT ?
         K24B=CNO//'.FETC'
         CALL JEEXIN(K24B,IRET)
         IF (IRET.GT.0) THEN
@@ -324,12 +318,12 @@ C FETI OR NOT ?
         IF (LFETI) THEN
           CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
           CALL JEVEUO(K24B,'L',IFETC)
-          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 40 IDD=1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
               K19B=ZK24(IFETC+IDD-1)(1:19)
               CALL DETRS2('CHAM_NO',K19B)
-            ENDIF         
+            ENDIF
    40     CONTINUE
           CALL JEDETR(K24B)
         ENDIF
@@ -402,16 +396,40 @@ C     -----------------------------------
         CALL JEDETR(MLTF//'.SEQU')
         CALL JEDETR(MLTF//'.RENU')
 
+
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'STOCKAGE') THEN
 C     -----------------------------------
         STOCK = NOMSD
-        CALL JEDETR(STOCK//'.ABLO')
-        CALL JEDETR(STOCK//'.ADIA')
-        CALL JEDETR(STOCK//'.DESC')
-        CALL JEDETR(STOCK//'.HCOL')
-        CALL JEDETR(STOCK//'.IABL')
-        CALL JEDETR(STOCK//'.REFE')
+        CALL JEDETR(STOCK//'.SCBL')
+        CALL JEDETR(STOCK//'.SCDI')
+        CALL JEDETR(STOCK//'.SCDE')
+        CALL JEDETR(STOCK//'.SCHC')
+        CALL JEDETR(STOCK//'.SCIB')
+
+        CALL JEDETR(STOCK//'.SMDI')
+        CALL JEDETR(STOCK//'.SMDE')
+        CALL JEDETR(STOCK//'.SMHC')
+
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'STOC_LCIEL') THEN
+C     -----------------------------------
+        STOCK = NOMSD
+        CALL JEDETR(STOCK//'.SCBL')
+        CALL JEDETR(STOCK//'.SCDI')
+        CALL JEDETR(STOCK//'.SCDE')
+        CALL JEDETR(STOCK//'.SCHC')
+        CALL JEDETR(STOCK//'.SCIB')
+
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'STOC_MORSE') THEN
+C     -----------------------------------
+        STOCK = NOMSD
+        CALL JEDETR(STOCK//'.SMDI')
+        CALL JEDETR(STOCK//'.SMDE')
+        CALL JEDETR(STOCK//'.SMHC')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'NUME_DDL') THEN
@@ -432,8 +450,8 @@ C     -----------------------------------
         CALL JEDETR(NU//'.VSUIVE')
         CALL JEDETR(NU//'.OLDN')
         CALL JEDETR(NU//'.NEWN')
-        
-C FETI OR NOT ? 
+
+C FETI OR NOT ?
         K24B=NU//'.FETN'
         CALL JEEXIN(K24B,IRET)
         IF (IRET.GT.0) THEN
@@ -444,13 +462,13 @@ C FETI OR NOT ?
         IF (LFETI) THEN
           CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
           CALL JEVEUO(K24B,'L',IFETN)
-          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 50 IDD=1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
               K19B=ZK24(IFETN+IDD-1)(1:19)
 C RECURSIVITE DE SECOND NIVEAU SUR DETRSD
               CALL DETRS2('NUME_DDL',K19B(1:14))
-            ENDIF         
+            ENDIF
    50     CONTINUE
           CALL JEDETR(K24B)
         ENDIF

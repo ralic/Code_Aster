@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,10 +17,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE CAMBIER S.CAMBIER
-GENE_VARI_ALEA=OPER(nom="GENE_VARI_ALEA",op=  28,sd_prod=table_sdaster,
+from Macro.gene_vari_alea_ops import gene_vari_alea_ops,gene_vari_alea_init
+GENE_VARI_ALEA=MACRO(nom="GENE_VARI_ALEA",
+               op_init=gene_vari_alea_init,op=gene_vari_alea_ops,
+               sd_prod=reel,reentrant='n',
                fr="Générer une réalisation d'une variable aléatoire réelle de loi de probabilité donnée (Gamma ou Exponentielle)",
-               reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+               UIinfo={"groupes":("Fonction",)},
    TYPE       = SIMP(statut='f', typ='TXM', into=("EXP_TRONQUEE", "EXPONENTIELLE", "GAMMA"), defaut="GAMMA"),
    b_gamma    =BLOC(condition = "TYPE == 'GAMMA' ",fr="Parametres loi gamma",
            VALE_MOY   = SIMP(statut='f', typ='R', defaut=1.),
@@ -35,8 +37,7 @@ GENE_VARI_ALEA=OPER(nom="GENE_VARI_ALEA",op=  28,sd_prod=table_sdaster,
            VALE_MOY   = SIMP(statut='f', typ='R', defaut=0.),
            BORNE_INF  = SIMP(statut='f', typ='R', defaut=-1.),
            BORNE_SUP  = SIMP(statut='f', typ='R', defaut=1.),
-           COEF_VAR   = SIMP(statut='f', typ='R', defaut=0.1),
+           COEF_VAR   = SIMP(statut='f', typ='R', defaut=0.1,val_min=0.),
              ),
    INIT_ALEA       =SIMP(statut='f',typ='I'),
-) ;
-   
+)

@@ -4,7 +4,7 @@
       INTEGER                  IPASS , ICMDEB , IERTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,10 +96,6 @@ C           --- VERIFICATIONS SUPPLEMENTAIRES ---
                CALL UTMESS('E','EXECUTION DES COMMANDES (ERREUR 01)',
      +                        'COMMANDE N '//CI4//' :  "'//NOMCMD//
      +                        '"  :  '//CH4//' ERREUR(S) DETECTEE(S)')
-            ELSE
-               CALL UTMESS('I','SUPERVISEUR',
-     +                         'VERIFICATIONS SUPPLEMENTAIRES : '//
-     +                         'AUCUNE ERREUR DETECTEE.')
             ENDIF
 C
          ELSEIF( IPASS .EQ. 2 ) THEN

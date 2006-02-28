@@ -1,7 +1,7 @@
       FUNCTION NOMIL(TYPMA,IA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -93,9 +93,9 @@ C --- VARIABLES
       ELSEIF (TYPMA.EQ.'QUAD8') THEN        
         CALL ASSERT(IA.LE.4)
         TAB(1)=5
-        TAB(2)=7
-        TAB(3)=8
-        TAB(4)=6
+        TAB(2)=6
+        TAB(3)=7
+        TAB(4)=8
       ELSEIF (TYPMA.EQ.'TRIA6') THEN        
         CALL ASSERT(IA.LE.3)
         TAB(1)=4

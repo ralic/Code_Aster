@@ -1,22 +1,22 @@
       SUBROUTINE IMCSMV(IFM,NOMSDZ,OPTIOZ,NBNO,LISNOZ,NBCMP,LISCMZ,
      &                  NBCHIF,EPS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.======================================================================
@@ -155,7 +155,7 @@ C     -----------------------------------------
 
 C --- RECUPERATION DU .REFA DE LA MATRICE :
 C     -----------------------------------
-      CALL JEVEUO(NOMSD//'.REFA','L',IDREFE)
+      CALL JEVEUO(NOMSD//'.REFA','L',JREFA)
 
 C --- NOMBRE D'EQUATIONS :
 C     ------------------
@@ -167,15 +167,15 @@ C     ---------------------------------------
 C --- ADRESSE DU TABLEAU DES ADRESSES DES TERMES DIAGONAUX DANS
 C --- LES BLOCS :
 C     ---------
-      CALL MTDSC2(ZK24(ZI(LMAT+1)),'ADIA','L',IDADIA)
+      CALL MTDSC2(ZK24(ZI(LMAT+1)),'SMDI','L',IDSMDI)
 
 C --- ADRESSE DU TABLEAU DES ADRESSES DU DEBUT DES BLOCS :
 C     --------------------------------------------------
-      CALL MTDSC2(ZK24(ZI(LMAT+1)),'ABLO','L',IDBLOC)
 
 C --- NOMBRE DE BLOCS DE LA DEMI-MATRICE :
 C     ----------------------------------
-      NBBLOC = ZI(LMAT+13)
+      NBBLOC=1
+      CALL ASSERT(NBBLOC.EQ.1)
 
 C --- LONGUEUR D'UN BLOC :
 C     ------------------
@@ -191,15 +191,15 @@ C     ---------------------------------------------
 C --- RECUPERATION DU TABLEAU DES NUMEROS DE COLONNES DES TERMES
 C --- DE LA MATRICE :
 C     -------------
-      CALL JEVEUO(NUMDDL//'.SMOS.HCOL','L',IDHCOL)
+      CALL JEVEUO(NUMDDL//'.SMOS.SMHC','L',IDSMHC)
 
 C --- RECUPERATION DU PROF_CHNO :
 C     -------------------------
       PRCHNO = NUMDDL//'.NUME'
 
-C --- .VALE DE LA MATRICE :
+C --- .VALM DE LA MATRICE :
 C     -------------------
-      VALE = NOMSD//'.VALE'
+      VALE = NOMSD//'.VALM'
 
 C --- RECUPERATION DU .DEEQ DU PROF_CHNO :
 C     ----------------------------------
@@ -284,13 +284,13 @@ C     ----------------------------------
 
 C ---    RECUPERATION DU BLOC COURANT :
 C        ----------------------------
-        CALL JEVEUO(JEXNUM(VALE,IBLOC),'L',IABLOC)
+        CALL JEVEUO(JEXNUM(VALE,IBLOC),'L',ISMBLC)
 
 C ---    IL1 : NUMERO DE LA PREMIERE LIGNE (OU COLONNE) DU BLOC
 C ---    IL2 : NUMERO DE LA DERNIERE LIGNE (OU COLONNE) DU BLOC :
 C        ------------------------------------------------------
-        IL1 = ZI(IDBLOC+IBLOC-1) + 1
-        IL2 = ZI(IDBLOC+IBLOC)
+        IL1 = 1
+        IL2 = NEQ
 
 C ---    BOUCLE SUR LES LIGNES DU BLOC COURANT :
 C        -------------------------------------
@@ -327,7 +327,7 @@ C           --------------------------------------------
 
 C ---       INDICE DU TERME DIAGONAL :
 C           ------------------------
-                IFINLI = ZI(IDADIA+IEQUA-1)
+                IFINLI = ZI(IDSMDI+IEQUA-1)
 
 C ---       LONGUEUR DE LA LIGNE COURANTE :
 C           -----------------------------
@@ -358,11 +358,11 @@ C           -------------------------
 
 C ---          POSITION DU TERME COURANT DANS LE BLOC :
 C              --------------------------------------
-                  INDB = IABLOC + KIN - 1
+                  INDB = ISMBLC + KIN - 1
 
 C ---          INDICE DE COLONNE DU TERME COURANT  :
 C              ----------------------------------
-                  INDCOL = ZI(IDHCOL+ITERM-1)
+                  INDCOL = ZI(IDSMHC+ITERM-1)
 
 C ---          STOCKAGE DU TERME POUR L'IMPRESSION S'IL EST NON-NUL :
 C              ----------------------------------------------------
@@ -411,7 +411,7 @@ C           -----------------------------------------
 
 C ---       INITIALISATION DE L'INDICE DE DEBUT DE LA LIGNE JEQUA :
 C           -----------------------------------------------------
-                JDEBLI = ZI(IDADIA+IEQUA-1) + 1
+                JDEBLI = ZI(IDSMDI+IEQUA-1) + 1
 
 C ---       BOUCLE SUR LES LIGNES SUIVANT LA LIGNE IEQUA DANS LE
 C ---       BLOC COURANT  :
@@ -420,7 +420,7 @@ C           ------------
 
 C ---          INDICE DE COLONNE DU PREMIER TERME DE LA LIGNE JEQUA :
 C              ----------------------------------------------------
-                  JCOL1 = ZI(IDHCOL+JDEBLI-1)
+                  JCOL1 = ZI(IDSMHC+JDEBLI-1)
 
 C ---          SI CET INDICE EST PLUS GRAND QUE IEQUA
 C ---          PAS DE TRAITEMENT A FAIRE :
@@ -429,7 +429,7 @@ C              -------------------------
 
 C ---          INDICE DU TERME DIAGONAL DE LA LIGNE JEQUA :
 C              ------------------------------------------
-                  JFINLI = ZI(IDADIA+JEQUA-1)
+                  JFINLI = ZI(IDSMDI+JEQUA-1)
 
 C ---          LONGUEUR DE LA LIGNE COURANTE :
 C              -----------------------------
@@ -444,7 +444,7 @@ C ---          S'IL Y EN A UN ET AUQUEL CAS JTERM1 N'EST PAS NUL
 C ---          ET EST L'INDICE DE CE TERME DANS LA MATRICE :
 C              -------------------------------------------
                   DO 40 JTERM = JDEBLI,JFINLI
-                    JNDCOL = ZI(IDHCOL+JTERM-1)
+                    JNDCOL = ZI(IDSMHC+JTERM-1)
                     IF (JNDCOL.EQ.IEQUA) THEN
                       JTERM1 = JTERM
                       GO TO 50
@@ -455,7 +455,7 @@ C              -------------------------------------------
 
 C ---          POSITION DE CE TERME DANS LE BLOC :
 C              ---------------------------------
-                  JNDB = IABLOC + JTERM1 - 1
+                  JNDB = ISMBLC + JTERM1 - 1
 
 C ---          STOCKAGE DU TERME POUR L'IMPRESSION S'IL EST NON-NUL :
 C              ----------------------------------------------------
@@ -499,7 +499,7 @@ C                -----------------------------------
                     END IF
                   END IF
    60             CONTINUE
-                  JDEBLI = ZI(IDADIA+JEQUA-1) + 1
+                  JDEBLI = ZI(IDSMDI+JEQUA-1) + 1
    70           CONTINUE
 
 C ---       RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
@@ -531,8 +531,8 @@ C ---    REACTUALISATION DE L'INDICE DE DEBUT DE LIGNE
 C ---    ET DE L'INDICE DU TERME COURANT :
 C        -------------------------------
    80     CONTINUE
-          KIN = ZI(IDADIA+IEQUA-1)
-          IDEBLI = ZI(IDADIA+IEQUA-1) + 1
+          KIN = ZI(IDSMDI+IEQUA-1)
+          IDEBLI = ZI(IDSMDI+IEQUA-1) + 1
    90   CONTINUE
         CALL JELIBE(JEXNUM(VALE,IBLOC))
   100 CONTINUE

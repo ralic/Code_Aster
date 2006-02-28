@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/02/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -113,18 +113,18 @@ C     DEPDEL
       CALL JEVECH('PBASECO','L',JBASEC)
 
       CALL JEVECH('PMATUUR','E',IMATT)
-
+      
 C     RECUPERATIONS DES DONNEES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
       DO 10 I=1,60
         INDCO(I) = ZI(JINDCO-1+I)
-        SEUIL(I) = ZR(JSEUIL-1+I)        
+        SEUIL(I) = ZR(JSEUIL-1+I) 
  10   CONTINUE
  
       RHON = ZR(JDONCO-1+1)
       MU = ZR(JDONCO-1+2)
       RHOTK = ZR(JDONCO-1+3)
-
+     
       INTEG = NINT(ZR(JDONCO-1+4))
 C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
       IF (NDIM .EQ. 3) THEN
@@ -133,7 +133,7 @@ C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
        IF (INTEG.EQ.6) FPG='FPG6'
        IF (INTEG.EQ.7) FPG='FPG7'
       ELSE
-      FPG='RIGI'
+      FPG='MASS'
       ENDIF
      
       NINTER=ZI(JLONCH-1+1)
@@ -154,6 +154,7 @@ C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
      &    TAU2(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+2*NDIM)
  14     CONTINUE
  13   CONTINUE
+                       
 C    
 C-----------------------------------------------------------------------
 C
@@ -206,6 +207,7 @@ C              WRITE(6,*)'MULTIPLICATION PAR 1/2'
         CALL ELREF4('SE2',FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
      &                                                     IDFDEF,IBID)
         ENDIF
+        
 C
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
@@ -227,10 +229,14 @@ C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
 C         NORMALE AU CENTRE DE LA FACETTE
           CALL LCINVN(NDIM,0.D0,NBARY)
           DO 122 I=1,NNOF
-            NBARY(1)=NBARY(1)+NDN(1,CFACE(IFA,I))/3.D0
-            NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/3.D0
-            IF (NDIM .EQ. 3)
-     &      NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/3.D0
+            IF (NDIM .EQ. 3) THEN
+              NBARY(1)=NBARY(1)+NDN(1,CFACE(IFA,I))/3.D0
+              NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/3.D0
+              NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/3.D0
+            ELSE
+              NBARY(1)=NBARY(1)+NDN(1,CFACE(IFA,I))/2.D0
+              NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/2.D0
+            ENDIF
  122      CONTINUE          
 
 C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
@@ -270,15 +276,6 @@ C               XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
 C
                   MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
      &                     - FFJ * FFI * JAC * MULT / RHON
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                  IF (PLI .EQ. PLJ) THEN
-                  MMAT(PLI,PLJ)=1.D0
-                  ELSE
-                  MMAT(PLI,PLJ)=0.D0
-                  ENDIF
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  121            CONTINUE
  120          CONTINUE
 C
@@ -291,7 +288,7 @@ C             I.1. CALCUL DE A ET DE At
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
                 CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
-
+                
                 DO 131 J = 1,NNO
                   DO 132 L = 1,DDLH
 C
@@ -303,13 +300,6 @@ C
      &              MMAT(DDLS*(J-1)+NDIM+L,PLI)+
      &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
 C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(PLI,DDLS*(J-1)+NDIM+L)=0.D0
-C
-                 MMAT(DDLS*(J-1)+NDIM+L,PLI)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
  132              CONTINUE
  
@@ -322,13 +312,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
                     MMAT(DDLS*(J-1)+2*NDIM+L,PLI)=
      &              MMAT(DDLS*(J-1)+2*NDIM+L,PLI)+
      &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                    MMAT(PLI,DDLS*(J-1)+2*NDIM+L)=0.D0
-C
-                    MMAT(DDLS*(J-1)+2*NDIM+L,PLI)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
  133              CONTINUE
  
@@ -346,21 +329,11 @@ C
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
      &                4.D0*RHON*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC*MULT
 C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  143                CONTINUE
                     DO 144 L = 1,SINGU*NDIM
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
      &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  144                CONTINUE
  
  142              CONTINUE
@@ -370,21 +343,11 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
      &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  146                CONTINUE
                     DO 147 L = 1,SINGU*NDIM
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
      &                4.D0*RHON*FFP(I)*FFP(J)*RR*RR*ND(K)*ND(L)*JAC*MULT
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  147                CONTINUE
  145              CONTINUE
  
@@ -419,7 +382,6 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
                   CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 
 C                 MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
-                  
                   IF (NDIM.EQ.3) THEN
                     METR(1,1)=DDOT(3,TAU1(1,NLI),1,TAU1(1,NLJ),1)
                     METR(1,2)=DDOT(3,TAU1(1,NLI),1,TAU2(1,NLJ),1)
@@ -434,15 +396,6 @@ C                 MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
                       
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &                           + FFI * FFJ * METR(K,L) * JAC * MULT
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                  IF (PLI+K .EQ. PLJ+L) THEN
-                  MMAT(PLI+K,PLJ+L)=1.D0
-                  ELSE
-                  MMAT(PLI+K,PLJ+L)=0.D0
-                  ENDIF
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  153                CONTINUE
  152              CONTINUE
  151            CONTINUE
@@ -452,14 +405,17 @@ C           SI CONTACT POUR CE PG : ON REMPLIT B, Bt, B_U et F
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 
 C             P : OPÉRATEUR DE PROJECTION
+              CALL MATINI(3,3,0.D0,P)
+              CALL MATINI(3,3,0.D0,PTKNP)
+              CALL MATINI(3,3,0.D0,TAUKNP)
               CALL XMAFR1(ND,P)
-
+              
 C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
               CALL LCINVN(NDIM,0.D0,SAUT)
               CALL LCINVN(NDIM,0.D0,LAMB1)
               DO 156 INO=1,NNO
                 DO 157 J=1,NDIM
-              SAUT(J)=SAUT(J)-2.D0*ZR(IDEPD-1+DDLS*(INO-1)+3+J)*FFP(INO)
+           SAUT(J)=SAUT(J)-2.D0*ZR(IDEPD-1+DDLS*(INO-1)+NDIM+J)*FFP(INO)
  157            CONTINUE
  156          CONTINUE
               DO 158 I=1,NNOF
@@ -468,12 +424,18 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
                 CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)       
                 DO 159 J=1,NDIM
-                  LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPD-1+PLI+1)*TAU1(J,NLI)
-     &                                  +ZR(IDEPD-1+PLI+2)*TAU2(J,NLI))
+                IF (NDIM.EQ.3) THEN
+                LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPD-1+PLI+1)*TAU1(J,NLI)
+     &                                +ZR(IDEPD-1+PLI+2)*TAU2(J,NLI))
+                ELSE
+                LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPD-1+PLI+1)*TAU1(J,NLI))
+                ENDIF
  159            CONTINUE
  158          CONTINUE
+              
               CALL XADHER(P,SAUT,LAMB1,RHOTK,R3,KN,PTKNP,IK)
-              CALL PROMAT(KN,NDIM,NDIM,NDIM,P,NDIM,NDIM,NDIM,KNP)
+
+              CALL PROMAT(KN,3,NDIM,NDIM,P,3,NDIM,NDIM,KNP)
 
 C             II.1. CALCUL DE B ET DE Bt
               DO 160 I = 1,NNOF
@@ -490,16 +452,17 @@ C               CALCUL DE TAU.KN.P
                     TAUKNP(1,J) = TAUKNP(1,J) + TAU1(K,NLI) * KNP(K,J)
  162              CONTINUE
  161            CONTINUE
-                DO 163 J = 1,NDIM
-                  TAUKNP(2,J) = 0.D0
-                  DO 164 K = 1,NDIM
-                    TAUKNP(2,J) = TAUKNP(2,J) + TAU2(K,NLI) * KNP(K,J)
- 164              CONTINUE
- 163            CONTINUE
-
+                IF (NDIM.EQ.3) THEN
+                  DO 163 J = 1,NDIM
+                    TAUKNP(2,J) = 0.D0
+                    DO 164 K = 1,NDIM
+                      TAUKNP(2,J) = TAUKNP(2,J) + TAU2(K,NLI) * KNP(K,J)
+ 164                CONTINUE
+ 163              CONTINUE
+                ENDIF
+               
                 DO 165 J = 1,NNO
-
-                  DO 166 K = 1,2
+                  DO 166 K = 1,NDIM-1
                     DO 167 L = 1,DDLH
 C
              MMAT(PLI+K,DDLS*(J-1)+NDIM+L)=MMAT(PLI+K,DDLS*(J-1)+NDIM+L)
@@ -508,16 +471,11 @@ C
              MMAT(DDLS*(J-1)+NDIM+L,PLI+K)=MMAT(DDLS*(J-1)+NDIM+L,PLI+K)
      &           +  2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC*MULT
 C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(PLI+K,DDLS*(J-1)+NDIM+L)=0.D0
-                 MMAT(DDLS*(J-1)+NDIM+L,PLI+K)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  167                CONTINUE
  166              CONTINUE
  165            CONTINUE
  160          CONTINUE
+
 
 C             II.2. CALCUL DE B_U
               DO 170 I = 1,NNO
@@ -529,11 +487,6 @@ C
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) -
      &      4.D0*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*PTKNP(K,L)*JAC*MULT
 C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                 MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)=0.D0
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  173                CONTINUE
  172              CONTINUE
  171            CONTINUE
@@ -554,20 +507,11 @@ C             II.3. CALCUL DE F
 C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
                   CALL XMAFR2(NLI,NLJ,TAU1,TAU2,IK,TAIKTA)
       
-                  DO 182 K = 1,2
-                    DO 183 L = 1,2
+                  DO 182 K = 1,NDIM-1
+                    DO 183 L = 1,NDIM-1
                       
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &              - MU*SEUIL(ISSPG)/RHOTK*FFI*FFJ*TAIKTA(K,L)*JAC*MULT
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                 IF (NDIM .EQ. 2) THEN
-                  IF (PLI+K .EQ. PLJ+L) THEN
-                  MMAT(PLI+K,PLJ+L)=1.D0
-                  ELSE
-                  MMAT(PLI+K,PLJ+L)=0.D0
-                  ENDIF
-                 ENDIF
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
  183                CONTINUE
  182              CONTINUE
  181            CONTINUE
@@ -597,7 +541,7 @@ C     FIN DE CHANGEMENT ET COPIE
           ZR(IMATT+IJ-1) = MMAT(I,J)
  210    CONTINUE
  200  CONTINUE
-C
+ 
  9999 CONTINUE
 
       CALL JEDEMA()

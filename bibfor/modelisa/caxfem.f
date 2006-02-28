@@ -1,7 +1,7 @@
       SUBROUTINE CAXFEM(FONREE,CHAR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
-      INTEGER      JFISS,IBID,IER,JSTANO,NREL
+      INTEGER      JFISS,IBID,IER,JSTANO,NREL,ADDIM,NDIM
       CHARACTER*8  REP,MOD,FISS,MA,K8BID
       CHARACTER*24 GRMA,GRNO
       CHARACTER*19 CHS,LISREL
@@ -60,6 +60,8 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 C-------------------------------------------------------------
 
       CALL JEMARQ()
+      
+      WRITE(6,*) 'CAXFEM'
 
       IF (FONREE.NE.'REEL') GOTO 9999
 
@@ -68,6 +70,9 @@ C-------------------------------------------------------------
 
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
       CALL DISMOI('F','NOM_MAILLA',MOD,'MODELE',IBID,MA,IER)
+      
+      CALL JEVEUO(MA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)
 
       CALL JEEXIN(MOD//'.FISS',IER)
       CALL ASSERT(IER.NE.0)
@@ -101,8 +106,10 @@ C     ON SUPPRIME LES DDLS DE CONTACT EN TROP
       CALL XDELCO(GRMA,MOD,LISREL,NREL)
 
 C     RELATIONS ENTRE LES INCONNUES DE CONTACT (POUR LA LBB)   
-      CALL XRELCO(FISS,MOD,MA,LISREL,NREL)      
-      
+      WRITE(6,*) 'NDIM',NDIM
+      IF (NDIM.EQ.3) THEN
+        CALL XRELCO(FISS,MOD,MA,LISREL,NREL)      
+      ENDIF
    
       IF (NREL.NE.0) CALL AFLRCH(LISREL,CHAR)
 

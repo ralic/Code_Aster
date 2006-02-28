@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF ENTETE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,6 +47,12 @@ class entier   (ASSD):
    def __init__(self,valeur=None,**args):
       ASSD.__init__(self,**args)
       self.valeur=valeur
+class reel(ASSD):
+   def __init__(self,valeur=None,**args):
+      ASSD.__init__(self,**args)
+      self.valeur=valeur
+   def __call__(self):
+      return self.valeur
 
 # Type geometriques
 class no  (GEOM):pass
@@ -311,11 +317,11 @@ class cham_elem_sdaster(cham_gd_sdaster):
       ncham=ncham+(8-len(ncham))*' '
       nchams=ncham[0:7]+'S'
       ncmp=comp+(8-len(comp))*' '
-   
+
       aster.prepcompcham(ncham,nchams,ncmp,"EL      ",topo,lgma)
-   
+
       valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
-   
+
       if (topo>0) :
          maille=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.M'))
          point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.P'))
@@ -324,9 +330,9 @@ class cham_elem_sdaster(cham_gd_sdaster):
          maille=None
          point=None
          sous_point=None
-   
+
       aster.prepcompcham("__DETR__",nchams,ncmp,"EL      ",topo,lgma)
-   
+
       return post_comp_cham_el(valeurs,maille,point,sous_point)
 
 # cham_gd/cham_no :
@@ -344,23 +350,23 @@ class cham_no_sdaster(cham_gd_sdaster):
           - self.noeud  : numero de noeud """
       if self.par_lot() :
          raise Accas.AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
-      
+
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
       nchams=ncham[0:7]+'S'
       ncmp=comp+(8-len(comp))*' '
-   
+
       aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
-   
+
       valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
-   
+
       if (topo>0) :
          noeud=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.N'))
       else :
          noeud=None
-   
+
       aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
-   
+
       return post_comp_cham_no(valeurs,noeud)
 
 # resultat_sdaster : (evol_sdaster,mode_stat,mode_meca)
@@ -704,7 +710,7 @@ class matr_asse_gene_r(matr_asse_gene):
                                 est mal cree par Code Aster")
 # Si le stockage est plein
     if desc[2]==2 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALE')[1])
+      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
       for j in range(desc[1]+1):
         for i in range(j):
@@ -715,7 +721,7 @@ class matr_asse_gene_r(matr_asse_gene):
         valeur[i,i]=0.5*valeur[i,i]
 # Si le stockage est diagonal
     elif desc[2]==1 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALE')[1])
+      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
       for i in range(desc[1]):
         valeur[i,i]=tmp[i]
@@ -761,14 +767,14 @@ class matr_asse_gene_r(matr_asse_gene):
         for i in range(j):
           k=j*(j-1)/2+i
           tmp[k]=matrice[j-1,i]
-      aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALE',len(tmp),tuple((\
+      aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALM',len(tmp),tuple((\
       range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
 # Si le stockage est diagonal
     elif desc[2]==1 :
       tmp=Numeric.zeros(desc[1],Numeric.Float)
       for j in range(desc[1]):
           tmp[j]=matrice[j,j]
-      aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALE',len(tmp),tuple((\
+      aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALM',len(tmp),tuple((\
       range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
 # Sinon on arrete tout
     else:
@@ -793,7 +799,7 @@ class matr_asse_gene_c(matr_asse_gene):
        est mal cree par Code Aster ")
 # Si le stockage est plein
     if desc[2]==2 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALE')[1])
+      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Complex)
       for j in range(desc[1]+1):
         for i in range(j):
@@ -804,7 +810,7 @@ class matr_asse_gene_c(matr_asse_gene):
         valeur[i,i]=0.5*valeur[i,i]
 # Si le stockage est diagonal
     elif desc[2]==1 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALE')[1])
+      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Complex)
       for i in range(desc[1]):
         valeur[i,i]=tmp[i]
@@ -853,7 +859,7 @@ class matr_asse_gene_c(matr_asse_gene):
           k=j*(j-1)/2+i
           tmpr[k]=matrice[j-1,i].real
           tmpc[k]=matrice[j-1,i].imag
-      aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(tmpr),tuple((\
+      aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALM',len(tmpr),tuple((\
                        range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
 # Si le stockage est diagonal
     elif desc[2]==1 :
@@ -862,7 +868,7 @@ class matr_asse_gene_c(matr_asse_gene):
       for j in range(desc[1]):
           tmpr[j]=matrice[j,j].real
           tmpc[j]=matrice[j,j].imag
-      aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(tmpr),tuple((\
+      aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALM',len(tmpr),tuple((\
                        range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
 # Sinon on arrete tout
     else:

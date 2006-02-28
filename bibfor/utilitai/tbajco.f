@@ -1,13 +1,13 @@
       SUBROUTINE TBAJCO ( NOMTA, PARA, TYPE, NBVAL, VI, VR, VC, VK,
-     &           ACTION, LIGN)
+     &           ACTION, LLIGN)
       IMPLICIT   NONE
 
-      INTEGER NBVAL, VI(*), LIGN(*)
+      INTEGER NBVAL, VI(*), LLIGN(*)
       REAL*8 VR(*)
       COMPLEX*16 VC(*)
       CHARACTER*(*) NOMTA,PARA,TYPE,VK(*),ACTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,8 @@ C IN  : VK      : LISTE DES VALEURS POUR LES PARAMETRES "K"
 C IN  : ACTION  : TYPE D ACTION A ENTREPRENDRE
 C                  'A' ON AJOUTE UNE COLONNE
 C                  'R' ON REMPLIT UNE COLONNE EXISTANTE
-C IN  : LIGNE   : LISTE DES INDICES DE LIGNES A AJOUTER EFFECTIVEMENT
+C IN  : LLIGN   : LISTE DES INDICES DE LIGNES A AJOUTER EFFECTIVEMENT
+C                 SI PREMIERE VALEUR =-1, ON AJOUTE SANS DECALAGE
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -57,17 +58,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
       INTEGER      I, IBID, IRET, JTBLP, JTBNP, NBPARA, KI, KR, KC, KK,
-     +             JVALE, JLOGQ, NBLIGN
+     +             JVALE, JLOGQ, NBLIGN, IIND
       REAL*8       RBID
       COMPLEX*16   CBID
       CHARACTER*1  KBID, ACTIOZ
       CHARACTER*3  TYPEZ, TYPEV
       CHARACTER*19 NOMTAB
-      CHARACTER*24 NOMJV, NOMJVL, PARAZ
+      CHARACTER*24 NOMJV, NOMJVL, PARAZ, INDIC
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      INDIC='&&TABJCO.IND'
+      CALL WKVECT(INDIC,'V V I',NBVAL,IIND)
       NOMTAB=' '
       NOMTAB=NOMTA
       TYPEZ=' '
@@ -90,7 +93,7 @@ C
 
       CALL JEVEUO ( NOMTAB//'.TBLP' , 'L', JTBLP )
       CALL JEVEUO ( NOMTAB//'.TBNP' , 'L', JTBNP )
-         
+
       NBPARA=ZI(JTBNP)
       NBLIGN=ZI(JTBNP+1)   
       IF(NBPARA.EQ.0) THEN
@@ -102,17 +105,23 @@ C
      &                'SUPERIEUR AU NOMBRE DE LIGNE DE LA TABLE')
       ENDIF
 
-      DO 10 I=1,NBVAL
-         IF (LIGN(I).LE.0) THEN
-            CALL UTMESS('F','TBAJCO','NUMERO DE LIGNE NEGATIF') 
-         ENDIF
-         IF (LIGN(I).GT.NBLIGN) THEN
+      IF (LLIGN(1).NE.-1) THEN
+        DO 10 I=1,NBVAL
+          ZI(IIND+I-1)=LLIGN(I)
+          IF (LLIGN(I).LE.0) THEN
+              CALL UTMESS('F','TBAJCO','NUMERO DE LIGNE NEGATIF') 
+          ENDIF
+          IF (LLIGN(I).GT.NBLIGN) THEN
             CALL UTMESS('F','TBAJCO','NUMERO DE LIGNE SUPERIEUR AU'//
      &      'NOMBRE DE LIGNE DE LA TABLE') 
-         ENDIF
+          ENDIF
+  10    CONTINUE      
+      ELSE
+        DO 20 I=1,NBVAL
+          ZI(IIND+I-1)=I
+  20    CONTINUE      
+      ENDIF
 
-  10  CONTINUE      
-      
 C  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE       
       IRET=0
       DO 40 I=1,NBPARA           
@@ -130,7 +139,7 @@ C  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE
 
       IF (TYPEV.NE.TYPEZ) THEN
          CALL UTMESS('F','TBAJCO','LES TYPES DU PARAMETRE'//
-     &   'NE CORRESPONDENT PAS ENTRE EUX.')
+     &   ' NE CORRESPONDENT PAS ENTRE EUX.')
       ENDIF
 
       CALL JEECRA ( NOMJV , 'LONUTI' ,  NBLIGN , ' ' )
@@ -142,30 +151,31 @@ C  --- REMPLISSAGE DES CELLULES DE LA COLONNE
       DO 50 I=1,NBVAL
          
          IF ( TYPEZ(1:1) .EQ. 'I' ) THEN
-            ZI(JVALE+LIGN(I)-1) = VI(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZI(JVALE+ZI(IIND+I-1)-1) = VI(I)
+            ZI(JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:1) .EQ. 'R' ) THEN
-            ZR(JVALE+LIGN(I)-1) = VR(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZR(JVALE+ZI(IIND+I-1)-1) = VR(I)
+            ZI(JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:1) .EQ. 'C' ) THEN
-            ZC(JVALE+LIGN(I)-1) = VC(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZC(JVALE+ZI(IIND+I-1)-1) = VC(I)
+            ZI(JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K80' ) THEN
-            ZK80(JVALE+LIGN(I)-1) = VK(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZK80(JVALE+ZI(IIND+I-1)-1) = VK(I)
+            ZI(  JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K32' ) THEN
-            ZK32(JVALE+LIGN(I)-1) = VK(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZK32(JVALE+ZI(IIND+I-1)-1) = VK(I)
+            ZI(  JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K24' ) THEN
-            ZK24(JVALE+LIGN(I)-1) = VK(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZK24(JVALE+ZI(IIND+I-1)-1) = VK(I)
+            ZI(  JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K16' ) THEN
-            ZK16(JVALE+LIGN(I)-1) = VK(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZK16(JVALE+ZI(IIND+I-1)-1) = VK(I)
+            ZI(  JLOGQ+ZI(IIND+I-1)-1) = 1
          ELSEIF ( TYPEZ(1:2) .EQ. 'K8' ) THEN
-            ZK8(JVALE+LIGN(I)-1) = VK(I)
-            ZI(JLOGQ+LIGN(I)-1) = 1
+            ZK8(JVALE+ZI(IIND+I-1)-1) = VK(I)
+            ZI( JLOGQ+ZI(IIND+I-1)-1) = 1
          ENDIF
   50  CONTINUE
+      CALL JEDETR(INDIC)
       CALL JEDEMA()
       END

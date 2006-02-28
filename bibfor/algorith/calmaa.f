@@ -2,7 +2,7 @@
      &                  MAA)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C--------- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*16 OPTION
       CHARACTER*19 MAA
       CHARACTER*24 LCHOUT(1),LCHIN(1),LIGRMO
+      REAL*8  RTBLOC,JEVTBL
 
 
 
@@ -81,14 +82,15 @@ C--------------------D'INTERFACE -----------------------------------
 C-------------------- NUMEROTATION ----------------------------------
 
       NUM = '&&CALMAA.NUM'//DIR
-      CALL NUMDDL(NUM,'V',1,MATEL,'RCMK','LIGN_CIEL')
-      CALL PROLCI(NUM,400.D0,'S','V')
+      CALL NUMDDL(NUM,'V',1,MATEL,'RCMK')
+      CALL PROMOR(NUM,'V')
+      CALL CRNSLV(NUM,'MULT_FRO','METIS','V')
 
 C---------------ASSEMBLAGE DES MATRICES AX OU AY DES N(I)N(J)NX OU NY
 
       MAA = '&&CA.AA'//DIR
 
-      CALL ASSMAT('V',MAA,1,LCHOUT,1.D0,NUM,'ZERO',1)
+      CALL ASSMAM('V',MAA,1,LCHOUT,1.D0,NUM,'ZERO',1)
 
 
    10 CONTINUE

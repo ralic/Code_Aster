@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,10 +20,12 @@
 #
 
 
-DEBUT(CODE=_F(NOM='SSLL107F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
+DEBUT(CODE=_F(NOM='SSLL107F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 
 TCARS=MACR_CARA_POUTRE(GROUP_MA_BORD='LCERC',
-                        NOEUD='N1',);
+                        NOEUD='N1',)
+
+IMPR_TABLE( TABLE=TCARS )
 #
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
 #
@@ -31,142 +33,136 @@ TCARS=MACR_CARA_POUTRE(GROUP_MA_BORD='LCERC',
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='AIRE',REFERENCE='ANALYTIQUE',
            VALE=1.963495E-3,
-           PRECISION=5.0000000000000001E-3,);
+           PRECISION=5.0E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='CDG_X',REFERENCE='ANALYTIQUE',
            VALE=0.0,
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='CDG_Y',REFERENCE='ANALYTIQUE',
            VALE=0.0,
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='IX_G',REFERENCE='ANALYTIQUE',
-           VALE=3.0679610000000001E-07,
-           PRECISION=8.9999999999999993E-3,);
+           VALE=3.067961E-07,
+           PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='IY_G',REFERENCE='ANALYTIQUE',
-           VALE=3.0679610000000001E-07,
-           PRECISION=8.9999999999999993E-3,);
+           VALE=3.067961E-07,
+           PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='IXY_G',REFERENCE='ANALYTIQUE',
            VALE=0.0,
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='IY_PRIN_G',REFERENCE='ANALYTIQUE',
-           VALE=3.0679610000000001E-07,
-           PRECISION=8.9999999999999993E-3,);
+           VALE=3.067961E-07,
+           PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='IZ_PRIN_G',REFERENCE='ANALYTIQUE',
-           VALE=3.0679610000000001E-07,
-           PRECISION=8.9999999999999993E-3,);
+           VALE=3.067961E-07,
+           PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='Y_MIN',REFERENCE='ANALYTIQUE',
-           VALE=-0.025000000000000001,);
+           VALE=-0.025,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='Y_MAX',REFERENCE='ANALYTIQUE',
-           VALE=0.025000000000000001,);
+           VALE=0.025,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='Z_MIN',REFERENCE='ANALYTIQUE',
-           VALE=-0.025000000000000001,);
+           VALE=-0.025,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='Z_MAX',REFERENCE='ANALYTIQUE',
-           VALE=0.025000000000000001,);
+           VALE=0.025,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='CT',REFERENCE='ANALYTIQUE',
-           VALE=6.1358999999999998E-07,
-           PRECISION=8.9999999999999993E-3,);
+           VALE=6.1359E-07,
+           PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='AY',REFERENCE='ANALYTIQUE',
-           VALE=1.1666666667000001,);
+           VALE=1.1666667,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='AZ',REFERENCE='ANALYTIQUE',
-           VALE=1.1666666667000001,);
+           VALE=1.1666667,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='EY',
            VALE=0.0,REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='EZ',
            VALE=0.0,REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000003',),
+                     VALE_K='.9000010',),
            NOM_PARA='JG',
            VALE=0.0,REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',);
 
 
-
-
-
 # TEST DE L'ENCHAINEMENT AVEC UN CALCUL POUTRE
 #
-
-
-IMPR_TABLE( TABLE=TCARS )
 
 #
 #     Affectation du reel contenu dans la table TCARS
 #     (ligne 'DX', colonne 1) dans la variable python pop
 #
 
-rext=TCARS['Y_MAX',2]
+#rext=TCARS['Y_MAX',2]
 
-#rext=2.5E-2
+rext=2.5E-2
 
 MA=LIRE_MAILLAGE(UNITE=21);
 
@@ -178,7 +174,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 E=2.E11;
 
 MATR=DEFI_MATERIAU(ELAS=_F(E=E,
-                           NU=0.29999999999999999,),);
+                           NU=0.3,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -189,7 +185,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      POUTRE=_F(GROUP_MA='G4',
                                SECTION='CERCLE',
                                CARA=('R'),
-                            #   VALE=(0.025000000000000001)
+                            #   VALE=(0.025)
                                VALE=rext)
                                ,)
 
@@ -223,8 +219,6 @@ R = 0.025;
 
 UX = FTOT/E/pi/R/R
 
-
-
 TEST_RESU(RESU=(
                 _F(RESULTAT=MEST5,
                    NUME_ORDRE=1,
@@ -242,3 +236,4 @@ TEST_RESU(RESU=(
                    )
 
 FIN()
+

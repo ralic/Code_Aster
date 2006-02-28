@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   INTE_MAIL_2D    =self.get_cmd('INTE_MAIL_2D')
   POST_RELEVE_T   =self.get_cmd('POST_RELEVE_T')
   IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
-  IMPR_CO         =self.get_cmd('IMPR_CO')
+  CREA_TABLE      =self.get_cmd('CREA_TABLE')
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
@@ -77,6 +77,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                          AFFE=_F(TOUT='OUI',
                                  MATER=__nomdma,),  )
 
+
 # --- CALCUL DES CARACTERISTIQUES GEOMETRIQUES DE LA SECTION :
 #     ------------------------------------------------------
 
@@ -86,10 +87,9 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   if SYME_Y    : motsimps['SYME_Y']    = SYME_Y
   motsimps['ORIG_INER'] = ORIG_INER
   mfact=_F(TOUT='OUI',**motsimps)
-  nomres=POST_ELEM(MODELE=__nomamo,
-                   CHAM_MATER=__nomama,
-                   CARA_GEOM=mfact    )
-
+  __cageo=POST_ELEM(MODELE=__nomamo,
+                    CHAM_MATER=__nomama,
+                    CARA_GEOM=mfact    )
 # nb  :  si GROUP_MA n existe pas : le mot clé est ignoré
 
 #
@@ -104,6 +104,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 #     ==================================================================
 
   if GROUP_MA_BORD and not GROUP_MA:
+
 # --- TRANSFORMATION DES GROUP_MA EN GROUP_NO SUR-LESQUELS
 # --- ON POURRA APPLIQUER DES CONDITIONS DE TEMPERATURE IMPOSEE :
 #     ---------------------------------------------------------
@@ -126,7 +127,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 #     ---------------------------------------------------------------
 
      __nomapi=CREA_MAILLAGE(MAILLAGE=__nomlma,
-                            REPERE=_F(TABLE=nomres,
+                            REPERE=_F(TABLE=__cageo,
                                       NOM_ORIG='CDG',  ),  )
 
 # --- AFFECTATION DU PHENOMENE 'THERMIQUE' AU MODELE EN VUE DE
@@ -353,36 +354,34 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      if args.has_key('GROUP_MA_INTE'):
         lgmaint=args['GROUP_MA_INTE']
         if lgmaint != None :
-           motscles['CARA_POUTRE']=_F(CARA_GEOM=nomres,
+           motscles['CARA_POUTRE']=_F(CARA_GEOM=__cageo,
                                    LAPL_PHI=__tempe1,
                                    RT=__rt,
                                    TOUT='OUI',
                                    OPTION='CARA_TORSION',
                                    GROUP_MA_INTE=args['GROUP_MA_INTE'],)
         else:
-           motscles['CARA_POUTRE']=_F(CARA_GEOM=nomres,
+           motscles['CARA_POUTRE']=_F(CARA_GEOM=__cageo,
                                     LAPL_PHI=__tempe1,
                                     RT=__rt,  
                                     TOUT='OUI',
                                     OPTION='CARA_TORSION',      )
-     nomres=POST_ELEM(reuse=nomres,
-                      MODELE=__nomoth,
-                      CHAM_MATER=__chmath,
-                      **motscles  )
+     __cator=POST_ELEM(MODELE=__nomoth,
+                       CHAM_MATER=__chmath,
+                       **motscles  )
  
 
 # --- CALCUL DES COEFFICIENTS DE CISAILLEMENT ET DES COORDONNEES DU
 # --- CENTRE DE CISAILLEMENT/TORSION :
 #     ------------------------------
 
-     nomres=POST_ELEM(reuse=nomres,
-                      MODELE=__nomoth,
-                      CHAM_MATER=__chmath,
-                      CARA_POUTRE=_F(CARA_GEOM=nomres,
-                                     LAPL_PHI_Y=__tempe2,
-                                     LAPL_PHI_Z=__tempe3,
-                                     TOUT='OUI',
-                                     OPTION='CARA_CISAILLEMENT',),  )
+     __cacis=POST_ELEM(MODELE=__nomoth,
+                       CHAM_MATER=__chmath,
+                       CARA_POUTRE=_F(CARA_GEOM=__cator,
+                                      LAPL_PHI_Y=__tempe2,
+                                      LAPL_PHI_Z=__tempe3,
+                                      TOUT='OUI',
+                                      OPTION='CARA_CISAILLEMENT',),  )
      
 
 #
@@ -408,7 +407,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 #     ----------
 
      __nomapt=CREA_MAILLAGE(MAILLAGE=__nomapi,
-                            REPERE=_F(TABLE=nomres,
+                            REPERE=_F(TABLE=__cacis,
                                       NOM_ORIG='TORSION',)  )
 
 # --- AFFECTATION DU PHENOMENE 'THERMIQUE' AU MODELE EN VUE DE
@@ -540,10 +539,9 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- CALCUL DE L INERTIE DE GAUCHISSEMENT :
 #     -------------------------------------
 
-     nomres=POST_ELEM(reuse=nomres,
-                      MODELE=__nomot2,
+     nomres=POST_ELEM(MODELE=__nomot2,
                       CHAM_MATER=__chmat2,
-                      CARA_POUTRE=_F(CARA_GEOM=nomres,
+                      CARA_POUTRE=_F(CARA_GEOM=__cacis,
                                      LAPL_PHI=__tempe4,
                                      TOUT='OUI',
                                      OPTION='CARA_GAUCHI'),  )
@@ -562,6 +560,9 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
 
   if GROUP_MA_BORD and GROUP_MA:
+
+# --- CALCUL DES CARACTERISTIQUES GEOMETRIQUES DE LA SECTION :
+#     ------------------------------------------------------
 
      if type(GROUP_MA_BORD)==types.StringType :
         l_group_ma_bord=[GROUP_MA_BORD,]
@@ -583,6 +584,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      if args.has_key('NOEUD') and (len(l_group_ma)!=len(l_noeud)):
         UTMESS('F', "MACR_CARA_POUTRE", "GROUP_MA et NOEUD incoherents")
 
+     __catp2=__cageo
      for i in range(0,len(l_group_ma_bord)):
 
 # --- TRANSFORMATION DES GROUP_MA EN GROUP_NO SUR-LESQUELS
@@ -600,7 +602,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 #     ---------------------------------------------------------------
 
         __nomapi=CREA_MAILLAGE(MAILLAGE=__nomlma,
-                               REPERE=_F(TABLE=nomres,
+                               REPERE=_F(TABLE=__cageo,
                                          NOM_ORIG='CDG',
                                          GROUP_MA=l_group_ma[i],  ),  )
 
@@ -781,30 +783,35 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- CALCUL DE LA CONSTANTE DE TORSION :
 #     ---------------------------------
              
-        nomres=POST_ELEM(reuse=nomres,
-                         MODELE=__nomoth,
-                         CHAM_MATER=__chmath,
-                         CARA_POUTRE=_F(CARA_GEOM=nomres,
-                                        LAPL_PHI=__tempe1,
-                                        RT=__rt,
-                                        GROUP_MA=l_group_ma[i],
-                                        OPTION='CARA_TORSION' ),     )
+        __catp1=POST_ELEM(MODELE=__nomoth,
+                          CHAM_MATER=__chmath,
+                          CARA_POUTRE=_F(CARA_GEOM=__catp2,
+                                         LAPL_PHI=__tempe1,
+                                         RT=__rt,
+                                         GROUP_MA=l_group_ma[i],
+                                         OPTION='CARA_TORSION' ),     )
 
 # --- CALCUL DES COEFFICIENTS DE CISAILLEMENT ET DES COORDONNEES DU
 # --- CENTRE DE CISAILLEMENT/TORSION :
 #     ------------------------------
 
-        nomres=POST_ELEM(reuse=nomres,
-                         MODELE=__nomoth,
-                         CHAM_MATER=__chmath,
-                         CARA_POUTRE=_F(CARA_GEOM=nomres,
-                                        LAPL_PHI_Y=__tempe2,
-                                        LAPL_PHI_Z=__tempe3,
-                                        GROUP_MA=l_group_ma[i],
-                                        LONGUEUR=args['LONGUEUR'],
-                                        MATERIAU=args['MATERIAU'],
-                                        LIAISON =args['LIAISON'],
-                                        OPTION='CARA_CISAILLEMENT' ),   )
+        __catp2=POST_ELEM(MODELE=__nomoth,
+                          CHAM_MATER=__chmath,
+                          CARA_POUTRE=_F(CARA_GEOM=__catp1,
+                                         LAPL_PHI_Y=__tempe2,
+                                         LAPL_PHI_Z=__tempe3,
+                                         GROUP_MA=l_group_ma[i],
+                                         LONGUEUR=args['LONGUEUR'],
+                                         MATERIAU=args['MATERIAU'],
+                                         LIAISON =args['LIAISON'],
+                                         OPTION='CARA_CISAILLEMENT' ),   )
+        IMPR_TABLE(TABLE=__catp2)
+     dprod  = __catp2.EXTR_TABLE().dict_CREA_TABLE()
+     nomres = CREA_TABLE(**dprod)
+  if not GROUP_MA_BORD :
+     nomres=POST_ELEM(MODELE=__nomamo,
+                      CHAM_MATER=__nomama,
+                      CARA_GEOM=mfact    )
   IMPR_TABLE(TABLE=nomres)
 
   return ier

@@ -1,5 +1,5 @@
-# MODIF  DATE 21/06/2005   AUTEUR MCOURTOI M.COURTOIS 
-# TITRE TEST IMPR_FONCTION ET METHODES PYTHON DE TRACE
+# MODIF  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+# TITRE TEST IMPR_FONCTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM = 'ZZZZ140A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON', ),
-   PAR_LOT='NON',
-)
+DEBUT(CODE=_F(NOM = 'ZZZZ140A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON', ),)
 
 # ------------------------------------------------------------------------------
 # COURBE DE TRACTION
@@ -138,21 +136,6 @@ TEST_FICHIER(
 )
 
 # ------------------------------------------------------------------------------
-A5.Trace(FORMAT='AGRAF',FICHIER=('A5.dogr','A5.digr'))
-TEST_FICHIER(
-   FICHIER='A5.dogr',
-   VALE_K='8869480960c43875ba2ee3ec0588c9e3',
-   REFERENCE='NON_REGRESSION',
-   VERSION='7.4.0',
-)
-TEST_FICHIER(
-   FICHIER='A5.digr',
-   VALE_K='9283df657c2fa170d6c422e6d94b4dc4',
-   REFERENCE='NON_REGRESSION',
-   VERSION='7.4.0',
-)
-
-# ------------------------------------------------------------------------------
 DEFI_FICHIER(UNITE=54, FICHIER='./REPE_OUT/unite.54')
 IMPR_FONCTION(
    FORMAT='XMGRACE',
@@ -167,15 +150,6 @@ DEFI_FICHIER(UNITE=54, ACTION='LIBERER')
 TEST_FICHIER(
    FICHIER='./REPE_OUT/unite.54',
    VALE_K='e80ba4454850c406d162e377a1e720b0',
-   REFERENCE='NON_REGRESSION',
-   VERSION='7.4.0',
-)
-
-# ------------------------------------------------------------------------------
-CTRACB.Trace(FORMAT='XMGRACE',FICHIER='fort.55')
-TEST_FICHIER(
-   FICHIER='fort.55',
-   VALE_K='9c840c55e3e2eee6fa27babbdbf95850',
    REFERENCE='NON_REGRESSION',
    VERSION='7.4.0',
 )

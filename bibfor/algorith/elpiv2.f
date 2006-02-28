@@ -2,7 +2,7 @@
      &                  LLF,LLF1,LLF2,NOMA,DEFICO,RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,28 +41,28 @@ C  ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT/FROTTEMENT
 C
 C IN  XJVMAX : VALEUR DU PIVOT MAX
 C IN  NDIM   : DIMENSION DU PROBLEME
-C OUT INDIC  : +1 ON A RAJOUTE UNE LIAISON 
-C              -1 ON A ENLEVE UNE LIAISON  
+C OUT INDIC  : +1 ON A RAJOUTE UNE LIAISON
+C              -1 ON A ENLEVE UNE LIAISON
 C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES
 C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
-C              LIAISON CORRECTE DU CALCUL 
+C              LIAISON CORRECTE DU CALCUL
 C              DE LA MATRICE DE CONTACT ACM1AT
 C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
 C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
 C IN  NOMA   : NOM DU MAILLAGE
 C I/O LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
-C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX
 C               DIRECTIONS SIMULTANEES (EN 3D)
-C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               PREMIERE DIRECTION (EN 3D)
-C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               SECONDE DIRECTION (EN 3D)
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C                'E': RESOCO(1:14)//'.LIAC'
 C                'E': RESOCO(1:14)//'.LIOT'
 C
-C      
+C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
       CHARACTER*32 JEXNUM
@@ -86,19 +86,19 @@ C
       INTEGER       KK1,KK2,JVA,NIV,ILIAC,IFM
       INTEGER       NOTE2,NOTE1,NOTE12,NOTE,NBLIAI,LLF0
       INTEGER       PIVOT2,LLIAC,IBID,POSIT
-      INTEGER       BTOTAL,DEKLAG,PIVOT,JDESC,NBBLOC,JOUV
+      INTEGER       BTOTAL,DEKLAG,PIVOT,JSCDE,NBBLOC,JOUV
       REAL*8        COPMAX
       CHARACTER*1   TYPEAJ, TYPESP
       CHARACTER*2   TYPEC0, TYPEF0, TYPEF1, TYPEF2
       CHARACTER*19  LIAC,LIOT,MATR,STOC,OUVERT
-      INTEGER       JLIAC,JLIOT,JVALE,IIABL,II,DERCOL,BLOC,JABLO
+      INTEGER       JLIAC,JLIOT,JVALE,ISCIB,II,DERCOL,BLOC,JSCBL
       CHARACTER*24  APPARI,CONTNO,CONTMA
       INTEGER       JAPPAR,JNOCO,JMACO
 C ======================================================================
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
 C ======================================================================
-C --- LECTURE DES STRUCTURES DE DONNEES 
+C --- LECTURE DES STRUCTURES DE DONNEES
 C ======================================================================
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       CONTMA = DEFICO(1:16)//'.MAILCO'
@@ -113,13 +113,13 @@ C ======================================================================
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(LIAC  ,'E',JLIAC )
       CALL JEVEUO(LIOT  ,'E',JLIOT )
-      CALL JEVEUO (STOC//'.IABL','L',IIABL)
-      CALL JEVEUO (STOC//'.ABLO','L',JABLO)
-      CALL JEVEUO (STOC//'.DESC','L',JDESC)
+      CALL JEVEUO (STOC//'.SCIB','L',ISCIB)
+      CALL JEVEUO (STOC//'.SCBL','L',JSCBL)
+      CALL JEVEUO (STOC//'.SCDE','L',JSCDE)
 C ======================================================================
 C --- INITIALISATION DES VARIABLES
 C ======================================================================
-      NBBLOC = ZI(JDESC+2)
+      NBBLOC = ZI(JSCDE-1+3)
       NBLIAI = ZI(JAPPAR )
       IBID   = 0
       PIVOT  = 0
@@ -139,8 +139,8 @@ C ======================================================================
          LLF0 = 0
       ENDIF
 C ======================================================================
-C --- VERIFICATION DE LA PRESENCE OU NON D'UN PIVOT NUL 
-C --- SUR L'ENSEMBLE DES LIAISONS EN CONTACT ET ADHERENTES 
+C --- VERIFICATION DE LA PRESENCE OU NON D'UN PIVOT NUL
+C --- SUR L'ENSEMBLE DES LIAISONS EN CONTACT ET ADHERENTES
 C ======================================================================
       BTOTAL = NBLIAC + LLF + LLF1 + LLF2 - 1
       DO 90 KK1 = 0, BTOTAL
@@ -150,17 +150,17 @@ C ======================================================================
          GOTO (1000, 2000, 3000, 4000) POSIT
  1000    CONTINUE
 C ======================================================================
-C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE CONTACT 
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE CONTACT
 C ======================================================================
-         II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
-         DERCOL=ZI(JABLO+II-1)
+         II = ZI(ISCIB-1+ILIAC+LLF0-DEKLAG)
+         DERCOL=ZI(JSCBL+II-1)
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-               CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+               CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
                ZL(JOUV+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -177,13 +177,13 @@ C ======================================================================
             END IF
  10      CONTINUE
 C ======================================================================
-C --- ON INCREMENTE LE VECTEUR DES LIAISONS OTEES LIOT 
+C --- ON INCREMENTE LE VECTEUR DES LIAISONS OTEES LIOT
 C ======================================================================
          ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
          NOTE = ZI(JLIOT+4*NBLIAI)
          ZI(JLIOT-1+NOTE) = LLIAC
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT 
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT
 C ======================================================================
          CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &               RESOCO,TYPESP,ILIAC,LLIAC,TYPEC0)
@@ -192,20 +192,20 @@ C ======================================================================
          GOTO 100
  2000    CONTINUE
 C ======================================================================
-C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT 
-C --- (DANS LE CAS GENERAL EN 2D/SUIVANT LES DEUX DIRECTIONS EN 3D) 
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
+C --- (DANS LE CAS GENERAL EN 2D/SUIVANT LES DEUX DIRECTIONS EN 3D)
 C ======================================================================
          IF (NDIM.EQ.3) THEN
             DEKLAG = DEKLAG + 1
-            II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
-            DERCOL=ZI(JABLO+II-1)
+            II = ZI(ISCIB-1+ILIAC+LLF0-DEKLAG)
+            DERCOL=ZI(JSCBL+II-1)
             BLOC=DERCOL*(DERCOL+1)/2
             IF (.NOT.ZL(JOUV-1+II)) THEN
                IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-                  CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+                  CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
                   ZL(JOUV+II)=.FALSE.
                ENDIF
-               CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+               CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
                ZL(JOUV-1+II)=.TRUE.
             ENDIF
             JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -215,7 +215,7 @@ C ======================================================================
                   PIVOT = 1
                ELSE
 C ======================================================================
-C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE 
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 C ======================================================================
                   PIVOT = 0
                ENDIF
@@ -234,18 +234,18 @@ C ======================================================================
             IF (PIVOT.EQ.0) THEN
                IF (PIVOT2.EQ.0) THEN
 C ======================================================================
-C --- PAS D'ELIMINATION DE PIVOT 
+C --- PAS D'ELIMINATION DE PIVOT
 C ======================================================================
                   GOTO 90
                ELSE
 C ======================================================================
-C --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION 
+C --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION
 C ======================================================================
                   ZI(JLIOT+4*NBLIAI+3) = ZI(JLIOT+4*NBLIAI+3) + 1
                   NOTE2 = ZI(JLIOT+4*NBLIAI+3)
                   ZI(JLIOT-1+NOTE2+3*NBLIAI) = LLIAC
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT 
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C --- ON SUPPRIME LA DOUBLE (F0), ON AJOUTE LA F1 -> LA F2 EST SUPPRIMEE
 C ======================================================================
                   CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
@@ -261,7 +261,7 @@ C ======================================================================
             ELSE
                IF (PIVOT2.EQ.0) THEN
 C ======================================================================
-C --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION 
+C --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION
 C ======================================================================
                   ZI(JLIOT+4*NBLIAI+2) = ZI(JLIOT+4*NBLIAI+2) + 1
                   NOTE1 = ZI(JLIOT+4*NBLIAI+2)
@@ -279,13 +279,13 @@ C ======================================================================
                   GOTO 100
                ELSE
 C ======================================================================
-C --- ELIMINATION DU PIVOT NUL SUIVANT LES DEUX DIRECTIONS 
+C --- ELIMINATION DU PIVOT NUL SUIVANT LES DEUX DIRECTIONS
 C ======================================================================
                   ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
                   NOTE12 = ZI(JLIOT+4*NBLIAI+1)
                   ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT 
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
                   CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      +                         RESOCO,TYPESP,ILIAC,LLIAC,TYPEF0)
@@ -293,15 +293,15 @@ C ======================================================================
                ENDIF
             ENDIF
          ELSE
-            II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
-            DERCOL=ZI(JABLO+II-1)
+            II = ZI(ISCIB-1+ILIAC+LLF0-DEKLAG)
+            DERCOL=ZI(JSCBL+II-1)
             BLOC=DERCOL*(DERCOL+1)/2
             IF (.NOT.ZL(JOUV-1+II)) THEN
                IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-                  CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+                  CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
                   ZL(JOUV+II)=.FALSE.
                ENDIF
-               CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+               CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
                ZL(JOUV-1+II)=.TRUE.
             ENDIF
             JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -311,7 +311,7 @@ C ======================================================================
                   PIVOT = 1
                ELSE
 C ======================================================================
-C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE 
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 C ======================================================================
                   PIVOT = 0
                   GOTO 90
@@ -321,7 +321,7 @@ C ======================================================================
             NOTE12 = ZI(JLIOT+4*NBLIAI+1)
             ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT 
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
             CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +                             RESOCO, TYPESP, ILIAC, LLIAC, TYPEF0)
@@ -331,18 +331,18 @@ C ======================================================================
          ENDIF
  3000    CONTINUE
 C ======================================================================
-C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT 
-C --- SUIVANT LA PREMIERE DIRECTION EN 3D 
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
+C --- SUIVANT LA PREMIERE DIRECTION EN 3D
 C ======================================================================
-         II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
-         DERCOL=ZI(JABLO+II-1)
+         II = ZI(ISCIB-1+ILIAC+LLF0-DEKLAG)
+         DERCOL=ZI(JSCBL+II-1)
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-               CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+               CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
                ZL(JOUV+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -352,7 +352,7 @@ C ======================================================================
                PIVOT = 1
             ELSE
 C ======================================================================
-C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE 
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 C ======================================================================
                PIVOT = 0
                GOTO 90
@@ -362,7 +362,7 @@ C ======================================================================
          NOTE12 = ZI(JLIOT+4*NBLIAI+1)
          ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT 
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
          CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +               RESOCO, TYPESP, ILIAC, LLIAC, TYPEF1)
@@ -371,18 +371,18 @@ C ======================================================================
          GOTO 100
  4000    CONTINUE
 C ======================================================================
-C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT 
-C --- SUIVANT LA SECONDE DIRECTION EN 3D 
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
+C --- SUIVANT LA SECONDE DIRECTION EN 3D
 C ======================================================================
-         II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
-         DERCOL=ZI(JABLO+II-1)
+         II = ZI(ISCIB-1+ILIAC+LLF0-DEKLAG)
+         DERCOL=ZI(JSCBL+II-1)
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-               CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+               CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
                ZL(JOUV+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -392,7 +392,7 @@ C ======================================================================
                PIVOT = 1
             ELSE
 C ======================================================================
-C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE 
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 C ======================================================================
                PIVOT = 0
                GOTO 90
@@ -402,7 +402,7 @@ C ======================================================================
          NOTE12 = ZI(JLIOT+4*NBLIAI+1)
          ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT 
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
          CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +               RESOCO, TYPESP, ILIAC, LLIAC, TYPEF2)

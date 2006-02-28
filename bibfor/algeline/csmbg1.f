@@ -4,7 +4,7 @@
       CHARACTER*(*) MAT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,10 +85,16 @@ C     DEBUT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       KMAT = MAT
-      CALL JEVEUO(KMAT//'.REFA','L',LREFE)
-      KSTOC = ZK24(LREFE+2)
-      CALL JEVEUO(KSTOC//'.DESC','L',LDESC)
-      NEQ    = ZI(LDESC)
+      CALL JEVEUO(KMAT//'.REFA','L',JREFA)
+      KSTOC = ZK24(JREFA-1+2)(1:14)//'.SMOS'
+      CALL JEEXIN(KSTOC//'.SMDE',IER)
+      IF (IER.NE.0) THEN
+         CALL JEVEUO(KSTOC//'.SMDE','L',JSMDE)
+         NEQ    = ZI(JSMDE-1+1)
+      ELSE
+         CALL JEVEUO(KSTOC//'.SCDE','L',JSCDE)
+         NEQ    = ZI(JSCDE-1+1)
+      END IF
       CALL JEEXIN(KMAT//'.LLIG',IRET)
       IF (IRET.EQ.0) GOTO 9999
       CALL JEVEUO(KMAT//'.LLIG','L',IDLLIG)
@@ -101,7 +107,7 @@ C-----------------------------------------------------------------------
 C
 C     ------------------------------------------------------------------
 C
-      CALL JELIRA(JEXNUM(KMAT//'.VALE',1),'TYPE',IBID,KBID)
+      CALL JELIRA(JEXNUM(KMAT//'.VALM',1),'TYPE',IBID,KBID)
       CALL ASSERT(KBID.EQ.'R')
       CALL CSMBR8 (KMAT,ZI(IDLLIG),ZI(IDALIG),
      +                 ZI(IDABLI),NEQ,NBLI,VCINE,VSMB)

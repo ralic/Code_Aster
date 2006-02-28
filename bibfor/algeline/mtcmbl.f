@@ -8,7 +8,7 @@
       REAL*8           CONST(NBCOMB)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/02/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,11 +86,10 @@ C     NBLIC  = NOMBRE DE BLOCS DU .VALI
       INTEGER               LGBLOC, NBLIC
 C     -----------------------------------------------------------------
       CHARACTER*1   BASE, CLAS, CLASI
-      CHARACTER*4   ETAMAT, ETAMA1
       CHARACTER*8   K8BID
       CHARACTER*19  MATRES,MATI,MAT1
 C     -----------------------------------------------------------------
-      INTEGER JREFA,JREFI
+      INTEGER JREFA,JREFAI
 
 C
 C --- VERIFICATION DE LA COHERENCE DES MATRICES A COMBINER
@@ -111,33 +110,26 @@ C
       DO 10 I = 1, NBCOMB
         CALL MTDSCR(LIMAT(I))
         CALL JEVEUO(LIMAT(I)(1:19)//'.&INT','E',ZI(IDLIMA+I-1))
+C       CALL VERISD('MATRICE',LIMAT(I))
    10 CONTINUE
 C
-      CALL JELIRA(LIMAT(1)(1:19)//'.REFA','DOCU',IBID,ETAMA1)
       CALL JEVEUO(LIMAT(1)(1:19)//'.REFA','L',JREFA)
-      IF (ETAMA1.NE.'ASSE')  CALL UTMESS('F','MTCMBL',
-     +    'LES MATRICES A COMBINER NE SONT PAS DE TYPE ASSE')
 C
       IER1 = 0
       DO 20 I = 2, NBCOMB
-
-         CALL JELIRA(LIMAT(I)(1:19)//'.REFA','DOCU',IBID,
-     +               ETAMAT)
-         CALL JEVEUO(LIMAT(I)(1:19)//'.REFA','L',JREFI)
-         IF (ZK24(JREFA+1).NE.ZK24(JREFI+1)) THEN
-            IER1=1
-         ENDIF
-         IF (ZK24(JREFA).NE.ZK24(JREFI)) THEN
+         CALL JEVEUO(LIMAT(I)(1:19)//'.REFA','L',JREFAI)
+         IF (ZK24(JREFA-1+2).NE.ZK24(JREFAI-1+2)) IER1=1
+         IF (ZK24(JREFA-1+2).NE.ZK24(JREFAI-1+2)) IER1=1
+         IF (ZK24(JREFA-1+1).NE.ZK24(JREFAI-1+1)) THEN
               CALL UTMESS('F','MTCMBL','LES MATRICES A COMBINER NE '//
      +                     'SONT PAS CONSTRUITES SUR LE MEME MAILLAGE')
          ENDIF
-
-         IF (ETAMAT.NE.'ASSE')  CALL UTMESS('F','MTCMBL',
-     +      'LES MATRICES A COMBINER NE SONT PAS DE TYPE ASSE')
   20  CONTINUE
-C
-C --- COMBINAISON LINEAIRE DES .VALE DES MATRICES :
+
+
+C --- COMBINAISON LINEAIRE DES .VALM DES MATRICES :
 C     ===========================================
+
 C ---   CAS OU LES MATRICES A COMBINER ONT LE MEME PROFIL :
 C       -------------------------------------------------
       IF (IER1.EQ.0) THEN
@@ -145,22 +137,17 @@ C       -------------------------------------------------
         CALL JEVEUO(MATRES//'.&INT','E',LRES)
         CALL CBVALE(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,LRES,
      +              DDLEXC)
+
 C ---   CAS OU LES MATRICES A COMBINER N'ONT PAS LE MEME PROFIL :
 C       -------------------------------------------------------
       ELSE
-        CALL PROLMA(MATRES, LIMAT, NBCOMB, BASE,NUMEDD,FACSYM)
+        CALL PROSMO(MATRES, LIMAT, NBCOMB, BASE,NUMEDD,FACSYM)
         CALL MTDSCR(MATRES)
         CALL JEVEUO(MATRES//'.&INT','E',LRES)
         CALL CBVAL2(NBCOMB,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
      +              LRES,DDLEXC)
       ENDIF
-C
-C --- AFFECTATION DE L'ETAT DE LA PREMIERE MATRICE A COMBINER
-C --- A LA MATRICE RESULTAT
-C --- CET ETAT NE PEUT ETRE QUE 'ASSE' PUISQUE L'ON NE FAIT PAS
-C --- DE COMBINAISON LINEAIRE DE MATRICES DECOMPOSEES :
-C     -----------------------------------------------
-      CALL JEECRA(MATRES//'.REFA','DOCU',IBID,ETAMA1)
+
 C
 C --- TRAITEMENT DE LA S.D. ELIM_DDL
 C --- I.E. C'EST LE CAS OU IL Y A DES DDLS ELIMINES DANS LES
@@ -271,4 +258,6 @@ C
       CALL JEDETR('&&MTCMBL.LISPOINT')
 C
       CALL JEDEMA()
+      CALL UTIMSD(6,-1,.FALSE.,.TRUE.,MATRES,1,' ')
+C     CALL VERISD('MATRICE',MATRES)
       END

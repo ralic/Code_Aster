@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,14 +45,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4  CTYP
       CHARACTER*8  K8B, MODELE, CARA, DEFORM, RESUCO, CRIT
       CHARACTER*16 CONCEP, NOMCMD
-      CHARACTER*19 RESU, KCHA, KNUM,TABTYP(3)
+      CHARACTER*19 RESU, KCHA, KNUM, TABTYP(3)
       CHARACTER*24 MATE, CHDEF
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
 C
       CALL GETRES ( RESU, CONCEP, NOMCMD )
-
+C
       CALL GETVID ( ' ', 'RESULTAT' , 0,1,1, RESUCO, NR )
 C                         
       IF(NR.EQ.0) RESUCO='        '
@@ -211,8 +211,7 @@ C                   -------------
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
-         CALL PECAPO ( RESU, MODELE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC )
+         CALL PECAPO ( RESU, MODELE, CARA, NCHAR, ZK8(JCHA), NH )
 
       ENDIF
 

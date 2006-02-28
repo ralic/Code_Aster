@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C     ----- OPERATEUR CREA_TABLE              --------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
       COMMON / IVARJE / ZI(1)
@@ -38,23 +39,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      IOCC,JF,IBID,NI,NR,NK,I,J,IR,JVALE,JP,NDIM,NDIM1,JT
       INTEGER      NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JLNG,JPROL,JD
-      INTEGER      NBLIGN,JTRAV1,JTRAV2,JTRAV3,JTRAV4,JTRAV5
-      REAL*8       RBID,VR(2)
-      COMPLEX*16   CBID,VC(2)
+      INTEGER      JTRAV1,JTRAV2,JTRAV3,JTRAV4,JTRAV5,LXLGUT,NPAR
+      INTEGER      IRET,IVCR,IVCI,LONGCO,JTBNP,NBLIGN
+      LOGICAL      EXIST
+      REAL*8       RBID
+      COMPLEX*16   CBID
       CHARACTER*1  KBID
       CHARACTER*3  NTYP
-      CHARACTER*8  RESULT,TYPARR(2),TYPARC(2)
-      CHARACTER*16 CONCEP,NOMCMD,NMPAR,NMPAR1,NMPARF(2)
+      CHARACTER*8  RESULT,TYPARR(2),TYPARC(3),TYP
+      CHARACTER*16 CONCEP,NOMCMD,NMPAR,NMPAR1,NMPARF(2),NMPARC(3)
       CHARACTER*19 NFCT
       CHARACTER*24 TRAV,LDBL,INDIC,LTYP,WORK
 C SENSIBILITE
-      INTEGER      NRPASS,NBPASS,ADRECG,IAUX,IRET
-      CHARACTER*19 LATAB1,NOPASE,LERES0
-      CHARACTER*24 NORECG
+      INTEGER      NRPASS,NBPASS,ADRECG,IAUX
+      CHARACTER*19 RESUL1,NOPASE,NFCT0
+      CHARACTER*24 NORECG,VECTCR,VECTCI
       CHARACTER*38 TITRES
 C SENSIBILITE
       DATA TYPARR / 'R'       , 'R'       /   
-      DATA TYPARC / 'R'       , 'C'       /   
+      DATA TYPARC / 'R'       , 'R'       , 'R'       /
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -64,14 +67,13 @@ C     ------------------------------------------------------------------
       CALL GETRES(RESULT,CONCEP,NOMCMD)
       CALL GETFAC('LISTE',NOCC)
       CALL GETFAC('FONCTION',NOCC2)
-      INDIC='&&OP0036.IND'
-      TRAV='&&OP0036.VAL'
-      LDBL='&&OP0036.DBL'
-      LTYP='&&OP0036.TYP'
-      WORK='&&OP0036.WOR'
+      INDIC  ='&&OP0036.IND'
+      TRAV   ='&&OP0036.VAL'
+      LDBL   ='&&OP0036.DBL'
+      LTYP   ='&&OP0036.TYP'
+      WORK   ='&&OP0036.WOR'
 C
-      NORECG = '&&'//'OP0135'//'_RESULTA_GD     '
-C
+      NORECG ='&&OP0036_PARA_SENSI     '
 C
 C     ==========
 C --- CAS: LISTE 
@@ -83,7 +85,6 @@ C     ==========
          CALL WKVECT(LDBL,'V V K16',NOCC,JD)
          CALL WKVECT(LTYP,'V V K8' ,NOCC,JY)
          DIMMAX=0
-         NBLIGN=0
          
          DO 50 IOCC=1,NOCC
             CALL GETVID('LISTE','PARA',IOCC,1,1,NMPAR,JP)
@@ -100,16 +101,17 @@ C     ==========
      &         ' ET LISTE_X DOIVENT CONTENIR LE MEME NOMBRE DE TERMES')
               ENDIF
               CALL WKVECT(INDIC,'V V I',-NINDI,III)
-              DIMMAX=0
+              LONGCO=0
               CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,-NINDI,ZI(III),IR)
               DO 55 I=1,-NINDI
-                 DIMMAX=MAX(DIMMAX,ZI(III+I-1))
+                 LONGCO=MAX(LONGCO,ZI(III+I-1))
  55           CONTINUE
               CALL JEDETR(INDIC)
-              ZI(JLNG+IOCC-1)=DIMMAX
+              ZI(JLNG+IOCC-1)=LONGCO
             ELSE
               ZI(JLNG+IOCC-1)=-NI-NR-NK
             ENDIF
+            DIMMAX=MAX(DIMMAX,ZI(JLNG+IOCC-1))
 
             IF ( NI.NE.0 ) THEN
                ZK8(JY+IOCC-1)='I'
@@ -127,18 +129,9 @@ C     ==========
 
  50      CONTINUE
 
-C       ---DIMENSIONNEMENT DE LA TABLE
-
-         NBLIGN=0
-         DO 70 I=1,NOCC
-            NBLIGN=MAX(NBLIGN,ZI(JLNG+I-1))
- 70      CONTINUE
-         
-C        ---CREATION DE LA TABLE
-
-         CALL TBCRSV(RESULT,'G',NOCC,ZK16(JD),ZK8(JY),NBLIGN)
-
-
+C       ---CREATION DE LA TABLE
+         CALL TBCRSV(RESULT,'G',NOCC,ZK16(JD),ZK8(JY),DIMMAX)
+C
          DO 200 IOCC=1,NOCC
             CALL GETVIS('LISTE','LISTE_I',IOCC,1,0,IBID,NI)
             CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,0,IBID,NINDI)
@@ -152,7 +145,7 @@ C        ---CREATION DE LA TABLE
      &                 ' DES PARAMETRES DOIVENT ETRE DIFFERENTS')
                ENDIF
  150        CONTINUE       
-
+C
             IF (NINDI.NE.0)THEN
                NINDI=-NINDI
                CALL WKVECT(INDIC,'V V I',NINDI,III)
@@ -229,23 +222,25 @@ C
         ENDIF
 C
         DO 60 , NRPASS = 1 , NBPASS
-          LATAB1 = '                   '
-          LATAB1(1:8) = ZK24(ADRECG+2*NRPASS-2)(1:8)
+          RESUL1 = '                   '
+          RESUL1(1:8) = ZK24(ADRECG+2*NRPASS-2)(1:8)
           NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
           CALL GETVID('FONCTION','FONCTION',1,1,1,NFCT,IR)
           IF (NOPASE.EQ.' ') THEN
-            LERES0 = NFCT
+            NFCT0 = NFCT
           ELSE
-            CALL PSRENC ( NFCT, NOPASE, LERES0, IRET )
+            CALL PSRENC ( NFCT, NOPASE, NFCT0, IRET )
             IF ( IRET.NE.0 ) THEN
               CALL UTMESS ('F', 'OP0036','IMPOSSIBLE DE TROUVER'//
      >   ' LE RESULTAT DERIVE ASSOCIE A LA FONCTION '//
      >  NFCT//' ET AU PARAMETRE SENSIBLE '//NOPASE)
             ENDIF
           ENDIF
-
-          CALL TBCRSD(LATAB1,'G')
-          CALL JEVEUO(LERES0//'.PROL','L',JPROL)
+C
+          CALL JELIRA(NFCT0//'.VALE','LONMAX',NDIM,KBID)
+          CALL JEVEUO(NFCT0//'.VALE','L',JVALE)
+          CALL JEVEUO(NFCT0//'.PROL','L',JPROL)
+C
           IF(ZK16(JPROL).NE.'FONCTION' .AND.
      &      ZK16(JPROL).NE.'CONSTANT'.AND.
      &      ZK16(JPROL).NE.'FONCT_C')
@@ -258,25 +253,42 @@ C
           ENDIF
           IF(NMPARF(1).EQ.NMPARF(2)) CALL UTMESS('F','OP0036',
      &    'LES NOMS DE CHAQUE PARAMETRE DOIVENT ETRE DIFFERENTS') 
+C
+C       ---CAS CREATION D UNE NOUVELLE TABLE
+C       ---
           IF (ZK16(JPROL).EQ.'FONCT_C') THEN
-            CALL TBAJPA(LATAB1,2,NMPARF,TYPARC)
-          ELSE
-            CALL TBAJPA(LATAB1,2,NMPARF,TYPARR)
+            NMPARC(1)=NMPARF(1)
+            NPAR     =LXLGUT(NMPARF(2))
+            NMPARC(2)=NMPARF(2)(1:NPAR)//'_R'
+            NMPARC(3)=NMPARF(2)(1:NPAR)//'_I'
           ENDIF
-          CALL JELIRA(LERES0//'.VALE','LONMAX',NDIM,KBID)
-          CALL JEVEUO(LERES0//'.VALE','L',JVALE)
+C
           IF (ZK16(JPROL).EQ.'FONCT_C') THEN
+            CALL TBCRSV(RESUL1,'G',3,NMPARC,TYPARC,NDIM/3)
+            CALL TBAJPA(RESUL1,3,NMPARC,TYPARC)
+            VECTCR='&&OP0036.VCR'
+            VECTCI='&&OP0036.VCI'
+            CALL WKVECT(VECTCR,'V V R',NDIM/3,IVCR)
+            CALL WKVECT(VECTCI,'V V R',NDIM/3,IVCI)
             DO 301 I=1,NDIM/3
-              VR(1)=ZR(JVALE-1+I)
-           VC(1)=DCMPLX(ZR(JVALE-1+NDIM/3+2*I-1),ZR(JVALE-1+NDIM/3+2*I))
-              CALL TBAJLI(LATAB1,2,NMPARF,IBID,VR,VC,KBID,0)
+               ZR(IVCR+I-1)= ZR(JVALE-1+NDIM/3+2*I-1)
+               ZR(IVCI+I-1)= ZR(JVALE-1+NDIM/3+2*I)
  301        CONTINUE
+            CALL TBAJCO(RESUL1,NMPARC(1),'R',NDIM/3,IBID,
+     &                  ZR(JVALE),CBID,KBID,'R',-1)
+            CALL TBAJCO(RESUL1,NMPARC(2),'R',NDIM/3,IBID,
+     &                  ZR(IVCR),CBID,KBID,'R',-1)
+            CALL TBAJCO(RESUL1,NMPARC(3),'R',NDIM/3,IBID,
+     &                  ZR(IVCI),CBID,KBID,'R',-1)
+            CALL JEDETR ( VECTCR )
+            CALL JEDETR ( VECTCI )
           ELSE
-            DO 300 I=1,NDIM/2
-              VR(1)=ZR(JVALE-1+I)
-              VR(2)=ZR(JVALE-1+NDIM/2+I)
-              CALL TBAJLI(LATAB1,2,NMPARF,IBID,VR,CBID,KBID,0)
- 300        CONTINUE
+            CALL TBCRSV(RESUL1,'G',2,NMPARF,TYPARR,NDIM/2)
+            CALL TBAJPA(RESUL1,2,NMPARF,TYPARR)
+            CALL TBAJCO(RESUL1,NMPARF(1),'R',NDIM/2,IBID,
+     &                  ZR(JVALE)       ,CBID,KBID,'R',-1)
+            CALL TBAJCO(RESUL1,NMPARF(2),'R',NDIM/2,IBID,
+     &                  ZR(JVALE+NDIM/2),CBID,KBID,'R',-1)
           ENDIF
   60    CONTINUE
         CALL JEDETR ( NORECG )

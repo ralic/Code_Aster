@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,17 +22,17 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
 
            regles=(EXCLUS('FONCTION','LISTE')),
 
-           LISTE=FACT(statut='f',min=2,max='**',
+           LISTE=FACT(statut='f',max='**',
                  fr="Creation d'une table a partir de listes",
                  regles=(UN_PARMI('LISTE_I','LISTE_R','LISTE_K')), 
-                        PARA=SIMP(statut='o',typ='TXM'),
-                        TYPE_K=SIMP(statut='f',typ='TXM',defaut='K8',
+                        PARA     =SIMP(statut='o',typ='TXM'),
+                        TYPE_K   =SIMP(statut='f',typ='TXM',defaut='K8',
                                     into=('K8','K16','K24')),
                         NUME_LIGN=SIMP(statut='f',typ='I',max='**'),
-                        LISTE_I=SIMP(statut='f',typ='I',max='**'),
-                        LISTE_R=SIMP(statut='f',typ='R',max='**'),
-                        LISTE_K=SIMP(statut='f',typ='TXM', max='**')),
-           FONCTION=FACT(statut='f',min=1,max=1,
+                        LISTE_I  =SIMP(statut='f',typ='I',max='**'),
+                        LISTE_R  =SIMP(statut='f',typ='R',max='**'),
+                        LISTE_K  =SIMP(statut='f',typ='TXM', max='**')),
+           FONCTION=FACT(statut='f',
                     fr="Creation d'une table a partir d'une fonction",
                         FONCTION=SIMP(statut='o',typ=(fonction_c,fonction_sdaster)),
                 b_sensibilite   =BLOC(condition="FONCTION != None",

@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C                 'ZERO':SI UN OBJET DE NOM MATAS ET DE TYPE
 C                        MATR_ASSE EXISTE ON L'ECRASE
 C                 'CUMU':SI UN OBJET DE NOM MATAS ET DE TYPE
 C                        MATR_ASSE EXISTE ON L'ENRICHI
-C IN  I   TYPE  : TYPE DES MATRICES ELEMENTAIRES A ASSMBLEES
+C IN  I   TYPE  : TYPE DES MATRICES ELEMENTAIRES A ASSEMBLEES
 C                          1 --> REELLES
 C                          2 --> COMPLEXES
 C ----------------------------------------------------------------------
@@ -83,8 +83,8 @@ C     NNOEMA : NBRE MAXI DE DDLS PAR NOEUD ADMIS PAR LE S.P.
       CHARACTER*8 MATEL,MAILLA
       CHARACTER*14 NUDEV
       CHARACTER*19 MATDEV,RESUL
-      CHARACTER*24 KMAILL,K24PRN,KNULIL,KMALIL,KMAREF,RESU,NOMLI,KHCOL,
-     &             KADIA,KVALE,KDESC,KTMP1,KTMP2,KCONL
+      CHARACTER*24 KMAILL,K24PRN,KNULIL,KMALIL,RESU,NOMLI,KSMHC,
+     &             KSMDI,KVALM,KTMP1,KTMP2,KCONL
       REAL*8 R,RINF,RSUP
       INTEGER HMAX,NMALIL,IMO,ILAGR,ILIMO
       INTEGER ADMODL,LCMODL,NBNO
@@ -198,28 +198,26 @@ C     --------------------------------------------------------------
       IF (IRET.GT.0) THEN
 
         NUDEV = NU
-        KMAREF = MATDEV//'.REFA'
-        CALL JEVEUO(KMAREF,'L',IDMARF)
-        IF ((ZK24(IDMARF-1+2) (1:14).EQ.NUDEV) .AND.
-     &      (ZK24(IDMARF-1+3) (17:18).EQ.'MO')) THEN
+        CALL JEVEUO(MATDEV//'.REFA','L',JREFA)
+        IF (ZK24(JREFA-1+2)(1:14).EQ.NUDEV) THEN
           ACREER = .FALSE.
 
 C --- ON DETRUIT LES OBJETS QUI SONT TOUJOURS A DETRUIRE :
 C     --------------------------------------------------
-          CALL JEDETR(KMAREF(1:19)//'.LIME')
-          CALL JEDETR(KMAREF(1:19)//'.CONI')
-          CALL JEDETR(KMAREF(1:19)//'.ABLI')
-          CALL JEDETR(KMAREF(1:19)//'.LLIG')
-          CALL JEDETR(KMAREF(1:19)//'.ALIG')
-          CALL JEDETR(KMAREF(1:19)//'.VALI')
-          CALL JEDETR(KMAREF(1:19)//'.JDRF')
-          CALL JEDETR(KMAREF(1:19)//'.JDDC')
-          CALL JEDETR(KMAREF(1:19)//'.JDFF')
-          CALL JEDETR(KMAREF(1:19)//'.JDHF')
-          CALL JEDETR(KMAREF(1:19)//'.JDPM')
-          CALL JEDETR(KMAREF(1:19)//'.JDES')
-          CALL JEDETR(KMAREF(1:19)//'.JDVL')
-          CALL JEDETR(KMAREF)
+          CALL JEDETR(MATDEV//'.LIME')
+          CALL JEDETR(MATDEV//'.CONI')
+          CALL JEDETR(MATDEV//'.ABLI')
+          CALL JEDETR(MATDEV//'.LLIG')
+          CALL JEDETR(MATDEV//'.ALIG')
+          CALL JEDETR(MATDEV//'.VALI')
+          CALL JEDETR(MATDEV//'.JDRF')
+          CALL JEDETR(MATDEV//'.JDDC')
+          CALL JEDETR(MATDEV//'.JDFF')
+          CALL JEDETR(MATDEV//'.JDHF')
+          CALL JEDETR(MATDEV//'.JDPM')
+          CALL JEDETR(MATDEV//'.JDES')
+          CALL JEDETR(MATDEV//'.JDVL')
+          CALL JEDETR(MATDEV//'.REFA')
         ELSE
           ACREER = .TRUE.
         END IF
@@ -240,18 +238,24 @@ C --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A MATAS :
 C     ----------------------------------------------
       KMAILL = '&MAILLA                 '
       KMALIL = MATDEV//'.LILI'
-      KMAREF = MATDEV//'.REFA'
-      KVALE = MATDEV//'.VALE'
+      KVALM = MATDEV//'.VALM'
 
 C --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES AU STOCKAGE :
 C     --------------------------------------------------
       NUDEV = NU
-      K5BID(1:5) = '.SMOS'
-      KHCOL = NUDEV(1:14)//K5BID(1:5)//'.HCOL'
-      CALL JEVEUO(KHCOL,'L',IDHCOL)
-      KADIA = NUDEV(1:14)//K5BID(1:5)//'.ADIA'
-      CALL JEVEUO(KADIA,'L',IDADIA)
-      KDESC = NUDEV(1:14)//K5BID(1:5)//'.DESC'
+      KSMHC = NUDEV(1:14)//'.SMOS.SMHC'
+      CALL JEVEUO(KSMHC,'L',IDSMHC)
+      KSMDI = NUDEV(1:14)//'.SMOS.SMDI'
+      CALL JEVEUO(KSMDI,'L',IDSMDI)
+
+      CALL JEVEUO(NUDEV(1:14)//'.SMOS.SMDE','L',JSMDE)
+      NEQU = ZI(JSMDE-1+1)
+      ITBLOC = ZI(JSMDE-1+2)
+
+      CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',JNUEQ)
+      DO 777, IEQ=1,NEQU
+         CALL ASSERT(ZI(JNUEQ-1+IEQ).EQ.IEQ)
+777   CONTINUE
 
 C --- CALCUL D UN REPERTOIRE,TEMPORAIRE, MATDEV.LILI A PARTIR DE LA
 C --- LISTE DE MATRICES ELEMENTAIRES MATDEV.LIME :
@@ -288,13 +292,12 @@ C     --------------------
 
 C --- CREATION ET REMPLISSAGE DE REFE :
 C     -------------------------------
-      CALL JECREO(KMAREF,BASE1//' V K24')
-      CALL JEECRA(KMAREF,'LONMAX',4,' ')
-      CALL JEECRA(KMAREF,'DOCU',IBID,'ASSE')
-      CALL JEVEUO(KMAREF,'E',IDMARF)
-      ZK24(IDMARF) = MAILLA
-      ZK24(IDMARF+1) = NUDEV(1:14)//'.NUME'
-      ZK24(IDMARF+2) = NUDEV(1:14)//K5BID(1:5)
+      CALL WKVECT(MATDEV//'.REFA',BASE1//' V K24',10,JREFA)
+      ZK24(JREFA-1+1) = MAILLA
+      ZK24(JREFA-1+2) = NUDEV(1:14)
+      ZK24(JREFA-1+8) = 'ASSE'
+      ZK24(JREFA-1+9) = 'MR'
+      ZK24(JREFA-1+10) = 'NOEU'
 
 C --- CREATION DE 2 OBJETS VOLATILS POUR ACCELERER CHARGER:
 C ---
@@ -305,23 +308,14 @@ C ---        POUR LE I-EME REEL DE LA MATRICE ELEM :
 C --- TMP2(2*(I-1)+1) --> NUMERO DU BLOC OU S'INJECTE I
 C --- TMP2(2*(I-1)+2) --> POSITION DANS LE BLOC DU REEL I :
 C     ---------------------------------------------------
-      KTMP1 = KVALE(1:19)//'.TMP1           '
-      KTMP2 = KVALE(1:19)//'.TMP2           '
+      KTMP1 = KVALM(1:19)//'.TMP1           '
+      KTMP2 = KVALM(1:19)//'.TMP2           '
       CALL JEEXIN(KTMP1,IRET)
-      CALL JEVEUO(KDESC,'L',IDDESC)
-      NEQU = ZI(IDDESC)
-      ITBLOC = ZI(IDDESC+1)
-      NBLC = ZI(IDDESC+2)
-      IF (NBLC.NE.1) CALL UTMESS('F','ASSMMN_1',
-     &                           'LE NOMBRE DE BLOCS DU'//
-     &                           'STOCKAGE "MORSE" '//KDESC(1:19)//
-     &                           ' EST DIFFERENT DE 1.')
 
 C --- CAS NON_SYMETRIQUE : ON DOUBLE LE NOMBRE DE BLOCS QUI A ETE DEFINI
 C ---  -----------------   DANS PROMOR POUR DES MATRICES SYMETRIQUES :
 C                          -----------------------------------------
-      NBLOC = NBLC
-      NBLC = NBLC + NBLC
+      NBLC = 2
 
       IF (IRET.LE.0) THEN
         CALL JECREO(KTMP1,' V V I')
@@ -329,35 +323,34 @@ C                          -----------------------------------------
       END IF
       CALL JEVEUO(KTMP1,'E',IATMP1)
 
-C --- ALLOCATION VALE EN R OU C SUIVANT TYPE :
+C --- ALLOCATION VALM EN R OU C SUIVANT TYPE :
 C     --------------------------------------
       IF (ACREER) THEN
         IF (TYPE.EQ.1) THEN
-          CALL JECREC(KVALE,BASE1//' V R','NU','DISPERSE','CONSTANT',
+          CALL JECREC(KVALM,BASE1//' V R','NU','DISPERSE','CONSTANT',
      &                NBLC)
         ELSE IF (TYPE.EQ.2) THEN
-          CALL JECREC(KVALE,BASE1//' V C','NU','DISPERSE','CONSTANT',
+          CALL JECREC(KVALM,BASE1//' V C','NU','DISPERSE','CONSTANT',
      &                NBLC)
         ELSE
           CALL UTMESS('F','ASSMAT',' ON NE PEUT ASSEMBLER QUE DES'//
      &                ' MATRICES REELLES OU COMPLEXES')
         END IF
-        CALL JEECRA(KVALE,'LONMAX',ITBLOC,' ')
-        CALL JEECRA(KVALE,'DOCU',IBID,'MR')
+        CALL JEECRA(KVALM,'LONMAX',ITBLOC,' ')
         DO 20 I = 1,NBLC
-          CALL JECROC(JEXNUM(KVALE,I))
+          CALL JECROC(JEXNUM(KVALM,I))
    20   CONTINUE
       ELSE
         IF (.NOT.CUMUL) THEN
-C         -- REMISE A ZERO DE .VALE :
+C         -- REMISE A ZERO DE .VALM :
           DO 30 I = 1,NBLC
-            CALL JERAZO(JEXNUM(KVALE,I),ITBLOC,1)
-            CALL JELIBE(JEXNUM(KVALE,I))
+            CALL JERAZO(JEXNUM(KVALM,I),ITBLOC,1)
+            CALL JELIBE(JEXNUM(KVALM,I))
    30     CONTINUE
         END IF
       END IF
 
-C --- CALCUL DE VALE
+C --- CALCUL DE VALM
 C --- ON COMMENCE PAR ASSEMBLER SUR LE MODELE :
 C     ---------------------------------------
       IMO = 1
@@ -514,7 +507,7 @@ C ---        ON STOCKE LA POSITION DANS LE BLOC NUBLOC DE LA MATRICE
 C ---        ASSEMBLEE, DU TERME COURANT IREEL DE LA MATRICE
 C ---        ELEMENTAIRE, CES INFORMATIONS SONT STOCKEES DANS KTMP2 :
 C            ------------------------------------------------------
-                            CALL ASRETN(IATMP2,IREEL,IDHCOL,IDADIA,
+                            CALL ASRETN(IATMP2,IREEL,IDSMHC,IDSMDI,
      &                                  IADLI,IADCO,NUBLOC)
    60                     CONTINUE
    70                   CONTINUE
@@ -530,10 +523,10 @@ C     ---------------------------------------------
                   ZI(IATMP1+1) = 1
                   IF (TYPE.EQ.1) THEN
                     CALL ASCOPR(IATMP1,IATMP2,IREEL,
-     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALE,R,0,0)
+     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
                   ELSE IF (TYPE.EQ.2) THEN
                     CALL ASCOPC(IATMP1,IATMP2,IREEL,
-     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALE,R,0,0)
+     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
                   END IF
   100           CONTINUE
 
@@ -542,16 +535,16 @@ C --- DES TERMES DIAGONAUX DU BLOC SUPERIEUR (PAR SOUCI D'HOMOGENEITE
 C --- VIS-A-VIS DU TRAITEMENT DES TERMES DIAGONAUX POUR LES
 C --- MATRICES ELEMENTAIRES SYMETRIQUES) :
 C     ----------------------------------
-                CALL JEVEUO(JEXNUM(KVALE,1),'L',IADVAS)
-                CALL JEVEUO(JEXNUM(KVALE,2),'E',IADVAI)
+                CALL JEVEUO(JEXNUM(KVALM,1),'L',IADVAS)
+                CALL JEVEUO(JEXNUM(KVALM,2),'E',IADVAI)
 
                 DO 110 IEQ = 1,NEQU
-                  IDIA = ZI(IDADIA+IEQ-1)
+                  IDIA = ZI(IDSMDI+IEQ-1)
                   ZR(IADVAI+IDIA-1) = ZR(IADVAS+IDIA-1)
   110           CONTINUE
 
-                CALL JELIBE(JEXNUM(KVALE,1))
-                CALL JELIBE(JEXNUM(KVALE,2))
+                CALL JELIBE(JEXNUM(KVALM,1))
+                CALL JELIBE(JEXNUM(KVALM,2))
 
 C    =============================================
 C--- = CAS DES MATRICES ELEMENTAIRES SYMETRIQUES =
@@ -623,7 +616,7 @@ C ---        CAR LA MATRICE ELEMENTAIRE ETANT SYMETRIQUE, LE TERME
 C ---        COURANT EXISTE A LA MEME POSITION DANS LE BLOC
 C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
-                            CALL ASRETM(IATMP2,IREEL,IDHCOL,IDADIA,
+                            CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,
      &                                  IADLI,IADCO)
   120                     CONTINUE
   130                   CONTINUE
@@ -659,7 +652,7 @@ C ---        CAR LA MATRICE ELEMENTAIRE ETANT SYMETRIQUE, LE TERME
 C ---        COURANT EXISTE A LA MEME POSITION DANS LE BLOC
 C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
-                          CALL ASRETM(IATMP2,IREEL,IDHCOL,IDADIA,IADLI,
+                          CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,IADLI,
      &                                IADCO)
   140                   CONTINUE
   150                 CONTINUE
@@ -690,7 +683,7 @@ C --- ET POUR TOUTE LA MATRICE ELEMENTAIRE ON POSE R = COEF*LICOEF(IMAT)
 C     ------------------------------------------------------------------
                         IF ((ILAGR.EQ.1) .AND. (NDDL1.EQ.1)) THEN
                           R = COEF*LICOEF(IMAT)
-                          ZR(IDCONL-1+IAD1) = R
+                          ZR(IDCONL-1+ZI(JNUEQ-1+IAD1)) = R
                         END IF
                         IF (NDDL1.GT.NDDLMA) THEN
                           CALL UTDEBM('F','ASSMMN','12')
@@ -748,7 +741,7 @@ C ---        CAR LA MATRICE ELEMENTAIRE ETANT SYMETRIQUE, LE TERME
 C ---        COURANT EXISTE A LA MEME POSITION DANS LE BLOC
 C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
-                            CALL ASRETM(IATMP2,IREEL,IDHCOL,IDADIA,
+                            CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,
      &                                  IADLI,IADCO)
   170                     CONTINUE
   180                   CONTINUE
@@ -784,7 +777,7 @@ C ---        CAR LA MATRICE ELEMENTAIRE ETANT SYMETRIQUE, LE TERME
 C ---        COURANT EXISTE A LA MEME POSITION DANS LE BLOC
 C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
-                          CALL ASRETM(IATMP2,IREEL,IDHCOL,IDADIA,IADLI,
+                          CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,IADLI,
      &                                IADCO)
   190                   CONTINUE
   200                 CONTINUE
@@ -799,10 +792,10 @@ C     ---------------------------------------------
                   ZI(IATMP1+1) = 1
                   IF (TYPE.EQ.1) THEN
                     CALL ASCNPR(IATMP1,IATMP2,IREEL,
-     &                          IDRESL+NCMPEL* (IEL-1),NBLOC,KVALE,R)
+     &                          IDRESL+NCMPEL* (IEL-1),1,KVALM,R)
                   ELSE IF (TYPE.EQ.2) THEN
                     CALL ASCOPC(IATMP1,IATMP2,IREEL,
-     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALE,R,0,0)
+     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
                   END IF
   220           CONTINUE
 C --- FIN DU BLOC CONCERNANT LE CAS TYMAT = 'S'
@@ -819,15 +812,15 @@ C     ------------------------------------------------
 
 C--- SI ON VIENT DE TRAITER LE MODELE :
 C    -------------------------------
-        CALL JEVEUO(JEXNUM(KVALE,1),'L',IDV)
+        CALL JEVEUO(JEXNUM(KVALM,1),'L',IDV)
         DO 260 I = 1,NEQU
-          IDI = ZI(IDADIA+I-1)
+          IDI = ZI(IDSMDI+I-1)
           IF (TYPE.EQ.1) R = ABS(ZR(IDV-1+IDI))
           IF (TYPE.EQ.2) R = ABS(ZC(IDV-1+IDI))
           IF ((R.NE.0.D0) .AND. (R.LT.RINF)) RINF = R
           IF ((R.NE.0.D0) .AND. (R.GT.RSUP)) RSUP = R
   260   CONTINUE
-        CALL JELIBE(JEXNUM(KVALE,1))
+        CALL JELIBE(JEXNUM(KVALM,1))
         IF (RINF.GE.R8MAEM()) THEN
           COEF = RSUP/2.D0
         ELSE
@@ -852,11 +845,11 @@ C     ---------------------------------------------------------------
       END IF
 
 C     -- MISE A JOUR DE REFA(4)
-      CALL JEVEUO(KMAREF,'E',IDMARF)
+      CALL JEVEUO(MATDEV//'.REFA','E',JREFA)
       IF (MOTCLE(1:4).EQ.'ZERO') THEN
-        ZK24(IDMARF-1+4) = OPTIO2
+        ZK24(JREFA-1+4) = OPTIO2
       ELSE
-        IF (ZK24(IDMARF-1+4).NE.OPTIO2) ZK24(IDMARF-1+4) = '&&MELANGE'
+        IF (ZK24(JREFA-1+4).NE.OPTIO2) ZK24(JREFA-1+4) = '&&MELANGE'
       END IF
 
       CALL JEDETR(KTMP1)
@@ -867,4 +860,5 @@ C     -- MISE A JOUR DE REFA(4)
  1000 FORMAT (1P,'COEFFICIENT DE CONDITIONNEMENT DES LAGRANGES',E12.5)
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()
+C     CALL VERISD('MATRICE',MATDEV)
       END

@@ -1,7 +1,7 @@
-      SUBROUTINE DIAGAV(NOMA19,NEQ,TYPVAR,TYPSTO,EPS)
+      SUBROUTINE DIAGAV(NOMA19,NEQ,TYPVAR,EPS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C           ET CALCULER UN EPSILON NUMERIQUE POUR LA FACTORISATION
 C     IN  : NOMA19 : MATR_ASSE QUE L'ON COMPLETERA PAR L'OBJET .DIGS
 C     IN  : NEQ    : NOMBRE D'EQUATIONS
 C     IN  : TYPVAR : REEL/COMPLEXE
-C     IN  : TYPSTO : MORSE/LIGN_CIEL
 C     OUT : EPS    : 'EPSILON' TEL QU'UN TERME DIAGONAL APRES
 C                    FACTORISATION SERA CONSIDERE COMME NUL
 C     ------------------------------------------------------------------
@@ -31,7 +30,7 @@ C     ------------------------------------------------------------------
       CHARACTER*14 NU
       REAL*8 EPS,DIAMAX,DIAMIN,R8GAEM,R8MAEM
       INTEGER NEQ,TYPVAR,TYPSTO,IFM,NIV,IRET,IADIGS,IBID
-      INTEGER IADIA,IABLO,IADESC,NBBLOC,IBLOC,IAVALE,IDERN,IPREM,I
+      INTEGER JSXDI,JSCBL,JSCDE,NBBLOC,IBLOC,IAVALE,IDERN,IPREM,I
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -61,56 +60,61 @@ C        CET OBJET CONTIENDRA LES TERMES DIAGONAUX
 C        AVANT ET APRES FACTORISATION :
 C        (1->NEQ : AVANT , NEQ+1 ->2*NEQ : APRES )
 C     -----------------------------------------
+      CALL JEDETR(NOMA19//'.DIGS')
       CALL WKVECT(NOMA19//'.DIGS','V V R',2*NEQ,IADIGS)
       CALL DISMOI('F','NOM_NUME_DDL',NOMA19,'MATR_ASSE',IBID,NU,IBID)
 
-C     -- STOCKAGE LIGNE DE CIEL :
-C     ---------------------------
-      IF (TYPSTO.EQ.1) THEN
-        CALL JEVEUO(NU//'.SLCS.ADIA','L',IADIA)
-        CALL JEVEUO(NU//'.SLCS.ABLO','L',IABLO)
-        CALL JEVEUO(NU//'.SLCS.DESC','L',IADESC)
-        NBBLOC = ZI(IADESC-1+3)
-        DO 30 IBLOC = 1,NBBLOC
-          CALL JEVEUO(JEXNUM(NOMA19//'.VALE',IBLOC),'L',IAVALE)
-          IDERN = ZI(IABLO-1+IBLOC+1)
-          IF (IDERN.GT.NEQ) CALL UTMESS('F','DIAGAV','STOP1')
-          IPREM = ZI(IABLO-1+IBLOC) + 1
-          IF (TYPVAR.EQ.1) THEN
-            DO 10 I = IPREM,IDERN
-              ZR(IADIGS-1+I) = ABS(ZR(IAVALE-1+ZI(IADIA+I-1)))
-   10       CONTINUE
-          ELSE IF (TYPVAR.EQ.2) THEN
-            DO 20 I = IPREM,IDERN
-              ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(IADIA+I-1)))
-   20       CONTINUE
-          ELSE
-            CALL UTMESS('F','DIAGAV','STOP 1')
-          END IF
-          CALL JELIBE(JEXNUM(NOMA19//'.VALE',IBLOC))
-   30   CONTINUE
 
-C     -- STOCKAGE MORSE :
-C     ------------------
-      ELSE IF (TYPSTO.EQ.2) THEN
-        CALL JEVEUO(NU//'.SMOS.ADIA','L',IADIA)
-        CALL JEVEUO(JEXNUM(NOMA19//'.VALE',1),'L',IAVALE)
+C     CAS STOCKAGE MORSE DISPONIBLE (OBJET .VALM):
+C     ---------------------------------------------
+      CALL JEEXIN(NOMA19//'.VALM',IRET)
+      IF (IRET.GT.0) THEN
+        CALL JEVEUO(NU//'.SMOS.SMDI','L',JSXDI)
+        CALL JEVEUO(JEXNUM(NOMA19//'.VALM',1),'L',IAVALE)
         IF (TYPVAR.EQ.1) THEN
           DO 40 I = 1,NEQ
-            ZR(IADIGS-1+I) = ABS(ZR(IAVALE-1+ZI(IADIA+I-1)))
+            ZR(IADIGS-1+I) = ABS(ZR(IAVALE-1+ZI(JSXDI+I-1)))
    40     CONTINUE
         ELSE IF (TYPVAR.EQ.2) THEN
           DO 50 I = 1,NEQ
-            ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(IADIA+I-1)))
+            ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
    50     CONTINUE
         ELSE
           CALL UTMESS('F','DIAGAV','STOP 2')
         END IF
-      ELSE
-        CALL UTMESS('F','DIAGAV','STOP 3')
+        GO TO 9998
       END IF
 
 
+C     CAS STOCKAGE MORSE INDISPONIBLE (OBJET .VALM):
+C     ---------------------------------------------
+      CALL ASSERT(NOMA19.EQ.'&&OP0070.RESOC.MATR')
+      CALL JEVEUO(NU//'.SLCS.SCDI','L',JSXDI)
+      CALL JEVEUO(NU//'.SLCS.SCBL','L',JSCBL)
+      CALL JEVEUO(NU//'.SLCS.SCDE','L',JSCDE)
+      NBBLOC = ZI(JSCDE-1+3)
+      DO 30 IBLOC = 1,NBBLOC
+        CALL JEVEUO(JEXNUM(NOMA19//'.UALF',IBLOC),'L',IAVALE)
+        IDERN = ZI(JSCBL-1+IBLOC+1)
+        IF (IDERN.GT.NEQ) CALL UTMESS('F','DIAGAV','STOP1')
+        IPREM = ZI(JSCBL-1+IBLOC) + 1
+        IF (TYPVAR.EQ.1) THEN
+          DO 10 I = IPREM,IDERN
+            ZR(IADIGS-1+I) = ABS(ZR(IAVALE-1+ZI(JSXDI+I-1)))
+   10     CONTINUE
+        ELSE IF (TYPVAR.EQ.2) THEN
+          DO 20 I = IPREM,IDERN
+            ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
+   20     CONTINUE
+        ELSE
+          CALL UTMESS('F','DIAGAV','STOP 1')
+        END IF
+        CALL JELIBE(JEXNUM(NOMA19//'.UALF',IBLOC))
+   30 CONTINUE
+
+
+
+9998  CONTINUE
 C     -- CALCUL DE EPS :
 C     ------------------
 C     ON AVAIT PENSE CALCULER EPS COMME:

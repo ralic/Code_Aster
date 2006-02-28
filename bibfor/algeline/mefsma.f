@@ -5,7 +5,7 @@
       CHARACTER*19          MASGEN, AMOGEN, RIGGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       LDESC, LDREF, NBMODE, NTERM, NBLOC
+      INTEGER       JSCDE, LDREF, NBMODE, NTERM, NBLOC
       CHARACTER*1   BASE
       CHARACTER*14 NUGENE
       CHARACTER*19  NOMNUM, NOMSTO
@@ -52,10 +52,10 @@ C
       NOMNUM = NUGENE//'.NUME'
       NOMSTO = NUGENE//'.SLCS'
 C
-      CALL JEVEUO ( NOMSTO//'.DESC', 'L', LDESC )
-      NBMODE = ZI(LDESC  )
-      NTERM  = ZI(LDESC+1)
-      NBLOC  = ZI(LDESC+2)
+      CALL JEVEUO ( NOMSTO//'.SCDE', 'L', JSCDE )
+      NBMODE = ZI(JSCDE-1+1)
+      NTERM  = ZI(JSCDE-1+2)
+      NBLOC  = ZI(JSCDE-1+3)
 C
       CALL JEVEUO ( NOMNUM//'.REFN', 'L', LDREF )
       BASE = ZK24(LDREF)

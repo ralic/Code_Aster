@@ -1,6 +1,6 @@
       SUBROUTINE NUMER2(NUPOSS,NBLIGR,VLIGR,MOLOC,SOLVEU,BASE,NU,NEQUA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C                    SI NUPOSS !=' ', NU PEUT ETRE MODIFIE (NU=NUPOSS)
 C OUT  I NEQUA: NOMBRE D'EQUATIONS DU SOUS-DOMAINE (EXPLOITE QU'EN DD)
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
-C       20/11/03 (OB): MODIF POUR SOLVEUR FETI.
 C----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -63,7 +62,7 @@ C----------------------------------------------------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER ISLVK,I,JLLIGR
+      INTEGER ISLVK,I,JLLIGR,JNSLV
 
       LOGICAL IDENOB,L1,L2,L3,L4,L5
       CHARACTER*19 SOLVE2
@@ -82,7 +81,6 @@ C DEB ------------------------------------------------------------------
       CALL DETRSD('NUME_DDL',NU1)
 
       CALL JEVEUO(SOLVE2//'.SLVK','L',ISLVK)
-      TYPRES = ZK24(ISLVK)
       METHOD = ZK24(ISLVK+3)
 
 
@@ -92,8 +90,7 @@ C DEB ------------------------------------------------------------------
         ZK24(JLLIGR-1+I) = VLIGR(I)
    10 CONTINUE
 
-C RAJOUT DU MOT-CLE SOLVEU ET NEQUA
-      CALL NUEFFE(LLIGR,BAS2(2:2),NU1,METHOD,TYPRES,MOLOC,SOLVE2,NEQUA)
+      CALL NUEFFE(LLIGR,BAS2(2:2),NU1,METHOD,MOLOC,SOLVE2,NEQUA)
 
 C     -- ON ESSAYE D'ECONOMISER LE PROF_CHNO :
       IF (NU2.NE.' ') THEN
@@ -114,11 +111,21 @@ C     -- ON ESSAYE D'ECONOMISER LE PROF_CHNO :
          END IF
       END IF
 
-      CALL PROFMA(NU1,SOLVEU,BAS2(1:1))
+      CALL PROFMA(NU1,SOLVE2,BAS2(1:1))
       CALL JEDETR(NU1//'     .ADLI')
       CALL JEDETR(NU1//'     .ADNE')
-      NU=NU1
 
       CALL JEDETR(LLIGR)
+
+
+C --- CREATION DE L'OBJET .NSLV :
+C     -------------------------------------
+      CALL JEDETR(NU1//'.NSLV')
+      CALL WKVECT(NU1//'.NSLV',BAS2(1:1)//' V K24',1,JNSLV)
+      ZK24(JNSLV-1+1)=SOLVE2
+
+C     CALL VERISD('NUME_DDL',NU1)
+
+      NU=NU1
       CALL JEDEMA()
       END

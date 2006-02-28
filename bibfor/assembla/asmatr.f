@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,MOTCLE,
      &                  BASE,TYPE,MATAS)
-C MODIF ASSEMBLA  DATE 11/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
+C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -27,7 +27,7 @@ C ======================================================================
       CHARACTER*4 MOTCLE
       CHARACTER*19 SOLVE2,INFCH2
       INTEGER ILICOE,I,ISLVK,INDSYM,IRET,IBID,IDBGAV,ILIMAT,IER
-      INTEGER IDLRE2,NBRESU,IRESU,K
+      INTEGER IDLRE2,NBRESU,IRESU,K,JREFA
       LOGICAL INDSUI,INDMAS
 C-----------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ C IN  K4 MOTCLE : 'ZERO' OU 'CUMU'
 C                 'ZERO':SI UN OBJET DE NOM MATAS ET DE TYPE
 C                        MATR_ASSE EXISTE ON ECRASE SON CONTENU.
 C                 'CUMU':SI UN OBJET DE NOM MATAS ET DE TYPE
-C                        MATR_ASSE EXISTE ON CUMULE DANS .VALE
+C                        MATR_ASSE EXISTE ON CUMULE DANS .VALM
 C IN  K1  BASE   : BASE SUR LAQUELLE ON CREE L'OBJET MATAS
 C IN  I   TYPE  : TYPE DES MATRICES ELEMENTAIRES A ASSEMBLER
 C                          1 --> REELLES
@@ -101,11 +101,11 @@ C      IF (NBMAT2.GT.99) CALL JXABOR()
       DO 10,K = 1,NBMAT2
         TLIMA2(K) = TLIMAT(K)
         IF (TLIMA2(K).EQ.'&&ASCOMA') INDSUI=.TRUE.
-        IF ((NBMAT2.EQ.1).AND.(TLIMAT(K).EQ.'&&OP0070.MEMASS')) 
+        IF ((NBMAT2.EQ.1).AND.(TLIMAT(K).EQ.'&&OP0070.MEMASS'))
      &  INDMAS=.TRUE.
    10 CONTINUE
       CALL JEEXIN('&&CFMMEL.LISTE_RESU',IRET)
-     
+
       IF ((IRET.GT.0).AND.(.NOT.INDSUI).AND.(.NOT.INDMAS)) THEN
         NBMAT2 = NBMAT2 + 1
         TLIMA2(NBMAT2) = '&&CFMMEL'
@@ -153,41 +153,31 @@ C REMPLISSAGE DE LA MATR_ASSE MATAS
 
       METRES = ZK24(ISLVK)
 
-      IF (METRES.EQ.'LDLT') THEN
-C     =============================
+
+
+      IF (METRES.EQ.'GCPC') THEN
+C     ================================
+        IF (TYPSYM.EQ.'S') THEN
+          CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
+     &              MOTCLE,  TYPE)
+        ELSE IF (TYPSYM.EQ.'N') THEN
+          CALL UTMESS('F','ASMATR',' LE TYPE  : '//TYPSYM//
+     &                '  DE LA MATRICE EST INCORRECT. ON ATTEND : "S"'//
+     &                'POUR UNE RESOLUTION PAR METHODE ITERATIVE')
+        END IF
+
+
+      ELSE
+C     ====
         CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
-        IF (IRET.NE.0) THEN
-          CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)
+        IF (IRET.GT.0) THEN
+          CALL JEVEUO(MATAS(1:19)//'.REFA','L',JREFA)
+          TYMASY=ZK24(JREFA-1+9)
           IF (TYMASY.EQ.'MR') THEN
             INDSYM = 1
           END IF
         END IF
-        IF (TYPSYM.EQ.'S' .AND. INDSYM.EQ.0) THEN
-          CALL ASSMAT(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
-     &              MOTCLE,  TYPE)
-        ELSE IF (TYPSYM.EQ.'N' .OR. INDSYM.EQ.1) THEN
-          CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
-          IF (IRET.NE.0) THEN
-            CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)
-            IF (TYMASY.EQ.'MS') THEN
-              CALL MASYNS(MATAS)
-            END IF
-          END IF
-          CALL ASSMNS(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
-     &              MOTCLE,  TYPE)
-        END IF
 
-
-      ELSE IF ((METRES.EQ.'MULT_FRO').OR.
-     &         (METRES.EQ.'FETI').OR.(METRES.EQ.'MUMPS')) THEN
-C     ==========================================================
-        CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
-        IF (IRET.NE.0) THEN
-          CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)
-          IF (TYMASY.EQ.'MR') THEN
-            INDSYM = 1
-          END IF
-        END IF
         IF (TYPSYM.EQ.'S' .AND. INDSYM.EQ.0) THEN
           CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
      &              MOTCLE,  TYPE)
@@ -198,25 +188,14 @@ C     ==========================================================
      &      '  AVEC FETI')
           CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
           IF (IRET.NE.0) THEN
-            CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)
+            CALL JEVEUO(MATAS(1:19)//'.REFA','L',JREFA)
+            TYMASY=ZK24(JREFA-1+9)
             IF (TYMASY.EQ.'MS') THEN
               CALL MASYNS(MATAS)
             END IF
           END IF
           CALL ASSMMN(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
      &               MOTCLE, TYPE)
-        END IF
-
-
-      ELSE IF (METRES.EQ.'GCPC') THEN
-C     ================================
-        IF (TYPSYM.EQ.'S') THEN
-          CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
-     &              MOTCLE,  TYPE)
-        ELSE IF (TYPSYM.EQ.'N') THEN
-          CALL UTMESS('F','ASMATR',' LE TYPE  : '//TYPSYM//
-     &                '  DE LA MATRICE EST INCORRECT. ON ATTEND : "S"'//
-     &                'POUR UNE RESOLUTION PAR METHODE ITERATIVE')
         END IF
 
       END IF

@@ -8,7 +8,7 @@
       REAL*8                          CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C       *  LES SCALAIRES SONT REELS OU COMPLEXES
 C     L'OPERATION DE COMBINAISON LINEAIRE N'A DE SENS QUE
 C     POUR DES MATRICES QUI NE SONT PAS DECOMPOSEES.
 C     C'EST POURQUOI ON FAIT LA COMBINAISON LINEAIRE DES :
-C                      .VALE
+C                      .VALM
 C                      .VALI (SI ILS EXISTENT)
 C                      .CONL
 C    ET NON PAS DES .VALF QUI SONT DES OBJETS D'UNE MATR_ASSE
@@ -86,7 +86,6 @@ C     NBLIC  = NOMBRE DE BLOCS DU .VALI
       INTEGER               LGBLOC, NBLIC
 C     -----------------------------------------------------------------
       CHARACTER*1   BASE, CLAS, CLASI
-      CHARACTER*4   ETAMAT, ETAMA1
       CHARACTER*8   K8BID
       CHARACTER*19  MATRES,MATI,MAT1
 C     -----------------------------------------------------------------
@@ -111,20 +110,12 @@ C
         CALL JEVEUO(LIMAT(I)(1:19)//'.&INT','E',ZI(IDLIMA+I-1))
    10 CONTINUE
 C
-      CALL JELIRA(LIMAT(1)(1:19)//'.REFA','DOCU',IBID,ETAMA1)
 C
       IER1 = 0
       DO 20 I = 2, NBCOMB
          CALL VRREFE (LIMAT(1), LIMAT(I), IER)
          IF (IER.NE.0) THEN
            IER1 = 1
-         ENDIF
-         CALL JELIRA(LIMAT(I)(1:19)//'.REFA','DOCU',IBID,
-     +               ETAMAT)
-         IF (ETAMAT.NE.ETAMA1) THEN
-              CALL UTMESS('F','MTCOMB','LES MATRICES A COMBINER'//
-     +                     ' NE SONT PAS DANS LE MEME ETAT'//
-     +                     ' REFERENCE PAR LE CHAMP DOCU DU .REFA')
          ENDIF
   20  CONTINUE
 C
@@ -140,7 +131,7 @@ C       -------------------------------------------------
 C ---   CAS OU LES MATRICES A COMBINER N'ONT PAS LE MEME PROFIL :
 C       -------------------------------------------------------
       ELSE
-        CALL PROLMA(MATRES, LIMAT, NBCOMB, BASE,' ',.TRUE.)
+        CALL PROSMO(MATRES, LIMAT, NBCOMB, BASE,' ',.TRUE.)
         CALL MTDSCR(MATRES)
         CALL JEVEUO(MATRES//'.&INT','E',LRES)
         CALL CBVAL2(NBCOMB,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
@@ -152,7 +143,6 @@ C --- A LA MATRICE RESULTAT
 C --- CET ETAT NE PEUT ETRE QUE 'ASSE' PUISQUE L'ON NE FAIT PAS
 C --- DE COMBINAISON LINEAIRE DE MATRICES DECOMPOSEES :
 C     -----------------------------------------------
-      CALL JEECRA(MATRES//'.REFA','DOCU',IBID,ETAMA1)
 C
 C --- TRAITEMENT DE LA S.D. ELIM_DDL
 C --- I.E. C'EST LE CAS OU IL Y A DES DDLS ELIMINES DANS LES
@@ -211,19 +201,15 @@ C
 C
 C --- LONGUEUR D'UN BLOC :
 C     ------------------
-         IF (ZI(ZI(IDLIMA)+6).EQ.1) THEN
-             LGBLOC = ZI(ZI(IDLIMA)+14)
-         ELSEIF (ZI(ZI(IDLIMA)+6).EQ.2) THEN
-            CALL JEVEUO(MATRES//'.ABLI','L',IDABLI)
-            CALL JEVEUO(MATRES//'.ALIG','L',IDALIG)
-            CALL JEVEUO(MATRES//'.LLIG','L',IDLLIG)
-            IMPFIN = ZI(IDABLI+NBLIC)
-            ILOC = ZI(IDALIG+IMPFIN-1)
-            IND = 2+3*(IMPFIN-1)
-            JDEB = ZI(IDLLIG+IND+1-1)
-            JFIN = ZI(IDLLIG+IND+2-1)
-            LGBLOC = ILOC+JFIN-JDEB
-         ENDIF
+         CALL JEVEUO(MATRES//'.ABLI','L',IDABLI)
+         CALL JEVEUO(MATRES//'.ALIG','L',IDALIG)
+         CALL JEVEUO(MATRES//'.LLIG','L',IDLLIG)
+         IMPFIN = ZI(IDABLI+NBLIC)
+         ILOC = ZI(IDALIG+IMPFIN-1)
+         IND = 2+3*(IMPFIN-1)
+         JDEB = ZI(IDLLIG+IND+1-1)
+         JFIN = ZI(IDLLIG+IND+2-1)
+         LGBLOC = ILOC+JFIN-JDEB
 C
 C --- CREATION DE LA COLLECTION .VALI DE LA MATRICE RESULTAT
 C --- (AVEC LA BONNE LONGUEUR DE BLOC) :
@@ -241,7 +227,7 @@ C     -------------------------------------------
         CALL CBVALI(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
      +              LRES)
 C
-C --- REMISE A 1 DES TERMES DIAGONAUX DES LIGNES ELIMINEES DU .VALE :
+C --- REMISE A 1 DES TERMES DIAGONAUX DES LIGNES ELIMINEES DU .VALM :
 C     -------------------------------------------------------------
         CALL CIDIA1(TYPRES,LRES)
 C
@@ -263,4 +249,5 @@ C
       CALL JEDETR('&&MTCOMB.LISPOINT')
 C
       CALL JEDEMA()
+C     CALL VERISD('MATRICE',MATRES)
       END

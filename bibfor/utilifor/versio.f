@@ -1,6 +1,6 @@
       SUBROUTINE VERSIO(VERS,UTIL,NIVO,DATE,EXPLOI)
 C ======================================================================
-C MODIF UTILIFOR  DATE 23/02/2006   AUTEUR gcbhhhh M.ADMINISTRATEUR
+C MODIF UTILIFOR  DATE 01/03/2006   AUTEUR gcbhhhh M.ADMINISTRATEUR
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,8 +35,8 @@ C
 C
       VERS = 8
       UTIL = 2
-      NIVO = 9
-      DATE = '23/02/2006'
+      NIVO = 10
+      DATE = '01/03/2006'
       EXPLOI = .FALSE.
 C      
       END

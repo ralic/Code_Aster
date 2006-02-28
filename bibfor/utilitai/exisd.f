@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C         / 'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C         / 'TABLE'
 C         / 'RESULTAT'
 C         / 'FONCTION'
-C         / 'MODELE' 
+C         / 'MODELE'
 C         /'MAILLAGE'
 C         /'NUME_DDL'
 C         /'MATR_ASSE'
@@ -197,7 +197,7 @@ C     -----------------------------------
 C     -----------------------------------
         CH = NOMSD
         CALL JEEXIN(CH//'.REFA',I2)
-        CALL JEEXIN(CH//'.VALE',I3)
+        CALL JEEXIN(CH//'.VALM',I3)
         IF (I2*I3.NE.0) GO TO 20
 
       ELSE IF (TYP2SD.EQ.'NUME_DDL') THEN

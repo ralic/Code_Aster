@@ -3,7 +3,7 @@
       CHARACTER*(*) BASE,TOUS,MESS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,6 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER NUOBJ
       REAL*8 SOMMR
 
-
       CALL JEMARQ()
       BAS1=BASE
 
@@ -64,8 +63,8 @@ C     --------------------------------------------------------------
       DEJAVU='&&IMPTOU.DEJAVU'
       CALL JEEXIN(DEJAVU,IRET)
       IF (IRET.EQ.0) THEN
-        CALL JECREO(DEJAVU,'L N K24')
-        CALL JEECRA( DEJAVU, 'NOMMAX', 10000 , KBID )
+        CALL JECREO(DEJAVU,'G N K24')
+        CALL JEECRA( DEJAVU, 'NOMMAX', 90000 , KBID )
       END IF
 
 
