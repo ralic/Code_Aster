@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF gmsh Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,28 +32,14 @@ except ImportError:
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
 
+# Multi-langues
+try:
+   import gettext
+   _ = gettext.gettext
+except:
+   def _(mesg):
+      return mesg
 
-log = 1
-
-def Mesh(maillage, **para) :
-
-  """
-    maillage : texte du maillage
-    para     : liste des parametres du maillage, concatene au maillage
-  """
-  
-  texte = ''
-  for p in para.keys() :
-    texte = texte + p + ' = ' + repr(para[p]) + ' ;\n'
-  texte = texte + maillage
-  
-  f = open('fort.geo','w')
-  f.write(texte)
-  f.close()
-  os.system('gmsh -3 fort.geo')
-  os.rename('fort.msh','fort.19')
-  os.remove('fort.geo')
-  
 
 
 # =========================================================================
@@ -78,9 +64,10 @@ def GMSH(mode, fichier, param) :
     elif param['mode'] == 'WINDOWS' :
       return GMSH_WINDOWS(mode, fichier, param)
     else :
-      raise "Mode d'environnement incorrect"
+      raise _("Mode d'environnement incorrect")
     
     
+# =========================================================================
 
 class GMSH_DISTANT :
 
@@ -96,82 +83,104 @@ class GMSH_DISTANT :
 
     if mode == 'POST' :
 
-      mdis    = param['machine_gmsh']
-      ex_gmsh = param['machine_gmsh_exe'] + ' -display ' + param['machine_visu']
-      fdis    = param['machine_gmsh_tmp'] + '/' + fichier + '.pos'
+      # Verifications
+      for var in ['machine_gmsh', 'tmp', 'protocole']:
+         if not param[var].strip():
+            UTMESS('A','STANLEY',_("En mode DISTANT, la variable '") + var + _("' est obligatoire. On abandonne.") )
+            return
+
+      # On renomme le fichier fort.33 en fort.33.pos
+      os.rename(fichier, fichier + '.pos')
+      fichier = fichier + '.pos'
+
+      # Executable Gmsh distant
+      if ( (param['machine_gmsh_exe'].strip() != '') and (param['machine_visu'].strip() != '') ):
+         ex_gmsh = param['machine_gmsh_exe'] + ' -display ' + param['machine_visu']
+      else:
+         ex_gmsh = None
+
+      # Protocole de recopie et d'execution distante
+      copie     = param['protocole'].split('/')[0]                                    # rcp ou scp
+      execution = param['protocole'].split('/')[1]                                    # rsh ou ssh
+
+      # Accès à la machine distante (sans login ou avec login)
+      mdis        = param['machine_gmsh']                                             # cli75ca
+      rep_distant = mdis + ':' + param['tmp'] + '/'                                   # cli75ca:/tmp/
+
+      # Fichier distant
+      fic_distant = param['tmp'] + '/' + fichier                                      # /tmp/fort.33.pos
 
       if param['machine_gmsh_login'].strip() != '':
-        fmdis   = param['machine_gmsh_login'] + '@' + mdis + ":" + fdis
-        mdis  = '-l ' + param['machine_gmsh_login'] + ' ' + mdis 
+         mdis  = '-l ' + param['machine_gmsh_login'] + ' ' + mdis                     # -l assire cli75ca
+         rep_distant = param['machine_gmsh_login'] + '@' + rep_distant                # assire@cli75ca:/tmp/
+
+
+      # Liste des fichiers a copier sur la machine distante
+      l_fichier = [ fichier ]
+
+
+      # Creation du script d'affichage sur la peau et recopie sur le serveur Gmsh
+      if param['SKIN'].lower() in ['oui', 'yes']:
+         fichier_script = 'skin.pos'
+         l_fichier.insert( 0, fichier_script )
+         fw=open(fichier_script,'w')
+         fw.write( 'Merge "' + fic_distant + '";' +'\n' )
+         fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
+         fw.write( 'Plugin(Skin).Run;' +'\n' )
+         fw.write( 'Delete View[0];' +'\n' )
+         fw.close()
+
+      # On efface eventuellement les anciens fichiers .pos
+      for fic in l_fichier:
+         txt = execution + " " + mdis + " 'rm -f " + param['tmp'] + '/' + fic + "'"
+         self.Commande( txt )
+
+      # Recopie du(des) fichier(s) .pos sur le serveur Gmsh
+      for fic in l_fichier:
+         txt = copie + " " + fic + " " + rep_distant + '/' + fic
+         self.Commande( txt )
+
+      # On lance Gmsh sur le serveur distant sur le premier fichier de la liste l_fichier
+      if ex_gmsh:
+         fic = l_fichier[0]
+         txt = execution + " " + mdis + " '" + ex_gmsh + " " + param['tmp'] + '/' + fic + "'"
+         self.Commande( txt )
       else:
-        fmdis   = mdis + ":" + fdis
+         UTMESS('A','STANLEY',_("Le parametre 'machine_gmsh_exe' ou 'machine_visu' n'est pas renseigné, il faut ouvrir le fichier manuellement.") )
 
 
-      # Verifications
-      for var in ['machine_gmsh', 'machine_gmsh_exe', 'machine_visu', 'machine_gmsh_tmp']:
-        if not param[var].strip():
-          UTMESS('A','STANLEY',"En mode DISTANT, la variable '" + var + "' est obligatoire. On abandonne.")
-          return
-
-      txt = "rcp " + fichier + " " + fmdis
-      UTMESS('I','STANLEY',"Execution de : " + txt)
-      os.system(txt)
-
-      if param['SKIN']=='OUI':
-        fw=open('skin.pos','w')
-        fw.write( 'Merge "' + param['machine_gmsh_tmp'] + '/' + fichier + '.pos' + '";' +'\n' )
-        fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
-        fw.write( 'Plugin(Skin).Run;' +'\n' )
-        fw.write( 'Delete View[0];' +'\n' )
-        fw.close()
-
-        txt = "rcp skin.pos " + param['machine_gmsh_login'] + '@' + param['machine_gmsh'] + ":" + param['machine_gmsh_tmp'] + '/skin.pos'
-        UTMESS('I','STANLEY',"Execution de : " + txt)
-        os.system(txt)
-
-        if param['machine_gmsh_exe'] !='':
-          txt = "rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
-          os.system(txt)
-
-          txt = "rsh " + mdis + " 'rm " + fdis + "'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
-          os.system(txt)
-
-          txt = "rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
-          os.system(txt)
-
-        else: UTMESS('A','STANLEY',"Le parametre 'machine_gmsh_exe' n'est pas renseigné, ouvrir le fichier .pos manuellement.")
-      else:
-        if param['machine_gmsh_exe'] !='':
-          txt = "rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
-          os.system(txt)
-
-          txt = "rsh " + mdis + " 'rm " + fdis + "'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
-          os.system(txt)
-        else: UTMESS('A','STANLEY',"Le parametre 'machine_gmsh_exe' n'est pas renseigné, ouvrir le fichier .pos manuellement.")
+      UTMESS('I','STANLEY',_("Lancement terminé.") )
 
     if mode == 'MAIL' :
       raise  'NON DVP' 
 
-  def Terminal_ouvert(self) : return 0
+
+  def Terminal_ouvert(self):
+     # Retourne 1 si le terminal est ouvert, 0 sinon
+     return 0
   
-# Retourne 1 si le terminal est ouvert, 0 sinon
+
+  def Fermer(self):
+     # Ferme le terminal (si necessaire)  
+     # Fais le menage dans l'objet
+     pass
 
 
-  def Fermer(self) : pass
-
-# Ferme le terminal (si necessaire)  
-# Fais le menage dans l'objet
-
-    
-  def Attendre(self) : pass
+  def Attendre(self):
+     pass
 
 
-      
+  def Commande(self, cmd):
+     """
+        Lancement d'une commande
+     """
+     UTMESS('I','STANLEY',_("Execution de : ") + cmd)
+     res = os.system(cmd)
+     return
+
+
+# =========================================================================
+
 class GMSH_LOCAL :
 
   def __init__(self, mode, fichier, param) :
@@ -188,7 +197,7 @@ class GMSH_LOCAL :
       except: pass
       os.rename(fichier, fichier + '.pos')
 
-      if param['SKIN']=='OUI':
+      if param['SKIN'].lower() in ['oui', 'yes']:
         fw=open('skin.pos','w')
         fw.write( 'Merge "' + fichier + '.pos' + '";' +'\n' )
         fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
@@ -199,21 +208,22 @@ class GMSH_LOCAL :
       else:
         shell = param['gmsh'] + ' ' + fichier + '.pos'
 
-      UTMESS('I','STANLEY',"Execution de : " + shell)
+      UTMESS('I','STANLEY',_("Execution de : ") + shell)
 
       if os.name=='nt':
         res = os.system(shell)
-        if res!=0: UTMESS('A','STANLEY','Erreur de lancement de la commande!')
+        if res!=0: UTMESS('A','STANLEY',_("Erreur de lancement de la commande!") )
       else:
         self.controle = Popen3(shell)  
 
+      UTMESS('I','STANLEY',_("Lancement terminé.") )
 
     if mode == 'MAIL' :
       raise  'NON DVP' 
 
   def Terminal_ouvert(self) :
   
-# Retourne 1 si le terminal est ouvert, 0 sinon
+    # Retourne 1 si le terminal est ouvert, 0 sinon
 
     etat = self.controle.poll()
     if etat == -1 :
@@ -224,20 +234,21 @@ class GMSH_LOCAL :
 
   def Fermer(self) :
 
-# Ferme le terminal (si necessaire)  
-# Fais le menage dans l'objet
+    # Ferme le terminal (si necessaire)  
+    # Fais le menage dans l'objet
 
     if self.Terminal_ouvert() :
       os.kill(self.controle.pid, signal.SIGTERM)
     
   def Attendre(self) :
   
-# Attend que l'on quitte gmsh
+    # Attend que l'on quitte gmsh
 
     self.controle.wait()
     self.Fermer()
 
 
+# =========================================================================
 
 class GMSH_WINDOWS :
 
@@ -254,14 +265,20 @@ class GMSH_WINDOWS :
     if mode == 'POST' :
 
       # Verifications
-      for var in ['machine_gmsh', 'smbclient', 'machine_gmsh_tmp']:
+      for var in ['machine_gmsh', 'smbclient', 'tmp']:
         if not param[var].strip():
-          UTMESS('A','STANLEY',"En mode WINDOWS, la variable '" + var + "' est obligatoire. On abandonne.")
+          UTMESS('A','STANLEY',_("Dans le mode WINDOWS, la variable '") + var + _("' est obligatoire. On abandonne.") )
           return
 
-      mdis = param['machine_gmsh']
+      # Variables
+      machine_win       = param['machine_win']
+      partage_win_nom   = param['partage_win_nom']
+      partage_win_login = param['partage_win_login']
+      partage_win_pass  = param['partage_win_pass']
+      smbclient         = param['smbclient']
 
-      lst = param['machine_gmsh_tmp'].split('\\')
+
+      lst = partage_win_nom.split('\\')
       _nom_partage = lst[0]
       if len(lst)>1: sous_rep = '\\'.join(lst[1:]) + '\\'
       else: sous_rep = ''
@@ -270,48 +287,65 @@ class GMSH_WINDOWS :
 
       # Syntaxe generale de smbclient : smbclient '\\cli70xx\temp' -N -c 'rm fic; put fic'
       # Copie du fort.33.pos
-      if param['machine_gmsh_login'] == '':
-        txt = param['smbclient'] + " '\\\\" + mdis + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos'" 
-        UTMESS('I','STANLEY',"Execution de : " + txt)
+      if partage_win_login == '':
+        txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos'" 
+        UTMESS('I','STANLEY',_("Execution de : ") + txt)
         os.system(txt)
       else:
-        txt = param['smbclient'] + " '\\\\" + mdis + "\\" + _nom_partage + "' " + "****" + " -U " + param['machine_gmsh_login'] + " -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos '"
-        UTMESS('I','STANLEY',"Execution de : " + txt)
-        txt = param['smbclient'] + " '\\\\" + mdis + "\\" + _nom_partage + "' " + param['machine_gmsh_pass'] + " -U " + param['machine_gmsh_login'] + " -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos '"
+        txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + "****" + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos '"
+        UTMESS('I','STANLEY',_("Execution de : ") + txt)
+        txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + partage_win_pass + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos '"
         os.system(txt)
 
       # Creation et copie du skin.pos
-      if param['SKIN']=='OUI':
+      if param['SKIN'].lower() in ['oui', 'yes']:
         fw=open('skin.pos','w')
         fw.write( 'Merge "' + fichier + '.pos' + '";' +'\n' )
         fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
         fw.write( 'Plugin(Skin).Run;' +'\n' )
         fw.write( 'Delete View[0];' +'\n' )
         fw.close()
-        if param['machine_gmsh_login'] == '':
-          txt = param['smbclient'] + " '\\\\" + mdis + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
+        if partage_win_login == '':
+          txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
+          UTMESS('I','STANLEY',_("Execution de : ") + txt)
           os.system(txt)
         else:
-          txt = param['smbclient'] + " '\\\\" + mdis + "\\" + _nom_partage + "' " + "****" + " -U " + param['machine_gmsh_login'] + " -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
-          UTMESS('I','STANLEY',"Execution de : " + txt)
-          txt = param['smbclient'] + " '\\\\" + mdis + "\\" + _nom_partage + "' " + param['machine_gmsh_pass'] + " -U " + param['machine_gmsh_login'] + " -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
+          txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + "****" + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
+          UTMESS('I','STANLEY',_("Execution de : ") + txt)
+          txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + partage_win_pass + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
           os.system(txt)
-        UTMESS('I','STANLEY',"Les fichiers de post-traitement sont copies. Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.")
+        UTMESS('I','STANLEY',_("Les fichiers de post-traitement sont copies. Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.") )
 
       else:
-        UTMESS('I','STANLEY',"Le fichier de post-traitement est copie. Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.")
+        UTMESS('I','STANLEY',_("Le fichier de post-traitement est copie. Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.") )
 
     if mode == 'MAIL' :
       raise  'NON DVP' 
 
   def Terminal_ouvert(self) : return 0
-  
-# Retourne 1 si le terminal est ouvert, 0 sinon
+     # Retourne 1 si le terminal est ouvert, 0 sinon
 
   def Fermer(self) : pass
-
-# Ferme le terminal (si necessaire)  
-# Fais le menage dans l'objet
+     # Ferme le terminal (si necessaire)  
+     # Fais le menage dans l'objet
     
   def Attendre(self) : pass
+
+
+# =========================================================================
+
+class SCRIPTS :
+
+  def __init__(self, script, fichier='script.pos') :
+     """
+        Produit le script pour Gmsh
+     """
+     
+     texte = ''
+
+     if script == 'SKIN':
+        texte += 'Merge "' + fichier + '.pos' + '";' +'\n'
+        texte += 'Plugin(Skin).iView=-1;' +'\n'
+        texte += 'Plugin(Skin).Run;' +'\n'
+        texte += 'Delete View[0];' +'\n'
+

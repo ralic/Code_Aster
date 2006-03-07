@@ -6,7 +6,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 06/03/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,6 +80,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVEUO(ABSCUR,'E',IADABS)
       DO 10 I=1,NNOFF
         ZR(IADABS-1+(I-1)+1)=ZR(IFON-1+4*(I-1)+4)
+        GTHI(I)=ZR(IADRGK-1+(I-1)*4+1)
+        K1TH(I)=ZR(IADRGK-1+(I-1)*4+2)
+        K2TH(I)=ZR(IADRGK-1+(I-1)*4+3)
+        K3TH(I)=ZR(IADRGK-1+(I-1)*4+4)
 10    CONTINUE
 
       CALL GETVTX(' ','LISSAGE_G',0,1,1,LISSG,IBID)
@@ -95,8 +99,33 @@ C
           ZR(IVECT+I-1) = ZR(IVECT+I-1) + DELTA
           ZR(IVECT+I+1-1) = 2.D0 * DELTA
  20     CONTINUE
-        CALL UTMESS('F','GKMET3','METHODE LAG NO-NO PAS FINIE')
-C
+        DO 30 I=1,NNOFF
+          GS(I) = GTHI(I)/ZR(IVECT+I-1 )
+          K1S(I) = K1TH(I)/ZR(IVECT+I-1 )
+          K2S(I) = K2TH(I)/ZR(IVECT+I-1 )
+          K3S(I) = K3TH(I)/ZR(IVECT+I-1 )
+30      CONTINUE
+C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
+        S1 = ZR(IADABS-1+1)
+        S2 = ZR(IADABS-1+2)
+        S3 = ZR(IADABS-1+3)
+        SN2 = ZR(IADABS-1+NNOFF-2)
+        SN1 = ZR(IADABS-1+NNOFF-1)
+        SN =  ZR(IADABS-1+NNOFF)
+
+        GS(1)=GS(2)+(S1-S2)*(GS(3)-GS(2))/(S3-S2)
+        K1S(1)=K1S(2)+(S1-S2)*(K1S(3)-K1S(2))/(S3-S2)
+        K2S(1)=K2S(2)+(S1-S2)*(K2S(3)-K2S(2))/(S3-S2)
+        K3S(1)=K3S(2)+(S1-S2)*(K3S(3)-K3S(2))/(S3-S2)
+        GS(NNOFF)=GS(NNOFF-1)
+     &        +(SN-SN1)*(GS(NNOFF-2)-GS(NNOFF-1))/(SN2-SN1)
+        K1S(NNOFF)=K1S(NNOFF-1)
+     &        +(SN-SN1)*(K1S(NNOFF-2)-K1S(NNOFF-1))/(SN2-SN1)
+        K2S(NNOFF)=K2S(NNOFF-1)
+     &        +(SN-SN1)*(K2S(NNOFF-2)-K2S(NNOFF-1))/(SN2-SN1)
+        K3S(NNOFF)=K3S(NNOFF-1)
+     &        +(SN-SN1)*(K3S(NNOFF-2)-K3S(NNOFF-1))/(SN2-SN1)
+          
       ELSEIF (LISSG .EQ. 'LAGRANGE') THEN
         MATR = '&&METHO3.MATRI'
 
@@ -116,12 +145,6 @@ C
           ZR(IMATR+(I-1+1)*NNOFF+I-1+1) = 2.D0 * DELTA
  40     CONTINUE
 
-        DO 50 I=1,NNOFF
-          GTHI(I)=ZR(IADRGK-1+(I-1)*4+1)
-          K1TH(I)=ZR(IADRGK-1+(I-1)*4+2)
-          K2TH(I)=ZR(IADRGK-1+(I-1)*4+3)
-          K3TH(I)=ZR(IADRGK-1+(I-1)*4+4)
- 50     CONTINUE        
 
         S1 = ZR(IADABS-1+1)
         S2 = ZR(IADABS-1+2)
@@ -130,6 +153,7 @@ C
         SN1 = ZR(IADABS-1+NNOFF-1)
         SN =  ZR(IADABS-1+NNOFF)
 
+C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
         GTHI(1)=GTHI(2)*(S2-S1)/(S3-S1)
         K1TH(1)=K1TH(2)*(S2-S1)/(S3-S1)
         K2TH(1)=K2TH(2)*(S2-S1)/(S3-S1)
@@ -151,14 +175,15 @@ C       SYSTEME LINEAIRE:  MATR*K2S = K2TH
 C       SYSTEME LINEAIRE:  MATR*K3S = K3TH
         CALL GSYSTE(MATR,NNOFF,NNOFF,K3TH,K3S)
 
-        DO 60 I=1,NNOFF
-          ZR(IADGKS-1+(I-1)*4+1)=GS(I)
-          ZR(IADGKS-1+(I-1)*4+2)=K1S(I)
-          ZR(IADGKS-1+(I-1)*4+3)=K2S(I)
-          ZR(IADGKS-1+(I-1)*4+4)=K3S(I)
- 60     CONTINUE
-
       ENDIF
+      
+      DO 60 I=1,NNOFF
+        ZR(IADGKS-1+(I-1)*4+1)=GS(I)
+        ZR(IADGKS-1+(I-1)*4+2)=K1S(I)
+        ZR(IADGKS-1+(I-1)*4+3)=K2S(I)
+        ZR(IADGKS-1+(I-1)*4+4)=K3S(I)
+ 60   CONTINUE
+
 
       DO 70 I=1,NNOFF*4
           ZR(IADGKI-1+I)=ZR(IADRGK-1+I)

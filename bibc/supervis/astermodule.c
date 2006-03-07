@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/02/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2548,16 +2548,19 @@ PyObject *args;
                                    SSCRUTE(nomob);
           if(ctype < 0){
             /* Erreur */
-            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+/*            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
             CALL_JEDEMA();
             _FIN(aster_getvectjev) ;
-            return NULL;
-          }
-          else if(ctype == 0){
+            return NULL;*/
+            /* vecteur jeveux inexistant : retourne None */
             Py_INCREF( Py_None ) ;
             CALL_JEDEMA();
             _FIN(aster_getvectjev) ;
             return Py_None;
+          }
+          else if(ctype == 0){
+            /* Liste vide */
+            tup = PyTuple_New( 0 ) ;
           }
           else if(ctype == 1){
             /* REEL */

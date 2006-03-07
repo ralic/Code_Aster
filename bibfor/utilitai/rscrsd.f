@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=47)
       PARAMETER (NCMEC2=49)
-      PARAMETER (NCMEC3=30)
+      PARAMETER (NCMEC3=31)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=22,NAEVNO=9)
+      PARAMETER (NPEVNO=23,NAEVNO=9)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
@@ -148,7 +148,7 @@ C     ------------------------------------------------------------------
      &     'RESI_GLOB_RELA','RESI_GLOB',
      &     'CHAR_MINI','ETA_PILOTAGE','RESI_GLOB_MOINS',
      &     'CHAR_CRIT','GFUM','GFUA','GFUML','GFUI','GFVAG','GFVFD',
-     &     'GFVAD'/
+     &     'GFVAD','FREQ'/
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
@@ -253,7 +253,8 @@ C     ------------------------------------------------------------------
      &     'VALE_CONT','VARI_ELNO_COQU','CRIT_ELNO_RUPT','ETOT_ELGA',
      &     'ETOT_ELNO_ELGA','ETOT_ELEM','VALE_NCOU_MAXI',
      &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA',
-     &     'EXTR_ELGA_VARI','EXTR_ELNO_VARI','EXTR_NOEU_VARI'/
+     &     'EXTR_ELGA_VARI','EXTR_ELNO_VARI','EXTR_NOEU_VARI',
+     &       'MODE_MECA'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
@@ -730,7 +731,8 @@ C     ------------------------------------------------------------------
         GO TO 310
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYPES2.EQ.'BASE_MODALE') THEN
+      ELSE IF (TYPES2.EQ.'BASE_MODALE' .OR.
+     & TYPES2.EQ.'DYNAMIQUE') THEN
 
         NBCHAM = NCMECA
         CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')

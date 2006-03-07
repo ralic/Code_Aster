@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -383,12 +383,12 @@ fo_ESTAR = FORMULE(NOM_PARA=('ET','EN','EFY','EFZ'),
 # Partie droite
 
 TAB1  = CALC_TABLE(TABLE=TAB1,reuse=TAB1,
-                   OPER=(_F(FORMULE=form_EN, NOM_PARA='EN' ),
-                         _F(FORMULE=form_ET, NOM_PARA='ET' ),
-                         _F(FORMULE=form_EFY,NOM_PARA='EFY'),
-                         _F(FORMULE=form_EFZ,NOM_PARA='EFZ'),
-                         _F(FORMULE=fo_ESTAR,NOM_PARA='ESTAR')
-                        )
+                   ACTION=(_F(OPERATION='OPER', FORMULE=form_EN, NOM_PARA='EN' ),
+                           _F(OPERATION='OPER', FORMULE=form_ET, NOM_PARA='ET' ),
+                           _F(OPERATION='OPER', FORMULE=form_EFY,NOM_PARA='EFY'),
+                           _F(OPERATION='OPER', FORMULE=form_EFZ,NOM_PARA='EFZ'),
+                           _F(OPERATION='OPER', FORMULE=fo_ESTAR,NOM_PARA='ESTAR'),
+                          )
                    )
 
 IMPR_TABLE(TABLE=TAB1)
@@ -438,12 +438,12 @@ TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              OPERATION='EXTRACTION',),);
 
 TAB2  = CALC_TABLE(TABLE=TAB2,reuse=TAB2,
-                   OPER=(_F(FORMULE=form_EN, NOM_PARA='EN' ),
-                         _F(FORMULE=form_ET, NOM_PARA='ET' ),
-                         _F(FORMULE=for_EFY,NOM_PARA='EFY'),
-                         _F(FORMULE=for_EFZ,NOM_PARA='EFZ'),
-                         _F(FORMULE=f_ESTAR,NOM_PARA='ESTAR')
-                        )
+                   ACTION=(_F(OPERATION='OPER', FORMULE=form_EN, NOM_PARA='EN' ),
+                           _F(OPERATION='OPER', FORMULE=form_ET, NOM_PARA='ET' ),
+                           _F(OPERATION='OPER', FORMULE=for_EFY,NOM_PARA='EFY'),
+                           _F(OPERATION='OPER', FORMULE=for_EFZ,NOM_PARA='EFZ'),
+                           _F(OPERATION='OPER', FORMULE=f_ESTAR,NOM_PARA='ESTAR'),
+                           ),
                    )
 
 IMPR_TABLE(TABLE=TAB2)

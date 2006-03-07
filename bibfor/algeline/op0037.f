@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -536,7 +536,7 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
              ENDIF
           ENDIF
           CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
-     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
      +                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
           CALL VPNOR2 ( MODEOU, NBMODE, ZI(LNUMOR), ZR(LCOEF) )
 
@@ -548,7 +548,7 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
  210         CONTINUE
  200       CONTINUE
            CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(LMODS),
-     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
      +                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
            CALL VPNOR2 ( MODEOU,NBMODE,ZI(LNUMOR),ZR(LCOEF))
          ENDIF
@@ -558,7 +558,7 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
           CALL WPNORM ( NORM, 'OUI', LMAT, NEQ, NBMODE, ZI(LDDL),
      +                  ZC(LMOD), ZR(LVALR) ,ZR(LCOEF))
           CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
-     +                 ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +               ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
      +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC )
          ELSE
            DO 220 IM = 1,NBMODE
@@ -568,7 +568,7 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
  230         CONTINUE
  220       CONTINUE
            CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
-     +                 ZC(LMODS),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +              ZC(LMODS),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
      +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
          ENDIF
         ELSE

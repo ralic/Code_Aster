@@ -1,0 +1,257 @@
+# MODIF  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+# TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(  NOM = 'SDNV106A',NIV_PUB_WEB='INTERNET'))
+#
+PRE_GIBI()
+#
+MA=LIRE_MAILLAGE()
+#
+MA=DEFI_GROUP( reuse=MA,
+               MAILLAGE=MA,
+               CREA_GROUP_NO=_F( 
+               TOUT_GROUP_MA = 'OUI'),);
+#
+MO=AFFE_MODELE( MAILLAGE=MA,
+                AFFE=_F( 
+                GROUP_MA = ('BLOC', 'FIXE', 'TRAC',),
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = '3D'),);
+#
+#  Materiau "dur" dont le module elastique vaut 100 fois 
+#  le module plastique
+#
+MATE_DUR=DEFI_MATERIAU(ELAS=_F( 
+                E = 20000.,
+                RHO=7900.0,
+                NU = 0.49999),
+                ECRO_LINE=_F(SY = 0.1,D_SIGM_EPSI = 200.),);
+#
+#  Materiau "mou" dont le module elastique vaut le module plastique
+#  du materiau precedant MATE_DUR
+#
+MATE_MOU=DEFI_MATERIAU(ELAS=_F( 
+                E = 200.,
+                RHO=7900.0,
+                NU = 0.49999),
+                ECRO_LINE=_F(SY = 0.1,D_SIGM_EPSI = 200.),);
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=
+                    _F(GROUP_MA = 'BLOC', MATER = MATE_DUR),);
+#
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,AFFE=
+                    _F(GROUP_MA = 'BLOC',MATER = MATE_MOU),);
+#
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                _F(  JUSQU_A = 1.,     NOMBRE = 10),
+                _F(  JUSQU_A = 2.,     NOMBRE = 1000),),);
+
+# 
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(
+                _F( GROUP_NO = 'A',  DX=0., DY=0., DZ=0.),
+                _F( GROUP_NO = 'B',  DY=0., DZ=0.),
+                _F( GROUP_NO = 'D',  DX=0., DZ=0.),
+                _F( GROUP_NO = 'C',  DZ=0.),
+                _F( GROUP_NO = 'E',  DX=0., DY=0.,),
+                _F( GROUP_NO = 'F',  DY=0.,),
+                _F( GROUP_NO = 'H',  DX=0.,),
+                ),);
+#
+TRACTION=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_FACE=_F( GROUP_MA = 'TRAC', FZ = 1.),);
+#
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0., 0., 1., 7., 2., 14.,),);
+#
+#  Calcul des modes sur le modele rigide
+#
+MACRO_MATR_ASSE ( MODELE = MO,
+                  CHAM_MATER=CHMAT,
+                  CHARGE     = (LIAISON,),
+                  NUME_DDL   = CO('NUMSTA'),
+                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),             
+                  MATR_ASSE=( 
+                   _F( MATRICE= CO('RIGSTA'), OPTION= 'RIGI_MECA'),
+                   _F( MATRICE= CO('MASSTA'), OPTION= 'MASS_MECA'),),);
+# 
+MODED=MODE_ITER_SIMULT(MATR_A=RIGSTA,
+                       MATR_B=MASSTA,
+                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                    NMAX_FREQ=95,),
+                       VERI_MODE=_F(STOP_ERREUR='NON',),);
+# 
+# Calcul des modes sur le modele souple
+#
+MACRO_MATR_ASSE ( MODELE = MO,
+                  CHAM_MATER=CHMAT2,
+                  CHARGE    = (LIAISON,),
+                  NUME_DDL  = CO('NUMST2'),
+                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),             
+                  MATR_ASSE=( 
+                   _F( MATRICE= CO('RIGST2'), OPTION= 'RIGI_MECA'),
+                   _F( MATRICE= CO('MASST2'), OPTION= 'MASS_MECA'),),);
+#
+MODE2=MODE_ITER_SIMULT(MATR_A=RIGST2,
+                       MATR_B=MASST2,
+                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                    NMAX_FREQ=95,),
+                       VERI_MODE=_F(STOP_ERREUR='NON',));
+#
+REPONSE=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                    _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
+                COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = 1.),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                               ITER_GLOB_MAXI = 50),
+                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
+             );
+#
+REPONSE=DYNA_NON_LINE( reuse=REPONSE,NEWMARK=_F(),
+                ETAT_INIT=_F(EVOL_NOLI = REPONSE),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                    _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
+                COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = 1.5,
+                    SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 10),
+                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
+                MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='TANGENTE',),
+             );
+#
+REPONSE=DYNA_NON_LINE( reuse=REPONSE,NEWMARK=_F(),
+                ETAT_INIT=_F(EVOL_NOLI = REPONSE),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                    _F( CHARGE = TRACTION, FONC_MULT = RAMPE),),
+                COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE'),
+                INCREMENT=_F(LIST_INST = L_INST,SUBD_PAS = 4,
+                             SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                               ITER_GLOB_MAXI = 10),
+                CRIT_FLAMB = _F(NB_FREQ=1,
+                                CHAR_CRIT=(-100.0,100.),),
+                MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='ELASTIQUE',),
+             );
+#
+#  Frequence du premier mode pour le materiau elastique raide
+#  Valeur venant de MODE_ITER_SIMULT
+#
+freqel = 3.58128E-01
+#
+#  Frequence du premier mode pour le materiau elastique souple 
+#  ou pour le module tangente plastique.
+#  Comme le rapport des modules vaut 100 (cf. MATE_DUR et MATE_MOU), 
+#  le rapport des frequence sera de 10
+#
+freqpl = freqel / 10
+#
+#  Tests sur la premiere frequence propre sur materiau plastique
+#
+TEST_RESU(RESU=(_F(RESULTAT=REPONSE,
+                   INST=1.01,
+                   PARA='FREQ',
+                   VALE=freqpl,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                 _F(RESULTAT=REPONSE,
+                   INST=1.06,
+                   PARA='FREQ',
+                   VALE=freqpl,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE,
+                   INST=1.25,
+                   PARA='FREQ',
+                   VALE=freqpl,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE,
+                   INST=1.49,
+                   PARA='FREQ',
+                   VALE=freqpl,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+             ),),);
+#
+#  Tests sur la premiere frequence propre sur materiau elastique
+#
+TEST_RESU(RESU=(_F(RESULTAT=REPONSE,
+                   INST=1.51,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE,
+                   INST=1.52,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                 _F(RESULTAT=REPONSE,
+                   INST=1.56,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE,
+                   INST=1.75,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE,
+                   INST=1.99,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+             ),),);
+#
+#  Charge critique elastoplastique (venant du premier STAT_NON_LINE)
+#  On compare le resultat de STAT_NON_LINE a celui de DYNA_NON_LINE
+#
+chcrit1 = 2.85714E+01 / 1.001
+#
+TEST_RESU(RESU=(_F(RESULTAT=REPONSE,
+                   INST=1.001,
+                   PARA='CHAR_CRIT',
+                   VALE=chcrit1,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),),),);
+#
+FIN();

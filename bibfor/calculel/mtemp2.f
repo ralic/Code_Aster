@@ -2,7 +2,7 @@
      &                    THVRAI, CHTEMP )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF CALCULEL  DATE 06/03/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
       INTEGER NBCHAM,IERD,ICORET,IRET,IBID      
       CHARACTER*1 BASE
       CHARACTER*19 CHTRE2,CH19
-      CHARACTER*16 NOMCHA
+      CHARACTER*16 NOMCHA,TABTYP(4)
       
 
       BASE   = 'V'
@@ -157,21 +157,18 @@ C              ------------------------------------------------
      &                     ' NE CONTIENT AUCUN CHAMP DE TEMPERATURE.')
             END IF
 
-         ELSE IF ((TYSD(1:14).EQ.'CHAM_NO_TEMP_R') .OR.
-     &            (TYSD(1:12).EQ.'CARTE_TEMP_R') .OR.
-     &            (TYSD(1:16).EQ.'CHAM_ELEM_TEMP_R')) THEN
-C           ----------------------------------------------
-           CALL UTMESS('I',NOMPRO,'LE CHAMP DE TEMPERATURE UTILISE'//
-     &                  ' EST INDEPENDANT DU TEMPS.')
+         ELSE IF ((TYSD(1:5).EQ.'CHAM_') .OR.
+     &            (TYSD(1:6).EQ.'CARTE_')) THEN
+C           -----------------------------------
+            TABTYP(1)='CARTE#TEMP_F'
+            TABTYP(2)='CARTE#TEMP_R'
+            TABTYP(3)='NOEU#TEMP_R'
+            TABTYP(4)='ELXX#TEMP_R'
+            CALL CHPVE2('F',TEMPE,4,TABTYP,IRET)
             CH19 = TEMPE(1:8)
             CALL COPISD('CHAMP_GD','V',CH19,CHTEMP(1:19))
             CALL JEDETR(CHTEMP(1:19)//'.TITR')
 
-         ELSE IF (TYSD(1:12).EQ.'CARTE_TEMP_F') THEN
-C           ----------------------------------------------
-            CH19 = TEMPE(1:8)
-            CALL COPISD('CHAMP_GD','V',CH19,CHTEMP(1:19))
-            CALL JEDETR(CHTEMP(1:19)//'.TITR')
          ELSE
            CALL UTMESS('F',NOMPRO,'2')
          END IF

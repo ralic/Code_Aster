@@ -2,7 +2,7 @@
      &           RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -446,8 +446,8 @@ C ======================================================================
            IF(NIV.GE.2) THEN
              WRITE(IFM,*)'<CONTACT> <> FACTORISATION MATRICE CONTACT '
            ENDIF
-           CALL TLDLG3 ('LDLT',2,LDSCON,INDFAC,NBLIAC,0,NDECI,ISINGU,
-     &                   NPVNEG,IER)
+           CALL TLDLG3 ('LDLT',' ',2,LDSCON,INDFAC,NBLIAC,0,NDECI,
+     &                   ISINGU,NPVNEG,IER)
            INDFAC = NBLIAC + 1
 C
 C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,9 +117,6 @@ L_RESU=DEFI_LIST_REEL(DEBUT=DT,
 L_CONT=DEFI_LIST_REEL(DEBUT=2.E-5,
                       INTERVALLE=_F(JUSQU_A=10.E-5,
                                     PAS=DT,),);
-ALF = 0.28;
-
-DEL = 0.55;
 
 
 U=DYNA_TRAN_EXPLI(MODELE=MODE,
@@ -135,8 +132,7 @@ U=DYNA_TRAN_EXPLI(MODELE=MODE,
                                VITE=CHAMP1,),
                   INCREMENT=_F(LIST_INST=L_INST,
                                INST_INIT=0.,),
-                  NEWMARK=_F(ALPHA=ALF,
-                             DELTA=DEL,),
+                  DIFF_CENT=_F(),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,

@@ -5,7 +5,7 @@
       COMPLEX*16 CCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 NOMDDL
       CHARACTER*14 NUME
       CHARACTER*19 MATRES,NOMA
-      CHARACTER*24 VALE,VALER
+      CHARACTER*24 VALM,VALMR
       COMPLEX*16 CZERO
       LOGICAL MATSYM
 C     -----------------------------------------------------------------
@@ -78,13 +78,18 @@ C     --- AFFE_CHAR_CINE ? ---
 
       IF (ZI(LMAT+4).NE.1) MATSYM = .FALSE.
       NOMA = ZK24(ZI(LMAT+1)) (1:19)
-      VALE = NOMA//'.VALM'
+      VALM = NOMA//'.VALM'
 
       NEQ = ZI(LRES+2)
       CALL MTDSC2(ZK24(ZI(LRES+1)),'SMDI','L',JSMDI)
       LGBLOC = ZI(LRES+14)
       MATRES = ZK24(ZI(LRES+1)) (1:19)
-      VALER = MATRES//'.VALM'
+      CALL JEVEUO(MATRES//'.REFA','L',JREFA)
+      CALL JEVEUO(ZK24(JREFA-1+2)(1:14)//'.SMOS.SMHC','L',JSMHC)
+      CALL JEVEUO(ZK24(JREFA-1+2)(1:14)//'.SMOS.SMDI','L',IBID)
+      CALL ASSERT(IBID.EQ.JSMDI)
+
+      VALMR = MATRES//'.VALM'
 
 C     --- NOM DE LA NUMEROTATION ASSOCIEE A LA MATRICE ---
       CALL DISMOI('F','NOM_NUME_DDL',NOMA,'MATR_ASSE',IBID,NUME,IERD)
@@ -92,20 +97,17 @@ C     --- NOM DE LA NUMEROTATION ASSOCIEE A LA MATRICE ---
 
 C     --- TOUTES COMPOSANTES A ZERO SAUF LES LAGRANGES ---
       NOMDDL = 'LAGR    '
-      MXDDL = 1
-      CALL WKVECT('&&MTCMBI','V V I',NEQ*MXDDL,LDDL)
-      CALL PTEDDL('NUME_DDL',NUME,MXDDL,NOMDDL,NEQ,ZI(LDDL))
+      CALL WKVECT('&&MTCMBI','V V I',NEQ,LDDL)
+      CALL PTEDDL('NUME_DDL',NUME,1,NOMDDL,NEQ,ZI(LDDL))
       DO 10 I = 0,NEQ - 1
         ZI(LDDL+I) = 1 - ZI(LDDL+I)
    10 CONTINUE
 
-      CALL JEVEUO(MATRES//'.REFA','L',JREFA)
-      CALL JEVEUO(ZK24(JREFA-1+2)(1:14)//'.SMOS.SMHC','L',JSMHC)
 
 
-        CALL JEVEUO(JEXNUM(VALER,1),'E',IATRES)
+        CALL JEVEUO(JEXNUM(VALMR,1),'E',IATRES)
         IF (.NOT.MATSYM) THEN
-          CALL JEVEUO(JEXNUM(VALER,2),'E',IATREI)
+          CALL JEVEUO(JEXNUM(VALMR,2),'E',IATREI)
         END IF
 
         IF (TYPMAT(1:1).EQ.'R') THEN
@@ -123,40 +125,37 @@ C     --- TOUTES COMPOSANTES A ZERO SAUF LES LAGRANGES ---
    40     CONTINUE
         END IF
 
-        CALL JEVEUO(JEXNUM(VALE,1),'L',IATMAT)
+        CALL JEVEUO(JEXNUM(VALM,1),'L',IATMAT)
         IF (.NOT.MATSYM) THEN
-          CALL JEVEUO(JEXNUM(VALE,2),'E',IATMAI)
+          CALL JEVEUO(JEXNUM(VALM,2),'E',IATMAI)
         END IF
 
 
         IF (TYPMAT(1:1).EQ.'R') THEN
-
             KIN = 0
             IDEBLI = 1
             DO 120 IEQUA = 1,NEQ
               IFINLI = ZI(JSMDI+IEQUA-1)
               DO 110 IND = IDEBLI,IFINLI
                 KIN = KIN + 1
-                ICOEF = MIN((2-ZI(LDDL+IEQUA-IFINLI+IND-1)-ZI(LDDL+
-     &                  IEQUA-1)),1)
+                ILIG=ZI(JSMHC-1+KIN)
+                ICOEF = MIN((2-ZI(LDDL+ILIG-1)-ZI(LDDL+IEQUA-1)),1)
                 ZR(IATRES+KIN-1) = ZR(IATRES+KIN-1) +
      &                             ZR(IATMAT+KIN-1)*ICOEF*COEF
   110         CONTINUE
               IDEBLI = ZI(JSMDI+IEQUA-1) + 1
   120       CONTINUE
 
-C         --- MATRICE COMPLEXE ---
 
         ELSE IF (TYPMAT(1:1).EQ.'C') THEN
-
             KIN = 0
             IDEBLI = 1
             DO 160 IEQUA = 1,NEQ
               IFINLI = ZI(JSMDI+IEQUA-1)
               DO 150 IND = IDEBLI,IFINLI
                 KIN = KIN + 1
-                ICOEF = MIN((2-ZI(LDDL+IEQUA-IFINLI+IND-1)-ZI(LDDL+
-     &                  IEQUA-1)),1)
+                ILIG=ZI(JSMHC-1+KIN)
+                ICOEF = MIN((2-ZI(LDDL+ILIG-1)-ZI(LDDL+IEQUA-1)),1)
                 ZC(IATRES+KIN-1) = ZC(IATRES+KIN-1) +
      &                             ZC(IATMAT+KIN-1)*ICOEF*CCOEF
   150         CONTINUE
@@ -164,13 +163,14 @@ C         --- MATRICE COMPLEXE ---
   160       CONTINUE
         END IF
 
-        CALL JELIBE(JEXNUM(VALE,1))
+
+        CALL JELIBE(JEXNUM(VALM,1))
         IF (.NOT.MATSYM) THEN
-          CALL JELIBE(JEXNUM(VALE,2))
+          CALL JELIBE(JEXNUM(VALM,2))
         END IF
-        CALL JELIBE(JEXNUM(VALER,1))
+        CALL JELIBE(JEXNUM(VALMR,1))
         IF (.NOT.MATSYM) THEN
-          CALL JELIBE(JEXNUM(VALER,2))
+          CALL JELIBE(JEXNUM(VALMR,2))
         END IF
 
 

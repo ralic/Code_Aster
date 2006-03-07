@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,16 +208,18 @@ IMPR_TABLE(TABLE=TCONT)
 #                                                       
 #
 COS    = FORMULE( NOM_PARA=('COOR_X','COOR_Y'),
-                  VALE='-180.*Numeric.arctan(COOR_X/COOR_Y)/pi')
+                  VALE='-180.*atan2(COOR_X,COOR_Y)/pi')
 
 TPRESS = CALC_TABLE(TABLE=TPRESS,reuse=TPRESS,
-                    OPER=_F(FORMULE=COS,
-                            NOM_PARA='COS'))
+                    ACTION=_F(OPERATION='FORMULE',
+                              FORMULE=COS,
+                              NOM_PARA='COS'))
 
 TPRES  = CALC_TABLE(TABLE=TPRESS,
-                    FILTRE=_F(NOM_PARA='COS',
-                              CRIT_COMP='LE',
-                              VALE=180.))
+                    ACTION=_F(OPERATION='FILTRE',
+                              FILTRE=_F(NOM_PARA='COS',
+                                        CRIT_COMP='LE',
+                                        VALE=180.)))
 
 IMPR_TABLE(TABLE=TPRESS)
 
@@ -225,15 +227,18 @@ CONT  = FORMULE(NOM_PARA=('CONT'),
                 VALE='-1.E6*CONT')
 
 TCONT = CALC_TABLE(TABLE=TCONT,reuse=TCONT,
-                   OPER=(_F(FORMULE=CONT,
-                            NOM_PARA='INDICATEUR'),
-                         _F(FORMULE=COS,
-                            NOM_PARA='COS')))
+                   ACTION=(_F(OPERATION='OPER',
+                              FORMULE=CONT,
+                              NOM_PARA='INDICATEUR'),
+                           _F(OPERATION='OPER',
+                              FORMULE=COS,
+                              NOM_PARA='COS')))
 
 TCON  = CALC_TABLE(TABLE=TCONT,
-                   FILTRE=_F(NOM_PARA='COS',
-                   CRIT_COMP='LE',
-                   VALE=180.))
+                   ACTION=_F(OPERATION='FILTRE',
+                             FILTRE=_F(NOM_PARA='COS',
+                                       CRIT_COMP='LE',
+                                       VALE=180.)))
 
 IMPR_TABLE(TABLE=TCONT)
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 06/03/2006   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2752,7 +2752,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              GC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              SIGM_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              PENA_ADHERENCE  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             PENA_CONTACT    =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             PENA_CONTACT    =SIMP(statut='f',typ='R',defaut=1.),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            RCCM            =FACT(statut='f',

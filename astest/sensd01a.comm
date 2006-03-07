@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE S.CAMBIER
 # TITRE Sensibilite au chargement/condition limite dans DYNA_LYNE_HARM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,10 +131,9 @@ RLTH=POST_RELEVE_T(ACTION=(_F(RESULTAT = DYHA,
                               NOEUD='NO5',
                               NOM_CMP='DX',),),);
 
-TINCA=CREA_TABLE(FONCTION=_F(FONCTION=DTZ2,
-                             SENSIBILITE=(F1,F2,D1),
-                             ),
-                 );
+TINCA=CREA_TABLE(FONCTION=_F(FONCTION=DTZ2,),
+                 SENSIBILITE=(F1,F2,D1),
+                 )
 
 #
 # 7. Test
@@ -147,15 +146,26 @@ TEST_FONCTION(VALEUR=(
        ));
 
 TEST_TABLE(TABLE=TINCA,
-           NOM_PARA='DX',
+           NOM_PARA='DX_R',
            SENSIBILITE=(F1),
            FILTRE          =_F(
                  NOM_PARA='FREQ',
                  CRIT_COMP='EQ',
                  VALE=40.,
                                ),
-           VALE_C=-2.5695869E-06-2.7550424E-07j,
-           PRECISION=1.E-3,
+           VALE=-2.5695869E-06,
+           PRECISION=5.E-3,
+           REFERENCE='ANALYTIQUE',);
+TEST_TABLE(TABLE=TINCA,
+           NOM_PARA='DX_I',
+           SENSIBILITE=(F1),
+           FILTRE          =_F(
+                 NOM_PARA='FREQ',
+                 CRIT_COMP='EQ',
+                 VALE=40.,
+                               ),
+           VALE=-2.7550424E-07,
+           PRECISION=5.E-3,
            REFERENCE='ANALYTIQUE',);
 #
 TEST_RESU(RESU=(

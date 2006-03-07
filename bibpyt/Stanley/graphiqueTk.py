@@ -1,4 +1,4 @@
-#@ MODIF graphiqueTk Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF graphiqueTk Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,34 +20,48 @@
 #  OBJETS GRAPHIQUES TK DE HAUT NIVEAU
 
 
-import Tkinter
+#import Tkinter as Tk
+import Tix as Tk
+
+import types
+import graphiqueTk as objets
+
+# Multi-langues
+try:
+   import gettext
+   _ = gettext.gettext
+except:
+   def _(mesg):
+      return mesg
+
+__fontes__ = 'arial 10 normal'
+
+# ==============================================================================
 
 class LIGNE_ETAT :
 
-  def __init__(self, frame_parent) :
+  def __init__(self, frame_parent, fonte=__fontes__) :
 
-    frame_ligne_etat = Tkinter.Frame(frame_parent)
+    frame_ligne_etat = Tk.Frame(frame_parent)
     frame_ligne_etat.pack()
-    self.label = Tkinter.Label(frame_ligne_etat, text='')
+    self.label = Tk.Label(frame_ligne_etat, text='', font=fonte)
     self.label.pack()
 #    self.Affecter("")
   
-  
   def Affecter(self, chaine) :
-    
     self.label.configure(text = chaine)
-           
+
+  
 # ==============================================================================
-    
+
 class MENU :
 
   """
     MENU DEROULANT SIMPLE
     
   """
-  
-        
-  def __init__ (self, frame_parent, colonnes, items, defaut='', expand = 1) :
+
+  def __init__ (self, frame_parent, colonnes, items, defaut='', expand = 1, fonte=__fontes__) :
   
     """
        IN  frame_parent : objet Tk parent du menu
@@ -56,27 +70,26 @@ class MENU :
                            cle = titre des colonnes,
                            resu = [ (item, methode), ...]
     """
-       
+
     self.acces = {}
-    
+
     for col in colonnes :
-      titre = Tkinter.Menubutton(frame_parent,text=col,
-              relief=Tkinter.FLAT,anchor = Tkinter.NW)
-      titre.pack(padx = 3, pady = 1, side = Tkinter.LEFT)
+      titre = Tk.Menubutton(frame_parent, text=col, relief=Tk.FLAT, anchor = Tk.NW, font=fonte)
+      titre.pack(padx = 3, pady = 1, side = Tk.LEFT)
       self.acces[col] = titre
         
       if col not in items.keys() :
-        titre['state'] = Tkinter.DISABLED
+        titre['state'] = Tk.DISABLED
         
       else :
-        choix = Tkinter.Menu(titre,tearoff=0)
+        choix = Tk.Menu(titre,tearoff=0, font=fonte)
         titre['menu'] = choix
         
         for item,action in items[col] :
           choix.add_command(label = item, command = action)
 
+
 # ==============================================================================
-    
       
 class MENU_RADIO_BOX :
 
@@ -90,24 +103,23 @@ class MENU_RADIO_BOX :
         Activer  : Appelle la methode de reaction avec comme parametre la selection actuelle
 
   """
-  
-        
-  def __init__ (self, frame_parent, titre, liste = None, methode = None, defaut='', expand = 1) :
-  
+
+  def __init__ (self, frame_parent, titre, liste = None, methode = None, defaut='', expand = 1, fonte=__fontes__):
+
     """
        IN  frame_parent : objet Tk parent du menu
        IN  titre    : titre du menu
        IN  liste    : liste des items du menu (ou None si menu factice)
        IN  methode  : methode invoquee lors d'une selection dans le menu
     """
-       
-    bouton = Tkinter.Menubutton(frame_parent, text=titre, relief=Tkinter.RAISED)
-    bouton.pack(fill=Tkinter.BOTH, expand=expand)
-    
+
+    bouton = Tk.Menubutton(frame_parent, text=titre, relief=Tk.RAISED, font=fonte)
+    bouton.pack(fill=Tk.BOTH, expand=expand)
+
     if liste :
       self.methode = methode
-      self.select  = Tkinter.StringVar()
-      menu = Tkinter.Menu(bouton,tearoff=0)
+      self.select  = Tk.StringVar()
+      menu = Tk.Menu(bouton,tearoff=0, font=fonte)
       for item in liste :
         menu.add_radiobutton(label=item,value=item,variable=self.select,command=self.Activer)
       bouton["menu"] = menu
@@ -119,12 +131,10 @@ class MENU_RADIO_BOX :
 
 
   def Activer(self) :
-  
     self.methode(self.select.get())
 
+
 # ==============================================================================
-
-
 
 class FEU_TRICOLORE :
 
@@ -145,43 +155,39 @@ class FEU_TRICOLORE :
 
     self.couleur = defaut   # couleur actuelle (par defaut) du feu
 
-   # cree l'objet feu tricolore
-    frame_feu  = Tkinter.Frame(frame_parent)
-    frame_feu.pack(side=Tkinter.LEFT,padx=5)
+    # cree l'objet feu tricolore
+    frame_feu  = Tk.Frame(frame_parent)
+    frame_feu.pack(side=Tk.LEFT,padx=5)
 
-    self.etatfeutot = Tkinter.Canvas(frame_feu, width = 30, height = 100,  
-                   background = 'black', border = 0 )
-    self.etatfeutot.pack(fill=Tkinter.NONE)
+    self.etatfeutot = Tk.Canvas(frame_feu, width = 30, height = 100, background = 'black', border = 0)
+    self.etatfeutot.pack(fill=Tk.NONE)
 
-   # dessine l'objet feu tricolore (pour la premiere fois)
-    self.etatfeu = [
-      self.etatfeutot.create_oval(5, 5, 25, 25,fill='red')    ,
-      self.etatfeutot.create_oval(5, 30, 25, 50,fill='white') ,
-      self.etatfeutot.create_oval(5, 55, 25, 75, fill='white')
-      ]
+    # dessine l'objet feu tricolore (pour la premiere fois)
+    self.etatfeu = [ self.etatfeutot.create_oval(5, 5, 25, 25,fill='red')    ,
+                     self.etatfeutot.create_oval(5, 30, 25, 50,fill='white') ,
+                     self.etatfeutot.create_oval(5, 55, 25, 75, fill='white')
+                   ]
 
 
   def Changer_couleur(self,nouvelle_couleur) :    
 
     '''On change la couleur du feu tricolore et on le redessine'''
 
-
     if nouvelle_couleur <> self.couleur : 
         
-     # On met a blanc l'ancienne couleur 
+      # On met a blanc l'ancienne couleur 
       position = FEU_TRICOLORE.liste_couleurs[self.couleur]
       self.etatfeutot.itemconfigure(self.etatfeu[position],fill='white')
 
-     # On affecte la nouvelle couleur
+      # On affecte la nouvelle couleur
       self.couleur = nouvelle_couleur
     
-     # On colorie la nouvelle couleur 
+      # On colorie la nouvelle couleur 
       position = FEU_TRICOLORE.liste_couleurs[self.couleur]
       self.etatfeutot.itemconfigure(self.etatfeu[position],fill=self.couleur)
 
+
 # ==============================================================================
-
-
 
 class LIST_BOX :
 
@@ -202,50 +208,48 @@ class LIST_BOX :
       
   """
   
-  def __init__(self, frame_parent, liste, type_selec, defaut = '', fonte = ('Fixed',14,'bold'), hbar = 0) :     
+  def __init__(self, frame_parent, liste, type_selec, defaut = '', hbar = 0, fonte = __fontes__):
 
 
     self.noms    = liste    # liste des noms selectionnables (chaine ou tt objet)
     self.courant = []       # selection courante
     self.indice  = []       # indices de la selection courante
   
-   # Barre d'ascenceur
-    scrollbar = Tkinter.Scrollbar(frame_parent)
-    scrollbar.pack(side=Tkinter.RIGHT, fill=Tkinter.Y) 
+    # Barre d'ascenceur
+    scrollbar = Tk.Scrollbar(frame_parent)
+    scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y) 
     if hbar:
-      hscrollbar = Tkinter.Scrollbar(frame_parent)
-      hscrollbar.pack(side=Tkinter.BOTTOM, fill=Tkinter.X) 
+      hscrollbar = Tk.Scrollbar(frame_parent)
+      hscrollbar.pack(side=Tk.BOTTOM, fill=Tk.X) 
 
  
-   # Creation de la fenetre de selection 
+    # Creation de la fenetre de selection 
     if hbar:
-      self.listbox = Tkinter.Listbox(
-        frame_parent, 
-        xscrollcommand  = hscrollbar.set,
-        yscrollcommand  = scrollbar.set,
-        selectmode      = type_selec,
-        exportselection = 0,
-        font = fonte,
-        )
+      self.listbox = Tk.Listbox( frame_parent, 
+                                      xscrollcommand  = hscrollbar.set,
+                                      yscrollcommand  = scrollbar.set,
+                                      selectmode      = type_selec,
+                                      exportselection = 0,
+                                      font = fonte,
+                                    )
     else :
-      self.listbox = Tkinter.Listbox(
-        frame_parent, 
-        yscrollcommand  = scrollbar.set,
-        selectmode      = type_selec,
-        exportselection = 0,
-        font = fonte,
-        )
+      self.listbox = Tk.Listbox( frame_parent, 
+                                      yscrollcommand  = scrollbar.set,
+                                      selectmode      = type_selec,
+                                      exportselection = 0,
+                                      font = fonte,
+                                    )
       
-   # Remplissage
+    # Remplissage
     for chaine in liste :
-      self.listbox.insert(Tkinter.END, chaine)
+      self.listbox.insert(Tk.END, chaine)
         
-   # Affichage
-    self.listbox.pack(side=Tkinter.LEFT, expand = 1, fill=Tkinter.BOTH)
+    # Affichage
+    self.listbox.pack(side=Tk.LEFT, expand = 1, fill=Tk.BOTH)
     scrollbar.config(command=self.listbox.yview)
     if hbar : hscrollbar.config(command=self.listbox.xview)
 
-   # Pre-selection du defaut
+    # Pre-selection du defaut
     try :
       p = liste.index(defaut)
       self.listbox.selection_set(p)
@@ -257,9 +261,9 @@ class LIST_BOX :
     
   def Change(self, liste,defaut = '') :
   
-    self.listbox.delete(0,Tkinter.END)
+    self.listbox.delete(0,Tk.END)
     for chaine in liste :
-      self.listbox.insert(Tkinter.END,chaine)
+      self.listbox.insert(Tk.END,chaine)
     self.noms = liste
     self.courant = [] 
 
@@ -291,33 +295,29 @@ class LIST_BOX :
       
     return different
 
-# ==============================================================================
- 
 
+# ==============================================================================
 
 class BOUTON :
 
+  def __init__(self, frame, couleur, nom, methode, x=10, y=10, fonte=__fontes__) :
 
-  def __init__(self, frame, couleur, nom, methode, x=10, y=10) :
-
-    bouton = Tkinter.Button(frame, bg=couleur,text=nom, command=methode)
-    bouton.pack(side=Tkinter.LEFT,padx=x,pady=y)  
+    bouton = Tk.Button(frame, bg=couleur,text=nom, command=methode, font=fonte)
+    bouton.pack(side=Tk.LEFT,padx=x,pady=y)  
   
   
 # ==============================================================================
 
-
 class DIALOGUE : 
-
 
   def __init__(self, *texte) :
   
-    self.rootTk = Tkinter.Tk()
+    self.rootTk = Tk.Tk()
     self.rootTk.wm_title('DIALOGUE ASTER')
     
-    frame_haut = Tkinter.Frame(self.rootTk,relief=Tkinter.RAISED,bd=2)
+    frame_haut = Tk.Frame(self.rootTk,relief=Tk.RAISED,bd=2)
     frame_haut.pack(padx=5,pady=5)
-    frame_bas = Tkinter.Frame(self.rootTk)
+    frame_bas = Tk.Frame(self.rootTk)
     frame_bas.pack(pady=0)
     
     ch = ' '*50 + '\n'
@@ -332,23 +332,20 @@ class DIALOGUE :
     self.Action_evenement() 
     self.rootTk.mainloop()
 
-
   def Action_evenement(self) :
-  
     self.rootTk.after(30, self.Action_evenement)
 
-      
+
 # ==============================================================================
 
-
-def SAISIE_MODE(l_infos,titre = "") :
+def SAISIE_MODE(l_infos,titre = "", fonte=__fontes__) :
 
   """
     procede a la saisie d'un certain nombre de chaines
     voir classe C_SAISIE
   """
   
-  saisie = C_SAISIE_MODE(l_infos,titre)
+  saisie = C_SAISIE_MODE(l_infos,titre,fonte)
   return saisie.reponse
 
 
@@ -360,32 +357,31 @@ class C_SAISIE_MODE :
   """
 
 
-  def __init__(self,l_infos, titre) :
+  def __init__(self,l_infos, titre, fonte=__fontes__) :
 
-    self.root = Tkinter.Tk()
+    self.root = Tk.Tk()
     self.root.title(titre)
     self.l_infos = l_infos
 
-    frame = Tkinter.Frame(self.root)
+    frame = Tk.Frame(self.root)
     frame.grid(padx = 10, pady = 3)
 
-    bouton = Tkinter.Button(self.root, bg='blue',text='OK', command=self.Lire_Mode)
+    bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire_Mode)
     bouton.grid(row = 1, column=0,pady = 3)  
 
 
-    self.listbox = Tkinter.Listbox(
-      frame, 
-      height=3,
-      exportselection = 0,
-      )
+    self.listbox = Tk.Listbox( frame, 
+                                    height=3,
+                                    exportselection = 0,
+                                  )
 
-   # Remplissage
+    # Remplissage
     for chaine in l_infos :
-      self.listbox.insert(Tkinter.END, chaine)
+      self.listbox.insert(Tk.END, chaine)
     self.listbox.selection_set(0)
 
-   # Affichage
-    self.listbox.pack(side=Tkinter.LEFT, expand = 0, fill=Tkinter.BOTH)
+    # Affichage
+    self.listbox.pack(side=Tk.LEFT, expand = 0, fill=Tk.BOTH)
 
     self.root.mainloop()
     self.root.destroy()
@@ -400,14 +396,14 @@ class C_SAISIE_MODE :
 
 # ==============================================================================
 
-def SAISIE(l_infos,titre = "", defaut = None) :
+def SAISIE(l_infos,titre = "", defaut = None, fonte=__fontes__) :
 
   """
     procede a la saisie d'un certain nombre de chaines
     voir classe C_SAISIE
   """
   
-  saisie = C_SAISIE(l_infos,titre,defaut)
+  saisie = C_SAISIE(l_infos,titre,defaut,fonte)
   return saisie.reponse
 
 
@@ -427,15 +423,15 @@ class C_SAISIE :
   """
 
 
-  def __init__(self,l_infos,titre, defaut) :
+  def __init__(self,l_infos,titre, defaut, fonte=__fontes__) :
   
-    self.root = Tkinter.Tk()
+    self.root = Tk.Tk()
     self.root.title(titre)
-    
-    frame = Tkinter.Frame(self.root)
+
+    frame = Tk.Frame(self.root)
     frame.grid(padx = 10, pady = 10)
 
-    bouton = Tkinter.Button(self.root, bg='blue',text='OK', command=self.Lire)
+    bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire)
     bouton.grid(row = 1, column=0,pady = 10)  
             
     row = 0
@@ -444,12 +440,12 @@ class C_SAISIE :
     for info in l_infos :
       nom = info[0]
       nbr = info[1]
-      label = Tkinter.Label(frame,text=nom,padx = 5, pady=2,justify = Tkinter.LEFT)
-      label.grid(row = row, column = 0, sticky = Tkinter.W)
+      label = Tk.Label(frame, text=nom, padx = 5, pady=2, justify = Tk.LEFT, font=fonte)
+      label.grid(row = row, column = 0, sticky = Tk.W)
       
       rep_ligne = []
       for i in xrange(nbr) :
-        var_rep = Tkinter.StringVar(self.root)
+        var_rep = Tk.StringVar(self.root)
         if defaut :
           val_def = defaut[row][i]
           if type(val_def) == type('') :
@@ -457,7 +453,7 @@ class C_SAISIE :
           else :
             var_rep.set(repr(val_def))
         rep_ligne.append(var_rep)
-        entree = Tkinter.Entry(frame,textvariable = var_rep)
+        entree = Tk.Entry(frame,textvariable = var_rep, font=fonte)
         entree.grid(row=row,column=i+1,padx=2)
 
       self.var.append(rep_ligne)
@@ -488,16 +484,17 @@ class CASE_A_COCHER :
     Case a cocher de base
   """
 
-  def __init__(self, frame, x, y, txt) :
+  def __init__(self, frame, x, y, txt, fonte=__fontes__) :
 
-    self.var = Tkinter.IntVar()
+    self.var = Tk.IntVar()
     self.var.set(0)
 
-    self.check = Tkinter.Checkbutton(frame, variable=self.var, command=self.Check_Commande)
-    self.check.pack(side=Tkinter.LEFT,padx=x,pady=y)  
-    self.check.configure(text=txt )
+    self.check = Tk.Checkbutton(frame, variable=self.var, command=self.Check_Commande)
+    self.check.pack(side=Tk.LEFT,padx=x,pady=y)  
+    self.check.configure(text=txt, font=fonte)
 
   def Check_Commande(self):
+    # Permet d'effectuer une action lors de la selection/deselection
     return True
 
   def Valeur(self):
@@ -510,40 +507,42 @@ class BARRE :
 
   """
     Barre de niveau (largeur x, hauteur y)
-    
+
     Attribut :
       niveau : dernier niveau fixe (0 a l'initialisation)
-      
+
     Methodes :
       Niveau : fixe le niveau de la barre (compris entre 0 et 1)
   """
-  
-  
+
   def __init__(self, master,x,y) :
-  
+
     self.x = x
     self.y = y
-    
-    frame = Tkinter.Frame(master)
+
+    frame = Tk.Frame(master)
     if x >= y:
-      frame.pack(side=Tkinter.TOP)
+      frame.pack(side=Tk.TOP)
     else :
-      frame.pack(side=Tkinter.LEFT)
-    
-    self.barre = Tkinter.Canvas(frame, width = x, height = y,  
+      frame.pack(side=Tk.LEFT)
+
+    self.barre = Tk.Canvas(frame, width = x, height = y,  
                   background = 'white',border = 0)
-    self.barre.pack(fill=Tkinter.NONE)
+    self.barre.pack(fill=Tk.NONE)
     self.rec = None
     self.niveau = 0
-    
-    
+
+
   def Niveau(self,v) :
-  
+
     if v<0 : v=0
     if v>1 : v=1
-    
+
     self.niveau = v
     if self.rec :
       self.barre.delete(self.rec)      
     self.rec = self.barre.create_rectangle(0,0,v*self.x,self.y, fill = 'blue')
-    
+
+
+# ==============================================================================
+

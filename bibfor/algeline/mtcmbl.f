@@ -8,7 +8,7 @@
       REAL*8           CONST(NBCOMB)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -258,6 +258,5 @@ C
       CALL JEDETR('&&MTCMBL.LISPOINT')
 C
       CALL JEDEMA()
-      CALL UTIMSD(6,-1,.FALSE.,.TRUE.,MATRES,1,' ')
 C     CALL VERISD('MATRICE',MATRES)
       END

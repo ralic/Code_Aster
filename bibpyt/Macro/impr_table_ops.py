@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 21/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,10 +35,11 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    """
    macro='IMPR_TABLE'
    import aster
-   from Accas               import _F
-   from Cata.cata           import table_jeveux
-   from Utilitai.Utmess     import UTMESS
+   from Accas import _F
+   from Cata.cata import table_jeveux
+   from Utilitai.Utmess  import UTMESS
    from Utilitai.UniteAster import UniteAster
+   from Utilitai.Sensibilite import NomCompose
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -75,30 +76,19 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    form_filtre='\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
 
    # 0.3. Création de la liste des tables (une seule sans SENSIBILITE)
-   form_sens='\n... SENSIBILITE AU PARAMETRE %s'
+   form_sens='\n... SENSIBILITE AU PARAMETRE %s (SD COMP %s)'
    ltab=[]
    if args['SENSIBILITE']:
-      nmemo='&NOSENSI.MEMO.CORR'.ljust(24)
-      vect=aster.getvectjev(nmemo)
-      if vect:
-         lps=args['SENSIBILITE']
-         if not type(lps) in EnumTypes:
-            lps=[lps,]
-         for ps in [ps.get_name() for ps in lps]:
-            trouv=False
-            for ch in vect[0:len(vect):2]:
-               if ch[0:8].strip()==TABLE.get_name() and ch[8:16].strip()==ps:
-                  trouv=True
-                  ncomp=ch[16:24].strip()
-                  sdtab=table_jeveux(ncomp)
-                  tabs=sdtab.EXTR_TABLE()
-                  tabs.titr+=form_sens % ps
-                  ltab.append([tabs, sdtab])
-            if not trouv:
-               UTMESS('A',macro,'Dérivée de %s par rapport à %s non disponible'\
-                     % (TABLE.get_name(), ps))
-      else:
-         UTMESS('A',macro,'Pas de calcul de sensibilité accessible.')
+      lps=args['SENSIBILITE']
+      if not type(lps) in EnumTypes:
+         lps=[lps,]
+      for ps in lps:
+         ncomp = NomCompose(TABLE, ps)
+         if ncomp != None:
+            sdtab = table_jeveux(ncomp)
+            tabs = sdtab.EXTR_TABLE()
+            tabs.titr = TABLE.TITRE() + tabs.titr + form_sens % (ps.get_name(), ncomp)
+            ltab.append([tabs, sdtab])
    else:
       ltab.append([TABLE.EXTR_TABLE(), TABLE])
 

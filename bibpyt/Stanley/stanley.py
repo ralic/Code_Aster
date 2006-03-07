@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,17 +44,44 @@ STANLEY
 
 """
 
-import sys,os,os.path,string,copy,tkFileDialog,cPickle
+import sys, os, os.path, string, copy, tkFileDialog, cPickle, tkMessageBox
+#import Tkinter as Tk
+import Tix as Tk
+
 import as_courbes, xmgrace, gmsh
 import cata_champs,aster
-#import Tix
+
+# Multi-langues
+try:
+   import gettext
+   _ = gettext.gettext
+except:
+   def _(mesg):
+      return mesg
 
 import Utilitai
 from Utilitai import sup_gmsh
 from Utilitai.Utmess import UTMESS
 from graphiqueTk import *
+import ihm_parametres
 from Cata.cata import *
 from Accas import _F
+from types import *
+
+# Salome
+try:
+   import salomeVisu
+   __salome__ = True
+
+except:
+   txt = _('Le module python "pylotage" semble etre absent, on desactive le mode Salome de Stanley')
+   UTMESS('I','STANLEY',txt)
+   __salome__ = False
+
+
+# Version du fichier des parametres Stanley
+__version_parametres__ = 1.0
+__fichier_last__ = 'last10.txt'
 
 cata = cata_champs.CATA_CHAMPS()
 
@@ -122,85 +149,398 @@ class PARAMETRES :
       __getitem__ : retourne la valeur d'un parametre (s'il existe)
       
   """
-  
+
   def __init__(self) :
 
     # Gestion des erreurs
     self.erreur = ERREUR()
 
-    ok_env=1
-    
+    # Initialisation des parametres
+    self.dparam, self.dliste_section, self.aide = self.Initialise_dparam()
+
+    # Parametres utilises par la suite dans Stanley
+    self.para = self.Initialise_para(self.dparam)
+
+    # Lecture de la derniere configuration connue ou creation d'une nouvelle configuration
+    self.Detecte_Derniere_Config()
+
+    # Si Salome n'est pas present, on l'enleve de la liste des choix possibles
+    if not __salome__:
+       self.dparam['mode_graphique']['val_possible'].remove('Salome')
+       self.para['mode_graphique'] = 'Gmsh/Xmgrace'
+
+
+    # Ce parametre sert a definir si les parametres doivent etre sauvegardes en sortant de l'IHM
+    self.Saved = True
+
+    # Ce parametre sert a definir si les fontes ont ete changées dans la fenetre de parametres
+    self.change_fonte = False
+
+# ------------------------------------------------------------------------------
+
+  def Initialise_para(self, dparam):
+    '''
+       Initialisation de para
+    '''
+
+    para = {}
+
+    for section in self.dliste_section.keys():
+       para[section] = {}
+
+    for cle in dparam.keys():
+       section = dparam[cle]['section']
+       try:     para[section][cle] = dparam[cle]['val']
+       except:  para[section][cle] = ''
+
+    return para
+
+
+# ------------------------------------------------------------------------------
+
+  def Affectation_dico_para(self, dico):
+    '''
+       Affectation du contenu des variables dico dans para
+    '''
+
+    # Stocke les anciens parametres (pour voir si il faut sauver ou non le profil)
+    self.old_para = self.para
+
+    # Reinitialise para
+    self.para = self.Initialise_para(self.dparam)
+
+    # Affecte a para les valeurs de dico
+    for cle in self.dparam.keys():
+       section = self.dparam[cle]['section']
+       try:
+                self.para[section][cle] = dico[section][cle]
+                if dico[section][cle] != self.old_para[section][cle]: self.Saved = False
+       except:
+                txt = _("<A> Impossible d'affecter la variable [") + self.dliste_section[section] + " / " + self.dparam[cle]['label'] + "]"
+                UTMESS('A','STANLEY',txt)
+                if   self.dparam[cle]['type'] == types.FloatType: self.para[section][cle] = 0.
+                elif self.dparam[cle]['type'] == types.IntType:   self.para[section][cle] = 0
+                else:                                             self.para[section][cle] = ''
+                self.Saved = False
+
+    return True
+
+
+# ------------------------------------------------------------------------------
+
+  def Initialise_dparam(self):
+    '''
+       Initialisation du dictionnaire des parametres dparam
+    '''
+
+    dliste_section={
+       'MODE_GRAPHIQUE' : _('Mode graphique'),
+       'PARAMETRES'     : _('Serveur de calcul Aster / Stanley'),
+       'VISUALISATION'  : _('Options graphiques'),
+       'CONFIG'         : _('Poste de travail et Serveurs Gmsh et Salome'),
+                   }
+
+     #['arial', 'helvetica', 'Courier', 'Lucida', 'times']
+
+    liste_fontes = []
+    for type_fonte in ['arial', 'helvetica', 'Courier', 'Lucida']:
+       for taille_fonte in [8, 10, 12, 14, 16]:
+          for mod_fonte in ['normal', 'bold']:
+             liste_fontes.append( type_fonte + ' ' + str(taille_fonte) + ' ' + mod_fonte )
+
+    dparam={
+
+      # Mode graphique
+      'mode_graphique'        : { 'label': _("Mode"),                             'val': 'Gmsh/Xmgrace',     'type': 'liste',          'section': 'MODE_GRAPHIQUE',                                      'val_possible': ["Gmsh/Xmgrace", "Salome"],      'bulle': _("Mode graphique"), },
+
+      # Parametres IHM et Serveur Aster
+      'fonte'                 : { 'label': _("Fontes"),                           'val': 'arial 10 normal',  'type': 'liste',          'section': 'PARAMETRES',                                                                                           'bulle': _("Les fontes de l'application"), 'val_possible': liste_fontes, },
+      'grace'                 : { 'label': _("Xmgrace"),                          'val': 'xmgrace',          'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Serveur de calcul : Chemin vers l'application Xmgrace"), },
+      'smbclient'             : { 'label': _("Smbclient"),                        'val': 'smbclient',        'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Serveur de calcul : Chemin vers l'application Smbclient (pour Profil Windows)"), },
+      'gmsh'                  : { 'label': _("Gmsh"),                             'val': 'gmsh',             'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Serveur de calcul : Chemin vers l'application Gmsh"), },
+
+      # Parametres Graphiques specifiques a Gmsh, Xmgrace, Salome
+      'TAILLE_MIN'            : { 'label': _("Gmsh : Taille minimale"),           'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': '', },
+      'SHRINK'                : { 'label': _("Gmsh : Shrink"),                    'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
+      'SKIN'                  : { 'label': _("Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _("Parametre pour Gmsh : affichage sur la peau uniquement."), },
+      'version_fichier_gmsh'  : { 'label': _("Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _("Parametre pour Gmsh : version du fichier resultat."), },
+
+      # Parametres du Poste de travail de l'utilisateur, de la machine des Services Salome ou Gmsh
+      'mode'                  : { 'label': _('Mode'),                             'val': 'LOCAL',            'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["LOCAL", "DISTANT", "WINDOWS"], 'bulle': '', },
+      'machine_visu'          : { 'label': _("Machine de visualisation"),         'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],      'bulle': _("Adresse du poste de travail"), },
+
+      'machine_gmsh'          : { 'label': _("Machine de Gmsh"),                  'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _("Machine hebergeant le service graphique Gmsh."), },
+      'machine_gmsh_login'    : { 'label': _("Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _("Login"), },
+      'machine_gmsh_exe'      : { 'label': _("Machine Gmsh : chemin vers gmsh"),  'val': 'gmsh',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _("Adresse du poste de travail"), },
+
+      'machine_salome'        : { 'label': _("Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _("Machine hebergeant le service graphique Salome."), },
+      'machine_salome_login'  : { 'label': _("Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],   'mode': ['DISTANT'],                 'bulle': _("Login"), },
+      'machine_salome_port'   : { 'label': _("Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Port de Salome sur la machine hebergeant le service Salome."), },
+
+      'machine_win'           : { 'label': _("Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Machine hebergeant le partage Windows/Samba."), },
+      'partage_win_nom'       : { 'label': _("Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Nom de partage Windows/Samba"), },
+      'partage_win_login'     : { 'label': _("Nom d'utilisateur du partage"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Partage Windows/Samba : nom d'utilisateur"), },
+      'partage_win_pass'      : { 'label': _("Mot de passe du partage"),          'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Partage Windows/Samba : mot de passe"), },
+
+      'protocole'             : { 'label': _("Protocole reseau"),                 'val': 'rcp/rsh',          'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["rcp/rsh", "scp/ssh"], 'mode': ['DISTANT'], 'bulle': _("Protocole de transfert reseau. \nLes .rhosts ou clés SSH doivent etre à jours."), },
+
+      'tmp'                   : { 'label': _("Repertoire temporaire"),            'val': '/tmp',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace', 'Salome'],   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Repertoire temporaire"), },
+
+           }
+
+
+# Champs Bulle particulierement longs
+
+    dparam['mode']['bulle'] = _(
+"""Mode d'utilisation suivant le profil du poste de travail.
+
+LOCAL: pour les utilisateurs qui travaillent sur une version locale d'Aster.
+
+DISTANT: le serveur Aster et/ou la machine de Gmsh est une machine distante,
+ou bien on utilise un partage Samba pour récuperer les fichiers Gmsh.
+
+WINDOWS: pour les utilisateur qui travaillent sous Windows / Exceed avec un
+répertoire partagé.
+""")
+
+
+    dparam['mode']['TAILLE_MIN'] = _(
+"""Parametre pour Gmsh : TAILLE_MIN
+
+Ceci permet de fixer la taille minimale d'un cote d'un element. Si cette taille n'est pas atteinte, on
+procede à une transformation geometrique (affinite le long du cote trop petit). L'interet est de
+pouvoir visualiser des resultats sur des elements tres etires (comme les elements de joint).
+Par defaut, tm vaut 0. : on ne modifie pas la geometrie des elements. 
+""")
+
+
+# Aide contextuelle
+    aide = { 'Gmsh/Xmgrace': {}, 'Salome': {} }
+    aide['Gmsh/Xmgrace'] = {
+'LOCAL': """
+Mode LOCAL:
+
+Il n'y a qu'une seule machine : le serveur de calcul Aster est sur le poste de travail de l'utilisateur (la machine locale).
+
+Gmsh est executé sur la machine locale.
+
+Il n'y a donc aucune adresse de machine à fournir.
+""", 
+
+'DISTANT': """
+Mode DISTANT:
+
+- La "Machine de Gmsh" est la machine sur laquelle sera executé Gmsh.
+- La "Machine de visualisation" est le poste de travail de l'utilisateur, et en général, c'est la "Machine de Gmsh".
+
+Remarques:
+
+. La "Machine de visualisation" peut eventuellement etre différente de la "Machine de Gmsh". On a dans ce cas un schéma à trois machines différentes.
+Gmsh sera executé à distance et son display sera renvoyé vers "Machine de visualisation" (mettre son IP).
+
+. Si le paramètre "Machine de visualisation" est vide, le fichier .pos sera déposé dans le répertoire temporaire sur la "Machine de Gmsh", mais Gmsh ne sera pas lancé.
+On pourra donc récupérer manuellement le fichier .pos par réseau et le visualiser (cette configuration permet d'utiliser Stanley via Exceed sous Windows et de récupérer manuellement le fichier sous Windows, par exemple en ftp).
+""", 
+
+'WINDOWS': """
+Mode WINDOWS:
+
+Dans ce mode, le poste de travail de l'utilisateur est une machine sous Windows et on accède à Stanley par un serveur X11 comme Xming ou Exceed.
+
+On a deux cas possibles :
+1. L'utilisateur a les droits pour définir un "répertoire partagé" sous son Windows (bouton droit sur un répertoire + Partage) et dans ce cas il crée lui meme son partage.
+2. L'utilisateur utilise une tierce machine avec un serveur Samba sur un serveur Unix/Linux.
+
+- La "Machine Windows/Samba" est la machine qui abrite le partage Windows ou Samba.
+- Le "Nom du partage Windows/Samba" est le nom sous lequel le répertoire Windows a été partagé, ou le nom du partage Samba.
+- Si nécessaire, on spécifie le nom d'utilisateur du partage et le mot de passe du partage.
+
+Les fichiers .pos sont transférés sur le disque partagé Windows ou le partage Samba.
+Dans les deux cas, il faut ouvrir depuis Windows le fichier .pos manuellement avec Gmsh Windows.
+""",
+}
+
+    aide['Salome'] = {
+'LOCAL': """
+Mode LOCAL:
+
+Il n'y a qu'une seule machine : le serveur de calcul Aster est sur le poste de travail de l'utilisateur (la machine locale).
+Salome est executé sur la machine locale et doit etre lancé indépendament de Stanley.
+
+Il n'y a donc aucune adresse de machine à fournir.
+""", 
+
+'DISTANT': """
+Mode DISTANT:
+
+- La "Machine de Salome" est la machine sur laquelle sera executé Salome. C'est une machine distante du serveur de calcul Aster.
+
+Salome doit etre lancé indépendament de Stanley.
+""", 
+
+'WINDOWS': """
+Mode WINDOWS:
+
+Ce mode est indisponible car Salome n'existe pas encore sous Windows.
+""", 
+}
+
+    return dparam, dliste_section, aide
+
+
+# ------------------------------------------------------------------------------
+
+  def Detecte_Derniere_Config(self):
+    '''
+       Lecture de la derniere config connues/utilisée.
+       Si echec, alors creation d'une nouvelle configuration.
+    '''
+
+    ok_env=True
+    res=True
+
     # essaye de lire le nom de la derniere config utilisée
-    fic_env = os.path.join(os.environ['HOME'],'.stanley') + '/last.txt'
+    fic_env = os.path.join(os.environ['HOME'],'.stanley') + '/' + __fichier_last__
+
+    # Essaye de determiner le dernier fichier d'environnement utilise
     try:
-      f = open(fic_env)
-      txt = f.read()
-      f.close()
-      fic_last=txt.split('\n')
-      try:
-        f = open(fic_last[0],'r')
-        self.para = cPickle.load(f)
-        f.close()
-      except IOError, (errno, strerror):
-        ok_env=0  # Le fichier n'existe plus
-    except IOError, (errno, strerror):
-      ok_env=0  # Le fichier d'environnement n'existe pas (premiere utilisation)
+       f = open(fic_env)
+       txt = f.read()
+       f.close()
+       fichier=txt.split('\n')[0]
+       if not os.path.isfile(fichier): 
+          ok_env=False # Le dernier fichier d'environnement n'existe plus
+    except:
+       ok_env=False    # Le dernier fichier d'environnement n'existe pas (premiere utilisation)
 
-    # Si on a pas trouve de configuration precedente, on en cree une nouvelle
-    if ok_env==0:
+    # Si on a un fichier d'environnement on le relit
+    if ok_env: res = self.Ouvrir_Fichier(fichier)
 
-      self.para={}
-      self.para['PARAMETRES']= {'fonte':     "('Courier',9,'normal')", 
-                                'grace':     'xmgrace', 
-                                'smbclient': 'smbclient', 
-                                'gmsh':      'gmsh',} 
+    # Si on ne trouve pas de configuration precedente, on en cree une nouvelle
+    if not ok_env or not res: self.Nouvelle_Configuration()
 
-      self.para['VISUALISATION']={'TAILLE_MIN': '0.',
-                                  'SHRINK':     '1.',
-                                  'SKIN':       'NON',
-                                  'version_fichier_gmsh': '1.2',}
+    # Si on ne trouve pas de configuration precedente, on en cree une nouvelle
+    if not res: self.Nouvelle_Configuration()
 
-      if 'HOSTNAME' in  os.environ.keys():
-        self.para['CONFIG'] = {'mode': 'LOCAL', 
-                               'machine_gmsh_login': '', 
-                               'machine_gmsh_pass': '', 
-                               'machine_visu': os.environ['DISPLAY'], 
-                               'machine_gmsh_exe': '', 
-                               'machine_gmsh': os.environ['HOSTNAME'], 
-                               'machine_gmsh_tmp': '/tmp'} 
 
-      elif os.environ['DISPLAY'].split(':')[0] == 'localhost':
-        self.para['CONFIG'] = {'mode': 'LOCAL', 
-                               'machine_gmsh_login': '', 
-                               'machine_gmsh_pass': '', 
-                               'machine_visu': os.environ['DISPLAY'], 
-                               'machine_gmsh_exe': '', 
-                               'machine_gmsh': 'localhost', 
-                               'machine_gmsh_tmp': '/tmp'} 
+# ------------------------------------------------------------------------------
 
-      else:
-        mgmsh = string.split(os.environ['DISPLAY'],':')[0]
-        self.para['CONFIG'] = {'mode': 'DISTANT',
-                               'machine_gmsh_login': 'user',
-                               'machine_gmsh_pass': '',
-                               'machine_visu': os.environ['DISPLAY'],
-                               'machine_gmsh_exe': '/usr/bin/gmsh',
-                               'machine_gmsh': mgmsh,
-                               'machine_gmsh_tmp': '/tmp'}
+  def Ouvrir_Fichier(self, fichier):
+    '''
+       Lecture du fichier d'environnement "fichier"
+    '''
 
-      # Cas particulier Windows
-      if os.name=='nt':
-        self.para['CONFIG'] = {'mode': 'LOCAL', 
-                               'machine_gmsh_login': '', 
-                               'machine_gmsh_pass': '', 
-                               'machine_visu': '127.0.0.1:0', 
-                               'machine_gmsh_exe': '', 
-                               'machine_gmsh': '127.0.0.1', 
-                               'machine_gmsh_tmp': os.environ['TEMP']} 
+    # Parametres relus du fichier
+    old_para = {}
+    ok_env=False
 
+    txt = _("Lecture du fichier d'environnement : ") + fichier
+    UTMESS('I','STANLEY',txt)
+    try:
+       f = open(fichier,'r')
+       old_para = cPickle.load(f)
+       f.close()
+       ok_env=True   # Le fichier a ete relu
+    except:
+       ok_env=False  # Le fichier n'existe plus
+
+    if not ok_env:
+       txt = _("Il n'y a pas de fichier d'environnement. On demarre avec une configuration par defaut.")
+       UTMESS('A','STANLEY',txt)
+
+    if ok_env:
+       # on verifie que le fichier d'environnement relut est conforme
+       txt = _("Le fichier d'environnement n'est pas exploitable (par exemple c'est une ancienne version). On demarre avec une configuration par defaut.")
+       if old_para.has_key('VERSION'):
+          if old_para['VERSION'].has_key('version_parametres'):
+             if not str(old_para['VERSION']['version_parametres']) == str(__version_parametres__):
+                txt1 = _("Le fichier d'environnement n'a pas la version attendue. On continue mais en cas de probleme, effacer le repertoire ~/.stanley/ et relancer.")
+                UTMESS('A','STANLEY',txt1)
+          else:
+            UTMESS('A','STANLEY',txt)
+            ok_env=False    # Le fichier d'environnement est trop vieux
+       else:
+          UTMESS('A','STANLEY',txt)
+          ok_env=False      # Le fichier d'environnement est trop vieux
+
+    # Si la configuration relue est exploitable, on l'utilise
+    if ok_env:
+       # Affectation des variables lues depuis le pickle a la variable para
+       res = self.Affectation_dico_para(old_para)
+       self.Saved = True
+
+       # Sauvegarde de la derniere configuration connue (fichier ~/.stanley/__fichier_last__)
+       f = os.path.join(os.environ['HOME'],'.stanley') + '/' + __fichier_last__
+       fw=open(f,'w')
+       fw.write(fichier)
+       fw.close()
+
+       return res 
+    else: return False
+
+
+# ------------------------------------------------------------------------------
+
+  def Nouvelle_Configuration(self, mode=None):
+    '''
+       Creation d'une nouvelle configuration "vierge" (mais pre-remplie suivant le mode et le poste de travail detecte)
+    '''
+
+    txt = _("On initialise une configuration par defaut.")
+    UTMESS('I','STANLEY',txt)
+
+    # Reinitialisation avec des parametres par defaut
+    self.para={}
+    for section in self.dliste_section.keys():
+       self.para[section] = {}
+
+    # On affecte ici les valeurs par defaut prises dans dparam
+    for cle in self.dparam.keys():
+       section = self.dparam[cle]['section']
+       try:     self.para[section][cle] = self.dparam[cle]['val']
+       except:  self.para[section][cle] = ''
+
+    # Detection du mode et surcharge des parametres qu'on peut detecter
+    if 'HOSTNAME' in os.environ.keys():
+          self.para['CONFIG']['mode']                  = 'LOCAL'
+          self.para['CONFIG']['machine_visu']          = os.environ['DISPLAY']
+          self.para['CONFIG']['machine_gmsh']          = os.environ['HOSTNAME']
+          self.para['CONFIG']['machine_salome']        = os.environ['HOSTNAME']
+
+    elif 'DISPLAY' in os.environ.keys():
+       mdisplay = os.environ['DISPLAY'].split(':')[0]
+       if mdisplay == 'localhost':
+          self.para['CONFIG']['mode']                  = 'LOCAL'
+          self.para['CONFIG']['machine_visu']          = os.environ['DISPLAY']
+          self.para['CONFIG']['machine_gmsh']          = 'localhost'
+          self.para['CONFIG']['machine_salome']        = 'localhost'
+       else:
+          self.para['CONFIG']['mode']                  = 'DISTANT'
+          self.para['CONFIG']['machine_visu']          = os.environ['DISPLAY']
+          self.para['CONFIG']['machine_gmsh']          = mdisplay
+          self.para['CONFIG']['machine_gmsh_login']    = 'please_change_me'
+          self.para['CONFIG']['machine_salome']        = mdisplay
+          self.para['CONFIG']['machine_salome_login']  = 'please_change_me'
+
+    # Cas particulier Windows (pour le moment on suppose que tout est en local)
+    if os.name=='nt':
+          self.para['CONFIG']['mode']                  = 'LOCAL'
+          self.para['CONFIG']['machine_visu']          = '127.0.0.1:0'
+          self.para['CONFIG']['machine_gmsh']          = '127.0.0.1'
+          self.para['CONFIG']['machine_gmsh_login']    = ''
+          self.para['CONFIG']['machine_gmsh_exe']      = ''
+          self.para['CONFIG']['machine_salome']        = '127.0.0.1'
+          self.para['CONFIG']['machine_salome_login']  = ''
+          self.para['CONFIG']['tmp']                   = os.environ['TEMP']
+          self.para['CONFIG']['machine_salome_port']   = '2810'
+
+    return
+
+
+# ------------------------------------------------------------------------------
 
   def __getitem__(self, cle) :
-  
+
     for nom_classe in self.para.keys() :
       classe = self.para[nom_classe]
       if cle in classe.keys() :
@@ -209,13 +549,6 @@ class PARAMETRES :
 
 
   def __setitem__(self,cle,s_val) :
-  
-#     if cle == 'SHRINK' :
-#       self.para['VISUALISATION']['SHRINK'] = string.atof(s_val)
-#     elif cle == 'TAILLE_MIN' :
-#       self.para['VISUALISATION']['TAILLE_MIN'] = string.atof(s_val)
-#     else :
-#       raise 'parametre inconnu'
 
     for i in self.para.keys():
       for j in self.para[i].keys():
@@ -223,162 +556,147 @@ class PARAMETRES :
           self.para[i][j] = str(s_val)
 
 
-  def Voir_Tout(self):
+  def Voir(self, interface):
 
     for i in self.para.keys():
       for j in self.para[i].keys():
         print self.para[i][j]
 
 
-  def Liste(self, nom_classe) :
+# ------------------------------------------------------------------------------
 
-    l = self.para[nom_classe].keys()
-    l.sort()
-    return l
-
-
-  def Modifier(self, nom_classe, interface) :
-  
-    if nom_classe not in self.para.keys() :
-      raise 'classe de parametres inconnue'
-      
-    l_para  = self.Liste(nom_classe)
-    nb_para = len(l_para)
-    defaut  = []
-    for p in l_para :
-      defaut.append(self[p])
-    reponse = interface.Requete_para(l_para,defaut)
-        
-    for row in xrange(nb_para) :
-      p       = l_para[row]
-      val_p   = reponse[row]
-      self[p] = val_p    
-
-
-  def Open_config(self, interface):
+  def Ouvrir_Sous(self, interface):
+    '''
+       Ouvre les parametres a partir d'un fichier à choisir
+    '''
     fp=tkFileDialog.askopenfile(mode='r',filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="Sélectionner le fichier contenant la configuration Stanley",initialdir='~/.stanley')
     if (fp != None):
-      self.para = cPickle.load(fp)
-      fp.close()
-      # Sauvegarde de la derniere configuration connue
-      f = os.path.join(os.environ['HOME'],'.stanley') + '/last.txt'
-      fw=open(f,'w')
-      fw.write(fp.name)
-      fw.close()
-      interface.ligne_etat.Affecter('Nouveaux parametres chargés.')
+       fichier = fp.name
+       res = self.Ouvrir_Fichier(fichier)
+    return
 
 
-  def Save_config(self, interface):
+# ------------------------------------------------------------------------------
+
+  def Sauvegarder_Rapide(self, interface):
+    '''
+       Sauvegarde les options dans la derniere config connues/utilisée
+    '''
+
+    # essaye de lire le nom de la derniere config utilisée
+    fic_env = os.path.join(os.environ['HOME'],'.stanley') + '/' + __fichier_last__
+
+    try:
+       f = open(fic_env)
+       txt = f.read()
+       f.close()
+       fic_last=txt.split('\n')
+       fichier = fic_last[0]
+    except:
+       self.Sauvegarder_Sous(interface)
+    else:
+       # Sauvegarder dans fichier
+       self.Sauvegarder(fichier, interface)
+
+    return
+
+
+# ------------------------------------------------------------------------------
+
+  def Sauvegarder_Sous(self, interface):
+    '''
+       Sauvegarde les parametres sous un fichier à choisir
+    '''
+
     try:
       os.mkdir(os.environ['HOME'] + '/.stanley')
     except: pass
     fp=tkFileDialog.asksaveasfile(filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="Sélectionner le fichier contenant la configuration Stanley",initialdir='~/.stanley')
     if (fp != None):
-      if fp.name[-4:]!='.stn': 
-        f=fp.name+'.stn'
-      else:
-        f=fp.name
-      fp=open(f,'w')
-      cPickle.dump(self.para,fp)
-      fp.close()
-      # Sauvegarde de la derniere configuration connue
-      f = os.path.join(os.environ['HOME'],'.stanley') + '/last.txt'
-      fw=open(f,'w')
-      fw.write(fp.name)
-      fw.close()
-      interface.ligne_etat.Affecter('Nouveaux parametres sauvegardés.')
+       if fp.name[-4:]!='.stn': 
+          fichier=fp.name+'.stn'
+       else:
+          fichier=fp.name
+       # Sauvegarder dans fichier
+       self.Sauvegarder(fichier, interface)
+
+    return
 
 
-  def New(self, mode):
+# ------------------------------------------------------------------------------
 
-    if mode == 'LOCAL':
-      para = {'mode': 'LOCAL',
-              'machine_gmsh_login': '-na-',
-              'machine_gmsh_pass': '-na-',
-              'machine_visu': os.environ['DISPLAY'],
-              'machine_gmsh_exe': '-na-',
-              'machine_gmsh': 'localhost',
-              'machine_gmsh_tmp': '/tmp'}
+  def Sauvegarder(self, fichier, interface):
+    '''
+       Sauvegarde les parametres dans le fichier "fichier"
+    '''
 
-    elif mode == 'DISTANT':
-      para = {'mode': 'DISTANT',
-              'machine_gmsh_login': 'user',
-              'machine_gmsh_pass': '-na-',
-              'machine_visu': os.environ['DISPLAY'],
-              'machine_gmsh_exe': '/usr/bin/gmsh',
-              'machine_gmsh': 'Ip machine de Gmsh',
-              'machine_gmsh_tmp': '/tmp'}
+    try:
 
-    elif mode == 'WINDOWS':
-      para = {'mode': 'WINDOWS', 
-              'machine_gmsh_login': 'user (si besoin) ou vide', 
-              'machine_gmsh_pass': 'pass (si besoin) ou vide', 
-              'machine_visu': '-na-', 
-              'machine_gmsh_exe': '-na-', 
-              'machine_gmsh': 'Ip machine Win', 
-              'machine_gmsh_tmp': 'Nom de partage rep. Win'} 
+       # Fixe la version
+       para = self.para
+       para['VERSION'] = {}
+       para['VERSION']['version_parametres'] = __version_parametres__
 
+       # Ouverture du fichier
+       fp=open(fichier,'w')
+       cPickle.dump(para,fp)
+       fp.close()
+
+       # Sauvegarde de la derniere configuration connue (fichier ~/.stanley/__fichier_last__)
+       f = os.path.join(os.environ['HOME'],'.stanley') + '/' + __fichier_last__
+       fw=open(f,'w')
+       fw.write(fichier)
+       fw.close()
+       res = True
+    except:
+       res = False
+
+    if res:
+       self.Saved = True
+       txt = _("Nouveaux parametres sauvegardés dans : " + fichier)
+       UTMESS('I','STANLEY', txt)
+       interface.ligne_etat.Affecter( txt )
     else:
-      print "Erreur systeme! Prevenez la maintenance!"
+       txt =  _("Impossible de sauvegarder les parametres dans : " + fichier)
+       UTMESS('A','STANLEY', txt)
+       interface.ligne_etat.Affecter( txt )
+
+    return
 
 
-    # Cas particulier Windows
-    if os.name=='nt':
-      para = {'mode': 'LOCAL', 
-              'machine_gmsh_login': '', 
-              'machine_gmsh_pass': '', 
-              'machine_visu': '127.0.0.1:0', 
-              'machine_gmsh_exe': '', 
-              'machine_gmsh': '127.0.0.1', 
-              'machine_gmsh_tmp': os.environ['TEMP']} 
+# ------------------------------------------------------------------------------
 
-    return para
+  def Terminer(self, interface):
+    '''
+       Termine l'execution de Stanley en verifiant la necessité de sauvegarder les parametres
+    '''
+
+    if self.Saved == False:
+       reponse = tkMessageBox.askokcancel(_("Sauvegarde des parametres"), _("Les paramètres ont été modifiés. Voulez-vous les sauvegarder?") )
+       if   reponse == 1: reponse = True
+       elif reponse == 0: reponse = False
+       if reponse: self.Sauvegarder_Sous(interface)
 
 
+# ------------------------------------------------------------------------------
 
+  def Afficher_Config(self, interface):
 
-  def New_config(self, interface):
+    # IHM d'edition des parametres
+    objet_para = ihm_parametres.AFFICHAGE_PARAMETRES(interface.rootTk, self.dliste_section, self.dparam, self.para, self.aide)
 
-    lst_mode = ['LOCAL', 'DISTANT', 'WINDOWS']
-    reponse = SAISIE_MODE( lst_mode, 'Choisir le mode')
+    if objet_para.nouveau_para:
 
-    self.para['CONFIG'] = self.New(mode=reponse)
+       # Verifie s'il faut relancer l'IHM ou pas (cad changement dans les fontes)
+       section = 'PARAMETRES'
+       cle     = 'fonte'
+       if objet_para.nouveau_para[section][cle] != self.para[section][cle]: self.change_fonte = True
 
-#     if reponse == 'LOCAL':
-#       self.para['CONFIG'] = {'mode': 'LOCAL',
-#                         'machine_gmsh_login': '-na-',
-#                         'machine_gmsh_pass': '-na-',
-#                         'machine_visu': os.environ['DISPLAY'],
-#                         'machine_gmsh_exe': '-na-',
-#                         'machine_gmsh': os.environ['HOSTNAME'],
-#                         'machine_gmsh_tmp': '/tmp'}
-# 
-#     elif reponse == 'DISTANT':
-#       self.para['CONFIG'] = {'mode': 'DISTANT',
-#                         'machine_gmsh_login': 'user',
-#                         'machine_gmsh_pass': '-na-',
-#                         'machine_visu': os.environ['DISPLAY'],
-#                         'machine_gmsh_exe': '/usr/bin/gmsh',
-#                         'machine_gmsh': 'Ip machine de Gmsh',
-#                         'machine_gmsh_tmp': '/tmp'}
-# 
-#     elif reponse == 'WINDOWS':
-#      self. para['CONFIG'] = {'mode': 'WINDOWS', 
-#                         'machine_gmsh_login': 'user (si besoin) ou vide', 
-#                         'machine_gmsh_pass': 'pass (si besoin) ou vide', 
-#                         'machine_visu': '-na-', 
-#                         'machine_gmsh_exe': '-na-', 
-#                         'machine_gmsh': 'Ip machine Win', 
-#                         'machine_gmsh_tmp': 'Nom de partage rep. Win'} 
-# 
-#     else:
-#       print "Erreur systeme! Prevenez la maintenance!"
+       # Affectation des parametres saisis dans l'IHM à la variable self.para
+       res = self.Affectation_dico_para(objet_para.nouveau_para)
 
-    self.Modifier('CONFIG',interface)
 
 # ==============================================================================
-
-
 
 class CONTEXTE :
 
@@ -969,7 +1287,7 @@ class SELECTION :
       
     self.mode = mode
 
-    if self.mode == 'Isovaleurs' :
+    if self.mode in ['Isovaleurs', 'SalomeIsovaleurs']:
       t_geom = ['TOUT_MAILLAGE']
       for nom_group in self.etat_geom.volu :
         t_geom.append(string.ljust(nom_group,8) + " (3D)")
@@ -977,7 +1295,7 @@ class SELECTION :
         t_geom.append(string.ljust(nom_group,8) + " (2D)")
       self.interface.geom.Change(t_geom,'TOUT_MAILLAGE')   
 
-    elif self.mode == 'Courbes' :
+    elif self.mode in ['Courbes', 'SalomeCourbes']:
       t_geom = []
       for nom_group in self.etat_geom.lign :
         t_geom.append(string.ljust(nom_group,8) + " (1D)")
@@ -1104,8 +1422,10 @@ class STANLEY :
 
    # Drivers d'outils de post-traitement
     self.driver = {
-      'Isovaleurs' : DRIVER_GMSH(self),
-      'Courbes'    : DRIVER_GRACE(self)
+      'Isovaleurs'      : DRIVER_GMSH(self),
+      'Courbes'         : DRIVER_GRACE(self),          
+      'SalomeCourbes'   : DRIVER_SALOME_COURBES(self),
+      'SalomeIsovaleurs': DRIVER_SALOME_ISOVALEURS(self)
       }
 
    # Lancement de l'interface graphique (jusqu'a ce qu'on quitte) 
@@ -1146,11 +1466,20 @@ class STANLEY :
    # Post-traitement (si necessaire)
     self.Calculer()
 
+    # Permet de passer du mode Salome au mode Gmsh/Xmgrace...
+    self.selection.mode = self.selection.mode.replace('Salome', '')
+
+   # Visualisation
+    if self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Salome' and self.selection.mode == 'Courbes':
+       self.selection.mode = 'SalomeCourbes'
+    elif self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Salome' and self.selection.mode == 'Isovaleurs':
+       self.selection.mode = 'SalomeIsovaleurs'
+
     # Options supplementaires a passer au driver graphique
     options = {}
     if self.selection.mode == 'Isovaleurs': options['case_sur_deformee'] = self.interface.case_sur_deformee.Valeur()
 
-   # Visualisation
+
     self.driver[self.selection.mode].Tracer(self.selection, options )    
 
 
@@ -1203,56 +1532,69 @@ class STANLEY :
     except: pass
     self.selection.Refresh()
 
+  def Editer_Parametres(self) : 
+    self.parametres.Afficher_Config(self.interface)
 
-  def Modi_visu(self) : 
-    self.parametres.Modifier('VISUALISATION',self.interface)
+    if self.parametres.change_fonte:
+       reponse = tkMessageBox.askokcancel(_("Changement des fontes"), _("Pour actualiser les fontes, il faut relancer l'IHM. Voulez-vous relancer Stanley ? Le fichier des paramètres sera modifiés.") )
+       if   reponse == 1: reponse = True
+       elif reponse == 0: reponse = False
+       if reponse:
+          self.selection.interface.rootTk.quit()
+          self.parametres.Sauvegarder_Rapide(self.interface)
+          self.parametres.Terminer(self.interface)
+          self.Fermeture_Propre_Stanley()
+          STANLEY(self.contexte.resultat, self.contexte.maillage, self.contexte.modele, self.contexte.cham_mater, self.contexte.cara_elem)
+#          self.Select()
 
-  def Modi_para(self) : 
-    self.parametres.Modifier('PARAMETRES',self.interface)
+  def Voir(self) : 
+    self.parametres.Voir(self.interface)
 
-  def Modi_config(self) : 
-    self.parametres.Modifier('CONFIG',self.interface)
+  def Open_config(self): 
+    self.parametres.Ouvrir_Sous(self.interface)
 
-  def Open_config(self) : 
-    self.parametres.Open_config(self.interface)
+  def Save_config(self): 
+    self.parametres.Sauvegarder_Sous(self.interface)
 
-  def Save_config(self) : 
-    self.parametres.Save_config(self.interface)
+  def Save_rapide(self): 
+    self.parametres.Sauvegarder_Rapide(self.interface)
 
-  def New_config(self) : 
-    self.parametres.New_config(self.interface)
-
-  def Rien(self) : 
-    pass
-
-  def Quitter(self) :
+  def Quitter(self):
     l_detr=[]
     for i in range(_NUM):
       l_detr.append( '_MA_'+str(i) )
     if len(l_detr)>0: DETRUIRE(CONCEPT=_F(NOM= l_detr ), INFO=1, ALARME='NON')
     self.selection.interface.rootTk.quit()
+    self.parametres.Terminer(self.interface)
 
   def Select(self):
-    for driver in self.driver.keys() :
-      try :
-        self.driver[driver].Fermer()
-      except AttributeError :
-        pass
+     """
+        Ferme Stanley et relance Pre_Stanley
+     """
+     self.Fermeture_Propre_Stanley()
+     PRE_STANLEY()
 
-    for i in range(_NUM):
-      DETRUIRE(CONCEPT=_F(NOM='_MA_'+str(i)), INFO=1, ALARME='NON')
-    self.interface.Kill()
-    PRE_STANLEY()
+
+  def Fermeture_Propre_Stanley(self):
+     """
+        Ferme Stanley : cloture des drivers, effacement des concepts temporaires
+     """
+     for driver in self.driver.keys() :
+        try :   
+           self.driver[driver].Fermer()
+        except AttributeError :
+           pass
+
+     for i in range(_NUM):
+        DETRUIRE(CONCEPT=_F(NOM='_MA_'+str(i)), INFO=1, ALARME='NON')
+     self.interface.Kill()
 
 
   def Clavier(self,event) :
-
     """
       Reaction aux raccourcis clavier (CTRL + touche)
     """
-      
     touche = event.keysym
-#    if touche == 'q' : self.selection.interface.rootTk.quit()
     if touche == 'q' : self.Quitter()
     if touche == 'c' : self.Calculer()
     if touche == 't' : self.Tracer()
@@ -1345,7 +1687,7 @@ class INTERFACE :
     l_va = etat_resu.va.keys()    
 
     self.stan = stan
-    self.rootTk    = Tkinter.Tk()       
+    self.rootTk    = Tk.Tk()       
     self.rootTk.wm_title('STANLEY')
     self.Dessin(t_champ, t_cmp, t_geom, t_no, l_va)
     self.Scan_selection()               
@@ -1398,25 +1740,27 @@ class INTERFACE :
     """
       Creation de tous les objets graphiques de l'interface
     """
-    
-        
+
+    # Fontes
+#    fonte = eval(self.stan.parametres['fonte'])
+    fonte = self.stan.parametres['fonte']
 
    # Frames generales
-    frame_menu  = Tkinter.Frame(self.rootTk,relief=Tkinter.RAISED,bd=1)
-    frame_menu.grid(row=0,column=0,sticky = Tkinter.NW)
-#    frame_menu.pack(padx=0,pady=0,anchor = Tkinter.NW)
+    frame_menu  = Tk.Frame(self.rootTk,relief=Tk.RAISED,bd=1)
+    frame_menu.grid(row=0,column=0,sticky = Tk.NW)
+#    frame_menu.pack(padx=0,pady=0,anchor = Tk.NW)
 
-    frame_boutons  = Tkinter.Frame(self.rootTk,relief=Tkinter.FLAT,bd=1)
-    frame_boutons.grid(row=0,column=2, sticky = Tkinter.NE)
-#    frame_boutons.pack(anchor = Tkinter.NE,pady=0)
+    frame_boutons  = Tk.Frame(self.rootTk,relief=Tk.FLAT,bd=1)
+    frame_boutons.grid(row=0,column=2, sticky = Tk.NE)
+#    frame_boutons.pack(anchor = Tk.NE,pady=0)
 
-    frame_selection  = Tkinter.Frame(self.rootTk,relief=Tkinter.RAISED,bd=3)
+    frame_selection  = Tk.Frame(self.rootTk,relief=Tk.RAISED,bd=3)
     frame_selection.grid(row=1,column=0,columnspan=3)
 #    frame_selection.pack(padx=2,pady=10)
 
-    frame_bas = Tkinter.Frame(self.rootTk)
+    frame_bas = Tk.Frame(self.rootTk)
     frame_bas.grid(row=2,column=0,columnspan =3,pady=3)
-    frame_espace = Tkinter.Frame(self.rootTk)
+    frame_espace = Tk.Frame(self.rootTk)
     frame_espace.grid(row=0,column=1,pady=20)
     
     
@@ -1432,55 +1776,48 @@ class INTERFACE :
 #     choix['Actions'] = [ ('Calculer',self.stan.Calculer),
 #                          ('Tracer',self.stan.Tracer)]
 
-    choix['Parametres'] = [ ('Visualisation',self.stan.Modi_visu),
-                            ('Serveur de calcul et Stanley',self.stan.Modi_para),
-                            ('Poste de travail',self.stan.Modi_config),
-                            ('------------------------------',self.stan.Rien),
-                            ('Charger une configuration',self.stan.Open_config),
-                            ('Sauvegarder une configuration',self.stan.Save_config),
-                            ('Nouvelle configuration',self.stan.New_config),
-#                             ('Charger une configuration',self.Open_config),
-#                             ('Sauvegarder une configuration',self.Save_config),
-#                             ('Nouvelle configuration',self.stan.New_config),
+    choix['Parametres'] = [
+                            ('Charger',self.stan.Open_config),
+                            ('Editer',self.stan.Editer_Parametres),
+                            ('Sauvegarder',self.stan.Save_rapide),
+                            ('Sauvegarder sous',self.stan.Save_config),
                           ]
 
-    menu = MENU(frame_menu,titres,choix)     
-
-    fonte = eval(self.stan.parametres['fonte'])
+    menu = MENU(frame_menu,titres,choix,fonte=fonte)     
 
    # boite de saisie des champs
-    frame_champs = Tkinter.Frame(frame_selection)
-    frame_champs.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_champs, "Champs")
-    self.champ = LIST_BOX(frame_champs,t_champ,Tkinter.SINGLE,fonte=fonte)
+    frame_champs = Tk.Frame(frame_selection)
+    frame_champs.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_champs, "Champs",fonte=fonte)
+    self.champ = LIST_BOX(frame_champs,t_champ,Tk.SINGLE,fonte=fonte)
 
    # boite de saisie des composantes
-    frame_cmp  = Tkinter.Frame(frame_selection)
-    frame_cmp.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_cmp,"Composantes")
-    self.cmp = LIST_BOX(frame_cmp,t_cmp,Tkinter.EXTENDED,defaut = 'TOUT_CMP',fonte=fonte)
+    frame_cmp  = Tk.Frame(frame_selection)
+    frame_cmp.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_cmp,"Composantes",fonte=fonte)
+    self.cmp = LIST_BOX(frame_cmp,t_cmp,Tk.EXTENDED,defaut = 'TOUT_CMP',fonte=fonte)
 
    # boite de saisie d'entites geometriques
-    frame_geom  = Tkinter.Frame(frame_selection)
-    frame_geom.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_geom,"Entites Geometriques",['Isovaleurs','Courbes'],self.stan.selection.Change_mode)
-    self.geom = LIST_BOX(frame_geom,t_geom,Tkinter.EXTENDED,defaut = 'TOUT_MAILLAGE',fonte=fonte)
+    frame_geom  = Tk.Frame(frame_selection)
+    frame_geom.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_geom,"Entites Geometriques",['Isovaleurs','Courbes'],self.stan.selection.Change_mode,fonte=fonte)
+    self.geom = LIST_BOX(frame_geom,t_geom,Tk.EXTENDED,defaut = 'TOUT_MAILLAGE',fonte=fonte)
 
    # boite de saisie des numeros d'ordre
-    frame_ordre  = Tkinter.Frame(frame_selection)
-    frame_ordre.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_ordre,"Ordres",l_va,self.stan.selection.Change_va,'NUME_ORDRE')
-    self.ordre = LIST_BOX(frame_ordre,t_no,Tkinter.EXTENDED,defaut = 'TOUT_ORDRE',fonte=fonte)
+    frame_ordre  = Tk.Frame(frame_selection)
+    frame_ordre.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_ordre,"Ordres",l_va,self.stan.selection.Change_va,'NUME_ORDRE',fonte=fonte)
+    self.ordre = LIST_BOX(frame_ordre,t_no,Tk.EXTENDED,defaut = 'TOUT_ORDRE',fonte=fonte)
 
    # Feu tricolore
     self.feu = FEU_TRICOLORE(frame_selection)
 
    # Boutons
-    BOUTON(frame_boutons, 'PaleGreen1', 'TRACER'   , self.stan.Tracer,   x=2,y=0)
-    self.case_sur_deformee = CASE_A_COCHER(frame_boutons, x=2, y=0, txt='Sur déformée')
-    BOUTON(frame_boutons, 'orange',     'CALCULER' , self.stan.Calculer, x=2,y=0)
-    BOUTON(frame_boutons, 'skyblue',    'SELECTION', self.stan.Select,   x=2,y=0)
-    BOUTON(frame_boutons, 'IndianRed1', 'SORTIR'   , self.stan.Quitter,  x=2,y=0)
+    BOUTON(frame_boutons, 'PaleGreen1', 'TRACER'   , self.stan.Tracer,   x=2,y=0, fonte=fonte)
+    self.case_sur_deformee = CASE_A_COCHER(frame_boutons, x=2, y=0, txt=_("Sur déformée"), fonte=fonte)
+    BOUTON(frame_boutons, 'orange',     'CALCULER' , self.stan.Calculer, x=2,y=0, fonte=fonte)
+    BOUTON(frame_boutons, 'skyblue',    'SELECTION', self.stan.Select,   x=2,y=0, fonte=fonte)
+    BOUTON(frame_boutons, 'IndianRed1', 'SORTIR'   , self.stan.Quitter,  x=2,y=0, fonte=fonte)
 
    # Ligne d'etat
     self.ligne_etat = LIGNE_ETAT(frame_bas)
@@ -1494,10 +1831,10 @@ class INTERFACE :
   
     global info
     
-    tk = Tkinter.Tk()
+    tk = Tk.Tk()
     tk.title = "A propos de Stanley"
 
-    l = Tkinter.Label(tk,padx=15,pady=15,text=info)
+    l = Tk.Label(tk,padx=15,pady=15,text=info)
     l.grid()
     
   def Bip(self) :
@@ -1520,13 +1857,14 @@ class INTERFACE :
         nom         nom du chemin
         x0,y0,z0    coordonnees du point origine
     """
-    
+
+    fonte = self.stan.parametres['fonte']
     infos = [
       ['Nom du point',1],
       ['Coordonnees',3]]
     defaut = [[''],[0.,0.,0.]]
     
-    reponse = SAISIE(infos,"Creation d'un point",defaut)
+    reponse = SAISIE(infos, _("Creation d'un point"), defaut, fonte=fonte)
     
     nom = reponse[0][0]
     nom = nom[0:8]            # pas plus de 8 caracteres dans un GROUP_MA
@@ -1552,14 +1890,16 @@ class INTERFACE :
         x1,y1,z1    coordonnees du point extremite
         nbr         nombre de points
     """
-    
+
+    fonte = self.stan.parametres['fonte']
+
     infos = [
       ['Nom du chemin',1],
       ['Origine   (x,y,z)',3],
       ['Extremite (x,y,z)',3],
       ['Nombre de points',1]]
     defaut = [[''],[0.,0.,0.],[1.,0.,0.],[2]]
-    reponse = SAISIE(infos,"Creation d'un chemin",defaut)
+    reponse = SAISIE(infos, _("Creation d'un chemin") , defaut, fonte=fonte)
     
     nom = reponse[0][0]
     nom = nom[0:8]            # pas plus de 8 caracteres dans un GROUP_MA
@@ -1578,7 +1918,6 @@ class INTERFACE :
 
 
   def Requete_para(self, l_para, l_defaut) :
-
     """
       Boite de dialogue pour definir une classe de parametres
       
@@ -1590,6 +1929,7 @@ class INTERFACE :
         liste des valeurs des parametres
     """
 
+    fonte = self.stan.parametres['fonte']
     infos   = []
     defaut  = []
     nb_para = len(l_para)
@@ -1598,7 +1938,7 @@ class INTERFACE :
       infos.append( (l_para[row],1) )
       defaut.append( [ l_defaut[row] ])
     titre = "Edition des parametres"
-    reponse = SAISIE(infos,titre,defaut)
+    reponse = SAISIE(infos, titre, defaut, fonte=fonte)
 
     sortie = []
     for row in xrange(nb_para) :
@@ -2002,7 +2342,7 @@ class DRIVER_GMSH(DRIVER) :
 
 class DRIVER_GRACE(DRIVER) :
 
-  CheminMultiple = "Le trace de courbe ne peut se faire que sur un chemin unique"
+  CheminMultiple = _("Le trace de courbe ne peut se faire que sur un chemin unique")
 
 
   def Tracer(self, selection, options={}) :
@@ -2184,11 +2524,203 @@ class DRIVER_GRACE(DRIVER) :
       if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
 
     else:
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.")
+      UTMESS('A','STANLEY',_("Cette action n'est pas realisable.") )
       return False
 
     return l_courbes
-      
+
+
+
+# ==============================================================================
+
+class DRIVER_SALOME_COURBES( DRIVER ) :
+    def Tracer(self, selection, options={}) :
+        if self.terminal : self.terminal.Fermer()
+              
+       # Extraction des resultats pour la selection requise
+        l_courbes = self.Extract( selection )
+                
+        self.terminal = salomeVisu.COURBES( l_courbes, self.stan.parametres, selection )
+          
+    
+    def Extract(self, selection) :
+        """
+        Execute les commandes aster de creation de la table pour GRACE
+        """  
+        
+        l_courbes = []
+        l_detr    = []
+           
+        contexte   = self.stan.contexte
+        type_champ = cata[selection.nom_cham].type
+       
+        if type_champ == 'ELGA' :
+          contexte, l_detr = self.Ecla_Gauss(selection, contexte)
+          if not contexte: return
+    
+       # Parametres communs a toutes les tables a calculer 
+        para = _F(
+          INTITULE   = 'TB_GRACE',
+          NOM_CHAM   = selection.nom_cham,
+          OPERATION  = 'EXTRACTION'
+          )
+          
+        if 'TOUT_CMP' in selection.nom_cmp :
+          para['TOUT_CMP'] = 'OUI'
+          l_nom_cmp = self.stan.etat_resu.cmp[selection.nom_cham]
+        else :
+          para['NOM_CMP'] = tuple(selection.nom_cmp)
+          l_nom_cmp = selection.nom_cmp
+          
+        
+        if selection.geom[0] == 'POINT' :
+        
+          para['NUME_ORDRE'] = selection.numeros
+          for point in selection.geom[1] :
+            contexte, detr = self.Projeter(selection, contexte, point) 
+            l_detr += detr
+            para['RESULTAT'] = contexte.resultat
+            para['GROUP_NO'] = point
+                        
+            try:
+                __GRACE = POST_RELEVE_T(ACTION = para)
+            except aster.error,err:
+                return self.erreur.Remonte_Erreur(err, [], 1)
+            except aster.FatalError,err:
+                return self.erreur.Remonte_Erreur(err, [], 1)
+            except Exception,err:
+                texte = "Cette action n'est pas realisable.\n"+str(err)
+                return self.erreur.Remonte_Erreur(err, [], 1, texte)          
+            
+            for comp in l_nom_cmp :
+              vale_x = selection.vale_va
+              courbe = as_courbes.Courbe(vale_x,vale_x)
+              courbe.Lire_y(__GRACE,comp)
+              nom = comp + ' --- ' + string.ljust(point,8)
+              l_courbes.append( (courbe, nom) )
+          
+            DETRUIRE(CONCEPT = _F(NOM = __GRACE),INFO=1)
+            if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1)
+            
+               
+        elif selection.geom[0] == 'CHEMIN' :
+        
+          chemin = selection.geom[1][0]
+         
+         # projection si necessaire
+          contexte, detr = self.Projeter(selection, contexte, chemin)
+          l_detr += detr    
+    
+          para['RESULTAT'] = contexte.resultat
+          para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
+    
+          for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
+            para['NUME_ORDRE'] = no,
+            
+            try:
+                __GRACE = POST_RELEVE_T(ACTION = para)
+            except aster.error,err:
+                return self.erreur.Remonte_Erreur(err, [], 1)
+            except aster.FatalError,err:
+                return self.erreur.Remonte_Erreur(err, [], 1)
+            except Exception,err:
+                texte = "Cette action n'est pas realisable.\n"+str(err)
+                return self.erreur.Remonte_Erreur(err, [], 1, texte)
+            
+            for comp in l_nom_cmp :
+              courbe = as_courbes.Courbe()
+              courbe.Lire_x(__GRACE, 'ABSC_CURV')
+              courbe.Lire_y(__GRACE, comp)
+    
+              nom_va = selection.nom_va
+              nom = comp + ' --- ' + nom_va + ' = ' + repr(va)
+              l_courbes.append( (courbe, nom) )
+    
+            DETRUIRE(CONCEPT = _F(NOM = __GRACE),INFO=1)
+    
+          if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1)
+    
+        else : raise 'ERREUR_DVP'    
+    
+        return l_courbes    
+
+
+# ==============================================================================
+
+class DRIVER_SALOME_ISOVALEURS( DRIVER) :
+    
+##    def __init__( self, stan ):    
+##          DRIVER.__init__( self, stan )
+
+    
+    def Tracer( self, selection, options={} ) :
+        if self.terminal : self.terminal.Fermer()
+                            
+        l_detr = []
+        contexte   = self.stan.contexte
+        type_champ = cata[selection.nom_cham].type
+            
+        if type_champ == 'ELGA' :
+            contexte, l_detr = self.Ecla_Gauss(selection, contexte)
+            if not contexte: return
+
+        # On efface le fichier si il existe deja
+        if os.path.isfile('fort.80'):
+          try:    os.remove('fort.80')
+          except: pass
+
+
+        DEFI_FICHIER(UNITE = 80, 
+                     TYPE  = 'LIBRE',);
+                                   
+        para = _F(
+          RESULTAT   = contexte.resultat,
+          NOM_CHAM   = selection.nom_cham,
+          NUME_ORDRE = selection.numeros 
+        )
+    
+        # CS_pbruno à voir.... test à faire selon type de visu ?
+        if type_champ in ['NOEU','ELNO'] and selection.geom[0] in ['VOLUME','SURFACE'] :
+            para['GROUP_MA'] = selection.geom[1]    # non actif a cause de IMPR_RESU
+    
+        if 'TOUT_CMP' not in selection.nom_cmp :
+            para['NOM_CMP'] = tuple(selection.nom_cmp)
+
+        try:
+            IMPR_RESU(  FORMAT  =   'MED',
+                        UNITE   =   80,
+                        RESU    =   para )                        
+        except aster.error,err:
+            self.erreur.Remonte_Erreur(err, [], 0)
+            DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+            return
+        except aster.FatalError,err:
+            self.erreur.Remonte_Erreur(err, [], 0)
+            DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+            return
+        except Exception,err:
+            texte = "Cette action n'est pas realisable.\n"+str(err)
+            self.erreur.Remonte_Erreur(err, [], 0, texte)
+            DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+            return
+                              
+        DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+        
+        medFileName = 'fort.80' 
+            
+        if l_detr :
+            DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
+            
+        if options.has_key( 'case_sur_deformee' ):
+            if options['case_sur_deformee'] == 1:
+                if type_champ == 'ELGA':
+                    UTMESS('A','STANLEY',_("Attention : on ne peut pas tracer un champs aux points de Gauss sur la deformee...") )
+                else:
+                    UTMESS('I','STANLEY',_("Le champ est trace avec la deformee") )
+                                
+        self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
+
+
 # ==============================================================================
 
 class PRE_STANLEY :
@@ -2220,9 +2752,8 @@ class PRE_STANLEY :
 
     self.para = PARAMETRES()
 
-    self.rootTk    = Tkinter.Tk()       
-#    self.rootTk    = Tix.Tk()       
-    self.rootTk.wm_title('PRE_STANLEY : choix des concepts')
+    self.rootTk    = Tk.Tk()       
+    self.rootTk.wm_title( _("PRE_STANLEY : choix des concepts") )
 
     # Récupération des concepts Aster présents dans la base
     self.jdc_recupere=CONTEXT.get_current_step().jdc
@@ -2335,43 +2866,44 @@ class PRE_STANLEY :
       Creation de tous les objets graphiques de l'interface
     """
 
-    fonte = eval(self.para['fonte'])
+#    fonte = eval(self.para['fonte'])
+    fonte = self.para['fonte']
         
    # Frames generales
-    frame_selection  = Tkinter.Frame(self.rootTk,relief=Tkinter.RAISED,bd=3)
+    frame_selection  = Tk.Frame(self.rootTk,relief=Tk.RAISED,bd=3)
     frame_selection.pack(padx=2,pady=2)
-    frame_bas = Tkinter.Frame(self.rootTk)
+    frame_bas = Tk.Frame(self.rootTk)
     frame_bas.pack(pady=10)
-    frame_boutons  = Tkinter.Frame(frame_bas,relief=Tkinter.RAISED,bd=1)
-    frame_boutons.pack(side=Tkinter.LEFT,pady=10)
+    frame_boutons  = Tk.Frame(frame_bas,relief=Tk.RAISED,bd=1)
+    frame_boutons.pack(side=Tk.LEFT,pady=10)
 
    # boite de saisie des champs
-    frame_modele = Tkinter.Frame(frame_selection)
-    frame_modele.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_modele, "modele")
-    self.modele = LIST_BOX(frame_modele,self.t_modele,Tkinter.SINGLE,self.t_modele[-1],fonte=fonte)
+    frame_modele = Tk.Frame(frame_selection)
+    frame_modele.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_modele, "modele",fonte=fonte)
+    self.modele = LIST_BOX(frame_modele,self.t_modele,Tk.SINGLE,self.t_modele[-1],fonte=fonte)
       
    # boite de saisie des champs
-    frame_evol = Tkinter.Frame(frame_selection)
-    frame_evol.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_evol, "evol")
-    self.evol = LIST_BOX(frame_evol,self.t_evol,Tkinter.SINGLE,self.t_evol[-1],fonte=fonte)
+    frame_evol = Tk.Frame(frame_selection)
+    frame_evol.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_evol, "evol",fonte=fonte)
+    self.evol = LIST_BOX(frame_evol,self.t_evol,Tk.SINGLE,self.t_evol[-1],fonte=fonte)
       
    # boite de saisie des champs
-    frame_cham_mater = Tkinter.Frame(frame_selection)
-    frame_cham_mater.pack(side=Tkinter.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_cham_mater, "cham_mater")
-    self.cham_mater = LIST_BOX(frame_cham_mater,self.t_cham_mater,Tkinter.SINGLE,self.t_cham_mater[-1],fonte=fonte)
+    frame_cham_mater = Tk.Frame(frame_selection)
+    frame_cham_mater.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_cham_mater, "cham_mater",fonte=fonte)
+    self.cham_mater = LIST_BOX(frame_cham_mater,self.t_cham_mater,Tk.SINGLE,self.t_cham_mater[-1],fonte=fonte)
       
    # boite de saisie des champs
     if self.t_cara_elem != []:
-      frame_cara_elem = Tkinter.Frame(frame_selection)
-      frame_cara_elem.pack(side=Tkinter.LEFT,padx=5)
-      MENU_RADIO_BOX(frame_cara_elem, "cara_elem")
-      self.cara_elem = LIST_BOX(frame_cara_elem,self.t_cara_elem,Tkinter.SINGLE,self.t_cara_elem[-1],fonte=fonte)
+      frame_cara_elem = Tk.Frame(frame_selection)
+      frame_cara_elem.pack(side=Tk.LEFT,padx=5)
+      MENU_RADIO_BOX(frame_cara_elem, "cara_elem",fonte=fonte)
+      self.cara_elem = LIST_BOX(frame_cara_elem,self.t_cara_elem,Tk.SINGLE,self.t_cara_elem[-1],fonte=fonte)
 
    # Boutons
-    BOUTON(frame_boutons,'PaleGreen1','STANLEY',self.Lancer)
-    BOUTON(frame_boutons,'IndianRed1','SORTIR',self.Sortir)
+    BOUTON(frame_boutons,'PaleGreen1','STANLEY',self.Lancer,fonte=fonte)
+    BOUTON(frame_boutons,'IndianRed1','SORTIR',self.Sortir,fonte=fonte)
 
    

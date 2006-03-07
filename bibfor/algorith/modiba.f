@@ -8,7 +8,7 @@
       LOGICAL             NEWRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,7 +231,7 @@ C        --- ON NORMALISE LES DEFORMEES
      +           ZR(LMOD), ZR(LVALR), LMASIN, XMASTR, 0, 0, ZR(LCOEF) )
 C        --- ON STOCKE LES DEFORMEES
          CALL VPSTOR ( -1, TYPMOD, NOMRES, NBNUOR, NEQ, ZR(LMOD), ZC(1),
-     +                 NBNUOR, NBPARI, NBPARR, NBPARK, NOPARA,
+     +                 NBNUOR, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                 ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
 C        --- ON NORMALISE LES AUTRES CHAMPS
          CALL VPNOR2 ( NOMRES, NBMODE, NUOR, ZR(LCOEF) )
@@ -239,7 +239,7 @@ C        --- ON NORMALISE LES AUTRES CHAMPS
       ELSE
 C        --- ON STOCKE LES DEFORMEES
          CALL VPSTOR ( -1, TYPMOD, NOMRES, NBNUOR, NEQ, ZR(LMOD), ZC(1),
-     +                 NBNUOR, NBPARI, NBPARR, NBPARK, NOPARA,
+     +                 NBNUOR, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                 ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
       ENDIF
 C

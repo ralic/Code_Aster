@@ -1,4 +1,4 @@
-# MODIF  DATE 27/02/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 06/03/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,7 +159,7 @@ RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
 RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
 
 nbc=len(RI)
-SIF = [None]*nbc
+SIF = [None]*(nbc+1)
 
 for i in range(0,nbc) :
 
@@ -178,6 +178,21 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF[i],);
 
+SIF[nbc]=CALC_G_LOCAL_T(MODELE=MODELEK,
+                     CHAM_MATER=CHAMPMA1,
+                     RESULTAT=UTOT1,
+                     SYME_CHAR='SANS',
+                     COMP_ELAS=_F(RELATION='ELAS',),
+                     OPTION='CALC_K_G',
+                     FISSURE=FISS,
+                     LISSAGE_THETA='LAGRANGE',
+                     LISSAGE_G='LAGRANGE_NO_NO',
+                     R_INF=RI[0],
+                     R_SUP=RS[0],
+                     INFO=2,);
+
+IMPR_TABLE(TABLE=SIF[nbc],);
+
 # SOLUTION ANALYTIQUE (chaboche p.53)
 a=5
 b=10
@@ -185,7 +200,7 @@ coef=(pi*a)/(2.*b)
 fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
 K1REF=-PRES*sqrt(pi*a)*fab
 
-for i in range(0,nbc) :
+for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1_LOCAL',
               TYPE_TEST='MAX',               

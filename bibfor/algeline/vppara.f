@@ -1,9 +1,10 @@
       SUBROUTINE VPPARA(MODES, TYPCON, KNEGA, LRAIDE, LMASSE, LAMOR,
      &                  MXRESF, NEQ, NFREQ, OMECOR, DLAGR,
      &                  DBLOQ, VECTR, VECTC, 
-     +                  NBPARI, NBPARR, NBPARK, NOPARA,
+     +                  NBPARI, NBPARR, NBPARK, NOPARA,MOD45,
      +                  RESUI, RESUR, RESUK ,KTYP)
       IMPLICIT NONE
+      CHARACTER*4   MOD45
       CHARACTER*8   MODES, KNEGA
       CHARACTER*1   KTYP
       CHARACTER*16  TYPCON
@@ -15,7 +16,7 @@
       COMPLEX *16   VECTC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +96,7 @@ C        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
 C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'R', MODES, NFREQ, NEQ, VECTR, ZBID,
-     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,
+     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA, MOD45,
      +                 RESUI, RESUR, RESUK, IPREC )
 C
       ELSE IF (( LAMOR .EQ. 0 ).AND.(KTYP.EQ.'C')) THEN
@@ -119,7 +120,7 @@ C        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
 C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'C', MODES, NFREQ, NEQ, RBID, VECTC,
-     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,
+     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ', 
      +                 RESUI, RESUR, RESUK, IPREC )
 C
       ELSE IF (( LAMOR .NE. 0 ).AND.(KTYP.EQ.'R')) THEN
@@ -139,7 +140,7 @@ C        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
 C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'C', MODES, NFREQ, NEQ, RBID, VECTC,
-     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,
+     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                 RESUI, RESUR, RESUK, IPREC )
       ELSE IF (( LAMOR .NE. 0 ).AND.(KTYP.EQ.'C')) THEN
 C
@@ -158,7 +159,7 @@ C        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
 C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'C', MODES, NFREQ, NEQ, RBID, VECTC,
-     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,
+     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                 RESUI, RESUR, RESUK, IPREC )
       ENDIF
 C     ------------------------------------------------------------------

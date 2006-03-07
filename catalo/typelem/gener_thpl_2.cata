@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +31,42 @@ ENTETE__ ELEMENT__ THPLQU9          MAILLE__ QUAD9
 ENTETE__ ELEMENT__ THPLTR3          MAILLE__ TRIA3
    ELREFE__  TR3     GAUSS__  RIGI=FPG1   MASS=FPG3  GANO=FPG1    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
+ENTETE__ ELEMENT__ THPLTR6          MAILLE__ TRIA6
+   ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG6  GANO=FPG3    NOEU=NOEU
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
+
+ENTETE__ ELEMENT__ THAXQU4          MAILLE__ QUAD4
+   ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=FPG4    NOEU=NOEU
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
+   % les elements axisymétriques ne devraient jamais etre utilisés pour CARA_XXXX
+   % Ce serait mieux d'inventer un autre "code" (-3 par exemple).
+   OPTION__   CARA_CISA               -2
+   OPTION__   CARA_GAUCHI             -2
+   OPTION__   CARA_TORSION            -2
+ENTETE__ ELEMENT__ THAXQU8          MAILLE__ QUAD8
+   ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4    NOEU=NOEU
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
+   OPTION__   CARA_CISA               -2
+   OPTION__   CARA_GAUCHI             -2
+   OPTION__   CARA_TORSION            -2
+ENTETE__ ELEMENT__ THAXQU9          MAILLE__ QUAD9
+   ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4    NOEU=NOEU
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
+   OPTION__   CARA_CISA               -2
+   OPTION__   CARA_GAUCHI             -2
+   OPTION__   CARA_TORSION            -2
+ENTETE__ ELEMENT__ THAXTR3          MAILLE__ TRIA3
+   ELREFE__  TR3     GAUSS__  RIGI=FPG1   MASS=FPG3  GANO=FPG3    NOEU=NOEU
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
+   OPTION__   CARA_CISA               -2
+   OPTION__   CARA_GAUCHI             -2
+   OPTION__   CARA_TORSION            -2
+ENTETE__ ELEMENT__ THAXTR6          MAILLE__ TRIA6
+   ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG6  GANO=FPG3    NOEU=NOEU
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
+   OPTION__   CARA_CISA               -2
+   OPTION__   CARA_GAUCHI             -2
+   OPTION__   CARA_TORSION            -2
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -161,7 +197,7 @@ OPTION__
     FLUX_ELNO_TEMP      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXNO  PFLUX_R
-   INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+   INIT_MAIL_VOIS      99     IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
     MASS_THER           77    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR

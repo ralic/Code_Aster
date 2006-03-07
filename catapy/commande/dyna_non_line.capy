@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -315,6 +315,16 @@ into=("DEPL","VITE","ACCE","SIEF_ELGA","VARI_ELGA","DEPL_ABSOLU","VITE_ABSOLU","
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            POINT           =SIMP(statut='f',typ='I' ,max='**'),
+         ),
+#-------------------------------------------------------------------
+         CRIT_FLAMB     =FACT(statut='f',min=1,max=1,
+           NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
+           CHAR_CRIT       =SIMP(statut='f',typ='R',min=2,max=2,defaut=(-10.0,10.),
+                            fr="Valeur des deux charges critiques délimitant la bande de recherche en HPP"),
+         ),
+         MODE_VIBR     =FACT(statut='f',min=1,max=1,
+           MATR_RIGI        =SIMP(statut='f',typ='TXM',defaut="ELASTIQUE",into=("ELASTIQUE","TANGENTE") ),
+           NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
          ),
 #-------------------------------------------------------------------
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+#& MODIF ENTETE  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,15 +229,18 @@ class macr_elem_stat  (ASSD):pass
 # liste :
 #--------------------------------
 class listr8_sdaster   (ASSD):
-  def Valeurs(self) :
-    """
-    Retourne la liste des valeurs : [val1, ..., valN]
-    """
-    if not self.par_lot():
-       vale='%-19s.VALE' % self.get_name()
-       return list(aster.getvectjev(vale))
-    else:
-       raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")
+   def Valeurs(self) :
+      """
+      Retourne la liste des valeurs : [val1, ..., valN]
+      """
+      if not self.par_lot():
+         vale='%-19s.VALE' % self.get_name()
+         t_vale = aster.getvectjev(vale)
+         if t_vale == None:
+            UTMESS('F', 'listr8.Valeurs', "Objet '%s' inexistant" % vale)
+         return list(t_vale)
+      else:
+         raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")
 
 
 # post-traitement :
@@ -439,7 +442,10 @@ class fonction_class(ASSD):
       """
       if not self.par_lot():
         TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-        prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
+        objev = '%-19s.PROL' % self.get_name()
+        prol = aster.getvectjev(objev)
+        if prol == None:
+           UTMESS('F', 'fonction.Parametres', "Objet '%s' inexistant" % objev)
         dico={
          'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
          'NOM_PARA'    : string.strip(prol[2][0:16]),
@@ -493,8 +499,11 @@ class fonction_sdaster(fonction_class):
       Retourne deux listes de valeurs : abscisses et ordonnees
       """
       if not self.par_lot():
-        vale=string.ljust(self.get_name(),19)+'.VALE'
-        lbl=list(aster.getvectjev(vale))
+        vale = '%-19s.VALE' % self.get_name()
+        lbl = aster.getvectjev(vale)
+        if lbl == None:
+           UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % vale)
+        lbl = list(lbl)
         dim=len(lbl)/2
         lx=lbl[0:dim]
         ly=lbl[dim:2*dim]
@@ -559,8 +568,11 @@ class fonction_c(fonction_class):
       Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
       """
       if not self.par_lot():
-        vale=string.ljust(self.get_name(),19)+'.VALE'
-        lbl=list(aster.getvectjev(vale))
+        vale = '%-19s.VALE' % self.get_name()
+        lbl = aster.getvectjev(vale)
+        if lbl == None:
+           UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % vale)
+        lbl = list(lbl)
         dim=len(lbl)/3
         lx=lbl[0:dim]
         lr=[]
@@ -633,10 +645,12 @@ class nappe_sdaster(fonction_class):
       """
       if self.par_lot():
          raise Accas.AsException("Erreur dans nappe.Valeurs en PAR_LOT='OUI'")
-      nsd=string.ljust(self.get_name(),19)
+      nsd = '%-19s' % self.get_name()
       dicv=aster.getcolljev(nsd+'.VALE')
       # les cles de dicv sont 1,...,N (indice du parametre)
       lpar=aster.getvectjev(nsd+'.PARA')
+      if lpar == None:
+         UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % (nsd+'.PARA'))
       lval=[]
       for k in range(len(dicv)):
          lbl=dicv[k+1]
@@ -653,7 +667,10 @@ class nappe_sdaster(fonction_class):
       if self.par_lot():
          raise Accas.AsException("Erreur dans nappe.Parametres en PAR_LOT='OUI'")
       TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-      prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
+      objev = '%-19s.PROL' % self.get_name()
+      prol=aster.getvectjev(objev)
+      if prol == None:
+         UTMESS('F', 'fonction.Parametres', "Objet '%s' inexistant" % objev)
       dico={
          'INTERPOL'      : [prol[1][0:3],prol[1][4:7]],
          'NOM_PARA'      : string.strip(prol[2][0:16]),
@@ -898,21 +915,42 @@ class matr_elem_temp_r(matr_elem):pass
 # table :
 #--------------------------------
 class table_sdaster(ASSD):
-  def __getitem__(self,key):
+   def __getitem__(self,key):
+      from Utilitai.Utmess import UTMESS
       if self.par_lot():
          raise Accas.AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
       requete = '%-24s' % key[0]
       tblp = '%-19s.TBLP' % self.get_name()
-      tabnom=list(aster.getvectjev(tblp))
+      tabnom = aster.getvectjev(tblp)
+      if tabnom == None:
+         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tblp)
       for i in range(len(tabnom)) :
          if tabnom[i]==requete: break
       resu=aster.getvectjev(tabnom[i+2])
+      if resu == None:
+         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tabnom[i+2])
       exist=aster.getvectjev(tabnom[i+3])
+      if exist == None:
+         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tabnom[i+3])
       if key[1]>len(resu) or exist[key[1]-1]==0:
          raise KeyError
       else:
          return resu[key[1]-1]
-  def EXTR_TABLE(self) :
+   def TITRE(self):
+      """Retourne le titre d'une table Aster
+      (Utile pour récupérer le titre et uniquement le titre d'une table dont
+      on souhaite manipuler la dérivée).
+      """
+      if self.par_lot():
+         raise Accas.AsException("Erreur dans table.TITRE en PAR_LOT='OUI'")
+      titj=aster.getvectjev('%-19s.TITR' % self.get_name())
+      if titj<>None:
+         titr='\n'.join(titj)
+      else:
+         titr=''
+      return titr
+      
+   def EXTR_TABLE(self) :
       """Produit un objet Table à partir du contenu d'une table Aster
       """
       def Nonefy(l1,l2) :
@@ -921,8 +959,14 @@ class table_sdaster(ASSD):
       if self.par_lot():
          raise Accas.AsException("Erreur dans table.EXTR_TABLE en PAR_LOT='OUI'")
       from Utilitai.Table import Table
-      tblp=string.ljust(self.get_name(),19)+'.TBLP'
-      tabnom=list(aster.getvectjev(tblp))
+      # titre
+      titr = self.TITRE()
+      # récupération des paramètres
+      v_tblp = aster.getvectjev('%-19s.TBLP' % self.get_name())
+      if v_tblp == None:
+         # retourne une table vide
+         return Table(titr=titr)
+      tabnom=list(v_tblp)
       nparam=len(tabnom)/4
       lparam=[tabnom[4*i:4*i+4] for i in range(nparam)]
       dval={}
@@ -942,12 +986,6 @@ class table_sdaster(ASSD):
         d={}
         for p in lpar : d[p]=dval[p][i]
         lisdic.append(d)
-      # titre
-      titj=aster.getvectjev(self.get_name().ljust(19)+'.TITR')
-      if titj<>None:
-         titr='\n'.join(titj)
-      else:
-         titr=''
       return Table(lisdic, lpar, ltyp, titr)
 
 class table_jeveux(table_sdaster):

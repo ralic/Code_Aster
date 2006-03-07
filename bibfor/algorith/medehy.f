@@ -1,7 +1,7 @@
       SUBROUTINE MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHHYDR,
      &                  CHSECH,CHSREF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/03/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,13 +58,13 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER IBID,IERD
+      INTEGER IBID,IERD,N1,N2
       INTEGER IRET,IRET2,NUMCH1,NUMCH2,JHYDR,JSECH
       CHARACTER*8 HYDR,SECH,K8BID,NOMO,NOMA,REPKH,REPKS
       CHARACTER*8 LPAIN(1),LPAOUT(1)
       CHARACTER*1 BASE
 
-      CHARACTER*16 TYSD
+      CHARACTER*16 TYSD,TABTYP(4)
       CHARACTER*19 CH19,HYMOD,HYDTEM
       CHARACTER*24 NOM24,LIGRMO,CHMATE
       CHARACTER*24 LCHIN(1),LCHOUT(1),CHGEOM,OPTION
@@ -251,18 +251,14 @@ C --------- RECUPERATION DU CHAMP SECHAGE DANS SECH
      &                  SECH//' NE CONTIENT AUCUN CHAMP SECHAGE')
           END IF
 
-         ELSE IF ((TYSD(1:14).EQ.'CHAM_NO_TEMP_R') .OR.
-     +            (TYSD(1:12).EQ.'CARTE_TEMP_R') .OR.
-     +            (TYSD(1:16).EQ.'CHAM_ELEM_TEMP_R')) THEN
+         ELSE IF ((TYSD(1:5).EQ.'CHAM_') .OR.
+     +            (TYSD(1:6).EQ.'CARTE_')) THEN
 C           ----------------------------------------------
-            CALL UTMESS('I','MEDEHY','LE CHAMP DE SECHAGE UTILISE'//
-     +                  ' EST INDEPENDANT DU TEMPS.')
-            CH19 = SECH(1:8)
-            CALL COPISD('CHAMP_GD','V',CH19,CHSECH(1:19))
-            CALL JEDETR(CHSECH(1:19)//'.TITR')
-
-         ELSE IF (TYSD(1:12).EQ.'CARTE_TEMP_F') THEN
-C           ----------------------------------------------
+            TABTYP(1)='CARTE#TEMP_F'
+            TABTYP(2)='CARTE#TEMP_R'
+            TABTYP(3)='NOEU#TEMP_R'
+            TABTYP(4)='ELXX#TEMP_R'
+            CALL CHPVE2('F',SECH,4,TABTYP,IRET)
             CH19 = SECH(1:8)
             CALL COPISD('CHAMP_GD','V',CH19,CHSECH(1:19))
             CALL JEDETR(CHSECH(1:19)//'.TITR')

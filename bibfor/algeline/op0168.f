@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -341,11 +341,11 @@ C
          CALL JEVEUO ( KVALK, 'L', LVALK )
          IF ( TYPMOD .EQ. 'R' ) THEN
             CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
-     +                    C16B, NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
+     +              C16B, NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSEIF ( TYPMOD .EQ. 'C' ) THEN
             CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, R8B,
-     +                 ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
+     +          ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSE
             CALL UTMESS('F','OP0168','"'//TYPMOD//

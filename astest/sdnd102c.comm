@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,6 +138,7 @@ TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
+               DIFF_CENT=_F(),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),

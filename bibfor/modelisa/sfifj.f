@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 06/03/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,6 +94,7 @@ C
          FMIN = ZR(IFREQ) 
          FMAX = ZR(IFREQ+NBM-1) 
       ELSE
+         CALL GETVID(' ','CHAM_NO',0,1,1,CHAMNO,NCHAM)
          CALL CHPVER('F',CHAMNO,'NOEU','DEPL_R',IER)
          NBM = 1
       ENDIF

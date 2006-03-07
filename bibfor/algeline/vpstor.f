@@ -1,15 +1,16 @@
       SUBROUTINE VPSTOR (INEG, TYPE, MODES, NBMODE, NEQ, VECPR8, VECPC8,
-     +                   MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,
-     +                   RESUFI, RESUFR, RESUFK, IPREC )
+     +                   MXRESF, NBPARI, NBPARR, NBPARK, NOPARA, MOD45,
+     +                   RESUFI, RESUFR, RESUFK, IPREC  )
       IMPLICIT   NONE
       INTEGER           INEG, NBMODE, NEQ, MXRESF, NBPARI, NBPARR,NBPARK
       INTEGER           IPREC, RESUFI(MXRESF,*)
+      CHARACTER*4       MOD45
       CHARACTER*(*)     TYPE, MODES, RESUFK(MXRESF,*), NOPARA(*)
       REAL*8            VECPR8(NEQ,*), RESUFR(MXRESF,*)
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/02/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +69,7 @@ C
 C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
       IF ( TYPCON .EQ. 'EVOL_NOLI' ) THEN
         TYPCON = 'MODE_FLAMB'
+        IF ( MOD45 . EQ. 'VIBR' ) TYPCON = 'MODE_MECA'
       ENDIF
       
       IF ( TYPCON .EQ. 'MODE_ACOU' ) THEN

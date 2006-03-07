@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 06/03/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 PREC,XFREQ,R8DEPI,VARPEP(NBPAEP),ALPHA,VALER(3),INST,R8B
       CHARACTER*1 BASE
       CHARACTER*8 K8B,NOMA,RESUL,CRIT,NOMLIG,NOMMAI,NOMMAS,
-     &            TYPARR(NBPARR),TYPARD(NBPARD),VALEK(2)
+     &            TYPARR(NBPARR),TYPARD(NBPARD),VALEK(2),NOMGD
       CHARACTER*16 TYPRES,OPTION,OPTIO2,NOPARR(NBPARR),NOPARD(NBPARD),
      &             OPTMAS,TABTYP(3)
       CHARACTER*19 CHELEM,KNUM,KINS,DEPLA,LIGREL
@@ -234,19 +234,29 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
         CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,'FREQ',IBID,
      &              XFREQ,C16B,K8B)
 
+        CALL DISMOI('F','NOM_GD',DEPLA,'CHAMP',IBID,NOMGD,IE)
         CALL DISMOI('F','TYPE_SUPERVIS',DEPLA,'CHAMP',IBID,TYPCHA,IE)
-        IF (TYPCHA(1:12).EQ.'CHAM_NO_DEPL') THEN
-          OPTIO2 = 'ECIN_ELEM_DEPL'
-          CHAMGD = DEPLA
-          CALL MECHTE(MODELE,NCHAR,LCHAR,MATE,EXITIM,INST,CHTREF,CHTEMP)
-        ELSE IF (TYPCHA(1:12).EQ.'CHAM_NO_TEMP') THEN
-          OPTIO2 = 'ECIN_ELEM_TEMP'
-          CHAMGD = ' '
-          CHTREF = ' '
-          CHTEMP = DEPLA
-        ELSE IF (TYPCHA(1:14).EQ.'CHAM_ELEM_ENER') THEN
-          CHELEM = DEPLA
-          GO TO 30
+        IF (TYPCHA(1:7).EQ.'CHAM_NO')THEN
+           IF (NOMGD(1:4).EQ.'DEPL') THEN
+            OPTIO2 = 'ECIN_ELEM_DEPL'
+            CHAMGD = DEPLA
+            CALL MECHTE(MODELE,NCHAR,LCHAR,MATE,EXITIM,INST,
+     &                  CHTREF,CHTEMP)
+           ELSE IF (NOMGD(1:4).EQ.'TEMP') THEN
+            OPTIO2 = 'ECIN_ELEM_TEMP'
+            CHAMGD = ' '
+            CHTREF = ' '
+            CHTEMP = DEPLA
+          ELSE
+            CALL UTMESS('F','PEECIN','TYPE DE CHAMP INCONNU.')
+          END IF
+        ELSEIF(TYPCHA(1:9).EQ.'CHAM_ELEM')THEN
+          IF (NOMGD(1:4).EQ.'ENER') THEN
+            CHELEM = DEPLA
+            GO TO 30
+          ELSE
+            CALL UTMESS('F','PEECIN','TYPE DE CHAMP INCONNU.')
+          END IF
         ELSE
           CALL UTMESS('F','PEECIN','TYPE DE CHAMP INCONNU.')
         END IF

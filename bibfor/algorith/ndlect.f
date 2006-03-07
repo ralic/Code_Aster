@@ -1,11 +1,11 @@
       SUBROUTINE NDLECT( CMD   , MODELE, MATE,   LISCHA, STADYN, LAMORT,
-     &                   ALPHA,  DELTA,  V0VIT,  V0ACC,  A0VIT, 
+     &                   ALPHA,  DELTA,  PHI,    V0VIT,  V0ACC,  A0VIT, 
      &                   A0ACC,  NBMODS, NMODAM, VALMOD, BASMOD,
      &                   NREAVI, LIMPED, LONDE,  CHONDP, NONDP, CHGRFL,
      &                   THETA,  IALGO , MASGEN, BASMOI, LMODAL,
      &                   FONDEP, FONVIT, FONACC, MULTAP, PSIDEL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C                     PLUS LES PARAMETRES de NEWMARK VISIBLEMENT (?)
 C      OUT LAMORT : BOOLEEN D'EXISTENCE D'AMORTISSEMENT
 C      OUT ALPHA  : PARAMETRE ALPHA DE NEWMARK
 C      OUT DELTA  : PARAMETRE DELTA DE NEWMARK
+C      OUT PHI    : PARAMETRE PHI DE TCHAMWA
 C      OUT V0VIT  : PARAMETRE METHODE
 C      OUT A0VIT  : PARAMETRE METHODE
 C      OUT A0ACC  : PARAMETRE METHODE
@@ -73,7 +74,8 @@ C                     (1) : NEWMARK
 C                     (2) : HHT
 C                     (3) : THETA-METHODE
 C                     (4) : ALPHA-METHODE
-C                     (6) : EXPLICITE
+C                     (6) : EXPLICITE : DIFFERENCES CENTREES
+C                     (7) : EXPLICITE : TCHAMWA-WIELGOSZ
 C IN/JXVAR MASGEN : DONNEES PROJECTION MODALE (?)
 C IN/JXVAR BASMOI : DONNEES PROJECTION MODALE (?)
 C      OUT LMODAL : BOOLEEN DE PROJECTION MODALE EN DYNAMIQUE EXPLICITE 
@@ -98,11 +100,11 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER       IRET, IRET2, NBOCC, N1, IBID, I, NCHAR,
-     +              JCHAR, JINF, NBOCCT, N2
+     &              JCHAR, JINF, NBOCCT, N2, NBOCCE,NBOCCW
       CHARACTER*8   K8B, LICMP(3), NOMCHA, REP
       CHARACTER*24  CHARGE, INFOCH
       REAL*8        UNDEMI,UN,DEUX,QUATRE, ZERO
-      REAL*8        ALPHA0,RCMP(3)
+      REAL*8        ALPHA0,RCMP(3),PHI
       COMPLEX*16    CPLX
 C
 C ----------------------------------------------------------------------
@@ -122,31 +124,54 @@ C -- EXISTENCE D'AMORTISSEMENT
        CALL DISMOI('F','EXI_AMOR_NOR',MATE,'CHAM_MATER',IBID,REP,IBID)
        IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
        CALL DISMOI('F','EXI_AMOR_TAN',MATE,'CHAM_MATER',IBID,REP,IBID)
-       IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.         
-C -- PARAMETRES METHODE DE NEWMARK
-         CALL GETFAC('NEWMARK',NBOCC)
-         IF (NBOCC.EQ.1) THEN
+       IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.            
+C -- PARAMETRES METHODE DE NEWMARK 
+       
+         IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
+           CALL MXMOAM(MASGEN,BASMOI,LMODAL)
+           
+           CALL GETFAC('DIFF_CENT',NBOCCE)
+           IF (NBOCCE .EQ. 1 ) THEN
+             IALGO = 6
+C --- ON INITIALISE DES PARAMETRES UTILISES DANS LE CONTACT CONTINU
+             ALPHA = 0.25D0
+             DELTA = 0.5D0
+             PHI = 1.D0
+           ELSE
+             CALL GETFAC('TCHAMWA',NBOCCW)
+             IF (NBOCCW.EQ.1) THEN
+               IALGO = 7
+               ALPHA = 0.25D0
+               DELTA = 0.5D0
+               CALL GETVR8('TCHAMWA','PHI',1,1,1,PHI,N1)
+             ENDIF
+           ENDIF
+         ELSE
+           CALL GETFAC('NEWMARK',NBOCC)
+           IF (NBOCC.EQ.1) THEN
              IALGO = 1
              CALL GETVR8('NEWMARK','ALPHA',1,1,1,ALPHA,N1)
              CALL GETVR8('NEWMARK','DELTA',1,1,1,DELTA,N1)
-         ELSE
-           CALL GETFAC('TETA_METHODE',NBOCCT)                  
-           IF(NBOCCT .EQ. 1 ) THEN
-             IALGO = 3
-             CALL GETVR8('TETA_METHODE','TETA',1,1,1,THETA,N2)
            ELSE
-             CALL GETFAC('HHT',NBOCCT)
-             IF  (NBOCCT .EQ. 1 ) THEN
-               CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
-               CALL GETVTX('HHT'    ,'MODI_EQUI',1,1,1,REP,N1)
-               IF ( REP(1:3) .EQ. 'NON' ) THEN 
-                 IALGO = 2
-               ELSE
-                 IALGO = 4
+             CALL GETFAC('TETA_METHODE',NBOCCT)                  
+             IF(NBOCCT .EQ. 1 ) THEN
+               IALGO = 3
+               CALL GETVR8('TETA_METHODE','TETA',1,1,1,THETA,N2)
+             ELSE
+               CALL GETFAC('HHT',NBOCCT)
+               IF  (NBOCCT .EQ. 1 ) THEN
+                 CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
+                 CALL GETVTX('HHT'    ,'MODI_EQUI',1,1,1,REP,N1)
+                 IF ( REP(1:3) .EQ. 'NON' ) THEN 
+                   IALGO = 2
+                 ELSE
+                   IALGO = 4
+                 ENDIF
                ENDIF
              ENDIF
            ENDIF
-         ENDIF 
+         ENDIF
+
          IF ((IALGO.EQ.2) . OR. (IALGO.EQ.4)) THEN
              ALPHA0 = ALPHA
              ALPHA = (UN-ALPHA0)* (UN-ALPHA0)/QUATRE
@@ -154,7 +179,7 @@ C -- PARAMETRES METHODE DE NEWMARK
          END IF
          
          IF ((IALGO.EQ.1) .OR. (IALGO.EQ.2) .OR. 
-     &        (IALGO.EQ.4)   ) THEN         
+     &        (IALGO.EQ.4).OR. (IALGO.EQ.6) .OR. (IALGO.EQ.7) ) THEN
            V0VIT = - (DELTA-ALPHA)/ALPHA
            V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
            A0VIT = -UN/ALPHA
@@ -219,12 +244,6 @@ C --- TEST DE LA PRESENCE DE CHARGES DE TYPE 'FORCE_FLUIDE'
                CALL GFLECT ( NOMCHA, CHGRFL )
             ENDIF
   10     CONTINUE
-      ENDIF
-
-      IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
-        CALL MXMOAM(MASGEN,BASMOI,LMODAL)
-C --- SI DYNA_TRAN_EXPLI IALGO=6
-         IALGO = 6
       ENDIF
 
  9999 CONTINUE

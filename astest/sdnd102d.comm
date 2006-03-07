@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,6 +118,7 @@ TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
+               DIFF_CENT=_F(),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
@@ -163,6 +164,70 @@ TEST_FONCTION(VALEUR=(
          VERSION  = '7.1.10' ),
     _F(  FONCTION = NOA_DXDR,  VALE_PARA = 0.50,
                                VALE_REFE = -3.75708E-04 ,
+         REFERENCE= 'NON_REGRESSION',
+         VERSION  = '7.1.10' ),
+                      ))
+
+
+
+# CALCUL DIRECT AVEC DISSIPATION NUMERIQUE
+# ----------------------------------------
+TRAN_DYT=DYNA_TRAN_EXPLI(  MODELE=MODELE,
+                CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
+               EXCIT=(_F(  CHARGE = CON_LIM),            
+                      _F(  CHARGE = CHAM_NO,
+                            FONC_MULT= ACCELER1 )),
+               COMP_INCR=(
+               _F(  RELATION = 'ELAS', 
+                           GROUP_MA = 'RESSORT1'),
+               _F(  RELATION = 'DIS_CHOC',
+                           GROUP_MA = 'MASSES1')),
+               TCHAMWA=_F(PHI=1.05),
+               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
+               INCREMENT=_F(  LIST_INST = L_INST),
+               ARCHIVAGE=_F(  LIST_INST = L_INST2),
+                      )
+
+                     
+NOADXDRT = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
+                     NOM_CHAM='DEPL',
+                     LIST_INST=LISTIMP,
+                     PROL_DROITE=  'LINEAIRE',
+                     PROL_GAUCHE= 'LINEAIRE',
+                     RESULTAT=  TRAN_DYT  );
+NOADXVRT = RECU_FONCTION( NOEUD= 'NO2' , NOM_CMP='DX' ,
+                     NOM_CHAM='VITE',
+                     LIST_INST=LISTIMP,
+                     PROL_DROITE=  'LINEAIRE',
+                     PROL_GAUCHE= 'LINEAIRE',
+                     RESULTAT= TRAN_DYT   );
+NOADXART = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
+                     NOM_CHAM='ACCE',
+                     LIST_INST=LISTIMP,
+                     PROL_DROITE=  'LINEAIRE',
+                     PROL_GAUCHE= 'LINEAIRE',
+                     RESULTAT=  TRAN_DYT  );
+                     
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.10,
+                               VALE_REFE = -1.56911E-04,
+         REFERENCE= 'NON_REGRESSION',
+         VERSION  = '7.1.10' ),
+    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.20,
+                               VALE_REFE = -4.94505E-04,
+         REFERENCE= 'NON_REGRESSION',
+         VERSION  = '7.1.10' ),
+    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.30,
+                               VALE_REFE = 3.02638E-04,
+         REFERENCE= 'NON_REGRESSION',
+         VERSION  = '7.1.10' ),
+    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.40,
+                               VALE_REFE = -3.80509E-04,
+         REFERENCE= 'NON_REGRESSION',
+         VERSION  = '7.1.10' ),
+    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.50,
+                               VALE_REFE = -3.92295E-04,
          REFERENCE= 'NON_REGRESSION',
          VERSION  = '7.1.10' ),
                       ))

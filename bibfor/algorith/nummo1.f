@@ -1,12 +1,13 @@
       SUBROUTINE  NUMMO1 ( NUGENE, MODMEC, NBMODE, TYPROF )
       IMPLICIT    NONE
       INTEGER              NBMODE
-      CHARACTER*8          MODMEC, TYPROF
+      CHARACTER*8          MODMEC
+      CHARACTER*(*)        TYPROF
       CHARACTER*14         NUGENE
       CHARACTER*19         PRGENE, STOMOR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_table_ops Macro  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,7 @@
 from types import *
 EnumTypes = (ListType, TupleType)
 
-def calc_table_ops(self, TABLE, FILTRE, EXTR, RENOMME, TRI, COMB, OPER,
-                   INFO, **args):
+def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    """
    Macro CALC_TABLE permettant de faire des opérations sur une table
    """
@@ -50,88 +49,82 @@ def calc_table_ops(self, TABLE, FILTRE, EXTR, RENOMME, TRI, COMB, OPER,
    tab = TABLE.EXTR_TABLE()
 
    #----------------------------------------------
-   # 1. Traitement du FILTRE
-   Filtre = []
-   # format pour l'impression des filtres
-   form_filtre = '\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
-   if FILTRE != None:
-      for Fi in FILTRE:
-         dF = Fi.cree_dict_valeurs(Fi.mc_liste)
-         for mc in dF.keys():
-            if dF[mc] == None:
-               del dF[mc]
-         Filtre.append(dF)
+   # Boucle sur les actions à effectuer
+   for fOP in ACTION:
+      occ = fOP.cree_dict_valeurs(fOP.mc_liste)
+      for mc, val in occ.items():
+         if val == None:
+            del occ[mc]
+   
+      #----------------------------------------------
+      # 1. Traitement du FILTRE
+      # format pour l'impression des filtres
+      form_filtre = '\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
+      if occ['OPERATION'] == 'FILTRE':
+         col = getattr(tab, occ['NOM_PARA'])
+         # peu importe le type
+         opts = [occ[k] for k in ('VALE','VALE_I','VALE_C','VALE_K') if occ.has_key(k)]
+         kargs = {}
+         for k in ('CRITERE','PRECISION'):
+            if occ.has_key(k):
+               kargs[k] = occ[k]
+         tab = tab & ( getattr(col, occ['CRIT_COMP'])(*opts,**kargs) )
+         # trace l'operation dans le titre
+         #if FORMAT in ('TABLEAU','ASTER'):
+         tab.titr += form_filtre % (occ['NOM_PARA'], occ['CRIT_COMP'], \
+            ' '.join([str(v) for v in opts]))
 
-   for Fi in Filtre:
-      col = getattr(tab, Fi['NOM_PARA'])
-      # peu importe le type
-      opts = [Fi[k] for k in ('VALE','VALE_I','VALE_C','VALE_K') if Fi.has_key(k)]
-      kargs = {}
-      for k in ('CRITERE','PRECISION'):
-         if Fi.has_key(k):
-            kargs[k] = Fi[k]
-      tab = tab & ( getattr(col, Fi['CRIT_COMP'])(*opts,**kargs) )
-      # trace l'operation dans le titre
-      #if FORMAT in ('TABLEAU','ASTER'):
-      tab.titr += form_filtre % (Fi['NOM_PARA'], Fi['CRIT_COMP'], \
-         ' '.join([str(v) for v in opts]))
-
-   #----------------------------------------------
-   # 2. Traitement de EXTR
-   if EXTR != None:
-      lpar = EXTR['NOM_PARA']
-      if not type(lpar) in EnumTypes:
-         lpar = [lpar]
-      for p in lpar:
-         if not p in tab.para:
-            UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
-      tab = tab[EXTR['NOM_PARA']]
-
-   #----------------------------------------------
-   # 3. Traitement de RENOMME
-   if RENOMME != None:
-      for MCFi in RENOMME:
-         try:
-            tab.Renomme(*MCFi['NOM_PARA'])
-         except KeyError, msg:
-            UTMESS('F', macro, msg)
-
-   #----------------------------------------------
-   # 4. Traitement du TRI
-   if TRI != None:
-      tab.sort(CLES=TRI['NOM_PARA'], ORDRE=TRI['ORDRE'])
-
-   #----------------------------------------------
-   # 5. Traitement de COMB
-   if COMB != None:
-      tab2 = COMB['TABLE'].EXTR_TABLE()
-      opts = [tab, tab2]
-      if COMB['NOM_PARA']<>None:
-         lpar = COMB['NOM_PARA']
+      #----------------------------------------------
+      # 2. Traitement de EXTR
+      if occ['OPERATION'] == 'EXTR':
+         lpar = occ['NOM_PARA']
          if not type(lpar) in EnumTypes:
             lpar = [lpar]
          for p in lpar:
             if not p in tab.para:
                UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
-            if not p in tab2.para:
-               UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, COMB['TABLE'].nom))
-         opts.append(lpar)
-      tab = merge(*opts)
+         tab = tab[occ['NOM_PARA']]
 
-   #----------------------------------------------
-   # 6. Traitement de OPER
-   if OPER != None:
-      for MCFi in OPER:
-         if MCFi['NOM_PARA'] in tab.para :
-            UTMESS('F', macro, 'Le paramètre %s existe déjà dans la table %s' % (MCFi['NOM_PARA'], TABLE.nom))
-         func = MCFi['FORMULE']
+      #----------------------------------------------
+      # 3. Traitement de RENOMME
+      if occ['OPERATION'] == 'RENOMME':
+         try:
+            tab.Renomme(*occ['NOM_PARA'])
+         except KeyError, msg:
+            UTMESS('F', macro, msg)
+
+      #----------------------------------------------
+      # 4. Traitement du TRI
+      if occ['OPERATION'] == 'TRI':
+         tab.sort(CLES=occ['NOM_PARA'], ORDRE=occ['ORDRE'])
+   
+      #----------------------------------------------
+      # 5. Traitement de COMB
+      if occ['OPERATION'] == 'COMB':
+         tab2 = occ['TABLE'].EXTR_TABLE()
+         opts = [tab, tab2]
+         if occ['NOM_PARA']<>None:
+            lpar = occ['NOM_PARA']
+            if not type(lpar) in EnumTypes:
+               lpar = [lpar]
+            for p in lpar:
+               if not p in tab.para:
+                  UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
+               if not p in tab2.para:
+                  UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, occ['TABLE'].nom))
+            opts.append(lpar)
+         tab = merge(*opts)
+   
+      #----------------------------------------------
+      # 6. Traitement de OPER
+      if occ['OPERATION'] == 'OPER':
+         if occ['NOM_PARA'] in tab.para :
+            UTMESS('F', macro, 'Le paramètre %s existe déjà dans la table %s' % (occ['NOM_PARA'], TABLE.nom))
+         func = occ['FORMULE']
          tabpar = []
          for para in func.nompar :
             if para not in tab.para :
                UTMESS('F', macro, 'Le paramètre de la formule %s est inexistant dans la table %s' % (para, TABLE.nom))
-#             i = tab.para.index(para)
-#             if tab.type[i] != 'R' :
-#                UTMESS('F', macro, 'Le paramètre %s doit etre réel dans la table %s' % (para, TABLE.nom))
             vals = getattr(tab,para).values()
             tabpar.append(vals)
          tabpar = transpose.transpose(tabpar)
@@ -144,8 +137,8 @@ def calc_table_ops(self, TABLE, FILTRE, EXTR, RENOMME, TRI, COMB, OPER,
                vectval.append(func(*lpar))
          # ajout de la colonne dans la table
          if INFO == 2:
-            aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (MCFi['NOM_PARA']+repr(vectval))+'\n')
-         tab[MCFi['NOM_PARA']] = vectval
+            aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (occ['NOM_PARA']+repr(vectval))+'\n')
+         tab[occ['NOM_PARA']] = vectval
 
    #----------------------------------------------
    # 99. Création de la table_sdaster résultat

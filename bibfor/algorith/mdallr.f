@@ -2,7 +2,7 @@
      &                   FREQ,ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     ------------------------------------------------------------------
       MATGEN = '&&MDALMA'
 
 C CREATION DE LA NUMEROTATION GENERALISE SUPPORT
-      CALL  NUMMO1(NUGENE,BASEMO,NBMODE,'LIGN_CIEL')
+      CALL  NUMMO1(NUGENE,BASEMO,NBMODE,'PLEIN')
 
 C CREATION DE LA MATRICE GENERALISE SUPPORT
       CALL WKVECT(MATGEN//'           .REFA','V V K24',10,JREFA)
