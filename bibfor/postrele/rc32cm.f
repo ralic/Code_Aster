@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      N1, IOCC, NDIM, NBCHAR, NUME, JTYPE, JCHAR
+      INTEGER      N1, N1T, IOCC, NDIM, NBCHAR, NUME, JTYPE, JCHAR
+      REAL*8       R8B
       CHARACTER*8  TYPE, KNUMEC
       CHARACTER*16 MOTCLF
 C DEB ------------------------------------------------------------------
@@ -72,17 +73,39 @@ C
          ZK8(JTYPE+NUME-1) = TYPE
 C
          CALL JECROC (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC))
-       CALL JEECRA (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC),'LONMAX',6,' ')
-       CALL JEECRA (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC),'LONUTI',6,' ')
-         CALL JEVEUO (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC), 'E', JCHAR )
+         CALL JEECRA (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC),
+     +                                              'LONMAX',12,' ')
+         CALL JEECRA (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC),
+     +                                              'LONUTI',12,' ')
+         CALL JEVEUO (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC),'E',JCHAR)
 C
-         CALL GETVR8 ( MOTCLF, 'FX', IOCC,1,1, ZR(JCHAR-1+1), N1 )
-         CALL GETVR8 ( MOTCLF, 'FY', IOCC,1,1, ZR(JCHAR-1+2), N1 )
-         CALL GETVR8 ( MOTCLF, 'FZ', IOCC,1,1, ZR(JCHAR-1+3), N1 )
+C ------ UN SEUL TENSEUR OU 2 ?
 C
-         CALL GETVR8 ( MOTCLF, 'MX', IOCC,1,1, ZR(JCHAR-1+4), N1 )
-         CALL GETVR8 ( MOTCLF, 'MY', IOCC,1,1, ZR(JCHAR-1+5), N1 )
-         CALL GETVR8 ( MOTCLF, 'MZ', IOCC,1,1, ZR(JCHAR-1+6), N1 )
+         CALL GETVR8 ( MOTCLF, 'MX', IOCC,1,0, R8B, N1T )
+C
+         IF ( N1T .NE. 0 ) THEN
+            CALL GETVR8 ( MOTCLF, 'FX', IOCC,1,1, ZR(JCHAR-1+1), N1 )
+            CALL GETVR8 ( MOTCLF, 'FY', IOCC,1,1, ZR(JCHAR-1+2), N1 )
+            CALL GETVR8 ( MOTCLF, 'FZ', IOCC,1,1, ZR(JCHAR-1+3), N1 )
+            CALL GETVR8 ( MOTCLF, 'MX', IOCC,1,1, ZR(JCHAR-1+4), N1 )
+            CALL GETVR8 ( MOTCLF, 'MY', IOCC,1,1, ZR(JCHAR-1+5), N1 )
+            CALL GETVR8 ( MOTCLF, 'MZ', IOCC,1,1, ZR(JCHAR-1+6), N1 )
+C
+         ELSE
+            CALL GETVR8 ( MOTCLF, 'FX_TUBU', IOCC,1,1,ZR(JCHAR-1+1),N1)
+            CALL GETVR8 ( MOTCLF, 'FY_TUBU', IOCC,1,1,ZR(JCHAR-1+2),N1)
+            CALL GETVR8 ( MOTCLF, 'FZ_TUBU', IOCC,1,1,ZR(JCHAR-1+3),N1)
+            CALL GETVR8 ( MOTCLF, 'MX_TUBU', IOCC,1,1,ZR(JCHAR-1+4),N1)
+            CALL GETVR8 ( MOTCLF, 'MY_TUBU', IOCC,1,1,ZR(JCHAR-1+5),N1)
+            CALL GETVR8 ( MOTCLF, 'MZ_TUBU', IOCC,1,1,ZR(JCHAR-1+6),N1)
+C
+            CALL GETVR8 ( MOTCLF, 'FX_CORP', IOCC,1,1,ZR(JCHAR-1+7),N1)
+            CALL GETVR8 ( MOTCLF, 'FY_CORP', IOCC,1,1,ZR(JCHAR-1+8),N1)
+            CALL GETVR8 ( MOTCLF, 'FZ_CORP', IOCC,1,1,ZR(JCHAR-1+9),N1)
+            CALL GETVR8 ( MOTCLF, 'MX_CORP',IOCC,1,1,ZR(JCHAR-1+10),N1)
+            CALL GETVR8 ( MOTCLF, 'MY_CORP',IOCC,1,1,ZR(JCHAR-1+11),N1)
+            CALL GETVR8 ( MOTCLF, 'MZ_CORP',IOCC,1,1,ZR(JCHAR-1+12),N1)
+         ENDIF
 C
  20   CONTINUE
 C

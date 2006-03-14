@@ -1,12 +1,12 @@
         SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, MOD, IMAT, NMAT, 
      3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
-     1                     PGL, NR, NVI, TEMPF, TIMED, TIMEF, YD,
-     &                     YF, DEPS, EPSD, DY, R )
+     1                     PGL,TOUTMS,HSR, NR, NVI,VIND, 
+     &            TEMPF, TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R )
         IMPLICIT   NONE
 C TOLE CRP_21        
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,13 @@ C       OUT R      :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
 C
         INTEGER         IMAT, NMAT, NR, NVI, KPG, KSP
-        REAL*8          DEPS(6)  , EPSD(6)
+        REAL*8          DEPS(6)  , EPSD(6), VIND(*)
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPF,   TIMED, TIMEF
         CHARACTER*8     MOD
         CHARACTER*16    LOI
+        REAL*8 TOUTMS(5,12,6), HSR(5,12,12)
         CHARACTER*(*)   FAMI
         
         INTEGER         NBCOMM(NMAT,3)
@@ -83,8 +84,8 @@ C
      
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMRE ( MOD, NMAT, MATERD, MATERF,TEMPF,
-     3                COMP,NBCOMM, CPMONO, PGL, NR, NVI, TIMED, TIMEF,
-     1                 YD,   YF,   DEPS,   DY,     R )
+     3          COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,NR, NVI,VIND,
+     1    TIMED, TIMEF,  YD,   YF,   DEPS,   DY,     R )
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRRES ( FAMI, KPG, KSP, MOD,   NMAT, MATERD, MATERF,
      1                 YD,  YF,  DEPS,  DY,  R )

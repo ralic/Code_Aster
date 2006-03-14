@@ -1,12 +1,12 @@
         SUBROUTINE LCPLAS ( FAMI,KPG,KSP,LOI,TOLER, ITMAX, MOD,IMAT,
      1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
-     3                      SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,ICOMP,
-     4                      IRTETI, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
+     3                 SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     4                  ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C
         
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
+        REAL*8 TOUTMS(5,12,6),HSR(5,12,12)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
@@ -96,7 +97,7 @@ C
          CALL LCPLNL ( FAMI, KPG, KSP, LOI,  TOLER, ITMAX, MOD,
      1                 IMAT,NMAT, MATERD,MATERF,MATCST,NR, NVI,
      2                 TEMPD,TEMPF,TIMED,TIMEF,DEPS,EPSD,SIGD,
-     3                 VIND,COMP,NBCOMM, CPMONO,PGL,
+     3                 VIND,COMP,NBCOMM, CPMONO,PGL,TOUTMS,HSR,
      3                 SIGF, VINF, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 CC

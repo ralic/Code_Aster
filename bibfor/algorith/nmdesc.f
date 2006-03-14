@@ -8,7 +8,7 @@
      &                  AMORT,  COEDEP, COEVIT, COEACC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,13 +75,32 @@ C OUT      LICCVG  I   CODES RETOURS
 C                      (4) - MATRICE SINGULIERE
 C
 C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
+
 
       REAL*8       CODONN(4), COPILO(3), DIINST
       CHARACTER*16 K16BID
       CHARACTER*19 MATRIX(2), CNDONN(4), CNPILO(3)
       CHARACTER*24 CNFEDO, CNFEPI, CNFSDO, CNFSPI, CNDIDO, CNDIPI
-      CHARACTER*24 CNCINE, K24BID
-      INTEGER NEQ ,JCIN0
+      CHARACTER*24 CNCINE, K24BID, K24CIN
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -123,21 +142,22 @@ C -- PREPARATION DU SECOND MEMBRE
       COPILO(2) =  1
       COPILO(3) =  1
 
-
 C -- CALCUL DE LA DIRECTION DE DESCENTE
 
 C     POUR LE CALCUL DE DDEPLA, IL FAUT METTRE CNCINE A ZERO :
-      CALL JEDUPO(CNCINE(1:19)//'.VALE','V','&&NMDESC.CNCINE', .TRUE.)
-      CALL JELIRA(CNCINE(1:19)//'.VALE','LONMAX',NEQ,K16BID )
-      CALL JERAZO(CNCINE(1:19)//'.VALE',NEQ ,1 )
+C     ON LE FAIT PROPREMENT VIA DES ROUTINES DEDIEES CHAM_NO
+      K24CIN='&&NMDESC.CNCINE'
+      CALL COPISD('CHAMP_GD','V',CNCINE,K24CIN)
+      CALL VTZERO(CNCINE)
+
       CALL NMRESO(PILOTE, 4     , CODONN, CNDONN, 3     ,
      &            COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
      &            DDEPLA)
 
 C     -- ON RETABLIT LES VALEURS DE CNCINE :
-      CALL JEDETR(CNCINE(1:19)//'.VALE')
-      CALL JEDUPO('&&NMDESC.CNCINE','V',CNCINE(1:19)//'.VALE', .TRUE.)
-      CALL JEDETR('&&NMDESC.CNCINE')
+      CALL DETRSD('CHAMP_GD',CNCINE)
+      CALL COPISD('CHAMP_GD','V',K24CIN,CNCINE)
+      CALL DETRSD('CHAMP_GD',K24CIN)
 
 9999  CONTINUE
       CALL JEDEMA()

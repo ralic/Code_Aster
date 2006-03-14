@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER   ( NBPARI=8 , NBPARR=16 , NBPARK=2, NBPARA=26 )
+      PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=1, NBPARA=17 )
       INTEGER       LPAR(3)
       REAL*8        R8B, PREC, ZERO, MASTOT
       CHARACTER*1   K1B, TYPMOD
@@ -59,13 +59,8 @@ C     ------------------------------------------------------------------
       DATA  KVALK / '&&OP0168.GRAN_MODAL_K_' /
       DATA NOMPAR / 'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' ,
      +              'MASS_EFFE_UN_DZ' /
-      DATA  NOPARA /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            ,
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+      DATA  NOPARA /        'NUME_MODE'       , 'NORME'           ,
+     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,

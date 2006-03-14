@@ -1,8 +1,8 @@
-      SUBROUTINE VTCRE1(CHAMP,NUMEDD,CLASSE,TYPE,IFM,NIV,METHOD,SDFETI,
+      SUBROUTINE VTCRE1(CHAMP,NUMEDD,CLASSE,TYPE,METHOD,SDFETI,
      &                  NUMSD,NEQ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,8 +30,7 @@ C                        ETRE CREE
 C     IN  TYPCE  : K1  : TYPE DES VALEURS DU CHAM_NO A CREER
 C                  'R'    ==> COEFFICIENTS REELS
 C                  'C'    ==> COEFFICIENTS COMPLEXES
-C     IN IFM,NIV : I   : PARAMETRES POUR MONITORING.
-C     IN NUMSD   : I   : NUMERO DE SOUS-DOAMINE
+C     IN NUMSD   : I   : NUMERO DE SOUS-DOMAINE
 C     OUT METHOD,SDFETI: K24 : PARAMETRES DU SOLVEUR.
 C     OUT   NEQ   : I   : INTEGER
 C   -------------------------------------------------------------------
@@ -72,10 +71,9 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
 C DECLARATION VARIABLES LOCALES
-      INTEGER      JCHAMP,JREFN,IBID,IERD,JNEQ,LCHP,NBREFN,
-     &             IFM,NIV,IINF
+      INTEGER      JCHAMP,JREFN,IBID,IERD,JNEQ,LCHP,NBREFN
       CHARACTER*8  K8BID
-      CHARACTER*24 VALE,REFE,DESC,INFOFE
+      CHARACTER*24 VALE,REFE,DESC
 
       DATA VALE/'                   .VALE'/
       DATA REFE/'                   .REFE'/
@@ -83,7 +81,6 @@ C DECLARATION VARIABLES LOCALES
             
 C------------------------------------------------------------------
       CALL JEMARQ()
-      INFOFE='FFFFFFFF'
 
 C ------------------------------- REFE --------------------------------
 C --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP
@@ -96,10 +93,7 @@ C NOM DE LA SD_FETI PRIS DANS LE .REFN DU NUME_DDL SOUS-JACENT
            
 C NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?      
       CALL JELIRA(NUMEDD(1:14)//'.NUME.REFN','LONMAX',NBREFN,K8BID)
-      IF (NBREFN.NE.4) THEN
-        IF (NIV.GE.2) WRITE(IFM,*)
-     &       '<FETI/VTCRE1> NUME_DDL/CHAM_NO NON ETENDU POUR FETI',
-     &       NUMEDD(1:14)//'.NUME.REFN'      
+      IF (NBREFN.NE.4) THEN      
         METHOD='XXXX'
         SDFETI='XXXX'
         CALL WKVECT(REFE,CLASSE//' V K24',2,JCHAMP)                     
@@ -109,13 +103,9 @@ C NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?
         SDFETI = ZK24(JREFN+3)
         ZK24(JCHAMP+2) = METHOD
         ZK24(JCHAMP+3) = SDFETI
-        IF ((METHOD(1:4).EQ.'FETI').OR.(NUMSD.GT.0)) THEN
-          CALL JEVEUO('&FETI.FINF','L',IINF)
-          INFOFE=ZK24(IINF)
-        ENDIF         
       ENDIF
       ZK24(JCHAMP) = ZK24(JREFN)
-      ZK24(JCHAMP+1) = NUMEDD(1:14)//'.NUME'      
+      ZK24(JCHAMP+1) = NUMEDD(1:14)//'.NUME'
       
 C ------------------------------- DESC --------------------------------
 C --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP
@@ -141,15 +131,6 @@ C --- TYPE DES VALEURS, LONGUEUR D'UN VECTEUR
 C --- CHANGER LA GRANDEUR
       CALL SDCHGD(CHAMP,TYPE)
 
-C MONITORING
-      IF ((INFOFE(1:1).EQ.'T').AND.((METHOD(1:4).EQ.'FETI')
-     &  .OR.(NUMSD.GT.0))) THEN
-        IF (NUMSD.EQ.0) THEN
-          WRITE(IFM,*)'<FETI/VTCRE1> DOMAINE GLOBAL ',CHAMP(1:19)
-        ELSE
-          WRITE(IFM,*)'<FETI/VTCRE1> SD: ',NUMSD,' ',CHAMP(1:19)
-        ENDIF                             
-      ENDIF
 C FIN ------------------------------------------------------
       CALL JEDEMA()
       END

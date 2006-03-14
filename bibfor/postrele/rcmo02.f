@@ -5,7 +5,7 @@
       CHARACTER*1         ETAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,12 +28,18 @@ C
 C IN  : ETAT   : ETAT STABILISE "A" OU "B"
 C IN  : NUMSIT : NUMERO DE LA SITUATION
 C OUT : VALE   : ON SOMME LES CHARGEMENTS
-C                VALE(1) = FX
-C                VALE(2) = FY
-C                VALE(3) = FZ
-C                VALE(4) = MX
-C                VALE(5) = MY
-C                VALE(6) = MZ
+C                VALE(1)  = FX  OU _TUBU
+C                VALE(2)  = FY  OU _TUBU
+C                VALE(3)  = FZ  OU _TUBU
+C                VALE(4)  = MX  OU _TUBU
+C                VALE(5)  = MY  OU _TUBU
+C                VALE(6)  = MZ  OU _TUBU
+C                VALE(7)  = FX_CORP
+C                VALE(8)  = FY_CORP
+C                VALE(9)  = FZ_CORP
+C                VALE(10) = MX_CORP
+C                VALE(11) = MY_CORP
+C                VALE(12) = MZ_CORP
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -57,7 +63,7 @@ C
       CHARACTER*8  K8B, KNUMES, KNUMEC
 C DEB ------------------------------------------------------------------
 C
-      DO 10 I = 1 , 6
+      DO 10 I = 1 , 12
          VALE(I) = 0.D0
  10   CONTINUE
 C       
@@ -85,11 +91,11 @@ C
          CALL JEVEUO (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC), 'L', JCHAR )
 C 
          IF ( ZK8(JTYPE+NUMCHA-1) .EQ. 'SEISME' ) THEN
-            DO 102 J = 1 , 6
+            DO 102 J = 1 , 12
                VALE(J) = VALE(J) + ZR(JCHAR-1+J)**2
  102        CONTINUE          
          ELSE
-            DO 104 J = 1 , 6
+            DO 104 J = 1 , 12
                VALE(J) = VALE(J) + ZR(JCHAR-1+J)
  104        CONTINUE          
          ENDIF
@@ -97,7 +103,7 @@ C
  100  CONTINUE
 C
        IF ( ZK8(JTYPE+NUMCHA-1) .EQ. 'SEISME' ) THEN
-          DO 106 J = 1 , 6
+          DO 106 J = 1 , 12
              VALE(J) = SQRT ( VALE(J) )
  106      CONTINUE          
        ENDIF

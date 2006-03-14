@@ -1,7 +1,7 @@
       SUBROUTINE DIAGAV(NOMA19,NEQ,TYPVAR,EPS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 NOMA19
       CHARACTER*14 NU
       REAL*8 EPS,DIAMAX,DIAMIN,R8GAEM,R8MAEM
-      INTEGER NEQ,TYPVAR,TYPSTO,IFM,NIV,IRET,IADIGS,IBID
+      INTEGER NEQ,TYPVAR,IFM,NIV,IRET,IADIGS,IBID
       INTEGER JSXDI,JSCBL,JSCDE,NBBLOC,IBLOC,IAVALE,IDERN,IPREM,I
 C     ------------------------------------------------------------------
 C
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM
+      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL JEMARQ()
@@ -88,7 +88,8 @@ C     ---------------------------------------------
 
 C     CAS STOCKAGE MORSE INDISPONIBLE (OBJET .VALM):
 C     ---------------------------------------------
-      CALL ASSERT(NOMA19.EQ.'&&OP0070.RESOC.MATR')
+      CALL ASSERT((NOMA19.EQ.'&&OP0070.RESOC.MATR').OR.
+     &            (NOMA19.EQ.'&&OP0070.RESUC.MATR'))
       CALL JEVEUO(NU//'.SLCS.SCDI','L',JSXDI)
       CALL JEVEUO(NU//'.SLCS.SCBL','L',JSCBL)
       CALL JEVEUO(NU//'.SLCS.SCDE','L',JSCDE)

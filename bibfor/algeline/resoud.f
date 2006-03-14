@@ -2,7 +2,7 @@
      +                    CHASOL, CRITEZ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,6 +113,10 @@ C ADRESSE JEVEUX OBJET FETI & MPI
         LFETI=.FALSE.
       ENDIF
 
+      IF ((NIV.GE.2).OR.(LFETIC)) THEN
+        CALL UTTCPU(53,'INIT ',6,TEMPS)
+        CALL UTTCPU(53,'DEBUT',6,TEMPS)
+      ENDIF
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
@@ -165,10 +169,7 @@ C========================================
         ENDIF
    10 CONTINUE
 
-      IF ((NIV.GE.2).OR.(LFETIC)) THEN
-        CALL UTTCPU(53,'INIT ',6,TEMPS)
-        CALL UTTCPU(53,'DEBUT',6,TEMPS)
-      ENDIF
+
       IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO'.OR.
      &    METRES.EQ.'FETI'.OR.METRES.EQ.'MUMPS') THEN
 
@@ -197,6 +198,8 @@ C========================================
           CALL RESFET(SDFETI(1:19),MATAS,CHCINE(1:19),CHSECM,CHSOL,
      &      NITER,EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN,STOGI,
      &      NBREOI,ACMA,ACSM)
+C  DESTRUCTION DES CHAM_NO FILS SOLUTION ET DU .FETC
+          CALL ASSDE2(CHSOL)
         ENDIF
 
       ELSE IF (METRES.EQ.'GCPC') THEN
@@ -216,7 +219,7 @@ C     ----------------------------------
       ENDIF
       IF ((NIV.GE.2).OR.(LFETIC)) THEN
         CALL UTTCPU(53,'FIN  ',6,TEMPS)
-        IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D11.4)')
+        WRITE(IFM,'(A44,D11.4,D11.4)')
      &       'TEMPS CPU/SYS SOLVEUR                     : ',TEMPS(5),
      &       TEMPS(6)
       ENDIF

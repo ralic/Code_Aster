@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 13/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -211,15 +211,15 @@ COS    = FORMULE( NOM_PARA=('COOR_X','COOR_Y'),
                   VALE='-180.*atan2(COOR_X,COOR_Y)/pi')
 
 TPRESS = CALC_TABLE(TABLE=TPRESS,reuse=TPRESS,
-                    ACTION=_F(OPERATION='FORMULE',
+                    ACTION=_F(OPERATION='OPER',
                               FORMULE=COS,
                               NOM_PARA='COS'))
 
 TPRES  = CALC_TABLE(TABLE=TPRESS,
                     ACTION=_F(OPERATION='FILTRE',
-                              FILTRE=_F(NOM_PARA='COS',
-                                        CRIT_COMP='LE',
-                                        VALE=180.)))
+                              NOM_PARA='COS',
+                              CRIT_COMP='LE',
+                              VALE=180.))
 
 IMPR_TABLE(TABLE=TPRESS)
 
@@ -236,9 +236,9 @@ TCONT = CALC_TABLE(TABLE=TCONT,reuse=TCONT,
 
 TCON  = CALC_TABLE(TABLE=TCONT,
                    ACTION=_F(OPERATION='FILTRE',
-                             FILTRE=_F(NOM_PARA='COS',
-                                       CRIT_COMP='LE',
-                                       VALE=180.)))
+                             NOM_PARA='COS',
+                             CRIT_COMP='LE',
+                             VALE=180.))
 
 IMPR_TABLE(TABLE=TCONT)
 

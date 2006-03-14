@@ -2,7 +2,7 @@
      &                   FREQ,ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,18 +58,13 @@ C
       COMPLEX*16       VECPC8(NBMODE,*)
 C
       INTEGER NBPARI, NBPARR, NBPARK, NBPARA, MXDDL,LADPA
-      PARAMETER   ( NBPARI=8 , NBPARR=16 , NBPARK=2, NBPARA=26 )
+      PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=1, NBPARA=17 )
       CHARACTER*24 NOPARA(NBPARA)
       CHARACTER*32  JEXNUM
 
 C     ------------------------------------------------------------------
-      DATA  NOPARA /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            ,
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+      DATA  NOPARA /        'NUME_MODE'       , 'NORME'           ,
+     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,

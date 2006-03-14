@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,6 +99,15 @@ DT = 1e-07;
 
 DT2 = 2e-06;
 
+# CONDITION DE COURANT = (.005 m)/(5000 m/s) = 1e-6 s
+# UNIQUEMENT SUR LES ELEMENTS ISOPARAMETRIQUES
+# ATTENTION A LA REDUCTION DU PAS DE TEMPS DU A LA PENALISATION DE CHOC
+
+DTC=.1*1.e-6
+
+L_COURA=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=_F(JUSQU_A=0.00014,
+                                    PAS=DTC,),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=0.00014,
@@ -133,12 +142,7 @@ U=DYNA_TRAN_EXPLI(MODELE=MODE,
                   INCREMENT=_F(LIST_INST=L_INST,
                                INST_INIT=0.,),
                   DIFF_CENT=_F(),
-                  NEWTON=_F(MATRICE='TANGENTE',
-                            REAC_ITER=1,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-                                 RESI_INTE_RELA=1.E-8,
-                                 ITER_INTE_MAXI=20,),
-                  ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+);
 
 VITECONT=RECU_FONCTION(RESULTAT=U,
                        NOM_CHAM='VITE',
@@ -177,68 +181,210 @@ VI5=RECU_FONCTION(RESULTAT=U,
 
 tpost=POST_ELEM(ENER_CIN=_F(TOUT='OUI',),
                 RESULTAT=U,);
-IMPR_TABLE(TABLE=tpost)
-#Non Regression
+
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
-                   VALE=0.001,
-                   NUME_ORDRE=5,
+                   INST=1.e-5,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N5',
-                   PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   VALE=0.001,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(0.001,1e-8),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=U,
-                   NUME_ORDRE=20,
+                   INST=2.4e-5,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N100',
-                   VALE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=0.01,
+                   VALE=-.00038,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(.06,1e-8),
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
-                   NUME_ORDRE=40,
+                   INST=8.e-5,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N100',
-                   VALE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=0.01,
+                   NOEUD='N5',
+                   VALE=-.0008,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(.03,1e-8),
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
-                   NUME_ORDRE=60,
+                   INST=12.e-5,
                    NOM_CHAM='VITE',
                    NOM_CMP='DZ',
                    NOEUD='N5',
                    VALE=100.0,
-                   PRECISION=0.05,
-                   REFERENCE='ANALYTIQUE',),
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(0.05,1e-8),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=U,
-                   NUME_ORDRE=60,
+                   INST=12.e-5,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N5',
                    VALE=0.002,
-                   PRECISION=0.1,
-                   REFERENCE='ANALYTIQUE',),),);
-
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(.05,1e-8),
+                   REFERENCE='ANALYTIQUE',)))
 #
 # Test de l energie cinetique
-#
-TEST_TABLE(      TABLE=tpost,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-                   REFERENCE='ANALYTIQUE',  
-                   NOM_PARA='TOTALE', 
-                   VALE=8.00000E+02, 
-                   PRECISION=0.0001)
 
-TEST_TABLE(      TABLE=tpost,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 70,),),
-                   REFERENCE='NON_REGRESSION',VERSION='8.1.15',  
-                   NOM_PARA='TOTALE', 
-                   VALE=7.94892E+02, 
-                   PRECISION=0.0001)
+TEST_TABLE(TABLE=tpost,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(NOM_PARA='INST',
+                      CRITERE='ABSOLU',
+                      PRECISION=1.e-8,
+                      VALE=1.e-6,),),
+           NOM_PARA='TOTALE',
+           VALE=800.0,
+           PRECISION=0.0001,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=tpost,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(NOM_PARA='INST',
+                      CRITERE='ABSOLU',
+                      PRECISION=1.e-8,
+                      VALE=1.2e-4,),),
+           NOM_PARA='TOTALE',
+           VALE=800.,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE', );
+
+
+
+# TEST DE LA MASSE DIAGONALE
+
+UDIAG=DYNA_TRAN_EXPLI(MODELE=MODE,
+                      CHAM_MATER=CM,
+                      CARA_ELEM=CARA,
+                      MASS_DIAG='OUI',
+                      EXCIT=_F(CHARGE=CH,
+                               FONC_MULT=RAMPE,),
+                      COMP_INCR=_F(RELATION='DIS_CHOC',
+                                   GROUP_MA='BASE',),
+                      COMP_ELAS=_F(RELATION='ELAS',
+                                   GROUP_MA='BARRE',),
+                      ETAT_INIT=_F(DEPL=CHAMP2,
+                                   VITE=CHAMP1,),
+                      INCREMENT=_F(LIST_INST=L_COURA,
+                                   INST_INIT=0.,),
+                      DIFF_CENT=_F(),)
+
+VITEDIAG=RECU_FONCTION(RESULTAT=UDIAG,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DZ',
+                       NOEUD='N5',
+                       TITRE='VITE',);
+
+VCDIAG=CALC_FONCTION(COMB=_F(FONCTION=VITEDIAG,
+                             COEF=12500.,),);
+
+MVCDIAG=CALC_FONCTION(INTEGRE=_F(FONCTION=VCDIAG,),);
+
+DE100DIA=RECU_FONCTION(RESULTAT=UDIAG,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DZ',
+                       NOEUD='N100',
+                       TITRE='DEPL',);
+
+VI100DIA=RECU_FONCTION(RESULTAT=UDIAG,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DZ',
+                       NOEUD='N100',
+                       TITRE='VITE',);
+
+DE5DIA=RECU_FONCTION(RESULTAT=UDIAG,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',
+                     NOEUD='N5',
+                     TITRE='DEPL',);
+
+VI5DIA=RECU_FONCTION(RESULTAT=UDIAG,
+                     NOM_CHAM='VITE',
+                     NOM_CMP='DZ',
+                     NOEUD='N5',
+                     TITRE='VITE',);
+
+tpostDIA=POST_ELEM(ENER_CIN=_F(TOUT='OUI',),
+                   RESULTAT=UDIAG,);
+
+TEST_RESU(RESU=(_F(RESULTAT=UDIAG,
+                   INST=1.e-5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N5',
+                   VALE=0.001,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(0.001,1e-8),
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=UDIAG,
+                   INST=2.4e-5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N100',
+                   VALE=-.00038,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(.06,1e-8),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=UDIAG,
+                   INST=8.e-5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N5',
+                   VALE=-.0008,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(.03,1e-8),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=UDIAG,
+                   INST=12.e-5,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DZ',
+                   NOEUD='N5',
+                   VALE=100.0,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(0.3,1e-8),
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=UDIAG,
+                   INST=12.e-5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N5',
+                   VALE=0.002,
+                   CRITERE=('RELATIF','ABSOLU'),
+                   PRECISION=(.08,1e-8),
+                   REFERENCE='ANALYTIQUE',)))
+
+
+# Test de l energie cinetique
+
+TEST_TABLE(TABLE=tpostDIA,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.e-6,
+                      CRITERE='ABSOLU',
+                      PRECISION=1.e-8),),
+           NOM_PARA='TOTALE',
+           VALE=800.0,
+           PRECISION=0.0001,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=tpostDIA,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.2e-4,
+                      CRITERE='ABSOLU',
+                      PRECISION=1.e-8),),
+           NOM_PARA='TOTALE',
+           VALE=800.,
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE', );
+
+
 FIN();

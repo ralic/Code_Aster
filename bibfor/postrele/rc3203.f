@@ -7,7 +7,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,9 +64,9 @@ C
       INTEGER      NBSIG1, NBSIG2, JNSG1, JNSG2, IS1, IOC1, IS2, IOC2, 
      +             JCOMBI, JPRESA, JPRESB, JNBOCC, JMSA, NDIM, INDI,
      +             JNOC1, JNOC2, IFM, NIV, JNSITU, NSITUP, NSITUQ, 
-     +             JIST1, JIST2, I1, I2
+     +             JIST1, JIST2, I1, I2, I
       REAL*8       PPI, PPJ, PQI, PQJ, SALTIJ, UG, SN, SP, SMM, 
-     +             MPI(6), MPJ(6), MQI(6), MQJ(6), MSE(6),
+     +             MPI(12), MPJ(12), MQI(12), MQJ(12), MSE(12),
      +             MATPI(8), MATPJ(8),MATQI(8), MATQJ(8)
       REAL*8       TYPEKE,SPMECA,SPTHER
       REAL*8 KEMECA,KETHER,KEMECS,KETHES
@@ -103,12 +103,9 @@ C
       CALL WKVECT ('&&RC3203.MATRICE_SALT','V V R',NDIM, JMSA )
 C 
       SEISME = .FALSE.
-      MSE(1) = 0.D0
-      MSE(2) = 0.D0
-      MSE(3) = 0.D0
-      MSE(4) = 0.D0
-      MSE(5) = 0.D0
-      MSE(6) = 0.D0
+      DO 10 I = 1, 12
+         MSE(I) = 0.D0
+ 10   CONTINUE
 C
 C --- SITUATION P :
 C     -------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSLV140A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM='SSLV140A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),);
 
 CUBER=LIRE_MAILLAGE();
 
@@ -74,24 +74,14 @@ CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        OPTION='COOR_ELGA',);
                
-SIGY = CONTR.EXTR_COMP('SIYY',[],0)
-POIDS=CHAMELG.EXTR_COMP('W',[],1)
-nbval = len(SIGY.valeurs)
-sigy=[None]*nbval
-volume=0
-for i in   range(nbval):
-    poidg=POIDS.valeurs[i]   
-    volume=volume+poidg
-somme = 0
-for i in   range(nbval):
-    sigy[i]=SIGY.valeurs[i]
-    poidg=POIDS.valeurs[i]
-    somme = somme+sigy[i]*poidg
+INT_SIYY=POST_ELEM(MODELE=MO,
+                   NUME_ORDRE=1,
+                   RESULTAT=MESTY,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA_DEPL',
+                                NOM_CMP=('SIYY'),
+                                TOUT='OUI'),)
 
-moduley=somme/volume    
-print 'moyenne de SIGY', somme/volume
-print 'volume total', volume
-
+IMPR_TABLE(TABLE=INT_SIYY)
 
 
 U1=DEFI_FONCTION(NOM_PARA='X',
@@ -135,55 +125,47 @@ CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  NOM_CHAM='SIEF_ELGA_DEPL',);
 
                
-SIGX = CONTR1.EXTR_COMP('SIXX',[],0)
+INT_SIXX=POST_ELEM(MODELE=MO,
+                   NUME_ORDRE=1,
+                   RESULTAT=MESTX,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA_DEPL',
+                                NOM_CMP=('SIXX'),
+                                TOUT='OUI'),)
 
-nbval = len(SIGX.valeurs)
-sigx=[None]*nbval
+IMPR_TABLE(TABLE=INT_SIXX)
 
-somme = 0
-for i in   range(nbval):
-    sigx[i]=SIGX.valeurs[i]
-    poidg=POIDS.valeurs[i]
-    somme = somme+sigx[i]*poidg
-    
-modulex=somme/volume    
-print 'moyenne de SIGX', somme/volume
+INT_SIX1=POST_ELEM(MODELE=MO,
+                   NUME_ORDRE=1,
+                   RESULTAT=MESTX,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA_DEPL',
+                                NOM_CMP=('SIXX'),
+                                GROUP_MA='MA1'),)
 
-SIGX1 = CONTR1.EXTR_COMP('SIXX',['MA1',],0)
-print SIGX1.valeurs
-nbval1 = len(SIGX1.valeurs)
-sigx1=[None]*nbval1
-POIDS1=CHAMELG.EXTR_COMP('W',['MA1',],1)
-volume1=0
-for i in   range(nbval1):
-    poidg1=POIDS1.valeurs[i]   
-    volume1=volume1+poidg1
-somme1 = 0
-for i in   range(nbval1):
-    sigx1[i]=SIGX1.valeurs[i]
-    poidg1=POIDS1.valeurs[i]
-    somme1 = somme1+sigx1[i]*poidg1
-    
-print 'moyenne de SIGX1', somme1/volume1
+IMPR_TABLE(TABLE=INT_SIX1)
 
-TB1=CREA_TABLE(LISTE=(_F(LISTE_I=(1,2),
-                         PARA='CAS'),
-                      _F(LISTE_R=(moduley,modulex),
-                         PARA='MODULE'))); 
-IMPR_TABLE(TABLE=TB1)
-                         
-TEST_TABLE(TABLE=TB1,
-           FILTRE=_F(NOM_PARA='CAS',
+                        
+TEST_TABLE(TABLE=INT_SIYY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1),
-           NOM_PARA='MODULE',
+           NOM_PARA='MOYE_SIYY',
            REFERENCE='ANALYTIQUE',
            VALE=150000);
 
-TEST_TABLE(TABLE=TB1,
-           FILTRE=_F(NOM_PARA='CAS',
-                     VALE_I=2),
-           NOM_PARA='MODULE',
-           REFERENCE='ANALYTIQUE',PRECISION=0.02,
+TEST_TABLE(TABLE=INT_SIXX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1),
+           NOM_PARA='MOYE_SIXX',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
            VALE=133333);
+
+TEST_TABLE(TABLE=INT_SIX1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1),
+           NOM_PARA='MOYE_SIXX',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE=133333);
+
 
 FIN();

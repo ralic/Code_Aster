@@ -1,0 +1,175 @@
+      SUBROUTINE CUACA1(DEFICU,RESOCU,LMAT,CINE,NBLIAC,
+     &                  AJLIAI)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT     NONE
+      CHARACTER*24 DEFICU
+      CHARACTER*24 RESOCU
+      CHARACTER*24 CINE
+      INTEGER      LMAT
+      INTEGER      NBLIAC
+      INTEGER      AJLIAI
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : CFACAT
+C ----------------------------------------------------------------------
+C
+C ROUTINE REALISANT LE CALCUL DE A.C-1.AT PAR RESOLUTION DE C.X=A(I)
+C     A(I) -> I-EME COLONNE DE A
+C     X    -> I-EME COLONNE DE C-1.A
+C  LA ROUTINE EST OPTIMISEE PAR TRAITEMENT DES SECONDS MEMBRES PAR BLOCS
+C
+C IN  DEFICU : SD DE DEFINITION (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCU : SD DE TRAITEMENT NUMERIQUE 
+C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
+C IN  CINE   : CHAM_NO CINEMATIQUE
+C IN  NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON CORRECTE DU CALCUL 
+C              DE LA MATRICE DE CONTACT ACM1AT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32       JEXNUM
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      LG,IBID,IL
+      INTEGER      LLIAC,JDECAL,NBDDL,JRCINE,IERD
+      INTEGER      NEQ,LGBLOC,TAMPON
+      INTEGER      NBSM,NPAS
+      INTEGER      NREST,IPAS,KK,ILIAC,NPAST
+      CHARACTER*14 NU
+      CHARACTER*19 LIAC,CM1A
+      INTEGER      JLIAC,JCM1A
+      CHARACTER*24 APDDL,APCOEF,POINOE
+      INTEGER      JAPDDL,JAPCOE,JPOI
+      CHARACTER*24 NOMMAT
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      CM1A   = RESOCU(1:14)//'.CM1A'
+      APDDL  = RESOCU(1:14)//'.APDDL'
+      LIAC   = RESOCU(1:14)//'.LIAC'
+      APCOEF = RESOCU(1:14)//'.APCOEF'
+      POINOE = DEFICU(1:16)//'.POINOE'      
+C 
+C --- RECUPERATION D'OBJETS JEVEUX
+C 
+      CALL JEVEUO(APDDL, 'L',JAPDDL)
+      CALL JEVEUO(LIAC,  'L',JLIAC )
+      CALL JEVEUO(APCOEF,'L',JAPCOE)
+      CALL JEVEUO(POINOE,'L',JPOI)      
+      CALL JEVEUO(CINE(1:19)//'.VALE'    ,'L',JRCINE)
+C 
+C --- NOMBRE D'EQUATIONS DU SYSTEME
+C 
+      NEQ    = ZI(LMAT+2)
+C
+C --- NOM DE LA MATRICE 
+C
+      NOMMAT = ZK24(ZI(LMAT+1))
+C
+C ----------------------------------------------------------------------
+C --- PAR METHODE DIRECTE AVEC BLOCS DE SECONDS MEMBRES
+C ----------------------------------------------------------------------
+C
+C --- CALCUL DE LGBLOC
+C
+      CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
+      LGBLOC = 10
+
+      NBSM   = NBLIAC - AJLIAI
+      NPAS   = NBSM / LGBLOC
+      NREST  = NBSM - LGBLOC*NPAS
+
+      IF (NREST.GT.0) THEN
+         NPAST = NPAS + 1
+      ELSE
+         NPAST = NPAS
+      ENDIF
+      CALL WKVECT('&&CFACA1.TAMPON',' V V R ',NEQ*LGBLOC,TAMPON)
+
+
+      DO 10 IPAS = 1,NPAST
+         LG = LGBLOC
+         IF (NPAST.NE.NPAS .AND. (IPAS.EQ.NPAST)) LG = NREST
+
+         DO 40 KK = 1,NEQ*LG
+           ZR(TAMPON-1+KK) = 0.0D0
+ 40      CONTINUE
+
+         DO 20 IL = 1,LG
+           ILIAC  = LGBLOC* (IPAS-1) + IL + AJLIAI
+           LLIAC  = ZI(JLIAC+ILIAC-1)
+           JDECAL = ZI(JPOI+LLIAC-1)
+           NBDDL  = ZI(JPOI+LLIAC) - ZI(JPOI+LLIAC-1) 
+C 
+C --- CALCUL DE LA COLONNE AT POUR LA LIAISON ACTIVE LLIAC EN CONTACT 
+C 
+           CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOE+JDECAL),
+     &                 ZI(JAPDDL+JDECAL),ZR(TAMPON+NEQ*(IL-1)))
+
+ 20      CONTINUE
+C 
+C --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
+C 
+         CALL NMRLDB(LMAT,ZR(JRCINE),ZR(TAMPON),LG)
+C 
+C --- RECOPIE 
+C
+         DO 50 IL = 1,LG
+            ILIAC = LGBLOC* (IPAS-1) + IL + AJLIAI
+            LLIAC = ZI(JLIAC+ILIAC-1)
+C 
+C --- AJOUT D'UNE LIAISON DE CONTACT
+C 
+ 1100       CONTINUE
+            CALL JEVEUO(JEXNUM(CM1A,LLIAC),'E',JCM1A)
+            DO 60 KK = 1,NEQ
+               ZR(JCM1A-1+KK) = ZR(TAMPON-1+NEQ* (IL-1)+KK)
+ 60         CONTINUE
+            CALL JELIBE(JEXNUM(CM1A,LLIAC))
+ 50      CONTINUE
+ 10   CONTINUE
+
+      AJLIAI = NBLIAC
+      CALL JEDETC('V','&&CFACA1',1)
+C 
+      CALL JEDEMA()
+C 
+      END

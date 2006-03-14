@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,11 +82,6 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
            NUME_MODE = 9,       VALE = 197.32)) )
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE,        PARA = 'ITER_QR',
-           CRITERE = 'ABSOLU',     PRECISION = 9.E+00,
-           NUME_MODE = 4, REFERENCE = 'NON_REGRESSION', VALE_I = 0) )
-
 # -------------------------------------------------------------------
 # ---- MODE DE MEBRANE SUR APPUIS ELASTIQUES
 #
@@ -138,13 +133,6 @@ TEST_RESU(
            NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
           )
 
-# --------------------------------------------------------------------
-
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE2,        PARA = 'ITER_QR',
-           CRITERE = 'ABSOLU',     PRECISION = 5.E+00,
-           NUME_MODE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0) )
-
 #====================================================================
 # ---- PLAQUE DST APPUYEE SUR LES BORDS
 
@@ -194,15 +182,6 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',     PRECISION = 3.0E-2,
            NUME_ORDRE = 9,       VALE = 197.32)) )
 
-# --------------------------------------------------------------------
-
-
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE3,        PARA = 'ITER_QR',
-           CRITERE = 'ABSOLU',     PRECISION = 6.E+00,
-           NUME_ORDRE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0)
-          )
-
 # -------------------------------------------------------------------
 # ---- MODE DE MEBRANE SUR APPUIS ELASTIQUES
 #
@@ -249,12 +228,5 @@ TEST_RESU(
           )
 
 # --------------------------------------------------------------------
-
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE4,        PARA = 'ITER_QR',
-           CRITERE = 'ABSOLU',     PRECISION = 6.E+00,
-           NUME_ORDRE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0)
-          )
-
 FIN()
 #

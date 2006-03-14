@@ -1,8 +1,9 @@
         SUBROUTINE LCMMAT (COMP, MOD,  IMAT,   NMAT,   TEMPD,   TEMPF,
-     &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI)
+     &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,
+     &   HSR)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,22 +66,22 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
       INTEGER  NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3),NBVAL,NVINI
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-      REAL*8          HYDRD , HYDRF , SECHD , SECHF,R8DGRD,HOOK(6,6)
+      REAL*8          HOOK(6,6)
       REAL*8          VALPAD(3), VALPAF(3),REPERE(7),XYZ(3),KOOH(6,6)
       REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
-      REAL*8          VALRES(NMAT)
-      CHARACTER*8     MOD, NOM , NOMC(14) , NOMPAR(3)
+      REAL*8          VALRES(NMAT),H,MS(6)
+      REAL*8          HSR(5,12,12)
+      CHARACTER*8     MOD, NOMC(14) , NOMPAR(3)
       CHARACTER*2     BL2, CERR(14)
       CHARACTER*3     MATCST
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI
-      CHARACTER*16    CPMONO(5*NMAT+1),PHENOM
-      INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J,ICAMAS,ITAB(8)
-      LOGICAL IRET
+      CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,NOMFAM
+      INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J
+      INTEGER MONO1,NBSYST,IEI,NBSYS, IS, IR
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -111,8 +112,6 @@ C
       CALL JEVEUO(COMP(6),'L',ICOMPO)
 C     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
 C           
-      NR=NVI+NDT-2
-      
       CALL MATROT(ANGMAS,PGL)
       
       DO 111 I=1,NMAT
@@ -128,6 +127,7 @@ C
  
       NBCOMM(1,1)=1
       
+      MONO1=1
       DO 6 IFA=1,NBFSYS
       
          NMATER=CPMONO(5*(IFA-1)+2)
@@ -163,11 +163,15 @@ C        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
  503     CONTINUE
          NBCOMM(IFA+1,1)=NVINI+NBVAL
          
+     
+   
  6    CONTINUE     
 C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU    
       NBCOMM(NMAT,2)=NBFSYS
       NBCOMM(NMAT,3)=NBCOMM(NBFSYS+1,1)+1
       NBCOMM(1,1)=1
+      
+      NBSYST=0
       
       DO 61 IFA=1,NBFSYS
       
@@ -176,6 +180,10 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
          NECRIS=ZK16(ICOMPO-1+5*(IFA-1)+4) 
          NECRCI=ZK16(ICOMPO-1+5*(IFA-1)+5) 
          
+         NOMFAM=CPMONO(5*(IFA-1)+1)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+
+         NBSYST=NBSYST+NBSYS
       
          CALL LCMAFL(NMATER,IMAT,NECOUL,NBVAL,1,NOMPAR,VALPAF,
      &            VALRES,NMAT)
@@ -201,8 +209,18 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
  506     CONTINUE
          NBCOMM(IFA+1,1)=NVINI+NBVAL
                   
+         IEI=NBCOMM(IFA,3)
+         H=MATERF(IEI-1+4,2)
+
+         
+         IF ((NECOUL.NE.'ECOU_VISC1').OR.
+     &       (NECRIS.NE.'ECRO_ISOT1').OR.         
+     &       (NECRCI.NE.'ECRO_CINE1')) THEN
+                 MONO1=0
+         ENDIF         
  61    CONTINUE         
-      
+       NBCOMM(NMAT,1)=MONO1
+
       CALL RCCOMA(IMAT,'ELAS',PHENOM,CERR)
       
       IF (PHENOM.EQ.'ELAS') THEN
@@ -296,7 +314,24 @@ C
          CALL UTMESS('F','LCMATE',PHENOM//' IMPOSSIBLE ACTUELLEMENT')
       ENDIF
       
+      IF (MONO1.EQ.0) THEN
+         NR=NVI+NDT-2
+      ELSE
+         NR=NDT+NBSYST
+      ENDIF
       
+C  DEFINITION DE LA MATRICE D INTERACTION
+        DO 606 IFA = 1, NBFSYS
+         DO 507 IS = 1, NBSYS
+           DO 508 IR = 1, NBSYS
+           IF (IS.EQ.IR) THEN
+           HSR(IFA,IS,IR) = 1.D0
+           ELSE
+           HSR(IFA,IS,IR) = H
+           ENDIF
+ 508       CONTINUE
+ 507     CONTINUE
+ 606    CONTINUE      
 C
 C -   MATERIAU CONSTANT ?
 C

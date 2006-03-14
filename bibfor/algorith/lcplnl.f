@@ -1,12 +1,12 @@
         SUBROUTINE LCPLNL ( FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
      1                      NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
-     3                      COMP,NBCOMM, CPMONO, PGL,
+     3                      COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,
      3                      SIGF, VINF, ICOMP, IRTETI)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,6 @@ C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
 C           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 C       ----------------------------------------------------------------
-C           NMOD   :  DIMENSION R , DRDY
 C           R      :  VECTEUR RESIDU
 C           DRDY   :  JACOBIEN
 C           DY     :  INCREMENT DES VARIABLES = ( DSIG  DVIN  (DEPS3)  )
@@ -77,11 +76,11 @@ C           TYPESS :  TYPE DE SOLUTION D ESSAI POUR NEWTON
 C           ESSAI  :  VALEUR  SOLUTION D ESSAI POUR NEWTON
 C           INTG   :  COMPTEUR DU NOMBRE DE TENTATIVES D'INTEGRATIONS
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT,    NMOD  , ICOMP
+        INTEGER         IMAT, NMAT , ICOMP
 C
 C
         INTEGER         TYPESS, ITMAX, IRET,KPG,KSP
-        INTEGER         NR,     NDT,    NDI,    NVI,  ITER
+        INTEGER         NR,     NDT,    NDI,    NVI,  ITER, NS
 C
         REAL*8          TOLER,  ESSAI, RBID
         REAL*8          EPSD(6),        DEPS(6)
@@ -94,18 +93,19 @@ C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPD, TEMPF,   TIMED, TIMEF
 C
-        CHARACTER*8     MOD,  NBITER
+        CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-        INTEGER I, INTG, IRTET, IRTETI, J
+        INTEGER I, INTG, IRTET, IRTETI
 
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
         REAL*8          EPSEQ
+        REAL*8          TOUTMS(5,12,6),HSR(5,12,12)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 
 C       ----------------------------------------------------------------
@@ -132,7 +132,15 @@ C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
 C        
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         IRTETI = 0
-        CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
+        
+        IF (NBCOMM(NMAT,1).EQ.1) THEN
+           NS=(NVI-8)/3
+           DO 102 I=1,NS
+              YD(NDT+I)=VIND(6+3*(I-1)+2)
+ 102     CONTINUE
+        ELSE
+           CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
+        ENDIF
         IF(MOD(1:6).EQ.'C_PLAN') YD (NR) = EPSD(3)
 C
 C       RESOLUTION ITERATIVE PAR NEWTON DE R(DY) = 0
@@ -152,7 +160,7 @@ C
         CALL LCINIT ( FAMI,KPG,KSP,LOI,TYPESS,ESSAI,MOD,NMAT,
      &                MATERF,TIMED,TIMEF,NR, NVI, YD,
      &                EPSD,  DEPS,   DY ,
-     &                COMP,NBCOMM, CPMONO, PGL,
+     &                COMP,NBCOMM, CPMONO, PGL,TOUTMS,
      &                VIND,SIGD)
      
         ITER = 0
@@ -168,8 +176,8 @@ C
 C --    CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
 C
         CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
-     &                COMP,NBCOMM,CPMONO,PGL,NR,NVI,TEMPF,
-     &                TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
+     &                COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &                TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
 
 C     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
         IF(ITER.EQ.1) THEN
@@ -180,8 +188,8 @@ C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
         CALL LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT, NMAT, MATERF,
      &                TEMPF,TIMED,TIMEF,YF,DEPS,
-     3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
-     &                  EPSD,  DY, DRDY )
+     3                COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &                  EPSD,  DY,    DRDY )
 C
 C --    RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C
@@ -200,7 +208,7 @@ C
 C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C
         CALL LCCONV( LOI,    DY,   DDY, NR, ITMAX, TOLER, ITER, INTG,
-     &               R,RINI,TYPESS, ESSAI, ICOMP, IRTET)
+     &               NMAT,NBCOMM,R,RINI,TYPESS, ESSAI, ICOMP, IRTET)
 
         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 
@@ -214,13 +222,6 @@ C
         CALL LCEQVN ( NDT ,   YF(1)     , SIGF )
         CALL LCEQVN ( NVI-1 , YF(NDT+1) , VINF )
 C
-C --   DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
-C
-        IF (LOI(1:8).EQ.'MONOCRIS') THEN
-           CALL LCDPEC ( VIND   , VINF, EPSEQ)
-           VINF (NVI-1) = VIND (NVI-1) + EPSEQ
-        ENDIF 
-C        
 
         IF ( LOI(1:7) .EQ. 'NADAI_B' ) THEN
            DO 10  I = 3 , NVI-1
@@ -228,10 +229,13 @@ C
    10      CONTINUE
         ENDIF
         VINF (NVI) = 1.D0
-        IF (LOI(1:8).EQ.'MONOCRIS') THEN
-           VINF (NVI) = ITER
-        ENDIF
 C
+C --   DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
+C
+        IF (LOI(1:8).EQ.'MONOCRIS') THEN
+           CALL LCDPEC(VIND,NBCOMM,NMAT,NDT,CPMONO,MATERF,
+     &               ITER,NVI,PGL, TOUTMS,DY, YF, VINF,EPSEQ )
+        ENDIF
 C
         IRTETI = 0
         GOTO 9999

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
          regles=(UN_PARMI('MASS_INER', 'ENER_POT', 'ENER_CIN','TRAV_EXT',
                           'WEIBULL', 'RICE_TRACEY', 'CARA_GEOM','CHAR_LIMITE',
                           'CARA_POUTRE', 'INDIC_ENER', 'INDIC_SEUIL',
-                          'AIRE_INTERNE','ENER_ELAS','ENER_TOTALE'),
+                          'AIRE_INTERNE','ENER_ELAS','ENER_TOTALE','INTEGRALE'),
                 ),
 
          MASS_INER      = FACT(statut='f',max='**',
@@ -180,6 +180,28 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                        MODE_FOURIER   = SIMP(statut='f',typ='I',defaut=0),
                        RESULTAT       = SIMP(statut='o',typ=(evol_noli) ),
                        regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
+                       PRECISION      = SIMP(statut='f',typ='R',defaut= 1.0E-3),
+                       CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
+                       TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                       NUME_ORDRE     = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+                       LIST_ORDRE     = SIMP(statut='f',typ=listis_sdaster),
+                       INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                       LIST_INST      = SIMP(statut='f',typ=listr8_sdaster),
+         ),
+
+         INTEGRALE  = FACT(statut='f',max='**',
+                               regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),),
+                               TOUT         = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                               MAILLE       = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                               GROUP_MA     = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                               NOM_CHAM       = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+                               NOM_CMP        = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
+                              ),
+         b_integrale = BLOC(condition = "( INTEGRALE != None )",
+                       fr="calcul de la moyenne d'une composante",
+                       regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
+                       MODELE         = SIMP(statut='f',typ=modele_sdaster),
+                       RESULTAT       = SIMP(statut='o',typ=(evol_noli,evol_ther,evol_elas) ),
                        PRECISION      = SIMP(statut='f',typ='R',defaut= 1.0E-3),
                        CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
                        TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),

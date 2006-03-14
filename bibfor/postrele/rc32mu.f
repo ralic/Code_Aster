@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,13 +41,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IBID, NS(7), NBABSC, JABSC, IRET, JMUNE, JMUNO,
+      INTEGER      IBID, NS(13), NBABSC, JABSC, IRET, JMUNE, JMUNO,
      +             I, J, K, L, NDIM, JCONT, NCMP
       PARAMETER  ( NCMP = 6 )
       REAL*8       PREC, MOMEN0, MOMEN1
       COMPLEX*16   CBID
       LOGICAL      EXIST
-      CHARACTER*8  K8B, CRIT, NOCMP(NCMP), TBSIG(7)
+      CHARACTER*8  K8B, CRIT, NOCMP(NCMP), TBSIG(13)
       CHARACTER*16 MOTCLF, VALEK
       CHARACTER*24 ABSCUR
 C DEB ------------------------------------------------------------------
@@ -58,14 +58,33 @@ C
       CRIT = 'RELATIF'
 C
       CALL GETVID ( MOTCLF, 'TABL_FX', 1,1,1, TBSIG(1), NS(1) )
+      IF ( NS(1) .EQ. 0 )
+     +   CALL GETVID ( MOTCLF, 'TABL_FX_TUBU', 1,1,1, TBSIG(1), NS(1) )
       CALL GETVID ( MOTCLF, 'TABL_FY', 1,1,1, TBSIG(2), NS(2) )
+      IF ( NS(2) .EQ. 0 )
+     +   CALL GETVID ( MOTCLF, 'TABL_FY_TUBU', 1,1,1, TBSIG(2), NS(2) )
       CALL GETVID ( MOTCLF, 'TABL_FZ', 1,1,1, TBSIG(3), NS(3) )
+      IF ( NS(3) .EQ. 0 )
+     +   CALL GETVID ( MOTCLF, 'TABL_FZ_TUBU', 1,1,1, TBSIG(3), NS(3) )
 C
       CALL GETVID ( MOTCLF, 'TABL_MX', 1,1,1, TBSIG(4), NS(4) )
+      IF ( NS(4) .EQ. 0 )
+     +   CALL GETVID ( MOTCLF, 'TABL_MX_TUBU', 1,1,1, TBSIG(4), NS(4) )
       CALL GETVID ( MOTCLF, 'TABL_MY', 1,1,1, TBSIG(5), NS(5) )
+      IF ( NS(5) .EQ. 0 )
+     +   CALL GETVID ( MOTCLF, 'TABL_MY_TUBU', 1,1,1, TBSIG(5), NS(5) )
       CALL GETVID ( MOTCLF, 'TABL_MZ', 1,1,1, TBSIG(6), NS(6) )
+      IF ( NS(6) .EQ. 0 )
+     +   CALL GETVID ( MOTCLF, 'TABL_MZ_TUBU', 1,1,1, TBSIG(6), NS(6) )
 C
-      CALL GETVID ( MOTCLF, 'TABL_PRES', 1,1,1, TBSIG(7), NS(7) )
+      CALL GETVID ( MOTCLF, 'TABL_FX_CORP', 1,1,1, TBSIG(7), NS(7) )
+      CALL GETVID ( MOTCLF, 'TABL_FY_CORP', 1,1,1, TBSIG(8), NS(8) )
+      CALL GETVID ( MOTCLF, 'TABL_FZ_CORP', 1,1,1, TBSIG(9), NS(9) )
+      CALL GETVID ( MOTCLF, 'TABL_MX_CORP', 1,1,1, TBSIG(10), NS(10) )
+      CALL GETVID ( MOTCLF, 'TABL_MY_CORP', 1,1,1, TBSIG(11), NS(11) )
+      CALL GETVID ( MOTCLF, 'TABL_MZ_CORP', 1,1,1, TBSIG(12), NS(12) )
+C
+      CALL GETVID ( MOTCLF, 'TABL_PRES', 1,1,1, TBSIG(13), NS(13) )
 C
 C --- ON RECUPERE L'ABSC_CURV DANS LA TABLE 'TABL_MX'
 C
@@ -88,14 +107,14 @@ C
       NOCMP(5) = 'SIXZ'
       NOCMP(6) = 'SIYZ'
 C
-C --- 7 TABLES A  ( 6 COMPOSANTES + 6 LINEARISEES + 6 M_0 + 6 M_1 )
-      NDIM = 7 * ( 6 + 6 + 6 + 6 )
+C --- 13 TABLES A  ( 6 COMPOSANTES + 6 LINEARISEES + 6 M_0 + 6 M_1 )
+      NDIM = 13 * ( 6 + 6 + 6 + 6 )
       CALL WKVECT ( '&&RC3200.MECA_UNIT .ORIG', 'V V R', NDIM, JMUNO )
       CALL WKVECT ( '&&RC3200.MECA_UNIT .EXTR', 'V V R', NDIM, JMUNE )
 C
 C --- LES PROFILS DE CONTRAINTES ISSUS DES CALCULS MECANIQUES UNITAIRES
 C
-      DO 10 I = 1 , 7
+      DO 10 I = 1 , 13
 C
          IF ( NS(I) .EQ. 0 ) GOTO 10
 C
@@ -126,15 +145,15 @@ C
 C
             CALL RC32MY ( NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
 C
-            L = 7*NCMP + NCMP*(I-1) + J
+            L = 13*NCMP + NCMP*(I-1) + J
             ZR(JMUNO-1+L) = MOMEN0 - 0.5D0*MOMEN1
             ZR(JMUNE-1+L) = MOMEN0 + 0.5D0*MOMEN1
 C
-            L = 2*7*NCMP + NCMP*(I-1) + J
+            L = 2*13*NCMP + NCMP*(I-1) + J
             ZR(JMUNO-1+L) = MOMEN0
             ZR(JMUNE-1+L) = MOMEN0
 C
-            L = 3*7*NCMP + NCMP*(I-1) + J
+            L = 3*13*NCMP + NCMP*(I-1) + J
             ZR(JMUNO-1+L) = 0.5D0*MOMEN1
             ZR(JMUNE-1+L) = 0.5D0*MOMEN1
 C

@@ -1,11 +1,11 @@
         SUBROUTINE LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,
      1                      MATERF,TEMPF,TIMED,TIMEF,YF,DEPS,
-     3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
-     2                      EPSD,  DY,  DRDY )
+     3                COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,
+     2                VIND,EPSD,  DY,  DRDY )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,8 @@ C
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR)
 C
         REAL*8          MATERF(NMAT,2),TEMPF
-        REAL*8          TIMED, TIMEF
+        REAL*8          TIMED, TIMEF,VIND(*)
+        REAL*8          TOUTMS(5,12,6),HSR(5,12,12)
 C
         CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
@@ -82,7 +83,7 @@ C
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMJA ( MOD, NMAT, MATERF, TIMED, TIMEF,TEMPF,
-     3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
+     3            COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
      1                  YF,  DY,   DRDY )
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRJAC ( FAMI,KPG,KSP,MOD, NMAT, MATERF,

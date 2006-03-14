@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/05/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
+      REAL*8        ARMIN, PREC
       COMPLEX*16    C16B
       CHARACTER*1   K1BID
       CHARACTER*8   CHARGE, NOMA, MODELE
@@ -64,7 +65,6 @@ C
       CALL JEMARQ()
       CHARGE = CHARGZ
 C
-      IZERO  = 0
       ZERO   = 0.0D0
       UNDEMI = 0.5D0
       DEUX   = 2.0D0
@@ -77,6 +77,11 @@ C
 C --- RECUPERATION DU MODELE :
 C     ----------------------
       CALL GETVID(' ','MODELE',0,1,1,MODELE,NMO)
+C
+C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
+C     -------------------------------------------------
+      CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',NDIM,K8BID,IER)
+      IF ( NDIM .GT. 1000 )  NDIM = 3
 C
 C --- LIGREL DU MODELE :
 C     ----------------
@@ -99,12 +104,7 @@ C     ---------------------------------------------------------
         CALL WKVECT(CHARGE//'.CARA_TORSION','V V R',NG,IDCARA)
         CALL WKVECT('&&CATORS.GRMA','V V K8',NG,IDGRMA)
         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',1,1,NG,
-     +              ZK8(IDGRMA),NGR)
-C
-C ---   REORIENTATION DES MAILLES DU GROUP_MA :
-C       -------------------------------------
-        CALL ORIGMA(MODELE,ZK8(IDGRMA),IZERO,.TRUE.,.FALSE.,
-     .              VECT,0,.FALSE.)
+     +                                            ZK8(IDGRMA),NGR)
 C
 C ---   RECUPERATION DES COORDONNEES X_MIN ET Y_MIN DU MAILLAGE :
 C       -------------------------------------------------------
@@ -112,6 +112,17 @@ C       -------------------------------------------------------
         IF ( IRET1 .NE. 0 ) THEN
           CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
           NBPAR = 0
+          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID, 
+     +                 K8BID,R8B , 'AR_MIN', K8BID, IBID, ARMIN, C16B, 
+     +                 K8BID, IRET2 )
+          IF ( IRET2 .EQ. 0 ) THEN
+             PREC = ARMIN*1.D-06
+          ELSEIF ( IRET2 .EQ. 1 ) THEN
+             PREC = 1.D-10
+          ELSE
+             CALL UTMESS('F','CATORS',
+     + 'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+          ENDIF
           CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID, 
      +                 K8BID,R8B , 'X_MIN', K8BID, IBID, XMIN, C16B, 
      +                K8BID, IRET2 )
@@ -123,7 +134,8 @@ C       -------------------------------------------------------
           IF ( IRET2 .NE. 0 ) CALL UTMESS('F','CATORS',
      +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
         ELSE
-          CALL UTMESS('F','CATORS','LA TABLE "CARA_GEOM" N''EXISTE PAS')
+          CALL UTMESS('F','CATORS',
+     +           'LA TABLE "CARA_GEOM" N''EXISTE PAS DANS LE MAILLAGE')
         ENDIF
 C
 C ---   CALCUL POUR CHAQUE GROUP_MA CONSTITUANT UN BORD DE
@@ -135,16 +147,21 @@ C
           STRAP  =  ZERO
           XL     =  ZERO
 C
-C
 C ---     RECUPERATION DES MAILLES DU GROUP_MA :
 C         ------------------------------------
           CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK8(IDGRMA+IGR-1)),
-     +                'L',JGRO)
+     +                                                        'L',JGRO)
 C
 C ---     RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 C         ---------------------------------------------
           CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',ZK8(IDGRMA+IGR-1)),
-     +                'LONMAX',NBMAIL,K1BID)
+     +                                        'LONMAX',NBMAIL,K1BID)
+C
+C ---     REORIENTATION DES MAILLES DU GROUP_MA :
+C         -------------------------------------
+          NORIEN = 0
+          CALL ORILMA ( MODELE, NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, 
+     +                  .TRUE., PREC )
 C
           NBMA = NBMA + NBMAIL
 C

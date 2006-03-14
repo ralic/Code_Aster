@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +25,7 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,)),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+         MASS_DIAG       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          EXCIT           =FACT(statut='o',max='**',
            regles=(PRESENT_ABSENT('FONC_MULT','ACCE'),
                    PRESENT_PRESENT('ACCE','VITE','DEPL'),

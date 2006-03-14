@@ -1,0 +1,174 @@
+      SUBROUTINE EXISCP(NOMCMP,CHAR,MODELE,
+     &                  NBND,TYPEND,NOMND,NUMND,
+     &                  RESU)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+
+      CHARACTER*8  NOMCMP
+      CHARACTER*8  CHAR
+      CHARACTER*8  MODELE
+      INTEGER      NBND
+      CHARACTER*3  TYPEND
+      CHARACTER*8  NOMND(*)
+      INTEGER      NUMND(*)    
+      INTEGER      RESU(*)
+C     
+C ----------------------------------------------------------------------
+C  CETTE ROUTINE DIT SI LA(LES) COMPOSANTE(S) EXISTE(NT) SUR UN NOEUD
+C ----------------------------------------------------------------------
+C
+CCC
+C
+C IN  NOMCMP  : NOM DU DDL
+C IN  CHAR    : CONCEPT RESULTANT DU CHARGEMENT
+C                 SI CHAR = ' ' -> ON PREND LE MODELE DANS MODELE
+C IN  MODELE  : NOM DU MODELE SI CHAR = ' '
+C IN  NBND    : NOMBRE DE NOEUDS SUR LESQUELS ON CHECKE LE DDL
+C IN  TYPEND  : LA LISTE DE NOEUDS EST FAITE
+C               - DE LEUR NOM SI TYPEND='NOM'
+C               - DE LEUR NUMERO SI TYPEND='NUM'
+C IN  NOMND   : LISTE DES NOEUDS (NOMS)
+C IN  NUMND   : LISTE DES NOEUDS (NUMEROS)
+C OUT RESU    : LISTE D'INTEGER CONTENANT LE RESULTAT
+C                 POUR CHAQUE NOEUD: 1 SI LE DDL EXISTE EN CE NOEUD
+C                                    0 SINON
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32       JEXNOM
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      JNOM,JNOMA,JPRNM,JEXIS
+      INTEGER      I,IER,ICMP,IBID,INO
+      INTEGER      NBCMP,NMOCL,NBEC
+      INTEGER      INDIK8
+      LOGICAL      EXISDG
+      PARAMETER    (NMOCL=300)
+      CHARACTER*1  K1BID
+      CHARACTER*8  NOMDDL(NMOCL),K8BID,NOMA,MOD
+      CHARACTER*16 PHENO
+      CHARACTER*19 LIGRMO
+      CHARACTER*24 NOMNOE
+      CHARACTER*8  NOMGD      
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()   
+C      
+C --- INITIALISATIONS
+C 
+      CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENO,IER)
+      CALL DISMOI('F','NOM_GD',PHENO,'PHENOMENE',IBID,NOMGD,IER)
+C
+C --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR
+C
+      CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NBEC,K8BID,IER)
+      CALL ASSERT(NBEC.LE.10)      
+C      
+C --- RECUPERATION DES NOMS DES DDLS DISPONIBLES POUR UNE GRANDEUR
+C
+      CALL JEEXIN(JEXNOM('&CATA.GD.NOMCMP',NOMGD),JEXIS)        
+      IF (JEXIS.EQ.0) THEN
+        CALL UTMESS('F','EXISCP','GRANDEUR INEXISTANTE')
+      ENDIF
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JNOM)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NBCMP,K1BID)
+C
+C --- NOMBRE DE DDL POUR CETTE GRANDEUR
+C
+      NBCMP = NBCMP - 1
+C
+C --- TROP DE DDLS POUR CETTE GRANDEUR
+C
+      CALL ASSERT(NBCMP.LE.NMOCL)
+C
+C --- NOM DES DDLS POUR CETTE GRANDEUR
+C
+      DO 10 I = 1,NBCMP
+        NOMDDL(I) = ZK8(JNOM-1+I)
+   10 CONTINUE
+C
+C --- INDICE DU DDL DANS LE TABLEAU NOMCMP
+C      
+      ICMP = INDIK8(NOMDDL,NOMCMP(1:8),1,NBCMP)
+C
+C --- DDL INEXISTANT POUR CETTE GRANDEUR
+C 
+      IF (ICMP.EQ.0) THEN
+        CALL UTMESS('F','EXISCP','COMPOSANTE DE GRANDEUR INEXISTANTE')
+      ENDIF
+C
+C --- NOM DU MODELE  
+C
+      IF (CHAR(1:1).EQ.' ') THEN
+        MOD = MODELE
+      ELSE      
+        CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
+      ENDIF
+C
+C --- LIGREL DU MODELE
+C      
+      LIGRMO = MOD(1:8)//'.MODELE'
+      CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
+C
+C --- MAILLAGE DU MODELE
+C         
+      CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
+      NOMA   = ZK8(JNOMA)
+      NOMNOE = NOMA//'.NOMNOE'
+C
+C --- POUR CHAQUE NOEUD, ON VERIFIE SI LE DDL EST DESSUS
+C      
+      DO 20 I=1,NBND
+        IF (TYPEND.EQ.'NUM') THEN
+          INO = NUMND(I)
+        ELSEIF (TYPEND.EQ.'NOM') THEN
+          CALL JENONU(JEXNOM(NOMNOE,NOMND(I)),INO)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF  
+        IF (INO.NE.0) THEN      
+          IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP)) THEN
+            RESU(I) = 1  
+          ELSE
+            RESU(I) = 0 
+          ENDIF
+        ENDIF           
+   20 CONTINUE      
+C      
+      CALL JEDEMA()
+      END

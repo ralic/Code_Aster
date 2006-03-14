@@ -1,77 +1,42 @@
-POURSUITE(CODE=_F(NOM='SSNV172A'),PAR_LOT='NON')
-
-# courbe contrainte-deformation en un point de Gauss
+POURSUITE(CODE=_F(NOM='SSNV172A'))
 
 nbt=NPAS+1
-numaille = 1
-numpoint = 3
 
-sigx=[]
-sig2=[]
-epsp=[]
+# trace interactif a l'aide de xmgrace si interactif=1
 
-for it in xrange(1,nbt+1):
-   print 'it=',it
-   CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                 OPERATION='EXTR',
-                 RESULTAT=EXPL3A,
-                 NUME_ORDRE=it,
-                 NOM_CHAM='SIEF_ELGA',);
+interactif=0
 
+F_SIXX=RECU_FONCTION(RESULTAT  = EXPL3A,
+                    NOM_CHAM  = 'SIEF_ELGA',
+                    NOM_CMP   = 'SIXX',
+                    MAILLE    = 'MA1',
+                    POINT     =  1);
 
-   EPSP1=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
-                 OPERATION='EXTR',
-                 RESULTAT=EXPL3A,
-                 NUME_ORDRE=it,
-                 NOM_CHAM='EPSP_ELGA',);
+F_EPXX=RECU_FONCTION(RESULTAT  = EXPL3A,
+                    NOM_CHAM  = 'EPSP_ELGA',
+                    NOM_CMP   = 'EPXX',
+                    MAILLE    = 'MA1',
+                    POINT     =  1);
 
 
-   SIGX = CONTR1.EXTR_COMP('SIXX',[],1)
-
-
-   EPPX = EPSP1.EXTR_COMP('EPXX',['TOUT'],0)
-   nbval = len(SIGX.valeurs)
-   for j in range(nbval):
-      if SIGX.maille[j]==numaille:
-         if SIGX.point[j]==numpoint:
-            sigx.append(SIGX.valeurs[j])
-            epsp.append(EPPX.valeurs[j])           
-   
-   DETRUIRE(CONCEPT=_F( NOM = 'CONTR1'))
-   DETRUIRE(CONCEPT=_F( NOM = 'EPSP1'))
-
-
-# trace interactif a l'aide de xmgrace si inter==1
-#inter=1
-inter=0
-
-if (inter==1):
-    import Stanley
-    from Stanley import as_courbes
-    from Stanley import xmgrace
-    graphe=xmgrace.Xmgr(10,' -noask')    
-    graphe.Nouveau_graphe()
-    ctest1 = as_courbes.Courbe()
-    ctest1.x=epsp
-    ctest1.y=sigx
-    graphe.Courbe(ctest1)
-    graphe.Attendre()
-
-# impression 
-
-import Numeric
-from Numeric import *
-sig1=array(sigx)
-eps2=array(epsp)
-a=array((eps2,sig1))
-Fcalc=transpose(a)
-
-Titre= 'Courbe Contrainte-Déformation Plastique, maille '
-Titre = Titre + str(numaille) + ' point ' + str(numpoint)
-
-print Titre
-print Fcalc
-
+if interactif==1:
+  IMPR_FONCTION(
+      FORMAT    = 'XMGRACE',
+      PILOTE    = 'INTERACTIF',
+      LEGENDE_X = 'EPXX',
+      LEGENDE_Y = 'SIXX',
+      BORNE_X   = (-0.01,0.),
+      BORNE_Y   = (-95., -75.),
+      GRILLE_X  = 0.002,
+      GRILLE_Y  = 5.,
+      COURBE=(_F(LEGENDE   = ' MAILLE MA1 , P.G. 1, SIXX=f(EPXX)',
+                 FONC_X=F_EPXX,FONC_Y=F_SIXX)))
+else:
+  # On imprime la courbe Contrainte-Deformation Plastique
+  IMPR_FONCTION(
+      FORMAT    = 'TABLEAU',
+      UNITE     = 8,
+      COURBE=(_F(FONC_X=F_EPXX,FONC_Y=F_SIXX)))
 
 # Calcul des moyennes a l'instant final
 CONTR0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -84,34 +49,22 @@ CONTR0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 CHAMELG=CALC_CHAM_ELEM(MODELE=TROISD,
                        CHAM_MATER=MAT,
                        OPTION='COOR_ELGA',);
-               
-POIDS=CHAMELG.EXTR_COMP('W',[],1)
 
-SIGX = CONTR0.EXTR_COMP('SIXX',[],1)
-dir(SIGX)
+INT_SIXX=POST_ELEM(MODELE=TROISD,
+                   NUME_ORDRE=nbt,
+                   RESULTAT=IMPL1,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('SIXX'),
+                                TOUT='OUI'),)
 
-print 'SIGX.maille'
-print SIGX.maille
+IMPR_TABLE(TABLE=INT_SIXX)
+              
+TEST_TABLE(TABLE=INT_SIXX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=21),
+           NOM_PARA='MOYE_SIXX',
+           REFERENCE='AUTRE_ASTER',
+           VALE=-95.5);
 
-print 'SIGX.point'
-print SIGX.point
-
-nbval = len(SIGX.valeurs)
-print nbval
-sigx=[None]*nbval
-
-volume=0
-for i in   range(nbval):
-    poidg=POIDS.valeurs[i]   
-    volume=volume+poidg
-somme = 0
-for i in   range(nbval):
-    sigx[i]=SIGX.valeurs[i]
-    poidg=POIDS.valeurs[i]
-    somme = somme+sigx[i]*poidg
-
-moduley=somme/volume    
-print 'moyenne de SIGX', somme/volume
-print 'volume total', volume
 
 FIN()

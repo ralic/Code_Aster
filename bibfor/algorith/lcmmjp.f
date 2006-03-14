@@ -1,10 +1,10 @@
       SUBROUTINE LCMMJP ( MOD, NMAT, MATER,TEMPF,
-     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
+     &       TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,
      &                  SIGF,VINF,SIGD,VIND,
      &                   DSDE )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,79 +46,150 @@ C
 C     OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 C     ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NVI,I,J,NR, NVV, IRET
+      INTEGER         NDT , NDI , NMAT , NVI
+      INTEGER         K,J,NR, NVV, IRET,NS
 C DIMENSIONNEMENT DYNAMIQUE
       REAL*8          DRDY(NR,NR),Y0(6,6),Y1(6,(NVI-8)),DSDE(6,6)
       REAL*8          MATER(NMAT*2),Y2((NVI-8),6),KYL(6,6),DET,I6(6,6)
-      REAL*8          Y3((NVI-8),(NVI-8)),HOOK(6,6)
+      REAL*8          Y3((NVI-8),(NVI-8))
       REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO,TEMPF
+      REAL*8 Z0(6,6),Z1(6,(NR-NDT)),Z2((NR-NDT),6),Z3((NR-NDT),(NR-NDT))
+        REAL*8 TOUTMS(5,12,6),HSR(5,12,12),MS(6)
       CHARACTER*8     MOD
-C      PARAMETER       ( UN   =  1.D0   )
-C      PARAMETER       ( ZERO =  0.D0   )
+      PARAMETER       ( UN   =  1.D0   )
+      PARAMETER       ( ZERO =  0.D0   )
 
-      INTEGER         NBCOMM(NMAT,3)
+      INTEGER         NBCOMM(NMAT,3),MONO1
+      INTEGER         NBFSYS,NBSYS,IS,NSFA,NUVRF, NUVR,IFA
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*), NOMFAM
       COMMON /TDIM/ NDT,NDI
-C      DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
-C     1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
-C     2                 ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
-C     3                 ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
-C     4                 ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
-C     5                 ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
+      DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
+     1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
+     2                 ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
+     3                 ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
+     4                 ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
+     5                 ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
 
-C
+C -  INITIALISATION
+
+      NSFA = 6
+      NUVRF = 6
+      NBFSYS = NBCOMM(NMAT,2)
+      NS = 0
+
 C - RECUPERER LES SOUS-MATRICES BLOC
-C
 
       CALL LCEQVN ( NDT  ,  SIGD , YD )
       CALL LCEQVN ( NDT  ,  SIGF , YF )
-      CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
-      CALL LCEQVN ( NVI-1,  VINF , YF(NDT+1) )
+
+      IF (NBCOMM(NMAT,1).EQ.1) THEN
+      
+      DO 99 IFA = 1, NBFSYS
+         NOMFAM = CPMONO(5*(IFA-1)+1)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+         NUVR = NUVRF
+          DO 98 IS = 1, NBSYS
+            YD(NSFA+IS)=VIND(NUVR+2)
+            YF(NSFA+IS)=VINF(NUVR+2)
+            DY(NSFA+IS)=VINF(NUVR+2)-VIND(NUVR+2)
+            NUVR = NUVRF + 3
+  98     CONTINUE
+            NS = NS + NBSYS
+  99     CONTINUE
+      NUVRF = NUVRF + 3*NBSYS
+      NSFA = NSFA + NBSYS
+                 
+      ELSE
+         CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
+         CALL LCEQVN ( NVI-1,  VINF , YF(NDT+1) )
       CALL LCEQVN ( NR,  YF , DY )
       CALL DAXPY( NR, -1.D0, YD, 1,DY, 1)
+      ENDIF   
 
 C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
       CALL LCMMJA ( MOD, NMAT, MATER, TIMED, TIMEF, TEMPF,
-     &              COMP,NBCOMM, CPMONO, PGL,NR,NVI,YF,DY,DRDY)
-C     NVV est le nombre de varaibles internes liées aux systemes de
-C     glissement, il y en a 3*Ns
+     &    COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,YF,DY,DRDY)
+      MONO1=NBCOMM(NMAT,1)
+         
+      IF (MONO1.EQ.1) THEN
 
-      NVV=NVI-2-6
+        DO 101 K=1,6
+        DO 101 J=1,6
+           Z0(K,J)=DRDY(K,J)
+ 101     CONTINUE
+        DO 201 K=1,6
+        DO 201 J=1,NS
+           Z1(K,J)=DRDY(K,NDT+J)
+ 201     CONTINUE
 
-      DO 10 I=1,6
-      DO 10 J=1,6
-         Y0(I,J)=DRDY(I,J)
- 10   CONTINUE
+        DO 301 K=1,NS
+        DO 301 J=1,6
+           Z2(K,J)=DRDY(NDT+K,J)
+ 301     CONTINUE
+        DO 401 K=1,NS
+        DO 401 J=1,NS
+           Z3(K,J)=DRDY(NDT+K,NDT+J)
+ 401     CONTINUE
+C       Z2=INVERSE(Z3)*Z2
+        CALL MGAUSS ('NFWP',Z3, Z2, NS, NS, 6, DET, IRET )
+        
+C       KYL=Z1*INVERSE(Z3)*Z2
+        CALL PROMAT(Z1,6,6,NS,Z2,NS,NS,6,KYL)
 
-      DO 20 I=1,6
-      DO 20 J=1,NVV
-         Y1(I,J)=DRDY(NDT+I,NDT+6+J)
- 20   CONTINUE
+C       Z0=Z0+Z1*INVERSE(Z3)*Z2
+        DO 501 K=1,6
+        DO 501 J=1,6
+           Z0(K,J)=Z0(K,J)-KYL(K,J)
+           DSDE(K,J)=I6(K,J)
+ 501    CONTINUE
+ 
+C       DSDE = INVERSE(Z0-Z1*INVERSE(Z3)*Z2)
 
-      DO 30 I=1,NVV
-      DO 30 J=1,6
-         Y2(I,J)=DRDY(NDT+6+I,J)
- 30   CONTINUE
+      
+C        CALL MGAUSS ('NFVP',Z0, DSDE, 6, 6, 6, DET, IRET )
+        CALL MGAUSS ('NFWP',Z0, DSDE, 6, 6, 6, DET, IRET )
+        
+      ELSE   
+                  
+C        NVV est le nombre de varaibles internes liées aux systemes de
+C        glissement, il y en a 3*Ns
 
-      DO 40 I=1,NVV
-      DO 40 J=1,NVV
-         Y3(I,J)=DRDY(NDT+6+I,NDT+6+J)
- 40   CONTINUE
+         NVV=NVI-2-6
+ 
+         DO 10 K=1,6
+         DO 10 J=1,6
+            Y0(K,J)=DRDY(K,J)
+ 10      CONTINUE
 
-C       Y2=INVERSE(Y3)*Y2
-      CALL MGAUSS ('NFVP',Y3, Y2, NVV, NVV, 6, DET, IRET )
+         DO 20 K=1,6
+         DO 20 J=1,NVV
+            Y1(K,J)=DRDY(NDT+K,NDT+6+J)
+ 20      CONTINUE
 
-C      KYL=Y1*INVERSE(Y3)*Y2
-      CALL PROMAT(Y1,6,6,NVV,Y2,NVV,NVV,6,KYL)
+         DO 30 K=1,NVV
+         DO 30 J=1,6
+            Y2(K,J)=DRDY(NDT+6+K,J)
+ 30      CONTINUE
 
-C      Y0=Y0+Y1*INVERSE(Y3)*Y2
-      CALL DAXPY(36, 1.D0, KYL, 1,Y0, 1)
-C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
-      CALL LCEQMN ( 6 , Y0,DSDE           )
-      CALL INVALM (DSDE, 6, 6)
+         DO 40 K=1,NVV
+         DO 40 J=1,NVV
+            Y3(K,J)=DRDY(NDT+6+K,NDT+6+J)
+ 40      CONTINUE
+ 
 
-C      CALL LCEQMA ( I6     , DSDE           )
-C      CALL MGAUSS ( Y0, DSDE, 6, 6, 6, DET, IRET )
-C      IF (.NOT.IRET) CALL UTMESS('F','LCMMJP','Y0 SINGULIERE')
+C          Y2=INVERSE(Y3)*Y2
+         CALL MGAUSS ('NFVP',Y3, Y2, NVV, NVV, 6, DET, IRET )
+
+C         KYL=Y1*INVERSE(Y3)*Y2
+         CALL PROMAT(Y1,6,6,NVV,Y2,NVV,NVV,6,KYL)
+
+C         Y0=Y0+Y1*INVERSE(Y3)*Y2
+         CALL DAXPY(36, 1.D0, KYL, 1,Y0, 1)
+C         DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
+         CALL LCEQMN ( 6 , Y0,DSDE)
+ 
+ 
+         CALL INVALM (DSDE, 6, 6)
+       ENDIF
       END

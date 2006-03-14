@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('LEVSUP','LEVINF','SURFSUP','SURFINF'),),
                        MODELE=MODELEIN,);
 
 #----------------------------------------------

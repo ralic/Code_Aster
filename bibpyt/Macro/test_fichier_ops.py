@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 19/09/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ import math
 import md5
 
 #-------------------------------------------------------------------------------
-def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
+def test_fichier_ops(self, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    """
      Macro TEST_FICHIER permettant de tester la non-regression d'un fichier
      'a une tolerance' pres pour les nombres reels en calculant
@@ -109,8 +109,7 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
                             _F(PARA='BOOLEEN',
                                LISTE_I=is_ok,),),)
    if args['REFERENCE'] == 'NON_REGRESSION':
-      TEST_TABLE(UNITE=UNITE,
-                 TABLE=tab1__,
+      TEST_TABLE(TABLE=tab1__,
                  FILTRE=_F(NOM_PARA='TEST',
                            VALE_K='VALEUR  ',),
                  NOM_PARA='BOOLEEN',
@@ -120,8 +119,7 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
                  REFERENCE=args['REFERENCE'],
                  VERSION=args['VERSION'],)
    else:
-      TEST_TABLE(UNITE=UNITE,
-                 TABLE=tab1__,
+      TEST_TABLE(TABLE=tab1__,
                  FILTRE=_F(NOM_PARA='TEST',
                            VALE_K='VALEUR  ',),
                  NOM_PARA='BOOLEEN',

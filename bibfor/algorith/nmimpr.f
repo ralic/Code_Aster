@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPR(PHASE,NATURZ,ARGZ,ARGR,ARGI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,9 +90,10 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER          MESS,IUNIFI,UNITM
-      INTEGER          JIMPIN
-      CHARACTER*24     IMPRCO,IMPINF
+      INTEGER          MESS,IUNIFI,UNITM,IBID,IFM,NIV,RANG,JIMPIN,IRET,
+     &                 IINF,NIVMPI
+      REAL*8           RBID
+      CHARACTER*24     IMPRCO,IMPINF,K24B,INFOFE
       INTEGER          UNIT
       SAVE             UNIT
       DATA IMPRCO      /'&&OP0070.IMPR.          '/
@@ -101,33 +102,50 @@ C ----------------------------------------------------------------------
 C
       MESS   = IUNIFI ('MESSAGE')
 
+C FETI PARALLE OR NOT ?
+      CALL INFNIV(IFM,NIV)
+      CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)
+      RANG=0
+      IF (IRET.GT.0) THEN
+        CALL JEVEUO('&FETI.FINF','L',IINF)
+        INFOFE=ZK24(IINF)
+        IF (INFOFE(10:10).EQ.'T') THEN
+          NIVMPI=2
+        ELSE
+          NIVMPI=1
+        ENDIF
+        CALL FETMPI(2,IBID,IFM,NIVMPI,RANG,IBID,K24B,K24B,K24B,RBID)
+      ENDIF
 
 C ======================================================================
 C
 C ROUTINE CHAPEAU - APPELLE LA ROUTINE PRINCIPALE NMIMPM
 C EN DEUX FOIS SI NECESSAIRE (SORTIES MESSAGE/FICHIER)
-C
+C SI FETI PARALLELE, SEUL LE PROCESSEUR MAITRE AFFICHE
 C ======================================================================
 
-      IF (PHASE.EQ.'INIT') THEN      
-        CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
-        IMPINF = IMPRCO(1:14)//'INFO'
-        CALL JEVEUO(IMPINF,'L',JIMPIN)
-        UNIT   = ZI(JIMPIN-1+8)
-      ELSE
+      IF (RANG.EQ.0) THEN
+
+        IF (PHASE.EQ.'INIT') THEN      
+          CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
+          IMPINF = IMPRCO(1:14)//'INFO'
+          CALL JEVEUO(IMPINF,'L',JIMPIN)
+          UNIT   = ZI(JIMPIN-1+8)
+        ELSE
 C
 C --- ECRITURE DANS LE FICHIER MESSAGE
 C
-        UNITM  = MESS
-        CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
+          UNITM  = MESS
+          CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C --- ECRITURE DANS LE FICHIER PERSO
 C      
-        IF (UNIT.NE.0) THEN
-          UNITM = UNIT
-          CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
+          IF (UNIT.NE.0) THEN
+            UNITM = UNIT
+            CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
+          ENDIF
         ENDIF
-      ENDIF
 
+      ENDIF
 
       END

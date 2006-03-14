@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,16 +130,6 @@ MODE82=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 CMP='DY'
 
 # ----------------------------------------------------------------------
-
-# POUR TESTER RESU:(GROUP_NO:) :
-# POUR TESTER UNITE:           :
-
-TEST_RESU( UNITE=6,
-    RESU=_F(   RESULTAT = FREQ, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
-            CRITERE = 'RELATIF',     PRECISION = 1.E-4,   NOM_CMP = CMP,
-            GROUP_NO = 'GP1',         VALE = 0.3473)
- )
-
 TEST_RESU(RESU=(
     _F(   RESULTAT = FREQ,        PARA = 'FREQ',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
@@ -168,7 +158,7 @@ TEST_RESU(RESU=(
 
  _F(   CHAM_GD = MODE1,        NOM_CMP = CMP,
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NOEUD = 'P1',             VALE = -0.3473),
+            GROUP_NO = 'GP1',          VALE = -0.3473),
  _F(   CHAM_GD = MODE1,        NOM_CMP = CMP,
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
             NOEUD = 'P2',             VALE = -0.6527),
@@ -193,7 +183,7 @@ TEST_RESU(RESU=(
 
  _F(   CHAM_GD = MODE8,        NOM_CMP = CMP,
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NOEUD = 'P1',             VALE = 0.3473),
+            GROUP_NO = 'GP1',          VALE = 0.3473),
  _F(   CHAM_GD = MODE81,       NOM_CMP = CMP,
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
             NOEUD = 'P1',             VALE = 0.3473),

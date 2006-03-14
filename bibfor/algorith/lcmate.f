@@ -1,12 +1,12 @@
         SUBROUTINE LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
      1                      HYDRD, HYDRF, SECHD,  SECHF,
-     2                      TYPMA, BZ,    MATERD, MATERF, MATCST, 
+     2                      TYPMA, BZ, HSR,MATERD, MATERF, MATCST, 
      3                      NBCOMM, CPMONO, ANGMAS, PGL, ITMAX, TOLER,
      4                      NDT, NDI,   NR,    NVI,    VIND)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C       ----------------------------------------------------------------
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
         REAL*8          HYDRD , HYDRF , SECHD , SECHF, TOLER
+        REAL*8          HSR(5,12,12)
         CHARACTER*16    LOI, COMP(*), CPMONO(5*NMAT+1)
         CHARACTER*8     MOD,    TYPMA
         CHARACTER*3     MATCST
@@ -132,12 +133,12 @@ C
      
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
          CALL LCMMAT ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,ANGMAS,PGL,
-     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
+     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI,HSR)
          TYPMA='COHERENT'
           
       ELSEIF ( LOI(1:8) .EQ. 'POLYCRIS' ) THEN
          CALL LCMMAP ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,ANGMAS,PGL,
-     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
+     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI)
          TYPMA='COHERENT'
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,ITMAX,TOLER,VIND,

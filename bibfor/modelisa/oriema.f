@@ -1,10 +1,14 @@
-      SUBROUTINE ORIEMA ( NOMAIZ, MODELZ, REORIE, NORIEN )
+      SUBROUTINE ORIEMA ( NOMAIL, TPMAIL, NBNMAI, LNMAIL,  
+     +                    TYP3D, NBNM3D, LNM3D,  
+     +                    NDIM, COOR, REORIE, NORIEN, IFM, NIV )
       IMPLICIT   NONE
-      INTEGER                                     NORIEN
-      LOGICAL                             REORIE
-      CHARACTER*(*)       NOMAIZ, MODELZ
+      INTEGER             NBNMAI, LNMAIL(*), NBNM3D, LNM3D(*), NDIM,
+     +                    NORIEN, IFM, NIV
+      REAL*8              COOR(*)
+      LOGICAL             REORIE
+      CHARACTER*8         NOMAIL, TPMAIL, TYP3D
 C.======================================================================
-C MODIF MODELISA  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,380 +26,157 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C ORIEMA  --  ORIENTATION DE LA MAILLE DE NOM NOMAIL
+C             DE TELLE MANIERE A CE QUE LA NORMALE A CETTE MAILLE
+C             SOIT EXTERIEURE AU VOLUME.
+C             CETTE MAILLE EST UNE MAILLE DE PEAU :
+C               .EN 2D C'EST UNE MAILLE DE TYPE SEG2 OU SEG3
+C               .EN 3D C'EST UNE MAILLE DE TYPE TRIA3, TRIA6,
+C                                               QUAD4, QUAD8 OU QUAD9
 C
-C     ORIEMA  --  ORIENTATION DE LA MAILLE DE NOM NOMAIL
-C                 DE TELLE MANIERE A CE QUE LA NORMALE A CETTE MAILLE
-C                 SOIT EXTERIEURE AU VOLUME.
-C                 CETTE MAILLE EST UNE MAILLE DE PEAU :
-C                  .EN 2D C'EST UNE MAILLE DE TYPE SEG2 OU SEG3
-C                  .EN 3D C'EST UNE MAILLE DE TYPE TRIA3, TRIA6,
-C                   QUAD4, QUAD8 OU QUAD9.
-C
-C IN  : NOMAIZ : NOM DE LA MAILLE
-C IN  : MODELZ : NOM DU MODELE
 C IN  : REORIE : = .FALSE.  ON VERIFIE L'ORIENTATION
 C                = .TRUE.   ON REORIENTE
 C OUT : NORIEN : = 0  LA MAILLE EST BIEN ORIENTEE
 C                = 1  LA MAILLE EST A REORIENTER
 C
 C.========================= DEBUT DES DECLARATIONS ====================
-C ----- COMMUNS NORMALISES  JEVEUX
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR,DDOT
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C
-      INTEGER IGR,IEL,IALIEL,ILLIEL,IMA,INO,IAMACO,ILMACO,JNOMA,I
-      INTEGER NDIM,IER,IDTYMA,IRET,NUMA1,NUTYMA,JDES,NBNO1,JCOOR
-      INTEGER N1,N2,N3,IC,NTYP,NBNOSO,NBGREL,NUMA,NUMAIL,ITYP,LT,NEL
-      INTEGER NBELEM,J,NNOE,K,NUNOEL,NUMGLM,INDI,INDIIS,NUMA0,NUMA2
-      INTEGER NBNOE,IFM,NIV,J55,NBSO,NVOL,JJ,IBID,NBPAR
-      INTEGER       NBTYP, NBNOMX
-      PARAMETER    (NBTYP  = 3)
+      INTEGER       NBNOMX
       PARAMETER    (NBNOMX = 27)
-      INTEGER       LTYP(NBTYP), LISNOE(NBNOMX), LISNO1(NBNOMX)
-      REAL*8        N(3), N1N2(3), N1N3(3), XG(3),COON1(3),COON2(3)
-      REAL*8        COON3(3),N1G(3),NORMEN,NORME1,XGN,ZERO,XG1(3)
-      REAL*8        R8B, PREC, ARMIN
-      COMPLEX*16    C16B
-      CHARACTER*1   K1BID, TYPERR
-      CHARACTER*8   K8BID, NOMA, MODELE, TYPEL, NOMAIL,NOMA1,NOMA2
-      CHARACTER*8   LISTYP(NBTYP), TYPE
-      CHARACTER*19  LIGRMO, NOMT19
-      CHARACTER*24  MAILMA, PARA
-C -----  FONCTIONS FORMULES
-C     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-      NUMAIL(IGR,IEL)=ZI(IALIEL-1+ZI(ILLIEL+IGR-1)+IEL-1)
-C     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
-C                     IMA ETANT UNE MAILLE DU MAILLAGE.
-      NUMGLM(IMA,INO)=ZI(IAMACO-1+ZI(ILMACO+IMA-1)+INO-1)
+      INTEGER       I, IC, N1, N2, N3, NBNSM, NBNS3D, INO, NBNOE
+      INTEGER       LISNOE(NBNOMX)
+      REAL*8        COON1(3),COON2(3),COON3(3), N1N2(3),N1N3(3), DDOT
+      REAL*8        N(3), NORME, N1G(3), XG3D(3), XGM(3), XGN, ZERO
 C
 C ========================= DEBUT DU CODE EXECUTABLE ==================
 C
-      CALL JEMARQ ( )
-      CALL INFNIV ( IFM , NIV )
-C
-C --- INITIALISATIONS :
-C     ---------------
-      MODELE = MODELZ
-      NOMAIL = NOMAIZ
       NORIEN = 0
-      ZERO   = 0.0D0
+      ZERO   = 0.D0
 C
-C --- MAILLAGE ASSOCIE AU MODELE :
-C     --------------------------
-      CALL JEVEUO(MODELE(1:8)//'.MODELE    .NOMA','L',JNOMA)
-      NOMA = ZK8(JNOMA)
-      MAILMA = NOMA//'.NOMMAI'
-C
-C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
-C
-      CALL JEEXIN ( NOMA//'           .LTNT', IRET )
-      IF ( IRET .NE. 0 ) THEN
-         CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
-         NBPAR = 0
-         PARA = 'AR_MIN                  '
-         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID,
-     +                K8BID, R8B , PARA, K8BID, IBID, ARMIN, C16B,
-     +                K8BID, IRET )
-          IF ( IRET .NE. 0 ) CALL UTMESS('F','ORIEMA',
-     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
-         PREC = ARMIN*1.D-06
-      ELSE
-         PREC = 1.D-10
-      ENDIF
-C
-      DO 10 I = 1, 3
-        N(I)    = ZERO
-        N1N2(I) = ZERO
-        N1N3(I) = ZERO
-        XG(I)   = ZERO
-        XG1(I)  = ZERO
+      DO 10 I = 1, NBNMAI
+        LISNOE(I) = LNMAIL(I)
   10  CONTINUE
-C
-      DO 20 I = 1, NBNOMX
-        LISNOE(I) = 0
-        LISNO1(I) = 0
-  20  CONTINUE
-      DO 21 I = 1, NBTYP
-        LISTYP(I) = '        '
-  21  CONTINUE
-C
-C --- LIGREL DU MODELE :
-C     ----------------
-      LIGRMO = MODELE//'.MODELE'
-      CALL JEVEUO(LIGRMO//'.LIEL','L',IALIEL)
-      CALL JEVEUO(JEXATR(LIGRMO//'.LIEL','LONCUM'),'L',ILLIEL)
-C
-C --- NUMERO DE LA MAILLE NOMAIL :
-C     --------------------------
-      CALL JENONU(JEXNOM(MAILMA,NOMAIL),NUMA1)
-C
-C --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
-C     ---------------------------------------
-      CALL JEVEUO(NOMA//'.TYPMAIL','L',IDTYMA)
-C
-C --- TYPE DE LA MAILLE :
-C     -----------------
-      NUTYMA = ZI(IDTYMA+NUMA1-1)
-      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
-C
-C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
-C     -------------------------------------------------
-      CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',NDIM,K8BID,IER)
-      IF ( NDIM .GT. 1000 )  NDIM = 3
-C
-C --- COORDONNEES DES CONNECTIVITES :
-C     -----------------------------
-      CALL JEVEUO(NOMA//'.CONNEX','L',IAMACO)
-      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILMACO)
-C
-      CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMA1),'E',JDES)
-      CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMA1),'LONMAX',NBNO1,K1BID)
-      DO 30 I = 1, NBNO1
-        LISNO1(I) = ZI(JDES+I-1)
-  30  CONTINUE
-C
-C --- RECUPERATION DU TABLEAU DES COORDONNEES :
-C     ---------------------------------------
-      CALL JEVEUO (NOMA//'.COORDO    .VALE','L',JCOOR)
+      DO 12 I = 1, 3
+         N(I)    = ZERO
+         N1N2(I) = ZERO
+         N1N3(I) = ZERO
+         XGM(I)  = ZERO
+         XG3D(I) = ZERO
+ 12   CONTINUE
 C
 C --- NUMERO DES 2 (3 EN 3D) PREMIERS NOEUDS DE LA MAILLE :
 C     ---------------------------------------------------
-      N1 = ZI(JDES+1-1)
-      N2 = ZI(JDES+2-1)
-      IF (NDIM.EQ.3)  N3 = ZI(JDES+3-1)
+      N1 = LISNOE(1)
+      N2 = LISNOE(2)
+      IF (NDIM.EQ.3)  N3 = LISNOE(3)
 C
-      DO 56 IC=1,3
-         COON1(IC)=ZR(JCOOR+3*(N1-1)+IC-1)
-         COON2(IC)=ZR(JCOOR+3*(N2-1)+IC-1)
-56    CONTINUE
-      CALL VDIFF(3,COON2,COON1,N1N2)
+      DO 20 IC = 1 , 3
+         COON1(IC) = COOR(3*(N1-1)+IC)
+         COON2(IC) = COOR(3*(N2-1)+IC)
+ 20   CONTINUE
+      CALL VDIFF ( 3, COON2, COON1, N1N2 )
 C
       IF (NDIM.EQ.2) THEN
-        N(1) =  N1N2(2)
-        N(2) = -N1N2(1)
+         N(1) =  N1N2(2)
+         N(2) = -N1N2(1)
       ELSEIF (NDIM.EQ.3) THEN
-         DO 57 IC=1,3
-            COON3(IC)=ZR(JCOOR+3*(N3-1)+IC-1)
-57       CONTINUE
-         CALL VDIFF(3,COON3,COON1,N1N3)
-         CALL PROVEC(N1N2, N1N3, N)
+         DO 22 IC=1,3
+            COON3(IC) = COOR(3*(N3-1)+IC)
+ 22      CONTINUE
+         CALL VDIFF ( 3, COON3, COON1, N1N3 )
+         CALL PROVEC ( N1N2, N1N3, N )
       ENDIF
+      CALL NORMEV ( N, NORME )
 C
-      CALL NORMEV(N,NORMEN)
-
-      IF (TYPEL(1:4).EQ.'QUAD') THEN
-        LISTYP(1)(1:4) = 'HEXA'
-        LISTYP(2)(1:5) = 'PENTA'
-        LISTYP(3)(1:5) = 'PYRAM'
-C
-        LTYP(1) = 4
-        LTYP(2) = 5
-        LTYP(3) = 5
-        NTYP   = 3
-        NBNOSO = 4
-C
-      ELSEIF (TYPEL(1:4).EQ.'TRIA') THEN
-        LISTYP(1)(1:5) = 'PENTA'
-        LISTYP(2)(1:5) = 'TETRA'
-        LISTYP(3)(1:5) = 'PYRAM'
-C
-        LTYP(1) = 5
-        LTYP(2) = 5
-        LTYP(3) = 5
-C
-        NTYP   = 3
-        NBNOSO = 3
-C
-      ELSEIF (TYPEL(1:3).EQ.'SEG') THEN
-       IF (NDIM.EQ.3) GOTO 9999
-        LISTYP(1)(1:4) = 'TRIA'
-        LISTYP(2)(1:4) = 'QUAD'
-C
-        LTYP(1) = 4
-        LTYP(2) = 4
-C
-        NTYP   = 2
-        NBNOSO = 2
-C
+      IF (TPMAIL(1:4).EQ.'QUAD') THEN
+         NBNSM = 4
+      ELSEIF (TPMAIL(1:4).EQ.'TRIA') THEN
+         NBNSM = 3
+      ELSEIF (TPMAIL(1:3).EQ.'SEG') THEN
+         IF (NDIM.EQ.3) GOTO 9999
+         NBNSM = 2
       ELSE
-        CALL UTMESS('F','ORIEMA','IMPOSSIBILITE, LA MAILLE '//
+         CALL UTMESS('F','ORIEMA','IMPOSSIBILITE, LA MAILLE '//
      +              NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
      +              'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     +            //'EN 2D, ET ELLE EST DE TYPE : '//TYPEL)
+     +              //'EN 2D, ET ELLE EST DE TYPE : '//TPMAIL)
       ENDIF
 C
-C     CENTRE DE GRAVITE DE CETTE MAILLE
+C --- CENTRE DE GRAVITE DE LA MAILLE DE PEAU
 C
-      DO 130 K = 1,NBNOSO
-         NUNOEL = NUMGLM(NUMA1,K)
-         XG1(1)  = XG1(1) + ZR(JCOOR+3*(NUNOEL-1)+1-1)
-         XG1(2)  = XG1(2) + ZR(JCOOR+3*(NUNOEL-1)+2-1)
-         XG1(3)  = XG1(3) + ZR(JCOOR+3*(NUNOEL-1)+3-1)
- 130  CONTINUE
-      XG1(1) = XG1(1) / NBNOSO
-      XG1(2) = XG1(2) / NBNOSO
-      XG1(3) = XG1(3) / NBNOSO
+      DO 30 I = 1 , NBNSM
+         INO = LISNOE(I)
+         XGM(1) = XGM(1) + COOR(3*(INO-1)+1)
+         XGM(2) = XGM(2) + COOR(3*(INO-1)+2)
+         XGM(3) = XGM(3) + COOR(3*(INO-1)+3)
+ 30   CONTINUE
+      XGM(1) = XGM(1) / NBNSM
+      XGM(2) = XGM(2) / NBNSM
+      XGM(3) = XGM(3) / NBNSM
+C
+      IF (TYP3D(1:4).EQ.'HEXA') THEN
+         NBNS3D=8
+      ELSEIF (TYP3D(1:4).EQ.'PENT') THEN
+         NBNS3D=6
+      ELSEIF (TYP3D(1:4).EQ.'PYRA') THEN
+         NBNS3D=5
+      ELSEIF (TYP3D(1:4).EQ.'TETR') THEN
+         NBNS3D=4
+      ELSEIF (TYP3D(1:4).EQ.'QUAD') THEN
+         NBNS3D=4
+      ELSEIF (TYP3D(1:4).EQ.'TRIA') THEN
+         NBNS3D=3
+      ENDIF
+C
+C --- DETERMINATION DU CENTRE DE GRAVITE DE LA MAILLE 3D
+C
+      DO 40 I = 1 , NBNS3D
+         INO = LNM3D(I)
+         XG3D(1)  = XG3D(1) + COOR(3*(INO-1)+1)
+         XG3D(2)  = XG3D(2) + COOR(3*(INO-1)+2)
+         XG3D(3)  = XG3D(3) + COOR(3*(INO-1)+3)
+ 40   CONTINUE
+      XG3D(1) = XG3D(1) / NBNS3D
+      XG3D(2) = XG3D(2) / NBNS3D
+      XG3D(3) = XG3D(3) / NBNS3D
 
-      NVOL=0
-
+      CALL VDIFF  ( 3, XG3D, XGM, N1G )
+      CALL NORMEV ( N1G, NORME )
+      XGN = DDOT ( 3, N1G, 1, N, 1 )
 C
-C --- RECHERCHE DE L'ELEMENT DE VOLUME SUR LEQUEL S'APPUIE LA MAILLE
-C --- DE NOM NOMAIL :
-C     =============
-C
-C --- BOUCLE SUR LE NOMBRE DE GRELS DU LIGREL DU MODELE :
-C     -------------------------------------------------
-      DO 40 IGR = 1,NBGREL(LIGRMO)
-C
-C ---   RECUPERATION DU TYPE DU PREMIER ELEMENT DU GREL :
-C       ----------------------------------------------
-         NUMA = NUMAIL(IGR,1)
-         IF ( NUMA .GT. 0 ) THEN
-            NUTYMA = ZI(IDTYMA+NUMA-1)
-            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
-C
-            DO 50 ITYP = 1, NTYP
-               LT=LTYP(ITYP)
-               IF (TYPE(1:LT).EQ.LISTYP(ITYP)(1:LT)) GOTO 60
-  50        CONTINUE
+C --- SI XGN > 0, LA NORMALE A LA MAILLE DE PEAU
+C --- EST DIRIGEE VERS L'INTERIEUR DU VOLUME, IL FAUT
+C --- LA REORIENTER :
+C     -------------
+      IF ( XGN .GT. ZERO ) THEN
+         NORIEN = NORIEN + 1
+         IF ( .NOT. REORIE ) GOTO 9999
+         IF ( TPMAIL(1:5).EQ.'QUAD9' .OR.
+     &        TPMAIL(1:5).EQ.'TRIA7' ) THEN
+            NBNOE = NBNMAI - 1
+         ELSE
+            NBNOE = NBNMAI
          ENDIF
-         GOTO 40
-  60     CONTINUE
-C
-         IF (TYPE(1:4).EQ.'HEXA') THEN
-            NBSO=8
-         ELSEIF (TYPE(1:4).EQ.'PENT') THEN
-            NBSO=6
-         ELSEIF (TYPE(1:4).EQ.'PYRA') THEN
-            NBSO=5
-         ELSEIF (TYPE(1:4).EQ.'TETR') THEN
-            NBSO=4
-         ELSEIF (TYPE(1:4).EQ.'QUAD') THEN
-            NBSO=4
-         ELSEIF (TYPE(1:4).EQ.'TRIA') THEN
-            NBSO=3
+         INO = 0
+         DO 50 I = NBNSM, 1 , -1
+            INO = INO+1
+            LNMAIL(I) = LISNOE(INO)
+ 50      CONTINUE
+         IF (NBNSM.NE.NBNOE) THEN
+            INO = 0
+            DO 52 I = NBNOE-1, NBNSM+1 , -1
+               INO = INO+1
+               LNMAIL(I) = LISNOE(INO+NBNSM)
+ 52         CONTINUE
+            LNMAIL(NBNOE) = LISNOE(NBNOE)
          ENDIF
-C
-         NEL  = NBELEM(LIGRMO,IGR)
-         DO 70 J = 1,NEL
-            NUMA = NUMAIL(IGR,J)
-            IF ( NUMA .LE. 0 ) GOTO 70
-C
-C ---       IL S'AGIT D'UNE MAILLE PHYSIQUE DU MAILLAGE :
-C           -------------------------------------------
-C
-            NNOE = ZI(ILMACO+NUMA)-ZI(ILMACO-1+NUMA)
-            DO 80 K = 1,NNOE
-               LISNOE(K) = NUMGLM(NUMA,K)
-  80        CONTINUE
-C
-C ---       ON REGARDE SI LES NOEUDS DE LA MAILLE NOMAIL
-C ---       APPARTIENNENT A LISNOE :
-C           ----------------------
-            DO 90 K = 1,NBNOSO
-               INDI = INDIIS(LISNOE,ZI(JDES+K-1),1,NNOE)
-               IF ( INDI .EQ. 0 )   GOTO 70
-  90        CONTINUE
-C
-C ---       ON EST SUR LA MAILLE DE VOLUME A LAQUELLE APPARTIENT
-C ---       LA MAILLE DE PEAU
-
-C SI PLUSIEURS MAILLES DE VOLUME CORRESPONDENT : ERREUR
-               IF (NVOL.EQ.0) THEN
-                  NUMA0=NUMA
-                  NVOL=NVOL+1
-               ELSE
-C
-C     SI LES MAILLES ONT LES MEMES SUPPORTS (DUPLICATION DES MAILLES)
-C     ON EMET UN MESSAGE D'ALARME
-C     SINON ON ARRETE EN FATAL
-C
-                  NUMA2=NUMA
-                  CALL ORIEM0 ( NOMA, NUMA0, NUMA2, PREC, IRET )
-                  IF ( IRET .EQ. 0 ) THEN
-                     TYPERR = 'A'
-                  ELSE
-                     TYPERR = 'F'
-                  ENDIF
-C
-C         POUR AFFICHER LES MAILLES DE VOLUMES AYANT NOMAIl EN COMMUN
-                  CALL UTDEBM(TYPERR,'ORIEMA','LA MAILLE DE PEAU '//
-     +              NOMAIL//' S''APPUIE SUR PLUS D''UNE MAILLE '//
-     +              'VOLUMIQUE')
-                  CALL JENUNO(JEXNUM(MAILMA,NUMA0),NOMA1)
-                  CALL JENUNO(JEXNUM(MAILMA,NUMA2),NOMA2)
-                  CALL UTIMPK('L',' MAILLE VOLUMIQUE 1 : ',1,NOMA1)
-                  CALL UTIMPK('L',' MAILLE VOLUMIQUE 2 : ',1,NOMA2)
-                  CALL UTFINM
-               ENDIF
-
-
-C ---       DETERMINATION DU CENTRE DE GRAVITE DE CETTE MAILLE
-C ---       DE VOLUME :
-C           ---------
-            DO 100 K = 1,NBSO
-               NUNOEL = NUMGLM(NUMA,K)
-               XG(1)  = XG(1) + ZR(JCOOR+3*(NUNOEL-1)+1-1)
-               XG(2)  = XG(2) + ZR(JCOOR+3*(NUNOEL-1)+2-1)
-               XG(3)  = XG(3) + ZR(JCOOR+3*(NUNOEL-1)+3-1)
- 100        CONTINUE
-            XG(1) = XG(1) / NBSO
-            XG(2) = XG(2) / NBSO
-            XG(3) = XG(3) / NBSO
-
-            CALL VDIFF  ( 3, XG, XG1, N1G )
-            CALL NORMEV ( N1G, NORME1 )
-            XGN=DDOT(3,N1G,1,N,1)
-C
-C ---       SI XGN > 0, LA NORMALE A LA MAILLE DE PEAU
-C ---       EST DIRIGEE VERS L'INTERIEUR DU VOLUME, IL FAUT
-C ---       LA REORIENTER :
-C           -------------
-            IF ( XGN .GT. ZERO ) THEN
-               NORIEN = NORIEN + 1
-               IF ( .NOT. REORIE ) GOTO 9999
-               IF ( TYPEL(1:5).EQ.'QUAD9' .OR.
-     &              TYPEL(1:5).EQ.'TRIA7' ) THEN
-                  NBNOE = NBNO1 - 1
-               ELSE
-                  NBNOE = NBNO1
-               ENDIF
-               K = 0
-               DO 110 I = NBNOSO, 1 , -1
-                  K = K+1
-                  ZI(JDES+I-1) = LISNO1(K)
- 110           CONTINUE
-               IF (NBNOSO.NE.NBNOE) THEN
-                  K = 0
-                  DO 120 I = NBNOE-1, NBNOSO+1 , -1
-                     K = K+1
-                     ZI(JDES+I-1) = LISNO1(K+NBNOSO)
- 120              CONTINUE
-                  ZI(JDES+NBNOE-1) = LISNO1(NBNOE)
-               ENDIF
-               IF (NIV.EQ.2) THEN
-                  WRITE(IFM,*) ' REORIENTATION MAILLE ',NOMAIL,
-     &                         ' NOEUDS ',(ZI(JDES+J55-1),J55=1,NBNO1),
+         IF (NIV.EQ.2) THEN
+            WRITE(IFM,*) ' REORIENTATION MAILLE ',NOMAIL,
+     &                   ' NOEUDS ',(LNMAIL(I),I=1,NBNMAI),
      &                         ' PRODUIT SCALAIRE ',XGN
-               ENDIF
-            ENDIF
-  70     CONTINUE
-  40  CONTINUE
- 9999 CONTINUE
+         ENDIF
+      ENDIF
 C
-      CALL JEDEMA()
+ 9999 CONTINUE
 C
       END

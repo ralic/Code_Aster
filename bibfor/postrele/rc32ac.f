@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,10 +76,10 @@ C
       INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
      +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR, JPASSA,
      +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
-     +             JNSITU, NSITUP, NSITUQ, JPMPB, IRET, I1, JFACT
-      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ,  
-     +             UG, NADM, MPI(6), MPJ(6), SM, SN, SNET, SP, SMM,
-     +             MATPI(8), MATPJ(8), MSE(6),TYPEKE,SPMECA,SPTHER,
+     +             JNSITU, NSITUP, NSITUQ, JPMPB, IRET, I1, JFACT, I
+      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ,
+     +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP, SMM,
+     +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB
       LOGICAL      SEISME, ENDUR, CFAIT
       CHARACTER*2  CODRET
@@ -174,12 +174,9 @@ C                           E T A P E   2
 C ----------------------------------------------------------------------
 C
          SEISME = .FALSE.
-         MSE(1) = 0.D0
-         MSE(2) = 0.D0
-         MSE(3) = 0.D0
-         MSE(4) = 0.D0
-         MSE(5) = 0.D0
-         MSE(6) = 0.D0
+         DO 220 I = 1, 12
+            MSE(I) = 0.D0
+ 220     CONTINUE
 C
 C ------ ON TRAITE LES SITUATIONS NON COMBINABLES
 C        ----------------------------------------

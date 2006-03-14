@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,16 +129,6 @@ MODE82=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 CMP='DY'
 
 # ----------------------------------------------------------------------
-
-# POUR TESTER RESU:(GROUP_NO:) :
-# POUR TESTER UNITE:           :
-
-TEST_RESU( UNITE = 6 ,
-    RESU=_F(   RESULTAT = FREQ, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
-            CRITERE = 'RELATIF',     PRECISION = 1.E-4,    NOM_CMP = CMP,
-            GROUP_NO = 'GP1',          VALE = 0.3473,              )
- )
-
 TEST_RESU(RESU=(
     _F(   RESULTAT = FREQ,         PARA = 'FREQ',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4, 

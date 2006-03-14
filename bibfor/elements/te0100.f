@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/03/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -261,6 +261,30 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
    45     CONTINUE
 
           CALL NMGR2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
+     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                NZ,PHASM,PHASP,
+     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
+     &                DEFANE,
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT2,VECT3,
+     &                ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+     
+C 7.3 - GRANDES DEFORMATIONS FORMULATION CO-ROTATIONNELLE ZMAT
+
+        ELSE IF (ZK16(ICOMPO+2).EQ.'COROTATIONNEL') THEN
+
+          DO 46 LI = 1,2*NNO
+            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+   46     CONTINUE
+
+          CALL NMGC2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),

@@ -1,9 +1,9 @@
         SUBROUTINE LCMMCV ( DY,   DDY,    NR,    ITMAX, TOLER, ITER,
-     &                R,RINI,IRTETI)
+     &               NMAT,NBCOMM,   R,RINI,IRTETI)
 C RESPONSABLE JMBHH01 J.M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,22 +41,45 @@ C                       =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
 C                       =3 ITMAX ATTEINT REDECOUPAGE LOCAL
 C                       =4 ITMAX ATTEINT  REDECOUPAGE GLOBAL
 C       ----------------------------------------------------------------
-        INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,IRTETI
-        REAL*8          TOLER,  ESSAI,  DDY(NR), DY(NR), R(NR),RINI(NR)
+        INTEGER         ITMAX,  ITER,  NR,IRTETI,NDT,NDI,I,NMAT,MONO1
+        REAL*8          TOLER,  DDY(NR), DY(NR), R(NR),RINI(NR)
 C       ----------------------------------------------------------------
-C
+        COMMON /TDIM/   NDT  , NDI
         REAL*8          ERRDY(NR), ERRR(NR)
-        INTEGER         I
         REAL*8          TER(100)
         SAVE            TER
+        INTEGER         NBCOMM(NMAT,3)
 C       ----------------------------------------------------------------
 C
-C -   EVALUATION  DE L'ERREUR RELATIVE EN DY, ERR =  !!DDY!!/!!DY!!
+C -   EVALUATION  DE L'ERREUR ABSOLUE EN RESIDU (DEFORMATIONS)
 C
-      CALL LCVERR ( DY, DDY, NR, 1, ERRDY  )
-C -   EVALUATION  DE L'ERREUR RELATIVE EN RESIDU, ERR = !!R!!/!!RINI!!
-C      CALL LCVERR ( RINI, R, NR, 0, ERRR  )
-      CALL LCVERR ( RINI, R, NR, 1, ERRR  )
+      MONO1=NBCOMM(NMAT,1)
+      
+      IF (MONO1.EQ.1) THEN
+      
+          ERRR(1)=0.D0
+          DO 100 I = 1,NR
+             ERRR(1) = MAX(ERRR(1), ABS(R(I)))
+ 100      CONTINUE
+
+          ERRDY(1)=0.D0
+          DO 101 I = NDT+1,NR
+             ERRDY(1) = MAX(ERRDY(1), ABS(DY(I)))
+ 101      CONTINUE
+
+      ELSE
+C
+C - EVALUATION  DE L'ERREUR RELATIVE EN DY, ERR =  !!DDY!!/!!DY!!
+C
+          CALL LCVERR ( DY, DDY, NR, 1, ERRDY  )
+ 
+C - EVALUATION  DE L'ERREUR RELATIVE EN RESIDU, ERR = !!R!!/!!RINI!!
+C          CALL LCVERR ( RINI, R, NR, 0, ERRR  )
+          CALL LCVERR ( RINI, R, NR, 1, ERRR  )
+      
+      ENDIF
+         
+ 
       TER(ITER) = ERRR(1)
 C
 C
@@ -71,7 +94,17 @@ C
              IRTETI = 0
              GOTO 9999
           ENDIF
-
+          
+          IF (MONO1.EQ.1) THEN
+      
+C        CAS OU LES VARIABLES INTERNES S'ENVOLENT
+             IF ( ERRDY(1) .GT. 1.D0 ) THEN
+                IRTETI = 3
+                GOTO 9999
+             ENDIF
+             
+          ENDIF
+C
 C -     NON CONVERGENCE ITERATION SUIVANTE
 C
           IF((ITER.GE.4).AND.(ITMAX.GE.4)) THEN
@@ -94,6 +127,9 @@ C           ------------
 C
       ELSEIF ( ITER .GE. ITMAX ) THEN
       
+C -     TEST DE NON DIVERGENCE
+         CALL LCVERR ( DY, DDY, NR, 0, ERRDY  )
+         
          IF ( ERRR(1) .LE. TOLER ) THEN
             IRTETI = 0
             GOTO 9999
@@ -111,14 +147,11 @@ C
      1           (TER(ITER-1) .LT. TER(ITER-2) )    ) THEN
             IRTETI = 3
             GOTO 9999
+          ENDIF
           ELSE 
             IRTETI=3
             GOTO 9999
           ENDIF
-         ELSE
-               IRTETI = 3
-               GOTO 9999             
-         ENDIF         
 C
       ENDIF
 C

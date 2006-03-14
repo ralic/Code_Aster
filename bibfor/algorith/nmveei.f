@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C TOLE CRP_21
       CHARACTER*8        TYPMOD(*)
       CHARACTER*(*)      FAMI
       REAL*8             CRIT(*),INSTAM,INSTAP,TM,TP,TREF
-      REAL*8             EPSM(6),DEPS(6)
+      REAL*8             EPSM(6),DEPS(6),HSR(5,12,12)
       REAL*8             SIGM(6),VIM(9),SIGP(6),VIP(9),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
@@ -169,7 +169,7 @@ C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
       CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,
-     1               HYDRD, HYDRF, SECHD,SECHF, TYPMA,  BZ, MATM,
+     1               HYDRD, HYDRF, SECHD,SECHF, TYPMA,  BZ, HSR,MATM,
      3               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
      2               TOLER, NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800

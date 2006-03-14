@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,6 +158,24 @@ C                   ----------
 
          CALL PEECIN ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA),
      +                 NH, NBOCC )
+
+      ENDIF
+
+      CALL GETFAC ( 'INTEGRALE' , NBOCC )
+C                   ----------        
+      IF ( NBOCC .NE. 0 ) THEN
+
+         CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N1 )
+         IF(N1.EQ.0)THEN
+               CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )
+               CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , NC )
+               CALL RSUTNU ( RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
+               CALL JEVEUO ( KNUM, 'L', JORDR )
+               CALL RSADPA(RESUCO,'L',1,'MODELE',ZI(JORDR),0,JPARA,K8B)
+               MODELE=ZK16(JPARA)
+         ENDIF
+
+         CALL PEEINT ( RESU, MODELE, NBOCC )
 
       ENDIF
 

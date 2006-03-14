@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKQ - DSQ - Q4G
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,14 +92,6 @@ TEST_RESU(
            NUME_ORDRE = 1,         VALE = FREQ1)
           )
 
-# --------------------------------------------------------------------
-
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE2, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_QR',
-           CRITERE = 'ABSOLU',       PRECISION = 7.E+00,
-           NUME_ORDRE = 1,         VALE_I = 0)
-          )
-
 #====================================================================
 # ---- MODE DE MEMBRANE DST SUR APPUIS ELASTIQUES
 #
@@ -152,14 +144,6 @@ TEST_RESU(
    RESU=_F(   RESULTAT = MODE4,        PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
            NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
-          )
-
-# --------------------------------------------------------------------
-
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE4,        PARA = 'ITER_QR',
-           NUME_ORDRE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0,
-           CRITERE = 'ABSOLU',       PRECISION = 7.E+00)
           )
 
 #====================================================================
@@ -216,14 +200,6 @@ TEST_RESU(
            NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
           )
 
-# --------------------------------------------------------------------
-
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE6,        PARA = 'ITER_QR',
-           NUME_ORDRE = 1,          VALE_I = 0,
-           CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 6.E+00)
-          )
-
 #====================================================================
 # ---- FLEXION PLAQUE DKQ APPUYEE SUR LES BORDS
 
@@ -275,16 +251,6 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',     PRECISION = 4.5E-2,
            NUME_ORDRE = 6,       VALE = 197.32)) )
 
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_BATHE',
-           CRITERE = 'ABSOLU',         PRECISION = 20.E+00,
-           NUME_ORDRE = 1,         VALE_I = 0),      
-   _F(   RESULTAT = MODE, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_JACOBI',
-           CRITERE = 'ABSOLU',         PRECISION = 9.E+00,
-           NUME_ORDRE = 1,         VALE_I = 0)) )
-
 #====================================================================
 # ---- FLEXION PLAQUE DSQ APPUYEE SUR LES BORDS
 
@@ -335,16 +301,6 @@ TEST_RESU(RESU=(
    _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.6E-2,
            NUME_ORDRE = 6,       VALE = 197.32)) )
-
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE3, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_BATHE',
-           CRITERE = 'ABSOLU',       PRECISION = 20.E+00,
-           NUME_ORDRE = 1,       VALE_I = 0),
-   _F(   RESULTAT = MODE3, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_JACOBI',
-           CRITERE = 'ABSOLU',       PRECISION = 9.E0,
-           NUME_ORDRE = 1,       VALE_I = 0)) )
 
 #====================================================================
 # ---- FLEXION PLAQUE Q4G APPUYEE SUR LES BORDS
@@ -401,16 +357,6 @@ TEST_RESU(RESU=(
    _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.0E-2,
            NUME_ORDRE = 6,       VALE = 197.32)) )
-
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE5, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_BATHE',
-           CRITERE = 'ABSOLU',       PRECISION = 17.E+00,
-           NUME_ORDRE = 1,          VALE_I = 0),
-   _F(   RESULTAT = MODE5, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_JACOBI',
-           CRITERE = 'ABSOLU',       PRECISION = 9.E+00,
-           NUME_ORDRE = 1,          VALE_I = 0)) )
 
 # --------------------------------------------------------------------
 

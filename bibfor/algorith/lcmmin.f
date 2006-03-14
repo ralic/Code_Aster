@@ -1,10 +1,10 @@
       SUBROUTINE LCMMIN ( TYPESS, ESSAI, MOD, NMAT,
      &                      MATERF, NR, NVI, YD, DEPS, DY,  
-     &                      COMP,NBCOMM, CPMONO, PGL,
+     &                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
      &                      TIMED,TIMEF,VIND,SIGD  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,18 +41,19 @@ C
       INTEGER         NDT , NDI , TYPESS , NMAT,NR,NVI,TYPES0
 C
       REAL*8          YD(NR)     , DY(NR),  ESSAI
-      REAL*8          HOOK(6,6) , DFDS(6)
+      REAL*8          HOOK(6,6) 
       REAL*8          DEPS(6)
-      REAL*8          SIG(6)    , DSIG(6)
+      REAL*8          DSIG(6)
 C
       REAL*8          MATERF(NMAT,2)
+      REAL*8          TOUTMS(5,12,6)
 C
       CHARACTER*8     MOD
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
-      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS
-      REAL*8          EVE(6),EVP(6)
+      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS,MONO1
+      REAL*8          EVP(6)
       REAL*8          PGL(3,3),MS(6)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16    NOMFAM
@@ -61,7 +62,14 @@ C
 C - SOLUTION INITIALE = NUL
 C
       TYPES0=TYPESS
-      TYPESS=7
+      
+      MONO1=NBCOMM(NMAT,1)      
+      IF (MONO1.EQ.1) THEN
+         TYPESS=0
+      ELSE
+         TYPESS=7
+      ENDIF
+      
       IF ( TYPESS .EQ. 0) THEN
          CALL LCINVN ( NR  , 0.D0 , DY )
          IF(MOD(1:6).EQ.'C_PLAN')THEN
@@ -139,5 +147,6 @@ C
 
       ENDIF
 C
+      CALL CALCMM(NBCOMM,CPMONO,NMAT,PGL,TOUTMS)
       TYPESS=TYPES0
       END

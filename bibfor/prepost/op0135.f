@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      REFI, VALI
+      INTEGER      REFI, VALI, IUNIFI
       REAL*8       VALPU(2),RESURE,RESUIM,R8NNEM,RVAL
       CHARACTER*1  CBID
       CHARACTER*3  OUINON, SSIGNE
@@ -78,9 +78,8 @@ C
      +                 'VALIDE AVEC LE MOT CLE FACTEUR "INTE_SPEC".')
       ENDIF
 C
-      IFIC   = 0
       NOMFIC = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC  , N1 )
+      IFIC  = IUNIFI('RESULTAT')
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', NOMFIC, 'NEW', 'O' )
       ENDIF

@@ -4,7 +4,7 @@
       INTEGER                          IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2000   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,153 +56,43 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER        IBID, IRET, IEQ1, IEQ2, NEQ1, JLAGR, JVALE1, JVALE2
-      INTEGER      NUNOE,NEQ2,JDESC1,JDESC2,JREFE1,JREFE2,JDEEQ1,JDEEQ2
-      INTEGER      NNOMX,NCPMX,JTRAV1,NUNO2,NUCP2,NUNO1,NUCP1
-      CHARACTER*1    K1B, TYP1, TYP2
-      CHARACTER*19   CH1, CH2
-
+      INTEGER        IRET,NBSD,ILIMPI,IRET1,IFETC1,IFETC2,IDD
+      CHARACTER*8    K8BID
+      CHARACTER*19   CH1,CH2
+      CHARACTER*24   CH1ESC,CH2ESC
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
       IER = 0
-      CH1  = CHIN
+      CH1 = CHIN
       CH2 = CHOUT
-C
-      CALL VRREFE ( CH1, CH2, IRET )
 
-
-C     1. SI LES 2 CHAMPS ONT LES MEMES NUMEROTATIONS :
-C     -------------------------------------------------
-      IF ( IRET .EQ. 0 ) THEN
-        CALL JELIRA(CH1//'.VALE','TYPE',IBID,TYP1)
-        CALL JELIRA(CH1//'.VALE','LONMAX',NEQ1,K1B)
-        CALL JEVEUO(CH1//'.VALE','L',JVALE1)
-        CALL JELIRA(CH2//'.VALE','TYPE',IBID,TYP2)
-        CALL JEVEUO(CH2//'.VALE','E',JVALE2)
-        IF ( TYP1 .EQ. TYP2 ) THEN
-           IF ( TYP1 .EQ. 'R' ) THEN
-              DO 10 IEQ1 = 0 , NEQ1-1
-                 ZR(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
- 10           CONTINUE
-           ELSEIF ( TYP1 .EQ. 'C' ) THEN
-              DO 12 IEQ1 = 0 , NEQ1-1
-                 ZC(JVALE2+IEQ1) = ZC(JVALE1+IEQ1)
- 12           CONTINUE
-           ELSE
-              CALL UTMESS('F','VTCOPY','LES CHAM_NOS '//CH1//' ET '//
-     +                         CH2//' SONT DE TYPE INCONNU '//TYP1)
-           ENDIF
+C --- RECOPIE DES CHAM_NOS "MAITRE"
+      
+      CALL VTCOP1(CH1,CH2,IER)
+      CALL JEEXIN(CH1(1:19)//'.FETC',IRET)
+            
+C --- SI FETI, ON DUPLIQUE AUSSI LES CHAM_NO ESCLAVES
+      IF (IRET.NE.0) THEN
+        CALL JELIRA(CH1(1:19)//'.FETC','LONMAX',NBSD,K8BID)
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+        CALL JEVEUO(CH1(1:19)//'.FETC','L',IFETC1)
+        CALL JEEXIN(CH2(1:19)//'.FETC',IRET1)
+C --- SI LE CHAM_NO CHOUT N'EST PAS FETI, ON S'ARRETE EN ERREUR FATALE
+        IF (IRET1.EQ.0) THEN
+          CALL UTMESS('F',' VTCOPY ','CHOUT NON FETI !')
         ELSE
-           IF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
-              DO 14 IEQ1 = 0 , NEQ1-1
-                 ZC(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
- 14           CONTINUE
-           ELSE
-              CALL UTMESS('F','VTCOPY','LE CHAM_NO '//CH1//
-     +                ' DE TYPE '//TYP1//' NE PEUT ETRE COPIE DANS '//
-     +                       'LE CHAM_NO '//CH2//' DE TYPE '//TYP2)
-           ENDIF
+          CALL JEVEUO(CH2(1:19)//'.FETC','L',IFETC2)
         ENDIF
-        GOTO 9999
+C --- BOUCLE SUR LES SOUS-DOMAINES
+        DO 10 IDD=1,NBSD
+          IF (ZI(ILIMPI+IDD).EQ.1)  THEN
+            CH1ESC=ZK24(IFETC1+IDD-1)
+            CH2ESC=ZK24(IFETC2+IDD-1)
+            CALL VTCOP1(CH1ESC,CH2ESC,IER)
+          ENDIF
+   10   CONTINUE
       ENDIF
-C
-C
-C     2. SI LES 2 CHAMPS N'ONT PAS LES MEMES NUMEROTATIONS :
-C     ------------------------------------------------------
-      CALL JELIRA ( CH1//'.VALE', 'TYPE'  , IBID, TYP1 )
-      CALL JELIRA ( CH1//'.VALE', 'LONMAX', NEQ1 , K1B  )
-      CALL JEVEUO ( CH1//'.VALE', 'L', JVALE1 )
-      CALL JELIRA ( CH2//'.VALE', 'TYPE'  , IBID, TYP2 )
-      CALL JELIRA ( CH2//'.VALE', 'LONMAX', NEQ2 , K1B  )
-      CALL JEVEUO ( CH2//'.VALE', 'E', JVALE2 )
 
-      CALL JEVEUO ( CH1//'.DESC', 'L', JDESC1 )
-      CALL JEVEUO ( CH2//'.DESC', 'L', JDESC2 )
-      IF ((ZI(JDESC1-1+2).LT.0).OR.(ZI(JDESC2-1+2).LT.0))
-     &      CALL UTMESS('F','VTCOPY',
-     &           'CHAMP A REPRESENTATION CONSTANTE NON TRAITE.')
-
-      CALL JEVEUO ( CH1//'.REFE', 'L', JREFE1 )
-      CALL JEVEUO ( CH2//'.REFE', 'L', JREFE2 )
-      IF (ZK24(JREFE1)(1:8).NE.ZK24(JREFE2)(1:8))
-     &   CALL UTMESS('F','VTCOPY','MAILLAGES DIFFERENTS.')
-      CALL JEVEUO ( ZK24(JREFE1-1+2)(1:19)//'.DEEQ', 'L', JDEEQ1 )
-      CALL JEVEUO ( ZK24(JREFE2-1+2)(1:19)//'.DEEQ', 'L', JDEEQ2 )
-
-
-C     2.1 ON CHERCHE LE NUMERO DE CMP LE PLUS GRAND ET
-C     LE NUMERO DE NOEUD LE PLUS GRAND DANS CH2->.DEEQ2 :
-C     ---------------------------------------------------------------
-
-      NNOMX=0
-      NCPMX=0
-      DO 16, IEQ2=1,NEQ2
-        NNOMX= MAX(NNOMX,ZI(JDEEQ2-1+2*(IEQ2-1)+1))
-        NCPMX= MAX(NCPMX,ZI(JDEEQ2-1+2*(IEQ2-1)+2))
- 16   CONTINUE
-
-
-C     2.2 ON REMPLIT UN OBJET DE TRAVAIL :
-C     ------------------------------------
-      CALL WKVECT ( '&&VTCOPY.TRAV1', 'V V I', NNOMX*NCPMX, JTRAV1 )
-      DO 18, IEQ2=1,NEQ2
-        NUNO2=ZI(JDEEQ2-1+2*(IEQ2-1)+1)
-        NUCP2=ZI(JDEEQ2-1+2*(IEQ2-1)+2)
-        IF (NUCP2.GT.0) ZI(JTRAV1-1+(NUNO2-1)*NCPMX+NUCP2)=IEQ2
- 18   CONTINUE
-
-
-C     2.3 ON RECOPIE LES VALEURS DE CH1 DANS CH2 :
-C     -------------------------------------------
-      IF ( TYP1 .EQ. TYP2 ) THEN
-         IF ( TYP1 .EQ. 'R' ) THEN
-            DO 20 IEQ1 = 1 , NEQ1
-              NUNO1=ZI(JDEEQ1-1+2*(IEQ1-1)+1)
-              NUCP1=ZI(JDEEQ1-1+2*(IEQ1-1)+2)
-              IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX) 
-     +                        .AND. (NUCP1.LE.NCPMX)) THEN
-                IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
-                IF (IEQ2 .GT. 0) THEN
-                  ZR(JVALE2-1+IEQ2)=ZR(JVALE1-1+IEQ1)
-                ENDIF
-              END IF
- 20         CONTINUE
-         ELSEIF ( TYP1 .EQ. 'C' ) THEN
-            DO 22 IEQ1 = 1 , NEQ1
-              NUNO1=ZI(JDEEQ1-1+2*(IEQ1-1)+1)
-              NUCP1=ZI(JDEEQ1-1+2*(IEQ1-1)+2)
-              IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX))THEN
-                IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
-                IF (IEQ2 .GT. 0) THEN
-                  ZC(JVALE2-1+IEQ2)=ZC(JVALE1-1+IEQ1)
-                ENDIF
-              END IF
- 22         CONTINUE
-         ELSE
-            CALL UTMESS('F','VTCOPY','LES CHAM_NOS '//CH1//' ET '//
-     +                         CH2//' SONT DE TYPE INCONNU '//TYP1)
-         ENDIF
-C
-      ELSEIF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
-         DO 24 IEQ1 = 1 , NEQ1
-           NUNO1=ZI(JDEEQ1-1+2*(IEQ1-1)+1)
-           NUCP1=ZI(JDEEQ1-1+2*(IEQ1-1)+2)
-           IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX))THEN
-             IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
-             IF (IEQ2 .GT. 0) THEN
-               ZC(JVALE2-1+IEQ2)=ZR(JVALE1-1+IEQ1)
-             ENDIF
-           END IF
- 24      CONTINUE
-C
-      ELSE
-         CALL UTMESS('F','VTCOPY','LE CHAM_NO '//CH1//' DE TYPE '//
-     +                TYP1//' NE PEUT ETRE COPIE DANS LE CHAM_NO '//
-     +                CH2//' DE TYPE '//TYP2)
-      ENDIF
-      CALL JEDETR ( '&&VTCOPY.TRAV1' )
-C
- 9999 CONTINUE
       CALL JEDEMA ( )
       END

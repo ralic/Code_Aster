@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,6 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Impression",)},
          fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",
          regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','GENE','OBJET')),
-         UNITE           =SIMP(statut='f',typ='I',defaut=8),  
 
          CHAM_NO         =FACT(statut='f',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO','TYPE_TEST'),

@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,7 +98,7 @@ C     -----------------------------------------------------------------
             IF (QUESTI.EQ.'EXI_RDM') THEN
               CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
               NOMODL = REPK(1:16)
-              IF ((NOMODL.EQ.'DKT') .OR. (NOMODL.EQ.'DST') .OR.
+              IF ((NOMODL(1:3).EQ.'DKT') .OR. (NOMODL.EQ.'DST') .OR.
      &            (NOMODL.EQ.'Q4G') .OR. (NOMODL(1:5).EQ.'CABLE') .OR.
      &            (NOMODL(1:4).EQ.'POU_') .OR. (NOMODL.EQ.'BARRE') .OR.
      &            (NOMODL(1:4).EQ.'DIS_') .OR.
@@ -135,7 +135,7 @@ C     -----------------------------------------------------------------
             ELSE IF (QUESTI.EQ.'EXI_PLAQUE') THEN
               CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
               NOMODL = REPK(1:16)
-              IF ((NOMODL.EQ.'DKT') .OR. (NOMODL.EQ.'DST') .OR.
+              IF ((NOMODL(1:3).EQ.'DKT') .OR. (NOMODL.EQ.'DST') .OR.
      &            (NOMODL.EQ.'Q4G')) THEN
                 REPK = 'OUI'
                 GO TO 40

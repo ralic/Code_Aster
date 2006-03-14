@@ -11,7 +11,7 @@ C
      +                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,8 @@ C
       LOGICAL      LMASU
 C
       CALL JEMARQ ( )
-      CHAME = CHAMEL(1:19)
+      CHAME  = CHAMEL(1:19)
+      NOMSY2 = NOMSYM
       NBCMPT=0
       CALL JELIRA(CHAME//'.CELV','TYPE',IBID,TYPE)
       IF (TYPE(1:1).EQ.'R') THEN
@@ -112,7 +113,6 @@ C     ----------------------------------------------------------
 
       CALL CELVER(CHAME,'NBSPT_1','COOL',KK)
       IF (KK.EQ.1) THEN
-        NOMSY2=NOMSYM
         IF (FORM.EQ.'RESULTAT') THEN
           CALL UTMESS('I','IRCHML','LE CHAMP: '//NOMSY2
      &  //' A DES ELEMENTS AYANT DES SOUS-POINTS.'
@@ -273,6 +273,11 @@ C ---------------------------------------------------------------------
 C                    F O R M A T   C A S T E M
 C ---------------------------------------------------------------------
       ELSE IF (FORM.EQ.'CASTEM')  THEN
+
+C ------ AU FORMAT CASTEM, PAS DE MINUSCULES
+C        LE NOM DU CHAM_GD EST DANS LA VARIABLE NOMSYM
+         IF ( .NOT. LRESU )  CALL LXCAPS ( NOMSY2 )
+
          CALL JEVEUO ( '&&OP0039.NOM_MODELE', 'L', JMODE )
          CALL JELIRA ( '&&OP0039.NOM_MODELE', 'LONUTI', NBMODL, CBID )
          DO 200 IMOD = 1 , NBMODL
@@ -288,7 +293,7 @@ C ---------------------------------------------------------------------
              CALL IRCECA(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      +                  ZR(JCELV),NOMGD,ZK8(IAD),
      +                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
-     +                  NOMSYM,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
+     +                  NOMSY2,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
      +                  NCMP,NUCMP,NIVE)
            ELSEIF (LOC.EQ.'ELGA') THEN
              CALL UTMESS('A','IRCHML','ON NE SAIT PAS ECRIRE DES '
@@ -314,7 +319,7 @@ C ---------------------------------------------------------------------
              CALL IRCECA(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      +                  ZR(JCELV),NOMGD,ZK8(IAD),
      +                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
-     +                  NOMSYM,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
+     +                  NOMSY2,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
      +                  NCMP,NUCMP,NIVE)
            ELSEIF (LOC.EQ.'ELGA') THEN
              CALL UTMESS('A','IRCHML','ON NE SAIT PAS ECRIRE DES '

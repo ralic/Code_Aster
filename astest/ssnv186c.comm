@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/03/2006   AUTEUR MASSIN P.MASSIN 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                COULOMB=1.0,
                                ITER_FROT_MAXI=6,
                                COEF_REGU_FROT=1000.,
-                               SEUIL_INIT=-1.E11,
+                               SEUIL_INIT=-1.E9,
                                ),
                     INFO=1,);
 

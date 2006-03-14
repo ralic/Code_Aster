@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,7 +137,7 @@ C               RETURN1 EN CAS DE NON CONVERGENCE LOCALE
 C       ----------------------------------------------------------------
 C
         INTEGER         ICOMP,        NPAL,      IPAL
-        INTEGER         NMOD ,        IRTET,     K
+        INTEGER         IRTET,     K
         INTEGER         RETCOM
         REAL*8          EPS(6),       DEPS(6),   SD(6)
         REAL*8          DSDELO(6,6)
@@ -145,7 +145,6 @@ C
         REAL*8          TEMD,         TEMF,      DETEMP
         REAL*8          HYDD,         HYDF,      DEHYDR
         REAL*8          SECD,         SECF,      DESECH
-        CHARACTER*132   RAISON
 C       ----------------------------------------------------------------
 C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
         INTEGER NFPGMX
@@ -220,15 +219,15 @@ C
  1      CONTINUE
 C
         IF ( NPAL .EQ. 0 ) THEN
-            CALL UTEXCP(23,'REDECE',
-     1          'REDECOUPAGE DEMANDE APRES NON CONVERGENCE '
-     2    //'LOCAL : MODIFIER ITER_INTE_PAS DANS L''OPTION COMP_INCR')
+            CALL UTMESS('A','REDECE','REDECOUPAGE DEMANDE'
+     1       //' APRES NON CONVERGENCE LOCALE. REDECOUPAGE GLOBAL')
+           GOTO 2
         ENDIF
 C
         IF ( ICOMP .GT. 3 ) THEN
             CALL UTMESS('A','REDECE','REDECOUPAGE EXCESSIF DU PAS DE'
      1       //' TEMPS INTERNE : REDUISEZ VOTRE PAS DE TEMPS OU'
-     3       //' AUGMENTER ABS(ITER_INTE_PAS)')
+     3       //' AUGMENTER ABS(ITER_INTE_PAS). REDECOUPAGE GLOBAL.')
            GOTO 2
         ENDIF
 C
@@ -310,5 +309,4 @@ C
         GO TO 9999
 C
  9999   CONTINUE
-        IREDEC=0
         END

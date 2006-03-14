@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,16 +29,15 @@ C                        CRITERE  : ( CRIT1 , CRIT2 )          L_TXM
 C     PREC1 ET CRIT1 SONT LA PRECISION ET LE CRITERE DU TEST
 C     PREC2 ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
 C ----------------------------------------------------------------------
-      INTEGER       IFIC, N1, NOCC
+      INTEGER       IFIC, N1, NOCC, IUNIFI
       LOGICAL       ULEXIS
       CHARACTER*16  NOMFI
 C     ------------------------------------------------------------------
 
       CALL INFMAJ()
 
-      IFIC = 0
       NOMFI = ' '
-      CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFIC , N1 )
+      IFIC  = IUNIFI('RESULTAT')
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
         CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
       ENDIF

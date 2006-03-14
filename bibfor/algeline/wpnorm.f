@@ -7,7 +7,7 @@
       REAL*8              RESUFR(NBMODE,*), COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,12 @@ C IN  DDLEXC : TABLEAU DES DDL EXCLUS
 C          = 0 SI EXCLUS
 C          = 1 SI NON EXCLUS
 C VAR VECPRO : TABLEAU DES VECTEURS PROPRES
-C VAR RESUFR : TABLEAU DES GRANDEURS MODALES
+C VAR RESUFR : TABLEAU DES GRANDEURS MODALES RANGEES SELON
+C        'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
+C        'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+C        'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+C        'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+C        'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' 
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -98,9 +103,9 @@ C        --- NORMALISATION SUR LES DDL NON EXCLUS
  8          CONTINUE
             IF ( PARA .EQ. 'OUI' ) THEN
                RX2 = RX1 * RX1
+               RESUFR(IM,4)  = RESUFR(IM,4)  * RX2
                RESUFR(IM,5)  = RESUFR(IM,5)  * RX2
                RESUFR(IM,6)  = RESUFR(IM,6)  * RX2
-               RESUFR(IM,7)  = RESUFR(IM,7)  * RX2
             ENDIF
  2       CONTINUE
 C
@@ -151,9 +156,9 @@ C        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
    32      CONTINUE
             IF ( PARA .EQ. 'OUI' ) THEN
                XNORM = XNORM * XNORM
+               RESUFR(IM,4) = RESUFR(IM,4) * XNORM
                RESUFR(IM,5) = RESUFR(IM,5) * XNORM
                RESUFR(IM,6) = RESUFR(IM,6) * XNORM
-               RESUFR(IM,7) = RESUFR(IM,7) * XNORM
             ENDIF
    30    CONTINUE
          CALL JEDETC('V','&&WPNORM',1)

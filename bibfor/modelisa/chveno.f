@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,17 +50,20 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       NBT, IER, N, NBMFAC, IMFAC, NOCC, IOCC, JGROUP, 
      +              IPRES, IDNOR, IDTAN, IF1, IF2, IF3, IMF1, IMF2,
-     +              NBOBJ, IOBJ, NBMC, IC, UTMOTP, NORIEN,  
-     +              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL, NUMA,
-     +              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,NOC1
+     +              NBOBJ, IOBJ, NBMC, IC, UTMOTP, NORIEN, NBPAR, IRET,
+     +              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL,NUMA,IBID,
+     +              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
+     +              NOC1, JCOOR, JTYMA, JNMA
       PARAMETER    ( NBT = 6 )
-      REAL*8        R8B, DNOR, R8PREM, DIR(3)
-      LOGICAL       GETEXM, REORIE, MCFL(NBT)
+      REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
+      LOGICAL       GETEXM, REORIE, MCFL(NBT), PLAQUE
+      COMPLEX*16    CBID
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL
+      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL, MODL
       CHARACTER*16  MCFT(NBT), MOTFAC, VALMC(4), TYPMC(4), CONCEP, CMD
       CHARACTER*16  APPAR
-      CHARACTER*24  GRMAMA, MAILMA
+      CHARACTER*19  NOMT19
+      CHARACTER*24  GRMAMA, MAILMA, PARA
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  , 
      +            'EFFE_FOND'  , 'CONTACT'  , 'LIAISON_UNIL_NO' /
@@ -77,12 +80,49 @@ C
 C     NOMBRE DE MOTS-CLES FACTEUR A VERIFIER
       NBMFAC = NBT
 C
+      MODL  = NOMO
       NOMMA = NOMA
       GRMAMA = NOMMA//'.GROUPEMA'
       MAILMA = NOMMA//'.NOMMAI'
 C
+C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
+C
+      CALL JEEXIN ( NOMMA//'           .LTNT', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL LTNOTB ( NOMMA , 'CARA_GEOM' , NOMT19 )
+         NBPAR = 0
+         PARA = 'AR_MIN                  '
+         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
+     +                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
+     +                K8B, IRET )
+         IF ( IRET .EQ. 0 ) THEN
+            PREC = ARMIN*1.D-06
+         ELSEIF ( IRET .EQ. 1 ) THEN
+            PREC = 1.D-10
+         ELSE
+            CALL UTMESS('F','CHVENO',
+     + 'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+         ENDIF
+      ELSE
+         CALL UTMESS('F','CHVENO',
+     +            'LA TABLE "CARA_GEOM" N''EXISTE PAS DANS LE MAILLAGE')
+      ENDIF
+C
       CALL GETVTX ( ' ', 'VERI_NORM', 0,1,1, MOT, N )
       IF ( MOT .EQ. 'NON' ) NBMFAC = 0
+C
+      NDIM = 0
+      CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8B,IER1)
+      IF ( NDIM .GT. 1000 )  NDIM = 3
+C
+      PLAQUE = .FALSE.
+      CALL DISMOI('F','EXI_RDM',NOMO,'MODELE',IBID,K8B,IER1)
+      IF ( K8B(1:3) .EQ. 'OUI' ) PLAQUE = .TRUE.
+C
+      CALL JEEXIN ( NOMMA//'.TYPMAIL        ', IRET )
+      IF ( IRET .NE. 0 ) 
+     +             CALL JEVEUO ( NOMMA//'.TYPMAIL        ', 'L', JTYMA )
+      CALL JEVEUO ( NOMMA//'.COORDO    .VALE', 'L', JCOOR )
 C
       DO 100 IMFAC = 1 , NBMFAC
          MOTFAC = MCFT(IMFAC)
@@ -137,11 +177,8 @@ C
 C                      
 C ---       RECUPERATION DE LA DIMENSION DU PROBLEME
 C
-            NDIM = 0
             NOC  = 0
             IF (MOTFAC .EQ. 'CONTACT') THEN
-               CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8B,IER1)
-               IF ( NDIM .GT. 1000 )  NDIM = 3
                CALL GETVR8 ( MOTFAC, 'VECT_NORM_ESCL',IOCC,1,3,DIR,NOC)
                CALL GETVR8 ( MOTFAC, 'VECT_Y',     IOCC,1,3, DIR, NOC1)
             ENDIF
@@ -238,12 +275,18 @@ C
                   ENDIF
                   NORIE1 = 0
                   NORIE2 = 0
-                  CALL ORIGMA ( NOMO, NOGR, NORIE1, REORIE,
-     .                                     .FALSE., R8B, N, .FALSE. )
+                  CALL JELIRA (JEXNOM(GRMAMA,NOGR),'LONMAX',NBMAIL,
+     +                                                       K1BID)
+                  CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)     
                   IF ( MCFL(IC) ) THEN
-                    CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)
-                    CALL JENUNO (JEXNUM(MAILMA,ZI(JGRO)),NOMAIL)
-                    CALL ORIEMA ( NOMAIL, NOMO, REORIE, NORIE2 )
+                    IF ( PLAQUE ) THEN
+                      CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, NORIE1 )
+                    ELSE
+                      CALL ORILMA ( MODL, NOMMA, NDIM, ZI(JGRO), NBMAIL,
+     +                                         NORIE1, REORIE, PREC )
+                    ENDIF
+                  ELSE
+                    CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, NORIE2 )
                   ENDIF
                   NORIEN = NORIE1 + NORIE2
                   IF ( NORIEN .NE. 0 ) THEN
@@ -254,21 +297,20 @@ C
                     CALL UTFINM()
                   ENDIF
  212             CONTINUE
+C
+C ------------ CAS DES MAILLES :
+C              ---------------
                ELSE
+                  CALL WKVECT('&&CHVENO.NUME_MAILLE','V V I',NBOBJ,JNMA)
                   DO 216  IOBJ = 1 , NBOBJ
                      NOMAIL = ZK8(JGROUP-1+IOBJ)
+                     CALL JENONU(JEXNOM(NOMMA//'.NOMMAI',NOMAIL),NUMA)
+                     ZI(JNMA+IOBJ-1) = NUMA
                      IF (MOTFAC .EQ. 'CONTACT') THEN
-C                        
-C ---                  NUMERO DE LA MAILLE
-C                      -------------------
                        CALL JEVEUO(NOMMA//'.TYPMAIL','L',IDTYMA)
-                       CALL JENONU(JEXNOM(NOMMA//'.NOMMAI',NOMAIL),NUMA)
-C
-C ---                  TYPE DE LA MAILLE :
-C                      -----------------
                        NUTYMA = ZI(IDTYMA+NUMA-1)
                        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),
-     +                                                      TYPEL)
+     +                                                            TYPEL)
 C                     
 C ---                  CAS D'UNE MAILLE POINT
 C                      ----------------------
@@ -319,15 +361,28 @@ C                      --------------------
                          ENDIF  
                        ENDIF
 C
-                     ENDIF                        
-                     CALL ORIEMA ( NOMAIL, NOMO, REORIE, NORIEN )
-                     IF ( NORIEN .NE. 0 ) THEN
-                        IER = IER + 1
-                        CALL UTDEBM('E',CMD,'MAILLE MAL ORIENTEE')
-                        CALL UTIMPK('S',': ', 1, NOMAIL)
-                        CALL UTFINM()
-                     ENDIF
+                     ENDIF  
  216              CONTINUE
+                  NORIE1 = 0
+                  NORIE2 = 0
+                  IF ( MCFL(IC) ) THEN
+                    IF ( PLAQUE ) THEN
+                      CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, NORIE1 )
+                    ELSE
+                      CALL ORILMA ( MODL, NOMMA, NDIM, ZI(JNMA), NBOBJ, 
+     +                                         NORIE1, REORIE, PREC )
+                    ENDIF
+                  ELSE
+                     CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, NORIE2 )
+                  ENDIF
+                  NORIEN = NORIE1 + NORIE2
+                  IF ( NORIEN .NE. 0 ) THEN
+                     IER = IER + 1
+                     CALL UTDEBM('E',CMD,'MAILLE MAL ORIENTEE')
+                     CALL UTIMPK('S',': ', 1, NOMAIL)
+                     CALL UTFINM()
+                  ENDIF
+                  CALL JEDETR('&&CHVENO.NUME_MAILLE')
                ENDIF
  211         CONTINUE
              CALL JEDETR ('&&CHVENO.OBJET') 

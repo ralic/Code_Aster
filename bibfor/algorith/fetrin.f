@@ -4,7 +4,7 @@
      &              IFIV,NBPROC,RANG,K24IRR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -295,11 +295,13 @@ C -------------------------------------------------
 C ----  RECONSTRUCTION SOLUTION U GLOBALE
 C -------------------------------------------------
 C RAJOUT EVENTUEL DES PARTIES DUES AUX MODES DE CORPS RIGIDES
-            IF (NBMC.NE.0) THEN
+            IF (NBMC.NE.0) THEN     
+            
 C COMPOSANTES DES MODES DE CORPS RIGIDES
               CALL JEVEUO(JEXNOM(NOMSDR,NOMSD),'L',IFETR)
               IDECAI=IFETR
               DO 32 J=1,NBMC
+
 C COEFF. ALPHAI MULTIPLICATEUR      
                 ALPHA=ZR(IDECAA)                       
 C USOLI = USOLI + BI * ALPHAI         
@@ -383,7 +385,7 @@ C              ENDIF
 C MONITORING
 C            IF (INFOFE(4:4).EQ.'T') THEN
 C              WRITE(IFM,*)'NOEUD TARDIF NON PRIS DANS CETTE PASSE '
-C              WRITE(IFM,*)IDD,J,INO,ICMP
+C              WRITE(IFM,*)IDD,J,INO,ICMP,-ZR(JXSOL+J)
 C            ENDIF
 
               ENDIF           
@@ -426,6 +428,7 @@ C IL EST POSSIBLE D'AVOIR UN LIGREL DE MAILLE TARDIVE SANS NOEUD TARDIF
                 CALL JELIRA(JEXNUM(PRNOL,ILIL),'LONMAX',LPRNOL,K8BID)
                 CALL JEVEUO(JEXNUM(PRNOL,ILIL),'L',IPRNOL)
                 LPRNOL=LPRNOL/NEC2
+                
 C --------------------------------            
 C BOUCLE SUR LES NOEUDS TARDIFS DU LIGREL LIGRL
 C --------------------------------              
@@ -464,6 +467,7 @@ C LIGRL LIGREL TARDIF DUPLIQUE DE PERE LIGR2
    55             CONTINUE
 
 C SI LIGREL DUPLIQUE, IL FAUT RETROUVER SON INDICE DANS LE  PRNO GLOBAL
+                  IMULT=1
                   IF (LDUP) THEN
                     CALL JEVEUO(LIGR2(1:19)//'.FEL3','L',IFETL3)
                     CALL JELIRA(LIGR2(1:19)//'.FEL3','LONMAX',LFETL3,
@@ -491,6 +495,8 @@ C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE DE L'INTERFACE
      &                      (ZI(IAUX3-2).EQ.-INO)) THEN
 C VOICI SON NUMERO LOCAL CONCERNANT LE SD
                             KSOL=ZI(IAUX3)
+C MULTIPLICITE NON UTILISEE
+                            IMULT=-IAUX1
                             GOTO 65
                           ENDIF
    56                   CONTINUE
@@ -509,7 +515,8 @@ C DECALAGE DANS LE .VALE DU CHAM_NO GLOBAL
                   DVALG=ZI(IPRNOG+(KSOL-1)*NEC2)
 
 C VALEUR UI A TRANSFERRER SUR LE CHAM_NO GLOBAL ET SUR LE LOCAL
-                  RAUXL=-ZR(JXSOL+J)
+C ON DECALE DE J-1 AU LIEU DE J POUR NOEUD PHYSIQUE CAR J COMMENCE A 1
+                  RAUXL=-ZR(JXSOL+J-1)
                   ZR(IVALCS+J-1)=RAUXL
                       
 C TEST POUR VERIFIER LA CONTINUITE AUX INTERFACES, NORMALEMENT INACTIVE
@@ -534,13 +541,13 @@ C                    CALL UTFINM()
 C                  ENDIF           
 C                ENDIF
              
-C AFFECTATION EFFECTIVE DE UI VERS U         
-                  ZR(IVALG)=RAUXL
+C AFFECTATION EFFECTIVE DE UI VERS U
+                 ZR(IVALG)=ZR(IVALG)+RAUXL         
 
 C MONITORING
 C              IF (INFOFE(4:4).EQ.'T') THEN
 C                WRITE(IFM,*)'NOEUD TARDIF',LDUP
-C                WRITE(IFM,*)IDD,LIGRL,INO,J,K,IVALG,RAUXL
+C                WRITE(IFM,*)IDD,LIGRL,INO,J,K,DVALG,RAUXL
 C              ENDIF             
    80           CONTINUE
               ENDIF
@@ -569,8 +576,9 @@ C REDUCTION DU RESIDU INITIAL POUR LE PROCESSUS MAITRE
           CALL FETMPI(7,NBI,IFM,NIVMPI,IBID,IBID,K24IRR,K24B,K24B,RBID)
           
         ELSE
-C REDUCTION DU CHAM_NO GLOBAL POUR LE PROCESSUS MAITRE
-          CALL FETMPI(7,NBPB,IFM,NIVMPI,IBID,IBID,K24VAL,K24B,K24B,RBID)
+C REDUCTION DU CHAM_NO GLOBAL POUR TOUS LES PROCESSEURS
+          CALL FETMPI(71,NBPB,IFM,NIVMPI,IBID,IBID,K24VAL,K24B,K24B,
+     &                RBID)
           IF ((RANG.EQ.0).AND.(INFOFE(2:2).EQ.'T'))
      &       CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24VAL(1:19),1,' ')
         ENDIF

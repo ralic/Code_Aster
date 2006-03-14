@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -223,10 +223,10 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDT   , NDI   , NR  , NVI, IRET
+        INTEGER         IMAT , NDT   , NDI   , NR  , NVI
         INTEGER         ITMAX, ICOMP  , JFIS1, KPG, KSP
-        INTEGER         NMAT , IOPTIO , IDNR
-        INTEGER         IRTET, IRTETI, K, L,I,J
+        INTEGER         NMAT
+        INTEGER         IRTET, IRTETI, K, L
         REAL*8          TOLER
         REAL*8          EPSI
         LOGICAL         BZ
@@ -252,6 +252,7 @@ C
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
 C
+        REAL*8          TOUTMS(5,12,6),HSR(5,12,12)
         CHARACTER*7     ETATD  ,     ETATF
         CHARACTER*8     MOD    ,     TYPMA,   TYPMOD(*)
         CHARACTER*16    COMP(*),     OPT,        LOI, CPMONO(5*NMAT+1)
@@ -289,7 +290,7 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                HYDRD,HYDRF,SECHD,SECHF,TYPMA,BZ,MATERD,MATERF,
+     1             HYDRD,HYDRF,SECHD,SECHF,TYPMA,BZ,HSR,MATERD,MATERF,
      3                MATCST,NBCOMM, CPMONO, ANGMAS, PGL,ITMAX, TOLER,
      2                NDT , NDI , NR, NVI, VIND)
  
@@ -362,7 +363,7 @@ C
           CALL LCPLAS ( FAMI,KPG,KSP,LOI, TOLER, ITMAX, MOD, IMAT, NMAT,
      1                  MATERD,MATERF, MATCST, NR, NVI, TEMPD, TEMPF,
      2                  TIMED,TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF,
-     3                  VINF,COMP,NBCOMM, CPMONO, PGL,
+     3                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
      3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
 C
           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
@@ -433,8 +434,8 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
 
                 CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,TEMPF,
-     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
-     &                  EPSD,DEPS,SIGF,VINF,SIGD,VIND, 
+     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &                  NR,NVI,EPSD,DEPS,SIGF,VINF,SIGD,VIND, 
      &                   DSDE )
 
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN

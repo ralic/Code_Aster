@@ -8,7 +8,7 @@
       CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      ICMP, JSIGU, ICMPS, INDICE, LONG, NBINST,
      +             NBTHER, JTHER, ITH, NUMTH, JTHUN
-      REAL*8       PIJ, MIJ(6), SN, SIJ(6), SIGU
+      REAL*8       PIJ, MIJ(12), SN, SIJ(6), SIGU
       CHARACTER*4  TYP2
       CHARACTER*8  K8B, TYPE, KNUMES, KNUMET 
 C DEB ------------------------------------------------------------------
@@ -81,7 +81,7 @@ C
 C
 C --- VARIATION DE MOMENT RESULTANT
 C
-      DO 10 ICMP = 1 , 6
+      DO 10 ICMP = 1 , 12
          MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
    10 CONTINUE
 C
@@ -90,12 +90,12 @@ C     POUR LE CHARGEMENT PIJ, MIJ
 C
       DO 30 ICMPS = 1 , 6
          SIJ(ICMPS) = 0.D0
-         DO 20 ICMP = 1 , 6
-            SIGU = ZR(JSIGU-1+42+6*(ICMP-1)+ICMPS)
+         DO 20 ICMP = 1 , 12
+            SIGU = ZR(JSIGU-1+78+6*(ICMP-1)+ICMPS)
             SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
    20    CONTINUE
 C ------ PRESSION
-         SIGU = ZR(JSIGU-1+42+36+ICMPS)
+         SIGU = ZR(JSIGU-1+78+72+ICMPS)
          SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
    30 CONTINUE
 C
@@ -117,7 +117,7 @@ C
                TYP2 = 'SITU'
             ENDIF
             IF ( SEISME ) THEN
-               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+42),  
+               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
      &                                          NBINST, ZR(INDICE), SN )
             ELSE
                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
@@ -149,7 +149,7 @@ C
                  TYP2 = 'SITU'
                ENDIF
                IF ( SEISME ) THEN
-                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+42),  
+                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
      &                                          NBINST, ZR(INDICE), SN )
                ELSE
                  CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
@@ -178,7 +178,7 @@ C
                TYP2 = 'SITU'
             ENDIF
             IF ( SEISME ) THEN
-               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+42), NBINST, 
+               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78), NBINST, 
      &                                                ZR(INDICE), SN )
             ELSE
                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
@@ -210,7 +210,7 @@ C
                  TYP2 = 'SITU'
                ENDIF
                IF ( SEISME ) THEN
-                  CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+42),  
+                  CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
      &                                          NBINST, ZR(INDICE), SN )
                ELSE
                   CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )

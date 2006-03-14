@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -372,30 +372,6 @@ EXPL1=CALC_ELEM(reuse =EXPL1,
                 RESULTAT=EXPL1,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-95.5,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=EXPL1,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.00067575375081,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=EXPL1,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-1.80404222067e-05,
-                   REFERENCE='NON_REGRESSION',),),);
                    
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
 # TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
@@ -689,30 +665,6 @@ IMPL1=CALC_ELEM(reuse =IMPL1,
                  RESULTAT=IMPL1,
                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-95.5,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=IMPL1,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-6.7624122427106E-04,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=IMPL1,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-1.8527919867920E-05,
-                   REFERENCE='NON_REGRESSION',),),);
                    
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
 # TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
@@ -756,8 +708,10 @@ IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                    COMPOR=COMPOR2,
                                    DEFORMATION='PETIT',
+                                   ITER_INTE_MAXI=100,
+                                   ITER_INTE_PAS=10,
                                    TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINSTC,
+                     INCREMENT=(_F(LIST_INST=LINST,
                                    SUBD_PAS=4,
                                    SUBD_PAS_MINI=1e-06,),),
                      NEWTON=(_F(REAC_ITER=1,),),
@@ -768,30 +722,6 @@ IMPL2=CALC_ELEM(reuse =IMPL2,
                  RESULTAT=IMPL2,
                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-95.5,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=IMPL2,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-6.7594357924921E-04,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=IMPL2,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-1.8230080633111E-05,
-                   REFERENCE='NON_REGRESSION',),),);
                    
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
 # TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
@@ -922,57 +852,3 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLTOUT,
 FIN(FORMAT_HDF='OUI',);
                    
 # IMPLICITE : TEST DE ECOU_VISC3, TRES LENT CAR PAS D'ECROUISSAGE
-
-IMPL3=STAT_NON_LINE(MODELE=TROISD,INFO=1,
-                     CHAM_MATER=MAT3,
-                     EXCIT=(_F(CHARGE=TRAC3,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPOR3B,
-                                   DEFORMATION='PETIT',
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=100,
-                                   ITER_INTE_PAS=-20,
-                                   RESO_INTE='IMPLICITE',
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST3C,
-                                   SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1e-06,),),
-                     NEWTON=_F(REAC_ITER=1),
-                     ARCHIVAGE=_F(LIST_INST=LINST3,),
-                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                   #                  ITER_GLOB_MAXI=100,
-                                     ),
-                                     ),
-                                     );
-
-IMPL3=CALC_ELEM(reuse =IMPL3,
-                 RESULTAT=IMPL3,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-
-TEST_RESU(RESU=(_F(RESULTAT=IMPL3,
-                   INST=TFIN3,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-92.37,PRECISION=0.07,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=IMPL3,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=IMPL3,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-9.36E-03,PRECISION=0.004,
-                   REFERENCE='AUTRE_ASTER',),),);
-                   

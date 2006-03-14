@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,20 +52,30 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER       JREFD, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
-      INTEGER       NMIN1, KMODE, NORDR, IBID, I, J, LADPA, LMODE, LVALE
+      INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
+      INTEGER       INDK24, NBPAST, IRANG
+      PARAMETER    ( NBPAST = 17 )
       CHARACTER*8   RES ,K8B, RAIDE
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO
-      CHARACTER*24  REFD,NUME
+      CHARACTER*24  REFD,NUME,NOPAST(NBPAST)
       LOGICAL       LREFD, LNUME
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
+C
+C --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
+      DATA  NOPAST /        'NUME_MODE'       , 'NORME'           ,
+     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
+     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
 C
       CALL GETRES (RES, TYPCON, NOMCMD )
-
+C
 C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
       IF ( TYPCON .EQ. 'EVOL_NOLI' ) THEN
         TYPCON = 'MODE_FLAMB'
@@ -101,7 +111,7 @@ C Si elle existe on prend la numerotation associee
 C
 C
 C     --- CONTROLE PREALABLE ---
-      DO 10 IMODE = 1, NBMODE
+      DO 20 IMODE = 1, NBMODE
          JMODE = RESUFI(IMODE,1)
          IF ( JMODE .LT. 1 .AND. INEG .GT. 0 ) THEN
             CALL UTMESS('A','VPSTOR'//'.VPSTOR',
@@ -111,7 +121,7 @@ C     --- CONTROLE PREALABLE ---
      +                  'SINGULIER (CECI CORRESPOND GENERALEMENT '//
      +                  'A UN PROBLEME DANS LA MODELISATION).' )
          ENDIF
- 10   CONTINUE
+ 20   CONTINUE
 C
 C     --- STOCKAGE DES MODES ---
       CALL RSEXIS ( MODES , IER )
@@ -123,7 +133,7 @@ C
       IMIN = 1
       NMAX = RESUFI(1,1)
       IMAX = 1
-      DO 80 IMODE = 2, NBMODE
+      DO 30 IMODE = 2, NBMODE
          IF ( RESUFI(IMODE,1) .LT. NMIN ) THEN
             NMIN = RESUFI(IMODE,1)
             IMIN = IMODE
@@ -132,10 +142,10 @@ C
             NMAX = RESUFI(IMODE,1)
             IMAX = IMODE
          ENDIF
- 80   CONTINUE
+ 30   CONTINUE
       NMIN1 = NMAX
 C
-      DO 100 IMODE = 1, NBMODE
+      DO 40 IMODE = 1, NBMODE
 C
 C       STOCKAGE DES FREQUENCES PAR ORDRE CROISSANT DE NUMERO
         IF (IMODE.EQ.1) THEN
@@ -143,13 +153,13 @@ C       STOCKAGE DES FREQUENCES PAR ORDRE CROISSANT DE NUMERO
         ELSEIF (IMODE.EQ.NBMODE) THEN
            KMODE = IMAX
         ELSE
-           DO 101 LMODE = 1, NBMODE
+           DO 42 LMODE = 1, NBMODE
               IF ( RESUFI(LMODE,1) .GT. NMIN  .AND.
      +             RESUFI(LMODE,1) .LT. NMIN1 ) THEN
                  NMIN1 = RESUFI(LMODE,1)
                  KMODE = LMODE
               ENDIF
- 101       CONTINUE
+ 42        CONTINUE
            NMIN  = NMIN1
            NMIN1 = NMAX
         ENDIF
@@ -179,46 +189,52 @@ C        --- VECTEUR PROPRE ---
         ENDIF
         CALL JEVEUO (CHAMNO//'.VALE', 'E', LVALE )
         IF (TYPE(1:1) .EQ. 'R' ) THEN
-           DO 110 IEQ = 1, NEQ
+           DO 44 IEQ = 1, NEQ
               ZR(LVALE+IEQ-1) = VECPR8(IEQ,KMODE)
- 110       CONTINUE
+ 44        CONTINUE
         ELSEIF (TYPE(1:1) .EQ. 'C' ) THEN
-           DO 120 IEQ = 1, NEQ
+           DO 46 IEQ = 1, NEQ
               ZC(LVALE+IEQ-1) = VECPC8(IEQ,KMODE)
- 120       CONTINUE
+ 46        CONTINUE
         ENDIF
         CALL RSNOCH (MODES, NOSY, NORDR, ' ' )
 C
-C        --- VARIABLES ET PARAMETRES ---
+C ----- ON STOCKE 'NUME_MODE'
 C
-        IF ( TYPCON.EQ.'MODE_FLAMB'  .AND. NOMCMD.NE.'NORM_MODE') THEN
-           CALL RSADPA(MODES,'E',1,NOPARA(1),NORDR,0,LADPA,K8B)
-           ZI(LADPA) = RESUFI(KMODE,1)
-           CALL RSADPA(MODES,'E',1,NOPARA(NBPARI+1),NORDR,0,LADPA,K8B)
-           ZK24(LADPA) = RESUFK(KMODE,1)
-           J = NBPARI + NBPARK
-           CALL RSADPA(MODES,'E',1,'CHAR_CRIT',NORDR,0,LADPA,K8B)
-           ZR(LADPA) = RESUFR(KMODE,2)
-           CALL RSADPA(MODES,'E',1,'ERREUR',NORDR,0,LADPA,K8B)
-           ZR(LADPA) = RESUFR(KMODE,4)
-        ELSE
-           DO 200 I = 1 , NBPARI
-              CALL RSADPA(MODES,'E',1,NOPARA(I),NORDR,0,LADPA,K8B)
-              ZI(LADPA) = RESUFI(KMODE,I)
- 200       CONTINUE
-           DO 210 I = 1 , NBPARK
-              CALL RSADPA(MODES,'E',1,NOPARA(NBPARI+I),NORDR,
-     &        0,LADPA,K8B)
-              ZK24(LADPA) = RESUFK(KMODE,I)
- 210       CONTINUE
-           J = NBPARI + NBPARK
-           DO 220 I = 1 , NBPARR
-              CALL RSADPA(MODES,'E',1,NOPARA(J+I),NORDR,0,LADPA,K8B)
-              ZR(LADPA) = RESUFR(KMODE,I)
- 220       CONTINUE
+        IRANG = INDK24(NOPARA,NOPAST(1),1,NBPARI)
+        IF ( IRANG .GT. 0 ) THEN
+           CALL RSADPA(MODES,'E',1,NOPAST(1),NORDR,0,LADPA,K8B)
+           ZI(LADPA) = RESUFI(KMODE,IRANG)
         ENDIF
 C
- 100  CONTINUE
+C ----- ON STOCKE 'NORME'
+C
+        IRANG = INDK24(NOPARA(NBPARI+1),NOPAST(2),1,NBPARK)
+        IF ( IRANG .GT. 0 ) THEN
+           CALL RSADPA(MODES,'E',1,NOPAST(2),NORDR,0,LADPA,K8B)
+           ZK24(LADPA) = RESUFK(KMODE,IRANG)
+        ENDIF
+C
+C ----- ON STOCKE LES PARAMETRES REELS
+C
+        IF ( TYPCON .EQ. 'MODE_FLAMB' ) THEN
+           CALL RSADPA(MODES,'E',1,'CHAR_CRIT',NORDR,0,LADPA,K8B)
+           IF ( NOMCMD.EQ.'NORM_MODE') THEN
+             ZR(LADPA) = RESUFR(KMODE,1)
+           ELSE
+             ZR(LADPA) = RESUFR(KMODE,2)
+           ENDIF
+        ELSE
+          DO 48 I = 3 , NBPAST
+            IRANG = INDK24(NOPARA(NBPARI+NBPARK+1),NOPAST(I),1,NBPARR)
+            IF ( IRANG .GT. 0 ) THEN
+              CALL RSADPA(MODES,'E',1,NOPAST(I),NORDR,0,LADPA,K8B)
+              ZR(LADPA) = RESUFR(KMODE,IRANG)
+            ENDIF
+ 48       CONTINUE
+        ENDIF
+C
+ 40   CONTINUE
 C
       CALL JEDEMA ( )
       END

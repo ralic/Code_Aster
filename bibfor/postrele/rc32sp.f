@@ -8,7 +8,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER ICMP,JSIGU,ICMPS,LONG,NBINST,NBTHER,JTHER,ITH,NUMTH,JTHUN
-      REAL*8       PIJ,MIJ(6),SP,SIJ(6),SIGU,SIJ0(6)
+      REAL*8       PIJ,MIJ(12),SP,SIJ(6),SIGU,SIJ0(6)
       CHARACTER*4  TYP2
       CHARACTER*8  K8B, TYPE, KNUMES, KNUMET
 C DEB ------------------------------------------------------------------
@@ -79,7 +79,7 @@ C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 
 C --- VARIATION DE MOMENT RESULTANT
 
-      DO 10 ICMP = 1,6
+      DO 10 ICMP = 1,12
         MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
    10 CONTINUE
 
@@ -90,12 +90,12 @@ C     POUR LE CHARGEMENT PIJ, MIJ
       DO 30 ICMPS = 1,6
         SIJ(ICMPS) = 0.D0
         SIJ0(ICMPS) = 0.D0
-        DO 20 ICMP = 1,6
+        DO 20 ICMP = 1,12
           SIGU = ZR(JSIGU-1+6*(ICMP-1)+ICMPS)
           SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
    20   CONTINUE
 C ----- PRESSION
-        SIGU = ZR(JSIGU-1+36+ICMPS)
+        SIGU = ZR(JSIGU-1+72+ICMPS)
         SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
    30 CONTINUE
 

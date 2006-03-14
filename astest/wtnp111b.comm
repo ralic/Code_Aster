@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 # ======================================================================
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,6 +67,8 @@ KINT=DEFI_CONSTANTE(VALE=1.0E-19,);
 
 FONCT1=DEFI_FONCTION(   NOM_PARA='INST',
                            VALE=( 0., 2000., 20., 0., ) )
+FONCT2=DEFI_FONCTION(   NOM_PARA='INST',
+                           VALE=( 0., 1., 20., 1., ) )                           
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=51000000.0,
                           NU=0.49,
@@ -100,12 +102,12 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                                                          ))
 
 CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                     CONTACT=_F(APPARIEMENT='NON',
-                                GROUP_MA_ESCL=('DROITE'),
+                       LIAISON_UNILATER=_F(
+                                GROUP_MA=('DROITE'),
                                 SANS_GROUP_NO=('MIL_DROITE'),
-                                NOM_CHAM='PRE1',
+                                NOM_CMP = ('PRE1',),
                                 COEF_IMPO=FONCT1,
-                                COEF_MULT_ESCL=1.0,),);
+                                COEF_MULT=FONCT2,),);
 
 
 MESTAT=STAT_NON_LINE(MODELE=MODELE,
@@ -113,13 +115,13 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      EXCIT=(_F(CHARGE=CHAR0,),
                             _F(CHARGE=CHAR1,),
                                                    ),
-                     COMP_INCR=_F(RELATION='KIT_HM',
-                                  ITER_INTE_MAXI=5,
+                     COMP_INCR=_F(RELATION='KIT_HM',ITER_INTE_MAXI=5,
                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                      INCREMENT=_F(LIST_INST=LI,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=20,),
-                     CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                    ),
                      PARM_THETA=1.0,);
 
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,

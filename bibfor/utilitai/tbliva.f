@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMTA,LIPACR(*),VK(*),VALK,CRIT(*),CTYPE,PARA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,18 +105,16 @@ C
             JNPAR = ZK24(JTBLP+4*(J-1))
             IF ( INPAR .EQ. JNPAR ) GOTO 10
  12      CONTINUE
-         CALL UTDEBM('F','TBLIVA','ERREUR DANS LES DONNEES') 
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         IER = 1
+         GOTO 9999
  10   CONTINUE
       INPAR = PARA
       DO 14 J = 1 , NBPARA
          JNPAR = ZK24(JTBLP+4*(J-1))
          IF ( INPAR .EQ. JNPAR ) GOTO 16
  14   CONTINUE
-      CALL UTDEBM('F','TBLIVA','ERREUR DANS LES DONNEES') 
-      CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-      CALL UTFINM( )
+      IER = 1
+      GOTO 9999
  16   CONTINUE
 C
       NOMJV = ZK24(JTBLP+2)

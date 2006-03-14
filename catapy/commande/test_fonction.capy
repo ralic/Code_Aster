@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,6 @@
 TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
             fr="Extraction d'une valeur numérique ou d'un attribut de fonction pour comparaison à une valeur de référence",
             UIinfo={"groupes":("Impression",)},
-         UNITE           =SIMP(statut='f',typ='I',defaut=8),  
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",

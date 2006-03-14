@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,24 +53,24 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER NBNO2,IDCAL1,IDCAL2
       INTEGER ICONB1,ICONU1,ICOCF1,ICONB2,ICONU2,ICOCF2
       INTEGER NNO11,NNO12,I,INDIRE,LNO
-      INTEGER NBTYP,NDDL2,JLISTK,JDIM,NDIM1
+      INTEGER NBTYP,NDDL2,JLISTK,JDIM,NDIM1,IRET,NBPAR
       INTEGER JNBN,JNUNOE,JNORM,IDIM,IJ,N1,N2,NORIEN
-      LOGICAL LROTA,DNOR,LREORI
-      REAL*8 BETA,COEF1,MROTA(3,3),ZERO,NORMAL(3)
-      COMPLEX*16 BETAC
-      CHARACTER*2 TYPLAG
-      CHARACTER*4 FONREE
-      CHARACTER*4 TYPCOE,ZCST,TYPLIA
-      CHARACTER*8 K8B,NOMA,MO,M8BLAN,NOMAIL
-      CHARACTER*8 KBETA,NONO1,NONO2,CHARGE,CMP,DDL2,LISTYP(10)
-      CHARACTER*16 MOTFAC,CORES1,CORES2,TYMOCL(4),MOTCLE(4),NOMCMD
-      CHARACTER*19 LIGRMO
-      CHARACTER*19 LISREL
-      CHARACTER*24 GEOM3,MAILMA
-      CHARACTER*1 KB
-      REAL*8 RBID
-      REAL*8 COEF11,COEF12,COEF3
       INTEGER ICOEF1,ICOEF2,ICOEF3,IAGNO3,NBNO3,NBMA3,IDMAI3
+      LOGICAL LROTA,DNOR,LREORI
+      REAL*8       BETA,COEF1,MROTA(3,3),ZERO,NORMAL(3)
+      REAL*8       R8B,PREC,ARMIN
+      REAL*8       COEF11,COEF12,COEF3
+      COMPLEX*16   CBID,BETAC
+      CHARACTER*1  KB
+      CHARACTER*2  TYPLAG
+      CHARACTER*4  FONREE
+      CHARACTER*4  TYPCOE,ZCST,TYPLIA
+      CHARACTER*8  K8B,NOMA,MO,M8BLAN,NOMAIL
+      CHARACTER*8  KBETA,NONO1,NONO2,CHARGE,CMP,DDL2,LISTYP(10)
+      CHARACTER*16 MOTFAC,CORES1,CORES2,TYMOCL(4),MOTCLE(4),NOMCMD
+      CHARACTER*19 LIGRMO, NOMT19
+      CHARACTER*19 LISREL
+      CHARACTER*24 GEOM3, PARA
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -106,7 +106,6 @@ C ----------------------------------------------------------------------
       LIGRMO = MO//'.MODELE'
       CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
       NOMA = ZK8(JNOMA)
-      MAILMA = NOMA//'.NOMMAI'
 
       NDIM = 3
       CALL DISMOI('F','Z_CST',MO,'MODELE',IBID,ZCST,IER)
@@ -130,6 +129,29 @@ C ----------------------------------------------------------------------
         LISTYP(9) = 'SEG3'
         LISTYP(10) = 'SEG4'
       END IF
+C
+C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
+C
+      CALL JEEXIN ( NOMA//'           .LTNT', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
+         NBPAR = 0
+         PARA = 'AR_MIN                  '
+         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
+     +                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
+     +                K8B, IRET )
+          IF ( IRET .EQ. 0 ) THEN
+             PREC = ARMIN*1.D-06
+          ELSEIF ( IRET .EQ. 1 ) THEN
+             PREC = 1.D-10
+          ELSE
+             CALL UTMESS('F','CALIRC',
+     + 'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+          ENDIF
+      ELSE
+         CALL UTMESS('F','CALYRC',
+     +            'LA TABLE "CARA_GEOM" N''EXISTE PAS DANS LE MAILLAGE')
+      ENDIF
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NNOMX,KB,IER)
       IDMAX = NNOMX + 3
@@ -209,18 +231,11 @@ C        ---------------------------------------------
           END IF
           CALL JEVEUO('&&CALYRC.LIMANU3','L',IDMAI3)
 
-          DO 10 I = 1,NBMA3
-            CALL JENUNO(JEXNUM(MAILMA,ZI(IDMAI3+I-1)),NOMAIL)
-            CALL ORIEMA(NOMAIL,MO,LREORI,NORIEN)
-            IF (NORIEN.NE.0) THEN
-              IER = IER + 1
-              CALL UTDEBM('E','CALYRC','MAILLE MAL ORIENTEE')
-              CALL UTIMPK('S',' : ',1,NOMAIL)
-              CALL UTFINM()
-            END IF
-   10     CONTINUE
-          IF (IER.NE.0) THEN
-            CALL UTMESS('F','CALYRC','ARRET SUR ERREUR(S)')
+          NORIEN = 0
+          CALL ORILMA ( MO, NOMA, NDIM, ZI(IDMAI3), NBMA3, NORIEN,
+     +                  LREORI, PREC )
+          IF (NORIEN.NE.0) THEN
+              CALL UTMESS('F','CALYRC','MAILLES MAL ORIENTEES')
           END IF
 
 C ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
@@ -264,20 +279,20 @@ C       -------------------
         IF (NDIM.EQ.2) THEN
 C        -- 1er groupe esclave / 1er groupe maitre --
           CALL PJ2DCO('PARTIE',MO,MO,NBMA1,ZI(IAGMA1),NBNO3,ZI(IAGNO3),
-     &                ' ',GEOM3,CORES1,.FALSE.,RBID)
+     &                ' ',GEOM3,CORES1,.FALSE.,R8B)
           IF (NBMA2.GT.0) THEN
 C        -- 1er groupe esclave  / 2eme groupe maitre --
           CALL PJ2DCO('PARTIE',MO,MO,NBMA2,ZI(IAGMA2),NBNO3,ZI(IAGNO3),
-     &                ' ',GEOM3,CORES2,.FALSE.,RBID)
+     &                ' ',GEOM3,CORES2,.FALSE.,R8B)
           ENDIF
         ELSE IF (NDIM.EQ.3) THEN
 C        -- 1er groupe esclave / 1er groupe maitre --
           CALL PJ3DCO('PARTIE',MO,MO,NBMA1,ZI(IAGMA1),NBNO3,ZI(IAGNO3),
-     &                ' ',GEOM3,CORES1,.FALSE.,RBID)
+     &                ' ',GEOM3,CORES1,.FALSE.,R8B)
           IF (NBMA2.GT.0) THEN
 C        -- 1er groupe esclave  / 2eme groupe maitre --
           CALL PJ3DCO('PARTIE',MO,MO,NBMA2,ZI(IAGMA2),NBNO3,ZI(IAGNO3),
-     &                ' ',GEOM3,CORES2,.FALSE.,RBID)
+     &                ' ',GEOM3,CORES2,.FALSE.,R8B)
           ENDIF
         END IF
 

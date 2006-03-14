@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 13/03/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,9 +192,9 @@ TPRESS = CALC_TABLE(TABLE=TPRESS,reuse=TPRESS,
 
 TPRES  = CALC_TABLE(TABLE=TPRESS,
                     ACTION=_F(OPERATION='FILTRE',
-                              FILTRE=_F(NOM_PARA='COS',
-                                          CRIT_COMP='LE',
-                                          VALE=180.),),)
+                              NOM_PARA='COS',
+                              CRIT_COMP='LE',
+                              VALE=180.),)
 
 IMPR_TABLE(TABLE=TPRESS)
 
@@ -211,9 +211,9 @@ TCONT = CALC_TABLE(TABLE=TCONT,reuse=TCONT,
 
 TCON  = CALC_TABLE(TABLE=TCONT,
                    ACTION=_F(OPERATION='FILTRE',
-                             FILTRE=_F(NOM_PARA='COS',
-                                      CRIT_COMP='LE',
-                                      VALE=180.),),)
+                             NOM_PARA='COS',
+                              CRIT_COMP='LE',
+                             VALE=180.),)
 
 IMPR_TABLE(TABLE=TCONT)
 

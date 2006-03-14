@@ -7,7 +7,7 @@
       LOGICAL           LMASIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/04/2000   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,12 @@ C IN  DDLEXC : TABLEAU DES DDL EXCLUS
 C          = 0 SI EXCLUS
 C          = 1 SI NON EXCLUS
 C VAR VECPRO : TABLEAU DES VECTEURS PROPRES
-C VAR RESUFR : TABLEAU DES GRANDEURS MODALES
+C VAR RESUFR : TABLEAU DES GRANDEURS MODALES RANGEES SELON
+C        'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
+C        'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+C        'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+C        'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+C        'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' 
 C IN  LMASIN : CALCUL DES MASSES MODALES UNITAIRES
 C IN  XMASTR : MASSE DE LA STRUCTURE
 C OUT COEF   : COEFFICIENTS
@@ -95,17 +100,17 @@ C
  8          CONTINUE
             IF (PARA.EQ.'OUI') THEN
                XX2 = XX1 * XX1
+               RESUFR(IM,4)  = RESUFR(IM,4)  * XX2
                RESUFR(IM,5)  = RESUFR(IM,5)  * XX2
-               RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
-C-PROV         RESUFR(IM,7)  = RESUFR(IM,7)  * XX2
+C-PROV         RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
+               RESUFR(IM,10) = RESUFR(IM,10) * XNORM
                RESUFR(IM,11) = RESUFR(IM,11) * XNORM
                RESUFR(IM,12) = RESUFR(IM,12) * XNORM
-               RESUFR(IM,13) = RESUFR(IM,13) * XNORM
             ELSE
                XX2 = XX1 * XX1
+               RESUFR(IM,4)  = RESUFR(IM,4)  * XX2
                RESUFR(IM,5)  = RESUFR(IM,5)  * XX2
-               RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
-C-PROV         RESUFR(IM,7)  = RESUFR(IM,7)  * XX2
+C-PROV         RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
             ENDIF
  2       CONTINUE
 C
@@ -113,19 +118,19 @@ C
 C
 C     --- ON NORMALISE LA MASSE OU LA RAIDEUR GENERALISEE A 1 ---
 C
-         INDG = 5
-         IF (NORM.EQ.'RIGI_GENE') INDG=6
+         INDG = 4
+         IF (NORM.EQ.'RIGI_GENE') INDG=5
          IF (PARA.EQ.'OUI') THEN
             DO 10 IM = 1,NBMODE
                XMN = RESUFR(IM,INDG)
                XX1 = 1.0D0 / XMN
                XX2 = SQRT(XMN)
                XX3 = 1.0D0 / XX2
+               RESUFR(IM,4)  = RESUFR(IM,4)  * XX1
                RESUFR(IM,5)  = RESUFR(IM,5)  * XX1
-               RESUFR(IM,6)  = RESUFR(IM,6)  * XX1
+               RESUFR(IM,10) = RESUFR(IM,10) * XX2
                RESUFR(IM,11) = RESUFR(IM,11) * XX2
                RESUFR(IM,12) = RESUFR(IM,12) * XX2
-               RESUFR(IM,13) = RESUFR(IM,13) * XX2
                COEF(IM) = XX3
                DO 12 IE = 1,NEQ
                   VECPRO(IE,IM) = VECPRO(IE,IM) * XX3
@@ -163,9 +168,9 @@ C
       ENDIF
       IF ( LMASIN ) THEN
          DO 30 IM = 1,NBMODE
-            RESUFR(IM,14) = RESUFR(IM,8 ) / XMASTR
-            RESUFR(IM,15) = RESUFR(IM,9 ) / XMASTR
-            RESUFR(IM,16) = RESUFR(IM,10) / XMASTR
+            RESUFR(IM,13) = RESUFR(IM,7) / XMASTR
+            RESUFR(IM,14) = RESUFR(IM,8) / XMASTR
+            RESUFR(IM,15) = RESUFR(IM,9) / XMASTR
  30      CONTINUE
       ENDIF
 C
@@ -179,9 +184,9 @@ C
                   VECPRO(IE,IM) = -VECPRO(IE,IM)
  102           CONTINUE
                IF (PARA.EQ.'OUI') THEN
+                  RESUFR(IM,10) = -RESUFR(IM,10)
                   RESUFR(IM,11) = -RESUFR(IM,11)
                   RESUFR(IM,12) = -RESUFR(IM,12)
-                  RESUFR(IM,13) = -RESUFR(IM,13)
                ENDIF
             ENDIF
  100     CONTINUE
@@ -194,9 +199,9 @@ C
                   VECPRO(IE,IM) = -VECPRO(IE,IM)
  112           CONTINUE
                IF (PARA.EQ.'OUI') THEN
+                  RESUFR(IM,10) = -RESUFR(IM,10)
                   RESUFR(IM,11) = -RESUFR(IM,11)
                   RESUFR(IM,12) = -RESUFR(IM,12)
-                  RESUFR(IM,13) = -RESUFR(IM,13)
                ENDIF
             ENDIF
  110     CONTINUE

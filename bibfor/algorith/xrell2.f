@@ -1,7 +1,7 @@
-      SUBROUTINE XRELL2(NARZ,TABNOZ,TABCOZ,FISS)
+      SUBROUTINE XRELL2(NARZ,NDIM,TABNOZ,TABCOZ,FISS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,8 @@ C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
 
-      INTEGER       NARZ,TABNOZ(3,NARZ)
-      REAL*8        TABCOZ(3,NARZ)
+      INTEGER       NARZ,NDIM,TABNOZ(3,NARZ)
+      REAL*8        TABCOZ(NDIM,NARZ)
       CHARACTER*8   FISS
 
 C   CHOIX DE L'ESPACE DES LAGRANGES VERSION2 (VOIR BOOK VI 30/09/05)
@@ -42,8 +42,8 @@ C       FISS     : SD FISS_XFEM AVEC LISTE DES RELATIONS ENTRE LAGRANGE
       INTEGER     MI,MA,NPAQ,T2(NARZ),NRELEQ,IP,DIMEQ,EQ(NARZ),IE,IPAQ
       INTEGER     LISEQT(NARZ,2),JLIS1,NRELRL,IH,IEXT,LISRLT(NARZ,3)
       INTEGER     COEFI(2),JLIS2,JLIS3
-      REAL*8      TABCO(NARZ,3),R8MAEM,DIST,DISMIN,LISCOT(NARZ,3)
-      REAL*8      COEFR(2),COARHY(NARZ,3)
+      REAL*8      TABCO(NARZ,NDIM),R8MAEM,DIST,DISMIN,LISCOT(NARZ,3)
+      REAL*8      COEFR(2),COARHY(NARZ,NDIM)
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*32       JEXNUM , JEXNOM , JEXATR
@@ -71,8 +71,10 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       DO 100 I=1,NAR
         DO 101 J=1,3
           TABNO(I,J)=TABNOZ(J,I)
-          TABCO(I,J)=TABCOZ(J,I)  
  101    CONTINUE
+        DO 102 J=1,NDIM
+          TABCO(I,J)=TABCOZ(J,I)  
+ 102    CONTINUE
  100  CONTINUE
 
 C     -------------------------------------------------------------
@@ -141,8 +143,10 @@ C         ON SAUVE BESTAR DANS ARHY ET NOARHY
           NBARHY=NBARHY+1
           DO 213 I=1,3
             ARHY(NBARHY,I)=TABNO(BESTAR,I)
-            COARHY(NBARHY,I)=TABCO(BESTAR,I)
  213      CONTINUE
+          DO 214 I=1,NDIM
+            COARHY(NBARHY,I)=TABCO(BESTAR,I)
+ 214      CONTINUE
 
 C         UPDATE SCORE DES NOEUDS SI ON SUPPRIMAIT LA MEILLEURE ARETE
           SCORNO(TABDIR(BESTAR,1))=SCORNO(TABDIR(BESTAR,1))-1
@@ -155,18 +159,18 @@ C         ON SUPPRIME EFFECTIVEMENT LA MEILLEURE ARETE
             TABNO(I,3) = TABNO(I+1,3)
             TABDIR(I,1)= TABDIR(I+1,1)
             TABDIR(I,2)= TABDIR(I+1,2)
-            TABCO(I,1) = TABCO(I+1,1)
-            TABCO(I,2) = TABCO(I+1,2)
-            TABCO(I,3) = TABCO(I+1,3)
+            DO 230 J=1,NDIM
+              TABCO(I,J) = TABCO(I+1,J)
+ 230        CONTINUE
  220      CONTINUE
           TABNO(NAR,1)=0
           TABNO(NAR,2)=0
           TABNO(NAR,3)=0
           TABDIR(NAR,1)=0
           TABDIR(NAR,2)=0
-          TABCO(NAR,1)=0
-          TABCO(NAR,2)=0
-          TABCO(NAR,3)=0
+          DO 240 J=1,NDIM
+            TABCO(NAR,J)=0    
+ 240      CONTINUE
           NAR=NAR-1
         ENDIF
 
@@ -256,7 +260,7 @@ C     ------------------------------------------------------------------
 C     CREATION DES RELATION LINEAIRES A IMPOSER
 C     ------------------------------------------------------------------
 
-C     NOMBRE DE RELATIONS MINEAIRES  = NB D'ARETES HYPERSTATIQUES
+C     NOMBRE DE RELATIONS LINEAIRES  = NB D'ARETES HYPERSTATIQUES
       NRELRL=NBARHY
 
 C     VECTEUR DES RELATIONS LINEAIRES           :LISRLT
@@ -277,10 +281,12 @@ C           ON PARCOURT LES ARETES VITALES CONNECTEES
               IF ( TABNO(I,1).EQ.ARHY(IH,IEXT).OR.
      &             TABNO(I,2).EQ.ARHY(IH,IEXT) )    THEN
 C               CALCUL DISTANCE ENTRE LAG A LIER ET LE LAG EXT
-                DIST= SQRT(  (TABCO(I,1)-COARHY(IH,1))**2
-     &                     + (TABCO(I,2)-COARHY(IH,2))**2
-     &                     + (TABCO(I,3)-COARHY(IH,3))**2 )
-
+                DIST=0
+                DO 512 J=1,NDIM
+                  DIST = (DIST + ((TABCO(I,J)-COARHY(IH,J))**2))
+ 512            CONTINUE
+                DIST = SQRT(DIST)
+                
                 IF (DIST.LE.DISMIN) THEN
                   DISMIN=DIST
                   COEFI(IEXT)=TABNO(I,3)

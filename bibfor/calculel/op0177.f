@@ -1,7 +1,7 @@
       SUBROUTINE OP0177 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,9 +79,8 @@ C
       LABEL  = ' '
       NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
-      IFIC  = 0
       NOMFI = ' ' 
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+      IFIC  = IUNIFI('RESULTAT')
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
       ENDIF

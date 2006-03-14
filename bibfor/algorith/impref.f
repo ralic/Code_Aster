@@ -2,7 +2,7 @@
      &                  TITRE,FORMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -212,10 +212,10 @@ C
       DATA FORCOL(27) /2/
 
 
-      DATA (TITCOL(J,28),J=1,3)/ '&&&&&&&&&&&&&&&&',
-     &'                ',
-     &'                '/
-      DATA FORCOL(28) /2/
+      DATA (TITCOL(J,28),J=1,3)/ '   ITERATIONS   ',
+     &                           '     FETI       ',
+     &                           '                '/
+      DATA FORCOL(28) /1/
  
 
       DATA (TITCOL(J,29),J=1,3)/ '&&&&&&&&&&&&&&&&',
@@ -241,7 +241,7 @@ C
          CALL UTMESS('F','IMPREF',
      &               'NOMBRE COLONNES INCORRECTE (DVLP)')
       ENDIF
-      IF ((ICOD.LE.0).OR.(ICOD.GT.27)) THEN
+      IF ((ICOD.LE.0).OR.(ICOD.GT.28)) THEN
          WRITE(6,*) 'ICOD:',ICOD
          CALL UTMESS('F','IMPREF',
      &               'CODE COLONNE INCORRECT (DVLP)')

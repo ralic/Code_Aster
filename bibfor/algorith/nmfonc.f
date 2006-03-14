@@ -2,7 +2,7 @@
      &                  FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,8 +56,9 @@ C       FONACT(6) :  METHODE XFEM
 C       FONACT(7) :  ALGORITHME DE DE BORST
 C       FONACT(8) :  CONVERGENCE PAR RESIDU DE REFERENCE
 C       FONACT(9) :  METHODE XFEM AVEC CONTACT
-C       FONACT(10): CONTACT/FROTTEMENT CONTINU
-C       FONACT(11): LIAISON UNILATERALE
+C       FONACT(10):  CONTACT/FROTTEMENT CONTINU
+C       FONACT(11):  SOLVEUR FETI
+C       FONACT(12):  LIAISON UNILATERALE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
@@ -80,7 +81,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      IBID,NOCC
       INTEGER      TYPALC,TYPALF
-      INTEGER      JSOLVE,IFISS,IXFEM,ICONT
+      INTEGER      JSOLVE,IFISS,IXFEM,ICONT,IUNIL
       INTEGER      ICONTX
       REAL*8       R8VIDE
       CHARACTER*8  K8BID
@@ -92,7 +93,7 @@ C  VOUS AVEZ CHANGE (AJOUTE/RETIRE UNE FONCTIONNALITE)
 C  ZFON MODIFIEE DANS OP0070
 C  MODIFIER LA LIGNE CI-DESSOUS ET DOCUMENTER DANS L'ENTETE
 C
-      IF (ZFON.NE.10) THEN
+      IF (ZFON.NE.12) THEN
          CALL UTMESS('F','NMFONC',
      &               'FONCTIONNALITE MODIFIEE (DVLP)')
       ENDIF
@@ -119,12 +120,8 @@ C --- LOIS NON LOCALES
       FONACT(3) = MODEDE .NE. ' '
       
 C --- LIAISON UNILATERALE
-C      CALL JEEXIN(DEFICU(1:16)//'.METHCU',ILIAI)
-C      IF (ILIAI.EQ.0) THEN
-C        FONACT(11) = .FALSE.
-C      ELSE
-C        FONACT(11) = .TRUE.
-C      ENDIF      
+      CALL JEEXIN(DEFICU(1:16)//'.METHCU',IUNIL)
+      FONACT(12) = IUNIL .NE. 0     
 
 C --- DEBORST ?
       CALL NMBORS(FONACT(7))
@@ -186,6 +183,19 @@ C ----------------------------------------------------------------------
       
 C ----------------------------------------------------------------------
 C
+C     FETI 
+C
+C ----------------------------------------------------------------------
+
+      CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
+      IF (ZK24(JSOLVE)(1:4).EQ.'FETI') THEN
+        FONACT(11)=.TRUE.
+      ELSE
+        FONACT(11)=.FALSE.
+      ENDIF       
+      
+C ----------------------------------------------------------------------
+C
 C     INCOMPATIBILITES DE CERTAINES FONCTIONNALITES
 C
 C ----------------------------------------------------------------------
@@ -217,18 +227,18 @@ C ----------------------------------------------------------------------
         ENDIF
       ENDIF
 
-C      IF (FONACT(11)) THEN
-C        IF (FONACT(2)) THEN
-C          CALL UTMESS('F','NMINIT',
-C     &    'LIAISON_UNILATERALE ET PILOTAGE SONT DES '//
-C     &    'FONCTIONNALITES INCOMPATIBLES')
-C        ENDIF
-C        IF (FONACT(1)) THEN 
-C          CALL UTMESS('F','NMINIT',
-C     &     'IAISON_UNILATERALE ET RECH. LIN. SONT DES '//
-C     &     'FONCTIONNALITES INCOMPATIBLES')
-C        ENDIF
-C      ENDIF
+      IF (FONACT(12)) THEN
+        IF (FONACT(2)) THEN
+          CALL UTMESS('F','NMINIT',
+     &    'LIAISON_UNILATERALE ET PILOTAGE SONT DES '//
+     &    'FONCTIONNALITES INCOMPATIBLES')
+        ENDIF
+        IF (FONACT(1)) THEN 
+          CALL UTMESS('F','NMINIT',
+     &     'IAISON_UNILATERALE ET RECH. LIN. SONT DES '//
+     &     'FONCTIONNALITES INCOMPATIBLES')
+        ENDIF
+      ENDIF
 
 
 

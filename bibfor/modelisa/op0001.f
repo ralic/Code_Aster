@@ -1,7 +1,7 @@
       SUBROUTINE OP0001 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,15 +121,15 @@ C               123456789012345678901234
       TYPMAI  = NOMU// '.TYPMAIL        '
       ADAPMA  = NOMU// '.ADAPTATION     '
 C
-C --- LECTURE DU MAILLAGE AU FORMAT ASTER
-C
+C --- LECTURE DU MAILLAGE AU FORMAT ASTER :
+C     -----------------------------------
       IF ( FMT(1:5) .EQ. 'ASTER' ) THEN
           CALL LRMAST ( NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
      >                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
      >                  IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
 C
-C --- LECTURE DU MAILLAGE AU FORMAT MED
-C
+C --- LECTURE DU MAILLAGE AU FORMAT MED :
+C     ---------------------------------
       ELSEIF (FMT(1:3) .EQ. 'MED' ) THEN
           CALL LRMHDF ( NOMAMD,
      >                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
@@ -138,9 +138,8 @@ C
      >                  NBCOOR )
       ENDIF
 C
-C       CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE
-C       ------------------------------------------------
-C
+C --- CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE :
+C     ------------------------------------------------
       CALL GETFAC('ABSC_CURV',IOC)
       IF(IOC.EQ.1) THEN
         ITOUT = 0
@@ -163,19 +162,23 @@ C
           ENDIF
         ENDIF
       ENDIF
-
-  
-C     CREATION DE L'OBJET .DIME
-C     --------------------------
+C
+C --- SUPPRESSION DES GROUPES DE NOEUDS OU MAILLES DE NOM ' ' :
+C     -------------------------------------------------------
+      CALL MAVEGR ( NOMU )
+C
+C --- CREATION DE L'OBJET .DIME :
+C     -------------------------
       CALL WKVECT(NOMU//'.DIME','G V I',6,IADIME)
       ZI(IADIME-1+1)= NBNOEU
       ZI(IADIME-1+3)= NBMAIL
       ZI(IADIME-1+6)= NBCOOR
 C
+C --- CARACTERISTIQUES GEOMETRIQUES :
+C     -----------------------------
       CALL CARGEO ( NOMU )
-
-  
-C     PHASE DE VERIFICATION DU MAILLAGE
+C
+C --- PHASE DE VERIFICATION DU MAILLAGE :
 C     ---------------------------------
       CALL GETVTX('VERI_MAIL','VERIF',1,1,1,VERI,IRET)
       IF (VERI.EQ.'OUI') THEN
@@ -185,10 +188,9 @@ C     ---------------------------------
          CALL UTMESS('A',CMD,'- PHASE DE VERIFICATION DU'
      &   //' MAILLAGE DESACTIVEE')
       ENDIF
-
-  
+C
 C     IMPRESSIONS DU MOT CLE INFO :
-C     ---------------------------------
+C     ---------------------------
       CALL INFOMA(NOMU)
   
       CALL JEDEMA ( )

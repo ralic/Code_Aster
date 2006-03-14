@@ -1,7 +1,7 @@
       SUBROUTINE COPICH ( BASE, CH1Z, CH2Z )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,19 +51,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*19  CH1, CH2
-
 
       CHARACTER*4  DOCU
-      CHARACTER*8  NOMU
+      CHARACTER*8  NOMU,K8BID
       CHARACTER*16 CONCEP,CMD
-      CHARACTER*19 PRNO,PRNO2
-      CHARACTER*24 O1, O2,NOOJB
-      INTEGER      IBID,IRET,IRET1,IRET2,JAD,IER
+      CHARACTER*19 PRNO,PRNO2,CH1ESC,CH2ESC,CH1,CH2
+      CHARACTER*24 O1, O2,NOOJB,METHOD
+      INTEGER      IBID,IRET,IRET1,IRET2,JAD,IER,NBSD,ILIMPI,IFETI,
+     &             IFETC1,IFETC2,IDD
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      CH1=CH1Z
-      CH2=CH2Z
+      CH1=CH1Z(1:19)
+      CH2=CH2Z(1:19)
 
       CALL JEEXIN(CH1 // '.DESC',IRET1)
       CALL JEEXIN(CH1 // '.CELD',IRET2)
@@ -79,6 +78,9 @@ C-----------------------------------------------------------------------
 C     -- CAS DES CHAM_NO :
 C     ----------------------
       IF  (DOCU.EQ.'CHNO') THEN
+
+C --- ON DUPLIQUE LE CHAM_NO MAITRE DANS TOUS LES CAS
+
         CALL JEDUP1(CH1//'.DESC',BASE,CH2//'.DESC')
         CALL JEDUP1(CH1//'.REFE',BASE,CH2//'.REFE')
         CALL JEDUP1(CH1//'.VALE',BASE,CH2//'.VALE')
@@ -104,6 +106,38 @@ C         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
           END IF
         END IF
 
+C --- SI FETI, ON DUPLIQUE AUSSI LES CHAM_NO ESCLAVES
+        CALL JEEXIN(CH1//'.FETC',IFETI)
+        IF (IFETI.NE.0) THEN
+          CALL JELIRA(CH1//'.FETC','LONMAX',NBSD,K8BID)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+          CALL JEVEUO(CH1//'.FETC','L',IFETC1)
+          CALL JEEXIN(CH2//'.FETC',IRET)
+C --- SI LE CHAM_NO CH2 N'EST PAS FETI, ON CREE LES CHAM_NOS FILS
+C     SINON ON LES REUTILISE
+          IF (IRET.EQ.0) THEN
+            CALL WKVECT(CH2//'.FETC',BASE//' V K24',NBSD,IFETC2)
+          ELSE
+            CALL JEVEUO(CH2//'.FETC','L',IFETC2)
+          ENDIF
+C --- BOUCLE SUR LES SOUS-DOMAINES CF VTCREB OU VTCMBL PAR EXEMPLE
+          DO 20 IDD=1,NBSD
+            IF (ZI(ILIMPI+IDD).EQ.1)  THEN
+              CH1ESC=ZK24(IFETC1+IDD-1)(1:19)
+              IF (IRET.EQ.0) THEN
+                CALL GCNCON('.',K8BID)
+                K8BID(1:1)='F'          
+                CH2ESC=CH2(1:11)//K8BID          
+                ZK24(IFETC2+IDD-1)(1:19)=CH2ESC
+              ELSE
+                CH2ESC=ZK24(IFETC2+IDD-1)(1:19)
+              ENDIF
+              CALL JEDUP1(CH1ESC//'.DESC',BASE,CH2ESC//'.DESC')
+              CALL JEDUP1(CH1ESC//'.REFE',BASE,CH2ESC//'.REFE')
+              CALL JEDUP1(CH1ESC//'.VALE',BASE,CH2ESC//'.VALE')
+            ENDIF
+   20     CONTINUE
+        ENDIF
 
 C     -- CAS DES CARTES :
 C     ----------------------

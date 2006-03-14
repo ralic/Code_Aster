@@ -8,7 +8,7 @@
       LOGICAL             NEWRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       INTEGER       LMAT(2), LDDL,  LVALI, LVALR, LVALK, LCOEF
       INTEGER       NPARI, NPARR, NPARK
       INTEGER       NBPARI, NBPARR, NBPARK, NBPARA
-      PARAMETER    ( NBPARI=8 , NBPARR=16 , NBPARK=2, NBPARA=26 )
+      PARAMETER    ( NBPARI=1 , NBPARR=15 , NBPARK=1, NBPARA=17 )
       REAL*8        FREQU, AMORT, OMEG2, MASG, RIGG, FREQOM
       REAL*8        FACTX, FACTY, FACTZ, DEPI, R8DEPI, XMASTR
       CHARACTER*1   TYPMOD
@@ -87,12 +87,8 @@ C
       DATA REFD  / '                   .REFD' /
       DATA IDDL  / 1, 2, 3, 4, 5, 6 /
       DATA  NOPARA /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            , 
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+     +  'NUME_MODE'       , 'NORME'           , 'FREQ'            , 
+     +  'OMEGA2'          , 'AMOR_REDUIT'     ,
      +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
@@ -183,16 +179,16 @@ C           --- OMEGA2 ---
 C           --- AMOR_REDUIT ---
             ZR(LVALR+NBNUOR*2 +I-1) = AMORT
 C           --- MASS_GENE , RIGI_GENE ---
-            ZR(LVALR+NBNUOR*4 +I-1) = MASG
-            ZR(LVALR+NBNUOR*5 +I-1) = RIGG
+            ZR(LVALR+NBNUOR*3 +I-1) = MASG
+            ZR(LVALR+NBNUOR*4 +I-1) = RIGG
 C           --- MASS_EFFE_D... ---
-            ZR(LVALR+NBNUOR*( 6+1)+I-1) = FACTX * FACTX / MASG
-            ZR(LVALR+NBNUOR*( 6+2)+I-1) = FACTY * FACTY / MASG
-            ZR(LVALR+NBNUOR*( 6+3)+I-1) = FACTZ * FACTZ / MASG
+            ZR(LVALR+NBNUOR*6+I-1) = FACTX * FACTX / MASG
+            ZR(LVALR+NBNUOR*7+I-1) = FACTY * FACTY / MASG
+            ZR(LVALR+NBNUOR*8+I-1) = FACTZ * FACTZ / MASG
 C           --- FACT_PARTICI_D... ---
-            ZR(LVALR+NBNUOR*(9+1)+I-1) = FACTX / MASG
-            ZR(LVALR+NBNUOR*(9+2)+I-1) = FACTY / MASG
-            ZR(LVALR+NBNUOR*(9+3)+I-1) = FACTZ / MASG
+            ZR(LVALR+NBNUOR*9 +I-1) = FACTX / MASG
+            ZR(LVALR+NBNUOR*10+I-1) = FACTY / MASG
+            ZR(LVALR+NBNUOR*11+I-1) = FACTZ / MASG
 C
             IF ( ITYPFL.EQ.3  .OR.
      &          (ITYPFL.EQ.4 .AND. IMASSE.NE.0)  ) THEN

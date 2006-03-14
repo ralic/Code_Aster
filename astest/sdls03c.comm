@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,11 +84,6 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',   PRECISION = 2.9E-2,
            NUME_MODE = 6,       VALE = 197.32)) )
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE_5,    PARA = 'ITER_QR',
-           CRITERE = 'ABSOLU',    PRECISION = 5.E+00,
-           NUME_MODE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0) )
-
 # --------------------------------------------------------------------
 
 MODE_6=MODE_ITER_SIMULT(  MATR_A=MATR,
@@ -116,17 +111,9 @@ TEST_RESU(RESU=(
    _F(   RESULTAT = MODE_6, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',   PRECISION = 1.8E-2,
            NUME_MODE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE_6, REFERENCE = 'ANALYTIQUE',    PARA = 'FREQ',
+   _F(   RESULTAT = MODE_6, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',   PRECISION = 2.9E-2,
            NUME_MODE = 6,       VALE = 197.32)) )
-
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE_6,    PARA = 'ITER_BATHE',
-           NUME_MODE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0,
-           CRITERE = 'ABSOLU',    PRECISION = 32.E0),
-   _F(   RESULTAT = MODE_6,    PARA = 'ITER_JACOBI',
-           CRITERE = 'ABSOLU',    PRECISION = 8.E0,
-           NUME_MODE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0)) )
 
 FIN()
 #

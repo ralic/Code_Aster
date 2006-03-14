@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,9 +41,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     PARAMETRES "MODE_MECA"
-      PARAMETER   ( NBPAMI=8 , NBPAMR=16 , NBPAMK=2, NBPAMT=26 )
+      PARAMETER   ( NBPAMI=1 , NBPAMR=15 , NBPAMK=1, NBPAMT=17 )
 C     PARAMETRES "MODE_FLAMB"
-      PARAMETER   ( NBPAFI=1 , NBPAFR=2  , NBPAFK=1, NBPAFT=4  )
+      PARAMETER   ( NBPAFI=1 , NBPAFR=1  , NBPAFK=1, NBPAFT=3  )
       INTEGER       LMAT(2), IBID, IFM , NIV
       INTEGER       ADRECG,NRPASS,NBPASS,IRET,IAUX,JAUX,IOCC,LMODS,ISENS
       REAL*8        R8B, PREC
@@ -64,21 +64,13 @@ C     ------------------------------------------------------------------
       DATA  KVALI / '&&OP0037.GRAN_MODAL_I' /
       DATA  KVALR / '&&OP0037.GRAN_MODAL_R' /
       DATA  KVALK / '&&OP0037.GRAN_MODAL_K' /
-      DATA  NOPARM /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            ,
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+      DATA  NOPARM /        'NUME_MODE'       , 'NORME'           ,
+     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
      +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
-      DATA  NOPARF /
-     +  'NUME_MODE'       ,
-     +  'NORME'           ,
-     +  'CHAR_CRIT'       , 'ERREUR'          /
+      DATA  NOPARF / 'NUME_MODE'  , 'NORME'   ,'CHAR_CRIT'   /
 C     ------------------------------------------------------------------
 C
 C     --- RECUPERATION DU RESULTAT ET DU MODE A TRAITER ---

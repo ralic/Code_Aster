@@ -1,7 +1,7 @@
-      SUBROUTINE XRELL1(TABNOZ,NAR,TABCO,PICKNO,NBPINO,FISS)
+      SUBROUTINE XRELL1(TABNOZ,NDIM,NAR,TABCO,PICKNO,NBPINO,FISS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 13/03/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,9 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
-      INTEGER        NAR,TABNOZ(3,NAR),NBPINO,PICKNO(NBPINO)
+      INTEGER        NDIM,NAR,TABNOZ(3,NAR),NBPINO,PICKNO(NBPINO)
       CHARACTER*8    FISS
-      REAL*8         TABCO(3,NAR)
+      REAL*8         TABCO(NDIM,NAR)
 C
 C   CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT
 C                    (VOIR BOOK VI 15/07/05) :
@@ -145,12 +145,16 @@ C                 ON VERIFIE SI L'AUTRE EXTREMITE EST LIBRE
                      IF (EXT.EQ.PICKNO(K)) LIBRE=0
  223              CONTINUE
                   IF (LIBRE.EQ.1) THEN
+                  
+                  
 C                    CALCUL DISTANCE ENTRE LAG �LIER ET LE LAG EXT
-                     DIST=PADIST(3,TABCO(1,I),TABCO(1,IA))
+                     DIST=PADIST(NDIM,TABCO(1,I),TABCO(1,IA))
                      IF (DIST.LT.DISMIN) THEN
                         DISMIN=DIST
                         COEFI(IEXT)=TABNO(I,3)
                         COEFR(IEXT)=DIST
+                  
+                  
                      ENDIF
                   ENDIF
                 ENDIF
@@ -182,7 +186,6 @@ C            WRITE(6,*)'LISRL ',LISRLT(IE,J),LISCOT(IE,J)
  231      CONTINUE
  230    CONTINUE
       ENDIF
-
 
       CALL JEDEMA()
       END

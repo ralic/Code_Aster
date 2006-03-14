@@ -1,0 +1,172 @@
+      SUBROUTINE NBNODE(NOMA,MOTFAC,NBOCC,
+     &                  NONBNO,NOPONO,NBTOT)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT      NONE
+      CHARACTER*8   NOMA
+      CHARACTER*16  MOTFAC
+      INTEGER       NBOCC
+      CHARACTER*24  NONBNO      
+      CHARACTER*24  NOPONO            
+      INTEGER       NBTOT
+C
+C ----------------------------------------------------------------------
+C ROUTINE UTILITAIRE
+C ----------------------------------------------------------------------
+C
+C COMPTE LES NOEUDS :
+C   - D'UN GROUP_NO OU D'UNE LISTE DE GROUP_NO
+C   - D'UN GROUP_MA OU D'UNE LISTE DE GROUP_MA
+C   - D'UNE MAILLE OU D'UNE LISTE DE MAILLES
+C   - D'UN NOEUD OU D'UNE LISTE DE NOEUDS (SE CONTENTE DE TRASNFORMER
+C        NOM DU NOEUD EN NUMERO DU NOEUD)
+C EN SORTIE, ON RECUPERE UNE LISTE
+C   LA LISTE EST UN OBJET JEVEUX DE NOM <NOMOBJ> CONTENANT <NBOBJ>
+C   ENTIERS CORRESPONDANT AUX NUMEROS DES NOEUDS. 
+C /!\ LISTE NON TRIEE ET POUVANT CONTENIR DES DOUBLES /!\
+C
+C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  MOTFAC : MOT_CLEF FACTEUR POUR LIAISON UNILATERALE
+C IN  NBOCC  : NOMBRE D'OCCURRENCES MOT-CLEF FACTEUR
+C IN  NONBNO : NOM DE L'OBJET JEVEUX CONTENANT LE NOMBRE DE NOEUDS
+C               POUR CHAQUE OCCURRENCE
+C IN  NOPONO : NOM DE L'OBJET JEVEUX CONTENANT LE VECTEUR D'INDIRECTION
+C OUT NBTOT  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*8   K8BID
+      INTEGER       IBID,IOCC
+      INTEGER       JGRMA,JGRNO,JMA,JNN,JNP
+      INTEGER       NBGRMA,NBGRNO,NBMAIL,NBNOEU,NBNOCC
+      INTEGER       NBNOGM,NBNOMA,NBNOGN,NBNONO
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C ======================================================================
+C
+C --- INITIALISATIONS
+C      
+      CALL JEVEUO(NONBNO,'E',JNN)
+      CALL JEVEUO(NOPONO,'E',JNP)
+      
+      ZI(JNP) = 1
+      NBNOCC = 0
+      NBTOT  = 0
+      NBNOGM = 0
+      NBNOGN = 0
+      NBNONO = 0
+      NBNOMA = 0
+      NBMAIL = 0
+      NBNOEU = 0
+      NBGRMA = 0
+      NBGRNO = 0
+C
+      DO 1000 IOCC=1,NBOCC
+        CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',
+     &              IOCC,1,0,K8BID,NBGRMA)    
+        IF (NBGRMA.NE.0) THEN
+          CALL JEDETR('&&NBNODE.GROUPMA')
+          NBGRMA = -NBGRMA
+          CALL WKVECT('&&NBNODE.GROUPMA','V V K8',NBGRMA,JGRMA)
+          CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',
+     &                IOCC,1,NBGRMA,ZK8(JGRMA),IBID)        
+          CALL NBNOD2(NOMA,NBGRMA,ZK8(JGRMA),'GROUP_MA',
+     &                NBNOGM)        
+          ZI(JNN-1+4*(IOCC-1)+1) = NBNOGM
+        ENDIF          
+
+        CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',
+     &              IOCC,1,0,K8BID,NBMAIL)    
+        IF (NBMAIL.NE.0) THEN
+          CALL JEDETR('&&NBNODE.MAILLE')
+          NBMAIL = -NBMAIL
+          CALL WKVECT('&&NBNODE.MAILLE','V V K8',NBMAIL,JMA)
+          CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',
+     &                IOCC,1,NBMAIL,ZK8(JMA),IBID)          
+          CALL NBNOD2(NOMA,NBMAIL,ZK8(JMA),'MAILLE  ',
+     &                NBNOMA)        
+          ZI(JNN-1+4*(IOCC-1)+2) = NBNOMA
+        ENDIF          
+
+        CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
+     &              IOCC,1,0,K8BID,NBGRNO)    
+        IF (NBGRNO.NE.0) THEN
+          CALL JEDETR('&&NBNODE.GROUPNO')
+          NBGRNO = -NBGRNO
+          CALL WKVECT('&&NBNODE.GROUPNO','V V K8',NBGRNO,JGRNO)
+          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
+     &                IOCC,1,NBGRNO,ZK8(JGRNO),IBID)        
+          CALL NBNOD2(NOMA,NBGRNO,ZK8(JGRNO),'GROUP_NO',
+     &                NBNOGN)  
+          ZI(JNN-1+4*(IOCC-1)+3) = NBNOGN      
+        ENDIF          
+
+        CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
+     &              IOCC,1,0,K8BID,NBNOEU)    
+        IF (NBNOEU.NE.0) THEN
+          NBNOEU = -NBNOEU
+          NBNONO = NBNOEU 
+          ZI(JNN-1+4*(IOCC-1)+4) = NBNONO
+        ENDIF          
+C
+C --- NOMBRE DE NOEUDS TOTAL POUR CETTE OCCURRENCE
+C       
+        NBNOCC = NBNONO+NBNOGN+NBNOGM+NBNOMA
+      
+        NBMAIL = 0
+        NBNOEU = 0
+        NBGRMA = 0
+        NBGRNO = 0
+
+        NBNONO = 0
+        NBNOMA = 0
+        NBNOGN = 0
+        NBNOGM = 0
+        ZI(JNP+IOCC) = ZI(JNP+IOCC-1)+NBNOCC
+C
+C --- NOMBRE DE NOEUDS TOTAL POUR TOUTES LES OCCURRENCES
+C
+        NBTOT = NBTOT + NBNOCC  
+ 1000 CONTINUE      
+C ======================================================================
+      CALL JEDEMA()
+C
+      END
