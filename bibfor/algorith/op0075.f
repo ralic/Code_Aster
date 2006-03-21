@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,10 @@ C --- LE RESULTAT EST-IL GENERALISE OU PAS :
 C     ---------------------------
       CALL GETVID(' ','RESULTAT',1,1,0,K8BID,IR)
       IF (IR .EQ. 0) THEN
-         CALL GETVID(' ','RESU_GENE',1,1,1,RESIN,IBID)
+         CALL GETVID(' ','RESU_GENE',1,1,1,RESIN,IR1)
+         IF (IR1. EQ. 0) THEN
+           CALL GETVID(' ','RESU_PHYS',1,1,1,RESIN,IR2)         
+         ENDIF
          CALL GETTCO(RESIN,CONCEP)
       ELSE
 C      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
@@ -281,6 +284,8 @@ C     --- CALCUL HARMONIQUE SANS SOUS-STRUCTURATION ---
             CALL HARM75(NOMRES,TYPRES,RESIN,NOMCMD,MODE)
           ENDIF
         ENDIF
+      ELSEIF (CONCEP(1:9).EQ.'EVOL_NOLI') THEN
+        CALL TRAN75(NOMRES,TYPRES,RESIN,NOMCMD,K8BID) 
 C
       ENDIF
 C

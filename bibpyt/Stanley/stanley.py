@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,9 +19,9 @@
 # ======================================================================
 """
   INTERFACE ASTER -> POST-TRAITEMENT GRAPHIQUE
-  
+
   Classes :
-  
+
     CONTEXTE     ensemble des concepts Aster necessaires au post-traitement    
     ETAT_GEOM    ensemble des donnees geometriques pouvant supporter un trace
     ETAT_RESU    Descripteur de la SD resultat (champs, parametres, ...)
@@ -32,21 +32,21 @@
     DRIVER
     DRIVER_GMSH
     DRIVER_GRACE 
-    
+
 """
 
 info = """
 INTERFACE DE POST-TRAITEMENT GRAPHIQUE POUR CODE_ASTER
 
 E. LORENTZ, P. BADEL, A. ASSIRE
-  
-STANLEY
 
+STANLEY
 """
 
 import sys, os, os.path, string, copy, tkFileDialog, cPickle, tkMessageBox
-#import Tkinter as Tk
-import Tix as Tk
+
+#import Tix as Tk
+import Tkinter as Tk
 
 import as_courbes, xmgrace, gmsh
 import cata_champs,aster
@@ -605,7 +605,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
   def Sauvegarder_Sous(self, interface):
     '''
-       Sauvegarde les parametres sous un fichier à choisir
+       Sauvegarde les parametres sous un fichier a choisir
     '''
 
     try:
@@ -698,7 +698,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
 # ==============================================================================
 
-class CONTEXTE :
+class CONTEXTE:
 
   def __init__(self, resultat, maillage, modele, cham_mater, cara_elem) :
   
@@ -712,7 +712,7 @@ class CONTEXTE :
 
 
 
-class ETAT_GEOM :
+class ETAT_GEOM:
 
   """
     ENSEMBLE DES DONNEES GEOMETRIQUES POUVANT SUPPORTER UN TRACE
@@ -880,7 +880,7 @@ class ETAT_GEOM :
 
     
 
-class ETAT_RESU : 
+class ETAT_RESU:
 
   """
     DESCRIPTEUR DE LA SD RESULTAT (CHAMPS, PARAMETRES, ...)
@@ -1077,7 +1077,7 @@ class ETAT_RESU :
 
 # ==============================================================================
 
-class SELECTION :  
+class SELECTION:
 
   """
     SELECTION REALISEE PAR L'UTILISATEUR DANS L'INTERFACE GRAPHIQUE
@@ -1399,7 +1399,7 @@ class SELECTION :
 # ==============================================================================
 
 
-class STANLEY :
+class STANLEY:
 
   """
     OUTIL DE POST-TRAITEMENT GRAPHIQUE
@@ -1477,8 +1477,17 @@ class STANLEY :
 
     # Options supplementaires a passer au driver graphique
     options = {}
+
+    # Trace sur la deformee
     if self.selection.mode == 'Isovaleurs': options['case_sur_deformee'] = self.interface.case_sur_deformee.Valeur()
 
+    # Animation des modes d'un mode_meca sous Gmsh
+    if self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Gmsh/Xmgrace':
+       if self.selection.contexte.resultat.__class__== mode_meca and self.selection.nom_cham == 'DEPL':
+          if not 'TOUT_ORDRE' in self.interface.ordre.courant:
+             if len(self.interface.ordre.courant)==1:
+                liste = ['Animer', 'Ne pas animer']
+                options['animation_mode'] = SAISIE_MODE( liste, _("Animation") )
 
     self.driver[self.selection.mode].Tracer(self.selection, options )    
 
@@ -2335,7 +2344,7 @@ class DRIVER_GMSH(DRIVER) :
         else:
           UTMESS('I','STANLEY',"Le champ est trace avec la deformee")
 
-    self.terminal = gmsh.GMSH('POST','fort.33',self.stan.parametres)
+    self.terminal = gmsh.GMSH('POST', 'fort.33', self.stan.parametres, options)
 
 
 # ==============================================================================

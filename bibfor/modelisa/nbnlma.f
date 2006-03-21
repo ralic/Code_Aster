@@ -1,11 +1,10 @@
-      SUBROUTINE NBNLMA ( NOMA, NBM, LIMANU, LIMANO, NBTYP, LITYP, NBN )
+      SUBROUTINE NBNLMA ( NOMA, NBM, LIMANU, NBTYP, LITYP, NBN )
       IMPLICIT   NONE
       INTEGER        LIMANU(*), NBM, NBN, NBTYP
       CHARACTER*8    LITYP(*), NOMA
-      CHARACTER*(*)  LIMANO(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/05/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,9 +29,8 @@ C
 C ARGUMENTS D'ENTREE:
 C      NOMA : NOM DU MAILLAGE
 C      NBM  : NOMBRE DE MAILLES DANS LA LISTE.
-C              SI >0 LA LISTE EST NUMEROTEE ==> LIMANU
-C              SI <0 LA LISTE EST NOMMEE    ==> LIMANO
-C      NBTYP: NOMBRE DE TYPE_MAILLES DANS LA LISTE LITYP.
+C    LIMANU : LISTE DES NUMEROS DE MAILLE
+C     NBTYP : NOMBRE DE TYPE_MAILLES DANS LA LISTE LITYP.
 C ARGUMENTS DE SORTIE:
 C      NBN  : NOMBRE DE NOEUDS
 C OBJETS JEVEUX CREES
@@ -54,107 +52,89 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNOM, JEXNUM
+      CHARACTER*32      JEXNOM, JEXNUM, JEXATR
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IATYMA, IBID, IRET, IT, ITROU, J, JDES, JLN, JNBN,
-     +             JTYP, M, MI, N, NBNA, NBNM, NN, NUMTYP
+     +             JTYP, M, MI, N, NBNA, NBNM, NN, NUMTYP, P1, P2
       CHARACTER*8  MK
       CHARACTER*1  K1BID
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      NBNM=0
-      DO 1 M=1,ABS(NBM)
-         IF (NBM.GT.0) THEN
-            MI=LIMANU(M)
-            CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
-            JTYP=IATYMA-1+MI
-         ELSE IF (NBM.LT.0) THEN
-            MK=LIMANO(M)
-            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),IBID)
-            CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
-            JTYP=IATYMA-1+IBID
-         END IF
-         NN=0
-         DO 2 IT=1,NBTYP
+C
+      CALL JEVEUO ( NOMA//'.TYPMAIL', 'L', IATYMA )
+      CALL JEVEUO ( JEXATR(NOMA//'.CONNEX','LONCUM'), 'L', P2 )
+      CALL JEVEUO ( NOMA//'.CONNEX', 'L', P1 )
+C
+      NBNM = 0
+      DO 10 M = 1 , NBM
+         MI   = LIMANU(M)
+         JTYP = IATYMA-1 + MI
+         NN = 0
+         DO 12 IT = 1 , NBTYP
             CALL JENONU(JEXNOM('&CATA.TM.NBNO',LITYP(IT)),NUMTYP)
-            IF (ZI(JTYP).EQ.NUMTYP) THEN
-               IF(NBM.GT.0) THEN
-                 CALL JELIRA(JEXNUM(NOMA//'.CONNEX',MI),'LONMAX',
-     +                       NN,K1BID)
-               ELSE IF(NBM.LT.0) THEN
-                 CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),IBID)
-                 CALL JELIRA(JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',
-     +                       NN,K1BID)
-               END IF
+            IF ( ZI(JTYP) .EQ. NUMTYP ) THEN
+               NN = ZI(P2+MI+1-1) - ZI(P2+MI-1)
             END IF
-    2    CONTINUE
-         IF (NN.EQ.0) THEN
-            IF (NBM.GT.0) THEN
-               CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',MI),MK)
-            ELSE
-               CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),MI)
-            END IF
+ 12      CONTINUE
+         IF ( NN .EQ. 0 ) THEN
+            CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',MI),MK)
             CALL UTDEBM('F','NBNLMA',' LA MAILLE ' )
             CALL UTIMPI('S',' DE NUM ',1,MI)
             CALL UTIMPK('L',' DE NOM ',1,MK//' A UN TYPE NON '//
      &                                  'CONFORME AU CALCUL ENVISAGE')
             CALL UTFINM()
          ELSE
-            NBNM=NBNM+NN
+            NBNM = NBNM + NN
          END IF
-    1 CONTINUE
+ 10   CONTINUE
+C
       CALL JEEXIN('&&NBNLMA.LN',IRET)
       IF (IRET.NE.0) CALL JEDETR('&&NBNLMA.LN')
-      CALL JECREO('&&NBNLMA.LN','V V I')
-      CALL JEECRA('&&NBNLMA.LN','LONMAX',NBNM,' ')
-      CALL JEVEUO('&&NBNLMA.LN','E',JLN)
+      CALL WKVECT ( '&&NBNLMA.LN', 'V V I', NBNM, JLN )
+      CALL JEECRA ( '&&NBNLMA.LN' , 'LONUTI', 0, ' ')
+C
       CALL JEEXIN('&&NBNLMA.NBN',IRET)
       IF (IRET.NE.0) CALL JEDETR('&&NBNLMA.NBN')
-      CALL JECREO('&&NBNLMA.NBN','V V I')
-      CALL JEECRA('&&NBNLMA.NBN','LONMAX',NBNM,' ')
-      CALL JEVEUO('&&NBNLMA.NBN','E',JNBN)
-      DO 3 M=1,ABS(NBM)
-         IF (NBM.GT.0) THEN
-            MI=LIMANU(M)
-            CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',MI),'L',JDES)
-            CALL JELIRA(JEXNUM(NOMA//'.CONNEX',MI),'LONMAX',NN,K1BID)
-         ELSE IF (NBM.LT.0) THEN
-            MK=LIMANO(M)
-            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',MK),IBID)
-            CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',IBID),'L',JDES)
-            CALL JELIRA(JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',NN,K1BID)
-         END IF
-         DO 4 N=1,NN
+      CALL WKVECT ( '&&NBNLMA.NBN', 'V V I', NBNM, JNBN )
+      CALL JEECRA ( '&&NBNLMA.NBN', 'LONUTI', 0, ' ')
 C
-C        NBNA EST LE NOMBRE DE NOEUDS ACTUELLEMENT STOCKES
+      DO 20 M = 1 , NBM
+         MI = LIMANU(M)
+         NN = ZI(P2+MI+1-1) - ZI(P2+MI-1)
 C
-            CALL JELIRA('&&NBNLMA.LN','LONUTI',NBNA,K1BID)
-            ITROU=0
+         DO 22 N = 1 , NN
 C
-C        SI LE NUMERO DE NOEUD (ZI(JDES-1+N)) EXISTE DEJA DANS .LN
-C        ON INCREMENTE A LA PLACE J  DANS LE TABLEAU &&NBNLMA.NBN
+C           NBNA EST LE NOMBRE DE NOEUDS ACTUELLEMENT STOCKES
 C
-            DO 5 J=1,NBNA
-               IF (ZI(JDES-1+N).EQ.ZI(JLN-1+J)) THEN
-                  ZI(JNBN-1+J)=ZI(JNBN-1+J)+1
-                  ITROU=1
+            CALL JELIRA ( '&&NBNLMA.LN', 'LONUTI', NBNA, K1BID )
+            ITROU = 0
+C
+C           SI LE NUMERO DE NOEUD EXISTE DEJA DANS .LN
+C           ON INCREMENTE A LA PLACE J DANS LE TABLEAU &&NBNLMA.NBN
+C
+            DO 24 J = 1 , NBNA
+               IF ( ZI(P1+ZI(P2+MI-1)-1+N-1) .EQ. ZI(JLN-1+J) ) THEN
+                  ZI(JNBN-1+J) = ZI(JNBN-1+J)+1
+                  ITROU = 1
                END IF
-    5       CONTINUE
+ 24         CONTINUE
 C
-C        SI LE NUMERO DE NOEUD (ZI(JDES-1+N)) N'EXISTE PAS,
-C        ON LE STOCKE A LA PLACE NBNA (A LA FIN ) DANS LE TABLEAU .LN
-C        ET ON STOCKE 1 A LA PLACE NBNA LE TABLEAU &&NBNLMA.NBN
+C           SI LE NUMERO DE NOEUD N'EXISTE PAS,
+C           ON LE STOCKE A LA PLACE NBNA (A LA FIN ) DANS LE TABLEAU .LN
+C           ET ON STOCKE 1 A LA PLACE NBNA LE TABLEAU &&NBNLMA.NBN
 C
-            IF (ITROU.EQ.0) THEN
-               NBNA=NBNA+1
-               ZI(JLN-1+NBNA)=ZI(JDES-1+N)
-               ZI(JNBN-1+NBNA)=1
-               CALL JEECRA('&&NBNLMA.LN','LONUTI',NBNA,' ')
-               CALL JEECRA('&&NBNLMA.NBN','LONUTI',NBNA,' ')
+            IF ( ITROU .EQ. 0 ) THEN
+               NBNA = NBNA + 1
+               ZI( JLN-1+NBNA) = ZI(P1+ZI(P2+MI-1)-1+N-1)
+               ZI(JNBN-1+NBNA) = 1
+               CALL JEECRA ( '&&NBNLMA.LN' , 'LONUTI', NBNA, ' ')
+               CALL JEECRA ( '&&NBNLMA.NBN', 'LONUTI', NBNA, ' ')
             END IF
-    4    CONTINUE
-    3 CONTINUE
-      NBN=NBNA
+ 22      CONTINUE
+ 20   CONTINUE
+C
+      NBN = NBNA
+C
       CALL JEDEMA()
       END

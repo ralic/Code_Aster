@@ -1,4 +1,4 @@
-#@ MODIF graphiqueTk Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF graphiqueTk Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,8 +20,8 @@
 #  OBJETS GRAPHIQUES TK DE HAUT NIVEAU
 
 
-#import Tkinter as Tk
-import Tix as Tk
+#import Tix as Tk
+import Tkinter as Tk
 
 import types
 import graphiqueTk as objets
@@ -424,7 +424,7 @@ class C_SAISIE :
 
 
   def __init__(self,l_infos,titre, defaut, fonte=__fontes__) :
-  
+
     self.root = Tk.Tk()
     self.root.title(titre)
 
@@ -433,16 +433,16 @@ class C_SAISIE :
 
     bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire)
     bouton.grid(row = 1, column=0,pady = 10)  
-            
+
     row = 0
     self.var = []
-    
+
     for info in l_infos :
       nom = info[0]
       nbr = info[1]
       label = Tk.Label(frame, text=nom, padx = 5, pady=2, justify = Tk.LEFT, font=fonte)
       label.grid(row = row, column = 0, sticky = Tk.W)
-      
+
       rep_ligne = []
       for i in xrange(nbr) :
         var_rep = Tk.StringVar(self.root)
@@ -461,9 +461,9 @@ class C_SAISIE :
 
     self.root.mainloop()
     self.root.destroy()
-    
-  
-  
+
+
+
   def Lire(self) : 
 
     self.reponse = []

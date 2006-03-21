@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,15 +40,21 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER       IRET,NRPASS,NBPASS,ADRECG
       LOGICAL       LATTR, LCONT, ULEXIS
       CHARACTER*1   BASE
-      CHARACTER*8   NOMCO
+      CHARACTER*6   NOMPRO
+      CHARACTER*8   NOMCO,KBID
+      CHARACTER*8   LERESU
       CHARACTER*16  NOMFI
+      CHARACTER*24  NORECG
       CHARACTER*72  CHAINE
 C     ------------------------------------------------------------------
+      PARAMETER (NOMPRO='OP0017')
 C
       CALL JEMARQ()
       CALL INFMAJ()
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
       NIVO = 0
       CALL GETVIS ( ' ', 'NIVEAU', 1,1,1, NIVO, N3 )
@@ -77,15 +83,32 @@ C
          CALL ULOPEN ( IFI, ' ', NOMFI, 'NEW', 'O' )
       ENDIF
   
-      CALL GETVID(' ','CO',0,1,0,NOMCO,N1)
-      NBCO= -N1
-      IF (NBCO.GT.0) THEN
-        CALL WKVECT ('&&OP0017.LISTE_CO','V V K8',NBCO,IALICO)
-        CALL GETVID(' ','CO',0,1,NBCO,ZK8(IALICO),N1)
-        DO 1, I=1,NBCO
-          CALL UTIMSD(IFI,NIVO,LATTR,LCONT,ZK8(IALICO-1+I),1,BASE)
- 1      CONTINUE
-      END IF
+      CALL GETFAC('CONCEPT',NBOCC)
+      DO 3 IOCC = 1,NBOCC
+         CALL GETVID('CONCEPT','NOM',IOCC,1,0,KBID,NCON)
+         NCON= -NCON
+         IF (NCON.GT.0) THEN
+           CALL WKVECT ('&&OP0017.LISTE_CO','V V K8',NCON,IALICO)
+           CALL GETVID('CONCEPT','NOM',IOCC,1,NCON,ZK8(IALICO),N1)
+           DO 1, I=1,NCON
+             IAUX = IOCC
+             CALL JEEXIN(NORECG,IER)
+             IF (IER.NE.0) CALL JEDETR(NORECG)
+             CALL PSRESE('CONCEPT',IAUX,1,ZK8(IALICO-1+I),1,
+     1                    NBPASS,NORECG,IRET)
+             CALL JEVEUO(NORECG,'L',ADRECG)
+             DO 2 NRPASS = 1,NBPASS
+C            POUR LE PASSAGE NUMERO NRPASS :
+C          . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
+C          . NOM DU PARAMETRE DE SENSIBILITE
+
+               LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
+               CALL UTIMSD(IFI,NIVO,LATTR,LCONT,LERESU,1,BASE)
+ 2           CONTINUE 
+ 1         CONTINUE
+           CALL JEDETR('&&OP0017.LISTE_CO')
+        ENDIF
+ 3    CONTINUE
   
       CALL GETVTX(' ','CHAINE',0,1,1,CHAINE,N2)
       IF (N2.GT.0) THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 27/06/2000
 # AUTEUR : F. LEBOUVIER (DELATCAD)
@@ -59,7 +59,7 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
                                   MODELISATION = 'TUYAU_3M')
                       )
 
-IMPR_CO(CO=MODELE)
+IMPR_CO(CONCEPT=_F(NOM=MODELE))
 
 #
 #---------------------------------------------------------------------

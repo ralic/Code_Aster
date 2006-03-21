@@ -1,0 +1,659 @@
+# MODIF  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
+# TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# CAS_TEST__: SDNV107A
+#
+# CALCUL DE LA REPONSE TRANSITOIRE NON-LINEAIRE AVEC DYNA_TRAN_EXPLI
+# D UNE POUTRE EN TRACTION AVEC ECROUISSAGE LINEAIRE CONDENSEE 
+# DYNAMIQUEMENT SUR BASE DE RITZ PAR SOUS-STRUCTURATION ELEMENTAIRE
+# SOIT SANS MODELE_GENE, MACR_ELEM_DYNA, INTERFACE_DYNA, ETC
+#
+
+DEBUT(  CODE=_F( NOM = 'SDNV107A',NIV_PUB_WEB='INTERNET'), )
+       
+#
+
+MAILLA=LIRE_MAILLAGE( )
+
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAILLA,
+          CREA_POI1 = (
+                _F(NOM_GROUP_MA='PC0',GROUP_NO='PC0',),
+                _F(NOM_GROUP_MA='PC1',GROUP_NO='PC1',),
+                _F(NOM_GROUP_MA='PC2',GROUP_NO='PC2',),
+                      ),
+                        )                      
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(
+                     GROUP_MA=('SURF1','SURF2','SURF3','BASE',
+                               'VOLU1','VOLU2','VOLU3','VOLU',),
+                     ),
+                    );
+                                                                                                                                                                                                                                                  
+MODELE1=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                            AFFE=(
+                               _F( GROUP_MA = 'VOLU1',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = '3D'),
+                               _F( GROUP_MA = ('PC1',),
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'DIS_T'),
+                                 ),
+                   )
+                                  
+MODELE2=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                            AFFE=(
+                               _F( GROUP_MA = 'VOLU2',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = '3D'),
+                               _F( GROUP_MA = ('PC1','PC2',),
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'DIS_T'),
+                                 ),
+                   )
+                   
+MODELE3=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                            AFFE=(
+                               _F( GROUP_MA = 'VOLU3',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = '3D'),
+                               _F( GROUP_MA = 'PC2',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'DIS_T'),
+                                 ),
+                   )
+                                      
+#
+MATER=DEFI_MATERIAU(  ELAS=_F( E = 4.E11,  NU = 0.,  RHO = 1000.0),
+                      ECRO_LINE=_F( D_SIGM_EPSI = 4.E10, SY = 80.E6),
+                   )
+
+#
+CHAMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                              AFFE=_F( GROUP_MA = 'VOLU',
+                                    MATER = MATER))
+
+#
+PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
+                            DISCRET=_F( CARA='K_T_D_N',
+                                        VALE=(0.,0.,0.,),
+                                   GROUP_MA = ('PC1',), ),
+                                   )
+                                   
+PARAM2=AFFE_CARA_ELEM(  MODELE=MODELE2,
+                            DISCRET=_F( CARA='K_T_D_N',
+                                        VALE=(0.,0.,0.,),
+                                   GROUP_MA = ('PC1','PC2',), ),
+                                   )
+                                   
+PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
+                            DISCRET=_F( CARA='K_T_D_N',
+                                        VALE=(0.,0.,0.,),
+                                   GROUP_MA = 'PC2',),
+                                   )                                   
+#
+
+
+########################################################################
+#
+#        PLAQUE APPUYEE-APPUYEE DECOUPEE EN 2 PARTIES
+#   SOUS-STRUCTURATION CLASSIQUE - INTERFACES TYPE CRAIG-BAMPTON
+#
+########################################################################
+#
+#
+# SOUS-STRUCTURE 1 APPUYEE-ENCASTREE - INTERFACE TYPE CRAIG-BAMPTON
+#
+CHARGE_1=AFFE_CHAR_MECA(  MODELE=MODELE1,
+          DDL_IMPO=(
+               _F( GROUP_NO='VOLU1',
+                         DY = 0.0, 
+                         DZ = 0.0,
+                         ),
+               _F( GROUP_NO = 'BASE', DX = 0.0, ),
+               
+               _F( GROUP_NO = ('PC1',), 
+                         DX = 0.0, 
+                         ),
+                   ),
+               LIAISON_UNIF=(
+                              _F(GROUP_NO = 'SURF1', DDL=('DX')),
+                              ),
+               )
+
+#
+MERIME_1=CALC_MATR_ELEM(      MODELE=MODELE1,
+                                CHARGE=CHARGE_1,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM1,
+                               OPTION='RIGI_MECA')
+
+#
+MEMAME_1=CALC_MATR_ELEM(      MODELE=MODELE1,
+                                CHARGE=CHARGE_1,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM1,
+                               OPTION='MASS_MECA')
+
+#
+NUMDDL_1=NUME_DDL(  MATR_RIGI=MERIME_1)
+
+#
+RAID_1=ASSE_MATRICE(  MATR_ELEM=MERIME_1,
+                           NUME_DDL=NUMDDL_1)
+
+#
+MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
+                           NUME_DDL=NUMDDL_1)
+
+#
+MODES_1=MODE_ITER_SIMULT(     MATR_A=RAID_1,
+                              MATR_B=MASS_1,
+                             VERI_MODE=_F(STOP_ERREUR='NON',),
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                              NMAX_FREQ = 6))
+
+#
+
+
+# SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
+#
+CHARGE_2=AFFE_CHAR_MECA(  MODELE=MODELE2,
+          DDL_IMPO=(
+               _F( GROUP_NO='VOLU2',
+                         DY = 0.0, 
+                         DZ = 0.0,
+                         ),
+               _F( GROUP_NO = ('PC1', 'PC2',),
+                         DX = 0.0, 
+                         ),
+                   ),
+               LIAISON_UNIF=(
+                               _F(GROUP_NO = 'SURF1',DDL=('DX')),
+                               _F(GROUP_NO = 'SURF2',DDL=('DX')),
+                               ),
+               )
+
+#
+MERIME_2=CALC_MATR_ELEM(      MODELE=MODELE2,
+                                CHARGE=CHARGE_2,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM2,
+                               OPTION='RIGI_MECA')
+
+#
+MEMAME_2=CALC_MATR_ELEM(      MODELE=MODELE2,
+                                CHARGE=CHARGE_2,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM2,
+                               OPTION='MASS_MECA')
+
+#
+NUMDDL_2=NUME_DDL(  MATR_RIGI=MERIME_2)
+
+#
+RAID_2=ASSE_MATRICE(  MATR_ELEM=MERIME_2,
+                           NUME_DDL=NUMDDL_2)
+
+#
+MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
+                           NUME_DDL=NUMDDL_2)
+
+#
+MODES_2=MODE_ITER_SIMULT(     MATR_A=RAID_2,
+                              MATR_B=MASS_2,
+                             VERI_MODE=_F(STOP_ERREUR='NON',),
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                              NMAX_FREQ = 6))
+                              
+                              
+#
+# SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
+#
+CHARGE_3=AFFE_CHAR_MECA(  MODELE=MODELE3,
+          DDL_IMPO=(
+               _F( GROUP_NO='VOLU3',
+                         DY = 0.0, 
+                         DZ = 0.0,
+                         ),
+               _F( GROUP_NO = 'PC2',
+                         DX = 0.0, 
+                         ),
+                   ),
+               LIAISON_UNIF=(
+                               _F(GROUP_NO = 'SURF2',DDL=('DX')),
+                               _F(GROUP_NO = 'SURF3',DDL=('DX')),                               
+                               ),
+               )
+
+#
+MERIME_3=CALC_MATR_ELEM(      MODELE=MODELE3,
+                                CHARGE=CHARGE_3,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM3,
+                               OPTION='RIGI_MECA')
+
+#
+MEMAME_3=CALC_MATR_ELEM(      MODELE=MODELE3,
+                                CHARGE=CHARGE_3,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM3,
+                               OPTION='MASS_MECA')
+
+#
+NUMDDL_3=NUME_DDL(  MATR_RIGI=MERIME_3)
+
+#
+RAID_3=ASSE_MATRICE(  MATR_ELEM=MERIME_3,
+                           NUME_DDL=NUMDDL_3)
+
+#
+MASS_3=ASSE_MATRICE(  MATR_ELEM=MEMAME_3,
+                           NUME_DDL=NUMDDL_3)
+
+#
+MODES_3=MODE_ITER_SIMULT(     MATR_A=RAID_3,
+                              MATR_B=MASS_3,
+                             VERI_MODE=_F(STOP_ERREUR='NON',),
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                              NMAX_FREQ = 6))
+                              
+                              
+#
+#   CALCUL DE LA SOLUTION STATIQUE
+#
+
+MODESTA1=MODE_STATIQUE(  MATR_RIGI=RAID_1,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'PC1', 
+                     AVEC_CMP = ('DX'),
+                                 ))
+
+MODESTA2=MODE_STATIQUE(  MATR_RIGI=RAID_2,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'PC1', 
+                     AVEC_CMP = ('DX'),
+                                 ))
+                                 
+MODESTA3=MODE_STATIQUE(  MATR_RIGI=RAID_2,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'PC2', 
+                     AVEC_CMP = ('DX'),
+                                 ))                                 
+                                                    
+MODESTA4=MODE_STATIQUE(  MATR_RIGI=RAID_3,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'PC2', 
+                     AVEC_CMP = ('DX'),
+                                 ))
+                                 
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                            AFFE=_F( GROUP_MA = 'VOLU',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '3D'))
+                                  
+
+#
+MERIME=CALC_MATR_ELEM(      MODELE=MODELE,
+                            CHAM_MATER=CHAMAT,
+                               OPTION='RIGI_MECA')
+                               
+MEMAME=CALC_MATR_ELEM(      MODELE=MODELE,
+                            CHAM_MATER=CHAMAT,
+                               OPTION='MASS_MECA')
+                               
+#
+NUMDDL=NUME_DDL(  MATR_RIGI=MERIME)
+
+RAIDE=ASSE_MATRICE(  MATR_ELEM=MERIME,
+                           NUME_DDL=NUMDDL)
+
+#
+MASSE=ASSE_MATRICE(  MATR_ELEM=MEMAME,
+                           NUME_DDL=NUMDDL)
+
+                                      
+EXCIMO3=AFFE_CHAR_MECA(MODELE=MODELE3,
+                      FORCE_NODALE=_F(GROUP_NO='PC3',
+                                      FX=1.E8,),);
+                                       
+
+DS1 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT= MODESTA1, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  
+DS2 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT= MODESTA2, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  
+DS3 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT= MODESTA3, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  
+DS4 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT= MODESTA4, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  
+CHS1 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
+                  MAILLAGE=MAILLAGE,  
+                  ASSE=(
+                      _F (TOUT='OUI', CHAM_GD=DS1, ),
+                      _F (TOUT='OUI', CHAM_GD=DS2, ),
+                       ),
+                  );
+CHS2 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
+                  MAILLAGE=MAILLAGE,  
+                  ASSE=(
+                      _F (TOUT='OUI', CHAM_GD=DS3, ),
+                      _F (TOUT='OUI', CHAM_GD=DS4, ),
+                       ),
+                  );
+
+MODESTAA = CREA_RESU (
+                       OPERATION='AFFE',
+                       TYPE_RESU= 'MULT_ELAS', NOM_CHAM='DEPL',
+         AFFE=(
+              _F( CHAM_GD= CHS1, NOM_CAS= 'CAS1'),
+              ),
+                     );
+                     
+MODESTAB = CREA_RESU (
+                       OPERATION='AFFE',
+                       TYPE_RESU= 'MULT_ELAS', NOM_CHAM='DEPL',
+         AFFE=(
+              _F( CHAM_GD= CHS2, NOM_CAS= 'CAS1'),
+              ),
+                     );
+
+BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
+                                _F( MODE_MECA = MODES_2,
+                                     NMAX_MODE = 999)),
+                         NUME_REF=NUMDDL)
+                                                 
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+                    RITZ=( _F( BASE_MODALE=BAMODA),
+                           _F( MODE_MECA = MODES_3,
+                                     NMAX_MODE = 999)),
+                         NUME_REF=NUMDDL)
+                         
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+                    RITZ=( _F( BASE_MODALE=BAMODA),
+                           _F( MULT_ELAS = MODESTAA,
+                                     NMAX_MODE = 999)),
+                         NUME_REF=NUMDDL)
+
+                                                
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+                   RITZ=( _F( BASE_MODALE=BAMODA),
+                          _F( MULT_ELAS = MODESTAB,
+                                    NMAX_MODE = 999)),
+                        NUME_REF=NUMDDL)
+                        
+                                                
+NDDLGENE = NUME_DDL_GENE( BASE= BAMODA,
+                          STOCKAGE= 'PLEIN',)
+                          
+#  CALCUL DU MACRO-ELEMENT
+#
+
+                       
+RIGIPRO1=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
+                            MATR_ASSE=RAID_1 )
+
+MASSPRO1=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
+                            MATR_ASSE=MASS_1 )
+                                                                                        
+RIGIPRO2=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
+                            MATR_ASSE=RAID_2 )
+
+MASSPRO2=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
+                            MATR_ASSE=MASS_2 )
+                            
+RIGIPRO3=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
+                            MATR_ASSE=RAID_3 )
+
+MASSPRO3=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
+                            MATR_ASSE=MASS_3 )                            
+
+RIGIGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
+                                 COEF_R=1.0,),
+                                _F(MATR_ASSE=RIGIPRO2,
+                                 COEF_R=1.0,),
+                                _F(MATR_ASSE=RIGIPRO3,
+                                 COEF_R=1.0,),
+                                 ),); 
+                                 
+MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
+                                 COEF_R=1.0,),
+                                _F(MATR_ASSE=MASSPRO2,
+                                 COEF_R=1.0,),
+                                _F(MATR_ASSE=MASSPRO3,
+                                 COEF_R=1.0,),
+                                 ),);
+                                 
+RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGIGENE,
+                             MATR_B=MASSGENE,
+                             CALC_FREQ=_F(
+                             OPTION = 'PLUS_PETITE',
+                             NMAX_FREQ = 20
+                                        )
+                       )
+RESMOD=REST_BASE_PHYS(    RESU_GENE=RESGEN,
+                          NOM_CHAM='DEPL',
+                          TOUT_ORDRE='OUI'
+                                        )
+                  
+MODGLO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = RESMOD,
+                                    NMAX_MODE=20),
+                              ),
+                        NUME_REF=NUMDDL)
+
+NUMEMODE=NUME_DDL_GENE(       BASE=MODGLO,
+                           STOCKAGE='DIAG',
+                           )
+                           
+NUMEMOD2=NUME_DDL_GENE(       BASE=MODGLO,
+                           STOCKAGE='PLEIN',
+                           )
+
+M_PROJ=PROJ_MATR_BASE(            BASE=MODGLO,
+                             NUME_DDL_GENE=NUMEMODE, 
+                            MATR_ASSE=MASSE)
+                            
+
+RIGPRO1=PROJ_MATR_BASE(  BASE=MODGLO,  
+                            NUME_DDL_GENE=NUMEMOD2,
+                            MATR_ASSE=RAID_1 )
+                            
+RIGPRO2=PROJ_MATR_BASE(  BASE=MODGLO,  
+                            NUME_DDL_GENE=NUMEMOD2,
+                            MATR_ASSE=RAID_2 )                            
+                            
+RIGGENT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGPRO1,
+                                 COEF_R=1.0,),
+                               _F(MATR_ASSE=RIGPRO2,
+                                 COEF_R=1.0,),
+                                 ),);
+                                      
+AMOGENT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGGENT,
+                                 COEF_R=0.0,),
+                                 ),);
+                                 
+MERIME3B=CALC_MATR_ELEM(      MODELE=MODELE3,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM3,
+                               OPTION='RIGI_MECA')
+
+NUMDDL3B=NUME_DDL(  MATR_RIGI=MERIME3B)
+                                 
+
+RESMO2=REST_BASE_PHYS(    RESU_GENE=RESGEN,
+                          NUME_DDL=NUMDDL3B,
+                          NOM_CHAM='DEPL',
+                          TOUT_ORDRE='OUI'
+                                        )
+                        
+LINSDYN=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=0.02,
+                                     NOMBRE=40,),);
+LINSDY2=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=0.02,
+                                     NOMBRE=1200,),);
+
+#
+# DEFINITION DE LA FONCTION D EVOLUTION DE FY
+#
+
+OMEGA = 314.;
+
+EVOL_FY = FORMULE(NOM_PARA='INST',VALE='sin(OMEGA*INST) ')
+
+EVINT=CALC_FONC_INTERP(FONCTION=EVOL_FY, NOM_PARA = 'INST',
+                          NOM_RESU='EVOL_FY',
+                          LIST_PARA=LINSDY2);
+                          
+DYTREX=DYNA_TRAN_EXPLI(MODELE=MODELE3,
+                     CARA_ELEM=PARAM3,
+                     CHAM_MATER=CHAMAT,
+                     EXCIT=(
+                            _F(CHARGE=EXCIMO3,
+                               FONC_MULT=EVINT,),),
+                     COMP_INCR=(
+                                _F(
+                                  RELATION='ELAS',
+                                  GROUP_MA='PC2',
+                                  ),
+                                _F(
+                                  RELATION='VMIS_ISOT_LINE',
+                                  GROUP_MA='VOLU3',
+                                  ),
+                               ),
+                     DIFF_CENT=_F( ),
+                     INCREMENT=_F(LIST_INST=LINSDY2,),
+                     ARCHIVAGE=_F(LIST_INST=LINSDYN,),
+                     PROJ_MODAL=_F(MODE_MECA = RESMO2,
+                                   MASS_GENE = M_PROJ,
+                                   RIGI_GENE = RIGGENT,
+                                   AMOR_GENE = AMOGENT,
+                                   ),
+                     );
+                                                  
+RESUGLO=REST_BASE_PHYS(   RESU_PHYS=DYTREX,
+                          BASE_MODALE=MODGLO,
+                          TOUT_CHAM='OUI',
+                                        )
+                                        
+                                        
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 1.12284E-02))
+                                     
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'VITE',      INST=3.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 4.13173E+00))
+                  
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'ACCE',      INST=5.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -3.62411E+03))
+                                    
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -1.00389E-02))
+                                     
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'VITE',      INST=1.25E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -4.17518E+00))
+                  
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'ACCE',      INST=1.4E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 4.32656E+03))
+                                                      
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, REFERENCE = 'AUTRE_ASTER', 
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  PRECISION = 1.1E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 1.13478E-02))
+                                                          
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 1.12284E-02))
+                                     
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'VITE',      INST=3.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 4.13173E+00))
+                  
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'ACCE',      INST=5.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -3.62411E+03))
+                                    
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -1.00389E-02))
+                                     
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'VITE',      INST=1.25E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -4.17518E+00))
+                  
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION',
+                    VERSION='8.2.12',
+                  NOM_CHAM = 'ACCE',      INST=1.4E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 4.32656E+03))
+                                    
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, REFERENCE = 'AUTRE_ASTER', 
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  PRECISION = 1.1E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 1.13478E-02))
+                                        
+
+FIN( ) 
+               

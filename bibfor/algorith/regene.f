@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
       CHARACTER*14 NUMDDL
       CHARACTER*16 DEPL,NOMPAR(5),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
-      CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD
+      CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD,BASMO2
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
@@ -101,8 +101,11 @@ C
       CALL JEVEUO(KINT//'.VALE','L',ITRESU)
       CALL JEVEUO(KINT//'.REFE','L',IADREF)
       BASMOD = ZK24(IADREF)(1:8)
+      CALL GETVID(' ','BASE_MODALE',1,1,1,K8B,IBID)
+      IF (IBID.NE.0) CALL GETVID(' ','BASE_MODALE',1,1,1,BASMOD,IBID)
 C
-      CALL GETTCO ( ZK24(IADREF), TYPREP )
+      BASMO2 = BASMOD
+      CALL GETTCO ( BASMO2, TYPREP )
 C
       IF ( TYPREP(1:9) .EQ. 'MODE_GENE' ) THEN
          CALL GETVID(' ','SQUELETTE',1,1,1,MAILSK,IBID)
@@ -219,6 +222,12 @@ C-----------------------------------------------------------------------
 
 C         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
            NUMEDD = ZK24(IADRIF+3)
+C           WRITE(6,*) 'NUMEDD ',NUMEDD
+           CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
+           IF (IBID.NE.0) THEN
+             CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
+             NUMEDD = NUMEDD(1:14)//'.NUME'
+           ENDIF
            NUMDDL = NUMEDD(1:14)
            CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
            CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
@@ -282,7 +291,8 @@ C
          ZK24(LREFE+1) = ZK24(IADRIF+1)
 C         ZK24(LREFE+1) = '  '
          ZK24(LREFE+2) = ZK24(IADRIF+2)
-         ZK24(LREFE+3) = ZK24(IADRIF+3)
+C         ZK24(LREFE+3) = ZK24(IADRIF+3)
+         ZK24(LREFE+3) = NUMEDD
          ZK24(LREFE+4) = ZK24(IADRIF+4)
          ZK24(LREFE+5) = ZK24(IADRIF+5)
          CALL JELIBE(KREFE//'.REFD')

@@ -61,5 +61,7 @@ TEST_RESU(RESU=(
                ),
           );
 #
+IMPR_CO(CONCEPT=(_F(NOM=RETH, SENSIBILITE=PS1)))
+
 FIN();
 

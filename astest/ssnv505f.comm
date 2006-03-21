@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -174,13 +174,9 @@ CHCON=AFFE_CHAR_MECA(MODELE=MODE,
                                   
                               METHODE='CONTINUE',
                                  MODL_AXIS='NON',
-                                 COEF_REGU_FROT = 1.,
                                  ITER_GEOM_MAXI = 3,
-                                 ITER_FROT_MAXI = 1,
                                  ITER_CONT_MAXI = 10,
-                                 FROTTEMENT  = 'COULOMB',
-                                 VECT_Y=(0.0,0.0,-1.0,),
-                                 COULOMB     = 0.,
+                                 VECT_ORIE_POU=(0.0,0.0,-1.0,),
                                  DIST_MAIT=31.75,
                                  DIST_ESCL=31.75,
                               ),);

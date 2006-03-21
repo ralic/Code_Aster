@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - CONT. PLANES - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,7 +159,7 @@ DEPLD2=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6,)
               )
 
-IMPR_CO(  CO=DEPLD2)
+IMPR_CO(  CONCEPT=_F(NOM=DEPLD2))
 
 # ------------------------------------------------------------------
 T_DZETA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',

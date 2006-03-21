@@ -1,7 +1,7 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
+C MODIF ELEMENTS  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -262,9 +262,6 @@ C  RECUPERATION DES DONNEES
       GAMMA    = ZR(JPCF-1+32)
       JEUSUP   = ZR(JPCF-1+33)
       
-      INDNOR   = 1
-      IF (INDNOR.EQ.1) GOTO 99
-99    CONTINUE
 C ---- MODIF
       IF (INDM .GE. 1) THEN
         CMP = 0
@@ -397,6 +394,7 @@ C  CALCUL DES MATRICES DE CONTACT
 C  ..............................
 
       IF (OPTION.EQ.'RIGI_CONT') THEN
+      IF (INDNOR .EQ. 1) INDCO = 0
 
 C POUR LA FORMULATION EN VITESSE
         IF (IFORM .EQ. 2) THEN
@@ -627,6 +625,7 @@ C   --------------------------------------------------------
          IF (COEFFF.EQ.0.D0) INDCO = 0
          IF (LAMBDA.EQ.0.D0) INDCO = 0
          IF (MALEK.NE.3)     INDCO = 0
+         IF (INDNOR .EQ. 1)  INDCO = 0
 
 C    PAS DE CONTACT
 C    --------------

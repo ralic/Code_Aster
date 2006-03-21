@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,7 +128,20 @@ C 3.  TRAITEMENT DU MOT CLE OPERATION :
 C     -------------------------------------------------------------
 
 
-      IF (OPERA.EQ.'AFFE') THEN
+      IF (OPERA.EQ.'NORMALE') THEN
+C     -----------------------------------------
+        IF (TYCHR.EQ.'NOEU') THEN
+          IF (NOMGD.NE.'GEOM_R') CALL UTMESS('F','OP0195','OPERATION= '
+     &               //OPERA//' SEULEMENT TYPE_CHAM= ''NOEU_GEOM_R'' ')
+          CALL CNONOR ( MO, NOMGD, 'G', CHOU )
+        ELSE 
+          CALL UTMESS('F','OP0195','OPERATION= '//OPERA//
+     &                ' INCOMPATIBLE AVEC TYPE_CHAM= '//TYCHR)
+        END IF
+
+
+
+      ELSE IF (OPERA.EQ.'AFFE') THEN
 C     -----------------------------------------
         IF (TYCHR.EQ.'NOEU') THEN
           CALL CNOAFF(MA,NOMGD,'G',CHOU)

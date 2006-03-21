@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,11 +52,11 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER NMOCL
       PARAMETER (NMOCL=300)
 
-      INTEGER I,J,K,N,JGROUP,JLISTI,JLISTK,JJJ,IGR,NGR,NGRO,NENT
+      INTEGER I,J,K,N,JLISTI,IGR,NGR,NGRO,NENT
       INTEGER NBNOEU,JVAL,NDDLA,JDIREC,NBML,NG,NBNO
       INTEGER IDIM,IN,JNORM,JTANG,JNUNOE,JNBN,JNONO,NFACI,NBGM
-      INTEGER NBGT,NBET,NBEGT,IBID,JNOMA,IER,IOCC,NDIM,NNO
-      INTEGER NBEM,NBEGM,IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
+      INTEGER IBID,JNOMA,IER,IOCC,NDIM,NNO
+      INTEGER IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
       INTEGER NCMP,NBTYP,IE,NBMA,JGR0,NBCMP,INOM
 
       INTEGER DDLIMP(NMOCL)
@@ -66,10 +66,10 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*3 TYMOCL(NMOCL)
       CHARACTER*3 CDIM
       CHARACTER*4 TYPCOE
-      CHARACTER*8 MOMA,MOGROU,K8BID,NOMA,MOD,LITYP(10),NOMG
+      CHARACTER*8 K8B,NOMA,MOD,LITYP(10),NOMG
       CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3),NOEUD(3)
-      CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD
-      CHARACTER*24 TRAV,OBJ1,OBJ2,GRMA
+      CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
+      CHARACTER*24 GRMA,MESMAI
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
       CHARACTER*1 K1BID
@@ -77,35 +77,28 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
       IF (NFACI.EQ.0) GO TO 220
-      CALL GETRES(K8BID,K8BID,NOMCMD)
+      CALL GETRES(K8B,K8B,NOMCMD)
 
       LISREL = '&&CAFACI.RLLISTE'
 
+      MESMAI = '&&CAFACI.MES_MAILLES'
       MOTFAC = 'FACE_IMPO     '
-      MOMA = 'MAILLE  '
-      MOGROU = 'GROUP_MA'
+      MOCLM(1) = 'MAILLE'
+      MOCLM(2) = 'GROUP_MA'
+      TYPMCL(1) = 'MAILLE'
+      TYPMCL(2) = 'GROUP_MA'
       TYPLAG = '12'
 
       DDL(1) = 'DX      '
       DDL(2) = 'DY      '
       DDL(3) = 'DZ      '
 
-      NBGM = 0
-      NBEM = 0
-      NBEGM = 0
-      NBGT = 0
-      NBET = 0
-      NBEGT = 0
-
       COEFC(1) = (1.0D0,0.0D0)
       COEFC(2) = (1.0D0,0.0D0)
       COEFC(3) = (1.0D0,0.0D0)
 
       TYPCOE = 'REEL'
-      IF (FONREE.EQ.'COMP') THEN
-        TYPCOE = 'COMP'
-      END IF
-
+      IF (FONREE.EQ.'COMP')  TYPCOE = 'COMP'
 
 C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 
@@ -116,13 +109,13 @@ C ---  LIGREL DU MODELE ---
       LIGRMO = MOD(1:8)//'.MODELE'
 
       IF (NOMCMD(11:14).EQ.'MECA') THEN
-        NOMG='DEPL_R'
+         NOMG='DEPL_R'
       ELSE IF (NOMCMD(11:14).EQ.'THER') THEN
-        NOMG='TEMP_R'
+         NOMG='TEMP_R'
       ELSE IF (NOMCMD(11:14).EQ.'ACOU') THEN
-        NOMG='PRES_C'
+         NOMG='PRES_C'
       ELSE
-        CALL ASSERT(.FALSE.)
+         CALL ASSERT(.FALSE.)
       END IF
       CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
@@ -132,57 +125,11 @@ C --- MAILLAGE ASSOCIE AU MODELE ---
       CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
       NOMA = ZK8(JNOMA)
 
-      OBJ1 = NOMA//'.GROUPE'//'MA'
-      OBJ2 = NOMA//'.NOMMAI'
-
-      DO 10 IOCC = 1,NFACI
-        CALL GETVID(MOTFAC,MOGROU,IOCC,1,0,K8BID,NGRO)
-        CALL GETVID(MOTFAC,MOMA,IOCC,1,0,K8BID,NENT)
-        NGRO = -NGRO
-        NBGM = MAX(NBGM,NGRO)
-        NBGT = NBGT + NGRO
-        NENT = -NENT
-        NBEM = MAX(NBEM,NENT)
-        NBET = NBET + NENT
-   10 CONTINUE
-
-      NDIM = MAX(NBGM,NBEM)
-      IF (NDIM.EQ.0) THEN
-        CALL UTMESS('F',MOTFAC,'IL N''Y A AUCUN GROUPE DE '//
-     &              'MAILLES NI AUCUNE MAILLE DEFINI APRES LE '//
-     &              'MOT FACTEUR '//MOTFAC)
-      END IF
-      TRAV = '&&CAFACI.'//MOTFAC
-      CALL WKVECT(TRAV,'V V K8',NDIM,JJJ)
-      DO 40 IOCC = 1,NFACI
-        CALL GETVID(MOTFAC,MOGROU,IOCC,1,NDIM,ZK8(JJJ),NGR)
-        DO 20 IGR = 1,NGR
-          CALL JEEXIN(JEXNOM(OBJ1,ZK8(JJJ+IGR-1)),IRET)
-          IF (IRET.EQ.0) THEN
-            CALL UTMESS('F',MOTFAC,'LE GROUPE '//ZK8(JJJ+IGR-1)//
-     &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
-          ELSE
-            CALL JELIRA(JEXNOM(OBJ1,ZK8(JJJ+IGR-1)),'LONMAX',N1,K1BID)
-            NBEGM = MAX(NBEGM,N1)
-            NBEGT = NBEGT + N1
-          END IF
-   20   CONTINUE
-        CALL GETVID(MOTFAC,MOMA,IOCC,1,NDIM,ZK8(JJJ),NNO)
-        DO 30 INO = 1,NNO
-          CALL JENONU(JEXNOM(OBJ2,ZK8(JJJ+INO-1)),IRET)
-          IF (IRET.EQ.0) THEN
-            CALL UTMESS('F',MOTFAC,MOMA//' '//ZK8(JJJ+INO-1)//
-     &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
-          END IF
-   30   CONTINUE
-   40 CONTINUE
-
-
 C ---------------------------------------------------
 C *** RECUPERATION DU DESCRIPTEUR GRANDEUR .PRNM
 C *** DU MODELE
 C ---------------------------------------------------
-      CALL DISMOI('F','NB_NO_MAILLA',LIGRMO,'LIGREL',N1,K8BID,IER)
+      CALL DISMOI('F','NB_NO_MAILLA',LIGRMO,'LIGREL',N1,K8B,IER)
       CALL JELIRA(LIGRMO//'.PRNM','LONMAX',N2,K1BID)
       NBEC = N2/N1
       IF (NBEC.GT.10) THEN
@@ -193,15 +140,6 @@ C ---------------------------------------------------
         CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
       END IF
 
-      NBGT = MAX(NBGT,1)
-      NBET = MAX(NBET,1)
-      NBEGT = MAX(NBEGT,1)
-C     ---------------------------------
-C     ALLOCATION DE TABLEAUX DE TRAVAIL
-C     ---------------------------------
-      CALL WKVECT('&&CAFACI.GROUP','V V K8',NBGT,JGROUP)
-      CALL WKVECT('&&CAFACI.LISTI','V V I',NBEGT,JLISTI)
-      CALL WKVECT('&&CAFACI.LISTK','V V K8',NBET,JLISTK)
 C     --------------------------------------------------------
 C     RECUPERATION DE LA DIMENSION DE L'ESPACE DES COORDONNEES
 C     --------------------------------------------------------
@@ -230,16 +168,21 @@ C     --------------------------------------------------------
         LITYP(9) = 'SEG3'
         LITYP(10) = 'SEG4'
       END IF
+
 C      ***************************************
 C      TRAITEMENT DES COMPOSANTES DNOR ET DTAN
 C      ***************************************
-
-C     MISE A JOUR DE LIGRCH ET STOCKAGE DANS LES CARTES
 
       DO 210 I = 1,NFACI
         NCMP = 0
         ICMP = 0
         INOR = 0
+C
+C ----- RECUPERATION DES MAILLES
+C
+        CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, I, 2,
+     +                                    MOCLM, TYPMCL, MESMAI, NBMA )
+        CALL JEVEUO ( MESMAI, 'L', JLISTI )
 C ---------------------------------------------------
 C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
 C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
@@ -304,56 +247,20 @@ C    FILTRAGE SUR LES COMPOSANTES NORMALES OU TANGENTIELLES
 C    ------------------------------------------------------
         IF (INOR.NE.0 .AND. ICMP.EQ.0) THEN
 
-C        ---------------
-C        CAS DE GROUP_MA
-C        ---------------
-          CALL GETVEM(NOMA,'GROUP_MA','FACE_IMPO','GROUP_MA',I,1,0,
-     &                ZK8(JGROUP),NG)
-          IF (NG.NE.0) THEN
-            NG = -NG
-            CALL GETVEM(NOMA,'GROUP_MA','FACE_IMPO','GROUP_MA',I,1,NG,
-     &                  ZK8(JGROUP),N)
-            GRMA = NOMA//'.GROUPEMA'
-            NBMA = 0
-            DO 90 J = 1,NG
-              CALL JEVEUO(JEXNOM(GRMA,ZK8(JGROUP-1+J)),'L',JGR0)
-              CALL JELIRA(JEXNOM(GRMA,ZK8(JGROUP-1+J)),'LONMAX',N,K1BID)
-              DO 80 K = 1,N
-                ZI(JLISTI-1+NBMA+K) = ZI(JGR0-1+K)
-   80         CONTINUE
-              NBMA = NBMA + N
-   90       CONTINUE
-            CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),' ',NBTYP,LITYP,NBNO)
-            CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
-            CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
-
-          END IF
-C        -------------------------------------
-C        CAS DE MAILLE,NBMA < 0 , C'EST NORMAL
-C        -------------------------------------
-          CALL GETVEM(NOMA,'MAILLE','FACE_IMPO','MAILLE',I,1,0,
-     &                ZK8(JLISTK),NBML)
-          IF (NBML.NE.0) THEN
-            NBML = -NBML
-            CALL GETVEM(NOMA,'MAILLE','FACE_IMPO','MAILLE',I,1,NBML,
-     &                  ZK8(JLISTK),N)
-            CALL NBNLMA(NOMA,-NBML,0,ZK8(JLISTK),NBTYP,LITYP,NBNO)
-            CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
-            CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
-
-            NBMA = -NBML
-          END IF
+          CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),NBTYP,LITYP,NBNO)
+          CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
+          CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
 C   -------------------------------------------
 C   CALCUL DES NORMALES ET TANGENTES AUX NOEUDS
 C   -------------------------------------------
           IF (DDLIMP(NDDLA+1).NE.0) THEN
-            CALL CANORT(NOMA,NBMA,ZI(JLISTI),ZK8(JLISTK),NDIM,NBNO,
-     &                  ZI(JNBN),ZI(JNUNOE),1)
+            CALL CANORT(NOMA,NBMA,ZI(JLISTI),K8B,NDIM,NBNO,
+     &                                       ZI(JNBN),ZI(JNUNOE),1)
             CALL JEVEUO('&&CANORT.NORMALE','L',JNORM)
           END IF
           IF (DDLIMP(NDDLA+2).NE.0) THEN
-            CALL CANORT(NOMA,NBMA,ZI(JLISTI),ZK8(JLISTK),NDIM,NBNO,
-     &                  ZI(JNBN),ZI(JNUNOE),2)
+            CALL CANORT(NOMA,NBMA,ZI(JLISTI),K8B,NDIM,NBNO,
+     &                                       ZI(JNBN),ZI(JNUNOE),2)
             CALL JEVEUO('&&CANORT.TANGENT','L',JTANG)
           END IF
 C   ----------------------
@@ -475,74 +382,26 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
             END IF
   150     CONTINUE
         END IF
+C
         IF (INOR.EQ.0) THEN
-C        ---------------
-C        CAS DE GROUP_MA
-C        ---------------
-          CALL GETVEM(NOMA,'GROUP_MA','FACE_IMPO','GROUP_MA',I,1,0,
-     &                ZK8(JGROUP),NG)
-          IF (NG.NE.0) THEN
-            NG = -NG
-            CALL GETVEM(NOMA,'GROUP_MA','FACE_IMPO','GROUP_MA',I,1,NG,
-     &                  ZK8(JGROUP),N)
-            GRMA = NOMA//'.GROUPEMA'
-            NBMA = 0
-            DO 170 J = 1,NG
-              CALL JEVEUO(JEXNOM(GRMA,ZK8(JGROUP-1+J)),'L',JGR0)
-              CALL JELIRA(JEXNOM(GRMA,ZK8(JGROUP-1+J)),'LONMAX',N,K1BID)
-              DO 160 K = 1,N
-                ZI(JLISTI-1+NBMA+K) = ZI(JGR0-1+K)
-  160         CONTINUE
-              NBMA = NBMA + N
-  170       CONTINUE
-            CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),' ',NBTYP,LITYP,NBNO)
-            CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
-            CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
+          CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),NBTYP,LITYP,NBNO)
+          CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
+          CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
 
-            IRET = 0
-            DO 180 INO = 1,NBNO
-              IN = ZI(JNUNOE-1+INO)
-              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
-              ZK8(JNONO-1+IN) = NOMNOE
-              CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
+          IRET = 0
+          DO 180 INO = 1,NBNO
+            IN = ZI(JNUNOE-1+INO)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
+            ZK8(JNONO-1+IN) = NOMNOE
+            CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                    ZI(JPRNM-1+ (IN-1)*NBEC+1),NDDLA,FONREE,
      &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
      &                    NBEC,ZR(JDIREC+3* (IN-1)),0,LISREL,
      &                    ZK8(INOM),NBCMP,IRET)
-  180       CONTINUE
-            IF ( IRET .EQ. 0 ) CALL UTMESS('F','CAFACI',
+  180     CONTINUE
+          IF ( IRET .EQ. 0 ) CALL UTMESS('F','CAFACI',
      &                        'AUCUN NOEUD NE CONNAIT LES DDL FOURNIS')
 
-          END IF
-C        -------------------------------------
-C        CAS DE MAILLE,NBNO < 0 , C'EST NORMAL
-C        -------------------------------------
-          CALL GETVEM(NOMA,'MAILLE','FACE_IMPO','MAILLE',I,1,0,
-     &                ZK8(JLISTK),NBML)
-          IF (NBML.NE.0) THEN
-            NBML = -NBML
-            CALL GETVEM(NOMA,'MAILLE','FACE_IMPO','MAILLE',I,1,NBML,
-     &                  ZK8(JLISTK),N)
-            CALL NBNLMA(NOMA,-NBML,0,ZK8(JLISTK),NBTYP,LITYP,NBNO)
-            CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
-            CALL JEVEUO('&&NBNLMA.NBN','L',JNBN)
-
-            IRET = 0
-            DO 190 INO = 1,NBNO
-              IN = ZI(JNUNOE-1+INO)
-              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
-              ZK8(JNONO-1+IN) = NOMNOE
-              CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
-     &                    ZI(JPRNM-1+ (IN-1)*NBEC+1),NDDLA,FONREE,
-     &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
-     &                    NBEC,ZR(JDIREC+3* (IN-1)),0,LISREL,
-     &                    ZK8(INOM),NBCMP,IRET)
-  190       CONTINUE
-            IF ( IRET .EQ. 0 ) CALL UTMESS('F','CAFACI',
-     &                        'AUCUN NOEUD NE CONNAIT LES DDL FOURNIS')
-
-            NBMA = NBML
-          END IF
         END IF
         CALL JEEXIN('&&CAFACI.NOMS_NOEUDS',IRET)
         IF (IRET.NE.0) CALL JEDETR('&&CAFACI.NOMS_NOEUDS')
@@ -554,6 +413,8 @@ C        -------------------------------------
 
   200   CONTINUE
 
+        CALL JEDETR ( MESMAI )
+
   210 CONTINUE
 C        -------------------------------------
 C        AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE
@@ -562,10 +423,6 @@ C        LIGRCH ET .NEMA)
 C        -------------------------------------
       CALL AFLRCH(LISREL,CHAR)
 
-      CALL JEDETR('&&CAFACI.GROUP')
-      CALL JEDETR('&&CAFACI.LISTK')
-      CALL JEDETR('&&CAFACI.LISTI')
-      CALL JEDETR(TRAV)
   220 CONTINUE
       CALL JEEXIN('&&NBNLMA.LN',IRET)
       IF (IRET.NE.0) CALL JEDETR('&&NBNLMA.LN')

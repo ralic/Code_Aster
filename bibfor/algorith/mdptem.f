@@ -8,7 +8,7 @@
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ADBHHVF F.VOLDOIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,7 @@ C
             IF (INFO.EQ.2)
      +      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
             DO 22 J = 1,NBMODE
+               IF (PULSAT(J).EQ.ZERO) GOTO 22
                KLOCX = ZERO
                KLOCY = ZERO
                KLOCZ = ZERO
@@ -129,33 +130,33 @@ C
                IF (KLOCX.LE.KNORM .OR. KLOCY.LE.KNORM
      +                                      .OR. KLOCZ.LE.KNORM) THEN
                   IF (INFO.EQ.2) THEN
-                     CALL UTIMPI('L',' POUR LE MODE NO :',1,J)
+                     CALL UTIMPI('L',' POUR LE MODE NO : ',1,J)
                      CALL UTIMPR('L','RAIDEUR LOCALE DEPX : ',1,KLOCX)
                      CALL UTIMPR('L','RAIDEUR LOCALE DEPY : ',1,KLOCY)
                      CALL UTIMPR('L','RAIDEUR LOCALE DEPZ : ',1,KLOCZ)
                   ENDIF
                ENDIF
                IF (KNORM.NE.ZERO) THEN
-                  DTI = DEUXPI / SQRT(PULSAT(J)**2 +
+                     DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      +                     KNORM * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )
-                  DTS = MIN(DTS, DTI)
-                  DTI = DEUXPI / SQRT(PULSAT(J)**2 +
+                     DTS = MIN(DTS, DTI)
+                     DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      +                     KNORM * DPLMOD(I,J,2+IA)**2 / MASGEN(J) )
-                  DTS = MIN(DTS, DTI)
-                  DTI = DEUXPI / SQRT(PULSAT(J)**2 +
+                     DTS = MIN(DTS, DTI)
+                     DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      +                     KNORM * DPLMOD(I,J,3+IA)**2 / MASGEN(J) )
-                  DTS = MIN(DTS, DTI)
+                     DTS = MIN(DTS, DTI)
                ENDIF
                IF (KTANG.NE.ZERO) THEN
-                  DTI = DEUXPI / SQRT(PULSAT(J)**2 +
+                     DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      +                     KTANG * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )
-                  DTS = MIN(DTS, DTI)
-                  DTI = DEUXPI / SQRT(PULSAT(J)**2 +
+                     DTS = MIN(DTS, DTI)
+                     DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      +                     KTANG * DPLMOD(I,J,2+IA)**2 / MASGEN(J) )
-                  DTS = MIN(DTS, DTI)
-                  DTI = DEUXPI / SQRT(PULSAT(J)**2 +
+                     DTS = MIN(DTS, DTI)
+                     DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      +                     KTANG * DPLMOD(I,J,3+IA)**2 / MASGEN(J) )
-                  DTS = MIN(DTS, DTI)
+                     DTS = MIN(DTS, DTI)
                ENDIF
  22         CONTINUE
             IF (IC.EQ.5) GOTO 20
@@ -168,14 +169,15 @@ C
          IF (INFO.EQ.2) CALL UTFINM()
       ENDIF
 C
-      IF ( METHOD .EQ. 'DEVOGE' ) THEN
+      IF     ( METHOD .EQ. 'DEVOGE'  ) THEN
          DT = MIN( DTS / 10.D0 , DTU )
       ELSEIF ( METHOD .EQ. 'NEWMARK' ) THEN
          DT = MIN( DTS / 10.D0 , DTU )
-      ELSEIF ( METHOD .EQ. 'ITMI' ) THEN
+      ELSEIF ( METHOD .EQ. 'ITMI'    ) THEN
          DT = DTU
          GOTO 9999
       ELSE
+C      CASE METHOD .EQ. 'EULER' OR OTHER
          DT = MIN( DTS / 20.D0 , DTU )
       ENDIF
       NBPAS = NINT( ( TFIN - TINIT ) / DT )
@@ -184,14 +186,14 @@ C
       IF ( DT .NE. DTU ) THEN
          IF (METHOD .EQ. 'NEWMARK') THEN
          CALL UTDEBM('A','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',' ')
-         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND:',1,DTU)
+         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND :',1,DTU)
          CALL UTIMPR('L','PAS DE TEMPS NECESSAIRE POUR LE CALCUL:',1,DT)
          CALL UTIMPK('L','RISQUES DE PROBLEMES DE PRECISION',1,' ')
          CALL UTFINM()
          ELSEIF (IVERI.EQ.1 .AND. METHOD .NE. 'ADAPT') THEN
          IER = IER + 1
          CALL UTDEBM('E','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',' ')
-         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND:',1,DTU)
+         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND :',1,DTU)
          CALL UTIMPR('L','PAS DE TEMPS NECESSAIRE POUR LE CALCUL:',1,DT)
          CALL UTIMPK('L','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',1,' ')
          CALL UTIMPK('L','PARAMETRES DE CALCUL DANS CE CAS :   ',1,' ')
@@ -199,10 +201,10 @@ C
          CALL UTFINM()
          ELSE
          CALL UTDEBM('A','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',' ')
-         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND:',1,DTU)
+         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND :',1,DTU)
          CALL UTIMPR('L','PAS DE TEMPS NECESSAIRE POUR LE CALCUL:',1,DT)
          IF (IVERI.NE.1)
-     &    CALL UTIMPK('L','ON PASSE OUTRE CAR VERI_PAS: NON     ',1,' ')
+     &    CALL UTIMPK('L','ON PASSE OUTRE CAR VERI_PAS = NON   ',1,' ')
          CALL UTIMPK('L','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',1,' ')
          CALL UTIMPK('L','PARAMETRES DE CALCUL DANS CE CAS :   ',1,' ')
          CALL UTIMPI('L','NB DE PAS DE CALCUL : ',1,NBPAS)

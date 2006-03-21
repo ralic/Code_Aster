@@ -4,7 +4,7 @@
       REAL*8 COOR(*),NORMAL(3)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,6 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER JTGDEF
       REAL*8 XX(3),YY(3),NORME,SURF,VECT(3),XTANG(6)
       CHARACTER*8 NOMTM
       CHARACTER*24 TANDEF
@@ -79,7 +78,7 @@ C     +                  'ELLE NE PEUT ETRE CALCULEE EN 3D')
               CALL NORMEV(NORMAL,NORME)
              ELSE 
               CALL UTMESS('F','CANORM','POUR LES SEG EN 3D, IL '//
-     &                    'FAUT RENSEIGNER VECT_Y')
+     &                    'FAUT RENSEIGNER VECT_ORIE_POU')
             END IF
 C          ELSE
 C            NORMAL(1) = COOR(5) - COOR(2)

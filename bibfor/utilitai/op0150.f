@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 20/03/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (LCMPVA='NOM_CMP')
       CHARACTER*11 LCMPVM
       PARAMETER (LCMPVM='NOM_CMP_MED')
-      INTEGER JCMPVA,JCMPVM
+      INTEGER JCMPVA,JCMPVM,IU99,IU98,IU97,ULNUME
 
       CHARACTER*72 REP
       CHARACTER*32 K32B
@@ -379,44 +379,48 @@ C              1234567890123456
         DIR = 'DONNEES_ENSIGHT/'
         FIC80B = FICH
         FIRES = DIR//FICH(1:LONG)
-        OPEN (99,FILE=FIRES)
+        IU99 = ULNUME ()
+        CALL ULOPEN(IU99,FIRES,' ','OLD','O')
 
 C  LECTURE DU FICHIER RESULTS (PAS DE TEMPS
 C                              ET FICHIERS GEOM ET PRES)
-        READ (99,'(3I8)',ERR=290,END=290,IOSTAT=IO) NSCAL,NVECT,
+        READ (IU99,'(3I8)',ERR=290,END=290,IOSTAT=IO) NSCAL,NVECT,
      &    NFLAG
-        READ (99,'(1I8)',ERR=290,END=290,IOSTAT=IO) NPAS
+        READ (IU99,'(1I8)',ERR=290,END=290,IOSTAT=IO) NPAS
 
         CALL WKVECT('&&'//NOMPRO//'.INST','V V R',NPAS,IPAS)
-        READ (99,'(6(E12.5))',ERR=290,END=290,
+        READ (IU99,'(6(E12.5))',ERR=290,END=290,
      &    IOSTAT=IO) (ZR(IPAS-1+I),I=1,NPAS)
         I1 = 0
         I2 = 0
         IF (NFLAG.GT.0) THEN
-          READ (99,'(2I8)',ERR=290,END=290,IOSTAT=IO) I1,I2
+          READ (IU99,'(2I8)',ERR=290,END=290,IOSTAT=IO) I1,I2
         ELSE
           IF (NPAS.NE.1) THEN
             CALL UTMESS('F',NOMPRO,'NFLAG ETANT EGAL A 0, ON NE '//
      &                  'PEUT PAS AVOIR PLUS D''UN INSTANT.')
           END IF
         END IF
-        READ (99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIGEOM
+        READ (IU99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIGEOM
         LONG = LXLGUT(FIGEOM)
         FIGEOM(1:16+LONG) = DIR//FIGEOM(1:LONG)
-        READ (99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIPRES
+        READ (IU99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIPRES
+        CALL ULOPEN(-IU99,' ',' ',' ',' ')
         LONG = LXLGUT(FIGEOM)
         FIPRES(1:16+LONG) = DIR//FIPRES(1:LONG)
 
         FIC80B = FIGEOM
-        OPEN (98,FILE=FIGEOM)
+        IU98 = ULNUME ()
+        CALL ULOPEN(IU98,FIGEOM,' ','OLD','O')
 C  LECTURE DU FICHIER GEOM (NUMEROS DE NOEUDS)
-        READ (98,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
-        READ (98,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
-        READ (98,'(1I8)',ERR=290,END=290,IOSTAT=IO) NBNO
+        READ (IU98,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
+        READ (IU98,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
+        READ (IU98,'(1I8)',ERR=290,END=290,IOSTAT=IO) NBNO
         CALL WKVECT('&&'//NOMPRO//'.NUMNOEU','V V I',NBNO,INOPR)
         DO 60 I = 1,NBNO
-          READ (98,'(1I8)',ERR=290,IOSTAT=IO) ZI(INOPR-1+I)
+          READ (IU98,'(1I8)',ERR=290,IOSTAT=IO) ZI(INOPR-1+I)
    60   CONTINUE
+        CALL ULOPEN(-IU98,' ',' ',' ',' ')
 
         NSTAR = 0
         NCARLU = 0
@@ -470,18 +474,20 @@ C  ----------------------------------------------------
             FIPRES = FIPRES(1:LL-NSTAR)//CHAINE(9-NSTAR:8)
           END IF
           FIC80B = FIPRES
-          OPEN (97,FILE=FIPRES)
-          READ (97,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
+          IU97 = ULNUME ()
+          CALL ULOPEN(IU97,FIPRES,' ','OLD','O')
+          READ (IU97,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
           CALL WKVECT('&&'//NOMPRO//'.PRES.'//CHAINE,'V V R',NBNO,IPRES)
           NLIG = NBNO/6
           DO 90 I = 1,NLIG
-            READ (97,'(6(E12.5))') (ZR(IPRES-1+6* (I-1)+J),J=1,6)
+            READ (IU97,'(6(E12.5))') (ZR(IPRES-1+6* (I-1)+J),J=1,6)
    90     CONTINUE
           IREST = NBNO - 6*NLIG
           IF (IREST.GT.0) THEN
-            READ (97,'(6(E12.5))',ERR=290,END=290,
+            READ (IU97,'(6(E12.5))',ERR=290,END=290,
      &        IOSTAT=IO) (ZR(IPRES-1+6*NLIG+J),J=1,IREST)
           END IF
+          CALL ULOPEN (-IU97,' ',' ',' ',' ')
 
 C  REMPLISSAGE DU .VALE DU CHAM_ELEM DE PRES_R
 

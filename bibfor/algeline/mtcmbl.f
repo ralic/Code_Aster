@@ -8,7 +8,7 @@
       REAL*8           CONST(NBCOMB)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/03/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,30 +204,23 @@ C
      +                   'CONSTANT',NBLIC)
          ENDIF
 C
-C --- LONGUEUR D'UN BLOC :
-C     ------------------
-         IF (ZI(ZI(IDLIMA)+6).EQ.1) THEN
-             LGBLOC = ZI(ZI(IDLIMA)+14)
-         ELSEIF (ZI(ZI(IDLIMA)+6).EQ.2) THEN
-            CALL JEVEUO(MATRES//'.ABLI','L',IDABLI)
-            CALL JEVEUO(MATRES//'.ALIG','L',IDALIG)
-            CALL JEVEUO(MATRES//'.LLIG','L',IDLLIG)
-            IMPFIN = ZI(IDABLI+NBLIC)
-            ILOC = ZI(IDALIG+IMPFIN-1)
-            IND = 2+3*(IMPFIN-1)
-            JDEB = ZI(IDLLIG+IND+1-1)
-            JFIN = ZI(IDLLIG+IND+2-1)
-            LGBLOC = ILOC+JFIN-JDEB
-         ENDIF
+C        ---  LONGUEUR D'UN BLOC DE .VALI :
+C        ---------------------------------
+         CALL JEVEUO(MATRES//'.ABLI','L',IDABLI)
+         CALL JEVEUO(MATRES//'.ALIG','L',IDALIG)
+         CALL JEVEUO(MATRES//'.LLIG','L',IDLLIG)
+         IMPFIN = ZI(IDABLI+NBLIC)
+         ILOC = ZI(IDALIG+IMPFIN-1)
+         IND = 2+3*(IMPFIN-1)
+         JDEB = ZI(IDLLIG+IND+1-1)
+         JFIN = ZI(IDLLIG+IND+2-1)
+         LGBLOC = ILOC+JFIN-JDEB
 C
 C --- CREATION DE LA COLLECTION .VALI DE LA MATRICE RESULTAT
 C --- (AVEC LA BONNE LONGUEUR DE BLOC) :
 C     --------------------------------
-         IBLIC = 1
-         CALL JECROC(JEXNUM(MATRES//'.VALI',IBLIC))
-         CALL JEECRA(JEXNUM(MATRES//'.VALI',IBLIC),'LONMAX',LGBLOC,
-     +                K8BID)
-         DO 30 IBLIC = 2, NBLIC
+         CALL JEECRA(MATRES//'.VALI','LONMAX',LGBLOC,K8BID)
+         DO 30 IBLIC = 1, NBLIC
             CALL JECROC(JEXNUM(MATRES//'.VALI',IBLIC))
   30    CONTINUE
 C

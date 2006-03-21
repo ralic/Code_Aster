@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
      +              NBOBJ, IOBJ, NBMC, IC, UTMOTP, NORIEN, NBPAR, IRET,
      +              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL,NUMA,IBID,
      +              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
-     +              NOC1, JCOOR, JTYMA, JNMA
+     +              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA
       PARAMETER    ( NBT = 6 )
       REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
       LOGICAL       GETEXM, REORIE, MCFL(NBT), PLAQUE
@@ -179,8 +179,10 @@ C ---       RECUPERATION DE LA DIMENSION DU PROBLEME
 C
             NOC  = 0
             IF (MOTFAC .EQ. 'CONTACT') THEN
-               CALL GETVR8 ( MOTFAC, 'VECT_NORM_ESCL',IOCC,1,3,DIR,NOC)
-               CALL GETVR8 ( MOTFAC, 'VECT_Y',     IOCC,1,3, DIR, NOC1)
+               CALL GETVR8 (MOTFAC,'VECT_NORM_ESCL',IOCC,1,3,DIR,NOC)
+               CALL GETVR8 (MOTFAC,'VECT_Y',IOCC,1,3, DIR, NOC11)
+               CALL GETVR8 (MOTFAC,'VECT_ORIE_POU',IOCC,1,3, DIR, NOC12)
+               NOC1=NOC11+NOC12
             ENDIF
 C
             INDIC = 0
@@ -264,7 +266,7 @@ C     +                  //' ELLE EST DE TYPE : '//TYPEL)
      +                   //' SOIT LA MAILLE '//NOMAIL//' DOIT ETRE UNE '
      +                   //' MAILLE DE PEAU DE TYPE "SEG" CAR ON EST '
      +                   //' EN 2D ET ELLE EST DE TYPE : '//TYPEL
-     +                   //', SOIT IL FAUT RENSEIGNER "VECT_Y" EN 3D') 
+     +                 //', SOIT IL FAUT RENSEIGNER "VECT_POU_Z" EN 3D')
                       ENDIF  
 C
                     ENDIF                   

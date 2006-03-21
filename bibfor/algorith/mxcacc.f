@@ -1,10 +1,12 @@
       SUBROUTINE MXCACC(
      &                   SOLVEU, SECMBR, CNRESI, ACCPLU,
-     &                   MATRIX, CNVCPR,
-     &                   LMODAL, MASGEN, BASMOI)
+     &                   MATRIX, CNVCPR, LMODAL, MASGEN, BASMOI,
+     &                   LSSTRU, ACCGEM, ACCGEP, VITGEM, VITGEP,
+     &                   DEPGEM, DEPGEP, RIGGEN, AMOGEN, FONGEN,
+     &                   FORGEN, INSTAP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2005   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,8 +26,9 @@ C ======================================================================
 C RESPONSABLE BOYERE E.BOYERE
 C TOLE CRP_21
 
-      IMPLICIT NONE
-      REAL*8       COEVIT, COEACC
+C      IMPLICIT NONE
+      IMPLICIT REAL*8 (A-H,O-Z)
+      REAL*8       COEVIT, COEACC, INSTAP
       CHARACTER*14 PILOTE
       CHARACTER*16 CMD
       CHARACTER*19 SOLVEU, CNRESI, CNVCPR
@@ -33,6 +36,10 @@ C TOLE CRP_21
       CHARACTER*24 ACCPLU, STADYN
       CHARACTER*24 MASSE, AMORT
       CHARACTER*24 MASGEN, BASMOI
+      CHARACTER*24 ACCGEM, ACCGEP, VITGEM, VITGEP
+      CHARACTER*24 DEPGEM, DEPGEP, RIGGEN, AMOGEN
+      CHARACTER*24 FONGEN, FORGEN
+      LOGICAL      LSSTRU
       LOGICAL      LAMORT, PREMIE
       LOGICAL      LMODAL
       
@@ -90,19 +97,6 @@ C -- INITIALISATION
      &                     CNFSDO, CNFSPI, K24BID, CNCINE)
 
 
-C -- LECTURE DE LA MATRICE ASSEMBLEE (ET ASSEMBLAGE SI BESOIN)
-
-C      CALL NMMATR('CORRECTION', MODELE, NUMEDD, MATE  , CARELE,
-C     &                  COMREF, COMPOR, LISCHA, MEDIRI, RESOCO,
-C     &                  METHOD, SOLVEU, PARMET, CARCRI, PARTPS,
-C     &                  NUMINS, ITERAT, VALMOI, POUGD , DEPDEL,
-C     &                  VALPLU, MATRIX, K16BID, DEFICO, STADYN,
-C     &                  PREMIE, CMD,    DEPENT, VITENT, LAMORT, 
-C     &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC, 
-C     &                  LICCVG(5))
-C      IF (LICCVG(5).NE.0) GOTO 9999
-
-
 C -- PREPARATION DU SECOND MEMBRE
 
       CNDONN(1) = CNFEDO
@@ -120,13 +114,7 @@ C -- PREPARATION DU SECOND MEMBRE
 
 C -- CALCUL DE LA DIRECTION DE DESCENTE
 
-C      DINST = DIINST(PARTPS, NUMINS) - DIINST(PARTPS, NUMINS-1)
 C      CALL UTIMSD('MESSAGE',2,.TRUE.,.TRUE.,'&&MATASS',1,' ')
-C      CALL NMRESO(PILOTE, 6     , CODONN, CNDONN, 3     ,
-C     &            COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
-C     &            DEPDEL, DINST , DEPOLD, MODELE, MATE  ,
-C     &            COMPOR, VALMOI, ACCPLU, ETA   , LICCVG(1))
-C -- CREATION DES SECONDS MEMBRES
 
 C    SECOND MEMBRE DES CHARGEMENTS DONNES
       CNSCD0 = '&&CNPART.CHP1'
@@ -141,27 +129,72 @@ C    SECOND MEMBRE DES CHARGEMENTS DONNES
         CALL JELIRA(MASGEN,'LONMAX',NBMODE,K8BID)
         CALL JEVEUO(MASGEN,'L',JMASGE)
         CALL JEVEUO(BASMOI,'L',JBASMO)
-        ACCGEN = '&&ACCGEN'
-        CALL JEEXIN(ACCGEN,IRET)
-        IF (IRET.EQ.0) THEN
-          CALL WKVECT(ACCGEN,'V V R',NBMODE,JACCGE)
-        ELSE
-          CALL JEVEUO(ACCGEN,'E',JACCGE)
-        END IF
         FMODAL = '&&FMODAL'
         CALL JEEXIN(FMODAL,IRET)
         IF (IRET.EQ.0) THEN
           CALL WKVECT(FMODAL,'V V R',NBMODE,JFMODA)
         ELSE
           CALL JEVEUO(FMODAL,'E',JFMODA)
-        END IF
-        DO 11 I=1,NBMODE
-          ZR(JFMODA+I-1) = DDOT(NEQ,ZR(JBASMO+(I-1)*NEQ),1,
-     &                           ZR(JSCD0),1)
-          ZR(JACCGE+I-1) = ZR(JFMODA+I-1)/ZR(JMASGE+I-1) 
- 11     CONTINUE
-        CALL JEVEUO(ACCPLU(1:19)//'.VALE','E',JACCP)
-        CALL MDGEPH(NEQ,NBMODE,ZR(JBASMO),ZR(JACCGE),ZR(JACCP))
+        ENDIF
+        IF (LSSTRU) THEN
+          CALL JEVEUO(RIGGEN,'L',JRIGGE)          
+          CALL JEVEUO(AMOGEN,'L',JAMOGE)
+          CALL JEVEUO(ACCGEM,'L',JACCGM)          
+          CALL JEVEUO(VITGEM,'L',JVITGM)
+          CALL JEVEUO(DEPGEM,'L',JDEPGM)
+          CALL JEVEUO(VITGEP,'L',JVITGP)
+          CALL JEVEUO(DEPGEP,'L',JDEPGP)
+          CALL JEVEUO(ACCGEP,'E',JACCGP)
+          CALL JEEXIN(FONGEN,IRET)
+          IF (IRET.EQ.0) THEN
+            NFONC = 0
+          ELSE
+            CALL JEVEUO(FONGEN,'L',JFONGE)
+            CALL JEVEUO(FORGEN,'L',JFORGE)
+            CALL JELIRA(FONGEN,'LONMAX',NFONC,K8BID)
+            CALL JEEXIN('&&VALFON',IRE2)
+            IF (IRE2.EQ.0) THEN
+              CALL WKVECT('&&VALFON','V V R',NFONC,JVALFO)
+            ELSE
+              CALL JEVEUO('&&VALFON','E',JVALFO)
+            ENDIF
+            DO 14 N=1,NFONC
+              CALL FOINTE('F ',ZK24(JFONGE+N-1)(1:8),1,'INST',INSTAP,
+     &                         ZR(JVALFO+N-1),IER)
+ 14         CONTINUE                        
+          ENDIF
+          DO 11 I=1,NBMODE
+            ZR(JFMODA+I-1) = DDOT(NEQ,ZR(JBASMO+(I-1)*NEQ),1,
+     &                            ZR(JSCD0),1)
+            DO 12 J=1,NBMODE
+              ZR(JFMODA+I-1) = ZR(JFMODA+I-1)  
+     &        - ZR(JRIGGE+(J-1)*NBMODE+I-1)*ZR(JDEPGP+J-1)
+     &        - ZR(JAMOGE+(J-1)*NBMODE+I-1)*ZR(JVITGP+J-1)
+ 12         CONTINUE
+            DO 15 N=1,NFONC
+              ZR(JFMODA+I-1) = ZR(JFMODA+I-1)  
+     &        + ZR(JFORGE+(N-1)*NBMODE+I-1)*ZR(JVALFO+N-1)
+ 15         CONTINUE
+            ZR(JACCGP+I-1) = ZR(JFMODA+I-1)/ZR(JMASGE+I-1) 
+ 11       CONTINUE
+          CALL JEVEUO(ACCPLU(1:19)//'.VALE','E',JACCP)
+          CALL MDGEPH(NEQ,NBMODE,ZR(JBASMO),ZR(JACCGP),ZR(JACCP))
+        ELSE
+          ACCGEN = '&&ACCGEN'
+          CALL JEEXIN(ACCGEN,IRET)
+          IF (IRET.EQ.0) THEN
+            CALL WKVECT(ACCGEN,'V V R',NBMODE,JACCGE)
+          ELSE
+            CALL JEVEUO(ACCGEN,'E',JACCGE)
+          ENDIF
+          DO 13 I=1,NBMODE
+            ZR(JFMODA+I-1) = DDOT(NEQ,ZR(JBASMO+(I-1)*NEQ),1,
+     &                            ZR(JSCD0),1)
+            ZR(JACCGE+I-1) = ZR(JFMODA+I-1)/ZR(JMASGE+I-1) 
+ 13       CONTINUE
+          CALL JEVEUO(ACCPLU(1:19)//'.VALE','E',JACCP)
+          CALL MDGEPH(NEQ,NBMODE,ZR(JBASMO),ZR(JACCGE),ZR(JACCP))
+        ENDIF
       ELSE
         CNGC0 = '&&MXCACC.GC0'
         CRGC = '&&RESGRA_GCPC'
@@ -173,7 +206,7 @@ C    SECOND MEMBRE DES CHARGEMENTS DONNES
         CALL JEDETR ( CRGC // '.CRTI' )
         CALL JEDETR ( CRGC // '.CRTR' )
         CALL JEDETR ( CRGC // '.CRDE' )
-      END IF
+      ENDIF
        
 9999  CONTINUE
       CALL JEDEMA()

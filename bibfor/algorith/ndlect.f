@@ -2,10 +2,10 @@
      &                   ALPHA,  DELTA,  PHI,    V0VIT,  V0ACC,  A0VIT, 
      &                   A0ACC,  NBMODS, NMODAM, VALMOD, BASMOD,
      &                   NREAVI, LIMPED, LONDE,  CHONDP, NONDP, CHGRFL,
-     &                   THETA,  IALGO , MASGEN, BASMOI, LMODAL,
-     &                   FONDEP, FONVIT, FONACC, MULTAP, PSIDEL )
+     &                   THETA,  IALGO , FONDEP, FONVIT, FONACC,
+     &                   MULTAP, PSIDEL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,11 +28,11 @@ C TOLE CRP_21
       IMPLICIT NONE
       INTEGER       NBMODS, NREAVI, NONDP, NMODAM, IALGO
       REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA, THETA
-      LOGICAL       LAMORT, LIMPED, LONDE, LMODAL
+      LOGICAL       LAMORT, LIMPED, LONDE
       CHARACTER*16  CMD
       CHARACTER*19  LISCHA
       CHARACTER*24  MODELE, MATE, STADYN, VALMOD, BASMOD, CHONDP
-      CHARACTER*24  MASGEN, BASMOI,CHGRFL
+      CHARACTER*24  CHGRFL
       CHARACTER*24  FONDEP,FONVIT,FONACC,MULTAP,PSIDEL
 
 C ----------------------------------------------------------------------
@@ -76,9 +76,6 @@ C                     (3) : THETA-METHODE
 C                     (4) : ALPHA-METHODE
 C                     (6) : EXPLICITE : DIFFERENCES CENTREES
 C                     (7) : EXPLICITE : TCHAMWA-WIELGOSZ
-C IN/JXVAR MASGEN : DONNEES PROJECTION MODALE (?)
-C IN/JXVAR BASMOI : DONNEES PROJECTION MODALE (?)
-C      OUT LMODAL : BOOLEEN DE PROJECTION MODALE EN DYNAMIQUE EXPLICITE 
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -117,94 +114,91 @@ C ----------------------------------------------------------------------
       LAMORT = .FALSE.
 
 C -- EXISTENCE D'AMORTISSEMENT
-       CALL DISMOI('F','EXI_AMOR_ALPHA',MATE,'CHAM_MATER',IBID,REP,IBID)
-       IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
-       CALL DISMOI('F','EXI_AMOR_BETA',MATE,'CHAM_MATER',IBID,REP,IBID)
-       IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
-       CALL DISMOI('F','EXI_AMOR_NOR',MATE,'CHAM_MATER',IBID,REP,IBID)
-       IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
-       CALL DISMOI('F','EXI_AMOR_TAN',MATE,'CHAM_MATER',IBID,REP,IBID)
-       IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.            
+      CALL DISMOI('F','EXI_AMOR_ALPHA',MATE,'CHAM_MATER',IBID,REP,IBID)
+      IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
+      CALL DISMOI('F','EXI_AMOR_BETA',MATE,'CHAM_MATER',IBID,REP,IBID)
+      IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
+      CALL DISMOI('F','EXI_AMOR_NOR',MATE,'CHAM_MATER',IBID,REP,IBID)
+      IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.
+      CALL DISMOI('F','EXI_AMOR_TAN',MATE,'CHAM_MATER',IBID,REP,IBID)
+      IF (REP(1:3).EQ.'OUI') LAMORT = .TRUE.            
 C -- PARAMETRES METHODE DE NEWMARK 
        
-         IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
-           CALL MXMOAM(MASGEN,BASMOI,LMODAL)
-           
-           CALL GETFAC('DIFF_CENT',NBOCCE)
-           IF (NBOCCE .EQ. 1 ) THEN
-             IALGO = 6
+      IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
+        CALL GETFAC('DIFF_CENT',NBOCCE)
+        IF (NBOCCE .EQ. 1 ) THEN
+          IALGO = 6
 C --- ON INITIALISE DES PARAMETRES UTILISES DANS LE CONTACT CONTINU
-             ALPHA = 0.25D0
-             DELTA = 0.5D0
-             PHI = 1.D0
-           ELSE
-             CALL GETFAC('TCHAMWA',NBOCCW)
-             IF (NBOCCW.EQ.1) THEN
-               IALGO = 7
-               ALPHA = 0.25D0
-               DELTA = 0.5D0
-               CALL GETVR8('TCHAMWA','PHI',1,1,1,PHI,N1)
-             ENDIF
-           ENDIF
-         ELSE
-           CALL GETFAC('NEWMARK',NBOCC)
-           IF (NBOCC.EQ.1) THEN
-             IALGO = 1
-             CALL GETVR8('NEWMARK','ALPHA',1,1,1,ALPHA,N1)
-             CALL GETVR8('NEWMARK','DELTA',1,1,1,DELTA,N1)
-           ELSE
-             CALL GETFAC('TETA_METHODE',NBOCCT)                  
-             IF(NBOCCT .EQ. 1 ) THEN
-               IALGO = 3
-               CALL GETVR8('TETA_METHODE','TETA',1,1,1,THETA,N2)
-             ELSE
-               CALL GETFAC('HHT',NBOCCT)
-               IF  (NBOCCT .EQ. 1 ) THEN
-                 CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
-                 CALL GETVTX('HHT'    ,'MODI_EQUI',1,1,1,REP,N1)
-                 IF ( REP(1:3) .EQ. 'NON' ) THEN 
-                   IALGO = 2
-                 ELSE
-                   IALGO = 4
-                 ENDIF
-               ENDIF
-             ENDIF
-           ENDIF
-         ENDIF
+          ALPHA = 0.25D0
+          DELTA = 0.5D0
+          PHI = 1.D0
+        ELSE
+          CALL GETFAC('TCHAMWA',NBOCCW)
+          IF (NBOCCW.EQ.1) THEN
+            IALGO = 7
+            ALPHA = 0.25D0
+            DELTA = 0.5D0
+            CALL GETVR8('TCHAMWA','PHI',1,1,1,PHI,N1)
+          ENDIF
+        ENDIF
+      ELSE
+        CALL GETFAC('NEWMARK',NBOCC)
+        IF (NBOCC.EQ.1) THEN
+          IALGO = 1
+          CALL GETVR8('NEWMARK','ALPHA',1,1,1,ALPHA,N1)
+          CALL GETVR8('NEWMARK','DELTA',1,1,1,DELTA,N1)
+        ELSE
+          CALL GETFAC('TETA_METHODE',NBOCCT)                  
+          IF (NBOCCT .EQ. 1 ) THEN
+            IALGO = 3
+            CALL GETVR8('TETA_METHODE','TETA',1,1,1,THETA,N2)
+          ELSE
+            CALL GETFAC('HHT',NBOCCT)
+            IF (NBOCCT .EQ. 1 ) THEN
+              CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
+              CALL GETVTX('HHT'    ,'MODI_EQUI',1,1,1,REP,N1)
+              IF ( REP(1:3) .EQ. 'NON' ) THEN 
+                IALGO = 2
+              ELSE
+                IALGO = 4
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDIF
+      ENDIF
 
-         IF ((IALGO.EQ.2) . OR. (IALGO.EQ.4)) THEN
-             ALPHA0 = ALPHA
-             ALPHA = (UN-ALPHA0)* (UN-ALPHA0)/QUATRE
-             DELTA = UNDEMI - ALPHA0
-         END IF
+      IF ((IALGO.EQ.2) . OR. (IALGO.EQ.4)) THEN
+        ALPHA0 = ALPHA
+        ALPHA = (UN-ALPHA0)* (UN-ALPHA0)/QUATRE
+        DELTA = UNDEMI - ALPHA0
+      END IF
          
-         IF ((IALGO.EQ.1) .OR. (IALGO.EQ.2) .OR. 
-     &        (IALGO.EQ.4).OR. (IALGO.EQ.6) .OR. (IALGO.EQ.7) ) THEN
-           V0VIT = - (DELTA-ALPHA)/ALPHA
-           V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
-           A0VIT = -UN/ALPHA
-           A0ACC = - (UN-DEUX*ALPHA)/DEUX/ALPHA
+      IF ((IALGO.EQ.1) .OR. (IALGO.EQ.2) .OR. 
+     &    (IALGO.EQ.4). OR. (IALGO.EQ.6) .OR. (IALGO.EQ.7) ) THEN
+        V0VIT = - (DELTA-ALPHA)/ALPHA
+        V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
+        A0VIT = -UN/ALPHA
+        A0ACC = - (UN-DEUX*ALPHA)/DEUX/ALPHA
 C POUR LA TETA_METHODE THETA DOIT ETRE DANS [0.5;1]
-         ELSEIF (IALGO.EQ.3) THEN
-             V0VIT = - (UN-THETA)/THETA
-             V0ACC = ZERO
-             A0VIT = -UN/THETA
-             A0ACC = ZERO         
-         ENDIF
+      ELSEIF (IALGO.EQ.3) THEN
+        V0VIT = - (UN-THETA)/THETA
+        V0ACC = ZERO
+        A0VIT = -UN/THETA
+        A0ACC = ZERO         
+      ENDIF
          
-         LICMP(1) = 'STAOUDYN'
-         LICMP(2) = 'ALFNMK'
-         LICMP(3) = 'DELNMK'
-         RCMP(1) = UN
-         RCMP(2) = ALPHA
-         RCMP(3) = DELTA
-         CALL JEEXIN(STADYN,IRET)
-         IF (IRET.NE.0) THEN
-            CALL JEDETR(STADYN)
-         END IF
-         CALL MECACT('V',STADYN,'MODELE',MODELE(1:8)//'.MODELE',
-     &               'STAOUDYN',3,LICMP,IBID,RCMP,CPLX,K8B)
-
+      LICMP(1) = 'STAOUDYN'
+      LICMP(2) = 'ALFNMK'
+      LICMP(3) = 'DELNMK'
+      RCMP(1) = UN
+      RCMP(2) = ALPHA
+      RCMP(3) = DELTA
+      CALL JEEXIN(STADYN,IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEDETR(STADYN)
+      END IF
+      CALL MECACT('V',STADYN,'MODELE',MODELE(1:8)//'.MODELE',
+     &            'STAOUDYN',3,LICMP,IBID,RCMP,CPLX,K8B)
 
 C -- DONNEES MULT-APPUI
       CALL GETVID(' ','MODE_STAT',1,1,1,K8B,NBMODS)

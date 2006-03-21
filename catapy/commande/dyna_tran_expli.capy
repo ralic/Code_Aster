@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,14 +44,22 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          ),
          AMOR_MODAL      =FACT(statut='f',
-           MODE_MECA       =SIMP(statut='f',typ=mode_meca),
+           MODE_MECA       =SIMP(statut='o',typ=mode_meca),
            AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**' ),
            NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
            REAC_VITE       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
-         PROJ_MODAL      =FACT(statut='f',
-           MODE_MECA       =SIMP(statut='f',typ=mode_meca),
+         PROJ_MODAL      =FACT(statut='f',max='**',
+           MODE_MECA       =SIMP(statut='o',typ=mode_meca),
            NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
+           regles=(PRESENT_PRESENT('MASS_GENE','RIGI_GENE'),),
+           MASS_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
+           RIGI_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
+           AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
+         ),
+         EXCIT_GENE      =FACT(statut='f',
+           FONC_MULT       =SIMP(statut='f',typ=fonction_sdaster,max='**' ),
+           VECT_GENE       =SIMP(statut='f',typ=vect_asse_gene,max='**' ),
          ),
          COMP_INCR       =C_COMP_INCR(),
          COMP_ELAS       =FACT(statut='f',max='**',
@@ -204,7 +212,7 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
                                  into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
 #-------------------------------------------------------------------
-         AFFICHAGE      = FACT(statut='f',max=16,
+        AFFICHAGE      = FACT(statut='f',max=16,
 
             UNITE       = SIMP(statut='f',typ='I',val_min=1),
 

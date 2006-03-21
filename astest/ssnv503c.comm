@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # DATE     : 03/08/2001
 # AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
@@ -67,7 +67,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODE,
                                    VALE=(0.005,0.0),),
                               ),);
 
-IMPR_CO ( CO = CARA ) ;
+IMPR_CO ( CONCEPT= _F(NOM=CARA )) ;
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX

@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -242,8 +242,7 @@ C ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
 C ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
 C ---        DES MAILLES DE PEAU MAILLE_ESCL :
 C            -------------------------------
-          CALL NBNLMA(NOMA,NBMA3,ZI(IDMAI3),'&&CALYRC.LINOMA',NBTYP,
-     &                LISTYP,NBNO3)
+          CALL NBNLMA(NOMA,NBMA3,ZI(IDMAI3),NBTYP,LISTYP,NBNO3)
 
 C ---        CALCUL DES NORMALES EN CHAQUE NOEUD :
 C            -----------------------------------

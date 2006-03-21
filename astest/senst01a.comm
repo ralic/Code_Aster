@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE validation des commandes DEFI_PARA_SENSI et MEMO_NOM_SENSI en thermique
 #       Controle de EXTR_RESU et CREA_CHAMP en sensibilite
@@ -91,7 +91,7 @@ RETH=THER_LINEAIRE(MODELE=MODEPLAN,
                                  NUME_FIN  = 2 )
                   );
 #
-#IMPR_CO (CO=(RETH))
+#IMPR_CO (CONCEPT=(RETH))
 #
 # 4. Manipulation sur les resultats
 # 4.1. On extrait la temperature puis sa derivee

@@ -1,4 +1,4 @@
-#@ MODIF ihm_parametres Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF ihm_parametres Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,20 @@
 #  OBJETS GRAPHIQUES TK DE L'IHM DES PARAMETRES
 
 
-#import Tkinter as Tk
-import Tix as Tk
+
+# Utilisation de Tix ou Tkinter / Pmw
+use_Pmw = False
+use_Tix = False
+use_Tk  = True
+#import Tix as Tk
+import Tkinter as Tk
+
+try:
+   import Pmw
+   use_Pmw = True
+except:
+   pass
+
 
 import types, tkMessageBox
 import ihm_parametres as objets
@@ -59,6 +71,21 @@ class AFFICHAGE_PARAMETRES :
     self.fenetre2.title(titre)
     self.fenetre2.geometry(str(largeur)+"x"+str(hauteur)+"+50+50")    
     self.fenetre2.resizable(width='no', height='no')
+
+    # Objet bulle d'aide
+    if use_Tix:
+#       self.bulle = objets.BULLE_TIX(frame=self.fenetre2)
+       # Objet bulle d'aide
+       self.bulle = Tk.Balloon(self.fenetre2)
+       self.bulle.configure(bg='blue', borderwidth=1)
+    elif use_Pmw:
+       try:
+          Pmw.initialise(self.fenetre2)
+          self.bulle = objets.BULLE_PMW(frame=self.fenetre2)
+       except:
+          self.bulle = None
+    else:
+       self.bulle = None
 
     # Fontes
     self.fonte=self.para['PARAMETRES']['fonte']
@@ -128,10 +155,6 @@ class AFFICHAGE_PARAMETRES :
     frame_5 = Tk.Frame(self.fenetre2, bd=0, relief='flat' )
     frame_5.place(in_=self.fenetre2,x=x_5,y=y_5,anchor='nw',width=largeur_5, height=hauteur_5)
 
-
-    # Objet bulle d'aide
-    self.bulle = Tk.Balloon(self.fenetre2)
-    self.bulle.configure(bg='blue', borderwidth=1)
 
     # Dictionnaires des objets Tk
     self.titre = {}
@@ -235,12 +258,12 @@ class AFFICHAGE_PARAMETRES :
           type_para = self.dparam[cle]['type']
           if   (type_para in ['texte', types.FloatType, 'fichier']):
             self.label[cle] = objets.LABEL(frame, self.dparam, self.dvar, section, cle, x=x, y=y+2, txt=label, fonte=self.fonte, bulle=self.bulle)
-            self.objet[cle] = objets.ENTRY(frame, self.dparam, self.dvar, section, cle, x=x1, y=y, largeur=15, fonte="helvetica 10 bold", bulle=self.bulle)
+            self.objet[cle] = objets.ENTRY(frame, self.dparam, self.dvar, section, cle, x=x1, y=y, largeur=15, fonte=self.fonte, bulle=self.bulle)
             y+=dy
           elif (self.dparam[cle]['type'] == 'liste'):
             y+=0.2*dy
             self.label[cle] = objets.LABEL(frame, self.dparam, self.dvar, section, cle, x=x, y=y+2, txt=label, fonte=self.fonte, bulle=self.bulle)
-            self.objet[cle] = objets.LISTE(frame, self.dparam, self.dvar, section, cle, x=x1, y=y, largeur=15, commande=None, fonte="helvetica 10 bold", bulle=self.bulle)
+            self.objet[cle] = objets.LISTE(frame, self.dparam, self.dvar, section, cle, x=x1, y=y, largeur=15, commande=None, fonte=self.fonte, bulle=self.bulle)
             y+=1.4*dy
           else:
             pass
@@ -263,8 +286,8 @@ class AFFICHAGE_PARAMETRES :
     if not reponse: return
 
     self.nouveau_para = None
-    self.bulle['state'] = 'none'
-    self.bulle.destroy()
+#    self.bulle['state'] = 'none'
+#    self.bulle.destroy()
     self.fenetre2.quit()
     self.fenetre2.destroy()
 
@@ -395,7 +418,7 @@ class LABEL:
 
 class ENTRY:
 
-  def __init__(self, frame, dparam, dvar, section, cle, x, y, largeur=15, fonte="helvetica 10 bold", bulle=None):
+  def __init__(self, frame, dparam, dvar, section, cle, x, y, largeur=15, fonte="helvetica 14 bold", bulle=None):
 
      self.dparam  = dparam
      self.dvar    = dvar
@@ -405,12 +428,21 @@ class ENTRY:
 
      self.enabled = True
 
+#      self.valeur = Tk.Entry(frame)
+#      self.valeur.place(in_=frame,x=x,y=y)
+#      self.valeur.configure(width=largeur)
+#      self.valeur.configure(justify="center")
+#      self.valeur.configure(textvariable = self.dvar[section][cle])
+#      self.valeur.configure(font=fonte)
+
+#     self.valeur = Tk.Entry(frame, textvariable = self.dvar[section][cle], font=fonte, width=largeur, justify="center")
      self.valeur = Tk.Entry(frame)
      self.valeur.place(in_=frame,x=x,y=y)
      self.valeur.configure(width=largeur)
      self.valeur.configure(justify="center")
      self.valeur.configure(textvariable = self.dvar[section][cle])
      self.valeur.configure(font=fonte)
+
 
      # Bulle d'aide
      if bulle and self.dparam[cle].has_key('bulle'): 
@@ -451,20 +483,31 @@ class LISTE:
      self.fonte    = fonte
      self.commande = commande
 
-     self.liste = Tk.OptionMenu(frame)
-     self.liste.place(in_=frame,x=x,y=y)
-     self.liste.configure(background="wheat")
-     self.liste.configure(highlightbackground="#d9d9d9")
-     self.liste.configure(highlightcolor="Black")
+     # Tix
+     if use_Tix:
+        self.liste = Tk.OptionMenu(frame)
+        self.liste.place(in_=frame,x=x,y=y)
+        self.liste.configure(background="wheat")
+        self.liste.configure(highlightbackground="#d9d9d9")
+        self.liste.configure(highlightcolor="Black")
+  
+        for l in self.dparam[cle]['val_possible']:
+           self.liste.add_command(l, label=l, underline=0, font=fonte)
+   
+        self.liste.configure(variable=self.dvar[section][cle])
+        if commande: self.liste.configure(command=commande)
+
+     else:
+        # Tkinter
+        variable = self.dvar[section][cle]
+        OPTIONS = self.dparam[cle]['val_possible']
+        self.liste = apply(Tk.OptionMenu, (frame, variable) + tuple(OPTIONS) )
+        self.liste.place(in_=frame,x=x,y=y)
+        self.liste.configure(font=self.fonte)
+
 
      self.enabled = True
 
-     for l in self.dparam[cle]['val_possible']:
-        self.liste.add_command(l, label=l, underline=0, font=fonte)
-
-     self.liste.configure(variable=self.dvar[section][cle])
-     if commande:
-        self.liste.configure(command=commande)
 
      # Bulle d'aide
      if bulle and self.dparam[cle].has_key('bulle'): 
@@ -534,32 +577,52 @@ class CASE_TEXTE:
   
      self.frame  = frame
      self.params = params
-     self.x      = x
-     self.y      = y
-     self.h      = h
-     self.l      = l
+     self.x      = int(x)
+     self.y      = int(y)
+     self.h      = int(h)
+     self.l      = int(l)
      self.fonte  = fonte
-  
-     self.Case_Texte = Tk.ScrolledText(self.frame)
-     self.Case_Texte.place(in_=self.frame,x=x,y=y)
+
+     scrollbar = Tk.Scrollbar(frame)
+     scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
+
+#     self.Case_Texte = Tk.ScrolledText(self.frame)
+
+#     self.Case_Texte = Tk.Text(self.frame)
+     self.Case_Texte = Tk.Text(self.frame, wrap=Tk.WORD, yscrollcommand=scrollbar.set)
+
+#     self.Case_Texte.place(in_=self.frame,x=x,y=y)
+     self.Case_Texte.pack()
+
      self.Case_Texte.configure(background="wheat")
      self.Case_Texte.configure(borderwidth="1")
      self.Case_Texte.configure(width=self.l)
      self.Case_Texte.configure(height=self.h)
      self.Case_Texte.configure(highlightbackground="#d9d9d9")
      self.Case_Texte.configure(highlightcolor="Black")
-     self.Texte = self.Case_Texte.subwidget_list["text"]
-     self.Texte.configure(background="wheat")
-     self.Texte.configure(font=self.fonte)
-     self.Texte.configure(takefocus="1")
-     self.Texte.configure(wrap="word")  # char, none, or word
-     self.Texte.config(state='disabled')
+     self.Case_Texte.configure(font=self.fonte)
+
+     self.Case_Texte.insert('end', "this is a ")
+
+     scrollbar.config(command=self.Case_Texte.yview)
+
+#      self.Texte = self.Case_Texte.subwidget_list["text"]
+#      self.Texte.configure(background="wheat")
+#      self.Texte.configure(font=self.fonte)
+#      self.Texte.configure(takefocus="1")
+#      self.Texte.configure(wrap="word")  # char, none, or word
+#      self.Texte.config(state='disabled')
 
   def Afficher(self, txt):
-     self.Texte.config(state='normal')
-     self.Texte.delete(1.0, 'end')
-     self.Texte.insert('end', txt )
-     self.Texte.config(state='disabled')
+#      self.Texte.config(state='normal')
+#      self.Texte.delete(1.0, 'end')
+#      self.Texte.insert('end', txt )
+#      self.Texte.config(state='disabled')
+
+     self.Case_Texte.config(state='normal')
+     self.Case_Texte.delete(1.0, 'end')
+     self.Case_Texte.insert('end', txt )
+     self.Case_Texte.config(state='disabled')
 
 
 
@@ -619,5 +682,30 @@ class CANVAS:
 
 # ==============================================================================
 
+class BULLE_PMW:
 
+  def __init__(self, frame):
+  
+    self.frame  = frame
+    self.bulle = Pmw.Balloon(self.frame)
+
+
+  def bind_widget(self, objet, balloonmsg):
+    self.bulle.bind(objet, balloonmsg)
+
+
+# ==============================================================================
+
+class BULLE_TIX:
+
+  def __init__(self, frame):
+  
+    self.frame  = frame
+    self.bulle = Tix.Balloon(self.frame)
+
+
+  def bind_widget(self, objet, balloonmsg):
+    self.bulle.bind(objet, balloonmsg)
+
+# ==============================================================================
 

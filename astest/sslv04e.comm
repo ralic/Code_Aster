@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (TRIA3 QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,6 +64,42 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,
                               PRES_REP=_F(  GROUP_MA = 'AE',  PRES = 60.))
 
 
+nor_DNOR = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
+                      OPERATION = 'NORMALE',
+                      MODELE    = MO,
+                      GROUP_MA  = 'FE'     );
+
+IMPR_RESU( RESU=_F( CHAM_GD= nor_DNOR ), );
+
+TEST_RESU(CHAM_NO=(
+           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+               GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'X'),
+           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+               GROUP_NO = 'E',    VALE =  0.707 ,   NOM_CMP = 'Y'),
+           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+               GROUP_NO = 'F',    VALE = -0.707 ,   NOM_CMP = 'X'),
+           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+               GROUP_NO = 'F',    VALE =  0.707 ,   NOM_CMP = 'Y'),
+                ), ) ;
+         
+nor_PRES = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
+                      OPERATION = 'NORMALE',
+                      MODELE    = MO,
+                      GROUP_MA  = 'AE'     );
+
+IMPR_RESU( RESU=_F( CHAM_GD= nor_PRES ), );
+
+TEST_RESU(CHAM_NO=(
+           _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',
+               GROUP_NO = 'A',    VALE = -1. ,      NOM_CMP = 'X'),
+           _F( CHAM_GD = nor_PRES,   CRITERE = 'ABSOLU',   PRECISION = 1.5E-2,
+               GROUP_NO = 'A',    VALE =  0. ,      NOM_CMP = 'Y'),
+           _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',   PRECISION = 1.5E-2,
+               GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'X'),
+           _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',   PRECISION = 1.5E-2,
+               GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'Y'),
+                ), ) ;
+         
 RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
                           EXCIT=_F(  CHARGE = CH),
                       )
@@ -78,38 +114,38 @@ CALC_NO( reuse=RESU,                      RESULTAT=RESU,
 TEST_RESU(RESU=(
    # DEPLACEMENTS
 
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 59.E-6),
-         _F(    CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+         _F(    CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-10,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0.),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'B',     NOM_CMP = 'DX',            VALE = 40.E-6),
-         _F(   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+         _F(   CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-10,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'B',     NOM_CMP = 'DY',            VALE = 0.),
 #        ( CHAM_GD : DEPLA  CRITERE:'RELATIF'   PRECISION: 1.E-2
 #        GROUP_NO: C     NOM_CMP:'DX'            VALE: 54.5089E-6   )
 #        ( CHAM_GD : DEPLA  CRITERE:'RELATIF'   PRECISION: 1.E-2
 #        GROUP_NO: C     NOM_CMP:'DY'            VALE: 22.5783E-6   )
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'D',     NOM_CMP = 'DX',            VALE = 36.9552E-6),
-         _F(   CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(   CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'D',     NOM_CMP = 'DY',            VALE = 15.3073E-6),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'E',     NOM_CMP = 'DX',            VALE = 41.7193E-6),
-         _F(   CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(   CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'E',     NOM_CMP = 'DY',            VALE = 41.7193E-6),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE = 28.2843E-6),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE = 28.2843E-6))
            )
@@ -121,16 +157,16 @@ TEST_RESU(RESU=(
     # DEFORMATIONS
 
 
-           _F(        CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',    VALE = -4.5E-4,      NOM_CMP = 'EPXX'),
-           _F(     CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+           _F(     CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',         NOM_CMP = 'EPYY',       VALE = 5.9E-4),
-           _F(     CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
+           _F(     CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.E-4,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',         NOM_CMP = 'EPZZ',       VALE = 0.),
-           _F(     CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
+           _F(     CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.E-4,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',         NOM_CMP = 'EPXY',       VALE = 0.))
            )
@@ -140,16 +176,16 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
 
 
-           _F(   CRITERE = 'RELATIF',    PRECISION = 0.12,
+           _F(   CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.12,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPXX',       VALE = -0.6E-4),
-           _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+           _F(   CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPYY',       VALE = 2.E-4),
-           _F(   CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
+           _F(   CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.E-4,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPZZ',       VALE = 0.),
-           _F(   CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
+           _F(   CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.E-4,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPXY',       VALE = 0.))
            )
@@ -159,16 +195,16 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
 
 
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.15,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.15,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',       NOM_CMP = 'EPXX',       VALE = 0.7E-4),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.15,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.15,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',     NOM_CMP = 'EPYY',       VALE = 0.7E-4),
-           _F(   CRITERE = 'ABSOLU',      PRECISION = 1.E-4,
+           _F(   CRITERE = 'ABSOLU',      REFERENCE='ANALYTIQUE',   PRECISION = 1.E-4,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',        NOM_CMP = 'EPZZ',       VALE = 0.),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',       NOM_CMP = 'EPXY',       VALE = -5.2E-4))
            )
@@ -178,16 +214,16 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
 
 
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.05,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.05,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',       NOM_CMP = 'EPXX',       VALE = 0.7E-4),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.05,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.05,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'EPYY',       VALE = 0.7E-4),
-           _F(    CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
+           _F(    CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.E-4,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',       NOM_CMP = 'EPZZ',       VALE = 0.),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.07,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.07,
  RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'EPXY',       VALE = -1.3E-4))
            )
@@ -197,16 +233,16 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
     # CONTRAINTES
 
-           _F(   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
+           _F(   CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 2.E-2,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',       NOM_CMP = 'SIXX',       VALE = -60.),
-           _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+           _F(   CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',      NOM_CMP = 'SIYY',       VALE = 100.),
-           _F(    CRITERE = 'ABSOLU',    PRECISION = 0.00001,
+           _F(    CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 0.00001,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',        NOM_CMP = 'SIZZ',       VALE = 0.),
-           _F(   CRITERE = 'ABSOLU',     PRECISION = 2.,
+           _F(   CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 2.,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'A',        NOM_CMP = 'SIXY',       VALE = 0.))
            )
@@ -215,16 +251,16 @@ TEST_RESU(RESU=(
 
 TEST_RESU(RESU=(
 
-           _F(   CRITERE = 'ABSOLU',     PRECISION = 1.5,
+           _F(   CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.5,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',    NOM_CMP = 'SIXX',       VALE = 0.),
-           _F(   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
+           _F(   CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 2.E-2,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'SIYY',       VALE = 40.),
-           _F(    CRITERE = 'ABSOLU',     PRECISION = 0.00001,
+           _F(    CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 0.00001,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'SIZZ',       VALE = 0.),
-           _F(    CRITERE = 'ABSOLU',     PRECISION = 1.,
+           _F(    CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 1.,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'B',    NOM_CMP = 'SIXY',       VALE = 0.))
            )
@@ -233,16 +269,16 @@ TEST_RESU(RESU=(
 
 TEST_RESU(RESU=(
 
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.07,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.07,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',        NOM_CMP = 'SIXX',       VALE = 20.),
-           _F(   CRITERE = 'RELATIF',     PRECISION = 0.07,
+           _F(   CRITERE = 'RELATIF',     REFERENCE='ANALYTIQUE',   PRECISION = 0.07,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',       NOM_CMP = 'SIYY',       VALE = 20.),
-           _F(     CRITERE = 'ABSOLU',    PRECISION = 0.00001,
+           _F(     CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 0.00001,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',        NOM_CMP = 'SIZZ',       VALE = 0.),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'E',      NOM_CMP = 'SIXY',       VALE = -80.))
            )
@@ -251,16 +287,16 @@ TEST_RESU(RESU=(
 
 TEST_RESU(RESU=(
 
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.03,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.03,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIXX',       VALE = 20.),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.02,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.02,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',    NOM_CMP = 'SIYY',       VALE = 20.),
-           _F(    CRITERE = 'ABSOLU',     PRECISION = 0.00001,
+           _F(    CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 0.00001,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIZZ',       VALE = 0.),
-           _F(   CRITERE = 'RELATIF',     PRECISION = 0.07,
+           _F(   CRITERE = 'RELATIF',     REFERENCE='ANALYTIQUE',   PRECISION = 0.07,
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIXY',       VALE = -20.))
            )
@@ -289,49 +325,49 @@ RESU1=MODI_REPERE(
 TEST_RESU(RESU=(
    # DEPLACEMENTS
 
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 59.E-6),
-         _F(    CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+         _F(    CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-10,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0.),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'B',     NOM_CMP = 'DX',            VALE = 40.E-6),
-         _F(   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+         _F(   CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-10,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'B',     NOM_CMP = 'DY',            VALE = 0.),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'D',     NOM_CMP = 'DX',            VALE = 36.9552E-6),
-         _F(   CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(   CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'D',     NOM_CMP = 'DY',            VALE = 15.3073E-6),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'E',     NOM_CMP = 'DX',            VALE = 41.7193E-6),
-         _F(   CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(   CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'E',     NOM_CMP = 'DY',            VALE = 41.7193E-6),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE = 28.2843E-6),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+         _F(    CRITERE = 'RELATIF',   REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
          RESULTAT = RESU1, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
          GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE = 28.2843E-6))
            )
 TEST_RESU(RESU=(
 
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.03,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.03,
  RESULTAT = RESU1, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIXX',       VALE = 20.),
-           _F(    CRITERE = 'RELATIF',    PRECISION = 0.02,
+           _F(    CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 0.02,
  RESULTAT = RESU1, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',    NOM_CMP = 'SIYY',       VALE = 20.),
-           _F(    CRITERE = 'ABSOLU',     PRECISION = 0.00001,
+           _F(    CRITERE = 'ABSOLU',     REFERENCE='ANALYTIQUE',   PRECISION = 0.00001,
  RESULTAT = RESU1, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIZZ',       VALE = 0.),
-           _F(   CRITERE = 'RELATIF',     PRECISION = 0.07,
+           _F(   CRITERE = 'RELATIF',     REFERENCE='ANALYTIQUE',   PRECISION = 0.07,
  RESULTAT = RESU1, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIXY',       VALE = -20.))
            )

@@ -1,7 +1,7 @@
       SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE,INST)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -143,7 +143,6 @@ C     ----------------------
       CALL JEVEUO(NOMA//'.CONNEX','L',IACNX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILCNX1)
 
-
 C     2.2. ON COMPTE DES CHOSES ET ON CREE .TYPNEMA :
 C      ------------------------------------------------
       DO 10,K = 1,NBTYP
@@ -166,8 +165,8 @@ C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
       NBNOT = 0
       DO 20,IPC = 1,NBPC
    
-        NUMA1 = NINT(ZR(JTABF+21* (IPC-1)+1))
-        NUMA2 = NINT(ZR(JTABF+21* (IPC-1)+2))
+        NUMA1 = NINT(ZR(JTABF+22* (IPC-1)+1))
+        NUMA2 = NINT(ZR(JTABF+22* (IPC-1)+2))
         ITYMA1 = ZI(JTYMAI-1+NUMA1)
         ITYMA2 = ZI(JTYMAI-1+NUMA2)
 
@@ -388,14 +387,12 @@ C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
           CALL JXABOR()
         END IF
 
-
    20 CONTINUE
 
 C     2.3 CREATION DE .NBNO :
 C      --------------------
       CALL WKVECT(LIGREL//'.NBNO','V V I',1,JNBNO)
       ZI(JNBNO-1+1) = NBNOT
-
 
 C     2.4 CREATION DE .NEMA :
 C      --------------------
@@ -462,8 +459,6 @@ C     'CFQ9Q9'
 C     'CFP2P2'   :
       LONG = LONG + COMPT(30)*(4+1)
 C 
-
-
       CALL JEECRA(LIGREL//'.NEMA','LONT',LONG,KBID)
       DO 50,IPC = 1,NBPC
         CALL JECROC(JEXNUM(LIGREL//'.NEMA',IPC))
@@ -472,8 +467,8 @@ C
         CALL JEVEUO(JEXNUM(LIGREL//'.NEMA',IPC),'E',JAD)
         ZI(JAD-1+NBNO+1) = ZI(JTYNMA-1+2* (IPC-1)+1)
 
-        NUMA1 = NINT(ZR(JTABF+21* (IPC-1)+1))
-        NUMA2 = NINT(ZR(JTABF+21* (IPC-1)+2))
+        NUMA1 = NINT(ZR(JTABF+22* (IPC-1)+1))
+        NUMA2 = NINT(ZR(JTABF+22* (IPC-1)+2))
         NBNO1 = ZI(ILCNX1+NUMA1) - ZI(ILCNX1-1+NUMA1)
         NBNO2 = ZI(ILCNX1+NUMA2) - ZI(ILCNX1-1+NUMA2)
 
@@ -488,8 +483,6 @@ C       -- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
    40   CONTINUE
 
    50 CONTINUE
-
-
 
 C      2.5 CREATION DE .LIEL:
 C      --------------------
@@ -653,7 +646,6 @@ C ---- Element de Poutre
 
    90 CONTINUE
 
-
 C      3. CREATION DE LA CARTE :
 C      -------------------------
 
@@ -668,32 +660,33 @@ C      -------------------------
   100 CONTINUE
 
       DO 110,IPC = 1,NBPC
-        ZR(JVALV-1+1) = ZR(JTABF+21* (IPC-1)+3)
-        ZR(JVALV-1+2) = ZR(JTABF+21* (IPC-1)+4)
-        ZR(JVALV-1+3) = ZR(JTABF+21* (IPC-1)+5)
-        ZR(JVALV-1+4) = ZR(JTABF+21* (IPC-1)+6)
-        ZR(JVALV-1+5) = ZR(JTABF+21* (IPC-1)+7)
-        ZR(JVALV-1+6) = ZR(JTABF+21* (IPC-1)+8)
-        ZR(JVALV-1+7) = ZR(JTABF+21* (IPC-1)+9)
-        ZR(JVALV-1+8) = ZR(JTABF+21* (IPC-1)+10)
-        ZR(JVALV-1+9) = ZR(JTABF+21* (IPC-1)+11)
-        ZR(JVALV-1+10) = ZR(JTABF+21* (IPC-1)+12)
-        ZR(JVALV-1+11) = ZR(JTABF+21* (IPC-1)+13)
-        ZR(JVALV-1+12) = ZR(JTABF+21* (IPC-1)+14)
-        IZONE = NINT(ZR(JTABF+21* (IPC-1)+15))
+        ZR(JVALV-1+1) = ZR(JTABF+22* (IPC-1)+3)
+        ZR(JVALV-1+2) = ZR(JTABF+22* (IPC-1)+4)
+        ZR(JVALV-1+3) = ZR(JTABF+22* (IPC-1)+5)
+        ZR(JVALV-1+4) = ZR(JTABF+22* (IPC-1)+6)
+        ZR(JVALV-1+5) = ZR(JTABF+22* (IPC-1)+7)
+        ZR(JVALV-1+6) = ZR(JTABF+22* (IPC-1)+8)
+        ZR(JVALV-1+7) = ZR(JTABF+22* (IPC-1)+9)
+        ZR(JVALV-1+8) = ZR(JTABF+22* (IPC-1)+10)
+        ZR(JVALV-1+9) = ZR(JTABF+22* (IPC-1)+11)
+        ZR(JVALV-1+10) = ZR(JTABF+22* (IPC-1)+12)
+        ZR(JVALV-1+11) = ZR(JTABF+22* (IPC-1)+13)
+        ZR(JVALV-1+12) = ZR(JTABF+22* (IPC-1)+14)
+        IZONE = NINT(ZR(JTABF+22* (IPC-1)+15))
         ZR(JVALV-1+13) = ZR(JCMCF+10* (IZONE-1)+2)
         ZR(JVALV-1+14) = ZR(JCMCF+10* (IZONE-1)+3)
         ZR(JVALV-1+15) = ZR(JCMCF+10* (IZONE-1)+4)
         ZR(JVALV-1+16) = NINT(ZR(JCMCF+10* (IZONE-1)+5))
+        ZR(JVALV-1+17) = ZR(JTABF+22* (IPC-1)+22)
         ZR(JVALV-1+18) = ZI(JECPD+6* (IZONE-1)+1)
-        ZR(JVALV-1+19) = ZR(JTABF+21* (IPC-1)+16)
+        ZR(JVALV-1+19) = ZR(JTABF+22* (IPC-1)+16)
         ZR(JVALV-1+20) = INST(2)        
         ZR(JVALV-1+21) = ZI(JECPD+6* (IZONE-1)+6)
-        ZR(JVALV-1+22) = ZR(JTABF+21*(IPC-1)+17)
-        ZR(JVALV-1+23) = ZR(JTABF+21*(IPC-1)+18)
-        ZR(JVALV-1+24) = ZR(JTABF+21*(IPC-1)+19)
-        ZR(JVALV-1+25) = ZR(JTABF+21*(IPC-1)+20)
-        ZR(JVALV-1+26) = ZR(JTABF+21* (IPC-1)+21)
+        ZR(JVALV-1+22) = ZR(JTABF+22*(IPC-1)+17)
+        ZR(JVALV-1+23) = ZR(JTABF+22*(IPC-1)+18)
+        ZR(JVALV-1+24) = ZR(JTABF+22*(IPC-1)+19)
+        ZR(JVALV-1+25) = ZR(JTABF+22*(IPC-1)+20)
+        ZR(JVALV-1+26) = ZR(JTABF+22* (IPC-1)+21)
         ZR(JVALV-1+27) = NINT(ZR(JCMCF+10* (IZONE-1)+7))
         ZR(JVALV-1+28) = ZR(JCMCF+10* (IZONE-1)+8)
         ZR(JVALV-1+29) = ZR(JCMCF+10* (IZONE-1)+9)
@@ -705,7 +698,6 @@ C      -------------------------
         CALL NOCART(CARTE,-3,KBID,'NUM',1,KBID,-IPC,LIGREL,NCMP)
 
   110 CONTINUE
-
 
 C      4. MENAGE :
 C      -------------------------

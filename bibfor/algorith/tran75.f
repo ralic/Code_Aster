@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,18 +54,19 @@ C ----------------------------------------------------------------------
       INTEGER       IPAR(MXPARA), I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
       REAL*8        R8B, EPSI, ALPHA, XNORM, DEPL(6)
+      COMPLEX*16    CBID
       CHARACTER*1   COLI, K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, GRAN, INTERP, BASEM2,
      +              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
      +              MATGEN
       CHARACTER*14  NUMDDL, NUMGEN
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
-     +              TYPBAS(8), TYPREP
+     +              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
       CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE,
      +              TYPREF(8)
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1,
-     +              OBJVE2, NOMNOE
-      LOGICAL       TOUSNO, MULTAP, LEFFOR
+     +              OBJVE2, NOMNOE, NUMEDD
+      LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -75,6 +76,9 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       MODE = BASEMO
       TRANGE = NOMIN
+      LRPHYS =.FALSE.
+      CALL GETTCO(NOMIN,CONCEP)
+      IF (CONCEP(1:9).EQ.'EVOL_NOLI') LRPHYS = .TRUE.
       IER = 0
 C
 C     --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
@@ -109,10 +113,12 @@ C      IF ( N1+N2 .NE. 0 ) TOUSNO = .FALSE.
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
 C
-      CALL JEVEUO ( TRANGE//'.DESC', 'L', IADESC )
-      NBMODE = ZI(IADESC+1)
+      IF (.NOT. LRPHYS ) THEN
+        CALL JEVEUO ( TRANGE//'.DESC', 'L', IADESC )
+        NBMODE = ZI(IADESC+1)
+      ENDIF
 C
-      IF ( MODE .EQ. BLANC ) THEN
+      IF ( MODE .EQ. BLANC .AND. .NOT. LRPHYS) THEN
          CALL JEVEUO(TRANGE//'.REFD','L',IAREFE)
          MATGEN = ZK24(IAREFE)(1:8)
          BASEMO = ZK24(IAREFE+5)(1:8)
@@ -157,6 +163,94 @@ C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
 C
          BASEM2 = BASEMO
 C
+      ELSEIF ( MODE .EQ. BLANC .AND. LRPHYS) THEN
+         CALL JELIRA(TRANGE//'.DGEN','LONMAX',NBSTO,K8B)
+         CALL GETVID(' ','BASE_MODALE',1,1,1,BASEMO,IBID)
+         CALL RSORAC(BASEMO,'LONUTI',IBID,RBID,K8B,CBID,RBID,
+     &               K8B,NBMODE,1,IBID)
+         CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
+         NUMEDD = ZK24(IADRIF+3)
+         CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
+         IF (IBID.NE.0) THEN
+           CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
+           NUMEDD = NUMEDD(1:14)//'.NUME'
+         ENDIF
+         NUMDDL = NUMEDD(1:14)
+         CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
+         CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
+         CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+         CALL GETVTX(' ','TOUT_CHAM',1,1,0,K8B,N0)
+         IF (N0.NE.0) THEN
+           NBCHAM = 3
+           CHAMP(1) = 'DEPL'
+           CHAMP(2) = 'VITE'
+           CHAMP(3) = 'ACCE'
+         ELSE         
+           CALL GETVTX(' ','NOM_CHAM',1,1,0,CHAMP,N1)
+           IF (N1.NE.0) THEN
+             NBCHAM = -N1
+             CALL GETVTX(' ','NOM_CHAM',1,1,NBCHAM,CHAMP,N1)
+           ELSE
+             CALL UTMESS('A','TRAN75','IL FAUT UN NOM DE CHAMP')
+             GOTO 9999
+           ENDIF
+         ENDIF
+         NBINS2 = NBSTO/NBMODE
+         KNUME = '&&TRAN75.NUM_RANG'
+         KINST = '&&TRAN75.INSTANT'
+         CALL RSTRAN('NON',TRANGE,' ',1,KINST,KNUME,NBINST,IRETOU)
+         IF ( IRETOU .NE. 0 ) THEN
+           CALL UTMESS('F','TRAN75','PROBLEME(S) RENCONTRE(S) LORS'//
+     +                     ' DE LA LECTURE DES INSTANTS.' )
+         ENDIF
+         CALL JEEXIN(KINST,IRET )
+         IF ( IRET .GT. 0 ) THEN
+           CALL JEVEUO ( KINST, 'L', JINST )
+           CALL JEVEUO ( KNUME, 'L', JNUME )
+         END IF
+C        WRITE(6,*) 'NBINST NBINS2 NBMODE NEQ ',NBINST,NBINS2,NBMODE,NEQ
+         IF (NBINST.GT.NBINS2) NBINST = NBINS2         
+C         WRITE(6,*) 'KINST ',(ZR(JINST+I-1),I=1,NBINST)
+C         WRITE(6,*) 'KNUME ',(ZI(JNUME+I-1),I=1,NBINST)
+C     --- CREATION DE LA SD RESULTAT ---
+         CALL RSCRSD(NOMRES, TYPRES, NBINST)
+C
+         DO 300 I = 1 , NBCHAM
+           IF ( CHAMP(I) .EQ. 'DEPL' ) THEN 
+             CALL JEVEUO(TRANGE//'.DGEN','L',JRESTR)
+           ELSEIF ( CHAMP(I) .EQ. 'VITE' ) THEN 
+             CALL JEVEUO(TRANGE//'.VGEN','L',JRESTR)
+           ELSEIF ( CHAMP(I) .EQ. 'ACCE' ) THEN 
+             CALL JEVEUO(TRANGE//'.AGEN','L',JRESTR)
+           ELSE
+             CALL UTMESS('A','TRAN75','PAS DE CHAMP AUTRE QUE'//
+     +                     ' DEPL OU VITE OU ACCE' )
+             GOTO 300
+           ENDIF
+           DO 310 IARCH = 1, NBINST
+             INUM = ZI(JNUME+IARCH-1)
+             CALL RSEXCH(NOMRES,CHAMP(I)(1:4),IARCH,CHAMNO,IRET)
+             CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
+             CALL JEVEUO(CHAMNO(1:19)//'.VALE','E',LDNEW)
+             CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
+     +                   ZR(JRESTR+(INUM-1)*NBMODE),ZR(LDNEW))
+             CALL RSNOCH(NOMRES,CHAMP(I)(1:4),IARCH,' ')
+             IF (I.EQ.1) THEN
+               CALL RSADPA(NOMRES,'E',1,'INST',IARCH,0,LINST,K8B)
+               ZR(LINST) = ZR(JINST+IARCH-1)
+             ENDIF
+ 310       CONTINUE
+ 300     CONTINUE
+         KREFE  = NOMRES
+         CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
+         ZK24(LREFE  ) = ZK24(IADRIF)
+         ZK24(LREFE+1) = ZK24(IADRIF+1)
+         ZK24(LREFE+2) = ZK24(IADRIF+2)
+         ZK24(LREFE+3) = NUMEDD
+         ZK24(LREFE+4) = ZK24(IADRIF+4)
+         ZK24(LREFE+5) = ZK24(IADRIF+5)
+         CALL JELIBE(KREFE//'.REFD')
+         GOTO 9999
       ELSE
 C         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 C

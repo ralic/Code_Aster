@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,15 +17,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
-def rest_base_phys_prod(RESU_GENE,RESULTAT,**args ):
+def rest_base_phys_prod(RESU_GENE,RESU_PHYS,RESULTAT,**args ):
   if AsType(RESU_GENE) == tran_gene : return dyna_trans
   if AsType(RESU_GENE) == mode_gene : return mode_meca
   if AsType(RESU_GENE) == mode_cycl : return mode_meca
   if AsType(RESU_GENE) == harm_gene : return dyna_harmo
+  if AsType(RESU_PHYS) == evol_noli : return dyna_trans
   if AsType(RESULTAT)  == evol_elas      : return evol_elas
   if AsType(RESULTAT)  == evol_noli      : return evol_noli
   if AsType(RESULTAT)  == evol_char      : return evol_char
-  if AsType(RESULTAT)  == dyna_trans      : return dyna_trans
+  if AsType(RESULTAT)  == dyna_trans     : return dyna_trans
   if AsType(RESULTAT)  == mode_meca      : return mode_meca
   if AsType(RESULTAT)  == mode_stat_depl : return mode_stat_depl
   if AsType(RESULTAT)  == base_modale    : return base_modale
@@ -35,20 +36,24 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
                     fr="Restituer dans la base physique des résultats en coordonnées généralisées",
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
-        regles=(UN_PARMI('RESU_GENE','RESULTAT'),
+        regles=(UN_PARMI('RESU_GENE','RESU_PHYS','RESULTAT'),
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
                 EXCLUS('TOUT_INST','NUME_ORDRE','INST','LIST_INST','TOUT_ORDRE'),
 #  Doc U à revoir
                 EXCLUS('MULT_APPUI','CORR_STAT'),
                 EXCLUS('MULT_APPUI','NOEUD','GROUP_NO'),
                 EXCLUS('CORR_STAT','NOEUD','GROUP_NO'),             
-                EXCLUS('NOEUD','GROUP_NO'), 
+                EXCLUS('NOEUD','GROUP_NO'),
+                PRESENT_PRESENT('RESU_PHYS','BASE_MODALE'),
                 PRESENT_PRESENT('RESULTAT','SQUELETTE'),
                 PRESENT_PRESENT('ACCE_MONO_APPUI','DIRECTION'),),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,evol_char,
                                                mode_meca,mode_stat_depl,base_modale) ),
          
-         RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene ) ),
+         RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene) ),
+         RESU_PHYS       =SIMP(statut='f',typ=evol_noli ),
+         BASE_MODALE     =SIMP(statut='f',typ=(base_modale,mode_meca) ),
+         NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  

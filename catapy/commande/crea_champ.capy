@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,8 +45,16 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        ------------------------------------------------------------------
          OPTION         =SIMP(statut='f',typ='TXM'),
 
-         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC",) ),
+         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE") ),
 
+#        ------------------------------------------------------------------
+         b_norm          =BLOC(condition = "OPERATION == 'NORMALE'",
+                               regles=(AU_MOINS_UN('GROUP_MA','MAILLE',),),
+             MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
+             GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+             MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                             ),
+#        ------------------------------------------------------------------
          b_affe          =BLOC(condition = "OPERATION == 'AFFE'",
              regles=(UN_PARMI('MAILLAGE','MODELE'),),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
@@ -68,6 +76,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 VALE_F          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
                                    ),
                              ),
+#        ------------------------------------------------------------------
          b_asse          =BLOC(condition = "OPERATION == 'ASSE'",
              regles=(UN_PARMI('MAILLAGE','MODELE'),),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
@@ -89,15 +98,18 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 COEF_R          =SIMP(statut='f',typ='R',defaut= 1. ),
                                     ),
                              ),
+#        ------------------------------------------------------------------
          b_eval          =BLOC(condition = "OPERATION == 'EVAL'",
              CHAM_F          =SIMP(statut='o',typ=cham_gd_sdaster),
              CHAM_PARA       =SIMP(statut='o',typ=cham_gd_sdaster,max='**'),
                              ),
+#        ------------------------------------------------------------------
          b_disc          =BLOC(condition = "OPERATION == 'DISC'",
              MODELE          =SIMP(statut='f',typ=(modele_sdaster) ),
              PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
              CHAM_GD         =SIMP(statut='o',typ=cham_gd_sdaster),
                              ),
+#        ------------------------------------------------------------------
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
              regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),

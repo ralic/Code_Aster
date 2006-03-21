@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA,DEFICO,OLDGEO,NEWGEO,COMGEO,DEPGEO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2005   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,11 +61,15 @@ C
       INTEGER NTMA,POSNO,POSMIN,JDIR,NPEX,POSNOE,NUMNOE,SUPPOK,NSANS
       INTEGER IZONE,TYCO,JECPD,JNORLI,ITYP,NUTYP,NUMSAN,JDEC0,JDEC,K
       INTEGER JCMCF,NTPC,IMA,POSMA,NUMAE,NBN,INI,NUMAM,LISSS,IATYMA
-      INTEGER JMETH
+      INTEGER JMETH,JPOUDI,ZMETH
       REAL*8 XIMIN,YIMIN,T1MIN(3),T2MIN(3),GEOM(3),LAMBDA,XPG,YPG,HPG
       REAL*8 DIR(3),NDIR,NORM(3),COON1(3),COON2(3),NORME1
       CHARACTER*24 COTAMA,MAESCL,CARACF,ECPDON,NORLIS,DIRCO,CONTNO
       CHARACTER*24 TABFIN,SANSNO,PSANS,NDIMCO,NOMACO,PNOMA,TANDEF,METHCO
+      CHARACTER*24 TANPOU
+      INTEGER NNEX,INI4
+      LOGICAL LDIST,CONDI
+      PARAMETER (ZMETH=8)
 C
 C ----------------------------------------------------------------------
 C
@@ -84,15 +88,16 @@ C     RECUPERATION DE QUELQUES DONNEES
       CARACF = DEFICO(1:16) // '.CARACF'
       ECPDON = DEFICO(1:16) // '.ECPDON'
       NORLIS = DEFICO(1:16) // '.NORLIS'
-      DIRCO = DEFICO(1:16) // '.DIRCO'
+      DIRCO  = DEFICO(1:16) // '.DIRCO'
       CONTNO = DEFICO(1:16) // '.NOEUCO'
       SANSNO = DEFICO(1:16) // '.SSNOCO'
-      PSANS = DEFICO(1:16) // '.PSSNOCO'
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'
+      PSANS  = DEFICO(1:16) // '.PSSNOCO'
+      NDIMCO = DEFICO(1:16) // '.NDIMCO'
       NOMACO = DEFICO(1:16) // '.NOMACO'
-      PNOMA = DEFICO(1:16) // '.PNOMACO'
+      PNOMA  = DEFICO(1:16) // '.PNOMACO'
       TANDEF = DEFICO(1:16) // '.TANDEF'
-      METHCO = DEFICO(1:16)//'.METHCO'
+      METHCO = DEFICO(1:16) // '.METHCO'
+      TANPOU = DEFICO(1:16) // '.TANPOU'
       
       CALL JEVEUO(COTAMA,'L',JMACO)
       CALL JEVEUO(MAESCL,'L',JMAESC)
@@ -190,6 +195,7 @@ C ---- NUMERO ABSOLU DU NOEUD DANS SANS_GROUP_NO OU SANS_NOEUD
           END IF
  50     CONTINUE
         
+        NNEX=0
         DO 10 INI = 1,NBN
 
           CALL GAUSS2(ALIAS,TYCO,XPG,YPG,INI,HPG)
@@ -201,28 +207,36 @@ C ---- NUMERO ABSOLU DU NOEUD DANS SANS_GROUP_NO OU SANS_NOEUD
      &                  T2MIN,XIMIN,YIMIN,DIR)
           ELSE
             CALL MRECHN(IZONE,GEOM,NEWGEO,DEFICO,POSNO)
+            CONDI=.TRUE.
             CALL MCHMPS(NOMA,GEOM,POSNO,NEWGEO,DEFICO,POSMIN,T1MIN,
-     &                  T2MIN,XIMIN,YIMIN)
+     &                  T2MIN,XIMIN,YIMIN,CONDI)
+     
+            IF(.NOT. CONDI) THEN
+              NNEX=NNEX+1
+            ENDIF
+            
           END IF
           NUMAM = ZI(JMACO+POSMIN-1)
           IF (LISSS .EQ. 1) THEN
             CALL COPNOR(NOMA,POSMIN,XIMIN,YIMIN,NEWGEO,DEFICO,T1MIN,
      &                  T2MIN)
           END IF
-          ZR(JTABF+21*NTPC+21*(INI-1)+1) = NUMAE
-          ZR(JTABF+21*NTPC+21*(INI-1)+2) = NUMAM
-          ZR(JTABF+21*NTPC+21*(INI-1)+3) = XPG
-          ZR(JTABF+21*NTPC+21*(INI-1)+4) = XIMIN
-          ZR(JTABF+21*NTPC+21*(INI-1)+5) = YIMIN
+          ZR(JTABF+22*NTPC+22*(INI-1)+1) = NUMAE
+          ZR(JTABF+22*NTPC+22*(INI-1)+2) = NUMAM
+          ZR(JTABF+22*NTPC+22*(INI-1)+3) = XPG
+          ZR(JTABF+22*NTPC+22*(INI-1)+4) = XIMIN
+          ZR(JTABF+22*NTPC+22*(INI-1)+5) = YIMIN
 C
 C ---- DEFINITION BASE TANGENTE LOCALE DANS LE CAS DES POUTRES
 C
-          IF((NDIM.EQ.3) .AND. (ALIAS(1:3).EQ.'SG2')) THEN
-            T2MIN(1)=ZR(JTGDEF+6*(IZONE-1))
-            T2MIN(2)=ZR(JTGDEF+6*(IZONE-1)+1)
-            T2MIN(3)=ZR(JTGDEF+6*(IZONE-1)+2)
+          IF(ZI(JMETH+ZMETH*(IZONE-1)+2).EQ.2) THEN
+            CALL JEVEUO(TANPOU,'L',JPOUDI)
+            T2MIN(1) = ZR(JPOUDI+3* (IZONE-1))
+            T2MIN(2) = ZR(JPOUDI+3* (IZONE-1)+1)
+            T2MIN(3) = ZR(JPOUDI+3* (IZONE-1)+2)
             CALL NORMEV(T2MIN,NORME1)
-          ENDIF
+          END IF
+          
 C
 C ---- DEFINITION BASE TANGENTE LOCALE AU NOEUD A EXCLURE
 C
@@ -286,49 +300,60 @@ C ---- NUMERO ABSOLU DU NOEUD DANS SANS_GROUP_NO OU SANS_NOEUD
             END IF
           END IF
 
-          ZR(JTABF+21*NTPC+21*(INI-1)+6) = T1MIN(1)
-          ZR(JTABF+21*NTPC+21*(INI-1)+7) = T1MIN(2)
-          ZR(JTABF+21*NTPC+21*(INI-1)+8) = T1MIN(3)
-          ZR(JTABF+21*NTPC+21*(INI-1)+9) = T2MIN(1)
-          ZR(JTABF+21*NTPC+21*(INI-1)+10) = T2MIN(2)
-          ZR(JTABF+21*NTPC+21*(INI-1)+11) = T2MIN(3)
-          ZR(JTABF+21*NTPC+21*(INI-1)+12) = YPG
+          ZR(JTABF+22*NTPC+22*(INI-1)+6) = T1MIN(1)
+          ZR(JTABF+22*NTPC+22*(INI-1)+7) = T1MIN(2)
+          ZR(JTABF+22*NTPC+22*(INI-1)+8) = T1MIN(3)
+          ZR(JTABF+22*NTPC+22*(INI-1)+9) = T2MIN(1)
+          ZR(JTABF+22*NTPC+22*(INI-1)+10) = T2MIN(2)
+          ZR(JTABF+22*NTPC+22*(INI-1)+11) = T2MIN(3)
+          ZR(JTABF+22*NTPC+22*(INI-1)+12) = YPG
           
           IF (PREMIE) THEN
             IF (ZI(JECPD+6*(IZONE-1)+5) .EQ. 1.D0) THEN
-              ZR(JTABF+21*NTPC+21*(INI-1)+13) = 1.D0
+              ZR(JTABF+22*NTPC+22*(INI-1)+13) = 1.D0
             ELSE
-              ZR(JTABF+21*NTPC+21*(INI-1)+13) = 0.D0
+              ZR(JTABF+22*NTPC+22*(INI-1)+13) = 0.D0
             END IF
           END IF
           
-          IF (PREMIE) ZR(JTABF+21*NTPC+21*(INI-1)+14) = LAMBDA
-          ZR(JTABF+21*NTPC+21*(INI-1)+15) = IZONE
-          ZR(JTABF+21*NTPC+21*(INI-1)+16) = HPG
-          IF (PREMIE) ZR(JTABF+21*NTPC+21* (INI-1)+21) = 0.D0
+          IF (PREMIE) ZR(JTABF+22*NTPC+22*(INI-1)+14) = LAMBDA
+          ZR(JTABF+22*NTPC+22*(INI-1)+15) = IZONE
+          ZR(JTABF+22*NTPC+22*(INI-1)+16) = HPG
+          IF (PREMIE) ZR(JTABF+22*NTPC+22*(INI-1)+21) = 0.D0
           IF (NINT(ZR(JCMCF+10*(IZONE-1)+7)) .EQ. 0.D0) THEN 
-            ZR(JTABF+21*NTPC+21* (INI-1)+21) = 1.D0
-          END IF       
-          IF (SUPPOK.EQ.1 .AND. NPEX.EQ.1) THEN
-              ZR(JTABF+21*NTPC+21*(INI-1)+17) = 1.D0
-              ZR(JTABF+21*NTPC+21*(INI-1)+18) = INI1
-              ZR(JTABF+21*NTPC+21*(INI-1)+19) = 0.D0
-              ZR(JTABF+21*NTPC+21*(INI-1)+20) = 0.D0
-          ELSEIF (SUPPOK.EQ.1 .AND. NPEX.EQ.2) THEN
-              ZR(JTABF+21*NTPC+21*(INI-1)+17) = 2.D0
-              ZR(JTABF+21*NTPC+21*(INI-1)+18) = INI1
-              ZR(JTABF+21*NTPC+21*(INI-1)+19) = INI2
-              ZR(JTABF+21*NTPC+21*(INI-1)+20) = 0.D0
-          ELSEIF (SUPPOK.EQ.1 .AND. NPEX.EQ.3) THEN
-              ZR(JTABF+21*NTPC+21*(INI-1)+17) = 3.D0
-              ZR(JTABF+21*NTPC+21*(INI-1)+18) = INI1
-              ZR(JTABF+21*NTPC+21*(INI-1)+19) = INI2
-              ZR(JTABF+21*NTPC+21*(INI-1)+20) = INI3
+            ZR(JTABF+22*NTPC+22* (INI-1)+21) = 1.D0
+          END IF
+          
+          IF (INI .EQ. NBN .AND. NNEX .EQ. NBN) THEN
+            DO 11 INI4 = 1,NBN
+            ZR(JTABF+22*NTPC+22*(INI4-1)+22) = 1.D0
+ 11         CONTINUE
           ELSE
-             ZR(JTABF+21*NTPC+21*(INI-1)+17) = 0.D0
-             ZR(JTABF+21*NTPC+21*(INI-1)+18) = 0.D0
-             ZR(JTABF+21*NTPC+21*(INI-1)+19) = 0.D0
-             ZR(JTABF+21*NTPC+21*(INI-1)+20) = 0.D0
+            DO 12 INI4 = 1,NBN
+            ZR(JTABF+22*NTPC+22*(INI4-1)+22) = 0.D0
+ 12         CONTINUE
+          END IF
+          
+          IF (SUPPOK.EQ.1 .AND. NPEX.EQ.1) THEN
+              ZR(JTABF+22*NTPC+22*(INI-1)+17) = 1.D0
+              ZR(JTABF+22*NTPC+22*(INI-1)+18) = INI1
+              ZR(JTABF+22*NTPC+22*(INI-1)+19) = 0.D0
+              ZR(JTABF+22*NTPC+22*(INI-1)+20) = 0.D0
+          ELSEIF (SUPPOK.EQ.1 .AND. NPEX.EQ.2) THEN
+              ZR(JTABF+22*NTPC+22*(INI-1)+17) = 2.D0
+              ZR(JTABF+22*NTPC+22*(INI-1)+18) = INI1
+              ZR(JTABF+22*NTPC+22*(INI-1)+19) = INI2
+              ZR(JTABF+22*NTPC+22*(INI-1)+20) = 0.D0
+          ELSEIF (SUPPOK.EQ.1 .AND. NPEX.EQ.3) THEN
+              ZR(JTABF+22*NTPC+22*(INI-1)+17) = 3.D0
+              ZR(JTABF+22*NTPC+22*(INI-1)+18) = INI1
+              ZR(JTABF+22*NTPC+22*(INI-1)+19) = INI2
+              ZR(JTABF+22*NTPC+22*(INI-1)+20) = INI3
+          ELSE
+             ZR(JTABF+22*NTPC+22*(INI-1)+17) = 0.D0
+             ZR(JTABF+22*NTPC+22*(INI-1)+18) = 0.D0
+             ZR(JTABF+22*NTPC+22*(INI-1)+19) = 0.D0
+             ZR(JTABF+22*NTPC+22*(INI-1)+20) = 0.D0
           END IF
 
  10     CONTINUE

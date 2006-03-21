@@ -1,6 +1,6 @@
-      SUBROUTINE MAJUST(ALIAS,XI,YI)
+      SUBROUTINE MAJUST(ALIAS,XI,YI,LDIST,TOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,12 @@ C ======================================================================
 
       IMPLICIT NONE
       CHARACTER*8 ALIAS
-      REAL*8 XI,YI,XII,YII
+      REAL*8 XI,YI,XII,YII,DIST,TOL
+      LOGICAL LDIST
+      
+      DIST=1.D0+TOL
       IF ((ALIAS(1:3).EQ.'SG2') .OR. (ALIAS(1:3).EQ.'SG3')) THEN
+        IF (ABS(XI).GT.DIST)  LDIST = .FALSE.
         IF (XI.LT.-1.D0) XI = -1.D0
         IF (XI.GT.1.D0) XI = 1.D0
       END IF

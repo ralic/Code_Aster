@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF gmsh Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@ except:
 
 
 
-def GMSH(mode, fichier, param) :
+def GMSH(mode, fichier, param, options=None) :
 
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
@@ -57,12 +57,14 @@ def GMSH(mode, fichier, param) :
       param    : parametres d'environnement
     """
     
+    if not options.has_key('animation_mode'): options['animation_mode'] = None
+
     if   param['mode'] == 'LOCAL' :
-      return GMSH_LOCAL(mode, fichier, param) 
+      return GMSH_LOCAL(mode, fichier, param, options) 
     elif param['mode'] == 'DISTANT' :
-      return GMSH_DISTANT(mode, fichier, param)
+      return GMSH_DISTANT(mode, fichier, param, options)
     elif param['mode'] == 'WINDOWS' :
-      return GMSH_WINDOWS(mode, fichier, param)
+      return GMSH_WINDOWS(mode, fichier, param, options)
     else :
       raise _("Mode d'environnement incorrect")
     
@@ -71,7 +73,7 @@ def GMSH(mode, fichier, param) :
 
 class GMSH_DISTANT :
 
-  def __init__(self, mode, fichier, param) :
+  def __init__(self, mode, fichier, param, options) :
 
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
@@ -183,7 +185,7 @@ class GMSH_DISTANT :
 
 class GMSH_LOCAL :
 
-  def __init__(self, mode, fichier, param) :
+  def __init__(self, mode, fichier, param, options) :
         
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
@@ -197,6 +199,7 @@ class GMSH_LOCAL :
       except: pass
       os.rename(fichier, fichier + '.pos')
 
+      # Script SKIN
       if param['SKIN'].lower() in ['oui', 'yes']:
         fw=open('skin.pos','w')
         fw.write( 'Merge "' + fichier + '.pos' + '";' +'\n' )
@@ -205,6 +208,37 @@ class GMSH_LOCAL :
         fw.write( 'Delete View[0];' +'\n' )
         fw.close()
         shell = param['gmsh'] + ' skin.pos'
+
+      # Script Animation des modes
+      elif options['animation_mode'] == 'Animer':
+        fw=open('script.pos','w')
+        fw.write( 'Merge "' + fichier + '.pos' + '";' +'\n' )
+
+        txt = """
+Plugin(HarmonicToTime).iView = -1 ;
+Plugin(HarmonicToTime).RealPart = 0 ;
+Plugin(HarmonicToTime).ImaginaryPart = 0 ;
+Plugin(HarmonicToTime).nSteps = 20 ;
+Plugin(HarmonicToTime).Run ;
+
+For i In {1:PostProcessing.NbViews-1}
+      Delete View[0];
+EndFor
+der= PostProcessing.NbViews;
+View[der-1].Visible = 1;
+View[der-1].ShowScale = 0; // Show value scale?
+View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2=value always, 3=step if multiple, 4=step always)
+"""
+        # Plugin(Annotate).Text = "bla" ; 
+        # Plugin(Annotate).Font = "Helvetica" ; 
+        # Plugin(Annotate).FontSize = 14 ; 
+        # Plugin(Annotate).Align = "Center" ; 
+        # Plugin(Annotate).Run ; 
+
+        fw.write( txt +'\n' )
+        fw.close()
+        shell = param['gmsh'] + ' script.pos'
+
       else:
         shell = param['gmsh'] + ' ' + fichier + '.pos'
 
@@ -252,7 +286,7 @@ class GMSH_LOCAL :
 
 class GMSH_WINDOWS :
 
-  def __init__(self, mode, fichier, param) :
+  def __init__(self, mode, fichier, param, options) :
         
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)

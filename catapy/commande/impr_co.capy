@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,14 +20,18 @@
 IMPR_CO=PROC(nom="IMPR_CO",op=17,
             UIinfo={"groupes":("Impression",)},
              fr="Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)",
-         regles=(UN_PARMI('CO','CHAINE','TOUT' ),),
+         regles=(UN_PARMI('CONCEPT','CHAINE','TOUT' ),),
 
          UNITE           =SIMP(statut='f',typ='I',defaut=8),
          NIVEAU          =SIMP(statut='f',typ='I',defaut=2,into=(-1,0,1,2) ),
          ATTRIBUT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
          CONTENU         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
          BASE            =SIMP(statut='f',typ='TXM',defaut="G",into=(" ","G","V","L") ),
-         CO              =SIMP(statut='f',typ=assd,validators=NoRepeat(),max='**'),
+         CONCEPT    =FACT(statut='f',max='**',
+             NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
+             SENSIBILITE =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),
+                                 fr="Paramètre de sensibilité.",
+                                 ang="Sensitivity parameter",max='**'),),        
          CHAINE          =SIMP(statut='f',typ='TXM'),
          POSITION        =SIMP(statut='f',typ='I',defaut=1),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE TEST HHM 2D, CALCUL DECOUPLE (S=0.5, DSDP=0)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,7 +161,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    RHO = 2000.,
    ALPHA = 8.E-6)
    )
-IMPR_CO(CO=MATERIAU),
+IMPR_CO(CONCEPT=_F(NOM=MATERIAU)),
 CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                           AFFE=_F( TOUT = 'OUI',
                         MATER = MATERIAU))
