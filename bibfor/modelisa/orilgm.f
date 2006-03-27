@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*)       MODELZ
 C ======================================================================
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -233,7 +233,7 @@ C
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                NORIEN=0
-               CALL ORNORM ( NOMA, ZI(JGRO), NBMAIL, NORIEN )
+               CALL ORNORM ( NOMA, ZI(JGRO), NBMAIL, REORIE, NORIEN )
                NORIT = NORIT + NORIEN
                WRITE(IFM,1000) GMAT, NORIEN
  320        CONTINUE

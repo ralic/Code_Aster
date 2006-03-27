@@ -6,7 +6,7 @@
       REAL*8              VECT(*), PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C -----  VARIABLES LOCALES
       INTEGER       ICO, IORIV1, IORIV2, P3, P4, MAOK, INDI, IDEB
       INTEGER       NBNMA1, NBNMA2, JDESM1, JDESM2, JNOR, INDIIS
       INTEGER       NBMAT, I, IM2, IORIM1, IORIM2
-      LOGICAL       DIME1, DIME2
+      LOGICAL       DIME1, DIME2, REORIE
       CHARACTER*8   K8B, TPMAIL, NOMAIL
       CHARACTER*24  MAILMA, NOMAVO
 C
@@ -70,6 +70,7 @@ C --- INITIALISATIONS :
 C     ---------------
       CALL INFNIV ( IFM , NIV )
       MAILMA = NOMA//'.NOMMAI'
+      REORIE = .TRUE.
 C
 C --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 C     ---------------------------------------
@@ -199,10 +200,10 @@ C
 C
             IF (DIME1)
      +         ICO = IORIM1 ( ZI(P1+JDESM1-1), 
-     +                        ZI(P1+JDESM2-1), .FALSE. )
+     +                        ZI(P1+JDESM2-1), REORIE )
             IF (DIME2)
      +         ICO = IORIM2 ( ZI(P1+JDESM1-1), NBNMA1,
-     +                        ZI(P1+JDESM2-1), NBNMA2, .FALSE. )
+     +                        ZI(P1+JDESM2-1), NBNMA2, REORIE )
 C
             IF ( ICO .EQ. 0 )  GOTO 210
             IF ( ICO .LT. 0 )  NORIEG = NORIEG + 1

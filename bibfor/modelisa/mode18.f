@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF MODELISA  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -205,6 +205,10 @@ C
      +         TYPELE.EQ.'MEDPQU9' .OR. 
      +         TYPELE.EQ.'MEPLSE3' .OR. TYPELE.EQ.'MEPLSE2' ) THEN
          TYPEMO = 'D_PLAN'
+
+      ELSEIF ( TYPELE.EQ.'MEDPTR6_X' .OR. TYPELE.EQ.'MEDPQU8_X'
+     +         ) THEN
+         TYPEMO = 'D_PLAN_X'
 
       ELSEIF ( TYPELE.EQ.'MEDPQS8' .OR. TYPELE.EQ.'MEDPQS4' ) THEN
          TYPEMO = 'D_PLAN_SI'

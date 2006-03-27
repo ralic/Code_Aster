@@ -8,7 +8,7 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C ----------------------------------------------------------------------
       
       IF (NDIM .EQ. 3) THEN
          PTMAX=6
-      ELSE
+      ELSEIF (NDIM .EQ. 2) THEN
          PTMAX=2
       ENDIF
 
@@ -144,6 +144,10 @@ C           ON AJOUTE A LA LISTE LE POINT C
         ENDIF
 
  100  CONTINUE
+
+C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
+      CALL XCFACF(JPTINT,PTMAX,IPT,JAINT,LSN,LST,IGEOM,NNO,NDIM,TYPMA)
+
       NINTER=IPT
 
       IF (0.EQ.1) THEN
@@ -159,174 +163,182 @@ C     2) DECOUPAGE EN FACETTES TRIANGULAIRES DE LA SURFACE DEFINIE
 C     ------------------------------------------------------------
 
 C                  (BOOK IV 09/09/04)
+
+C     CAS 3D
       IF (NDIM .EQ. 3) THEN
-       IF (NINTER.LT.3) GOTO 500
 
-       DO 200 I=1,5
-        DO 201 J=1,3
-          CFACE(I,J)=0
- 201    CONTINUE
- 200   CONTINUE
+        IF (NINTER.LT.3) GOTO 500
 
-C     NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-       CALL LCINVN(3,0.D0,ND)
-       DO 210 I=1,NNO
-        DO 211 J=1,3
-          ND(J)=ND(J)+ZR(JGRLSN-1+3*(I-1)+J)/NNO
- 211    CONTINUE
- 210   CONTINUE
+        DO 200 I=1,5
+         DO 201 J=1,3
+           CFACE(I,J)=0
+ 201     CONTINUE
+ 200    CONTINUE
 
-C      PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
-       CALL LCINVN(3,0.D0,BAR)
-       DO 220 I=1,NINTER
-        DO 221 J=1,3
-          BAR(J)=BAR(J)+ZR(JPTINT-1+(I-1)*3+J)/NINTER
- 221    CONTINUE
- 220   CONTINUE
-       DO 230 J=1,3
-        A(J)=ZR(JPTINT-1+(1-1)*3+J)
-        OA(J)=A(J)-BAR(J)
- 230   CONTINUE
-       NOA=SQRT(OA(1)*OA(1) + OA(2)*OA(2)  +  OA(3)*OA(3))
+C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
+        CALL LCINVN(3,0.D0,ND)
+        DO 210 I=1,NNO
+         DO 211 J=1,3
+           ND(J)=ND(J)+ZR(JGRLSN-1+3*(I-1)+J)/NNO
+ 211     CONTINUE
+ 210    CONTINUE
 
-C      BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
-       DO 240 I=1,NINTER
-        DO 241 J=1,3
-          M(J)=ZR(JPTINT-1+(I-1)*3+J)
-          AM(J)=M(J)-A(J)
- 241    CONTINUE
-        PS=DDOT(3,AM,1,ND,1)
+C       PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
+        CALL LCINVN(3,0.D0,BAR)
+        DO 220 I=1,NINTER
+         DO 221 J=1,3
+           BAR(J)=BAR(J)+ZR(JPTINT-1+(I-1)*3+J)/NINTER
+ 221     CONTINUE
+ 220    CONTINUE
+        DO 230 J=1,3
+         A(J)=ZR(JPTINT-1+(1-1)*3+J)
+         OA(J)=A(J)-BAR(J)
+ 230    CONTINUE
+        NOA=SQRT(OA(1)*OA(1) + OA(2)*OA(2)  +  OA(3)*OA(3))
 
-        PS1=DDOT(3,ND,1,ND,1)
-        LAMBDA=-PS/PS1
-        DO 242 J=1,3
-          H(J)=M(J)+LAMBDA*ND(J)
-          OH(J)=H(J)-BAR(J)
- 242    CONTINUE
-        PS=DDOT(3,OA,1,OH,1)
+C       BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
+        DO 240 I=1,NINTER
+         DO 241 J=1,3
+           M(J)=ZR(JPTINT-1+(I-1)*3+J)
+           AM(J)=M(J)-A(J)
+ 241     CONTINUE
+         PS=DDOT(3,AM,1,ND,1)
 
-        NOH=SQRT(OH(1)*OH(1) + OH(2)*OH(2)  +  OH(3)*OH(3))
-        COS=PS/(NOA*NOH)
+         PS1=DDOT(3,ND,1,ND,1)
+         LAMBDA=-PS/PS1
+         DO 242 J=1,3
+           H(J)=M(J)+LAMBDA*ND(J)
+           OH(J)=H(J)-BAR(J)
+ 242     CONTINUE
+         PS=DDOT(3,OA,1,OH,1)
 
-        THETA(I)=TRIGOM('ACOS',COS)
-C       SIGNE DE THETA (06/01/2004)
-        CALL PROVEC(OA,OH,R3)
-        PS=DDOT(3,R3,1,ND,1)
-        IF (PS.LT.EPS) THETA(I) = -1 * THETA(I) + 2 * R8PI()
+         NOH=SQRT(OH(1)*OH(1) + OH(2)*OH(2)  +  OH(3)*OH(3))
+         COS=PS/(NOA*NOH)
 
- 240   CONTINUE
+         THETA(I)=TRIGOM('ACOS',COS)
+C        SIGNE DE THETA (06/01/2004)
+         CALL PROVEC(OA,OH,R3)
+         PS=DDOT(3,R3,1,ND,1)
+         IF (PS.LT.EPS) THETA(I) = -1 * THETA(I) + 2 * R8PI()
 
-C      TRI SUIVANT THETA CROISSANT
-       DO 250 PD=1,NINTER-1
-        PP=PD
-        DO 251 I=PP,NINTER
-          IF (THETA(I).LT.THETA(PP)) PP=I
- 251    CONTINUE
-        TAMPOR(1)=THETA(PP)
-        THETA(PP)=THETA(PD)
-        THETA(PD)=TAMPOR(1)
-        DO 252 K=1,3
-          TAMPOR(K)=ZR(JPTINT-1+3*(PP-1)+K)
-          ZR(JPTINT-1+3*(PP-1)+K)=ZR(JPTINT-1+3*(PD-1)+K)
-          ZR(JPTINT-1+3*(PD-1)+K)=TAMPOR(K)
- 252    CONTINUE
-        DO 253 K=1,4
-          TAMPOR(K)=ZR(JAINT-1+4*(PP-1)+K)
-          ZR(JAINT-1+4*(PP-1)+K)=ZR(JAINT-1+4*(PD-1)+K)
-          ZR(JAINT-1+4*(PD-1)+K)=TAMPOR(K)
- 253    CONTINUE
- 250   CONTINUE
+ 240    CONTINUE
+
+C       TRI SUIVANT THETA CROISSANT
+        DO 250 PD=1,NINTER-1
+         PP=PD
+         DO 251 I=PP,NINTER
+           IF (THETA(I).LT.THETA(PP)) PP=I
+ 251     CONTINUE
+         TAMPOR(1)=THETA(PP)
+         THETA(PP)=THETA(PD)
+         THETA(PD)=TAMPOR(1)
+         DO 252 K=1,3
+           TAMPOR(K)=ZR(JPTINT-1+3*(PP-1)+K)
+           ZR(JPTINT-1+3*(PP-1)+K)=ZR(JPTINT-1+3*(PD-1)+K)
+           ZR(JPTINT-1+3*(PD-1)+K)=TAMPOR(K)
+ 252     CONTINUE
+         DO 253 K=1,4
+           TAMPOR(K)=ZR(JAINT-1+4*(PP-1)+K)
+           ZR(JAINT-1+4*(PP-1)+K)=ZR(JAINT-1+4*(PD-1)+K)
+           ZR(JAINT-1+4*(PD-1)+K)=TAMPOR(K)
+ 253     CONTINUE
+ 250    CONTINUE
 
 
- 500   CONTINUE
+ 500    CONTINUE
 
-       IF (NINTER.GT.6) THEN
-        CALL UTMESS('F','XCFACE','NOMBRE DE POINTS D''INTERSECTION '//
-     &                                                'IMPOSSIBLE.')
-       ELSEIF (NINTER.EQ.6) THEN
-         NFACE=4
-         CFACE(1,1)=1
-         CFACE(1,2)=2
-         CFACE(1,3)=3
-         CFACE(2,1)=1
-         CFACE(2,2)=3
-         CFACE(2,3)=5
-         CFACE(3,1)=1
-         CFACE(3,2)=5
-         CFACE(3,3)=6
-         CFACE(4,1)=3
-         CFACE(4,2)=4
-         CFACE(4,3)=5
-       ELSEIF (NINTER.EQ.5) THEN
-         NFACE=3
-         CFACE(1,1)=1
-         CFACE(1,2)=2
-         CFACE(1,3)=3
-         CFACE(2,1)=1
-         CFACE(2,2)=3
-         CFACE(2,3)=4
-         CFACE(3,1)=1
-         CFACE(3,2)=4
-         CFACE(3,3)=5
-       ELSEIF (NINTER.EQ.4) THEN
-         NFACE=2
-         CFACE(1,1)=1
-         CFACE(1,2)=2
-         CFACE(1,3)=3
-         CFACE(2,1)=1
-         CFACE(2,2)=3
-         CFACE(2,3)=4
-       ELSEIF (NINTER.EQ.3) THEN
-         NFACE=1
-         CFACE(1,1)=1
-         CFACE(1,2)=2
-         CFACE(1,3)=3
-       ELSE
-         NFACE=0
-       ENDIF
+        IF (NINTER.GT.6) THEN
+         CALL UTMESS('F','XCFACE','NOMBRE DE POINTS D''INTERSECTION '//
+     &                                               'IMPOSSIBLE.')
+        ELSEIF (NINTER.EQ.6) THEN
+          NFACE=4
+          CFACE(1,1)=1
+          CFACE(1,2)=2
+          CFACE(1,3)=3
+          CFACE(2,1)=1
+          CFACE(2,2)=3
+          CFACE(2,3)=5
+          CFACE(3,1)=1
+          CFACE(3,2)=5
+          CFACE(3,3)=6
+          CFACE(4,1)=3
+          CFACE(4,2)=4
+          CFACE(4,3)=5
+        ELSEIF (NINTER.EQ.5) THEN
+          NFACE=3
+          CFACE(1,1)=1
+          CFACE(1,2)=2
+          CFACE(1,3)=3
+          CFACE(2,1)=1
+          CFACE(2,2)=3
+          CFACE(2,3)=4
+          CFACE(3,1)=1
+          CFACE(3,2)=4
+          CFACE(3,3)=5
+        ELSEIF (NINTER.EQ.4) THEN
+          NFACE=2
+          CFACE(1,1)=1
+          CFACE(1,2)=2
+          CFACE(1,3)=3
+          CFACE(2,1)=1
+          CFACE(2,2)=3
+          CFACE(2,3)=4
+        ELSEIF (NINTER.EQ.3) THEN
+          NFACE=1
+          CFACE(1,1)=1
+          CFACE(1,2)=2
+          CFACE(1,3)=3
+        ELSE
+          NFACE=0
+        ENDIF
+
+C     CAS 2D
+      ELSEIF (NDIM .EQ. 2) THEN
+
+        DO 800 I=1,5
+         DO 801 J=1,3
+           CFACE(I,J)=0
+ 801     CONTINUE
+ 800    CONTINUE
+        IF (NINTER .EQ. 2) THEN
+C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
+        CALL LCINVN(2,0.D0,ND)
+        DO 810 I=1,NNO
+         DO 811 J=1,2
+           ND(J)=ND(J)+ZR(JGRLSN-1+2*(I-1)+J)/NNO
+ 811     CONTINUE
+ 810    CONTINUE
+       
+        DO 841 J=1,2
+           A(J)=ZR(JPTINT-1+J)
+           B(J)=ZR(JPTINT-1+2+J)
+           AB(J)=B(J)-A(J)
+ 841    CONTINUE
+       
+        ABPRIM(1)=-AB(2)
+        ABPRIM(2)=AB(1)
+       
+        IF (DDOT(2,ABPRIM,1,ND,1) .LT. 0.D0) THEN
+        DO 852 K=1,2
+           TAMPOR(K)=ZR(JPTINT-1+K)
+           ZR(JPTINT-1+K)=ZR(JPTINT-1+2+K)
+           ZR(JPTINT-1+2+K)=TAMPOR(K)
+ 852     CONTINUE
+         DO 853 K=1,4
+           TAMPOR(K)=ZR(JAINT-1+K)
+           ZR(JAINT-1+K)=ZR(JAINT-1+4+K)
+           ZR(JAINT-1+4+K)=TAMPOR(K)
+ 853     CONTINUE
+        ENDIF
+          NFACE=1
+          CFACE(1,1)=1
+          CFACE(1,2)=2
+        ELSE
+          NFACE=0
+        ENDIF
+
       ELSE
-
-       DO 800 I=1,5
-        DO 801 J=1,3
-          CFACE(I,J)=0
- 801    CONTINUE
- 800   CONTINUE
-       IF (NINTER .EQ. 2) THEN
-C     NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-       CALL LCINVN(2,0.D0,ND)
-       DO 810 I=1,NNO
-        DO 811 J=1,2
-          ND(J)=ND(J)+ZR(JGRLSN-1+2*(I-1)+J)/NNO
- 811    CONTINUE
- 810   CONTINUE
-       
-       DO 841 J=1,2
-          A(J)=ZR(JPTINT-1+J)
-          B(J)=ZR(JPTINT-1+2+J)
-          AB(J)=B(J)-A(J)
- 841   CONTINUE
-       
-       ABPRIM(1)=-AB(2)
-       ABPRIM(2)=AB(1)
-       
-       IF (DDOT(2,ABPRIM,1,ND,1) .LT. 0.D0) THEN
-       DO 852 K=1,2
-          TAMPOR(K)=ZR(JPTINT-1+K)
-          ZR(JPTINT-1+K)=ZR(JPTINT-1+2+K)
-          ZR(JPTINT-1+2+K)=TAMPOR(K)
- 852    CONTINUE
-        DO 853 K=1,4
-          TAMPOR(K)=ZR(JAINT-1+K)
-          ZR(JAINT-1+K)=ZR(JAINT-1+4+K)
-          ZR(JAINT-1+4+K)=TAMPOR(K)
- 853    CONTINUE
-       ENDIF
-         NFACE=1
-         CFACE(1,1)=1
-         CFACE(1,2)=2
-       ELSE
-         NFACE=0
-       ENDIF
+        CALL UTMESS('F','XCFACE','PROBLEME DE DIMENSION :NI 2D, NI 3D')
       ENDIF
 
       IF (0.EQ.1) THEN

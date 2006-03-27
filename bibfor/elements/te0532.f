@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
 C.......................................................................
 C
 C                CONTACT X-FEM MÉTHODE CONTINUE : 
@@ -57,8 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      NDIM,DDLH,DDLC,DDLS,NNO,NNOS,NNOM,NNOF
       INTEGER      NPG,NPGF,XOULA,INCOCA,INTEG,NFE,SINGU
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3)
-
-      CHARACTER*8   ELREF,TYPMA,FPG
+      CHARACTER*8   ELREF,TYPMA,FPG,ELC
       REAL*8        HE,SIGN,VTMP(204),SOMME,FFI,REAC,JAC,FFP(27),PREC
       REAL*8        ND(3),DN,SAUT(3),LAMBDA,LST,R,RR
       PARAMETER    (PREC=1.D-16)
@@ -91,7 +91,7 @@ C     DEPLACEMENT COURANT (DEPPLU) : 'PDEPL_P'
 
       CALL JEVECH('PINCOCA','E',JOUT1)
       CALL JEVECH('PINDCOO','E',JOUT2)
-      
+
 C     RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
       DO 10 I=1,60
@@ -108,15 +108,17 @@ C     SUR LA TOPOLOGIE DES FACETTES
 C
       IF (NINTER.LT.NDIM)  GOTO 9999
 C
-C     SCHEMA D'INTEGRATION NUMERIQUE
+C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
       INTEG = NINT(ZR(JDONCO-1+4))
       IF (NDIM .EQ. 3) THEN
-       IF (INTEG.EQ.1) FPG='XCON'
-       IF (INTEG.EQ.4) FPG='FPG4'
-       IF (INTEG.EQ.6) FPG='FPG6'
-       IF (INTEG.EQ.7) FPG='FPG7'
-      ELSE
-      FPG='MASS'
+        IF (INTEG.EQ.1) FPG='XCON'
+        IF (INTEG.EQ.4) FPG='FPG4'
+        IF (INTEG.EQ.6) FPG='FPG6'
+        IF (INTEG.EQ.7) FPG='FPG7'
+        ELC='TR3'
+      ELSEIF (NDIM.EQ.2) THEN
+        FPG='MASS'
+        ELC='SE2'
       ENDIF
 C
       CALL TECAEL(IADZI,IAZK24)
@@ -132,14 +134,7 @@ C
 C     BOUCLE SUR LES FACETTES
       DO 100 IFA=1,NFACE
 C
-C       LA FAMILLE 'XCON' A 12 PG INTEGRE ORDRE I+J=6
-        IF (NDIM .EQ. 3) THEN
-          CALL ELREF4('TR3',FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
-     &                                                     IDFDEF,IBID)
-        ELSE
-          CALL ELREF4('SE2',FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
-     &                                                     IDFDEF,IBID)
-        ENDIF
+        CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
                
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
@@ -151,10 +146,10 @@ C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM .EQ. 3) THEN
-          CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
+            CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
      &                                                    JAC,FFP,ND)
-          ELSE
-          CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
+          ELSEIF (NDIM.EQ.2) THEN
+            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
      &                                                    JAC,FFP,ND)
           ENDIF
 C
@@ -171,15 +166,15 @@ C
 C         CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
           CALL LCINVN(NDIM,0.D0,SAUT)
           DO 140 I = 1,NNO
-            DO 141 J = 1,NDIM
+            DO 141 J = 1,DDLH
               SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * 
      &                         (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
      &                           + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
  141        CONTINUE
             DO 142 J = 1,SINGU*NDIM
               SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
-     &                         (   ZR(IDEPM-1+DDLS*(I-1)+2*NDIM+J)
-     &                           + ZR(IDEPL-1+DDLS*(I-1)+2*NDIM+J) )
+     &                         (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+DDLH+J)
+     &                           + ZR(IDEPL-1+DDLS*(I-1)+NDIM+DDLH+J) )
  142        CONTINUE
  140      CONTINUE
           DN = 0.D0
@@ -206,7 +201,7 @@ C         INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
               ZI(JOUT2-1+ISSPG) = 1
               INCOCA = 0
             ELSE
-              ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
+             ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
             END IF           
 C
 C         ON REGARDE LA REACTION POUR LES POINTS SUPPOSÉS CONTACTANT : 
@@ -216,7 +211,7 @@ C         ON REGARDE LA REACTION POUR LES POINTS SUPPOSÉS CONTACTANT :
               ZI(JOUT2-1+ISSPG) = 0
               INCOCA = 0
             ELSE
-              ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
+             ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
             END IF
 C
           ELSE

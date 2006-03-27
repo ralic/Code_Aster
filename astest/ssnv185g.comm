@@ -1,0 +1,294 @@
+# MODIF  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+# TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV185G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+
+# a : profondeur de la fissure   
+# h : hauteur du plan de fissure   
+a = 5.
+h = 15.
+
+#----------------------------------------------
+#                MAILLAGE : hexa_5_31_51.mgib
+#----------------------------------------------
+
+PRE_GIBI();
+
+MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG1,);
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
+                    CREA_GROUP_NO=(_F(NOM='VOLQUAD',GROUP_MA='VOL',),
+                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,0.,h),VECT_NORMALE=(0.,0.,1.),PRECISION=0.01,),),);
+
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+                     AFFE=(_F(GROUP_MA=('VOL',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D_XFEM',),
+                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),);  
+                              
+MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
+                       MAILLAGE=MAILLAG2,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       MODELE=MODELEIN,);                                     
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-h');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+a');         
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI= (0. ,a ,h ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 PT_ORIGIN=(0. ,20. ,h ),),
+                    CONTACT=_F(ALGO_LAGR='NON',
+                               INTEGRATION='GAUSS',
+                               CONTACT_INIT='OUI',),
+                    INFO=1,
+                    );
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+        
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=205000.0E6
+nu=0.
+rho=7800.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+       
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+                       MODELE=MODELEK,
+                       AFFE=_F(TOUT = 'OUI',
+                                MATER=ACIER,
+                                TEMP_REF=0.0,),
+                             );
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   LIAISON_DDL=(_F(NOEUD=('N4031','N3876',),
+                                   DDL=('DX','DX',),
+                                   COEF_MULT=(1.0,1.0),
+                                   COEF_IMPO=0.0,),
+                                _F(NOEUD=('N4031','N3876',),
+                                   DDL=('DY','DY',),
+                                   COEF_MULT=(1.0,1.0),
+                                   COEF_IMPO=0.0,),
+                                _F(NOEUD=('N4031','N3876',),
+                                   DDL=('DZ','DZ',),
+                                   COEF_MULT=(1.0,1.0),
+                                   COEF_IMPO=0.0,),
+                                _F(NOEUD=('N3886','N4041',),
+                                   DDL=('DX','DX',),
+                                   COEF_MULT=(1.0,1.0),
+                                   COEF_IMPO=0.0,),
+                                _F(NOEUD=('N3886','N4041',),
+                                   DDL=('DZ','DZ',),
+                                   COEF_MULT=(1.0,1.0),
+                                   COEF_IMPO=0.0,),        
+                                _F(NOEUD=('N9768','N9767',),
+                                   DDL=('DZ','DZ',),
+                                   COEF_MULT=(1.0,1.0),
+                                   COEF_IMPO=0.0,),
+                             ),);
+
+# PRESSION POSITIVE = COMPRESSION
+PRES=1.E6                              
+CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
+                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),); 
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA1,              
+                   EXCIT=(_F(CHARGE=CHXFEM,),                                           
+                          _F(CHARGE=CH1,),
+                          _F(CHARGE=CH2,),),  
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA='VOL',),
+                   INCREMENT=_F(LIST_INST=L_INS1,
+                                INST_FIN=1.0,),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              PCENT_PIVOT=250,),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : RECUPERATION DES PRESSIONS DE CONTACT
+#------------------------------------------------------------------------
+
+# table des pressions de contact suivant y, en x=0
+TABLAG0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',             
+                               NOEUD=('NS14287','NS14290','NS14293','NS14296','NS14299',
+                                      'NS14302','NS14305','NS14308','NS14311','NS14314',
+                                      'NS14317','NS14320','NS14323','NS14326','NS14329','NS14332',),
+                               RESULTAT=UTOT1,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='LAGS_C',
+                               OPERATION='EXTRACTION',),);
+
+# table des pressions de contact suivant y, en x=1     
+TABLAG1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',             
+                               NOEUD=('NS13875','NS13880','NS13885','NS13890','NS13895',
+                                      'NS13900','NS13905','NS13910','NS13915','NS13920',
+                                      'NS13925','NS13930','NS13935','NS13940','NS13945','NS13950',),
+                               RESULTAT=UTOT1,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='LAGS_C',
+                               OPERATION='EXTRACTION',),);
+
+LAGREF=-PRES
+
+TEST_TABLE(TABLE=TABLAG0,
+              NOM_PARA='LAGS_C',
+              TYPE_TEST='MAX',
+              VALE=LAGREF,
+              CRITERE='RELATIF',
+              PRECISION=0.04,
+              REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TABLAG0,
+              NOM_PARA='LAGS_C',
+              TYPE_TEST='MIN',
+              VALE=LAGREF,
+              CRITERE='RELATIF',
+              PRECISION=0.04,
+              REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TABLAG1,
+              NOM_PARA='LAGS_C',
+              TYPE_TEST='MAX',
+              VALE=LAGREF,
+              CRITERE='RELATIF',
+              PRECISION=0.04,
+              REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TABLAG1,
+              NOM_PARA='LAGS_C',
+              TYPE_TEST='MIN',
+              VALE=LAGREF,
+              CRITERE='RELATIF',
+              PRECISION=0.04,
+              REFERENCE='ANALYTIQUE',);
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
+#------------------------------------------------------------------------
+
+# TEST AVEC PLUSIEURS COURONNES
+RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
+RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
+
+nbc=len(RI)
+SIF = [None]*(nbc+1)
+
+for i in range(0,nbc) :
+
+   SIF[i]=CALC_G_LOCAL_T(MODELE=MODELEK,
+                     CHAM_MATER=CHAMPMA1,
+                     RESULTAT=UTOT1,
+                     SYME_CHAR='SANS',
+                     COMP_ELAS=_F(RELATION='ELAS',),
+                     OPTION='CALC_K_G',
+                     FISSURE=FISS,
+                     LISSAGE_THETA='LAGRANGE',
+                     LISSAGE_G='LAGRANGE',
+                     R_INF=RI[i],
+                     R_SUP=RS[i],
+                     INFO=1,);
+
+   IMPR_TABLE(TABLE=SIF[i],);
+
+SIF[nbc]=CALC_G_LOCAL_T(MODELE=MODELEK,
+                     CHAM_MATER=CHAMPMA1,
+                     RESULTAT=UTOT1,
+                     SYME_CHAR='SANS',
+                     COMP_ELAS=_F(RELATION='ELAS',),
+                     OPTION='CALC_K_G',
+                     FISSURE=FISS,
+                     LISSAGE_THETA='LAGRANGE',
+                     LISSAGE_G='LAGRANGE_NO_NO',
+                     R_INF=RI[0],
+                     R_SUP=RS[0],
+                     INFO=1,);
+
+IMPR_TABLE(TABLE=SIF[nbc],);
+
+GREF=0.
+
+for i in range(0,nbc+1) :
+   TEST_TABLE(TABLE=SIF[i],
+              NOM_PARA='G_LOCAL',
+              TYPE_TEST='MAX',               
+              VALE=GREF,
+              CRITERE='ABSOLU',
+              PRECISION=0.0005,
+              REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=SIF[i],
+              NOM_PARA='G_LOCAL',
+              TYPE_TEST='MIN',               
+              VALE=GREF,
+              CRITERE='ABSOLU',
+              PRECISION=0.0005,
+              REFERENCE='ANALYTIQUE',);
+
+
+#MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+#DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
+#                    MODELE=MODELEK,
+#                    NOM_CHAM='DEPL',
+#                    RESULTAT=UTOT1);
+#
+#DEFI_FICHIER(UNITE=81);
+#DEFI_FICHIER(UNITE=82);
+#
+#IMPR_RESU(FORMAT='IDEAS',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM));
+#IMPR_RESU(FORMAT='IDEAS',UNITE=82,RESU=_F(RESULTAT=DEPL));
+
+FIN();

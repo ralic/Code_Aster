@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
+C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,9 @@ C
       IF ( NDIM .GT. 1000 )  NDIM = 3
 C
       PLAQUE = .FALSE.
-      CALL DISMOI('F','EXI_RDM',NOMO,'MODELE',IBID,K8B,IER1)
+      CALL DISMOI('F','EXI_PLAQUE',NOMO,'MODELE',IBID,K8B,IER1)
+      IF ( K8B(1:3) .EQ. 'OUI' ) PLAQUE = .TRUE.
+      CALL DISMOI('F','EXI_COQUE',NOMO,'MODELE',IBID,K8B,IER1)
       IF ( K8B(1:3) .EQ. 'OUI' ) PLAQUE = .TRUE.
 C
       CALL JEEXIN ( NOMMA//'.TYPMAIL        ', IRET )
@@ -282,13 +284,15 @@ C
                   CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)     
                   IF ( MCFL(IC) ) THEN
                     IF ( PLAQUE ) THEN
-                      CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, NORIE1 )
+                      CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
+     +                                                          NORIE1 )
                     ELSE
                       CALL ORILMA ( MODL, NOMMA, NDIM, ZI(JGRO), NBMAIL,
      +                                         NORIE1, REORIE, PREC )
                     ENDIF
                   ELSE
-                    CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, NORIE2 )
+                    CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
+     +                                                          NORIE2 )
                   ENDIF
                   NORIEN = NORIE1 + NORIE2
                   IF ( NORIEN .NE. 0 ) THEN
@@ -369,13 +373,15 @@ C
                   NORIE2 = 0
                   IF ( MCFL(IC) ) THEN
                     IF ( PLAQUE ) THEN
-                      CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, NORIE1 )
+                      CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
+     +                                                          NORIE1 )
                     ELSE
                       CALL ORILMA ( MODL, NOMMA, NDIM, ZI(JNMA), NBOBJ, 
      +                                         NORIE1, REORIE, PREC )
                     ENDIF
                   ELSE
-                     CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, NORIE2 )
+                     CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
+     +                                                          NORIE2 )
                   ENDIF
                   NORIEN = NORIE1 + NORIE2
                   IF ( NORIEN .NE. 0 ) THEN

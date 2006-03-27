@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 27/03/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,7 +167,7 @@ class PARAMETRES :
     # Si Salome n'est pas present, on l'enleve de la liste des choix possibles
     if not __salome__:
        self.dparam['mode_graphique']['val_possible'].remove('Salome')
-       self.para['mode_graphique'] = 'Gmsh/Xmgrace'
+       self.para['MODE_GRAPHIQUE']['mode_graphique'] = 'Gmsh/Xmgrace'
 
 
     # Ce parametre sert a definir si les parametres doivent etre sauvegardes en sortant de l'IHM
@@ -449,7 +449,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        UTMESS('A','STANLEY',txt)
 
     if ok_env:
-       # on verifie que le fichier d'environnement relut est conforme
+       # on verifie que le fichier d'environnement relu est conforme
        txt = _("Le fichier d'environnement n'est pas exploitable (par exemple c'est une ancienne version). On demarre avec une configuration par defaut.")
        if old_para.has_key('VERSION'):
           if old_para['VERSION'].has_key('version_parametres'):
@@ -1751,7 +1751,6 @@ class INTERFACE :
     """
 
     # Fontes
-#    fonte = eval(self.stan.parametres['fonte'])
     fonte = self.stan.parametres['fonte']
 
    # Frames generales
@@ -2308,7 +2307,6 @@ class DRIVER_GMSH(DRIVER) :
                        NOM_CHAM   = 'DEPL',
                        NUME_ORDRE = selection.numeros,)
             para = [ para, para0 ]
-
 
     # Tracé au format GMSH
     DEFI_FICHIER(UNITE = 33, INFO=1)
@@ -2875,7 +2873,6 @@ class PRE_STANLEY :
       Creation de tous les objets graphiques de l'interface
     """
 
-#    fonte = eval(self.para['fonte'])
     fonte = self.para['fonte']
         
    # Frames generales

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+#& MODIF COMMANDE  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,6 +86,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "COQUE_C_PLAN",
                                                                       "COQUE_D_PLAN",
                                                                       "D_PLAN",
+                                                                      "D_PLAN_X",
                                                                       "D_PLAN_GRAD_EPSI",
                                                                       "D_PLAN_GRAD_VARI",
                                                                       "D_PLAN_NS",

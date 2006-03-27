@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+%& MODIF COMPELEM  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -250,6 +250,10 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'C_PLAN_X'          DIM__ 2 2   CODE__ 'CPX'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_X
+
+       MODELISATION__ 'D_PLAN_X'          DIM__ 2 2   CODE__ 'DPX'
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_X
+              MAILLE__ QUAD8     ELEMENT__ MEDPQU8_X
        
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
               MAILLE__ SEG2      ELEMENT__ MEPLSE2

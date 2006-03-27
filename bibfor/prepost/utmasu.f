@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,6 +63,7 @@ C
       INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IRET, IM1, IM2
       INTEGER       IMA, NUMA, NNOE, INO, NBM, I, K, INDI, NNOEM, NNOE1
       INTEGER       LISNOE(27), LISMA(1000), JMODL
+      LOGICAL       MAOK
       CHARACTER*1   TYPERR
       CHARACTER*8   K8B, NOMAIL, NOMA1, NOMA2
       CHARACTER*24  NOMAVO
@@ -75,16 +76,25 @@ C     -----------------------
       CALL JEVEUO ( MAIL//'.CONNEX', 'L', P1 )
       CALL JEVEUO ( MODL//'.MAILLE', 'L', JMODL )
 C
+C --- CREATION DE LA SD :
+C     -----------------
+      CALL WKVECT ( NOMOB1, 'V V I' , NLIMA, JM3D )
+C
+C --- ON VERIFIE QUE LES MAILLES APPARTIENNENT AU MODELE :
+C     --------------------------------------------------
+      MAOK = .FALSE. 
+      DO 20 IMA = 1, NLIMA
+         NUMA = LIMA(IMA)
+         IF ( ZI(JMODL-1+NUMA) .NE. 0 ) MAOK = .TRUE. 
+ 20   CONTINUE
+      IF ( .NOT. MAOK ) GOTO 9999
+C
 C --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 C     ---------------------------------------------
       NOMAVO = '&&UTMASU.MAILLE_VOISINE '
       CALL UTMAVO ( MAIL, KDIM, LIMA, NLIMA, 'V', NOMAVO )
       CALL JEVEUO ( JEXATR(NOMAVO,'LONCUM'), 'L', P4 )
       CALL JEVEUO ( NOMAVO, 'L', P3 )
-C
-C --- CREATION DE LA SD :
-C     -----------------
-      CALL WKVECT ( NOMOB1, 'V V I' , NLIMA, JM3D )
 C
 C --- ON REMPLIT LA SD :
 C     -----------------
@@ -100,9 +110,10 @@ C     -----------------
          NBM = 0
          DO 10 I = 1, NBMAT
             IM2 = ZI(P3+ZI(P4+IMA-1)-1+I-1)
-            NNOEM = ZI(P2+IM2) - ZI(P2-1+IM2)
+            IF ( IM2 .EQ. 0 ) GOTO 10
             IF ( ZI(JMODL-1+IM2) .EQ. 0 ) GOTO 10
             IF ( ZI(P1+ZI(P2+IM2-1)-1) .EQ. 0 ) GOTO 10
+            NNOEM = ZI(P2+IM2) - ZI(P2-1+IM2)
 
             DO 12 K =  1 , NNOE
                INDI = INDIIS(ZI(P1+ZI(P2+IM2-1)-1),LISNOE(K),1,NNOEM)
@@ -143,6 +154,8 @@ C
  100  CONTINUE
 C
       CALL JEDETR ( NOMAVO )
+C
+ 9999 CONTINUE
 C
       CALL JEDEMA()
 C

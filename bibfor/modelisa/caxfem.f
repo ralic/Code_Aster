@@ -1,7 +1,7 @@
       SUBROUTINE CAXFEM(FONREE,CHAR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
-      INTEGER      JFISS,IBID,IER,JSTANO,NREL,ADDIM,NDIM
+      INTEGER      JFISS,IBID,IER,JSTANO,NREL
       CHARACTER*8  REP,MOD,FISS,MA,K8BID
       CHARACTER*24 GRMA,GRNO
       CHARACTER*19 CHS,LISREL
@@ -60,8 +60,6 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 C-------------------------------------------------------------
 
       CALL JEMARQ()
-      
-      WRITE(6,*) 'CAXFEM'
 
       IF (FONREE.NE.'REEL') GOTO 9999
 
@@ -70,9 +68,6 @@ C-------------------------------------------------------------
 
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
       CALL DISMOI('F','NOM_MAILLA',MOD,'MODELE',IBID,MA,IER)
-      
-      CALL JEVEUO(MA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
 
       CALL JEEXIN(MOD//'.FISS',IER)
       CALL ASSERT(IER.NE.0)
@@ -85,7 +80,10 @@ C-------------------------------------------------------------
       LISREL = '&&CAXFEM.RLISTE'
       NREL=0
 
+
 C     ON SUPPRIME LES DDLS HEAVISIDE ET CRACK TIP
+C     ------------------------------------------
+
       GRMA=FISS//'.MAILFISS  .HEAV'
       CALL XDELDL(MOD,MA,GRMA,JSTANO,LISREL,NREL)
 
@@ -98,16 +96,22 @@ C     ON SUPPRIME LES DDLS HEAVISIDE ET CRACK TIP
       GRNO=FISS//'.LISNOH'
       CALL XDELH(MOD,MA,GRNO,LISREL,NREL)
 
+
 C     ON SUPPRIME LES DDLS DE CONTACT EN TROP
+C     ------------------------------------------
+
       GRMA=FISS//'.MAILFISS  .HEAV'
+      CALL XDELCO(GRMA,MOD,LISREL,NREL)
+
+      GRMA=FISS//'.MAILFISS  .CTIP'
       CALL XDELCO(GRMA,MOD,LISREL,NREL)
 
       GRMA=FISS//'.MAILFISS  .HECT'
       CALL XDELCO(GRMA,MOD,LISREL,NREL)
 
-C     RELATIONS ENTRE LES INCONNUES DE CONTACT (POUR LA LBB)   
-      WRITE(6,*) 'NDIM',NDIM
-      CALL XRELCO(FISS,MOD,MA,LISREL,NREL)
+C     RELATIONS ENTRE LES INCONNUES DE CONTACT (POUR LA LBB)
+      CALL XRELCO(FISS,MOD,MA,LISREL,NREL)      
+      
    
       IF (NREL.NE.0) CALL AFLRCH(LISREL,CHAR)
 

@@ -1,6 +1,9 @@
-      FUNCTION IORIM1(NUM1,NUM2,BAVARD)
+      FUNCTION IORIM1 ( NUM1, NUM2, REORIE )
+      IMPLICIT NONE
+      INTEGER           IORIM1, NUM1(2), NUM2(2)
+      LOGICAL           REORIE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/02/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-C
 C     IORIM1  --  ORIENTATION D'UNE MAILLE PAR RAPPORT A UNE VOISINE
 C
 C   ARGUMENT        E/S  TYPE         ROLE
@@ -29,34 +29,34 @@ C
 C   CODE RETOUR IORIM1 : 0 SI LES MAILLES NE SONT PAS CONTIGUES
 C                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 C                                      FALLU REORIENTER)
-      INTEGER NUM1(2),NUM2(2)
-      LOGICAL BAVARD
 C
-      LOGICAL EGAL
-      EGAL(K1,K2)=NUM1(K1).EQ.NUM2(K2)
+      INTEGER  I1, J1, K, L
+      LOGICAL  EGAL
+      EGAL(I1,J1) = NUM1(I1).EQ.NUM2(J1)
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
-C     BOUCLES SUR LES SOMMETS
-      DO 10 I1=1,2
-      J1=3-I1
-      IF (EGAL(I1,I1)) THEN
-        IORIM1=-1
-        GOTO 100
-      ENDIF
-      IF (EGAL(I1,J1)) THEN
-        IORIM1= 1
-        GOTO 100
-      ENDIF
+C --- BOUCLES SUR LES SOMMETS
+      DO 10 I1 = 1, 2
+         J1 = 3-I1
+         IF ( EGAL(I1,I1) ) THEN
+            IORIM1 = -1
+            GOTO 100
+         ENDIF
+         IF ( EGAL(I1,J1) ) THEN
+            IORIM1 = 1
+            GOTO 100
+         ENDIF
    10 CONTINUE
-      IORIM1=0
+      IORIM1 = 0
   100 CONTINUE
-      IF (.NOT.BAVARD.AND.IORIM1.LT.0) THEN
-C       ON PERMUTE LES SOMMETS
-        K=NUM2(1)
-        L=NUM2(2)
-        NUM2(1)=L
-        NUM2(2)=K
+C
+C --- ON PERMUTE LES SOMMETS
+      IF ( REORIE .AND. IORIM1.LT.0 ) THEN
+         K = NUM2(1)
+         L = NUM2(2)
+         NUM2(1) = L
+         NUM2(2) = K
       ENDIF
 C
       END

@@ -1,5 +1,6 @@
+
 # MODIF  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
-# TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
+# TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV182E',
+DEBUT(CODE=_F(NOM='SSNV182F',
               NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
@@ -36,10 +37,10 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_X',),
+                              MODELISATION='D_PLAN_X',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);       
+                              MODELISATION='D_PLAN',),),);       
 
 
 THETA=-30./180.*pi
@@ -56,7 +57,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     CONTACT=_F(INTEGRATION='GAUSS',
                                COEF_REGU_CONT=100., 
                                ITER_CONT_MAXI=4,   
-                               CONTACT_INIT='OUI',    
+                               CONTACT_INIT='OUI',
                                FROTTEMENT='COULOMB',
                                COULOMB=1.0,
                                ITER_FROT_MAXI=6,
@@ -98,9 +99,6 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
 
-IMPR_RESU(MODELE=MODELEK,FORMAT='ASTER',UNITE=20,
-            RESU=(_F( MAILLAGE=MAILLAG2,),),);                   
-
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
                    EXCIT=(_F(CHARGE=CHXFEM,),                                           
@@ -127,11 +125,9 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              'NS486','NS487','NS522','NS523',
                              'NS524','NS561','NS562','NS598',
                              'NS599','NS600','NS636','NS638',),
-#                             GROUP_NO='SURFQUAD',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
-#                             TOUT_CMP='OUI',
                              NOM_CMP=('LAGS_C','LAGS_F1',),
                              OPERATION='EXTRACTION',),);
 

@@ -2,7 +2,7 @@
      &                  FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/03/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -200,25 +200,21 @@ C     INCOMPATIBILITES DE CERTAINES FONCTIONNALITES
 C
 C ----------------------------------------------------------------------
 
-      IF (FONACT(4).OR.FONACT(5)) THEN
+      CALL  JEVEUO(SOLVEU//'.SLVK','L',JSOLVE)
+C
+C --- CONTACT DISCRET
+C
+      IF (FONACT(4)) THEN
         IF (FONACT(2)) THEN
           CALL UTMESS('F','NMINIT',
      &    'CONTACT ET PILOTAGE SONT DES FONCTIONNALITES INCOMPATIBLES')
         ENDIF
-
         IF (FONACT(1).AND.ABS(TYPALC).NE.5) THEN 
-          CALL UTMESS('F','NMINIT',
-     &     'CONTACT ET RECH. LIN. SONT DES '//
-     &     'FONCTIONNALITES INCOMPATIBLES')
+          CALL UTMESS('A','NMINIT',
+     &     'CONTACT ET RECH. LIN. PEUVENT POSER DES PROBLEMES DE '//
+     &     'CONVERGENCE')
         ENDIF
-
-        CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
         IF (ZK24(JSOLVE)(1:4).EQ.'GCPC') THEN
-          IF (ABS(TYPALC).EQ.3) THEN
-            CALL UTMESS('F','NMINIT',
-     &           'LA COMBINAISON: METHODE CONTINUE EN CONTACT'//
-     &           ' ET SOLVEUR GCPC N''EST PAS DISPONIBLE.')
-          ENDIF
           IF (ABS(TYPALF).NE.0) THEN
             CALL UTMESS('F','NMINIT',
      &           'LA COMBINAISON: CONTACT-FROTTEMENT'//
@@ -226,17 +222,37 @@ C ----------------------------------------------------------------------
           ENDIF
         ENDIF
       ENDIF
-
+C
+C --- CONTACT CONTINUE
+C      
+      IF (FONACT(5)) THEN
+        IF (FONACT(1)) THEN
+          CALL UTMESS('F','NMINIT',
+     &             'CONTACT CONTINUE ET RECH. LIN. SONT INCOMPATIBLES')
+        ENDIF  
+        IF (FONACT(2)) THEN
+          CALL UTMESS('F','NMINIT',
+     &             'CONTACT CONTINUE ET PILOTAGE SONT INCOMPATIBLES')
+        ENDIF 
+        IF (ZK24(JSOLVE)(1:4).EQ.'GCPC') THEN
+          CALL UTMESS('F','NMINIT',
+     &         'LA COMBINAISON: METHODE CONTINUE EN CONTACT'//
+     &         ' ET SOLVEUR GCPC N''EST PAS DISPONIBLE.')
+        ENDIF                   
+      ENDIF
+C
+C --- LIAISON UNILATERALE 
+C
       IF (FONACT(12)) THEN
         IF (FONACT(2)) THEN
           CALL UTMESS('F','NMINIT',
-     &    'LIAISON_UNILATERALE ET PILOTAGE SONT DES '//
+     &    'LIAISON_UNILATER ET PILOTAGE SONT DES '//
      &    'FONCTIONNALITES INCOMPATIBLES')
         ENDIF
         IF (FONACT(1)) THEN 
-          CALL UTMESS('F','NMINIT',
-     &     'IAISON_UNILATERALE ET RECH. LIN. SONT DES '//
-     &     'FONCTIONNALITES INCOMPATIBLES')
+          CALL UTMESS('A','NMINIT',
+     &     'LIAISON_UNILATER ET RECH. LIN. PEUVENT POSER DES '//
+     &     'PROBLEMES DE CONVERGENCE')
         ENDIF
       ENDIF
 

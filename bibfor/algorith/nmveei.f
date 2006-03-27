@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 27/03/2006   AUTEUR FLANDI L.FLANDI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -203,6 +203,10 @@ C
         CALL LCOPLI('ISOTROPE', MOD, MATM, HOOKM)
         CALL R8INIR ( NB*NB,0.D0,A,1)
         CALL R8INIR ( NB,0.D0,B,1)
+        IF (NDIM.EQ.2) THEN
+           SIGM(5)=0.D0
+           SIGM(6)=0.D0
+        ENDIF   
         CALL LCEQVN ( NB,SIGM,B)
         DO 00142 I = 1,NB
           DO 00142 K = 1,NB

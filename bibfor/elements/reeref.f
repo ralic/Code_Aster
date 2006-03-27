@@ -10,7 +10,7 @@
       LOGICAL      GRAND
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
-      
+     
       CALL MATINI(NDIM,NDIM,0.D0,KRON)
       DO 10 P=1,NDIM
           KRON(P,P)=1.D0
@@ -138,7 +138,7 @@ C     CALCUL DE L'ERREUR
  240  CONTINUE
       ERR=DDOT(NDIM,ETMP,1,ETMP,1)
       CALL LCEQVN(NDIM,XENEW,XE)
-      IF (ERR.LE.TOLER) THEN 
+      IF (ERR.LE.TOLER) THEN
         GOTO 999
       ELSEIF (ITER.LT.ITERMX) THEN
         GOTO 100
@@ -240,6 +240,8 @@ C     CALCUL DES DÉFORMATIONS : EPS
           EPSTAB(I,J) = 0.5D0*TMP
  431    CONTINUE
  430  CONTINUE
+
+      CALL LCINVN(6,0.D0,EPS) 
 
       EPS(1) = EPSTAB(1,1)
       EPS(2) = EPSTAB(2,2)

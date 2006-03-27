@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -107,17 +107,19 @@ CCC      CALL WKVECT ( '&&UTMAVO.TRAV1', 'V V I', 1000, JTR1 )
                NUTYMA = ZI(IDTYMA+IMA-1)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
                IF (TYPE(1:4).EQ.'HEXA') THEN
-                  IF ( KDIM .EQ. '2D' ) GOTO 120
+                  IF ( KDIM.EQ.'2D' .OR. KDIM.EQ.'1D') GOTO 120
                ELSEIF (TYPE(1:4).EQ.'PENT') THEN
-                  IF ( KDIM .EQ. '2D' ) GOTO 120
+                  IF ( KDIM.EQ.'2D' .OR. KDIM.EQ.'1D') GOTO 120
                ELSEIF (TYPE(1:4).EQ.'PYRA') THEN
-                  IF ( KDIM .EQ. '2D' ) GOTO 120
+                  IF ( KDIM.EQ.'2D' .OR. KDIM.EQ.'1D') GOTO 120
                ELSEIF (TYPE(1:4).EQ.'TETR') THEN
-                  IF ( KDIM .EQ. '2D' ) GOTO 120
+                  IF ( KDIM.EQ.'2D' .OR. KDIM.EQ.'1D') GOTO 120
                ELSEIF (TYPE(1:4).EQ.'QUAD') THEN
-                  IF ( KDIM .EQ. '3D' ) GOTO 120
+                  IF ( KDIM.EQ.'3D' .OR. KDIM.EQ.'1D') GOTO 120
                ELSEIF (TYPE(1:4).EQ.'TRIA') THEN
-                  IF ( KDIM .EQ. '3D' ) GOTO 120
+                  IF ( KDIM.EQ.'3D' .OR. KDIM.EQ.'1D') GOTO 120
+               ELSEIF (TYPE(1:3).EQ.'SEG') THEN
+                  IF ( KDIM.EQ.'3D' .OR. KDIM.EQ.'2D') GOTO 120
                ELSE
                   IF ( KDIM .NE. '  ' ) GOTO 120
                ENDIF
@@ -189,7 +191,6 @@ C
                ZI(JMAIL-1+NBMAT) = IMA
  220        CONTINUE
  210     CONTINUE
-
  200  CONTINUE
 
       CALL JEDETR ( '&&UTMAVO.TRAV1' )

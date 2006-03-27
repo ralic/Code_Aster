@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 27/03/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,7 @@ C ----------------------------------------------------------------------
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
+      LOGICAL          LENRG
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
@@ -417,6 +418,28 @@ C
      &     //' A ETE CONSTITUEE AVEC LA VERSION '//CVERSB//' ET VOUS'
      &     //' UTILISEZ LA VERSION '//CVERSU)
         ENDIF
+
+        IF ( NBLOC .EQ. 0 ) THEN
+          NBLMA2 = MFIC/(LONGBL(IC)*LOIS)
+        ELSE
+          NBLMA2 = MIN ( NBLOC , MFIC/(LONGBL(IC)*LOIS) )
+        ENDIF
+C
+C ---- LORSQUE LE NOMBRE D'ENREGISTREMENTS MAXIMUM EST MODIFIE
+C
+        NBLMA1 = NBLMAX(IC)
+        IF ( NBLMAX(IC) .GE. NBLMA2 ) THEN
+          LENRG = .FALSE.
+          NBLMA2 = NBLMAX(IC)
+        ELSE
+          CALL JVDEBM ( 'A' ,'JEINIF', ' ' )
+          CALL JVIMPI ( 'L' ,'LE NOMBRE D''ENREGISTREMENTS MAXIMUM DE'
+     &    //' LA BASE '//NOMBAS(IC)//' SERA MODIFIE, DE ',1,NBLMAX(IC))
+          CALL JVIMPI ( 'S' , 'A ', 1 , NBLMA2 )
+          CALL JVFINM
+          LENRG = .TRUE.
+        ENDIF  
+
         CALL JVDEBM ( 'I' , ' ' , ' ' )
         CALL JVIMPK ( 'L' , 'REOUVERTURE DE LA BASE            : ',
      &                 1 , NOMBAS(IC))
@@ -436,6 +459,8 @@ C
      &                 1 , (NREUTI(IC)*100)/NREMAX(IC) )
         CALL JVFINM
 C
+        NBLMAX(IC)= NBLMA2
+C
         LMARQ = 2 * NREMAX(IC) * LOIS
         CALL JJALLS (LMARQ,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC))
         KAT(16) = KMARQ(IC)
@@ -448,8 +473,8 @@ C
         CALL JXLIR1 ( IC , CARA(JCARA(IC)) )
         CALL JJECRS (KAT(1),IC,1,0,'E',IMARQ(JMARQ(IC)+2*1-1))
 C
-        NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMAX(IC) )
-        NBEX   = NBLMAX(IC)/NBENRG(IC)+1
+        NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMA2 )
+        NBEX   = NBLMA2/NBENRG(IC)+1
         IF ( LCRA ) THEN
          LONIND = NBEX*(NBENRG(IC)/512+1)*512 * LOIS
          CALL JJALLS (LONIND,'V','I',LOIS,Z,INDEF,IADRS,KINDEF(IC))
@@ -489,12 +514,19 @@ C
         JIADD(IC) = IADRS - 1
         CALL JJECRS (KAT(2),IC,2,0,'E',IMARQ(JMARQ(IC)+2*2-1))
 C
-        LON2 = NBLMAX(IC) * LOIS
+        LON2 = NBLMA2 * LOIS
         CALL JJALLS ( LON2 ,'V','I',LOIS,Z, IACCE , IADRS , KAT(15))
         JIACCE(IC) = IADRS - 1
         CALL JJECRS (KAT(15),IC,15,0,'E',IMARQ(JMARQ(IC)+2*15-1))
         CALL JXLIRO ( IC , KAT( 2) , IADADD  , 2*LON )
-        CALL JXLIRO ( IC , KAT(15) , IADD(JIADD(IC)+2*15-1) , LON2 )
+        LON1 = NBLMA1 * LOIS
+        CALL JXLIRO ( IC , KAT(15) , IADD(JIADD(IC)+2*15-1) , LON1 )
+        IF ( LENRG ) THEN
+          CALL JXLIBD ( 0, 15 , IC , IADD(JIADD(IC)+2*15-1) , LON1 )
+          IADD(JIADD(IC)+2*15-1) = 0
+          IADD(JIADD(IC)+2*15  ) = 0
+          CALL JXECRO(IC,KAT(15),IADD(JIADD(IC)+2*15-1),LON2,0,15)
+        ENDIF  
 C
         LON = NREMAX(IC) * LEN(GENR(1))
         CALL JJALLS (LON,'V','K',LEN(GENR(1)),Z,IGENR, IADRS , KAT(3))
@@ -548,14 +580,38 @@ C
         JHCOD(IC) = IADRS - 1
         CALL JJECRS (KAT(13),IC,13,0,'E',IMARQ(JMARQ(IC)+2*13-1))
         CALL JXLIRO ( IC , KAT(13), IADD(JIADD(IC)+2*13-1), LON )
-        LON = 3*NBLMAX(IC) * LOIS
-        CALL JJALLS ( LON, 'V','I',LOIS     ,Z,IUSADI,IADRS, KAT(14))
+        LON2 = 3*NBLMA2 * LOIS
+        CALL JJALLS ( LON2, 'V','I',LOIS     ,Z,IUSADI,IADRS, KAT(14))
+        DO 231 L=1,NBLMA2
+          IUSADI( IADRS + (3*L-2) - 1 ) = -1
+          IUSADI( IADRS + (3*L-1) - 1 ) = -1
+          IUSADI( IADRS + (3*L  ) - 1 ) =  0
+ 231    CONTINUE
         JUSADI(IC) = IADRS - 1
         CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
-        CALL JXLIRO ( IC , KAT(14), IADD(JIADD(IC)+2*14-1), LON )
+        LON1 = 3*NBLMA1 * LOIS
+        CALL JXLIRO ( IC , KAT(14), IADD(JIADD(IC)+2*14-1), LON1 )
+        IF ( LENRG ) THEN
+          CALL JXLIBD ( 0, 14 , IC , IADD(JIADD(IC)+2*14-1) , LON1 )
+          IADD(JIADD(IC)+2*14-1) = 0
+          IADD(JIADD(IC)+2*14  ) = 0
+          CALL JXECRO(IC,KAT(14),IADD(JIADD(IC)+2*14-1),LON2,0,14)
+        ENDIF  
         DO 20 I = 1 , LIDBAS
            IADM(JIADM(IC) + I ) = KAT(I)
  20     CONTINUE
+        IF ( LENRG ) THEN
+          LONG(JLONG(IC)+15) = NBLMA2
+          LONO(JLONO(IC)+15) = NBLMA2
+          LONG(JLONG(IC)+14) = 2*NBLMA2
+          LONO(JLONO(IC)+14) = 2*NBLMA2
+          LON2 = LONO(JLONO(IC)+9) * LTYP(JLTYP(IC)+9)
+          CALL JXECRO(IC,KAT(9), IADD(JIADD(IC)+2*9-1), LON2,0,9)
+          LON2 = LONO(JLONO(IC)+10) * LTYP(JLTYP(IC)+10)
+          CALL JXECRO(IC,KAT(10),IADD(JIADD(IC)+2*10-1),LON2,0,10)
+          CALL JXECRO(IC,KAT(1),IADD(JIADD(IC)+2*I-1),
+     &                  LONO(JLONO(IC)+I)*LOIS,0,1)
+        ENDIF  
       ENDIF
 C
       IPGC = IPGCA
