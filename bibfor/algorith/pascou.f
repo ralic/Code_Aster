@@ -1,0 +1,182 @@
+      SUBROUTINE PASCOU(MATE)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+C ----------------------------------------------------------------------
+C
+C          EVALUATION DU PAS DE TEMPS DE COURANT POUR LE MODELE
+C
+C IN  IMATE   : ADRESSE DU CHAMP DE MATERIAU
+C ----------------------------------------------------------------------
+C
+
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      IMPLICIT NONE
+      
+      INTEGER      ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8       ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16   ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL      ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER   IBID,JCESD,JCESL,JCESV,N1,I
+      INTEGER   NBMA,IMA,IAD,JPAS,NBDT,JREPE
+      REAL*8    DTCOU,VALEUR,VMIN,VMAX,PHI
+      LOGICAL   EXIGEO,BOONEG,BOOPOS
+      CHARACTER*6 NOMPRO
+      CHARACTER*8  K8BID,MO,LPAIN(2),LPAOUT(1),STOCFL
+      CHARACTER*19 CHAMS,LISINS
+      CHARACTER*24 CHGEOM,LIGREL,LCHIN(2),LCHOUT(1),MATE
+      
+      CALL JEMARQ()
+      
+      NOMPRO ='OP0070'
+      
+      CALL GETVID(' ','MODELE',1,1,1,MO,IBID)
+      
+      LIGREL=MO//'.MODELE'
+      
+      LPAIN(1)='PMATERC'
+      LCHIN(1)=MATE
+      
+C --- RECUPERATION DU CHAMP GEOMETRIQUE
+      CALL MEGEOM(MO,' ',EXIGEO,CHGEOM)
+      
+      LPAIN(2)='PGEOMER'
+      LCHIN(2)=CHGEOM
+ 
+      LPAOUT(1)='PCOURAN'
+      LCHOUT(1)='&&'//NOMPRO//'.PAS_COURANT'
+      
+      CALL CALCUL('S','PAS_COURANT',LIGREL,2,LCHIN,LPAIN,
+     &             1,LCHOUT,LPAOUT,'G')
+      
+C     PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
+      CHAMS ='&&'//NOMPRO//'.CHAMS'
+
+      CALL CELCES (LCHOUT(1),'V',CHAMS)
+      
+      CALL JEVEUO(CHAMS//'.CESD','L',JCESD)
+      
+      CALL JELIRA(MO//'.MAILLE','LONMAX',NBMA,K8BID)
+      CALL JEVEUO(CHAMS//'.CESL','L',JCESL)
+      CALL JEVEUO(CHAMS//'.CESV','L',JCESV)
+                  
+C     INITIALISATION DE DTCOU
+      
+      DTCOU = -1.D0
+
+C A L'ISSUE DE LA BOUCLE :
+C BOONEG=TRUE SI L'ON N'A PAS PU CALCULER DTCOU POUR AU MOINS UN ELEMENT
+C BOOPOS=TRUE SI L'ON A CALCULE DTCOU POUR AU MOINS UN ELEMENT
+      BOONEG = .FALSE.
+      BOOPOS = .FALSE.
+      
+      DO 10,IMA = 1,NBMA
+        CALL CESEXI('C',JCESD,JCESL,IMA,1,1,1,IAD)
+        IF (IAD.GT.0) THEN
+          VALEUR = ZR(JCESV-1+IAD)
+        ELSEIF (IAD.EQ.0) THEN
+          GOTO 10
+        ENDIF
+        IF (VALEUR.LT.0) THEN
+          BOONEG = .TRUE.
+        ELSE
+          BOOPOS = .TRUE.
+          IF (DTCOU.GT.0) THEN
+            IF (VALEUR.LE.DTCOU) DTCOU = VALEUR
+          ELSE
+            DTCOU = VALEUR
+          ENDIF
+        ENDIF
+ 10   CONTINUE
+ 
+      CALL GETVID(' ','STOP_CFL',1,1,1,STOCFL,N1)
+      
+C BOOPOS=TRUE SI L'ON A CALCULE DTCOU POUR AU MOINS UN ELEMENT
+      IF (BOOPOS) THEN
+        IF (BOONEG) THEN
+          CALL UTMESS('A','PASCOU',
+     &  'LA CONDITION DE STABILITE N''A PAS PU ETRE CALCULEE POUR'
+     & //' TOUS LES ELEMENTS. ELLE PEUT ETRE TROP GRANDE.')
+        ENDIF
+
+C     VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
+
+        CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
+        CALL JEVEUO(LISINS//'.LPAS','L',JPAS)
+
+        CALL JELIRA(LISINS//'.LPAS','LONMAX',NBDT,K8BID)
+            
+        CALL GETFAC('DIFF_CENT',N1)
+        IF (N1.EQ.1) THEN
+          DTCOU =DTCOU/(2.D0)        
+          CALL UTDEBM('I','PASCOU','PAS DE TEMPS MAX POUR DIFF_CENT :')
+          CALL UTIMPR('S',' ',1,DTCOU)
+          CALL UTFINM()
+        ELSE
+          CALL GETFAC('TCHAMWA',N1)
+          IF (N1.EQ.1) THEN
+            CALL GETVR8('TCHAMWA','PHI',1,1,1,PHI,N1)
+            DTCOU = DTCOU/(PHI*2.D0)
+            CALL UTDEBM('I','PASCOU','PAS DE TEMPS MAX POUR TCHAMWA :')
+            CALL UTIMPR('S',' ',1,DTCOU)
+            CALL UTFINM()
+          ELSE
+            CALL UTMESS('F','PASCOU','SCHEMA INCONNU')
+          ENDIF
+        ENDIF
+        
+        DO 20 I=1,NBDT
+          IF (ZR(JPAS-1+I).GT.DTCOU) THEN
+            IF (STOCFL(1:3).EQ.'OUI') THEN
+              CALL UTMESS('F','PASCOU','LA LISTE D''INSTANTS'
+     &     //  ' FOURNIE NE RESPECTE PAS LA CONDITION DE STABILITE.')
+            ELSE
+              CALL UTMESS('A','PASCOU','LA LISTE D''INSTANTS'
+     &     //  ' FOURNIE NE RESPECTE PAS LA CONDITION DE STABILITE.')
+            ENDIF
+          ENDIF
+ 20     CONTINUE
+ 
+      ELSEIF (STOCFL(1:3).EQ.'OUI') THEN
+        CALL UTMESS('F','PASCOU','LA CONDITION DE STABILITE N''A PU'
+     & //' ETRE CALCULEE POUR AUCUN ELEMENT.')
+      ELSEIF (STOCFL(1:3).EQ.'NON') THEN
+          CALL UTMESS('A','PASCOU','LA CONDITION DE STABILITE N''A PU'
+     & //' ETRE CALCULEE POUR AUCUN ELEMENT.')
+      ENDIF
+ 
+      CALL JEDEMA()
+
+      END

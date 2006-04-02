@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -51,6 +51,7 @@ MODE_LOCAL__
                                         UO3      VO3      WO3      UO4      VO4      WO4      
                                         UO5      VO5      WO5      UO6      VO6      WO6      
                                         WO       WI1      WO1      )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
@@ -198,6 +199,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR  
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR  ENBSP_I  PNBSP_I  
                               OUT__  EDCEL_I  PDCEL_I  
+    PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
+                              OUT__  ECOURAN  PCOURAN
     RAPH_MECA           586   IN__   CCAGEPO  PCAGEPO  CCAMASS  PCAMASS  CCAORIE  PCAORIE  CCARCRI  PCARCRI  
                                      CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  

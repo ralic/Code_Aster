@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,6 +55,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       EPXX     EPYY     EPZZ     EPXY     )
                                  EN2   (DX       DY       )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
     EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMMAG   ELNO__ IDEN__  (DOMA     )
@@ -316,6 +317,8 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
+    PAS_COURANT         405   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
+                              OUT__  ECOURAN  PCOURAN
     PILO_PRED_DEFO      543   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      NDEPLAR  PDDEPLR  NDEPLAR  PDEPL0R  NDEPLAR  PDEPL1R  NDEPLAR  PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR

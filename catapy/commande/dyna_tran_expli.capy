@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
+#& MODIF COMMANDE  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,11 +128,12 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
            VALE            =SIMP(statut='f',typ='R'),
          ),
 #-------------------------------------------------------------------
-         DIFF_CENT         =FACT(statut='f',
+         DIFF_CENT       =FACT(statut='f',
          ),
-         TCHAMWA           =FACT(statut='f',
+         TCHAMWA         =FACT(statut='f',
            PHI             =SIMP(statut='f',typ='R',defaut= 1.05),
          ),
+         STOP_CFL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          NEWTON          =FACT(statut='c',
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1 ),
            PREDICTION      =SIMP(statut='f',typ='TXM',into=("TANGENTE","ELASTIQUE") ),
