@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#@ MODIF E_ETAPE Execution  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 """
 """
 # Modules Python
-import string,types,sys,os,fpformat
+import types,sys,os
 from os import times
 
 # Modules Eficas
@@ -107,27 +107,24 @@ class ETAPE:
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
       if self.jdc.fico!=None :
-        ficode=open(os.getcwd()+'/ficode','a')
+        ficode=open('ficode', 'a')
         v=genpy.genpy(defaut='avec',simp='into')
         self.accept(v)
-        chaine=' '+string.ljust(self.jdc.fico,10)+string.ljust(self.nom,20)
+        chaine = ' %-10s%-20s' % (self.jdc.fico, self.nom)
         for mc in v.args.keys():
-            if type(v.args[mc])==types.StringType:
-              chainec=chaine+string.ljust(' --',20)+string.ljust(mc,20)+string.ljust(v.args[mc],20)
+            if type(v.args[mc]) in types.StringTypes:
+              chainec = '%s %-20s%-20s%-20s\n' % (chaine, '--', mc, v.args[mc])
               ficode.write(chainec)
-              ficode.write('\n')
-            elif type(v.args[mc])==types.ListType:
+            elif type(v.args[mc]) == types.ListType:
               for mcs in v.args[mc]:
                  for mcf in mcs.keys():
-                  chainec=chaine+string.ljust(mc,20)+string.ljust(mcf,20)+mcs[mcf]
+                  chainec = '%s%-20s%-20s%s\n' % (chaine, mc, mcf, mcs[mcf])
                   ficode.write(chainec)
-                  ficode.write('\n')
-            elif type(v.args[mc])==types.DictType:
-                mcs=v.args[mc]
+            elif type(v.args[mc]) == types.DictType:
+                mcs = v.args[mc]
                 for mcf in mcs.keys():
-                  chainec=chaine+string.ljust(mc,20)+string.ljust(mcf,20)+mcs[mcf]
+                  chainec = '%s%-20s%-20s%s\n' % (chaine, mc, mcf, mcs[mcf])
                   ficode.write(chainec)
-                  ficode.write('\n')
         ficode.close()
 
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
@@ -166,7 +163,7 @@ class ETAPE:
          echo_mess.append( '\n' )
          commande_formatee=v.formate_etape()
          echo_mess.append(commande_formatee)
-         texte_final=string.join(echo_mess)
+         texte_final = ' '.join(echo_mess)
          aster.affiche('MESSAGE',texte_final)
 
       return
@@ -180,28 +177,17 @@ class ETAPE:
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'             ) or \
          (self.jdc.impr_macro=='OUI'             ) :
-         echo_mess=[]
          decalage="  "  # blancs au debut de chaque ligne affichee
-         echo_mess.append( decalage )
-         echo_mess.append( '\n' )
-         if cpu_user!=None :
-            chaine=`self.icmd`
-            l=len(chaine)
-            while l < 4  :
-               chaine='0'+chaine
-               l=l+1
-            echo_fin=decalage+" #  FIN COMMANDE NO : "+chaine+"   DUREE TOTALE:"
-            echo_fin=echo_fin+fpformat.fix(cpu_syst+cpu_user,2).rjust(12)
-            echo_fin=echo_fin+"s (SYST:"+fpformat.fix(cpu_syst,2).rjust(12)+"s)"
+         echo_mess=[decalage]
+         if cpu_user != None :
+            echo_fin = "%s #  FIN COMMANDE NO : %04d   DUREE TOTALE:%12.2fs (SYST:%12.2fs)" \
+               % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst)
          else :
-            echo_fin=decalage+" #  FIN COMMANDE : "+self.nom
+            echo_fin = "%s #  FIN COMMANDE : %s" % (decalage, self.nom)
          echo_mess.append(echo_fin)
-         echo_mess.append( '\n' )
-         echo_mess.append( decalage )
-         echo_mess.append("#  ---------------------------------------------------------------------------")
-         echo_mess.append( '\n' )
-         texte_final=string.join(echo_mess)
-         aster.affiche('MESSAGE',texte_final)
+         echo_mess.append(decalage + '#  ' + '-'*75)
+         texte_final=os.linesep.join(echo_mess)
+         aster.affiche('MESSAGE', texte_final)
 
       return
 

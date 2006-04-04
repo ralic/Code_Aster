@@ -1,0 +1,1897 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU O.             DATE 03/04/2006 - 13:52:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009629 DU 2006-03-31 07:57:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   FETI parallele + STAT_NON_LINE en fonctionnement basique
+FONCTIONNALITE
+   Contexte
+   --------
+   Permettre l'utilisation, en parallele, du solveur lineaire FETI dans STAT_NON_LINE.
+   
+   Fonctionnalite
+   --------------
+   C'est le pendant de la fiche EL9541 (restit. de la 8.2.12 du 15/03/06) en
+   mode parallele.
+   
+   Details
+   -------
+   * Les contraintes du non lineaire obligent, si on veut impacter le moins
+   possible le code actuel (et ses mises a jours hebdo):
+   - une fois la resolution de KU=F effectuee, on reconstruit le U global
+   et on le diffuse a tous les proc. Ils ont en besoin pour reconstruire
+   les Ki et Fi locaux, pour l'archivage, pour d'eventuels calculs de
+   criteres... (ALFETI)
+   - A chaque estimation de residu (critere d'arret de Newton, pilotage,
+   recherche lineaire...) on somme puis diffuse de 5 a 7 CHAM_NO dimen
+   sionnes a la taille du pb global (NMFINT,NMFEXT,NMRESI).
+   - A chaque archivage de donnees dans l'EVOL_NOLI (potentiellement chaque
+   pas de temps) on somme puis diffuse tous les CHAM_ELEM (dimensionnes a
+   la taille global sur chaque proc mais calcules et remplis que compte
+   tenu des mailles physiques attribuees a chaque proc). Potentiellement
+   4 communications de CHAM_ELEM.CELV dimensionnes a plusieurs fois la
+   taille du pb global a chaque pas de temps ! (attention a ARCHIVAGE/
+   PAS_ARCH).
+   
+   
+   * Il faut faire attention aux "fausses" options de calculs elementaires qui
+   perturbent le deroulement parallele du flot de donnees. Ainsi l'option
+   NSPG_NBVA qui dimensionne les VARI_R globaux ne doit pas etre parallelisee
+   par CALCUL.
+   
+   
+   * A chaque assemblage vectoriel, on construit les CHAM_NO fils associes au
+   proc  et  le CHAM_NO pere est rempli uniquement de leur contributions
+   (pour calculer le residu par la suite). Souvent, une de ces deux etapes
+   est inutile: CHAM_NO intermediaire de calcul non somme dans un second
+   membre ou CHAM_NO contribuant aux seconds membres mais non concerne par
+   le residu. Cela peut donc s'optimiser.
+   Il faudrait arriver a discerner les cas de figures
+   et a les rendre transparents aux developpeurs (pb des methodes d'acces
+   aux cham_no)
+   Sinon, pour eviter les RESULTATS FAUX on est amene a faire des choses peu
+   optimales. Dans STAT_NON_LINE, les multiples creations de CHAM_NO condui
+   sent avec FETI (qui multiplie ce nombre par le nombre de sous-domaine+1)
+   a un emiettement de la memoire JEVEUX et donc diminue notablement les
+   gains a attendre sur ce creneau.
+   
+   
+   Rq 1: En parallele, avec FETI (et potentiellement avec MUMPS ou PETSc distribues)
+   
+   LIGREL        CALCUL ELEM        ASSEMBLAGE MATRICIEL     ASSEMBLAGE VECTORIEL
+   ---------------------------------------------------------------------------------------
+   
+   MODELE
+   chaque proc dimensionne      Chaque proc boucle sur     Idem pour les Fi
+   les VECT_ELEM, CHAM_ELEM...  les donnes globales mais   On construit
+   a la meme taille, celle du   n'assemble que les donnees le CHAM_NO global (F)
+   pb global.                   locales requisent pour     et on remplit les
+   Mais ne va initialiser,      obtenir les Ki.            composantes des
+   calculer et remplir que les  On n'assemble pas la       contributions des
+   donnees liees a ses mailles  matrice globale K !        mailles associees au
+   physiques.                                              proc.
+   (sauf OPTION=NSPG_NBVA pour
+   laquelle on fait comme en seq)
+   
+   CHARGE
+   Comme en sequentiel                      Idem LIGREL de modele
+   
+   Rq 2: A mon avis, le contrat d'un solveur parallele distribue et du flot de donnees
+   paralleles qu'il organise est (au moins dans un premier temps):
+   En fin d'operateur, chaque proc doit proposer la meme base JEVEUX et donc la meme
+   SD_RESULTAT. Et ce, afin de ne pas avoir a reecrire les routines de redemarrages et de
+   lecture de donnees des operateurs. Le flot de donnees paralleles doit etre limite a
+   l'operateur.
+   Deux STAT_NON_LINE enchaines doivent donner le meme resultat qu'un seul !
+   
+   Rq 3: Compte tenu de mon experience recente sur la parallelisation des calculs
+   elementaires je me permet de formuler la regle suivante:
+   Pour tarir un flot de donnees, sans impacter trop le code et sa
+   maintenabilite/evolutivite, soit:
+   - on encapsule les structures de donnees preexistantes (c'est le cas des
+   NUME_DDL,MATR_ASSE, CHAM_NO, SD_SOLVEUR)
+   - on laisse dimensionnees les Structures de Donnees tel que dans le pb sequentiel,
+   mais on ne va effectuer les calculs que sur les donnees locales. Sans s'occuper des
+   phases
+   logistiques (initialisation....) peut couteuses et sources de beaucoup d'ennuis si on les
+   taries en parallele.
+   
+   VALIDATION
+   -----------
+   
+   Non regression sur la douzaines de cas-tests FETI lineaires et
+   non-lineaires: FETI001a/b....FETI005a/b (LINUX)
+   
+   Le cube en non-lineaire (cas-test M1 de la HI-23/05/044): 90 000 DDL
+   sur CLAMSID et avec 400 Mo. Temps Elapsed (en s). STAT_NON_LINE avec
+   VMIS_ISO_TRAC et FONC_MULT et RESI_RELA=10-6, CORRECTION=PREDICTION=TANG
+   En jouant sur REAC_ITER/REAC_INCR.
+   
+   MULT_FRONT seq        FETI 10 proc (5x2)  Rapport
+   --------------------------------------------------------------------------
+   40 systemes lineaires       342                 205               1.7
+   dont 1 factorisation
+   
+   11 systemes /  4 fact       340                  92               3.7
+   
+   7 systemes /   7 fact       509                  97               5.2
+   
+   Rappel MECA_STATIQUE         84                  12               7.0
+   1 resolution/ 1 fac
+   
+   INSTANT DE CALCUL :  1.000000000E+00
+   
+   MULT_FRONT.............
+   ---------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+   |     NEWTON     |     RELATIF    |     ABSOLU     |   ASSEMBLAGE   |
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+   ---------------------------------------------------------------------
+   |     0        X | 4.09026E-02  X | 8.98846E-05    |TANGENTE        |
+   |     1        X | 1.74103E-02  X | 3.82596E-05    |                 |
+   |     2        X | 7.41756E-03  X | 1.63003E-05    |                |
+   |     3        X | 5.38677E-06  X | 1.18376E-08    |TANGENTE        |
+   |     4          | 1.14549E-08    | 2.51725E-11    |                |
+   ---------------------------------------------------------------------
+   FETI..............
+   --------------------------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |   OPTION  |   ITERATIONS
+   |     NEWTON     |     RELATIF    |     ABSOLU     | ASSEMBLAGE|     FETI
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |           |
+   --------------------------------------------------------------------------------------
+   |     0        X | 4.09026E-02  X | 8.98846E-05    |TANGENTE   |    63
+   |     1        X | 1.74103E-02  X | 3.82596E-05    |           |    29
+   |     2        X | 7.41756E-03  X | 1.63003E-05    |           |    12
+   |     3        X | 5.38677E-06  X | 1.18376E-08    |TANGENTE   |    63
+   |     4          | 2.04126E-08    | 4.48572E-11    |           |     3
+   --------------------------------------------------------------------------------------
+   
+   INSTANT DE CALCUL :  1.050000000E+00
+   ---------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+   |     NEWTON     |     RELATIF    |     ABSOLU     |   ASSEMBLAGE   |
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+   ---------------------------------------------------------------------
+   |     0        X | 8.51789E-05  X | 1.96542E-07    |TANGENTE        |
+   |     1        X | 1.53820E-06  X | 3.54925E-09    |                |
+   |     2          | 4.01577E-08    | 9.26601E-11    |                |
+   ---------------------------------------------------------------------
+   -------------------------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     | OPTION    | ITERATIONS
+   |     NEWTON     |     RELATIF    |     ABSOLU     | ASSEMBLAGE|     FETI
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |           |
+   --------------------------------------------------------------------------------------
+   |     0        X | 8.51789E-05  X | 1.96542E-07    |TANGENTE   |    62
+   |     1        X | 1.53820E-06  X | 3.54926E-09    |           |    10
+   |     2          | 4.01569E-08    | 9.26583E-11    |           |     1
+   --------------------------------------------------------------------------------------
+   
+   INSTANT DE CALCUL :  1.100000000E+00
+   ---------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+   |     NEWTON     |     RELATIF    |     ABSOLU     |   ASSEMBLAGE   |
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+   ---------------------------------------------------------------------
+   |     0        X | 7.21283E-05  X | 1.74354E-07    |TANGENTE        |
+   |     1        X | 1.28227E-06  X | 3.09961E-09    |                |
+   |     2          | 3.21682E-08    | 7.77596E-11    |                |
+   ---------------------------------------------------------------------
+   --------------------------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     | OPTION     |   ITERATIONS
+   |     NEWTON     |     RELATIF    |     ABSOLU     | ASSEMBLAGE |     FETI
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |            |
+   --------------------------------------------------------------------------------------
+   |     0        X | 7.21283E-05  X | 1.74354E-07    |TANGENTE    |    62
+   |     1        X | 1.28227E-06  X | 3.09962E-09    |            |    10
+   |     2          | 3.21675E-08    | 7.77580E-11    |            |     1
+   -------------------------------------------------------------------------------------
+   
+   Perimetres sources
+   ------------------
+   assvec, calcul, exlim2,fetmon,nmarch,nmfint,nmfext,nmresi,zechlo
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D9.03.01
+VALIDATION
+   informatique, fonctionnelle, non-regression
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques.        DATE 04/04/2006 - 18:47:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009556 DU 2006-03-15 10:37:15
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   usage de LTEATT au lieu de IF (NOMTE(3:4).EQ.'AX')
+FONCTIONNALITE
+   OK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.6
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR g8bhhxd      DESROCHES X.           DATE 04/04/2006 - 18:48:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009359 DU 2006-01-13 14:11:08
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TMA : CS
+TITRE
+   Mauvaise denomination ELGA/ ELEM pour l'indicateur d'erreur
+FONCTIONNALITE
+   Changement des noms des options de calcul de residu :
+   ERRE_ELGA_NORE --> ERRE_ELEM_SIGM
+   ERRE_ELEM_NOZ1 --> ERZ1_ELEM_SIGM
+   ERRE_ELEM_NOZ2 --> ERZ2_ELEM_SIGM
+   ERRE_ELNO_ELGA --> ERRE_ELNO_ELEM
+   ERRE_NOEU_ELGA --> ERRE_NOEU_ELEM
+   ERTH_ELEM_TEMP --> ERRE_ELEM_TEMP
+   ERTH_ELNO_ELEM --> ERRE_ELNO_ELEM
+   
+   Fusion des grandeurs ERREUR et ERRETEMP dans ERREUR
+   
+   Modification des catalogues d'elements
+   Modification des catalogues de commande calc_elem, calc_no et macro_elas_mult
+   Modification des catalogues c_nom_cham_into et c_nom_grandeur
+   Impact dans 49 tests
+   
+   Impact doc
+   V : V7.15.101, V6.03.119, V6.03.120, V4.02.001, V4.03.113, V3.04.007, V3.04.111, V1.01.161
+   U : U4.81.01,  U5.01.01, U5.01.14, U5.01.31, U7.05.21,
+   R : R4.10.01, R4.10.03,
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01,  U5.01.01, U5.01.14, U5.01.31, U7.05.21, R4.10.01, R4.10.03, V7.15.101,
+V6.03.119, V6.03.120, V4.02.001, V4.03.113, V3.04.007, V3.04.111, V1.01.161
+VALIDATION
+   Modification de 49 tests
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques.        DATE 04/04/2006 - 18:48:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009522 DU 2006-03-02 13:01:29
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : CS
+TITRE
+   AFFE_CARA_ELEM + Discrets
+FONCTIONNALITE
+   Verifications supplementaires pour l'affectation des elements DISCRETs :
+   le code verifie que les entites affectees a des discrets sont du bon type
+   pour une caracteristique de type ..._N, les entites sont des mailles de type POI1 ou des
+   noeuds
+   pour une caracteristique de type ..._L, les entites ne peuvent etre que des mailles de
+   type SEG2, pas de noeuds
+   De plus dans le catalogue de la commande:
+   les mots cles MAILLE, GROUP_MA, NOEUD et GROUP_NO sont valides pour une caracteristique de
+   type ..._N
+   les mots cles MAILLE, GROUP_MA sont valides pour une caracteristique de type ..._L
+   Ces mots cles sont dans les blocs des caracteristiques.
+   
+   3 cas tests a modifier sdnd102b, c et d
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage des tests AFFE_CARA_ELEM/DISCRET
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 04/04/2006 - 18:48:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009412 DU 2006-01-30 10:33:42
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   CONTACT - Epaisseur coque/plaque
+FONCTIONNALITE
+   Le but de cette evolution est d'introduire un jeu variable pour le
+   contact d'elements de
+   structure de type plaque.
+   Ce jeu est lie a la plaque meme quand elle se deplace.
+   On utilise simplement les informations liees a la plaque lors de
+   l'AFFE_CARA_ELEM option
+   COQUE mot cle EPAIS.
+   Pour activer cette option, on introduit dans la commande
+   AFFE_CHAR_MECA deux nouveaux mots
+   cles:
+   CONTACT = _F ( DIST_COQUE = / 'NON'    par defaut
+   / 'OUI'
+   CARA_ELEM = cara
+   ...
+   si DIST_COQUE est present, alors CARA_ELEM est obligatoire.
+   
+   Lors du traitement du contact, on ajoute simplement le jeu
+   correspondant a la demie
+   epaisseur
+   de la coque pour le noeud ESCLAVE.
+   L'excentrement n'est pas traite. Si l'excentrement est non nul, on
+   arrete en Fatal.
+   
+   Affichage lors de la lecture du mot cle CONTACT (INFO=2)
+   Exemple d'impression
+   <CONTACT> ************** DIST_COQUE  ************
+   NOEUD: N1     DEMI-EPAISSEUR:  3.17500E+01
+   NOEUD: N2     DEMI-EPAISSEUR:  3.17500E+01
+   NOEUD: N3     DEMI-EPAISSEUR:  3.17500E+01
+   
+   
+   catalogues impactees : affe_char_meca et affe_char_meca_f
+   routines impactees : calico, cfdist, projco, rechco, surfco
+   nouvelle routine : cacoco
+   
+   validation : on ajoute DIST_COQUE dans le cas test ssnv505a,
+   on supprime
+   
+   DOC MODI_MAILLAGE: penser a mettre un avertissement sur
+   excentrement+ORIE_NORM_COQUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.01 ; V6.04.505 ; D4.06.14: U4.23.04
+VALIDATION
+   ssnv505a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 04/04/2006 - 18:48:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009571 DU 2006-03-16 17:29:53
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   NEW8.2.12, les tests ssnv185b, c et d terminent en NOOK
+FONCTIONNALITE
+   Probleme :
+   
+   les TEST_FICHIER sont NOOK
+   
+   IMPR_RESU(FORMAT='IDEAS',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM));
+   
+   TEST_FICHIER(FICHIER='MAIL_XFEM',
+   VALE_K='75a0308efe2d415256d1fa972246afc9',
+   EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4}',),
+   REFERENCE='NON_REGRESSION',
+   VERSION='8.2.7',)
+   
+   
+   Solution :
+   
+   On remplace ce test par 3 TEST_TABLE :
+   on cree une table avec POST_RELEVE_T contenant tous les noeuds du maillage.
+   et on fait des tests de non-regression sur la somme des valeurs
+   absolues des coordonnees des noeuds du maillage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.185
+VALIDATION
+   ssnv185b,c,d
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009621 DU 2006-03-30 08:28:01
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   NEW8.2.14, le test ssnv185e s'arrete en ERREUR
+FONCTIONNALITE
+   Cela etait du a un oubli lors de la restitution du contact sur les elements en fond de
+   fissure.
+   Sur ces elements, on procede a un raccord P0.
+   les ddls de pressions de contact en fond de fissure sont alors portes par les noeuds
+   milieux des aretes les plus proches.
+   
+   dans la recherche des points de contact nodaux les plus proches, on avait oublie
+   d'exclure
+   les points de contact en fond.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous les test X-FEM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009619 DU 2006-03-30 08:09:45
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   NEW8.2.14, le test sslv311a termine en NOOK
+FONCTIONNALITE
+   il y avait deux tests en NOOK, dont un de non-regression
+   
+   ajustement des valeurs de reference avec accord d'Erwan Galenne
+   
+   1) tole : 10.5% -> 10.6%
+   ce test de toute facon, le test sur ce point est le plus imprecis de toute la serie
+   (tous
+   les autres test sont plutot vers 2-4%)
+   
+   2) test de non regression : on est meilleur que la version de ref, donc la valeur de ref
+   devient la 8.2.14
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv311a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009493 DU 2006-02-24 08:02:36
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests ssnv185b, c et d sous linux Rocks (XEFM)
+FONCTIONNALITE
+   doublon
+   voir fiche 9456
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009500 DU 2006-02-27 14:50:19
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   post-traitement X-FEM : elements 2D (tout type d'enrichissement)
+FONCTIONNALITE
+   Objectif
+   --------
+   Etendre au 2D ce qui a ete fait en matiere de post-traitement pour les elements XFEM
+   3D.
+   L'utilisateur pourra donc utiliser les commandes POST_MAIL_XFEM (generation du maillage
+   fissure)
+   et POST_CHAM_XFEM (projection du champ deplacement sur ce maillage) sur un modele XFEM
+   2D.
+   
+   Developpement
+   -------------
+   - catalogues
+   ajout de l'option DEPL_POST_XFEM dans les catalogues : gener_mecpl2_xh.cata,
+   gener_mecpl2_xht.cata, gener_mecpl2_xt.cata.
+   activation de l'option TPOPOSE et des modes locaux associes dans le catalogue
+   gener_mecpl2_x.cata.
+   
+   - source fortran
+   renommer la routine xdel3d.f en xdepla.f
+   realisation d'un travail de dimensionnement dans les routines op0187.f, op0196.f,
+   te0515.f, xdepla.f.
+   
+   Validation
+   ----------
+   ajout des commandes POST_MAIL_XFEM et POST_CHAM_XFEM dans les fichiers de commandes des
+   cas-tests suivants:
+   - ssnv173f: enrichissement heaviside + mailles QUAD4 + fissure sectionnant les elements
+   - ssnv182d: enrichissement heaviside + mailles QUAD4 + fissure adjacente aux elements
+   
+   
+   Pour la validation des elements enrichis par les fonctions singulieres, un cas test
+   perso
+   a ete utilise, qui sera restitue lorsque le calcul de K1 et K2 sera disponible pour
+   les
+   elements 2D X-FEM (apres refonte des operateurs)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.173, V6.04.182
+VALIDATION
+   ssnv173f,ssnv182d
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009561 DU 2006-03-15 15:16:47
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Introduction de l'angle de propagation dans les resultats de CALC_K_G
+FONCTIONNALITE
+   Probleme :
+   
+   Les operateurs de post-traitement des fissures donnent
+   actuellement avec les methodes energetiques
+   Gtheta, KI, KII, KIII.
+   On propose d'enrichir cette structure en rajoutant
+   la notion de direction de propagation: divers
+   criteres sont possibles. Pour le moment on se contentera
+   du critere de contrainte maximale en mode I+II, quite a
+   l'enrichir par la suite d'autres criteres.
+   J'en ai discute avec Erwan.
+   On peut soit m'attribuer directement la fiche, soit a
+   Erwan puisqu'il doit etre responsable de ces operateurs.
+   Cette restitution s'inscrit dans le cadre de la
+   propagation des levels pour la fissuration. Elle permet
+   de connaitre la direction de propagation.
+   PMa.
+   
+   
+   Solution :
+   
+   L'operateur CALC_G_LOCAL_T a ete enrichi avec la variable
+   BETA, angle de direction de propagation de la fissure dans
+   la base locale en fond de fissure.
+   Pour l'instant, seuls les elements 3D prennent en compte
+   cet enrichissement.
+   
+   Impact de l'integration du parametre BETA :
+   * grandeur_simple__.cata :
+   ajout de BETA dans G = ...
+   * gener_me_x.cata , gener_me_xh.cata , gener_me_xt.cata ,
+   gener_me_xht.cata , gener_me3d_2.cata , gener_me3d_3.cata :
+   ajout de BETA dans le mode local EKTHETA
+   * op0077.f :
+   modif. pour l'affichage des valeurs de BETA
+   * cakg3d.f :
+   passage de vecteurs de dimension 4*NombreNOeudsFondFissure
+   a des vecteurs de dimension 5*NombreNOeudsFondFissure pour
+   le stockage de l'information BETA (en plus de G,K1,K2,K3),
+   et modifications engendrees pour les appels a ces vecteurs
+   * gkmet3.f :
+   modifications engendrees par le changement de dimension
+   des vecteurs (cf ci-dessus)
+   Calcul et stockage de la valeur BETA pour les noeuds en
+   fond de fissure
+   * gksimp.f :
+   Impression des valeurs de BETA
+   
+   Cas test :
+   Le cas test ssnv185h reprend les principales
+   caracteristiques du test ssnv185c, mais avec une fissure
+   inclinee  : parallelepipede, maillage d'hexaedres,
+   sollicitation traction simple, fissure inclinee de 45° par
+   rapport a la direction de traction et on mesure l'angle de
+   propagation de fissure.
+   
+   Le non-impact des modifications
+   a ete verifie par passage de la liste des cas tests utilisant DEFI_FISS_XFEM.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.185
+VALIDATION
+   ssnv185h
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS J.              DATE 04/04/2006 - 18:48:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009341 DU 2006-01-10 10:06:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Indicateurs d'erreurs en quantites d'interet
+FONCTIONNALITE
+   On propose de restituer le calcul d'erreur en quantite d'interet.
+   Pour cela, un reorganisation des sources "estimateurs en residus" a ete faite. Puis
+   on a
+   mis en place le cadre
+   quantite d'interet en creant plusieurs options et donnant la possibilite de
+   descendre deux
+   champs au niveu
+   elementaire. Les resultats sont ecrit dans un champs (resultats par elements) et
+   dans des
+   parametres (resultats
+   globaux).
+   
+   Reorganisation des sources :
+   
+   Les te0375 et te0377 ont ete decomposes en 3 partie, une pour chacun des termes de
+   l'erreur. Ainsi j'ai cree 6 routines (3 pour le 2D ERE2D1,2,3 et 3 pour le 3D
+   ERE3D1,2,3) qui prepare les donnees avant de faire les differentes integrations.
+   Ensuite
+   une routine
+   assure l'integration numerique des termes. De plus certaine partie ont ete
+   remplace par des routines deja existante dans le code. Ce travail a permis de donner
+   une
+   organisation modulaire indispensable pour le calcul d'erreur en quantite.
+   d'interet. Au passage on corrige le bug emis dans la fiche 9554.
+   
+   Cadre quantites d'interet :
+   
+   Deux nouveaux te sont crees. Ils prennent les memes champs que les te precedents
+   mais avec
+   en plus les champs relatifs
+   au probleme dual. Grace a l'organisation modulaire, on appelle les diferentes routines
+   deux fois (pour le probleme
+   primal et le probleme dual).
+   
+   Ecriture des resultats :
+   
+   On cree les parametres suivants :
+   ERREUR_ABOLUE, ERREUR_RELATIVE, NORME_SIGMA,
+   TERM_VOLU_ABSO,TERM_VOLU_RELA
+   TERM_SAUT_ABSO,TERM_SAUT_RELA
+   TERM_NORM_ABSO,TERM_NORM_RELA
+   
+   Les options de calcul crees sont :
+   QIRE_ELEM_SIGM
+   QIRE_ELNO_ELEM
+   QIZ1_ELEM_SIGM
+   QIZ2_ELEM_SIGM
+   
+   Les modelisation et contraintes sont les memes que pour les estimateurs classiques
+   utilises.
+   
+   Cas-tests :
+   sslp107a
+   sslp107b
+   sslv113c
+   sslv113d
+   
+   Exemple de fichier commande :
+   
+   CHARPRIM=AFFE_CHAR_MECA(MODELE=,
+   FACE_IMPO=,
+   FORCE_CONTOUR=,);
+   
+   RESUPRIM=MECA_STATIQUE(MODELE=,
+   CHAM_MATER=,
+   EXCIT=_F(CHARGE=CHARPRIM,),);
+   
+   RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
+   RESULTAT=RESUPRIM,
+   TOUT_ORDRE='OUI',
+   OPTION=('SIRE_ELNO_DEPL','ERRE_ELGA_NORE',),);
+   
+   
+   CHARDUAL=AFFE_CHAR_MECA(MODELE=,
+   FACE_IMPO=,
+   FORCE_INTERNE=);
+   
+   RESUDUAL=MECA_STATIQUE(MODELE=MO,
+   CHAM_MATER=CM,
+   EXCIT=_F(CHARGE=CHARDUAL,),);
+   
+   RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
+   RESULTAT=RESUDUAL,
+   TOUT_ORDRE='OUI',
+   OPTION=('SIRE_ELNO_DEPL','ERRE_ELGA_NORE'),);
+   
+   RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
+   RESULTAT=RESUPRIM,
+   OPTION=('QIRE_ELEM_SIGM',),
+   RESU_DUAL=RESUDUAL,);
+   
+   On note que les blocage pour les deux problemes DOIVENT etre les memes, le chargement
+   en
+   effort pour le probleme dual
+   doit etre de type FORCE_INTERNE (quantite d'interet deplacement sur une composante)
+   ou
+   EPSI_INIT (quantite d'interet
+   contrainte sur une composante).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 90.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009554 DU 2006-03-15 09:59:27
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Estimateur d'erreur en residu et modelisation incompressible
+FONCTIONNALITE
+   L'erreur provient du calcul du deuxieme et troisieme terme de l'erreur. En effet l'appel
+   aux valeurs de sigma est inexact, il sous-entend que le nombre de composante en 2D du
+   tenseur des contraintes en 4 alors qu'il est de 5. Ainsi on recupere sigma22 au lieu de
+   recuperer sigma11, sigma33 au lieu de sigma22, la composante SIP au lieu de sigma12 .On
+   donne en exemple un morceau de code ou on calcule un saut de contrainte entre un
+   element
+   et son voisin. Le bug est present depuis l'introduction du developpement (version
+   7.2.10, fiche 6398)
+   
+   Lignes 643-645, te0377.f :
+   SG11(2) = ZR(IAD+IDEC1-4)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-4)
+   SG22(2) = ZR(IAD+IDEC1-3)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-3)
+   SG12(2) = ZR(IAD+IDEC1-1)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-1)
+   
+   On remplace par un appel "classique" du genre :
+   SIG11(2) = ZR(IAD-1+NBCMP*(JNO-1)+1)
+   
+   On corrige les tests faux en modifiant la valeur de de reference dans TEST_RESU :
+   ssls09c
+   sslv130c
+   sslv130d
+   ssnp123b
+   ssnv112c
+   ssnv112d
+   ssnv124a
+   ssnv124c
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.2.10
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.2.10
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   affichage au niveau du fortran
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR f1bhhaj      ANGLES J.              DATE 30/03/2006 - 13:18:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009441 DU 2006-02-08 15:19:56
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test sslv135d FATIGUE
+FONCTIONNALITE
+   La remonte d'erreur etait la suivante :
+   
+   FATI_L=CALC_FATIGUE(TYPE_CHARGE='NON_PERIODIQUE',
+   CRITERE='DANG_VAN_MODI_AV',
+   TYPE_CALCUL='FATIGUE_MULTI',
+   OPTION='DOMA_ELGA',
+   DELTA_OSCI=0.0,
+   INFO=1,
+   RESULTAT=SOL_L,
+   COEF_PREECROU=1.0,
+   CHAM_MATER=MAT,
+   PROJECTION='UN_AXE',
+   );
+   
+   NOMBRE TOTAL DE POINTS DE GAUSS A EXPLORER ==> 1000
+   
+   NUMERO DU PAQUET DE MAILLES  -  NOMBRE DE POINTS DE GAUSS TRAITES
+   1    96
+   1    200
+   1    296
+   1    400
+   1    496
+   1    600
+   1    696
+   1    800
+   1    896
+   
+   <INFO> Code_Aster run ended, diagnostic : <F>_ABNORMAL_ABORT
+   
+   <E>_CORE_FILE      Code_Aster run created a coredump
+   
+   <INFO> core file name : core.14558
+   
+   ------------------------------------------------------------------
+   --------------
+   Coredump analysis
+   
+   coredump
+   analysis...                                                    [
+   OK  ]
+   Using host libthread_db library "/lib/tls/libthread_db.so.1".
+   Core was generated by `./aster.exe Eficas/Execution/E_SUPERV.py -
+   eficas_path ./Eficas -commandes fort.'.
+   Program terminated with signal 11, Segmentation fault.
+   #0  s_copy (a=0xbfff3e40 " ÷·@",
+   b=0xeddc1520 <Address 0xeddc1520 out of bounds>, la=32, lb=32)
+   at ../../../../libf2c/libF77/s_copy.c:26
+   26	../../../../libf2c/libF77/s_copy.c: No such file or
+   directory.
+   in ../../../../libf2c/libF77/s_copy.c
+   #0  s_copy (a=0xbfff3e40 " ÷·@",
+   b=0xeddc1520 <Address 0xeddc1520 out of bounds>, la=32, lb=32)
+   at ../../../../libf2c/libF77/s_copy.c:26
+   #1  0x08088071 in jjcren_ ()
+   #2  0x080884fd in jjvern_ ()
+   #3  0x0808876e in jedetr_ ()
+   #4  0x0808be80 in detrsd_ ()
+   #5  0x08097011 in paqmai_ ()
+   #6  0x0824c3e2 in op0151_ ()
+   #7  0x080fb045 in ex0100_ ()
+   #8  0x080a2c44 in execop_ ()
+   #9  0x0809f112 in expass_ ()
+   #10 0x0809cc8f in aster_oper ()
+   
+   Elle mettait en cause la routine paqmai.f ou la routine paqnoe.f
+   ne facon aleatoire.
+   
+   La raison etait que dans ces deux routines je detruisais des
+   Structure de Donnees qui n'existaient pas.
+   
+   La correction est la suivante :
+   
+   IF ( NOMCRI(1:12) .EQ. 'FATEMI_SOCIE' ) THEN
+   CALL DETRSD('CHAM_ELEM_S',CES3)
+   CALL DETRSD('CHAM_ELEM_S',CES4)
+   ENDIF
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.1.5
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv135d
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 03/04/2006 - 19:01:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009481 DU 2006-02-22 10:52:09
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utilisation des modeles de fluage des betons sur des elements 1D/2D
+FONCTIONNALITE
+   Introduction des variables de commandes Hydratation et Sechage dans les elements de
+   poutres multifibres (POU_D_EM), BARRE.
+   La recuperation de ces variables de commande permet, a l'appel de NMCOMP, de
+   beneficier de
+   tous les comportements qui les utilisent, via
+   ALGO_1D='DEBORST'.Les comportements vises sont : GRANGER_FP et BETON_UMLV_FP
+   
+   Pour completer le developpement, il a fallu implanter aussi les options CHAR_MECA_SECH_R
+   ET CHAR_MECA_HYDR_R pour ces elements.
+   Par contre l'option EPRG_ELNO n'est pas developpee pour ces elements.
+   
+   En ce qui concerne les elements de coque, il faudrait preciser les modelisations
+   visees
+   (COQUE_1D, DKT ouCOQUE_3D) er la discretisation
+   souhaitee pour le sechage (3 DDL comme la temperature : TEMP, TEMP_INF, TEMP_SUP ?) et
+   pour l'hydratation (Valeurs par couches ?).
+   Pour cette raison, le developpement n'est pas restitue en coques. Il faudrait emettre
+   une
+   nouvelle EL plus precise sur ce que l'on
+   souhaite faire en coques.
+   
+   Validation :
+   -----------
+   
+   test SSNV142 : essai de fluage propre avec le modele de GRANGER_FP_INDT. (Doc
+   V604142c.doc
+   nouvelle modelisation B : BARRE
+   nouvelle modelisation C : poutre_multi_fibre POU_D_EM
+   
+   test SSNP116 : COUPLAGE GRANGER_FP avec diverses lois elastoplastiques  (doc
+   V603116c.doc)
+   nouvelle modelisation D : BARRE.
+   
+   On a passe egalement le test fourni. Les docs V sont attachees a lafiche
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.142, V6.03.116, U4.51.11
+VALIDATION
+   SSNP116, SSNV142
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009580 DU 2006-03-21 09:18:09
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test ssnv172a sous linux Calibre 3
+FONCTIONNALITE
+   En version NEW8.2.12 compilee sous linux Calibre 3 (clp50a8), le test ssnv172a s'arrete
+   en
+   NOOK :
+   
+   ---- RESULTAT:  IMPL1    NUME_ORDRE:  21 NOM_CHAM: EPSP_ELGA
+   
+   REFERENCE: NON_REGRESSION
+   NOOK EPXX         RELA    -0.128 % VALE:-1.8504164019534E-05
+   MA1      1        TOLE     0.100 % REFE:-1.8527919867920E-05
+   
+   Cette fiche est sans suite pour moi. En effet, des modifications ont ete effectuees
+   sur le
+   test SSNV172A, et le test_resu incrimine n'existe plus dans la version actuelle.
+   N'aurait-il pas ee mis a jour sur CLP50A8 ?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009633 DU 2006-03-31 16:05:37
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   Permettre 1000 grains dans le POLYCRISTAL
+FONCTIONNALITE
+   Il s'agit de permettre d'affecter jusqu'a 1000 grains (1000 phases) dans le comportement
+   POLYCRISTAL. Or la dimension des objets contenant les coefficients materiau ne permettait
+   d'affecter que 50 grains. On augmente donc cette dimension (tableau local de dimension
+   6000 au lieu de 200). Ceci n'impacte que la resolution par RUNGE_KUTTA (NMVPRK).
+   
+   Du coup cela fonctionne avec 1000 grains (test SSNV125 dans lequel j'ai mis 1000 Grains)
+   
+   Cela va servir pour nos calculs POLYCRISTAL, et aussi pour PERFECT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.11
+VALIDATION
+   SSNV125 avec 1000 grains
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009608 DU 2006-03-28 15:55:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Amelioration des performances des comportements VISC_IRRA_LOG et GRAN_IRRA_LOG
+FONCTIONNALITE
+   Action relisee pour le projet CACHEMIRE :
+   
+   Pour ameliorer les performances et la robustesse des calculs d'assemblages, une des
+   etapes
+   consiste a optimiser les comportements VISC_IRRA_LOG et GRAN_IRRA_LOG.
+   C'est l'objet de cette fiche. La restitution est prete et validee.
+   
+   Rien ne change dans le fichier de commandes. On a simplement retravaille la formulation
+   pour avoir un comportement objectif (le temps n'intervenant plus explicitement). Du coup
+   l'integration s'en trouve simplifiee : aucune iteration locale, la dependance de la
+   deformation viscoplastique en fonction de la fluence s'ecrit directement. Les
+   performances
+   s'en ressentent : sur le test SSNL128A, en raffinant le maillage (100 PMF) on passe de
+   170s a 110s. Ce comportement a ete optimise en 1D (barres, PMF) et 3D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.09, R5.03.08
+VALIDATION
+   SSNL128A,SSNL128B,SSNL128C,SSNL113A
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM MARC              DATE 03/04/2006 - 13:23:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009316 DU 2006-01-03 12:58:32
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests sdnl111e et sdnv100c en version NEW8.2.1
+FONCTIONNALITE
+   je n'observe pas le probleme.
+   fiche classee sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009511 DU 2006-03-02 08:18:42
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests sdnl111f sous linux
+FONCTIONNALITE
+   je n'observe pas le plantage.
+   je la classe sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009594 DU 2006-03-24 10:05:33
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests sdnv100c,d,e et g en version NEW8.2.13 sous linux Calibre 3
+FONCTIONNALITE
+   Probleme d'initialisation de IZONE suite a la restit de la
+   fiche 9549 (introduction du mot-cle VECT_ORIE_POU pour
+   orientation de la normale de contact dans le cas des
+   poutres).
+   
+   On remplace izone=ZI(JMAESC+3*(IMA-1)+2) par
+   izone=ZI(JZOCO+POSNO-1)
+   dans lissag.f
+   
+   cas-tests impactes:
+   sdnv107a
+   sdnv100c,d,e,g
+   sensd05a
+   sensd08a
+   sensm13a
+   sens014a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009593 DU 2006-03-24 10:00:14
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test ssnv505f en version NEW8.2.13 sous linux Calibre 3
+FONCTIONNALITE
+   Probleme d'initialisation de IZONE suite a la restit de la
+   fiche 9549 (introduction du mot-cle VECT_ORIE_POU pour
+   orientation de la normale de contact dans le cas des
+   poutres).
+   
+   On remplace izone=ZI(JMAESC+3*(IMA-1)+2) par
+   izone=ZI(JZOCO+POSNO-1)
+   dans lissag.f
+   
+   cas-tests impactes:
+   sdnv107a
+   sdnv100c,d,e,g
+   sensd05a
+   sensd08a
+   sensm13a
+   sens014a
+   ET
+   ssnv505f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009588 DU 2006-03-23 10:04:47
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   NEW8.2.13, les tests sdnv100c, d, e et g s'arretent en ERREUR
+FONCTIONNALITE
+   Probleme d'initialisation de IZONE suite a la restit de la
+   fiche 9549 (introduction du mot-cle VECT_ORIE_POU pour
+   orientation de la normale de contact dans le cas des
+   poutres).
+   
+   On remplace izone=ZI(JMAESC+3*(IMA-1)+2) par
+   izone=ZI(JZOCO+POSNO-1)
+   dans lissag.f
+   
+   cas-tests impactes:
+   sdnv107a
+   sdnv100c,d,e,g
+   sensd05a
+   sensd08a
+   sensm13a
+   sens014a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR gnicolas     Gerald NICOLAS         DATE 03/04/2006 - 13:49:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008859 DU 2005-07-08 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   Detruire les concepts caches crees par la sensibilite
+FONCTIONNALITE
+   Actuellement DETRUIRE ne sait imprimer que les concepts connus dans le jeu de commande.
+   L'objectif de la fiche est de pouvoir detruire les concepts caches crees par la
+   SENSIBILITE.
+   
+   Syntaxe:
+   
+   DETRUIRE (
+   / f  CONCEPT = _F (o NOM = concept                      [concept]
+   f SENSIBILITE = (ps1, ps2,...)       [l_para_sensi]
+   (theta1, thata2,...) [l_theta_geom]
+   / f OBJET = _F ...
+   ...
+   
+   Ex:  DETRUIRE(CONCEPT=_F(NOM=RETH,SENSIBILITE=PS1))
+   
+   Fichiers Modifies:
+   - catalogue : detruire.capy
+   - fortran   : ops007.f
+   - cas-test  : senst01
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.14.01 U4.50.02
+VALIDATION
+   senst01a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 03/04/2006 - 12:28:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009604 DU 2006-03-28 08:15:10
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   CALC_TABLE : accumulation de titre ?
+FONCTIONNALITE
+   Le nombre de lignes d'un titre (CALL TITRE) est limite a 50, il y a meme un PARAMETER,
+   mais rien n'arrete quand on arrive a 51 et on plante ensuite salement.
+   
+   A 50, on emet une alarme et on ignore les suivants.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   enchainement de 100 calc_table
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR romeo        FERNANDES R.           DATE 03/04/2006 - 12:28:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009575 DU 2006-03-20 06:33:31
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests wtnp102a et wtnp102b sous linux
+FONCTIONNALITE
+   Les tests se sont encore corriges tous seuls...
+   La prochaine fois (car il aura surement une prochaine fois), il faudra "sauter" sur le
+   bug !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 03/04/2006 - 12:28:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009469 DU 2006-02-16 14:11:41
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   NEW8.2.8 les cas tests senst03a et b s'arretent en ARRET_ANORMAL
+FONCTIONNALITE
+   Depuis le menage des "reentrants" non justifies, les tests senst03a et b plantent.
+   En attendant la mise au carre du traitement des JDC sensibles, on modifie les tests de la
+   maniere suivante :
+   - on fait les POST_RELEVE_T dans deux tables differentes (a venir : un mode "reentrant
+   uniquement si SENSIBILITE"),
+   - le post-traitement des tables est fait en POURSUITE (probleme d'evaluation des
+   formules),
+   - on compare la derivee calculee avec l'estimation en differences finies en faisant
+   un
+   CALC_TABLE,
+   - les tests sont maintenant en PAR_LOT='OUI'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les tests eux-memes
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009637 DU 2006-04-03 06:49:16
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   Mini-evolutions
+FONCTIONNALITE
+   CALC_TABLE :
+   - ajout du filtre par expression reguliere
+   - on peut prendre en entree une table sensible. En revanche, la table produite est
+   toujours une table "nominale" (coherence avec les autres commandes a voir dans le cadre
+   du
+   projet QSM).
+   
+   
+   LIRE_TABLE :
+   - le separateur est aujourd'hui obligatoire alors qu'au format ASTER (le seul
+   supporte),
+   c'est un espace.
+   
+   
+   E_SUPERV :
+   - l'option "-debug" ne faisait rien, puisque la valeur par defaut restait a 0,
+   - remplacement des appels os.system('cat') par open/write
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test des operations independamment les unes des autres
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques.        DATE 04/04/2006 - 11:40:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009023 DU 2005-09-21 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   Charges cinematiques
+FONCTIONNALITE
+   1) Constat:
+   ---------
+   L'utilisation des charges cinematiques conduisait a creer un objet
+   matrice.VALI de taille tres importante.
+   Cet objet obligeait a utiliser beaucoup de memoire.
+   
+   Solution :
+   Je revois profondement la programmation des charges cinematiques pour
+   corriger ce defaut.
+   
+   
+   2) Gains obtenus :
+   ---------------
+   J'ai fait l'essai suivant :
+   1 cube maille en 20*20*20 hexa8 dont on bloque une face (21*21 noeuds)
+   
+   Avant la correction :
+   - 512 Mo => memoire insuffisante
+   - 760 Mo => OK    (35,47s)
+   
+   Apres la correction :
+   - 80 Mo  => memoire insuffisante
+   - 128 Mo => OK    (28,3s)
+   
+   On peut donc passer ce test avec  6 fois moins de memoire qu'avant et,
+   cerise sur le gateau, on gagne 20% de CPU !
+   Bravo Jacot !
+   
+   3) Validation :
+   ------------
+   Passage de la liste de tous les tests utilisants AFFE_CHAR_CINE
+   
+   4) Impact Doc D :
+   -----------------
+   D4.06.10 SD_MATR_ASSE : refonte des objets
+   .VALI  -> .CCVA     (modifie)
+   .CONI  -> .CCID
+   .LLIG  -> .CCLL     (modifie)
+   .ABLI  ->            supprime
+   .ALIG  ->            supprime
+   nouveau :   .CCJJ
+   
+   
+   
+   Liste des fichiers impactes par la correction de la fiche:
+   -----------------------------------------------------------
+   ascima.f  assmmn.f  csmbc8.f  deteli.f  mtcopy.f  nmrldb.f  vpddl.f
+   asmchc.f  cbvali.f  csmbg1.f  detrsd.f  mtdsc3.f  op0012.f
+   asschc.f  cidia1.f  csmbgg.f  mtcmbl.f  mtdscr.f  tldlg2.f
+   assmam.f  copisd.f  csmbr8.f  mtcomb.f  nmresi.f  vereli.f
+   
+   
+   NB_JOURS_TRAV : 3 (JP) + 6 (DCAD)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.10
+VALIDATION
+   passage de tous les tests AFFE_CHAR_CINE
+NB_JOURS_TRAV  : 9.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008670 DU 2005-05-12 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.0)
+TMA : CS
+TITRE
+   resorber ALCAR2 et NOCAR2
+FONCTIONNALITE
+   Les nouvelles routines ALCAR2 et NOCAR2 ont remplace dans tout le code les anciennes
+   routines ALCAR et NOCAR.
+   
+   L interet principal de ces routines de creation de carte est qu il n est plus necessaire
+   de dimensionner la carte une fois pour toute lors de sa creation. En effet la routine
+   NOCAR2 permet d agrandir la carte en cas de besoin.
+   
+   Un probleme de taille memoire est apparu sur le test ascou21a.
+   Apres analyse de la segmentation memoire, celle-ci est en majorite libre. Le probleme se
+   pose lorsqu on veut allouer la matrice factorise. Il se trouve que la repartition des
+   objets en memoire est defavorable ( pas de place pour allouer ce "gros" objet ). La cause
+   du probleme est que la creation d une carte requiert plus de place qu'avant. En effet,
+   plutot que de demander a l utilisateur la taille de la carte, on part d une taille
+   unitaire pour ensuite augmenter la taille par des puissances de 2 jusqu a avoir une taille
+   suffisante. Selon la taille des cartes, la nouvelle carte est donc legerement plus grande
+   ( dans des limites de rapport 2 au maximum ).
+   Pour le resoudre, on partitionne la memoire en allouant 80% de la place memoire jeveux aux
+   gros objets via les mots cles TAILLE et PARTITION de la commande POURSUITE.
+   
+   Rq: pour etre sur de ne pas commettre d erreur, je suggere de restituer les nouvelles
+   routine sous le nom ALCAR2 et NOCAR2. A la prochaine restitution, on renomme ces routines
+   en ALCART et NOCART qui sont des noms plus parlant.
+   
+   MPACT DOC_D :
+   - soit renommer dans D6.00.01 : ALCART et NOCART
+   - soit renommer dans le fortran : ALCAR2 -> ALCART, ...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+   passage de la liste complete
+NB_JOURS_TRAV  : 8.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 04/04/2006 - 11:40:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008392 DU 2005-01-19 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.0)
+TMA : CS
+TITRE
+   charges cinematiques dans STAT_NON_LINE
+FONCTIONNALITE
+   La fiche comportait deux parties distinctes. La premiere partie consistait a ne pas
+   connaitre en dur le nom de la matrice globale de rigidite mais a le transmettre via des
+   arguments a travers les routines.
+   Le second point concernait les charges cinematiques et les les risques d erreur dans la
+   routine nmdome.
+   
+   Seul le premier point est traite dans cette fiche car une fiche plus generale sur la
+   refonte de la SD des charges est en cours.
+   
+   Pour realiser ce point, toutes les routines utilisant la matrice de rigidite ont ete
+   modifie pour recuperer en argument le nom de la matrice du premier membre assemble defini
+   dans op0070 par MATASS='&&OP0070.MATASS'
+   
+   Par ailleurs, pour la dynamique, une matrice comprenant seulement la rigidite est
+   disponible et est transmis via l'argument RIGID. La matrice MATASS comprend quant a elle
+   tout le premier membre c est a dire la matrice de rigidite plus la matrice de masse et
+   eventuellement la matrice d amortissement.
+   
+   Remarque : Pour le contact, l ancienne facon de proceder etait de renommer la matrice du
+   premier membre lorsqu il y avait du contact. Ce passage a ete supprime (la routine nmmafr
+   ne sert plus a rien et est supprime). Pour cela, on a modifie legerement la routine mtcmbl
+   qui combine des matrices. Un nouvel argument signale a la routine si le resultat de la
+   combinaison doit etre ecrit dans une nouvelle matrice ou dans une des matrices d entree.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+   passage de la liste complete
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sslp107a                      cibhhlv L.VIVAN            410    410      0
+ CASTEST AJOUT sslv113c                      cibhhlv L.VIVAN            203    203      0
+ CASTEST AJOUT sslv113d                      cibhhlv L.VIVAN            203    203      0
+ CASTEST AJOUT ssnp116d                      jmbhh01 J.M.PROIX          430    430      0
+ CASTEST AJOUT ssnv142b                      jmbhh01 J.M.PROIX          170    170      0
+ CASTEST AJOUT ssnv142c                      jmbhh01 J.M.PROIX          187    187      0
+ CASTEST AJOUT ssnv185h                      cibhhlv L.VIVAN            224    224      0
+ CASTEST MODIF ascou15a                      cibhhlv L.VIVAN            190      3      3
+ CASTEST MODIF ascou21a                      vabhhts J.PELLET            89      1      1
+ CASTEST MODIF demo001a                      cibhhlv L.VIVAN            296      4      4
+ CASTEST MODIF fdlv101a                      cibhhlv L.VIVAN            164      3      3
+ CASTEST MODIF fiab001a                      cibhhlv L.VIVAN            127      1      1
+ CASTEST MODIF forma04a                      cibhhlv L.VIVAN            361      5      5
+ CASTEST MODIF forma04b                      cibhhlv L.VIVAN            364      5      5
+ CASTEST MODIF forma04c                      cibhhlv L.VIVAN            313      6      6
+ CASTEST MODIF forma05a                      cibhhlv L.VIVAN            314      5      5
+ CASTEST MODIF forma05b                      cibhhlv L.VIVAN            360      9      9
+ CASTEST MODIF forma08b                      cibhhlv L.VIVAN            381      4      4
+ CASTEST MODIF hplv103a                      cibhhlv L.VIVAN            620      4      3
+ CASTEST MODIF sdnd102b                      cibhhlv L.VIVAN            460      4      5
+ CASTEST MODIF sdnd102c                      cibhhlv L.VIVAN            242      3      5
+ CASTEST MODIF sdnd102d                      cibhhlv L.VIVAN            235      4      6
+ CASTEST MODIF sensm07a                      cibhhlv L.VIVAN            216      2      2
+ CASTEST MODIF senst01a                     lebouvie F.LEBOUVIER        155      1      1
+ CASTEST MODIF senst03a                     mcourtoi M.COURTOIS         220     56    180
+ CASTEST MODIF senst03b                     mcourtoi M.COURTOIS         233     14    148
+ CASTEST MODIF ssla200b                      cibhhlv L.VIVAN           1337      2      2
+ CASTEST MODIF sslp200b                      cibhhlv L.VIVAN           1255      2      2
+ CASTEST MODIF sslp201b                      cibhhlv L.VIVAN           1187      2      2
+ CASTEST MODIF ssls09b                       cibhhlv L.VIVAN            342      9      9
+ CASTEST MODIF ssls09c                       cibhhlv L.VIVAN            197     90    111
+ CASTEST MODIF sslv07a                       cibhhlv L.VIVAN            675      8      8
+ CASTEST MODIF sslv07b                       cibhhlv L.VIVAN            146      8      8
+ CASTEST MODIF sslv07d                       cibhhlv L.VIVAN            306      5      5
+ CASTEST MODIF sslv111a                      cibhhlv L.VIVAN            285     19     19
+ CASTEST MODIF sslv111b                      cibhhlv L.VIVAN            234     16     16
+ CASTEST MODIF sslv111c                      cibhhlv L.VIVAN            236     16     16
+ CASTEST MODIF sslv111d                      cibhhlv L.VIVAN            236     16     16
+ CASTEST MODIF sslv111e                      cibhhlv L.VIVAN            236     16     16
+ CASTEST MODIF sslv113a                      cibhhlv L.VIVAN            173     10     10
+ CASTEST MODIF sslv113b                      cibhhlv L.VIVAN            189     10     10
+ CASTEST MODIF sslv130a                      cibhhlv L.VIVAN            389      5      5
+ CASTEST MODIF sslv130b                      cibhhlv L.VIVAN            371      5      5
+ CASTEST MODIF sslv130c                      cibhhlv L.VIVAN            348      9      9
+ CASTEST MODIF sslv130d                      cibhhlv L.VIVAN            802    715    304
+ CASTEST MODIF sslv130e                      cibhhlv L.VIVAN            390      5      5
+ CASTEST MODIF sslv135a                      f1bhhaj J.ANGLES          1286      1      1
+ CASTEST MODIF sslv135b                      f1bhhaj J.ANGLES          1266      1      1
+ CASTEST MODIF sslv135c                      f1bhhaj J.ANGLES          1193     18      9
+ CASTEST MODIF sslv135d                      f1bhhaj J.ANGLES           781      3      2
+ CASTEST MODIF sslv135e                      f1bhhaj J.ANGLES          1062     11      6
+ CASTEST MODIF sslv311a                      cibhhlv L.VIVAN            380      4      4
+ CASTEST MODIF ssnl128a                      jmbhh01 J.M.PROIX          557      1      1
+ CASTEST MODIF ssnl128b                      jmbhh01 J.M.PROIX          622    454    425
+ CASTEST MODIF ssnl128c                      jmbhh01 J.M.PROIX          457    336    315
+ CASTEST MODIF ssnp123a                      cibhhlv L.VIVAN            225      5      5
+ CASTEST MODIF ssnp123b                      cibhhlv L.VIVAN            202     48     68
+ CASTEST MODIF ssnp130a                      cibhhlv L.VIVAN            270      2      2
+ CASTEST MODIF ssnp130b                      cibhhlv L.VIVAN            269      2      2
+ CASTEST MODIF ssnp130c                      cibhhlv L.VIVAN            229      2      2
+ CASTEST MODIF ssnp130d                      cibhhlv L.VIVAN            249      2      2
+ CASTEST MODIF ssnv112a                      cibhhlv L.VIVAN            202      5      5
+ CASTEST MODIF ssnv112b                      cibhhlv L.VIVAN            233      5      5
+ CASTEST MODIF ssnv112c                      cibhhlv L.VIVAN            290    239    131
+ CASTEST MODIF ssnv112d                      cibhhlv L.VIVAN            291    235    132
+ CASTEST MODIF ssnv124a                      cibhhlv L.VIVAN            202     92    151
+ CASTEST MODIF ssnv124b                      cibhhlv L.VIVAN            181      5      5
+ CASTEST MODIF ssnv124c                      cibhhlv L.VIVAN            136     84    121
+ CASTEST MODIF ssnv173f                      cibhhlv L.VIVAN            287     29      3
+ CASTEST MODIF ssnv182d                      cibhhlv L.VIVAN            205     37      1
+ CASTEST MODIF ssnv185b                      cibhhlv L.VIVAN            276     47      9
+ CASTEST MODIF ssnv185c                      cibhhlv L.VIVAN            305     50      9
+ CASTEST MODIF ssnv185d                      cibhhlv L.VIVAN            273     50      9
+ CASTEST MODIF ssnv185f                      cibhhlv L.VIVAN            207      2      2
+ CASTEST MODIF ssnv505a                      cibhhlv L.VIVAN            224      4     14
+ CASTEST MODIF tpll01j                       cibhhlv L.VIVAN            121     10     10
+ CASTEST MODIF zzzz121a                      cibhhlv L.VIVAN            271      4      4
+ CASTEST MODIF zzzz121b                      cibhhlv L.VIVAN            460      6      6
+ CASTEST MODIF zzzz121c                      cibhhlv L.VIVAN            377      7      7
+ CASTEST MODIF zzzz121d                      cibhhlv L.VIVAN            466     10     10
+ CASTEST MODIF zzzz161a                      cibhhlv L.VIVAN            266      5      5
+ CASTEST MODIF zzzz175a                      cibhhlv L.VIVAN            624      3      3
+CATALOGU AJOUT options/erre_elem_sigm        cibhhlv L.VIVAN             47     47      0
+CATALOGU AJOUT options/erre_elem_temp_f      cibhhlv L.VIVAN             36     36      0
+CATALOGU AJOUT options/erre_elem_temp_r      cibhhlv L.VIVAN             36     36      0
+CATALOGU AJOUT options/erre_elno_elem        cibhhlv L.VIVAN             27     27      0
+CATALOGU AJOUT options/erre_qizz             cibhhlv L.VIVAN             37     37      0
+CATALOGU AJOUT options/qire_elem_sigm        cibhhlv L.VIVAN             61     61      0
+CATALOGU AJOUT options/qire_elno_elem        cibhhlv L.VIVAN             27     27      0
+CATALOGU MODIF compelem/grandeur_simple__    cibhhlv L.VIVAN            604      6      7
+CATALOGU MODIF options/char_meca_hydr_r      jmbhh01 J.M.PROIX           42      3      1
+CATALOGU MODIF options/char_meca_sech_r      jmbhh01 J.M.PROIX           43      3      1
+CATALOGU MODIF typelem/gener_me2db1          jmbhh01 J.M.PROIX          222     18      1
+CATALOGU MODIF typelem/gener_me2dg_1         cibhhlv L.VIVAN            374      4      4
+CATALOGU MODIF typelem/gener_me2dg_2         cibhhlv L.VIVAN            390      4      4
+CATALOGU MODIF typelem/gener_me3d_2          cibhhlv L.VIVAN            156      2      2
+CATALOGU MODIF typelem/gener_me3d_3          cibhhlv L.VIVAN            632     14      7
+CATALOGU MODIF typelem/gener_me3dg_1         cibhhlv L.VIVAN            349      3      3
+CATALOGU MODIF typelem/gener_me3dg_3         cibhhlv L.VIVAN            373      3      3
+CATALOGU MODIF typelem/gener_me3di3          cibhhlv L.VIVAN            218     14      5
+CATALOGU MODIF typelem/gener_me_x            cibhhlv L.VIVAN            612     16      7
+CATALOGU MODIF typelem/gener_me_xh           cibhhlv L.VIVAN            284      2      2
+CATALOGU MODIF typelem/gener_me_xht          cibhhlv L.VIVAN            286      2      2
+CATALOGU MODIF typelem/gener_me_xt           cibhhlv L.VIVAN            290      2      2
+CATALOGU MODIF typelem/gener_meax_2          cibhhlv L.VIVAN            593     18      6
+CATALOGU MODIF typelem/gener_meaxs2          cibhhlv L.VIVAN            558     18      6
+CATALOGU MODIF typelem/gener_mebar1          jmbhh01 J.M.PROIX          225     21      2
+CATALOGU MODIF typelem/gener_mecpg2          cibhhlv L.VIVAN            369      4      4
+CATALOGU MODIF typelem/gener_mecpl2          cibhhlv L.VIVAN            584     18      6
+CATALOGU MODIF typelem/gener_mecpl2_x        cibhhlv L.VIVAN            575     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xh       cibhhlv L.VIVAN            186      9      1
+CATALOGU MODIF typelem/gener_mecpl2_xht      cibhhlv L.VIVAN            188      9      1
+CATALOGU MODIF typelem/gener_mecpl2_xt       cibhhlv L.VIVAN            159     11      3
+CATALOGU MODIF typelem/gener_medpg2          cibhhlv L.VIVAN            370      3      3
+CATALOGU MODIF typelem/gener_medpl2          cibhhlv L.VIVAN            600     17      5
+CATALOGU MODIF typelem/gener_medpl2_x        cibhhlv L.VIVAN            570     12     14
+CATALOGU MODIF typelem/gener_medpl2_xh       cibhhlv L.VIVAN            188      9      1
+CATALOGU MODIF typelem/gener_medpl2_xht      cibhhlv L.VIVAN            190      9      1
+CATALOGU MODIF typelem/gener_medpl2_xt       cibhhlv L.VIVAN            161     11      3
+CATALOGU MODIF typelem/gener_mepli2          cibhhlv L.VIVAN            206     15      6
+CATALOGU MODIF typelem/gener_mepmf1          jmbhh01 J.M.PROIX          192     19      2
+CATALOGU MODIF typelem/gener_mepmf2          jmbhh01 J.M.PROIX          224     16      1
+CATALOGU MODIF typelem/gener_meshb3          cibhhlv L.VIVAN            323      4      4
+CATALOGU MODIF typelem/gener_mv2d_2          cibhhlv L.VIVAN            338     14      5
+CATALOGU MODIF typelem/gener_mv3d_3          cibhhlv L.VIVAN            438     14      5
+CATALOGU MODIF typelem/gener_th3d_3          cibhhlv L.VIVAN            231     12     12
+CATALOGU MODIF typelem/gener_th3dd3          cibhhlv L.VIVAN            202      9      9
+CATALOGU MODIF typelem/gener_thaxd2          cibhhlv L.VIVAN            222      6      6
+CATALOGU MODIF typelem/gener_thaxf2          cibhhlv L.VIVAN            120      4      4
+CATALOGU MODIF typelem/gener_thcq_2          cibhhlv L.VIVAN            130      4      4
+CATALOGU MODIF typelem/gener_thcqa1          cibhhlv L.VIVAN             89      4      4
+CATALOGU MODIF typelem/gener_thcqp1          cibhhlv L.VIVAN             89      4      4
+CATALOGU MODIF typelem/gener_thpl_2          cibhhlv L.VIVAN            240      6      6
+CATALOGU MODIF typelem/gener_thpld2          cibhhlv L.VIVAN            223      6      6
+CATALOGU MODIF typelem/mecpqs4               cibhhlv L.VIVAN            536     18      6
+CATALOGU MODIF typelem/mecptr3               cibhhlv L.VIVAN            569     18      6
+CATALOGU MODIF typelem/mecptr6               cibhhlv L.VIVAN            565     18      6
+CATALOGU MODIF typelem/medpqs4               cibhhlv L.VIVAN            547     18      6
+CATALOGU MODIF typelem/medpqs8               cibhhlv L.VIVAN            546     18      6
+CATALOGU MODIF typelem/medptr6               cibhhlv L.VIVAN            575     18      6
+CATALOGU SUPPR options/erre_elga_nore        cibhhlv L.VIVAN             47      0     47
+CATALOGU SUPPR options/erre_elno_elga        cibhhlv L.VIVAN             27      0     27
+CATALOGU SUPPR options/erth_elem_temp_f      cibhhlv L.VIVAN             36      0     36
+CATALOGU SUPPR options/erth_elem_temp_r      cibhhlv L.VIVAN             36      0     36
+CATALOGU SUPPR options/erth_elno_elem        cibhhlv L.VIVAN             28      0     28
+CATALOPY MODIF commande/affe_cara_elem       cibhhlv L.VIVAN            536    117     11
+CATALOPY MODIF commande/affe_char_meca       cibhhlv L.VIVAN           1024      4      4
+CATALOPY MODIF commande/affe_char_meca_f     cibhhlv L.VIVAN            694      4      3
+CATALOPY MODIF commande/calc_elem            cibhhlv L.VIVAN            578     38     10
+CATALOPY MODIF commande/calc_no              cibhhlv L.VIVAN            102      2      2
+CATALOPY MODIF commande/calc_table          mcourtoi M.COURTOIS         107      9      3
+CATALOPY MODIF commande/detruire            lebouvie F.LEBOUVIER         37      4      1
+CATALOPY MODIF commande/lire_table          mcourtoi M.COURTOIS          32      2      2
+CATALOPY MODIF commande/macro_elas_mult      cibhhlv L.VIVAN             85      5      4
+CATALOPY MODIF commun/c_nom_cham_into        cibhhlv L.VIVAN            188     11      8
+CATALOPY MODIF commun/c_nom_grandeur         cibhhlv L.VIVAN            146      1      2
+ FORTRAN AJOUT calculel/qintzz               cibhhlv L.VIVAN             99     99      0
+ FORTRAN AJOUT calculel/qires1               cibhhlv L.VIVAN            527    527      0
+ FORTRAN AJOUT elements/ere2d1               cibhhlv L.VIVAN            153    153      0
+ FORTRAN AJOUT elements/ere2d2               cibhhlv L.VIVAN            199    199      0
+ FORTRAN AJOUT elements/ere2d3               cibhhlv L.VIVAN            333    333      0
+ FORTRAN AJOUT elements/ere3d1               cibhhlv L.VIVAN            137    137      0
+ FORTRAN AJOUT elements/ere3d2               cibhhlv L.VIVAN            137    137      0
+ FORTRAN AJOUT elements/ere3d3               cibhhlv L.VIVAN            263    263      0
+ FORTRAN AJOUT elements/intega               cibhhlv L.VIVAN             77     77      0
+ FORTRAN AJOUT elements/intenc               cibhhlv L.VIVAN             89     89      0
+ FORTRAN AJOUT elements/te0292               cibhhlv L.VIVAN            164    164      0
+ FORTRAN AJOUT elements/te0368               cibhhlv L.VIVAN            608    608      0
+ FORTRAN AJOUT elements/te0378               cibhhlv L.VIVAN            412    412      0
+ FORTRAN AJOUT elements/xdepla               cibhhlv L.VIVAN            166    166      0
+ FORTRAN AJOUT modelisa/cacoco               cibhhlv L.VIVAN            179    179      0
+ FORTRAN AJOUT utilitai/calnor               cibhhlv L.VIVAN            235    235      0
+ FORTRAN MODIF algeline/alfeti               boiteau O.BOITEAU          984     11      7
+ FORTRAN MODIF algeline/cbvali               vabhhts J.PELLET           160     86    162
+ FORTRAN MODIF algeline/cidia1               vabhhts J.PELLET           112     20     28
+ FORTRAN MODIF algeline/csmbc8               vabhhts J.PELLET           102     47     51
+ FORTRAN MODIF algeline/csmbg1               vabhhts J.PELLET           115     25     27
+ FORTRAN MODIF algeline/csmbgg               vabhhts J.PELLET           110     10     11
+ FORTRAN MODIF algeline/csmbr8               vabhhts J.PELLET           103     41     46
+ FORTRAN MODIF algeline/deteli               vabhhts J.PELLET            68     12     13
+ FORTRAN MODIF algeline/mtcmbl               vabhhts J.PELLET           244     79     90
+ FORTRAN MODIF algeline/mtcomb               vabhhts J.PELLET           223     48     78
+ FORTRAN MODIF algeline/mtcopy               vabhhts J.PELLET           106     28     28
+ FORTRAN MODIF algeline/mtdsc3               vabhhts J.PELLET           138      7      5
+ FORTRAN MODIF algeline/mtdscr               vabhhts J.PELLET           200     24     30
+ FORTRAN MODIF algeline/tldlg2               vabhhts J.PELLET           638    209    174
+ FORTRAN MODIF algeline/vereli               vabhhts J.PELLET           133     47     74
+ FORTRAN MODIF algeline/vpddl                vabhhts J.PELLET           155     42     42
+ FORTRAN MODIF algorith/accel0               vabhhts J.PELLET           235     14     14
+ FORTRAN MODIF algorith/algocl               vabhhts J.PELLET           679      9      5
+ FORTRAN MODIF algorith/algoco               vabhhts J.PELLET           705      9      5
+ FORTRAN MODIF algorith/algogl               vabhhts J.PELLET           681      9      5
+ FORTRAN MODIF algorith/asasma               vabhhts J.PELLET            75      2      3
+ FORTRAN MODIF algorith/ascima               vabhhts J.PELLET            80     19     17
+ FORTRAN MODIF algorith/cakg3d               cibhhlv L.VIVAN            398     14     12
+ FORTRAN MODIF algorith/cakgmo               cibhhlv L.VIVAN            300     19     19
+ FORTRAN MODIF algorith/cfalgo               vabhhts J.PELLET           202     10      9
+ FORTRAN MODIF algorith/cfdist               cibhhlv L.VIVAN            129      9      3
+ FORTRAN MODIF algorith/cffrot               vabhhts J.PELLET           101      3      3
+ FORTRAN MODIF algorith/cfresu               vabhhts J.PELLET           443      6      7
+ FORTRAN MODIF algorith/comp1d               jmbhh01 J.M.PROIX          174      9      6
+ FORTRAN MODIF algorith/conlig               vabhhts J.PELLET            62      5      5
+ FORTRAN MODIF algorith/fetmon               boiteau O.BOITEAU          138      3      3
+ FORTRAN MODIF algorith/frapp2               vabhhts J.PELLET           709      3      3
+ FORTRAN MODIF algorith/lissag                  kham M.KHAM             302      7     10
+ FORTRAN MODIF algorith/mappar                  kham M.KHAM             368      9      6
+ FORTRAN MODIF algorith/mchmps                  kham M.KHAM             203      5     11
+ FORTRAN MODIF algorith/mxmass               vabhhts J.PELLET           204      1      1
+ FORTRAN MODIF algorith/nddoet               vabhhts J.PELLET           522     10      9
+ FORTRAN MODIF algorith/nm1vil               jmbhh01 J.M.PROIX          230     13     69
+ FORTRAN MODIF algorith/nmarch               boiteau O.BOITEAU          359     56     16
+ FORTRAN MODIF algorith/nmasfr               vabhhts J.PELLET           108      4      7
+ FORTRAN MODIF algorith/nmco1d               jmbhh01 J.M.PROIX          147     10      1
+ FORTRAN MODIF algorith/nmcofr               vabhhts J.PELLET           202      5      3
+ FORTRAN MODIF algorith/nmconv               vabhhts J.PELLET           704      6      5
+ FORTRAN MODIF algorith/nmdepl               vabhhts J.PELLET           311     21     17
+ FORTRAN MODIF algorith/nmdesc               vabhhts J.PELLET           168     11      7
+ FORTRAN MODIF algorith/nmdorc               vabhhts J.PELLET           585      8     12
+ FORTRAN MODIF algorith/nmfext               boiteau O.BOITEAU          143      2      2
+ FORTRAN MODIF algorith/nmfint               boiteau O.BOITEAU          219      5      4
+ FORTRAN MODIF algorith/nmflam               vabhhts J.PELLET           198      9      7
+ FORTRAN MODIF algorith/nmible               vabhhts J.PELLET           176      7      6
+ FORTRAN MODIF algorith/nminit               vabhhts J.PELLET           426     16     15
+ FORTRAN MODIF algorith/nmmatr               vabhhts J.PELLET           432     18     20
+ FORTRAN MODIF algorith/nmprdc               vabhhts J.PELLET           219     13     10
+ FORTRAN MODIF algorith/nmpred               vabhhts J.PELLET           136     29     27
+ FORTRAN MODIF algorith/nmprex               vabhhts J.PELLET           211     13     10
+ FORTRAN MODIF algorith/nmprta               vabhhts J.PELLET           324     18     14
+ FORTRAN MODIF algorith/nmresi               vabhhts J.PELLET           266     14     17
+ FORTRAN MODIF algorith/nmrldb               vabhhts J.PELLET            75     23     22
+ FORTRAN MODIF algorith/nmunil               vabhhts J.PELLET           121      4      4
+ FORTRAN MODIF algorith/nmvcfo               jmbhh01 J.M.PROIX          227      9      7
+ FORTRAN MODIF algorith/nmvcpr               jmbhh01 J.M.PROIX          350     16     12
+ FORTRAN MODIF algorith/nmvpir               jmbhh01 J.M.PROIX          580     37     31
+ FORTRAN MODIF algorith/nmvprk               jmbhh01 J.M.PROIX          361      3      2
+ FORTRAN MODIF algorith/op0070               vabhhts J.PELLET           917     45     41
+ FORTRAN MODIF algorith/projco               cibhhlv L.VIVAN            191      7      5
+ FORTRAN MODIF algorith/rechco               cibhhlv L.VIVAN            408      6      4
+ FORTRAN MODIF algorith/te0350               cibhhlv L.VIVAN            212      3      2
+ FORTRAN MODIF algorith/te0351               cibhhlv L.VIVAN             81      3      4
+ FORTRAN MODIF algorith/typthm               cibhhlv L.VIVAN             49      4      7
+ FORTRAN MODIF algorith/xcfacf               cibhhlv L.VIVAN            181     19      4
+ FORTRAN MODIF assembla/asmchc               vabhhts J.PELLET           249    171    152
+ FORTRAN MODIF assembla/asschc               vabhhts J.PELLET           112     36     53
+ FORTRAN MODIF assembla/assmam               vabhhts J.PELLET          1147    332    238
+ FORTRAN MODIF assembla/assmmn               vabhhts J.PELLET           903    101     62
+ FORTRAN MODIF assembla/assvec               boiteau O.BOITEAU          991     46     15
+ FORTRAN MODIF assembla/op0012               vabhhts J.PELLET           108     13     11
+ FORTRAN MODIF calculel/agcar2               vabhhts J.PELLET           129     10     12
+ FORTRAN MODIF calculel/alcar2               vabhhts J.PELLET           129      6      6
+ FORTRAN MODIF calculel/calcul               boiteau O.BOITEAU          410      9      2
+ FORTRAN MODIF calculel/mecact               vabhhts J.PELLET           162      3      3
+ FORTRAN MODIF calculel/mecalm               cibhhlv L.VIVAN           2836    296     41
+ FORTRAN MODIF calculel/nocar2               vabhhts J.PELLET           195     14      2
+ FORTRAN MODIF calculel/op0058               cibhhlv L.VIVAN            115      4      9
+ FORTRAN MODIF calculel/op0077               cibhhlv L.VIVAN            646     10      7
+ FORTRAN MODIF calculel/op0175               vabhhts J.PELLET           563      4      6
+ FORTRAN MODIF calculel/reslgn               cibhhlv L.VIVAN             45      3      5
+ FORTRAN MODIF calculel/reslo2               cibhhlv L.VIVAN            141     34     25
+ FORTRAN MODIF calculel/resloc               cibhhlv L.VIVAN            298      3      3
+ FORTRAN MODIF calculel/resth2               cibhhlv L.VIVAN            252      4      4
+ FORTRAN MODIF calculel/resthe               cibhhlv L.VIVAN            263      2      2
+ FORTRAN MODIF calculel/rethgn               cibhhlv L.VIVAN             66      4      4
+ FORTRAN MODIF calculel/te0503               cibhhlv L.VIVAN            117      6      2
+ FORTRAN MODIF calculel/te0504               cibhhlv L.VIVAN             90      6      2
+ FORTRAN MODIF calculel/te0506               cibhhlv L.VIVAN             97      5      2
+ FORTRAN MODIF calculel/te0507               cibhhlv L.VIVAN            128      5      2
+ FORTRAN MODIF calculel/thaclm               cibhhlv L.VIVAN            891      9      9
+ FORTRAN MODIF calculel/uthk                 cibhhlv L.VIVAN            328      7      3
+ FORTRAN MODIF calculel/zechlo               boiteau O.BOITEAU          129      5     52
+ FORTRAN MODIF calculel/zzglo1               cibhhlv L.VIVAN            216      2      2
+ FORTRAN MODIF calculel/zzglob               cibhhlv L.VIVAN            296    160     29
+ FORTRAN MODIF calculel/zzloca               cibhhlv L.VIVAN             75      8      8
+ FORTRAN MODIF elements/ernozz               cibhhlv L.VIVAN             59     45     35
+ FORTRAN MODIF elements/gkmet3               cibhhlv L.VIVAN            206     22     12
+ FORTRAN MODIF elements/gksimp               cibhhlv L.VIVAN            205     22      9
+ FORTRAN MODIF elements/metau1               cibhhlv L.VIVAN            129      4     12
+ FORTRAN MODIF elements/pmfcom               jmbhh01 J.M.PROIX          286     10      2
+ FORTRAN MODIF elements/resr3d               cibhhlv L.VIVAN             73      2      2
+ FORTRAN MODIF elements/resrot               cibhhlv L.VIVAN             66      2      2
+ FORTRAN MODIF elements/te0003               cibhhlv L.VIVAN            939      3      3
+ FORTRAN MODIF elements/te0004               cibhhlv L.VIVAN            114      2      2
+ FORTRAN MODIF elements/te0007               cibhhlv L.VIVAN            133      3      2
+ FORTRAN MODIF elements/te0030               cibhhlv L.VIVAN            189      4      6
+ FORTRAN MODIF elements/te0070               cibhhlv L.VIVAN            118      6      2
+ FORTRAN MODIF elements/te0071               cibhhlv L.VIVAN            126      5      2
+ FORTRAN MODIF elements/te0072               cibhhlv L.VIVAN            126      5      2
+ FORTRAN MODIF elements/te0073               cibhhlv L.VIVAN            463      4      8
+ FORTRAN MODIF elements/te0074               cibhhlv L.VIVAN            100      5      2
+ FORTRAN MODIF elements/te0075               cibhhlv L.VIVAN            119      6      2
+ FORTRAN MODIF elements/te0088               cibhhlv L.VIVAN             99      6      2
+ FORTRAN MODIF elements/te0089               cibhhlv L.VIVAN             93      6      2
+ FORTRAN MODIF elements/te0090               cibhhlv L.VIVAN             99      5      3
+ FORTRAN MODIF elements/te0091               cibhhlv L.VIVAN             99      6      2
+ FORTRAN MODIF elements/te0096               cibhhlv L.VIVAN           1200      3      3
+ FORTRAN MODIF elements/te0100               cibhhlv L.VIVAN            313      3      3
+ FORTRAN MODIF elements/te0120               cibhhlv L.VIVAN            136      3      2
+ FORTRAN MODIF elements/te0136               cibhhlv L.VIVAN            127      7      2
+ FORTRAN MODIF elements/te0137               cibhhlv L.VIVAN            149      6      2
+ FORTRAN MODIF elements/te0138               cibhhlv L.VIVAN            126      5      7
+ FORTRAN MODIF elements/te0150               jmbhh01 J.M.PROIX          343     85     24
+ FORTRAN MODIF elements/te0155               jmbhh01 J.M.PROIX          632    148      2
+ FORTRAN MODIF elements/te0178               cibhhlv L.VIVAN             99      6      2
+ FORTRAN MODIF elements/te0179               cibhhlv L.VIVAN             88      6      2
+ FORTRAN MODIF elements/te0204               cibhhlv L.VIVAN            769      3      3
+ FORTRAN MODIF elements/te0209               cibhhlv L.VIVAN            100      6      2
+ FORTRAN MODIF elements/te0210               cibhhlv L.VIVAN            171      5      2
+ FORTRAN MODIF elements/te0211               cibhhlv L.VIVAN            132      6      2
+ FORTRAN MODIF elements/te0212               cibhhlv L.VIVAN            147      6      2
+ FORTRAN MODIF elements/te0235               cibhhlv L.VIVAN            371      5      7
+ FORTRAN MODIF elements/te0244               cibhhlv L.VIVAN            490      3      3
+ FORTRAN MODIF elements/te0248               jmbhh01 J.M.PROIX          465     21      1
+ FORTRAN MODIF elements/te0249               cibhhlv L.VIVAN            167      3      3
+ FORTRAN MODIF elements/te0250               cibhhlv L.VIVAN            189      3      3
+ FORTRAN MODIF elements/te0251               cibhhlv L.VIVAN            125      6      2
+ FORTRAN MODIF elements/te0255               cibhhlv L.VIVAN             99      6      2
+ FORTRAN MODIF elements/te0256               cibhhlv L.VIVAN            114      6      2
+ FORTRAN MODIF elements/te0257               cibhhlv L.VIVAN            150      6      2
+ FORTRAN MODIF elements/te0258               cibhhlv L.VIVAN            118      6      2
+ FORTRAN MODIF elements/te0274               cibhhlv L.VIVAN            216      3      3
+ FORTRAN MODIF elements/te0275               cibhhlv L.VIVAN             98      6      2
+ FORTRAN MODIF elements/te0277               cibhhlv L.VIVAN            115      6      2
+ FORTRAN MODIF elements/te0288               cibhhlv L.VIVAN            309      5      4
+ FORTRAN MODIF elements/te0289               cibhhlv L.VIVAN            525      6      3
+ FORTRAN MODIF elements/te0305               cibhhlv L.VIVAN             82      5      2
+ FORTRAN MODIF elements/te0307               cibhhlv L.VIVAN             94      5      2
+ FORTRAN MODIF elements/te0315               cibhhlv L.VIVAN            142      5      2
+ FORTRAN MODIF elements/te0316               cibhhlv L.VIVAN            103      5      2
+ FORTRAN MODIF elements/te0317               cibhhlv L.VIVAN            100      5      2
+ FORTRAN MODIF elements/te0331               cibhhlv L.VIVAN            407      8      5
+ FORTRAN MODIF elements/te0332               cibhhlv L.VIVAN            308      8      5
+ FORTRAN MODIF elements/te0348               jmbhh01 J.M.PROIX          269     77     15
+ FORTRAN MODIF elements/te0353               cibhhlv L.VIVAN            426      5      2
+ FORTRAN MODIF elements/te0372               cibhhlv L.VIVAN            111      5      2
+ FORTRAN MODIF elements/te0373               cibhhlv L.VIVAN             94      5      2
+ FORTRAN MODIF elements/te0375               cibhhlv L.VIVAN            486    354    698
+ FORTRAN MODIF elements/te0377               cibhhlv L.VIVAN            329    188    575
+ FORTRAN MODIF elements/te0379               cibhhlv L.VIVAN             72      2      2
+ FORTRAN MODIF elements/te0386               cibhhlv L.VIVAN            131      5      2
+ FORTRAN MODIF elements/te0387               cibhhlv L.VIVAN            150      6      2
+ FORTRAN MODIF elements/te0449               cibhhlv L.VIVAN            230      3      2
+ FORTRAN MODIF elements/te0479               cibhhlv L.VIVAN             76      5      4
+ FORTRAN MODIF elements/te0515               cibhhlv L.VIVAN            197     36     21
+ FORTRAN MODIF elements/te0516               jmbhh01 J.M.PROIX          439     22      1
+ FORTRAN MODIF elements/te0533               cibhhlv L.VIVAN            595      2      1
+ FORTRAN MODIF elements/te0535               jmbhh01 J.M.PROIX          304     21      1
+ FORTRAN MODIF elements/te0539               cibhhlv L.VIVAN            427      3      3
+ FORTRAN MODIF elements/te0540               cibhhlv L.VIVAN            186      3      2
+ FORTRAN MODIF elements/te0543               cibhhlv L.VIVAN            148      5      4
+ FORTRAN MODIF elements/te0545               cibhhlv L.VIVAN            266      3      3
+ FORTRAN MODIF elements/te0548               cibhhlv L.VIVAN            135      1      3
+ FORTRAN MODIF elements/te0550               cibhhlv L.VIVAN            130      5      2
+ FORTRAN MODIF elements/te0577               cibhhlv L.VIVAN            367      3      3
+ FORTRAN MODIF elements/te0578               cibhhlv L.VIVAN            211      3      3
+ FORTRAN MODIF elements/te0579               cibhhlv L.VIVAN            228      3      3
+ FORTRAN MODIF elements/te0592               cibhhlv L.VIVAN            272      3      3
+ FORTRAN MODIF elements/te0593               cibhhlv L.VIVAN            256      3      3
+ FORTRAN MODIF elements/te0594               cibhhlv L.VIVAN            213      3      3
+ FORTRAN MODIF elements/te0595               cibhhlv L.VIVAN            253      3      3
+ FORTRAN MODIF elements/xteini               cibhhlv L.VIVAN            100      2      2
+ FORTRAN MODIF from_c/fetam                  boiteau O.BOITEAU          353     38     13
+ FORTRAN MODIF modelisa/abscur               vabhhts J.PELLET           234      4      4
+ FORTRAN MODIF modelisa/aceaba               vabhhts J.PELLET           300      7      7
+ FORTRAN MODIF modelisa/aceaca               vabhhts J.PELLET           121      8     10
+ FORTRAN MODIF modelisa/aceaco               vabhhts J.PELLET           133      6     13
+ FORTRAN MODIF modelisa/aceadi               vabhhts J.PELLET           275     14     20
+ FORTRAN MODIF modelisa/aceagb               vabhhts J.PELLET           223      8     10
+ FORTRAN MODIF modelisa/aceagr               vabhhts J.PELLET           175      6      8
+ FORTRAN MODIF modelisa/aceama               vabhhts J.PELLET           142      7      9
+ FORTRAN MODIF modelisa/aceaor               vabhhts J.PELLET           358      4      5
+ FORTRAN MODIF modelisa/aceapc               vabhhts J.PELLET           417      9     11
+ FORTRAN MODIF modelisa/aceapf               vabhhts J.PELLET           120      6      8
+ FORTRAN MODIF modelisa/aceapo               vabhhts J.PELLET           392      7      7
+ FORTRAN MODIF modelisa/acearm               vabhhts J.PELLET           197      8     14
+ FORTRAN MODIF modelisa/acearp               vabhhts J.PELLET           419      8     15
+ FORTRAN MODIF modelisa/aceat3               vabhhts J.PELLET           350      2      2
+ FORTRAN MODIF modelisa/aceinc               vabhhts J.PELLET           314      8    110
+ FORTRAN MODIF modelisa/acevdi               cibhhlv L.VIVAN            198     95      8
+ FORTRAN MODIF modelisa/aflrch               vabhhts J.PELLET           400      3      3
+ FORTRAN MODIF modelisa/arlcha               vabhhts J.PELLET           311      1      1
+ FORTRAN MODIF modelisa/cachei               vabhhts J.PELLET           210      7     11
+ FORTRAN MODIF modelisa/cachre               vabhhts J.PELLET           426      8     10
+ FORTRAN MODIF modelisa/caecha               vabhhts J.PELLET           219     13     15
+ FORTRAN MODIF modelisa/caechp               vabhhts J.PELLET           142      7     11
+ FORTRAN MODIF modelisa/caelec               vabhhts J.PELLET           154      6      9
+ FORTRAN MODIF modelisa/caflnl               vabhhts J.PELLET           108      6      9
+ FORTRAN MODIF modelisa/caflux               vabhhts J.PELLET           329     13     15
+ FORTRAN MODIF modelisa/cafond               vabhhts J.PELLET           223      6      8
+ FORTRAN MODIF modelisa/cafono               vabhhts J.PELLET           330      4      8
+ FORTRAN MODIF modelisa/cafotu               vabhhts J.PELLET           160      7      9
+ FORTRAN MODIF modelisa/cafthm               vabhhts J.PELLET           144      7      7
+ FORTRAN MODIF modelisa/cagrai               vabhhts J.PELLET           136      7     10
+ FORTRAN MODIF modelisa/caimpd               vabhhts J.PELLET           112      6      9
+ FORTRAN MODIF modelisa/caimpe               vabhhts J.PELLET           116      7     10
+ FORTRAN MODIF modelisa/calapl               vabhhts J.PELLET           180      6      9
+ FORTRAN MODIF modelisa/calico               cibhhlv L.VIVAN            431      7      1
+ FORTRAN MODIF modelisa/caonde               vabhhts J.PELLET           112      6      9
+ FORTRAN MODIF modelisa/capoco               cibhhlv L.VIVAN            188      8     15
+ FORTRAN MODIF modelisa/caprec               vabhhts J.PELLET           529      3      6
+ FORTRAN MODIF modelisa/capres               vabhhts J.PELLET           129      8     10
+ FORTRAN MODIF modelisa/carayo               vabhhts J.PELLET           128      7     10
+ FORTRAN MODIF modelisa/casour               vabhhts J.PELLET           122      8     10
+ FORTRAN MODIF modelisa/cators               vabhhts J.PELLET           269      8     18
+ FORTRAN MODIF modelisa/cavite               vabhhts J.PELLET           115      7     10
+ FORTRAN MODIF modelisa/cavitn               vabhhts J.PELLET           112      6      9
+ FORTRAN MODIF modelisa/cbchei               vabhhts J.PELLET            40      4     12
+ FORTRAN MODIF modelisa/cbecha               vabhhts J.PELLET            39      4     10
+ FORTRAN MODIF modelisa/cbelec               vabhhts J.PELLET            36      4     11
+ FORTRAN MODIF modelisa/cbflnl               vabhhts J.PELLET            39      5     12
+ FORTRAN MODIF modelisa/cbflux               vabhhts J.PELLET            38      4     11
+ FORTRAN MODIF modelisa/cbgrai               vabhhts J.PELLET            38      4     11
+ FORTRAN MODIF modelisa/cbimpd               vabhhts J.PELLET            38      5     11
+ FORTRAN MODIF modelisa/cbimpe               vabhhts J.PELLET            38      5     12
+ FORTRAN MODIF modelisa/cbonde               vabhhts J.PELLET            37      4     11
+ FORTRAN MODIF modelisa/cbpres               vabhhts J.PELLET            95     10     32
+ FORTRAN MODIF modelisa/cbrayo               vabhhts J.PELLET            38      4     11
+ FORTRAN MODIF modelisa/cbsour               vabhhts J.PELLET            63      5     10
+ FORTRAN MODIF modelisa/cbvite               vabhhts J.PELLET            38      4     11
+ FORTRAN MODIF modelisa/cbvitn               vabhhts J.PELLET            37      4     11
+ FORTRAN MODIF modelisa/charme               vabhhts J.PELLET           385      9     17
+ FORTRAN MODIF modelisa/cragch               vabhhts J.PELLET           157     31     13
+ FORTRAN MODIF modelisa/exlim2               boiteau O.BOITEAU          511      4     10
+ FORTRAN MODIF modelisa/op0006               vabhhts J.PELLET           275      5     15
+ FORTRAN MODIF modelisa/op0019               vabhhts J.PELLET           491     13     56
+ FORTRAN MODIF modelisa/op0180               vabhhts J.PELLET           395      3      3
+ FORTRAN MODIF modelisa/pmfd02               vabhhts J.PELLET           162      6      8
+ FORTRAN MODIF modelisa/rcmate               vabhhts J.PELLET           103      5      6
+ FORTRAN MODIF modelisa/rcsref               vabhhts J.PELLET           107      5      8
+ FORTRAN MODIF modelisa/rctref               vabhhts J.PELLET            99      5      6
+ FORTRAN MODIF modelisa/sigmca               vabhhts J.PELLET           128      2      2
+ FORTRAN MODIF modelisa/surfco               cibhhlv L.VIVAN            431     20      3
+ FORTRAN MODIF prepost/op0187                cibhhlv L.VIVAN            852     74     21
+ FORTRAN MODIF prepost/op0196                cibhhlv L.VIVAN            522     44     17
+ FORTRAN MODIF prepost/paqmai                f1bhhaj J.ANGLES           617      6      2
+ FORTRAN MODIF prepost/paqnoe                f1bhhaj J.ANGLES           446      3      1
+ FORTRAN MODIF supervis/ops007              lebouvie F.LEBOUVIER        137     33      5
+ FORTRAN MODIF utilitai/caraff               vabhhts J.PELLET           158      6     10
+ FORTRAN MODIF utilitai/cocopg               vabhhts J.PELLET           184      1      1
+ FORTRAN MODIF utilitai/copisd               vabhhts J.PELLET           314      8      7
+ FORTRAN MODIF utilitai/detrsd               vabhhts J.PELLET           594     55     42
+ FORTRAN MODIF utilitai/modopt               cibhhlv L.VIVAN            159      7      7
+ FORTRAN MODIF utilitai/rscrsd               cibhhlv L.VIVAN            753     21     12
+ FORTRAN MODIF utilitai/rslesd               cibhhlv L.VIVAN            441     85     28
+ FORTRAN MODIF utilitai/titre1              mcourtoi M.COURTOIS         158      6      2
+ FORTRAN SUPPR algorith/nmmafr               vabhhts J.PELLET            89      0     89
+  PYTHON MODIF Build/B_SENSIBILITE_JDC      mcourtoi M.COURTOIS         500      6      3
+  PYTHON MODIF Execution/E_ETAPE            mcourtoi M.COURTOIS         266     20     34
+  PYTHON MODIF Execution/E_SUPERV           mcourtoi M.COURTOIS         339      7      6
+  PYTHON MODIF Macro/calc_table_ops         mcourtoi M.COURTOIS         178     11      2
+  PYTHON MODIF Stanley/cata_champs           cibhhlv L.VIVAN            208      4      4
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         852     14      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   30        5876      5876             +5876
+ MODIF :  415      124242      8720    7614     +1106
+ SUPPR :    6         263               263      -263
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  451      130381     14596    7877     +6719 

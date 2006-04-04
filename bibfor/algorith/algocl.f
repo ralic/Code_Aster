@@ -1,7 +1,7 @@
-       SUBROUTINE ALGOCL(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,
+       SUBROUTINE ALGOCL(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
      &                   DEPTOT,ITERAT,LREAC,RESU,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C
       INTEGER      LDSCON
       INTEGER      ITERAT
       CHARACTER*8  NOMA
+      CHARACTER*19 MATASS
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
       CHARACTER*24 CINE
@@ -72,6 +73,7 @@ C                'E':  RESOCO(1:14)//'.DEL0'
 C                'E':  RESOCO(1:14)//'.DELT'
 C                'E':  RESOCO(1:14)//'.COCO'
 C                'E':  RESOCO(1:14)//'.CM1A'
+C IN  MATASS  : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
 C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
 C IN  NOMA    : NOM DU MAILLAGE
@@ -120,8 +122,8 @@ C
       INTEGER      JAPPAR,JCOCO,JAPPTR,JDELTA,JNOCO,JMACO,JCONV
       CHARACTER*24 NOZOCO,APCOEF,APDDL,APJEU,APMEMO
       INTEGER      JZOCO,JAPCOE,JAPDDL,JAPJEU,JAPMEM
-      CHARACTER*24 K24BID
-      CHARACTER*19 MATAS1,MATASS,MATPRE
+      CHARACTER*24 MACONT,K24BID
+      CHARACTER*19 MATAS1,MATPRE
       CHARACTER*19 DELT0,LIAC,CM1A,LIOT,MU
       INTEGER      JDELT0,JLIAC,JCM1A,JLIOT,JMU
       CHARACTER*19 SOLVEU,CHASEC,CHASOL
@@ -182,6 +184,7 @@ C ======================================================================
       DELTA  = RESOCO(1:14)//'.DELT'
       COCO   = RESOCO(1:14)//'.COCO'
       CM1A   = RESOCO(1:14)//'.CM1A'
+      MACONT = ZK24(ZI(LDSCON+1))
       SOLVEU = '&&OP0070.SOLVEUR'
 C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO)
@@ -203,6 +206,7 @@ C ======================================================================
       CALL JEVEUO(DEPTOT(1:19)//'.VALE','E',JDEPP)
       CALL JEVEUO(COCO,'E',JCOCO)
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
+      CALL JEECRA(MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
 C ======================================================================
 C --- INITIALISATION DE VARIABLES
 C --- NESCL  : NOMBRE DE NOEUDS ESCLAVES SUSCEPTIBLES D'ETRE EN CONTACT
@@ -269,7 +273,6 @@ C     -----------------------------------------------------------------
       GCPC = (ZK24(JSLVK-1+1).EQ.'GCPC')
       IF (GCPC) THEN
         MATAS1 = ZK24(ZI(LMAT+1))
-        MATASS = '&&MATASS'
         IF (MATAS1.NE.MATASS) CALL UTMESS('F','ALGOCL','STOP')
         MATPRE = '&&NMMATR.MAPREC'
         CHASOL = '&&ALGOCL.CHASOL'
@@ -448,6 +451,7 @@ C --- EST DEJA FACTORISEE (SI ON REFACTORISAIT A PARTIR DE 1, ON
 C --- FACTORISERAIT LA FACTORISEE, CE QUI EST GENANT, CAR FACTORISATION
 C --- EN PLACE)
 C ======================================================================
+        CALL JEECRA(MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
 C ======================================================================
         IF (INDFAC.LE.NBLIAC) THEN
            IF(NIV.GE.2) THEN

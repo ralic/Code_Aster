@@ -1,5 +1,5 @@
 # RESPONSABLE ADBHHVV V.CANO
-# MODIF  DATE 24/10/2005   AUTEUR ADBHHVV V.CANO 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,7 @@ DEPLA=CALC_ELEM(reuse =DEPLA,
                 RESULTAT=DEPLA,
                 INST=1.,
                 PREC_ERR=0.8,
-                OPTION=('SIEF_ELNO_ELGA','ERRE_ELGA_NORE','ERRE_ELNO_ELGA','ETOT_ELEM',
+                OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ETOT_ELEM',
                         'SING_ELEM','SING_ELNO_ELEM'),
                 EXCIT=(_F(CHARGE=CHP,FONC_MULT=F_INST,),
                        _F(CHARGE=CHCL,),),);

@@ -1,7 +1,7 @@
       SUBROUTINE TE0277(OPTION,NOMTE)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C ......................................................................
       REAL*8 Z,HECHP,NX,NY,TPG,THETA
       INTEGER NNO,KP,NPG,IPOIDS,IVF,IDFDE,IGEOM
       INTEGER IVERES,K,I,L,LI,IHECHP,INCR,NBELR
+      LOGICAL LAXI,LTEATT
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -52,6 +53,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL ELREF2(NOMTE,2,LIREFE,NBELR)
       CALL ASSERT(NBELR.EQ.2)
@@ -83,7 +87,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
           Z2 = Z2 + ZR(IGEOM+2* (NNO+I)-1)*ZR(IVF+L-1)
           TPG = TPG + (ZR(ITEMP+NNO+I-1)-ZR(ITEMP+I-1))*ZR(IVF+L-1)
    10   CONTINUE
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           POIDS1 = POIDS1*R1
           POIDS2 = POIDS2*R2
         END IF

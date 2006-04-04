@@ -1,12 +1,12 @@
-      SUBROUTINE TYPTHM(NOMTE,AXI,TYPMOD,NDIM)
+      SUBROUTINE TYPTHM ( NOMTE, AXI, TYPMOD, NDIM )
       IMPLICIT      NONE
-      LOGICAL       AXI
+      LOGICAL       AXI, LTEATT
       INTEGER       NDIM
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,10 +27,7 @@ C =====================================================================
 C --- BUT : DETERMINER LE TYPE DE MODELISATION (AXI DPLAN 3D) ---------
 C =====================================================================
       AXI       = .FALSE.
-      IF ( NOMTE(6:9) .EQ.'AXIS' .OR.
-     +     NOMTE(4:7) .EQ.'AXIS' .OR.
-     +     NOMTE(5:8) .EQ.'AXIS' .OR.
-     +     NOMTE(7:10).EQ.'AXIS' ) THEN
+      IF ( LTEATT(' ','AXIS','OUI') ) THEN
          AXI       = .TRUE.
          TYPMOD(1) = 'AXIS    '
          NDIM      = 2

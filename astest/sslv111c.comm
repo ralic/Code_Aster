@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,10 +95,10 @@ RESU=MECA_STATIQUE(     MODELE=MO,
 RESU=CALC_ELEM(  reuse=RESU,  
                       TOUT_ORDRE='OUI',
                           OPTION=(
-                                  'ERRE_ELEM_NOZ1',
-                                  'ERRE_ELEM_NOZ2',
+                                  'ERZ1_ELEM_SIGM',
+                                  'ERZ2_ELEM_SIGM',
                                   'SIRE_ELNO_DEPL',
-                                  'ERRE_ELGA_NORE',
+                                  'ERRE_ELEM_SIGM',
                                  ),
                       RESULTAT=RESU
                         )
@@ -183,28 +183,28 @@ IMPR_RESU(   MODELE=MO,RESU=(
          NUME_ORDRE = 1, SOUS_TITRE = 'CONTRAINTES AUX NOEUDS ZZ2',
          VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
 
-     _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ1',
+     _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM',
          NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR ZZ1',
          VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-      _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ1',
+      _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM',
          NUME_ORDRE = 1, SOUS_TITRE = (
 'ESTIMATEUR D''ERREUR ZZ1:LISTE DES MAILLES OU L''ERREUR RELATIVE ',
 'EST SUPERIEURE A 10 POUR CENT',         ),
         BORNE_INF = 10., NOM_CMP = 'NUEST'),
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ2',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM',
          NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR ZZ2',
       VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ2',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM',
          NUME_ORDRE = 1, SOUS_TITRE = (
 'ESTIMATEUR D''ERREUR ZZ2:LISTE DES MAILLES OU L''ERREUR RELATIVE ',
 'EST SUPERIEURE A 10 POUR CENT',     ),
          BORNE_INF = 10., NOM_CMP = 'NUEST'),
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELGA_NORE',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM',
          NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR EN RESIDU',
       VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELGA_NORE',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM',
          NUME_ORDRE = 1, SOUS_TITRE = (
 'ESTIMATEUR D''ERREUR EN RESIDU :LISTE DES MAILLES OU L''ERREUR  ',
 'RELATIVE EST SUPERIEURE A 10 POUR CENT',     ),
@@ -212,22 +212,22 @@ IMPR_RESU(   MODELE=MO,RESU=(
             )
 
 TEST_RESU(RESU=(   
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ1', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.001,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ1', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 5.,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'NUEST',  VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ2', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.001,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_NOZ2', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 10.,
              MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELGA_NORE', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.02,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELGA_NORE', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 11.,
              MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.))
            )

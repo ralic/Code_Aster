@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,9 +48,9 @@ ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT               -1
    OPTION__   META_INIT_ELNO          -1
-   OPTION__   ERTH_ELEM_TEMP_R        -2
-   OPTION__   ERTH_ELEM_TEMP_F        -2
-   OPTION__   ERTH_ELNO_ELEM          -2
+   OPTION__   ERRE_ELEM_TEMP_R        -2
+   OPTION__   ERRE_ELEM_TEMP_F        -2
+   OPTION__   ERRE_ELNO_ELEM          -2
 ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    ELREFE__  PY5       GAUSS__  RIGI=FPG5  MASS=FPG5  GANO=FPG5
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4
@@ -63,9 +63,9 @@ ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT               -1
    OPTION__   META_INIT_ELNO          -1
-   OPTION__   ERTH_ELEM_TEMP_R        -2
-   OPTION__   ERTH_ELEM_TEMP_F        -2
-   OPTION__   ERTH_ELNO_ELEM          -2
+   OPTION__   ERRE_ELEM_TEMP_R        -2
+   OPTION__   ERRE_ELEM_TEMP_F        -2
+   OPTION__   ERRE_ELNO_ELEM          -2
 ENTETE__ ELEMENT__ THER_TETRA10     MAILLE__ TETRA10
    ELREFE__  T10       GAUSS__  RIGI=FPG5   MASS=FPG15  GANO=FPG4
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   MASS=FPG6
@@ -84,10 +84,10 @@ MODE_LOCAL__
     NVITESR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EERREURT  = ERRETEMP ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+    EERREURT  = ERREUR ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
                                         TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
-    EERRENOT  = ERRETEMP ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+    EERRENOT  = ERREUR ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
                                         TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     FLUZ     )
@@ -167,15 +167,15 @@ OPTION__
                               OUT__  EDURTNO  PDURT_R
     EPOT_ELEM_TEMP      66    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
-    ERTH_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+    ERRE_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN
                               OUT__  EERREURT  PERREUR
-    ERTH_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+    ERRE_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN
                               OUT__  EERREURT  PERREUR
-    ERTH_ELNO_ELEM      4     IN__   EERREURT  PERREUR
+    ERRE_ELNO_ELEM      4     IN__   EERREURT  PERREUR
                               OUT__  EERRENOT  PERRENO
     FLUX_ELGA_SENS      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN

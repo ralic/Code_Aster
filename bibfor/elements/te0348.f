@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
+C MODIF ELEMENTS  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C
       REAL*8       Q(14), QQ(14), BSM(14,14), DE(14)
       CHARACTER*2  CODRET(3)
       CHARACTER*8  NOMPAR(3), NOMRES(3)
+      
+      REAL*8       KENDOG,KDESSI,SECH,HYDR,INSTAN
 C     ------------------------------------------------------------------
       ZERO = 0.0D0
       NNO   = 2
@@ -63,10 +65,10 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       CALL JEVECH ('PGEOMER','L',LX)
       LX = LX - 1
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
-     +           + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
+     &           + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
       IF( XL .EQ. ZERO ) THEN
          CALL UTMESS('F','ELEMENTS DE POUTRE (TE0348)',
-     +                  'NOEUDS CONFONDUS POUR UN ELEMENT')
+     &                  'NOEUDS CONFONDUS POUR UN ELEMENT')
       ENDIF
 C
 C     --- RECUPERATION DES ORIENTATIONS ---
@@ -106,7 +108,7 @@ C
       IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 C
          CALL RCVALA(ZI(LMATE),' ','ELAS',0,NOMPAR,VALPAR,
-     +                                1,'RHO',RHO,CODRET,'FM')
+     &                                1,'RHO',RHO,CODRET,'FM')
 C
          CALL JEVECH('PPESANR','L',LPESA)
          DO 100 I=1,3
@@ -144,25 +146,24 @@ C        --- LA CHARGE EST CONSTANTE OU VARIE LINEAIREMENT ---
          FE(12)  =  ( QQ(3)/30.0D0+ QQ(10)/20.0D0) * COEF
          FE(6)   =  ( QQ(2)/20.0D0+ QQ(9) /30.0D0) * COEF
          FE(13)  = -( QQ(2)/30.0D0+ QQ(9) /20.0D0) * COEF
-C
-C     ------------------------------------------------------------------
-C
-      ELSEIF ( OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
-        NOMRES(1) = 'E'
-        NOMRES(2) = 'NU'
-        NOMRES(3) = 'ALPHA'
-        CALL RCVALA(ZI(LMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
+         
+C        FIN CHAR_MECA_PESA_R
+
+      ELSE
+      
+         NOMRES(1) = 'E'
+         NOMRES(2) = 'NU'
+         NOMRES(3) = 'ALPHA'
+         CALL RCVALA(ZI(LMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
      &                                     VALRES,CODRET, 'FM' )
          E      = VALRES(1)
          NU     = VALRES(2)
          G      = E / ( 2.0D0 * ( 1.0D0 + NU ) )
          ALPHA  = VALRES(3)
-C
          DO 200 I = 1 , 105
             MAT(I) = ZERO
  200     CONTINUE
          CALL PTKA21(MAT,E,A,XL,XIY,XIZ,XJX,XJG,G,ALFAY,ALFAZ,EY,EZ)
-C
 C        --- REMPLISSAGE DE LA MATRICE CARREE ---
          IND = 0
          DO 202 I = 1, 14
@@ -175,16 +176,78 @@ C        --- REMPLISSAGE DE LA MATRICE CARREE ---
             IND = IND + 1
             BSM(I,I) = MAT(IND)
  202     CONTINUE
+      
+         IF ( OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
+C           --- TEMPERATURE DE REFERENCE ---
+            CALL JEVECH('PTEREF','L',LTREF)
+C           --- TEMPERATURE EFFECTIVE ---
+            CALL JEVECH('PTEMPER','L',LTEMP)
+            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
+            F = ALPHA * TEMP
 C
-C        --- TEMPERATURE DE REFERENCE ---
-         CALL JEVECH('PTEREF','L',LTREF)
-C
-C        --- TEMPERATURE EFFECTIVE ---
-         CALL JEVECH('PTEMPER','L',LTEMP)
-C
-         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
-C
-         F = ALPHA * TEMP
+         ELSEIF ( OPTION.EQ.'CHAR_MECA_SECH_R') THEN
+C           --- TEMPERATURE EFFECTIVE ---
+            CALL JEVECH('PTEMPER','L',LTEMP)
+            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
+C           ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
+            CALL JEVECH('PSECHER','L',ISECH)
+C           ---- RECUPERATION DU SECHAGE DE REFERENCE
+            CALL JEVECH('PSECREF','L',ISREF)
+            SREF=ZR(ISREF)
+            SECH = 0.5D0*(ZR(ISECH)+ZR(ISECH+1))
+C           ---- RECUPERATION DE L'INSTANT
+            CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+            IF (ITEMPS.NE.0) THEN
+               INSTAN = ZR(ITEMPS)
+            ELSE
+               INSTAN = 0.D0
+            ENDIF         
+            NOMPAR(1) = 'TEMP'
+            VALPAR(1) = TEMP
+            NOMPAR(2) = 'INST'
+            VALPAR(2) = INSTAN
+            NOMPAR(3) = 'SECH'
+            VALPAR(3) = SECH
+C ----      INTERPOLATION DE K_DESSIC EN FONCTION DE LA TEMPERATURE
+C           OU DU SECHAGE
+C           ----------------------------------------------------------
+            CALL RCVALA(ZI(LMATE),' ','ELAS',3,NOMPAR,VALPAR,1,
+     &          'K_DESSIC',KDESSI, CODRET, ' ' )
+            IF (CODRET(1).NE.'OK') KDESSI=0.D0
+C           DEPLACEMENT INDUIT PAR LE SECHAGE
+            F = -KDESSI*(SREF-SECH) 
+
+         ELSEIF ( OPTION.EQ.'CHAR_MECA_HYDR_R') THEN
+C           --- TEMPERATURE EFFECTIVE ---
+            CALL JEVECH('PTEMPER','L',LTEMP)
+            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
+C           RECUPERATION DU CHAMP D HYDRATATION SUR L'ELEMENT
+            CALL JEVECH('PHYDRER','L',IHYDR)
+            HYDR = ZR(IHYDR)
+C           RECUPERATION DE L'INSTANT
+            CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+            IF (ITEMPS.NE.0) THEN
+            INSTAN = ZR(ITEMPS)
+            ELSE
+            INSTAN = 0.D0
+            ENDIF
+            NOMPAR(1) = 'TEMP'
+            VALPAR(1) = TEMP
+            NOMPAR(2) = 'INST'
+            VALPAR(2) = INSTAN
+            NOMPAR(3) = 'HYDR'
+            VALPAR(3) = HYDR
+C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
+C           DE L HYDRATATION OU DU SECHAGE
+C           ----------------------------------------------------------
+            CALL RCVALA(ZI(LMATE),' ','ELAS',3,NOMPAR,VALPAR,1,
+     &          'B_ENDOGE',KENDOG, CODRET, ' ' )
+            IF (CODRET(1).NE.'OK') KENDOG=0.D0
+C           DEPLACEMENT INDUIT PAR L'HYDRATATION
+            F = -KENDOG*HYDR
+
+         ENDIF
+         
          DE(1) = -F * XL
          DE(8) = -DE(1)
 C
@@ -195,11 +258,10 @@ C        --- CALCUL DES FORCES INDUITES ---
             DO 208 J = 1 , 7
                FE(I)   = FE(I)   + BSM(I,J)     * DE(J)
                FE(I+7) = FE(I+7) + BSM(I+7,J+7) * DE(J+7)
- 208       CONTINUE
- 206    CONTINUE
+ 208        CONTINUE
+ 206     CONTINUE
 C
       ENDIF
-C
 C     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
       CALL JEVECH ('PVECTUR','E',LVECT)
       CALL UTPVLG ( NNO, NC, PGL, FE(1), ZR(LVECT) )

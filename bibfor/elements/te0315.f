@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C.......................................................................
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IFLUX
       INTEGER NDI,NNO,KP,NPG,IVECTT,IMATE
       INTEGER LDEC,MATER
+      LOGICAL  LTEATT, LAXI
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -57,6 +58,8 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -121,7 +124,7 @@ C CALCUL DU FLUX FLUIDE NORMAL AU POINT DE GAUSS
 
 C CAS AXISYMETRIQUE
 
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           R = 0.D0
           DO 50 I = 1,NNO
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+LDEC+I-1)

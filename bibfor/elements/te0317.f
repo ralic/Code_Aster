@@ -1,6 +1,6 @@
       SUBROUTINE TE0317(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C.......................................................................
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IFLUX
       INTEGER NDI,NNO,KP,NPG,IVECTU,IMATE
       INTEGER LDEC,MATER
+      LOGICAL  LTEATT, LAXI
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -56,6 +57,8 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       NDI = NNO* (NNO+1)/2
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATTTR','E',IMATTT)
       DO 10 I = 1,NDI
@@ -75,7 +78,7 @@ C ON CALCULE L ACCEL AU POINT DE GAUSS
 
 C CAS AXISYMETRIQUE
 
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           R = 0.D0
           DO 20 I = 1,NNO
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+LDEC+I-1)

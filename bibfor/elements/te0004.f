@@ -1,7 +1,7 @@
       SUBROUTINE TE0004(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C RESPONSABLE BOITEAU O.BOITEAU
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE: EXTENSION DU CHAM_ELEM ERRETEMP DES ELEMENTS
 C                         AUX NOEUDS PAR ELEMENTS
-C                         OPTION : 'ERTH_ELNO_ELEM'
+C                         OPTION : 'ERRE_ELNO_ELEM'
 C           (POUR PERMETTRE NOTAMMENT L'UTILISATION DE POST_RELEVE_T)
 
 C IN OPTION : NOM DE L'OPTION

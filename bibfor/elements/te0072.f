@@ -1,6 +1,6 @@
       SUBROUTINE TE0072(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C ......................................................................
       INTEGER IVECTT,I,J,L,LI,ICOEFH,ITEX,IRAY,ITEMP,ITEMPS
       INTEGER NNOP2,C(6,9),ISE,NSE
       REAL*8 SIGMA,EPSIL,TPINF,TZ0,R8T0
+      LOGICAL LTEATT,LAXI
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -54,6 +55,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       TZ0 = R8T0()
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       IF (OPTION(11:14).EQ.'TEXT') THEN
         CALL JEVECH('PCOEFHR','L',ICOEFH)
@@ -96,7 +99,7 @@ C BOUCLE SUR LES SOUS-ELEMENTS
             R = R + COORSE(2* (I-1)+1)*ZR(IVF+L-1)
             TPG = TPG + ZR(ITEMP-1+C(ISE,I))*ZR(IVF+L-1)
    40     CONTINUE
-          IF (NOMTE(3:4).EQ.'AX') POIDS = POIDS*R
+          IF (LAXI) POIDS = POIDS*R
           IF (OPTION(11:14).EQ.'TEXT') THEN
             DO 50 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1

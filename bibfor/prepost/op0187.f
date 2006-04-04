@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
      &        JREFE,JVAL,NBMAGT,JNBNIM,JNBSEM,NBSEM,JNGMF,IPOMA,INUMA,
      &        IREGM,NUMAF,NUMSE,NBUTI,JJ,JNBNFG,ITET,JCNS,NMVTNF,I1,I2,
      &        JPIN,NUMNI,INO,KTET,IMA,JC,NBNIM,ICNS,NLIG,IOCC,NBNONO,
-     &        NBHEA,
+     &        NBHEA,NTET,TYPSE,IC,DIM,
      &        NXIS,NBNIS,JNIS,JNISID,JCOFE,INIS,NUISP,NUISM,NBCNS,NBPIN,
      &        JCORF,ILOC,JNBSE,IIND,JSE,JIIND,JIINDP,NBGEL,NBMAGL,JCOFL,
      &        IIPIN,JJCNS,IICNS,JJPIN,IGREL,NBGREL,JWXFEM,JL,JDIMI,JJSE,
@@ -61,7 +61,7 @@ C     ------------------------------------------------------------------
      &        NBMANI,JMANIS,JNDNIS,JLNNO,JINDNS,JNNEW,NBNOIS,IRE,JMX,
      &        NBNOSO,NBNOMI,JNX,NBHECT,NBCTIP,NBHEAV,JHECT,JCTIP
       REAL*8  XNIS,YNIS,ZNIS,XNXIS,YNXIS,ZNXIS,EPS
-      PARAMETER(EPS=1.D-10, NBCNS=128, NBPIN=33, NBHEA=36)
+      PARAMETER(EPS=1.D-10)
       CHARACTER*1 KBID
       CHARACTER*8 MO,MAF,MA,FISS,NOMA,NOMGMA,NOMNO,CH,NOMSE,NOMNI,TMP,
      &            NOMGNO,NXISM,NXISP,K8B,NOXIS
@@ -86,7 +86,19 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
         CALL UTIMPK('S',' ',1,MO)
         CALL UTIMPK('S',' EST INCOMPATIBLE AVEC LA METHODE XFEM',1,KBID)
         CALL UTFINM()
-      ENDIF 
+      ENDIF
+C
+      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)  
+C
+      IF(DIM.EQ.3)THEN
+        NBCNS=128
+        NBPIN=33
+        NBHEA=36
+      ELSEIF(DIM.EQ.2)THEN
+        NBCNS=18
+        NBPIN=6
+        NBHEA=6
+      ENDIF
 C
 C --- NOM DU MAILLAGE D'ENTREE : MA
       CALL JEVEUO(MO//'.MODELE    .NOMA','L',JNOMA)
@@ -189,7 +201,11 @@ C     ON PARCOURT LE LIGREL:
          CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
          NUTYEL=ZI(IGREL+NBMAGL-1)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NOTYPE)
-         IF(NOTYPE(1:6).NE.'MECA_X') GOTO 40
+         IF(DIM.EQ.3)THEN
+             IF(NOTYPE(1:6).NE.'MECA_X') GOTO 40
+         ELSE
+             IF(NOTYPE(8:9).NE.'_X')GOTO 40
+         ENDIF
          DO 50 J=1,NBMAGL-1
            IMA=ZI(IGREL+J-1)
            IOCC=IOCC+1
@@ -243,6 +259,7 @@ C            NOMBRE DE SOUS-ELEMENTS
           ELSE
 C            ON RECUPERE LES MAILLES QUADRATIQUES EN VUE DE LES
 C            LINEARISER
+             CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMA),'L',JCO)
              IF(NOTYPE(1:13).EQ.'MECA_X_HEXA20'  .OR.
      &          NOTYPE(1:14).EQ.'MECA_X_PENTA15' .OR.
      &          NOTYPE(1:14).EQ.'MECA_X_TETRA10' )THEN
@@ -260,14 +277,23 @@ C            LINEARISER
                       NBNOMI=6
                       ZI(JH20M+IMA-1)=18
                 ENDIF
-                DO 46 INO=1,NBNOMI
-                   ZI(JH20N+ZI(JCO+NBNOSO+INO-1)-1)=1
- 46             CONTINUE
+             ELSEIF(NOTYPE.EQ.'MECPTR6_X')THEN
+               CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMA),'L',JCO)
+               NBNOSO=3
+               NBNOMI=3
+               ZI(JH20M+IMA-1)=7
+             ELSEIF(NOTYPE.EQ.'MECPQU8_X')THEN
+               NBNOSO=4
+               NBNOMI=4
+               ZI(JH20M+IMA-1)=12
              ENDIF
+             DO 46 INO=1,NBNOMI
+                ZI(JH20N+ZI(JCO+NBNOSO+INO-1)-1)=1
+ 46          CONTINUE
           ENDIF
-           IICNS=IICNS+NBCNS
-           IIPIN=IIPIN+NBPIN
-           IIHEA=IIHEA+NBHEA
+          IICNS=IICNS+NBCNS
+          IIPIN=IIPIN+NBPIN
+          IIHEA=IIHEA+NBHEA
  50    CONTINUE
  40   CONTINUE
 C
@@ -308,9 +334,9 @@ C --- CREATION DES OBJETS: '.DIME','.NOMNOE','.COORDO'
            CALL JENUNO(JEXNUM(MA//'.NOMNOE',I),NOMNO)
            CALL JECROC(JEXNOM(TMP//'.NOMNOE',NOMNO))
            CALL JENONU(JEXNOM(TMP//'.NOMNOE',NOMNO),NUNO)
-           ZR(JCORF+3*(NUNO-1))=ZR(JCOR+3*(I-1))
-           ZR(JCORF+3*(NUNO-1)+1)=ZR(JCOR+3*(I-1)+1)
-           ZR(JCORF+3*(NUNO-1)+2)=ZR(JCOR+3*(I-1)+2)
+           DO 53 IC=1,3
+              ZR(JCORF+3*(NUNO-1)+IC-1)=ZR(JCOR+3*(I-1)+IC-1)
+ 53        CONTINUE
         ENDIF
  52   CONTINUE
 C
@@ -350,6 +376,10 @@ C --- CREATION DES OBJETS : '.NOMMAI','.TYPMAIL','.CONNEX'
                ELSEIF(ZI(JTYP+I-1).EQ.21)THEN
                  NBNOSO=6
                ELSEIF(ZI(JTYP+I-1).EQ.19)THEN
+                 NBNOSO=4
+               ELSEIF(ZI(JTYP+I-1).EQ.9)THEN
+                 NBNOSO=3
+               ELSEIF(ZI(JTYP+I-1).EQ.14)THEN
                  NBNOSO=4
                ENDIF
               NBCO=NBNOSO
@@ -416,6 +446,13 @@ C
 C
 C     I- ON PARCOURT LES MAILLES X-FEM
 C     --------------------------------
+      IF(DIM.EQ.3)THEN
+          NTET=4
+          TYPSE=18
+      ELSE
+          NTET=3
+          TYPSE=7
+      ENDIF
       DO 100 I=1,NBMF
 C        NUMERO DE LA MAILLE X-FEM
          NUMAF=ZI(JWXFEM+I-1)
@@ -425,6 +462,10 @@ C        NOMBRE DE NOEUDS SOMMETS:
          ELSEIF(ZI(JTYP+NUMAF-1).EQ.21)THEN
                  NBNOSO=6
          ELSEIF(ZI(JTYP+NUMAF-1).EQ.19)THEN
+                 NBNOSO=4
+         ELSEIF(ZI(JTYP+NUMAF-1).EQ.9)THEN
+                 NBNOSO=3
+         ELSEIF(ZI(JTYP+NUMAF-1).EQ.14)THEN
                  NBNOSO=4
          ENDIF
          CALL JEVEUO(JEXNUM(MA//'.CONNEX',NUMAF),'L',JCO)
@@ -499,17 +540,17 @@ C        ---------------------------------
               ZI(JMX+2*IMX-1)=ZI(JHTET+J-1)
             ENDIF
             ZI(JNBSE+IMA-1)=NUMSE
-            ZI(JTYPF+NBMNF+IMA-1)=18
+            ZI(JTYPF+NBMNF+IMA-1)=TYPSE
             CALL JECROC(JEXNUM(CONNEX,NUMSE))
-            CALL JEECRA(JEXNUM(CONNEX,NUMSE),'LONMAX',4,KBID)
+            CALL JEECRA(JEXNUM(CONNEX,NUMSE),'LONMAX',NTET,KBID)
             CALL JEVEUO(JEXNUM(CONNEX,NUMSE),'E',JCOF)
             KTET=0
 C     
 C           III- ON PARCOURT LES NOEUDS DES SOUS-ELEMENTS
 C           ---------------------------------------------        
-            DO 150 ITET=1,4
+            DO 150 ITET=1,NTET
 C              NUMERO LOCAL DU NOEUD DU SOUS-ELEMENT: ICNS
-               ICNS=ZI(JCNS+ZI(JJCNS+I-1)+4*(J-1)+ITET-1)
+               ICNS=ZI(JCNS+ZI(JJCNS+I-1)+NTET*(J-1)+ITET-1)
                KTET=KTET+1
 C
 C              III-1 SI LE NOEUD EST UN NOEUD D'INTERSECTION
@@ -537,10 +578,16 @@ C                 SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
                            ZI(JNX+II-1)=NUMNI
                         ENDIF
 C                       COORDONNEES                     
-                        DO 151 JC=1,3
-                           ZR(JCORF+3*(NUMNI-1)+JC-1)=
-     &                          ZR(JPIN+ZI(JJPIN+I-1)+3*(ILOC-1)+JC-1)
- 151                    CONTINUE
+                        ZR(JCORF+3*(NUMNI-1))=
+     &                      ZR(JPIN+ZI(JJPIN+I-1)+DIM*(ILOC-1))
+                        ZR(JCORF+3*(NUMNI-1)+1)=
+     &                      ZR(JPIN+ZI(JJPIN+I-1)+DIM*(ILOC-1)+1)
+                        IF(DIM.EQ.3)THEN
+                           ZR(JCORF+3*(NUMNI-1)+2)=
+     &                      ZR(JPIN+ZI(JJPIN+I-1)+3*(ILOC-1)+2)
+                        ELSE
+                           ZR(JCORF+3*(NUMNI-1)+2)=0.D0
+                        ENDIF
 C                       CONNECTIVITES
                         ZI(JCOF+KTET-1)=NUMNI
                      ELSE
@@ -568,10 +615,16 @@ C                 SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
                            ZI(JNX+II-1)=NUMNI
                         ENDIF
 C                       COORDONNEES                     
-                        DO 152 JC=1,3
-                           ZR(JCORF+3*(NUMNI-1)+JC-1)=
-     &                          ZR(JPIN+ZI(JJPIN+I-1)+3*(ILOC-1)+JC-1)
- 152                    CONTINUE
+                        ZR(JCORF+3*(NUMNI-1))=
+     &                      ZR(JPIN+ZI(JJPIN+I-1)+DIM*(ILOC-1))
+                        ZR(JCORF+3*(NUMNI-1)+1)=
+     &                      ZR(JPIN+ZI(JJPIN+I-1)+DIM*(ILOC-1)+1)
+                        IF(DIM.EQ.3)THEN
+                           ZR(JCORF+3*(NUMNI-1)+2)=
+     &                      ZR(JPIN+ZI(JJPIN+I-1)+3*(ILOC-1)+2)
+                        ELSE
+                           ZR(JCORF+3*(NUMNI-1)+2)=0.D0
+                        ENDIF
 C                       CONNECTIVITES
                         ZI(JCOF+KTET-1)=NUMNI
                      ELSE
@@ -609,7 +662,7 @@ C                        SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
      &                             NUMNI)
                               DO 153 JC=1,3
                                  ZR(JCORF+3*(NUMNI-1)+JC-1)=
-     &                                ZR(JCOR+3*(ZI(JCO+ICNS-1)-1)+JC-1)
+     &                             ZR(JCOR+3*(ZI(JCO+ICNS-1)-1)+JC-1)
  153                          CONTINUE
                            ELSE
                               CALL JENONU(JEXNOM(TMP//'.NOMNOE',NOMNI),
@@ -664,7 +717,7 @@ C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
                 ZNIS=ZR(JCOR+3*(NIS-1)+2)
                 DO 401 J=1,NBSEM
                    CALL JEVEUO(JEXNUM(CONNEX,ZI(JMX+2*J-2)),'L',JCOFL)
-                   DO 402 JJ=1,4
+                   DO 402 JJ=1,NTET
                       NXIS=ZI(JCOFL+JJ-1)
                       XNXIS=ZR(JCORF+3*(NXIS-1))
                       YNXIS=ZR(JCORF+3*(NXIS-1)+1)
@@ -693,7 +746,7 @@ C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
                 CALL JENONU(JEXNOM(TMP//'.NOMNOE',NOXIS),NIS)
                 DO 404 J=1,NBSEM
                    CALL JEVEUO(JEXNUM(CONNEX,ZI(JMX+2*J-2)),'E',JCOFE)
-                   DO 405 JJ=1,4
+                   DO 405 JJ=1,NTET
                       IF(NIS.EQ.ZI(JCOFE+JJ-1))THEN
                           IF(ZI(JMX+2*J-1).EQ.-1)THEN
                              CALL JENUNO(JEXNUM(MAF//'.NOMMAI',

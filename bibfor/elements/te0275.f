@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 POIDS,POIDS1,POIDS2,COEFH
       REAL*8 R1,R2,NX,NY,TPG,THETA
       CHARACTER*8 LIREFE(2)
+      LOGICAL LAXI, LTEATT
 C     ------------------------------------------------------------------
+
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL ELREF2(NOMTE,2,LIREFE,NBELR)
       CALL ASSERT(NBELR.EQ.2)
@@ -78,7 +82,7 @@ C     ------------------------------------------------------------------
           R2 = R2 + ZR(IGEOM+2* (NNO+I)-2)*ZR(IVF+L-1)
           TPG = TPG + (ZR(ITEMP+NNO+I-1)-ZR(ITEMP+I-1))*ZR(IVF+L-1)
    10   CONTINUE
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           POIDS1 = POIDS1*R1
           POIDS2 = POIDS2*R2
         END IF

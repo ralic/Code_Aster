@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,7 +104,7 @@ RESUTRQ2=CALC_ELEM( reuse=RESUTRQ2,   RESULTAT=RESUTRQ2,
                     EXCIT=_F(  CHARGE = CHARTRQU),
                     OPTION=( 'SIGM_ELNO_DEPL',
                              'EPSI_ELNO_DEPL',
-                             'ERRE_ELGA_NORE', )
+                             'ERRE_ELEM_SIGM', )
                      )
 
 #
@@ -121,7 +121,7 @@ IMPR_RESU ( RESU=_F( MAILLAGE=MAILTRQU, IMPR_COOR = 'OUI', ) ) ;
 IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2, ) ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD =REQT_GD, ) ) ;
 IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
-                     NOM_CHAM = ('ERRE_ELGA_NORE',),
+                     NOM_CHAM = ('ERRE_ELEM_SIGM',),
                      GROUP_MA = 'MILIEU' ),
             INFO=2 ) ;
 #
@@ -134,7 +134,7 @@ IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
                                    NOM_CHAM = ('SIGM_ELNO_DEPL',),),
             INFO=2 ) ;
 IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
-                                   NOM_CHAM = 'ERRE_ELGA_NORE',),
+                                   NOM_CHAM = 'ERRE_ELEM_SIGM',),
             INFO=2 ) ;
 #
 # 5. Relecture
@@ -172,7 +172,7 @@ ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 MODELE=MODETRQU,
                 FORMAT='MED',
                 UNITE=80,
-                NOM_MED='RESUTRQ2ERRE_ELGA_NORE__________',
+                NOM_MED='RESUTRQ2ERRE_ELEM_SIGM__________',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='ELEM_ERREUR',
                 NOM_CMP_IDEM='OUI',

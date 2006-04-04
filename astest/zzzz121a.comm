@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2005   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,7 +142,7 @@ for k in range(1,10):
    RESU[k]=CALC_ELEM(       reuse=RESU[k],
                             RESULTAT=RESU[k],
                             OPTION=( 'SIGM_ELNO_DEPL',
-                                     'ERRE_ELEM_NOZ1', )
+                                     'ERZ1_ELEM_SIGM', )
                     )
 #
 # 4.8. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d1 A L'ITERATION K
@@ -150,7 +150,7 @@ for k in range(1,10):
 ###   nomfic="MED_%d" %k
 ###   DEFI_FICHIER (UNITE=40+k,FICHIER='nomfic');
 ###   IMPR_RESU ( UNITE=40+k, FORMAT='MED', RESU=_F( 
-###               RESULTAT=RESU[k], NOM_CHAM='ERRE_ELEM_NOZ1', NOM_CMP='ERREST'  ) ) ;
+###               RESULTAT=RESU[k], NOM_CHAM='ERZ1_ELEM_SIGM', NOM_CMP='ERREST'  ) ) ;
 #
 # 4.9. Extraction du deplacement au noeud "OPPOSE" dans une table
 #
@@ -206,7 +206,7 @@ for k in range(1,10):
                        MAILLAGE_N = M[k],
                        MAILLAGE_NP1 = M[k+1],
                        RESULTAT_N = RESU[k],
-                       INDICATEUR = 'ERRE_ELEM_NOZ1',
+                       INDICATEUR = 'ERZ1_ELEM_SIGM',
                        NOM_CMP_INDICA='ERREST',
                        CRIT_RAFF_PE = 0.03,
                        NIVE_MAX = 5),

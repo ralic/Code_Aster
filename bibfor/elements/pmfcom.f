@@ -2,6 +2,8 @@
      &                  NF,
      &                  INSTAM,INSTAP,
      &                  TEMPM,TEMPP,TREF,
+     &                   HYDRGM,HYDRGP,
+     &                   SECHGM,SECHGP,SREF,
      &                  E,ALPHA,
      &                  ICDMAT,NBVALC,
      &                  DEFAM,DEFAP,
@@ -11,7 +13,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,6 +39,7 @@ C ======================================================================
       REAL*8 TEMPM,TEMPP,ALPHA,DSIDEP,TREF,SIGX,SIGXP,EPSX,DEPSX
       REAL*8 CRIT(*),INSTAM,INSTAP
       REAL*8 DEFAP(*), DEFAM(*)
+      REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
 C     ------------------------------------------------------------------
 C     AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
 
@@ -193,7 +196,8 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
      +                  VARIM(IVARI),VARIM(IVARI+1),
      +                  SIGF(I),VARIP(IVARI),VARIP(IVARI+1),MODF(I))
 55      CONTINUE
-      ELSE IF (COMPO.EQ.'GRAN_IRRA_LOG') THEN
+      ELSE IF ((COMPO.EQ.'GRAN_IRRA_LOG').OR.
+     &         (COMPO.EQ.'VISC_IRRA_LOG')) THEN
         IF (COMPOR(5)(1:10).EQ.'ANALYTIQUE') THEN
             DO 56 I = 1,NF
               IVARI = NBVALC* (I-1) + 1
@@ -224,6 +228,8 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
             CALL COMP1D('RIGI',KPG,I,OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
+     &                   HYDRGM,HYDRGP,
+     &                   SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VARIM(IVARI),VARIP(IVARI),SIGF(I),MODF(I),
      &                  CODREF)
@@ -263,6 +269,8 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
             CALL COMP1D('RIGI',KPG,I,OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
+     &                   HYDRGM,HYDRGP,
+     &                   SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VARIM(IVARI),VARIP(IVARI),SIGF(I),MODF(I),
      &                  CODREF)

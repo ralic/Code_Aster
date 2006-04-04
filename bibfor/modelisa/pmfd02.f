@@ -1,6 +1,6 @@
       SUBROUTINE PMFD02(NOMA,CESDEC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER NBOCC,IOCC,IRET
       INTEGER NBMA,NBCOU,NBV,NBSEC
-      INTEGER NBET,NBAP,K,I,JNCMP,JVALV,JMA
+      INTEGER NBAP,K,I,JNCMP,JVALV,JMA
       CHARACTER*19 CARTE
       CHARACTER*16 MOCLES(2),TYPMCL(2),MOCLEF(3)
       CHARACTER*8 K8B
@@ -67,7 +67,6 @@ C     ------------------------------------------------------------------
 
       MESMAI = '&&PMFD02.MES_MAILLES'
       NBAP = 0
-      NBET = 0
       DO 70 I = 1 , 3
          CALL GETFAC ( MOCLEF(I), NBOCC )
          NBAP = NBAP + NBOCC
@@ -75,7 +74,6 @@ C     ------------------------------------------------------------------
             CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOCLEF(I), K, 2,
      +                                   MOCLES, TYPMCL, MESMAI, NBMA )
             IF ( NBMA .NE. 0 )  CALL JEDETR ( MESMAI )
-            NBET = NBET + NBMA
  72      CONTINUE
  70   CONTINUE
 
@@ -87,7 +85,7 @@ C     ------------------------------------------------------------------
 
 
       CARTE='&&PMFD02.NBSP_I'
-      CALL ALCART ( 'V', CARTE, NOMA, 'NBSP_I', NBAP, NBET )
+      CALL ALCAR2 ( 'V', CARTE, NOMA, 'NBSP_I' )
 
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
@@ -107,7 +105,7 @@ C     -----------------------------------------------------------
         ZI(JVALV-1+1) =  NBCOU
 
         CALL JEVEUO (MESMAI , 'L', JMA )
-        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+        CALL NOCAR2 ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
      +                ZI(JMA), ' ', 1 )
         CALL JEDETR(MESMAI)
    10 CONTINUE
@@ -125,7 +123,7 @@ C     -----------------------------------------------------------
         ZI(JVALV-1+1) =  NBCOU
 
         CALL JEVEUO (MESMAI , 'L', JMA )
-        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+        CALL NOCAR2 ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
      +                ZI(JMA), ' ', 1 )
         CALL JEDETR(MESMAI)
    20 CONTINUE
@@ -146,7 +144,7 @@ C     -----------------------------------------------------------
         ZI(JVALV-1+2) =  NBSEC
 
         CALL JEVEUO (MESMAI , 'L', JMA )
-        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+        CALL NOCAR2 ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
      +                ZI(JMA), ' ', 2 )
         CALL JEDETR(MESMAI)
    30 CONTINUE

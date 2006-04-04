@@ -1,4 +1,4 @@
-# MODIF  DATE 06/03/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,17 +218,58 @@ for i in range(0,nbc+1) :
               REFERENCE='ANALYTIQUE',);
 
 
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : MAILLAGE FISSURE
+#------------------------------------------------------------------------
+
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
 
-DEFI_FICHIER(FICHIER='MAIL_XFEM',UNITE=81);
-IMPR_RESU(FORMAT='IDEAS',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM));
-DEFI_FICHIER(ACTION='LIBERER',UNITE=81);
+TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                               GROUP_NO='VOL',
+                               RESULTAT=UTOT1,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='DX',
+                               OPERATION='EXTRACTION',),);
 
-TEST_FICHIER(FICHIER='MAIL_XFEM',
-             VALE_K='33ed525f765f22fdb26780c7ecd21827',
-             EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4}',),
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.2.7',)
+# TEST DE NON REGRESSION PAR RAPPORT A LA VERSION 8.2.14
+
+DXREF=4.8900000004903e+03
+DYREF=4.8406451625824e+04
+DZREF=1.4670000498790e+05
+PREC=1.e-10
+
+TEST_TABLE(TABLE=TABDEP,
+           NOM_PARA='COOR_X',
+           TYPE_TEST='SOMM_ABS',
+           VALE=DXREF,
+           CRITERE='RELATIF',
+           PRECISION=PREC,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '8.2.14'),     
+
+TEST_TABLE(TABLE=TABDEP,
+           NOM_PARA='COOR_Y',
+           TYPE_TEST='SOMM_ABS',
+           VALE=DYREF,
+           CRITERE='RELATIF',
+           PRECISION=PREC,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '8.2.14'),      
+
+TEST_TABLE(TABLE=TABDEP,
+           NOM_PARA='COOR_Z',
+           TYPE_TEST='SOMM_ABS',
+           VALE=DZREF,
+           CRITERE='RELATIF',
+           PRECISION=PREC,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '8.2.14'),      
+
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : DEPLACEMENTS POUR LE MAILLAGE FISSURE
+#------------------------------------------------------------------------
 
 DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
                     MODELE=MODELEK,

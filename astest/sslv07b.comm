@@ -1,4 +1,4 @@
-# MODIF  DATE 23/11/2004   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,11 +77,11 @@ CALC_ELEM(     reuse=DEP2,  MODELE=MO,            CHAM_MATER=CHMAT,
                          RESULTAT=DEP2,        NUME_ORDRE=1,
                EXCIT=(_F(  CHARGE = CH1),
                       _F(  CHARGE = CH2)),
-   OPTION=( 'EPOT_ELEM_DEPL', 'SIGM_ELNO_DEPL',   'ERRE_ELGA_NORE',
-                                                'ERRE_ELNO_ELGA',))
+   OPTION=( 'EPOT_ELEM_DEPL', 'SIGM_ELNO_DEPL',   'ERRE_ELEM_SIGM',
+                                                'ERRE_ELNO_ELEM',))
 
 
-IMPR_RESU ( RESU = _F( RESULTAT = DEP2, NOM_CHAM = 'ERRE_ELGA_NORE',
+IMPR_RESU ( RESU = _F( RESULTAT = DEP2, NOM_CHAM = 'ERRE_ELEM_SIGM',
                       ) )
 DEPL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 NOM_CHAM='DEPL', RESULTAT=DEP2, NUME_ORDRE=1
@@ -127,16 +127,16 @@ TEST_RESU(CHAM_NO=(
         NOEUD = 'N533',     NOM_CMP = 'SIZZ',          VALE = 2.29554E5),
      # ERREUR RELATIVE
 
-            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
               MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.),
-            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
               MAILLE = 'HEX100',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 11.),
-            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELGA',
+            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELEM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
               MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.),
-            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELGA',
+            _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELEM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
               MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.))
 

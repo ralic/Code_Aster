@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,10 +72,10 @@ MODE_LOCAL__
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EERREURT  = ERRETEMP ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+    EERREURT  = ERREUR  ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
                                         TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
-    EERRENOT  = ERRETEMP ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+    EERRENOT  = ERREUR  ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
                                         TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     )
@@ -159,15 +159,15 @@ OPTION__
                               OUT__  EDURTNO  PDURT_R
     EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
-    ERTH_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+    ERRE_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN
                               OUT__  EERREURT  PERREUR
-    ERTH_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+    ERRE_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN
                               OUT__  EERREURT  PERREUR
-    ERTH_ELNO_ELEM      4     IN__   EERREURT  PERREUR
+    ERRE_ELNO_ELEM      4     IN__   EERREURT  PERREUR
                               OUT__  EERRENOT  PERRENO
     FLUX_ELGA_SENS      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN

@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,10 @@ C   CONSTANTES POUR INTO MENEGOTTO
       REAL*8 SIGP(6),SIGM(6),EPS(6),DEPS(6),R8MIEM,ETAN,R8VIDE
       REAL*8 ANGMAS(3),R8NNEM
       INTEGER I,J,IK
+      
+      INTEGER ISEREF,ISECHM,ISECHP,IHYDRM,IHYDRP
+      REAL*8  HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
+      
 
       LOGICAL VECTEU
 
@@ -104,6 +108,15 @@ C --- PARAMETRES EN ENTREE
       CALL JEVECH('PTEMPPR','L',ITEMPP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
+      
+      CALL JEVECH ('PSECREF', 'L',ISEREF)
+      CALL JEVECH ('PSECHMR', 'L',ISECHM)
+      CALL JEVECH ('PSECHPR', 'L',ISECHP)
+      
+      CALL JEVECH ('PHYDRMR', 'L',IHYDRM)
+      CALL JEVECH ('PHYDRPR', 'L',IHYDRP)
+      
+
 
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
@@ -356,10 +369,17 @@ C     ------------
                IVARMP=JTAB(1)
                CALL DCOPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
             ENDIF
+        HYDRGM=ZR(IHYDRM)
+        HYDRGP=ZR(IHYDRP)
+        SECHGM=0.5D0*(ZR(ISECHM)+ZR(ISECHM+1))
+        SECHGP=0.5D0*(ZR(ISECHP)+ZR(ISECHP+1))
+        SREF=ZR(ISEREF)
 
           CALL COMP1D('RIGI',1,1,OPTION,
      &                SIGX,EPSX,DEPX,
      &                TEMPM,TEMPP,TREF,
+     &                   HYDRGM,HYDRGP,
+     &                   SECHGM,SECHGP,SREF,
      &                ANGMAS,
      &                ZR(IVARIM),ZR(IVARIP),SIGXP,ETAN,CODRET)
 

@@ -1,0 +1,89 @@
+      SUBROUTINE INTENC(NBNA,JAC,VECTX,VECTY,MAT11,MAT22,MAT12,NX,NY,
+     &                  INTE)
+      IMPLICIT NONE
+      INTEGER NBNA
+      REAL*8 JAC(3),VECTX(3),VECTY(3),MAT11(3),MAT22(3),MAT12(3)
+      REAL*8 NX(3),NY(3),INTE
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C     BUT:
+C         CALCUL DES TERMES PAR NOEUD POUR UNE INTEGRATION
+C         DE NEWTON-COTES À 2 OU 3 POINTS DU TYPE : 
+C              (
+C              |     (VECT-MAT.N)**2 dBORD
+C              )BORD 
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   NBNA   : NOMBRE DE POINTS D'INTEGRATION
+C IN   JAC    : VECTEUR DES JACOBIENS DE LA TRANSFORMATION AUX NOEUDS
+C IN   VECTX  : COMPOSANTES EN X DU VECTEUR AUX NOEUDS
+C IN   VECTY  : COMPOSANTES EN Y DU VECTEUR AUX NOEUDS
+C IN   MAT11  : COMPOSANTES 11 DE LA MATRICE AUX NOEUDS
+C IN   MAT22  : COMPOSANTES 22 DE LA MATRICE AUX NOEUDS
+C IN   MAT12  : COMPOSANTES 12 DE LA MATRICE AUX NOEUDS
+C IN   NX     : VECTEUR DES ABSCISSES DES NORMALES AUX NOEUDS
+C IN   NY     : VECTEUR DES ORDONNEES DES NORMALES AUX NOEUDS
+C
+C      SORTIE :
+C-------------
+C OUT  INTE   : VALEUR DE L'INTEGRALE
+C
+C ----------------------------------------------------------------------
+      REAL*8 INTE1,INTE2,INTE3,POIDS(3)
+C ----------------------------------------------------------------------
+C        
+C        ON REALISE UNE INTEGRATION DE NEWTON-COTES AVEC 2 OU 3 POINTS
+C        D'INTEGRATION SELON LE NOMBRE DE POINTS DE L'ARETE CONSIDEREE
+C        SOIT NBNA = 2 OU 3
+C
+      INTE1=JAC(1)*
+     &      ((VECTX(1)-MAT11(1)*NX(1)-MAT12(1)*NY(1))**2
+     &      +(VECTY(1)-MAT12(1)*NX(1)-MAT22(1)*NY(1))**2) 
+C     
+      INTE2=JAC(2)*
+     &      ((VECTX(2)-MAT11(2)*NX(2)-MAT12(2)*NY(2))**2
+     &      +(VECTY(2)-MAT12(2)*NX(2)-MAT22(2)*NY(2))**2)
+C
+      POIDS(1)=1.D0
+      POIDS(2)=1.D0
+C
+      INTE=INTE1*POIDS(1)+INTE2*POIDS(2)
+C
+      IF (NBNA.EQ.3) THEN
+C
+        INTE3=JAC(3)*
+     &        ((VECTX(3)-MAT11(3)*NX(3)-MAT12(3)*NY(3))**2
+     &        +(VECTY(3)-MAT12(3)*NX(3)-MAT22(3)*NY(3))**2)
+C
+        POIDS(1)=1.D0/3.D0
+        POIDS(2)=1.D0/3.D0
+        POIDS(3)=4.D0/3.D0
+C
+        INTE=INTE1*POIDS(1)+INTE2*POIDS(2)+INTE3*POIDS(3)
+C
+      ENDIF
+C
+      END

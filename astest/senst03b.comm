@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la source imposee et temp exterieure
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 #                                                                       
 # ======================================================================
 #
-DEBUT( CODE=_F(  NOM = 'SENST03B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR_LOT='NON' )
+DEBUT( CODE=_F(NOM = 'SENST03B', NIV_PUB_WEB='INTERNET',),)
 #
 #  On note T1=1+0.1*INST, T2=1+0.2*INST, T3=1+0.3*INST ET T4=1+0.4*INST
 #
@@ -61,20 +61,10 @@ DEBUT( CODE=_F(  NOM = 'SENST03B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR
 #   * L'ecart qui est teste est un ecart relatif par rapport a la valeur par
 #     differences finies.
 #
-# 1. Definition/memorisation des fonctions constantes
-#
-PS_UN=DEFI_CONSTANTE(VALE=1.0,);
-MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
-#
-PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
-MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
-#
 # 2. Definition des parametres sensibles et des autres parametres
 #
 PS1=DEFI_PARA_SENSI(VALE=10.0,);
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS1,NOM_SD='PS1',),);
 PS2=DEFI_PARA_SENSI(VALE=140.0,);
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
 
 EPSA=1.E-1;
 A1=100.0;
@@ -84,14 +74,14 @@ A4=140.0;
 A5=-120.0;
 A6=10.0;
 
-PS1P = FORMULE(NOM_PARA='INST',VALE='10.+EPSA');
-PS1M = FORMULE(NOM_PARA='INST',VALE='10.-EPSA');
-PS2P = FORMULE(NOM_PARA='INST',VALE='140.+EPSA');
-PS2M = FORMULE(NOM_PARA='INST',VALE='140.-EPSA');
-T_OPP = FORMULE(NOM_PARA='INST',VALE=' A2*(1.+0.1*INST)');
-COEFH = FORMULE(NOM_PARA='INST',VALE=' A3*(1.+0.3*INST)');
-T_ORI = FORMULE(NOM_PARA='INST',VALE=' A1*(1.+0.1*INST)');
-FLUXR = FORMULE(NOM_PARA='INST',VALE=' A5*(1.+0.2*INST)');
+PS1P = FORMULE(NOM_PARA='INST', VALE='10.+EPSA');
+PS1M = FORMULE(NOM_PARA='INST', VALE='10.-EPSA');
+PS2P = FORMULE(NOM_PARA='INST', VALE='140.+EPSA');
+PS2M = FORMULE(NOM_PARA='INST', VALE='140.-EPSA');
+T_OPP = FORMULE(NOM_PARA='INST', VALE='A2*(1.+0.1*INST)');
+COEFH = FORMULE(NOM_PARA='INST', VALE='A3*(1.+0.3*INST)');
+T_ORI = FORMULE(NOM_PARA='INST', VALE='A1*(1.+0.1*INST)');
+FLUXR = FORMULE(NOM_PARA='INST', VALE='A5*(1.+0.2*INST)');
 #
 # 3. Prealable
 #
@@ -126,27 +116,10 @@ CH_0=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
 #
 CH_1=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
                       SOURCE=_F(GROUP_MA = 'MOITIE2',SOUR=PS1));
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
-                      PARA_SENSI=PS1,
-                      NOM_COMPOSE='CH_1_PS1',
-                      VALEUR='PS1',
-                      MOT_FACT='SOURCE',
-                      MOT_CLE='SOUR',));
-CH_1_PS1=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
-                     SOURCE=_F(GROUP_MA= 'MOITIE2',SOUR=PS_UN));
 #
 CH_2=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
              ECHANGE=_F(GROUP_MA='BORD_GAU',
                         COEF_H=COEFH,TEMP_EXT=PS2));
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_2',
-                      PARA_SENSI=PS2,
-                      NOM_COMPOSE='CH_2_PS2',
-                      VALEUR='PS2',
-                      MOT_FACT='ECHANGE',
-                      MOT_CLE='TEMP_EXT',));
-CH_2_PS2=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
-             ECHANGE=_F(GROUP_MA='BORD_GAU',
-                        COEF_H=PS_ZERO,TEMP_EXT=PS_UN));
 #
 # 3.4 Chargements translates pour differences finies
 #
@@ -163,12 +136,6 @@ CH_2P=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
 #
 # 4.1. Calcul standard + 2 calculs de sensibilite
 #
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RETH',
-                       PARA_SENSI=PS1,
-                       NOM_COMPOSE='RETH_PS1'),
-                    _F(NOM_SD='RETH',
-                       PARA_SENSI=PS2,
-                       NOM_COMPOSE='RETH_PS2')));
 LR8=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A = 10.,NOMBRE=2));
 RETH=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
@@ -229,33 +196,15 @@ RLTH=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH,
                    OPERATION='EXTRACTION',
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP')));
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RLTH',
-                       PARA_SENSI=PS1,
-                       NOM_COMPOSE='RLTH_PS1'),
-                    _F(NOM_SD='RLTH',
-                       PARA_SENSI=PS2,
-                       NOM_COMPOSE='RLTH_PS2')));
-RLTH=POST_RELEVE_T(reuse=RLTH,
+RLTHPS=POST_RELEVE_T(#reuse=RLTH,
                    ACTION=_F(RESULTAT = RETH,
                    INTITULE='TEMPERATURE',
                    NOM_CHAM='TEMP',
                    OPERATION='EXTRACTION',
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP'),
-                   SENSIBILITE=(PS1)));
-RLTH=POST_RELEVE_T(reuse=RLTH,
-                   ACTION=_F(RESULTAT = RETH,
-                   INTITULE='TEMPERATURE',
-                   NOM_CHAM='TEMP',
-                   OPERATION='EXTRACTION',
-                   GROUP_NO=('I','CENTRE','J'),
-                   NOM_CMP=('TEMP'),
-                   SENSIBILITE=(PS2)));
-###IMPR_TABLE( TABLE=RLTH,NOM_PARA=('NOEUD','INST','TEMP',),);
-###IMPR_TABLE( TABLE=RLTH,SENSIBILITE=(PS1),
-###            NOM_PARA=('NOEUD','INST','TEMP',),);
-###IMPR_TABLE( TABLE=RLTH,SENSIBILITE=(PS2),
-###            NOM_PARA=('NOEUD','INST','TEMP',),);
+                   SENSIBILITE=(PS1, PS2)));
+
 RLTH1M=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH1M,
                    INTITULE='TEMPERATURE',
                    NOM_CHAM='TEMP',
@@ -281,87 +230,4 @@ RLTH2P=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH2P,
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP')));
 #
-# 5. Boucle Python de comparaison difference finie/derivee analytique
-#
-for nume_ordre_k in range(3):
-
-  k1 = 3*nume_ordre_k+1
-#
-# 5.1. point 'I'
-#
-  temp=RLTH['TEMP',k1]
-#
-  tempm=RLTH1M['TEMP',k1]
-  tempp=RLTH1P['TEMP',k1]
-  dfps1 = (tempp-tempm)/(2.*EPSA)
-  tempm=RLTH2M['TEMP',k1]
-  tempp=RLTH2P['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*EPSA)
-#
-  TEST_RESU(RESU=(
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('I'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
-          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('I'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
-          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
-                 )
-            ) ;
-#
-# 5.2. point 'CENTRE'
-#
-  k1=k1+1
-  temp=RLTH['TEMP',k1]
-#
-  tempm=RLTH1M['TEMP',k1]
-  tempp=RLTH1P['TEMP',k1]
-  dfps1 = (tempp-tempm)/(2.*EPSA)
-  tempm=RLTH2M['TEMP',k1]
-  tempp=RLTH2P['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*EPSA)
-#
-  TEST_RESU(RESU=(
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('CENTRE'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
-          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('CENTRE'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
-          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
-                 )
-            ) ;
-#
-# 5.3. point 'J'
-#
-  k1=k1+1
-  temp=RLTH['TEMP',k1]
-#
-  tempm=RLTH1M['TEMP',k1]
-  tempp=RLTH1P['TEMP',k1]
-  dfps1 = (tempp-tempm)/(2.*EPSA)
-  tempm=RLTH2M['TEMP',k1]
-  tempp=RLTH2P['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*EPSA)
-#
-  TEST_RESU(RESU=(
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('J'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
-          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('J'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
-          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
-                 )
-            ) ;
-#
-FIN();
+FIN()

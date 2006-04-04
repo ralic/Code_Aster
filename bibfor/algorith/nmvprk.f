@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,8 @@ C
 C
         PARAMETER     ( MAXDOM = 0.99D0 )
 C
-        PARAMETER       ( NMAT = 190     )
+C       POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
+        PARAMETER       ( NMAT = 6000     )
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2),R8VIDE
         INTEGER         NBCOMM(NMAT,3)

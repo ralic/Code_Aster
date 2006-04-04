@@ -1,8 +1,12 @@
       SUBROUTINE RSLESD (RESULT,NUORD,MODELE,MATERI,CARELE,EXCIT,
      &                   IEXCIT)
-C
+      IMPLICIT NONE
+      INTEGER      NUORD,IEXCIT
+      CHARACTER*8  RESULT,MODELE,CARELE,MATERI
+      CHARACTER*19 EXCIT
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,29 +24,32 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C
-      IMPLICIT NONE
+C     BUT:
+C         LIRE OU ECRIRE DES NOMS DE CONCEPT DE LA SD RESULTAT ET
+C         D'EXPLOITER DES OBJETS DE LA SD CORRESPONDANT AUX CHARGES.
 C
-      INTEGER NUORD,IEXCIT
-      CHARACTER*8  RESULT,MODELE,CARELE,MATERI
-      CHARACTER*19 EXCIT
-
-
-C----------------------------------------------------------------------
-C     BUT: PERMET DE LIRE OU D'ECRIRE DES NOMS DE CONCEPT DE 
-C          LA SD RESULTAT ET D'EXPLOITER DES OBJETS DE LA SD
-C          CORRESPONDANT AUX CHARGES
 C
-C     IN      RESULT : NOM DE LA SD RESULTAT
-C     IN      IORDR  : NUMERO D'ORDRE
-C     OUT     MODELE : NOM DU MODELE
-C     OUT     MATERI : NOM DU CHAMP MATERIAU
-C     OUT     CARELE : NOM DE LA CARACTERISTIQUE ELEMENTAIRE
-C     OUT     EXCIT  : NOM DE LA SD INFO_CHARGE
-C     OUT     IEXCIT : INDICE DEFINISSANT L'ORIGINE DU CHARGEMENT
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   RESULT : NOM DE LA SD RESULTAT
+C IN   NUORD  : NUMERO D'ORDRE
+C
+C      SORTIE :
+C-------------
+C OUT  MODELE : NOM DU MODELE
+C OUT  MATERI : NOM DU CHAMP MATERIAU
+C OUT  CARELE : NOM DE LA CARACTERISTIQUE ELEMENTAIRE CARA_ELEM
+C OUT  EXCIT  : NOM DE LA SD INFO_CHARGE
+C OUT  IEXCIT : INDICE DEFINISSANT L'ORIGINE DU CHARGEMENT
 C                      UTILISE LORS DES CALCLULS
 C                      0 : LE CHARGEMENT EST ISSU DE LA SD RESULTAT
 C                      1 : LE CHARGEMENT EST FOURNI PAR L'UTILISATEUR
-C 
+C
+C ......................................................................
+
 C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -58,24 +65,21 @@ C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C     VARIABLES LOCALES
-      INTEGER JPARA,N,N1,N2,N3,N4,IEX
-      INTEGER JLCHA,JINFC,JFCHA, NCHA
-      INTEGER ILU, ISD
-      INTEGER NCHALU, NCHASD
-      INTEGER LCHALU,FCHALU
-      CHARACTER*6 NOMPRO
-      PARAMETER(NOMPRO='RSLESD')
-      CHARACTER*8 BLAN8,NOMSD,NOMLU
-      CHARACTER*8 FONCLU, K8B, FONCSD
-      CHARACTER*19 KCHA, KFON
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      INTEGER      JPARA,N,N1,N2,N3,N4,IEX,JLCHA,JINFC,JFCHA,NCHA
+      INTEGER      ILU,ISD,NCHALU,NCHASD,LCHALU,FCHALU
+
+      CHARACTER*6  NOMPRO
+      CHARACTER*8  BLAN8,NOMSD,NOMLU,FONCLU,K8B,FONCSD
       CHARACTER*16 TYPE,NOMCMD
+      CHARACTER*19 KCHA, KFON
       CHARACTER*24 EXCISD
 
+      PARAMETER(NOMPRO='RSLESD')
+      
 C ----------------------------------------------------------------------
-C
+
       CALL JEMARQ()
 C
 C--- INITIALISATIONS
@@ -94,12 +98,20 @@ C     T R A I T E M E N T  DU  M O D E L E
 C
 C========================================================== 
 C     
+
+C      WRITE(6,*)'rslesd01'
+
 C---  RECUPERATION DU NOM DU MODELE
 C
       CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
 C
+C      WRITE(6,*)'rslesd01-MODELE=',MODELE
+
       CALL RSADPA(RESULT,'L',1,'MODELE',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)
+C      WRITE(6,*)'rslesd01-RESULT=',RESULT
+C      WRITE(6,*)'rslesd01-NOMSD=',NOMSD
+
 C 
 C--- VERIFICATIONS ET AFFECTATIONS
 C
@@ -120,6 +132,9 @@ C
            MODELE = BLAN8
         ENDIF
       ENDIF        
+
+C      WRITE(6,*)'rslesd02'
+
 C
 C--- SI LE MODELE EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
 C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
@@ -128,6 +143,10 @@ C
          CALL RSADPA(RESULT,'E',1,'MODELE',NUORD,0,JPARA,K8B)
          ZK8(JPARA)=MODELE
       ENDIF
+
+
+C      WRITE(6,*)'rslesd03'
+C      WRITE(6,*)'rslesd02-MODELE=',MODELE
 C      
 C==========================================================
 C
@@ -137,9 +156,15 @@ C==========================================================
 C
 C--- RECUPERATION DU NOM DU CARA_ELEM
 C
-      IF((NOMCMD.NE.'CALC_G_LOCAL_T').AND.
+C      IF((NOMCMD.NE.'CALC_G_LOCAL_T').AND.
+C     &   (NOMCMD.NE.'CALC_G_THETA_T'))THEN
+      IF((NOMCMD.NE.'CALC_ERREUR'   ).AND.
+     &   (NOMCMD.NE.'CALC_G_LOCAL_T').AND.
      &   (NOMCMD.NE.'CALC_G_THETA_T'))THEN
+C      WRITE(6,*)'rslesd-GET_VID'
         CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)
+
+C      WRITE(6,*)'rslesd04'
 C
         CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
         NOMSD=ZK8(JPARA)
@@ -147,11 +172,16 @@ C
 C--- VERIFICATIONS ET AFFECTATIONS
 C
         IF (NOMSD.NE.' ')THEN
+C      WRITE(6,*)'rslesd-IF01=',CARELE
           IF (N2.EQ.0) THEN
+C      WRITE(6,*)'rslesd-IF02=',CARELE
              CARELE = NOMSD 
+C      WRITE(6,*)'rslesd-IF03=',CARELE
           ELSEIF (NOMSD.EQ.NOMLU) THEN
              CARELE = NOMLU
+C      WRITE(6,*)'rslesd-IF04=',CARELE
           ELSE
+C      WRITE(6,*)'rslesd-IF05=',CARELE
              CALL UTMESS('A',NOMPRO,
      &            ' LE CARA_ELEM FOURNI PAR L''UTILISATEUR'
      &          //' EST DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT,'
@@ -161,18 +191,28 @@ C
           ENDIF
         ELSE
           IF (N2.NE.0) THEN
+C      WRITE(6,*)'rslesd-IF06=',CARELE
              CARELE = NOMLU 
           ELSE
+C      WRITE(6,*)'rslesd-IF07=',CARELE         
              CARELE = BLAN8
           ENDIF
         ENDIF
+
+C      WRITE(6,*)'rslesd-IF08=',CARELE
 C
 C--- SI LE CARA_ELEM EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
 C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
 C  
+
+C      WRITE(6,*)'rslesd05'
+
         IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
            CALL RSADPA(RESULT,'E',1,'CARAELEM',NUORD,0,JPARA,K8B)
            ZK8(JPARA)=CARELE
+
+C      WRITE(6,*)'rslesd06'
+
         ENDIF
       ENDIF
 C            
@@ -181,6 +221,8 @@ C
 C     T R A I T E M E N T   D U   M A T E R I A U
 C
 C========================================================== 
+
+C      WRITE(6,*)'rslesd04'
 C
 C---  RECUPERATION DU NOM DU CHAMP MATERIAU
 C
@@ -219,6 +261,9 @@ C
          CALL RSADPA(RESULT,'E',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
          ZK8(JPARA)=MATERI
       ENDIF
+
+C      WRITE(6,*)'rslesd05'
+
 C            
 C==========================================================
 C
@@ -231,22 +276,33 @@ C
 C--- LECTURE DES INFORMATIONS UTILISATEUR
 C
       IF(NOMCMD.NE.'POST_ELEM') THEN
- 
-        CALL GETFAC('EXCIT',NCHALU)
+
+C      WRITE(6,*)'rslesd06'
+
+         CALL GETFAC('EXCIT',NCHALU)
 C
         IF ( NCHALU .NE. 0 ) THEN 
           CALL WKVECT(KCHA,'V V K8',NCHALU,LCHALU)
           CALL WKVECT(KFON,'V V K8',NCHALU,FCHALU)
+C      WRITE(6,*)'rslesd07'
           DO 10 IEX = 1, NCHALU
             CALL GETVID('EXCIT','CHARGE',IEX,1,1,
      &                   ZK8(LCHALU+IEX-1),N1)
-            CALL GETVID('EXCIT','FONC_MULT',IEX,1,1,FONCLU,N2)
-            IF (N2.NE.0) THEN
-              ZK8(FCHALU+IEX-1) = FONCLU
-            ENDIF
- 10       CONTINUE
+C      WRITE(6,*)'rslesd08'
+            IF(NOMCMD.NE.'CALC_ERREUR') THEN 
+              CALL GETVID('EXCIT','FONC_MULT',IEX,1,1,FONCLU,N2)
+      
+C      WRITE(6,*)'FONCLU=',FONCLU
+C      WRITE(6,*)'rslesd09'
+
+              IF (N2.NE.0) THEN
+                ZK8(FCHALU+IEX-1) = FONCLU
+              ENDIF
+            ENDIF  
+  10      CONTINUE
         ENDIF
       ELSE
+C      WRITE(6,*)'rslesd-01'
         CALL GETVID(' ','CHARGE'    ,0,1,0,K8B   ,N4)
         NCHA = -N4
         NCHALU = MAX(1,NCHA)
@@ -256,6 +312,7 @@ C
 C
 C--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT
 C
+C      WRITE(6,*)'rslesd-02'
       CALL RSADPA(RESULT,'L',1,'EXCIT',NUORD,0,JPARA,K8B)
       EXCISD=ZK24(JPARA)
 C 

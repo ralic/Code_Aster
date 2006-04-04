@@ -1,6 +1,6 @@
       SUBROUTINE TE0251(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C ......................................................................
       INTEGER IMATTT,I,J,IJ,L,LI,LJ
       INTEGER C(6,9),ISE,NSE,NNOP2
       INTEGER IGEOM,IFLUX,ITEMPI,ITEMPS
+      LOGICAL  LTEATT, LAXI
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -54,6 +55,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PFLUXNL','L',IFLUX)
@@ -91,7 +95,7 @@ C --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
             R = R + COORSE(2* (I-1)+1)*ZR(IVF+L-1)
             TPG = TPG + ZR(ITEMPI-1+C(ISE,I))*ZR(IVF+L-1)
    50     CONTINUE
-          IF (NOMTE(3:4).EQ.'AX') POIDS = POIDS*R
+          IF (LAXI) POIDS = POIDS*R
           CALL FODERI(ZK8(IFLUX),TPG,RBID,ALPHAP)
           IJ = IMATTT - 1
           DO 70 I = 1,NNO

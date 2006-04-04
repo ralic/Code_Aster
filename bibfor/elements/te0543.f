@@ -1,6 +1,6 @@
       SUBROUTINE TE0543(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C ......................................................................
       INTEGER ICONTM,IVARIM,ICOPIL,IBORNE,ICTAU
       INTEGER IDEPLM,IDDEPL,IDEPL0,IDEPL1,ICOMPO,IRET
       REAL*8 DFDI(2187),ELGEOM(10,27)
+      LOGICAL LTEATT
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -59,10 +60,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C - TYPE DE MODELISATION
 
-      IF (NOMTE(1:5).EQ.'MECA_') THEN
-        TYPMOD(1) = '3D      '
-      ELSE IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
+      ELSEIF (NOMTE(1:5).EQ.'MECA_') THEN
+        TYPMOD(1) = '3D      '
       ELSE IF (NOMTE(1:5).EQ.'MGCA_') THEN
         TYPMOD(1) = '3D      '
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN

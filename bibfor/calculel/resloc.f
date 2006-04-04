@@ -4,7 +4,7 @@
       CHARACTER*(*) LIGREL,MATE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     BUT:
 C         CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
-C                     OPTION : 'ERRE_ELGA_NORE'
+C                     OPTION : 'ERRE_ELEM_SIGM'
 C     ARGUMENTS:
 C     ----------
 C ENTREE :
@@ -276,7 +276,7 @@ C --- SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
 
       LPAOUT(1) = 'PERREUR'
       LCHOUT(1) = RESU
-      OPTION = 'ERRE_ELGA_NORE'
+      OPTION = 'ERRE_ELEM_SIGM'
       CALL CALCUL('C',OPTION,LIGREL,10,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
       CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
       IF (IRET.EQ.0) THEN

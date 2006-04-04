@@ -1,6 +1,6 @@
       SUBROUTINE TE0479 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,9 +45,12 @@ C
       INTEGER            NDIM,NNO,NNOS,NPG,JGANO,KP,ICOPG,INO
       INTEGER            IDFDE,IPOIDS,IVF,IGEOM
       REAL*8             XX,YY,RBID81(81),POIDS
+      LOGICAL            LTEATT, LAXI
 C DEB ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 C
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 C      ----------------------------------------------
@@ -66,9 +69,7 @@ C
         ZR(ICOPG+3*(KP-1)+1)=YY
         CALL DFDM2D (NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),RBID81,RBID81,POIDS)
 C       EN AXI R C'EST XX
-        IF (NOMTE(3:4).EQ.'AX') THEN
-          POIDS=POIDS*XX          
-        ENDIF
+        IF (LAXI) POIDS=POIDS*XX          
         ZR(ICOPG+3*(KP-1)+2)=POIDS
   100 CONTINUE
 C

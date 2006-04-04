@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,7 +110,7 @@ C
      &         NBDIV2,IDEB,IFIN,I1,IRET,IDEFSE,ISIGSE
 
       LOGICAL  GRAND,AXI,CP,DP,FONC,INCR,EPSINI,LPIPO,
-     &         TSENUL,DERIVE,DERIVF,DERFOR
+     &         TSENUL,DERIVE,DERIVF,DERFOR,LTEATT
 
 C =====================================================================
 C INITIALISATIONS
@@ -127,7 +127,7 @@ C =====================================================================
       EPSINI = .FALSE.
       DERFOR = .FALSE.
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
         AXI = .TRUE.
       ELSEIF (NOMTE(3:4).EQ.'CP') THEN

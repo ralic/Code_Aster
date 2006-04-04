@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,9 +30,11 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
    macro = 'CALC_TABLE'
    from Accas               import _F
+   from Cata.cata import table_jeveux
    from Utilitai.Utmess     import UTMESS
    from Utilitai            import transpose
    from Utilitai.Table      import Table, merge
+   from Utilitai.Sensibilite import NomCompose
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -46,7 +48,14 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    DETRUIRE      = self.get_cmd('DETRUIRE')
 
-   tab = TABLE.EXTR_TABLE()
+   # 0. faut-il utiliser une table dérivée
+   form_sens='\n... SENSIBILITE AU PARAMETRE %s (SD COMP %s)'
+   if args['SENSIBILITE']:
+      ncomp = NomCompose(TABLE, args['SENSIBILITE'], msg='F')
+      sdtab = table_jeveux(ncomp)
+      tab = sdtab.EXTR_TABLE()
+   else:
+      tab = TABLE.EXTR_TABLE()
 
    #----------------------------------------------
    # Boucle sur les actions à effectuer
@@ -62,7 +71,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       form_filtre = '\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
       if occ['OPERATION'] == 'FILTRE':
          col = getattr(tab, occ['NOM_PARA'])
-         # peu importe le type
+         # peu importe le type, c'est la meme méthode d'appel
          opts = [occ[k] for k in ('VALE','VALE_I','VALE_C','VALE_K') if occ.has_key(k)]
          kargs = {}
          for k in ('CRITERE','PRECISION'):

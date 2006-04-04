@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,13 +147,12 @@ CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                        )
 
 #
-CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-          _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT1',
-                    VALE = (98696.,  0.,  0., )),
-          _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'MASSES1',
-                    VALE = (0.,  0.,  0., )),
-                  _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASSES1', 
-                    VALE = 25.))
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
+                          DISCRET=( _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', 
+                                         GROUP_MA = 'RESSORT1',
+                                         VALE = (98696.,  0.,  0., )),
+                                    _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASSES1', 
+                                         VALE = 25.))
                          )
 
 MACRO_MATR_ASSE(  MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,

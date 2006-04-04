@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,7 @@ C
      &         NBDIV2,IDEB,IFIN,I1,IRET,NPG1
 
       LOGICAL  GRAND,AXI,CP,FONC,INCR,EPSINI,
-     &         TSENUL,DERIVL
+     &         TSENUL,DERIVL,LTEATT
 
 C =====================================================================
 C INITIALISATIONS
@@ -139,7 +139,7 @@ C =====================================================================
 CGN      PRINT *,'................. ',NOMPRO,' .............'
 
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
         AXI = .TRUE.
       ELSEIF (NOMTE(3:4).EQ.'CP') THEN

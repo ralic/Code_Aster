@@ -1,7 +1,7 @@
-      SUBROUTINE ALGOCO(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,
-     &                  DEPTOT,LICCVG)
+      SUBROUTINE ALGOCO(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
+     &                  RESU,DEPTOT,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C TOLE CRP_20
 C ======================================================================
       IMPLICIT     NONE
       CHARACTER*8  NOMA
+      CHARACTER*19 MATASS
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
       CHARACTER*24 CINE
@@ -36,7 +37,7 @@ C ======================================================================
 C
 C ALGO DE CONTACT
 C
-C ALGO. POUR CONTACT	: CONTRAINTES ACTIVES
+C ALGO. POUR CONTACT    : CONTRAINTES ACTIVES
 C ALGO. POUR FROTTEMENT : SANS
 C
 C RESOLUTION DE : C.DU + AT.MU  = F
@@ -66,6 +67,7 @@ C                'E':  RESOCO(1:14)//'.DEL0'
 C                'E':  RESOCO(1:14)//'.DELT'
 C                'E':  RESOCO(1:14)//'.COCO'
 C                'E':  RESOCO(1:14)//'.CM1A'
+C IN  MATASS  : NOM DEL A MATRICE DU PREMIER MEMBRE ASSEMBLEE
 C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
 C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
 C IN  NOMA    : NOM DU MAILLAGE
@@ -107,7 +109,7 @@ C
       COMPLEX*16   CBID
       INTEGER      IBID
       LOGICAL      TROUAC,DELPOS,GCPC,LELPIV,CFEXCL
-      CHARACTER*19 MATASS,MATAS1,MATPRE
+      CHARACTER*19 MATAS1,MATPRE
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
       INTEGER      II,KK,ITER,ILIAC,NEQMAX,ITEX
       INTEGER      JRESU,JDEPP
@@ -119,6 +121,7 @@ C
       REAL*8       XJVMAX,X1,R8BID
       CHARACTER*1  TYPEAJ,TYPESP
       CHARACTER*2  TYPEC0
+      CHARACTER*24 MACONT
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU,NOZOCO
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JCMU,JZOCO
       CHARACTER*24 CONTNO,CONTMA,CONVCO,APMEMO
@@ -174,6 +177,7 @@ C ======================================================================
       ATMU   = RESOCO(1:14)//'.ATMU'
       COCO   = RESOCO(1:14)//'.COCO'
       SOLVEU = '&&OP0070.SOLVEUR'
+      MACONT = ZK24(ZI(LDSCON+1))
 C ======================================================================
       CALL JEVEUO(COCO,'E',JCOCO)
       CALL JEVEUO(NOZOCO,'L',JZOCO)
@@ -195,6 +199,7 @@ C ======================================================================
       CALL JEVEUO(DELTA,'E',JDELTA)
       CALL JEVEUO(RESU(1:19)//'.VALE','E',JRESU)
       CALL JEVEUO(DEPTOT(1:19)//'.VALE','E',JDEPP)
+      CALL JEECRA(MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
 C ======================================================================
 C --- INITIALISATION DE VARIABLES
@@ -265,7 +270,6 @@ C     -----------------------------------------------------------------
       GCPC = (ZK24(JSLVK-1+1).EQ.'GCPC')
       IF (GCPC) THEN
         MATAS1 = ZK24(ZI(LMAT+1))
-        MATASS = '&&MATASS'
         IF (MATAS1.NE.MATASS) CALL UTMESS('F','ALGOCO','STOP')
         MATPRE = '&&NMMATR.MAPREC'
         CHASOL = '&&ALGOCO.CHASOL'

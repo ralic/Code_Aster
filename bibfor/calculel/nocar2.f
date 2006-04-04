@@ -2,7 +2,7 @@
      &                  NMLIGZ, NCMP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C-----------------------------------------------------------------------
       CHARACTER*8 SCAL,MA,KBID,BASE
       INTEGER NOMA,NOLI
       CHARACTER*24 CLIMA, TRAV
+      LOGICAL LAGGR
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -93,6 +94,7 @@ C
       NOMLIG = NMLIGZ
       GROUPE = GROUPZ
       MODE   = MODEZ
+      LAGGR=.FALSE.
 C
       CALL JEVEUO(CHIN//'.NOMA','L',NOMA)
       MA = ZK8(NOMA-1+1)
@@ -102,7 +104,12 @@ C
       NEC = NBEC(GD)
       NGDMX = ZI(JDESC-1+2)
       NEDIT = ZI(JDESC-1+3) + 1
+
+
+C     -- FAUT-IL AGRANDIR LA CARTE ?
+C     -------------------------------
       IF (NEDIT.GT.NGDMX) THEN
+         LAGGR=.TRUE.
          NGDMX=2*NGDMX
          CALL AGCAR2(NGDMX, CHIN)
          CALL JEVEUO(CHIN//'.DESC','E',JDESC)
@@ -153,14 +160,19 @@ C     -- FAUT-IL AGRANDIR .LIMA ?
       CALL JEVEUO(JEXATR(CHIN//'.LIMA','LONCUM'),'L',ILLIMA)
       LONTAP=ZI(ILLIMA-1+NEDIT)+MAX(DIM,1)
       IF (LONTAP.GT.LONTAV) THEN
+         LAGGR=.TRUE.
+         LONTAP=MAX(2*LONTAV,LONTAP)
+      ENDIF
+      IF (LAGGR) THEN
         CLIMA=CHIN//'.LIMA'
         TRAV=CHIN//'.TRAV'
         CALL JEDUPO(CLIMA,'V',TRAV,.FALSE.)
         CALL JELIRA(CLIMA,'CLAS',IBID,BASE)
         CALL JEDETR(CHIN//'.LIMA')
-        CALL COCOPG(TRAV, CLIMA, NGDMX, MAX(2*LONTAV,LONTAP),BASE)
+        CALL COCOPG(TRAV, CLIMA, NGDMX,LONTAP,BASE)
         CALL JEDETR(TRAV)
       ENDIF
+
 
       CALL JECROC(JEXNUM(CHIN//'.LIMA',NEDIT))
       CALL JEECRA(JEXNUM(CHIN//'.LIMA',NEDIT),'LONMAX',MAX(DIM,1),' ')

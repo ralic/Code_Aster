@@ -1,6 +1,6 @@
       SUBROUTINE TE0007 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8        MODELI
       REAL*8             NHARM, BSIGM(18),GEO(18)
       INTEGER            NBSIGM
+      LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
       MODELI(1:2) = NOMTE(3:4)
 C
@@ -60,7 +61,7 @@ C     -----------------
 
 C - SPECIFICATION DE LA DIMENSION
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         NDIM = 2
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN
         NDIM = 2

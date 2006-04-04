@@ -1,8 +1,8 @@
       SUBROUTINE NMASFR ( DEFICO, RESOCO, MATASS )
-      
+
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ======================================================================
 C CREATION DE LA MATRICE DE FROTTEMENT
 C IN  DEFICO  : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO  : SD CONTACT
-C VAR  MATASS 
+C VAR  MATASS
 C      IN/JXIN  : MATR_ASSE TANGENTE
 C      OUT/JXOUT: MATR_ASSE TANGENTE + FROTTEMENT (EVENTUEL)
 C ======================================================================
@@ -55,7 +55,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       CHARACTER*14 NUMEDF,NT
       CHARACTER*24 APPARI
       INTEGER      ICONTA,TYPALC,TYPALF,FROT3D,MATTAN,IBID,IER
-      CHARACTER*19 MAFROT,KT
+      CHARACTER*19 MAFROT
       CHARACTER*24 LIMAT(2)
       REAL*8       COEFMU(2)
       CHARACTER*1  TYPMAT(2),TYPCST(2)
@@ -72,7 +72,7 @@ C     ----------------------------------------------------------------
            GO TO 9999
          ENDIF
          IF (MATTAN.EQ.0) THEN
-             GO TO 9999   
+             GO TO 9999
          ENDIF
       ENDIF
  111  CONTINUE
@@ -87,25 +87,22 @@ C
       TYPCST(2) = 'R'
       TYPMAT(1) = 'R'
       TYPMAT(2) = 'R'
-      KT = '&&NMASFR.MATANG'
       NT = '&&NMASFR.NUTANG'
 C
 
       CALL DETRSD('NUME_DDL',NT)
-      CALL DETRSD('MATR_ASSE',KT)
 C    ON REND LE CODE MUET QUAND INFO=1
       CALL INFMUE()
-      CALL MTCMBL(2,TYPCST,COEFMU,TYPMAT,LIMAT,'R',KT,' ','V',NT,.TRUE.)
+      CALL MTCMBL(2,TYPCST,COEFMU,TYPMAT,LIMAT,'R',MATASS,
+     &             ' ','V',NT,.TRUE.)
       CALL INFBAV()
       CALL DISMOI('F','NOM_NUME_DDL',MAFROT,'MATR_ASSE',
      &                IBID,NUMEDF,IER)
-      CALL DETRSD('MATR_ASSE',MATASS)
       CALL DETRSD('MATR_ASSE',MAFROT)
       CALL DETRSD('NUME_DDL',NUMEDF)
 C
-      MATASS = KT
 C
  9999 CONTINUE
       CALL JEDEMA()
-    
+
       END

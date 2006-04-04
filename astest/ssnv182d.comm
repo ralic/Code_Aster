@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,6 +164,42 @@ TEST_TABLE(TABLE=LAG,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
            REFERENCE='ANALYTIQUE',);      
+
+
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+
+DEFI_FICHIER(UNITE=81);
+IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM));
+
+
+ 
+
+DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
+                    MODELE=MODELEK,
+                    NOM_CHAM='DEPL',
+                    RESULTAT=UTOT1)
+
+
+DEFI_FICHIER(UNITE=82);
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=DEPL));
+
+TEST_RESU(RESU=(_F(  RESULTAT=DEPL,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DX',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'ABSOLU',
+                     VALE = 0.0,
+                     PRECISION=1.E-6,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '8.2.13'),                          
+                _F(  RESULTAT=DEPL,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DY',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'ABSOLU',
+                     VALE = 2.31E-04,
+                     PRECISION=1.E-6,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '8.2.13'),),)
+          
 
 FIN();                  
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,14 +121,14 @@ REMEZERO=MECA_STATIQUE(         MODELE=MOMEZERO,
 REMEZERO=CALC_ELEM( reuse=REMEZERO,   RESULTAT=REMEZERO,
                     
               OPTION=( 'SIGM_ELNO_DEPL', 
-                       'ERRE_ELGA_NORE', ),
+                       'ERRE_ELEM_SIGM', ),
               NUME_ORDRE=3
                       )
 #
 # 3.4.4. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d2 A L'ITERATION 0
 #
 ###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=REMEZERO,
-###                     NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST',NUME_ORDRE = 3 ) ) ;
+###                     NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST',NUME_ORDRE = 3 ) ) ;
 ###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RETHZERO,
 ###                     NOM_CHAM='TEMP', NUME_ORDRE = 2 ) ) ;
 #
@@ -140,7 +140,7 @@ MACR_ADAP_MAIL(
                        MAILLAGE_N = MZERO,
                        MAILLAGE_NP1 = CO("MUN"),
                        RESULTAT_N = REMEZERO,
-                       INDICATEUR = 'ERRE_ELGA_NORE',
+                       INDICATEUR = 'ERRE_ELEM_SIGM',
                        NOM_CMP_INDICA = 'ERREST' ,
                        NUME_ORDRE = 3,
                        CRIT_RAFF_PE = 0.03),
@@ -221,14 +221,14 @@ REMEUN=MECA_STATIQUE(         MODELE=MOMEUN,
 REMEUN=CALC_ELEM( reuse=REMEUN,   RESULTAT=REMEUN,
                     
               OPTION=( 'SIGM_ELNO_DEPL', 
-                       'ERRE_ELGA_NORE', ),
+                       'ERRE_ELEM_SIGM', ),
               NUME_ORDRE=3
                       )
 #
 # 5.4.4. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d2 A L'ITERATION 1
 #
 ###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=REMEUN,
-###                     NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST',NUME_ORDRE = 3 ) ) ;
+###                     NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST',NUME_ORDRE = 3 ) ) ;
 ###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RETHUN,
 ###                     NOM_CHAM='TEMP', NUME_ORDRE = 2 ) ) ;
 #
@@ -269,7 +269,7 @@ MACR_ADAP_MAIL(
                        MAILLAGE_N = MUN,
                        MAILLAGE_NP1 = CO("MDEUX"),
                        RESULTAT_N = REMEUN,
-                       INDICATEUR = 'ERRE_ELGA_NORE',
+                       INDICATEUR = 'ERRE_ELEM_SIGM',
                        NOM_CMP_INDICA = 'ERREST' ,
                        INST = 8.0,
                        CRIT_RAFF_PE = 0.03,

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,7 +135,7 @@ resultat=MECA_STATIQUE(MODELE=modele,
 #
 resultat=CALC_ELEM(reuse =resultat,
                    RESULTAT=resultat,
-                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELGA_NORE'));
+                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM'));
 #
 # 8.2. Les derivees des contraintes aux points de Gauss
 #

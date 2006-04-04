@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRES CONCENTRIQUES SEPARES PAR UN FLUIDE INCOMPRESSIBLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,9 +79,9 @@ CHARGE=AFFE_CHAR_THER( MODELE=FLUIDE1,
                     TEMP_IMPO=_F( GROUP_NO = 'TEMPIMPO', TEMP = 0.)  )
 
 CHAMPCAR=AFFE_CARA_ELEM( MODELE=STRUCT,
-                         DISCRET_2D=(_F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                         DISCRET_2D=(_F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_N',
                                          VALE = (1.E7, 1.E7, )),
-                                     _F( GROUP_MA = 'RESSOREX', CARA = 'K_T_D_L',
+                                     _F( GROUP_MA = 'RESSOREX', CARA = 'K_T_D_N',
                                          VALE = (5.E6, 5.E6, ))))
 
 CHARGS=AFFE_CHAR_MECA( MODELE=STRUCT,DDL_IMPO=(

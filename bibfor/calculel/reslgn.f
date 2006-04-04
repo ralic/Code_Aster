@@ -1,9 +1,9 @@
-      SUBROUTINE RESLGN(LIGREL,ERREG,ERREN)
+      SUBROUTINE RESLGN(LIGREL,OPTION,ERREG,ERREN)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) LIGREL,ERREG,ERREN
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-C     BUT:   CALCUL DE L'OPTION : 'ERRE_ELNO_ELGA'
+C     BUT:   CALCUL DE L'OPTION : 'ERRE_ELNO_ELEM' ET 'QIRE_ELNO_ELEM'
 C     ----
 
 C IN  : LIGREL : NOM DU LIGREL
@@ -39,8 +39,6 @@ C ......................................................................
 
       LPAOUT(1) = 'PERRENO'
       LCHOUT(1) = ERREN
-
-      OPTION = 'ERRE_ELNO_ELGA'
 
       CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
 

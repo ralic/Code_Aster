@@ -3,7 +3,7 @@
      &                  ACMA,ACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,7 @@ C DECLARATION VARIABLES LOCALES
      &             LONG,MOD,IFIV,IINF,IFET6,IREX,IFETI,ILIMPI,IFETPT,
      &             NBTOT,IFET1,NBI2,IPIV,MAMOY,RANG,IBID,NIVMPI,NBSD1,
      &             NBPROC,IMSMK,IMSMI,DIMTET,IMSMR,NBDDSM,NBREOA,
-     &             JBID,LBID,ASSMAT,MBID,IACSM
+     &             JBID,LBID,ASSMAT,MBID,IACSM,IRET1,IRET2
       REAL*8       DNRM2,ANORM,ANORMK,ANORM0,EPSIK,PARAAF,DDOT,ALPHA,
      &             ALPHAN,ALPHAD,BETA,BETAD,BETAN,R8MIEM,RMIN,RAUX,
      &             TEMPS(6),RBID,TETNUM,ANORMD,RESMIN
@@ -159,6 +159,9 @@ C----  1.1 DONNEES GENERALES
       CALL JEVEUO(KINF,'L',IINF)
       INFOFE=ZK24(IINF)
       CALL JEEXIN(CRITER(1:19)//'.CRTI',IRET)
+      CALL JEEXIN(CRITER(1:19)//'.CRTR',IRET1)
+      CALL JEEXIN(CRITER(1:19)//'.CRDE',IRET2)
+      IRET=IRET*IRET1*IRET2
       IF (IRET.EQ.0) THEN
         CALL WKVECT(CRITER(1:19)//'.CRTI','V V I',1,JCRI)
         CALL WKVECT(CRITER(1:19)//'.CRTR','V V R8',1,JCRR)
@@ -497,6 +500,7 @@ C----  2.5 CALCUL DU VECTEUR LAGRANGE_FETI INITIAL LANDA0 (ZR(IVLAGI))
 C----  2.6 CALCUL DU RESIDU INITIAL (ZR(IRR)): R0 = D - FI*LANDA0
 C----      ET DU SECOND MEMBRE (ZR(IR1)): D DE NORME ANORMD
 
+
       CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR1),MATAS,ZI(IFETF),ZI(IFETH),
      &            COLAUX,CHSECM,SDFETI,ZR(IVLAGI),1,CHSOL,
      &            TESTCO,LRIGID,DIMGI,IRR,NOMGGT,IPIV,NOMGI,
@@ -504,6 +508,7 @@ C----      ET DU SECOND MEMBRE (ZR(IR1)): D DE NORME ANORMD
       DO 15 I=0,NBI1
         ZR(IR3+I)=0.D0
    15 CONTINUE
+
       CALL FETRIN(NBSD,NBI,ZR(IR1),ZR(IR2),MATAS,ZI(IFETF),ZI(IFETH),
      &            COLAUX,CHSECM,SDFETI,ZR(IR3),1,CHSOL,
      &            TESTCO,LRIGID,DIMGI,IRR,NOMGGT,IPIV,NOMGI,
@@ -614,9 +619,9 @@ C   MISE A JOUR PAR PROC 0 DE H0_TILDE=M-1*A*G0
       CALL FETPRJ(NBI,ZR(IR3),ZR(IRH),NOMGGT,LRIGID,
      &    DIMGI,1,SDFETI,IPIV,NBSD,ZI(IFETF),ZI(IFETH),MATAS,NOMGI,
      &    LSTOGI,INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRH)
-    
-C----  2.10 CALCUL DE LA DD INITIALE (ZR(IRP)): P0=H0 (=G0 SI NON PREC)
 
+   
+C----  2.10 CALCUL DE LA DD INITIALE (ZR(IRP)): P0=H0 (=G0 SI NON PREC)
 C  EVENTUELLEMENT REORTHOGONALISEE PAR RAPPORT AUX PAS DE TEMPS
 C  PRECEDENT + CALCUL DE ALPHAN0 = G0.P0 (=G0.G0 SI NON PRECOND)
       IF ((ITPS.EQ.1).OR.(.NOT.LACSM)) THEN
@@ -641,6 +646,7 @@ C----  2.11 TEST DEFINIE-POSITIVITE DE P*FI*P ET ORTHO GCPPC
         ENDIF
       ENDIF
       CALL FETCPU(4,TEMPS,INFOFE,RANG,IFM)
+
          
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
@@ -676,7 +682,6 @@ C  STOCKAGE FI*PK
           CALL DCOPY(NBI,ZR(IRZ),1,ZR(IDDFRO+IAUX1),1)
           CALL JELIBE(K24FIR)
         ENDIF
-
 C---------------------------------------------------
 C----  3.2  CALCUL DE ALPHAK = GK.PK/ZK.PK = ALPHANK/ALPHADK
 C---------------------------------------------------
@@ -698,7 +703,8 @@ C  STOCKAGE ZK.PK SI REORTHO
             ENDIF
             ZR(IPSRO+IAUX1)=ALPHAD
           ENDIF
-        ENDIF   
+        ENDIF 
+  
         CALL FETTOR(1,INFOFE,RANG,ITEST,NBI,IRR,IR1,NOMGGT,LRIGID,DIMGI,
      &              SDFETI,IPIV,NBSD,IFETF,IFETH,MATAS,NOMGI,LSTOGI,
      &              IREX,IPRJ,NBPROC,K24IRG,IRG,IFM,IRP,IRZ)
@@ -731,7 +737,7 @@ C  MAINTENANT ON DIFFUSE ZR(IRG)
         CALL FETTOR(2,INFOFE,RANG,ITEST,NBI,IRR,IR1,NOMGGT,LRIGID,DIMGI,
      &              SDFETI,IPIV,NBSD,IFETF,IFETH,MATAS,NOMGI,LSTOGI,
      &              IREX,IPRJ,NBPROC,K24IRG,IRG,IFM,IRP,IRZ)
-          
+
 C---------------------------------------------------
 C----  3.5  CALCUL TEST D'ARRET ET AFFICHAGE
 C---------------------------------------------------
@@ -797,7 +803,6 @@ C  STOCKAGE
 C---------------------------------------------------
 C----  3.7  PRECONDITIONNEMENT (ZR(IRH)): HK+1 =P*A*M-1*A*GK+1
 C---------------------------------------------------
-
         CALL FETCPU(10,TEMPS,INFOFE,RANG,IFM)   
 C  PHASE DE SCALING 1 (ZR(IR1)): AUX1 = A * GK+1
         CALL FETSCA(NBI,ZR(IRG),ZR(IR1),SCALIN,INFOFE,NBI2,IFETI,IFM)
@@ -820,7 +825,6 @@ C  CALCUL DE LA PROJECTION 2 (ZR(IRH)): HK+1 = P * AUX1
      &              1,SDFETI,IPIV,NBSD,ZI(IFETF),ZI(IFETH),MATAS,
      &              NOMGI,LSTOGI,INFOFE,IREX,IPRJ,NBPROC,RANG,K24BID)
         CALL FETCPU(11,TEMPS,INFOFE,RANG,IFM)
-        
 C---------------------------------------------------
 C----  3.8  NEW DIRECTION DE DESCENTE (ZR(IRP)): PK+1=HK+1 + ...
 C----       AVEC EVENTUELLEMENT UNE PHASE DE REORTHONORMALISATION
@@ -835,7 +839,7 @@ C---------------------------------------------------
         CALL FETTOR(3,INFOFE,RANG,ITEST,NBI,IRR,IR1,NOMGGT,LRIGID,DIMGI,
      &              SDFETI,IPIV,NBSD,IFETF,IFETH,MATAS,NOMGI,LSTOGI,
      &              IREX,IPRJ,NBPROC,K24IRG,IRG,IFM,IRP,IRZ) 
-     
+
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C----  FIN BOUCLES DU GCPPC DE FETI
@@ -941,7 +945,7 @@ C MEMBRES
         ENDIF
       ENDIF
       IF (OPT(1:13).EQ.'NETTOYAGE_SDT') THEN
-C NETTOYAGE TOTAL
+C NETTOYAGE TOTAL OBJETS TEMPORAIRES CREES DANS CRESOL,NUMERO
         CALL JEDETR(KINF)
         CALL JEDETR(K24PAS)
         CALL JEDETR(K24SM1)

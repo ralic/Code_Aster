@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,13 +80,15 @@ C ---------------------------------------------------------------------
      &             KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,KNEQUA,
      &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE,SDFETA
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR     
-      LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,LLICHP,LFETIC
+      LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,LLICHP,LFETIC,
+     &             LSAUTE
       INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
      &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
-     &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,
-     &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT
-      REAL*8       TEMPS(6)
+     &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
+     &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT,
+     &             NIVMPI,RANG,NBLOG
+      REAL*8       TEMPS(6),RBID
      
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -311,6 +313,13 @@ C ADRESSE JEVEUX OBJET AFFICHAGE CPU
         CALL JEVEUO('&FETI.INFO.CPU.ASSE','E',IFCPU)
 C ADRESSE JEVEUX OBJET FETI & MPI
         CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+        CALL JEVEUO('&FETI.LISTE.SD.MPIB','L',ILIMPB)
+        IF (INFOFE(10:10).EQ.'T') THEN
+          NIVMPI=2
+        ELSE
+          NIVMPI=1
+        ENDIF
+        CALL FETMPI(2,IBID,IFM,NIVMPI,RANG,IBID,K24B,K24B,K24B,RBID)
       ENDIF
 
 C========================================
@@ -515,7 +524,7 @@ C PAR DEFAUT LIGREL DE MODELE
               LLICH=.FALSE.
               LLICHD=.FALSE.
               LLICHP=.FALSE.
-              IF ((LFETI).AND.(IDD.NE.0)) THEN
+              IF (LFETI) THEN
                 NOMLOG=NOMLI(1:19)//'.FEL1'
                 CALL JEEXIN(NOMLOG,IRET1) 
                 IF (IRET1.NE.0) THEN
@@ -523,45 +532,53 @@ C LIGREL DE CHARGE A MAILLES TARDIVES
                   CALL JEVEUO(NOMLOG,'L',IFEL1)
                   LLICH=.TRUE.
                   LLIMO=.FALSE.
-                  IF (ZK24(IFEL1-1+IDD).EQ.' ') THEN
-C LIGREL NE CONCERNANT PAS LE SOUS-DOMAINE IDD
-                    GOTO 180              
+                  IF (IDD.EQ.0) THEN
+                    LSAUTE=.TRUE.
+                    CALL JELIRA(NOMLOG,'LONMAX',NBLOG,K8BID)
+                    DO 95 I=1,NBLOG
+                      IF (ZK24(IFEL1-1+I).NE.' ') LSAUTE=.FALSE. 
+   95               CONTINUE
                   ELSE
-                    CALL JEEXIN(NOMLI(1:19)//'.FEL2',IRET2)
-                    IF (IRET2.NE.0) THEN
+                    LSAUTE=.FALSE.
+                    IF (ZK24(IFEL1-1+IDD).EQ.' ') LSAUTE=.TRUE.
+                  ENDIF
+C LIGREL NE CONCERNANT PAS LE SOUS-DOMAINE IDD OU LE DOMAINE GLOBAL
+                  IF (LSAUTE) GOTO 180
+                  
+                  CALL JEEXIN(NOMLI(1:19)//'.FEL2',IRET2)
+                  IF (IRET2.NE.0) THEN
 C LIGREL DE CHARGE A MAILLES TARDIVES DUPLIQUEES DE FILS NOMLID
 C DDL_IMPO, FORCE_NODALE...
-                      LLICHD=.TRUE.
+                    LLICHD=.TRUE.
 C VRAI NOM DU LIGREL DUPLIQUE CONTENU DANS PROF_CHNO.LILI LOCAL
-                      NOMLID=ZK24(IFEL1-1+IDD)
-                      CALL JEVEUO(NOMLI(1:19)//'.FEL2','L',IFEL2)
-                      CALL JEEXIN(NOMLI(1:19)//'.FEL3',IRET3)
-                      IF (IRET3.NE.0) THEN
-                        CALL JEVEUO(NOMLI(1:19)//'.FEL3','L',IFEL3)
+                    IF (IDD.NE.0) NOMLID=ZK24(IFEL1-1+IDD)
+                    CALL JEVEUO(NOMLI(1:19)//'.FEL2','L',IFEL2)
+                    CALL JEEXIN(NOMLI(1:19)//'.FEL3',IRET3)
+                    IF (IRET3.NE.0) THEN
+                      CALL JEVEUO(NOMLI(1:19)//'.FEL3','L',IFEL3)
 C LIGREL DE CHARGE A NOEUDS TARDIFS DUPLIQUES (DDL_IMPO...)
-                        LLICHP=.TRUE.
-                      ELSE
-C PAS DE NOEUD TARDIF DUPLIQUE (FORCE_NODALE)
-                        LLICHP=.FALSE.
-                      ENDIF
-                      CALL JEEXIN(NOMLI(1:19)//'.FEL4',IRET3) 
-                      IF (IRET3.NE.0)
-     &                  CALL JEVEUO(NOMLI(1:19)//'.FEL4','L',IFEL4)
-                      CALL JEEXIN(NOMLI(1:19)//'.FEL5',IRET3) 
-                      IF (IRET3.NE.0)
-     &                  CALL JEVEUO(NOMLI(1:19)//'.FEL5','L',IFEL5)
+                      LLICHP=.TRUE.
                     ELSE
+C PAS DE NOEUD TARDIF DUPLIQUE (FORCE_NODALE)
+                      LLICHP=.FALSE.
+                    ENDIF
+                    CALL JEEXIN(NOMLI(1:19)//'.FEL4',IRET3) 
+                    IF (IRET3.NE.0)
+     &                CALL JEVEUO(NOMLI(1:19)//'.FEL4','L',IFEL4)
+                    CALL JEEXIN(NOMLI(1:19)//'.FEL5',IRET3) 
+                    IF (IRET3.NE.0)
+     &                CALL JEVEUO(NOMLI(1:19)//'.FEL5','L',IFEL5)
+                  ELSE
 C LIGREL DE CHARGE NON DUPLIQUE
-                      LLICHD=.FALSE.                
-                    ENDIF                   
-                  ENDIF
+                    LLICHD=.FALSE.                
+                  ENDIF                   
                 ELSE
 C LIGREL DE MODELE              
                   LLIMO=.TRUE.
                 ENDIF
               ENDIF
 C--------- POUR FETI & LIGREL TARDIF: FIN
-              
+
 C---- TEST EXISTENCE &&POIDS_MAILLE
 C------------------------------
               IF ( NOMOPT(1:9).EQ.'FULL_MECA'.OR.
@@ -575,7 +592,7 @@ C------------------------------
 C ILIVE: INDICE DANS LIST_RESU (GLOBAL) DES VECT_ELEM.LILI DU NOMLI
 C ILINU: INDICE DANS PROF_CHNO.LILI (GLOBAL OU LOCAL) DU NOMLI
               CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
-              IF (LLICHD) THEN
+              IF ((LLICHD).AND.(IDD.NE.0)) THEN
                 CALL JENONU(JEXNOM(KNULIL,NOMLID),ILINU)
               ELSE
                 CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)       
@@ -608,7 +625,7 @@ C NUMA : NUMERO DE LA MAILLE
 C MONITORING
                     IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) THEN 
                       WRITE(IFM,*)'<FETI/ASSVEC>','IDD',IDD,'LIGREL',
-     &                  NOMLI,'ILIVE',ILIVE
+     &                  NOMLI,'ILIVE',ILIVE,'RANG',RANG
                       WRITE(IFM,*)'IGR',IGR,'IEL',IEL,'NUMA',NUMA
                       IF (LLIMO) 
      &                  WRITE(IFM,*)'.LOGI',ZI(ILIGRP+ABS(NUMA))
@@ -626,13 +643,23 @@ C MONITORING
 
 C SI ON EST DANS UN CALCUL FETI SUR UN SOUS-DOMAINE, ON SE POSE LA
 C QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AU SOUS-DOMAINE IDD
-                    IF ((LFETI).AND.(IDD.NE.0)) THEN
+                    IF (LFETI) THEN
                       IF (NUMA.GT.0) THEN
                         IF (LLICH)
      &                    CALL UTMESS('F','ASSMAM','FETI: MAILLE '//
      &                        'POSITIVE AVEC LIGREL DE CHARGE !')
 C ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
-                        IF (ZI(ILIGRP+NUMA).NE.IDD) GOTO 160
+                        IF (IDD.NE.0) THEN
+C CHAQUE PROC ASSEMBLE LA PARTIE PHYSIQUE DES SECONDS MEMBRES FETI LE
+C CONCERNANT
+                          IF (ZI(ILIGRP+NUMA).NE.IDD) GOTO 160
+                        ELSE
+C IDEM POUR LA PARTIE PHYSIQUE DU CHAM_NO GLOBAL
+                          IBID=ZI(ILIGRP+NUMA)
+                          IF (IBID.GT.0) THEN
+                            IF (ZI(ILIMPB+IBID-1).NE.RANG) GOTO 160
+                          ENDIF
+                        ENDIF
                       ELSE
 C ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
                         IF (LLIMO)
@@ -720,8 +747,12 @@ C LFEL2=.FALSE. ON LA SAUTE
                         IAUX1=ZI(IFEL2+2*(NUMA-1)+1)
 C C'EST UNE MAILLE TARDIVE NON SITUEE SUR UNE INTERFACE
                         IF (IAUX1.GT.0) THEN
+                          IF (IDD.NE.0) THEN                    
 C ELLE CONCERNE LE SD, ON L'ASSEMBLE
-                          IF (IAUX1.EQ.IDD) LFEL2=.TRUE.
+                            IF (IAUX1.EQ.IDD) LFEL2=.TRUE.
+                          ELSE
+                            IF (ZI(ILIMPB+IAUX1-1).EQ.RANG) LFEL2=.TRUE.
+                          ENDIF
 C C'EST UNE MAILLE TRADIVE SITUEE SUR UNE INTERFACE, DONC PARTAGEE
 C ENTRE PLUSIEURS SOUS-DOMAINES
                         ELSE IF (IAUX1.LT.0) THEN
@@ -773,7 +804,7 @@ C NOEUD TARDIF
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C SI POUR FETI, NOEUD TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
-                          IF (LLICHP) THEN
+                          IF ((LLICHP).AND.(IDD.NE.0)) THEN
                             IAUX1=ZI(IFEL3+2*(N1-1)+1)
                             IF (IAUX1.GT.0) THEN
 C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE NON SUR L'INTERFACE

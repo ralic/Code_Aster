@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/10/2004   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -217,11 +217,8 @@ C ---  RECUPERATION D'UNE CARTE DE CONTRAINTES INITIALES LE CAS ECHEANT
      &                                   ' N EST PAS UN CONCEPT DE TYPE'
      &                                   //' CABL_PRECONT')
               CALL JEVEUO(SIGCAB//'.DESC','L',JDESC)
+
               IASM = ZI(JDESC+1)
-              IF (IASM.NE.NBMAMA) CALL UTMESS('F','CAPREC',
-     &                                 'MAJORANT DU '//
-     &                         'NOMBRE D ASSOCIATIONS INVALIDE POUR LA '
-     &                                 //'CARTE '//SIGCAB)
 
 C ---  RECOPIAGE DE LA PREMIERE CARTE
 
@@ -270,7 +267,7 @@ C ---  RECUPERATION DES DONNEES APPORTEES PAR LES CARTES SUIVANTES
                     ZR(JVALV1) = ZR(JVALE+NSIEF* (IAS-1))
                     IF (ICODE1.EQ.ICODOK) ZR(JVALV1) = ZR(JVALV1) +
      &                  ZR(JVALE1+NSIEF* (IAS1-1))
-                    CALL NOCART(SIGCHA,3,K1B,'NUM',1,K1B,NUMAIL,' ',1)
+                    CALL NOCAR2(SIGCHA,3,K1B,'NUM',1,K1B,NUMAIL,' ',1)
                   END IF
    50           CONTINUE
                 CALL JELIBE(SIGCAB//'.DESC')

@@ -1,7 +1,7 @@
       SUBROUTINE OP0012(IER)
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C----------------------------------------------------------------------
       CHARACTER*24 K24B
       CHARACTER*72 KBIDON
       INTEGER TYPE
-      CHARACTER*1 NOMTYP, TYPMAT
+      CHARACTER*1 NOMTYP,TYPMAT
 C-----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
@@ -80,27 +80,29 @@ C---- MOTS CLE : MATR_ELEM ET LICOEF :
       CALL WKVECT(MATAS//'.LI2MATEL','V V K8',NBMAT,ILIMA2)
       CALL GETVID(' ','MATR_ELEM',0,1,NBMAT,ZK8(ILIMA2),L)
       CALL WKVECT(MATAS//'.LICOEF','V V R',NBMAT,ILICOE)
-      DO 5 I = 1,NBMAT
-          ZR(ILICOE-1+I) = 1.0D0
-    5 CONTINUE
+      DO 10 I = 1,NBMAT
+        ZR(ILICOE-1+I) = 1.0D0
+   10 CONTINUE
 
 
 C---- ASSEMBLAGE PROPREMENT DIT
       NOMTYP = TYPMAT(NBMAT,ZK8(ILIMA2))
       IF (NOMTYP.EQ.'S') THEN
-          CALL ASSMAM('G',MATAS,NBMAT,ZK8(ILIMA2),ZR(ILICOE),NU,
-     +                'ZERO',TYPE)
+        CALL ASSMAM('G',MATAS,NBMAT,ZK8(ILIMA2),ZR(ILICOE),NU,'ZERO',
+     &              TYPE)
+
       ELSE
-          CALL ASSMMN('G',MATAS,NBMAT,ZK8(ILIMA2),ZR(ILICOE),NU,
-     +                'ZERO',TYPE)
-      ENDIF
+        CALL ASSMMN('G',MATAS,NBMAT,ZK8(ILIMA2),ZR(ILICOE),NU,'ZERO',
+     &              TYPE)
+      END IF
 
 
 C---- PRISE EN COMPTE DES CHARGES CINEMATIQUES SI IL Y EN A
       IF (NBCHC.NE.0) THEN
         CALL WKVECT('OP0012.&&LCHARCINE','V V K8',NBCHC,ILCHCI)
         CALL GETVID(' ','CHAR_CINE',0,1,NBCHC,ZK8(ILCHCI),IBID)
-        CALL ASSCHC('G',MATAS,NBCHC,ZK8(ILCHCI),NU,'ZERO')
-      ENDIF
+        CALL ASSCHC('G',MATAS,NBCHC,ZK8(ILCHCI),NU)
+      END IF
+
       CALL JEDEMA()
       END

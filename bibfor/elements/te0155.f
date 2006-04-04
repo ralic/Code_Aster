@@ -3,7 +3,8 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
+C MODIF ELEMENTS  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +62,10 @@ C
       INTEGER      LMATER,LPESA,LFORC,ITEMPS,NBPAR,IRET,LTREF,LTEMP
       INTEGER      IFCX
       CHARACTER*8  NOMPAV(1)
-      REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANG1(3),U(3),V(3)
+      REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANG1(3),U(3),V(3),INSTAN
       LOGICAL      NORMAL,GLOBAL,OKVENT
+      
+      REAL*8       KENDOG,KDESSI,SECH,HYDR
 C     ------------------------------------------------------------------
       DATA         NOMPAR / 'X' , 'Y' , 'Z' , 'INST' /
       DATA         NOMPAV /'VITE'/
@@ -467,7 +470,150 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
+         ENDIF
+C
+
+      ELSEIF ( OPTION.EQ.'CHAR_MECA_SECH_R' ) THEN
+C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+         CALL JEVECH ('PCAGNBA', 'L',LSECT)
+         A = ZR(LSECT)
+C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+         CALL JEVECH ('PMATERC', 'L', LMATER)
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+     &               CODRES,'FM')
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
+     +                                      ALPHAT,CODRES,'FM')
+
+C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PSECHER','L',ISECH)
+
+C ---- RECUPERATION DU SECHAGE DE REFERENCE
+C      -------------------------------------------
+      CALL JEVECH('PSECREF','L',ISREF)
+C ---- RECUPERATION DE L'INSTANT
+C      -------------------------
+      CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+      IF (ITEMPS.NE.0) THEN
+      INSTAN = ZR(ITEMPS)
+      ELSE
+      INSTAN = 0.D0
       ENDIF
+C
+C        TEMPERATURE EFFETIVE
+         CALL JEVECH('PTEMPER','L',LTEMP)
+C
+         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
+         SECH = 0.5D0*(ZR(ISECH)+ZR(ISECH+1))
+                  
+      NOMPAR(1) = 'TEMP'
+      VALPA2(1) = TEMP
+      NOMPAR(2) = 'INST'
+      VALPA2(2) = INSTAN
+      NOMPAR(3) = 'SECH'
+      VALPA2(3) = SECH
+C
+C        TERME DE LA MATRICE ELEMENTAIRE
+         XRIG = E * A / XL
+C
+C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
+C           DE L HYDRATATION OU DU SECHAGE
+C           ----------------------------------------------------------
+            CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
+     +          'K_DESSIC',KDESSI, CODRES, ' ' )
+C
+            IF (CODRES.NE.'OK') KDESSI=0.D0
+C
+CC        DEPLACEMENT INDUIT PAR LE SECHAGE
+         XDEP = -KDESSI*(ZR(ISREF)-SECH) * XL
+C
+C        --- CALCUL DES FORCES INDUITES ---
+         FL(1) = -XRIG * XDEP
+         FL(4) =  XRIG * XDEP
+         CALL UTPVLG ( NNO, NC, PGL, FL(1), VECT )
+C
+C ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
+C
+         IF (NOMTE.EQ.'MECA_BARRE') THEN
+           DO 55 I=1,6
+            ZR(LVECT+I-1) = VECT(I)
+ 55        CONTINUE
+         ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+          ZR(LVECT)     = VECT(1)
+          ZR(LVECT+1)   = VECT(2)
+          ZR(LVECT+2)   = VECT(4)
+          ZR(LVECT+3)   = VECT(5)
+         ENDIF
+C
+
+      ELSEIF ( OPTION.EQ.'CHAR_MECA_HYDR_R' ) THEN
+C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+         CALL JEVECH ('PCAGNBA', 'L',LSECT)
+         A = ZR(LSECT)
+C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+         CALL JEVECH ('PMATERC', 'L', LMATER)
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+     &               CODRES,'FM')
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
+     +                                      ALPHAT,CODRES,'FM')
+
+C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PHYDRER','L',IHYDR)
+
+C ---- RECUPERATION DE L'INSTANT
+C      -------------------------
+      CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+      IF (ITEMPS.NE.0) THEN
+      INSTAN = ZR(ITEMPS)
+      ELSE
+      INSTAN = 0.D0
+      ENDIF
+C
+C        TEMPERATURE EFFETIVE
+         CALL JEVECH('PTEMPER','L',LTEMP)
+C
+         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
+         HYDR = ZR(IHYDR)
+         
+      NOMPAR(1) = 'TEMP'
+      VALPA2(1) = TEMP
+      NOMPAR(2) = 'INST'
+      VALPA2(2) = INSTAN
+      NOMPAR(3) = 'HYDR'
+      VALPA2(3) = HYDR
+C
+C        TERME DE LA MATRICE ELEMENTAIRE
+         XRIG = E * A / XL
+C
+C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
+C           DE L HYDRATATION OU DU SECHAGE
+C           ----------------------------------------------------------
+            CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
+     +          'B_ENDOGE',KENDOG, CODRES, ' ' )
+C
+            IF (CODRES.NE.'OK') KENDOG=0.D0
+C
+CC        DEPLACEMENT INDUIT PAR LE SECHAGE
+         XDEP = -KENDOG*HYDR * XL
+C
+C        --- CALCUL DES FORCES INDUITES ---
+         FL(1) = -XRIG * XDEP
+         FL(4) =  XRIG * XDEP
+         CALL UTPVLG ( NNO, NC, PGL, FL(1), VECT )
+C
+C ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
+C
+         IF (NOMTE.EQ.'MECA_BARRE') THEN
+           DO 56 I=1,6
+            ZR(LVECT+I-1) = VECT(I)
+ 56        CONTINUE
+         ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+          ZR(LVECT)     = VECT(1)
+          ZR(LVECT+1)   = VECT(2)
+          ZR(LVECT+2)   = VECT(4)
+          ZR(LVECT+3)   = VECT(5)
+         ENDIF
 C
       ENDIF
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ for k in range(3):
                               _F(CHARGE=FPILO),),);
                        
    RESUELAS=CALC_ELEM(reuse =RESUELAS,
-                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELGA_NORE','ERRE_ELNO_ELGA'),
+                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM'),
                  RESULTAT=RESUELAS);  
                                 
    MAIL[k+1]=CO('MAIL_%d' % (k+1))
@@ -96,7 +96,7 @@ for k in range(3):
                    MAILLAGE_N = MAIL[k],
                    MAILLAGE_NP1 = MAIL[k+1],
                    RESULTAT_N = RESUELAS,
-                   INDICATEUR = 'ERRE_ELGA_NORE',
+                   INDICATEUR = 'ERRE_ELEM_SIGM',
                    NOM_CMP_INDICA = 'ERREST' ,
                    CRIT_RAFF_PE = 0.08,
                    ),
@@ -109,7 +109,7 @@ for k in range(3):
    DEFI_FICHIER(UNITE=51)
    
    IMPR_RESU(FORMAT='GMSH',UNITE=51,MODELE=MO,
-             RESU=_F( RESULTAT=RESUELAS,NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST'),)
+             RESU=_F( RESULTAT=RESUELAS,NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST'),)
    DEFI_FICHIER(ACTION='LIBERER',UNITE=51)
 
 #  Lancement de GMSH 

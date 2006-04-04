@@ -7,7 +7,7 @@
       CHARACTER*8   TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -143,6 +143,8 @@ C       RECHERCHE DU LAMBDA NODAL LE PLUS PROCHE
         DMIN=R8MAEM()
         DO 511 J=1,IPT
           IF (J.EQ.I) GOTO 511
+          IF (ZR(JAINT-1+4*(J-1)+1).EQ.-1.D0 .OR.
+     &        ZR(JAINT-1+4*(J-1)+2).EQ.-1.D0 )  GOTO 511
           D=PADIST(NDIM,ZR(JPTINT-1+NDIM*(I-1)+1),
      &                  ZR(JPTINT-1+NDIM*(J-1)+1))
           IF (D.LE.DMIN) THEN
@@ -152,14 +154,27 @@ C       RECHERCHE DU LAMBDA NODAL LE PLUS PROCHE
  511    CONTINUE
  
 C       COPIE DU VECTEUR JAINT 
-        DO 512 J=1,4
-          ZR(JAINT-1+4*(I-1)+J)=ZR(JAINT-1+4*(JMIN-1)+J)
- 512    CONTINUE
- 
+C       MAIS ON LAISSE UNE INDIC -1 POUR POUVOIR ENCORE RECONNAITRE
+C       UN POINT DU FOND
+        IF (ZR(JAINT-1+4*(JMIN-1)+1).GT.0)
+     &    ZR(JAINT-1+4*(I-1)+1)=ZR(JAINT-1+4*(JMIN-1)+1)
+        IF (ZR(JAINT-1+4*(JMIN-1)+2).GT.0)
+     &    ZR(JAINT-1+4*(I-1)+2)=ZR(JAINT-1+4*(JMIN-1)+2)
+        ZR(JAINT-1+4*(I-1)+3)=ZR(JAINT-1+4*(JMIN-1)+3)
+        ZR(JAINT-1+4*(I-1)+4)=ZR(JAINT-1+4*(JMIN-1)+4)
+
  510  CONTINUE
  
 C--------------------------- FIN -------------------------------------- 
  
+C      ON SUPPRIME LES -1 RESTANT
+       DO 512 I=1,IPT
+          DO 513 J=1,2
+             IF (ZR(JAINT-1+4*(I-1)+J).EQ.-1.D0)
+     &          ZR(JAINT-1+4*(I-1)+J)=0.D0
+ 513      CONTINUE
+ 512   CONTINUE
+
  9999 CONTINUE
 
       CALL JEDEMA()

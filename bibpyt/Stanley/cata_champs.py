@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF cata_champs Stanley  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,9 +143,9 @@ class CATA_CHAMPS :
     self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA_DEPL'],            "Invariants des deformations aux points de Gauss")
     self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
     self('EQUI_NOEU_EPSI', 'NOEU',['EQUI_ELNO_EPSI'],            "Invariants des deformations aux noeuds")
-    self('ERRE_ELGA_NORE', 'ELGA',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
-    self('ERRE_ELNO_ELGA', 'ELNO',['ERRE_ELGA_NORE'],            "Indicateurs d'erreur en residu aux noeuds par element")
-    self('ERTH_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
+    self('ERRE_ELEM_SIGM', 'ELGA',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
+    self('ERRE_ELNO_ELEM', 'ELNO',['ERRE_ELEM_SIGM'],            "Indicateurs d'erreur en residu aux noeuds par element")
+    self('ERRE_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
     self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
     self('VALE_CONT'     , 'NOEU',[],                            "Informations sur l'etat de contact")
 

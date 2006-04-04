@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION  , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C ......................................................................
 C    - FONCTION REALISEE: EXTENSION DU CHAM_ELEM ERREUR DES POINTS
 C                         DE GAUSS AUX NOEUDS
-C                         OPTION : 'ERRE_ELNO_ELGA'
+C                         OPTION : 'ERRE_ELNO_ELEM'
 C             (POUR PERMETTRE D'UTILISER POST_RELEVE_T)
 C
 C    - ARGUMENTS:

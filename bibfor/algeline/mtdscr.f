@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ZI(+14) : LONGUEUR DU BLOC POUR LA MATRICE MORSE
 C     ZI(+15) : INUTILISE
 C     ZI(+16) : INUTILISE
 C     ZI(+17) : INUTILISE
-C     ZI(+18) : NOMBRE DE BLOCS POUR .VALI
+C     ZI(+18) : INUTILISE
 C     ------------------------------------------------------------------
 C
 C
@@ -93,15 +93,17 @@ C        ------ ALLOCATION DES OBJETS SI NECESSAIRE :
         CALL JECREO(MAT19//'.&INT',' V V I')
         CALL JEECRA(MAT19//'.&INT','LONMAX',19,'  ')
       END IF
+
       CALL JEVEUO(MAT19//'.&INT','E',LMAT)
-      DO 1, K=1,19
-         ZI(LMAT-1+K)  = ISMAEM()
-1     CONTINUE
+      DO 10,K = 1,19
+        ZI(LMAT-1+K) = ISMAEM()
+   10 CONTINUE
 
       CALL JEEXIN(MAT19//'.&IN2',IER)
       IF (IER.EQ.0) THEN
         CALL JECREO(MAT19//'.&IN2',' V E K24')
       END IF
+
       CALL JEVEUT(MAT19//'.&IN2','E',LNOM)
       ZK24(LNOM) = MAT19
 
@@ -133,10 +135,12 @@ C     ------------
       CALL JEEXIN(MAT19//'.VALM',IRET)
 C     -- POUR TRAITER LE CAS OU ON A DETRUIT VOLONTAIREMENT LE .VALM
       IF (IRET.GT.0) THEN
-         CALL JELIRA(MAT19//'.VALM','TYPE',IBID,KBID)
+        CALL JELIRA(MAT19//'.VALM','TYPE',IBID,KBID)
+
       ELSE
-         CALL JELIRA(MAT19//'.UALF','TYPE',IBID,KBID)
-      ENDIF
+        CALL JELIRA(MAT19//'.UALF','TYPE',IBID,KBID)
+      END IF
+
       CALL ASSERT(KBID(1:1).EQ.'R' .OR. KBID(1:1).EQ.'C')
       IF (KBID(1:1).EQ.'R') ZI(LMAT+3) = 1
       IF (KBID(1:1).EQ.'C') ZI(LMAT+3) = 2
@@ -147,26 +151,32 @@ C     ------------
       CALL JEEXIN(MAT19//'.VALM',IRET)
 C     -- POUR TRAITER LE CAS OU ON A DETRUIT VOLONTAIREMENT LE .VALM
       IF (IRET.GT.0) THEN
-         TYMA = ZK24(JREFA-1+9)
-         IF (TYMA.EQ.'MS') THEN
-           ZI(LMAT+4) = 1
-         ELSE IF (TYMA.EQ.'MR') THEN
-           ZI(LMAT+4) = 0
-         ELSE
-           CALL ASSERT(.FALSE.)
-         END IF
+        TYMA = ZK24(JREFA-1+9)
+        IF (TYMA.EQ.'MS') THEN
+          ZI(LMAT+4) = 1
+
+        ELSE IF (TYMA.EQ.'MR') THEN
+          ZI(LMAT+4) = 0
+
+        ELSE
+          CALL ASSERT(.FALSE.)
+        END IF
+
       ELSE
-         CALL JELIRA(MAT19//'.UALF','NMAXOC',NB1,KBID)
-         CALL JEVEUO(NU//'.SLCS.SCDE','L',JSCDE)
-         NB2=ZI(JSCDE-1+3)
-         IF (NB1.EQ.NB2) THEN
-           ZI(LMAT+4) = 1
-         ELSEIF (NB1.EQ.2*NB2) THEN
-           ZI(LMAT+4) = 0
-         ELSE
-           CALL ASSERT(.FALSE.)
-         ENDIF
-      ENDIF
+        CALL JELIRA(MAT19//'.UALF','NMAXOC',NB1,KBID)
+        CALL JEVEUO(NU//'.SLCS.SCDE','L',JSCDE)
+        NB2 = ZI(JSCDE-1+3)
+        IF (NB1.EQ.NB2) THEN
+          ZI(LMAT+4) = 1
+
+        ELSE IF (NB1.EQ.2*NB2) THEN
+          ZI(LMAT+4) = 0
+
+        ELSE
+          CALL ASSERT(.FALSE.)
+        END IF
+
+      END IF
 
 
 C     -- LMAT+14
@@ -174,33 +184,17 @@ C     ----------
       ZI(LMAT+14) = ZI(JSMDE-1+2)
 
 
-C     -- LMAT+7 ET LMAT+18  (SI CHARGES CINEMATIQUES) :
+C     -- LMAT+7    (SI CHARGES CINEMATIQUES) :
 C     -------------------------------------------------
-      CALL JEEXIN(MAT19//'.LLIG',IER)
+      CALL JEEXIN(MAT19//'.CCLL',IER)
       IF (IER.NE.0) THEN
-        CALL JEEXIN(MAT19//'.ALIG',IERA)
-        IF (IERA.EQ.0) THEN
-          CALL UTMESS('F','MTDSCR_1',' .LLIG EXISTE ET LE .ALIG'//
-     &                ' N"EXISTE PAS INCOHERENCE DANS LA MATR_ASSE')
-        END IF
-
-        CALL JEEXIN(MAT19//'.ABLI',IERA)
-        IF (IERA.EQ.0) THEN
-          CALL UTMESS('F','MTDSCR_1',' .LLIG EXISTE ET LE .ABLI'//
-     &                ' N"EXISTE PAS INCOHERENCE DANS LA MATR_ASSE')
-        END IF
-
-        CALL JEVEUO(MAT19//'.LLIG','L',JLLIG)
-        ZI(LMAT+7) = ZI(JLLIG)
-
-        CALL JELIRA(MAT19//'.ABLI','LONMAX',NB,KBID)
-        ZI(LMAT+18) = NB - 1
+        CALL JELIRA(MAT19//'.CCLL','LONMAX',LCCLL,KBID)
+        ZI(LMAT+7) = LCCLL/3
       ELSE
-        ZI(LMAT+7)  = 0
-        ZI(LMAT+18) = 0
+        ZI(LMAT+7) = 0
       END IF
 
 
-   10 CONTINUE
+   20 CONTINUE
       CALL JEDEMA()
       END

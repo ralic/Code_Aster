@@ -4,7 +4,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,6 @@ C
 C ARGUMENTS D'ENTREE:
 C      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C      LIGRMO : NOM DU LIGREL DE MODELE
-C      NBCA   : NOMBRE D'APPEL A NOCART
-C      NBET   : NOMBRE TOTAL DE MAILLES
 C      NOMA   : NOM DU MAILLAGE
 C ----------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
@@ -51,7 +49,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       IMA, NBFLP, JVALV, JNCMP, IOCC, INTO, JTRAN,
      +              JNO,NBTOU, NBMA, JMA, NBMA2, JMA2, NTRA, NSYM,
-     +              JNUMA, NBET
+     +              JNUMA
       REAL*8        RBID
       CHARACTER*8   K8B, TYPMCL(2), TYPMC2(2)
       CHARACTER*16  MOTCLF, MOTCLE(2), MOTCL2(2), LISTMA, LTRANS
@@ -88,8 +86,7 @@ C
          CALL CODENT ( IOCC, 'D0', LISTMA(15:16) )
          CALL CODENT ( IOCC, 'D0', LTRANS(15:16) )
 C
-         CALL ALCAR0 ( NOMA, MOTCLF, 2, MOTCLE, TYPMCL, NBET )
-         CALL ALCART ( 'G', CARTE, NOMA, 'LISTMA', 2, NBET )
+         CALL ALCAR2 ( 'G', CARTE, NOMA, 'LISTMA')
 C
          CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
          CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
@@ -100,7 +97,7 @@ C
          ZK8(JNCMP+1) = 'TRANS'
          ZK16(JVALV)   = ' '
          ZK16(JVALV+1) = ' '
-         CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, 2)
+         CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, 2)
 C
          CALL WKVECT ( LTRANS, 'G V R', 6 , JTRAN )
          ZR(JTRAN)   = 0.D0
@@ -150,7 +147,7 @@ C
  14            CONTINUE
                CALL JEDETR ( MESMA2 )
             ENDIF
-            CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, 2 )
+            CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, 2 )
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
@@ -173,7 +170,7 @@ C
  18            CONTINUE
                CALL JEDETR ( MESMA2 )
             ENDIF
-            CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',2)
+            CALL NOCAR2 ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',2)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

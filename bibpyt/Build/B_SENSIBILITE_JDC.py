@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -312,7 +312,7 @@ class SENSIBILITE_JDC :
           print new_jdc.cr
           print ">> JDC.py : FIN RAPPORT"
           new_jdc.supprime()
-          sys.exit(0)
+          return 1, None
 #
         new_jdc.exec_compile()
         if not new_jdc.cr.estvide(): 
@@ -321,9 +321,12 @@ class SENSIBILITE_JDC :
           print new_jdc.cr
           print ">> JDC.py : FIN RAPPORT"
           new_jdc.supprime()
-          sys.exit(0)
+          return 1, None
 #
         CONTEXT.set_current_step(new_jdc)
+#   Update du contexte : nécessaire pour avoir les constantes (parameters)
+#                        dans le new_jdc
+        new_jdc.const_context=self.jdc.const_context
 #
         if self.DEBUG :
           print "Le nouveau JDC est créé en tant qu'objet : ",new_jdc

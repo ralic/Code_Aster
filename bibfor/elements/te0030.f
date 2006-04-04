@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,7 @@ C =====================================================================
       REAL*8       VBIFUR, RACINE(4), DSDE(6,6)
       CHARACTER*8  MOD, MODELI
       CHARACTER*16 RELCOM
+      LOGICAL      LTEATT
 C =====================================================================
 C --- RINDIC EST LE NOMBRE DE PARAMETRE DE LOCALISATION DEFINIT -------
 C --- SOUS LE MOT-CLE IND_LOCA DANS GRANDEUR_SIMPLE.CATA --------------
@@ -75,7 +76,7 @@ C =====================================================================
          ELSE IF (MODELI(1:2).EQ.'CP') THEN
             MOD(1:6) = 'C_PLAN'
             NBSIG = NBSIGM(MODELI)
-         ELSE IF (MODELI(1:2).EQ.'AX') THEN
+         ELSE IF (LTEATT(' ','AXIS','OUI')) THEN
             MOD(1:4) = 'AXIS'
             NBSIG = NBSIGM(MODELI)
          ELSE
@@ -83,10 +84,7 @@ C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE THM -----------------------
 C =====================================================================
             LOGTHM  = .TRUE.
-            IF ( NOMTE(6:9) .EQ.'AXIS' .OR.
-     +           NOMTE(4:7) .EQ.'AXIS' .OR.
-     +           NOMTE(5:8) .EQ.'AXIS' .OR.
-     +           NOMTE(7:10).EQ.'AXIS'      )THEN
+            IF ( LTEATT(' ','AXIS','OUI') )THEN
                MOD(1:4) = 'AXIS'
             ELSE IF ( NOMTE(6:7) .EQ.'DP' .OR.
      +                NOMTE(7:8) .EQ.'DP' .OR.

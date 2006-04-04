@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL ZL,NONSYM
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -49,10 +49,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     -----------------------------------------------------------------
-      INTEGER TYPSYM
 C     -----------------------------------------------------------------
       CHARACTER*19 MATRES
-      CHARACTER*24 VALER
+      CHARACTER*24 VALM
 
       COMPLEX*16 CUN
 C     -----------------------------------------------------------------
@@ -62,58 +61,51 @@ C     -----------------------------------------------------------------
       CUN = (1.0D0,0.0D0)
 
       MATRES = ZK24(ZI(LRES+1))
-      VALER = MATRES//'.VALM'
+      VALM = MATRES//'.VALM'
 
-      CALL JEVEUO(MATRES//'.CONI','L',IDCONI)
+      CALL JEVEUO(MATRES//'.CCID','L',JCCID)
 
-      TYPSYM = ZI(LRES+4)
+      NONSYM=ZI(LRES+4).EQ.0
       CALL MTDSC2(ZK24(ZI(LRES+1)),'SMDI','L',JSMDI)
 
-C --- BOUCLE SUR LES BLOCS DE LA MATRICE RESULTAT
 
+      CALL JEVEUO(JEXNUM(VALM,1),'E',JVALMS)
+      IF (NONSYM) CALL JEVEUO(JEXNUM(VALM,2),'E',JVALMI)
 
-        CALL JEVEUO(JEXNUM(VALER,1),'E',IATRES)
-        IF (TYPSYM.EQ.0) THEN
-          CALL JEVEUO(JEXNUM(VALER,2),'E',IATREI)
-        END IF
-
-        IL1 = 1
-        IL2 = ZI(LRES+2)
-        IF (TYPRES(1:1).EQ.'R') THEN
-          DO 10 IEQUA = IL1,IL2
-            IF (ZI(IDCONI+IEQUA-1).EQ.1) THEN
-              ZR(IATRES+ZI(JSMDI+IEQUA-1)-1) = UN
-            END IF
-   10     CONTINUE
-
-          IF (TYPSYM.EQ.0) THEN
-            DO 20 IEQUA = IL1,IL2
-              IF (ZI(IDCONI+IEQUA-1).EQ.1) THEN
-                ZR(IATREI+ZI(JSMDI+IEQUA-1)-1) = UN
-              END IF
-   20       CONTINUE
+      IL1 = 1
+      IL2 = ZI(LRES+2)
+      IF (TYPRES(1:1).EQ.'R') THEN
+        DO 10 IEQUA = IL1,IL2
+          IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
+            ZR(JVALMS+ZI(JSMDI+IEQUA-1)-1) = UN
           END IF
-        ELSE IF (TYPRES(1:1).EQ.'C') THEN
-          DO 30 IEQUA = IL1,IL2
-            IF (ZI(IDCONI+IEQUA-1).EQ.1) THEN
-              ZC(IATRES+ZI(JSMDI+IEQUA-1)-1) = CUN
+   10   CONTINUE
+
+        IF (NONSYM) THEN
+          DO 20 IEQUA = IL1,IL2
+            IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
+              ZR(JVALMI+ZI(JSMDI+IEQUA-1)-1) = UN
             END IF
-   30     CONTINUE
+   20     CONTINUE
+        END IF
 
-          IF (TYPSYM.EQ.0) THEN
-            DO 40 IEQUA = IL1,IL2
-              IF (ZI(IDCONI+IEQUA-1).EQ.1) THEN
-                ZC(IATREI+ZI(JSMDI+IEQUA-1)-1) = CUN
-              END IF
-   40       CONTINUE
+      ELSE IF (TYPRES(1:1).EQ.'C') THEN
+        DO 30 IEQUA = IL1,IL2
+          IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
+            ZC(JVALMS+ZI(JSMDI+IEQUA-1)-1) = CUN
           END IF
-        END IF
-        CALL JELIBE(JEXNUM(VALER,1))
-        IF (TYPSYM.EQ.0) THEN
-          CALL JELIBE(JEXNUM(VALER,2))
+   30   CONTINUE
+
+        IF (NONSYM) THEN
+          DO 40 IEQUA = IL1,IL2
+            IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
+              ZC(JVALMI+ZI(JSMDI+IEQUA-1)-1) = CUN
+            END IF
+   40     CONTINUE
         END IF
 
-      CALL JELIBE(MATRES//'.CONI')
+      END IF
+
 
 
       CALL JEDEMA()

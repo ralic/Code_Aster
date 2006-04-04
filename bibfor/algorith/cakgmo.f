@@ -12,8 +12,7 @@
       LOGICAL THLAGR,GLAGR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -158,7 +157,7 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         NDIMTE = NDEG + 1
       END IF
 
-      CALL WKVECT('&&CAKGMO.VALG','V V R8',NDIMTE*4,IADRGK)
+      CALL WKVECT('&&CAKGMO.VALG','V V R8',NDIMTE*5,IADRGK)
       CALL JEVEUO(THETAI,'L',JRESU)
 
       LIGRMO = MODELE//'.MODELE'
@@ -204,10 +203,10 @@ C
      &              'V')
         
 C     BUT :  FAIRE LA "SOMME" D'UN CHAM_ELEM        
-        CALL MESOMM(CHGTHI,4,IBID,GKTHI,CBID,0,IBID)
+        CALL MESOMM(CHGTHI,5,IBID,GKTHI,CBID,0,IBID)
         
         DO 29 J=1,4
-          ZR(IADRGK-1+(I-1)*4+J) = GKTHI(J)
+          ZR(IADRGK-1+(I-1)*5+J) = GKTHI(J)
  29     CONTINUE
         
  20   CONTINUE
@@ -219,8 +218,8 @@ C- DEUXIEME METHODE : G_LEGENDRE ET THETA_LAGRANGE
 C- TROISIEME METHODE: G_LAGRANGE ET THETA_LAGRANGE
 C    (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 
-      CALL WKVECT('&&CAKGMO.VALGK_S','V V R8',NNOFF*4,IADGKS)  
-      CALL WKVECT('&&CAKGMO.VALGKI','V V R8',NNOFF*4,IADGKI) 
+      CALL WKVECT('&&CAKGMO.VALGK_S','V V R8',NNOFF*5,IADGKS)  
+      CALL WKVECT('&&CAKGMO.VALGKI','V V R8',NNOFF*5,IADGKI) 
       ABSCUR='&&CAKGMO.TEMP     .ABSCU'       
       CALL WKVECT(ABSCUR,'V V R',NNOFF,IADABS)
       
@@ -246,24 +245,24 @@ C
       IF (SYMECH.EQ.'SYME') THEN
         DO 30 I = 1,NNOFF
 C         G(S) = 2*G(S)
-          ZR(IADGKS+4*(I-1)) = 2.D0*ZR(IADGKS+4*(I-1))
+          ZR(IADGKS+5*(I-1)) = 2.D0*ZR(IADGKS+5*(I-1))
 C         K1(S) = 2*K1(S)
-          ZR(IADGKS+4*(I-1) + 1) = 2.D0*ZR(IADGKS+4*(I-1) + 1)
+          ZR(IADGKS+5*(I-1) + 1) = 2.D0*ZR(IADGKS+5*(I-1) + 1)
 C         K2(S) = 0, K3(S) = 0
-          ZR(IADGKS+4*(I-1) + 2) = 0.D0
-          ZR(IADGKS+4*(I-1) + 3) = 0.D0
+          ZR(IADGKS+5*(I-1) + 2) = 0.D0
+          ZR(IADGKS+5*(I-1) + 3) = 0.D0
  30    CONTINUE
       END IF
 C
       IF (SYMECH.EQ.'ANTI') THEN
         DO 333 I = 1,NNOFF
 C         G(S) = 2*G(S)
-          ZR(IADGKS+4*(I-1)) = 2.D0*ZR(IADGKS+4*(I-1))
+          ZR(IADGKS+5*(I-1)) = 2.D0*ZR(IADGKS+5*(I-1))
 C         K2(S) = 2*K2(S)
-          ZR(IADGKS+4*(I-1) + 2) = 2.D0*ZR(IADGKS+4*(I-1) + 2)
+          ZR(IADGKS+5*(I-1) + 2) = 2.D0*ZR(IADGKS+5*(I-1) + 2)
 C         K1(S) = 0, K3(S) = 0
-          ZR(IADGKS+4*(I-1) + 1) = 0.D0
-          ZR(IADGKS+4*(I-1) + 3) = 0.D0
+          ZR(IADGKS+5*(I-1) + 1) = 0.D0
+          ZR(IADGKS+5*(I-1) + 3) = 0.D0
  333    CONTINUE
       END IF
 C
@@ -278,10 +277,11 @@ C
           GPMI(1)=IORD
           GPMI(2)=I
           GPMR(1) = ZR(IADABS-1+I)
-          GPMR(2) = ZR(IADGKS-1+4*(I-1)+2)
-          GPMR(3) = ZR(IADGKS-1+4*(I-1)+3)
-          GPMR(4) = ZR(IADGKS-1+4*(I-1)+4)
-          GPMR(5) = ZR(IADGKS-1+4*(I-1)+1)
+          GPMR(2) = ZR(IADGKS-1+5*(I-1)+2)
+          GPMR(3) = ZR(IADGKS-1+5*(I-1)+3)
+          GPMR(4) = ZR(IADGKS-1+5*(I-1)+4)
+          GPMR(5) = ZR(IADGKS-1+5*(I-1)+1)
+          GPMR(6) = ZR(IADGKS-1+5*(I-1)+5)
         
         CALL TBAJLI(RESULT,NBPRUP,NOPRUP,GPMI,GPMR,CBID,K1BID,0)
  40   CONTINUE

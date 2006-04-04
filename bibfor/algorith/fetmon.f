@@ -2,7 +2,7 @@
      &                  LSTOGI,IFET1,RANG,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -124,8 +124,8 @@ C DECLARATION VARIABLES LOCALES
         WRITE(IFM,1089)R1M
         WRITE(IFM,*)'******************************************'
       ENDIF            
- 1075 FORMAT(' N ',I4,'     :   ',I9,'    ',I9,'    ',I9)
- 1080 FORMAT('TOTAL       :',I12,' ',I12,' ',I12)
+ 1075 FORMAT(' N ',I4,'     :',I12,' ',I12,' ',I12)
+ 1080 FORMAT('TOTAL       :',I15,' ',I15,' ',I15)
  1081 FORMAT(I12,' ',I12,'        ',D8.2,' %')
  1082 FORMAT('TAILLE (GI + GIT*GI)/MATRICE MOYENNE :',D11.4,' %')
  1083 FORMAT('MOYENNE     :',I12,' ',I12,' ',I12) 

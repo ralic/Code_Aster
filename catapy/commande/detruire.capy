@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 03/04/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,9 @@ DETRUIRE=MACRO(nom="DETRUIRE",op=-7,
              regles=(UN_PARMI('CONCEPT','OBJET',),), 
             CONCEPT     =FACT(statut='f',max='**',
                 NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
+                SENSIBILITE =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),
+                                 fr="Paramètre de sensibilité.",
+                                 ang="Sensitivity parameter",max='**'),
             ),
             OBJET  =FACT(statut='f',max='**',
                CLASSE      =SIMP(statut='f',typ='TXM',into=('G','V','L'),defaut='G'),  

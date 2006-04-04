@@ -1,26 +1,26 @@
-      SUBROUTINE ACEAPC ( NOMU, NOMA, LMAX, NOCAPC, NMTGPC, NBOCC )
+      SUBROUTINE ACEAPC ( NOMU, NOMA, LMAX, NBOCC )
       IMPLICIT  REAL*8  ( A-H , O-Z )
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE  CRP_6 
+C TOLE  CRP_6
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
 C     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT DEFI_ARC
@@ -28,8 +28,6 @@ C ----------------------------------------------------------------------
 C IN  : NOMU   : NOM UTILISATEUR DE LA COMMANDE
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : LMAX   : LONGUEUR
-C IN  : NOCAPC : NOMBRE
-C IN  : NMTGPC : NOMBRE
 C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DEFI_ARC
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -72,7 +70,7 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTAR = NOMU//'.CARARCPO'
       TMPNAR = CARTAR//'.NCMP'
       TMPVAR = CARTAR//'.VALV'
-      CALL ALCART('G',CARTAR,NOMA,'CAARPO',NOCAPC,NMTGPC)
+      CALL ALCAR2('G',CARTAR,NOMA,'CAARPO')
       CALL JEVEUO(TMPNAR,'E',JDCC)
       CALL JEVEUO(TMPVAR,'E',JDVC)
       MLGCOO = NOMA//'.COORDO    .VALE'
@@ -148,10 +146,10 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   IMG = ZI(JDGM+IJM-1)
                   ZR(JDVC)   = XRC
                   ZR(JDVC+1) = XANG * DGRD
-                  CALL NOCART(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
+                  CALL NOCAR2(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
 576               CONTINUE
 556           CONTINUE
-            
+
             ELSEIF ( NC.NE.0 .OR. NP.NE.0 ) THEN
                CALL ACNOEX(NOMA,'GRMA',ZK8(JDLS),NG,NO1,NO2)
                DO 32 I = 1 , 3
@@ -182,7 +180,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   RR         = XRC1
 C                 ZR(JDVC)   = RR
 C                 ZR(JDVC+1) = ANGL(3) + PI
-C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT 
+C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   DO 347 I=1,3
                      XC1(I)= X1(I) - XCEN(I)
                      XC2(I)= X2(I) - XCEN(I)
@@ -206,7 +204,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                       CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                       ZR(JDVC)   = RR
                       ZR(JDVC+1) = ANGL(3) + PI
-                      CALL NOCART(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
+                      CALL NOCAR2(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
 57                   CONTINUE
 557               CONTINUE
                ELSE
@@ -242,7 +240,7 @@ C
                      TM(I)=XM(I)-XTAN(I)
                      XCEN(I)=XM(I)+TM(I)/(TAN(PHIS2)*TAN(PHIS2))
   33              CONTINUE
-  
+
 C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   DO 348 I=1,3
                      XC1(I)= X1(I) - XCEN(I)
@@ -267,7 +265,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                       CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                       ZR(JDVC)   = RR
                       ZR(JDVC+1) = ANGL(3) + PI
-                      CALL NOCART(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
+                      CALL NOCAR2(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
 58                   CONTINUE
 558               CONTINUE
                ENDIF
@@ -285,11 +283,11 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
               DO 559 IJM=1,NM
                 ZR(JDVC)   = XRC
                 ZR(JDVC+1) = XANG * DGRD
-                CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                CALL NOCAR2(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
      &                           0,' ',8)
 579               CONTINUE
 559           CONTINUE
-            
+
             ELSEIF ( NC.NE.0 .OR. NP.NE.0 ) THEN
                CALL ACNOEX(NOMA,'LIMA',ZK8(JDLS),NM,NO1,NO2)
                DO 42 I = 1 , 3
@@ -318,7 +316,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   ENDIF
                   PHI = 2.D0*ASIN(DM/XRC1)
                   RR   = XRC1
-                  
+
 C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   DO 645 I=1,3
                      XC1(I)= X1(I) - XCEN(I)
@@ -327,7 +325,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   CALL PROVEC(XC1,XC2,V1)
                   CALL ACNOCE(NOMA,'LIMA',ZK8(JDLS),NM,ZR(JDCO),RR,
      &                        XCEN,TOLE,V1,ISPV)
-     
+
                   DO 55 IJM=1,NM
                      CALL JENONU(JEXNOM(MLGNMA,ZK8(JDLS-1+IJM)),NUMMAI)
                      CALL JEVEUO(JEXNUM(MLGCNX,NUMMAI),'L',JDNO)
@@ -340,7 +338,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                      ZR(JDVC)   = RR
                      ZR(JDVC+1) = ANGL(3) + PI
-                     CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                     CALL NOCAR2(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
      &                           0,' ',8)
 55                CONTINUE
                ELSE
@@ -374,7 +372,7 @@ C
                      XCEN(I)=XM(I)+TM(I)/(TAN(PHIS2)*TAN(PHIS2))
   63              CONTINUE
 
-C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT 
+C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   DO 646 I=1,3
                      XC1(I)= X1(I) - XCEN(I)
                      XC2(I)= X2(I) - XCEN(I)
@@ -382,7 +380,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   CALL PROVEC(XC1,XC2,V1)
                   CALL ACNOCE(NOMA,'LIMA',ZK8(JDLS),NM,ZR(JDCO),RR,
      &                        XCEN,TOLE,V1,ISPV)
-     
+
                   DO 56 IJM=1,NM
                      CALL JENONU(JEXNOM(MLGNMA,ZK8(JDLS-1+IJM)),NUMMAI)
                      CALL JEVEUO(JEXNUM(MLGCNX,NUMMAI),'L',JDNO)
@@ -395,7 +393,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                      ZR(JDVC)   = RR
                      ZR(JDVC+1) = ANGL(3) + PI
-                     CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                     CALL NOCAR2(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
      &                           0,' ',8)
 56                CONTINUE
                ENDIF

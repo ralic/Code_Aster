@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,10 @@ MODE_LOCAL__
                                         X7       X8      )
     E6NEUTR = NEUT_R    ELEM__         (X1       X2       X3       X4       X5       X6       )
     E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
+    E20NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18 
+                                        X19      X20   )
     E18NEUI = NEUT_I   ELEM__          (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18    )
@@ -106,6 +110,10 @@ OPTION__
                                      CONTX_R  PDONCO   N1NEUT_R PLST     E4NEUTR  PPINTER  E8NEUTR  PAINTER
                                      E2NEUTI  PCFACE   E2NEUTI  PLONCHA  E8NEUTR PBASECO  E1NEUTR  PSEUIL
                               OUT__  MVECTUR  PVECTUR
+    DEPL_POST_XFEM      515   IN__   E18NEUI PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E6NEUTI PHEAVTO
+                                     E8NEUTI  PLONCHA  E6NEUTR PPINTTO  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST
+                              OUT__  E20NEUTR PDEXFEM
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI PHEAVTO   E8NEUTI  PLONCHA
                                      N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST 

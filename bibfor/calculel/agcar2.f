@@ -1,7 +1,7 @@
       SUBROUTINE AGCAR2(NGDMXN, CHINZ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,10 @@ C ======================================================================
 C --------------------------------------------------------------------
 C   AGRANDISSEMENT DE LA CARTE CHIN, NGDMXN ETANT LE NOUVEAU NOMBRE
 C   MAXIMUM DE COUPLES (ENTITE,VALEUR) A STOCKER
+
+C   ATTENTION : AGCAR2 N'AGRANDIT PAS L'OBJET .LIMA
+C               CELUI-CI EST AGRANDI DIRECTEMENT PAR NOCAR2
+C     IL EST DONC DANGEREUX D'APPELER AGCAR2 EN DEHORS DE NOCAR2
 C --------------------------------------------------------------------
 C  NGDMXN       - IN     - I    - : NOUVEAU NOMBRE MAX DE COUPLES
 C               -        -      -   (ENTITE,VALEUR) A STOCKER
@@ -60,15 +64,13 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C
       CHARACTER*1 BASE
-      CHARACTER*24 TRAV, CLIMA,DESCAV
+      CHARACTER*24 DESCAV
       CHARACTER*1 K1BID
       INTEGER JDESCA,JDESC,NEC,IEC,NGDMXA,NEDIT,IED,IDECA,IDEC
       INTEGER IBID,NCMP,NMXMA ,IGD
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       CHIN = CHINZ
-      TRAV = CHIN//'.TRAV'
-      CLIMA = CHIN//'.LIMA'
       CALL JELIRA(CHIN//'.DESC','CLAS',IBID,BASE)
 
 C
@@ -117,14 +119,10 @@ C ---  AGRANDISSEMENT DE NOLI
 C ------------------------------
       CALL JUVECA(CHIN//'.NOLI',NGDMXN)
 
-
-C ---  AGRANDISSEMENT DE LIMA
-C ------------------------------
-      CALL JEDUPO(CLIMA,'V',TRAV,.FALSE.)
-      CALL JELIRA(CLIMA,'LONT',NMXMA,K1BID)
-      CALL JEDETR(CHIN//'.LIMA')
-      CALL COCOPG(TRAV, CLIMA, NGDMXN, NMXMA,BASE)
-      CALL JEDETR(CHIN//'.TRAV')
+C
+C ---  AGRANDISSEMENT DE LIMA : ON NE FAIT RIEN :
+C      C'EST NOCAR2 QUI AGRANDIT .LIMA SI NECESSAIRE
+C
 C
       CALL JEDEMA()
 

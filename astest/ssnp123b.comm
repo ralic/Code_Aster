@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,10 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
 DEBUT(CODE=_F(NOM='SSNP123B',
               NIV_PUB_WEB='INTERNET',),);
-
 # DEFINITION DU PROBLEME
 #=======================
 
@@ -58,9 +56,7 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                                       NOMBRE=5,),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0, 0.0,
-                          1.0, 1.0,),);
-
+                    VALE=(0.0,0.0,1.0,1.0,),);
 # CALCUL
 #========
 
@@ -75,18 +71,12 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                 SUBD_PAS_MINI=0.001,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
-
 # POST TRAITEMENT
 #=================
 
 RESU=CALC_ELEM(reuse =RESU,
-               
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO_ELGA',
-                       'ERRE_ELGA_NORE',
-                       'ERRE_ELNO_ELGA',
-                       ),
-               );
+               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
@@ -111,10 +101,8 @@ S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
                   INFO=1,);
 
 IMPR_TABLE(TABLE=S_T,);
-
 # TESTS
 #=======
-
 # NON REGRESSION
 
 TEST_TABLE(TABLE=S_T,
@@ -122,7 +110,7 @@ TEST_TABLE(TABLE=S_T,
                      VALE=0.0,),
            NOM_PARA='SIYY',
            VALE=234.174,
-           PRECISION=1.E-4,
+           PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=S_T,
@@ -130,7 +118,7 @@ TEST_TABLE(TABLE=S_T,
                      VALE=1.54051,),
            NOM_PARA='SIYY',
            VALE=257.417,
-           PRECISION=1.E-4,
+           PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=S_T,
@@ -138,7 +126,7 @@ TEST_TABLE(TABLE=S_T,
                      VALE=3.26795,),
            NOM_PARA='SIYY',
            VALE=300.333,
-           PRECISION=1.E-4,
+           PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=S_T,
@@ -146,7 +134,7 @@ TEST_TABLE(TABLE=S_T,
                      VALE=3.83403,),
            NOM_PARA='SIYY',
            VALE=263.212,
-           PRECISION=1.E-4,
+           PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=S_T,
@@ -154,69 +142,61 @@ TEST_TABLE(TABLE=S_T,
                      VALE=4.37942,),
            NOM_PARA='SIYY',
            VALE=175.829,
-           PRECISION=1.E-4,
+           PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.0001,
-               POINT = 1,
-               MAILLE='M20',    
-               NOM_CMP = 'NUEST',      
-               VALE = 6.7648703450865E-02, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='NUEST',
+                  MAILLE='M20',
+                  POINT=1,
+                  VALE=0.0692947900089,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.0001,
-               NOEUD= 'N20',
-               MAILLE='M20',    
-               NOM_CMP = 'ERREST',      
-               VALE = 1.6569310777456E-02, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M20',
+                  NOEUD='N20',
+                  VALE=0.0169724897195,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR LES CONTRAINTES AU POINT B
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'SIEF_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.0001,
-               NOEUD= 'N20',
-               MAILLE='M20',    
-               NOM_CMP = 'SIYY',      
-               VALE = 4.3988472878960E+02, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  INST=1.0,
+                  NOM_CHAM='SIEF_ELNO_ELGA',
+                  NOM_CMP='SIYY',
+                  MAILLE='M20',
+                  NOEUD='N20',
+                  VALE=439.88472879,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.2.10',),);
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'SIEF_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.0001,
-               NOEUD= 'N20',
-               MAILLE='M20',    
-               NOM_CMP = 'SIXX',      
-               VALE = -2.5767301805151E-01, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  INST=1.0,
+                  NOM_CHAM='SIEF_ELNO_ELGA',
+                  NOM_CMP='SIXX',
+                  MAILLE='M20',
+                  NOEUD='N20',
+                  VALE=-0.257673018052,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.2.10',),);
 
 FIN();

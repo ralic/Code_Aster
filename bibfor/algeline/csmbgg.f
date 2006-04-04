@@ -6,7 +6,7 @@
       CHARACTER*(*) TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C    !        ! * !    ! = !         ! * !    ! <=> K' X = F'
 C    ! 0    1 !   ! X  !   ! 0    1  !   ! U  !
 C    !        !   !  I !   !         !   !  0 !
 C  ON A LMAT  :DESCRIPTEUR DE K' CAR DANS L'ASSEMBLAGE ON ASSEMBLE
-C              DIRECTEMNT K'   KIL SE TROUVE DANS .VALI DE K'
+C              DIRECTEMENT K'   KIL SE TROUVE DANS .CCVA DE K'
 C       VSMB  :EN IN (FI,0)  EN OUT = F'
 C       VCINE : (0,U0)
 C REMARQUES :
@@ -79,17 +79,15 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER NEQ,NIMPO,IDLLIG,IDALIG
+      INTEGER NEQ,NIMPO,JCCLL,JCCJJ
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
       NEQ = ZI(LMAT+2)
       NIMPO = ZI(LMAT+7)
       IF (NIMPO.EQ.0) GO TO 10
-      CALL JEVEUO(ZK24(ZI(LMAT+1)) (1:19)//'.LLIG','E',IDLLIG)
-      CALL JEVEUO(ZK24(ZI(LMAT+1)) (1:19)//'.ALIG','E',IDALIG)
-      CALL JEVEUO(ZK24(ZI(LMAT+1)) (1:19)//'.ABLI','E',IDABLI)
-      NBLI = ZI(LMAT+18)
+      CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCLL','L',JCCLL)
+      CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCJJ','L',JCCJJ)
 
 C     ------------------------------------------------------------------
 
@@ -97,14 +95,15 @@ C     ------------------------------------------------------------------
 
 C        --- SYSTEME REEL:
         CALL ASSERT(TYPE.EQ.'R')
-        CALL CSMBR8(ZK24(ZI(LMAT+1)),ZI(IDLLIG),ZI(IDALIG),ZI(IDABLI),
-     &              NEQ,NBLI,VCINE,VSMB)
+        CALL CSMBR8(ZK24(ZI(LMAT+1)),ZI(JCCLL),ZI(JCCJJ),NEQ,
+     &              VCINE,VSMB)
+
       ELSE IF (ZI(LMAT+3).EQ.2) THEN
 
 C        --- SYSTEME COMPLEXE:
         CALL ASSERT(TYPE.EQ.'C')
-        CALL CSMBC8(ZK24(ZI(LMAT+1)),ZI(IDLLIG),ZI(IDALIG),ZI(IDABLI),
-     &              NEQ,NBLI,CVCINE,CVSMB)
+        CALL CSMBC8(ZK24(ZI(LMAT+1)),ZI(JCCLL),ZI(JCCJJ),NEQ,
+     &              CVCINE,CVSMB)
       END IF
 
    10 CONTINUE

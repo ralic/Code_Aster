@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF PREPOST  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C     =================================================================
 C                      OPERATEUR POST_CHAM_XFEM
 C                      ------------------------
@@ -55,9 +56,9 @@ C     ------------------------------------------------------------------
      &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,DEBXHT,
      &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS,
      &        JTYPMA,NBNOSO,NBHEAV,NBCTIP,NBHECT, JWXFEM, NBINMX,FINXHT,
-     &        NCESV,NBPT,NBSP,NBCP,ICP
+     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM
       REAL*8  INST,EPS,R8B,RBID
-      PARAMETER(EPS=1.D-10, NBCNS=128, NBHEA=36, NBINMX=9)
+      PARAMETER(EPS=1.D-10, NBINMX=9)
       CHARACTER*1  KBID
       CHARACTER*8  MO,RESUCO,RESUC1,MA,LDEP(3),NOMNOE,NOMNOI,
      &             LPAIN(NBINMX),LPAOUT(1),K8B,NOMA,TYPMA,CHNUM
@@ -93,6 +94,17 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
       ENDIF
       CALL JEVEUO(MO//'.FISS','L',JFISS)
 C
+C --- DIMENSION GEOMETRIQUE
+      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)  
+
+      IF(DIM.EQ.3)THEN
+        NBCNS=128
+        NBHEA=36
+      ELSEIF(DIM.EQ.2)THEN
+        NBCNS=18
+        NBHEA=6
+      ENDIF
+
 C --- RECUPERATION DU CHAMP GEOMETRIQUE
       CALL MEGEOM(MO,' ',EXIGEO,CHGEOM)
 
@@ -131,13 +143,18 @@ C       ================================
 C
         IF (NOMCHA(1:4).EQ.'DEPL')THEN
 C
+           IF(DIM.EQ.3)THEN
+             NBCMP=3
+           ELSE
+             NBCMP=2
+           ENDIF
+
            DO 20 IOR = 1 , NBORDR
 C
 C             1 - COPIE DES DEPLACEMENTS DES NOEUDS CLASSIQUES
 C             ------------------------------------------------
 C
 C             CREATION D'UN CHAMP SIMPLE : CHS
-              NBCMP=3
               CALL CNSCRE(MA,'DEPL_R',NBCMP,LDEP,'V',CHS)
 C
 C             EXTRACTION DES DEPLACEMENTS
@@ -145,7 +162,7 @@ C             EXTRACTION DES DEPLACEMENTS
               CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,KBID)
               INST=ZR(JINST)
               CALL RSEXCH(RESUCO,NOMCHA,IORD,CHNO,IRET)
-CR
+C
 C              CALL IMPRSD('CHAMP',CHNO,8,'--- CHAMP DEPL SD_RES---')
 C
 C             PASSAGE : CHAMP --> CHAMP_S
@@ -207,10 +224,12 @@ C
                     ZR(JCNSV2+KY)=ZR(JCNSV1+ZI(JCNSD1+1)*(JNO-1)+IDY-1)
                     ZL(JCNSL2+KY)=.TRUE.
                  ENDIF
-                 IF(ZL(JCNSL1+(JNO-1)*ZI(JCNSD1+1)+IDZ-1))THEN
-                    KZ=KK+2
-                    ZR(JCNSV2+KZ)=ZR(JCNSV1+ZI(JCNSD1+1)*(JNO-1)+IDZ-1)
-                    ZL(JCNSL2+KZ)=.TRUE.
+                 IF(DIM.EQ.3)THEN
+                   IF(ZL(JCNSL1+(JNO-1)*ZI(JCNSD1+1)+IDZ-1))THEN
+                     KZ=KK+2
+                     ZR(JCNSV2+KZ)=ZR(JCNSV1+ZI(JCNSD1+1)*(JNO-1)+IDZ-1)
+                     ZL(JCNSL2+KZ)=.TRUE.
+                   ENDIF
                  ENDIF
  40           CONTINUE
  45           CONTINUE
@@ -316,7 +335,11 @@ C             BOUCLE SUR LES GRELS:
                  CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
                  CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',
      &                ZI(IGREL+NBMAGL-1)),NOTYPE)
-                 IF(NOTYPE(1:6).NE.'MECA_X') GOTO 140              
+                 IF(DIM.EQ.3)THEN
+                    IF(NOTYPE(1:6).NE.'MECA_X') GOTO 140
+                 ELSE
+                    IF(NOTYPE(8:9).NE.'_X')GOTO 140
+                 ENDIF
 C                BOUCLE SUR LES MAILLES DU GREL:
                  DO 150 J=1,NBMAGL-1
                     IMA=ZI(IGREL+J-1)
@@ -401,6 +424,10 @@ C
                        NBNOSO=6
                  ELSEIF(TYPMA(1:4).EQ.'TETR')THEN
                        NBNOSO=4
+                 ELSEIF(TYPMA(1:4).EQ.'TRIA')THEN
+                       NBNOSO=3
+                 ELSEIF(TYPMA(1:4).EQ.'QUAD')THEN
+                       NBNOSO=4
                  ENDIF
 C
                   CALL WKVECT('&&OP0196.NO_LOC','V V I',NBNOSO,JNOLOC)
@@ -420,11 +447,11 @@ C
                        KK=KK+1
                        NUMNOE=ZI(JLNONX+KK-1)
                        CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUMNOE),NOMNOE)
-                       DO 800 ICP=1,3
+                       DO 800 ICP=1,NBCMP
                          CALL CESEXI('C',JCESD,JCESL,ZI(JWXFEM+I-1),1,1,
-     &                               3*NBNOSO+3*J-3+ICP,IAD)
-                         ZR(JCNSV2+3*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
-                         ZL(JCNSL2+3*(NUMNOE-1)+ICP-1)=.TRUE.
+     &                               NBCMP*(NBNOSO+J-1)+ICP,IAD)
+                       ZR(JCNSV2+NBCMP*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
+                         ZL(JCNSL2+NBCMP*(NUMNOE-1)+ICP-1)=.TRUE.
  800                   CONTINUE
  779                CONTINUE
 C
@@ -436,11 +463,11 @@ C
                       CALL JENUNO(JEXNUM(ZK8(JCNSK1)//'.NOMNOE',
      &                     ZI(JCO+J-1)),NOMNOE)
                        CALL JENONU(JEXNOM(MA//'.NOMNOE',NOMNOE),NUMNOE)
-                       DO 801 ICP=1,3
+                       DO 801 ICP=1,NBCMP
                           CALL CESEXI('C',JCESD,JCESL,ZI(JWXFEM+I-1),
-     &                                 1,1,3*J-3+ICP,IAD)
-                          ZR(JCNSV2+3*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
-                          ZL(JCNSL2+3*(NUMNOE-1)+ICP-1)=.TRUE.
+     &                                 1,1,NBCMP*(J-1)+ICP,IAD)
+                       ZR(JCNSV2+NBCMP*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
+                          ZL(JCNSL2+NBCMP*(NUMNOE-1)+ICP-1)=.TRUE.
  801                   CONTINUE
  799               CONTINUE
                    ENDIF
@@ -458,11 +485,11 @@ C
                          ENDIF
                         ENDIF
                         CALL JENONU(JEXNOM(MA//'.NOMNOE',NOMNOE),NUMNOE)
-                        DO 802 ICP=1,3
+                        DO 802 ICP=1,NBCMP
                           CALL CESEXI('C',JCESD,JCESL,ZI(JWXFEM+I-1),
-     &                                 1,1,3*J-3+ICP,IAD)
-                          ZR(JCNSV2+3*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
-                          ZL(JCNSL2+3*(NUMNOE-1)+ICP-1)=.TRUE.
+     &                                 1,1,NBCMP*(J-1)+ICP,IAD)
+                       ZR(JCNSV2+NBCMP*(NUMNOE-1)+ICP-1)=ZR(JCESV+IAD-1)
+                          ZL(JCNSL2+NBCMP*(NUMNOE-1)+ICP-1)=.TRUE.
  802                    CONTINUE
   778                CONTINUE
                   ENDIF

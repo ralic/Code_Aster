@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,12 +44,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IGEOM2,IMATT,K,I,J,L,LI,LJ,ITEMPS,IHECHP,NBELR
       REAL*8 POIDS,POIDS1,POIDS2,NX,NY,THETA,MAT(6),COEFH,R1,R2
       CHARACTER*8 LIREFE(2)
+      LOGICAL  LTEATT, LAXI
 C     ------------------------------------------------------------------
 
       CALL ELREF2(NOMTE,2,LIREFE,NBELR)
       CALL ASSERT(NBELR.EQ.2)
       CALL ELREF4(LIREFE(2),'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
@@ -67,7 +70,7 @@ C     ------------------------------------------------------------------
       DO 50 KP = 1,NPG
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),NX,NY,POIDS1)
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM2),NX,NY,POIDS2)
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           R1 = 0.D0
           R2 = 0.D0
           DO 10 I = 1,NNO

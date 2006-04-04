@@ -1,25 +1,25 @@
-      SUBROUTINE ACEADI(NOMA,NOMO,LMAX,NOCADI,NMTGDI,NBOCC,IVR,IFM)
+      SUBROUTINE ACEADI(NOMA,NOMO,LMAX,NBOCC,IVR,IFM)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           LMAX,NOCADI(*),NMTGDI(*),NBOCC,IVR(*),IFM
+      INTEGER           LMAX,NBOCC,IVR(*),IFM
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
@@ -28,8 +28,6 @@ C ----------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : NOMO   : NOM DU MODELE
 C IN  : LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-C IN  : NOCADI : NOMBRE
-C IN  : NMTGDI : NOMBRE
 C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DISCRET
 C IN  : IVR    : TABLEAU DES INDICES DE VERIFICATION
 C ----------------------------------------------------------------------
@@ -133,13 +131,9 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       TMPNDK = CARTDK//'.NCMP'
       TMPVDK = CARTDK//'.VALV'
 C
-      DO 10 I = 1 , 3
-         NOCADI(I) = NOCADI(I) + 2
- 10   CONTINUE
-C
-      CALL ALCART('G',CART(1),NOMA,'CADISK',NOCADI(1),NMTGDI(1))
-      CALL ALCART('G',CART(2),NOMA,'CADISM',NOCADI(2),NMTGDI(2))
-      CALL ALCART('G',CART(3),NOMA,'CADISA',NOCADI(3),NMTGDI(3))
+      CALL ALCAR2('G',CART(1),NOMA,'CADISK')
+      CALL ALCAR2('G',CART(2),NOMA,'CADISM')
+      CALL ALCAR2('G',CART(3),NOMA,'CADISA')
       CALL JEVEUO(TMPNDK,'E',JDC(1))
       CALL JEVEUO(TMPVDK,'E',JDV(1))
       CALL JEVEUO(TMPNDM,'E',JDC(2))
@@ -161,14 +155,14 @@ C         AFIN DE POUVOIR CALCULER LES MATRICES K,M,A DANS TOUS LES CAS
          IF (I.EQ.1) THEN
             ZK8(JDC(I)+79)  = 'ETA     '
             ZR (JDV(I)+79)  = 0.D0
-            CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',80)
+            CALL NOCAR2(CART(I),1,' ',' ',0,' ',0,' ',80)
             IF (IXNW.NE.0) THEN
-               CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,80)
+               CALL NOCAR2(CART(I),-1,' ',' ',0,' ',0,LIGMO,80)
             ENDIF
          ELSE
-            CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',79)
+            CALL NOCAR2(CART(I),1,' ',' ',0,' ',0,' ',79)
             IF (IXNW.NE.0) THEN
-               CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,79)
+               CALL NOCAR2(CART(I),-1,' ',' ',0,' ',0,LIGMO,79)
             ENDIF
          ENDIF
  20   CONTINUE
@@ -210,7 +204,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
               CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
      +                    NCMP,L,IFM)
                DO 38 II = 1 , NG
-              CALL NOCART(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,' ',NCMP)
+              CALL NOCAR2(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,' ',NCMP)
  38            CONTINUE
  36         CONTINUE
          ENDIF
@@ -221,7 +215,7 @@ C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
             DO 40 I = 1,NCARAC
               CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
      +                    NCMP,L,IFM)
-               CALL NOCART(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',NCMP)
+               CALL NOCAR2(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',NCMP)
  40         CONTINUE
          ENDIF
 C
@@ -241,7 +235,7 @@ C                                                  DE GROUPES DE NOEUDS
                      DO 44 II = 1,NCARAC
                         CALL AFFDIS(NDIM,IREP,ETA,CAR(II),VAL,JDC,JDV,
      +                              IVR,IV,KMA,NCMP,L,IFM)
-                       CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+                       CALL NOCAR2(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      +                                                       LIGMO,NCMP)
  44                  CONTINUE
                   ENDIF
@@ -256,7 +250,7 @@ C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
                   DO 46 I = 1,NCARAC
                      CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,
      +                           IVR,IV,KMA,NCMP,L,IFM)
-                     CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+                     CALL NOCAR2(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      +                                                       LIGMO,NCMP)
  46               CONTINUE
                ENDIF

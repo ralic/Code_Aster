@@ -1,0 +1,410 @@
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+from Numeric import *
+
+nbel = 2
+# ----------------------------------------------------------------------
+# Declaration des tableaux :
+# ----------------------------------------------------------------------
+sigma=zeros((nbel,4),'float')
+dndx=zeros((nbel,3),'float')
+dndy=zeros((nbel,3),'float')
+hf=zeros((nbel,3),'float')
+nx=zeros((nbel,3),'float')
+ny=zeros((nbel,3),'float')
+terme1=zeros(nbel,'float')
+terme2=zeros(nbel,'float')
+terme3=zeros(nbel,'float')
+terme=zeros(nbel,'float')
+norsig=zeros(nbel,'float')
+relatif=zeros((nbel,4),'float')
+# ----------------------------------------------------------------------
+# Donnees :
+# ----------------------------------------------------------------------
+# Contraintes aux noeuds par elements
+#
+sigma[0,0]=1.00163000000e0
+sigma[0,1]=7.24594e-4
+sigma[0,2]=3.00706e-1
+sigma[0,3]=1.08689e-3
+#
+sigma[1,0]=9.9837000000e-1
+sigma[1,1]=4.27873e-1
+sigma[1,2]=4.27873e-1
+sigma[1,3]=-1.08689e-3
+#
+# Definition des derivees des fonctions de forme
+#
+dndx[0,0] = -1./3.
+dndx[0,1] = 1./3.
+dndx[0,2] = 0.
+#
+dndx[1,0] = 0.
+dndx[1,1] = 1./3.
+dndx[1,2] = -1./3.
+#
+dndy[0,0] = 0.
+dndy[0,1] = -1./2.
+dndy[0,2] = 1./2.
+#
+dndy[1,0] = -1./2.
+dndy[1,1] = 0.
+dndy[1,2] = 1./2.
+#
+# Definitions des grandeurs geometriques
+#
+he = 3.6055128
+#
+hf[0,0]=3.
+hf[0,1]=2.
+hf[0,2]=3.6055128
+hf[1,0]=3.6055128
+hf[1,1]=3.
+hf[1,2]=2.
+#
+# Definitions des normales
+#
+nx[0,0]=0.
+ny[0,0]=-1.
+nx[0,1]=1.
+ny[0,1]=0.
+nx[0,2]=0.554700196
+ny[0,2]=-0.832050294
+nx[1,0]=-0.554700196
+ny[1,0]=0.832050294
+nx[1,1]=0.
+ny[1,1]=1.
+nx[1,2]=-1.
+ny[1,2]=0.
+#
+# Definition des efforts
+#
+fx=1.
+fy=0.
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# Corps du programme
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+print "****************************************************************"
+print "****************************************************************"
+print "*                                                              *"
+print "*     Test de validation de l'estimateur d'erreur en residu    *"
+print "*                Calcul des valeurs de reference               *"
+print "*                                                              *"
+print "****************************************************************"
+print "****************************************************************"
+print ""
+print "************************************************"
+print "* Probleme etudie :                            *"
+print "************************************************"
+print ""
+print "/N4********N3---->"
+print "/*       *  *---->"
+print "/* M2  *    *---->"
+print "/*   *  M1  *---->"
+print "/* *        *---->"
+print "/N1********N2---->"
+print ""
+
+# Boucle sur les elements 
+nbel = 2
+coef = 1./sqrt(24)
+erreur = 0.
+norme = 0.
+for i in range(nbel) :
+#
+# Dessins
+#
+    if (i==0) :
+        print ""
+        print "************************************************"
+        print "* Element n 1 :                                *"
+        print "************************************************"
+        print ""
+        print "          N3"
+        print "        *  *"
+        print "      *    *"
+        print "    *      *"
+        print "  *        *"
+        print "N1********N2"
+        print ""
+    else :
+        print ""
+        print "************************************************"
+        print "* Element n 2 :                                *"
+        print "************************************************"
+        print ""
+        print "N4********N3"
+        print "*       *   "
+        print "*     *     "
+        print "*   *       "
+        print "* *         "
+        print "N1          "
+        print ""
+
+# Test sur le type de bord
+    if (i==0) :
+        bord=3
+# si prise en compte de tout les chargements implicites
+#        listbord=[1,2]
+        listbord=2
+    else :
+        bord=1
+# si prise en compte de tout les chargements implicites
+#        listbord=[2,3]
+        listbord=3
+# ----------------------------------------------------------------------
+# Calcul du premier terme
+# ----------------------------------------------------------------------
+    nno = 3
+    poids = 1./2.
+    jacob = 6.
+#
+# Calcule de la divergence de sigma
+#
+    terme1[i] = 0.
+    norsig[i]= 0.
+    forx = 0.
+    fory = 0.
+
+    dsig11 = 0.
+    dsig12 = 0.
+    dsig21 = 0.
+    dsig22 = 0.
+    spg11 = 0.
+    spg22 = 0.
+    spg33 = 0.
+    spg12 = 0.
+    for j in range(nno) :
+        dsig11 = dsig11 + sigma[i,0] * dndx[i,j]
+        dsig12 = dsig12 + sigma[i,1] * dndy[i,j]
+        dsig21 = dsig21 + sigma[i,3] * dndx[i,j]
+        dsig22 = dsig22 + sigma[i,3] * dndy[i,j]
+        spg11 = spg11 + sigma[i,0] * 1/3
+        spg22 = spg22 + sigma[i,1] * 1/3
+        spg33 = spg33 + sigma[i,2] * 1/3
+        spg12 = spg12 + sigma[i,3] * 1/3
+        
+    dsx = dsig11 + dsig12
+    dsy = dsig21 + dsig22
+    #    print "dsig11=",dsig11
+    #    print "dsig12=",dsig12
+    #    print "dsig22=",dsig22
+    #    print "dsig21=",dsig21
+#    print "spg11=",spg11
+#    print "spg22=",spg22
+#    print "spg33=",spg33
+#    print "spg12=",spg12
+#
+# Integration de Gauss sur un point
+#
+    norsig[i] = sqrt((spg11**2 + spg22**2 + spg33**2 + spg12**2) * jacob * poids)
+    print "Element(",i+1,"),             norme de sigma =",norsig[i]
+    terme1[i] = coef * he * ((forx + dsx)**2 + (fory + dsy)**2) * jacob * poids
+    print "Element(",i+1,"),  valeur absolue du terme 1 =",terme1[i]
+    relatif[i,0] = 100. * sqrt( terme1[i]**2 / ( terme1[i]**2 + norsig[i]**2 ) )
+    print "Element(",i+1,"), valeur relative du terme 1 =",relatif[i,0],"%"
+#
+# ----------------------------------------------------------------------
+# Calcul du deuxieme terme
+# ----------------------------------------------------------------------
+#
+    nna = 2
+    poid = 1.
+    if (i==0) :
+        jac = 1.80277564
+        reper = 1
+    else :
+        jac = 1.80277564
+        reper = 1
+#
+    if (i==nbel-1) :
+        j=0
+    else :
+        j=i+1
+#
+# Calcul du saut de contrainte inter-elements
+#
+    sosig11 = sigma[i,0] - sigma[j,0]
+    sosig22 = sigma[i,1] - sigma[j,1]
+    sosig12 = sigma[i,3] - sigma[j,3]
+#    print sosig11
+#    print sosig22
+#    print sosig12
+#
+# Calcul du terme de l'integrale
+#
+    inte = 0.
+    for j in range(nna) :
+        inte = inte + ((sosig11 * nx[i,bord-1] + sosig12 * ny[i,bord-1])**2 + (sosig12 * nx[i,bord-1] + sosig22 * ny[i,bord-1])**2) * poid * jac * reper
+#
+# Integration de Newton-Cotes sur deux points
+#
+    terme2[i] = terme2[i] + coef * 1./2. * sqrt(hf[i,bord-1]) * sqrt(inte)
+    print "Element(",i+1,"),  valeur absolue du terme 2 =",terme2[i]
+    relatif[i,1] = 100. * sqrt( terme2[i]**2 / ( terme2[i]**2 + norsig[i]**2 ) )
+    print "Element(",i+1,"), valeur relative du terme 2 =",relatif[i,1],"%"
+#
+# ----------------------------------------------------------------------
+# Calcul du troisieme terme
+# ----------------------------------------------------------------------
+#
+    nna = 2
+    poid = 1.
+    if (i==0) :
+        jac=1.
+        reper=1
+    else :
+        jac=1.5
+        reper=0
+#
+# Calcul du terme de l'integrale
+#
+    inte = 0.
+    for j in range(nna) :
+        inte = inte + ((fx - (sigma[i,0] * nx[i,listbord-1] + sigma[i,3] * ny[i,listbord-1]))**2 + (fy - (sigma[i,3] * nx[i,listbord-1] + sigma[i,1] * ny[i,listbord-1]))**2) * poid * jac * reper
+#
+# Integration de Newton-Cotes sur deux points
+#
+    terme3[i] = terme3[i] + coef * sqrt(hf[i,listbord-1]) * sqrt(inte)
+    print "Element(",i+1,"),  valeur absolue du terme 3 =",terme3[i]
+    relatif[i,2] = 100. * sqrt( terme3[i]**2 / ( terme3[i]**2 + norsig[i]**2 ) )
+    print "Element(",i+1,"), valeur relative du terme 3 =",relatif[i,2],"%"
+#
+# ----------------------------------------------------------------------
+# Calcul de l'erreur par element
+# ----------------------------------------------------------------------
+#
+    terme[i] = terme1[i] + terme2[i] + terme3[i]
+    print "Element(",i+1,"),  valeur absolue de l'erreur =",terme[i]
+    relatif[i,3] = 100. * sqrt( terme[i]**2 / ( terme[i]**2 + norsig[i]**2 ) )
+    print "Element(",i+1,"), valeur relative de l'erreur =",relatif[i,3],"%"
+#
+# ----------------------------------------------------------------------
+# Calcul de l'erreur globale
+# ----------------------------------------------------------------------
+#
+    erreur = erreur + (terme[i])**2
+    norme = norme + (norsig[i])**2
+erreur = sqrt(erreur)
+norme = sqrt(norme)
+errela = 100. * sqrt( erreur**2 / ( erreur**2 + norme**2 ) )
+
+print ""
+print ""
+print "************************************************"
+print "* Estimateur d'erreur en residu                *"
+print "************************************************"
+print ""
+print " Erreur absolue estimee =",erreur
+print "Erreur relative estimee =",errela,"%"
+print "Norme de sigma calculee =",norme
+
+#***********************************************************************
+#***********************************************************************
+#***********************************************************************
+#***********************************************************************
+
+DEBUT(CODE=_F( NOM = 'SSLP107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+
+MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),
+                       INFO=2,);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),);
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=2.0,
+                            NU=0.3,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(GROUP_MA='DOMAINE',
+                               MATER=MATER,),);
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
+                    FACE_IMPO=_F(GROUP_MA='DA',
+                                 DX=0.0,
+                                 DY=0.0,),
+                    FORCE_CONTOUR=_F(GROUP_MA='BC',
+                                     FX=1.0,),);
+
+RESU=MECA_STATIQUE(MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=_F(CHARGE=CHAR,),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
+
+##############################################
+#                                            #
+#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU  #
+#                                            #
+##############################################
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M1',
+                  POINT=1,
+                  VALE=terme[0],
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M2',
+                  POINT=1,
+                  VALE=terme[1],
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ABSOLUE',
+                  VALE=erreur,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_RELATIVE',
+                  VALE=errela,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='NORME_SIGMA',
+                  VALE=norme,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+FIN();

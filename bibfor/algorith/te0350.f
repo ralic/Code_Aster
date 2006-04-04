@@ -1,7 +1,7 @@
       SUBROUTINE TE0350(OPTION,NOMTE)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,6 +39,7 @@ C ======================================================================
       REAL*8  VECT1(54), VECT3(4*27*2)
       REAL*8  ANGMAS(3),R8VIDE,R8DGRD
       REAL*8  PHASM(7*27),PHASP(7*27)
+      LOGICAL  LTEATT, LAXI
 
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -68,7 +69,7 @@ C
      
 C - TYPE DE MODELISATION
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN
         TYPMOD(1) = 'C_PLAN  '

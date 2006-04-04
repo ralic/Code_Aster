@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=47)
-      PARAMETER (NCMEC2=49)
+      PARAMETER (NCMEC2=54)
       PARAMETER (NCMEC3=31)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
@@ -49,7 +49,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=18)
+      PARAMETER (NCTHER=19)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -69,12 +69,12 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ E L A S
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVEL=22,NAEVEL=9)
+      PARAMETER (NPEVEL=31,NAEVEL=9)
       CHARACTER*16 PAEVEL(NPEVEL)
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=23,NAEVNO=9)
+      PARAMETER (NPEVNO=32,NAEVNO=9)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
@@ -124,7 +124,9 @@ C     ------------------------------------------------------------------
      &     'RESI_GCPC','EFFORT_N','MOMENT_MFY','MOMENT_MFZ',
      &     'DEFO_D_DX_X','DEFO_D_DRY_X','DEFO_D_DRZ_X','EFFORT_D_VY_X',
      &     'EFFORT_D_VZ_X','MOMENT_D_MT_X','EFFORT_VY','EFFORT_VZ',
-     &     'MOMENT_MT'/
+     &     'MOMENT_MT','ERREUR_ABSOLUE','ERREUR_RELATIVE','NORME_SIGMA',
+     &     'TERME_VOLU_ABSO','TERME_VOLU_RELA','TERME_SAUT_ABSO',
+     &     'TERME_SAUT_RELA','TERME_NORM_ABSO','TERME_NORM_RELA'/
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
@@ -133,7 +135,10 @@ C     ------------------------------------------------------------------
      &     'RESI_GLOB_RELA','RESI_GLOB',
      &     'CHAR_MINI','ETA_PILOTAGE','RESI_GLOB_MOINS',
      &     'CHAR_CRIT','GFUM','GFUA','GFUML','GFUI','GFVAG','GFVFD',
-     &     'GFVAD','FREQ'/
+     &     'GFVAD','FREQ','ERREUR_ABSOLUE','ERREUR_RELATIVE',
+     &     'NORME_SIGMA','TERME_VOLU_ABSO','TERME_VOLU_RELA',
+     &     'TERME_SAUT_ABSO','TERME_SAUT_RELA','TERME_NORM_ABSO',
+     &     'TERME_NORM_RELA'/
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
@@ -197,9 +202,12 @@ C     ------------------------------------------------------------------
      &     'EPSP_NOEU_ZAC','ALPH0_ELGA_EPSP','ALPHP_ELGA_ALPH0',
      &     'VARI_NON_LOCAL','LANL_ELGA'/
       DATA CHMEC2/'DEGE_ELNO_DEPL','DEGE_NOEU_DEPL','EPOT_ELEM_DEPL',
-     &     'ECIN_ELEM_DEPL','FORC_NODA','REAC_NODA','ERRE_ELGA_NORE',
-     &     'ERRE_ELNO_ELGA','ERRE_NOEU_ELGA','ERRE_ELEM_NOZ1',
-     &     'ERRE_ELEM_NOZ2','EPSG_ELGA_DEPL','EPSG_ELNO_DEPL',
+     &     'ECIN_ELEM_DEPL','FORC_NODA','REAC_NODA',
+     &     'ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ERRE_NOEU_ELEM',
+     &     'ERZ1_ELEM_SIGM','ERZ2_ELEM_SIGM',
+     &     'QIRE_ELEM_SIGM','QIRE_ELNO_ELEM','QIRE_NOEU_ELEM',
+     &     'QIZ1_ELEM_SIGM','QIZ2_ELEM_SIGM',
+     &     'EPSG_ELGA_DEPL','EPSG_ELNO_DEPL',
      &     'EPSG_NOEU_DEPL','EPSP_ELGA','EPSP_ELNO','EPSP_NOEU',
      &     'VARI_ELGA','VARI_ELNO','VARI_NOEU','VARI_ELNO_ELGA',
      &     'VARI_NOEU_ELGA','VARI_ELNO_TUYO','EPSA_ELNO','EPSA_NOEU',
@@ -220,7 +228,8 @@ C     ------------------------------------------------------------------
      &     'ETOT_ELNO_ELGA','ETOT_ELEM','VALE_NCOU_MAXI',
      &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA',
      &     'EXTR_ELGA_VARI','EXTR_ELNO_VARI','EXTR_NOEU_VARI',
-     &       'MODE_MECA'/
+     &     'MODE_MECA'/
+
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
@@ -229,8 +238,8 @@ C     ------------------------------------------------------------------
      &     'META_NOEU_TEMP','DURT_ELGA_META','DURT_ELNO_META',
      &     'DURT_NOEU_META','HYDR_ELNO_ELGA',
      &     'HYDR_NOEU_ELGA','DETE_ELNO_DLTE','DETE_NOEU_DLTE',
-     &     'COMPORTHER','ERTH_ELEM_TEMP','ERTH_ELNO_ELEM',
-     &     'SOUR_ELGA_ELEC'/
+     &     'COMPORTHER','ERRE_ELEM_TEMP','ERRE_ELNO_ELEM',
+     &     'ERRE_NOEU_ELEM','SOUR_ELGA_ELEC'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='o',
                                      "EPSI_NOEU_DEPL",
                                      "EPSP_NOEU"     ,"EPSP_NOEU_ZAC",
                                      "EQUI_NOEU_EPME","EQUI_NOEU_EPSI","EQUI_NOEU_SIGM",
-                                     "ERRE_NOEU_ELGA",
+                                     "ERRE_NOEU_ELEM","QIRE_NOEU_ELEM",
                                      "FLUX_NOEU_TEMP",
                                      "HYDR_NOEU_ELGA",
                                      "INTE_NOEU_ACTI","INTE_NOEU_REAC",

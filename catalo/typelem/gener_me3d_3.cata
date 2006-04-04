@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -68,7 +68,6 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
-    ECOURAN  = NEUT_R   ELEM__         (X1       )
     EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMMAG   ELNO__ IDEN__  (DOMA     )
     ETRIANO  = DOMMAG   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
@@ -88,9 +87,9 @@ MODE_LOCAL__
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   
-                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
+                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
     EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   
-                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
+                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
     EFACY_R  = FACY_R   ELGA__ RIGI    (DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1  
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2   
                                         VNM2X    VNM2Y    VNM2Z    SINMAX2  SINMOY2  EPNMAX2  
@@ -100,7 +99,7 @@ MODE_LOCAL__
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     EGTHETA  = G        ELEM__         (GTHETA   )
-    EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       )
+    EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA)
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
@@ -117,6 +116,7 @@ MODE_LOCAL__
                                         X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
     E8NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       )
     E36NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
@@ -149,6 +149,7 @@ MODE_LOCAL__
                                         X127     X128     )
     CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      )
+    CCONSTR  = NEUT_R   ELEM__         (X1       )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     E3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )
@@ -436,11 +437,11 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ  
     EQUI_ELNO_SIGM      335   IN__   ECONTPG  PCONTRR  
                               OUT__  ECOEQNO  PCONTEQ  
-    ERRE_ELGA_NORE      375   IN__   ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER  
+    ERRE_ELEM_SIGM      375   IN__   ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER  
                                      CMATERC  PMATERC  CPESANR  PPESANR  CREFERI  PPRESS   CROTATR  PROTATR  
                                      CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  
                               OUT__  EERREUR  PERREUR  
-    ERRE_ELNO_ELGA      379   IN__   EERREUR  PERREUR  
+    ERRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR  
                               OUT__  EERRENO  PERRENO  
     ETOT_ELEM           576   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR   
                                      NGEOMER  PGEOMER  
@@ -522,6 +523,12 @@ OPTION__
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  
                               OUT__  EENEDNO  PADAPTI  ECONTPG  PALPHA1  EDEFOPG  PALPHAI  EDEFOPG  PALPHAL  
                                      EDEFOPG  PALPHAS  
+    QIRE_ELEM_SIGM      368   IN__   ECONTNO  PCONTNOP ECONTNO  PCONTNOD CREFERI  PFORCEP  CREFERI  PFORCED
+                                     EFORCER  PFRVOLUP EFORCER  PFRVOLUD NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CPESANR  PPESANRP CPESANR  PPESANRD CREFERI  PPRESSP  CREFERI  PPRESSD
+                                     CROTATR  PROTATRP CROTATR  PROTATRD CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  
+                                     CCONSTR  PCONSTR
+                              OUT__  EERREUR  PERREUR  
     RADI_ELGA_SIGM      489   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  CSOUSOP  PNEUK24  ZVARIPG  PVARIMR  
                                      ZVARIPG  PVARIPR  
                               OUT__  ZVARIPG  PVARIMO  

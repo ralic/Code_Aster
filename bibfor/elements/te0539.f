@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ......................................................................
       INTEGER JPINTT,JCNSET,JHEAVT,JLONCH,JBASLO,JLSN,JLST
       INTEGER KK,NI,MJ,JTAB(7),NZ,NNOS,ICAMAS
       INTEGER DDLH,DDLC,NDDL,INO,NNOM,NFE,IBID
-      LOGICAL DEFANE, MATSYM
+      LOGICAL DEFANE, MATSYM,LTEATT
       REAL*8  MATNS(3*27*3*27)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
@@ -76,14 +76,14 @@ C - TYPE DE MODELISATION
         TYPMOD(1) = '3D      '
         TYPMOD(2) = '        '
       ELSE
-         IF (NOMTE(3:4).EQ.'AX') THEN
-          TYPMOD(1) = 'AXIS    '
+         IF (LTEATT(' ','AXIS','OUI')) THEN
+           TYPMOD(1) = 'AXIS    '
          ELSE IF (NOMTE(3:4).EQ.'CP') THEN
-          TYPMOD(1) = 'C_PLAN  '
+           TYPMOD(1) = 'C_PLAN  '
          ELSE IF (NOMTE(3:4).EQ.'DP') THEN
-          TYPMOD(1) = 'D_PLAN  '
+           TYPMOD(1) = 'D_PLAN  '
          ELSE
-          CALL UTMESS('F','TE0100','NOM D''ELEMENT ILLICITE')
+           CALL UTMESS('F','TE0100','NOM D''ELEMENT ILLICITE')
          END IF
          IF (NOMTE(1:2).EQ.'MD') THEN
            TYPMOD(2) = 'ELEMDISC'

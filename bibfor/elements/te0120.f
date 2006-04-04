@@ -1,6 +1,6 @@
       SUBROUTINE TE0120(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       REAL*8  VFF(126),DFF(378),DFDI1(24),DFDI2(81)
       INTEGER N,K
-C     ------------------------------------------------------------------
+      LOGICAL LTEATT
+C  ------------------------------------------------------------------
 C
 C   DECODAGE DE LA MODELISATION ET DE LA DIMENSION DE L'ESPACE
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN
         TYPMOD(1) = 'C_PLAN  '

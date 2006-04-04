@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,6 @@ C                         FORCES IMPOSEES PAR NOEUD
    10   CONTINUE
       END IF
       NSURCH = 0
-      LON = 0
 
 C --------------------------------------------------------------
 C     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FORCE_NODALE
@@ -219,7 +218,6 @@ C       ---------------------------
 
         CALL RELIEM(LIGRMO, NOMA, 'NO_NOEUD', MOTCLF, I, 2,
      +                                  MOTCLS, TYPMCL, MESNOE, NBNO )
-        LON = LON + NBNO
         CALL JEVEUO ( MESNOE, 'L', JNO )
 
         DO 100 JJ = 1,NBNO
@@ -243,15 +241,13 @@ C     -----------------------------------------------
       LIEL = LIGRCH//'.LIEL'
       CARTE = CHAR//'.CHME.FORNO'
 C
-      LON = LON - NSURCH
-      LONCAR = LON
       CALL JEEXIN ( CARTE//'.DESC', IRET )
 
       IF ( IRET .EQ. 0 ) THEN
          IF (FONREE.EQ.'REEL') THEN
-            CALL ALCART('G',CARTE,NOMA,'FORC_R',LONCAR,LON)
+            CALL ALCAR2('G',CARTE,NOMA,'FORC_R')
          ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL ALCART('G',CARTE,NOMA,'FORC_F',LONCAR,LON)
+            CALL ALCAR2('G',CARTE,NOMA,'FORC_F')
          ELSE
             CALL UTMESS('F','CAFONO','VALEUR INATTENDUE: '//FONREE)
          END IF
@@ -316,7 +312,7 @@ C
 C   ON CREE UNE CARTE POUR CHAQUE NOEUD AFFECTE ET ON NOTE TOUTES
 C   LES COMPOSANTES (NBCOMP)
 C
-            CALL NOCART(CARTE,-3,' ','NUM',1,' ',ZI(JL),LIEL,NBCOMP)
+            CALL NOCAR2(CARTE,-3,' ','NUM',1,' ',ZI(JL),LIEL,NBCOMP)
 C
          END IF
 

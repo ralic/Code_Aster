@@ -1,6 +1,6 @@
       SUBROUTINE SURFCO(CHAR,NOMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE MABBAS M.ABBAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,9 +73,9 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       INTEGER JMANO,JPOMA,JNOMA,JPONO,JMAMA,JPOIN,JZOCO
 
       CHARACTER*24 CARACF,ECPDON,MAESCL,PNOQUA,NORLIS,TANDEF,SANSNO
-      CHARACTER*24 PSANS,JEUPOU,TANPOU
+      CHARACTER*24 PSANS,JEUPOU,TANPOU,JEUCOQ
       INTEGER JCMCF,JECPD,JMAESC,JNOQUA,JNORLI,JSANS,JPSANS,JPOUDI
-      INTEGER NZOCO,NSUCO,NMACO,NNOCO,NMANO,NNOMA,NMAMA,JJPOU
+      INTEGER NZOCO,NSUCO,NMACO,NNOCO,NMANO,NNOMA,NMAMA,JJPOU,JJCOQ
 
       CALL JEMARQ
       CALL INFNIV(IFM,NIV)
@@ -107,6 +107,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       SANSNO = CHAR(1:8) // '.CONTACT.SSNOCO'
       PSANS  = CHAR(1:8) // '.CONTACT.PSSNOCO'
       JEUPOU = CHAR(1:8) // '.CONTACT.JEUPOU'
+      JEUCOQ = CHAR(1:8) // '.CONTACT.JEUCOQ'
       TANPOU = CHAR(1:8) // '.CONTACT.TANPOU'
 
       CALL JEVEUO(NDIMCO,'L',JDIM)
@@ -143,6 +144,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       CALL JEVEUO(SANSNO,'E',JSANS)
       CALL JEVEUO(PSANS, 'E',JPSANS)
       CALL JEVEUO(JEUPOU,'L',JJPOU)
+      CALL JEVEUO(JEUCOQ,'L',JJCOQ)
       CALL JEVEUO(TANPOU,'E',JPOUDI)
 
 C ======================================================================
@@ -285,6 +287,20 @@ C ======================================================================
       END IF
 
 C ======================================================================
+C                    IMPRESSIONS POUR LES COQUES
+C ======================================================================
+      IF ( (ZR(JJCOQ-1+NNOCO+1).GT.0.5D0) .AND. (NIV.GE.2)) THEN
+         WRITE (IFM,*)
+         WRITE (IFM,1012)
+     &          '************** DIST_COQUE   **************'
+         DO 70 INO = 1 , NNOCO
+            IF ( ZR(JJCOQ-1+INO).EQ.0.D0 ) GOTO 70
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(JNOCO-1+INO)),CHAIN1)
+            WRITE (IFM,1016) CHAIN1, ZR(JJCOQ-1+INO)
+ 70      CONTINUE
+      END IF
+
+C ======================================================================
 C                    IMPRESSIONS POUR LES DEVELOPPEURS
 C ======================================================================
 
@@ -390,6 +406,7 @@ C ======================================================================
  1010 FORMAT ('<CONTACT> ',A19,I5,A14)
  1012 FORMAT ('<CONTACT> ',A40)
  1014 FORMAT (1P,10X,'NOEUD: ',A8,' RAYON_POUTRE: ',E12.5)
+ 1016 FORMAT (1P,10X,'NOEUD: ',A8,' DEMI-EPAISSEUR: ',E12.5)
 
  1020 FORMAT ('<CONTACT> ',A37,I5)
  1030 FORMAT ('<CONTACT> ',A13,I5,A3,I5,A8,1X,I5,A7)

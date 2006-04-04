@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -659,7 +659,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
 # ----------------------------------------------------------------------
 CALC_ELEM( reuse=MSLI2,
                            OPTION=( 'EPME_ELGA_DEPL', 'SIGM_ELNO_DEPL',
-                                    'ERRE_ELGA_NORE', 'ERRE_ELNO_ELGA',
+                                    'ERRE_ELEM_SIGM', 'ERRE_ELNO_ELEM',
                                     'EPME_ELNO_DEPL', 'EPOT_ELEM_DEPL',
                                     'EPSI_ELGA_DEPL', 'EPSI_ELNO_DEPL',
                                     'EQUI_ELNO_SIGM', 'EQUI_ELGA_SIGM',

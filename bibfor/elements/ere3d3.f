@@ -1,0 +1,263 @@
+      SUBROUTINE ERE3D3(NOE,IFA,ITYP,IREF1,IREF2,IVOIS,IGEOM,ISIG,
+     &                  NBCMP,INST,NPGB,NX,NY,NZ,
+     &                  SIG11,SIG22,SIG33,SIG12,SIG13,SIG23,CHX,CHY,CHZ)
+      IMPLICIT NONE
+      INTEGER NOE(9,6,3),IFA,ITYP,IREF1,IREF2,IVOIS,IGEOM,ISIG
+      INTEGER NBCMP,NPGB
+      REAL*8 INST,NX(27),NY(27),NZ(27),CHX(27),CHY(27),CHZ(27)
+      REAL*8 SIG11(27),SIG22(27),SIG12(27),SIG33(27),SIG13(27),SIG23(27)
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRP_21
+C
+C     BUT:
+C         TROISIEME TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE :
+C         CALCUL DE LA DIFFERENCE ENTRE LES EFFORTS APPLIQUES SUR LE  
+C         BORD ET LA CONTRAINTE NORMALE EN 3D.
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   NOMTE  : NOM DU TYPE_MAILLE
+C IN   NNO    : NOMBRE DE NOEUDS DU TYPE_MAILLE
+C IN   IPG    : NUMERO DU POINT DE GAUSS
+C IN   IGEOM  : ADRESSE DANS ZR DU TABLEAU DES COORDONNEES
+C IN   IVF    : ADRESSE DANS ZR DU TABLEAU DES FONCTIONS DE FORME
+C IN   ISIG   : ADRESSE DANS ZR DU TABLEAU DES CONTRAINTES AUX NOEUDS
+C IN   NBCMP  : NOMBRE DE COMPOSANTES
+C IN   DFDX   : DERIVEES DES FONCTIONS DE FORME / X
+C IN   DFDY   : DERIVEES DES FONCTIONS DE FORME / Y
+C IN   POIDS  : POIDS
+C
+C      SORTIE :
+C-------------
+C OUT  DSX    : PREMIERE COMPOSANTE DE DIVERGENCE SIGMA
+C OUT  DSY    : SECONDE COMPOSANTE DE DIVERGENCE SIGMA
+C OUT  NORME  : NORME DE SIGMA AU POINT DE GAUSS
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      INTEGER IAGD,IADE1,IADE2,IAVA1,IAVA2,IAPTM1,IAPTM2,IGD1,IGD2,IACMP
+      INTEGER NCMPM1,NCMPM2,INO,IMAV,IPGF
+      INTEGER IER,IER1,IER2,IER3
+      INTEGER IENT1,IENT2,NUMGD1,NUMGD2
+
+      REAL*8  PR,FX,FY,FZ,VALPAR(4),PRC(27),FXC(27),FYC(27),FZC(27)
+
+      CHARACTER*4 NOMPAR(4)
+      CHARACTER*8 PRF,FXF,FYF,FZF
+      CHARACTER*19 NOMGD1,NOMGD2
+
+      LOGICAL FLAG
+
+C ----------------------------------------------------------------------
+C ------- RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES FACES --------
+
+      IAGD=ZI(IREF1+4)
+C
+      IADE1=ZI(IREF1+6)
+      IAVA1=ZI(IREF1+7)
+      IAPTM1=ZI(IREF1+8)
+      IF (IADE1.NE.0) THEN
+        IGD1=ZI(IADE1)
+        IACMP=ZI(IREF1+5)
+        NCMPM1=ZI(IACMP-1+IGD1)
+      ENDIF
+C
+        IADE2 = ZI(IREF2+6)
+        IAVA2 = ZI(IREF2+7)
+        IAPTM2 = ZI(IREF2+8)
+      IF (IADE2 .NE. 0) THEN
+        IGD2 = ZI(IADE2)
+        IACMP = ZI(IREF2+5)
+        NCMPM2= ZI(IACMP-1+IGD2)
+      ENDIF
+C
+C ----------------------------------------------------------------------
+C
+      NOMGD1=' '
+      NOMGD2=' '
+      IF (IADE1.NE.0) THEN
+        IMAV=ZI(IVOIS+IFA)
+        IF (IAPTM1.EQ.0) THEN
+C         CARTE CONSTANTE
+          IENT1=1
+        ELSE
+C         LA CARTE A ETE ETENDUE
+          IENT1=ZI(IAPTM1-1+IMAV)
+        ENDIF
+        NUMGD1=ZI(IREF1+9)
+        NOMGD1=ZK8(IAGD-1+NUMGD1)
+      ENDIF
+C
+      IF (IADE2.NE.0) THEN
+        IMAV=ZI(IVOIS+IFA)
+        IF (IAPTM2.EQ.0) THEN
+C         CARTE CONSTANTE
+          IENT2=1
+        ELSE
+C       LA CARTE A ETE ETENDUE
+        IENT2=ZI(IAPTM2-1+IMAV)
+        ENDIF
+        NUMGD2 = ZI(IREF2+9)
+        NOMGD2 = ZK8(IAGD-1+NUMGD2)
+      ENDIF
+C
+C ----- BOUCLE SUR LES POINTS DE GAUSS DE LA FACE ----------------------
+C
+        CALL R8INIR(27,0.D0,CHX,1)
+        CALL R8INIR(27,0.D0,CHY,1)
+        CALL R8INIR(27,0.D0,CHZ,1)
+C
+        CALL R8INIR(27,0.D0,SIG11,1)
+        CALL R8INIR(27,0.D0,SIG22,1)
+        CALL R8INIR(27,0.D0,SIG33,1)
+        CALL R8INIR(27,0.D0,SIG12,1)
+        CALL R8INIR(27,0.D0,SIG13,1)
+        CALL R8INIR(27,0.D0,SIG23,1)
+      DO 10 IPGF=1,NPGB
+C
+         INO=NOE(IPGF,IFA,ITYP)
+C
+         IF (NPGB.EQ.6.AND.IPGF.LE.3) GOTO 10
+C
+C ----- CALCUL DES CHARGES APPLIQUEES SUR LE BORD ----------------------
+C ------- RECUPERATION DES PRESSIONS -----------------------------------
+C
+        IF (NOMGD2(1:6).EQ.'PRES_R') THEN
+          PR=ZR(IAVA2-1+(IENT2-1)*NCMPM2+1)
+C
+          IF (ABS(PR).GT.1.D-15) THEN
+C
+            CHX(IPGF)=-PR*NX(IPGF)
+            CHY(IPGF)=-PR*NY(IPGF)
+            CHZ(IPGF)=-PR*NZ(IPGF)
+C
+          END IF
+C  
+        ELSE IF (NOMGD2(1:6).EQ.'PRES_F') THEN
+          PRF=ZK8(IAVA2-1+(IENT2-1)*NCMPM2+1)
+C
+          IF (PRF.NE.'&FOZERO') THEN
+C
+            NOMPAR(1)='X'
+            NOMPAR(2)='Y'
+            NOMPAR(3)='Z'
+            NOMPAR(4)='INST'
+            VALPAR(1)=ZR(IGEOM+3*INO-3)
+            VALPAR(2)=ZR(IGEOM+3*INO-2)
+            VALPAR(3)=ZR(IGEOM+3*INO-1)
+            VALPAR(4)=INST
+            CALL FOINTE('FM',PRF,4,NOMPAR,VALPAR,PRC(IPGF),IER)
+C
+            CHX(IPGF)=-PRC(IPGF)*NX(IPGF)
+            CHY(IPGF)=-PRC(IPGF)*NY(IPGF)
+            CHZ(IPGF)=-PRC(IPGF)*NZ(IPGF)
+C
+          END IF
+C
+C ------- RECUPERATION DES FORCES --------------------------------------
+C
+        ELSE IF (NOMGD1(1:6).EQ.'FORC_R') THEN
+          FX=ZR(IAVA1-1+(IENT1-1)*NCMPM1+1)
+          FY=ZR(IAVA1-1+(IENT1-1)*NCMPM1+2)
+          FZ=ZR(IAVA1-1+(IENT1-1)*NCMPM1+3)
+
+          IF (ABS(FX).GT.1.D-15.OR.
+     &        ABS(FY).GT.1.D-15.OR.
+     &        ABS(FZ).GT.1.D-15) THEN
+C
+            CHX(IPGF)=FX
+            CHY(IPGF)=FY
+            CHZ(IPGF)=FZ
+C
+          END IF
+
+        ELSE IF (NOMGD1(1:6).EQ.'FORC_F') THEN
+          FXF=ZK8(IAVA1-1+(IENT1-1)*NCMPM1+1)
+          FYF=ZK8(IAVA1-1+(IENT1-1)*NCMPM1+2)
+          FZF=ZK8(IAVA1-1+(IENT1-1)*NCMPM1+3)
+
+          IF (FXF.NE.'&FOZERO'.OR.
+     &        FYF.NE.'&FOZERO'.OR.
+     &        FZF.NE.'&FOZERO') THEN
+C
+            NOMPAR(1)='X'
+            NOMPAR(2)='Y'
+            NOMPAR(3)='Z'
+            NOMPAR(4)='INST'
+            VALPAR(1)=ZR(IGEOM+3*INO-3)
+            VALPAR(2)=ZR(IGEOM+3*INO-2)
+            VALPAR(3)=ZR(IGEOM+3*INO-1)
+            VALPAR(4)=INST
+            CALL FOINTE('FM',FXF,4,NOMPAR,VALPAR,FXC(IPGF),IER1)
+            CALL FOINTE('FM',FYF,4,NOMPAR,VALPAR,FYC(IPGF),IER2)
+            CALL FOINTE('FM',FZF,4,NOMPAR,VALPAR,FZC(IPGF),IER3)
+C
+            CHX(IPGF)=FXC(IPGF)
+            CHY(IPGF)=FYC(IPGF)
+            CHZ(IPGF)=FZC(IPGF)
+C
+          END IF
+        END IF
+C
+C ----- RECUPERATION DES CONTRAINTES AUX PTS DE GAUSS ------------------
+C
+C
+        IF ((NOMGD1(1:6).EQ.'FORC_R').OR.
+     &      (NOMGD1(1:6).EQ.'FORC_F').OR.
+     &      (NOMGD2(1:6).EQ.'PRES_R').OR.
+     &      (NOMGD2(1:6).EQ.'PRES_F')) THEN
+C	
+C ----- PAS DE CHARGEMENT EXPLICITE SUR LE BORD ==> SIGMA RESTE NUL
+          SIG11(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+1)
+          SIG22(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+2)
+          SIG33(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+3)
+          SIG12(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+4)
+          SIG13(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+5)
+          SIG23(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+6)
+C    
+        END IF
+C
+ 10   CONTINUE
+C
+      END

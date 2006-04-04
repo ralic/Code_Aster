@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (PENTA15)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -246,8 +246,8 @@ EVOL2 = CALC_ELEM (reuse=EVOL2,
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
                'EQUI_ELNO_EPSI',
-               'ERRE_ELGA_NORE',
-               'ERRE_ELNO_ELGA',
+               'ERRE_ELEM_SIGM',
+               'ERRE_ELNO_ELEM',
            ),   ) ;
 
 EVOL2 = CALC_NO (reuse=EVOL2,
@@ -360,7 +360,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = EVOL2,
                INST = 1.,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               NOM_CHAM = 'ERRE_ELEM_SIGM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.0001,
                POINT = 1,
@@ -374,7 +374,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = EVOL2,
                INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               NOM_CHAM = 'ERRE_ELNO_ELEM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.0001,
                GROUP_NO= 'A',

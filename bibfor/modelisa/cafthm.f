@@ -1,4 +1,4 @@
-      SUBROUTINE CAFTHM (CHAR, LIGRMO, NBCA, NBET, NOMA, FONREE )
+      SUBROUTINE CAFTHM (CHAR, LIGRMO, NOMA, FONREE )
       IMPLICIT      NONE
       INTEGER       NBCA, NBET
       CHARACTER*4   FONREE
@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF MODELISA  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,9 +72,9 @@ C
       CARTE = CHAR//'.CHME.FLUX '
 C
       IF (FONREE.EQ.'REEL') THEN
-         CALL ALCART ( 'G', CARTE, NOMA, 'FTHM_R', NBCA+1, NBET )
+         CALL ALCAR2 ( 'G', CARTE, NOMA, 'FTHM_R')
       ELSE IF (FONREE.EQ.'FONC') THEN
-         CALL ALCART ( 'G', CARTE, NOMA, 'FTHM_F', NBCA+1, NBET )
+         CALL ALCAR2 ( 'G', CARTE, NOMA, 'FTHM_F')
       ELSE
          CALL UTMESS('F','CAFTHM','VALEUR INATTENDUE: '//FONREE )
       END IF
@@ -101,7 +101,7 @@ C
          ZK8(JVALV+2) = '&FOZERO'
          ZK8(JVALV+3) = '&FOZERO'
       ENDIF
-      CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP )
+      CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP )
 C
       MESMAI = '&&CAFTHM.MAILLES_INTE'
       MOTCLE(1) = 'GROUP_MA'
@@ -129,12 +129,12 @@ C
 C
          IF ( NBTOU .NE. 0 ) THEN
 C
-            CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
+            CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
-            CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
+            CALL NOCAR2 ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

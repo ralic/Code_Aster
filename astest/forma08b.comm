@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,8 +122,8 @@ RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                OPTION=('SIGM_ELNO_DEPL',
                        'EQUI_ELNO_SIGM',
-                       'ERRE_ELGA_NORE',
-                       'ERRE_ELNO_ELGA',),);
+                       'ERRE_ELEM_SIGM',
+                       'ERRE_ELNO_ELEM',),);
 
 #
 # 0.1. CALCUL DES CHAMPS AUX NOEUDS
@@ -188,7 +188,7 @@ IMPR_RESU(MODELE=MODMECA,FORMAT='CASTEM',
                    NOM_CHAM=('DEPL',
                             'SIGM_ELNO_DEPL',
                             'EQUI_ELNO_SIGM',
-                            'ERRE_ELNO_ELGA',
+                            'ERRE_ELNO_ELEM',
                             'FORC_NODA',
                             'REAC_NODA',),),);
 

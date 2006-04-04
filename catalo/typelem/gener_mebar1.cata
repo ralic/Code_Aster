@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+%& MODIF TYPELEM  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,9 @@ MODE_LOCAL__
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
-    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
+    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1    
+                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5     
+                                        KIT6     KIT7     KIT8     KIT9     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       )
@@ -42,7 +44,8 @@ MODE_LOCAL__
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       REP      )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ RIGI   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
+    EHYDREN  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
@@ -104,6 +107,12 @@ OPTION__
     CHAR_MECA_TEMP_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_SECH_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC  
+                                     NTEMPER  PSECHER  CTEREFE  PSECREF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  
+                              OUT__  MVECTUR  PVECTUR  
+    CHAR_MECA_HYDR_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC  
+                                     EHYDRER  PHYDRER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  
+                              OUT__  MVECTUR  PVECTUR  
     ECIN_ELEM_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFREQR   PFREQR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EENECNO  PENERCR
@@ -127,6 +136,8 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
                                      NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
+                                     CTEREFE  PSECREF
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
@@ -134,6 +145,8 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
                                      NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
+                                     CTEREFE  PSECREF
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     INDU_MUTU           -1    IN__   XXXXXX   XXXXXX
@@ -161,6 +174,8 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
                                      NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
+                                     CTEREFE  PSECREF
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -173,6 +188,8 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
                                      NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR
+                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
+                                     CTEREFE  PSECREF
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -185,6 +202,8 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
                                      NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR
+                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
+                                     CTEREFE  PSECREF
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF

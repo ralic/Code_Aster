@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C       -- TYPESD INCONNU => ON UTILISE JEDUPC => COUTEUX EN CPU
         CALL JEDUPC(' ',SD1,1,BASE,SD2,.TRUE.)
 
 C ----------------------------------------------------------------------
-      ELSE IF ((TYPESD.EQ.'CHAMP').OR.(TYPESD.EQ.'CHAMP_GD')) THEN
+      ELSE IF ((TYPESD.EQ.'CHAMP') .OR. (TYPESD.EQ.'CHAMP_GD')) THEN
 C     ----------------------------------------------------------------
         CH1 = SD1
         CH2 = SD2
@@ -211,10 +211,7 @@ C     ---------------------------------------------
         K191 = SD1
         K192 = SD2
         CALL JEDUP1(K191//'.DESC',BAS2,K192//'.DESC')
-        CALL JEDUP1(K191//'.ABLI',BAS2,K192//'.ABLI')
-        CALL JEDUP1(K191//'.ALIG',BAS2,K192//'.ALIG')
         CALL JEDUP1(K191//'.COND',BAS2,K192//'.COND')
-        CALL JEDUP1(K191//'.CONI',BAS2,K192//'.CONI')
         CALL JEDUP1(K191//'.CONL',BAS2,K192//'.CONL')
         CALL JEDUP1(K191//'.JDRF',BAS2,K192//'.JDRF')
         CALL JEDUP1(K191//'.JDDC',BAS2,K192//'.JDDC')
@@ -225,13 +222,15 @@ C     ---------------------------------------------
         CALL JEDUP1(K191//'.JDVL',BAS2,K192//'.JDVL')
         CALL JEDUP1(K191//'.LILI',BAS2,K192//'.LILI')
         CALL JEDUP1(K191//'.LIME',BAS2,K192//'.LIME')
-        CALL JEDUP1(K191//'.LLIG',BAS2,K192//'.LLIG')
         CALL JEDUP1(K191//'.REFA',BAS2,K192//'.REFA')
         CALL JEDUP1(K191//'.VALM',BAS2,K192//'.VALM')
         CALL JEDUP1(K191//'.UALF',BAS2,K192//'.UALF')
         CALL JEDUP1(K191//'.VALF',BAS2,K192//'.VALF')
         CALL JEDUP1(K191//'.VALF',BAS2,K192//'.WALF')
-        CALL JEDUP1(K191//'.VALI',BAS2,K192//'.VALI')
+        CALL JEDUP1(K191//'.CCID',BAS2,K192//'.CCID')
+        CALL JEDUP1(K191//'.CCLL',BAS2,K192//'.CCLL')
+        CALL JEDUP1(K191//'.CCJJ',BAS2,K192//'.CCJJ')
+        CALL JEDUP1(K191//'.CCVA',BAS2,K192//'.CCVA')
 
 C --------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'TABLE') THEN
@@ -242,6 +241,7 @@ C     -----------------------------------
           CALL UTMESS('F','COPISD','STRUCTURE DE DONNEES INEXISTANTE :'
      &                //SDR1)
         END IF
+
         CALL TBCOPI(BASE,SD1,SD2)
 
 C ----------------------------------------------------------------------
@@ -253,6 +253,7 @@ C     -----------------------------------
           CALL UTMESS('F','COPISD','STRUCTURE DE DONNEES INEXISTANTE :'
      &                //SDR1)
         END IF
+
         CALL RSCOPI(BASE,SD1,SD2)
 
 C ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 21/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,6 +51,7 @@ DicForm = {
    'ccom'  : '#',       # commentaire
    'cdeb'  : '',        # début de ligne
    'cfin'  : '\n',      # fin de ligne
+   'sepch' : ';',       # séparateur entre deux lignes d'une cellule
    'formK' : '%-8s',    # chaines
    'formR' : '%12.5E',  # réels
    'formI' : '%8d'      # entiers
@@ -204,7 +205,7 @@ class TableBase(object):
             if type(rep) is FloatType:
                lig.append(FMT(dform,'formR',t,lmax[i]) % rep)
                empty=False
-            elif type(rep) is IntType:
+            elif type(rep) in (IntType, LongType):
                lig.append(FMT(dform,'formI',t,lmax[i]) % rep)
                empty=False
             else:
@@ -218,7 +219,8 @@ class TableBase(object):
                   s='\\'+s
                lig.append(s)
          if not empty:
-            txt.append(dform['csep'].join(lig))
+            lig2 = [dform['sepch'].join(ch.splitlines()) for ch in lig]
+            txt.append(dform['csep'].join(lig2))
       if ASTER:
          txt.append('#FIN_TABLE')
       # ajout du debut de ligne
@@ -622,6 +624,15 @@ class Colonne(TableBase):
             vmin=(1.-PRECISION)*VALE
             vmax=(1.+PRECISION)*VALE
          return self._extract(lambda v: v<>None and vmin<v<vmax)
+
+# ------------------------------------------------------------------------------
+   def REGEXP(self, regexp):
+      """Retient les lignes dont le paramètre satisfait l'expression
+      régulière `regexp`.
+      """
+      if not type(regexp) in StringTypes:
+         return self._extract(lambda v : False)
+      return self._extract(lambda v : v != None and re.search(regexp, v) != None)
 
 # ------------------------------------------------------------------------------
    def __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.):

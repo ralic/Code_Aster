@@ -1,7 +1,7 @@
       SUBROUTINE TE0515(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,8 +24,8 @@ C RESPONSABLE GENIAUT S.GENIAUT
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES DEPLACEMENTS REELS AUX NOEUDS
-C                          DES SOUS-ELEMENTS (TETRAEDRES)
-C                          (ELEMENTS 3D AVEC X-FEM)
+C                          DES SOUS-ELEMENTS (TRIANGLES,TETRAEDRES)
+C                          (ELEMENTS 2D 3D AVEC X-FEM)
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -43,7 +43,7 @@ C
       INTEGER IND,    IND1,   IND2,   NNI,    JBASLO
 
       INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD,DDLT,NFE,IBID,NDDL
-      INTEGER  NPGBIS,NNOM
+      INTEGER  NPGBIS,NNOM, NTET,NBCMP
       INTEGER  JCOOPG,JDFD2,JCOORS
       REAL*8   DEPLA(3)
       REAL*8   DEPR(3,33)
@@ -67,13 +67,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      PARAMETER    (NSEMAX=6)
       CALL JEMARQ()
       CALL TECAEL(IADZI,IAZK24)
 
       CALL XTEINI(NOMTE,DDLH,NFE,IBID,DDLC,NNOM,DDLT,NDDL)
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
+      IF(NDIM.EQ.3)THEN
+        NTET=4
+        NBCMP=3
+        NSEMAX=6
+      ELSE
+        NTET=3
+        NBCMP=2
+        NSEMAX=3
+      ENDIF
+
       NNOP = NNO
       CALL ELREF1(ELREFP)
 
@@ -103,6 +113,10 @@ C     VERIFICATION QUE LA MAILLE EST DE TYPE HEXA,PENTA OU TETRA
       ELSEIF(ZK24(IAZK24+ZI(IADZI+1)+5)(1:5).EQ.'PENTA')THEN
          NBNOSO=6
       ELSEIF(ZK24(IAZK24+ZI(IADZI+1)+5)(1:5).EQ.'TETRA')THEN
+         NBNOSO=4
+      ELSEIF(ZK24(IAZK24+ZI(IADZI+1)+5)(1:4).EQ.'TRIA')THEN
+         NBNOSO=3
+      ELSEIF(ZK24(IAZK24+ZI(IADZI+1)+5)(1:4).EQ.'QUAD')THEN
          NBNOSO=4
       ELSE
          CALL UTMESS('F','TE0515','TYPE DE MAILLE NON VALIDE ' //
@@ -135,37 +149,38 @@ C        RÉCUPÉRATION DU DÉCOUPAGE EN NSE SOUS-ÉLÉMENTS
 
 C       BOUCLE D'INTÉGRATION SUR LES NSE SOUS-ÉLÉMENTS
         DO 110 ISE=1,NSE
-          CALL LCINVN(3*NNOP,0.D0,DEPR)
+          CALL LCINVN(NBCMP*NNOP,0.D0,DEPR)
           CPT=CPT+1
 
 C         FONCTION HEAVYSIDE CSTE SUR LE SOUS-ELEMENTS
           HE=ZI(JHEAVT-1+NSEMAX*(IT-1)+ISE)
 
 C    BOUCLE SUR LES 4 SOMMETS DU SOUS-TÉTRA
-          DO 120 JNO=1,4
-             INO=ZI(JCNSET-1 + 4*(CPT-1)+JNO)
-              CALL  XDEL3D(ELREFP,INO,NNOP,IGEOM,ZR(JPINTT),ZR(IDEPLR),
-     &              HE,DDLH,NFE,DDLT,ZR(JBASLO),ZR(JLSN),ZR(JLST),DEPLA)
+          DO 120 JNO=1,NTET
+             INO=ZI(JCNSET-1 + NTET*(CPT-1)+JNO)
+              CALL  XDEPLA(NDIM,ELREFP,INO,NNOP,IGEOM,ZR(JPINTT),
+     &                     ZR(IDEPLR),HE,DDLH,NFE,DDLT,ZR(JBASLO),
+     &                     ZR(JLSN),ZR(JLST),DEPLA)
               IF(INO.LT.1000)THEN
-                 IF(ZI(IND1+INO-1).EQ.0)THEN
-                    ZR(IDXFEM+3*(INO-1))  = DEPLA(1)
-                    ZR(IDXFEM+3*(INO-1)+1)= DEPLA(2)
-                    ZR(IDXFEM+3*(INO-1)+2)= DEPLA(3)
+                 IF(ZI(IND1+INO-1).EQ.0)THEN 
+                    ZR(IDXFEM+NBCMP*(INO-1))  = DEPLA(1)
+                    ZR(IDXFEM+NBCMP*(INO-1)+1)= DEPLA(2)
+                    IF(NDIM.EQ.3)ZR(IDXFEM+NBCMP*(INO-1)+2)= DEPLA(3)
                     ZI(IND1+INO-1)=INO
                  ENDIF
               ELSE
                  IF(ZI(IND2+2*(INO-1001)).EQ.0.AND.HE.LT.0)THEN
-                    ZR(IDXFEM+NBNOSO*3+KK)  = DEPLA(1)
-                    ZR(IDXFEM+NBNOSO*3+KK+1)= DEPLA(2)
-                    ZR(IDXFEM+NBNOSO*3+KK+2)= DEPLA(3)
+                    ZR(IDXFEM+NBNOSO*NBCMP+KK)  = DEPLA(1)
+                    ZR(IDXFEM+NBNOSO*NBCMP+KK+1)= DEPLA(2)
+                    IF(NDIM.EQ.3)ZR(IDXFEM+NBNOSO*NBCMP+KK+2)= DEPLA(3)
                     ZI(IND2+2*(INO-1001))=INO
-                    KK=KK+3
+                    KK=KK+NBCMP
                  ELSEIF(ZI(IND2+2*(INO-1001)+1).EQ.0.AND.HE.GT.0)THEN
-                    ZR(IDXFEM+NBNOSO*3+KK)  = DEPLA(1)
-                    ZR(IDXFEM+NBNOSO*3+KK+1)= DEPLA(2)
-                    ZR(IDXFEM+NBNOSO*3+KK+2)= DEPLA(3)
+                    ZR(IDXFEM+NBNOSO*NBCMP+KK)  = DEPLA(1)
+                    ZR(IDXFEM+NBNOSO*NBCMP+KK+1)= DEPLA(2)
+                    IF(NDIM.EQ.3)ZR(IDXFEM+NBNOSO*NBCMP+KK+2)= DEPLA(3)
                     ZI(IND2+2*(INO-1001)+1)=INO
-                    KK=KK+3
+                    KK=KK+NBCMP
                  ENDIF
               ENDIF
 120       CONTINUE

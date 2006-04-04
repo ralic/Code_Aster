@@ -1,10 +1,10 @@
       SUBROUTINE CSMBG1(MAT,VSMB,VCINE)
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8  VSMB,VCINE
+      REAL*8 VSMB,VCINE
       CHARACTER*(*) MAT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C-----------------------------------------------------------------------
 C BUT : CALCUL DE LA CONTRIBUTION AU SECOND MEMBRE DES DDLS IMPOSEES
 C       LORSQU'ILS SONT TRAITEES PAR ELIMINATION
 C
-C        ! K    K   ! L POU NON IMPOSE I POUR IMPOSE
+C        ! K    K   ! L POUR NON IMPOSE I POUR IMPOSE
 C K  =   !  LL   LI !
 C        !  T       !
 C        ! K    K   !
@@ -39,7 +39,7 @@ C    !        ! * !    ! = !         ! * !    ! <=> K' X = F'
 C    ! 0    1 !   ! X  !   ! 0    1  !   ! U  !
 C    !        !   !  I !   !         !   !  0 !
 C  ON A LMAT  :DESCRIPTEUR DE K' CAR DANS L'ASSEMBLAGE ON ASSEMBLE
-C              DIRECTEMNT K'   KIL SE TROUVE DANS .VALI DE K'
+C              DIRECTEMENT K'   KIL SE TROUVE DANS .CCVA DE K'
 C       VSMB  :EN IN (FI,0)  EN OUT = F'
 C       VCINE : (0,U0)
 C REMARQUES :
@@ -60,58 +60,56 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     COMMUNS JEVEUX
 C-----------------------------------------------------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER NEQ,NIMPO,IDLLIG,IDALIG
+      INTEGER NEQ,NIMPO,JCCLL,JCCJJ
       CHARACTER*19 KMAT,KSTOC,KBID
-      COMPLEX*16   CBID
+      COMPLEX*16 CBID
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       KMAT = MAT
       CALL JEVEUO(KMAT//'.REFA','L',JREFA)
-      KSTOC = ZK24(JREFA-1+2)(1:14)//'.SMOS'
+      KSTOC = ZK24(JREFA-1+2) (1:14)//'.SMOS'
       CALL JEEXIN(KSTOC//'.SMDE',IER)
       IF (IER.NE.0) THEN
-         CALL JEVEUO(KSTOC//'.SMDE','L',JSMDE)
-         NEQ    = ZI(JSMDE-1+1)
+        CALL JEVEUO(KSTOC//'.SMDE','L',JSMDE)
+        NEQ = ZI(JSMDE-1+1)
+
       ELSE
-         CALL JEVEUO(KSTOC//'.SCDE','L',JSCDE)
-         NEQ    = ZI(JSCDE-1+1)
+        CALL JEVEUO(KSTOC//'.SCDE','L',JSCDE)
+        NEQ = ZI(JSCDE-1+1)
       END IF
-      CALL JEEXIN(KMAT//'.LLIG',IRET)
-      IF (IRET.EQ.0) GOTO 9999
-      CALL JEVEUO(KMAT//'.LLIG','L',IDLLIG)
-      NIMPO  = ZI(IDLLIG)
-      IF (NIMPO.EQ.0) GOTO 9999
-      CALL JEVEUO(KMAT//'.ALIG','L',IDALIG)
-      CALL JEVEUO(KMAT//'.ABLI','L',IDABLI)
-      CALL JELIRA(KMAT//'.ABLI','LONMAX',IBID,KBID)
-      NBLI  = IBID-1
-C
-C     ------------------------------------------------------------------
-C
-      CALL JELIRA(JEXNUM(KMAT//'.VALM',1),'TYPE',IBID,KBID)
+
+      CALL JEEXIN(KMAT//'.CCLL',IRET)
+      IF (IRET.EQ.0) GO TO 10
+
+      CALL JEVEUO(KMAT//'.CCLL','L',JCCLL)
+      CALL JEVEUO(KMAT//'.CCJJ','L',JCCJJ)
+      CALL JELIRA(KMAT//'.CCLL','LONMAX',NIMPO,KBID)
+      NIMPO=NIMPO/3
+      CALL ASSERT(NIMPO.GT.0)
+
+      CALL JELIRA(KMAT//'.VALM','TYPE',IBID,KBID)
       CALL ASSERT(KBID.EQ.'R')
-      CALL CSMBR8 (KMAT,ZI(IDLLIG),ZI(IDALIG),
-     +                 ZI(IDABLI),NEQ,NBLI,VCINE,VSMB)
-C
- 9999 CONTINUE
+      CALL CSMBR8(KMAT,ZI(JCCLL),ZI(JCCJJ),NEQ,VCINE,VSMB)
+
+ 10   CONTINUE
       CALL JEDEMA()
       END

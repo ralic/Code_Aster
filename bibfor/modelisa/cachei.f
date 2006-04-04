@@ -1,14 +1,12 @@
-      SUBROUTINE CACHEI ( CHAR, LIGRMO, NBCA, NBET, NOMA, FONREE,
-     +                    PARAM, MOTCL )
+      SUBROUTINE CACHEI ( CHAR, LIGRMO, NOMA, FONREE, PARAM, MOTCL )
       IMPLICIT   NONE
-      INTEGER           NBCA, NBET
       CHARACTER*4       FONREE
       CHARACTER*5       PARAM
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRMO, MOTCL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +30,6 @@ C
 C ARGUMENTS D'ENTREE:
 C      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C      LIGRMO : NOM DU LIGREL DE MODELE
-C      NBCA   : NOMBRE D'APPEL A NOCART
-C      NBET   : NOMBRE TOTAL DE MAILLES
 C      NOMA   : NOM DU MAILLAGE
 C      FONREE : FONC OU REEL
 C      PARAM  : NOM DU TROISIEME CHAMP DE LA CARTE (EPSIN)
@@ -87,9 +83,9 @@ C
       CALL DISMOI('F','MODELISATION',MOD,'MODELE',IBID,MODELI,IER)
 C
       IF (FONREE.EQ.'REEL') THEN
-         CALL ALCART ( 'G', CARTE , NOMA , 'EPSI_R', NBCA+1, NBET )
+         CALL ALCAR2 ( 'G', CARTE , NOMA , 'EPSI_R')
       ELSE IF (FONREE.EQ.'FONC') THEN
-         CALL ALCART ( 'G', CARTE , NOMA , 'EPSI_F', NBCA+1, NBET )
+         CALL ALCAR2 ( 'G', CARTE , NOMA , 'EPSI_F')
       ELSE
          CALL UTMESS('F','CACHEI','VALEUR INATTENDUE: '//FONREE )
       END IF
@@ -127,7 +123,7 @@ C
             ZK8(JVALV-1+I) = '&FOZERO'
  12      CONTINUE
       END IF
-      CALL NOCART (CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP)
+      CALL NOCAR2 (CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP)
 C
       MESMAI = '&&CACHEI.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -200,12 +196,12 @@ C
 C
          IF ( NBTOU .NE. 0 ) THEN
 C
-            CALL NOCART(CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
+            CALL NOCAR2(CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
-            CALL NOCART( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
+            CALL NOCAR2( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
             CALL JEDETR ( MESMAI )
          ENDIF
  20   CONTINUE

@@ -1,7 +1,7 @@
       SUBROUTINE TE0212(OPTION,NOMTE)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C ......................................................................
       REAL*8 Z,Z1,Z2,HECHP,NX,NY,THETA,MAT(6)
       INTEGER NNO,KP,NPG,IPOIDS,IVF,IDFDE,IGEOM
       INTEGER ITEMPS,IMATT,K,I,J,IJ,L,LI,LJ,NBELR
+      LOGICAL  LTEATT, LAXI
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -57,6 +58,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL ASSERT(NBELR.EQ.2)
       CALL ELREF4(LIREFE(2),'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)
+
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
@@ -88,7 +92,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
         POIDS = (POIDS1+POIDS2)/2.0D0
         R = (R1+R2)/2.D0
         Z = (Z1+Z2)/2.D0
-        IF (NOMTE(3:4).EQ.'AX') POIDS = POIDS*R
+        IF (LAXI) POIDS = POIDS*R
         VALPAR(1) = R
         NOMPAR(1) = 'X'
         VALPAR(2) = Z

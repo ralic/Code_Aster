@@ -1,5 +1,4 @@
-
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -12,9 +11,6 @@
 # MAILLAGE : ELEMENT 3D QUADRANGLE A 9 NOEUDS
 # UNITES   : NEWTON , MILLIMETRE , SECONDE (N,MM,S)
 #
-#
-
-
 DEBUT(CODE=_F( NOM = 'SSNV505A',NIV_PUB_WEB='INTERNET'));
 #......................................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D QUA8
@@ -22,12 +18,8 @@ DEBUT(CODE=_F( NOM = 'SSNV505A',NIV_PUB_WEB='INTERNET'));
 #......................................................................
 #
 #
-
-
 PRE_GIBI();
 #
-#
-
 
 MAILL1=LIRE_MAILLAGE();
 
@@ -108,7 +100,9 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
                               GROUP_MA_ESCL='SESC',
                               SANS_GROUP_NO=('LBB1','LCC1'),
                               DIST_MAIT=31.75,
-                              DIST_ESCL=31.75,
+                              CARA_ELEM=CARA, 
+                              DIST_COQUE='OUI', 
+#                              DIST_ESCL=31.75,
                               RECHERCHE = 'NOEUD_BOUCLE',
                               TOLE_PROJ_EXT=0.25,
                               ),
@@ -164,8 +158,6 @@ U=CALC_NO(reuse =U,
                  _F(CHARGE=CH2,),
                  ),
          );
-          
-
 
 TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO='C',
@@ -230,5 +222,3 @@ TEST_TABLE(TABLE=TAB_REAC,
 
 
 FIN();
-
-

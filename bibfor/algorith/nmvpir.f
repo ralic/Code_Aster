@@ -8,7 +8,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,9 @@ C
       INTEGER           K,L
       INTEGER           NDIMSI
       REAL*8            ALPHA,BETA,CAA,SAA,CBA,SBA
-      REAL*8            DEPSGR
+      INTEGER           NDT, NDI
+      COMMON /TDIM/     NDT , NDI
+      REAL*8            DEPSGR,DP1,DEV(6),LCNRTS
       REAL*8            DEGRAN(6)
       REAL*8            DEPSTH(6)
       REAL*8            DEPSDV(6),SIGDV(6),SIGEL(6),EPSMO,SIGMO
@@ -148,6 +150,7 @@ C
       IF ((T1.GT.PREC).AND.(T2.GT.PREC))  THEN
          CALL UTMESS('F','ROUTINE NMVPIR','THETA = 1 OU 0.5 ')
       ENDIF
+      IF (COMPOR(1)(5:10).EQ.'_IRRA_') THETA=1.D0        
 C
       IF (TYPMOD(1).EQ.'C_PLAN') THEN
          IULMES = IUNIFI('MESSAGE')
@@ -187,6 +190,13 @@ C INCREMENT DE TEMPS
          NDIMSI=4
       ELSE
          NDIMSI=6
+      ENDIF
+      IF (NDIM.EQ.3)THEN
+         NDT = 6
+         NDI = 3
+      ELSE 
+         NDT = 4
+         NDI = 3
       ENDIF
 C
 C MISE AU FORMAT DES TERMES NON DIAGONAUX
@@ -262,7 +272,15 @@ C        PARAMETRES DE LA LOI DE FLUAGE
          B         = COEVIL(2)
          CTPS      = COEVIL(3)
          ENER      = COEVIL(4)
-         FLUPHI=COEVIL(5)
+         IF (COEVIL(5).NE.1.D0) THEN
+            FLUPHI=COEVIL(5)
+            IRRAP = FLUPHI*INSTAP
+            IRRAM = FLUPHI*INSTAM
+         ENDIF
+         IF (IRRAP.LT.IRRAM) THEN
+            CALL UTMESS('F','GRAN_IRRA_LOG',
+     &      'FLUENCE DECROISSANTE (FLUX<0)')
+         ENDIF
 
       ELSE IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
 C        PARAMETRES DE LA LOI DE FLUAGE
@@ -273,18 +291,15 @@ C        PARAMETRES DE LA LOI DE FLUAGE
          IF (CODGRA(3).NE.'OK') THEN
             COEFGR(3) = 1.D0
          ENDIF
-            IF (COEVIL(5).NE.1.D0) THEN
-               CALL UTMESS('A','GRAN_IRRA_LOG',
-     *         'FLUENCE COMMANDEE ET FLUX_PHI DIFFERENT DE 1')
-               FLUPHI=COEVIL(5)
-            ELSE
-               FLUPHI = (IRRAP-IRRAM)/DELTAT
-            ENDIF
-            IF(ABS(FLUPHI).LE.1.D-10) FLUPHI=0.D0
-            IF (FLUPHI.LT.0.D0) THEN
-               CALL UTMESS('F','GRAN_IRRA_LOG',
-     *         'FLUENCE DECROISSANTE (PHI<0)')
-            ENDIF
+         IF (COEVIL(5).NE.1.D0) THEN
+            FLUPHI=COEVIL(5)
+            IRRAP = FLUPHI*INSTAP
+            IRRAM = FLUPHI*INSTAM
+         ENDIF
+         IF (IRRAP.LT.IRRAM) THEN
+            CALL UTMESS('F','GRAN_IRRA_LOG',
+     &      'FLUENCE DECROISSANTE (FLUX<0)')
+         ENDIF
          A     = COEVIL(1)
          B     = COEVIL(2)
          CTPS  = COEVIL(3)
@@ -440,30 +455,8 @@ C
          ENDIF
          CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),VALDEN,
      *          UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
-      ELSE IF (COMPOR(1)(1:10).EQ.'VISC_IRRA_') THEN
-         XAP = 0.99D0 * SIELEQ
-         IF (ABS(A0).LE.PREC.OR.FLUPHI.LE.1.D-15) THEN
-            X = 0.D0
-         ELSE
-          CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X,IRET)
-          IF(IRET.EQ.1) GOTO 9999
-         ENDIF
-         CALL GGPVIL(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *            FLUPHI,A,B,CTPS,ENER,THETA,DEUMUP,PREC,INT(NITER),
-     *            FG,FDGDST,FDGDEV)
-
-      ELSE IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
-         XAP = 0.99D0 * SIELEQ
-         IF (ABS(A0).LE.PREC.OR.FLUPHI.LE.1.D-15) THEN
-            X = 0.D0
-         ELSE
-          CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X,IRET)
-          IF(IRET.EQ.1) GOTO 9999
-         ENDIF
-         CALL GGPVIL(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *            FLUPHI,A,B,CTPS,ENER,THETA,DEUMUP,PREC,INT(NITER),
-     *            FG,FDGDST,FDGDEV)
-
+     
+     
       ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
          D=VIM(2)+(DELTAT*(SIEQM+SIEQP)/(2*COEINT(2)))
          XAP = SIELEQ
@@ -512,10 +505,17 @@ C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
      *        FG,FDGDST,FDGDEV)
       ENDIF
 C
-      IF (X.NE.0.D0) THEN
-         COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FG/X)
+      IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN        
+         DP1=EXP(-ENER/(TP+273.15D0))
+         DP1=DP1*(A*CTPS/(1.D0+CTPS*IRRAP)+B)*(IRRAP-IRRAM)
+         COEF1=1.D0/(1.D0+1.5D0*DEUXMU*DP1)
+         X=0.D0
       ELSE
-         COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+         IF (X.NE.0.D0) THEN
+            COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FG/X)
+         ELSE
+            COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+         ENDIF
       ENDIF
 C
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
@@ -528,8 +528,14 @@ C
             DELTEV   = (SIGEL(K)-SIGDV(K))/(DEUMUP*THETA)
             DELTP2   = DELTP2   + DELTEV**2
  170     CONTINUE
-         VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
 
+         IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN  
+            CALL LCDEVI ( SIGP , DEV )
+            VIP(1)= VIM(1) + DP1*LCNRTS( DEV ) 
+         ELSE
+            VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
+         ENDIF
+         
          IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
             IF (D.LE.1.D0) THEN
                VIP(2) = VIM(2)+ ((SIEQP+SIEQM)*DELTAT)/(2*COEINT(2))

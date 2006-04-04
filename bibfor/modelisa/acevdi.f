@@ -4,7 +4,7 @@
       CHARACTER*(*)           NOMAZ,NOMOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,9 +36,28 @@ C               SOUS  UN  MEME  MOT  CLE  "CARA"
 C     COMDIS : TABLEAU DES ARGUMENTS INCOMPATIBLES SOUS "CARA" :
 C               ( A M K N S T TR )
 C ----------------------------------------------------------------------
+C ----- COMMUNS NORMALISES  JEVEUX
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
+C 
       REAL*8        R8B
-      CHARACTER*8   K8B,   NOMU, NOMA, NOMO
+      CHARACTER*4   TYPE
+      CHARACTER*8   K8B, NOMU, NOMA, NOMO, NOMAIL, TYPEL, NOGRM
       CHARACTER*16  REP, TOU, CONCEP, CMD, MCF
+      CHARACTER*24  GRMAMA, MAILMA, CARA
 C     ------------------------------------------------------------------
       CALL GETRES(NOMU,CONCEP,CMD)
 C
@@ -51,20 +70,30 @@ C
       I3D = 0
       I2D = 0
       MCF = ' '
+      GRMAMA = NOMA//'.GROUPEMA'
+      MAILMA = NOMA//'.NOMMAI'
 C
-C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
+C --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
+C     ---------------------------------------
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',IDTYMA)
+C
+C --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
+C     ----------------------------------------
       NDIM = 3
       CALL DISMOI('F','Z_CST',NOMOZ,'MODELE',IBID,K8B,IER)
       IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
 C
-C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 3D
+C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 3D :
+C     ---------------------------------------------------------
       CALL MODEXI(NOMOZ,'DIS_',I3D)
 C
-C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 2D
+C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 2D :
+C     ---------------------------------------------------------
       CALL MODEXI(NOMOZ,'2D_DIS_',I2D)
 C
 C --- ON INTERDIT SUR UN MAILLAGE 2D D'AVOIR DES ELEMENTS DISCRETS
-C --- 2D ET 3D
+C --- 2D ET 3D :
+C     --------
       IF (I2D.EQ.1.AND.I3D.EQ.1.AND.NDIM.EQ.2) THEN
           CALL UTMESS('E',CMD,'ON INTERDIT D''AVOIR SUR UN MAILLAGE '
      +              //'2D DES ELEMENTS DISCRETS 2D ET 3D .')
@@ -73,8 +102,8 @@ C --- 2D ET 3D
       IF (I2D.EQ.1) MCF = 'DISCRET_2D'
       IF (I3D.EQ.1) MCF = 'DISCRET'
 C
-C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRETS
-C --- 2D
+C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRETS 2D :
+C     ---------------------------------------------------------------
       IF (I2D.EQ.1.AND.NDIM.EQ.3) THEN
           CALL UTMESS('E',CMD,'ON INTERDIT D''AVOIR SUR UN MAILLAGE '
      +              //'3D DES ELEMENTS DISCRETS 2D .')
@@ -87,7 +116,11 @@ C
           IER = IER + 1
       ENDIF
 C
+C --- BOUCLE SUR LES OCCURENCES :
+C     -------------------------
       DO 10 IOC = 1,NBOCC
+C
+         CALL GETVTX(MCF,'CARA',IOC,1,1,CARA,NC)
 C
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',IOC,1,0,K8B,NG)
          CALL GETVEM(NOMA,'MAILLE'  ,MCF,'MAILLE'  ,IOC,1,0,K8B,NM)
@@ -101,6 +134,60 @@ C
             NLG = MAX(NLG,-NG)
             NLN = MAX(NLN,-NN)
             NLJ = MAX(NLJ,-NJ)
+         ENDIF
+C
+C ------ VERIFICATION DU BON TYPE DE MAILLE EN FONCTION DE CARA :
+C        ------------------------------------------------------
+         IF ( CARA(2:7) .EQ. '_T_D_N'   .OR. 
+     +        CARA(2:8) .EQ. '_TR_D_N'  .OR. 
+     +        CARA(2:5) .EQ. '_T_N'     .OR. 
+     +        CARA(2:6) .EQ. '_TR_N'   ) THEN
+            TYPE = 'POI1'
+         ELSE
+            TYPE = 'SEG2'
+         ENDIF
+C
+         IF ( NM .NE. 0 ) THEN
+            NBMAIL = -NM
+            CALL WKVECT ( '&&ACEVDI.MAILLE', 'V V K8', NBMAIL, JMAIL )
+            CALL GETVID ( MCF, 'MAILLE', IOC,1,NBMAIL, ZK8(JMAIL), N1 )
+            DO 12 IMA = 1, NBMAIL
+               NOMAIL = ZK8(JMAIL+IMA-1)
+               CALL JENONU(JEXNOM(MAILMA,NOMAIL),NUMA)
+               NUTYMA = ZI(IDTYMA+NUMA-1)
+               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
+               IF (TYPEL(1:4).NE.TYPE) THEN
+                  CALL UTMESS('F','ACEVDI','IMPOSSIBILITE, LA MAILLE '//
+     +                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
+     +                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
+     +                        ' POUR LA CARACTERISTIQUE '//CARA)
+               ENDIF
+ 12         CONTINUE
+            CALL JEDETR ( '&&ACEVDI.MAILLE' )
+         ENDIF
+C
+         IF ( NG .NE. 0 ) THEN
+            NBGRM = -NG
+            CALL WKVECT ( '&&ACEVDI.GROUP_MA', 'V V K8', NBGRM, JGRM )
+            CALL GETVID ( MCF, 'GROUP_MA', IOC,1,NBGRM, ZK8(JGRM), N1 )
+            DO 14 IG = 1, NBGRM
+               NOGRM = ZK8(JGRM+IG-1)
+               CALL JELIRA(JEXNOM(GRMAMA,NOGRM),'LONMAX',NBMAIL,K8B)
+               CALL JEVEUO(JEXNOM(GRMAMA,NOGRM),'L',JMAIL)
+               DO 16 IMA = 1 , NBMAIL
+                  NUMA = ZI(JMAIL+IMA-1)
+                  NUTYMA = ZI(IDTYMA+NUMA-1)
+                  CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
+                  IF (TYPEL(1:4).NE.TYPE) THEN
+                     CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
+                  CALL UTMESS('F','ACEVDI','IMPOSSIBILITE, LA MAILLE '//
+     +                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
+     +                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
+     +                        ' POUR LA CARACTERISTIQUE '//CARA)
+                  ENDIF
+ 16            CONTINUE
+ 14         CONTINUE
+            CALL JEDETR ( '&&ACEVDI.GROUP_MA' )
          ENDIF
 C
  10   CONTINUE

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,13 +67,14 @@ C
       CHARACTER*8    NOMRES(3)
       CHARACTER*24   NOMPAR(3)
 C
-      LOGICAL        FONC
+      LOGICAL        FONC, LAXI, LTEATT
 C.......................................................................
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEMARQ()
       EPS = 1.D-10
-
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
@@ -181,7 +182,7 @@ C -----------
 C
 C*** D'ABORD LE CAS AXI
 C
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
            POIDS = POIDS*R
            DTDM(4) = DTDM(4)/R
            DUDM(4) = DUDM(4)/R

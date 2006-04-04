@@ -2,7 +2,7 @@
      &                  INFOFE,NBPROC)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF MODELISA  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -156,10 +156,7 @@ C 'F'//GNCON(2:8)//LIGRCH(9:19)
           
 C ON VA STOCKER LE NOM DU NOUVEAU LIGREL DANS LE .FEL1 SI IL EXISTE
 C SINON ON LE CREER
-C OB D
           K24CF1=K24CHL(1:19)//'.FEL1'
-C           K24CF1=K24CHL(1:19)//'.FETL'
-C OB F
           CALL JEEXIN(K24CF1,IRET)
           IF (IRET.EQ.0) THEN
 C CONSTITUTION OBJET STOCKAGE.FEL1
@@ -433,10 +430,7 @@ C  ON NE DUPLIQUE PAS LA CHARGE
 C-----------------------------------------------------------------------
 C ON VA STOCKER LE NOM DU NOUVEAU LIGREL DANS LE .FEL1 SI IL EXISTE
 C SINON ON LE CREER
-C OB D
           K24CF1=ZK24(IFLIN+K1)(1:19)//'.FEL1'
-C          K24CF1=ZK24(IFLIN+K1)(1:19)//'.FETL'
-C OB F
           CALL JEEXIN(K24CF1,IRET)
           IF (IRET.EQ.0) THEN
 C CONSTITUTION OBJET STOCKAGE.FEL1
@@ -497,14 +491,14 @@ C SOUS-DOMAINE CONCERNE PAR DES LIGRELS TARDIFS DE CHARGE
               CALL JELIRA(JEXNOM(K24B,NOMSD2),'LONMAX',NBCHA2,K8BID)
               DO 140 K=1,NBCHA2
                 K1=K-1
-C OB D
                 K24CF1=ZK24(IFLIN+K1)(1:19)//'.FEL1'
-C                K24CF1=ZK24(IFLIN+K1)(1:19)//'.FETL'
-C OB F
                 CALL JEEXIN(K24CF1,IRET1)
                 IF (IRET1.EQ.0) THEN
 C CONSTITUTION OBJET STOCKAGE.FEL1
                   CALL WKVECT(K24CF1,'V V K24',NBSD,IFEL1)
+                  DO 135 I=1,NBSD
+                    ZK24(IFEL1+I-1)=' '
+  135             CONTINUE
                 ENDIF      
   140         CONTINUE
             ENDIF

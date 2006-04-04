@@ -1,7 +1,7 @@
-      SUBROUTINE TLDLG2(LMAT,NPREC,NSTOC,NOMSOL,INPN,BASE)
+      SUBROUTINE TLDLG2(LMAT,NPREC,NMRIG,NOMSOL,INPN,BASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C    IN: LMAT    DESCRIPTEUR DE LA MATRICE
 C                DONT ON CHERCHE LES MODES RIGIDES
 C    IN: NPREC  SI DIFFERENT DE 0,NIVEAU DE PERTE DE DECIMALES A PARTIR
 C                DUQUEL ON CONSIDERE QU'UN PIVOT EST NUL.SI 0, CE SERA 8
-C   OUT: NSTOC   NOMBRE DE MODES DE CORPS RIGIDE
+C   OUT: NMRIG   NOMBRE DE MODES DE CORPS RIGIDE
 C   OUT: NOMSOL  NOM DE LA MATRICE DES MODES DE CORPS RIGIDE
 C                ATTENTION, CONVENTION DE NOM: SI NOMSOL(9:14)='.FETI.'
 C                ALORS RECHERCHE DE CORPS RIGIDE POUR FETI
@@ -56,8 +56,8 @@ C-----------------------------------------------------------------------
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      LMAT,NPREC,NSTOC,INPN
-      CHARACTER*1  BASE
+      INTEGER LMAT,NPREC,NMRIG,INPN
+      CHARACTER*1 BASE
       CHARACTER*19 NOMSOL
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -78,19 +78,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DECLARATION VARIABLES LOCALES
-      CHARACTER*8  NOMNO,NOMCMP,TARDIF,KBID,METRES,RENUM
+      CHARACTER*8 NOMNO,NOMCMP,TARDIF,KBID,METRES,RENUM
       CHARACTER*14 NU
       CHARACTER*19 NOMA19,NOMB19,LIGREL
       CHARACTER*24 INFOFE
       CHARACTER*40 INFOBL
-      COMPLEX*16   CBID
+      COMPLEX*16 CBID
       INTEGER NDECI,ISINGU,NOM,NEQ,TYPVAR,TYPSYM,TYPSTO,NAUX,MADR,
-     &        NBBLOC,LMATB,ISCDIB,ISCBLB,ISCHCB,JREFAB,
-     &        NDIGI2,NPIVOT,IFM,NIV,PASS,I,IEQ,J,JEQ,ILIS,IOUIA,NADR,
-     &        IBID,LXSOL,LSMB,LCINE,LCONI,IDEC1,K,IDECI,IDECJ,COMPT,
-     &        IINF,LADR1,LADR2
+     &        NBBLOC,LMATB,ISCDIB,ISCBLB,ISCHCB,JREFAB,NDIGI2,NPIVOT,
+     &        IFM,NIV,PASS,I,IEQ,J,JEQ,ILIS,IOUIA,NADR,IBID,LXSOL,LSMB,
+     &        LCINE,JCCID,IDEC1,K,IDECI,IDECJ,COMPT,IINF,LADR1,LADR2
       INTEGER JDIGS,JREFA
-      REAL*8  EPSB,DMAX,D1,ANORM,MOYDIA
+      REAL*8 EPSB,DMAX,D1,ANORM,MOYDIA
       LOGICAL LFETI
 
 C     ------------------------------------------------------------------
@@ -108,68 +107,76 @@ C EXTRACTION DES DONNEES DE LA MATRICE LMAT
 
 C TEST POUR SAVOIR SI METHODE DE RESOLUTION FETI
       IF (NOMSOL(9:14).EQ.'.FETI.') THEN
-        LFETI=.TRUE.
+        LFETI = .TRUE.
         CALL JEVEUO('&FETI.FINF','L',IINF)
-        INFOFE=ZK24(IINF)
-        METRES='MULT_FRO'
-        RENUM='METIS'
+        INFOFE = ZK24(IINF)
+        METRES = 'MULT_FRO'
+        RENUM = 'METIS'
         CALL INFMUE()
         CALL INFNIV(IFM,NIV)
+
       ELSE
-        LFETI=.FALSE.
-        INFOFE='FFFFFFFF'
+        LFETI = .FALSE.
+        INFOFE = 'FFFFFFFF'
         CALL DISMOI('F','METH_RESO',NOMA19,'MATR_ASSE',IBID,METRES,IBID)
         CALL DISMOI('F','RENUM_RESO',NOMA19,'MATR_ASSE',IBID,RENUM,IBID)
-      ENDIF
+      END IF
 
 C POUR DEBRANCHER TEST DE MOORE-PENROSE
-      INFOFE(9:9)='F'
+      INFOFE(9:9) = 'F'
 
 
 C MONITORING ET TESTS
       IF (NIV.GE.2) THEN
-        WRITE(IFM,*)
+        WRITE (IFM,*)
      &    '<TLDLG2> RECHERCHE DE MODES RIGIDES DE LA MATRICE :',NOMA19
-        WRITE(IFM,*)
-     &    '<TLDLG2>DESCRIPTION DE LA MATRICE ',NOMA19,':'
-      ENDIF
+        WRITE (IFM,*) '<TLDLG2>DESCRIPTION DE LA MATRICE ',NOMA19,':'
+      END IF
+
       IF (TYPSYM.EQ.1) THEN
-        IF (NIV.GE.2) WRITE(IFM,*)'<TLDLG2> MATRICE SYMETRIQUE'
+        IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> MATRICE SYMETRIQUE'
+
       ELSE
-        IF (NIV.GE.2) WRITE(IFM,*)'<TLDLG2> MATRICE NON-SYMETRIQUE'
+        IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> MATRICE NON-SYMETRIQUE'
         CALL UTMESS('F','TLDLG2',
-     &    'RECHERCHE DE CORPS RIGIDE POUR L''INSTANT PROSCRITE'//
-     &    '  AVEC MATRICE NON-SYMETRIQUE')
-      ENDIF
+     &             'RECHERCHE DE CORPS RIGIDE POUR L''INSTANT PROSCRITE'
+     &              //'  AVEC MATRICE NON-SYMETRIQUE')
+      END IF
+
       IF (TYPVAR.EQ.1) THEN
-        IF (NIV.GE.2) WRITE(IFM,*)'<TLDLG2> MATRICE REELLE'
+        IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> MATRICE REELLE'
+
       ELSE
-        IF (NIV.GE.2) WRITE(IFM,*)'<TLDLG2> MATRICE COMPLEXE'
+        IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> MATRICE COMPLEXE'
         CALL UTMESS('F','TLDLG2',
-     &    'RECHERCHE DE CORPS RIGIDE POUR L''INSTANT PROSCRITE'//
-     &    '  AVEC MATRICE COMPLEXE')
-      ENDIF
+     &             'RECHERCHE DE CORPS RIGIDE POUR L''INSTANT PROSCRITE'
+     &              //'  AVEC MATRICE COMPLEXE')
+      END IF
+
       IF (METRES.EQ.'LDLT') THEN
-        IF (NIV.GE.2) WRITE(IFM,*)'<TLDLG2> METHODE LDLT'
+        IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> METHODE LDLT'
         IF (LFETI) CALL UTMESS('F','TLDLG2',
-     &    'SOLVEUR INTERNE FETI POUR L''INSTANT PROSCRIT'//
-     &    '  AVEC MATRICE STOCKEE SKYLINE')
+     &                   'SOLVEUR INTERNE FETI POUR L''INSTANT PROSCRIT'
+     &                         //'  AVEC MATRICE STOCKEE SKYLINE')
+
       ELSE IF (METRES.EQ.'MULT_FRO') THEN
-        IF (NIV.GE.2) WRITE(IFM,*)'<TLDLG2> METHODE MULT_FRONT'
+        IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> METHODE MULT_FRONT'
+
       ELSE
         CALL UTMESS('F','TLDLG2','TYPE DE STOCKAGE INCONNU')
-      ENDIF
+      END IF
 
 
 C PERTE DE DECIMALES POUR LAQUELLE ON CONSIDERE LE PIVOT NUL.
 C DEFAUT: 8
       IF (NPREC.EQ.0) THEN
         NDIGI2 = 8
+
       ELSE
         NDIGI2 = NPREC
-      ENDIF
+      END IF
 
-      NSTOC = 0
+      NMRIG = 0
 
 C CE VECTEUR CONTIENDRA DES 0,ET LE NUMERO,LA OU ON A BLOQUE
       CALL WKVECT('&&POSMODRI','V V I ',NEQ,IOUIA)
@@ -201,7 +208,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C RECHERCHE ADRESSES DES .SCDI , .SCBL ET .SCHC
             CALL MTDSC2(ZK24(ZI(LMATB+1)),'SCDI','L',ISCDIB)
             CALL MTDSC2(ZK24(ZI(LMATB+1)),'SCBL','L',ISCBLB)
-            CALL JEVEUO(ZK24(JREFAB-1+2)(1:14)//'.SLCS.SCHC','L',ISCHCB)
+            CALL JEVEUO(ZK24(JREFAB-1+2) (1:14)//'.SLCS.SCHC','L',
+     &                  ISCHCB)
 
 C          DEBUT BOUCLE: TANT QUE 'IL EXISTE PIVOT NUL'
    10       CONTINUE
@@ -213,26 +221,27 @@ C          FACTORISATION DE B (LDLT REELLE SYMETRIQUE)
 C DEBUT TEST PIVOT VRAIMENT NUL
             IF (NPIVOT.GE.1) THEN
               ISINGU = NPIVOT
-              IF (NIV.GE.2) WRITE(IFM,*)
-     &          '<TLDLG2> PIVOT VRAIMENT NUL A LA LIGNE ',ISINGU
+              IF (NIV.GE.2) WRITE (IFM,*)
+     &            '<TLDLG2> PIVOT VRAIMENT NUL A LA LIGNE ',ISINGU
               CALL DISMOI('F','NOM_NUME_DDL',NOMA19,'MATR_ASSE',IBID,NU,
      &                    IBID)
               IF (NU.NE.' ') THEN
                 CALL RGNDAS('NUME_DDL',NU,ISINGU,NOMNO,NOMCMP,TARDIF,
      &                      LIGREL,INFOBL)
-                IF (NIV.GE.2) WRITE (IFM,*)
-     &            '<TLDLG2> NOEUD ',NOMNO,' CMP ',NOMCMP
+                IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> NOEUD ',NOMNO,
+     &              ' CMP ',NOMCMP
+
               ELSE
                 CALL UTMESS('A','TLDLG2','NOM_NUME_DDL '//NOMA19//
      &                      ' NON TROUVE')
-              ENDIF
+              END IF
 C FIN EXTRACTION DE RENSEIGNEMENTS SUR DDL DU PIVOT NUL
-              IF (LFETI) ZI(INPN+NSTOC) = ISINGU
+              IF (LFETI) ZI(INPN+NMRIG) = ISINGU
               PASS = 1
-              NSTOC = NSTOC + 1
-              CALL ASSERT(NSTOC.LE.NEQ)
-              ZI(IOUIA-1+ISINGU) = NSTOC
-              GOTO 30
+              NMRIG = NMRIG + 1
+              CALL ASSERT(NMRIG.LE.NEQ)
+              ZI(IOUIA-1+ISINGU) = NMRIG
+              GO TO 30
 
 C FIN TEST PIVOT VRAIMENT NUL
             ELSE
@@ -243,48 +252,54 @@ C DEBUT BOUCLE TESTS Q-NULLITE DE PIVOT
                 IF (D1.GT.0.D0) THEN
                   NDECI = INT(LOG10(D1))
                   ISINGU = IEQ
+
                 ELSE
                   NDECI = 0
-                ENDIF
+                END IF
 C DEBUT TEST NULLITE DE PIVOT
                 IF (NDECI.GE.NDIGI2) THEN
 
 C EXTRACTION DE RENSEIGNEMENTS SUR DDL DU PIVOT NUL
                   IF (NIV.GE.2) THEN
-                    WRITE(IFM,*)
-     &              '<TLDLG2> PIVOT QUASIMENT NUL A LA LIGNE ',ISINGU
-                    WRITE(IFM,*)
-     &              '<TLDLG2> NOMBRE DE DECIMALES PERDUES : ',NDECI
-                  ENDIF
+                    WRITE (IFM,*)
+     &                '<TLDLG2> PIVOT QUASIMENT NUL A LA LIGNE ',ISINGU
+                    WRITE (IFM,*)
+     &                '<TLDLG2> NOMBRE DE DECIMALES PERDUES : ',NDECI
+                  END IF
+
                   CALL DISMOI('F','NOM_NUME_DDL',NOMA19,'MATR_ASSE',
-     &                      IBID,NU,IBID)
+     &                        IBID,NU,IBID)
                   IF (NU.NE.' ') THEN
                     CALL RGNDAS('NUME_DDL',NU,ISINGU,NOMNO,NOMCMP,
-     &                        TARDIF,LIGREL,INFOBL)
-                    IF (NIV.GE.2) WRITE(IFM,*)
-     &                '<TLDLG2> NOEUD ',NOMNO,' CMP ',NOMCMP
+     &                          TARDIF,LIGREL,INFOBL)
+                    IF (NIV.GE.2) WRITE (IFM,*) '<TLDLG2> NOEUD ',NOMNO,
+     &                  ' CMP ',NOMCMP
+
                   ELSE
-                    CALL UTMESS('A','TLDLG2','NOM_NUME_DDL '//NOMA19//
-     &                        ' NON TROUVE')
-                  ENDIF
+                    CALL UTMESS('A','TLDLG2',
+     &                          'NOM_NUME_DDL '//NOMA19//' NON TROUVE')
+                  END IF
 
 C FIN EXTRACTION DE RENSEIGNEMENTS SUR DDL DU PIVOT NUL
-                  IF (LFETI) ZI(INPN+NSTOC) = ISINGU
+                  IF (LFETI) ZI(INPN+NMRIG) = ISINGU
                   PASS = 1
-                  NSTOC = NSTOC + 1
+                  NMRIG = NMRIG + 1
 
-                  ZI(IOUIA-1+ISINGU) = NSTOC
-                ENDIF
+                  ZI(IOUIA-1+ISINGU) = NMRIG
+                END IF
 
 C FIN BOUCLE TESTS DE Q-NULLITE DU PIVOT
 
    20         CONTINUE
-            ENDIF
+            END IF
+
             IF (PASS.NE.0) THEN
-              GOTO 30
+              GO TO 30
+
             ELSE
-              GOTO 40
-            ENDIF
+              GO TO 40
+
+            END IF
 
    30       CONTINUE
 
@@ -300,17 +315,19 @@ C       BLOCAGE 'CINEMATIQUE' DU/DES DDL A PIVOT NUL
             CALL ASSERT(.FALSE.)
 C           JP : J'AI DETRUIT ASLCHC MAIS IL ME SEMBLE QU'ON
 C                DEVRAIT POUVOIR FAIRE PLUS SIMPLE QUE ASLCHC
-C           CALL ASLCHC('V',NOMB19,ZI(IOUIA),NSTOC,'ZERO')
+C           CALL ASLCHC('V',NOMB19,ZI(IOUIA),NMRIG,'ZERO')
             CALL DIAGAV(NOMB19,NEQ,TYPVAR,EPSB)
             CALL JEVEUO(NOMB19//'.DIGS','L',JDIGS)
             GO TO 10
+
    40       CONTINUE
 
 
 C ON NE FONCTIONNE QU'AVEC DES MATRICES SYMETRIQUES REELLES
 
-          ENDIF
-        ENDIF
+          END IF
+
+        END IF
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C                    MULTIFRONTALE                         C
@@ -329,25 +346,27 @@ C DEBUT TEST PIVOT VRAIMENT NUL-------------------
             IF (NPIVOT.GE.1) THEN
               ISINGU = NPIVOT
               IF (NIV.GE.2) WRITE (IFM,*)
-     &          '<TLDLG2> PIVOT VRAIMENT NUL A LA LIGNE ',ISINGU
+     &            '<TLDLG2> PIVOT VRAIMENT NUL A LA LIGNE ',ISINGU
               CALL DISMOI('F','NOM_NUME_DDL',NOMA19,'MATR_ASSE',IBID,NU,
      &                    IBID)
               IF (NU.NE.' ') THEN
                 CALL RGNDAS('NUME_DDL',NU,ISINGU,NOMNO,NOMCMP,TARDIF,
      &                      LIGREL,INFOBL)
                 IF (NIV.GE.2) THEN
-                  WRITE(IFM,*)'<TLDLG2> NOEUD ',NOMNO,' CMP ',NOMCMP
-                  WRITE(IFM,*)'         TARDIF ',TARDIF,'INFOBL ',INFOBL
-                ENDIF
+                  WRITE (IFM,*) '<TLDLG2> NOEUD ',NOMNO,' CMP ',NOMCMP
+                  WRITE (IFM,*) '         TARDIF ',TARDIF,'INFOBL ',
+     &              INFOBL
+                END IF
+
               ELSE
                 CALL UTMESS('A','TLDLG2','NOM_NUME_DDL '//NOMA19//
      &                      ' NON TROUVE')
-              ENDIF
+              END IF
 C FIN EXTRACTION DE RENSEIGNEMENTS SUR DDL DU PIVOT NUL
-              IF (LFETI) ZI(INPN+NSTOC) = ISINGU
+              IF (LFETI) ZI(INPN+NMRIG) = ISINGU
               PASS = 1
-              NSTOC = NSTOC + 1
-              ZI(IOUIA-1+ISINGU) = NSTOC
+              NMRIG = NMRIG + 1
+              ZI(IOUIA-1+ISINGU) = NMRIG
 C FIN TEST PIVOT VRAIMENT NUL---------------------
             ELSE
 C DEBUT BOUCLE TESTS Q-NULLITE DE PIVOT-----------
@@ -357,48 +376,56 @@ C DEBUT BOUCLE TESTS Q-NULLITE DE PIVOT-----------
                 IF (D1.GT.0.D0) THEN
                   NDECI = INT(LOG10(D1))
                   ISINGU = IEQ
+
                 ELSE
                   NDECI = 0
-                ENDIF
+                END IF
 C DEBUT TEST NULLITE DE PIVOT
                 IF (NDECI.GE.NDIGI2) THEN
 
 C EXTRACTION DE RENSEIGNEMENTS SUR DDL DU PIVOT NUL
                   IF (NIV.GE.2) THEN
-                    WRITE(IFM,*)
-     &              '<TLDLG2> PIVOT QUASIMENT NUL A LA LIGNE ',ISINGU
-                    WRITE(IFM,*)
-     &              '<TLDLG2> NOMBRE DE DECIMALES PERDUES : ',NDECI
-                  ENDIF
+                    WRITE (IFM,*)
+     &                '<TLDLG2> PIVOT QUASIMENT NUL A LA LIGNE ',ISINGU
+                    WRITE (IFM,*)
+     &                '<TLDLG2> NOMBRE DE DECIMALES PERDUES : ',NDECI
+                  END IF
+
                   CALL DISMOI('F','NOM_NUME_DDL',NOMA19,'MATR_ASSE',
-     &                      IBID,NU,IBID)
+     &                        IBID,NU,IBID)
                   IF (NU.NE.' ') THEN
                     CALL RGNDAS('NUME_DDL',NU,ISINGU,NOMNO,NOMCMP,
-     &                        TARDIF,LIGREL,INFOBL)
+     &                          TARDIF,LIGREL,INFOBL)
                     IF (NIV.GE.2) THEN
-                      WRITE(IFM,*)'<TLDLG2> NOEUD ',NOMNO,' CMP ',NOMCMP
-                      WRITE(IFM,*)'         TARDIF ',TARDIF,'INFOBL ',
+                      WRITE (IFM,*) '<TLDLG2> NOEUD ',NOMNO,' CMP ',
+     &                  NOMCMP
+                      WRITE (IFM,*) '         TARDIF ',TARDIF,'INFOBL ',
      &                  INFOBL
-                    ENDIF
+                    END IF
+
                   ELSE
-                    CALL UTMESS('A','TLDLG2','NOM_NUME_DDL '//NOMA19//
-     &                        ' NON TROUVE')
-                  ENDIF
+                    CALL UTMESS('A','TLDLG2',
+     &                          'NOM_NUME_DDL '//NOMA19//' NON TROUVE')
+                  END IF
 C FIN EXTRACTION DE RENSEIGNEMENTS SUR DDL DU PIVOT NUL
-                  IF (LFETI) ZI(INPN+NSTOC) = ISINGU
+                  IF (LFETI) ZI(INPN+NMRIG) = ISINGU
                   PASS = 1
-                  NSTOC = NSTOC + 1
-                  ZI(IOUIA-1+ISINGU) = NSTOC
-                ENDIF
+                  NMRIG = NMRIG + 1
+                  ZI(IOUIA-1+ISINGU) = NMRIG
+                END IF
+
    60         CONTINUE
 C FIN BOUCLE TESTS DE Q-NULLITE DU PIVOT----------
 
-            ENDIF
+            END IF
+
             IF (PASS.NE.0) THEN
-              GOTO 70
+              GO TO 70
+
             ELSE
-              GOTO 80
-            ENDIF
+              GO TO 80
+
+            END IF
 
    70       CONTINUE
 
@@ -409,16 +436,18 @@ C REINITIALISATION DE B-------------------------------------
             CALL COPISD('MATR_ASSE','V',NOMA19,NOMB19)
             CALL MTDSCR(NOMB19)
 C       BLOCAGE 'CINEMATIQUE' DU/DES DDL A PIVOT NUL
-            CALL ASMCHC('V',NOMB19,ZI(IOUIA),NSTOC,'ZERO')
+            CALL ASMCHC('V',NOMB19,ZI(IOUIA),NMRIG)
             CALL DIAGAV(NOMB19,NEQ,TYPVAR,EPSB)
             CALL JEVEUO(NOMB19//'.DIGS','L',JDIGS)
-            GOTO 50
+            GO TO 50
 
    80       CONTINUE
 
-          ENDIF
-        ENDIF
-      ENDIF
+          END IF
+
+        END IF
+
+      END IF
 
 C FIN RECHERCHE DES PIVOTS NULS---------------------------------------
 
@@ -426,14 +455,13 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C TESTS NOMBRES DE MODES DE CORPS RIGIDE
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       IF (NIV.GE.1) THEN
-        WRITE (IFM,7900)
-        WRITE(IFM,*)'<TLDLG2> NB DE MODES DE CORPS RIGIDES'//
-     &    ' DETECTES: ',NSTOC
-      ENDIF
+        WRITE (IFM,9000)
+        WRITE (IFM,*) '<TLDLG2> NB DE MODES DE CORPS RIGIDES'//
+     &    ' DETECTES: ',NMRIG
+      END IF
 
-      IF (NSTOC.GE.7)
-     &  CALL UTMESS('A','TLDLG2','ATTENTION PLUS DE SIX'//
-     &              ' MODES DE CORPS RIGIDES DETECTES')
+      IF (NMRIG.GE.7) CALL UTMESS('A','TLDLG2','ATTENTION PLUS DE SIX'//
+     &                            ' MODES DE CORPS RIGIDES DETECTES')
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C SI FETI: COPIE DE LA FACTORISEE TEMPORAIRE NOMB19.VALF DANS CELLE
@@ -443,13 +471,15 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
         CALL JEEXIN(NOMA19//'.VALF',IBID)
         IF (IBID.GT.0) THEN
           CALL UTMESS('F','TLDLG2','! ATTENTION '//NOMA19//'.VALF'//
-     &                    ' EXISTE DEJA !')
+     &                ' EXISTE DEJA !')
+
         ELSE
           CALL JEDUPO(NOMB19//'.VALF',BASE,NOMA19//'.VALF',.FALSE.)
-        ENDIF
-      ENDIF
+        END IF
 
-      IF (NSTOC.NE.0) THEN
+      END IF
+
+      IF (NMRIG.NE.0) THEN
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C DEBUT CALCUL DE MODES DE CORPS RIGIDE
@@ -459,22 +489,23 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
         CALL JEVEUO(NOMB19//'.&INT','E',LMATB)
 
 C CONSTRUCTION DES SECONDS MEMBRES DU TYPE (KER -ID(R)) DANS ---------
-C ZR(LXSOL, LXSOL+NEQ .... LXSOL+(NSTOC-1)*NEQ) POUR R VARIANT -------
-C DE 1 A NSTOC                                                --------
+C ZR(LXSOL, LXSOL+NEQ .... LXSOL+(NMRIG-1)*NEQ) POUR R VARIANT -------
+C DE 1 A NMRIG                                                --------
 
 C ALLOCATION DES VECTEURS AUXILIAIRES ET SOLUTION
-        CALL WKVECT(NOMB19//'.CONI','V V I ',NEQ,LCONI)
-        CALL WKVECT(NOMSOL,'V V R ',NEQ*NSTOC,LXSOL)
-        CALL WKVECT('&&TLSECCIN','V V R ',NEQ*NSTOC,LCINE)
+        CALL WKVECT(NOMB19//'.CCID','V V I ',NEQ,JCCID)
+        CALL WKVECT(NOMSOL,'V V R ',NEQ*NMRIG,LXSOL)
+        CALL WKVECT('&&TLSECCIN','V V R ',NEQ*NMRIG,LCINE)
 
 C REMPLISSAGE POUR AVOIR FI=0 ET U0=-1 (NOTATION CSMBGG)
         ILIS = 1
         DO 90 JEQ = 1,NEQ
           IF (ZI(IOUIA+JEQ-1).NE.0) THEN
-            ZI(LCONI+JEQ-1) = 1
+            ZI(JCCID+JEQ-1) = 1
             ZR(LCINE+ (ILIS-1)*NEQ+JEQ-1) = -1.D0
             ILIS = ILIS + 1
-          ENDIF
+          END IF
+
    90   CONTINUE
 
 C-----------------------------------------------------------
@@ -493,9 +524,9 @@ C    ! 0    1 !   ! X  !   ! 0     U0  !
 C    !        !   !  R !   !           !
 C ZR(LXSOL+(R-1)*NEQ) = F'(R)
 
-        DO 100 ILIS = 1,NSTOC
+        DO 100 ILIS = 1,NMRIG
           CALL CSMBGG(LMATB,ZR(LXSOL+ (ILIS-1)*NEQ),
-     &              ZR(LCINE+(ILIS-1)*NEQ),CBID,CBID,'R')
+     &                ZR(LCINE+ (ILIS-1)*NEQ),CBID,CBID,'R')
   100   CONTINUE
 
 C SCALING VIA ALPHA DES COMPOSANTES DU SECOND MEMBRE DUES AUX LAGRANGES
@@ -504,92 +535,96 @@ C SCALING INUTILE CAR LE SECOND MEMBRE N'EST PAS LE SECOND MEMBRE
 C INITIAL, VOIRE CONDUISANT A UN RESULTAT FAUX SI ON ELIMINE UN DDL
 C CONCERNE PAR UNE RELATION DE LAGRANGE (AFFE_CHAR_MECA)
 C ZR(LXSOL) CONTIENT U/ALPHA
-        CALL RLDLG3(METRES,LMATB,ZR(LXSOL),CBID,NSTOC)
+        CALL RLDLG3(METRES,LMATB,ZR(LXSOL),CBID,NMRIG)
 C LA ENCORE, SCALING
 C SCALING DES COMPOSANTES DE ZR(LXSOL) POUR CONTENIR LA SOL. REELLE U
-      ENDIF
+      END IF
+
       CALL DETRSD('MATR_ASSE',NOMB19)
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C VERIFICATION DES MODES DE CORPS RIGIDES ET DE LA PSEUDO-INVERSE
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      IF ((INFOFE(6:6).EQ.'T').AND.LFETI) THEN
+      IF ((INFOFE(6:6).EQ.'T') .AND. LFETI) THEN
 
-        IF (NSTOC.NE.0) THEN
+        IF (NMRIG.NE.0) THEN
 C VALEUR ABSOLUE MOYENNE DE LA DIAGONALE
-          MOYDIA=0.D0
-          DO 104 IEQ = 1,NEQ
-            MOYDIA=MOYDIA+ABS(ZR(JDIGS-1+IEQ))
-  104     CONTINUE
-          WRITE(IFM,*)
-     &      '<TLDLG2> MOYENNE DES TERMES DIAGONAUX ',MOYDIA/NEQ
+          MOYDIA = 0.D0
+          DO 110 IEQ = 1,NEQ
+            MOYDIA = MOYDIA + ABS(ZR(JDIGS-1+IEQ))
+  110     CONTINUE
+          WRITE (IFM,*) '<TLDLG2> MOYENNE DES TERMES DIAGONAUX ',
+     &      MOYDIA/NEQ
 
 C NORME L1(K*UI) / NORME L1(KII)
-          NAUX=NEQ*NSTOC
+          NAUX = NEQ*NMRIG
           CALL WKVECT('&&TLDLG2.VERIFMCR','V V R',NAUX,LADR1)
-          CALL MRMULT('ZERO',LMAT,ZR(LXSOL),'R',ZR(LADR1),NSTOC)
-          ANORM=0.D0
-          DO 106 I=1,NSTOC
-            DO 105 J=1,NEQ
-               ANORM=ANORM+ABS(ZR(LADR1+(I-1)*NSTOC+J-1))
-  105       CONTINUE
-            ANORM=100.D0*ANORM/MOYDIA
-            WRITE(IFM,*)'<TLDLG2> TEST K*MCR(J)/K (EN %) ',I,ANORM
-  106     CONTINUE
+          CALL MRMULT('ZERO',LMAT,ZR(LXSOL),'R',ZR(LADR1),NMRIG)
+          ANORM = 0.D0
+          DO 130 I = 1,NMRIG
+            DO 120 J = 1,NEQ
+              ANORM = ANORM + ABS(ZR(LADR1+ (I-1)*NMRIG+J-1))
+  120       CONTINUE
+            ANORM = 100.D0*ANORM/MOYDIA
+            WRITE (IFM,*) '<TLDLG2> TEST K*MCR(J)/K (EN %) ',I,ANORM
+  130     CONTINUE
           CALL JEDETR('&&TLDLG2.VERIFMCR')
-        ENDIF
+        END IF
 C VERIF CONDITION DE MOORE-PENROSE
 C CALCUL DE (KIDD)- * FIDD PAR MULT_FRONT
 C A RESERVER AU DEVELOPPEUR POUR LA MISE AU POINT OU LA MAINTENANCE
 C CORRECTIVE CAR TRES COUTEUX EN MEMOIRE ET CPU
         IF (INFOFE(9:9).EQ.'T') THEN
-          NAUX=NEQ*NEQ
+          NAUX = NEQ*NEQ
           CALL WKVECT('&&TLDLG2.VERIFPSI1','V V R',NAUX,LADR2)
           CALL WKVECT('&&TLDLG2.VERIFPSI2','V V R',NAUX,MADR)
-          NAUX=NEQ*(NEQ+1)/2
+          NAUX = NEQ* (NEQ+1)/2
           CALL WKVECT('&&TLDLG2.VERIFPSI3','V V R',NAUX,NADR)
           CALL COPMA2(NOMA19,ZR(LADR2),ZR(MADR))
           CALL RLTFR8(NOMA19,NEQ,ZR(MADR),NEQ,TYPSYM)
-          IF (NSTOC.NE.0) THEN
-            DO 108 I=1,NSTOC
-              IDEC1=ZI(INPN+I-1)
-              DO 107 J=1,NEQ
-                ZR(MADR-1+(J-1)*NEQ+IDEC1)=0.D0
-  107         CONTINUE
-  108       CONTINUE
-          ENDIF
-          IDEC1=NADR
-          ANORM=0.D0
-          COMPT=0
-          DO 130 J=1,NEQ
-            IDECJ=(J-1)*NEQ+MADR-1
-            DO 120 I=J,NEQ
-              IDECI=LADR2-1+I
-              MOYDIA=ZR(IDECI+(J-1)*NEQ)
-              ZR(IDEC1)=-MOYDIA
-              DO 110 K=1,NEQ
-                ZR(IDEC1)=ZR(IDEC1)+ZR(IDECI+(K-1)*NEQ)*ZR(IDECJ+K)
-  110         CONTINUE
+          IF (NMRIG.NE.0) THEN
+            DO 150 I = 1,NMRIG
+              IDEC1 = ZI(INPN+I-1)
+              DO 140 J = 1,NEQ
+                ZR(MADR-1+ (J-1)*NEQ+IDEC1) = 0.D0
+  140         CONTINUE
+  150       CONTINUE
+          END IF
+
+          IDEC1 = NADR
+          ANORM = 0.D0
+          COMPT = 0
+          DO 180 J = 1,NEQ
+            IDECJ = (J-1)*NEQ + MADR - 1
+            DO 170 I = J,NEQ
+              IDECI = LADR2 - 1 + I
+              MOYDIA = ZR(IDECI+ (J-1)*NEQ)
+              ZR(IDEC1) = -MOYDIA
+              DO 160 K = 1,NEQ
+                ZR(IDEC1) = ZR(IDEC1) + ZR(IDECI+ (K-1)*NEQ)*ZR(IDECJ+K)
+  160         CONTINUE
               IF (ABS(MOYDIA).NE.0.D0) THEN
-                ANORM=ANORM+ABS(ZR(IDEC1)/MOYDIA)
-                COMPT=COMPT+1
-              ENDIF
-              IDEC1=IDEC1+1
-  120       CONTINUE
-  130     CONTINUE
-          ANORM=100.D0*ANORM/COMPT
-          WRITE(IFM,*)'<TLDLG2> TEST K*(K)+*K-K/K (EN %) ',ANORM
-          WRITE(IFM,*)'<TLDLG2> NBRE TERMES TOTAUX/NEGLIGES ',
-     &              NAUX,NAUX-COMPT
+                ANORM = ANORM + ABS(ZR(IDEC1)/MOYDIA)
+                COMPT = COMPT + 1
+              END IF
+
+              IDEC1 = IDEC1 + 1
+  170       CONTINUE
+  180     CONTINUE
+          ANORM = 100.D0*ANORM/COMPT
+          WRITE (IFM,*) '<TLDLG2> TEST K*(K)+*K-K/K (EN %) ',ANORM
+          WRITE (IFM,*) '<TLDLG2> NBRE TERMES TOTAUX/NEGLIGES ',NAUX,
+     &      NAUX - COMPT
           CALL JEDETR('&&TLDLG2.VERIFPSI1')
           CALL JEDETR('&&TLDLG2.VERIFPSI2')
           CALL JEDETR('&&TLDLG2.VERIFPSI3')
-        ENDIF
-      ENDIF
+        END IF
+
+      END IF
 C NETTOYAGE ET SORTIE-------------------------------------------------
 
-  999 CONTINUE
-      IF (NIV.GE.1) WRITE (IFM,8000)
+  190 CONTINUE
+      IF (NIV.GE.1) WRITE (IFM,9010)
       CALL JEDETC(' ','&&POSMODRI',1)
       CALL JEDETC(' ','&&TLDDLBLO',1)
       CALL JEDETC(' ','&&TLSECCIN',1)
@@ -598,6 +633,6 @@ C NETTOYAGE ET SORTIE-------------------------------------------------
 
       CALL JEDEMA()
 
- 7900 FORMAT (72X,/)
- 8000 FORMAT (72 ('-'),/)
+ 9000 FORMAT (72X,/)
+ 9010 FORMAT (72 ('-'),/)
       END

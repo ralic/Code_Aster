@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,14 +47,13 @@ C     -------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER NP,IPAR,JCELD,IRET,IFETI,IAUX1,IIEL,IACHL1
+      INTEGER NP,IPAR,JCELD
       INTEGER LGCATA,LGGREL,I,IACHII,IACHIK,IACHIX,IACHLO,IACHOI,IACHOK
       INTEGER IADSGD,IAMLOC,IAOPDS,IAOPMO,IAOPNO,IAOPPA
       INTEGER IAOPTT,IEL,ILMLOC
       INTEGER ILOPMO,ILOPNO,INDIK8,IPARG,LGCO,NPARIN,NPARIO
       CHARACTER*1 TYPSCA
       CHARACTER*8 NOMPAR
-      LOGICAL     LFETI
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
@@ -75,16 +74,9 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 C DEB-------------------------------------------------------------------
 
-C     FETI PARALLELE OR NOT ?
-C     --------------------------------------------------
-      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
-      IF (IRET.NE.0) THEN
-        LFETI=.TRUE.
-        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
-        IFETI=IFETI-1
-      ELSE
-        LFETI=.FALSE.
-      ENDIF
+C SI FETI PARALLELE, ROUTINE NON FILTREE AVEC'&CALCUL.FETI.NUMSD' CAR
+C CELA FAUSSE LA RECOPIE DES RESULTATS FAITE DANS MONTEE.F, CAR ON A PAS
+C FILTRE CETTE REMONTEE DANS LE CAS DES CHAM_ELEM
 
       NP = NBPARA(OPT,TE,'OUT')
       DO 40 IPAR = 1,NP
@@ -103,8 +95,6 @@ C     -- LE CHAMP LOCAL EST-IL ETENDU ?
         CALL CHLOET(IPARG,ETENDU,JCELD)
         IF (ETENDU) THEN
           LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
-C     -- LA LOGIQUE DE TARISSEMENT DE DONNEES N'EST PAS POSSIBLE
-          LFETI=.FALSE. 
         ELSE
           LGGREL = NBELGR*LGCATA
         END IF
@@ -117,54 +107,17 @@ C     -- LA LOGIQUE DE TARISSEMENT DE DONNEES N'EST PAS POSSIBLE
 C       2- MISE A ZERO :
 C       --------------------------------------------------
         IF (TYPSCA.EQ.'R') THEN
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-          IF (LFETI) THEN
-            IACHL1=IACHLO-1
-            DO 8 IIEL=1,NBELGR
-              IF (ZL(IFETI+IIEL)) THEN
-                IAUX1=IACHL1+(IIEL-1)*LGCATA
-                DO 6 I=1,LGCATA
-                  ZR(IAUX1+I) = 0.0D0
-    6           CONTINUE
-              ENDIF
-    8       CONTINUE
-          ELSE
-            DO 10 I = 1,LGGREL
-              ZR(IACHLO-1+I) = 0.0D0
-   10       CONTINUE
-          ENDIF
+          DO 10 I = 1,LGGREL
+            ZR(IACHLO-1+I) = 0.0D0
+   10     CONTINUE
         ELSE IF (TYPSCA.EQ.'C') THEN
-          IF (LFETI) THEN
-            IACHL1=IACHLO-1
-            DO 18 IIEL=1,NBELGR
-              IF (ZL(IFETI+IIEL)) THEN
-                IAUX1=IACHL1+(IIEL-1)*LGCATA
-                DO 16 I=1,LGCATA
-                  ZC(IAUX1+I) = DCMPLX(0.D0,0.D0)
-   16           CONTINUE
-              ENDIF
-   18       CONTINUE
-          ELSE
-            DO 20 I = 1,LGGREL
-              ZC(IACHLO-1+I) = DCMPLX(0.D0,0.D0)
-   20       CONTINUE
-          ENDIF
+          DO 20 I = 1,LGGREL
+            ZC(IACHLO-1+I) = DCMPLX(0.D0,0.D0)
+   20     CONTINUE
         ELSE IF (TYPSCA.EQ.'I') THEN
-          IF (LFETI) THEN
-            IACHL1=IACHLO-1
-            DO 28 IIEL=1,NBELGR
-              IF (ZL(IFETI+IIEL)) THEN
-                IAUX1=IACHL1+(IIEL-1)*LGCATA
-                DO 26 I=1,LGCATA
-                  ZI(IAUX1+I) = 0
-   26           CONTINUE
-              ENDIF
-   28       CONTINUE
-          ELSE
-            DO 30 I = 1,LGGREL
-              ZI(IACHLO-1+I) = 0
-   30       CONTINUE
-          ENDIF
+          DO 30 I = 1,LGGREL
+            ZI(IACHLO-1+I) = 0
+   30     CONTINUE
         ELSE
           CALL UTMESS('F','ZECHLO',
      +                'ERREUR PGMEUR DANS ZECHLO : TYPE_SCALAIRE:'//

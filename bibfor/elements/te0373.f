@@ -1,6 +1,6 @@
       SUBROUTINE TE0373(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C.......................................................................
       REAL*8 POIDS,NX,NY,CELER,R8PI,PI
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IONDE
       INTEGER NDI,NNO,KP,NPG,IVECTU,IMATE,LDEC
+      LOGICAL  LTEATT, LAXI
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -53,6 +54,8 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -74,7 +77,7 @@ C     BOUCLE SUR LES POINTS DE GAUSS
         NY = 0.0D0
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),NX,NY,POIDS)
 
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           R = 0.D0
           DO 20 I = 1,NNO
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+LDEC+I-1)

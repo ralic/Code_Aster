@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DE CHARGE LIMITE EN 2D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,190 +18,138 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
+DEBUT(CODE=_F(NOM='SSNV124A',
+              NIV_PUB_WEB='INTERNET',),);
 
-DEBUT(CODE=_F(NOM='SSNV124A',NIV_PUB_WEB='INTERNET'),);
+PRE_GIBI();
 
-PRE_GIBI()
 MA=LIRE_MAILLAGE();
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA=('LAB','LBC','LDA'),),);
+              CREA_GROUP_NO=_F(GROUP_MA=('LAB','LBC','LDA',),),);
 
-MA = DEFI_GROUP( reuse = MA,
-  MAILLAGE = MA,
-  CREA_GROUP_NO = _F(
-    NOM        = 'SOMMETS',
-    GROUP_MA   = 'S',
-    CRIT_NOEUD = 'SOMMET'
-    )
-  )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='S',
+                               NOM='SOMMETS',
+                               CRIT_NOEUD='SOMMET',),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN_INCO',),);
 
-CM = DEFI_MATERIAU (
-  ECRO_LINE=_F(SY=10, D_SIGM_EPSI = 0)
-  )
+CM=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0,
+                              SY=10,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=CM,),);
-
-
 # ----------- CONDITIONS AUX LIMITES -------------------------------
-
 
 CH_CL=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='LBC',
                                   DY=0.0,),
                                _F(GROUP_NO='LAB',
-                                  DX=0.0,),
-                                  ),);
-
-  
+                                  DX=0.0,),),);
 # ----------- CHARGEMENT PERMANENT ----------------------------------
 
-  
 CH0=AFFE_CHAR_MECA(MODELE=MO,
                    FORCE_CONTOUR=_F(GROUP_MA='LDA',
-                                    FY=-0.20000000000000001,),);
-
-
+                                    FY=-0.2,),);
 # ----------- CHARGEMENT A PILOTER (CAS 1)-----------------------------
 
 CH_PILO1=AFFE_CHAR_MECA(MODELE=MO,
-                   FORCE_CONTOUR=_F(GROUP_MA='LCD',
-                                    FX=-0.80000000000000004,),);
-
-
-
+                        FORCE_CONTOUR=_F(GROUP_MA='LCD',
+                                         FX=-0.8,),);
 # ----------- CHARGEMENT A PILOTER (CAS 2)-----------------------------
 
-
 CH_PILO2=AFFE_CHAR_MECA(MODELE=MO,
-                   FORCE_CONTOUR=_F(GROUP_MA='LCD',
-                                    FX=-1.0,),);
-
-
-
-
-
+                        FORCE_CONTOUR=_F(GROUP_MA='LCD',
+                                         FX=-1.0,),);
 # --- CONDITION D INCOMPRESSIBILITE ---
 
-INCOMP = AFFE_CHAR_MECA(
-  MODELE   = MO,
-  DDL_IMPO = _F(GROUP_NO='SOMMETS', GONF=0)
-  )
-  
-L_INST = DEFI_LIST_REEL(
-  DEBUT = 0,
-  INTERVALLE = (
-    _F(JUSQU_A=1, NOMBRE=1),
-    _F(JUSQU_A=1.69897, NOMBRE=1),
-    )
-  )
+INCOMP=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='SOMMETS',
+                                  GONF=0,),);
 
-
+L_INST=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=(_F(JUSQU_A=1,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=1.69897,
+                                     NOMBRE=1,),),);
 # -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 1)-------------
 
+RESU1=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CH_CL,),
+                           _F(CHARGE=INCOMP,),
+                           _F(CHARGE=CH0,),
+                           _F(CHARGE=CH_PILO1,
+                              TYPE_CHARGE='FIXE_PILO',),),
+                    COMP_INCR=_F(RELATION='NORTON_HOFF',),
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    PILOTAGE=_F(TYPE='ANA_LIM',),);
 
-
-RESU1 = STAT_NON_LINE(
-  MODELE = MO,
-  CHAM_MATER = CHMAT,
-  EXCIT = (
-    _F(CHARGE=CH_CL),
-    _F(CHARGE=INCOMP),
-    _F(CHARGE=CH0),
-    _F(CHARGE=CH_PILO1, TYPE_CHARGE = 'FIXE_PILO')
-    ),
-  COMP_INCR     = _F(RELATION='NORTON_HOFF'),
-  INCREMENT     = _F(LIST_INST=L_INST,),
-  NEWTON        = _F(MATRICE='TANGENTE', REAC_ITER=1),
-  PILOTAGE      = _F(TYPE='ANA_LIM')
-  )
-  
-  
-ECHL1 = POST_ELEM(
-  RESULTAT = RESU1,
-  CHAR_LIMITE=_F(CHAR_CSTE='OUI')
-  )
-
-
+ECHL1=POST_ELEM(CHAR_LIMITE=_F(CHAR_CSTE='OUI',),
+                RESULTAT=RESU1,);
 # -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 2)-------------
 
+RESU2=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CH_CL,),
+                           _F(CHARGE=INCOMP,),
+                           _F(CHARGE=CH_PILO2,
+                              TYPE_CHARGE='FIXE_PILO',),),
+                    COMP_INCR=_F(RELATION='NORTON_HOFF',),
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    PILOTAGE=_F(TYPE='ANA_LIM',),);
 
-RESU2 = STAT_NON_LINE(
-  MODELE = MO,
-  CHAM_MATER = CHMAT,
-  EXCIT = (
-    _F(CHARGE=CH_CL),
-    _F(CHARGE=INCOMP),
-    _F(CHARGE=CH_PILO2, TYPE_CHARGE = 'FIXE_PILO')
-    ),
-  COMP_INCR     = _F(RELATION='NORTON_HOFF'),
-  INCREMENT     = _F(LIST_INST=L_INST,),
-  NEWTON        = _F(MATRICE='TANGENTE', REAC_ITER=1),
-  PILOTAGE      = _F(TYPE='ANA_LIM')
-  )
-  
-ECHL2 = POST_ELEM(
-  RESULTAT = RESU2,
-  CHAR_LIMITE=_F()
-  )
-
-
+ECHL2=POST_ELEM(CHAR_LIMITE=_F(),
+                RESULTAT=RESU2,);
 #--------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
-#
-
 
 TEST_TABLE(TABLE=ECHL1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.69897,),
            NOM_PARA='CHAR_LIMI_SUP',
            VALE=14.6837,
-           REFERENCE= 'ANALYTIQUE',
-           FILTRE = _F(NOM_PARA='INST',
-                       VALE = 1.69897));
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=ECHL2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.69897,),
            NOM_PARA='CHAR_LIMI_SUP',
-           VALE=11.547000000000001,
-           REFERENCE= 'ANALYTIQUE',
-           FILTRE = _F(NOM_PARA='INST',
-                       VALE = 1.69897));
+           VALE=11.547,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=ECHL2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.69897,),
            NOM_PARA='CHAR_LIMI_ESTIM',
-           VALE=9.6225000000000005,
-           REFERENCE= 'ANALYTIQUE',
-           FILTRE = _F(NOM_PARA='INST',
-                       VALE = 1.69897));
+           VALE=9.6225,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=ECHL1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.69897,),
            NOM_PARA='PUIS_CHAR_CSTE',
            VALE=-0.25,
-           REFERENCE= 'ANALYTIQUE',
-           FILTRE = _F(NOM_PARA='INST',
-                       VALE = 1.69897));
-
+           REFERENCE='ANALYTIQUE',);
 #--------------------------------------------------------------
 #      TEST DES DEFORMATIONS (CAS 1)
 #--------------------------------------------------------------
 
-
-
-RESU1=CALC_ELEM( reuse =RESU1,
-  
-  OPTION = ('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI',
-            'SIEF_ELNO_ELGA',
-            'ERRE_ELGA_NORE','ERRE_ELNO_ELGA',),
-  RESULTAT=RESU1
-  )
-
+RESU1=CALC_ELEM(reuse =RESU1,
+                RESULTAT=RESU1,
+                OPTION=('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI','SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    INST=1.69897,
@@ -211,8 +159,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='N3',
                    VALE=-0.3125,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-4,
-                   REFERENCE= 'ANALYTIQUE'),
+                   PRECISION=0.0001,
+                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
                    INST=1.69897,
                    NOM_CHAM='EQUI_ELNO_EPSI',
@@ -221,41 +169,34 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='N3',
                    VALE=0.3608439,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-4,
-                   REFERENCE= 'ANALYTIQUE'),),);
-
+                   PRECISION=0.0001,
+                   REFERENCE='ANALYTIQUE',),),);
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU1,
-               INST = 1.69897,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.001,
-               POINT = 1,
-               MAILLE='M1',    
-               NOM_CMP = 'NUEST',      
-               VALE = 4.6684503217777, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  INST=1.69897,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='NUEST',
+                  MAILLE='M1',
+                  POINT=1,
+                  VALE=8.30420174201,
+                  CRITERE='RELATIF',
+                  PRECISION=0.001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU1,
-               INST = 1.69897,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.001,
-               NOEUD= 'N3',
-               MAILLE='M1',    
-               NOM_CMP = 'ERREST',      
-               VALE = 1.0094464831948, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  INST=1.69897,
+                  NOM_CHAM='ERRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M1',
+                  NOEUD='N3',
+                  VALE=1.79985410059,
+                  CRITERE='RELATIF',
+                  PRECISION=0.001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
 
-
-FIN()
-
+FIN();

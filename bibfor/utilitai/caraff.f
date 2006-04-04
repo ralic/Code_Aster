@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER       GD,IBID,IED,NOCC,NBAPNO,NBE,NCMPMX,NBTOU,N1
+      INTEGER       GD,IBID,IED,NOCC,NCMPMX,NBTOU,N1
       INTEGER       IAD,JNCMP,JVALV,JMAIL,NBCMP,K,IOCC,NBMAIL,NBVAR
       REAL*8        RBID
       COMPLEX*16    CBID
@@ -71,14 +71,10 @@ C     ------------------------------------------------------------------
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
 
-      NBAPNO = NOCC
-      CALL ALCAR0 ( NOMA, MOTCLF, 2, MOTCLS, TYPMCL, NBE )
-
 C     1- ALLOCATION DE LA CARTE
 C     --------------------------------------------
       CARTE = CARTZ
-      IF ( GRAN .EQ. 'VAR2_R' ) NBAPNO = NBAPNO + 1
-      CALL ALCART ( BASE, CARTE, NOMA, GRAN, NBAPNO, NBE )
+      CALL ALCAR2 ( BASE, CARTE, NOMA, GRAN )
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
 C
@@ -92,7 +88,7 @@ C
             ZK8(JNCMP-1+K) = ZK8(IAD-1+K)
             ZR(JVALV-1+K) = 0.D0
    10    CONTINUE
-         CALL NOCART( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
+         CALL NOCAR2( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
       END IF
 C
 C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
@@ -142,13 +138,13 @@ C       TEST SUR LES DONNEES INTRODUITES
 C
         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
         IF ( NBTOU .NE. 0 ) THEN
-          CALL NOCART(CARTE,1,' ','NOM',0,' ',0,' ',NBCMP)
+          CALL NOCAR2(CARTE,1,' ','NOM',0,' ',0,' ',NBCMP)
 C
         ELSE
            CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                 MOTCLS, TYPMCL, MESMAI, NBMAIL )
            CALL JEVEUO ( MESMAI, 'L', JMAIL )
-           CALL NOCART(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
+           CALL NOCAR2(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
            CALL JEDETR ( MESMAI )
         ENDIF
    30 CONTINUE

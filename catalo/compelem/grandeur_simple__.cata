@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF COMPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -282,11 +282,9 @@ GRANDEUR_SIMPLE__
                 et la force de Neumann
        TERMN2 : erreur relative des sauts entre les contraintes normales
                 et la force de Neumann >>
-    ERREUR   = R    ERREST   NUEST    SIGCAL
-                    TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2
-    SING_R   = R    DEGRE    TAILLE
-    ERRETEMP = R    ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2
-                    TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1
+    ERREUR   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2
+                    ERTABS   ERTREL   TERMNO   TERMN2   TERMVO   TERMV2   TERMV1   TERMSA
+                    TERMS2   TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1   
 <<  FACY_R   : GRANDEUR LIEE A LA FATIGUE A GRAND NOMBRE DE CYCLES SOUS
                CHARGEMENT MULTIAXIAL
        DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
@@ -369,7 +367,7 @@ GRANDEUR_SIMPLE__
     FREQ_R   = R    FREQ
     FTHM_F   = K8   PFLU     PFLU1    PFLU2    PTHER
     FTHM_R   = R    PFLU     PFLU1    PFLU2    PTHER
-    G        = R    GTHETA   FIC1     FIC2     K1       K2       K3
+    G        = R    GTHETA   FIC1     FIC2     K1       K2       K3       BETA
     GEOM_R   = R    X        Y        Z        W
     G_DEPL_R = R    D_DX_X   D_DX_Y   D_DX_Z   D_DY_X   D_DY_Y   D_DY_Z   D_DZ_X   D_DZ_Y
                     D_DZ_Z
@@ -549,6 +547,7 @@ GRANDEUR_SIMPLE__
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
                     QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
                     VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
+    SING_R   = R    DEGRE    TAILLE
     SIZZ_R   = R    SIZZ
     SOUR_F   = K8   SOUR     VNOR
     SOUR_R   = R    SOUR     VNOR

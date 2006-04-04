@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,8 +116,8 @@ RESU=CALC_ELEM(reuse=RESU,
                       
                         OPTION=('EPSI_ELNO_DEPL',
                                 'SIEF_ELNO_ELGA',
-                                'ERRE_ELGA_NORE',
-                                'ERRE_ELNO_ELGA',),
+                                'ERRE_ELEM_SIGM',
+                                'ERRE_ELNO_ELEM',),
                    )
 
 
@@ -153,7 +153,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = RESU,
                NUME_ORDRE = 1,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               NOM_CHAM = 'ERRE_ELEM_SIGM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.001,
                POINT = 1,
@@ -167,7 +167,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = RESU,
                NUME_ORDRE = 1,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               NOM_CHAM = 'ERRE_ELNO_ELEM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.001,
                NOEUD= 'N1',

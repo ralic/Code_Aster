@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -58,9 +58,9 @@ MODE_LOCAL__
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   
-                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
+                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
     EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   
-                                        TERMRE   TERMR2   TERMSA   TERMS2   TERMNO   TERMN2   )
+                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
@@ -69,6 +69,7 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      )
+    CCONSTR  = NEUT_R   ELEM__         (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y        
                                         Z        )
@@ -129,11 +130,11 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ  
     EQUI_ELNO_SIGM      438   IN__   ECONTPG  PCONTRR  
                               OUT__  ECOEQNO  PCONTEQ  
-    ERRE_ELGA_NORE      375   IN__   ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER  
+    ERRE_ELEM_SIGM      375   IN__   ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER  
                                      CMATERC  PMATERC  CPESANR  PPESANR  CREFERI  PPRESS   CROTATR  PROTATR  
                                      CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  
                               OUT__  EERREUR  PERREUR  
-    ERRE_ELNO_ELGA      379   IN__   EERREUR  PERREUR  
+    ERRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR  
                               OUT__  EERRENO  PERRENO  
     FORC_NODA           481   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
                                      NGEOMER  PGEOMER  
@@ -162,6 +163,14 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I  
     PAS_COURANT         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    QIRE_ELEM_SIGM      368   IN__   ECONTNO  PCONTNOP ECONTNO  PCONTNOD CREFERI  PFORCEP  CREFERI  PFORCED
+                                     EFORCER  PFRVOLUP EFORCER  PFRVOLUD NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CPESANR  PPESANRP CPESANR  PPESANRD CREFERI  PPRESSP  CREFERI  PPRESSD
+                                     CROTATR  PROTATRP CROTATR  PROTATRD CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  
+                                     CCONSTR  PCONSTR
+                              OUT__  EERREUR  PERREUR  
+    QIRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR  
+                              OUT__  EERRENO  PERRENO  
     RAPH_MECA           459   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
                                      CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   

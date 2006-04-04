@@ -6,7 +6,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C
 C  SORTIE
 C
 C   IADGKS     --> ADRESSE DE VALEURS DE GKS 
-C                   (VALEUR DE G(S), K1(S), K2(S), K3(S))
+C                   (VALEUR DE G(S), K1(S), K2(S), K3(S), BETA(S)
 C   IADGKI     --> ADRESSE DE VALEURS DE GKTHI
 C                  (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 C   ABSCUR     --> VALEURS DES ABSCISSES CURVILIGNES S
@@ -52,6 +52,7 @@ C
       REAL*8       S1,S2,DELTA,S3,SN2,SN1,SN
       REAL*8       GTHI(NNOFF),K1TH(NNOFF),K2TH(NNOFF),K3TH(NNOFF)
       REAL*8       GS(NNOFF),K1S(NNOFF),K2S(NNOFF),K3S(NNOFF)
+      REAL*8       BETAS(NNOFF)
       CHARACTER*24 LISSG,VECT,MATR
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
@@ -80,10 +81,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVEUO(ABSCUR,'E',IADABS)
       DO 10 I=1,NNOFF
         ZR(IADABS-1+(I-1)+1)=ZR(IFON-1+4*(I-1)+4)
-        GTHI(I)=ZR(IADRGK-1+(I-1)*4+1)
-        K1TH(I)=ZR(IADRGK-1+(I-1)*4+2)
-        K2TH(I)=ZR(IADRGK-1+(I-1)*4+3)
-        K3TH(I)=ZR(IADRGK-1+(I-1)*4+4)
+        GTHI(I)=ZR(IADRGK-1+(I-1)*5+1)
+        K1TH(I)=ZR(IADRGK-1+(I-1)*5+2)
+        K2TH(I)=ZR(IADRGK-1+(I-1)*5+3)
+        K3TH(I)=ZR(IADRGK-1+(I-1)*5+4)
 10    CONTINUE
 
       CALL GETVTX(' ','LISSAGE_G',0,1,1,LISSG,IBID)
@@ -104,6 +105,7 @@ C
           K1S(I) = K1TH(I)/ZR(IVECT+I-1 )
           K2S(I) = K2TH(I)/ZR(IVECT+I-1 )
           K3S(I) = K3TH(I)/ZR(IVECT+I-1 )
+                
 30      CONTINUE
 C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
         S1 = ZR(IADABS-1+1)
@@ -134,7 +136,7 @@ C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
         NUM = 3
         DO 40 I = 1,NNOFF-1
           S1 = ZR(IADABS+I-1)
-          S2 = ZR(IADABS+I)
+          S2 = ZR(IADABS+I)          
           DELTA = (S2-S1) / 6.D0
 C
           KK = IMATR + (I-1)*NNOFF + I - 1
@@ -178,16 +180,24 @@ C       SYSTEME LINEAIRE:  MATR*K3S = K3TH
       ENDIF
       
       DO 60 I=1,NNOFF
-        ZR(IADGKS-1+(I-1)*4+1)=GS(I)
-        ZR(IADGKS-1+(I-1)*4+2)=K1S(I)
-        ZR(IADGKS-1+(I-1)*4+3)=K2S(I)
-        ZR(IADGKS-1+(I-1)*4+4)=K3S(I)
+        ZR(IADGKS-1+(I-1)*5+1)=GS(I)
+        ZR(IADGKS-1+(I-1)*5+2)=K1S(I)
+        ZR(IADGKS-1+(I-1)*5+3)=K2S(I)
+        ZR(IADGKS-1+(I-1)*5+4)=K3S(I)
  60   CONTINUE
 
+      DO 70 I=1,NNOFF*5
+        ZR(IADGKI-1+I)=ZR(IADRGK-1+I)
+ 70   CONTINUE
 
-      DO 70 I=1,NNOFF*4
-          ZR(IADGKI-1+I)=ZR(IADRGK-1+I)
- 70     CONTINUE
+
+C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
+      DO 80 I=1,NNOFF
+        BETAS(I) = 0.0D0      
+        IF (K2S(I).NE.0.D0) BETAS(I) = 2.0D0*ATAN2(0.25D0*(K1S(I)/K2S(I)
+     &    -SIGN(1.0D0,K2S(I))*SQRT((K1S(I)/K2S(I))**2.0D0+8.0D0)),1.0D0)
+          ZR(IADGKS-1+(I-1)*5+5)=BETAS(I)
+ 80   CONTINUE
 
       CALL JEDETR('&&METHO3.MATRI')
       CALL JEDETR('&&METHO3.VECT')

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMUN  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,15 +87,18 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "EQUI_NOEU_EPME",
                         "EQUI_NOEU_EPSI",
                         "EQUI_NOEU_SIGM",
-                        "ERRE_ELEM_NOZ1",
-                        "ERRE_ELEM_NOZ2",
-                        "ERRE_ELGA_NORE",
-                        "ERRE_ELNO_ELGA",
-                        "ERRE_NOEU_ELGA",
+                        "ERRE_ELEM_SIGM",
+                        "ERRE_ELEM_TEMP",
+                        "ERRE_ELNO_ELEM",
+                        "ERRE_NOEU_ELEM",
+                        "ERZ1_ELEM_SIGM",
+                        "ERZ2_ELEM_SIGM",
+                        "QIRE_ELEM_SIGM",
+                        "QIRE_ELNO_ELEM",
+                        "QIZ1_ELEM_SIGM",
+                        "QIZ2_ELEM_SIGM",
                         "SING_ELEM",
                         "SING_ELNO_ELEM",
-                        "ERTH_ELEM_TEMP",
-                        "ERTH_ELNO_ELEM",
                         "ETOT_ELEM",
                         "ETOT_ELGA",
                         "ETOT_ELNO_ELGA",

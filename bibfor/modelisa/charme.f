@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,9 +77,9 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBOCC(6), I, IFACE, IGREL, INEMA, IRET,
      +             NDIM, NBET, IRET2
-      CHARACTER*5  PARAM(7) , PARA
-      CHARACTER*8  CHAR, NOMA, NOMO, TYPMCL(2)
-      CHARACTER*16 TYPE, OPER , CHREP(6), MOTFAC, MOTCLS(2)
+      CHARACTER*5  PARAM(7),PARA
+      CHARACTER*8  CHAR, NOMA, NOMO
+      CHARACTER*16 TYPE, OPER , CHREP(6), MOTFAC
       CHARACTER*19 LIGRCH, LIGRMO, LIGRET, LIGREL
 C
       DATA CHREP / 'FORCE_CONTOUR' , 'FORCE_INTERNE' , 'FORCE_ARETE' ,
@@ -91,11 +91,6 @@ C     ------------------------------------------------------------------
 C
 C
       CALL GETRES ( CHAR, TYPE, OPER )
-C
-      MOTCLS(1) = 'GROUP_MA'
-      MOTCLS(2) = 'MAILLE'
-      TYPMCL(1) = 'GROUP_MA'
-      TYPMCL(2) = 'MAILLE'
 C
 C --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
 C
@@ -148,11 +143,9 @@ C
          DO 20 I = 1 , 6
             IF ( NBOCC(I) .NE. 0 ) THEN
 C
-               CALL ALCAR0 ( NOMA, CHREP(I), 2, MOTCLS, TYPMCL, NBET )
-C
-               CALL CACHRE ( CHAR , LIGRMO , NBOCC(I) , NBET , NOMA ,
-     +                       NDIM , FONREE , PARAM(I) , CHREP(I) )
-C
+               CALL CACHRE ( CHAR , LIGRMO ,  NOMA , NDIM ,
+     +                       FONREE , PARAM(I) , CHREP(I) )
+
             ENDIF
    20    CONTINUE
 C
@@ -167,15 +160,14 @@ C            --------- FORCE_POUTRE  INTERDIT EN 2D
    15    CONTINUE
          DO 25 I = 1 , 6
             IF ( NBOCC(I) .NE. 0 ) THEN
-               CALL ALCAR0 ( NOMA, CHREP(I), 2, MOTCLS, TYPMCL, NBET )
 C
                PARA = PARAM(I)
 C    CAS DE FORCE INTERNE EN 2D
                IF ( I .EQ. 2 ) PARA = 'F2D2D'
 C    CAS DES COQCYL AXI
                IF ( I .EQ. 6 .AND. NDIM . EQ. 2 ) PARA = 'FCO2D'
-               CALL CACHRE ( CHAR , LIGRMO , NBOCC(I) , NBET , NOMA ,
-     +                       NDIM , FONREE , PARA , CHREP(I) )
+               CALL CACHRE ( CHAR , LIGRMO ,  NOMA , NDIM ,
+     +                       FONREE , PARA , CHREP(I) )
             ENDIF
    25    CONTINUE
       ENDIF
@@ -197,7 +189,7 @@ C
 C
 C --- LIAISON UNILATERALE SIMPLE
 C
-         CALL CALIUN ( CHAR, NOMA, LIGRMO, NDIM, FONREE )        
+         CALL CALIUN ( CHAR, NOMA, LIGRMO, NDIM, FONREE )
 C
 C --- VITE_FACE ---
 C

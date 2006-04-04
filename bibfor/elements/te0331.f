@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 11/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       INTEGER            IPOIDS,IVF,IDFDE,IMATE
       INTEGER            IGEOM,ICONG,IVARIG
       INTEGER            ISIGIE,ISIGIS,ITEMPE,ICOMPO,NBVARI
+      LOGICAL            LTEATT, LAXI
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -72,6 +73,8 @@ C
       VOLUME=0.D0
       VOLACT=0.D0
       DVOL=0.D0
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 C
       NOMRES(1) = 'M'
       NOMRES(2) = 'VOLU_REFE'
@@ -144,7 +147,7 @@ C=================================================================
             R=0.D0
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
      &                  POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 160 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  160           CONTINUE
@@ -208,7 +211,7 @@ C=================================================================
             K=(KP-1)*NNO
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
      &                  POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 170 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  170           CONTINUE
@@ -277,7 +280,7 @@ C=================================================================
             K=(KP-1)*NNO
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
      &                  POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 210 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  210           CONTINUE
@@ -353,7 +356,7 @@ C=================================================================
                CONG(II)=ZR(ICONG+(4*KP)-5+II)
  175        CONTINUE
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 240 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  240           CONTINUE

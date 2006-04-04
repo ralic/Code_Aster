@@ -1,7 +1,7 @@
       SUBROUTINE TE0351(OPTION,NOMTE)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,6 +30,7 @@ C ======================================================================
       INTEGER NNO,NPG1,IPOIDS,IVF,IDFDE,IGEOM
       INTEGER ICONTM,IVECTU,NDIM,NNOS,JGANO
       REAL*8  WORK(18)
+      LOGICAL  LTEATT, LAXI
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
@@ -53,11 +54,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 C
-      
-      
 C - TYPE DE MODELISATION
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN
         TYPMOD(1) = 'C_PLAN  '

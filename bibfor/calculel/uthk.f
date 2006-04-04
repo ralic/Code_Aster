@@ -1,7 +1,7 @@
       SUBROUTINE UTHK(NOMTE,IGEOM,HK,NDIM,NOE,NSOMM,ITYP,INO,NIV,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,9 @@ C FACE_4 OU FACE_8
         ENDIF
       ENDIF
 
-      IF ((NOMTE2.EQ.'TR').OR.(NOMTE2.EQ.'TL')) THEN
+      IF ((NOMTE2.EQ.'TR').OR.
+     &    (NOMTE2.EQ.'TS').OR.
+     &    (NOMTE2.EQ.'TL')) THEN
 C TRIANGLE --> DIAMETRE DU CERCLE CIRCONSCRIT
 
         A = X1 + X2
@@ -169,7 +171,9 @@ C CAS GENERAL
           WRITE(IFM,*)'DIAMETRES ',HK,H1,H2
         ENDIF
 
-      ELSE IF ((NOMTE2.EQ.'QU').OR.(NOMTE2.EQ.'QL')) THEN
+      ELSE IF ((NOMTE2.EQ.'QU').OR.
+     &         (NOMTE2.EQ.'QS').OR.
+     &         (NOMTE2.EQ.'QL')) THEN
 C QUADRANGLE --> MAX DES DIAGONALES
 
         X4 = ZR(IGEOM+6)

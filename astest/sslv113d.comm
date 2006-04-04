@@ -1,0 +1,203 @@
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSLV113D',NIV_PUB_WEB='INTERNET'))
+
+MESH=LIRE_MAILLAGE();
+
+MO=AFFE_MODELE(MAILLAGE=MESH,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
+
+MA1=DEFI_MATERIAU(ELAS=_F(E=2.0,
+                          NU=0.3,
+                          ALPHA=0.0,),);
+
+MA2=DEFI_MATERIAU(ELAS=_F(E=1.0,
+                          NU=0.3,
+                          ALPHA=0.0,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MESH,
+                 AFFE=(_F(GROUP_MA='DOM1',
+                          MATER=MA1,),
+                       _F(GROUP_MA='DOM2',
+                          MATER=MA2,),),);
+
+#-----------------------------------------------------------------------
+#
+#  RESOLUTION DU PROBLEME PRIMAL
+#    =>ASSEMBLAGE DE L(.)
+#    =>ASSEMBLAGE DE A(.,.)
+#    =>RESOLUTION
+#    =>CALCUL DE L'ESTIMATEUR EN RESIDU POUR LE PRIMAL
+#
+#-----------------------------------------------------------------------
+
+CHARPRIM=AFFE_CHAR_MECA(MODELE=MO,
+                        FACE_IMPO=(_F(GROUP_MA='GRMA1',
+                                      DY=0.0,),
+                                   _F(GROUP_MA='GRMA2',
+                                      DY=0.91333,),),
+                        FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
+                                          FX=1.0,),
+                                       _F(GROUP_MA='GRMA4',
+                                          FX=-2.0,),),);
+
+RESUPRIM=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CM,
+                       EXCIT=_F(CHARGE=CHARPRIM,),);
+
+RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
+                   RESULTAT=RESUPRIM,
+                   TOUT_ORDRE='OUI',
+                   OPTION=('SIRE_ELNO_DEPL',),);
+
+RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
+                   RESULTAT=RESUPRIM,
+                   TOUT_ORDRE='OUI',
+                   OPTION=('ERRE_ELEM_SIGM',),);
+
+#-----------------------------------------------------------------------
+#
+#  RESOLUTION DU PROBLEME DUAL
+#    =>ASSEMBLAGE DE Q(.)
+#    =>ASSEMBLAGE DE A(.,.)
+#    =>RESOLUTION
+#    =>CALCUL DE L'ESTIMATEUR EN RESIDU POUR LE DUAL
+#
+#-----------------------------------------------------------------------
+
+CHARDUAL=AFFE_CHAR_MECA(MODELE=MO,
+                        FACE_IMPO=(_F(GROUP_MA='GRMA1',
+                                      DY=0.0,),
+                                   _F(GROUP_MA='GRMA2',
+                                      DY=0.91333,),),
+                        EPSI_INIT=_F(TOUT='OUI',
+                                         EPXX=1.0,),);
+
+RESUDUAL=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CM,
+                       EXCIT=_F(CHARGE=CHARDUAL,),);
+
+RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
+                   RESULTAT=RESUDUAL,
+                   TOUT_ORDRE='OUI',
+                   OPTION=('SIRE_ELNO_DEPL',),);
+
+RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
+                   RESULTAT=RESUDUAL,
+                   TOUT_ORDRE='OUI',
+                   OPTION=('ERRE_ELEM_SIGM',),);
+
+#-----------------------------------------------------------------------
+#
+#  CALCUL DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
+#
+#-----------------------------------------------------------------------
+
+RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
+                 RESULTAT=RESUPRIM,
+                 OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
+                 RESU_DUAL=RESUDUAL,);
+
+#-----------------------------------------------------------------------
+#
+#  TESTS DE NON REGRESSION
+#
+#-----------------------------------------------------------------------
+
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M1',
+                  POINT=1,
+                  VALE=5.4510863727309E-02,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='QIRE_ELEM_SIGM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M1',
+                  POINT=1,
+                  VALE=6.8040023249064E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='QIRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M4',
+                  NOEUD='N1',
+                  VALE=8.9352680284468E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ABSOLUE',
+                  VALE=7.0427741867787E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  PARA='TERME_VOLU_ABSO',
+                  VALE=7.4912309880259E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  PARA='TERME_SAUT_ABSO',
+                  VALE=0.0000000000000E+00,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
+                  NUME_ORDRE=1,
+                  PARA='TERME_NORM_ABSO',
+                  VALE=2.5649109499604E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
+
+FIN();

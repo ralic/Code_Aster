@@ -21,7 +21,7 @@ C TOLE CRP_20
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -54,7 +54,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP
-      INTEGER JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2
+      INTEGER JNOMA,JVALV,K,N1,NBMA,NBMO1,NBVARI,NC1,NC2
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
       INTEGER INV,DIMANV,NBMONO,NUNIT,ITEINT,ITEPAS,NUMGD,JACMP,NBCRIT
       INTEGER JCRIT,JVALC
@@ -153,16 +153,13 @@ C    ON VERIFIE SI UNE MAILLE SUR LAQUELLE ON ESSAIE D'AFFECTER
 C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
 
         CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMAT,K8B,IRET)
-        CALL WKVECT ( '&&VERI_MAILLE', 'V V K16', NBMAT, JMAIL ) 
-        NBAP = 0
-        NBET = 0
+        CALL WKVECT ( '&&VERI_MAILLE', 'V V K16', NBMAT, JMAIL )
         BUG = .FALSE.
         CHAIN1 = ' MAILLE:     COMPORTEMENT:        RELATION:'
         CHAIN2 = ' '
         CHAIN2(13:28) = MOCLEF(1)
         DO 80 I = 1,NBMO1
           CALL GETFAC(MOCLEF(I),NBOCC)
-          NBAP = NBAP + NBOCC
           DO 70 K = 1,NBOCC
             NBMA = 0
             NIVO = .FALSE.
@@ -269,14 +266,13 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
                 END IF
               END IF
             END IF
-            NBET = NBET + NBMA
    70     CONTINUE
    80   CONTINUE
         IF (BUG) THEN
           CALL UTFINM()
           CALL UTMESS('F','NMDORC','ARRET SUR ERREURS')
         END IF
-        CALL ALCART('V',COMPOR,NOMA,NOMGRD,NBAP+1,NBET)
+        CALL ALCAR2('V',COMPOR,NOMA,NOMGRD)
         CALL JEVEUO(COMPOR//'.NCMP','E',JNCMP)
         CALL JEVEUO(COMPOR//'.VALV','E',JVALV)
 
@@ -288,7 +284,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
         IF (CRILOC) THEN
 C CARTE DES CRITERES DE CONVERGENCES LOCAUX
           CALL GETVR8(' ','PARM_THETA',0,1,1,THETA ,IRET)
-          CALL ALCART('V',CARCRI,NOMA,'CARCRI',NBAP+1,NBET)
+          CALL ALCAR2('V',CARCRI,NOMA,'CARCRI')
           CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JCRIT)
           CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALC)
 
@@ -347,7 +343,7 @@ C  POUR COMPORTEMENT KIT_
                   NBVARI = NBVARI + NBVEL(ICOMEL)
                 ENDIF
   120         CONTINUE
-  
+
               EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
               EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
               IF (EXICP) THEN
@@ -365,7 +361,7 @@ C  POUR COMPORTEMENT KIT_
                    ENDIF
                 ENDIF
               END IF
-              
+
               IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
      &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
                 DO 122 INV = 1, DIMANV
@@ -396,25 +392,25 @@ C  POUR COMPORTEMENT KIT_
                   NBVARI = NBVARI*NBVEL(1) + NBVARI + 1
                 END IF
               END IF
-              
+
             ELSEIF (COMP(1:8).EQ.'MONOCRIS') THEN
                 CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
                 CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
                 CALL ASSERT(ZI(ICPRI).EQ.1)
                 NBSYST=ZI(ICPRI-1+5)
                 NBVARI=ZI(ICPRI-1+3)
-                ZK16(JVALV-1+6) = SDCOMP//'.CPRK'             
+                ZK16(JVALV-1+6) = SDCOMP//'.CPRK'
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBSYST
-              
+
             ELSEIF (COMP(1:8).EQ.'POLYCRIS') THEN
                 CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
                 CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
                 CALL ASSERT(ZI(ICPRI).EQ.2)
                 NBMONO=ZI(ICPRI-1+2)
                 NBVARI=ZI(ICPRI-1+3)
-                ZK16(JVALV-1+6) = SDCOMP 
+                ZK16(JVALV-1+6) = SDCOMP
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBMONO
-              
+
             ELSEIF (COMP(1:4).EQ.'ZMAT') THEN
                 CALL GETVIS(MOCLEF(I),'NB_VARI',K,1,1,NBVARI,N1)
                 CALL GETVIS(MOCLEF(I),'UNITE',K,1,1,NUNIT,N1)
@@ -442,7 +438,7 @@ C  POUR COMPORTEMENT KIT_
                     ENDIF
                  ENDIF
                END IF
-              
+
               END IF
             END IF
 
@@ -489,8 +485,8 @@ C  POUR COMPORTEMENT KIT_
                 ZK16(JVALV-1+ICOMEL+7) = '        '
               END IF
   140       CONTINUE
-  
-   
+
+
 
 C ======================================================================
 C --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR RELATION -----------
@@ -507,7 +503,7 @@ C ======================================================================
      &                  TYPMCL,MESMAI,NBMA)
             IF (NBMA.NE.0) THEN
               CALL JEVEUO(MESMAI,'L',JMA)
-              CALL NOCART(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
+              CALL NOCAR2(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NCMPMA)
               IF (CRILOC) THEN
                 CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)
@@ -515,12 +511,12 @@ C ======================================================================
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
      &                    IRET)
 
-     
+
                 IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
      &            CALL UTMESS('A','NMDOCN','CRITERE DE CONVERGENCE '//
      &               'POUR INTEGRER LE COMPORTEMENT RESI_INTE_RELA '//
      &               'LACHE')
-     
+
                 ITEPAS = 0
                 CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
      &                       IRET)
@@ -533,14 +529,14 @@ C la variable  ZR(JVALC+1) n'est pas utilisee
                 IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
-                CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
+                CALL NOCAR2(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NBCRIT)
               ENDIF
               CALL JEDETR(MESMAI)
             ELSE
 C ------- PAR DEFAUT C'EST TOUT='OUI'
 C            CALL GETVTX ( MOCLEF(I), 'TOUT'  , K,1,1, OUI   , NT )
-              CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
+              CALL NOCAR2(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
               IF (CRILOC) THEN
 C    LECTURE DES PARAMETRES
                 CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO  ,IRET)
@@ -548,12 +544,12 @@ C    LECTURE DES PARAMETRES
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
      &                    IRET)
 
-     
+
                 IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
      &            CALL UTMESS('A','NMDORC','CRITERE DE CONVERGENCE '//
      &               'POUR INTEGRER LE COMPORTEMENT RESI_INTE_RELA '//
      &               'LACHE')
-     
+
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS' ,K,1,1,ITEPAS,
      &                       IRET)
                 ZR(JVALC) = ITEINT
@@ -565,7 +561,7 @@ C la variable  ZR(JVALC+1) n'est pas utilisee
                 IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
-                CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
+                CALL NOCAR2(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
               ENDIF
             END IF
 

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
       INTEGER            ISSOPT,IMA,NBVARI,IPOPP,NDIM,NNOS,JGANO
       INTEGER            IPOIDS,IVF,IDFDE,II,IRET,IADZI,IVARMG,IAZK24
       INTEGER            IGEOM,ICONG,IVARPG,ISDRMR,ISDRPR,KQ
+      LOGICAL            LTEATT, LAXI
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -69,6 +70,8 @@ C     -------------------------------------
       CALL TECAEL(IADZI,IAZK24)
       IMA =ZI(IADZI)
       NUMEMA= DBLE(IMA)
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 C
       POIDS=0.D0
       TRIAX=0.D0
@@ -124,7 +127,7 @@ C
             K=(KP-1)*NNO
             R=0.D0
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 160 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  160           CONTINUE
@@ -170,7 +173,7 @@ C
             SDRSRM = ZR(ISDRMR+KP-1)
             K=(KP-1)*NNO
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 170 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  170           CONTINUE
@@ -209,7 +212,7 @@ C
             R=0.D0
             K=(KP-1)*NNO
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 210 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  210           CONTINUE
@@ -263,7 +266,7 @@ C
             VARIGM=ZR(IVARMG+NBVARI*(KP-1)+IPOPP-1)
             VARIGP=ZR(IVARPG+NBVARI*(KP-1)+IPOPP-1)
             CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-            IF (NOMTE(3:4).EQ.'AX') THEN
+            IF (LAXI) THEN
                DO 240 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
  240           CONTINUE

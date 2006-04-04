@@ -1,6 +1,6 @@
       SUBROUTINE TE0449(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C ......................................................................
       REAL*8  FINTU(2,9), FINTA(2,4), KUU(2,9,2,9)
       REAL*8  KUA(2,9,2,4), KAA(2,4,2,4), TRAV1(54), TRAV2(54)
       REAL*8  ANGMAS(3),R8VIDE,R8DGRD,R8NNEM
+      LOGICAL LTEATT
 
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -77,7 +78,7 @@ C   FONCTIONS DE FORMES ET POINTS DE GAUSS
       CALL ELREF4(ELREF2,'RIGI',NDIM,NNO2,NNOS,NPG2,IPOIDS,IVF2,
      +                                              IDFDE2,JGANO)
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
       ELSE IF (NOMTE(3:4).EQ.'PL') THEN
         TYPMOD(1) = 'D_PLAN  '

@@ -1,6 +1,6 @@
        SUBROUTINE METAU1(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,8 +32,7 @@ C ......................................................................
       REAL*8       TTRG,VK3AL,VALRES(NBRES),COEF1,COEF2,EPSTH
       REAL*8       DFDX(9),DFDY(9),TPG,POIDS,R,PHASPG(7)
       INTEGER      NNO,KP,NPG1,I,ITEMPE,IVECTU,ITREF,NZ,JTAB(7),L
-
-
+      LOGICAL      LTEATT
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,NDIM,NNOS,JGANO
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -61,15 +60,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       MATER = ZI(IMATE)
 
-
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'F_ALPHA'
       NOMRES(4) = 'C_ALPHA'
       NOMRES(5) = 'PHASE_REFE'
       NOMRES(6) = 'EPSF_EPSC_TREF'
-
-
 
       CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PTEMPER','L',ITEMPE)
@@ -79,9 +75,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     INFORMATION DU NOMBRE DE PHASE
       CALL TECACH('OON','PPHASRR',7,JTAB,IRET)
       NZ = JTAB(6)
-
-
-
 
       DO 40 KP = 1,NPG1
         K = (KP-1)*NNO
@@ -107,7 +100,7 @@ C passage des noeuds aux points de gauss
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,6,NOMRES,VALRES,
      &              CODRET,'FM')
         VK3AL = VALRES(1)/ (1.D0-2.D0*VALRES(2))
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LTEATT(' ','AXIS','OUI')) THEN
           POIDS = POIDS*R
           DO 20 I = 1,NNO
             K = (KP-1)*NNO
@@ -122,8 +115,6 @@ C passage des noeuds aux points de gauss
           ZALPHA = PHASPG(1) + PHASPG(2) 
         END IF
 
-
-
         COEF1 = (1.D0-ZALPHA)* (VALRES(4)*TTRG- (1-VALRES(5))*VALRES(6))
         COEF2 = ZALPHA* (VALRES(3)*TTRG+VALRES(5)*VALRES(6))
         EPSTH = COEF1 + COEF2
@@ -134,4 +125,5 @@ C passage des noeuds aux points de gauss
           ZR(IVECTU+2*I-1) = ZR(IVECTU+2*I-1) + POIDS*DFDY(I)
    30   CONTINUE
    40 CONTINUE
+
       END

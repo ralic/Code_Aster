@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,7 +175,7 @@ RESU_0 = CALC_ELEM ( reuse=RESU_0, RESULTAT = RESU_0,
                      EXCIT = ( _F( CHARGE = CH1_0 ),
                                _F( CHARGE = CH2_0 ) ),
                      OPTION = ( 'SIGM_ELNO_DEPL', 
-                                'ERRE_ELGA_NORE', ),
+                                'ERRE_ELEM_SIGM', ),
                     )
 #
 # 3.6. Calcul de la contrainte a comparer
@@ -192,7 +192,7 @@ MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFFINEMENT',
                                   MAILLAGE_N = M_0,
                                   MAILLAGE_NP1 = CO("M_1"),
                                   RESULTAT_N = RESU_0,
-                                  INDICATEUR = 'ERRE_ELGA_NORE',
+                                  INDICATEUR = 'ERRE_ELEM_SIGM',
                                   NOM_CMP_INDICA = 'ERREST' ,
                                   CRIT_RAFF_PE = 0.03),
                  MAILLAGE_FRONTIERE = ARC,
@@ -246,7 +246,7 @@ RESU_1 = CALC_ELEM ( reuse=RESU_1, RESULTAT = RESU_1,
                      EXCIT = ( _F( CHARGE = CH1_1 ),
                                _F( CHARGE = CH2_1 ) ),
                      OPTION = ( 'SIGM_ELNO_DEPL', 
-                                'ERRE_ELGA_NORE', ),
+                                'ERRE_ELEM_SIGM', ),
                     )
 #
 # 5.6. Calcul de la contrainte a comparer
@@ -265,7 +265,7 @@ MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFF_DERA',
                                   MAILLAGE_N = M_1,
                                   MAILLAGE_NP1 = CO("M_2"),
                                   RESULTAT_N = RESU_1,
-                                  INDICATEUR = 'ERRE_ELGA_NORE',
+                                  INDICATEUR = 'ERRE_ELEM_SIGM',
                                   NOM_CMP_INDICA = 'ERREST' ,
                                   CRIT_RAFF_PE = 0.03,
                                   CRIT_DERA_PE = 0.20),
@@ -282,14 +282,14 @@ MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFF_DERA',
 ### soit defini sur le maillage
 ### Or ce ne n'est fait que plus tard. A creuser ...
 ###                              _F( RESULTAT = RESU_1,
-###                                  NOM_CHAM   = 'ERRE_ELGA_NORE',
+###                                  NOM_CHAM   = 'ERRE_ELEM_SIGM',
 ###                                  TYPE_CHAM  = 'ELEM_ERREUR',
 ###                                  NUME_ORDRE = 1,
 ###                                  CHAM_MAJ   = CO("ERRE_1_2") ),
 ###ERRE_1=EXTR_RESU(RESULTAT=RESU_1,
-###                 ARCHIVAGE=_F(NOM_CHAM='ERRE_ELGA_NORE',NUME_ORDRE=1,),);
+###                 ARCHIVAGE=_F(NOM_CHAM='ERRE_ELEM_SIGM',NUME_ORDRE=1,),);
 ###IMPR_RESU(RESU=_F(RESULTAT=RESU_1,
-###                  NOM_CHAM='ERRE_ELGA_NORE',),);
+###                  NOM_CHAM='ERRE_ELEM_SIGM',),);
 ###IMPR_RESU(RESU=_F(RESULTAT=ERRE_1,),);
 ###IMPR_RESU(RESU=_F(CHAM_GD=ERRE_1_2,),);
 #
@@ -337,7 +337,7 @@ RESU_2 = CALC_ELEM ( reuse=RESU_2, RESULTAT = RESU_2,
                      EXCIT = ( _F( CHARGE = CH1_2 ),
                                _F( CHARGE = CH2_2 ) ),
                      OPTION = ( 'SIGM_ELNO_DEPL', 
-                                'ERRE_ELGA_NORE', ),
+                                'ERRE_ELEM_SIGM', ),
                     )
 #
 # 7.6. Calcul de la contrainte a comparer
@@ -354,7 +354,7 @@ MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFF_DERA',
                                   MAILLAGE_N = M_2,
                                   MAILLAGE_NP1 = CO("M_3"),
                                   RESULTAT_N = RESU_2,
-                                  INDICATEUR = 'ERRE_ELGA_NORE',
+                                  INDICATEUR = 'ERRE_ELEM_SIGM',
                                   NOM_CMP_INDICA = 'ERREST' ,
                                   CRIT_RAFF_PE = 0.03,
                                   CRIT_DERA_PE = 0.20),

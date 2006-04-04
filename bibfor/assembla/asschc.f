@@ -1,12 +1,12 @@
-      SUBROUTINE ASSCHC(BASE,MATAS,NBCHC,LCHCI,NOMNU,MOTC)
+      SUBROUTINE ASSCHC(BASE,MATAS,NBCHC,LCHCI,NOMNU)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) MATAS,LCHCI(*),NOMNU
       CHARACTER*1 BASE
-      CHARACTER*4 MOTC
+      CHARACTER*4 CUMU
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,12 +34,6 @@ C IN   NBCHC   I       : NOMBRE DE CHARGE CINEMATIQUES
 C IN   LCHCI   K*19    : LISTE DES NOMS DES CHARGES CINEMATIQUES
 C                        L'EFFET DE CES CHARGES EST CUMULE DANS MATAS
 C IN   NOMNU   K*14    : NOM DE LA NUMEROTATION
-C IN   MOTC    K*4     : 'ZERO' OU 'CUMU'
-C                        'ZERO': SI .CONI EXISTE DEJA ON S'ARRETE EN
-C                        ERREUR 'F' CAR SI ON VEUT ELIMINER LE .CONI
-C                        DEJA EXISTANT IL FAUT REMPLIR LES COLONNES
-C                        MISES A 0. DANS LA MATRICE
-C                        'CUMU': SI .CONI EXISTE ON L'ENRICHI
 C-----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
@@ -70,60 +64,49 @@ C                DEBUT DES INSTRUCTIONS
 C----------------------------------------------------------------------
       MAT = MATAS
       NU = NOMNU
-      IF (NBCHC.EQ.0) GOTO 9999
+      IF (NBCHC.EQ.0) GO TO 40
+
       CALL JEVEUO(NU//'.NUME.NEQU','L',IDEQU)
       NEQU = ZI(IDEQU)
       CALL DISMOI('F','NOM_GD',NU,'NUME_DDL',IBID,GD,IERD)
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GD),NUMGD)
       CALL JEVEUO(JEXNUM('&CATA.GD.DESCRIGD',NUMGD),'L',IDDES)
-      NEC = ZI(IDDES+2 )
-      CALL JEEXIN(MAT//'.CONI',IER)
-      IF (IER.NE.0) THEN
-        IF (MOTC.EQ.'ZERO') THEN
-C         CALL JEDETR(MAT//'.CONI')
-C         CALL WKVECT(MAT//'.CONI',BASE//' V I ',NEQU,IDCONI)
-C     QUAND ON RECONSTRUIRA LA MATRICE
-          CALL UTMESS('F','ASSCHC_1','LA MATRICE POSSEDE DEJA DES '
-     +    //'CHARGES CINEMATIQUES => ON N"Y TOUCHE PLUS OU ON '
-     +    //'L"ENRICHIE')
-        ELSE IF (MOTC.EQ.'CUMU') THEN
-          CALL JEVEUO(MAT//'.CONI','E',IDCONI)
-        ELSE
-          CALL UTMESS('F','ASSCHC_1',' LES ARGUMENTS POSSIBLES DE MOTC'
-     +    //' SONT ZERO OU CUMU')
-        ENDIF
-      ELSE
-        CALL WKVECT(MAT//'.CONI',BASE//' V I ',NEQU,IDCONI)
-      ENDIF
+      NEC = ZI(IDDES+2)
+
+      CALL JEDETR(MAT//'.CCID')
+      CALL WKVECT(MAT//'.CCID',BASE//' V I ',NEQU,JCCID)
+
+
       CALL JEVEUO(JEXNUM(NU//'.NUME.PRNO',1),'L',IDPRNO)
-      DO 1 ICH = 1,NBCHC
+      DO 20 ICH = 1,NBCHC
         NOMCH = LCHCI(ICH)
         CALL JEVEUO(NOMCH//'.DEFI','L',IDEFI)
         NIMP = ZI(IDEFI)
         DO 10 IMP = 1,NIMP
-          INO = ZI( IDEFI+3*(IMP-1)+1)
-          IDDL = ZI( IDEFI+3*(IMP-1)+2)
-          IEQ = ZI(IDPRNO-1+(NEC+2)*(INO-1)+1)+ IDDL - 1
-          IEXI = ZI(IDCONI-1+IEQ)
-          IF (IEXI.EQ.0) THEN
-            ZI( IDCONI-1+IEQ) = -1
-          ENDIF
-10      CONTINUE
-1     CONTINUE
-C
-C --- STOCKAGE DES LIGNES A ELIMINER CONI(IEQ)=-1 A CAUSE DE CUMU
+          INO = ZI(IDEFI+3* (IMP-1)+1)
+          IDDL = ZI(IDEFI+3* (IMP-1)+2)
+          IEQ = ZI(IDPRNO-1+ (NEC+2)* (INO-1)+1) + IDDL - 1
+          IEXI = ZI(JCCID-1+IEQ)
+          IF (IEXI.EQ.0) ZI(JCCID-1+IEQ) = -1
+   10   CONTINUE
+   20 CONTINUE
+
+
+C --- STOCKAGE DES LIGNES A ELIMINER CCID(IEQ)=-1 A CAUSE DE CUMU
 C     POUR NE PAS RESTOCKER UNE LIGNE DEJA TRAITEE
-      CALL WKVECT('&&ASSCHC.STOC','V V I ',NEQU,IDSTOC)
-      NSTOC = 0
-      DO 2 IEQ = 1, NEQU
-        IF ( ZI( IDCONI-1+IEQ).EQ.-1) THEN
-          NSTOC = NSTOC+1
-          ZI( IDSTOC-1+IEQ) = NSTOC
-          ZI( IDCONI-1+IEQ) = 1
-        ENDIF
-2     CONTINUE
-      CALL ASMCHC(BASE,MAT,ZI(IDSTOC),NSTOC,MOTC)
-      CALL JEDETR('&&ASSCHC.STOC')
- 9999 CONTINUE
+      CALL WKVECT('&&ASSCHC.ELIM','V V I ',NEQU,IDELIM)
+      NELIM = 0
+      DO 30 IEQ = 1,NEQU
+        IF (ZI(JCCID-1+IEQ).EQ.-1) THEN
+          NELIM = NELIM + 1
+          ZI(IDELIM-1+IEQ) = NELIM
+          ZI(JCCID-1+IEQ) = 1
+        END IF
+
+   30 CONTINUE
+      CALL ASMCHC(BASE,MAT,ZI(IDELIM),NELIM)
+      CALL JEDETR('&&ASSCHC.ELIM')
+
+   40 CONTINUE
       CALL JEDEMA()
       END

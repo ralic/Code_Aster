@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,8 +83,8 @@ C     NNOEMA : NBRE MAXI DE DDLS PAR NOEUD ADMIS PAR LE S.P.
       CHARACTER*8 MATEL,MAILLA
       CHARACTER*14 NUDEV
       CHARACTER*19 MATDEV,RESUL
-      CHARACTER*24 KMAILL,K24PRN,KNULIL,KMALIL,RESU,NOMLI,KSMHC,
-     &             KSMDI,KVALM,KTMP1,KTMP2,KCONL
+      CHARACTER*24 KMAILL,K24PRN,KNULIL,KMALIL,RESU,NOMLI,KSMHC,KSMDI,
+     &             KVALM,KTMP1,KTMP2,KCONL
       REAL*8 R,RINF,RSUP
       INTEGER HMAX,NMALIL,IMO,ILAGR,ILIMO
       INTEGER ADMODL,LCMODL,NBNO
@@ -182,8 +182,10 @@ C --- VERIF DE MOTCLE: SI ZERO ON ECRASE SI CUMU ON CUMULE :
 C     ----------------------------------------------------
       IF (MOTCLE(1:4).EQ.'ZERO') THEN
         CUMUL = .FALSE.
+
       ELSE IF (MOTCLE(1:4).EQ.'CUMU') THEN
         CUMUL = .TRUE.
+
       ELSE
         CALL UTMESS('F','ASSMMN',' LE PARAMETRE : '//MOTCLE//
      &              ' EST INCORRECT. ON ATTEND : "CUMU" OU "ZERO" ')
@@ -199,17 +201,16 @@ C     --------------------------------------------------------------
 
         NUDEV = NU
         CALL JEVEUO(MATDEV//'.REFA','L',JREFA)
-        IF (ZK24(JREFA-1+2)(1:14).EQ.NUDEV) THEN
+        IF (ZK24(JREFA-1+2) (1:14).EQ.NUDEV) THEN
           ACREER = .FALSE.
 
 C --- ON DETRUIT LES OBJETS QUI SONT TOUJOURS A DETRUIRE :
 C     --------------------------------------------------
           CALL JEDETR(MATDEV//'.LIME')
-          CALL JEDETR(MATDEV//'.CONI')
-          CALL JEDETR(MATDEV//'.ABLI')
-          CALL JEDETR(MATDEV//'.LLIG')
-          CALL JEDETR(MATDEV//'.ALIG')
-          CALL JEDETR(MATDEV//'.VALI')
+          CALL JEDETR(MATDEV//'.CCID')
+          CALL JEDETR(MATDEV//'.CCLL')
+          CALL JEDETR(MATDEV//'.CCJJ')
+          CALL JEDETR(MATDEV//'.CCVA')
           CALL JEDETR(MATDEV//'.JDRF')
           CALL JEDETR(MATDEV//'.JDDC')
           CALL JEDETR(MATDEV//'.JDFF')
@@ -218,12 +219,15 @@ C     --------------------------------------------------
           CALL JEDETR(MATDEV//'.JDES')
           CALL JEDETR(MATDEV//'.JDVL')
           CALL JEDETR(MATDEV//'.REFA')
+
         ELSE
           ACREER = .TRUE.
         END IF
+
       ELSE
         ACREER = .TRUE.
       END IF
+
       IF (ACREER) CALL DETRSD('MATR_ASSE',MATDEV)
 
 C --- RECOPIE DE LA LISTE DES MAT_ELE DANS 1 OBJET JEVEUX DONT ON
@@ -253,9 +257,9 @@ C     --------------------------------------------------
       ITBLOC = ZI(JSMDE-1+2)
 
       CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',JNUEQ)
-      DO 777, IEQ=1,NEQU
-         CALL ASSERT(ZI(JNUEQ-1+IEQ).EQ.IEQ)
-777   CONTINUE
+      DO 20,IEQ = 1,NEQU
+        CALL ASSERT(ZI(JNUEQ-1+IEQ).EQ.IEQ)
+   20 CONTINUE
 
 C --- CALCUL D UN REPERTOIRE,TEMPORAIRE, MATDEV.LILI A PARTIR DE LA
 C --- LISTE DE MATRICES ELEMENTAIRES MATDEV.LIME :
@@ -321,6 +325,7 @@ C                          -----------------------------------------
         CALL JECREO(KTMP1,' V V I')
         CALL JEECRA(KTMP1,'LONMAX',NBLC,' ')
       END IF
+
       CALL JEVEUO(KTMP1,'E',IATMP1)
 
 C --- ALLOCATION VALM EN R OU C SUIVANT TYPE :
@@ -329,25 +334,30 @@ C     --------------------------------------
         IF (TYPE.EQ.1) THEN
           CALL JECREC(KVALM,BASE1//' V R','NU','DISPERSE','CONSTANT',
      &                NBLC)
+
         ELSE IF (TYPE.EQ.2) THEN
           CALL JECREC(KVALM,BASE1//' V C','NU','DISPERSE','CONSTANT',
      &                NBLC)
+
         ELSE
           CALL UTMESS('F','ASSMAT',' ON NE PEUT ASSEMBLER QUE DES'//
      &                ' MATRICES REELLES OU COMPLEXES')
         END IF
+
         CALL JEECRA(KVALM,'LONMAX',ITBLOC,' ')
-        DO 20 I = 1,NBLC
+        DO 30 I = 1,NBLC
           CALL JECROC(JEXNUM(KVALM,I))
-   20   CONTINUE
+   30   CONTINUE
+
       ELSE
         IF (.NOT.CUMUL) THEN
 C         -- REMISE A ZERO DE .VALM :
-          DO 30 I = 1,NBLC
+          DO 40 I = 1,NBLC
             CALL JERAZO(JEXNUM(KVALM,I),ITBLOC,1)
             CALL JELIBE(JEXNUM(KVALM,I))
-   30     CONTINUE
+   40     CONTINUE
         END IF
+
       END IF
 
 C --- CALCUL DE VALM
@@ -357,14 +367,14 @@ C     ---------------------------------------
       RINF = R8MAEM()
       RSUP = -1.D0
       COEF = +1.D0
-   40 CONTINUE
+   50 CONTINUE
 
 
 C     ========================================
 C --- = BOUCLE SUR LES MATR_ELEM
 C     ========================================
       ILONG = 0
-      DO 250 IMAT = 1,NBMAT
+      DO 260 IMAT = 1,NBMAT
         MATEL = ZK8(ILIMAT+IMAT-1)
         CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI ',NBRESU,K1BID)
@@ -374,6 +384,7 @@ C       -- ON REGARDE SI TOUS LES MATR_ELEM ONT ETE CALCULES AVEC LA
 C          MEME SUR_OPTION :
         IF (IMAT.EQ.1) THEN
           OPTIO2 = OPTIO
+
         ELSE
           IF (OPTIO2.NE.OPTIO) OPTIO2 = '&&MELANGE'
         END IF
@@ -381,11 +392,11 @@ C          MEME SUR_OPTION :
 C     =======================================
 C --- = BOUCLE SUR LES RESU_ELEM =
 C     =======================================
-        DO 240 IRESU = 1,NBRESU
+        DO 250 IRESU = 1,NBRESU
 
           RESU = ZK24(IDLRES+IRESU-1)
           CALL JEEXIN(RESU(1:19)//'.DESC',IER)
-          IF (IER.EQ.0) GO TO 240
+          IF (IER.EQ.0) GO TO 250
           TYMAT = 'S'
 
           RESUL = RESU
@@ -396,9 +407,9 @@ C     =======================================
           NOMLI = ZK24(IAD)
           CALL JENONU(JEXNOM(KMALIL,NOMLI),ILIMA)
           CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
-          IF ((IMO.EQ.1) .AND. (ILIMA.NE.ILIMO)) GO TO 240
-          IF ((IMO.EQ.0) .AND. (ILIMA.EQ.ILIMO)) GO TO 240
-          DO 230 IGR = 1,ZZNGEL(ILIMA)
+          IF ((IMO.EQ.1) .AND. (ILIMA.NE.ILIMO)) GO TO 250
+          IF ((IMO.EQ.0) .AND. (ILIMA.EQ.ILIMO)) GO TO 250
+          DO 240 IGR = 1,ZZNGEL(ILIMA)
 C     ====================================
 C --- = BOUCLE SUR LES GOUPES D'ELEMENTS =
 C     ====================================
@@ -423,7 +434,7 @@ C    =================================================
 
 C--- BOUCLE SUR LES ELEMENTS D'UN GROUPE D'ELEMENT :
 C    ---------------------------------------------
-                DO 100 IEL = 1,NEL
+                DO 110 IEL = 1,NEL
 
                   IREEL = 0
                   ILAGR = 0
@@ -437,25 +448,27 @@ C       --------------------------------------
 
 C ---   AFFECTATION DE NUMLOC :
 C       ---------------------
-                    DO 50 K1 = 1,NNOE
+                    DO 60 K1 = 1,NNOE
                       N1 = ZZCONX(NUMA,K1)
                       IAD1 = ZZPRNO(ILIMNU,N1,1)
                       CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
-     &                          MODE,NEC,NCMP,N1,K1,NDDL1,POSDDL(1,K1))
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,
+     &                            POSDDL(1,K1))
                       IF (NDDL1.GT.NDDLMA) THEN
                         CALL UTDEBM('F','ASSMMN','11')
                         CALL UTIMPI('L','  NDDL : ',1,NDDL1)
                         CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
                         CALL UTFINM()
                       END IF
+
                       NUMLOC(K1,1) = N1
                       NUMLOC(K1,2) = IAD1
                       NUMLOC(K1,3) = NDDL1
-   50               CONTINUE
+   60               CONTINUE
 
 C ---   BOUCLE 1 SUR LES NOEUDS DE L'ELEMENT :
 C       ------------------------------------
-                    DO 90 K1 = 1,NNOE
+                    DO 100 K1 = 1,NNOE
 
                       N1 = NUMLOC(K1,1)
                       IAD1 = NUMLOC(K1,2)
@@ -463,7 +476,7 @@ C       ------------------------------------
 
 C ---    PARCOURS DES DDLS DU NOEUD 1 :
 C        ----------------------------
-                      DO 80 I1 = 1,NDDL1
+                      DO 90 I1 = 1,NDDL1
 
 C ---      NUMERO D'EQUATION DU DDL COURANT DANS LA MATRICE ASSEMBLEE :
 C          ---------------------------------------------------------
@@ -471,14 +484,14 @@ C          ---------------------------------------------------------
 
 C ---      BOUCLE 2 SUR LES NOEUDS DE L'ELEMENT :
 C          ------------------------------------
-                        DO 70 K2 = 1,NNOE
+                        DO 80 K2 = 1,NNOE
 
                           IAD2 = NUMLOC(K2,2)
                           NDDL2 = NUMLOC(K2,3)
 
 C ---       PARCOURS DES DDLS DU NOEUD 2 :
 C           ----------------------------
-                          DO 60 I2 = 1,NDDL2
+                          DO 70 I2 = 1,NDDL2
 
 C ---        NUMERO D'EQUATION DU DDL COURANT DANS LA MATRICE ASSEMBLEE:
 C            ----------------------------------------------------------
@@ -492,6 +505,7 @@ C            -------------------------------------------
                               IADLI = IAD11
                               IADCO = IAD21
                               NUBLOC = 1
+
                             ELSE
 
 C ---        LE NUMERO DE LIGNE EST PLUS GRAND QUE LE NUMERO DE
@@ -509,10 +523,10 @@ C ---        ELEMENTAIRE, CES INFORMATIONS SONT STOCKEES DANS KTMP2 :
 C            ------------------------------------------------------
                             CALL ASRETN(IATMP2,IREEL,IDSMHC,IDSMDI,
      &                                  IADLI,IADCO,NUBLOC)
-   60                     CONTINUE
-   70                   CONTINUE
-   80                 CONTINUE
-   90               CONTINUE
+   70                     CONTINUE
+   80                   CONTINUE
+   90                 CONTINUE
+  100               CONTINUE
                   END IF
 
 C --- POUR FINIR, ON RECOPIE EFFECTIVEMENT LES TERMES:
@@ -523,12 +537,14 @@ C     ---------------------------------------------
                   ZI(IATMP1+1) = 1
                   IF (TYPE.EQ.1) THEN
                     CALL ASCOPR(IATMP1,IATMP2,IREEL,
-     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
+     &                          IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
+
                   ELSE IF (TYPE.EQ.2) THEN
                     CALL ASCOPC(IATMP1,IATMP2,IREEL,
-     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
+     &                          IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
                   END IF
-  100           CONTINUE
+
+  110           CONTINUE
 
 C --- ON AFFECTE AUX TERMES DIAGONAUX DU BLOC INFERIEUR LES VALEURS
 C --- DES TERMES DIAGONAUX DU BLOC SUPERIEUR (PAR SOUCI D'HOMOGENEITE
@@ -538,10 +554,10 @@ C     ----------------------------------
                 CALL JEVEUO(JEXNUM(KVALM,1),'L',IADVAS)
                 CALL JEVEUO(JEXNUM(KVALM,2),'E',IADVAI)
 
-                DO 110 IEQ = 1,NEQU
+                DO 120 IEQ = 1,NEQU
                   IDIA = ZI(IDSMDI+IEQ-1)
                   ZR(IADVAI+IDIA-1) = ZR(IADVAS+IDIA-1)
-  110           CONTINUE
+  120           CONTINUE
 
                 CALL JELIBE(JEXNUM(KVALM,1))
                 CALL JELIBE(JEXNUM(KVALM,2))
@@ -553,7 +569,7 @@ C    =============================================
 
 C--- BOUCLE SUR LES ELEMENTS D'UN GROUPE D'ELEMENT :
 C    ---------------------------------------------
-                DO 220 IEL = 1,NEL
+                DO 230 IEL = 1,NEL
                   IREEL = 0
                   ILAGR = 0
 C---- R = COEF MULTIPLICATEUR
@@ -566,34 +582,36 @@ C       --------------------------------------
 
 C ---   BOUCLE 1 SUR LES NOEUDS DE L'ELEMENT :
 C       ------------------------------------
-                    DO 160 K1 = 1,NNOE
+                    DO 170 K1 = 1,NNOE
                       N1 = ZZCONX(NUMA,K1)
                       IAD1 = ZZPRNO(ILIMNU,N1,1)
                       CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
-     &                          MODE,NEC,NCMP,N1,K1,NDDL1,POSDDL(1,K1))
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,
+     &                            POSDDL(1,K1))
                       IF (NDDL1.GT.NDDLMA) THEN
                         CALL UTDEBM('F','ASSMMN','11')
                         CALL UTIMPI('L','  NDDL : ',1,NDDL1)
                         CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
                         CALL UTFINM()
                       END IF
+
                       NUMLOC(K1,1) = N1
                       NUMLOC(K1,2) = IAD1
                       NUMLOC(K1,3) = NDDL1
 
 C ---    PARCOURS DES DDLS DU NOEUD 1 :
 C        ----------------------------
-                      DO 150 I1 = 1,NDDL1
+                      DO 160 I1 = 1,NDDL1
 
 C ---      BOUCLE 2 SUR LES NOEUDS DE L'ELEMENT :
 C          ------------------------------------
-                        DO 130 K2 = 1,K1 - 1
+                        DO 140 K2 = 1,K1 - 1
                           IAD2 = NUMLOC(K2,2)
                           NDDL2 = NUMLOC(K2,3)
 
 C ---       PARCOURS DES DDLS DU NOEUD 2 :
 C           ----------------------------
-                          DO 120 I2 = 1,NDDL2
+                          DO 130 I2 = 1,NDDL2
 
 C ---        IAD11 NUMERO D'EQUATION DU DDL 1 DANS LA MATRICE ASSEMBLEE
 C ---        IAD21 NUMERO D'EQUATION DU DDL 2 DANS LA MATRICE ASSEMBLEE:
@@ -603,6 +621,7 @@ C            ----------------------------------------------------------
                             IF (IAD11.LE.IAD21) THEN
                               IADLI = IAD11
                               IADCO = IAD21
+
                             ELSE
                               IADLI = IAD21
                               IADCO = IAD11
@@ -618,8 +637,8 @@ C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
                             CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,
      &                                  IADLI,IADCO)
-  120                     CONTINUE
-  130                   CONTINUE
+  130                     CONTINUE
+  140                   CONTINUE
 
 C ---       TRAITEMENT DU TERME DIAGONAL DE LA MATRICE ELEMENTAIRE :
 C           -----------------------------------------------------
@@ -629,7 +648,7 @@ C           -----------------------------------------------------
 
 C ---       PARCOURS DES DDLS DU NOEUD 2 :
 C           ----------------------------
-                        DO 140 I2 = 1,I1
+                        DO 150 I2 = 1,I1
 
 C ---        IAD11 NUMERO D'EQUATION DU DDL 1 DANS LA MATRICE ASSEMBLEE
 C ---        IAD21 NUMERO D'EQUATION DU DDL 2 DANS LA MATRICE ASSEMBLEE:
@@ -639,6 +658,7 @@ C            ----------------------------------------------------------
                           IF (IAD11.LE.IAD21) THEN
                             IADLI = IAD11
                             IADCO = IAD21
+
                           ELSE
                             IADLI = IAD21
                             IADCO = IAD11
@@ -654,9 +674,10 @@ C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
                           CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,IADLI,
      &                                IADCO)
-  140                   CONTINUE
-  150                 CONTINUE
-  160               CONTINUE
+  150                   CONTINUE
+  160                 CONTINUE
+  170               CONTINUE
+
                   ELSE
 
 C ---   NUMA < 0 : CAS DES ELEMENTS 'LAGRANGE' :
@@ -670,13 +691,14 @@ C      ----------------------------------------------------------
 
 C ---   BOUCLE 1 SUR LES NOEUDS DE L'ELEMENT :
 C       ------------------------------------
-                    DO 210 K1 = 1,NNOE
+                    DO 220 K1 = 1,NNOE
                       N1 = ZZNEMA(ILIMA,NUMA,K1)
                       IF (N1.LT.0) THEN
                         N1 = -N1
                         IAD1 = ZZPRNO(ILINU,N1,1)
                         CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
-     &                          MODE,NEC,NCMP,N1,K1,NDDL1,POSDDL(1,K1))
+     &                              MODE,NEC,NCMP,N1,K1,NDDL1,
+     &                              POSDDL(1,K1))
 
 C --- SI NOEUD LAGR ( ILAGR=1,NDDL1=1,N1<0,NUMA<0 ) ALORS CONL(IAD1)=R
 C --- ET POUR TOUTE LA MATRICE ELEMENTAIRE ON POSE R = COEF*LICOEF(IMAT)
@@ -685,40 +707,45 @@ C     ------------------------------------------------------------------
                           R = COEF*LICOEF(IMAT)
                           ZR(IDCONL-1+ZI(JNUEQ-1+IAD1)) = R
                         END IF
+
                         IF (NDDL1.GT.NDDLMA) THEN
                           CALL UTDEBM('F','ASSMMN','12')
                           CALL UTIMPI('L','  NDDL : ',1,NDDL1)
                           CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
                           CALL UTFINM()
                         END IF
+
                       ELSE
                         IAD1 = ZZPRNO(ILIMNU,N1,1)
                         CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
-     &                          MODE,NEC,NCMP,N1,K1,NDDL1,POSDDL(1,K1))
+     &                              MODE,NEC,NCMP,N1,K1,NDDL1,
+     &                              POSDDL(1,K1))
                         IF (NDDL1.GT.NDDLMA) THEN
                           CALL UTDEBM('F','ASSMMN','13')
                           CALL UTIMPI('L','- NDDL : ',1,NDDL1)
                           CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
                           CALL UTFINM()
                         END IF
+
                       END IF
+
                       NUMLOC(K1,1) = N1
                       NUMLOC(K1,2) = IAD1
                       NUMLOC(K1,3) = NDDL1
 
 C ---    PARCOURS DES DDLS DU NOEUD 1 :
 C        ----------------------------
-                      DO 200 I1 = 1,NDDL1
+                      DO 210 I1 = 1,NDDL1
 
 C ---      BOUCLE 2 SUR LES NOEUDS DE L'ELEMENT :
 C          ------------------------------------
-                        DO 180 K2 = 1,K1 - 1
+                        DO 190 K2 = 1,K1 - 1
                           IAD2 = NUMLOC(K2,2)
                           NDDL2 = NUMLOC(K2,3)
 
 C ---       PARCOURS DES DDLS DU NOEUD 2 :
 C           ----------------------------
-                          DO 170 I2 = 1,NDDL2
+                          DO 180 I2 = 1,NDDL2
 
 C ---        IAD11 NUMERO D'EQUATION DU DDL 1 DANS LA MATRICE ASSEMBLEE
 C ---        IAD21 NUMERO D'EQUATION DU DDL 2 DANS LA MATRICE ASSEMBLEE:
@@ -728,6 +755,7 @@ C            ----------------------------------------------------------
                             IF (IAD11.LE.IAD21) THEN
                               IADLI = IAD11
                               IADCO = IAD21
+
                             ELSE
                               IADLI = IAD21
                               IADCO = IAD11
@@ -743,8 +771,8 @@ C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
                             CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,
      &                                  IADLI,IADCO)
-  170                     CONTINUE
-  180                   CONTINUE
+  180                     CONTINUE
+  190                   CONTINUE
 
 C ---       TRAITEMENT DU TERME DIAGONAL DE LA MATRICE ELEMENTAIRE :
 C           -----------------------------------------------------
@@ -754,7 +782,7 @@ C           -----------------------------------------------------
 
 C ---       PARCOURS DES DDLS DU NOEUD 2 :
 C           ----------------------------
-                        DO 190 I2 = 1,I1
+                        DO 200 I2 = 1,I1
 
 C ---        IAD11 NUMERO D'EQUATION DU DDL 1 DANS LA MATRICE ASSEMBLEE
 C ---        IAD21 NUMERO D'EQUATION DU DDL 2 DANS LA MATRICE ASSEMBLEE:
@@ -764,6 +792,7 @@ C            ----------------------------------------------------------
                           IF (IAD11.LE.IAD21) THEN
                             IADLI = IAD11
                             IADCO = IAD21
+
                           ELSE
                             IADLI = IAD21
                             IADCO = IAD11
@@ -779,9 +808,9 @@ C ---        SUPERIEUR ET DANS LE BLOC INFERIEUR :
 C            -----------------------------------
                           CALL ASRETM(IATMP2,IREEL,IDSMHC,IDSMDI,IADLI,
      &                                IADCO)
-  190                   CONTINUE
-  200                 CONTINUE
-  210               CONTINUE
+  200                   CONTINUE
+  210                 CONTINUE
+  220               CONTINUE
                   END IF
 
 C --- POUR FINIR, ON RECOPIE EFFECTIVEMENT LES TERMES:
@@ -793,42 +822,49 @@ C     ---------------------------------------------
                   IF (TYPE.EQ.1) THEN
                     CALL ASCNPR(IATMP1,IATMP2,IREEL,
      &                          IDRESL+NCMPEL* (IEL-1),1,KVALM,R)
+
                   ELSE IF (TYPE.EQ.2) THEN
                     CALL ASCOPC(IATMP1,IATMP2,IREEL,
-     &                 IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
+     &                          IDRESL+NCMPEL* (IEL-1),NBLC,KVALM,R,0,0)
                   END IF
-  220           CONTINUE
+
+  230           CONTINUE
 C --- FIN DU BLOC CONCERNANT LE CAS TYMAT = 'S'
 C     ----------------------------------------
               END IF
+
               CALL JELIBE(JEXNUM(RESU(1:19)//'.RESL',IGR))
 C --- FIN DU BLOC CONCERNANT LE CAS MODE DU LIGREL > 0
 C     ------------------------------------------------
             END IF
-  230     CONTINUE
-  240   CONTINUE
-  250 CONTINUE
+
+  240     CONTINUE
+  250   CONTINUE
+  260 CONTINUE
       IF (IMO.EQ.1) THEN
 
 C--- SI ON VIENT DE TRAITER LE MODELE :
 C    -------------------------------
         CALL JEVEUO(JEXNUM(KVALM,1),'L',IDV)
-        DO 260 I = 1,NEQU
+        DO 270 I = 1,NEQU
           IDI = ZI(IDSMDI+I-1)
           IF (TYPE.EQ.1) R = ABS(ZR(IDV-1+IDI))
           IF (TYPE.EQ.2) R = ABS(ZC(IDV-1+IDI))
           IF ((R.NE.0.D0) .AND. (R.LT.RINF)) RINF = R
           IF ((R.NE.0.D0) .AND. (R.GT.RSUP)) RSUP = R
-  260   CONTINUE
+  270   CONTINUE
         CALL JELIBE(JEXNUM(KVALM,1))
         IF (RINF.GE.R8MAEM()) THEN
           COEF = RSUP/2.D0
+
         ELSE
           COEF = (RSUP+RINF)/2.D0
         END IF
+
         IF (NIV.EQ.2) THEN
-          WRITE (IFM,1000) COEF
+          WRITE (IFM,9000) COEF
         END IF
+
         IMO = 0
 
 C --- CREATION DE L'OBJET .CONL EN OPTION RIGI SI AU MOINS UNE CHARGE :
@@ -837,17 +873,20 @@ C     ---------------------------------------------------------------
           KCONL = MATDEV(1:19)//'.CONL'
           CALL JEDETR(KCONL)
           CALL WKVECT(KCONL,BASE1//' V R',NEQU,IDCONL)
-          DO 270 I = 1,NEQU
+          DO 280 I = 1,NEQU
             ZR(IDCONL-1+I) = 1.D0
-  270     CONTINUE
+  280     CONTINUE
         END IF
-        GO TO 40
+
+        GO TO 50
+
       END IF
 
 C     -- MISE A JOUR DE REFA(4)
       CALL JEVEUO(MATDEV//'.REFA','E',JREFA)
       IF (MOTCLE(1:4).EQ.'ZERO') THEN
         ZK24(JREFA-1+4) = OPTIO2
+
       ELSE
         IF (ZK24(JREFA-1+4).NE.OPTIO2) ZK24(JREFA-1+4) = '&&MELANGE'
       END IF
@@ -856,9 +895,9 @@ C     -- MISE A JOUR DE REFA(4)
       CALL JEDETR(KTMP2)
       CALL JEDETR(MATDEV//'.ADNE')
       CALL JEDETR(MATDEV//'.ADLI')
-  280 CONTINUE
- 1000 FORMAT (1P,'COEFFICIENT DE CONDITIONNEMENT DES LAGRANGES',E12.5)
+  290 CONTINUE
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()
 C     CALL VERISD('MATRICE',MATDEV)
+ 9000 FORMAT (1P,'COEFFICIENT DE CONDITIONNEMENT DES LAGRANGES',E12.5)
       END

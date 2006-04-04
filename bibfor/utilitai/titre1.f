@@ -5,7 +5,7 @@
       INTEGER                  NBTITR,       LGDON(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +58,12 @@ C
 C     --- TANT QU'IL Y A DES LIGNES FAIRE ---
       ICOLS  = 0
       ILIGD  = 1
+      IF ( NBTITR .GT. MXLIGS ) THEN
+         CALL UTMESS('A', 'TITRE', 'SEULES LES 50 PREMIERES LIGNES DU '
+     +                           //'TITRE SONT CONSERVEES.')
+      ENDIF
  1000 CONTINUE
-      IF ( ILIGD .LE. NBTITR ) THEN
+      IF ( ILIGD .LE. NBTITR .AND. ILIGD .LE. MXLIGS ) THEN
 C
 C        --- TANT QU'IL Y A DES COLONNES FAIRE ---
          ICOLD = 1

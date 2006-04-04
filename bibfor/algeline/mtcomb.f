@@ -1,14 +1,14 @@
-      SUBROUTINE MTCOMB(NBCOMB,TYPCST,CONST,TYPMAT,LIMAT,TYPRES,
-     +                  MATREZ,DDLEXC,BASZ)
+      SUBROUTINE MTCOMB(NBCOMB,TYPCST,CONST,TYPMAT,LIMAT,TYPRES,MATREZ,
+     &                  DDLEXC,BASZ)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           NBCOMB
-      CHARACTER*(*)    TYPCST(*),   TYPMAT(*),    TYPRES,  DDLEXC
-      CHARACTER*(*)     MATREZ, BASZ
-      CHARACTER*24     LIMAT(NBCOMB)
-      REAL*8                          CONST(*)
+      INTEGER NBCOMB
+      CHARACTER*(*) TYPCST(*),TYPMAT(*),TYPRES,DDLEXC
+      CHARACTER*(*) MATREZ,BASZ
+      CHARACTER*24 LIMAT(NBCOMB)
+      REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     L'OPERATION DE COMBINAISON LINEAIRE N'A DE SENS QUE
 C     POUR DES MATRICES QUI NE SONT PAS DECOMPOSEES.
 C     C'EST POURQUOI ON FAIT LA COMBINAISON LINEAIRE DES :
 C                      .VALM
-C                      .VALI (SI ILS EXISTENT)
+C                      .CCVA (SI ILS EXISTENT)
 C                      .CONL
 C    ET NON PAS DES .VALF QUI SONT DES OBJETS D'UNE MATR_ASSE
 C    DECOMPOSEE PAR LA METHODE MULTI_FRONTALE
@@ -63,38 +63,36 @@ C            L'OPERATEUR
 C     -----------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32  JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     -----------------------------------------------------------------
-C     LGBLOC = LONGUEUR DES BLOCS
-C     NBLIC  = NOMBRE DE BLOCS DU .VALI
-      INTEGER               LGBLOC, NBLIC
+      INTEGER NCCVA
 C     -----------------------------------------------------------------
-      CHARACTER*1   BASE, CLAS, CLASI
-      CHARACTER*8   K8BID
-      CHARACTER*19  MATRES,MATI,MAT1
+      CHARACTER*1 BASE,CLAS,CLASI
+      CHARACTER*8 KBID
+      CHARACTER*19 MATRES,MATI,MAT1
 C     -----------------------------------------------------------------
 C
 C --- VERIFICATION DE LA COHERENCE DES MATRICES A COMBINER
 C
       CALL JEMARQ()
 C
-      BASE   = BASZ
+      BASE = BASZ
       MATRES = MATREZ
 C
 C --- RECUPERATION DE LA LISTE DES NOMS DE MATR_ASSE A COMBINER :
@@ -105,19 +103,20 @@ C --- LES POINTEURS DES DESCRIPTEURS DES MATR_ASSE A COMBINER :
 C     -------------------------------------------------------
       CALL WKVECT('&&MTCOMB.LISPOINT','V V I',NBCOMB,IDLIMA)
 C
-      DO 10 I = 1, NBCOMB
+      DO 10 I = 1,NBCOMB
         CALL MTDSCR(LIMAT(I))
-        CALL JEVEUO(LIMAT(I)(1:19)//'.&INT','E',ZI(IDLIMA+I-1))
+        CALL JEVEUO(LIMAT(I) (1:19)//'.&INT','E',ZI(IDLIMA+I-1))
    10 CONTINUE
 C
 C
       IER1 = 0
-      DO 20 I = 2, NBCOMB
-         CALL VRREFE (LIMAT(1), LIMAT(I), IER)
-         IF (IER.NE.0) THEN
-           IER1 = 1
-         ENDIF
-  20  CONTINUE
+      DO 20 I = 2,NBCOMB
+        CALL VRREFE(LIMAT(1),LIMAT(I),IER)
+        IF (IER.NE.0) THEN
+          IER1 = 1
+        END IF
+
+   20 CONTINUE
 C
 C --- COMBINAISON LINEAIRE DES .VALE DES MATRICES :
 C     ===========================================
@@ -127,16 +126,15 @@ C       -------------------------------------------------
         CALL MTDSCR(MATRES)
         CALL JEVEUO(MATRES//'.&INT','E',LRES)
         CALL CBVALE(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,LRES,
-     +              DDLEXC)
+     &              DDLEXC)
 C ---   CAS OU LES MATRICES A COMBINER N'ONT PAS LE MEME PROFIL :
 C       -------------------------------------------------------
       ELSE
-        CALL PROSMO(MATRES, LIMAT, NBCOMB, BASE,' ',.TRUE.)
+        CALL PROSMO(MATRES,LIMAT,NBCOMB,BASE,' ',.TRUE.)
         CALL MTDSCR(MATRES)
         CALL JEVEUO(MATRES//'.&INT','E',LRES)
-        CALL CBVAL2(NBCOMB,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
-     +              LRES,DDLEXC)
-      ENDIF
+        CALL CBVAL2(NBCOMB,CONST,TYPMAT,ZI(IDLIMA),TYPRES,LRES,DDLEXC)
+      END IF
 C
 C --- AFFECTATION DE L'ETAT DE LA PREMIERE MATRICE A COMBINER
 C --- A LA MATRICE RESULTAT
@@ -164,74 +162,45 @@ C
 C --- ON VERIFIE QUE LES S.D. ELIM_DDL DES MATRICES A COMBINER
 C --- SONT IDENTIQUES :
 C     ---------------
-         CALL VERELI(NBCOMB, ZI(IDLIMA), IER)
-         IF (IER.NE.0) THEN
-              CALL UTMESS('F','MTCOMB','LES ELIM_DDL DES MATRICES'//
-     +                     ' A COMBINER NE SONT PAS COHERENTS')
-         ENDIF
+        CALL VERELI(NBCOMB,ZI(IDLIMA),IER)
+        IF (IER.NE.0) THEN
+          CALL UTMESS('F','MTCOMB','LES ELIM_DDL DES MATRICES'//
+     &                ' A COMBINER NE SONT PAS COHERENTS')
+        END IF
 C
 C --- NOM DE LA PREMIERE MATRICE A COMBINER :
 C     -------------------------------------
-         MAT1 = ZK24(ZI(ZI(IDLIMA)+1))
+        MAT1 = ZK24(ZI(ZI(IDLIMA)+1))
 C
 C --- BASE SUR LAQUELLE SE TROUVE LA PREMIERE MATRICE A COMBINER :
 C     ----------------------------------------------------------
         CALL JELIRA(MAT1//'.REFA','CLAS',IBID,CLASI)
-C
-C --- NOMBRE DE BLOCS :
-C     ---------------
-         NBLIC = ZI(ZI(IDLIMA)+18)
-C
-C --- RECOPIE DE LA S.D. ELIM_DDL (SAUF LE .VALI)
+
+
+C --- RECOPIE DE LA S.D. ELIM_DDL (SAUF LE .CCVA)
 C --- DE LA PREMIERE MATRICE A COMBINER SUR LA S.D. ELIM_DDL
 C --- DE LA MATRICE RESULTAT :
 C     ----------------------
-         CALL JEDUPO(MAT1//'.CONI',CLAS, MATRES//'.CONI',.TRUE.)
-         CALL JEDUPO(MAT1//'.LLIG',CLAS, MATRES//'.LLIG',.TRUE.)
-         CALL JEDUPO(MAT1//'.ALIG',CLAS, MATRES//'.ALIG',.TRUE.)
-         CALL JEDUPO(MAT1//'.ABLI',CLAS, MATRES//'.ABLI',.TRUE.)
-C
-         IF ( TYPRES(1:1) .EQ. 'R' ) THEN
-             CALL JECREC(MATRES//'.VALI',CLAS//' V R','NU','DISPERSE',
-     +                   'CONSTANT',NBLIC)
-         ELSEIF ( TYPRES(1:1) .EQ. 'C' ) THEN
-             CALL JECREC(MATRES//'.VALI',CLAS//' V C','NU','DISPERSE',
-     +                   'CONSTANT',NBLIC)
-         ENDIF
-C
-C --- LONGUEUR D'UN BLOC :
-C     ------------------
-         CALL JEVEUO(MATRES//'.ABLI','L',IDABLI)
-         CALL JEVEUO(MATRES//'.ALIG','L',IDALIG)
-         CALL JEVEUO(MATRES//'.LLIG','L',IDLLIG)
-         IMPFIN = ZI(IDABLI+NBLIC)
-         ILOC = ZI(IDALIG+IMPFIN-1)
-         IND = 2+3*(IMPFIN-1)
-         JDEB = ZI(IDLLIG+IND+1-1)
-         JFIN = ZI(IDLLIG+IND+2-1)
-         LGBLOC = ILOC+JFIN-JDEB
-C
-C --- CREATION DE LA COLLECTION .VALI DE LA MATRICE RESULTAT
-C --- (AVEC LA BONNE LONGUEUR DE BLOC) :
-C     --------------------------------
-         IBLIC = 1
-         CALL JECROC(JEXNUM(MATRES//'.VALI',IBLIC))
-         CALL JEECRA(JEXNUM(MATRES//'.VALI',IBLIC),'LONMAX',LGBLOC,
-     +                K8BID)
-         DO 30 IBLIC = 2, NBLIC
-            CALL JECROC(JEXNUM(MATRES//'.VALI',IBLIC))
-  30    CONTINUE
-C
-C --- COMBINAISON LINEAIRE DES .VALI DES MATRICES :
+        CALL JEDUPO(MAT1//'.CCID',CLAS,MATRES//'.CCID',.TRUE.)
+        CALL JEDUPO(MAT1//'.CCLL',CLAS,MATRES//'.CCLL',.TRUE.)
+        CALL JEDUPO(MAT1//'.CCJJ',CLAS,MATRES//'.CCJJ',.TRUE.)
+
+
+C --- CREATION DU .CCVA DE LA MATRICE RESULTAT :
+C     ----------------------------------------
+        CALL JELIRA(MATRES//'.CCJJ','LONMAX',NCCVA,KBID)
+        CALL WKVECT(MATRES//'.CCVA',CLAS//' V '//TYPRES(1:1),NCCVA,IBID)
+
+C --- COMBINAISON LINEAIRE DES .CCVA DES MATRICES :
 C     -------------------------------------------
-        CALL CBVALI(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
-     +              LRES)
-C
+        CALL CBVALI(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,LRES)
+
+
 C --- REMISE A 1 DES TERMES DIAGONAUX DES LIGNES ELIMINEES DU .VALM :
 C     -------------------------------------------------------------
         CALL CIDIA1(TYPRES,LRES)
-C
-      ENDIF
+
+      END IF
 C
 C --- CONSTRUCTION DU DESCRIPTEUR DE LA MATRICE RESULTAT :
 C     ==================================================
@@ -242,8 +211,9 @@ C --- COMBINAISON LINEAIRE DES .CONL DES MATRICES SI NECESSAIRE :
 C     =========================================================
       IF (DDLEXC.NE.'LAGR') THEN
         CALL MTCONL(NBCOMB,TYPCST,CONST,ZI(IDLIMA),TYPRES,LRES)
+
       ELSE
-        CALL JEDETR(ZK24(ZI(LRES+1))(1:19)//'.CONL')
+        CALL JEDETR(ZK24(ZI(LRES+1)) (1:19)//'.CONL')
       END IF
 C
       CALL JEDETR('&&MTCOMB.LISPOINT')

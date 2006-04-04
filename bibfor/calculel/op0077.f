@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,10 +52,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8 PREC,ALPHA,TIME,RBID,PULS,TIMEU,TIMEV
 
       CHARACTER*1 K1BID
-      CHARACTER*4 TYPRUP(8),K4BID
+      CHARACTER*4 TYPRUP(9),K4BID
       CHARACTER*8 NOMA,MODELE,SYMECH,K8B,K8BID
       CHARACTER*8 RESU,FISS,FOND,K8BI1,CRIT,THETAI,RESULT
-      CHARACTER*16 TYPE,OPER,OPTION,NOPRUP(8),OPTIO2,TYSD
+      CHARACTER*16 TYPE,OPER,OPTION,NOPRUP(9),OPTIO2,TYSD
       CHARACTER*19 GRLT,GRLN
       CHARACTER*24 CHFOND,NOMNO,COORN,OBJMA,CHDEPL,VECORD,THETLG,VCHAR
       CHARACTER*24 TRAV1,TRAV2,TRAV3,STOK4,LISSTH,LISSG,SDTHET,K24BID
@@ -402,7 +402,7 @@ C - CREATION DE TABLE -----------------------------------------------
       ENDIF
 
       IF ( OPTION.EQ.'CALC_K_G' ) THEN
-          NBPRUP = 8
+          NBPRUP = 9
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
           NOPRUP(2) = 'INST'
@@ -419,12 +419,14 @@ C - CREATION DE TABLE -----------------------------------------------
           TYPRUP(7) = 'R'
           NOPRUP(8) = 'G_LOCAL'
           TYPRUP(8) = 'R'
+          NOPRUP(9) = 'BETA_LOCAL'
+          TYPRUP(9) = 'R'
 C          NOPRUP(8) = 'G_IRWIN'
 C          TYPRUP(8) = 'R'
       ENDIF
       
       IF ( OPTION.EQ.'K_G_MODA' ) THEN
-          NBPRUP = 7
+          NBPRUP = 8
           NOPRUP(1) = 'NUME_MODE'
           TYPRUP(1) = 'I'
           NOPRUP(2) = 'NUM_PT'
@@ -439,6 +441,8 @@ C          TYPRUP(8) = 'R'
           TYPRUP(6) = 'R'
           NOPRUP(7) = 'G_LOCAL'
           TYPRUP(7) = 'R'
+          NOPRUP(8) = 'BETA_LOCAL'
+          TYPRUP(8) = 'R'
       ENDIF
 
       CALL TBCRSD(RESULT,'G')
@@ -490,8 +494,7 @@ C=======================================================================
           DO 40 I = 1,LONVEC
             IF (NRES.NE.0) THEN
               IORD = ZI(IVEC-1+I)
-              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
-     &        RESU,IORD)
+              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,RESU,IORD)
               CALL JEVEUO(VCHAR,'L',ICHA)
               CALL RSEXCH(RESU,'DEPL',IORD,CHDEPL,IRET)
               IF (IRET.NE.0) THEN

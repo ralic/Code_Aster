@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,8 @@
 # ======================================================================
 # Calcul de l'indicateur d'erreur en thermique lineaire stationnaire (mur plan
 # en tetra10) couplee avec un remaillage sur l'erreur totale via HOMARD.
-# Cas test de non-regression informatique sur les options 'ERTH_ELEM_TEMP' 
-# (valeurs par element de l'indicateur), 'ERTH_ELNO_ELEM' (valeurs aux noeuds
+# Cas test de non-regression informatique sur les options 'ERRE_ELEM_TEMP' 
+# (valeurs par element de l'indicateur), 'ERRE_ELNO_ELEM' (valeurs aux noeuds
 # par elements) et de leurs adherence avec le processus de remaillage.
 
 #-------------------------------------------------------------------------------
@@ -66,13 +66,13 @@ for k in range(1,nbcalc):
               TOUT='OUI', 
                RESULTAT=RESU[k],
 #              INFO=2,
-              OPTION=('FLUX_ELNO_TEMP','ERTH_ELEM_TEMP','ERTH_ELNO_ELEM'))
+              OPTION=('FLUX_ELNO_TEMP','ERRE_ELEM_TEMP','ERRE_ELNO_ELEM'))
 
    IMPR_RESU( FORMAT='MED', RESU=_F( RESULTAT = RESU[k]))
 
    if ( k < nbcalc-1 ) :
 # Adaptation du maillage en se basant sur la composante ERTABS du champ
-# ERTH_ELEM_TEMP de RESU[k]. Critere de raffinement = 2%.
+# ERRE_ELEM_TEMP de RESU[k]. Critere de raffinement = 2%.
 # Ancien maillage: M[k]. Maillage raffine: M[k+1]
 #
      M[k+1]=CO('M_%d' % (k+1))
@@ -83,7 +83,7 @@ for k in range(1,nbcalc):
                        MAILLAGE_N = M[k],
                        MAILLAGE_NP1 = M[k+1],
                        RESULTAT_N = RESU[k],
-                       INDICATEUR = 'ERTH_ELEM_TEMP',
+                       INDICATEUR = 'ERRE_ELEM_TEMP',
                        NUME_ORDRE = 0,
                        NOM_CMP_INDICA = 'ERTABS',
                        CRIT_RAFF_PE = 0.02,
@@ -91,18 +91,18 @@ for k in range(1,nbcalc):
                  QUALITE='OUI',
                  INTERPENETRATION='NON' )
 
-# Tests de non-regression de ERTH_ELEM_TEMP/ERTH_ELNO_TEMP et de la
+# Tests de non-regression de ERRE_ELEM_TEMP/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0, 
-                NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'MA1', 
+                NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'MA1', 
                 POINT =1,                    PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.1591876225226E-05,
                 VERSION='V6.6',              CRITERE='RELATIF')))
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0, 
-                NOM_CHAM = 'ERTH_ELNO_ELEM', MAILLE = 'MA1',
+                NOM_CHAM = 'ERRE_ELNO_ELEM', MAILLE = 'MA1',
                 NOEUD = 'NO4',               PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.1591876225226E-05,
@@ -112,7 +112,7 @@ TEST_RESU(RESU=(
 # La maille M25 ==> MP
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[2],          NUME_ORDRE = 0, 
-                NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'MP', 
+                NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'MP', 
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.3627678192699E-05,  PRECISION = 1.E-5,

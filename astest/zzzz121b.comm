@@ -1,5 +1,5 @@
 
-# MODIF  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,10 +116,10 @@ RESUZERO=MECA_STATIQUE(MODELE=MODEZERO,
 
 RESUZERO=CALC_ELEM(reuse =RESUZERO,
                    RESULTAT=RESUZERO,
-                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELGA_NORE',),);
+                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
 #
 # 3.7. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_3d_cube_d2 A L'ITERATION 0
-###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUZERO, NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST' ) ) ;
+###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUZERO, NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST' ) ) ;
 ###IMPR_RESU ( RESU=_F( RESULTAT=RESUZERO ) ) ;
 
 #
@@ -130,7 +130,7 @@ MACR_ADAP_MAIL(LANGUE='ANGLAIS',
                              MAILLAGE_N=MZERO,
                              MAILLAGE_NP1=CO('MUN'),
                              RESULTAT_N=RESUZERO,
-                             INDICATEUR='ERRE_ELGA_NORE',
+                             INDICATEUR='ERRE_ELEM_SIGM',
                              NOM_CMP_INDICA='ERREST',
                              CRIT_RAFF_REL=0.9,),
                QUALITE='OUI',
@@ -194,7 +194,7 @@ RESUUN=MECA_STATIQUE(MODELE=MODEUN,
 
 RESUUN=CALC_ELEM(reuse =RESUUN,
                  RESULTAT=RESUUN,
-                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELGA_NORE',),);
+                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
 #
 # 5.7. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_3d_cube_d2 A L'ITERATION 1
 #
@@ -241,7 +241,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUUN,
 INDIC=CREA_CHAMP(TYPE_CHAM='ELEM_ERREUR',
                  OPERATION='EXTR',
                  RESULTAT=RESUUN,
-                 NOM_CHAM='ERRE_ELGA_NORE',
+                 NOM_CHAM='ERRE_ELEM_SIGM',
                  NUME_ORDRE=1,);
 #
 

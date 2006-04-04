@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,11 +47,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NNO,NNOS,JGANO,NDIM,KP,NPG,IPOIDS,IVF,IDFDE,IGEOM
       INTEGER IVECTU,K,I,IFORC,II,IRET
       REAL*8 POIDS,R,FX,FY,NX,NY
-
+      LOGICAL LTEATT,LAXI
       INTEGER IADZI,IAZK24,J
 C     ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PVECTUR','E',IVECTU)
@@ -77,7 +79,7 @@ C        --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
           FY = FY + ZR(IFORC+II+1)*ZR(IVF+K+I-1)
    10   CONTINUE
 
-        IF (NOMTE(3:4).EQ.'AX') THEN
+        IF (LAXI) THEN
           R = 0.D0
           DO 20 I = 1,NNO
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)

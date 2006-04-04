@@ -1,11 +1,13 @@
-      SUBROUTINE ZZGLOB ( CHAMP, OPTION, IORD, TIME, RESUCO )
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IORD
-      REAL*8              TIME
-      CHARACTER*(*)       CHAMP, OPTION, RESUCO
+      SUBROUTINE ZZGLOB (CHAMP,OPTION,IORD,TIME,RESUCO,RESUC1)
+      IMPLICIT NONE
+      INTEGER IORD
+      REAL*8 TIME
+      CHARACTER*(*) RESUCO
+      CHARACTER*19 RESUC1
+      CHARACTER*(*) CHAMP,OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,14 +24,30 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-C     BUT :  CALCULER LES ESTIMATEURS GLOBAUX
-C            A PARTIR DES ESTIMATEURS LOCAUX CONTENUS DANS CHAMP
 C
-C IN  : CHAMP  :  NOM DU CHAM_ELEM_ERREUR
-C IN  : OPTION : 'ERRE_ELEM_NOZ1' OU 'ERRE_ELEM_NOZ2'OU 'ERRE_ELGA_NORE'
-C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C     BUT:
+C         CALCULER LES ESTIMATEURS GLOBAUX A PARTIR DES ESTIMATEURS
+C         LOCAUX CONTENUS DANS CHAMP.
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   CHAMP  :  NOM DU CHAM_ELEM_ERREUR
+C IN   OPTION : 'ERZ1_ELEM_SIGM' OU 'ERZ2_ELEM_SIGM'OU 'ERRE_ELEM_SIGM'
+C IN   IORD   :  NUMERO D'ORDRE
+C IN   TIME   :  INSTANT DE CALCUL
+C IN   RESUCO :  NOM DU CONCEPT ENTRANT
+C IN   RESUC1 :  NOM DU CONCEPT RESULTAT DE LA COMMANDE CALC_ERREUR
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+
+C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -45,15 +63,29 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
-C     ------------------------------------------------------------------
-      INTEGER       IFI, NBGREL, NBELEM, DIGDEL, LONGT, LONG2, MODE, J
-      REAL*8        NU0, NUVO, NUSA, NUNO, TERMVO, TERMSA, TERMNO
-      REAL*8        RZERO, ERR, ERR0, NORS, NORV, NUEX, THETA
-      REAL*8        Q, NORSEL, NORSUP, ERRSIG
-      LOGICAL       FIRST
-      CHARACTER*4   CVAL, DOCU
-      CHARACTER*8   SCAL,SCALAI
-      CHARACTER*19  CHAMP2, LIGREL
+C
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER IFI,NBGREL,NBELEM,DIGDEL,IBID,LIG,NEL,NBEL
+      INTEGER LONGT,LONG2,MODE,K,J,VALI,IRET,IAD,IDECGR,IAVALE
+      INTEGER ICOEF,NBGR,JCELD,IACELK,IUNIFI,LADPA
+
+      REAL*8 RZERO,ERR,ERR0,NORS,NORV,NUEX,THETA
+      REAL*8 Q,NORSEL,NORSUP,ERRSIG,VALR,LISTR(3)
+      REAL*8 NU0,NUVO,NUSA,NUNO,TERMVO,TERMSA,TERMNO
+
+      CHARACTER*1 KBID,VALK
+      CHARACTER*4 CVAL,DOCU
+      CHARACTER*8 SCAL,SCALAI,TYP,LISTT(4),K8BID
+      CHARACTER*16 LISTK(4)
+      CHARACTER*19 CHAMP2,LIGREL
+      CHARACTER*19 NOMT19
+      
+      COMPLEX*16 CBID,VALC
+      
+      LOGICAL FIRST
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       IFI    = IUNIFI('RESULTAT')
@@ -98,6 +130,7 @@ C     ----------------------------
 C
 C        -- ON CUMULE :
 C        --------------
+
          CALL JEVEUO (CHAMP2//'.CELV','E',IAVALE)
 C
          ERR0 = 0.D0
@@ -108,7 +141,7 @@ C
          NBEL = 0
          DO 2 ,J = 1,NBGR
             MODE=ZI(JCELD-1+ZI(JCELD-1+4+J) +2)
-            IF (MODE.EQ.0 ) GOTO 2
+            IF (MODE.EQ.0) GOTO 2
             NEL = NBELEM(LIGREL,J)
             IDECGR=ZI(JCELD-1+ZI(JCELD-1+4+J)+8)
             DO 3 , K = 1,NEL
@@ -121,37 +154,135 @@ C
                NBEL = NBEL + 1
  3          CONTINUE
 2        CONTINUE
-      NU0    = 100.D0*SQRT(ERR0/(ERR0+NORS))
-      ERR0   = SQRT(ERR0)
-      NUVO   = 100.D0*SQRT(TERMVO/(TERMVO+NORS))
-      TERMVO = SQRT(TERMVO)
-      NUSA   = 100.D0*SQRT(TERMSA/(TERMSA+NORS))
-      TERMSA = SQRT(TERMSA)
-      NUNO   = 100.D0*SQRT(TERMNO/(TERMNO+NORS))
-      TERMNO = SQRT(TERMNO)
-      NORS   = SQRT(NORS)
-C
-      WRITE(IFI,*) ' '
-      WRITE(IFI,*) '**********************************************'
-      IF(OPTION(1:14).EQ.'ERRE_ELEM_NOZ1') THEN
-         WRITE(IFI,*) ' MECANIQUE: ESTIMATEUR D''ERREUR ZZ1'
-      ELSEIF(OPTION(1:14).EQ.'ERRE_ELEM_NOZ2') THEN
-         WRITE(IFI,*) ' MECANIQUE: ESTIMATEUR D''ERREUR ZZ2'
-      ELSEIF(OPTION(1:14).EQ.'ERRE_ELGA_NORE') THEN
-         WRITE(IFI,*) ' MECANIQUE: ESTIMATEUR D''ERREUR EN RESIDU'
+      IF(OPTION(1:14).EQ.'QIRE_ELEM_SIGM') THEN
+        ERR0   = SQRT(ERR0)
+        TERMVO = SQRT(TERMVO)
+        TERMSA = SQRT(TERMSA)
+        TERMNO = SQRT(TERMNO)
+      ELSE  
+        NU0    = 100.D0*SQRT(ERR0/(ERR0+NORS))
+        ERR0   = SQRT(ERR0)
+        NUVO   = 100.D0*SQRT(TERMVO/(TERMVO+NORS))
+        TERMVO = SQRT(TERMVO)
+        NUSA   = 100.D0*SQRT(TERMSA/(TERMSA+NORS))
+        TERMSA = SQRT(TERMSA)
+        NUNO   = 100.D0*SQRT(TERMNO/(TERMNO+NORS))
+        TERMNO = SQRT(TERMNO)
+        NORS   = SQRT(NORS)
       ENDIF
-      WRITE(IFI,*) '**********************************************'
+C
+C        -- ON ECRIT LES TERMES DANS LES PARAMETRES DE LA SD RESULTAT :
+C        -----------------------------------
+
+      IF(OPTION(1:14).EQ.'QIRE_ELEM_SIGM') THEN
+       CALL RSADPA(RESUC1,'E',1,'ERREUR_ABSOLUE',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=ERR0
+       CALL RSADPA(RESUC1,'E',1,'TERME_VOLU_ABSO',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=TERMVO
+       CALL RSADPA(RESUC1,'E',1,'TERME_SAUT_ABSO',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=TERMSA
+       CALL RSADPA(RESUC1,'E',1,'TERME_NORM_ABSO',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=TERMNO
+      ELSE  
+       CALL RSADPA(RESUC1,'E',1,'ERREUR_ABSOLUE',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=ERR0
+       CALL RSADPA(RESUC1,'E',1,'ERREUR_RELATIVE',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=NU0
+       CALL RSADPA(RESUC1,'E',1,'NORME_SIGMA',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=NORS
+       CALL RSADPA(RESUC1,'E',1,'TERME_VOLU_ABSO',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=TERMVO
+       CALL RSADPA(RESUC1,'E',1,'TERME_VOLU_RELA',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=NUVO
+       CALL RSADPA(RESUC1,'E',1,'TERME_SAUT_ABSO',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=TERMSA
+       CALL RSADPA(RESUC1,'E',1,'TERME_SAUT_RELA',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=NUSA
+       CALL RSADPA(RESUC1,'E',1,'TERME_NORM_ABSO',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=TERMNO
+       CALL RSADPA(RESUC1,'E',1,'TERME_NORM_RELA',IORD,0,LADPA,K8BID)
+       ZR(LADPA)=NUNO
+      ENDIF
+C
+C        -- ON CREE LA TABLE DES RESULTATS :
+C        -----------------------------------
+
+      LISTK(1)='NUME_ORDR'
+      LISTK(2)='ERRE_RELA'
+      LISTK(3)='ERRE_ABSO'
+      LISTK(4)='NORM_SIGM'
+      LISTT(1)='I'
+      LISTT(2)='R'
+      LISTT(3)='R'
+      LISTT(4)='R'      
+
+      CALL JEEXIN(RESUC1//'.LTNT',IRET)
+      IF (IRET.EQ.0) CALL LTCRSD(RESUC1,'G')
+
+      NOMT19 = ' '
+      CALL LTNOTB(RESUC1,'ESTI_GLOB',NOMT19)
+      CALL JEEXIN(NOMT19//'.TBBA',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL TBCRSD(NOMT19,'G')
+        CALL TBAJPA (NOMT19,4,LISTK,LISTT)          
+      ENDIF
+
+      LISTR(1)=NU0
+      LISTR(2)=ERR0
+      LISTR(3)=NORS
+
+      CALL TBAJLI (NOMT19,4,LISTK,IORD,LISTR,CBID,KBID,0)
+            
+      CALL TBIMPR (NOMT19,'        ','EXCEL',10,4,
+     &                    LISTK,0,' ','1PE12.5',' ')
+     
+      WRITE(IFI,*) ' '
+      WRITE(IFI,*) '***************************************************'
+      IF(OPTION(1:14).EQ.'ERZ1_ELEM_SIGM') THEN
+         WRITE(IFI,*) ' MECANIQUE : ESTIMATEUR D''ERREUR ZZ1'
+      ELSEIF(OPTION(1:14).EQ.'ERZ2_ELEM_SIGM') THEN
+         WRITE(IFI,*) ' MECANIQUE : ESTIMATEUR D''ERREUR ZZ2'
+      ELSEIF(OPTION(1:14).EQ.'ERRE_ELEM_SIGM') THEN
+         WRITE(IFI,*) ' MECANIQUE : ESTIMATEUR D''ERREUR EN RESIDU '
+     &                 //'EXPLICITE'
+      ELSEIF(OPTION(1:14).EQ.'QIRE_ELEM_SIGM') THEN
+         WRITE(IFI,*) ' MECANIQUE : ESTIMATEUR D''ERREUR EN QUANTITE '
+     &                 //'D''INTERET'
+         WRITE(IFI,*) '             - METHODE RESIDU EXPLICITE -'
+      ELSEIF(OPTION(1:14).EQ.'QIZ1_ELEM_SIGM') THEN
+         WRITE(IFI,*) ' MECANIQUE : ESTIMATEUR D''ERREUR EN QUANTITE '
+     &                 //'D''INTERET'
+         WRITE(IFI,*) '             - METHODE ZZ1 -'
+      ELSEIF(OPTION(1:14).EQ.'QIZ2_ELEM_SIGM') THEN
+         WRITE(IFI,*) ' MECANIQUE : ESTIMATEUR D''ERREUR EN QUANTITE '
+     &                 //'D''INTERET'
+         WRITE(IFI,*) '             - METHODE ZZ2 -'
+      ENDIF
+      WRITE(IFI,*) '***************************************************'
 
       WRITE(IFI,111)'SD RESULTAT: ',RESUCO
       WRITE(IFI,110)' NUMERO D''ORDRE: ',IORD
       WRITE(IFI,109)' INSTANT: ',TIME
+
+      IF(OPTION(1:14).EQ.'QIRE_ELEM_SIGM') THEN
+      WRITE(IFI,*)'ERREUR            ABSOLUE'
+        WRITE(IFI,108)' TOTALE          ',ERR0
+        WRITE(IFI,108)' TERME VOLUMIQUE ',TERMVO
+        WRITE(IFI,108)' TERME SAUT      ',TERMSA
+        WRITE(IFI,108)' TERME NORMAL    ',TERMNO
+      ELSE IF ((OPTION(1:14).EQ.'ERZ1_ELEM_SIGM').OR.
+     &         (OPTION(1:14).EQ.'ERZ2_ELEM_SIGM')) THEN
       WRITE(IFI,*)'ERREUR            ABSOLUE'//
      &            '         RELATIVE   NORME DE SIGMA'
-
-      WRITE(IFI,108)' TOTALE          ',ERR0,NU0,NORS
-      WRITE(IFI,108)' TERME VOLUMIQUE ',TERMVO,NUVO
-      WRITE(IFI,108)' TERME SAUT      ',TERMSA,NUSA
-      WRITE(IFI,108)' TERME NORMAL    ',TERMNO,NUNO
+        WRITE(IFI,108)' TOTALE          ',ERR0,NU0,NORS
+      ELSE
+      WRITE(IFI,*)'ERREUR            ABSOLUE'//
+     &            '         RELATIVE   NORME DE SIGMA'
+        WRITE(IFI,108)' TOTALE          ',ERR0,NU0,NORS
+        WRITE(IFI,108)' TERME VOLUMIQUE ',TERMVO,NUVO
+        WRITE(IFI,108)' TERME SAUT      ',TERMSA,NUSA
+        WRITE(IFI,108)' TERME NORMAL    ',TERMNO,NUNO
+      ENDIF
 C
 101   FORMAT(5X,'ERREUR RELATIVE ESTIMEE = ',F7.3,' %')
 104   FORMAT(5X,'ERREUR ABSOLUE ESTIMEE  =  ',D10.3)

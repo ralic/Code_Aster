@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,7 @@ RESU=CALC_ELEM(     reuse=RESU,
                                 
                             TOUT_ORDRE='OUI',
                                 OPTION=( 'SIRE_ELNO_DEPL',
-                                         'ERRE_ELGA_NORE',
+                                         'ERRE_ELEM_SIGM',
                                         ),
                               RESULTAT=RESU
                         )
@@ -150,35 +150,35 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.6),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M10',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.2),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M11',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.03),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M20',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.01),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.01),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M10',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.01),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M11',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.001),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
           MAILLE = 'M20',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.0001))

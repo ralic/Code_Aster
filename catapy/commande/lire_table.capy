@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ LIRE_TABLE=MACRO(nom="LIRE_TABLE",op=lire_table_ops,sd_prod=table_sdaster,
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER",),defaut="ASTER"),
          NUME_TABLE      =SIMP(statut='f',typ='I',defaut=1),
-         SEPARATEUR      =SIMP(statut='o',typ='TXM'),
+         SEPARATEUR      =SIMP(statut='f',typ='TXM',defaut=' '),
          PARA            =SIMP(statut='f',typ='TXM',max='**'),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          )  ;

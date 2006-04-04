@@ -1,9 +1,9 @@
-      SUBROUTINE VERELI(NBCOMB, LMAT, IER)
+      SUBROUTINE VERELI(NBCOMB,LMAT,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           NBCOMB,LMAT(*),IER
+      INTEGER NBCOMB,LMAT(*),IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,127 +34,100 @@ C
 C     -----------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32  JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     -----------------------------------------------------------------
-      CHARACTER*19  MATI
+      CHARACTER*19 MATI
 C     -----------------------------------------------------------------
       CALL JEMARQ()
-      IER    = 0
+      IER = 0
 C
-      NEQ    = ZI(LMAT(1)+2)
+      NEQ = ZI(LMAT(1)+2)
       NBDDL1 = ZI(LMAT(1)+7)
-      NBLIC1 = ZI(LMAT(1)+18)
 C
       IF (NBDDL1.EQ.0) THEN
-            CALL UTMESS('F','VERELI','LA PREMIERE MATRICE DE LA LISTE'//
-     +                  ' NE COMPORTE PAS DE DDLS ELIMINES, LA '//
-     +                  'ROUTINE EST DONC INOPERANTE, ELLE NE DOIT '//
-     +                  'ETRE APPELEE QUE LORSQUE LES MATRICES A '//
-     +                  'COMPARER ONT TOUTES DES DDLS ELIMINES.')
-      ENDIF
+        CALL UTMESS('F','VERELI','LA PREMIERE MATRICE DE LA LISTE'//
+     &              ' NE COMPORTE PAS DE DDLS ELIMINES, LA '//
+     &              'ROUTINE EST DONC INOPERANTE, ELLE NE DOIT '//
+     &              'ETRE APPELEE QUE LORSQUE LES MATRICES A '//
+     &              'COMPARER ONT TOUTES DES DDLS ELIMINES.')
+      END IF
 C
-      CALL WKVECT('&&VERELI.CONI','V V I',NBCOMB,ICONI)
-      CALL WKVECT('&&VERELI.LLIG','V V I',NBCOMB,ILLIG)
-      CALL WKVECT('&&VERELI.ABLI','V V I',NBCOMB,IABLI)
-      CALL WKVECT('&&VERELI.ALIG','V V I',NBCOMB,IALIG)
+      CALL WKVECT('&&VERELI.CCID','V V I',NBCOMB,JCCID)
+      CALL WKVECT('&&VERELI.CCLL','V V I',NBCOMB,JCCLL)
 C
-      DO 10 I =1, NBCOMB
-         MATI = ZK24(ZI(LMAT(I)+1))
-         CALL JEEXIN(MATI//'.CONI',IEXI)
-         IF (IEXI.EQ.0) CALL UTMESS('F','VERELI','LA MATRICE: '//
-     & MATI//' DOIT AVOIR DES DDLS ELIMINES (AFFE_CHAR_CINE).')
-         CALL JEVEUO(MATI//'.CONI','L',ZI(ICONI+I-1))
-         CALL JEVEUO(MATI//'.LLIG','L',ZI(ILLIG+I-1))
-         CALL JEVEUO(MATI//'.ABLI','L',ZI(IABLI+I-1))
-         CALL JEVEUO(MATI//'.ALIG','L',ZI(IALIG+I-1))
-  10  CONTINUE
+      DO 10 I = 1,NBCOMB
+        MATI = ZK24(ZI(LMAT(I)+1))
+        CALL JEEXIN(MATI//'.CCID',IEXI)
+        IF (IEXI.EQ.0) CALL UTMESS('F','VERELI','LA MATRICE: '//MATI//
+     &                 ' DOIT AVOIR DES DDLS ELIMINES (AFFE_CHAR_CINE).'
+     &                             )
+        CALL JEVEUO(MATI//'.CCID','L',ZI(JCCID+I-1))
+        CALL JEVEUO(MATI//'.CCLL','L',ZI(JCCLL+I-1))
+   10 CONTINUE
 C
 C--- VERIFICATION DE L'EGALITE DES DIFFERENTS ATTRIBUTS
 C--- CONCERNANT LES DDLS ELIMINES DES MATRICES A COMPARER
 C
-      DO 20 I =2, NBCOMB
-            NBDDLI = ZI(LMAT(I)+7)
-            IF (NBDDL1.NE.NBDDLI) THEN
-                  IER = IER + 1
-                  CALL UTMESS('I','VERELI','LES NOMBRES DE DDLS'//
-     +                        ' ELIMINES DES MATRICES A COMPARER'//
-     +                        ' SONT DIFFERENTS')
-                  GOTO 9999
-            ENDIF
+      DO 60 I = 2,NBCOMB
+        NBDDLI = ZI(LMAT(I)+7)
+        IF (NBDDL1.NE.NBDDLI) THEN
+          IER = IER + 1
+          CALL UTMESS('I','VERELI','LES NOMBRES DE DDLS'//
+     &                ' ELIMINES DES MATRICES A COMPARER'//
+     &                ' SONT DIFFERENTS')
+          GO TO 80
+
+        END IF
 C
-            NBLIC = ZI(LMAT(I)+18)
-            IF (NBLIC1.NE.NBLIC) THEN
-                  IER = IER + 1
-                  CALL UTMESS('I','VERELI','LES NOMBRES DE BLOCS'//
-     +                        ' DES .VALI DES MATRICES A COMPARER'//
-     +                        ' SONT DIFFERENTS')
-                  GOTO 9999
-            ENDIF
 C
-            DO 30 J =1, NEQ
-               IF (ZI(ZI(ICONI+1-1)+J-1).NE.ZI(ZI(ICONI+I-1)+J-1)) THEN
-                  IER = IER + 1
-                  CALL UTMESS('I','VERELI','LES MATRICES COMPORTENT'//
-     +                        ' DES DDLS ELIMINES DIFFERENTS')
-                  GOTO 9999
-               ENDIF
-  30        CONTINUE
+        DO 20 J = 1,NEQ
+          IF (ZI(ZI(JCCID+1-1)+J-1).NE.ZI(ZI(JCCID+I-1)+J-1)) THEN
+            IER = IER + 1
+            CALL UTMESS('I','VERELI','LES MATRICES COMPORTENT'//
+     &                  ' DES DDLS ELIMINES DIFFERENTS')
+            GO TO 80
+
+          END IF
+
+   20   CONTINUE
 C
-            DO 40 J =1, 3*NBDDLI+1
-               IF (ZI(ZI(ILLIG+1-1)+J-1).NE.ZI(ZI(ILLIG+I-1)+J-1)) THEN
-                  IER = IER + 1
-                  CALL UTMESS('I','VERELI','LES MATRICES ONT'//
-     +                        ' DES .LLIG DIFFERENTS')
-                  GOTO 9999
-               ENDIF
-  40        CONTINUE
+        DO 30 J = 1,3*NBDDLI + 1
+          IF (ZI(ZI(JCCLL+1-1)+J-1).NE.ZI(ZI(JCCLL+I-1)+J-1)) THEN
+            IER = IER + 1
+            CALL UTMESS('I','VERELI','LES MATRICES ONT'//
+     &                  ' DES .CCLL DIFFERENTS')
+            GO TO 80
+
+          END IF
+
+   30   CONTINUE
 C
-            DO 50 J =1, NBLIC+1
-               IF (ZI(ZI(IABLI+1-1)+J-1).NE.ZI(ZI(IABLI+I-1)+J-1)) THEN
-                  IER = IER + 1
-                  CALL UTMESS('I','VERELI','LES MATRICES ONT'//
-     +                        ' DES .ABLI DIFFERENTS')
-                  GOTO 9999
-               ENDIF
-  50        CONTINUE
+   60 CONTINUE
 C
-            DO 60 J =1, NBDDLI
-               IF (ZI(ZI(IALIG+1-1)+J-1).NE.ZI(ZI(IALIG+I-1)+J-1)) THEN
-                  IER = IER + 1
-                  CALL UTMESS('I','VERELI','LES MATRICES ONT'//
-     +                        ' DES .ALIG DIFFERENTS')
-                  GOTO 9999
-               ENDIF
-  60        CONTINUE
+      DO 70 I = 1,NBCOMB
+        MATI = ZK24(ZI(LMAT(I)+1))
+   70 CONTINUE
 C
-  20  CONTINUE
+   80 CONTINUE
 C
-      DO 70 I =1, NBCOMB
-         MATI = ZK24(ZI(LMAT(I)+1))
-  70  CONTINUE
-C
- 9999 CONTINUE
-C
-      CALL JEDETR('&&VERELI.CONI')
-      CALL JEDETR('&&VERELI.LLIG')
-      CALL JEDETR('&&VERELI.ABLI')
-      CALL JEDETR('&&VERELI.ALIG')
+      CALL JEDETR('&&VERELI.CCID')
+      CALL JEDETR('&&VERELI.CCLL')
 C
       CALL JEDEMA()
       END

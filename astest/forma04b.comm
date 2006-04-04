@@ -1,4 +1,4 @@
-# MODIF  DATE 25/02/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,10 +180,10 @@ for num_calc in range(0,nb_calc1) :
 # LISSAGE DES CONTRAINTES SI MECA_STATIQUE
 #                       'SIGM_ELNO_DEPL',
 # CALCUL DE L'INDICATEUR ZZ1 PAR ELEM
-                       'ERRE_ELEM_NOZ1',
+                       'ERZ1_ELEM_SIGM',
 # CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
-                       'ERRE_ELGA_NORE',
-                       'ERRE_ELNO_ELGA',),);
+                       'ERRE_ELEM_SIGM',
+                       'ERRE_ELNO_ELEM',),);
                           
 # IMPRESSION FORMAT CASTEM I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
@@ -191,7 +191,7 @@ for num_calc in range(0,nb_calc1) :
             RESU=_F(MAILLAGE=MA[num_calc],
                     RESULTAT=DEPLA[num_calc],
                     NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',
-                              'ERRE_ELNO_ELGA')
+                              'ERRE_ELNO_ELEM')
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
 

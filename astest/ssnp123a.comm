@@ -1,4 +1,4 @@
-# MODIF  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,8 +83,8 @@ RESU=CALC_ELEM(reuse =RESU,
                
                RESULTAT=RESU,
                OPTION=('SIEF_ELNO_ELGA',
-                       'ERRE_ELGA_NORE',
-                       'ERRE_ELNO_ELGA',
+                       'ERRE_ELEM_SIGM',
+                       'ERRE_ELNO_ELEM',
                       ),
                );
 
@@ -165,7 +165,7 @@ TEST_TABLE(TABLE=S_T,
 TEST_RESU(RESU=(             
            _F( RESULTAT = RESU,
                INST = 1.,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               NOM_CHAM = 'ERRE_ELEM_SIGM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.0001,
                POINT = 1,
@@ -179,7 +179,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = RESU,
                INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               NOM_CHAM = 'ERRE_ELNO_ELEM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.0001,
                NOEUD= 'N6',

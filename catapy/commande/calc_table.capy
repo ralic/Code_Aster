@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,13 +43,16 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                       fr="Sélectionne les lignes de la table vérifiant un critère",
          NOM_PARA  = SIMP(statut='o',typ='TXM'),
          CRIT_COMP = SIMP(statut='f',typ='TXM',defaut="EQ",
-                          into=("EQ","LT","GT","NE","LE","GE","VIDE",
-                                "NON_VIDE","MAXI","ABS_MAXI","MINI","ABS_MINI"),),
+                          into=('EQ','NE','GT','LT','GE','LE','REGEXP',
+                                'VIDE','NON_VIDE','MAXI','ABS_MAXI','MINI','ABS_MINI'),),
          b_vale = BLOC(condition = "(CRIT_COMP in ('EQ','NE','GT','LT','GE','LE'))",
             regles=(UN_PARMI('VALE','VALE_I','VALE_K','VALE_C',),),
             VALE   = SIMP(statut='f',typ='R'),
             VALE_I = SIMP(statut='f',typ='I'),
             VALE_C = SIMP(statut='f',typ='C'),
+            VALE_K = SIMP(statut='f',typ='TXM'),
+         ),
+         b_regexp = BLOC(condition = "CRIT_COMP == 'REGEXP'",
             VALE_K = SIMP(statut='f',typ='TXM'),
          ),
          b_crit = BLOC(condition = "CRIT_COMP in ('EQ','NE')",
@@ -95,6 +98,9 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
       ),
    ),
    
+   SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),max=1,
+                      fr="Paramètre de sensibilité",
+                      ang="Sensitivity parameter"),
    TITRE = SIMP(statut='f',typ='TXM',max='**',
                 fr="Titre de la table produite"),
    INFO  = SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

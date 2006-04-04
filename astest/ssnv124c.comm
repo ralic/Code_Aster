@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DE CHARGE LIMITE EN AXI - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,157 +17,120 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-#
 
-DEBUT(   CODE=_F(  NOM = 'SSNV124C',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNV124C',
+              NIV_PUB_WEB='INTERNET',),);
 
-PRE_GIBI()
+PRE_GIBI();
 
-MA=LIRE_MAILLAGE(   )
+MA=LIRE_MAILLAGE();
 
-MA=DEFI_GROUP(reuse=MA,   MAILLAGE=MA,
-                   CREA_GROUP_NO=_F(  GROUP_MA = ('LAB', 'LBC', 'LDA',))
-                 )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA=('LAB','LBC','LDA',),),);
 
-MA = DEFI_GROUP(reuse = MA,
-  MAILLAGE = MA,
-  CREA_GROUP_MA = _F(
-    NOM  = 'MATIERE', 
-    TOUT = 'OUI'
-    ),
-  CREA_GROUP_NO = _F(
-    NOM        = 'SOMMETS',
-    GROUP_MA   = 'MATIERE',
-    CRIT_NOEUD = 'SOMMET'
-    )
-  )
- 
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='MATIERE',
+                               TOUT='OUI',),
+              CREA_GROUP_NO=_F(GROUP_MA='MATIERE',
+                               NOM='SOMMETS',
+                               CRIT_NOEUD='SOMMET',),);
 
-MO=AFFE_MODELE(   MAILLAGE=MA,
-                         AFFE=_F(  TOUT = 'OUI',
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = 'AXIS_INCO')
-                  )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS_INCO',),);
 
-CM=DEFI_MATERIAU(
-  ECRO_LINE=_F(SY=10, D_SIGM_EPSI = 0)
-  )
+CM=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0,
+                              SY=10,),);
 
-CHMAT=AFFE_MATERIAU(     MAILLAGE=MA,
-                                AFFE=_F(  TOUT = 'OUI',
-                                       MATER = CM)
-                         )
-
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=CM,),);
 # ----------- CONDITIONS AUX LIMITES --------------------------------
 
+CH_CL=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=(_F(GROUP_NO='LBC',
+                                  DY=0.0,),
+                               _F(GROUP_NO='LDA',
+                                  DY=0.0,),),);
 
-CH_CL=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
-                          
-                                _F(  GROUP_NO = 'LBC',       DY = 0.E0),
-                                _F(  GROUP_NO = 'LDA',       DY = 0.E0))
-                        )
-
-INCOMP = AFFE_CHAR_MECA(
-  MODELE   = MO,
-  DDL_IMPO = _F(GROUP_NO='SOMMETS', GONF=0)
-  )
-  
+INCOMP=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='SOMMETS',
+                                  GONF=0,),);
 # ----------- CHARGEMENT A PILOTER ----------------------------------
 
-CH1=AFFE_CHAR_MECA(    MODELE=MO,
-                         FORCE_CONTOUR=_F( GROUP_MA = 'LAB',
-                                         FX = 1.)
-                        )
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_CONTOUR=_F(GROUP_MA='LAB',
+                                    FX=1.0,),);
 
-
-L_INST=DEFI_LIST_REEL(         DEBUT=0.0,
-                            INTERVALLE=_F( JUSQU_A = 1.69897,   NOMBRE = 1)
-                         )
-
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.69897,
+                                    NOMBRE=1,),);
 # -------------- CALCUL AVEC LA LOI DE NORTON-HOFF -----------------
 
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CH_CL,),
+                          _F(CHARGE=INCOMP,),
+                          _F(CHARGE=CH1,
+                             TYPE_CHARGE='FIXE_PILO',),),
+                   COMP_INCR=_F(RELATION='NORTON_HOFF',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   PILOTAGE=_F(TYPE='ANA_LIM',),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-05,
+                                  ITER_GLOB_MAXI=15,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              RENUM='MDA',),);
 
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 
-RESU=STAT_NON_LINE( 
-  MODELE=MO,
-  CHAM_MATER=CHMAT,
-  EXCIT=(
-    _F(CHARGE = CH_CL),
-    _F(CHARGE = INCOMP),
-    _F(CHARGE = CH1,TYPE_CHARGE='FIXE_PILO')
-    ),
-  COMP_INCR=_F(RELATION = 'NORTON_HOFF'),
-  INCREMENT=_F(LIST_INST = L_INST),
-  NEWTON=_F( 
-    MATRICE = 'TANGENTE',
-    REAC_ITER = 1
-    ),
-  PILOTAGE=_F(TYPE='ANA_LIM'),
-  CONVERGENCE=_F( 
-    RESI_GLOB_MAXI = 1.E-5,
-    ITER_GLOB_MAXI = 15
-    ),
-  SOLVEUR=_F( 
-    METHODE = 'MULT_FRONT',
-    RENUM = 'MDA'
-    )
-  )
-
-RESU=CALC_ELEM( reuse =RESU,
-  
-  OPTION = ('SIEF_ELNO_ELGA',
-            'ERRE_ELGA_NORE','ERRE_ELNO_ELGA',),
-  RESULTAT=RESU
-  )
-
-ECHL = POST_ELEM(
-  RESULTAT = RESU,
-  CHAR_LIMITE=_F()
-  )
-
+ECHL=POST_ELEM(CHAR_LIMITE=_F(),
+               RESULTAT=RESU,);
 #--------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
 
-TEST_TABLE(      TABLE=ECHL,
-               NOM_PARA='CHAR_LIMI_SUP',
-                   VALE=12.685    )
+TEST_TABLE(TABLE=ECHL,
+           NOM_PARA='CHAR_LIMI_SUP',
+           VALE=12.685,);
 
-TEST_TABLE(      TABLE=ECHL,
-               NOM_PARA='CHAR_LIMI_ESTIM',
-              PRECISION=2.E-02,
-                   VALE=8.5545   )
+TEST_TABLE(TABLE=ECHL,
+           NOM_PARA='CHAR_LIMI_ESTIM',
+           VALE=8.5545,
+           PRECISION=0.02,);
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 #--------------------------------------------------------------------------------
 
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  INST=1.69897,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='NUEST',
+                  MAILLE='M41',
+                  POINT=1,
+                  VALE=9.87426561489,
+                  CRITERE='RELATIF',
+                  PRECISION=0.001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU,
-               INST = 1.69897,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.001,
-               POINT = 1,
-               MAILLE='M41',    
-               NOM_CMP = 'NUEST',      
-               VALE = 6.2826085308032, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  INST=1.69897,
+                  NOM_CHAM='ERRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M41',
+                  NOEUD='N1',
+                  VALE=0.356675365955,
+                  CRITERE='RELATIF',
+                  PRECISION=0.001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.2.15',),);
 
-TEST_RESU(RESU=(             
-           _F( RESULTAT = RESU,
-               INST = 1.69897,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.001,
-               NOEUD= 'N1',
-               MAILLE='M41',    
-               NOM_CMP = 'ERREST',      
-               VALE = 2.2627653112346E-01, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
-             ),
-            );
-FIN()
+FIN();

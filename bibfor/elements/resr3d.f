@@ -1,6 +1,6 @@
       SUBROUTINE RESR3D ( ROTA, COOR, FF, RHO, NNO, NPG, FRX, FRY, FRZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DE LA FORCE 3D DUE A UN TERME DE
 C                          ROTATION
-C                          POUR L'OPTION : 'ERRE_ELGA_NORE'
+C                          POUR L'OPTION : 'ERRE_ELEM_SIGM'
 C                             (ESTIMATEUR EN RESIDU)
 C
 C    - ARGUMENTS:

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,8 +133,8 @@ EVOL = CALC_ELEM (reuse=EVOL,
               OPTION= (
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
-               'ERRE_ELGA_NORE',
-               'ERRE_ELNO_ELGA',
+               'ERRE_ELEM_SIGM',
+               'ERRE_ELNO_ELEM',
            ),   ) ;
 
 EVOL = CALC_NO (reuse=EVOL,
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = EVOL,
                INST = 1.,  
-               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               NOM_CHAM = 'ERRE_ELEM_SIGM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.0001,
                POINT = 1,
@@ -217,7 +217,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(             
            _F( RESULTAT = EVOL,
                INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               NOM_CHAM = 'ERRE_ELNO_ELEM',   
                CRITERE = 'RELATIF',    
                PRECISION = 0.0001,
                GROUP_NO= 'A',

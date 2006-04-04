@@ -1,36 +1,30 @@
       SUBROUTINE ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,
      +                  NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
-     +                  NBTEL,NOCAPC,NMTGPC,NOCADI,NMTGDI,NOCACO,NMTGCO,
-     +                  NOCACA,NMTGCA,NOCAMA,NMTGMA,NOCAPF,NMTGPF,
-     +                  NOCAGR,NMTGGR,NOCAGB,NMTGGB,
-     +                  JDLM,JDLN,LMAX,IER)
+     +                  NBTEL,NOCACO,NOCAGB,JDLM,JDLN,LMAX,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                     NBMCF,       NTYELE(*),NBOCC(*),IVR(*)
+      INTEGER           NOCACO,NBMCF,NTYELE(*),NBOCC(*),IVR(*),NOCAGB
       INTEGER           NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEGR,NBEGB,NBTEL
-      INTEGER           NOCAPC,NMTGPC,NOCADI(*),NMTGDI(*),NOCACO,NMTGCO
-      INTEGER           NOCACA,NMTGCA,NOCAMA,NMTGMA,NOCAPF,NMTGPF
-      INTEGER           NOCAGR,NMTGGR,NOCAGB,NMTGGB
       INTEGER           JDLM,JDLN,LMAX,IER
       CHARACTER*8       NOMA,NOMO
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ----------------------------------------------------------------------
@@ -59,7 +53,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       PARAMETER    ( NBCAR = 100 )
-      CHARACTER*1  KMA(3)
       CHARACTER*4  EXITUY
       CHARACTER*6  KIOC
       CHARACTER*8  NOMU, NOMMAI, NOMNOE, CAR(NBCAR)
@@ -68,30 +61,13 @@ C     ------------------------------------------------------------------
       CHARACTER*24 MODMAI, MODNEM, MODNOE
       CHARACTER*8 K8BID
       CHARACTER*1 K1BID
-      DATA KMA / 'K' , 'M' , 'A' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
-      DO 70 II = 1 ,3
-         NOCADI(II) = 0
-         NMTGDI(II) = 0
- 70   CONTINUE
-      NOCACO = 0
-      NMTGCO = 0
-      NOCAPC = 0
-      NMTGPC = 0
-      NOCACA = 0
-      NMTGCA = 0
 C
-      NOCAMA = 0
-      NMTGMA = 0
-      NOCAPF = 0
-      NMTGPF = 0
-      NOCAGR = 0
-      NMTGGR = 0
+      NOCACO = 0
       NOCAGB = 0
-      NMTGGB = 0
       NNOE   = 0
 C
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ET MODELE
@@ -156,26 +132,12 @@ C ---     DES NOEUDS SONT AFFECTES :
 C
 C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
           IF (NG.GT.0) THEN
+            IF (MCL.EQ.2)  NOCACO = NOCACO + 1
+            IF (MCL.EQ.12) NOCAGB = NOCAGB + 1
             DO 34 I = 1 , NG
-              IF (MCL.EQ.2) NOCACO = NOCACO + 1
-C              IF (MCL.EQ.5) NOCAPC = NOCAPC + 1
-              IF (MCL.EQ.6) NOCACA = NOCACA + 1
-              IF (MCL.EQ.8) NOCAMA = NOCAMA + 1
-              IF (MCL.EQ.9) NOCAPF = NOCAPF + 1
-              IF (MCL.EQ.11) NOCAGR = NOCAGR + 1
               CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONMAX',
      +                                              NBMAGR,K1BID)
-              IF (MCL.EQ.5) THEN
-                 NOCAPC = NOCAPC + NBMAGR
-              ENDIF
-              IF (MCL.EQ.12) THEN
-                 IF (NORIG.EQ.0) THEN
-                    NOCAGB = NOCAGB + 1
-                 ELSE
-                    NOCAGB = NOCAGB + NBMAGR
-                 ENDIF
-              ENDIF
               DO 36 J = 1,NBMAGR
                 NUMMAI = ZI(JDGM+J-1)
                 CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)
@@ -185,55 +147,13 @@ C              IF (MCL.EQ.5) NOCAPC = NOCAPC + 1
      +                      NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
      +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  36           CONTINUE
-              IF (MCL.EQ.3 .OR. MCL.EQ.14 .OR. MCL.EQ.10) THEN
-                DO 38 II = 1 , NCARA
-                  DO 40 JJ = 1 , 3
-                    IF (CAR(II)(1:1).EQ.KMA(JJ)) NOCADI(JJ)=NOCADI(JJ)+1
- 40               CONTINUE
- 38             CONTINUE
-              ENDIF
  34         CONTINUE
           ENDIF
 C
 C ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
           IF (NM.GT.0) THEN
-            IF (MCL.EQ.2) THEN
-               NOCACO = NOCACO + 1
-               NMTGCO = NMTGCO + NM
-            ELSEIF (MCL.EQ.3 .OR. MCL.EQ.14) THEN
-               DO 42 II = 1 , NCARA
-                  DO 44 JJ = 1 , 3
-                     IF (CAR(II)(1:1).EQ.KMA(JJ)) THEN
-                        NOCADI(JJ) = NOCADI(JJ) + 1
-                        NMTGDI(JJ) = NMTGDI(JJ) + NM
-                        GOTO 42
-                     ENDIF
- 44               CONTINUE
- 42            CONTINUE
-            ELSEIF (MCL.EQ.5) THEN
-C               NOCAPC = NOCAPC + 1
-               NOCAPC = NOCAPC + NM
-               NMTGPC = NMTGPC + NM
-            ELSEIF (MCL.EQ.6) THEN
-               NOCACA = NOCACA + 1
-               NMTGCA = NMTGCA + NM
-            ELSEIF (MCL.EQ.8) THEN
-               NOCAMA = NOCAMA + 1
-               NMTGMA = NMTGMA + NM
-            ELSEIF (MCL.EQ.9) THEN
-               NOCAPF = NOCAPF + 1
-               NMTGPF = NMTGPF + NM
-            ELSEIF (MCL.EQ.11) THEN
-               NOCAGR = NOCAGR + 1
-               NMTGGR = NMTGGR + NM
-            ELSEIF (MCL.EQ.12) THEN
-               IF (NORIG.EQ.0) THEN
-                  NOCAGB = NOCAGB + 1
-                  NMTGGB = NMTGGB + NM
-               ELSE
-                  NOCAGB = NOCAGB + NM
-               ENDIF
-            ENDIF
+            IF (MCL.EQ.2) NOCACO = NOCACO + 1
+            IF (MCL.EQ.12) NOCAGB = NOCAGB + 1
             DO 46 I = 1 , NM
               NOMMAI = ZK8(JDLS+I-1)
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUMMAI)
@@ -267,17 +187,6 @@ C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
      +                        NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
      +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  50             CONTINUE
-                IF (MCL.EQ.3.OR.MCL.EQ.14) THEN
-                  DO 54 II = 1 , NCARA
-                    DO 56 JJ = 1 , 3
-                      IF (CAR(II)(1:1).EQ.KMA(JJ)) THEN
-                        NOCADI(JJ) = NOCADI(JJ) + 1
-                        NMTGDI(JJ) = NMTGDI(JJ) + NBNOGR
-                        GOTO 54
-                      ENDIF
- 56                 CONTINUE
- 54               CONTINUE
-                ENDIF
  48           CONTINUE
             ENDIF
 C
@@ -296,17 +205,6 @@ C ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
      +                      NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
      +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  58           CONTINUE
-              IF (MCL.EQ.3.OR.MCL.EQ.14) THEN
-                DO 62 II = 1 , NCARA
-                  DO 64 JJ = 1 , 3
-                    IF (CAR(II)(1:1).EQ.KMA(JJ)) THEN
-                      NOCADI(JJ) = NOCADI(JJ) + 1
-                      NMTGDI(JJ) = NMTGDI(JJ) + NN
-                      GOTO 62
-                    ENDIF
- 64               CONTINUE
- 62             CONTINUE
-              ENDIF
             ENDIF
           ENDIF
  20     CONTINUE

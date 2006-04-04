@@ -1,11 +1,10 @@
-      SUBROUTINE CAFLNL ( CHAR, LIGRMO, NBCA, NBET, NOMA )
+      SUBROUTINE CAFLNL ( CHAR, LIGRMO, NOMA )
       IMPLICIT NONE
-      INTEGER             NBCA, NBET
       CHARACTER*8         CHAR, NOMA
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +28,6 @@ C
 C ARGUMENTS D'ENTREE:
 C      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C      LIGRMO : NOM DU LIGREL DE MODELE
-C      NBCA   : NOMBRE D'APPEL A NOCART
-C      NBET   : NOMBRE TOTAL DE MAILLES
 C      NOMA   : NOM DU MAILLAGE
 C      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
 C      FONREE : FONC OU REEL
@@ -64,7 +61,7 @@ C
       CALL GETFAC ( MOTCLF , NFLUX )
 C
       CARTE = CHAR//'.CHTH.FLUNL'
-      CALL ALCART ( 'G', CARTE, NOMA, 'FLUN_F', NBCA+1, NBET )
+      CALL ALCAR2 ( 'G', CARTE, NOMA, 'FLUN_F')
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
 C
@@ -77,7 +74,7 @@ C
       ZK8(JVALV-1+1) = '&FOZERO'
       ZK8(JVALV-1+2) = '&FOZERO'
       ZK8(JVALV-1+3) = '&FOZERO'
-      CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP)
+      CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP)
 C
       MESMAI = '&&CAFLNL.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -93,13 +90,13 @@ C
 C
          CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
-            CALL NOCART (CARTE,1,' ','NOM',0,' ', 0,LIGRMO,NCMP)
+            CALL NOCAR2 (CARTE,1,' ','NOM',0,' ', 0,LIGRMO,NCMP)
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
-            CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
+            CALL NOCAR2 ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

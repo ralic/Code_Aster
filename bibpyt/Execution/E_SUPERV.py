@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF E_SUPERV Execution  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,8 @@
 
 """
 # Modules Python
-import sys,os
+import sys
+import os
 import traceback
 import re
 
@@ -83,7 +84,7 @@ class SUPERV:
       self.CHEMIN=None
       self.nomFichierCommandes=None
       k=0
-      arg_debug=0
+      arg_debug=1
       self.rep_mat=None
       self.tempsMax=0.
       self.verif=0
@@ -204,7 +205,7 @@ class SUPERV:
       if j.par_lot == 'NON':
          print "FIN EXECUTION"
          if j.fico!=None :
-            os.system('cat ./fort.15 ./ficode >> ./fort.15')
+            open('fort.15', 'a').write(open('ficode', 'r').read())
          return ier
 
       # Verification de la validite du jeu de commande
@@ -284,7 +285,7 @@ class SUPERV:
             return 1   
       except EOFError:
          if j.fico!=None :
-            os.system('cat ./fort.15 ./ficode >> ./fort.15')
+            open('fort.15', 'a').write(open('ficode', 'r').read())
          return 0
       except :
          self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
@@ -308,7 +309,7 @@ class SUPERV:
             print ">> JDC.py : FIN RAPPORT"
 
          if j.fico!=None :
-            os.system('cat ./fort.15 ./ficode >> ./fort.15')
+            open('fort.15', 'a').write(open('ficode', 'r').read())
 
          return ier
 

@@ -1,6 +1,8 @@
       SUBROUTINE COMP1D(FAMI,KPG,KSP,OPTION,
      &                  SIGX,EPSX,DEPX,
      &                  TEMPM,TEMPP,TREF,
+     &                   HYDRGM,HYDRGP,
+     &                   SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VIM,VIP,SIGXP,ETAN,CODRET)
       IMPLICIT NONE
@@ -10,7 +12,8 @@
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,11 +135,11 @@ C
 C
 C ---    INITIALISATION DES TABLEAUX
 C
-         HYDRGM = ZERO
-         HYDRGP = ZERO
-         SECHGM = ZERO
-         SECHGP = ZERO
-         SREF   = ZERO
+C         HYDRGM = ZERO
+C         HYDRGP = ZERO
+C         SECHGM = ZERO
+C         SECHGP = ZERO
+C         SREF   = ZERO
 C
          CALL R8INIR (NEQ,ZERO,EPSANM,1)
 C

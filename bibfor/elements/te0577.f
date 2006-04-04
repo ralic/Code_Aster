@@ -1,7 +1,7 @@
       SUBROUTINE TE0577(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C ......................................................................
 
       LOGICAL DPAXI
       LOGICAL THTNUL,DLTNUL
-      LOGICAL AXI
+      LOGICAL AXI,LTEATT
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -132,7 +132,7 @@ C 2.1. ==> FIN DES INITIALISATIONS
         ZR(I) = 0.D0
    30 CONTINUE
 
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
         AXI = .TRUE.
         DPAXI = .TRUE.
       ELSE
