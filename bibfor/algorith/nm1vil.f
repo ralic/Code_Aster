@@ -8,7 +8,7 @@
      &                  ANGMAS,
      &                  SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 11/04/2006   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,7 @@ C GRANDISSEMENT
       CHARACTER*8 NOMGRD(NBCLGR)
       REAL*8            T1,T2,R8VIDE
       REAL*8            DEPSGR,DEGRAN,DEPSTH,DEPSEL,DEPSAN,DEPSIM
-      REAL*8            SIGEL
+      REAL*8            SIGEL,MULP,MULM
       REAL*8            DPCMOD,COEF1,COEF2,COEFB,EXPQT
       REAL*8            FG,FDGDST,FDGDEV
       REAL*8            ALPHA,A0,XAP,X
@@ -191,8 +191,27 @@ C         PARAMETRES DE LA LOI DE FLUAGE
       ENDIF
 
 C     INCREMENT DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
-      DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))-
-     *         (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
+
+
+C     on ajoute ce test pour eviter le cas 0**0
+      IF (COEFGR(3).EQ.0.D0) THEN
+        IF (IRRAP.EQ.0.D0) THEN
+          MULP=0.D0
+        ELSE
+          MULP=(IRRAP**COEFGR(3))
+        ENDIF
+        IF (IRRAM.EQ.0.D0) THEN
+          MULM=0.D0
+        ELSE
+          MULM=(IRRAM**COEFGR(3))
+        ENDIF
+      ELSE
+        MULP=(IRRAP**COEFGR(3))
+        MULM=(IRRAM**COEFGR(3))
+      ENDIF
+
+      DEPSGR = (COEFGR(1)*TP+COEFGR(2))*MULP-
+     *         (COEFGR(1)*TM+COEFGR(2))*MULM
 
 C     RECUPERATION DU REPERE POUR LE GRANDISSEMENT
       ALPHA = ANGMAS(1)

@@ -1,0 +1,587 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR acbhhcd      DEVESA G.              DATE 10/04/2006 - 14:41:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009398 DU 2006-01-25 15:47:36
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   DYNA_TRAN_MODAL, cumul MULT_APPUI, chgt volumique et chocs
+FONCTIONNALITE
+   Le probleme intervient quand on veut melanger des charges multi-appui avec
+   des charges non multi-appui (forces imposees ou excitation mono-appui par
+   exemple)dans un calcul avec mode statique pour correction du mouvement
+   d'entrainement. Dans ce cas, on veut lire toutes les fonctions
+   multiplicatrices en deplacement impose du mouvement d'entrainement multi-
+   appui pour toutes les excitations et on tombe sur une fonction en deplacement
+   impose non existante pour une charge non multi-appui d'ou le message fatal.
+   La correction du probleme consiste a sauter les excitations non multi-appui
+   dans la correction du mouvement d'entrainement en testant si la fonction de
+   deplacement impose n'est pas une chaine de caracteres blancs. Cette
+   correction intervient dans la routine MDFCHO pour la prise en compte des
+   forces de choc mais aussi dans les routines MDGEP3 et MDGEP4 qui
+   interviennent dans les operateurs REST_BASE_PHYS et RECU_FONCTION en presence
+   de MULT_APPUI='OUI'. Dans ce cas, le message fatal qui prevenait du melange
+   des charges multi-appui avec des charges non multi-appui pour la correction
+   du mouvement d'entrainement est remplace par une alarme.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude jointe
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009590 DU 2006-03-23 15:13:40
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   utilisation de SPEC AUTO dans MACRO_MISS_3D
+FONCTIONNALITE
+   Cette anomalie concerne strictement MISS3D et non Aster dans le chainage Aster-
+   MISS3D.
+   Le premier point concernant les multi-fondations a ete deja resolu par le
+   traitement de la fiche 9095, que ce soit pour l'utilisation d'un
+   echantillonnage spectral manuel par SPEC MAX ou pour celle d'un echantillonnage
+   spectral automatique par SPEC AUTO, en ajustant dans la routine INIALG de
+   MISS3D le nombre d'echantillons spectraux pour qu'il soit superieur au nombre
+   d'echantillons spatiaux.
+   Pour le second point, on propose d'utiliser la meme idee que precedemment en
+   forcant dans la routine INIALG de MISS3D le nombre d'echantillons spectraux a
+   une valeur minimale de 1024 conseillee par Didier Clouteau.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009597 DU 2006-03-24 11:30:49
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests miss04a et miss05a sous linux Calibre 3
+FONCTIONNALITE
+   Le probleme ne semblait pas lie de prime abord a la mise a jour du script sur
+   Linux lie aux modifications recentes de la syntaxe de MACRO_MISS_3D en V8 car
+   les tests MISS04A et MISS05A tournaient avec l'ancienne syntaxe. Et en effet,
+   le lancement de ces tests dans un profil d'etude ASTK a donne les resultats
+   esperes. Il y a peut-etre eu un manque momentane de memoire lors du passage
+   precedent.
+   Toutefois, l'utilisation des possibilites de la nouvelle syntaxe de
+   MACRO_MISS_3D en linux necessitait de toute maniere la double mise a niveau de
+   la routine GTASTER reliant des resultats d'Aster aux donnees de MISS3D ainsi
+   que du script de lancement de MISS3D via EXEC_LOGICIEL.
+   Les sources correspondants ont ete transmis a Jean-Pierre pour installation
+   sur linux. Jean-Pierre a pu repasser sur linux, cette fois-ci sans encombres,
+   la batterie des tests Aster-MISS3D y compris MISS04A et MISS05A.
+   Toutefois encore, pour pouvoir tester a la fois sur linux et sur clayastr les
+   modifications recentes de la syntaxe de MACRO_MISS_3D en V8 lors du traitement
+   de la fiche 9080, on modifie le test ZZZZ108A pour introduire dans
+   MACRO_MISS_3D le nouveau mot cle PARAMETRE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.108
+VALIDATION
+   cas test ZZZZ108A
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009626 DU 2006-03-30 11:38:20
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TITRE
+   verrouillage IMPR_MACR_ELEM
+FONCTIONNALITE
+   On va donc blinder dans la routine IREDM1 pour que les
+   groupes de mailles utilises dans IMPR_MACR_ELEM via les
+   mots cles: GROUP_MA_INTERF, mais aussi eventuellement
+   GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL, ne
+   contiennent que des mailles surfaciques de type TRIA 3
+   ou 6 ou QUAD 4 ou 8. Avec arret fatal sinon.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS J.              DATE 11/04/2006 - 10:21:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009658 DU 2006-04-06 15:53:12
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test sslp107a plante sous Debian Linux
+FONCTIONNALITE
+   Le probleme vient du fait qu'avec certaines versions de Numeric et/ou de Python lorsqu'on
+   type un tableau ainsi :
+   
+   tableau=zeros((ligne,colonne),'float')
+   
+   chaque composante du tableau est typee comme 'array'.
+   
+   On remplace la syntaxe 'float' par Float.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 10/04/2006 - 11:07:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009648 DU 2006-04-06 06:19:46
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test ssnv185f en version NEW8.2.16 sous linux Rocks
+FONCTIONNALITE
+   pb :
+   
+   Avec la version NEW8.2.16 compilee sous linux Rocks (clpaster) le test ssnv185f s'arrete
+   en erreur avec le message suivant :
+   ** ERROR RETURN ** FROM DMUMPS INFO(1)=-13
+   
+   
+   Solution :
+   
+   c'est MUMPS qui n'a pas assez de memoire disponible pour pivoter.
+   (depend de l'etat memoire de la machine ?)
+   en mettant le parametre PCENT_PIVOT=100 du mot-cle SOLVEUR, ca passe sans probleme
+   sous
+   clayastr et clpaster
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185f
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR godard       GODARD V.              DATE 11/04/2006 - 08:24:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009610 DU 2006-03-29 11:33:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   modification de la loi DIS_GRICRA
+FONCTIONNALITE
+   Dans le cadre du projet Cachemire, on souhaite modifier la loi de comportement DIS_GRICRA
+   et les parametres materiaux associes, afin d'une part de rendre l'identification des
+   parametres plus facile, et d'autre part d'optimiser la resolution numerique de la loi
+   (matrice tangente symetrique).
+   Le comportement non lineaire en rotation, particulier a DIS_GRICRA, etait jusqu'a
+   present
+   decrit grace au calcul de l'equilibre sur un systeme de bossettes et de ressorts. Il
+   est
+   cependant possible de decrire ce comportement en rotation directement par superposition
+   d'une loi plastique + loi elastique bilineaire, ce qui simplifie beaucoup la loi. Les
+   parametres de DIS_GRICRA ne sont alors plus des parametres "empiriques" du type
+   "rigidite
+   de ressort et de bossettes" ou "distance entre bossettes" (difficiles a identifier), mais
+   directement des rigidites en rotation et des seuils en rotation (type angles critiques)
+   qui sont beaucoup plus simples a manipuler.
+   Le comportement general de DIS_GRICRA n'est cependant pas modifie.
+   
+   De plus, compte-tenu des differentes fonctions de dependance de la liaison grille-crayon
+   vis-a-vis de la temperature et de l'irradiation, voulues par le SEPTEN, on enleve ces
+   fonctions ecrites auparavant en dur dans le fortran, et on autorise a la place
+   l'utilisateur a rentrer des fonctions pour les parametres materiaux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R5.03.17,U4.51.11, U4.43.01,  V6.02.131, V6.02.132
+VALIDATION
+   cas test ssnl131 et ssnl132
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009657 DU 2006-04-06 11:19:41
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   GRAN_IRRA_LOG : erreur numerique
+FONCTIONNALITE
+   Probleme dans la loi de comportement GRAN_IRRA_LOG quand  le grandissement (parametre
+   GRAN_S de la loi materiau) et  l'irradiation sont tous les deux nuls.
+   
+   Erreur numerique dans NM1VIL pour l'operation :
+   DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))
+   car IRRAP=0 et COEFGR(3)=GRANS_S=0
+   
+   On differencie ce cas des autres
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichier perso
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC D.            DATE 11/04/2006 - 17:31:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009646 DU 2006-04-05 15:18:09
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   Condition de Courant pour les coques
+FONCTIONNALITE
+   J'ai detecte une erreur dans le calcul de la condition de
+   Courant (option PAS_COURANT) pour la famille d'elements
+   DKT.
+   
+   L'erreur se trouvait dans le calcul de la distance
+   minimale entre deux sommets de maille et etait due a une
+   mauvaise interpretation de la variable "dimension de
+   l'espace", obtenue par la routine "elref4". La routine
+   rend la dimension de l'espace de l'element de reference
+   (=2 pour les DKT) et non pas la dimension du probleme (=3
+   en l'occurence).
+   
+   La valeur correcte recherchee se trouve dans
+   l'attribut "DIM_COOR_MODELI" et peut etre obtenue a
+   travers la routine utilitaire TEATTR. La routine TE0404 a
+   ete corrigee.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test personnel
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 10/04/2006 - 11:04:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009265 DU 2005-12-15 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   IMPR_FONCTION concept deja defini
+FONCTIONNALITE
+   Il s'agit en fait du probleme concernant la destruction des objets temporaires dans les
+   macros.
+   J'ai bien reproduit le probleme en STA8.2, c'est corrige en NEW8.2.x.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test elementaire enchainant 2 poursuites
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009665 DU 2006-04-07 14:09:58
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   Utilisation des formules dans CALC_TABLE / Table.py
+FONCTIONNALITE
+   L'operation OPER de CALC_TABLE consiste a evaluer une formule dont les parametres
+   sont des
+   colonnes d'une table et a creer une nouvelle colonne avec le resultat.
+   
+   Ceci avait ete programme dans l'ops de CALC_TABLE, il est plus judicieux d'en faire une
+   methode de la classe Table (Table.py) pour pouvoir en beneficier dans d'autre
+   macros... et
+   meme hors Aster (je m'en sers pour manipuler  les fiches du REX et en extraire des
+   stats).
+   
+   Exemple d'utilisation :
+   >>> tab.fromfunction(nom_para, fonction, list_para)
+   - nom_para : nom de la colonne resultat,
+   - fonction : une fonction python quelconque qui retourne  UNE valeur entiere, reelle ou
+   chaine,
+   - list_para : nom des colonnes, autant que de donnees d'entree de la fonction
+   (facultatif
+   si on passe une formule car alors list_para = FORMULE.nompar).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests utilisant CALC_TABLE / OPER
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009667 DU 2006-04-07 14:53:09
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   Passer le test sensd03a en PAR_LOT='OUI'
+FONCTIONNALITE
+   Les tests sensd* sont en mode PAR_LOT='NON' uniquement pour la comparaison de la derivee
+   avec une estimation en differences finies.
+   On peut faire le meme test en PAR_LOT='OUI' (y compris les boucles pour chaque parametre
+   sensible).
+   
+   Le calcul sensible proprement dit devient beaucoup plus simple.
+   
+   Dans cette fiche, je restitue uniquement le sensd03a.
+   Il y avait un probleme avec CALC_MATR_ELEM qui plantait en floating point exception car
+   la
+   commande etait dans la liste des commandes a deriver quand un de ses arguments est
+   derive.
+   Je la retire car :
+   - dans aucun cas-test on utilise cette possibilite,
+   - si on le voulait, elle devrait gerer le cas particulier ou E=0.
+   
+   J'en profite pour restituer mes modifs dans deux modules du superviseur qui traitent des
+   jeux de donnees sensibles (B_SENSIBILITE_JDC, B_SENSIBILITE_COMMANDES_SENSIBLES).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sensd03a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 10/04/2006 - 14:19:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009454 DU 2006-02-14 15:23:11
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : DeltaCad
+TITRE
+   impr_resu GMSH et resultat thermique
+FONCTIONNALITE
+   1) Anomalie
+   Lorsque que laon faisait un IMPR_RESU au format GMSH sans preciser le nom du champ
+   daun
+   resultat thermique, ca plantait avec le message :
+   <IMPR_RESU> <IRGMCE>     NBSP DIFFERENT DE 1
+   
+   2) Detail de laanomalie
+   Il saest avere que lorsque laon precise le nom du champ, caest OK seulement si le
+   champ
+   est present  chaque numero daordre de la SD RESULTAT.
+   Par exemple :
+   IMPR_RESU(FORMAT=aGMSHa,UNITE=37,
+   RESU=_F(RESULTAT=TEMPE,NOM_CHAM=aTEMPa),)
+   Ici le champ TEMP a ete stocke dans la SD RESULTAT a chaque numero daordre.
+   
+   Lorsque laon ne precise pas le nom du champ (ce qui est permis), alors on imprime tous
+   les
+   champs contenus dans la SD RESULTAT  chaque numro daordre.
+   Or lorsque le champ est manquant pour un numero daordre, on tombe en erreur fatale avec
+   le
+   message suivant :
+   <IMPR_RESU> <IRGMCE>     NBSP DIFFERENT DE 1
+   
+   En effet, laajout des lignes suivantes dans le cas-test ttnl02a fait planter Aster :
+   IMPR_RESU(FORMAT=aGMSHa,UNITE=37,
+   RESU=_F(RESULTAT=TEMPE),)
+   
+   La raison est la suivante :
+   La SD RESULTAT contient 2 champs : aTEMPa et aHYDR_ELNO_ELGAa pour plusieurs
+   numeros daordre.
+   Laimpression de aTEMPa saeffectue correctement car ce champ est stocke a tous les
+   numeros
+   daordre.
+   Par contre, le champ aHYDR_ELNO_ELGAa fait planter laimpression car il naest
+   stocke quaau
+   premier numero daordre.
+   
+   Pour le traitement des champs ELNO (comme aHYDR_ELNO_ELGAa), on recupere le nombre de
+   sous
+   points a chaque numero daordre. Lorsque le champ est absent, la variable relative au
+   nombre de sous points est initialisee  0. Ceci explique le message daerreur ci-dessus.
+   
+   3) Correction
+   Nous verifions laexistence du champ dans la boucle sur les numeros daordre
+   dans la routine IRGMCE par le biais daun appel  RSEXCH. Si le champ est absent, on
+   passe
+   au numero daordre suivant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.2.9
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas-test ttnl01a + lecture du fichier genere par IMPR_RESU sous GMSH
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques.        DATE 10/04/2006 - 14:19:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009190 DU 2005-11-10 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   AFFE_CHAR_MECA
+FONCTIONNALITE
+   Realisation d'une evolution dans AFFE_CHAR_MECA / FACE_IMPO pour mieux gerer
+   les "jointures" de faces.
+   --------------------------------------------------------------------------
+   
+   Le probleme (modele) est le suivant :
+   
+   Soit en 2D un rectangle dont les 4 faces sont Gauche, Droite, Haut et Bas.
+   Supposons que l'on veuille imposer sur ses bords :
+   FACE_IMPO / Gauche : DX=DY=0
+   FACE_IMPO / Haut   : DNOR=0
+   
+   Cette modelisation conduit au fameux message "pivot nul : conditions aux
+   limites redondantes". En effet, le noeud d'interface entre Gauche et Haut
+   (appelons le A) est trop contraint : on lui impose 3 conditions aux limites :
+   DX(A)=0
+   DY(A)=0
+   c1*DX(A)+s1*DY(A)=0 (avec c1 epsilonesque et s1 voisin de 1.)
+   
+   Du fait que c1 peut etre legerement different de 0. (calcul imprecis de la
+   normale), ces 3 relations sont conservees car il n'y en a pas 2 qui soient
+   multiples l'une de l'autre.
+   
+   Le probleme peut se resumer comme ceci :
+   Quand on impose des conditions aux limites sur les noeuds de 2 zones
+   jointives. Les noeuds de la jonction sont affectes des "2 cotes" et parfois
+   c'est trop ! Il faut choisir. Dans l'exemple precedent, on pourrait par
+   exemple dire que pour le point A la condition DX=DY=0 est suffisante.
+   
+   Il faudrait donc pouvoir dire :
+   FACE_IMPO / Haut : DNOR=0 SAUF sur A
+   
+   On peut deja le faire en definissant le GROUP_NO (Haut - A) mais ce passage
+   par "GROUP_NO" n'est pas conseille (surtout avec Homard).
+   
+   On a donc decide d'introduire un nouveau mot cle : SANS_GROUP_MA pour
+   exclure certains noeuds d'un GROUP_MA.
+   
+   Dans notre exemple, l'utilisateur dira :
+   FACE_IMPO (GROUP_MA=Gauche, DX=0, DY=0)
+   FACE_IMPO (GROUP_MA=Haut, SANS_GROUP_MA=Gauche , DNOR=0)
+   
+   
+   La signification de la 2eme occurrence de FACE_IMPO est :"pour tous les
+   noeuds de Haut sauf ceux qui appartiennent a Gauche, DNOR=0."
+   
+   ---------------------------------------------------------------------
+   Impact Documentaire (AFFE_CHAR_MECA) :
+   --------------------------------------
+   
+   On ajoute 2 mots cles (SANS_GROUP_MA et SANS_MAILLE) sous le mot cle facteur
+   FACE_IMPO.
+   
+   Si l'utilisateur dit :
+   
+   FACE_IMPO(GROUPE_MA(GM1,GM2), SANS_GROUPE_MA=GM3, SANS_MAILLE=MA24
+   DX=...)
+   
+   On affectera la condition DX=... sur tous les noeuds des mailles de (GM1 +
+   GM2) sauf sur ceux qui appartiennent aussi aux mailles de (GM3 + MA24)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdls115a                     markovic D.MARKOVIC         209    209      0
+ CASTEST MODIF demo001a                     mcourtoi M.COURTOIS         296      2      2
+ CASTEST MODIF sensd03a                     mcourtoi M.COURTOIS         168     44    204
+ CASTEST MODIF sslp107a                       delmas J.DELMAS           399     14     25
+ CASTEST MODIF ssnl131a                       godard V.GODARD           189     57     39
+ CASTEST MODIF ssnl131b                       godard V.GODARD           185     55     38
+ CASTEST MODIF ssnl131c                       godard V.GODARD           271    146     90
+ CASTEST MODIF ssnl131d                       godard V.GODARD           262    115     67
+ CASTEST MODIF ssnl132a                       godard V.GODARD           873     17     25
+ CASTEST MODIF ssnl132b                       godard V.GODARD           906     13     24
+ CASTEST MODIF ssnv185f                      geniaut S.GENIAUT          207      2      2
+ CASTEST MODIF ttnl02a                       rezette C.REZETTE          193      4      1
+ CASTEST MODIF zzzz108a                      acbhhcd G.DEVESA           971    140     61
+CATALOPY MODIF commande/affe_char_meca       rezette C.REZETTE         1026      3      1
+CATALOPY MODIF commande/affe_char_meca_f     rezette C.REZETTE          696      3      1
+CATALOPY MODIF commande/defi_materiau         godard V.GODARD          2902     25     21
+CATALOPY MODIF commun/c_comp_incr             godard V.GODARD           339      2      2
+ FORTRAN AJOUT calculel/kndif2               rezette C.REZETTE          102    102      0
+ FORTRAN MODIF algorith/dicrgr                godard V.GODARD           383    229    305
+ FORTRAN MODIF algorith/mdfcho               acbhhcd G.DEVESA           535     10      4
+ FORTRAN MODIF algorith/mdgep3               acbhhcd G.DEVESA            57      5      4
+ FORTRAN MODIF algorith/mdgep4               acbhhcd G.DEVESA            53      5      4
+ FORTRAN MODIF algorith/nm1vil                godard V.GODARD           249     23      4
+ FORTRAN MODIF calculel/kndiff               rezette C.REZETTE           80     32     22
+ FORTRAN MODIF elements/te0047                godard V.GODARD           701     10     10
+ FORTRAN MODIF elements/te0404              markovic D.MARKOVIC         110     20     13
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          595      2      2
+ FORTRAN MODIF modelisa/cafaci               rezette C.REZETTE          474     48     11
+ FORTRAN MODIF modelisa/calirc               rezette C.REZETTE          519      3      4
+ FORTRAN MODIF modelisa/calyrc               rezette C.REZETTE          615      3      4
+ FORTRAN MODIF modelisa/canort               rezette C.REZETTE          662     40     39
+ FORTRAN MODIF modelisa/nbnlma               rezette C.REZETTE          161     24      3
+ FORTRAN MODIF prepost/irgmce                rezette C.REZETTE          349      5      4
+ FORTRAN MODIF prepost/irgmec                rezette C.REZETTE          173     22      7
+ FORTRAN MODIF utilitai/cnonor               rezette C.REZETTE          192      3      4
+ FORTRAN MODIF utilitai/iredm1               acbhhcd G.DEVESA           433     21      1
+ FORTRAN SUPPR algorith/lcdigc                godard V.GODARD           187      0    187
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES   mcourtoi M.COURTOIS         254     67     50
+  PYTHON MODIF Build/B_SENSIBILITE_JDC      mcourtoi M.COURTOIS         492      3     11
+  PYTHON MODIF Macro/calc_table_ops         mcourtoi M.COURTOIS         162      3     19
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         899     50      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    2         311       311              +311
+ MODIF :   38       18031      1270    1131      +139
+ SUPPR :    1         187               187      -187
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   41       18529      1581    1318      +263 

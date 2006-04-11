@@ -22,7 +22,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,6 @@ C
       CALL WKVECT('&&IRGMCG.TYPE','V V K8',NBORD2,JTYPE)
 
       NBCMP = 0
-
       DO 60 IOR = 1,NBORD2
         IF (LRESU) THEN
           CALL RSEXCH(NOMCON,CHAMSY,ORDR(IOR),NOCH19,IRET)
@@ -237,7 +236,8 @@ C           NBNO=NBRE DE NOEUDS DE CET ELEMENT
  1202       CONTINUE
              CALL IRGMEC(ZI(JNUMOL),IMA,CONNEX,NBORD2,ZI(JTABD),
      &                  ZI(JTABL),ZI(JTABV),PARTIE,JTYPE,NBNO,LISTNO,
-     &                  ICMP,IFI,IWRI,IADMAX)
+     &                  ICMP,IFI,IWRI,IADMAX,ORDR,CHAMSY,NOMCON,
+     &                  LRESU)
               IADMM = MAX(IADMAX,IADMM)
  1201       CONTINUE
             IF (IADMM.GT.0)  NBEL2(I) = NBEL(I)
@@ -274,7 +274,8 @@ C           NBNO=NBRE DE NOEUDS DE CET ELEMENT
  1303         CONTINUE
               CALL IRGMEC(ZI(JNUMOL),IMA,CONNEX,NBORD2,ZI(JTABD),
      &                    ZI(JTABL),ZI(JTABV),PARTIE,JTYPE,NBNO,
-     &                    LISTNO,ICMP,IFI,IWRI,IADMAX)
+     &                    LISTNO,ICMP,IFI,IWRI,IADMAX,ORDR,
+     &                    CHAMSY,NOMCON,LRESU)
  1301       CONTINUE
           ENDIF
  130    CONTINUE

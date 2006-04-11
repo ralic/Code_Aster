@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 11/04/2006   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -495,7 +495,6 @@ C ======================================================================
      &              'ELEMENT SEG2 + MODELISATION DIS_TR')
         ENDIF
 
-        CALL R8INIR(144,0.D0,KLV3,1)
 C
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PVARIMR','L',IVARIM)
@@ -517,10 +516,10 @@ C       -- ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
         CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
         IF (IRET2.GT.0) IRRAP=0.D0
 
-        IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
-     &    OPTION(1:9).EQ.'FULL_MECA') THEN
-          CALL JEVECH('PMATUNS','E',IMAT)
-        ENDIF
+C         IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
+C      &    OPTION(1:9).EQ.'FULL_MECA') THEN
+C           CALL JEVECH('PMATUNS','E',IMAT)
+C         ENDIF
 
         IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &      OPTION(1:9).EQ.'FULL_MECA') THEN
@@ -532,14 +531,15 @@ C       -- ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
 
         CALL DICRGR(OPTION,NEQ,NC,ZI(IMATE),
      &              ULM,DUL,ZR(ICONTM),ZR(IVARIM),
-     &              PGL,KLV3,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
+     &              PGL,KLV,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
      &              ITEMP, TEMPM, TEMPP,IRRAP)
 
 
-        IF (OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA')
-     &            THEN
-          CALL DCOPY(144,KLV3,1,ZR(IMAT),1)
+        IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RIGI_MECA_TANG') THEN
+          CALL JEVECH('PMATUUR','E',IMAT)
+          CALL UTPSLG(NNO,NC,PGL,KLV,ZR(IMAT))
         END IF
+
 
       END IF
 

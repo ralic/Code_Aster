@@ -4,7 +4,7 @@
       CHARACTER*8  NOMO, GRAN, CNO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER       IBID, IER, NEC, IACMP, IAV, I, IRET, II, INO, JJ,
      +              NCMPMX, NUMGD, NDIM, NBNO, NBNOEU, IDIM, NN, NBMA,
      +              NBCOMP, NBTYP, LONVAL, ICOMP, IC, IEC, IAND, JLMA,
-     +              JNBN, JNUNOE, JNORM, JNNO, JVAL, JNBCA, JDESC
+     +              JNUNOE, JNORM, JNNO, JVAL, JNBCA, JDESC
       REAL*8        RBID, VALR(3)
       CHARACTER*2   TYPVAL
       CHARACTER*8   K8B, RESU, NOMA, ZCST,TYPMCL(4),NOCMP(3),LISTYP(10)
@@ -129,13 +129,12 @@ C
       CALL JEVEUO ( MESMAI, 'L', JLMA )
 C
       CALL NBNLMA ( NOMA, NBMA, ZI(JLMA), NBTYP, LISTYP, NBNO )
-      CALL JEVEUO ( '&&NBNLMA.NBN', 'L', JNBN   )
       CALL JEVEUO ( '&&NBNLMA.LN' , 'L', JNUNOE )
 C
 C --- DETERMINATION DES NORMALES
 C
       CALL CANORT ( NOMA, NBMA, ZI(JLMA), K8B, NDIM, NBNO,
-     &                                         ZI(JNBN), ZI(JNUNOE), 1 )
+     &                                         ZI(JNUNOE), 1 )
 C
       CALL JEVEUO ( '&&CANORT.NORMALE', 'L', JNORM )
 C

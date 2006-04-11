@@ -8,7 +8,7 @@
      +                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 10/04/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,6 +154,11 @@ C
          NBMA = NBMA + NB
          DO 72 IN = 0,NB-1
            CALL JELIRA(JEXNUM(MANOMA,ZI(LDGM+IN)),'LONMAX',NM,K8B)
+           IF (NM.NE.3.AND.NM.NE.4.AND.NM.NE.6.AND.NM.NE.8) THEN
+             CALL UTMESS('F','IREDM1.01',
+     &           'GROUP_MA_INTERF: UN ELEMENT N''EST NI TRIA3 '//
+     &           'NI TRIA6 NI QUAD4 NI QUAD8')
+           ENDIF
            CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
            DO 74 NN = 1, NM
               INOE = ZI(LDNM+NN-1)
@@ -167,6 +172,11 @@ C
          NBMA2 = NBMA2 + NB
          DO 82 IN = 0,NB-1
            CALL JELIRA(JEXNUM(MANOMA,ZI(LDGM+IN)),'LONMAX',NM,K8B)
+           IF (NM.NE.3.AND.NM.NE.4.AND.NM.NE.6.AND.NM.NE.8) THEN
+             CALL UTMESS('F','IREDM1.02',
+     &           'GROUP_MA_FLU_STR: UN ELEMENT N''EST NI TRIA3 '//
+     &           'NI TRIA6 NI QUAD4 NI QUAD8')
+           ENDIF
            CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
            DO 84 NN = 1, NM
               INOE = ZI(LDNM+NN-1)
@@ -180,6 +190,11 @@ C
          NBMA3 = NBMA3 + NB
          DO 92 IN = 0,NB-1
            CALL JELIRA(JEXNUM(MANOMA,ZI(LDGM+IN)),'LONMAX',NM,K8B)
+           IF (NM.NE.3.AND.NM.NE.4.AND.NM.NE.6.AND.NM.NE.8) THEN
+             CALL UTMESS('F','IREDM1.03',
+     &           'GROUP_MA_FLU_SOL: UN ELEMENT N''EST NI TRIA3 '//
+     &           'NI TRIA6 NI QUAD4 NI QUAD8')
+           ENDIF
            CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
            DO 94 NN = 1, NM
               INOE = ZI(LDNM+NN-1)
@@ -193,6 +208,11 @@ C
          NBMA4 = NBMA4 + NB
          DO 102 IN = 0,NB-1
            CALL JELIRA(JEXNUM(MANOMA,ZI(LDGM+IN)),'LONMAX',NM,K8B)
+           IF (NM.NE.3.AND.NM.NE.4.AND.NM.NE.6.AND.NM.NE.8) THEN
+             CALL UTMESS('F','IREDM1.04',
+     &           'GROUP_MA_SOL_SOL: UN ELEMENT N''EST NI TRIA3 '//
+     &           'NI TRIA6 NI QUAD4 NI QUAD8')
+           ENDIF
            CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
            DO 104 NN = 1, NM
               INOE = ZI(LDNM+NN-1)

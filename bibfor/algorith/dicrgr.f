@@ -1,17 +1,17 @@
       SUBROUTINE DICRGR(OPTION,NEQ,NC,ICODMA,ULM,
-     &                  DUL,SIM,VARIM,PGL,KLGLO,VARIP,FONO,SIP,ITEMP,
+     &                  DUL,SIM,VARIM,PGL,KLV,VARIP,FONO,SIP,ITEMP,
      &                  TEMPM,TEMPP,IRRAP)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER NEQ,ICODMA,NC,JTAB(7),ITEMP
-      REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(12),TEMPM,TEMPP
-      REAL*8 PGL(3,3),VARIP(12),FONO(NEQ)
-      REAL*8 IRRAP,KLGLO(144)
+      INTEGER NEQ,ICODMA,NC,ITEMP
+      REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(5),TEMPM,TEMPP
+      REAL*8 PGL(3,3),VARIP(5),FONO(NEQ)
+      REAL*8 IRRAP,KLV(78)
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 11/04/2006   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,37 +75,36 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 
-      CHARACTER*2 CODRET(20)
-      CHARACTER*8 NOMRES(20),NOMPAR
+      CHARACTER*2 CODRE1(4),CODRE2(2),CODRE3,CODRE4(5),CODRE5(5)
+      CHARACTER*8 NOMRE1(4),NOMRE2(2),NOMRE3,NOMRE4(5),NOMRE5(5)
+      CHARACTER*8 NOMPAR(2)
 
-      INTEGER     LGPG,IRET,NNO,I,NBPAR,IIRRAP,J,K,L,P,Q
-      REAL*8      VALRES(20),RBID
-      REAL*8      KN,KT,RN,RT,LB,FNO,MU,ECROB,ECROR,GNO
-      REAL*8      C0,C1,C2,C3,C4,C5,TB1,TB2,TF,TC
-      REAL*8      H1,H2,B1,B2,R1,R2
-      REAL*8      DUX,DUY,DUZ,DPH,DTH
-      REAL*8      UXM,UYM,UZM,PHM,THM
-      REAL*8      X,Y,Z,DX,DY,DZ
-      REAL*8      FH1(3),FB1(3),FR1(3)
-      REAL*8      MOPX,MOPY,MOPZ
-      REAL*8      KXX,KYY,KZZ,KNN,KPP,KTT,KZP,KXT
-      REAL*8      FL(12),RMIN
-      REAL*8      XPH1,XPB1,XPR1
-      REAL*8      ZPH1,ZPB1,ZPR1
-      REAL*8      FIRRA,TEMP,FTEMP
-      REAL*8      MATAN(6,6),MTH1(3,3),MTB1(3,3),MTR1(3,3)
-      REAL*8      MATLOC(12,12),MATAN2(6,6)
-      REAL*8      MATGLO(12,12),MUR
+      INTEGER     NNO,I,NBPAR,J,K,L,P,Q
+      INTEGER     ICOD,ICOD2
+      REAL*8      VALRE1(4),VALRE2(2),VALRE3,VALRE4(5),VALRE5(5)
+      REAL*8      VALPAR(2)
+      REAL*8      FNO,H1
+      REAL*8      DUX,DUY,DPH,DTH
+      REAL*8      UXM,PHM,THM
+      REAL*8      KXX,KYY,KZZ,KPP,KTT
+      REAL*8      FL(12)
+      REAL*8      TEMP,FTEMP
+      REAL*8      KTAX,MUAX,ETAX,KNAX
+      REAL*8      KTRIG,DP,PM,RTM,RTP,RTE
+      REAL*8      SIELEQ,BETA,SEUIL,RM
+      REAL*8      PHIPL,PPM,FPHI,MOPHI,DKH,KHM
+      REAL*8      PHITAN,THETAN,KKK,ECRO
+      REAL*8      PHIC,KPHI,THETAC,KTHETA,EPHI
+      REAL*8      DPP,DPHIPL,SEUROT,KTHET2
+
+      DATA NOMRE1/'KN_AX','KT_AX','ET_AX','ET_ROT'/
+      DATA NOMRE2/'F_SER','COUL_AX'/
+      DATA NOMRE3/'F_SER_FO'/
+      DATA NOMRE4/'ANG1','ANG2','PEN1','PEN2','PEN3'/
+      DATA NOMRE5/'ANG1_FO','ANG2_FO','PEN1_FO','PEN2_FO','PEN3_FO'/
 
 
-      DATA NOMRES/'KN_BOS','KT_BOS','KN_RES','KT_RES',
-     &            'DIST_BOS','FORC_SER','COUL_BOS','COUL_RES',
-     &            'ECRO_BOS','ECRO_RES',
-     &            'F_IRRA_0','F_IRRA_1','F_IRRA_2','F_IRRA_3',
-     &            'F_IRRA_4','F_IRRA_5',
-     &            'F_TEMP_1','F_TEMP_2','TEMP_1','TEMP_2'/
-
-  
+C
 C---procedure pour la liaison grille crayon
 C
 C on travaille ici dans le repère local
@@ -116,336 +115,262 @@ C  recuperer les variables internes  (moins)
 C  recuperer les parametres de defi_materiau
 
       CALL R8INIR(NEQ,0.D0,FL,1)
-      RMIN=1.D-8
 C
 C recuperation des donnees materiau pour le discret
-      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,20,
-     &            NOMRES,VALRES,CODRET,' ')
-C
-C on construit la fonction d'irradiation
-      IF ((CODRET(11).EQ.'OK').AND.(CODRET(12).EQ.'OK').AND.
-     &     (CODRET(13).EQ.'OK').AND.(CODRET(14).EQ.'OK').AND.
-     &     (CODRET(15).EQ.'OK').AND.(CODRET(16).EQ.'OK')) THEN
-           C0=VALRES(11)
-           C1=VALRES(12)
-           C2=VALRES(13)
-           C3=VALRES(14)
-           C4=VALRES(15)
-           C5=VALRES(16)
-           FIRRA=(IRRAP+1.D0)**(C5*LOG(IRRAP+1.D0)**5.D0
-     &            +C4*LOG(IRRAP+1.D0)**4.D0+C3*LOG(IRRAP+1.D0)**3.D0
-     &            +C2*LOG(IRRAP+1.D0)**2.D0+C1*LOG(IRRAP+1.D0)+C0)
+      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,4,
+     &            NOMRE1,VALRE1,CODRE1,' ')
+
+      KNAX=VALRE1(1)
+      KTAX=VALRE1(2)/4.D0
+      ETAX=VALRE1(3)*KTAX
+
+      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,2,
+     &            NOMRE2,VALRE2,CODRE2,' ')
+      IF (CODRE2(1).EQ.'OK') THEN
+        FNO=VALRE2(1)/4.D0
+        MUAX=VALRE2(2)
       ELSE
-        IF ((CODRET(11).EQ.'OK').OR.(CODRET(12).EQ.'OK').OR.
-     &     (CODRET(13).EQ.'OK').OR.(CODRET(14).EQ.'OK').OR.
-     &     (CODRET(15).EQ.'OK').OR.(CODRET(16).EQ.'OK')) THEN
-          CALL UTMESS('F','DICRGR','LES PARAMETRES IRRA_0,IRRA_1,'//
-     &            'IRRA_2,IRRA_3,IRRA_4,IRRA_5'//
-     &            'DANS DEFI_MATERIAU DOIVENT TOUS ETRE SPECIFIES'//
-     &            'POUR PRENDRE EN COMPTE LA FONCTION D IRRADIATION')
-        ELSE
-          FIRRA=1.D0
-        ENDIF
-      ENDIF
-C
-C on construit la fonction de temperature
-      IF (ITEMP.NE.0) THEN
-        IF ((CODRET(17).EQ.'OK').AND.(CODRET(18).EQ.'OK').AND.
-     &     (CODRET(19).EQ.'OK').AND.(CODRET(20).EQ.'OK')
-     &      ) THEN
-          TB1=VALRES(17)
-          TB2=VALRES(18)
-          TF=VALRES(19)
-          TC=VALRES(20)
+        IF (ITEMP.NE.0) THEN
+          NBPAR=2
           TEMP = 0.5D0* (TEMPM+TEMPP)
-          FTEMP=((TB2-TB1)/(TC-TF))/TB1*(TEMP-TF)+1
+          NOMPAR(2)='IRRA'
+          NOMPAR(1)='TEMP'
+          VALPAR(2)=IRRAP
+          VALPAR(1)=TEMP
+          CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,1,
+     &              NOMRE3,VALRE3,CODRE3,' ')
+          IF (CODRE3.EQ.'OK') THEN
+            FNO=VALRE3/4.D0
+            MUAX=VALRE2(2)
+          ENDIF
         ELSE
-          IF ((CODRET(17).EQ.'OK').OR.(CODRET(18).EQ.'OK').OR.
-     &       (CODRET(19).EQ.'OK').OR.(CODRET(20).EQ.'OK')
-     &        ) THEN
-            CALL UTMESS('F','DICRGR','LES PARAMETRES TEMP_0,TEMP_1,'//
-     &              'TEMP_2,TEMP_3,TEMP_4'//
-     &              'DANS DEFI_MATERIAU DOIVENT TOUS ETRE SPECIFIES'//
-     &              'POUR PRENDRE EN COMPTE LA FONCTION DE TEMPERATURE')
-          ELSE
-            FTEMP=1.D0
+          IF (CODRE2(1).NE.'OK') THEN
+            CALL UTMESS('F','DICRGR','LES CHAMPS DE TEMPERATURE'//
+     &                'ET D IRRADIATION DOIVENT ETRE SPECIFIES'//
+     &                'POUR UTILISER LA FORCE DE SERRAGE'//
+     &                'SOUS FORME DE FONCTION')
           ENDIF
         ENDIF
-      ELSE
-        FTEMP=1.D0
       ENDIF
-C
-C
-C
-      KN=VALRES(1)
-      KT=VALRES(2)
-      RN=VALRES(3)
-      RT=VALRES(4)
-      LB=VALRES(5)/2.D0
-      FNO=VALRES(6)*FIRRA*FTEMP
-      MU=VALRES(7)
-      MUR=VALRES(8)
-      ECROB=VALRES(9)
-      ECROR=VALRES(10)
-      GNO=FNO/2.D0
+      
+      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,5,
+     &            NOMRE4,VALRE4,CODRE4,' ')
+
+      IF (CODRE4(1).EQ.'OK') THEN
+        PHIC=VALRE4(1)
+        THETAC=VALRE4(2)
+        KTHETA=VALRE4(4)/2.D0
+        KPHI=VALRE4(3)/2.D0-KTHETA
+        KTHET2=VALRE4(5)/2.D0
+      ELSE
+        IF (ITEMP.NE.0) THEN
+          NBPAR=2
+          TEMP = 0.5D0* (TEMPM+TEMPP)
+          NOMPAR(2)='IRRA'
+          NOMPAR(1)='TEMP'
+          VALPAR(2)=IRRAP
+          VALPAR(1)=TEMP
+          CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,5,
+     &              NOMRE5,VALRE5,CODRE5,' ')
+          PHIC=VALRE5(1)
+          THETAC=VALRE5(2)
+          KTHETA=VALRE5(4)/2.D0
+          KPHI=VALRE5(3)/2.D0-KTHETA
+          KTHET2=VALRE5(5)/2.D0
+        ELSE
+          CALL UTMESS('F','DICRGR','LES CHAMPS DE TEMPERATURE'//
+     &                'ET D IRRADIATION DOIVENT ETRE SPECIFIES'//
+     &                'POUR UTILISER LES ANGLES ET LES PENTES'//
+     &                'SOUS FORME DE FONCTIONS')
+        ENDIF
+       ENDIF
+       EPHI=VALRE1(4)*KPHI
+
 C
 C Variables internes de contact au temps moins
-      H1=1.D0-VARIM(1)
-      B1=1.D0-VARIM(5)
-      R1=1.D0-VARIM(9)
+       H1=1.D0-VARIM(3)
 
-      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-      LGPG = MAX(JTAB(6),1)*JTAB(7)
-
-C--initialisation des variables utiles pour la matrice tangente
-      XPH1=0.D0
-      XPB1=0.D0
-      XPR1=0.D0
-      ZPH1=0.D0
-      ZPB1=0.D0
-      ZPR1=0.D0
 C
 C
 C---calcul de l'evolution des variables internes et des forces
 C---pour FULL_MECA et RAPH_MECA
 
-      IF (OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RAPH_MECA')
+      IF ((OPTION(1:9).EQ.'FULL_MECA').OR.(OPTION(1:9).EQ.'RAPH_MECA'))
      &        THEN
 C
 C  extension de l'element
 C
 C  extension au pas de temps precedent
         UXM = ULM(1+NC) - ULM(1)
-        UYM = ULM(2+NC) - ULM(2)
-        UZM = ULM(3+NC) - ULM(3)
         PHM = ULM(4+NC) - ULM(4)
+        KHM = ULM(5+NC) - ULM(5)
         THM = ULM(6+NC) - ULM(6)
 C  variation d'extension
         DUX = DUL(1+NC) - DUL(1)
         DUY = DUL(2+NC) - DUL(2)
-        DUZ = DUL(3+NC) - DUL(3)
         DPH = DUL(4+NC) - DUL(4)
+        DKH = DUL(5+NC) - DUL(5)
         DTH = DUL(6+NC) - DUL(6)
 C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  CALCUL DES FORCES EN TRANSLATION
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Calcul des forces et evolution des variables internes
-C   sur chacun des sous éléments du système de liaison
+C  calcul de la force (translation)
 C
-C  Bossette H1
-        X=UXM+LB*THM
-        Y=UYM
-        Z=UZM-LB*PHM
-        DX=DUX+LB*DTH
-        DY=DUY
-        DZ=DUZ-LB*DPH
-        CALL LCDIGC(X,Y,Z,DX,DY,DZ,VARIM(2),VARIM(3),VARIM(4),KN,KT,MU,
-     &             GNO,ECROB,VARIP(2),VARIP(3),VARIP(4),H1,FH1,MTH1)
-        VARIP(1)=1.D0-H1
-        IF ((ABS(VARIP(2)-VARIM(2)).GT.RMIN).OR.
-     &        (ABS(VARIP(3)-VARIM(3)).GT.RMIN)) THEN
-         XPH1=KT/(ECROB+KT)
-         ZPH1=KT/(ECROB+KT)
-        ENDIF
-C
-C  Bossette B1
-        X=UXM-LB*THM
-        Y=UYM
-        Z=UZM+LB*PHM
-        DX=DUX-LB*DTH
-        DY=DUY
-        DZ=DUZ+LB*DPH
-        CALL LCDIGC(X,Y,Z,DX,DY,DZ,VARIM(6),VARIM(7),VARIM(8),KN,KT,MU,
-     &             GNO,ECROB,VARIP(6),VARIP(7),VARIP(8),B1,FB1,MTB1)
-        VARIP(5)=1.D0-B1
-        IF ((ABS(VARIP(6)-VARIM(6)).GT.RMIN).OR.
-     &     (ABS(VARIP(7)-VARIM(7)).GT.RMIN)) THEN
-         XPB1=KT/(ECROB+KT)
-         ZPB1=KT/(ECROB+KT)
-        ENDIF
-C
-C  Ressort R1
-C-la direction x du ressort est inversee par rapport aux bossettes
-C-on rentre donc -x dans la loi de comportement
-        X=-UXM
-        Y=UYM
-        Z=UZM
-        DX=-DUX
-        DY=DUY
-        DZ=DUZ
-        CALL LCDIGC(X,Y,Z,DX,DY,DZ,VARIM(10),VARIM(11),VARIM(12),RN,RT,
-     &          MUR,FNO,ECROR,VARIP(10),VARIP(11),VARIP(12),R1,FR1,MTR1)
-C
-C-la direction x du ressort est inversee par rapport aux bossettes
-C-on inverse donc la force et la matrice tangente
-        FR1(1)=-FR1(1)
-        MTR1(1,2)=-MTR1(1,2)
-        MTR1(2,1)=-MTR1(2,1)
-        MTR1(3,1)=-MTR1(3,1)
-        MTR1(1,3)=-MTR1(1,3)
-C
-        VARIP(9)=1.D0-R1
-        IF ((ABS(VARIP(10)-VARIM(10)).GT.RMIN).OR.
-     &     (ABS(VARIP(11)-VARIM(11)).GT.RMIN)) THEN
-         XPR1=RT/(ECROR+RT)
-         ZPR1=RT/(ECROR+RT)
-        ENDIF
-C
-C
-        DO 100 I=1,12
-          VARIP(LGPG+I)=VARIP(I)
-100   CONTINUE
-C
-C--- Calcul de forces nodales et des moments dans le repere local
-C
-        MOPY=0.D0
-        MOPX=-LB*(FH1(3)-FB1(3))
-        MOPZ=LB*(FH1(1)-FB1(1))
-C
-        SIP(1)=FH1(1)+FB1(1)+FR1(1)
-        SIP(2)=FH1(2)+FB1(2)+FR1(2)
-        SIP(3)=FH1(3)+FB1(3)+FR1(3)
-        SIP(1+NC)=FH1(1)+FB1(1)+FR1(1)
-        SIP(2+NC)=FH1(2)+FB1(2)+FR1(2)
-        SIP(3+NC)=FH1(3)+FB1(3)+FR1(3)
-        SIP(5)=MOPY
-        SIP(4)=MOPX
-        SIP(6)=MOPZ
-        SIP(5+NC)=MOPY
-        SIP(4+NC)=MOPX
-        SIP(6+NC)=MOPZ
-C
+C on garde -FN0 dans la direction du discret
+C possibilité de frottement dans la direction 2 (verticalement)
+C force nulle dans la 3e direction
+
+        RTM = (SIM(2+NC)+SIM(2))/2.D0
+        SEUIL = MUAX*FNO
+        PM = VARIM(1)
+        RTE = RTM + KTAX*DUY
+        SIELEQ = ABS(RTE)
+        BETA = KTAX*ETAX/ (KTAX-ETAX)
+        RM = BETA*PM + SEUIL
+        IF (SIELEQ.LE.RM) THEN
+          DP = 0.D0
+          RTP = RTE
+          KTRIG = KTAX
+          VARIP(1) = PM
+          VARIP(2) = 0.D0
+        ELSE
+          VARIP(2) = 1.D0
+          DP = ABS(RTE) - (SEUIL+BETA*PM)
+          DP = DP/ (BETA+KTAX)
+          RTP = (SEUIL + BETA* (PM+DP))*RTE/ABS(RTE)
+          VARIP(1) = PM + DP
+          KTRIG = ETAX
+        END IF
+        SIP(1)=-FNO+KNAX*(UXM+DUX)
+        SIP(2)=RTP
+        SIP(3)=0.D0
+        SIP(1+NC)=-FNO+KNAX*(UXM+DUX)
+        SIP(2+NC)=RTP
+        SIP(3+NC)=0.D0
+
         FL(2)=-SIP(2)
         FL(1)=-SIP(1)
         FL(3)=-SIP(3)
         FL(2+NC)=SIP(2)
         FL(1+NC)=SIP(1)
         FL(3+NC)=SIP(3)
-        FL(5)=-MOPY
-        FL(4)=-MOPX
-        FL(6)=-MOPZ
-        FL(5+NC)=MOPY
-        FL(4+NC)=MOPX
-        FL(6+NC)=MOPZ
+
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  CALCUL DES FORCES EN ROTATION
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C  Calcul des forces et evolution des variables internes
+C   sur chacun des sous éléments du système de liaison
 C
 C
-C
-C calcul de la partie de la matrice tangente sur un noeud
-C
-C  dans le repere local
-C
-        CALL R8INIR(36,0.D0,MATAN,1)
-        DO 500 I=1,3
-          DO 501 J=1,3
-            MATAN(I,J)=MATAN(I,J)+MTH1(I,J)+MTB1(I,J)+MTR1(I,J)
-501       CONTINUE
-          MATAN(I,4)=MATAN(I,4)-LB*MTH1(I,3)+LB*MTB1(I,3)
-          MATAN(I,6)=MATAN(I,6)+LB*MTH1(I,1)-LB*MTB1(I,1)
-          MATAN(4,I)=MATAN(4,I)-LB*MTH1(3,I)+LB*MTB1(3,I)
-          MATAN(6,I)=MATAN(6,I)+LB*MTH1(1,I)-LB*MTB1(1,I)
-500     CONTINUE
-          MATAN(4,4)=LB*LB*(MTH1(3,3)+MTB1(3,3))
-          MATAN(6,6)=LB*LB*(MTH1(1,1)+MTB1(1,1))
-          MATAN(4,6)=-LB*LB*(MTH1(3,1)+MTB1(3,1))
-          MATAN(6,4)=-LB*LB*(MTH1(1,3)+MTB1(1,3))
-C
-C
+C  angle theta (DRZ): possibilite de decollement
+C  cela equivaut a une loi bilineaire
+
+        IF ((THETAC-THM-DTH).LT.0.D0) THEN
+          H1=0.D0
+          SIP(6)=KTHETA*THETAC+KTHET2*(THM+DTH-THETAC)         
+        ELSEIF ((THETAC+THM+DTH).LT.0.D0) THEN
+          H1=0.D0
+          SIP(6)=-KTHETA*THETAC+KTHET2*(THM+DTH+THETAC)         
+        ELSE
+          H1=1.D0
+          SIP(6)=KTHETA*(THM+DTH)
+        ENDIF
+
+        SIP(6+NC)=SIP(6)
+        FL(6)=-SIP(6)
+        FL(6+NC)=SIP(6)
+        THETAN=H1*KTHETA+(1.D0-H1)*KTHET2
+        VARIP(3)=1.D0-H1
+
+
+C  angle phi (DRX): loi de frottement
+
+        PHIPL=VARIM(4)
+        PPM=VARIM(5)
+        FPHI=PHM+DPH-PHIPL
+        ECRO=EPHI/KPHI
+        
+        SEUROT=ABS(FPHI)-PHIC-ECRO*PPM
+        IF (SEUROT.LT.0.D0) THEN
+          MOPHI=KPHI*FPHI
+          VARIP(4)=VARIM(4)
+          VARIP(5)=VARIM(5)
+          PHITAN=KPHI
+        ELSE
+          DPP=-(PHIC+ECRO*PPM-ABS(PHM-PHIPL+DPH))/(1.D0+ECRO)
+          DPHIPL=DPP*DPH/ABS(DPH)
+          VARIP(4)=VARIM(4)+DPHIPL
+          VARIP(5)=VARIM(5)+DPP
+          MOPHI=KPHI*(PHM+DPH-PHIPL-DPHIPL)
+          PHITAN=EPHI
+        ENDIF
+
+        SIP(4)=MOPHI
+        SIP(4+NC)=MOPHI
+        FL(4)=-MOPHI
+        FL(4+NC)=MOPHI
+
+C pour le dernier angle, on met quand meme une rigidite, meme si 
+Cles conditions limites doivent imposer que ça ne tourne pas 
+        SIP(5)=KPHI*(KHM+DKH)
+        SIP(5+NC)=KPHI*(KHM+DKH)
+        FL(5)=-KPHI*(KHM+DKH)
+        FL(5+NC)=KPHI*(KHM+DKH)
+
+
       ENDIF
 C
 C
 C
 C---Matrice tangente pour FULL_MECA(_ELAS) et RIGI_MECA(_ELAS)
 
-      IF (OPTION(1:9).EQ.'FULL_MECA' 
-     &           .OR. OPTION(1:9).EQ.'RIGI_MECA') THEN
+      IF ((OPTION(1:9).EQ.'FULL_MECA')
+     &           .OR. (OPTION(1:9).EQ.'RIGI_MECA')) THEN
 C
         IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.(OPTION(10:14).EQ.'_ELAS'))
      &               THEN
 C
-C
-          KXX=(H1+B1)*KN+R1*RN
-          KYY=(H1*(1.D0-XPH1)+B1*(1.D0-XPB1))*KT+(R1*(1.D0-XPR1))*RT
-          KZZ=(H1*(1.D0-ZPH1)+B1*(1.D0-ZPB1))*KT+R1*(1.D0-ZPR1)*RT
-          KPP=LB*LB*(H1+B1)*KN
-          KTT=LB*LB*(H1*(1.D0-ZPH1)+B1*(1.D0-ZPB1))*KT
-          KXT=LB*(B1-H1)*KN
-          KZP=LB*(H1*(1.D0-ZPH1)-B1*(1.D0-ZPB1))*KT
-C
-C  on remplit la matrice tangente dans le repere local
-C
-          CALL R8INIR(144,0.D0,MATLOC,1)
-C
-C on remplit le 1er bloc 6x6
-          MATLOC(1,1)=KXX
-          MATLOC(2,2)=KYY
-          MATLOC(3,3)=KZZ
-          MATLOC(4,4)=KPP
-          MATLOC(6,6)=KTT
-C--on ne remplit pas les termes extra-diagonaux pour RIGI_MECA_ELAS
-C et FULL_MECA_ELAS
-          IF (OPTION(10:14).NE.'_ELAS') THEN
-            MATLOC(1,6)=KXT
-            MATLOC(6,1)=KXT
-            MATLOC(3,4)=KZP
-            MATLOC(4,3)=KZP
-          ENDIF
-C
-C on remplit les autres blocs
-C
-          DO 101 I=1,6
-            DO 102 J=1,6
-              MATLOC(I+6,J+6)=MATLOC(I,J)
-              MATLOC(I,J+6)=-MATLOC(I,J)
-              MATLOC(I+6,J)=-MATLOC(I,J)
- 102        CONTINUE
- 101      CONTINUE
-C
+          KXX=KNAX
+          KYY=KTAX
+          KZZ=0.D0
+          KPP=KPHI
+          KKK=KPHI
+          KTT=KTHETA
         ELSE
-C
-          CALL R8INIR(144,0.D0,MATLOC,1)
-          DO 103 I=1,6
-            DO 104 J=1,6
-              MATLOC(I,J)=MATAN(I,J)
-              MATLOC(I+6,J)=-MATAN(I,J)
-              MATLOC(I,J+6)=-MATAN(I,J)
-              MATLOC(I+6,J+6)=MATAN(I,J)
-104         CONTINUE
-103       CONTINUE
-C
+          KXX=KNAX
+          KYY=KTRIG
+          KZZ=0.D0
+          KPP=PHITAN
+          KKK=KPHI
+          KTT=THETAN
         ENDIF
 C
 C
-C on exprime la matrice tangente dans le repere global
-C
-        CALL R8INIR(144,0.D0,MATGLO,1)
+        CALL R8INIR(78,0.D0,KLV,1)
+        KLV(1)=KXX
+        KLV(3)=KYY
+        KLV(6)=KZZ
+        KLV(10)=KPP
+        KLV(15)=KKK
+        KLV(21)=KTT
+        KLV(28)=KXX
+        KLV(36)=KYY
+        KLV(45)=KZZ
+        KLV(55)=KPP
+        KLV(66)=KKK
+        KLV(78)=KTT
+        KLV(22)=-KXX
+        KLV(30)=-KYY
+        KLV(39)=-KZZ
+        KLV(49)=-KPP
+        KLV(60)=-KKK
+        KLV(72)=-KTT
 
-        DO 123 I=1,3
-          DO 124 L=1,3
-            DO 125 P=1,4
-            DO 126 Q=1,4 
-              DO 127 J=1,3
-                DO 128 K=1,3
-                  MATGLO(I+3*(P-1),L+3*(Q-1))=
-     &                   MATGLO(I+3*(P-1),L+3*(Q-1))
-     &                  +PGL(J,I)*MATLOC(J+3*(P-1),K+3*(Q-1))*PGL(K,L)
- 128            CONTINUE
- 127          CONTINUE
- 126        CONTINUE
- 125        CONTINUE
- 124      CONTINUE
- 123    CONTINUE
-C
-C on range la matrice tangente sous forme d'un vecteur
-C (rangement d'une matrice non symétrique)
-C
-        DO 860 I=1,12
-          DO 861 J=1,12
-             K=12*(I-1)+J
-             KLGLO(K)=MATGLO(I,J)
- 861      CONTINUE
- 860    CONTINUE
-C
       ENDIF
-C
 C
 C---Calcul des forces nodales dans le repère global
 C
@@ -454,6 +379,5 @@ C
         NNO = 2
         CALL UTPVLG(NNO,NC,PGL,FL,FONO)
       ENDIF
-C
-C
+
       END

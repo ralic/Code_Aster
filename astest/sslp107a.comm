@@ -1,5 +1,5 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
-# TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
+# MODIF  DATE 11/04/2006   AUTEUR DELMAS J.DELMAS 
+# TITRE VALIDATION DES ESTIMATEURS D'ERREUR BASES SUR LES RESIDUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,18 +23,18 @@ nbel = 2
 # ----------------------------------------------------------------------
 # Declaration des tableaux :
 # ----------------------------------------------------------------------
-sigma=zeros((nbel,4),'float')
-dndx=zeros((nbel,3),'float')
-dndy=zeros((nbel,3),'float')
-hf=zeros((nbel,3),'float')
-nx=zeros((nbel,3),'float')
-ny=zeros((nbel,3),'float')
-terme1=zeros(nbel,'float')
-terme2=zeros(nbel,'float')
-terme3=zeros(nbel,'float')
-terme=zeros(nbel,'float')
-norsig=zeros(nbel,'float')
-relatif=zeros((nbel,4),'float')
+sigma=zeros((nbel,4),Float)
+dndx=zeros((nbel,3),Float)
+dndy=zeros((nbel,3),Float)
+hf=zeros((nbel,3),Float)
+nx=zeros((nbel,3),Float)
+ny=zeros((nbel,3),Float)
+terme1=zeros(nbel,Float)
+terme2=zeros(nbel,Float)
+terme3=zeros(nbel,Float)
+terme=zeros(nbel,Float)
+norsig=zeros(nbel,Float)
+relatif=zeros((nbel,4),Float)
 # ----------------------------------------------------------------------
 # Donnees :
 # ----------------------------------------------------------------------
@@ -205,14 +205,6 @@ for i in range(nbel) :
         
     dsx = dsig11 + dsig12
     dsy = dsig21 + dsig22
-    #    print "dsig11=",dsig11
-    #    print "dsig12=",dsig12
-    #    print "dsig22=",dsig22
-    #    print "dsig21=",dsig21
-#    print "spg11=",spg11
-#    print "spg22=",spg22
-#    print "spg33=",spg33
-#    print "spg12=",spg12
 #
 # Integration de Gauss sur un point
 #
@@ -246,9 +238,6 @@ for i in range(nbel) :
     sosig11 = sigma[i,0] - sigma[j,0]
     sosig22 = sigma[i,1] - sigma[j,1]
     sosig12 = sigma[i,3] - sigma[j,3]
-#    print sosig11
-#    print sosig22
-#    print sosig12
 #
 # Calcul du terme de l'integrale
 #

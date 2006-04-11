@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,27 +127,11 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       #----------------------------------------------
       # 6. Traitement de OPER
       if occ['OPERATION'] == 'OPER':
-         if occ['NOM_PARA'] in tab.para :
-            UTMESS('F', macro, 'Le paramètre %s existe déjà dans la table %s' % (occ['NOM_PARA'], TABLE.nom))
-         func = occ['FORMULE']
-         tabpar = []
-         for para in func.nompar :
-            if para not in tab.para :
-               UTMESS('F', macro, 'Le paramètre de la formule %s est inexistant dans la table %s' % (para, TABLE.nom))
-            vals = getattr(tab,para).values()
-            tabpar.append(vals)
-         tabpar = transpose.transpose(tabpar)
-         vectval = []
-         for lpar in tabpar:
-            # si un paramètre est absent, on ne peut pas évaluer la formule
-            if None in lpar:
-               vectval.append(None)
-            else:
-               vectval.append(func(*lpar))
          # ajout de la colonne dans la table
+         tab.fromfunction(occ['NOM_PARA'], occ['FORMULE'])
          if INFO == 2:
+            vectval = getattr(tab, occ['NOM_PARA']).values()
             aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (occ['NOM_PARA']+repr(vectval))+'\n')
-         tab[occ['NOM_PARA']] = vectval
 
    #----------------------------------------------
    # 99. Création de la table_sdaster résultat

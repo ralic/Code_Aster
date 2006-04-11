@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,15 +29,18 @@ from types import *
 EnumTypes = (ListType, TupleType)
 NumberTypes = (IntType, LongType, FloatType, ComplexType)
 
+import transpose
+
 # try/except pour utiliser hors aster
 try:
    from Utilitai.Utmess import UTMESS
 except ImportError:
    def UTMESS(code,sprg,texte):
       fmt = '\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
       if code == 'F':
-         sys.exit(1)
+         raise StandardError, fmt % (code,sprg,texte)
+      else:
+         print fmt % (code,sprg,texte)
 
 if not sys.modules.has_key('Graph'):
    try:
@@ -71,6 +74,11 @@ class TableBase(object):
       return self.ReprTable()
    def Croise(self, **kargs):
       raise NotImplementedError, 'Must be defined in a derived class'
+
+   def __len__(self):
+      """Retourne le nombre de ligne dans la Table/Colonne.
+      """
+      return len(self.rows)
 
 # ------------------------------------------------------------------------------
    def Impr(self, FICHIER=None, FORMAT='TABLEAU', dform=None, **opts):
@@ -355,6 +363,45 @@ class Table(TableBase):
          i+=1
       for j in range(i,len(k_value)): 
          self.append({k_para:k_value[j]})
+
+# ------------------------------------------------------------------------------
+   def fromfunction(self, nom_para, funct, l_para=None):
+      """Ajoute une colonne `nom_para` en évaluant la fonction `funct` sur
+      la valeur des paramètres `l_para` (qui doivent exister dans la table).
+      Si `l_para` n'est pas fourni, on prend `funct`.nompar (FORMULE Aster).
+      """
+      # vérif préalables
+      if not hasattr(funct, '__call__'):
+         UTMESS('F', 'Table', "(fromfunction) '%s' n'a pas d'attribut '__call__'." \
+            % funct.__name__)
+      if nom_para in self.para :
+         UTMESS('F','Table','Le parametre %s existe déjà.' % nom_para)
+      if l_para == None:
+         if not hasattr(funct, 'nompar'):
+            UTMESS('F', 'Table', "(fromfunction) '%s' n'a pas d'attribut 'nompar'." \
+               % funct.__name__)
+         l_para = funct.nompar
+      if not type(l_para) in EnumTypes:
+         l_para = [l_para]
+      not_found = ', '.join([p for p in l_para if not p in self.para])
+      if not_found != '':
+         UTMESS('F','Table','Parametre(s) absent(s) de la table : %s' % not_found)
+      # liste des valeurs des paramètres
+      tabpar = []
+      for para in l_para:
+         vals = getattr(self, para).values()
+         tabpar.append(vals)
+      tabpar = transpose.transpose(tabpar)
+      # évaluation de la fonction sur ces paramètres
+      vectval = []
+      for lpar in tabpar:
+         # si un paramètre est absent, on ne peut pas évaluer la formule
+         if None in lpar:
+            vectval.append(None)
+         else:
+            vectval.append(funct(*lpar))
+      # ajout de la colonne
+      self[nom_para] = vectval
 
 # ------------------------------------------------------------------------------
    def __iter__(self):

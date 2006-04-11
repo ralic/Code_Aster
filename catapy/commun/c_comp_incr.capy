@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 13/03/2006   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMUN  DATE 11/04/2006   AUTEUR GODARD V.GODARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -208,7 +208,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           GRILLE_PINTO_MEN=SIMP(statut='c',typ='I',defaut=16,into=(16,)),
           DIS_CONTACT     =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           DIS_CHOC        =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
-          DIS_GRICRA     =SIMP(statut='c',typ='I',defaut=12,into=(12,)),
+          DIS_GRICRA     =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           DIS_GOUJ2E_PLAS =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           DIS_GOUJ2E_ELAS =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           PINTO_MENEGOTTO =SIMP(statut='c',typ='I',defaut=8,into=(8,)),

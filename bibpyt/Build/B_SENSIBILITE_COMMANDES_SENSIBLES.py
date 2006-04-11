@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,61 +42,64 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
    . La liste des classe de paramètres sensibles définis dans le jdc.
 
    """
-   defi_para_sensi = "defi_para_sensi"
-   sensible = "sensible"
-   a_deriver = "a_deriver"
-   a_deriver_ensemble = "a_deriver_ensemble"    
-   sensibles_speciales="sensibles_speciales"
-   poursuite = "poursuite"    
+   defi_para_sensi     = "defi_para_sensi"
+   sensible            = "sensible"
+   sensible_princ      = "sensible_princ"
+   sensible_post       = "sensible_post"
+   sensible_all        = "sensible_all"
+   a_deriver           = "a_deriver"
+   a_deriver_ensemble  = "a_deriver_ensemble"    
+   poursuite           = "poursuite"    
 #
 # ---------- Début du constructeur ----------
 #
    def __init__(self,
-                l_commandes_defi_para_sensi=None,
-                l_commandes_sensibles=None,
-                l_commandes_a_deriver=None,
-                l_commandes_a_deriver_ensemble=None,
-                l_commandes_poursuite=None,
-                d_commandes_sensibles_speciales=None,
                 mot_cle = 'SENSIBILITE',
                 memo_nom_sensi = 'MEMO_NOM_SENSI',
-                DEBUG=None
+                DEBUG=None,
                 ) :
-       l_commandes_defi_para_sensi_defaut=['DEFI_PARA_SENSI']
-       l_commandes_sensibles_defaut=['THER_LINEAIRE',
-                                     'THER_NON_LINE',
-                                     'MECA_STATIQUE',
-                                     'STAT_NON_LINE',
-                                     'DYNA_LINE_HARM',
+       self.d_cmd = {
+         self.defi_para_sensi     : ['DEFI_PARA_SENSI'],
+         # commandes qui créent le concept nominal ET le(s) concept(s) dérivé(s)
+         self.sensible_princ      : ['DYNA_LINE_HARM',
                                      'DYNA_LINE_TRAN',
-                                     'MODE_ITER_SIMULT',
+                                     'DYNA_NON_LINE',
+                                     'MECA_STATIQUE',
                                      'MODE_ITER_INV',
-                                     'NORM_MODE',
-                                     'EXTR_RESU',
-                                     'PROJ_CHAMP',
+                                     'MODE_ITER_SIMULT',
+                                     'STAT_NON_LINE',
+                                     'THER_LINEAIRE',
+                                     'THER_NON_LINE',],
+         # commandes qui créent le concept nominal OU le(s) concept(s) dérivé(s)
+         self.sensible_post       : ['CALC_ELEM',
                                      'CALC_G_THETA_T',
-                                     'RECU_FONCTION',
+                                     'CALC_NO',
+                                     #'CALC_TABLE',
+                                     'CREA_CHAMP',
                                      'CREA_TABLE',
-                                     'POST_RELEVE_T']
-       l_commandes_a_deriver_defaut=['AFFE_MATERIAU',
+                                     'EXTR_RESU',
+                                     'NORM_MODE',
+                                     'POST_RELEVE_T',
+                                     'PROJ_CHAMP',
+                                     'RECU_FONCTION',],
+         # celles qui ne créent rien ne sont pas ici, of course ! (IMPR_xxxx, TEST_xxxx)
+         # commandes dupliquées pour chaque paramètre sensible
+         self.a_deriver_ensemble  : ['DEFI_MATERIAU',],
+         # commandes à dupliquer en fonction des concepts sensibles présents en argument
+         self.a_deriver           : ['AFFE_MATERIAU',
                                      'AFFE_CHAR_MECA_F',
                                      'AFFE_CHAR_THER_F',
-                                     'CREA_CHAMP',
-                                     'CALC_MATR_ELEM' ]
-       l_commandes_a_deriver_ensemble_defaut=['DEFI_MATERIAU']
-       l_commandes_poursuite_defaut=['POURSUITE']
-       d_commandes_sensibles_speciales_defaut={}
-       d={}
-       d["OPERATION"] = ["AFFE"]
-       d_commandes_sensibles_speciales_defaut["CREA_CHAMP"]=d
+                                     #'CALC_MATR_ELEM',
+                                     ],
+         self.poursuite           : ['POURSUITE',],
+       }
+       self.d_cmd[self.sensible]     = self.d_cmd[self.sensible_princ] \
+                                     + self.d_cmd[self.sensible_post]
+       all = []
+       for liste in self.d_cmd.values():
+          all.extend(liste)
+       self.d_cmd[self.sensible_all] = all
        DEBUG_defaut = 0
-       self.dict_commandes = {}
-       self.dict_commandes[self.defi_para_sensi]     = l_commandes_defi_para_sensi or l_commandes_defi_para_sensi_defaut
-       self.dict_commandes[self.sensible]            = l_commandes_sensibles or l_commandes_sensibles_defaut
-       self.dict_commandes[self.a_deriver]           = l_commandes_a_deriver or l_commandes_a_deriver_defaut
-       self.dict_commandes[self.a_deriver_ensemble]  = l_commandes_a_deriver_ensemble or l_commandes_a_deriver_ensemble_defaut
-       self.dict_commandes[self.poursuite]           = l_commandes_poursuite or l_commandes_poursuite_defaut
-       self.dict_commandes[self.sensibles_speciales] = d_commandes_sensibles_speciales or d_commandes_sensibles_speciales_defaut
        self.DEBUG = DEBUG or DEBUG_defaut
        self.mot_cle = mot_cle
        self.memo_nom_sensi = memo_nom_sensi
@@ -128,13 +131,13 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        Code de retour :  0, tout va bien
                          1, la commande est déjà dans la liste
        """
-       liste = self.dict_commandes[type_commande]
+       liste = self.d_cmd[type_commande]
        if commande in liste :
          codret = 1
        else :
          codret = 0
          liste.append(commande)
-       self.dict_commandes[type_commande] = liste
+       self.d_cmd[type_commande] = liste
        return codret
 #
 #
@@ -150,7 +153,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        """
        Récupère la liste des commandes de définition des paramètres sensibles
        """
-       return self.dict_commandes[self.defi_para_sensi]
+       return self.d_cmd[self.defi_para_sensi]
 #
    def add_commande_sensible(self,commande) :
        """
@@ -164,7 +167,27 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        """
        Récupère la liste des commandes sensibles
        """
-       return self.dict_commandes[self.sensible]
+       return self.d_cmd[self.sensible]
+#
+   def get_l_commandes_sensibles_all(self) :
+       """
+       Récupère la liste de toutes les commandes sensibles
+       """
+       return self.d_cmd[self.sensible_all]
+#
+   def add_commande_sensible_post(self,commande) :
+       """
+       Ajoute une commande sensible à la liste
+       Code de retour :  0, tout va bien
+                         1, la commande est déjà dans la liste
+       """
+       return self.add_commande(commande,self.sensible_post)
+#
+   def get_l_commandes_sensibles_post(self) :
+       """
+       Récupère la liste des commandes sensibles de post
+       """
+       return self.d_cmd[self.sensible_post]
 #
    def add_commande_a_deriver(self,commande) :
        """
@@ -178,7 +201,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        """
        Récupère la liste des commandes à dériver
        """
-       return self.dict_commandes[self.a_deriver]
+       return self.d_cmd[self.a_deriver]
 #
    def add_commande_a_deriver_ensemble(self,commande) :
        """
@@ -192,7 +215,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        """
        Récupère la liste des commandes à dériver ensemble
        """
-       return self.dict_commandes[self.a_deriver_ensemble]
+       return self.d_cmd[self.a_deriver_ensemble]
 #
    def add_commande_poursuite(self,commande) :
        """
@@ -206,13 +229,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        """
        Récupère la liste des commandes de poursuite
        """
-       return self.dict_commandes[self.poursuite]
-# 
-   def get_d_commandes_sensibles_speciales(self) :
-       """
-       Récupère le dictionnaire des commandes sensibles speciales
-       """
-       return self.dict_commandes[self.sensibles_speciales]
+       return self.d_cmd[self.poursuite]
 #
 #
 if __name__ == "__main__" :

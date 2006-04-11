@@ -3,7 +3,7 @@
       REAL*8                        PSIDEL(NEQ,*),TEMPS,     REP
       CHARACTER*8                                NOMFON(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 10/04/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,11 @@ C
       REP    = 0.D0
       DO 10 IEX = 1,NBEXCI
          IF ( NOMFON(IEX) .EQ. BLANC ) THEN
-            CALL UTDEBM('F','MDGEP4','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            CALL UTIMPK('L','INCOMPATIBILITE AVEC DYNA_TRAN_MODAL :',
-     +                   1,'CALCUL EN MONO APPUI')
+            CALL UTDEBM('A','MDGEP4','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            CALL UTIMPK('L','INCOMPATIBILITE AVEC MULTI APPUI :',
+     +                   1,'CHARGE EN MONO APPUI')
             CALL UTFINM()
+            GOTO 10
          ENDIF
          CALL FOINTE('F ',NOMFON(IEX),1,NOMPAR,TEMPS,COEF,IER)
          REP = REP + PSIDEL(IDDL,IEX)*COEF

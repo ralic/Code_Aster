@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,8 +222,6 @@ class SENSIBILITE_JDC :
       l_commandes_a_deriver_ensemble = self.commandes_sensibles.get_l_commandes_a_deriver_ensemble()
 #     l_commandes_sensibles = liste des commandes qui pilotent la sensibilité
       l_commandes_sensibles = self.commandes_sensibles.get_l_commandes_sensibles()
-#     d_commandes_sensibles_speciales = dictionnaire des commandes à dériver selon les mots-clés
-      d_commandes_sensibles_speciales = self.commandes_sensibles.get_d_commandes_sensibles_speciales()
 #     l_commandes_poursuite = liste des commandes qui pilotent une reprise de calcul
       l_commandes_poursuite = self.commandes_sensibles.get_l_commandes_poursuite()
 #     commande mémorisant les noms pour la sensibilité
@@ -431,14 +429,8 @@ class SENSIBILITE_JDC :
                           if self.DEBUG :
                             print ".. Dictionnaire des sd utilisées : ", daux
                           if daux.has_key(mot_cle) : on_derive = 0
-# 3.3.3.3. Remarque : certaines commandes, comme CREA_CHAMP par exemple, doivent etre traitées
-#          avec sagesse. En effet, soit elles sont utilisées pour préparer le calcul et doivent
-#          alors etre dérivées ; soit elles sont utilisées en post-traitement et ne doivent pas
-#          l'etre. Le tri se fait en fonction de valeurs de mot-clés renseignés en dur.
-                    if on_derive :
-                      if d_commandes_sensibles_speciales.has_key(etape.nom) :
-                        d_aux = d_commandes_sensibles_speciales[etape.nom]
-                        on_derive = derivation.derivation_speciale(etape,d_aux)
+# 3.3.3.3. cas particulier CREA_CHAMP avec des mot-clés renseignés en dur : supprimer !
+#
 # 3.3.3.4. On doit dériver par rapport au paramètre param ; alors on y va ...
                     if on_derive :
 # 3.3.3.4.1. Si la commande en elle-meme est à dériver, on y va

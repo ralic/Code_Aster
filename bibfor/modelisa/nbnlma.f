@@ -4,7 +4,7 @@
       CHARACTER*8    LITYP(*), NOMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,11 +31,14 @@ C      NOMA : NOM DU MAILLAGE
 C      NBM  : NOMBRE DE MAILLES DANS LA LISTE.
 C    LIMANU : LISTE DES NUMEROS DE MAILLE
 C     NBTYP : NOMBRE DE TYPE_MAILLES DANS LA LISTE LITYP.
+C             SI NBTYP=0: AUCUNE VERIF N'EST FAITE SUR LES TYPES
+C    LITYP  : LISTE DES TYPES DE MAILLE
+C             SI NBTYP=0: LITYP=K8BID
 C ARGUMENTS DE SORTIE:
 C      NBN  : NOMBRE DE NOEUDS
-C OBJETS JEVEUX CREES
-C      &&NBNLMA.LN   : NUMEROS DES NOEUDS (CREE SI ICOD=1)
-C      &&NBNLMA.NBN  : NOMBRES D'OCCURENCES DES NOEUDS (CREE SI ICOD=1)
+C   OBJETS JEVEUX CREES
+C      &&NBNLMA.LN   : NUMEROS DES NOEUDS
+C      &&NBNLMA.NBN  : NOMBRES D'OCCURENCES DES NOEUDS
 C-----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
@@ -66,17 +69,21 @@ C
       CALL JEVEUO ( JEXATR(NOMA//'.CONNEX','LONCUM'), 'L', P2 )
       CALL JEVEUO ( NOMA//'.CONNEX', 'L', P1 )
 C
+C --- SI ON SOUHAITE CONTROLEE LE TYPE DE MAILLE DE LIMANU:
+      IF (NBTYP.NE.0)THEN
+
       NBNM = 0
       DO 10 M = 1 , NBM
          MI   = LIMANU(M)
          JTYP = IATYMA-1 + MI
          NN = 0
+
          DO 12 IT = 1 , NBTYP
-            CALL JENONU(JEXNOM('&CATA.TM.NBNO',LITYP(IT)),NUMTYP)
-            IF ( ZI(JTYP) .EQ. NUMTYP ) THEN
-               NN = ZI(P2+MI+1-1) - ZI(P2+MI-1)
-            END IF
- 12      CONTINUE
+             CALL JENONU(JEXNOM('&CATA.TM.NBNO',LITYP(IT)),NUMTYP)
+             IF ( ZI(JTYP) .EQ. NUMTYP ) THEN
+                NN = ZI(P2+MI+1-1) - ZI(P2+MI-1)
+             END IF
+   12    CONTINUE
          IF ( NN .EQ. 0 ) THEN
             CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',MI),MK)
             CALL UTDEBM('F','NBNLMA',' LA MAILLE ' )
@@ -85,9 +92,23 @@ C
      &                                  'CONFORME AU CALCUL ENVISAGE')
             CALL UTFINM()
          ELSE
-            NBNM = NBNM + NN
+             NBNM = NBNM + NN
          END IF
+
  10   CONTINUE
+
+C --- SINON:
+      ELSE
+
+      NBNM = 0
+      DO 14 M = 1 , NBM
+         MI   = LIMANU(M)
+         NN = ZI(P2+MI+1-1) - ZI(P2+MI-1)
+         NBNM = NBNM + NN
+ 14   CONTINUE
+
+      ENDIF
+C
 C
       CALL JEEXIN('&&NBNLMA.LN',IRET)
       IF (IRET.NE.0) CALL JEDETR('&&NBNLMA.LN')

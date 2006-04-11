@@ -2,7 +2,7 @@
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+C MODIF ELEMENTS  DATE 11/04/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,10 +48,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      CHARACTER*2 CODRET
+      CHARACTER*2  CODRET
+      CHARACTER*8  CND
       CHARACTER*16 PHENOM
-      INTEGER ICOUR,IMATE,IGEOM,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER I,J
+      INTEGER ICOUR,IMATE,IGEOM,ND,NDIM,NNO,NNOS,NPG
+      INTEGER I,J,IPOIDS,IVF,IDFDE,JGANO,IER
       REAL*8  DMIN,DISTIJ,XI,YI,ZII,XJ,YJ,ZJ,RBID
       REAL*8  E,NU,ALPHA,RHO,VITMAT
 C DEB ------------------------------------------------------------------
@@ -62,24 +63,29 @@ C     RECUPERATION DES COORDONNEES DES NOEUDS
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
-C     CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
-      DMIN = SQRT((ZR(IGEOM-1+NDIM*(2-1)+1)-ZR(IGEOM-1+1))**2
-     &           +(ZR(IGEOM-1+NDIM*(2-1)+2)-ZR(IGEOM-1+2))**2
-     &           +(ZR(IGEOM-1+NDIM*(2-1)+3)-ZR(IGEOM-1+3))**2)
+      CALL TEATTR(' ','S','DIM_COOR_MODELI',CND,IER)
+      READ(CND,'(I8)')  ND
       
-      DO 10 I=1,NNOS
+C     CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
+      DMIN = SQRT((ZR(IGEOM-1+ND*(2-1)+1)-ZR(IGEOM-1+1))**2
+     &           +(ZR(IGEOM-1+ND*(2-1)+2)-ZR(IGEOM-1+2))**2
+     &           +(ZR(IGEOM-1+ND*(2-1)+3)-ZR(IGEOM-1+3))**2)
+      
+      DO 10 I=1,NNOS-1
         DO 20 J=I+1,NNOS
         
-         XI = ZR(IGEOM-1+NDIM*(I-1)+1)
-         YI = ZR(IGEOM-1+NDIM*(I-1)+2)
-         ZII = ZR(IGEOM-1+NDIM*(I-1)+3)
+         XI  = ZR(IGEOM-1+ND*(I-1)+1)
+         YI  = ZR(IGEOM-1+ND*(I-1)+2)
+         ZII = ZR(IGEOM-1+ND*(I-1)+3)
          
-         XJ = ZR(IGEOM-1+NDIM*(J-1)+1)
-         YJ = ZR(IGEOM-1+NDIM*(J-1)+2)
-         ZJ = ZR(IGEOM-1+NDIM*(J-1)+3)
+         XJ = ZR(IGEOM-1+ND*(J-1)+1)
+         YJ = ZR(IGEOM-1+ND*(J-1)+2)
+         ZJ = ZR(IGEOM-1+ND*(J-1)+3)
+         
+         
          
          DISTIJ = SQRT((XJ-XI)**2+(YJ-YI)**2+(ZJ-ZII)**2)
-         
+     
          IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0)) DMIN = DISTIJ
           
  20     CONTINUE
@@ -99,5 +105,6 @@ C     CALCUL DE LA CELERITE DES ONDES DANS LE MATERIAU
 C     CALCUL DU PAS DE TEMPS DE LA CONDITION DE COURANT
 
       ZR(ICOUR) = DMIN/VITMAT
+      
 C FIN ------------------------------------------------------------------
       END

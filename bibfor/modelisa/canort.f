@@ -1,7 +1,7 @@
-      SUBROUTINE CANORT(NOMA,NBMA,LISTI,LISTK,NDIM,NBNO,NBOPN,NUNO,L)
+      SUBROUTINE CANORT(NOMA,NBMA,LISTI,LISTK,NDIM,NBNO,NUNO,L)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/11/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER NBMA,LISTI(*),NDIM,NBNO,NBOPN(*),NUNO(*),L
+      INTEGER NBMA,LISTI(*),NDIM,NBNO,NUNO(*),L
       CHARACTER*8 NOMA,LISTK(*)
 
 C     BUT: CALCULER LES NORMALES AUX NOEUDS D'UNE LISTE DE MAILLES
@@ -33,7 +33,6 @@ C              SI <0 LA LISTE EST NOMMEE    ==> LISTK
 C      NDIM : DIMENSION DU PROBLEME
 C      NBNO : NOMBRE DE NOEUDS DANS LA LISTE DE MAILLES.
 C             = NOMBRE DE MAILLES SUPPLEMENTAIRES.
-C      NBOPN: NOMBRE D'OCCURENCES DE CHAQUE NOEUD DANS LA LISTE
 C      NUNO : LISTE DES NUMEROS DE NOEUDS DE LA LISTE DE MAILLES
 C      L    : =1 ==> CALCUL DE LA NORMALE (2D ET 3D)
 C             =2 ==> CALCUL DE LA TANGENTE (2D )
@@ -64,7 +63,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      DIMCOO,I,J,K,IFONC,IBID,IRET,JNORM,ISOM,IN
       INTEGER      IDOBJ2,JCOOR,IATYMA,M,JCOODE,IJ,INO
-      INTEGER      N,NOCC,NNO,NNOS,NBPAR
+      INTEGER      N,NOCC,NNO,NNOS,NBPAR,NNN
       INTEGER      IINVER,IMAIL,NUMAIL,ITYP,JDES,NN,NUMNO,LINO(9)
       REAL*8       COOR(3,9),A,B,C,PVEC(3),NORME,R8B
       COMPLEX*16   C16B
@@ -104,16 +103,6 @@ C     TYPES D ELEMENTS SUSCEPTIBLES D ETRE PRESENT
       CALL JEECRA(NOMOBJ,'LONMAX',NDIM*NBNO,' ')
       CALL JEVEUO(NOMOBJ,'E',JNORM)
 C
-      NOMOB2 = '&&CANORT.VECTEUR'
-      CALL JEEXIN(NOMOB2,IRET)
-      IF (IRET.NE.0) CALL JEDETR(NOMOB2)
-      ISOM = 0
-      DO 1 I = 1, NBNO
-         ISOM = ISOM + NBOPN(I)
- 1    CONTINUE
-        
-      CALL WKVECT(NOMOB2,'V V R',NDIM*ISOM,IDOBJ2)
-C
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
 
@@ -145,6 +134,17 @@ C     DE MAILLE ( POUR PASSAGE DANS CNCINV )
 
 C     RECUPERATION DE LA CONNECTIVITE INVERSE
       CALL CNCINV(NOMA,LISTI,ABS(NBMA),'V',CONINV)
+
+      NOMOB2 = '&&CANORT.VECTEUR'
+      CALL JEEXIN(NOMOB2,IRET)
+      IF (IRET.NE.0) CALL JEDETR(NOMOB2)
+      ISOM = 0
+      DO 1 I = 1, NBNO
+         CALL JELIRA(JEXNUM(CONINV,NUNO(I)),'LONMAX',NNN,K8B)
+         ISOM = ISOM + NNN
+ 1    CONTINUE
+        
+      CALL WKVECT(NOMOB2,'V V R',NDIM*ISOM,IDOBJ2)
       
       CALL JEVEUO (NOMA//'.COORDO    .DESC', 'L', JCOODE)
 
@@ -152,10 +152,11 @@ C     RECUPERATION DE LA CONNECTIVITE INVERSE
 C     BOUCLE SUR TOUS LES NOEUDS CONCERNES
       DO 10 INO=1,NBNO
          NUMNO=NUNO(INO)
+         CALL JELIRA(JEXNUM(CONINV,NUMNO),'LONMAX',NNN,K8B)
          CALL JEVEUO(JEXNUM(CONINV,NUMNO),'L',IINVER)
 
 C    BOUCLE SUR TOUTES LES MAILLES CONNECTEES AU NOEUD ACTUEL
-         DO 20 IMAIL=1,NBOPN(INO)
+         DO 20 IMAIL=1,NNN
 
 C           NUMERO ABSOLUE DE LA MAILLE
 
@@ -198,9 +199,9 @@ C           NUMERO ABSOLUE DE LA MAILLE
                   ENDIF
                ENDIF
                ZR(JNORM-1+2*(INO-1)+1)=ZR(JNORM-1+2*(INO-1)+1)
-     &               +A/NBOPN(INO)
+     &               +A/NNN
                ZR(JNORM-1+2*(INO-1)+2)=ZR(JNORM-1+2*(INO-1)+2)
-     &               +B/NBOPN(INO)
+     &               +B/NNN
                IJ=IJ+1
                ZR(IDOBJ2-1+2*(IJ-1)+1) = A
                ZR(IDOBJ2-1+2*(IJ-1)+2) = B
@@ -244,9 +245,9 @@ C              ON S INTERESSE AU VECTEUR NORMAL
                   ENDIF
                ENDIF
                ZR(JNORM-1+2*(INO-1)+1)=ZR(JNORM-1+2*(INO-1)+1)
-     &               +A/NBOPN(INO)
+     &               +A/NNN
                ZR(JNORM-1+2*(INO-1)+2)=ZR(JNORM-1+2*(INO-1)+2)
-     &               +B/NBOPN(INO)
+     &               +B/NNN
                IJ=IJ+1
                ZR(IDOBJ2-1+2*(IJ-1)+1) = A
                ZR(IDOBJ2-1+2*(IJ-1)+2) = B
@@ -298,11 +299,11 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
                ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
-     &            +A/NBOPN(INO)
+     &            +A/NNN
                ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
-     &            +B/NBOPN(INO)
+     &            +B/NNN
                ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
-     &            +C/NBOPN(INO)
+     &            +C/NNN
                IJ=IJ+1
 C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 C              UNE VERIFICATION ULTERIEURE
@@ -349,11 +350,11 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
                ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
-     &            +A/NBOPN(INO)
+     &            +A/NNN
                ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
-     &            +B/NBOPN(INO)
+     &            +B/NNN
                ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
-     &            +C/NBOPN(INO)
+     &            +C/NNN
                IJ=IJ+1
 C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 C              UNE VERIFICATION ULTERIEURE
@@ -402,11 +403,11 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
                ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
-     &            +A/NBOPN(INO)
+     &            +A/NNN
                ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
-     &            +B/NBOPN(INO)
+     &            +B/NNN
                ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
-     &            +C/NBOPN(INO)
+     &            +C/NNN
                IJ=IJ+1
 C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 C              UNE VERIFICATION ULTERIEURE
@@ -455,11 +456,11 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
                ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
-     &            +A/NBOPN(INO)
+     &            +A/NNN
                ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
-     &            +B/NBOPN(INO)
+     &            +B/NNN
                ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
-     &            +C/NBOPN(INO)
+     &            +C/NNN
                IJ=IJ+1
 C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 C              UNE VERIFICATION ULTERIEURE
@@ -505,11 +506,11 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
                ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
-     &            +A/NBOPN(INO)
+     &            +A/NNN
                ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
-     &            +B/NBOPN(INO)
+     &            +B/NNN
                ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
-     &            +C/NBOPN(INO)
+     &            +C/NNN
                IJ=IJ+1
 C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 C              UNE VERIFICATION ULTERIEURE
@@ -558,11 +559,11 @@ C              CALCUL DU VECTEUR NORMAL ET NORMALISATION
 C              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES 
 C              RELATIVES A UN NOEUD
                ZR(JNORM-1+3*(INO-1)+1)=ZR(JNORM-1+3*(INO-1)+1)
-     &            +A/NBOPN(INO)
+     &            +A/NNN
                ZR(JNORM-1+3*(INO-1)+2)=ZR(JNORM-1+3*(INO-1)+2)
-     &            +B/NBOPN(INO)
+     &            +B/NNN
                ZR(JNORM-1+3*(INO-1)+3)=ZR(JNORM-1+3*(INO-1)+3)
-     &            +C/NBOPN(INO)
+     &            +C/NNN
                IJ=IJ+1
 C              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 C              UNE VERIFICATION ULTERIEURE
@@ -579,7 +580,7 @@ C              UNE VERIFICATION ULTERIEURE
       IJ = 0
       DO 2 N=1,NBNO
          INO = NUNO(N)
-         NOCC=NBOPN(N)
+         CALL JELIRA(JEXNUM(CONINV,INO),'LONMAX',NOCC,K8B)
          IF (NDIM.EQ.2) THEN
             VNORM =  ZR(JNORM-1+2*(N-1)+1)*ZR(JNORM-1+2*(N-1)+1)
      +             + ZR(JNORM-1+2*(N-1)+2)*ZR(JNORM-1+2*(N-1)+2) 

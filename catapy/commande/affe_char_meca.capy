@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -179,6 +179,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 #  rajout d'un mot clé REPERE :/ LOCAL /GLOBAL
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             SANS_GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             SANS_MAILLE     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              DX              =SIMP(statut='f',typ='R' ),
              DY              =SIMP(statut='f',typ='R' ),
              DZ              =SIMP(statut='f',typ='R' ),
