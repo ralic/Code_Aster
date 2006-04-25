@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,11 +56,11 @@ C
       INTEGER          NBSIG, NBSIG1, NBSIG2, NDIM, NNO, I,
      +                 NNOS, NPG, IPOIDS, IVF, IDFDE,
      +                 IGAU, ISIG, IGEOM, IDEPL,
-     +                 ITEMPE, ITREF, ITEMPS, IDEFO, IMATE, IHYDRE,
-     +                 ISECHE
+     +                 ITEMPE, ITREF, ITEMPS, IDEFO, IMATE, ISECHE
       REAL*8           EPSM(54), REPERE(7)
       REAL*8           NHARM, INSTAN, TEMPE(27)
       REAL*8           HYDR(27), SECH(27), RBID
+      CHARACTER*4      FAMI
       CHARACTER*8      MODELI
       CHARACTER*16     COMPOR
 C DEB ------------------------------------------------------------------
@@ -69,8 +69,10 @@ C
 C
       IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
         CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+        FAMI='GANO'
       ELSE
         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+        FAMI='RIGI'
       ENDIF
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -93,7 +95,6 @@ C
 C
       DO 20 I = 1, 27
          TEMPE(I)   = ZERO
-         HYDR(I)    = ZERO
          SECH(I)    = ZERO
  20   CONTINUE
 C
@@ -124,13 +125,10 @@ C      --------------------------------------------------
 C
 C --- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
 C     -----------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',1,IHYDRE,IRET)
-      IF(IHYDRE.NE.0) THEN
       DO 35 I = 1, NPG
-         HYDR(I)   = ZR(IHYDRE+I-1)
+         CALL RCVARC(' ','HYDR','+',FAMI,I,1,HYDR(I),IRET)
+         IF (IRET.EQ.1) HYDR(I)=0.D0
   35  CONTINUE
-      ELSE
-      ENDIF
 C
 C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 C     -----------------------------------------------------

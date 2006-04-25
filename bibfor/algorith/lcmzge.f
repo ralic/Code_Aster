@@ -1,9 +1,9 @@
-      SUBROUTINE LCMZGE (NDIM, TYPMOD, IMATE, EPSTM,
-     &                   DEPST, VIM, TM,TP,TREF,
-     &                   HYDRM,HYDRP,SECHM,SECHP,SREF,
+      SUBROUTINE LCMZGE (FAMI,KPG,KSP,NDIM, TYPMOD, IMATE,
+     &                   EPSTM,DEPST, VIM, TM,TP,TREF,
+     &                   SECHM,SECHP,SREF,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,12 @@ C ======================================================================
 
       IMPLICIT NONE
       CHARACTER*8       TYPMOD(*)
+      CHARACTER*(*)     FAMI
       CHARACTER*16      OPTION
-      INTEGER            NDIM, IMATE
+      INTEGER            NDIM, IMATE,KPG,KSP
       REAL*8             EPSTM(12), DEPST(12), VIM(3)
       REAL*8             SIG(6), VIP(3), DSIDPT(6,6,2), TM, TP, TREF
-      REAL*8             HYDRM,HYDRP,SECHM,SECHP,SREF, PROJ(6,6)
+      REAL*8             SECHM,SECHP,SREF, PROJ(6,6)
 
 C ----------------------------------------------------------------------
 C  LOI DE COMPORTEMENT ENDOMMAGEABLE : MODELE DE MAZARS (EN DELOCALISE)
@@ -45,8 +46,6 @@ C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  TM      : TEMPERATURE EN T-
 C IN  TP      : TEMPERATURE EN T+
 C IN  TREF    : TEMPERATURE DE REFERENCE
-C IN  HYDRM   : HYDRATATION A L'INSTANT PRECEDENT
-C IN  HYDRP   : HYDRATATION A L'INSTANT DU CALCUL
 C IN  SECHM   : SECHAGE A L'INSTANT PRECEDENT
 C IN  SECHP   : SECHAGE A L'INSTANT DU CALCUL
 C IN  SREF    : SECHAGE DE REFERENCE
@@ -64,10 +63,11 @@ C ----------------------------------------------------------------------
 
 
       LOGICAL      RIGI, RESI, ELAS, RELA, PROG, CPLAN
+      CHARACTER*1 POUM
       CHARACTER*2 CODRET(6)
-      CHARACTER*8 NOMRES(6) , NOMPAR(3)
+      CHARACTER*8 NOMRES(6) , NOMPAR(2)
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
-      INTEGER     I,J,K,L
+      INTEGER     I,J,K,L,IRET
       REAL*8      E, NU, ALPHA, KDESS, BENDO
       REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0
       REAL*8      EPSM(6), EPSRM(6), DEPS(6), DEPSR(6), EPSPLU(6)
@@ -105,14 +105,18 @@ C     DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
       IF (RESI) THEN
+        POUM='+'
         TEMP = TP
-        HYDR = HYDRP
+        CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDR,IRET)
+        IF (IRET.NE.0) HYDR=0.D0
         SECH = SECHP
         TMAX = MAX(TMAXM, TP)
         IF (TMAX.GT.TMAXM) VIP(3) = TMAX
       ELSE
+        POUM='-'
         TEMP = TM
-        HYDR = HYDRM
+        CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDR,IRET)
+        IF (IRET.NE.0) HYDR=0.D0
         SECH = SECHM
         TMAX = TMAXM
       ENDIF
@@ -122,20 +126,18 @@ C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
 C-----------------------------------------------------
 
       NOMPAR(1) = 'TEMP'
-      NOMPAR(2) = 'HYDR'
-      NOMPAR(3) = 'SECH'
+      NOMPAR(2) = 'SECH'
       VALPAR(1) = TMAX
-      VALPAR(2) = HYDR
-      VALPAR(3) = SECH
+      VALPAR(2) = SECH
 
 C    LECTURE DES CARACTERISTIQUES ELASTIQUES
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
-      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAR,2,
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',2,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRET, 'FM')
-      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAR,1,
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',2,NOMPAR,VALPAR,1,
      &              NOMRES(3),VALRES(3),CODRET(3), ' ')
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
@@ -165,8 +167,8 @@ C --- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
        NOMRES(5) = 'AT'
        NOMRES(6) = 'BT'
 
-       CALL RCVALA(IMATE,' ','MAZARS',3,NOMPAR,VALPAR,6,
-     &            NOMRES,VALRES,CODRET,'FM')
+       CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','MAZARS',2,NOMPAR,
+     &            VALPAR,6,NOMRES,VALRES,CODRET,'FM')
       EPSD0 = VALRES(1)
       BETA  = VALRES(2)
       AC    = VALRES(3)

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/04/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
-      REAL*8       LSN,LST,R,RR
+      REAL*8       LSN,LST,R,RR,E
 C......................................................................
 
       CALL JEMARQ()
@@ -151,6 +151,9 @@ C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
           CFACE(I,J)=ZI(JCFACE-1+NDIM*(I-1)+J)
  12      CONTINUE
  11   CONTINUE
+
+C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
+      E=ZR(JDONCO-1+5)
 C
 C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
       DO 13 NLI=1,NINTER
@@ -270,7 +273,7 @@ C               XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
                   CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 C
                   MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
-     &                     - FFJ * FFI * JAC * MULT / RHON
+     &                     - FFJ * FFI * JAC * MULT / RHON * E * E
 
  121            CONTINUE
  120          CONTINUE
@@ -290,22 +293,22 @@ C             I.1. CALCUL DE A ET DE At
 C
                     MMAT(PLI,DDLS*(J-1)+NDIM+L)=
      &              MMAT(PLI,DDLS*(J-1)+NDIM+L)+
-     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
+     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT * E
 C
                     MMAT(DDLS*(J-1)+NDIM+L,PLI)=
      &              MMAT(DDLS*(J-1)+NDIM+L,PLI)+
-     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
+     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT * E
 C
  132              CONTINUE
 
                   DO 133 L = 1,SINGU*NDIM
                     MMAT(PLI,DDLS*(J-1)+NDIM+DDLH+L)=
      &              MMAT(PLI,DDLS*(J-1)+NDIM+DDLH+L)+
-     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT
+     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT * E
 
                     MMAT(DDLS*(J-1)+NDIM+DDLH+L,PLI)=
      &              MMAT(DDLS*(J-1)+NDIM+DDLH+L,PLI)+
-     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT
+     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT * E
 
  133              CONTINUE
  
@@ -436,7 +439,7 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
 
               CALL XADHER(P,SAUT,LAMB1,RHOTK,R3,KN,PTKNP,IK)
 
-              CALL PROMAT(KN,NDIM,NDIM,NDIM,P,NDIM,NDIM,NDIM,KNP)
+              CALL PROMAT(KN,3,NDIM,NDIM,P,3,NDIM,NDIM,KNP)
 
 C             II.1. CALCUL DE B ET DE Bt
               DO 160 I = 1,NNOF

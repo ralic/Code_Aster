@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -70,7 +70,6 @@ MODE_LOCAL__
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      )
@@ -198,7 +197,7 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM   
                               OUT__  MMATUUR  PSYM     
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
+                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER  
                               OUT__  ECONTNO  PSIEF_R  
     VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,6 @@ MODE_LOCAL__
                                         DRZ      )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CINSTPR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
@@ -164,7 +163,7 @@ OPTION__
                               OUT__  EEFGENO  PSIEFNOR
                                      EEFGENC  PSIEFNOC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EHYDRER  PHYDR_R  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
+                              OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
     TOU_INI_ELNO        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     VARI_ELGA_ELNO      -1    IN__   XXXXXX   XXXXXX

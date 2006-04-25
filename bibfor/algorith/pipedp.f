@@ -1,7 +1,7 @@
-      SUBROUTINE PIPEDP(NDIM, TYPMOD, IMATE, EPSM, SIGM, VIM,
+      SUBROUTINE PIPEDP(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,EPSM,SIGM,VIM,
      &                  EPSP, EPSD, ELGEOM, A0, A1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,8 @@ C ======================================================================
 
       IMPLICIT NONE      
       CHARACTER*8        TYPMOD(2)
-      INTEGER            NDIM, IMATE
+      CHARACTER*(*)      FAMI
+      INTEGER            NDIM, IMATE,KPG,KSP
       REAL*8             EPSP(6), EPSD(6)
       REAL*8             EPSM(6), VIM(2), SIGM(6), A0, A1
       REAL*8             ELGEOM(*)
@@ -83,7 +84,7 @@ C --  RECUPERATION MATERIAU
 C
       TBID = 0.D0
       MOD  = TYPMOD(1)
-      CALL BETMAT ( MOD, IMATE, NMAT, TBID, TBID, TBID, TBID,
+      CALL BETMAT ( FAMI,KPG,KSP,MOD,IMATE,NMAT,TBID,TBID,
      1              TBID, TBID, MATERD, MATERF, MATCST, NDT,
      2              NDI , NR, NVI)
 C

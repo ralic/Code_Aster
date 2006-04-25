@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,12 +93,6 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                       ),
                   );
 
-CM=AFFE_MATERIAU(  MAILLAGE=M,   
-                   AFFE=_F( TOUT = 'OUI',
-                            MATER = BETON,
-                            TEMP_REF = 20.,
-                            SECH_REF = 100.,) )
-
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
@@ -122,14 +116,14 @@ SECH1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=SECHF,
                    INST=64800000.0,),   ),);
 
-HYDRI=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='HYDR',
                         VALE=0.0,),);
 
-HYDRF=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
@@ -138,7 +132,7 @@ HYDRF=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
 
 HYDR1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
-                NOM_CHAM='HYDR_ELNO_ELGA',
+                NOM_CHAM='HYDR_NOEU_ELGA',
                 AFFE=(
                 _F(CHAM_GD=HYDRI,
                    INST=0.0,),
@@ -151,6 +145,18 @@ TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                                NOM_CMP = 'TEMP',
                                VALE = 20.)
                        )
+
+CM=AFFE_MATERIAU(  MAILLAGE=M,   
+                   AFFE=_F( TOUT = 'OUI',
+                            MATER = BETON,
+                            TEMP_REF = 20.,
+                            SECH_REF = 100.,),
+                   AFFE_VARC=_F(TOUT='OUI',
+                                EVOL=HYDR1,
+                                NOM_VARC="HYDR",
+                                NOM_CHAM='HYDR_NOEU_ELGA',
+                                PROL_GAUCHE='CONSTANT',
+                                PROL_DROITE='CONSTANT'),);
 
 FORCE=DEFI_FONCTION( NOM_PARA='INST',
                      PROL_DROITE='LINEAIRE',
@@ -183,7 +189,6 @@ CH22=AFFE_CHAR_MECA_F( MODELE=MO,
 CH3=AFFE_CHAR_MECA( MODELE        = MO,
                     TEMP_CALCULEE = TEMP,
                     SECH_CALCULEE = SECH1,
-                    HYDR_CALCULEE = HYDR1,
                   )
 
 L_INST=DEFI_LIST_REEL( DEBUT=-1.0,

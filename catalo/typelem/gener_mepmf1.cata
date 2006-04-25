@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,8 +48,6 @@ MODE_LOCAL__
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
-    EHYDREN  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CCOEFC   = IMPE_C   ELEM__         (IMPE     )
     CCOEFR   = IMPE_R   ELEM__         (IMPE     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -91,7 +89,7 @@ OPTION__
                                      CTEMPSR  PTEMPSR  ECAFIEL  PFIBRES
                               OUT__  MVECTUR  PVECTUR  
     CHAR_MECA_HYDR_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                                     EHYDRER  PHYDRER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
+                                     ZVARCPG  PVARCPR  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                                      ECAFIEL  PFIBRES 
                               OUT__  MVECTUR  PVECTUR  
     DEGE_ELNO_DEPL      537   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
@@ -123,8 +121,7 @@ OPTION__
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
-                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
-                                     CTEREFE  PSECREF
+                                     NTEMPER  PSECHMR  NTEMPER  PSECHPR  CTEREFE  PSECREF
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     MASS_MECA           141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
@@ -147,8 +144,7 @@ OPTION__
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
-                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
-                                     CTEREFE  PSECREF
+                                     NTEMPER  PSECHMR  NTEMPER  PSECHPR  CTEREFE  PSECREF
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -163,9 +159,8 @@ OPTION__
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
-                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR  
-                                     CTEREFE  PSECREF
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  NTEMPER  PSECHMR
+                                     NTEMPER  PSECHPR  CTEREFE  PSECREF
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      537   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  DDL_MECA PDEPLAR
                                      ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
@@ -186,7 +181,7 @@ OPTION__
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECAFIEL  PCAFI_R  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
+                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VARI_ELNO_ELGA      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
 

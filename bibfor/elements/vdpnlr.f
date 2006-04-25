@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -186,7 +186,7 @@ C---- LES REALS
       INTEGER NBVARI, ITAB(8), LGPG, NZ, K2 ,ITABM(8) ,ITABP(8)
       INTEGER NBV , NBPAR,IRET
       REAL * 8 RAC2,ANGMAS(3)
-      REAL * 8 HYDRGM, HYDRGP, SECHGM, SREF, SECHGP, LC
+      REAL * 8 SECHGM, SREF, SECHGP, LC
       REAL * 8 VALRES ( 26 ), VALPAR, VALPU ( 2 )
       REAL * 8 TMPG1 , TMPG2 , TMPG3 , TPPG1 , TPPG2 , TPPG3
       REAL * 8 TMC, TPC, TPG1 , CISAIL
@@ -654,8 +654,6 @@ C
  620        CONTINUE
 C ---  VARIABLE D HYDRATATION ET DE SECHAGE
 
-          HYDRGM = 0.D0
-          HYDRGP = 0.D0
           SECHGM = 0.D0
           SECHGP = 0.D0
           SREF   = 0.D0
@@ -834,7 +832,6 @@ C -    APPEL A LA LOI DE COMPORTEMENT
               CALL NMCOMP('MASS',INTSN,KSP,2,TYPMOD,ZI(IMATE),
      &               ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                    TMC,TPC,ZR(ITREF),
-     &                    HYDRGM,HYDRGP,
      &                    SECHGM,SECHGP,SREF,
      &                    EPS2D,DEPS2D,
      &                    SIGN,ZR(IVARIM+K2),

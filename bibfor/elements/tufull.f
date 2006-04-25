@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 PASS(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),TMC,TPC,OMEGA,VTEMP(NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
-      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,ANGMAS(3)
+      REAL*8 SECHGM,SECHGP,SREF,LC,ANGMAS(3)
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICOMPO,NDIMV,IVARIX
       INTEGER IPOIDS,IVF,NBVARI,LGPG,JTAB(7)
       INTEGER IMATE,ITEMP,IMATUU,ICAGEP,IGEOM,NBPAR,ITABM(8),ITABP(8)
@@ -301,8 +301,6 @@ C        -------------------------------------------------------
 
 C ---  VARIABLE D HYDRATATION ET DE SECHAGE
 
-      HYDRGM = 0.D0
-      HYDRGP = 0.D0
       SECHGM = 0.D0
       SECHGP = 0.D0
       SREF   = 0.D0
@@ -409,7 +407,6 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &                  ZK16(ICOMPO),ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
-     &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF, 
      &                  EPS2D,DEPS2D,
      &                  SIGN,ZR(IVARIM+K2),

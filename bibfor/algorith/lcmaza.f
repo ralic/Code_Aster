@@ -1,9 +1,9 @@
-      SUBROUTINE LCMAZA (NDIM, TYPMOD, IMATE,COMPOR, EPSM,
+      SUBROUTINE LCMAZA (FAMI,KPG,KSP,NDIM, TYPMOD, IMATE,COMPOR,EPSM,
      &                   DEPS, VIM, TM,TP,TREF,
-     &                   HYDRM,HYDRP,SECHM,SECHP,SREF,
+     &                   SECHM,SECHP,SREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,10 +26,11 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*8       TYPMOD(2)
       CHARACTER*16      COMPOR(*),OPTION
-      INTEGER            NDIM, IMATE
-      REAL*8             EPSM(6), DEPS(6), VIM(3), TM, TP, TREF
-      REAL*8             HYDRM,HYDRP,SECHM,SECHP,SREF
-      REAL*8             SIG(6), VIP(3), DSIDEP(6,6)
+      CHARACTER*(*)     FAMI
+      INTEGER           NDIM, IMATE, KPG, KSP
+      REAL*8            EPSM(6), DEPS(6), VIM(3), TM, TP, TREF
+      REAL*8            SECHM,SECHP,SREF
+      REAL*8            SIG(6), VIP(3), DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE : MODELE DE MAZARS
 C     POUR MAZARS  OU MAZARS_FO COMBINABLE AVEC ELAS OU ELAS_FO
@@ -45,8 +46,6 @@ C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  TM      : TEMPERATURE EN T-
 C IN  TP      : TEMPERATURE EN T+
 C IN  TREF    : TEMPERATURE DE REFERENCE
-C IN  HYDRM   : HYDRATATION A L'INSTANT PRECEDENT
-C IN  HYDRP   : HYDRATATION A L'INSTANT DU CALCUL
 C IN  SECHM   : SECHAGE A L'INSTANT PRECEDENT
 C IN  SECHP   : SECHAGE A L'INSTANT DU CALCUL
 C IN  SREF    : SECHAGE DE REFERENCE
@@ -69,10 +68,11 @@ C         BT = CONSTANTE DE TRACTION    (10 000 A 100 000)[REEL OU FCT]
 C         BC = CONSTANTE DE COMPRESSION (1000 A 2000)[REEL OU FCT]
 C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI, PROG, ELAS, CPLAN
+      CHARACTER*1  POUM
       CHARACTER*2 CODRET(6)
-      CHARACTER*8 NOMRES(6), NOMPAR(3)
+      CHARACTER*8 NOMRES(6), NOMPAR(2)
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
-      INTEGER     I,J,K,L
+      INTEGER     I,J,K,L,IRET
       REAL*8      E, NU, ALPHA, KDESS, BENDO 
       REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0
       REAL*8      EPS(6), EPSE(6), EPSPLU(6), EPSEP(3), EPST(3), EPSEQ
@@ -80,7 +80,7 @@ C ----------------------------------------------------------------------
       REAL*8      TEMP, TMAX, TMAXM, HYDR, SECH      
       REAL*8      TOL, TOLDYN, TR(6), TU(6), JACAUX(3), VECPE(3,3)
       REAL*8      RAC2, LAMBDA, DEUXMU, ALPHAT, COEF, RTEMPC, RTEMPT
-      REAL*8      VALRES(6), VALPAR(3), COPLAN, D, TMP1
+      REAL*8      VALRES(6), VALPAR(2), COPLAN, D, TMP1
       REAL*8      KRON(6)  
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -110,13 +110,17 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
       IF (RESI) THEN
         TEMP = TP
-        HYDR = HYDRP
+        CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDR,IRET)
+        IF ( IRET.NE.0) HYDR=0.D0
+        POUM='+'
         SECH = SECHP
         TMAX = MAX(TMAXM, TP) 
         IF (TMAX.GT.TMAXM) VIP(3) = TMAX
       ELSE
         TEMP = TM
-        HYDR = HYDRM
+        CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDR,IRET)
+        IF ( IRET.NE.0) HYDR=0.D0
+        POUM='-'
         SECH = SECHM
         TMAX = TMAXM
       ENDIF
@@ -126,11 +130,9 @@ C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
 C-----------------------------------------------------
 
       NOMPAR(1) = 'TEMP'
-      NOMPAR(2) = 'HYDR'
-      NOMPAR(3) = 'SECH'
+      NOMPAR(2) = 'SECH'
       VALPAR(1) = TMAX
-      VALPAR(2) = HYDR
-      VALPAR(3) = SECH
+      VALPAR(2) = SECH
 
 C    LECTURE DES CARACTERISTIQUES ELASTIQUES 
 
@@ -138,10 +140,10 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
 
-      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAR,2,
-     &             NOMRES,VALRES,CODRET, 'FM')
-      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), ' ')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',2,
+     &            NOMPAR,VALPAR,2,NOMRES,VALRES,CODRET,'FM')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',2,NOMPAR,
+     &            VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),' ')
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
       NU    = VALRES(2)
@@ -174,8 +176,8 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(4) = 'BC'
       NOMRES(5) = 'AT'
       NOMRES(6) = 'BT'
-      CALL RCVALA(IMATE,' ','MAZARS',3,NOMPAR,VALPAR,6,
-     &            NOMRES,VALRES,CODRET,'FM')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','MAZARS',2,NOMPAR,
+     &            VALPAR,6,NOMRES,VALRES,CODRET,'FM')
       EPSD0 = VALRES(1)
       BETA  = VALRES(2)
       AC    = VALRES(3)
@@ -277,7 +279,7 @@ C ------------------------------------------------------
 
 
 C   4 -  CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
-C----------------------------------------------------------------	
+C----------------------------------------------------------------
       DO  50 K=1,3
         SIGELP(K) = LAMBDA*(EPSEP(1)+EPSEP(2)+EPSEP(3))
 50    CONTINUE
@@ -361,7 +363,7 @@ C ------------------------------------------------------------
         END IF 
 
 C    3 - CALCUL DES CONTRAINTES
-C ------------------------------------------------------------     	  
+C ------------------------------------------------------------  
                   
 C        ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES REELLES
         CALL R8INIR(6, 0.D0, SIG,1)
@@ -384,7 +386,7 @@ C ======================================================================
       IF (RIGI)  THEN 
 
 C   1 -  CONTRIBUTION ELASTIQUE
-C ------------------------------------------------------------     	  
+C -------------------------------------------------------------  
               
         CALL R8INIR(36, 0.D0, DSIDEP,1)
         LAMBDA = LAMBDA * (1.D0 - D)
@@ -404,7 +406,7 @@ C ------------------------------------------------------------
 
 C   2 -  CONTRIBUTION DUE A  L'ENDOMMAGEMENT
 C             ON SYMETRISE LA MATRICE (K + Kt )/2
-C ------------------------------------------------------------     	  
+C ------------------------------------------------------------  
         IF ((.NOT.ELAS).AND.(PROG)) THEN
             RTEMPT = BT * ( EPSEQ - EPSD0 )
             RTEMPC = BC * ( EPSEQ - EPSD0 )

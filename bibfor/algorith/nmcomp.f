@@ -1,7 +1,6 @@
       SUBROUTINE NMCOMP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,
      &                   TM,TP,TREF,
-     &                   HYDRM,HYDRP,
      &                   SECHM,SECHP,SREF,
      &                   EPSM,DEPS,
      &                   SIGM,VIM,
@@ -13,7 +12,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +38,7 @@ C TOLE CRP_21
       CHARACTER*(*) FAMI
       CHARACTER*16       COMPOR(*), OPTION
       REAL*8             CRIT(*), INSTAM, INSTAP, TM, TP, TREF, SREF
-      REAL*8             HYDRM, HYDRP, SECHM, SECHP
+      REAL*8             SECHM, SECHP
       REAL*8             PHASM(NZ),PHASP(NZ)
       REAL*8             EPSM(*), DEPS(*), DSIDEP(*)
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
@@ -81,8 +80,6 @@ C                                     1 = RUNGE_KUTTA
 C     INSTAM  : INSTANT DU CALCUL PRECEDENT
 C     INSTAP  : INSTANT DU CALCUL
 C     TREF    : TEMPERATURE DE REFERENCE POUR LES CONTRAINTES THERMIQUES
-C     HYDRM   : HYDRATATION A L'INSTANT PRECEDENT
-C     HYDRP   : HYDRATATION A L'INSTANT DU CALCUL
 C     SECHM   : SECHAGE A L'INSTANT PRECEDENT
 C     SECHP   : SECHAGE A L'INSTANT DU CALCUL
 C     SREF    : SECHAGE DE REFERENCE
@@ -232,8 +229,8 @@ C -- DRUCKER - PRAGER
 C -- MAZARS
 
         IF (COMPOR(1) .EQ. 'MAZARS') THEN
-          CALL LCMZGE(NDIM, TYPMOD, IMATE, EPSM, DEPS,
-     &                   VIM,TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,
+          CALL LCMZGE(FAMI,KPG,KSP,NDIM, TYPMOD, IMATE, EPSM,
+     &                 DEPS,VIM,TM,TP,TREF,SECHM,SECHP,SREF,
      &                   OPTION, SIGP, VIP,  DSIDEP, TAMPON)
           GOTO 9000
         END IF
@@ -332,8 +329,8 @@ C PETITES DEFORMATIONS
           ENDIF
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                    INSTAM,INSTAP,TM,TP,TREF,HYDRM,HYDRP,SECHM,
-     &                    SECHP,SREF,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
+     &                    INSTAM,INSTAP,TM,TP,TREF,SECHM,SECHP,
+     &                    SREF,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
      &                    DSIDEP,R8BID,R8BID,CODRET)
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
@@ -347,8 +344,8 @@ C PETITES DEFORMATIONS
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
             ELSE
-              CALL LCLDSB(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
-     &                   VIM,TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,
+              CALL LCLDSB(FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
+     &                   DEPS,VIM,TM,TP,TREF,SECHM,SECHP,SREF,
      &                   OPTION, SIGP, VIP,  DSIDEP)
             ENDIF
         ELSE IF ( COMPOR(1) .EQ. 'ENDO_ORTH_BETON' ) THEN
@@ -364,8 +361,8 @@ C PETITES DEFORMATIONS
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL LCMAZA(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
-     &                   VIM,TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,
+            CALL LCMAZA(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,EPSM,
+     &                  DEPS,VIM,TM,TP,TREF,SECHM,SECHP,SREF,
      &                   OPTION, SIGP, VIP,  DSIDEP)
           ENDIF
         ELSEIF ( COMPOR(1) .EQ. 'BETON_REGLE_PR' ) THEN
@@ -506,7 +503,7 @@ C
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &           INSTAM, INSTAP, TM,   TP,    TREF,
-     &           HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
+     &           SECHM, SECHP, SREF, EPSM, DEPS,
      &           SIGM, VIM,OPTION, TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
      &           CODRET)
           ELSE
@@ -517,7 +514,7 @@ C
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
-     &                  HYDRM, HYDRP,SECHM, SECHP, SREF, EPSM, DEPS,
+     &                  SECHM, SECHP, SREF, EPSM, DEPS,
      &            SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
      &            CODRET)
           ELSE
@@ -615,7 +612,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ELSE
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE, COMPOR, CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
-     &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
+     &                    SECHM, SECHP, SREF, EPSM, DEPS,
      &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP,
      &            CODRET)
           ENDIF
@@ -626,7 +623,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ELSE
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
-     &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
+     &                    SECHM, SECHP, SREF, EPSM, DEPS,
      &            SIGM, VIM, OPTION, TAMPON,ANGMAS,  SIGP, VIP, DSIDEP,
      &             CODRET)
           ENDIF
@@ -635,8 +632,8 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL NMGRAN (NDIM,  TYPMOD, IMATE, COMPOR,CRIT,INSTAM,
-     &                   INSTAP,TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,
+            CALL NMGRAN (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                   INSTAM,INSTAP,TM,TP,TREF,SECHM,SECHP,SREF,
      &                   TM,TP,DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
           ENDIF
 C -- FLUAGE PROPRE UMLV
@@ -645,8 +642,8 @@ C -- FLUAGE PROPRE UMLV
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL LCUMFP (NDIM,TYPMOD,IMATE,COMPOR,INSTAM,INSTAP,
-     &                   TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,EPSM,
+            CALL LCUMFP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,INSTAM,
+     &                   INSTAP,TM,TP,TREF,SECHM,SECHP,SREF,EPSM,
      &                   DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
           END IF
 C----LOI D'ACIER CORRODE
@@ -670,8 +667,8 @@ C
            CALL UTMESS('F','NMCOMP','PAS DE C_PLAN POUR BAZANT_FD  '//
      &                     'UTILISER C_PLAN_DEBORST')
             ELSE
-              CALL  NMGDES (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,HYDRM,HYDRP,
+              CALL  NMGDES (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,
+     &                   COMPOR,CRIT,INSTAM,INSTAP,TM,TP,TREF,
      &                   SECHM,SECHP,SREF,TM,TP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP)
           ENDIF
@@ -682,7 +679,7 @@ C
           ELSE
             CALL NMCOUP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CP,CRIT,
      &           INSTAM, INSTAP, TM,   TP,    TREF,
-     &           HYDRM, HYDRP, SECHM, SECHP,SREF, EPSM, DEPS,
+     &           SECHM, SECHP,SREF, EPSM, DEPS,
      &           SIGM, VIM,OPTION, TAMPON,SIGP, VIP, DSIDEP,CODRET)
           ENDIF
 
@@ -691,7 +688,7 @@ CCC    MONOCRISTAL
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
-     &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
+     &                  SECHM, SECHP, SREF,EPSM, DEPS,
      &           SIGM, VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
      &           CODRET)
           ELSE

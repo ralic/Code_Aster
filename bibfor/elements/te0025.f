@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,NPG,JVAL,IPOIDS,IVF,IDFDE,
-     &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,
+     &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,IER,
      &        ITEMPS,IDEFO,IMATE,IHYDRE,ISECHE,IRET,JTAB(3)
       REAL*8 EPSM(162),EPSNO(162),REPERE(7),TEMPE(27)
       REAL*8 HYDR(27),SECH(27),RBID
@@ -95,7 +95,6 @@ C     -----------------
 
       DO 30 I = 1,27
         TEMPE(I) = ZERO
-        HYDR(I) = ZERO
         SECH(I) = ZERO
    30 CONTINUE
 
@@ -118,15 +117,10 @@ C      --------------------------------------------------
 
 C--- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
 C    -----------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',3,JTAB,IRET)
-      IHYDRE = JTAB(1)
-      IF (IHYDRE.NE.0) THEN
-        CALL ASSERT(NPG.EQ.JTAB(3))
-        DO 50 I = 1,NPG
-          HYDR(I) = ZR(IHYDRE+I-1)
-   50   CONTINUE
-      ELSE
-      END IF
+      DO 50 I = 1,NPG
+        CALL RCVARC(' ','HYDR','+','RIGI',I,1,HYDR(I),IER)
+        IF (IER.EQ.1) HYDR(I)=0.D0
+   50 CONTINUE
 
 C--- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 C    -----------------------------------------------------

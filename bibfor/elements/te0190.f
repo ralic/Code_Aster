@@ -1,6 +1,6 @@
       SUBROUTINE TE0190(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,10 +106,6 @@ C ---- RECUPERATION TEMPERATURES AUX NOEUDS DE L'ELEMENT
 C      -------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',1,IHYDR,IRETH)
-
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL TECACH('NNN','PSECHER',1,ISECH,IRETS)
@@ -136,11 +132,8 @@ C          ------------------------------------------------------
         TEMPG = ZERO
         SECHG = ZERO
 
-        IF (IRETH.EQ.0) THEN
-          HYDRG = ZR(IHYDR+IGAU-1)
-        ELSE
-          HYDRG = ZERO
-        END IF
+        CALL RCVARC(' ','HYDR','+','RIGI',IGAU,1,HYDRG,IRET)
+        IF (IRET.EQ.1) HYDRG=ZERO
 
         DO 30 I = 1,NNO
           TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)
@@ -150,8 +143,6 @@ C          ------------------------------------------------------
           DO 40 I = 1,NNO
             SECHG = SECHG + ZR(IVF+I+IDECPG)*ZR(ISECH+I-1)
    40     CONTINUE
-        ELSE
-          SECHG = ZERO
         END IF
 
 C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU

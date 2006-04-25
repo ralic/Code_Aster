@@ -1,8 +1,9 @@
-      SUBROUTINE SDCONX(RHON,CRIT,FROTT,MU,RHOT,SEUIL0,STACO0,INTE,FISS)
+      SUBROUTINE SDCONX(RHON,CRIT,FROTT,MU,RHOT,SEUIL0,STACO0,INTE,
+     &                                          COECH,ALGOLA,IOCCC,FISS)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,9 +24,9 @@ C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
 
-      REAL*8       RHON,MU,RHOT,SEUIL0
-      INTEGER      CRIT(2)
-      CHARACTER*8  FROTT,STACO0,INTE,FISS
+      REAL*8       RHON,MU,RHOT,SEUIL0,COECH
+      INTEGER      CRIT(2),IOCCC
+      CHARACTER*8  FROTT,STACO0,INTE,ALGOLA,FISS
 C
 C   CRÉATION DE LA STRUCTURE DE DONNÉE CONTACT X-FEM
 C
@@ -38,6 +39,10 @@ C       RHOT   : COEF_REGU_FROT
 C       SEUIL0 : SEUIL_INIT
 C       STACO0 : CONTACT INITIAL ("OUI" OU "NON")
 C       INTE   : SCHEMA D'INTEGRATION ("GAUSS" OU "NOEUD")
+C       COECH  : COEFFICIENT DE MISE À L'ECHELLE DES TERMES DE PRESSION
+C                DE CONTACT (CAD DE DE TYPE 'LAGS_C')
+C       ALGOLA : ALGORITHME DE RESTRICTION DES LAGRANGES
+C       IOCCC  : OCCURENCE DU MOT-CLÉ FACTEUR CONTACT
 C       FISS   : SD FISS_XFEM
 C 
 C   OUT
@@ -67,9 +72,28 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 
       CALL JEMARQ()
 
-      CALL WKVECT(FISS//'.CONTACT.CARACF','G V R',7,JCMCF)
+C     SI LE MOT-CLÉ FACTEUR CONTACT N'EST PAS RENSEIGNÉ, CHOIX DES
+C     PARAMÈTRES POUR "NE PAS PRENDRE EN COMPTE" LE CONTACT
+C                   VOIR BOOK VI 11/04/2006)
+      IF (IOCCC.EQ.0) THEN
+        RHON=100.D0
+        CRIT(1)=4
+        STACO0='NON'
+        INTE='FPG4'
+        COECH=1.D0
+        ALGOLA='NON'
+        FROTT='SANS'
+      ENDIF
+
+C     ------------------------------------------------------------------
+C          CREATION DU .CARACF
+C     ------------------------------------------------------------------
+
+      CALL WKVECT(FISS//'.CONTACT.CARACF','G V R',8,JCMCF)
+
 C     NB DE ZONES DE CONTACT
       ZR(JCMCF-1+1)=1.D0
+
 C     SCHÉMAS D'INTÉGRATION 
 C     =1 SI INTEGRATION = 'GAUSS' : SCHÉMA EXACT À 12 POINTS (FPG12)
 C     =4 SI INTEGRATION = 'FPG4'  : SCHÉMA RÉDUIT À 4 POINTS (FGP4)
@@ -87,10 +111,13 @@ C     =7 SI INTEGRATION = 'FPG7'  : SCHÉMA RÉDUIT À 7 POINTS (FGP7)
         CALL UTMESS('F','SDCONX','CHOIX INCORRECT DU SCHEMA '//
      &                  'D''INTEGRATION NUMERIQUE POUR LE CONTACT')
       ENDIF      
+
 C     COEF_REGU_CONT
       ZR(JCMCF-1+3)=RHON      
+
 C     COEF_REGU_FROT
       ZR(JCMCF-1+4)=RHOT
+
       IF (FROTT.EQ.'COULOMB') THEN
 C       COEF DE COULOMB POUR LE FROTTEMENT
         ZR(JCMCF-1+5)=MU               
@@ -103,32 +130,60 @@ C                      =3 SI FROTTEMENT='COULOMB')
         ZR(JCMCF-1+6)=1.D0
         SEUIL0=0.D0
       ENDIF
+
 C     SEUIL_INIT
       ZR(JCMCF-1+7)=SEUIL0    
 
+C     COEFFICIENT DE MISE À L'ECHELLE DES TERMES DE PRESSION DE CONTACT 
+      ZR(JCMCF-1+8)=COECH   
+
+C     ------------------------------------------------------------------
+C          CREATION DU .ECPDON
+C     ------------------------------------------------------------------
+
       CALL WKVECT(FISS//'.CONTACT.ECPDON','G V I',6,JECPD)
+
 C     NB TOTAL DE ZONES DE CONTACT
       ZI(JECPD-1+1)=1
+
 C     INDICATEUR D'AXIS (=1 SI MODL_AXIS='OUI' 
 C                        =0 SI MODL_AXIS='NON')
       ZI(JECPD-1+2)=0
+
 C     ITER_CONT_MAXI
       ZI(JECPD-1+3)=CRIT(1)    
+
 C     ITER_FROT_MAXI
       ZI(JECPD-1+4)=CRIT(2) 
+
 C     ITER_GEOM_MAXI
       ZI(JECPD-1+5)=1
+
 C     STATUT DE CONTACT INITIAL
       IF (STACO0.EQ.'OUI') ZI(JECPD-1+6)=1
       IF (STACO0.EQ.'NON') ZI(JECPD-1+6)=0      
+
+C     ------------------------------------------------------------------
+C          CREATION DU .METHCO
+C     ------------------------------------------------------------------
                  
       CALL WKVECT(FISS//'.CONTACT.METHCO','G V I',7,JMETH)
+
 C     N° DE LA MÉTHODE UTILISÉE (=6 SI MÉTHODE CONTINUE)
       ZI(JMETH-1+7)=6
 
-      CALL WKVECT(FISS//'.CONTACT.XFEM','G V I',1,JXFEM)
+C     ------------------------------------------------------------------
+C          CREATION DU .XFEM
+C     ------------------------------------------------------------------
+
+      CALL WKVECT(FISS//'.CONTACT.XFEM','G V I',2,JXFEM)
+
 C     INDICATEUR DE PRÉSENCE DE LA MÉTHODE CONTINUE AVEC X-FEM
       ZI(JXFEM-1+1)=1
+
+C     INDICATEUR POUR SAVOIR S'IL FAUDRA ZAPPER LA VÉRIFICATION DE LA
+C     CONDITION D'INTERPÉNÉTRATION
+      IF (IOCCC.EQ.0) ZI(JXFEM-1+2)=1
 
       CALL JEDEMA()
       END

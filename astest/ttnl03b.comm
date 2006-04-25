@@ -1,4 +1,4 @@
-# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXI QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -336,7 +336,8 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = MAT,
-                                  TEMP_REF = 20.9)       )
+                                  TEMP_REF = 20.9),
+                            AFFE_VARC=_F(EVOL=RESUTHYD,NOM_VARC='HYDR'),);
 
 #
 
@@ -345,7 +346,6 @@ CHMECA=AFFE_CHAR_MECA(
                           DDL_IMPO=_F( GROUP_NO = 'A',
                                     DY = 0.),
                      TEMP_CALCULEE=RESUTHYD,
-                     HYDR_CALCULEE=RESUTHYD
                             )
 
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
-                               CONTACT=_F(),
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,

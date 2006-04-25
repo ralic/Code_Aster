@@ -1,12 +1,12 @@
         SUBROUTINE REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
+     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
+     &                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,ANGMAS,SIGF,VINF,DSDE,
      &                      RETCOM)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,8 +87,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
-C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
 C               SREF    SECHAGE DE REFERENCE
@@ -105,7 +103,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*), ANGMAS(3)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF , SREF, ELGEOM(*)
+        REAL*8          SECHD , SECHF , SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -121,8 +119,6 @@ C               TD      INSTANT T
 C               TF      INSTANT T+DT
 C               TEMD    TEMPERATURE A T
 C               TEMF    TEMPERATURE A T+DT
-C               HYDD   HYDRATATION A T
-C               HYDF   HYDRATATION A T+DT
 C               SECD   SECHAGE A T
 C               SECF   SECHAGE A T+DT
 C               EPS     DEFORMATION TOTALE A T
@@ -143,7 +139,6 @@ C
         REAL*8          DSDELO(6,6)
         REAL*8          DELTAT,TD,TF
         REAL*8          TEMD,         TEMF,      DETEMP
-        REAL*8          HYDD,         HYDF,      DEHYDR
         REAL*8          SECD,         SECF,      DESECH
 C       ----------------------------------------------------------------
 C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
@@ -191,17 +186,16 @@ C
         ENDIF
 C
         IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
-        CALL PLASBE ( TYPMOD, IMAT,  COMP,  CRIT,
-     1                TEMPD, TEMPF, TREF,
-     2                HYDRD, HYDRF, SECHD, SECHF, SREF,
+        CALL PLASBE ( FAMI, KPG ,KSP, TYPMOD, IMAT, COMP, CRIT,
+     1                TEMPD, TEMPF, TREF, SECHD, SECHF, SREF,
      3                EPSDT, DEPST, SIGD,  VIND,  OPT, ELGEOM,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ELSE
         CALL PLASTI ( FAMI,KPG,KSP, TYPMOD, IMAT,  COMP,  CRIT,
-     1                TIMED, TIMEF, TEMPD, TEMPF, TREF,
-     2                HYDRD, HYDRF, SECHD, SECHF, SREF,
-     3                EPSDT, DEPST, SIGD,  VIND,  OPT, ANGMAS,
-     4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
+     1                TIMED, TIMEF, TEMPD, TEMPF, TREF, SECHD, 
+     2                SECHF, SREF, EPSDT, DEPST, SIGD,  VIND,  
+     3                OPT, ANGMAS, SIGF,  VINF,  DSDE,  ICOMP,
+     4                NVI,  IRTET)
         ENDIF
         IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C
@@ -245,9 +239,6 @@ C --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
                 TEMD = TEMPD
                 DETEMP = (TEMPF - TEMPD) / NPAL
                 TEMF = TEMD + DETEMP
-                DEHYDR = (HYDRF - HYDRD)  / NPAL
-                HYDD = HYDRD
-                HYDF = HYDD + DEHYDR
                 DESECH = (SECHF - SECHD)  / NPAL
                 SECD = SECHD
                 SECF = SECD + DESECH
@@ -267,8 +258,6 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
                 TF1=TF
                 TEMD = TEMF
                 TEMF = TEMF + DETEMP
-                HYDD = HYDF
-                HYDF = HYDF + DEHYDR
                 SECD = SECF
                 SECF = SECF + DESECH
                 CALL LCSOVE ( EPS     , DEPS    , EPS  )
@@ -280,16 +269,16 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
 C
 C
             IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
-              CALL PLASBE ( TYPMOD,  IMAT,   COMP,   CRIT,
-     1                    TEMD,   TEMF,   TREF,  HYDD, HYDF,
+              CALL PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
+     1                    CRIT, TEMD,   TEMF,   TREF,
      2                    SECD, SECF, SREF, EPS,   DEPS,
      3                    SD,  VIND,   OPT, ELGEOM, SIGF, VINF,
      4                    DSDELO,  ICOMP,   NVI,  IRTET)
             ELSE
               CALL PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TD,
-     1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
+     1                    TF,    TEMD,   TEMF,   TREF,
      2                    SECD, SECF, SREF,  EPS,   DEPS,
-     2                SD,    VIND,     OPT, ANGMAS,   SIGF,   VINF,
+     2                    SD, VIND, OPT, ANGMAS, SIGF, VINF,
      3                    DSDELO,  ICOMP,   NVI,  IRTET)
             ENDIF
 

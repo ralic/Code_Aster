@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF CALCULEL  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,8 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 ZK16,OPTION
       CHARACTER*24 CHGEOM,CHTEMP,LCHIN(NBIN),LCHOUT(1),KCMP(5)
       CHARACTER*24 LIGRMO,LIGRCH,CHTREF,CHTIME,CHLAPL,CHCARA(15),ZK24
-      CHARACTER*24 CHHARM,CH24,CHSECH,CHSREF,CHHYDR
+      CHARACTER*24 CHHARM,CH24,CHSECH,CHSREF
+      CHARACTER*19 CHVARC
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 
@@ -591,10 +592,9 @@ C ====================================================================
             END IF
 
             CHSECH = '&&ME2MME.SECH'
-            CHHYDR = '&&ME2MME.HYDR'
-            CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHHYDR,
+            CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,
      &                  CHSECH,CHSREF)
-
+            CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
             OPTION = 'CHAR_MECA_TEMP_R'
             LPAIN(2) = 'PMATERC'
             LCHIN(2) = MATE
@@ -611,8 +611,8 @@ C ====================================================================
             LCHIN(15) = CHCARA(11)
             LPAIN(16) = 'PSECHER'
             LCHIN(16) = CHSECH
-            LPAIN(17) = 'PHYDRER'
-            LCHIN(17) = CHHYDR
+            LPAIN(17) = 'PVARCPR'
+            LCHIN(17) = CHVARC
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
@@ -625,7 +625,7 @@ C ====================================================================
               ILIRES = ILIRES - 1
             END IF
             CALL DETRSD('CHAMP_GD',CHSECH)
-            CALL DETRSD('CHAMP_GD',CHHYDR)
+            CALL DETRSD('CHAMP_GD',CHVARC)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.PRESS',IRET)

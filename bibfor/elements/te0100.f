@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C ......................................................................
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP
-      INTEGER IHYDRM,IHYDRP,ISECHM,ISECHP,ISREF,IVARIX,IRET
+      INTEGER ISECHM,ISECHP,ISREF,IVARIX,IRET
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,NZ,JCRET,CODRET
       INTEGER NDIM,NNOS,JGANO,ICAMAS
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
@@ -135,8 +135,6 @@ C  PASSAGE DE PPHASMR ET PPHASPR AUX POINTS DE GAUSS
   9     CONTINUE
       END IF
 
-      CALL JEVECH('PHYDRMR','L',IHYDRM)
-      CALL JEVECH('PHYDRPR','L',IHYDRP)
       CALL JEVECH('PSECHMR','L',ISECHM)
       CALL JEVECH('PSECHPR','L',ISECHP)
       CALL JEVECH('PSECREF','L',ISREF)
@@ -170,7 +168,7 @@ C - HYPER-ELASTICITE
 C        OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
           CALL NMEL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(ITEMPM),ZR(IHYDRM),ZR(ISECHM),
+     &                LGPG,ZR(ICARCR),ZR(ITEMPM),ZR(ISECHM),
      &                ZR(ITREF),ZR(IDEPLM),VECT1,VECT2,
      &                VECT3,ZR(ICONTM),ZR(IVARIM),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -184,7 +182,7 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
 
           CALL NMEL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(ITEMPP),ZR(IHYDRP),ZR(ISECHP),
+     &                LGPG,ZR(ICARCR),ZR(ITEMPP),ZR(ISECHP),
      &                ZR(ITREF),ZR(IDEPLP),VECT1,VECT2,
      &                VECT3,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -223,7 +221,6 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  LGPG,ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                  ZR(IHYDRM),ZR(IHYDRP),
      &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                  NZ,PHASM,PHASP,
      &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
@@ -243,7 +240,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
@@ -265,7 +261,6 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
@@ -289,7 +284,6 @@ C 7.3 - GRANDES DEFORMATIONS FORMULATION CO-ROTATIONNELLE ZMAT
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),

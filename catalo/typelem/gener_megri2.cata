@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -45,7 +45,6 @@ MODE_LOCAL__
                                         GAX      GAY      )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     ENBSP_I  = NBSP_I   ELEM__         (GRI_NCOU )
     CNUMCOR  = NUMC_I   ELEM__         (NUMC     ORDO     )
@@ -196,7 +195,7 @@ OPTION__
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER  
                               OUT__  ENBSP_I  PNBSP_I  
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
+                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
     VARI_ELNO_COQU      580   IN__   ENBSP_I  PNBSP_I  CNUMCOR  PNUMCOR  ZVARIPG  PVARIGR  
                               OUT__  ZVARINO  PVARINR  
     VARI_ELNO_ELGA      31    IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR  

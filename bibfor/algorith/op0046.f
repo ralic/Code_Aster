@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       CHARACTER*24 CHTIME, CHAMGD, CHFREQ, CHMASS
       CHARACTER*24 CHAMEL, CHSIG,  CHEPS
       CHARACTER*24 CHGEOM, CHCARA(15), CHTEMP, CHTREF, CHHARM
-      CHARACTER*24 CHHYDR, CHSECH, CHSREF
+      CHARACTER*24 CHVARC, CHSECH, CHSREF
       CHARACTER*24 INFOCH, MATE
       CHARACTER*24 K24B, NOOBJ
       CHARACTER*24 COMPOR, CARCRI
@@ -108,6 +108,7 @@ C
       ALPHA  = 0.D0
       CALPHA = (0.D0 , 0.D0)
       NFON   = 0
+      CHVARC='&&OP0046.VARC'
 C
 C -- LECTURE DES OPERANDES DE LA COMMANDE
 C
@@ -225,7 +226,9 @@ C
          CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
      >                                              CHTREF,CHTEMP )
          CALL MEDEHY(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
-     >                                       CHHYDR,CHSECH,CHSREF )
+     >                                       CHSECH,CHSREF )
+         CALL VRCINS(MODELE(1:8),MATE(1:8),CARELE(1:8),TIME,
+     >                                       CHVARC(1:19))
 
          IF ( EXIPOU .AND. NFON.NE.0 ) THEN
            CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IER)
@@ -236,7 +239,7 @@ C
      >               CHTREF,CHTIME,K24B,CHHARM,CHSIG,CHEPS,
      >               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
      >               K24B,K24B,CHAMEL,LIGREL,BASE,
-     >               CHHYDR,CHSECH,CHSREF,K24B,K24B,
+     >               CHVARC,CHSECH,CHSREF,K24B,K24B,
      >               K24B, K24B, K8B, IBID, IRET )
 
 

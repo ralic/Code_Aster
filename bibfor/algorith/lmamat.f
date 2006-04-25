@@ -1,11 +1,11 @@
-        SUBROUTINE LMAMAT ( MOD,    IMAT,   NMAT,   TEMPD,    TEMPF,
-     1                      HYDRD,  HYDRF,  SECHD,  SECHF,   MATERD,
+        SUBROUTINE LMAMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
+     1                      SECHD,  SECHF,   MATERD,
      1                      MATERF, MATCST, TYPMA,    NDT,   NDI,
      2                      NR,     NVI )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,8 +45,6 @@ C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  DE MATER
 C           TEMPD  :  TEMPERATURE  A T
 C           TEMPF  :  TEMPERATURE  A T+DT
-C           HYDRD  :   HYDRATATION A L'INSTANT PRECEDENT
-C           HYDRF  :   HYDRATATION A L'INSTANT DU CALCUL
 C           SECHD  :   SECHAGE A L'INSTANT PRECEDENT
 C           SECHF  :   SECHAGE A L'INSTANT DU CALCUL
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T
@@ -61,15 +59,16 @@ C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
-        INTEGER         NMAT, IMAT, NDT , NDI  , NR , NVI
+        INTEGER         NMAT, IMAT, NDT , NDI  , NR , NVI,KPG,KSP
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPD , TEMPF , VMTP1(29) , VMTP2(29)
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF
-        REAL*8          VALPAD(3), VALPAF(3)
+        REAL*8          SECHD , SECHF
+        REAL*8          VALPAD(2), VALPAF(2)
         REAL*8          EPSI
-        CHARACTER*8     MOD,  NOM , NOMC(34) , TYPMA , NOMPAR(3)
+        CHARACTER*8     MOD,  NOM , NOMC(34) , TYPMA , NOMPAR(2)
         CHARACTER*2     BL2, FB2, CERR(34)
         CHARACTER*3     MATCST
+        CHARACTER*(*)   FAMI
         DATA EPSI       /1.D-15/
 C       ----------------------------------------------------------------
 C
@@ -129,19 +128,16 @@ C
  9       CONTINUE
 C
           NOMPAR(1) = 'TEMP'
-          NOMPAR(2) = 'HYDR'
-          NOMPAR(3) = 'SECH'
+          NOMPAR(2) = 'SECH'
           VALPAD(1) = TEMPD
-          VALPAD(2) = HYDRD
-          VALPAD(3) = SECHD
+          VALPAD(2) = SECHD
           VALPAF(1) = TEMPF
-          VALPAF(2) = HYDRF
-          VALPAF(3) = SECHF
+          VALPAF(2) = SECHF
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALA(IMAT,' ',    'ELAS',       3,  NOMPAR,VALPAD, 5,
-     1                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
+          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',2,NOMPAR,VALPAD,
+     1                 5,NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
@@ -160,8 +156,8 @@ C --    CONSTRUCTION DES MATRICES D ANISOTROPIE A TEMPF (T)
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALA(IMAT,' ',    'ELAS',       3,  NOMPAR,VALPAF, 5,
-     1                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',2,NOMPAR,
+     1                VALPAF,5,NOMC(1),MATERF(1,1),CERR(1),BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0

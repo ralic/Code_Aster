@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C.......................................................................
       REAL*8 B(486),BTDB(81,81),D(36),JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM
       REAL*8 HYDRG,SECHG
-      INTEGER NBSIGM,IGEOM, IPOIDS, IVF, IDFDE
+      INTEGER NBSIGM,IGEOM, IPOIDS, IVF, IDFDE,IRET
       LOGICAL LSENS
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -102,10 +102,6 @@ C ---- RECUPERATION TEMPERATURES AUX NOEUDS DE L'ELEMENT
 C      -------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',1,IHYDR,IRETH)
-
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL TECACH('NNN','PSECHER',1,ISECH,IRETS)
@@ -127,12 +123,7 @@ C          -------
         XYZGAU(2) = 0.D0
         XYZGAU(3) = 0.D0
         TEMPG = 0.D0
-        IF (IRETH.EQ.0) THEN
-          HYDRG = ZR(IHYDR+IGAU-1)
-        ELSE
-          HYDRG = 0.D0
-        END IF
-
+        CALL RCVARC(' ','HYDR','+','RIGI',IGAU,1,HYDRG,IRET)
         DO 30 I = 1,NNO
 
           IDECNO = 3* (I-1) - 1

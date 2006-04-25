@@ -1,0 +1,167 @@
+# MODIF  DATE 24/04/2006   AUTEUR PABHHHH N.TARDIEU 
+# TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM = 'ZZZZ215A',
+              NIV_PUB_WEB='INTERNET'),);
+
+# ==============================================================
+# CREATION DE 2 CHAMPS DE PRESSION SUR LA PEAU 
+# DU CUBE MAILLE FIN
+# ==============================================================
+
+MAFLUIDE=LIRE_MAILLAGE(UNITE=22,
+                       FORMAT='MED',);
+
+MOFLUIDE=AFFE_MODELE(MAILLAGE=MAFLUIDE,
+                  AFFE=_F(GROUP_MA=('Face1','Face2','Face3','Face4','Face5','Face6',),
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),);
+
+VAL0=CREA_CHAMP(TYPE_CHAM='ELEM_PRES_R',
+                OPERATION='AFFE',
+                MODELE=MOFLUIDE,
+                PROL_ZERO='OUI',
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='PRES',
+                        VALE=0.,),
+                INFO=1,);
+                
+
+VAL1=CREA_CHAMP(TYPE_CHAM='ELEM_PRES_R',
+                OPERATION='AFFE',
+                MODELE=MOFLUIDE,
+                PROL_ZERO='OUI',
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='PRES',
+                        VALE=1.,),
+                INFO=1,);
+
+RES_PRES=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_CHAR',
+                   NOM_CHAM='PRES',
+                   AFFE=(_F(CHAM_GD=VAL0,
+                            MODELE=MOFLUIDE,
+                            INST=0.,),
+                         _F(CHAM_GD=VAL1,
+                            MODELE=MOFLUIDE,
+                            INST=1.,),
+                        ),);
+                   
+#IMPR_RESU(FORMAT='GMSH',
+#          UNITE=97,
+#          RESU=_F(RESULTAT=RES_PRES,
+#                  ),);
+
+
+# ==============================================================
+# EXPLOITATION DE CET EVOL_CHAR DANS UN CALCUL MECANIQUE
+#   - on projete la pression fluide sur le maillage mecanique
+#   - on cree un evol_char utilise pour la resolution
+# ==============================================================
+
+MASOLIDE=LIRE_MAILLAGE(UNITE=23,
+                       FORMAT='MED',);
+
+MOSOLIDE=AFFE_MODELE(MAILLAGE=MASOLIDE,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=1.,
+                            NU=0.3,),);
+
+MATER=AFFE_MATERIAU(MAILLAGE=MASOLIDE,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+RES_PROJ=PROJ_CHAMP(METHODE='ELEM',
+                    RESULTAT=RES_PRES,
+                    MODELE_1=MOFLUIDE,
+                    MODELE_2=MOSOLIDE,
+                    VIS_A_VIS=_F(TOUT_1='OUI',
+                                 GROUP_MA_2=('Face1','Face2','Face3','Face4','Face5','Face6',),),
+                    TOUT_ORDRE='OUI',);
+
+#IMPR_RESU(FORMAT='GMSH',
+#          UNITE=98,
+#          RESU=_F(RESULTAT=RES_PROJ,),);
+
+
+CHA_PROJ=AFFE_CHAR_MECA(MODELE=MOSOLIDE,
+                        EVOL_CHAR=RES_PROJ,);
+
+CHA_IMPO=AFFE_CHAR_MECA(MODELE=MOSOLIDE,
+                      FACE_IMPO=_F(GROUP_MA='Face1',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=5,),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+RESU=STAT_NON_LINE(MODELE=MOSOLIDE,
+                   CHAM_MATER=MATER,
+                   EXCIT=(_F(CHARGE=CHA_IMPO,),
+                          _F(CHARGE=CHA_PROJ,),),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   );
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   REFERENCE='NON_REGRESSION',
+                   MAILLE='M81',NOEUD='N3Q',NOM_CMP='DX',
+                   VALE=-4.03149E+01,
+                   PRECISION=1.E-6,
+                   VERSION='8.02.12',),
+                _F(RESULTAT=RESU,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   REFERENCE='NON_REGRESSION',
+                   MAILLE='M81',NOEUD='N3Q',NOM_CMP='DY',
+                   VALE=-6.81884E+01,
+                   PRECISION=1.E-6,
+                   VERSION='8.02.12',),
+                _F(RESULTAT=RESU,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   REFERENCE='NON_REGRESSION',
+                   MAILLE='M81',NOEUD='N3Q',NOM_CMP='DZ',
+                   VALE=3.02618E+01,
+                   PRECISION=1.E-6,
+                   VERSION='8.02.12',)
+                   ))
+           
+
+#IMPR_RESU(FORMAT='GMSH',
+#          UNITE=99,
+#          RESU=_F(RESULTAT=RESU,
+#                  NOM_CHAM='DEPL',),);
+
+
+FIN();

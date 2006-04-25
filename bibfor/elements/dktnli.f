@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -150,7 +150,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
      &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV
       REAL*8     DEUX, RAC2, QSI, ETA, CARA(25), JACOB(5)
       REAL*8    CTOR,EPSANP(4),EPSANM(4),PHASM(7),PHASP(7)
-      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,JACGAU,BMAT(6,18)
+      REAL*8    SECHGM,SECHGP,SREF,LC,JACGAU,BMAT(6,18)
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
       LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
       CHARACTER*24 NOMELE
@@ -357,8 +357,6 @@ C        -------------------------------------------------------
       END IF
 
 C ---  VARIABLE D HYDRATATION ET DE SECHAGE
-      HYDRGM = 0.D0
-      HYDRGP = 0.D0
       SECHGM = 0.D0
       SECHGP = 0.D0
       SREF   = 0.D0
@@ -471,7 +469,6 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
      &                ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
-     &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF,
      &                  EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),

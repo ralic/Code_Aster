@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,HYDRD,
-     2                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
+     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
+     2                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
-C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
 C               SREF    SECHAGE DE REFERENCE
@@ -109,7 +107,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          HYDRD, HYDRF, SECHD, SECHF, SREF, ELGEOM(*)
+        REAL*8          SECHD, SECHF, SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -121,17 +119,17 @@ C
         CHARACTER*8     TYPMOD(*)
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
-        INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3
+        INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3, IRE2
         INTEGER         NVI2, NN, I,RETCOM
         CHARACTER*2     FB2, CERR(5)
-        CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR(3)
+        CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR(2)
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI
         REAL*8          RBID, NU, ANGMAS(3)
         REAL*8          EPSFL(6), EPSFLD(6), EPSFLF(6), DEPSFL(6)
-        REAL*8          DEPS(6), KOOH(6,6), VALPAD(3), VALPAF(3)
+        REAL*8          DEPS(6), KOOH(6,6), VALPAD(2), VALPAF(2)
         REAL*8          MATERD(5) , MATERF(5), DEPST2(6), DEPSEL(6)
         REAL*8          EPSICV, TOLER, NDSIG, NSIGF
-        REAL*8          DSIGF(6)
+        REAL*8          DSIGF(6),HYDRD, HYDRF
         REAL*8          EPSELD(6), EPSELF(6)
 C
         INTEGER         K
@@ -262,9 +260,9 @@ C
 C --- RESOLUTION LOI DE FLUAGE
 C
       IF ( OPTFLU .EQ. 'RAPH_MECA' ) THEN
-         CALL NMGRAN (NDIM,   TYPMOD,   IMAT,    CMP1,   CRIT,
-     1                TIMED,  TIMEF,    TEMPD,   TEMPF,  TREF,
-     2                HYDRD,  HYDRF,    SECHD,   SECHF,  SREF, TMPDMX,
+         CALL NMGRAN (FAMI, KPG, KSP, NDIM, TYPMOD, IMAT, CMP1,
+     1                CRIT, TIMED, TIMEF, TEMPD, TEMPF, TREF,
+     2                SECHD,   SECHF,  SREF, TMPDMX,
      3                TMPFMX, DEPST2,   SIGD,    VIND(1),OPT,
      4                SIGF2,  VINF(1),  DSDE )
 C
@@ -276,25 +274,22 @@ C
          NOMC(4)   = 'B_ENDOGE'
          NOMC(5)   = 'K_DESSIC'
          NOMPAR(1) = 'TEMP'
-         NOMPAR(2) = 'HYDR'
-         NOMPAR(3) = 'SECH'
+         NOMPAR(2) = 'SECH'
          VALPAD(1) = TMPDMX
-         VALPAD(2) = HYDRD
-         VALPAD(3) = SECHD
+         VALPAD(2) = SECHD
          VALPAF(1) = TMPFMX
-         VALPAF(2) = HYDRF
-         VALPAF(3) = SECHF
+         VALPAF(2) = SECHF
 C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAD, 1,
-     1                NOMC(2), MATERD(2), CERR(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',2,NOMPAR,
+     1               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAF, 1,
-     1                NOMC(2), MATERF(2), CERR(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',2,NOMPAR,
+     1               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
 C
          MATERD(1) = 1.D0
          MATERF(1) = 1.D0
@@ -345,7 +340,7 @@ C
 C
           CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
      1                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
-     2                 HYDRD, HYDRF,     SECHD,    SECHF, SREF,
+     2                 SECHD,    SECHF, SREF,
      3                 DEPS , SIGD,      VIND(NN), OPT,
      4                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
@@ -358,7 +353,7 @@ C
 C
               CALL REDECE (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
      1                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
-     2                     HYDRD, HYDRF,    SECHD,    SECHF, SREF,
+     2                     SECHD,    SECHF, SREF,
      3                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
      4              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
       ELSE
@@ -371,8 +366,8 @@ C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAD, 5,
-     1                NOMC(1), MATERD(1), CERR(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',2,NOMPAR,
+     1               VALPAD,5,NOMC(1),MATERD(1),CERR(1), FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERD(3) = 0.D0
          IF ( CERR(4) .NE. 'OK' ) MATERD(4) = 0.D0
@@ -380,8 +375,8 @@ C
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAF, 5,
-     1                NOMC(1), MATERF(1), CERR(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',2,NOMPAR,
+     1               VALPAF,5,NOMC(1),MATERF(1),CERR(1),FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERF(3) = 0.D0
          IF ( CERR(4) .NE. 'OK' ) MATERF(4) = 0.D0
@@ -405,6 +400,13 @@ C
          BENDOF = MATERF(4)
          KDESSD = MATERD(5)
          KDESSF = MATERF(5)
+
+C        RECUPERATION DE L HYDRATATION
+         CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRD,IRE2)
+         IF (IRE2.NE.0) HYDRD=0.D0
+         CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRF,IRE2)
+         IF (IRE2.NE.0) HYDRF=0.D0
+
          EPSTH = ALPHAF*(TEMPF-TREF)  - ALPHAD*(TEMPD-TREF)
      &         - BENDOF*HYDRF        + BENDOD*HYDRD
      &         - KDESSF*(SREF-SECHF) + KDESSD*(SREF-SECHD)

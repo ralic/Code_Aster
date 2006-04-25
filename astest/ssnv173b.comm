@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,18 +54,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
-                   CONTACT=_F(INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=4,   
-                               CONTACT_INIT='NON',    
-                               FROTTEMENT='SANS',
-#                               FROTTEMENT='COULOMB',
-#                               COULOMB=1.0,
-#                               ITER_FROT_MAXI=6,
-#                               COEF_REGU_FROT=1000.,
-#                               SEUIL_INIT=-1.E11,
-                               ),
-
                     INFO=3,
                     );
 

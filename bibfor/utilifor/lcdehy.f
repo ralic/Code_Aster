@@ -1,9 +1,9 @@
-        SUBROUTINE LCDEHY ( NMAT, MATERD, MATERF, HD, HF, SD,
+        SUBROUTINE LCDEHY ( FAMI, KPG, KSP, NMAT, MATERD, MATERF, SD,
      &                      SF, SREF, DEPSM, EPSDM )
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF UTILIFOR  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,15 +47,14 @@ C       ----------------------------------------------------------------
 C       IN      NMAT    DIMENSION  DE MATER
 C               MATERD  COEFFICIENTS MATERIAU A T
 C               MATERF  COEFFICIENTS MATERIAU A T+DT
-C               HD      HYDRATATION DEBUT INCREMENT
-C               HF      HYDRATATION FIN INCREMENT
-C               HD      SECHAGE DEBUT INCREMENT
-C               HF      SECHAGE FIN INCREMENT
+C               SD      SECHAGE DEBUT INCREMENT
+C               SF      SECHAGE FIN INCREMENT
 C       VAR     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
-        INTEGER         NDT  , NDI , NMAT , K
+        INTEGER         NDT  , NDI , NMAT , K, IRET, KPG, KSP
         CHARACTER*2     CE
+        CHARACTER*(*)   FAMI
         REAL*8          HD, HF, SD, SF, SREF
         REAL*8          EPSDM(6), DEPSM(6)
         REAL*8          BENDOD, BENDOF, KDESSD, KDESSF
@@ -68,6 +67,10 @@ C
         BENDOF = MATERF(4,1)
         KDESSD = MATERD(5,1)
         KDESSF = MATERF(5,1)
+        CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HD,IRET)
+        IF ( IRET.NE.0) HD=0.D0
+        CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HF,IRET)
+        IF ( IRET.NE.0) HF=0.D0
 C
         DO 110 K = 1,NDI
             DEPSM(K) = DEPSM(K) + ( BENDOF*HF - BENDOD*HD)

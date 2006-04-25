@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +73,8 @@ C     NPG : NOMBRE DE POINTS DE GAUSS
       REAL*8 E,G,EM,NU,NUM,ALPHAP,ALPHAM,TEMP,TEMM,PHIY,PHIZ,F,DF
       REAL*8 DEFAM(6),DEFAP(6)
       
-      INTEGER ISEREF,ISECHM,ISECHP,IHYDRM,IHYDRP
-      REAL*8  HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
+      INTEGER ISEREF,ISECHM,ISECHP
+      REAL*8  SECHGM,SECHGP,SREF
       
 C     ------------------------------------------------------------------
 
@@ -136,11 +136,6 @@ C
       CALL JEVECH ('PSECHMR', 'L',ISECHM)
       CALL JEVECH ('PSECHPR', 'L',ISECHP)
       
-      CALL JEVECH ('PHYDRMR', 'L',IHYDRM)
-      CALL JEVECH ('PHYDRPR', 'L',IHYDRP)
-      
-
-
       CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRETM)
       CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRETP)
       IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
@@ -298,8 +293,6 @@ C       POUR AVOIR MODULE ET CONTRAINTE SUR CHAQUE FIBRE
 C         ENDIF
 
         
-        HYDRGM=ZR(IHYDRM-1+KP)
-        HYDRGP=ZR(IHYDRP-1+KP)
         SECHGM=0.5D0*(ZR(ISECHM)+ZR(ISECHM+1))
         SECHGP=0.5D0*(ZR(ISECHP)+ZR(ISECHP+1))
         SREF=ZR(ISEREF-1+1)
@@ -308,8 +301,7 @@ C
      &            NBFIB,
      &            ZR(IINSTM),ZR(IINSTP),
      &            TEMM,TEMP,ZR(ITREF),
-     &                   HYDRGM,HYDRGP,
-     &                   SECHGM,SECHGP,SREF,
+     &            SECHGM,SECHGP,SREF,
      &            E,ALPHAP,
      &            ZI(IMATE),NBVALC,
      &            DEFAM,DEFAP,

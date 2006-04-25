@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C.......................................................................
       REAL*8 SIGMA(162),REPERE(7),INSTAN,NHARM
       REAL*8 SIGM2(162)
       INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER IHYDR,ISECH,ISREF
+      INTEGER ISECH,ISREF,IGAU,IRET
       LOGICAL LSENS
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -108,9 +108,6 @@ C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
-C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PHYDRER','L',IHYDR)
 
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
@@ -123,9 +120,9 @@ C      -------------------------------------------
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
 C      ------------------------------------
-      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
-     &            ZR(IGEOM),ZR(IDEPL), ZR(ITEMPE),ZR(ITREF),
-     &            ZR(IHYDR),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
+      CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
+     &            IDFDE,ZR(IGEOM),ZR(IDEPL), ZR(ITEMPE),
+     &            ZR(ITREF),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
      &            ZI(IMATE),NHARM,SIGMA,.FALSE.)
 
 C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
@@ -134,13 +131,13 @@ C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
 C      ------------------------------------
       IF (LSENS) THEN
-        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
-     &              ZR(IGEOM),ZR(IDEPS),ZR(ITEMPE),ZR(ITREF),
-     &              ZR(IHYDR),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
+        CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
+     &              IDFDE,ZR(IGEOM),ZR(IDEPS),ZR(ITEMPE),
+     &              ZR(ITREF),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
      &              ZI(IMATE),NHARM,SIGM2,.TRUE.)
-        DO 20 I = 1,NBSIG*NPG1
+        DO 30 I = 1,NBSIG*NPG1
           SIGMA(I) = SIGMA(I) + SIGM2(I)
-   20   CONTINUE
+   30   CONTINUE
       END IF
 
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
@@ -148,8 +145,8 @@ C ---- AVEC LE VECTEUR DES CONTRAINTES AUX POINTS D'INTEGRATION
 C      --------------------------------------------------------
       CALL JEVECH('PCONTRR','E',ICONT)
 
-      DO 30 I = 1,NBSIG*NPG1
+      DO 40 I = 1,NBSIG*NPG1
         ZR(ICONT+I-1) = SIGMA(I)
-   30 CONTINUE
+   40 CONTINUE
 
       END

@@ -1,10 +1,10 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     2                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
+     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
+     2                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          HYDRD, HYDRF, SECHD, SECHF, SREF, ELGEOM(*)
+        REAL*8          SECHD, SECHF, SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -80,8 +80,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
-C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
 C               SREF    SECHAGE DE REFERENCE
@@ -139,8 +137,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       CMP2(1:7) .EQ. 'NADAI_B'              ) THEN
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
+     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
+     &                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
            IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
@@ -173,8 +171,8 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
               CALL UTMESS('F','NMCOUP','PAS DE C_PLAN POUR EIB '//
      &                     'UTILISER C_PLAN_DEBORST')
             ENDIF
-            CALL LCUMFP ( NDIM, TYPMOD, IMAT, COMP,
-     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,HYDRD,HYDRF,
+            CALL LCUMFP ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT, COMP,
+     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
      &                      SECHD,SECHF,SREF,EPSDT,DEPST,
      2                      SIGD, VIND, OPTION,SIGF,VINF,DSDE)
           ENDIF

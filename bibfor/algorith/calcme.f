@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -225,7 +225,7 @@ C ======================================================================
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, 
-     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
+     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME,RETCOM)
@@ -236,7 +236,7 @@ C ======================================================================
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, 
-     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
+     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME,RETCOM)
@@ -386,10 +386,9 @@ C --- LOI MAZARS -------------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'MAZARS') THEN
         TINI = T - DT
-        CALL LCMAZA(  NDIM, TYPMOD,  IMATE, COMPOR,DEFGEM(ADDEME+NDIM),
-     >                      DEPS, VINTM, TINI, T, TREF, 
-     >                      0.D0,0.D0,0.D0,0.D0,0.D0,
-     >                      OPTION, CONGEP(ADCOME), VINTP, DSDEME)
+        CALL LCMAZA('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPOR,
+     >              DEFGEM(ADDEME+NDIM),DEPS, VINTM, TINI, T, TREF, 
+     >              0.D0,0.D0,0.D0,OPTION,CONGEP(ADCOME),VINTP,DSDEME)
      
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
@@ -417,10 +416,10 @@ C --- LOI ENDO_ISOT_BETON ----------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'ENDO_ISOT_BETON') THEN
         TINI = T - DT
-        CALL LCLDSB(  NDIM, TYPMOD,  IMATE, COMPOR,
+        CALL LCLDSB('RIGI',1,1,NDIM, TYPMOD,  IMATE, COMPOR,
      &                      DEFGEM(ADDEME+NDIM), 
      >                      DEPS, 
-     >                      VINTM,TINI,T,TREF,0.D0,0.D0,0.D0,0.D0,0.D0,
+     >                      VINTM,TINI,T,TREF,0.D0,0.D0,0.D0,
      >                      OPTION, CONGEP(ADCOME), VINTP, 
      >                      DSDEME)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.

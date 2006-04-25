@@ -1,8 +1,8 @@
-      SUBROUTINE SIGTMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,TEMPE,TREF,
-     +                   HYDR,SECH,SREF,INSTAN,MATER,REPERE,OPTION,
+      SUBROUTINE SIGTMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,TEMPE,
+     +                   TREF,SECH,SREF,INSTAN,MATER,REPERE,OPTION,
      +                   SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +58,10 @@ C -----  ARGUMENTS
            CHARACTER*16 OPTION
            REAL*8       NI(1), XYZ(1), TEMPE(1), REPERE(7), SIGMA(1)
            REAL*8       HYDR(1),SECH(1),SREF,INSTAN
+           CHARACTER*(*) FAMI
 C -----  VARIABLES LOCALES
            REAL*8       D(36), XYZGAU(3), EPSTH(6)
+           INTEGER      IRET
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -93,7 +95,8 @@ C        MEMBRE CHAR_MECA_* OU CALCUL DES CONTRAINTES VRAIES (SIGVMC.F)
           IF (OPTION(11:14).EQ.'TEMP'.OR.
      &        OPTION(11:14).EQ.'HYDR'.OR.
      &        OPTION(11:14).EQ.'SECH') THEN
-              HYDRG     = HYDR(IGAU)
+              CALL RCVARC(' ','HYDR','+',FAMI,IGAU,1,HYDRG,IRET)
+              IF (IRET.NE.0) HYDRG=0.D0
           ELSE
               HYDRG     = ZERO
           ENDIF

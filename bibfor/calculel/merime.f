@@ -9,7 +9,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF CALCULEL  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,13 +62,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8 K8B,LPAIN(25),LPAOUT(2),STATUT,NOMRES,NOMGD,KBID
       CHARACTER*16 OPTION,NOMCMD,TYPRES
-      CHARACTER*19 NOMFON
+      CHARACTER*19 NOMFON,CHVARC
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(25),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
-      CHARACTER*24 CHHYDR,CHSECH,CHSREF
+      CHARACTER*24 CHSECH,CHSREF
       COMPLEX*16 CBID
-      DATA CHHYDR,CHSECH/'&&CHHYDR.CH_HYDR_R','&&CHSECH.CH_SECH_R'/
+      DATA CHVARC,CHSECH/'&&MERIME.CH_VARC_R','&&CHSECH.CH_SECH_R'/
 
       CALL JEMARQ()
       MODELE = MODELZ
@@ -90,10 +90,10 @@ C     ------------------------------------------------------------------
 
 
       IF (NOMCMD.EQ.'MECA_STATIQUE') THEN
-        CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHHYDR,
+        CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,
      &              CHSECH,CHSREF)
+        CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
       ELSE
-        CHHYDR = ' '
         CHSECH = ' '
       END IF
 
@@ -168,8 +168,8 @@ C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE: TEMP_R/TEMP_F
         LCHIN(16) = CHCARA(13)
         LPAIN(17) = 'PCAGEPO'
         LCHIN(17) = CHCARA(5)
-        LPAIN(18) = 'PHYDRER'
-        LCHIN(18) = CHHYDR
+        LPAIN(18) = 'PVARCPR'
+        LCHIN(18) = CHVARC
         LPAIN(19) = 'PSECHER'
         LCHIN(19) = CHSECH
         LPAIN(20) = 'PTEMPSR'

@@ -1,7 +1,6 @@
       SUBROUTINE COMP1D(FAMI,KPG,KSP,OPTION,
      &                  SIGX,EPSX,DEPX,
      &                  TEMPM,TEMPP,TREF,
-     &                   HYDRGM,HYDRGP,
      &                   SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VIM,VIP,SIGXP,ETAN,CODRET)
@@ -12,7 +11,7 @@
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +95,7 @@ C
 C
       REAL*8         DSIDEP(6,6)
       REAL*8         ZERO
-      REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
+      REAL*8         SECHGM,SECHGP,SREF
       REAL*8         EPSANM(6),EPSANP(6),PHASM(7),PHASP(7)
       REAL*8         LC(10,27)
       REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6),R8VIDE
@@ -135,8 +134,6 @@ C
 C
 C ---    INITIALISATION DES TABLEAUX
 C
-C         HYDRGM = ZERO
-C         HYDRGP = ZERO
 C         SECHGM = ZERO
 C         SECHGP = ZERO
 C         SREF   = ZERO
@@ -156,7 +153,6 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &               ZK16(ICOMPO),ZR(ICARCR),
      &               ZR(IINSTM),ZR(IINSTP),
      &               TEMPM,TEMPP,TREF,
-     &               HYDRGM,HYDRGP,
      &               SECHGM,SECHGP,SREF,
      &               EPS,DEPS,
      &               SIGM,VIM,

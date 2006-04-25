@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -209,7 +209,6 @@ C
 C         ================
          CALL CBTEMP ( CHAR )
          CALL CBSECH ( CHAR )
-         CALL CBHYDR ( CHAR )
          CALL CBPRCA ( CHAR )
          CALL CAANEL ( CHAR )
          CALL CBPESA ( CHAR, NOMA )

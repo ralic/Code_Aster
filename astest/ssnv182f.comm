@@ -1,5 +1,5 @@
 
-# MODIF  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,6 +58,8 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                COEF_REGU_CONT=100., 
                                ITER_CONT_MAXI=4,   
                                CONTACT_INIT='OUI',
+                               ALGO_LAGR='NON',
+                               COEF_ECHELLE=1.,
                                FROTTEMENT='COULOMB',
                                COULOMB=1.0,
                                ITER_FROT_MAXI=6,

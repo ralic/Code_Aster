@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION 
 #       SUR UN CYLINDRE - LOI DE MAZARS LOCALE
 # -----------------------------------------------------------------
@@ -69,11 +69,6 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                    AT   = AT,
                                    BC   = BC,
                                    BT   = BT),)
-CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=20.0,
-                         SECH_REF=100.),);
 
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
@@ -120,14 +115,14 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                    INST=0.0,),
                 _F(CHAM_GD=TEMPF,
                    INST=3600.0,  ),),);
-HYDRI=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='HYDR',
                         VALE=0.0,),);
 
-HYDRF=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
@@ -136,12 +131,19 @@ HYDRF=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                         
 HYDR1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
-                NOM_CHAM='HYDR_ELNO_ELGA',
+                NOM_CHAM='HYDR_NOEU_ELGA',
                 AFFE=(
                 _F(CHAM_GD=HYDRI,
                    INST=0.0,),
                 _F(CHAM_GD=HYDRF,
                    INST=3600.0,  ),),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,
+                         TEMP_REF=20.0,
+                         SECH_REF=100.),
+                 AFFE_VARC=_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC="HYDR",NOM_CHAM='HYDR_NOEU_ELGA'),);
 
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
@@ -150,8 +152,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                 
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                    TEMP_CALCULEE=TEMP1,
-                   SECH_CALCULEE=SECH1,
-                   HYDR_CALCULEE=HYDR1);
+                   SECH_CALCULEE=SECH1);
 
 #  ATTENTION :METTRE  SUFFISAMMENT DE PAS DE TEMPS QUAND E VARIE AVEC LE
 #  SECHAGE SINON RESULTATS APPROXIMATIFS OU PROBLEME DE CONVERGENCE

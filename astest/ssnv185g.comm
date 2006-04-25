@@ -1,4 +1,4 @@
-# MODIF  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(0. ,20. ,h ),),
                     CONTACT=_F(ALGO_LAGR='NON',
+                               COEF_ECHELLE=1.,
                                INTEGRATION='GAUSS',
                                CONTACT_INIT='OUI',),
                     INFO=1,

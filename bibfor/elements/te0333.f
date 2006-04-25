@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,6 @@ C     ---------------
         EPSPLN(I) = ZERO
    10 CONTINUE
       DO 20 I = 1,MXCMPG
-        HYDR(I) = ZERO
         SECH(I) = ZERO
    20 CONTINUE
       SREF = 0.D0
@@ -122,13 +121,10 @@ C     -------------------------------------------
 
 C --- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
 C     -----------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',1,IHYDRE,IRET)
-      IF (IHYDRE.NE.0) THEN
-        DO 40 I = 1,NPG
-          HYDR(I) = ZR(IHYDRE+I-1)
-   40   CONTINUE
-      ELSE
-      END IF
+      DO 40 I = 1,NPG
+        CALL RCVARC(' ','HYDR','+','RIGI',I,1,HYDR(I),IRET)
+        IF (IRET.EQ.1) HYDR(I)=ZERO
+   40 CONTINUE
 
 C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 C     -----------------------------------------------------
@@ -269,7 +265,6 @@ C  ---   TEMPERATURE AU POINT D'INTEGRATION COURANT :
 C        ------------------------------------------
         TEMPG = ZERO
         SECHG = ZERO
-        HYDRG = ZERO
         HYDRG = HYDR(IGAU)
 
         DO 80 I = 1,NNO

@@ -1,6 +1,6 @@
       SUBROUTINE TE0081(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ......................................................................
       REAL*8 B(486),BTDB(81,81),D(36),JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM,TEMPG
       REAL*8 HYDRG,SECHG
-      INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
+      INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO,IRET
       LOGICAL LSENS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -106,10 +106,6 @@ C ---- RECUPERATION TEMPERATURES AUX NOEUDS DE L'ELEMENT
 C      -------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',1,IHYDR,IRETH)
-
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL TECACH('NNN','PSECHER',1,ISECH,IRETS)
@@ -129,12 +125,9 @@ C  --      COURANT
 C          ------------------------------------------------------
         TEMPG = ZERO
         SECHG = ZERO
-
-        IF (IRETH.EQ.0) THEN
-          HYDRG = ZR(IHYDR+IGAU-1)
-        ELSE
-          HYDRG = ZERO
-        END IF
+        
+        CALL RCVARC(' ','HYDR','+','RIGI',IGAU,1,HYDRG,IRET)
+        IF (IRET.EQ.1) HYDRG=0.D0
 
         DO 30 I = 1,NNO
           TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)

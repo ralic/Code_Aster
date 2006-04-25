@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C ......................................................................
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP,JCRET,CODRET
-      INTEGER IHYDRM,IHYDRP,ISECHM,ISECHP,ISREF,IVARIX
+      INTEGER ISECHM,ISECHP,ISREF,IVARIX
       INTEGER JPINTT,JCNSET,JHEAVT,JLONCH,JBASLO,JLSN,JLST
       INTEGER KK,NI,MJ,JTAB(7),NZ,NNOS,ICAMAS
       INTEGER DDLH,DDLC,NDDL,INO,NNOM,NFE,IBID
@@ -128,8 +128,6 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PTEMPPR','L',ITEMPP)
       CALL JEVECH('PINSTMR','L',IINSTM)
       CALL JEVECH('PINSTPR','L',IINSTP)
-      CALL JEVECH('PHYDRMR','L',IHYDRM)
-      CALL JEVECH('PHYDRPR','L',IHYDRP)
       CALL JEVECH('PSECHMR','L',ISECHM)
       CALL JEVECH('PSECHPR','L',ISECHP)
       CALL JEVECH('PSECREF','L',ISREF)
@@ -197,7 +195,7 @@ C         OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
           CALL XMEL3D(NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,OPTION,
      &                NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(ITEMPM),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
-     &                ZI(JLONCH),ZR(JBASLO),ZR(IHYDRM),ZR(ISECHM),
+     &                ZI(JLONCH),ZR(JBASLO),ZR(ISECHM),
      &                ZR(ITREF),ZR(IDEPLM),ZR(JLSN),ZR(JLST),ZR(ICONTM),
      &                ZR(IVARIM),ZR(IMATUU),ZR(IVECTU),CODRET)
 
@@ -219,7 +217,7 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
           CALL XMEL3D(NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,OPTION,
      &                NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(ITEMPP),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
-     &                ZI(JLONCH),ZR(JBASLO),ZR(IHYDRP),ZR(ISECHP),
+     &                ZI(JLONCH),ZR(JBASLO),ZR(ISECHP),
      &                ZR(ITREF),ZR(IDEPLP),ZR(JLSN),ZR(JLST),ZR(ICONTP),
      &                ZR(IVARIP),ZR(IMATUU),ZR(IVECTU),CODRET)
 
@@ -255,7 +253,6 @@ C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
@@ -274,7 +271,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
@@ -309,7 +305,6 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
@@ -359,7 +354,6 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  LGPG,ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                  ZR(IHYDRM),ZR(IHYDRP),
      &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                  NZ,PHASM,PHASP,
      &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
@@ -379,7 +373,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
@@ -401,7 +394,6 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),

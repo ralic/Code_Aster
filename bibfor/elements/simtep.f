@@ -1,10 +1,10 @@
-      SUBROUTINE SIMTEP (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +                   XYZ,DEPL,TEMPE,TREF,INSTAN,REPERE,MATER,
-     +                   NHARM,SIGMA)
+      SUBROUTINE SIMTEP (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+     +                   IDFDE,XYZ,DEPL,TEMPE,TREF,INSTAN,REPERE,
+     +                   MATER,NHARM,SIGMA)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,12 +79,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
            INTEGER      IPOIDS,IVF,IDFDE
            CHARACTER*8  MODELI
+           CHARACTER*(*) FAMI
            REAL*8       XYZ(1), DEPL(1), TEMPE(1), REPERE(7), SIGMA(1)
            REAL*8       INSTAN, NHARM
 C -----  VARIABLES LOCALES
            INTEGER      I, MATER, NBSIG, NDIM, NNO, NPG
            CHARACTER*16 K16BID
-           REAL*8       SIGTH(162),HYDR(27),SECH(27),TREF,ZERO, RBID
+           REAL*8       SIGTH(162),SECH(27),TREF,ZERO, RBID
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -97,10 +98,9 @@ C
          SIGMA(I) = ZERO
  10   CONTINUE
 C
-C --- PAS DE PRISE EN COMPTE DES VARIABLES D'HYDRATATION OU SECHAGE
+C --- PAS DE PRISE EN COMPTE DES VARIABLES DE SECHAGE
 C
       DO 11 I = 1, NPG
-         HYDR(I) = ZERO
          SECH(I) = ZERO
  11   CONTINUE
 C
@@ -112,8 +112,8 @@ C      ---------------------------------------------------------
 C
 C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
-      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,TREF,
-     +            HYDR,SECH,RBID,INSTAN,MATER,REPERE,K16BID,SIGTH)
+      CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,
+     +            TREF,SECH,RBID,INSTAN,MATER,REPERE,K16BID,SIGTH)
 C
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+%& MODIF OPTIONS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,5 +24,6 @@ OPTION__
    IN__
         PMATERC  ADRSJEVE
         PGEOMER  GEOM_R
+        PCACOQU  CACOQU
    OUT__
         PCOURAN  NEUT_R ELEM__

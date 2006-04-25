@@ -1,6 +1,6 @@
       SUBROUTINE TE0116 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,8 @@ C ......................................................................
 C
       CHARACTER*8      MODELI
       CHARACTER*16     OPTION, NOMTE
-      REAL*8           SIGMA(54), REPERE(7), R8BID1(9),R8BID2
+      CHARACTER*4      FAMI
+      REAL*8           SIGMA(54), REPERE(7), R8BID1(9)
       REAL*8           NHARM, INSTAN
       INTEGER          NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,DIMMOD
 C
@@ -53,11 +54,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       IF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
-         CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,
-     &                                            IVF,IDFDE,JGANO)
+        CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                                           IVF,IDFDE,JGANO)
+        FAMI='GANO'
       ELSE
         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,
      &                                           IVF,IDFDE,JGANO)
+        FAMI='RIGI'
       ENDIF
       MODELI(1:2) = NOMTE(3:4)
       DIMMOD = 3
@@ -71,7 +74,6 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
-      R8BID2 =0.D0
       CALL R8INIR(9,0.D0,R8BID1,1)
 
 C
@@ -118,9 +120,9 @@ C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIGVMC(MODELI,NNO,DIMMOD,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
-     +            ZR(ITREF),R8BID1,R8BID1,R8BID2,INSTAN,REPERE,
+      CALL SIGVMC(FAMI,MODELI,NNO,DIMMOD,NBSIG,NPG,IPOIDS,IVF,
+     +            IDFDE,ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
+     +            ZR(ITREF),R8BID1,R8BID1,INSTAN,REPERE,
      +            ZI(IMATE),NHARM,SIGMA,.FALSE.)
 C
       CALL PPGAN2(JGANO,NBSIG,SIGMA,ZR(ICONT))

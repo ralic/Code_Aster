@@ -1,12 +1,12 @@
-         SUBROUTINE PLASBE ( TYPMOD, IMAT,  COMP,  CRIT,
-     1                       TEMPD, TEMPF, TREF,
-     2                       HYDRD, HYDRF, SECHD, SECHF, SREF, EPSDT,
+         SUBROUTINE PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
+     1                       CRIT, TEMPD, TEMPF, TREF,
+     2                       SECHD, SECHF, SREF, EPSDT,
      3                       DEPST, SIGD,  VIND,  OPT, ELGEOM, SIGF,
      4                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,8 +115,6 @@ C                       FIXEE EN DUR)
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
-C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
 C               SREF    SECHAGE DE REFERENCE
@@ -191,7 +189,7 @@ C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
         REAL*8          TEMPD,    TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF , SREF, ELGEOM(*)
+        REAL*8          SECHD , SECHF , SREF, ELGEOM(*)
         REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
         REAL*8          SIGD(6),     SIGF(6),   SIGE(6), DSIG(6)
@@ -203,6 +201,7 @@ C
         CHARACTER*16    COMP(*),     OPT,        LOI
         CHARACTER*3     MATCST, CNSEUI
         CHARACTER*8     NOMAIL
+        CHARACTER*(*)   FAMI
         REAL*8          PC, PT, FC, FT, DFCDLC, DFTDLT, KUC, KUT, KE
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
@@ -245,7 +244,7 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-        CALL BETMAT ( MOD, IMAT, NMAT, TMPMX, TEMPF, HYDRD,  HYDRF,
+        CALL BETMAT ( FAMI, KPG, KSP, MOD, IMAT, NMAT, TMPMX, TEMPF,
      1                SECHD, SECHF, MATERD, MATERF, MATCST, NDT,
      2                NDI , NR, NVI)
 C
@@ -256,7 +255,7 @@ C
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
-        CALL LCDEHY ( NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
+        CALL LCDEHY ( FAMI, KPG, KSP, NMAT,  MATERD, MATERF,
      &                SECHD, SECHF, SREF, DEPS,   EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T

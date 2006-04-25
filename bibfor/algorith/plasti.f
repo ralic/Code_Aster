@@ -1,12 +1,11 @@
          SUBROUTINE PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TIMED,
-     1                       TIMEF, TEMPD, TEMPF, TREF, HYDRD, HYDRF,
-     2                       SECHD, SECHF, SREF, EPSDT, DEPST, SIGD, 
-     3                   VIND,OPT,ANGMAS,SIGF, VINF, DSDE, ICOMP, NVI, 
-     4                       IRTETI)
+     1                       TIMEF, TEMPD, TEMPF, TREF, SECHD, SECHF, 
+     2                       SREF, EPSDT, DEPST, SIGD,VIND,OPT,ANGMAS,
+     3                       SIGF, VINF, DSDE, ICOMP, NVI, IRTETI)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,8 +175,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
-C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
 C               SREF    SECHAGE DE REFERENCE
@@ -239,7 +236,7 @@ C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
         REAL*8          TIMED,       TIMEF,     TEMPD,    TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF, SREF
+        REAL*8          SECHD , SECHF, SREF
         REAL*8          EPSD(6),     DEPS(6)
         REAL*8          EPSDT(6),    DEPST(6)
         REAL*8          SIGD(6),     SIGF(6)
@@ -290,7 +287,7 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1             HYDRD,HYDRF,SECHD,SECHF,TYPMA,BZ,HSR,MATERD,MATERF,
+     1                SECHD,SECHF,TYPMA,BZ,HSR,MATERD,MATERF,
      3                MATCST,NBCOMM, CPMONO, ANGMAS, PGL,ITMAX, TOLER,
      2                NDT , NDI , NR, NVI, VIND)
  
@@ -301,8 +298,8 @@ C
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
-        CALL LCDEHY ( NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
-     &                SECHD, SECHF, SREF, DEPS,   EPSD )
+        CALL LCDEHY ( FAMI, KPG, KSP, NMAT, MATERD, MATERF,
+     &                SECHD, SECHF, SREF, DEPS, EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
 C

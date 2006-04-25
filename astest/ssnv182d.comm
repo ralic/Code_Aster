@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     GROUP_MA_ENRI='SURF',
                     CONTACT=_F(ALGO_LAGR='NON',
                                CONTACT_INIT='OUI',    
+                               COEF_ECHELLE=1.,
                                FROTTEMENT='SANS',
                                ),
                     INFO=1,);

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                ITER_CONT_MAXI=4,   
                                CONTACT_INIT='OUI',    
                                ALGO_LAGR='VERSION1',
+                               COEF_ECHELLE=1.E11,
                                FROTTEMENT='SANS',
 #                               FROTTEMENT='COULOMB',
 #                               COULOMB=1.0,
@@ -82,7 +83,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          INFO=1,);
 
-E=1.0E3
+E=1.0E11
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0,),);
 
@@ -152,8 +153,8 @@ IMPR_TABLE(TABLE=LAG,);
 
 
 # TESTS
-
-LAREF=-1.*pres
+# LES VALEURS DE PRESSIONS OBTENUES SONT EN FAIT LES PRESSIONS DIVISEES PAR COEF_ECHELLE
+LAREF=-1.*pres/1.e11
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
