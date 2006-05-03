@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,12 +138,8 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              NOM_CMP=('LAGS_C','LAGS_F1',),
                              OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=LAG,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-           
+IMPR_TABLE(TABLE=LAG);
+        
 
 # TESTS
 
@@ -163,5 +159,22 @@ TEST_TABLE(TABLE=LAG,
            CRITERE='RELATIF',
            PRECISION=0.007,
            REFERENCE='AUTRE_ASTER',);
+
+# LA2REF EST LA SOLUTION ANALYTIQUE (PAS DE FROTTEMENT AU POINT MILIEU)
+LA1REF=0.
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_F1',            
+           FILTRE=(_F(NOM_PARA='COOR_X',
+                      CRIT_COMP='EQ',
+                      VALE=10.,),
+                   _F(NOM_PARA='COOR_Y',
+                      CRIT_COMP='EQ',
+                      VALE=17.5,),
+                  ),
+           VALE=LA1REF,
+           CRITERE='ABSOLU',
+           PRECISION=5.E-3,
+           REFERENCE='ANALYTIQUE',);           
            
 FIN();           

@@ -1,0 +1,802 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET N.             DATE 03/05/2006 - 11:00:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009711 DU 2006-04-26 18:02:17
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   DYNA_TRAN_EXPLI : calcul Condition de Courant en modal sans les matrices generalisees
+FONCTIONNALITE
+   On recupere les frequences propres directement dans l'objet
+   MODE_MECA. On ne les recalcule plus a partir des matrices
+   generalisees (M et K) assemblees, comme c'etait fait dans
+   DYNA_TRAN_MODAL par exemple.
+   La condition de COurant en modal est donc maintenant toujours
+   calculee, meme quand on ne donne que MODE_MECA.
+   Seule la routine pascom.f est impactee (et son appelant
+   diinit.f qui ne doit plus le transmettre que le MODE_MECA).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas test personnel
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kxbadng      ADOBES A.              DATE 02/05/2006 - 17:48:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009630 DU 2006-03-31 09:15:50
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   CALC_FLUI_STRU
+FONCTIONNALITE
+   Il s'agit d'un bug d'impression. Le parametre NUME_ORDRE est confondu avec
+   le parametre
+   NUME_MODE et le deuxieme etait systematiquement imprime comme le maximum
+   du nombre de mode
+   selectionne.
+   Apres verification la correction doit etre reportee en v7. Il s agit en
+   effet d une anomalie.
+   Cependant, un probleme de coherence existe par ailleurs. En effet, avec la
+   syntaxe
+   suivante de CALC_FLUI_STRU :
+   
+   MELFLUI0=CALC_FLUI_STRU(VITE_FLUI=_F(VITE_MIN=1.000000e-01,
+   VITE_MAX=8.100000e+00,
+   NB_POIN=41,),
+   BASE_MODALE=_F(MODE_MECA=MODES,
+   
+   NUME_ORDRE=(1,3,4,6,7,8,11,12,),
+   AMOR_REDUIT=(2.0e-03,2.0e-03,2.0e-03,2.0e-03,2.0e-03,2.0e-03,2.0e-03,2.0e-
+   03,),),
+   TYPE_FLUI_STRU=TYPEFLUI,             IMPRESSION=_F(PARA_COUPLAGE='OUI',),);
+   
+   L'affichage donne
+   
+   MODE : NUMERO D ORDRE:  1/ NUME_MODE:  8/ FREQ: 5.036263D+01
+   ....
+   
+   MODE : NUMERO D ORDRE:  3/ NUME_MODE:  8/ FREQ: 5.569398D+01
+   ....
+   
+   Le numero d ordre qui devrait etre le numero dans la liste selectionne (
+   donc ici de 1 a 8
+   ) prend en fait le numero du mode de la base selectionne. Et le numero de
+   mode est bloque
+   au maximum.
+   Par soucis de coherence avec la syntaxe et pour eviter un changement de
+   syntaxe pour l
+   utilisateur, celui-ci devant fournir une liste d entier sous le mot cle
+   NUME_ORDRE, on
+   decide de conserver la liste de numero d ordre tel quel mais de supprimer
+   la liste des
+   NUME_MODE de l affichage.
+   
+   En reprenant l exemple ci dessus, le nouvel affichage donne donc
+   
+   MODE : NUMERO D ORDRE:  1/ FREQ: 5.036263D+01
+   ....
+   
+   MODE : NUMERO D ORDRE:  3/ FREQ: 5.569398D+01
+   ....
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test fourni avec l anomalie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 02/05/2006 - 17:48:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009663 DU 2006-04-07 09:41:04
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : CS
+TITRE
+   IMPR_RESU format IDEAS
+FONCTIONNALITE
+   Dans la restitution 8.2.7 (fiche 9204), les suffixes indexant les noeuds et mailles au
+   format IDEAS etaient passes respectivement de NO a N et de MA a M. Malheureusement, la
+   commande IMPR_RESU devait aussi etre impacte et ne l as pas ete. Du coup, une impression
+   au format IDEAS donnait des maillages aberrants. Afin de corriger ce probleme on modifie
+   la routine irmasu.f pour qu elles prennent le numero du noeud de 2 a 8 et plus comme avant
+   de 3 a 8.
+   
+   Au niveau validation, le cas test zzzz176a faisait deja une impression au format IDEAS et
+   une relecture avec verification. Cependant le test fait derriere etait toujours correct a
+   cause d une erreur dans l enchainement de commande DEFI_FICHIER IMPR_RESU et PRE_IDEAS. Ce
+   probleme plus general sera traite dans une fiche a part par un developpeur plus averti.
+   En attendant, le premier DEFI_FICHIER d allocation du fichier est mis en commentaire.
+   Ainsi, on avait :
+   
+   DEFI_FICHIER(FICHIER='IDEAS', UNITE=56, );
+   IMPR_RESU(FORMAT='IDEAS', UNITE=56, RESU=_F(MAILLAGE=MAYA,),);
+   DEFI_FICHIER (ACTION='LIBERER',UNITE=56)
+   
+   Cette syntaxe ne fonctionne pas. On commentarise la premiere ligne :
+   
+   IMPR_RESU(FORMAT='IDEAS', UNITE=56, RESU=_F(MAILLAGE=MAYA,),);
+   DEFI_FICHIER (ACTION='LIBERER',UNITE=56)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz176a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 02/05/2006 - 14:26:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009719 DU 2006-04-28 06:41:07
+TYPE express concernant Code_Aster (VERSION 8.4)
+TITRE
+   MACR_ASPIC_CALC : petits bugs
+FONCTIONNALITE
+   Corrections de plusieurs petites anomalies dans MACR_ASPIC_MAIL, signalees via la TMA :
+   - impression de la valeur locale de G (calculee mais non imprimee jusqu'a present)
+   - erreur dans l'impression du champ de temperature
+   - probleme avec le mot cle BORNES de l'option CALC_G_MAX (ajoute dans la liste des
+   arguments de la macro)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test aspic
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 02/05/2006 - 17:16:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009720 DU 2006-04-28 08:34:43
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   bug X-FEM en 2D et petites ameliorations en post-traitement
+FONCTIONNALITE
+   Probleme :
+   
+   En 3D, si on cherche a decouper un element de bord 2D, le processus de
+   sous-decoupage des
+   elements plante avec un message d'erreur sur le nombre d'intersections trouvees entre
+   l'element de bord et la fissure.
+   
+   
+   Solution :
+   
+   cela est du a une erreur de programmation dans la routine de sous-decoupage des elements
+   X-FEM (xdecou.f), on allait chercher la dimension du maillage, au lieu d'aller chercher la
+   dimension de l'element.
+   
+   Cela provoquait l'emission de messages d'erreur, car pour un element de bord dans un
+   maillage 3D, le nombre de points d'intersections trouves sur cet element de bord etait
+   impossible (en reference a un element de dimension 3).
+   
+   validation sur un cas test perso, qui devrait bientot devenir un vrai cas test, une fois
+   que les elements de bords X-FEM seront disponibles (EL 9058 sur l'impostion de condition
+   de Neumann sur un bord X-FEM).
+   
+   
+   j'en profite pour ameliorer le post-traitement pour le contact (creation du champ
+   contenant la base covariante aux facettes de contact)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009723 DU 2006-04-28 13:34:40
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   frottement avec X-FEM  : algorithme de restriction de l'espace des semi-multiplicateurs
+de frottement
+FONCTIONNALITE
+   Probleme :
+   
+   Dans le cadre du traitement de contact par la methode continue avec X-FEM, on a ete
+   oblige
+   de mettre en place un algorithme visant a reduire les oscillations sur les pressions de
+   contact.
+   
+   En fait, lorsque le frottement est active, on observe aussi des oscillations sur les
+   semi-multiplicateurs de frottement.
+   
+   Il faudrait donc aussi activer l'algorithme pour reduire les oscillations sur les
+   semi-multiplicateurs de frottement.
+   
+   
+   Solution :
+   
+   On ecrit les memes relations a imposer que celle sur les pressions de contact, mais cette
+   fois-ci, avec les reactions tangentielles de frottement. Ces relations etant vectorielles,
+   on les projete sur la base covariante aux points de contact (tau1, tau2) pour obtenir une
+   relation scalaire (en 2D) ou deux relations scalaires (en 3D).
+   
+   le choix de la base covariante est arbitraire  : on projete les relations sur la base
+   covariante au 1er point de contact de la relation.
+   
+   ex en 2D pour une relation lineaire entre les points A, B et C :
+   L(A).TAU(A) + L(B).TAU(B) + L(C).TAU(C) = 0
+   
+   devient      L(A).TAU(A).TAU(A) + L(B).TAU(B).TAU(A) + L(C).TAU(C).TAU(A) = 0
+   
+   
+   Validation : toutes les modelisations du cas test ssnv186 qui utilisent du frottement (a,
+   b, c, d en 3D et f, g, h en 2D)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.186, R7.02.12
+VALIDATION
+   ssnv186a, b, c, d, f, g, h
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET S.              DATE 03/05/2006 - 14:13:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009625 DU 2006-03-30 09:40:20
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests wtnv131a et b sous linux Calibre 3 en version NEW8.2.14
+FONCTIONNALITE
+   On augmente le temps CPU necessaire :
+   Pour wtnv131a :150s (au lieu de 100)
+   Pour wtnv131b :250s (au lieu de 200)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage des cas tests wtnv131a et wtnv131b sous clp50a8
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009513 DU 2006-03-02 08:29:02
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test wtnv131b sous linux Calibre 3
+FONCTIONNALITE
+   Idem fiche 9625
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas test wtnv131b sous clp50a8
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 02/05/2006 - 11:32:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009650 DU 2006-04-06 06:31:38
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Test yyyy117a en version NEW8.2.16 sous linux Rocks et Alphaserver
+FONCTIONNALITE
+   En effet ! depuis que l'on a ajoute le sechage et l'hydratation pour les elements de
+   barre, ceux-ci savent calculer les options CHAR_MECA_SECH_R et CHAR_MECA_HYDR_R. Il faut
+   donc definir la valeur du champ de sechage pour ces elements (et donc le mettre egal
+   a
+   SECH_REF si on ne veut pas modeliser de retrait dans ces elements).
+   En faisant cette modif, le test YYYY117 se comporte comme avant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   yyyy117a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009617 DU 2006-03-29 17:24:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   COMP_ELAS + materiau fonction de l'hydratation ou du sechage
+FONCTIONNALITE
+   sans suite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM MARC              DATE 03/05/2006 - 16:57:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007902 DU 2004-06-15 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 7.3)
+TITRE
+   Probleme de convergence en contact frottement
+FONCTIONNALITE
+   il s'agit du cas-test cylindre dans un alesage avec contact-
+   frottant. La non convergence est due a l'utilisation de la
+   matrice elastique dans stat_non_line. En mettant la matrice
+   tangente, c'est ok.
+   
+   Remarque: avec la methode continue, il faut toujours
+   utiliser la matrice tangente avec reac_iter=1, car on a
+   besoin de reactualiser la matrice de contact a chaque
+   iteration.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008056 DU 2004-09-03 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 7.3)
+TITRE
+   SSNV128m anomalie concernant l'usage de iter_cont_maxi
+FONCTIONNALITE
+   je n'observe plus le probleme.
+   -> ok.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 03/05/2006 - 10:22:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009623 DU 2006-03-30 09:36:44
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test ssnv506d sous linux Calibre 3 en version NEW8.2.14
+FONCTIONNALITE
+   Fonctionne en NEW8.2.16
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test lui-meme
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009560 DU 2006-03-15 13:52:41
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   CONTACT - Option VECT_Y pour orienter les poutres
+FONCTIONNALITE
+   Il n'y a pas un bug.
+   Le fait est que pour ne pas avoir de frottement, il faut mettre FROITTEMENT='SANS' ou ne
+   
+   rien mettre car c'est la valeur par defaut.
+   Donc VECT_Y etait active meme sans frottement.
+   VECT_Y sert a deux choses:
+   1/ orienter localement le repere de contact/frottement pour eviter certains conflits
+   avec
+   les conditions limites
+   2/ orienter les poutres dans le cas de contact entre poutres.
+   Toutefois, dessous, on a la meme strategie: on impose un repere dans une certaine
+   
+   position. C'est pour ca que les deux fonctions ont le meme mot-clef.
+   Dans la methode continue par contre, le fait d'exclure une direction de frottement
+   
+   (fonctionnalite 1) ou d'orienter une poutre (fonctionnalite 2) est different dans le
+   
+   traitement. Et on peut avoir besoin d'orienter une poutre ET d'exclure une direction de
+   
+   frottement. D'ou les deux mots-clefs (VECT_Y/VECT_Z et VECT_ORIE_POU).
+   Par souci de coherence, je propose aussi deux mots-clefs pour la methode discrete:
+   VECT_Y
+   et VECT_ORIE_POU qui font la meme chose informatiquement mais qui n'ont pas le meme
+   sens
+   pour l'utilisateur. Ces deux mots-clefs ne seront presents que dans le cas des methodes
+   ou
+   l'on peut avoir frottemeent (lagrangien et penalisation). Dans ce cas, ils s'excluent
+   
+   mutuellement.
+   Dans le cas ou l'on a besoin d'orienter une poutre ET d'exclure une direction de
+   frottement, l'utilisateur pourra utiliser indifferement VECT_Y et VECT_ORIE_POU.
+   
+   Dans les methodes sans frottement (contraintes actives, verif, gcpc), il n'y
+   a que le mot-clef VECT_ORIE_POU.
+   
+   On modifie le cas-test ssnv505g pour tester VECT_ORIE_POU
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01,V6.04.505
+VALIDATION
+   ssnv505g,cas-tests avec VECT_Y
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009337 DU 2006-01-09 13:40:54
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   DYNA_NON_LINE  <"FLOATING POINT EXCEPTION">
+FONCTIONNALITE
+   On est pile sur la pointe du cone de frottement.
+   Pour decider si un non est glissant ou non, on regarde la valeur du produit force de
+   
+   glissement par "jeu" du glissement. Quand ce produit est nul, la liaison est bien
+   glissante.
+   Toutefois, on ne prevoyait pas un cas. L'evaluation du parametre de lagrange du
+   glissement
+   se fait en calculant le signe du glissement (normalisation de la force du glissement et
+   
+   donc division par la valeur absolue du glissement).
+   Lorsque le glissement est nul ET que la force d'adherence est nulle, le produit est nul
+   
+   mais on se trouve sur la pointe du cone de frottement. Dans ce cas, la valeur du
+   jeu de glissement est nul et donc division par zero.
+   On prevoit le cas en disant que si le jeu de glissement est nul mais que la force
+   d'adherence est nulle aussi (pointe du cone), alors on considere que le point est
+   adherent.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test fourni
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008036 DU 2004-08-31 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 7.3)
+TITRE
+   Contact et champ VALE_CONT
+FONCTIONNALITE
+   C'est normal.
+   Pour un materiau elastique (et non infiniment rigide), le fait
+   d'appuyer sur un cube avec un cube plus petit fait une deformee en
+   cuvette: les bords se relevent un peu moins que le milieu. Les
+   normales sont donc avec des composantes suivant Y.
+   Pour la deuxieme question, effectivement, c'est un peu bete: les
+   forces de contact et de frottement sont bien exprimees dans le repere
+   global (en multipliant par les normales ou les tangentes).
+   Par contre les glissements sont exprimes dans le repere local de
+   contact. Je suggere l'emission d'une evolution pour que les
+   glissements soient aussi exprimes dans le repere global (pour les deux
+   grandes classes de methode de contact).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   cas-test lui-meme
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 02/05/2006 - 13:26:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009309 DU 2005-12-29 12:57:22
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   CALC_FONCTION info=2
+FONCTIONNALITE
+   Le mot-cle INFO n'etait pas traite dans CALC_FONCTION et INFO_FONCTION.
+   
+   Si INFO=2, on fait un IMPR_FONCTION/IMPR_TABLE dans l'unite 6 (.mess) en fin de commande.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.04, U4.32.05
+VALIDATION
+   zzzz100a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009310 DU 2005-12-30 05:59:52
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   IMPR_FONCTION / RECU_FONCTION et SENSIBILITE
+FONCTIONNALITE
+   Le probleme n'est pas lie a la sensibilite.
+   Apres un MECA_STATIQUE, RECU_FONCTION sur un noeud donne une fonction a un seul point.
+   Le
+   fichier xmgrace produit definit xmin=xmax ce que n'aime pas xmgrace.
+   
+   Je modifie Graph.py pour gerer ce cas particulier, j'obtiens une belle courbe avec un
+   point au milieu !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009704 DU 2006-04-24 16:41:58
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Pouvoir appeler RCVALE depuis les macros
+FONCTIONNALITE
+   Dans le but d'ecrire des commandes du type POST_K1_K2_K3 en Python, on a besoin de
+   recuperer les valeurs des parametres du materiau.
+   
+   Pour cela, on a ecrit une interface C/Python vers RCVALE dans astermodule.c (que l'on
+   retrouve sous aster.rcvale) et une methode de mater_sdaster.
+   Exemple d'appel :
+   mater = DEFI_MATERIAU(...)
+   nompar = ('TEMP', 'SECH')   # juste pour montrer que l'on passe des 'tuple' ou 'list'
+   valpar = (245., 0.)
+   nomres = ['E', 'NU']
+   valres, codret = mater.RCVALE('ELAS', nompar, valpar, nomres, 'F')
+   
+   ou si le materiau ne depend de rien :
+   
+   valres, codret = mater.RCVALE('ELAS', nomres=['E', 'NU'])
+   
+   car les valeurs par defaut des arguments sont :
+   nompar = ()
+   valpar = ()
+   stop = 'F'
+   
+   Remarque : il faut nommer 'nomres' car l'ordre des arguments de la routine fortran RCVALE
+   ont ete conserves (sauf NBPAR, NBRES qui sont implicitement definis).
+   
+   Les verifications sur les arguments sont faites dans la methode (l'interface C n'en
+   faisant aucune). On verifie :
+   - que les cardinaux de nompar et valpar sont identiques,
+   - que les valeurs de nompar et nomres sont des chaines de caracteres,
+   - que les valeurs de valpar sont des reels (entiers acceptes).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U1.03.02
+VALIDATION
+   tests utilisant POST_RCCM, POST_K1_K2_K3
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009642 DU 2006-04-04 12:16:28
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Impr_Courbe et les nappes
+FONCTIONNALITE
+   L'utilisateur definit une formule a 2 parametres, puis fait un CALC_FONC_INTERP.
+   L'operateur produit bien une nappe, mais le catalogue dit que la sd_prod est une
+   fonction !
+   
+   Correction de calc_fonc_interp.capy : Quand le type en entree est une formule et que
+   NOM_PARA_FONC est fourni, c'est qu'il s'agit d'une nappe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.01
+VALIDATION
+   etude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009722 DU 2006-04-28 09:32:03
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   Recuperer les valeurs non "None" d'une colonne d'un Table
+FONCTIONNALITE
+   Pour faire - par exemple - la somme de toutes les valeurs d'une colonne d'une Table (suite
+   a EXTR_TABLE dans une macro), il faut retirer les lignes ou la colonne en question n'est
+   pas definie.
+   
+   La methode .values() d'une colonne retourne None sur ces lignes.
+   On ajoute donc une methode .no_none_values() qui retourne uniquement des valeurs
+   differentes de None.
+   
+   Pour sommer les valeurs de la colonne '_nbJours' d'une table, on peut ecrire ensuite :
+   nbj = sum(tdvp._nbJours.not_none_values())
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test elementaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR thpapa       PAPACONSTANTINOU T.    DATE 02/05/2006 - 12:46:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008840 DU 2005-07-01 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   cas test validation seisme
+FONCTIONNALITE
+   Suite aux differents echanges avec F. Voldoire, O. Nicolas
+   et G. Devesa, je propose les modifications suivantes
+   concernant le cas-test sdll109a :
+   
+   - Modification du fichier de commande sdll109a.comm :
+   suppression des 7 tests en REAC_NODA cites dans l'AL.
+   Ces tests sont en effet realises sur des noeuds
+   quelconques du maillage et donc non soumis a une charge.
+   La force de reaction obtrenue avec Code_Aster est donc
+   forcement nulle.
+   En outre, comme on ne sait plus verifier le calcul POUX
+   d'origine, on ne sait pas dire s'il y a eu erreur sur le
+   numero de noeud ou sur la quantite a tester (qui est non
+   nulle d'apres les resultats POUX).
+   On supprime donc ces tests car ils ne sont pas pertinents
+   et on ne peut pas les comparer a nouveau au calcul de
+   reference.
+   
+   - Modification de la doc V :
+   la doc V ne decrivait pas correctement le cas-test, je
+   l'ai donc modifiee en consequence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.02.109
+VALIDATION
+   SDLL109
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule         mcourtoi M.COURTOIS        4225    167     26
+ CASTEST MODIF aspic01a                      galenne E.GALENNE          195      5      4
+ CASTEST MODIF sdll109a                       thpapa T.PAPACONSTANTINOU   2056      4     19
+ CASTEST MODIF ssnv186a                      geniaut S.GENIAUT          169     24      3
+ CASTEST MODIF ssnv186b                      geniaut S.GENIAUT          195     25      3
+ CASTEST MODIF ssnv186c                      geniaut S.GENIAUT          181     24      2
+ CASTEST MODIF ssnv186d                      geniaut S.GENIAUT          168     22      3
+ CASTEST MODIF ssnv186f                      geniaut S.GENIAUT          172     19     10
+ CASTEST MODIF ssnv186g                      geniaut S.GENIAUT          180     19      6
+ CASTEST MODIF ssnv186h                      geniaut S.GENIAUT          181     21      7
+ CASTEST MODIF ssnv505g                       mabbas M.ABBAS            242      3      9
+ CASTEST MODIF wtnv131a                       granet S.GRANET           286      1      1
+ CASTEST MODIF wtnv131b                       granet S.GRANET           287      1      1
+ CASTEST MODIF yyyy117a                      jmbhh01 J.M.PROIX          679      4      3
+ CASTEST MODIF zzzz100a                     mcourtoi M.COURTOIS        1861      1      1
+ CASTEST MODIF zzzz176a                      cibhhpd L.SALMONA          165     12     15
+CATALOGU AJOUT options/error_lagr            geniaut S.GENIAUT           35     35      0
+CATALOGU MODIF options/ener_rela2            geniaut S.GENIAUT           37      5      1
+CATALOGU MODIF typelem/gener_me_x            geniaut S.GENIAUT          603      2      4
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          279      4      5
+CATALOGU MODIF typelem/gener_me_xht          geniaut S.GENIAUT          281      4      5
+CATALOGU MODIF typelem/gener_me_xt           geniaut S.GENIAUT          283      2      6
+CATALOPY MODIF commande/affe_char_meca        mabbas M.ABBAS           1026      9      7
+CATALOPY MODIF commande/affe_char_meca_f      mabbas M.ABBAS            698      8      6
+CATALOPY MODIF commande/calc_fonc_interp    mcourtoi M.COURTOIS          58     14      7
+CATALOPY MODIF entete/accas                 mcourtoi M.COURTOIS        1116    103     78
+ FORTRAN AJOUT algorith/xbasco               geniaut S.GENIAUT          163    163      0
+ FORTRAN AJOUT algorith/xmmres               geniaut S.GENIAUT          266    266      0
+ FORTRAN MODIF algeline/fluimp               cibhhpd L.SALMONA          604      3      4
+ FORTRAN MODIF algorith/diinit                boyere E.BOYERE           483      4      7
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            762      7      3
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          242      3      2
+ FORTRAN MODIF algorith/op0070               geniaut S.GENIAUT          919      3      1
+ FORTRAN MODIF algorith/pascom                boyere E.BOYERE           126     19     38
+ FORTRAN MODIF algorith/sdconx               geniaut S.GENIAUT          201     14      2
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          169      5      9
+ FORTRAN MODIF algorith/xdecov               geniaut S.GENIAUT          397      4      8
+ FORTRAN MODIF algorith/xjacff               geniaut S.GENIAUT          129      3      2
+ FORTRAN MODIF algorith/xlagsp               geniaut S.GENIAUT          232     59     21
+ FORTRAN MODIF algorith/xrell1               geniaut S.GENIAUT          191      3      3
+ FORTRAN MODIF elements/te0532               geniaut S.GENIAUT          241      3      3
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          597      3      4
+ FORTRAN MODIF elements/te0534               geniaut S.GENIAUT          460      3      3
+ FORTRAN MODIF modelisa/alfint              mcourtoi M.COURTOIS         216      3      3
+ FORTRAN MODIF modelisa/cazoco                mabbas M.ABBAS            600     17      1
+ FORTRAN MODIF modelisa/rcvale              mcourtoi M.COURTOIS         165      5      4
+ FORTRAN MODIF modelisa/xrelco               geniaut S.GENIAUT          238    116     22
+ FORTRAN MODIF postrele/op0185              mcourtoi M.COURTOIS         233      7      4
+ FORTRAN MODIF postrele/prccm3              mcourtoi M.COURTOIS          84      3      3
+ FORTRAN MODIF postrele/rc3201              mcourtoi M.COURTOIS         576      3      3
+ FORTRAN MODIF postrele/rc32ac              mcourtoi M.COURTOIS         422      3      3
+ FORTRAN MODIF postrele/rc32fs              mcourtoi M.COURTOIS         192      5      5
+ FORTRAN MODIF postrele/rc32fu              mcourtoi M.COURTOIS         244      3      3
+ FORTRAN MODIF postrele/rc32ma              mcourtoi M.COURTOIS         162      3      3
+ FORTRAN MODIF postrele/rc36ac              mcourtoi M.COURTOIS         454      3      3
+ FORTRAN MODIF postrele/rc36fs              mcourtoi M.COURTOIS         200      5      5
+ FORTRAN MODIF postrele/rc36fu              mcourtoi M.COURTOIS         232      3      3
+ FORTRAN MODIF postrele/rc36ma              mcourtoi M.COURTOIS         291      3      3
+ FORTRAN MODIF prepost/avdowh               mcourtoi M.COURTOIS         133      6      6
+ FORTRAN MODIF prepost/deltau               mcourtoi M.COURTOIS         677      7      7
+ FORTRAN MODIF prepost/dtauno               mcourtoi M.COURTOIS         685      7      7
+ FORTRAN MODIF prepost/fglema               mcourtoi M.COURTOIS         205      3      2
+ FORTRAN MODIF prepost/irmasu                cibhhpd L.SALMONA          342      7      7
+ FORTRAN MODIF prepost/rnomat               mcourtoi M.COURTOIS         291     23     23
+ FORTRAN MODIF supervis/getcon              mcourtoi M.COURTOIS         206      4      1
+ FORTRAN MODIF utilitai/op0134              mcourtoi M.COURTOIS         153      3      3
+ FORTRAN MODIF utilitai/pecapo              mcourtoi M.COURTOIS         415      3      2
+  PYTHON MODIF Macro/calc_fonction_ops      mcourtoi M.COURTOIS         333      7      2
+  PYTHON MODIF Macro/impr_fonction_ops      mcourtoi M.COURTOIS         402     29     29
+  PYTHON MODIF Macro/info_fonction_ops      mcourtoi M.COURTOIS         256      6      2
+  PYTHON MODIF Macro/macr_aspic_calc_ops     galenne E.GALENNE          805     11     10
+  PYTHON MODIF Utilitai/Graph               mcourtoi M.COURTOIS        1207     11      3
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         925     36     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3         464       464              +464
+ MODIF :   70       32720       984     524      +460
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   73       33184      1448     524      +924 

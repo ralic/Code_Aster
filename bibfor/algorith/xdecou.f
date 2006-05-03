@@ -6,7 +6,7 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,21 +59,17 @@ C
       REAL*8          A(3),B(3),C(3),LSNA,LSNB,PADIST,LONGAR,TAMPOR(3)
       REAL*8          ALPHA
       INTEGER         AR(12,2),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
-      INTEGER         IA,I,IPT,IBID,PP,PD,K,PTMAX,L
+      INTEGER         IA,I,IPT,IBID,PP,PD,K,PTMAX,L,NDIM
       CHARACTER*8     TYPMA,NOMA
-      INTEGER         IADZI,IAZK24,NDIM,ADDIM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       
-      CALL TECAEL(IADZI,IAZK24)
-      NOMA=ZK24(IAZK24)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
       
       IF (NDIM .EQ. 3) THEN
          PTMAX=11
-      ELSE
+      ELSEIF (NDIM.EQ.2) THEN
          PTMAX=3
       ENDIF
 
@@ -89,7 +85,7 @@ C     - POSITION DU PT SUR L'ARETE
             
       IF (NDIM .EQ. 2) THEN
         TYPMA='TRIA3'
-      ELSE 
+      ELSEIF (NDIM.EQ.3) THEN
         TYPMA='TETRA4'
       ENDIF
       IPT=0

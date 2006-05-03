@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -358,8 +358,8 @@ C
               IF (ENDUR) THEN
                   UG=0.D0
               ELSE
-                 CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
-     +                                   'WOHLER', NADM, CODRET, 'F ' )
+                 CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',SALTIJ,1,
+     +                       'WOHLER  ',NADM,CODRET,'F ')
          IF ( NADM .LT. 0 ) THEN
             CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
      +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')

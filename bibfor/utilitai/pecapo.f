@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,8 @@ C     INSERTION DU PARAMETRE 'RT' DANS LA TABLE 'RESU'
           IF (N1.EQ.0) THEN
             NU=0.D0
           ELSE
-            CALL RCVALE(MATER,'ELAS',0,' ',R8B,
+            K8B = ' '
+            CALL RCVALE(MATER,'ELAS',0,K8B,R8B,
      +                  1,'NU      ',NU,CODRET,'FM')
           ENDIF
         ENDIF

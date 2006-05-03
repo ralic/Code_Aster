@@ -5,7 +5,7 @@
       INTEGER           NBF,NBPOIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,9 +94,10 @@ C
 C --- RECUPERATION DE P,SIG,TEMP AUX INSTANTS TI ET TI+1
 C
 C --- RECUPERATION DE EXP_S
+        NOMPAR = '       '
         NOMRES(1) = 'EXP_S'
         CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
-     +              0,' ',RBID,1,NOMRES(1),
+     +              0,NOMPAR,RBID,1,NOMRES(1),
      +              EXPS,CODRET(1),'F ')
 C --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         NBPAR = 1

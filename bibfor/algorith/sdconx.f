@@ -3,7 +3,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,7 +89,7 @@ C     ------------------------------------------------------------------
 C          CREATION DU .CARACF
 C     ------------------------------------------------------------------
 
-      CALL WKVECT(FISS//'.CONTACT.CARACF','G V R',8,JCMCF)
+      CALL WKVECT(FISS//'.CONTACT.CARACF','G V R',9,JCMCF)
 
 C     NB DE ZONES DE CONTACT
       ZR(JCMCF-1+1)=1.D0
@@ -136,6 +136,18 @@ C     SEUIL_INIT
 
 C     COEFFICIENT DE MISE À L'ECHELLE DES TERMES DE PRESSION DE CONTACT 
       ZR(JCMCF-1+8)=COECH   
+
+C     ALGORITHME DE RESTRICTION DE L'ESPACE DES MULITPLICATEURS
+      IF (ALGOLA.EQ.'NON') THEN
+        ZR(JCMCF-1+9)=0.D0
+      ELSEIF (ALGOLA.EQ.'VERSION1') THEN
+        ZR(JCMCF-1+9)=1.D0
+      ELSEIF (ALGOLA.EQ.'VERSION2') THEN
+        ZR(JCMCF-1+9)=2.D0
+      ELSE
+        CALL UTMESS('F','SDCONX','CHOIX INCORRECT DE L'''//
+     &    'ALGORITHME DE RESTRICTION DE L''ESPACE DES MULITPLICATEURS')
+      ENDIF
 
 C     ------------------------------------------------------------------
 C          CREATION DU .ECPDON

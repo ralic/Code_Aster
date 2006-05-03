@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF Graph Utilitai  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,7 @@ class Graph:
       # pour conserver les paramètres du dernier tracé
       self.LastTraceArgs = {}
       self.LastTraceFormat = ''
-      return
+
 # ------------------------------------------------------------------------------
    def SetExtremaX(self,marge=0., x0=None, x1=None, force=True):
       """Remplit les limites du tracé (Min/Max_X) avec les valeurs de la
@@ -137,6 +137,8 @@ class Graph:
       if x1<>None:   self.BBXmax=max([self.BBXmax, x1])
 
       dx=max(self.BBXmax-self.BBXmin,0.01*self.BBXmax)
+      if dx == 0.:
+         dx = 1.e-6
       if force or self.Min_X==None:
          self.Min_X = self.BBXmin - marge*dx/2.
       if force or self.Max_X==None:
@@ -152,6 +154,8 @@ class Graph:
       if y1<>None:   self.BBYmax=max([self.BBYmax, y1])
 
       dy=max(self.BBYmax-self.BBYmin,0.01*self.BBYmax)
+      if dy == 0.:
+         dy = 1.e-6
       if force or self.Min_Y==None:
          self.Min_Y = self.BBYmin - marge*dy/2.
       if force or self.Max_Y==None:
@@ -389,7 +393,7 @@ class TraceGraph:
       
       # let's go
       self.Trace()
-      return
+
 # ------------------------------------------------------------------------------
    def __del__(self):
       """Fermeture du(des) fichier(s) à la destruction"""
@@ -866,6 +870,10 @@ class TraceXmgrace(TraceGraph):
             g.Grille_X=int(round(g.Grille_X))
          if deltaY>4:
             g.Grille_Y=int(round(g.Grille_Y))
+         if g.Grille_X == 0.:
+            g.Grille_X = 1.e-6
+         if g.Grille_Y == 0.:
+            g.Grille_Y = 1.e-6
       # entete
       content = self.Entete()
       content.append('')

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@ import Accas
 from Accas import *
 from Accas import _F
 import string
-import types
+from types import TupleType, ListType, StringType, InstanceType
 import Numeric
 from math import sin,cos,tan,asin,acos,atan2,atan,sinh,cosh,tanh,exp,log,log10
 from math import sqrt,pi
@@ -33,10 +33,12 @@ try:
 except:
   pass
 
-#
 __version__="$Name:  $"
 __Id__="$Id: cata_aster_v6.py,v 1.12 2001/01/16 15:55:05 iliade Exp $"
-#
+
+EnumTypes = (ListType, TupleType)
+
+# -----------------------------------------------------------------------------
 JdC = JDC_CATA(code='ASTER',
                execmodul=None,
                regles = (AU_MOINS_UN('DEBUT','POURSUITE'),
@@ -54,12 +56,14 @@ class reel(ASSD):
    def __call__(self):
       return self.valeur
 
+# -----------------------------------------------------------------------------
 # Type geometriques
 class no  (GEOM):pass
 class grno(GEOM):pass
 class ma  (GEOM):pass
 class grma(GEOM):pass
 
+# -----------------------------------------------------------------------------
 # Autres
 class cabl_precont    (ASSD):pass
 class cara_elem       (ASSD):pass
@@ -77,7 +81,6 @@ class fond_fiss       (ASSD):pass
 class interf_dyna_clas(ASSD):pass
 class interspfact     (ASSD):pass
 class listis_sdaster  (ASSD):pass
-class mater_sdaster   (ASSD):pass
 class melasflu_sdaster(ASSD):pass
 class nume_ddl_sdaster(ASSD):pass
 class nume_ddl_gene   (ASSD):pass
@@ -88,8 +91,8 @@ class surface_sdaster (ASSD):pass
 class tran_gene       (ASSD):pass
 class type_flui_stru  (ASSD):pass
 
+# -----------------------------------------------------------------------------
 # modeles :
-#--------------------------------
 class modele_sdaster  (ASSD):pass
 class modele_gene     (ASSD):
   def LIST_SOUS_STRUCT(self) :
@@ -113,8 +116,35 @@ class modele_gene     (ASSD):
     return [([(lidf[ind][indb]) for indb in range(4)]) for ind in lidf]
 
 
+# -----------------------------------------------------------------------------
+# materiau
+class mater_sdaster(ASSD):
+   def RCVALE(self, phenomene, nompar=(), valpar=(), nomres=(), stop='F'):
+      """Appel à la routine fortran RCVALE pour récupérer les valeurs des
+      propriétés du matériau.
+      """
+      if self.par_lot() :
+         raise Accas.AsException("Erreur dans mater.RCVALE en PAR_LOT='OUI'")
+      from Utilitai.Utmess import UTMESS
+      # vérification des arguments
+      if not nompar in EnumTypes:
+         nompar = tuple(nompar)
+      if not valpar in EnumTypes:
+         valpar = tuple(valpar)
+      if not nomres in EnumTypes:
+         nomres = tuple(nomres)
+      if len(nompar) != len(valpar):
+         UTMESS('F', 'RCVALE', """Arguments incohérents :
+      Nom des paramètres : %s
+   Valeur des paramètres : %s""" \
+         % (', '.join(nompar), ', '.join([repr(v) for v in valpar])))
+      if len(nomres) < 1:
+         UTMESS('F', 'RCVALE', 'Argument invalide : "nomres" vide !')
+      # appel à l'interface Python/C
+      return aster.rcvale(self.nom, phenomene, nompar, valpar, nomres, stop)
+
+# -----------------------------------------------------------------------------
 # macro-elements :
-#--------------------------------
 class macr_elem_dyna  (ASSD):
   def NBRE_MODES(self) :
     """ retourne le nombre de modes total, dynamiques et d'interface """
@@ -154,7 +184,7 @@ class macr_elem_dyna  (ASSD):
     print ncham
     desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
 
-# On teste si le DESC du vecteur existe
+    # On teste si le DESC du vecteur existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
        est mal cree par Code Aster")
@@ -181,7 +211,7 @@ class macr_elem_dyna  (ASSD):
       raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
-# avertissement generique
+    # avertissement generique
     UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
 
     nommacr=self.get_name()
@@ -197,18 +227,18 @@ class macr_elem_dyna  (ASSD):
     ncham=nommacr+(8-len(nommacr))*' '+ext
     desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
 
-# On teste si le DESC de la matrice jeveux existe
+    # On teste si le DESC de la matrice jeveux existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
                                 est mal cree par Code Aster")
     Numeric.asarray(matrice)
 
-# On teste si la matrice python est de dimension 2
+    # On teste si la matrice python est de dimension 2
     if (len(Numeric.shape(matrice))<>2):
        raise Accas.AsException("La dimension de la matrice \
                                 est incorrecte")
 
-# On teste si les tailles de la matrice jeveux et python sont identiques
+    # On teste si les tailles de la matrice jeveux et python sont identiques
     if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
        raise Accas.AsException("La dimension de la matrice \
                                 est incorrecte")
@@ -222,12 +252,11 @@ class macr_elem_dyna  (ASSD):
     range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
     return
 
-
 class macr_elem_stat  (ASSD):pass
 
 
+# -----------------------------------------------------------------------------
 # liste :
-#--------------------------------
 class listr8_sdaster   (ASSD):
    def Valeurs(self) :
       """
@@ -243,8 +272,8 @@ class listr8_sdaster   (ASSD):
          raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")
 
 
+# -----------------------------------------------------------------------------
 # post-traitement :
-#--------------------------------
 class post_comp_cham_el :
   def __init__(self,valeurs,maille=None,point=None,sous_point=None) :
     self.valeurs=valeurs
@@ -257,8 +286,8 @@ class post_comp_cham_no :
     self.valeurs=valeurs
     self.noeud=noeud
 
+# -----------------------------------------------------------------------------
 # maillage :
-#--------------------------------
 class maillage_sdaster(ASSD):
   def LIST_GROUP_NO(self) :
       """ retourne la liste des groupes de noeuds sous la forme :
@@ -285,23 +314,17 @@ class maillage_sdaster(ASSD):
          ngpma.append((grp.strip(),len(dic_gpma[grp]),dim))
       return ngpma
 
-
 class squelette     (maillage_sdaster):pass
 
 
-# cham_gd_sdaster (carte_sdaster,cham_no_sdaster,cham_elem_sdaster)
-#--------------------------------
-
+# -----------------------------------------------------------------------------
+# champ_gd/carte
 class cham_gd_sdaster(ASSD):pass
-
-# cham_gd_sdaster/carte_sdaster :
-#--------------------------------
 class carte_sdaster  (cham_gd_sdaster):pass
 
-# cham_gd_sdaster/cham_elem_sdaster :
-#--------------------------------
+# -----------------------------------------------------------------------------
+# cham_elem
 class cham_elem_sdaster(cham_gd_sdaster):
-
   def EXTR_COMP(self,comp,lgma,topo=0) :
       """ retourne les valeurs de la composante comp du champ sur la liste
         de groupes de mailles lgma avec eventuellement l'info de la
@@ -338,8 +361,8 @@ class cham_elem_sdaster(cham_gd_sdaster):
 
       return post_comp_cham_el(valeurs,maille,point,sous_point)
 
-# cham_gd/cham_no :
-#--------------------------------
+# -----------------------------------------------------------------------------
+# cham_no :
 class cham_no_sdaster(cham_gd_sdaster):
 
   def EXTR_COMP(self,comp,lgno,topo=0) :
@@ -372,9 +395,8 @@ class cham_no_sdaster(cham_gd_sdaster):
 
       return post_comp_cham_no(valeurs,noeud)
 
+# -----------------------------------------------------------------------------
 # resultat_sdaster : (evol_sdaster,mode_stat,mode_meca)
-#--------------------------------------
-
 class resultat_sdaster(ASSD):
   def LIST_CHAMPS (self) :
     if self.par_lot() :
@@ -393,6 +415,7 @@ class resultat_sdaster(ASSD):
       raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
     return aster.GetResu(self.get_name(), "PARAMETRES")
 
+# -----------------------------------------------------------------------------
 class acou_harmo    (resultat_sdaster):pass
 class base_modale   (resultat_sdaster):pass
 class comb_fourier  (resultat_sdaster):pass
@@ -407,8 +430,8 @@ class mode_gene     (resultat_sdaster):pass
 class mult_elas     (resultat_sdaster):pass
 class theta_geom    (resultat_sdaster):pass
 
+# -----------------------------------------------------------------------------
 # resultat_sdaster/evol_sdaster :
-#--------------------------------
 class evol_sdaster(resultat_sdaster):pass
 class evol_char(evol_sdaster):pass
 class evol_elas(evol_sdaster):pass
@@ -416,22 +439,22 @@ class evol_noli(evol_sdaster):pass
 class evol_ther(evol_sdaster):pass
 class evol_varc(evol_sdaster):pass
 
+# -----------------------------------------------------------------------------
 # resultat_sdaster/mode_stat :
-#--------------------------------
 class mode_stat(resultat_sdaster):pass
 class mode_stat_depl(mode_stat):pass
 class mode_stat_acce(mode_stat):pass
 class mode_stat_forc(mode_stat):pass
 
 
+# -----------------------------------------------------------------------------
 # resultat_sdaster/mode_meca :
-#--------------------------------
 class mode_meca(resultat_sdaster):pass
 class mode_meca_c(mode_meca):pass
 
 
+# -----------------------------------------------------------------------------
 # types 'fonction' :
-#--------------------------------
 class fonction_class(ASSD):
    def Valeurs(self):pass
    def Parametres(self):
@@ -461,9 +484,9 @@ class fonction_class(ASSD):
          'PROL_DROITE' : self.etape['PROL_DROITE'],
          'PROL_GAUCHE' : self.etape['PROL_GAUCHE'],
         }
-        if   type(dico['INTERPOL'])==types.TupleType :
+        if   type(dico['INTERPOL'])==TupleType :
                   dico['INTERPOL']=list(dico['INTERPOL'])
-        elif type(dico['INTERPOL'])==types.StringType :
+        elif type(dico['INTERPOL'])==StringType :
                   dico['INTERPOL']=[dico['INTERPOL'],]
         if len(dico['INTERPOL'])==1 :
            dico['INTERPOL']=dico['INTERPOL']*2
@@ -479,6 +502,7 @@ class fonction_class(ASSD):
       gr.AjoutCourbe(Val=self.Valeurs(),
             Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']])
       gr.Trace(FORMAT=FORMAT,**kargs)
+
 class fonction_sdaster(fonction_class):
    def convert(self,arg='real'):
       """
@@ -528,11 +552,14 @@ class fonction_sdaster(fonction_class):
    def __call__(self,val):
       ### Pour EFICAS : substitution de l'instance de classe
       ### parametre par sa valeur
-      if type(val)==types.InstanceType : val=val.valeur
+      if type(val)==InstanceType:
+         val=val.valeur
       ###
       __ff=self.convert()
       return __ff(val)
+
 class para_sensi(fonction_sdaster): pass
+
 class fonction_c(fonction_class):
    def convert(self,arg='real'):
       """
@@ -611,11 +638,12 @@ class fonction_c(fonction_class):
    def __call__(self,val):
       ### Pour EFICAS : substitution de l'instance de classe
       ### parametre par sa valeur
-      import types
-      if type(val)==types.InstanceType : val=val.valeur
+      if type(val)==InstanceType:
+         val=val.valeur
       ###
       __ff=convert(self)
       return __ff(val)
+
 class nappe_sdaster(fonction_class):
    def convert(self):
       """
@@ -704,8 +732,8 @@ class nappe_sdaster(fonction_class):
          gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']])
       gr.Trace(FORMAT=FORMAT,**kargs)
 
+# -----------------------------------------------------------------------------
 # matr_asse :
-#--------------------------------
 class matr_asse(ASSD):pass
 class matr_asse_gene(matr_asse):pass
 
@@ -721,11 +749,11 @@ class matr_asse_gene_r(matr_asse_gene):
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
     desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-# On teste si le DESC de la matrice existe
+    # On teste si le DESC de la matrice existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
                                 est mal cree par Code Aster")
-# Si le stockage est plein
+    # Si le stockage est plein
     if desc[2]==2 :
       tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
@@ -736,13 +764,13 @@ class matr_asse_gene_r(matr_asse_gene):
       valeur=(valeur+Numeric.transpose(valeur))
       for i in range(desc[1]):
         valeur[i,i]=0.5*valeur[i,i]
-# Si le stockage est diagonal
+    # Si le stockage est diagonal
     elif desc[2]==1 :
       tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
       for i in range(desc[1]):
         valeur[i,i]=tmp[i]
-# Sinon on arrete tout
+    # Sinon on arrete tout
     else:
       raise KeyError
     return valeur
@@ -755,28 +783,28 @@ class matr_asse_gene_r(matr_asse_gene):
        raise Accas.AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
-# avertissement generique
+    # avertissement generique
     UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
 
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
     desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
 
-# On teste si le DESC de la matrice existe
+    # On teste si le DESC de la matrice existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
                                 est mal cree par Code Aster")
     Numeric.asarray(matrice)
 
-# On teste si la dimension de la matrice python est 2
+    # On teste si la dimension de la matrice python est 2
     if (len(Numeric.shape(matrice))<>2) :
        raise Accas.AsException("La dimension de la matrice est incorrecte ")
 
-# On teste si les tailles des matrices jeveux et python sont identiques
+    # On teste si les tailles des matrices jeveux et python sont identiques
     if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
        raise Accas.AsException("La taille de la matrice est incorrecte ")
 
-# Si le stockage est plein
+    # Si le stockage est plein
     if desc[2]==2 :
       taille=desc[1]*desc[1]/2.0+desc[1]/2.0
       tmp=Numeric.zeros([int(taille)],Numeric.Float)
@@ -786,14 +814,14 @@ class matr_asse_gene_r(matr_asse_gene):
           tmp[k]=matrice[j-1,i]
       aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALM',len(tmp),tuple((\
       range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
-# Si le stockage est diagonal
+    # Si le stockage est diagonal
     elif desc[2]==1 :
       tmp=Numeric.zeros(desc[1],Numeric.Float)
       for j in range(desc[1]):
           tmp[j]=matrice[j,j]
       aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALM',len(tmp),tuple((\
       range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
-# Sinon on arrete tout
+    # Sinon on arrete tout
     else:
       raise KeyError
     return
@@ -814,7 +842,7 @@ class matr_asse_gene_c(matr_asse_gene):
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
        est mal cree par Code Aster ")
-# Si le stockage est plein
+    # Si le stockage est plein
     if desc[2]==2 :
       tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Complex)
@@ -825,13 +853,13 @@ class matr_asse_gene_c(matr_asse_gene):
       valeur=(valeur+Numeric.transpose(valeur))
       for i in range(desc[1]):
         valeur[i,i]=0.5*valeur[i,i]
-# Si le stockage est diagonal
+    # Si le stockage est diagonal
     elif desc[2]==1 :
       tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
       valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Complex)
       for i in range(desc[1]):
         valeur[i,i]=tmp[i]
-# Sinon on arrete tout
+    # Sinon on arrete tout
     else:
       raise KeyError
     return valeur
@@ -844,7 +872,7 @@ class matr_asse_gene_c(matr_asse_gene):
        raise Accas.AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
-# avertissement generique
+    # avertissement generique
     UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
 
     Numeric.asarray(matrice)
@@ -852,21 +880,21 @@ class matr_asse_gene_c(matr_asse_gene):
     ncham=ncham+(8-len(ncham))*' '
     desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
 
-# On teste si le DESC de la matrice existe
+    # On teste si le DESC de la matrice existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou \
        est mal cree par Code Aster")
     Numeric.asarray(matrice)
 
-# On teste si la dimension de la matrice python est 2
+    # On teste si la dimension de la matrice python est 2
     if (len(Numeric.shape(matrice))<>2) :
        raise Accas.AsException("La dimension de la matrice est incorrecte ")
 
-# On teste si la taille de la matrice jeveux et python est identique
+    # On teste si la taille de la matrice jeveux et python est identique
     if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
        raise Accas.AsException("La taille de la matrice est incorrecte ")
 
-# Si le stockage est plein
+    # Si le stockage est plein
     if desc[2]==2 :
       taille=desc[1]*desc[1]/2.0+desc[1]/2.0
       tmpr=Numeric.zeros([int(taille)],Numeric.Float)
@@ -878,7 +906,7 @@ class matr_asse_gene_c(matr_asse_gene):
           tmpc[k]=matrice[j-1,i].imag
       aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALM',len(tmpr),tuple((\
                        range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
-# Si le stockage est diagonal
+    # Si le stockage est diagonal
     elif desc[2]==1 :
       tmpr=Numeric.zeros(desc[1],Numeric.Float)
       tmpc=Numeric.zeros(desc[1],Numeric.Float)
@@ -887,12 +915,12 @@ class matr_asse_gene_c(matr_asse_gene):
           tmpc[j]=matrice[j,j].imag
       aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALM',len(tmpr),tuple((\
                        range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
-# Sinon on arrete tout
+    # Sinon on arrete tout
     else:
       raise KeyError
     return
 
-
+# -----------------------------------------------------------------------------
 class matr_asse_gd(matr_asse):pass
 class matr_asse_depl_c(matr_asse_gd):pass
 class matr_asse_depl_r(matr_asse_gd):pass
@@ -901,19 +929,16 @@ class matr_asse_pres_r(matr_asse_gd):pass
 class matr_asse_temp_c(matr_asse_gd):pass
 class matr_asse_temp_r(matr_asse_gd):pass
 
+# -----------------------------------------------------------------------------
 # matr_elem :
-#--------------------------------
 class matr_elem(ASSD):pass
 class matr_elem_depl_c(matr_elem):pass
 class matr_elem_depl_r(matr_elem):pass
 class matr_elem_pres_c(matr_elem):pass
 class matr_elem_temp_r(matr_elem):pass
 
-
-
-
+# -----------------------------------------------------------------------------
 # table :
-#--------------------------------
 class table_sdaster(ASSD):
    def __getitem__(self,key):
       from Utilitai.Utmess import UTMESS
@@ -936,6 +961,7 @@ class table_sdaster(ASSD):
          raise KeyError
       else:
          return resu[key[1]-1]
+   
    def TITRE(self):
       """Retourne le titre d'une table Aster
       (Utile pour récupérer le titre et uniquement le titre d'une table dont
@@ -988,15 +1014,17 @@ class table_sdaster(ASSD):
         lisdic.append(d)
       return Table(lisdic, lpar, ltyp, titr)
 
+# -----------------------------------------------------------------------------
 class table_jeveux(table_sdaster):
    """Classe permettant d'accéder à une table jeveux qui n'a pas d'ASSD associée,
    c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
    def __init__(self,nom_jeveux):
       self.nom=nom_jeveux
 
+# -----------------------------------------------------------------------------
 # vect_asse :
-#--------------------------------
 class vect_asse(ASSD):pass
+
 class vect_asse_gene(vect_asse):
   def EXTR_VECT_GENE_R(self) :
     """ retourne les valeurs du vecteur generalisee
@@ -1005,11 +1033,9 @@ class vect_asse_gene(vect_asse):
           - self.valeurs : Numeric.array contenant les valeurs """
     if self.par_lot():
        raise Accas.AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
-
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
     valeur=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'))
-
     return valeur
 
   def RECU_VECT_GENE_R(self,vecteur) :
@@ -1020,18 +1046,18 @@ class vect_asse_gene(vect_asse):
        raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
-# avertissement generique
+    # avertissement generique
     UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
 
     Numeric.asarray(vecteur)
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
     desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-# On teste si le DESC du vecteur existe
+    # On teste si le DESC du vecteur existe
     if (desc==None):
        raise Accas.AsException("L'objet vecteur n'existe pas ou \
        est mal cree par Code Aster")
-# On teste si la taille du vecteur jeveux et python est identique
+    # On teste si la taille du vecteur jeveux et python est identique
     if desc[1]<>Numeric.shape(vecteur)[0] :
        raise Accas.AsException("La taille du vecteur python est incorrecte")
     aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(vecteur),tuple((\
@@ -1060,18 +1086,18 @@ class vect_asse_gene(vect_asse):
        raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
     from Utilitai.Utmess import UTMESS
 
-# avertissement generique
+    # avertissement generique
     UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
 
     Numeric.asarray(vecteur)
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
     desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-# On teste si le DESC de la matrice existe
+    # On teste si le DESC de la matrice existe
     if (desc==None):
        raise Accas.AsException("L'objet vecteur n'existe pas ou \
        est mal cree par Code Aster")
-# On teste si la taille de la matrice jeveux et python est identique
+    # On teste si la taille de la matrice jeveux et python est identique
     if desc[1]<>Numeric.shape(vecteur)[0] :
        raise Accas.AsException("La taille du vecteur python est incorrecte")
     tmpr=vecteur.real
@@ -1080,9 +1106,8 @@ class vect_asse_gene(vect_asse):
     range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
     return
 
-
+# -----------------------------------------------------------------------------
 # vect_elem :
-#--------------------------------
 class vect_elem(ASSD):pass
 class vect_elem_depl_r(vect_elem):pass
 class vect_elem_pres_c(vect_elem):pass

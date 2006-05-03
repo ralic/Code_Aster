@@ -1,7 +1,7 @@
       SUBROUTINE RCVALE( NOMMAZ,PHENOM,NBPAR,NOMPAR,VALPAR,
      &                   NBRES,NOMRES,VALRES,CODRET, STOP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            NBPAR,NBRES
-      CHARACTER*(*)      PHENOM, CODRET(NBRES), STOP
-      CHARACTER*(*)      NOMMAZ, NOMPAR(NBPAR), NOMRES(NBRES)
+      CHARACTER*(*)      PHENOM, STOP
+      CHARACTER*(*)      NOMMAZ
+      CHARACTER*2        CODRET(NBRES)
+      CHARACTER*8        NOMPAR(NBPAR), NOMRES(NBRES)
       REAL*8             VALPAR(NBPAR), VALRES(NBRES)
 C ----------------------------------------------------------------------
 C     OBTENTION DE LA VALEUR VALRES D'UN "ELEMENT" D'UNE RELATION DE
@@ -70,7 +72,6 @@ C
       CHARACTER*10       NOMPHE
       CHARACTER*8        NOMMAT
       SAVE
-
 
       CALL JEMARQ()
       NOMMAT = NOMMAZ

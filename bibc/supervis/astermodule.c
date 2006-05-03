@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -164,6 +164,8 @@
 #define CALLSPSSPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(c),strlen(d))
 #define FCALLSSS(UN,LN,a,la,b,lb,c,lc)    F_FUNC(UN,LN)(a,b,c,la,lb,lc)
 #define FCALLPSSP(UN,LN,a,b,lb,c,lc,d)    F_FUNC(UN,LN)(a,b,c,d,lb,lc)
+#define DEFSSPSPPSPSS(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,li,j,lj)    STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,la,lb,ld,lg,li,lj)
+#define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                     F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g),strlen(i),strlen(j))
 
 #elif defined PPRO_NT
 #define STDCALL(UN,LN)                           __stdcall F_FUNC(UN,LN)
@@ -236,6 +238,8 @@
 #define CALLSPSSPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,strlen(a),b,c,strlen(c),d,strlen(d),e,f,g)
 #define FCALLSSS(UN,LN,a,la,b,lb,c,lc)    F_FUNC(UN,LN)(a,la,b,lb,c,lc)
 #define FCALLPSSP(UN,LN,a,b,lb,c,lc,d)    F_FUNC(UN,LN)(a,b,lb,c,lc,d)
+#define DEFSSPSPPSPSS(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,li,j,lj)    STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f,g,lg,h,i,li,j,lj)
+#define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,strlen(g),h,i,strlen(i),j,strlen(j))
 
 #endif
 
@@ -533,6 +537,7 @@ static PyObject *pile_commandes = (PyObject*)0 ;
    pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
 static char *NomCas          = "        ";
 
+/* ------------------------------------------------------------------ */
 /*
     Les exceptions levees dans le Fortran par les developpeurs
     doivent etre des objets de la classe AsterError (numero equivalent 21) ou d'une classe
@@ -582,6 +587,7 @@ void initExceptions(PyObject *dict)
         if(ArretCPUError != NULL) PyDict_SetItemString(dict, "ArretCPUError", ArretCPUError);
 }
 
+/* ------------------------------------------------------------------ */
 /*
   Subroutine appelable depuis le Fortran pour demander la levee d'une exception de type exc_type
   Une chaine de charactere (reason) ajoute un commentaire au type d'exception
@@ -642,6 +648,7 @@ static char nom_cmd[256];        /* utilise par fstr3 */
 
 
 
+/* ------------------------------------------------------------------ */
 
 void TraiteMessageErreur( _IN char * message )
 {
@@ -661,6 +668,7 @@ void TraiteMessageErreur( _IN char * message )
         }
 }
 
+/* ------------------------------------------------------------------ */
 void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message )
 {
 
@@ -700,6 +708,7 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
         longueur = 0     ;
 }
 
+/* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_OUT INTEGER *isval, _OUT INTEGER *nbval )
 {
@@ -751,6 +760,7 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 }
 
 
+/* ------------------------------------------------------------------ */
 char * fstr1( _IN char *s, _IN int l)
 {
         /*
@@ -784,6 +794,7 @@ char * fstr3( _IN char *s, _IN int l)
 
 
 
+/* ------------------------------------------------------------------ */
 void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN int lfac, _OUT INTEGER *occu)
 {
         /*
@@ -818,6 +829,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN int lfac, _OUT INTEGER *occu)
 
 
 
+/* ------------------------------------------------------------------ */
 void convc8( _IN int nval, _IN PyObject *tup, _OUT double *val)
 {
 
@@ -843,6 +855,8 @@ void convc8( _IN int nval, _IN PyObject *tup, _OUT double *val)
         }
         return ;
 }
+
+/* ------------------------------------------------------------------ */
 int conv_un_c8( _IN PyObject *tup, _OUT double *val)
 {
 
@@ -889,8 +903,7 @@ int conv_un_c8( _IN PyObject *tup, _OUT double *val)
 }
 
 
-
-
+/* ------------------------------------------------------------------ */
 void convr8( _IN int nval, _IN PyObject *tup, _OUT double *val)
 {
 
@@ -913,8 +926,7 @@ void convr8( _IN int nval, _IN PyObject *tup, _OUT double *val)
 }
 
 
-
-
+/* ------------------------------------------------------------------ */
 void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val)
 {
 
@@ -937,9 +949,7 @@ void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val)
 }
 
 
-
-
-
+/* ------------------------------------------------------------------ */
 void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
 {
         /*
@@ -988,8 +998,7 @@ void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
 }
 
 
-
-
+/* ------------------------------------------------------------------ */
 void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
 {
         /*
@@ -1031,6 +1040,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
 }
 
 
+/* ------------------------------------------------------------------ */
 void STDCALL(GETRAN,getran)(_OUT double *rval)
 {
         /*
@@ -1066,7 +1076,7 @@ void STDCALL(GETRAN,getran)(_OUT double *rval)
 }
 
 
-
+/* ------------------------------------------------------------------ */
 void DEFP(INIRAN,iniran,_IN INTEGER *jump)
 {
         /*
@@ -1086,7 +1096,7 @@ void DEFP(INIRAN,iniran,_IN INTEGER *jump)
 }
 
 
-
+/* ------------------------------------------------------------------ */
 void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN int lnom, _OUT char *typobj, _IN int ltyp)
 {
         /*
@@ -1137,6 +1147,8 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN int lnom, _OUT char *typobj, _IN 
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN int lcle)
 {
 
@@ -1180,6 +1192,8 @@ void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN int lcle)
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN int lfac,_IN INTEGER *iocc,_IN INTEGER *nbval,
                             _OUT char *motcle,_IN int lcle,_OUT char *type,_IN int ltyp, _OUT INTEGER *nbarg)
 {
@@ -1272,6 +1286,8 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN int lfac,_IN INTEGER *iocc,_IN
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 FORTRAN_LOGICAL DEFSS( GETEXM ,getexm, _IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle)
 {
         /*
@@ -1308,6 +1324,7 @@ FORTRAN_LOGICAL DEFSS( GETEXM ,getexm, _IN char *motfac,_IN int lfac,_IN char *m
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN int lres, _OUT char *concep, _IN int lconc, _OUT char *nomcmd, _IN int lcmd)
 {
         /*
@@ -1368,6 +1385,8 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN int lres, _OUT char *concep,
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval)
 {
@@ -1448,6 +1467,8 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval)
 {
@@ -1527,6 +1548,8 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN char *param,_IN int lpara,_IN double *val,
                      _OUT double *resu)
 {
@@ -1572,6 +1595,7 @@ void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN 
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT INTEGER *val,_OUT INTEGER *nbval )
 {
@@ -1652,6 +1676,7 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFPS(GETVLI,getvli,_OUT INTEGER *unite , _OUT char *cas , _IN int lcas )
 {
         /*
@@ -1667,6 +1692,8 @@ void DEFPS(GETVLI,getvli,_OUT INTEGER *unite , _OUT char *cas , _IN int lcas )
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT INTEGER *val,_OUT INTEGER *nbval )
 {
@@ -1745,6 +1772,8 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
 {
@@ -1838,6 +1867,8 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         return ;
 }
 
+
+/* ------------------------------------------------------------------ */
 void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
 {
@@ -1925,6 +1956,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
 {
         /*
@@ -1953,6 +1985,8 @@ void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
         _FIN("smcdel_")
 }
 
+
+/* ------------------------------------------------------------------ */
 long FindLength( _IN char *chaineFortran , _IN INTEGER longueur )
 {
         /*
@@ -1971,6 +2005,8 @@ long FindLength( _IN char *chaineFortran , _IN INTEGER longueur )
         return k+1 ;
 }
 
+
+/* ------------------------------------------------------------------ */
 PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval)
 {
    /*
@@ -2012,6 +2048,7 @@ PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval)
    }
 }
 
+/* ------------------------------------------------------------------ */
 PyObject * MakeListString( long nbval,char *kval,int lkval )
 {
    /*
@@ -2039,6 +2076,7 @@ PyObject * MakeListString( long nbval,char *kval,int lkval )
 }
 
 
+/* ------------------------------------------------------------------ */
 PyObject * MakeTupleInt(long nbval,long* kval)
 {
    /*
@@ -2066,6 +2104,7 @@ PyObject * MakeTupleInt(long nbval,long* kval)
    }
 }
 
+/* ------------------------------------------------------------------ */
 PyObject * MakeListInt(long nbval,long* kval)
 {
    /*
@@ -2090,6 +2129,7 @@ PyObject * MakeListInt(long nbval,long* kval)
 
 
 
+/* ------------------------------------------------------------------ */
 PyObject * MakeTupleFloat(long nbval,double * kval)
 {
    /*
@@ -2117,6 +2157,7 @@ PyObject * MakeTupleFloat(long nbval,double * kval)
    }
 }
 
+/* ------------------------------------------------------------------ */
 PyObject * MakeListFloat(long nbval,double * kval)
 {
    /*
@@ -2140,7 +2181,7 @@ PyObject * MakeListFloat(long nbval,double * kval)
 }
 
 
-
+/* ------------------------------------------------------------------ */
 void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
 {
    /*
@@ -2170,7 +2211,7 @@ void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
 }
 
 
-
+/* ------------------------------------------------------------------ */
 void DEFSSP(GCUCON,gcucon, char *resul, int lresul, char *concep, int lconcep, INTEGER *ier)
 {
    /*
@@ -2204,6 +2245,7 @@ void DEFSSP(GCUCON,gcucon, char *resul, int lresul, char *concep, int lconcep, I
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFPSP(GCUCDT,gcucdt,INTEGER *icmd,char *resul,int lresul,INTEGER *ier)
 {
         /*
@@ -2247,6 +2289,7 @@ void DEFPSP(GCUCDT,gcucdt,INTEGER *icmd,char *resul,int lresul,INTEGER *ier)
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFSSPPP(GETTVC,gettvc,char * nom,int lnom,char *ctyp,int lctyp,INTEGER *ival,double *rval,INTEGER *ier)
 {
         /*
@@ -2297,6 +2340,7 @@ void DEFSSPPP(GETTVC,gettvc,char * nom,int lnom,char *ctyp,int lctyp,INTEGER *iv
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFPPP(GCECDU,gcecdu,INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
 {
         /*
@@ -2327,6 +2371,7 @@ void DEFPPP(GCECDU,gcecdu,INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
 
 
 
+/* ------------------------------------------------------------------ */
 void gcncon2_(char *type,char *resul,int ltype,int lresul)
 {
 /* CCAR : cette fonction devrait s appeler gcncon mais elle est utilisee par
@@ -2353,6 +2398,7 @@ void gcncon2_(char *type,char *resul,int ltype,int lresul)
         MYABORT("Cette procedure n est pas implementee");
 }
 
+/* ------------------------------------------------------------------ */
 /*
  * Pour conserver le lien entre le code de calcul en Fortran et le superviseur
  * en Python, on memorise la commande courante.
@@ -2383,6 +2429,7 @@ static PyObject * empile(PyObject *c)
         return c;
 }
 
+/* ------------------------------------------------------------------ */
 static PyObject * depile()
 {
         PyObject * com;
@@ -2420,6 +2467,7 @@ static PyObject * depile()
         return com;
 }
 
+/* ------------------------------------------------------------------ */
 PyObject * get_active_command()
 {
         /*
@@ -2428,7 +2476,8 @@ PyObject * get_active_command()
    return commande;
 }
 
-/* -------------------- appels aux routines JEVEUX -------------------- */
+/* ------------------------------------------------------------------ */
+/* -------------------- appels aux routines JEVEUX ------------------ */
 #define CALL_JEMARQ() STDCALL(JEMARQ, jemarq)()
 void CALL_JEMARQ();
 
@@ -2437,7 +2486,7 @@ void CALL_JEDEMA();
 
 #define CALL_JEDETR(nom) CALLS(JEDETR, jedetr, nom)
 void DEFS(JEDETR, jedetr, char *, int);
-/* -------------------------------------------------------------------- */
+/* ------------------------------------------------------------------ */
 
 #define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
 void DEFSSSSPPS(PRCOCH,prcoch,char *,int,char *,int,char *,int,char *,int,INTEGER *,INTEGER *,char *,int);
@@ -2504,6 +2553,7 @@ PyObject *args;
         }
 }
 
+/* ------------------------------------------------------------------ */
 #define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
 void DEFSPPPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
 
@@ -2655,6 +2705,7 @@ static char getcolljev_doc[]=
 Retourne la valeur du concept nomsd \n\
 dans un tuple.";
 
+/* ------------------------------------------------------------------ */
 static PyObject* aster_getcolljev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2818,6 +2869,7 @@ static char putvectjev_doc[]=
 Renvoie le contenu d'un objet python dans  \n\
 un vecteur jeveux.";
 
+/* ------------------------------------------------------------------ */
 static PyObject* aster_putvectjev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2894,6 +2946,7 @@ static char putcolljev_doc[]=
 Renvoie le contenu d'un objet python dans  \n\
 un vecteur jeveux.";
 
+/* ------------------------------------------------------------------ */
 static PyObject* aster_putcolljev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2959,6 +3012,7 @@ PyObject *args;
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFSPSPPPS(RSACCH,rsacch,char *, int, INTEGER *, char *,int,INTEGER *, INTEGER *, INTEGER *, char *,int);
 void DEFSPSSPPP(RSACVA,rsacva,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
 void DEFSPSSPPP(RSACPA,rsacpa,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
@@ -2972,6 +3026,7 @@ void DEFSPSSPPP(RSACPA,rsacpa,char *, int,INTEGER *, char *,int,char *,int,INTEG
 
 
 
+/* ------------------------------------------------------------------ */
 static PyObject* aster_GetResu(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3141,6 +3196,7 @@ PyObject *args;
 }
 
 
+/* ------------------------------------------------------------------ */
 #define CALL_EXPASS(a,b,c,d)  F_FUNC(EXPASS,expass)(a,b,c,d)
 extern void STDCALL(EXPASS,expass)(INTEGER* , INTEGER* , INTEGER* , INTEGER*);
 
@@ -3196,6 +3252,7 @@ PyObject *args;
         }
 }
 
+/* ------------------------------------------------------------------ */
 #define CALL_OPSEXE(a,b,c,d,e)  CALLPPPSP(OPSEXE,opsexe,a,b,c,d,e)
 extern void DEFPPPSP(OPSEXE,opsexe,INTEGER* , INTEGER* , INTEGER* , char *,int ,INTEGER* ) ;
 
@@ -3252,6 +3309,7 @@ PyObject *args;
 }
 
 
+/* ------------------------------------------------------------------ */
 extern void STDCALL(IMPERS,impers)();
 #define CALL_IMPERS() F_FUNC(IMPERS,impers)()
 
@@ -3266,6 +3324,7 @@ PyObject *self; /* Not used */
         return Py_None;
 }
 
+/* ------------------------------------------------------------------ */
 void DEFSS(AFFICH,affich,char *,int,char *,int);
 #define CALL_AFFICH(a,b) CALLSS(AFFICH,affich,a,b)
 
@@ -3288,6 +3347,7 @@ PyObject *args;
         return Py_None;
 }
 
+/* ------------------------------------------------------------------ */
 void DEFSSP(ONERRF,onerrf,char *,int, _OUT char *,int, _OUT INTEGER *);
 #define CALL_ONERRF(a,b,c) CALLSSP(ONERRF,onerrf,a,b,c)
 
@@ -3333,6 +3393,7 @@ PyObject *args;
       }
 }
 
+/* ------------------------------------------------------------------ */
 void DEFSSSSP(ULOPEN,ulopen,char *,int,char *,int,char *,int,char *,int,INTEGER *);
 #define CALL_ULOPEN(a,b,c,d,e) CALLSSSSP(ULOPEN,ulopen,a,b,c,d,e)
 
@@ -3361,6 +3422,7 @@ PyObject *args;
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFP(FCLOSE,fclose,INTEGER *);
 #define CALL_FCLOSE(a) CALLP(FCLOSE,fclose,a)
 
@@ -3381,6 +3443,7 @@ PyObject *args;
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFPPS(REPOUT,repout,INTEGER *,INTEGER *,char *,int);
 #define CALL_REPOUT(a,b,c) CALLPPS(REPOUT,repout,a,b,c)
 
@@ -3409,6 +3472,7 @@ PyObject *args;
         return temp;
 }
 
+/* ------------------------------------------------------------------ */
 void DEFPPS(REPDEX,repdex,INTEGER *,INTEGER *,char *,int);
 #define CALL_REPDEX(a,b,c) CALLPPS(REPDEX,repdex,a,b,c)
 
@@ -3437,7 +3501,80 @@ PyObject *args;
         return temp;
 }
 
+/* ---------------------------------------------------------------------- */
+void DEFSSPSPPSPSS(RCVALE, rcvale, char *,int, char *,int, INTEGER *, char *,int, double *, INTEGER *, char *,int, double *, char *, int, char *, int);
+#define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPSS(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
 
+static char rcvale_doc[] =
+"Interface d'appel à la routine fortran RCVALE.\n"
+"   Arguments : nommat, phenomene, nompar, valpar, nomres, stop\n"
+"   Retourne  : valres, codret (tuples)\n"
+" Aucune vérification n'est faite sur les arguments d'entrée (c'est l'appelant,\n"
+" a priori mater_sdaster.rcvale, qui le fait)";
+
+static PyObject * aster_rcvale(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+   char *nommat, *phenom;
+   char *stop;
+   PyObject *t_nompar, *t_valpar, *t_nomres;
+   PyObject *t_valres, *t_codret;
+   PyObject *t_res;
+   int i;
+   INTEGER nbpar, nbres;
+   char *nompar, *nomres, *codret;
+   double *valpar, *valres;
+   int long_nompar = 8;       /* doivent impérativement correspondre aux  */
+   int long_nomres = 8;       /* longueurs des chaines de caractères      */
+   int long_codret = 2;       /* déclarées dans la routine fortran RCVALE */
+   
+   _DEBUT(aster_rcvale)
+   
+   if (!PyArg_ParseTuple(args, "ssOOOs", &nommat, &phenom, \
+                  &t_nompar, &t_valpar, &t_nomres, &stop)) return NULL;
+      
+   /* Conversion en tableaux de chaines et réels */
+   nbpar = PyTuple_Size(t_nompar);
+   nompar = (char *)malloc(long_nompar*nbpar*sizeof(char));
+   convertxt(nbpar, t_nompar, nompar, long_nompar);
+   
+   valpar = (double *)malloc(nbpar*sizeof(double));
+   convr8(nbpar, t_valpar, valpar);
+   
+   nbres = PyTuple_Size(t_nomres);
+   nomres = (char *)malloc(long_nomres*nbres*sizeof(char));
+   convertxt(nbres, t_nomres, nomres, long_nomres);
+   
+   /* allocation des variables de sortie */
+   valres = (double *)malloc(nbres*sizeof(double));
+   codret = (char *)malloc(long_codret*nbres*sizeof(char));
+   
+   CALL_RCVALE(nommat, phenom, &nbpar, nompar, valpar, &nbres, nomres, valres, codret, stop);
+   
+   /* création des tuples de sortie */
+   t_valres = MakeTupleFloat(nbres, valres);
+   t_codret = MakeTupleString(nbres, codret, long_codret, NULL);
+   
+   /* retour de la fonction */
+   t_res = PyTuple_New(2);
+   PyTuple_SetItem(t_res, 0, t_valres);
+   PyTuple_SetItem(t_res, 1, t_codret);
+   
+   _FIN(aster_rcvale)
+   free(nompar);
+   free(valpar);
+   free(valres);
+   free(codret);
+   
+   Py_DECREF(t_nompar);
+   Py_DECREF(t_valpar);
+   Py_DECREF(t_nomres);
+   return t_res;
+}
+
+
+/* ---------------------------------------------------------------------- */
 void DEFSPSP(MDNOMA,mdnoma,char *,int,INTEGER *,char *,int,INTEGER *);
 #define CALL_MDNOMA(a,b,c,d) CALLSPSP(MDNOMA,mdnoma,a,b,c,d)
 
@@ -3470,6 +3607,7 @@ PyObject *args;
         return temp;
 }
 
+/* ------------------------------------------------------------------ */
 void DEFSPPSSSP(MDNOCH,mdnoch,char *,int,INTEGER *,INTEGER *,char *,int,char *,int,char *,int,INTEGER *);
 #define CALL_MDNOCH(a,b,c,d,e,f,g) CALLSPPSSSP(MDNOCH,mdnoch,a,b,c,d,e,f,g)
 
@@ -3509,6 +3647,7 @@ PyObject *args;
 }
 
 
+/* ------------------------------------------------------------------ */
 void TraitementFinAster( _IN int val )
 {
         _DEBUT("TraitementFinAster") ;
@@ -3557,6 +3696,7 @@ void TraitementFinAster( _IN int val )
         return ;
 }
 
+/* ------------------------------------------------------------------ */
 #define CALL_GETLTX(a,b,c,d,e,f,g) CALLSSPPPPP(GETLTX,getltx,a,b,c,d,e,f,g)
 #define CALL_GETVTX(a,b,c,d,e,f,g) CALLSSPPPSP(GETVTX,getvtx,a,b,c,d,e,f,g)
 
@@ -3597,6 +3737,7 @@ int RecupNomCas(void)
                 return 0;
 }
 
+/* ------------------------------------------------------------------ */
 void DEFPPPP(POURSU,poursu,INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
 void DEFS(GCCPTS,gccpts,char *, int );
 
@@ -3687,6 +3828,7 @@ PyObject *args;
         }
 }
 
+/* ------------------------------------------------------------------ */
 #define CALL_DEBUT(a,b,c)  F_FUNC(DEBUT,debut)(a,b,c)
 extern void STDCALL(DEBUT,debut)(INTEGER* , INTEGER* , INTEGER* );
 
@@ -3751,6 +3893,7 @@ PyObject *args;
         }
 }
 
+/* ------------------------------------------------------------------ */
 #define CALL_IBMAIN(a,b,c)  F_FUNC(IBMAIN,ibmain)(a,b,c)
 extern void STDCALL(IBMAIN,ibmain)(INTEGER* , INTEGER* , INTEGER* );
 
@@ -3776,9 +3919,7 @@ PyObject *args;
 }
 
 
-
-
-
+/* ------------------------------------------------------------------ */
 static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 {
 
@@ -3852,6 +3993,7 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 }
 
 
+/* ------------------------------------------------------------------ */
 /* List of functions defined in the module */
 
 static PyMethodDef aster_methods[] = {
@@ -3869,6 +4011,7 @@ static PyMethodDef aster_methods[] = {
                 {"repdex",       aster_repdex,       METH_VARARGS},
                 {"mdnoma",       aster_mdnoma,       METH_VARARGS},
                 {"mdnoch",       aster_mdnoch,       METH_VARARGS},
+                {"rcvale",       aster_rcvale,       METH_VARARGS, rcvale_doc},
                 {"argv",         aster_argv,         METH_VARARGS},
                 {"prepcompcham", aster_prepcompcham, METH_VARARGS},
                 {"getvectjev",   aster_getvectjev,   METH_VARARGS, getvectjev_doc},
@@ -3880,6 +4023,7 @@ static PyMethodDef aster_methods[] = {
 };
 
 
+/* ------------------------------------------------------------------ */
 #define CALL_VERSIO(a,b,c,d,e) CALLPPPSP(VERSIO,versio,a,b,c,d,e)
 
 void initvers(PyObject *dict)
@@ -3928,8 +4072,7 @@ initaster()
 
 
 
-
-
+/* ------------------------------------------------------------------ */
 void AfficheChaineFortran( _IN char *chaine , _IN int longueur )
 {
         /* Traitement des chaines fortran : pour le deboguage uniquement*/
@@ -3987,6 +4130,7 @@ int EstPret( _IN char *chaine , _IN int longueur )
 }
 
 
+/* ------------------------------------------------------------------ */
 void AjoutChaineA( _INOUT char **base , _IN char *supplement )
 {
 
@@ -4042,11 +4186,7 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
 }
 
 
-
-
-
-
-
+/* ------------------------------------------------------------------ */
 const char *aster_ident()
 {
         const char *identCVS = "$Id: astermodule.c,v 1.59.12.1.2.1 2001/05/16 16:14:54 iliade Exp $ $Name:  $" ;
@@ -4054,6 +4194,7 @@ const char *aster_ident()
 }
 
 
+/* ------------------------------------------------------------------ */
 void DEFP(GETCMC,getcmc,INTEGER *icmc)
 {
         /*

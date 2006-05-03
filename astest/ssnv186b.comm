@@ -1,4 +1,4 @@
-# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,8 +121,11 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
-                             NOM_CMP=('LAGS_C',),
+                             NOM_CMP=('LAGS_C','LAGS_F1','LAGS_F2',),
                              OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=LAG,);
+
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
 LAREF=-9.52844E-05
@@ -167,7 +170,26 @@ TEST_TABLE(TABLE=LAG,
                   ),
            VALE=LA8216,
            CRITERE='RELATIF',
-           PRECISION=1.E-3,
+           PRECISION=1.E-10,
            REFERENCE='NON_REGRESSION',VERSION='8.2.16');
 
+# TEST DE NON-REGRESSION PAR RAPPORT A LA VERSION 8.2.18
+LA2REF=-3.9336395589177E-01
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_F2',            
+           FILTRE=(_F(NOM_PARA='COOR_X',
+                      CRIT_COMP='EQ',
+                      VALE=0.,),
+                   _F(NOM_PARA='COOR_Y',
+                      CRIT_COMP='EQ',
+                      VALE=10.,),
+                   _F(NOM_PARA='COOR_Z',
+                     CRIT_COMP='EQ',
+                     VALE=17.5,),
+                  ),
+           VALE=LA2REF,
+           CRITERE='RELATIF',
+           PRECISION=1.E-10,
+           REFERENCE='NON_REGRESSION',VERSION='8.2.18');
 FIN();

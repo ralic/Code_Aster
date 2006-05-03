@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,18 +62,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8          PADIST,P(3),XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS
       INTEGER         JPTINT,JAINT,JCOSE,JHEAV
-      INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE
+      INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE,NDIM,IBID
       INTEGER         A1,A2,A3,A4,A,B,C
       CHARACTER*8     TYPMA,NOMA
-      INTEGER         IADZI,IAZK24,NDIM,ADDIM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
-      CALL TECAEL(IADZI,IAZK24)
-      NOMA=ZK24(IAZK24)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
+      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 
       IF (NDIM.EQ.3) THEN
         NSEMAX=6
@@ -103,60 +99,60 @@ C     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
 C                  ALGO BOOK III (26/04/04)
 C-----------------------------------------------------------------------
 
-
       IF (NDIM .EQ. 2) THEN
-       IF (NINTER .LT. 2) THEN
-        IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
-C     1 SEUL ELEMENT
-       NSE=1
-        DO 90 IN=1,3
-            CNSE(1,IN)=CONNEC(IT,IN)
- 90     CONTINUE
-       ELSEIF (NINTER .EQ. 2) THEN
-        A1=NINT(ZR(JAINT-1+4*(1-1)+1))
-        A2=NINT(ZR(JAINT-1+4*(2-1)+1)) 
-        IF (NPTS .EQ. 2) THEN
-C     1 SEUL ELEMENT
+
+        IF (NINTER .LT. 2) THEN
+         IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
+C         1 SEUL ELEMENT
         NSE=1
-        DO 91 IN=1,3
-            CNSE(1,IN)=CONNEC(IT,IN)
- 91     CONTINUE
-        ELSEIF (NPTS .EQ. 1) THEN
-C     2 ELEMENTS
-        NSE=2
-        CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
-C       101 et 102 les 2 points d'intersection
-          CNSE(1,1)=101
-          CNSE(1,2)=102
-          CNSE(1,3)=CONNEC(IT,AR(A2,1))
-          CNSE(2,1)=101
-          CNSE(2,2)=102
-          CNSE(2,3)=CONNEC(IT,AR(A2,2))         
-        ELSE
-C     3 ELEMENTS
-        NSE=3
-        CALL ASSERT(A1.NE.0)
-C       101 et 102 les 2 points d'intersection
-C         ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
-          DO 93 I=1,2
-            DO 94 J=1,2
-              IF (AR(A1,I).EQ.AR(A2,J)) THEN
-                 A=AR(A1,I)
-                 B=AR(A1,3-I)
-                 C=AR(A2,3-J)
-              ENDIF
- 94         CONTINUE
- 93       CONTINUE
-          CNSE(1,1)=101
-          CNSE(1,2)=102
-          CNSE(1,3)=CONNEC(IT,A)
-          CNSE(2,1)=101
-          CNSE(2,2)=102
-          CNSE(2,3)=CONNEC(IT,C)
-          CNSE(3,1)=101
-          CNSE(3,2)=CONNEC(IT,B)
-          CNSE(3,3)=CONNEC(IT,C)
-        ENDIF
+         DO 90 IN=1,3
+             CNSE(1,IN)=CONNEC(IT,IN)
+ 90      CONTINUE
+        ELSEIF (NINTER .EQ. 2) THEN
+         A1=NINT(ZR(JAINT-1+4*(1-1)+1))
+         A2=NINT(ZR(JAINT-1+4*(2-1)+1)) 
+         IF (NPTS .EQ. 2) THEN
+C      1 SEUL ELEMENT
+         NSE=1
+         DO 91 IN=1,3
+             CNSE(1,IN)=CONNEC(IT,IN)
+ 91      CONTINUE
+         ELSEIF (NPTS .EQ. 1) THEN
+C      2 ELEMENTS
+         NSE=2
+         CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
+C        101 et 102 les 2 points d'intersection
+           CNSE(1,1)=101
+           CNSE(1,2)=102
+           CNSE(1,3)=CONNEC(IT,AR(A2,1))
+           CNSE(2,1)=101
+           CNSE(2,2)=102
+           CNSE(2,3)=CONNEC(IT,AR(A2,2))
+         ELSE
+C      3 ELEMENTS
+         NSE=3
+         CALL ASSERT(A1.NE.0)
+C        101 et 102 les 2 points d'intersection
+C          ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
+           DO 93 I=1,2
+             DO 94 J=1,2
+               IF (AR(A1,I).EQ.AR(A2,J)) THEN
+                  A=AR(A1,I)
+                  B=AR(A1,3-I)
+                  C=AR(A2,3-J)
+               ENDIF
+ 94          CONTINUE
+ 93        CONTINUE
+           CNSE(1,1)=101
+           CNSE(1,2)=102
+           CNSE(1,3)=CONNEC(IT,A)
+           CNSE(2,1)=101
+           CNSE(2,2)=102
+           CNSE(2,3)=CONNEC(IT,C)
+           CNSE(3,1)=101
+           CNSE(3,2)=CONNEC(IT,B)
+           CNSE(3,3)=CONNEC(IT,C)
+         ENDIF
        ELSE
         CALL UTMESS('F','XDECOV','TROP DE POINTS D INTERSECTION')
        ENDIF

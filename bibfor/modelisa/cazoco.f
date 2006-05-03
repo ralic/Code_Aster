@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCO(CHAR,MOTFAC,NOMA,NOMO,NDIM,IREAD,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 03/05/2006   AUTEUR MABBAS M.ABBAS 
 C RESPONSABLE MABBAS M.ABBAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -385,10 +385,26 @@ C
      &                 )
           ELSE
             ZI(JMETH+ZMETH*(IWRITE-1)+2) = 1
-            ZR(JTGDEF+(IWRITE-1)*3) = DIR(1)
+            ZR(JTGDEF+(IWRITE-1)*3)   = DIR(1)
             ZR(JTGDEF+(IWRITE-1)*3+1) = DIR(2)
             ZR(JTGDEF+(IWRITE-1)*3+2) = DIR(3)
           END IF
+        END IF
+      END IF
+C 
+C --- MOT-CLE VECT_ORIE_POU
+C       
+      CALL GETVR8(MOTFAC,'VECT_ORIE_POU',IREAD,1,3,DIR,NOC)
+      IF (NOC .NE. 0) THEN
+        IF (NDIM .EQ. 2) THEN
+          CALL UTMESS('A','CAZOCO',
+     &       'LA COMMANDE VECT_ORIE_POUT'//' N''INTERVIENT PAS EN 2D.'
+     &               )
+        ELSE
+          ZI(JMETH+ZMETH*(IWRITE-1)+2) = 1
+          ZR(JTGDEF+(IWRITE-1)*3)   = DIR(1)
+          ZR(JTGDEF+(IWRITE-1)*3+1) = DIR(2)
+          ZR(JTGDEF+(IWRITE-1)*3+2) = DIR(3)
         END IF
       END IF
 C 

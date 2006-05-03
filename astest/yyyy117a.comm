@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 02/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE  SUIVI PERFORMANCE : FLUAGE SAS FLAMANVILLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,8 @@ MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
 SECH=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                      MAILLAGE=MAIL,AFFE=(
               _F( TOUT = 'OUI',  NOM_CMP = 'TEMP',  VALE = 0.),
-              _F( GROUP_NO = ('BETON','SURFCL',),
+           #   _F( GROUP_NO = ('BETON','SURFCL',),
+              _F( GROUP_NO = ('BETON','SURFCL','CPTOT',),
                     NOM_CMP = 'TEMP',
                     VALE = 1.))
                        )
@@ -176,7 +177,7 @@ ACIER=DEFI_MATERIAU(    ELAS=_F( E = 192000.E+06,
                       )
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,AFFE=(
-                         _F( GROUP_MA = ('BETON',),
+                         _F( GROUP_MA = ('BETON','CPTOT'),
                                MATER = BETON,
                                SECH_REF = 1.),
                          _F( GROUP_MA = ('COCSAS','COCINT','COLLER1',

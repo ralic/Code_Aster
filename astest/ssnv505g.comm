@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 03/05/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,11 +103,8 @@ CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
                               METHODE='LAGRANGIEN',
                                   DIST_MAIT=31.75,
                                   DIST_ESCL=31.75,
-                                  FROTTEMENT='COULOMB',
-                                  COEF_MATR_FROT=1.,
-                                  VECT_Y=(0.,0.,1.,),
+                                  VECT_ORIE_POU=(0.,0.,1.,),
                                   REAC_GEOM='AUTOMATIQUE',
-                                  COULOMB=0.,
                               
                               ),);
 
@@ -119,11 +116,8 @@ CHPOU=AFFE_CHAR_MECA(MODELE=MODE, INFO=2,
                                   DIST_MAIT=31.75,
                                   DIST_POUTRE='OUI', 
                                   CARA_ELEM=DEFI_R, 
-                                  FROTTEMENT='COULOMB',
-                                  COEF_MATR_FROT=1.,
-                                  VECT_Y=(0.,0.,1.,),
+                                  VECT_ORIE_POU=(0.,0.,1.,),
                                   REAC_GEOM='AUTOMATIQUE',
-                                  COULOMB=0.,
                               
                               ),);
 

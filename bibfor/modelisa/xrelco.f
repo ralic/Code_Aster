@@ -1,7 +1,7 @@
       SUBROUTINE XRELCO(FISS,MOD,MA,LISREL,NREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,44 +58,94 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
-      REAL*8      RBID,BETAR,COEFR(3)
-      INTEGER     IER,JLIS1,NDIM(3),NEQ,I,NRL,JLIS2,JLIS3,K
-      INTEGER     NUNO(3)
-      CHARACTER*8 NOEUD(3),K8BID,DDL(3),DDLC(3)
+      REAL*8      RBID,BETAR,COEFR(6),DDOT,TAUA(3,2),TAUB(3,2),TAUC(3,2)
+      INTEGER     IER,JLIS1,NDIM(6),NEQ,I,NRL,JLIS2,JLIS3,K,ADDIM
+      INTEGER     NUNO(6),DIM,JCNSD,JCNSV,JCNSL,IAD,J
+      CHARACTER*8 NOEUD(6),K8BID,DDL(6),DDLC(3)
+      CHARACTER*19 CHS
       COMPLEX*16  CBID
       DATA        BETAR/0.D0/
       DATA        DDLC/'LAGS_C','LAGS_F1','LAGS_F2'/
 C-------------------------------------------------------------
 
-
-
       CALL JEMARQ()
+
+C     RECUPERATION DE LA DIMENSION DU PROBLEME
+      CALL JEVEUO(MA//'.DIME','L',ADDIM)
+      DIM=ZI(ADDIM-1+6)
+
+C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS DE CONTACT
+      CHS = '&&XRELCO.BASCO'
+
+C      CALL IMPRSD('CHAMP',FISS//'.BASCO',6,'FISS.BASCO')
+
+C     INITIALISATION
+      DO 5 I=1,6
+        NDIM(I)=0
+ 5    CONTINUE
 
 C     1) RELATIONS D'EGALITE     
 C        ----------------------
 
       CALL JEEXIN(FISS//'.CONTACT.LISEQ',IER)
+
       IF (IER.EQ.0) GO TO 100
 
       CALL JEVEUO(FISS//'.CONTACT.LISEQ','L',JLIS1)
       CALL JELIRA(FISS//'.CONTACT.LISEQ','LONMAX',NEQ,K8BID)
 
       DO 10 I = 1,NEQ/2
+
         NUNO(1) = ZI(JLIS1-1+2*(I-1)+1)
         NUNO(2) = ZI(JLIS1-1+2*(I-1)+2)
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(1)),NOEUD(1))
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(2)),NOEUD(2))
         COEFR(1) = 1.D0
         COEFR(2) = -1.D0
-        NDIM(1) = 0
-        NDIM(2) = 0
-        DO 20 K=1,1
-          DDL(1) = DDLC(K)
-          DDL(2) = DDLC(K)
-          CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIM,RBID,2,BETAR,CBID,
-     &                K8BID,'REEL','REEL','12',0.D0,LISREL)
-          NREL = NREL + 1
+
+C       RELATION POUR LES MULTIPLICATEURS DE CONTACT ('LAGS_C')
+        DDL(1) = DDLC(1)
+        DDL(2) = DDLC(1)
+        CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIM,RBID,2,BETAR,CBID,
+     &              K8BID,'REEL','REEL','12',0.D0,LISREL)
+        NREL = NREL + 1
+
+C       RELATIONS POUR LES SEMI-MULTIPLICATEURS DE FROTTEMENT
+C       EN 2D :  LAGS_F1(N1).TAU1(N1) - LAGS_F1(N2).TAU1(N2) = 0
+C       EN 3D :  LAGS_F1(N1).TAU1(N1) - LAGS_F1(N2).TAU1(N2)
+C              + LAGS_F2(N1).TAU2(N1) - LAGS_F2(N2).TAU2(N2) = 0
+C       POUR IMPOSER CES RELATIONS : PROJECTION SUR LA BASE (TAU1,TAU2)
+
+        CALL CNOCNS(FISS//'.BASCO','V',CHS)
+        CALL JEVEUO(CHS//'.CNSV','L',JCNSV)
+        CALL JEVEUO(CHS//'.CNSD','L',JCNSD)
+        CALL JEVEUO(CHS//'.CNSL','L',JCNSL)
+
+        DDL(1) = DDLC(2)
+        DDL(2) = DDLC(2)
+        IF (DIM.EQ.3)  DDL(3) = DDLC(3)
+        IF (DIM.EQ.3)  DDL(4) = DDLC(3)
+        IF (DIM.EQ.3)  NUNO(3) = NUNO(1)
+        IF (DIM.EQ.3)  NUNO(4) = NUNO(2)
+        IF (DIM.EQ.3)  NOEUD(3) = NOEUD(1)
+        IF (DIM.EQ.3)  NOEUD(4) = NOEUD(2)
+        DO 20 J=1,DIM
+          TAUA(J,1) = ZR(JCNSV-1+12*(NUNO(1)-1)+6+J)
+          TAUB(J,1) = ZR(JCNSV-1+12*(NUNO(2)-1)+6+J)
+          IF (DIM.EQ.3) TAUA(J,2) = ZR(JCNSV-1+12*(NUNO(1)-1)+9+J)
+          IF (DIM.EQ.3) TAUB(J,2) = ZR(JCNSV-1+12*(NUNO(2)-1)+9+J)
  20     CONTINUE
+ 
+        DO 21 K=1,DIM-1
+          COEFR(1) =  DDOT(DIM,TAUA(1,1),1,TAUA(1,K),1)
+          COEFR(2) = -DDOT(DIM,TAUB(1,1),1,TAUA(1,K),1)
+          IF (DIM.EQ.3) COEFR(3) =  DDOT(DIM,TAUA(1,2),1,TAUA(1,K),1)
+          IF (DIM.EQ.3) COEFR(4) = -DDOT(DIM,TAUB(1,2),1,TAUA(1,K),1)
+          CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIM,RBID,2*(DIM-1),BETAR,
+     &                CBID,K8BID,'REEL','REEL','12',0.D0,LISREL)
+          NREL = NREL + 1
+ 21     CONTINUE
+
  10   CONTINUE
 
  100  CONTINUE
@@ -114,29 +164,73 @@ C     ----------------------
       CALL ASSERT(IER.EQ.NRL)
 
       DO 30 I = 1,NRL/3
+
         NUNO(1) = ZI(JLIS2-1+3*(I-1)+1)
         NUNO(2) = ZI(JLIS2-1+3*(I-1)+2)
         NUNO(3) = ZI(JLIS2-1+3*(I-1)+3)
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(1)),NOEUD(1))
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(2)),NOEUD(2))
         CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO(3)),NOEUD(3))
-        COEFR(1) = ZR(JLIS3-1+3*(I-1)+1)
-        COEFR(2) = ZR(JLIS3-1+3*(I-1)+2)
-        COEFR(3) = ZR(JLIS3-1+3*(I-1)+3)
-        NDIM(1) = 0
-        NDIM(2) = 0
-        NDIM(3) = 0
-        DO 40 K=1,1
-          DDL(1) = DDLC(K)
-          DDL(2) = DDLC(K)
-          DDL(3) = DDLC(K)
+        IAD=JLIS3-1+3*(I-1)
+        COEFR(1) = ZR(IAD+1)
+        COEFR(2) = ZR(IAD+2)
+        COEFR(3) = ZR(IAD+3)
 
-          CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIM,RBID,3,BETAR,CBID,
-     &                K8BID,'REEL','REEL','12',0.D0,LISREL)
-          NREL = NREL + 1
+C       RELATION POUR LES MULTIPLICATEURS DE CONTACT ('LAGS_C')
+        DDL(1) = DDLC(1)
+        DDL(2) = DDLC(1)
+        DDL(3) = DDLC(1)
+
+        CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIM,RBID,3,BETAR,CBID,
+     &              K8BID,'REEL','REEL','12',0.D0,LISREL)
+        NREL = NREL + 1
+
+C       RELATIONS POUR LES SEMI-MULTIPLICATEURS DE FROTTEMENT
+C              (VOIR BOOK VI 20/04/06)
+
+        CALL CNOCNS(FISS//'.BASCO','V',CHS)
+        CALL JEVEUO(CHS//'.CNSV','L',JCNSV)
+        CALL JEVEUO(CHS//'.CNSD','L',JCNSD)
+        CALL JEVEUO(CHS//'.CNSL','L',JCNSL)
+
+        DDL(1) = DDLC(2)
+        DDL(2) = DDLC(2)
+        DDL(3) = DDLC(2)
+        IF (DIM.EQ.3) THEN
+          DDL(4) = DDLC(3)
+          DDL(5) = DDLC(3)
+          DDL(6) = DDLC(3)
+          NUNO(4) = NUNO(1)
+          NUNO(5) = NUNO(2)
+          NUNO(6) = NUNO(3)
+          NOEUD(4) = NOEUD(1)
+          NOEUD(5) = NOEUD(2)
+          NOEUD(6) = NOEUD(3)
+        ENDIF
+        DO 40 J=1,DIM
+          TAUA(J,1) = ZR(JCNSV-1+12*(NUNO(1)-1)+6+J)
+          TAUB(J,1) = ZR(JCNSV-1+12*(NUNO(2)-1)+6+J)
+          TAUC(J,1) = ZR(JCNSV-1+12*(NUNO(3)-1)+6+J)
+          IF (DIM.EQ.3) TAUA(J,2) = ZR(JCNSV-1+12*(NUNO(1)-1)+9+J)
+          IF (DIM.EQ.3) TAUB(J,2) = ZR(JCNSV-1+12*(NUNO(2)-1)+9+J)
+          IF (DIM.EQ.3) TAUC(J,2) = ZR(JCNSV-1+12*(NUNO(3)-1)+9+J)
  40     CONTINUE
- 30   CONTINUE
 
+        DO 41 K=1,DIM-1
+          COEFR(1) = ZR(IAD+1) * DDOT(DIM,TAUA(1,1),1,TAUA(1,K),1)
+          COEFR(2) = ZR(IAD+2) * DDOT(DIM,TAUB(1,1),1,TAUA(1,K),1)
+          COEFR(3) = ZR(IAD+3) * DDOT(DIM,TAUC(1,1),1,TAUA(1,K),1)
+          IF (DIM.EQ.3) THEN
+            COEFR(4) = ZR(IAD+1) * DDOT(DIM,TAUA(1,2),1,TAUA(1,K),1)
+            COEFR(5) = ZR(IAD+2) * DDOT(DIM,TAUB(1,2),1,TAUA(1,K),1)
+            COEFR(6) = ZR(IAD+3) * DDOT(DIM,TAUC(1,2),1,TAUA(1,K),1)
+          ENDIF
+          CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIM,RBID,3*(DIM-1),BETAR,
+     &                CBID,K8BID,'REEL','REEL','12',0.D0,LISREL)
+          NREL = NREL + 1
+ 41     CONTINUE
+
+ 30   CONTINUE
 
  200  CONTINUE
 

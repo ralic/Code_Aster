@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_fonction_ops Macro  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
                       ENVELOPPE,ASSE,CORR_ACCE,PUISSANCE,INVERSE,
                       NOM_PARA,NOM_RESU,INTERPOL,PROL_DROITE,
                       PROL_GAUCHE,NOM_PARA_FONC,INTERPOL_FONC,PROL_DROITE_FONC,
-                      PROL_GAUCHE_FONC,**args):
+                      PROL_GAUCHE_FONC,INFO,**args):
   """
      Ecriture de la macro CALC_FONCTION
   """
@@ -49,6 +49,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
   
   ### On importe les definitions des commandes a utiliser dans la macro
   DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
+  IMPR_FONCTION  = self.get_cmd('IMPR_FONCTION')
   DEFI_NAPPE     = self.get_cmd('DEFI_NAPPE')
   
   ### Comptage commandes + déclaration concept sortant
@@ -324,5 +325,9 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
      if NOM_PARA_FONC !=None : para['NOM_PARA_FONC']   =INTERPOL
      if INTERPOL_FONC !=None : para['INTERPOL']   =INTERPOL
      C_out=DEFI_NAPPE(PARA=__ex.vale_para.tolist(),DEFI_FONCTION=def_fonc,**para)
+  if INFO > 1:
+     IMPR_FONCTION(FORMAT='TABLEAU',
+                   UNITE=6,
+                   COURBE=_F(FONCTION=C_out),)
   return ier
 

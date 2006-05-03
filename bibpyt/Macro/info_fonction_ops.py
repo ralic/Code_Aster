@@ -1,4 +1,4 @@
-#@ MODIF info_fonction_ops Macro  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF info_fonction_ops Macro  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,**args):
+def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   """
      Ecriture de la macro INFO_FONCTION
   """
@@ -30,6 +30,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,**args):
 
   ### On importe les definitions des commandes a utiliser dans la macro
   CREA_TABLE     = self.get_cmd('CREA_TABLE')
+  IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
   CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
   
   ### Comptage commandes + déclaration concept sortant
@@ -249,4 +250,7 @@ porte le calcul, ceci peut etre une source d erreurs.''')
            l_table.append(_F(LISTE_R=dphfor,PARA='DUREE_PHAS_FORT'))
      C_out=CREA_TABLE(LISTE=l_table)
 
+  if INFO > 1:
+     IMPR_TABLE(UNITE=6,
+                TABLE=C_out)
   return ier

@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF impr_fonction_ops Macro  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    import pprint
    import aster
    from Accas               import _F
+   from Cata.cata           import nappe_sdaster, fonction_c
    from Utilitai            import Graph
    from Utilitai.Utmess     import UTMESS
    from Utilitai.UniteAster import UniteAster
@@ -54,11 +55,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 0.1. Fichier
    nomfich=None
-   if args['UNITE'] and args['UNITE']<>6:
+   if args['UNITE'] and args['UNITE']!=6:
       nomfich=UL.Nom(args['UNITE'])
       if INFO==2:
-         aster.affiche('MESSAGE', ' Nom du fichier :'+nomfich+'\n')
-   if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size<>0:
+         aster.affiche('MESSAGE', ' Nom du fichier :'+nomfich)
+   if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size!=0:
       if FORMAT=='XMGRACE':
          niv='A'
       else:
@@ -82,7 +83,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          if dC[mc]==None: del dC[mc]
       Courbe.append(dC)
    if INFO==2:
-      aster.affiche('MESSAGE',' Nombre de fonctions à analyser : '+str(len(Courbe))+'\n')
+      aster.affiche('MESSAGE',' Nombre de fonctions à analyser : '+str(len(Courbe)))
 
    # 0.3. Devra-t-on interpoler globalement ?
    #      Dans ce cas, linter__ est le LIST_PARA
@@ -98,12 +99,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          for typi in unparmi:
             if dCi.has_key(typi):
                obj=dCi[typi]
-               typ=obj.__class__.__name__
                break
          if obj==None:
             UTMESS('S',macro,'incohérence entre le catalogue et la macro.')
          if typi=='FONCTION':
-            if typ=='nappe_sdaster':
+            if isinstance(obj, nappe_sdaster):
                lpar,lval=obj.Valeurs()
                linterp=lval[0][0]
             else:
@@ -114,7 +114,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             linterp=obj
          linter__=DEFI_LIST_REEL(VALE=linterp)
       if INFO==2:
-         aster.affiche('MESSAGE', ' Interpolation globale sur la liste :\n'+pprint.pformat(linter__.Valeurs())+'\n')
+         aster.affiche('MESSAGE', ' Interpolation globale sur la liste :')
+         aster.affiche('MESSAGE', pprint.pformat(linter__.Valeurs()))
 
 
    #----------------------------------------------
@@ -131,7 +132,6 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       for typi in unparmi:
          if dCi.has_key(typi):
             obj=dCi[typi]
-            typ=obj.__class__.__name__
             break
       if not dCi.has_key('LEGENDE') and hasattr(obj,'get_name'):
             dCi['LEGENDE']=obj.get_name()
@@ -142,7 +142,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
       # 1.2.1. Mot-clé FONCTION
       if   typi=='FONCTION':
-         if typ=='nappe_sdaster':
+         if isinstance(obj, nappe_sdaster):
             lpar,lval=obj.Valeurs()
             dico,ldicf=obj.Parametres()
             Leg=dCi['LEGENDE']
@@ -201,10 +201,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             lval=list(ftmp__.Valeurs())
             lx=lval[0]
             lr=lval[1]
-            if typ=='fonction_c' and dCi.has_key('PARTIE'):
-               if dCi['PARTIE']=='IMAG' : lr=lval[2]
+            if isinstance(obj, fonction_c) and dCi.get('PARTIE') == 'IMAG':
+               lr=lval[2]
             # on stocke les données dans le Graph
-            if typ=='fonction_c' and not dCi.has_key('PARTIE'):
+            if isinstance(obj, fonction_c) and not dCi.has_key('PARTIE'):
                nomresu=dpar['NOM_RESU'].strip()+'_'+str(len(graph.Legendes))
                dicC={
                   'Val' : lval,
@@ -227,7 +227,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
      et à la première occurence de COURBE""")
          lx=dCi['LIST_PARA'].Valeurs()
          lr=obj.Valeurs()
-         if len(lx)<>len(lr):
+         if len(lx)!=len(lr):
             UTMESS('S',macro,"LIST_PARA et LIST_RESU n'ont pas la meme taille")
          # on stocke les données dans le Graph
          dicC={
@@ -243,7 +243,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       elif typi=='FONC_X':
          ob2=dCi['FONC_Y']
          # peut-on blinder au niveau du catalogue
-         if typ=="nappe_sdaster" or ob2.__class__.__name__=="nappe_sdaster":
+         if isinstance(obj, nappe_sdaster) or isinstance(ob2, nappe_sdaster):
             UTMESS('S',macro,"FONC_X/FONC_Y ne peuvent pas etre des nappes !")
          if interp and iocc>0:
             UTMESS('S',macro,"""Au format 'TABLEAU' ,FONC_X/FONC_Y ne peut apparaitre qu'une seule fois
@@ -309,7 +309,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
      et à la première occurence de COURBE""")
          lx=obj
          lr=dCi['ORDONNEE']
-         if len(lx)<>len(lr):
+         if len(lx)!=len(lr):
             UTMESS('S',macro,"ABSCISSE et ORDONNEE n'ont pas la meme taille")
          # on stocke les données dans le Graph
          dicC={
@@ -327,7 +327,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 1.3. dbg
    if INFO==2:
-      message='\n'+'-'*70+'\n Contenu du Graph : \n'+'-'*70
+      message='\n'+'-'*70+'\n Contenu du Graph : \n'+'-'*70+'\n'
       message=message+graph.__repr__()
       message=message+'-'*70+'\n'
       aster.affiche('MESSAGE',message)
@@ -338,21 +338,21 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 2.0. Surcharge des propriétés du graphique et des axes
    # (bloc quasiment identique dans Table)
-   if args['TITRE']<>None:          graph.Titre=args['TITRE']
-   if args['SOUS_TITRE']<>None:     graph.SousTitre=args['SOUS_TITRE']
+   if args['TITRE']!=None:          graph.Titre=args['TITRE']
+   if args['SOUS_TITRE']!=None:     graph.SousTitre=args['SOUS_TITRE']
    if FORMAT in ('XMGRACE','AGRAF'):
-      if args['BORNE_X']<>None:
+      if args['BORNE_X']!=None:
                                        graph.Min_X=args['BORNE_X'][0]
                                        graph.Max_X=args['BORNE_X'][1]
-      if args['BORNE_Y']<>None:
+      if args['BORNE_Y']!=None:
                                        graph.Min_Y=args['BORNE_Y'][0]
                                        graph.Max_Y=args['BORNE_Y'][1]
-      if args['LEGENDE_X']<>None:      graph.Legende_X=args['LEGENDE_X']
-      if args['LEGENDE_Y']<>None:      graph.Legende_Y=args['LEGENDE_Y']
-      if args['ECHELLE_X']<>None:      graph.Echelle_X=args['ECHELLE_X']
-      if args['ECHELLE_Y']<>None:      graph.Echelle_Y=args['ECHELLE_Y']
-      if args['GRILLE_X']<>None:       graph.Grille_X=args['GRILLE_X']
-      if args['GRILLE_Y']<>None:       graph.Grille_Y=args['GRILLE_Y']
+      if args['LEGENDE_X']!=None:      graph.Legende_X=args['LEGENDE_X']
+      if args['LEGENDE_Y']!=None:      graph.Legende_Y=args['LEGENDE_Y']
+      if args['ECHELLE_X']!=None:      graph.Echelle_X=args['ECHELLE_X']
+      if args['ECHELLE_Y']!=None:      graph.Echelle_Y=args['ECHELLE_Y']
+      if args['GRILLE_X']!=None:       graph.Grille_X=args['GRILLE_X']
+      if args['GRILLE_Y']!=None:       graph.Grille_Y=args['GRILLE_Y']
 
    kargs={
       'FORMAT'    : FORMAT,
@@ -372,7 +372,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # 2.2. au format AGRAF
    elif FORMAT=='AGRAF':
       nomdigr=None
-      if args['UNITE_DIGR']<>6:
+      if args['UNITE_DIGR']!=6:
          nomdigr=UL.Nom(args['UNITE_DIGR'])
       kargs['FICHIER']=[nomfich, nomdigr]
       kargs['dform']={ 'formR' : '%12.5E' }
@@ -389,7 +389,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # Traiter le cas des UL réservées
    if args['UNITE'] and args['UNITE'] in ul_reserve:
       UL.Etat(args['UNITE'], etat='F')
-   if FORMAT=='AGRAF' and args['UNITE_DIGR']<>args['UNITE'] \
+   if FORMAT=='AGRAF' and args['UNITE_DIGR']!=args['UNITE'] \
          and args['UNITE_DIGR'] in ul_reserve:
       UL.Etat(args['UNITE_DIGR'], etat='F')
 

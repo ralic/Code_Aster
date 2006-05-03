@@ -1,7 +1,7 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -469,14 +469,14 @@ C DE LA CONTRAINTE NORMALE MOYENNE SUR LE PLAN CRITIQUE,
 C DE LA DEFORMATION NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LA DEFORMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
 
-               CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'E',VALE,CODRET,
-     &                     '  ')
+               CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
+     &                     VALE,CODRET,'  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
                   CALL UTMESS('F', 'DELTAU.2', 'NOUS NE POUVONS PAS'//
      &                   ' RECUPERER LA VALEUR DU MODULE D''YOUNG : E.')
                ENDIF
-               CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'NU',VALNU,CODRET,
-     &                     '  ')
+               CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
+     &                     VALNU,CODRET,'  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
                   CALL UTMESS('F', 'DELTAU.3', 'NOUS NE POUVONS PAS'//
      &                    ' RECUPERER LA VALEUR DU COEFFICIENT DE ' //
@@ -598,8 +598,8 @@ C CALCUL DU NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
                   IF (ENDUR) THEN
                      NRUPT(K)=R8MAEM()
                   ELSE
-                  CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM',SIGEQ(K),1,
-     &                        'WOHLER',NRUPT(K),CODRET,'F')
+                  CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',SIGEQ(K),1,
+     &                        'WOHLER  ',NRUPT(K),CODRET,'F')
                   ENDIF
                ENDIF
 

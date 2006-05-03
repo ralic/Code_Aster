@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60)
       REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3)
       REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3),DDOT
-      REAL*8      LST,R,RR,E
+      REAL*8      LST,R,RR,E,G(3)
 C.......................................................................
 
       CALL JEMARQ()
@@ -241,7 +241,7 @@ C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM .EQ. 3) THEN
-            CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
+            CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
      &                                                    JAC,FFP,ND)
           ELSEIF (NDIM.EQ.2) THEN
             CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,

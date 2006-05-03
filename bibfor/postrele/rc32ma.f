@@ -3,7 +3,7 @@
       CHARACTER*8       MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,8 +51,8 @@ C
       PARAMETER    ( NBCMP = 7, NBCMP2=NBCMP+1 )
       REAL*8        PARA(NBCMP), TEMPA, TEMPB,TKE
       CHARACTER*2   CODRET(NBCMP)
-      CHARACTER*8   NOPA, NOPB, TYPEKE
-      CHARACTER*16  PHENOM, MOTCLF, NOCMP(NBCMP)
+      CHARACTER*8   NOPA, NOPB, TYPEKE, NOCMP(NBCMP)
+      CHARACTER*16  PHENOM, MOTCLF
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C

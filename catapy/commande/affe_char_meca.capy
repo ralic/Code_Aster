@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 03/05/2006   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -419,8 +419,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                 DIST_MAIT       =SIMP(statut='f',typ='R'),
                 DIST_ESCL       =SIMP(statut='f',typ='R'),
                 VECT_NORM_ESCL  =SIMP(statut='f',typ='R',max=3),
-                VECT_Y   =SIMP(statut='f',typ='R',min=3,max=3),
-                #VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
+                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
            ),
 
            b_active        =BLOC(condition = "METHODE == 'CONTRAINTE' ",
@@ -458,8 +457,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                 COEF_IMPO       =SIMP(statut='f',typ='R'),
                 COEF_MULT_ESCL  =SIMP(statut='f',typ='R'),
                 VECT_NORM_ESCL  =SIMP(statut='f',typ='R',max=3),
-                VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
-                #VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
+                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
                 DIST_MAIT       =SIMP(statut='f',typ='R'),
                 DIST_ESCL       =SIMP(statut='f',typ='R'),
 
@@ -487,14 +485,17 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                       fr="Paramètre de la réactualisation géométrique auto",
                                   ), 
 
-
+               
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
                 DIST_MAIT       =SIMP(statut='f',typ='R'),
                 DIST_ESCL       =SIMP(statut='f',typ='R'),
+                
+                regles=(EXCLUS('VECT_Y','VECT_ORIE_POU')),
+                
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
-                #VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
+                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
                      COULOMB         =SIMP(statut='o',typ='R',),
                      COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
@@ -528,8 +529,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
                 DIST_MAIT       =SIMP(statut='f',typ='R'),
                 DIST_ESCL       =SIMP(statut='f',typ='R'),
+                regles=(EXCLUS('VECT_Y','VECT_ORIE_POU')),
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
-                #VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
+                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
                 
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
                      COULOMB         =SIMP(statut='o',typ='R',),

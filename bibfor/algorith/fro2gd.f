@@ -2,7 +2,7 @@
      &                    DEPTOT,ITERAT,LREAC,DEPDEL,RESU,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/05/2006   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,7 +113,7 @@ C
       INTEGER      ZCONV
       PARAMETER    (ZCONV=4)
       LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
-      INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,ITEMAX
+      INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,ITEMAX
       INTEGER      II,JJ,KK,IOTE,ILIAC,NUMIN,IZONE,ITEMUL,ISTO
       INTEGER      JRESU,JDEPP,NDIM,NEQMAX,ITER
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,INDIC,INDFAC
@@ -121,7 +121,7 @@ C
       INTEGER      NBLCIN,NBLFIN,LLF1,LLF2,NESMAX,BTOTAL
       INTEGER      LLF,LFMIN
       INTEGER      AJLIAI,SPLIAI,POSIT,COMPT0
-      REAL*8       R8MAEM,R8PREM,AJEU,RHO,RHORHO,AADELT
+      REAL*8       R8MAEM,R8PREM,R8MIEM,AJEU,RHO,RHORHO,AADELT
       REAL*8       VAL,ZMU,XFORC,XJVMAX,R8BID
       REAL*8       AJEUFX,XPDT,XK,XCOMP,XCOS,X1
       COMPLEX*16   CBID
@@ -524,11 +524,15 @@ C --- LA LIAISON EST BIEN GLISSANTE
 C --- ON MET A JOUR MU_G EN FONCTION DE L'INCREMENT DE DEPLACEMENT
 C ======================================================================
                      CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
-     &                                 ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
+     &                           ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
                      AJEUFX = ZR(JAPJFX-1+LLIAC) + VAL
-                     XCOMP  = ABS( AJEUFX )
-                     XCOS   = AJEUFX / XCOMP
-                     ZR(JMU-1+3*NBLIAI+LLIAC) = XK * XCOS
+                     IF (ABS(AJEUFX).LE.R8MIEM()) THEN
+                       ZR(JMU-1+3*NBLIAI+LLIAC) = 0.D0
+                     ELSE
+                       XCOMP  = ABS( AJEUFX )
+                       XCOS   = AJEUFX / XCOMP
+                       ZR(JMU-1+3*NBLIAI+LLIAC) = XK * XCOS
+                     ENDIF
                   ENDIF
                ENDIF
  710        CONTINUE

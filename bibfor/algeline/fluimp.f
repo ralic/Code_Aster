@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGELINE  DATE 02/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,7 +191,7 @@ C
         DO 10 IM = 1,NBM
           IMOD = NUOR(IM)
           IF(CALCUL(1)) THEN
-             WRITE (IFR,1002) IMOD,NBM,FREQI(IMOD)
+             WRITE (IFR,1002) IMOD,FREQI(IMOD)
              WRITE (IFR,*) ' ------------------------------------------'
              WRITE (IFR,*)
 C
@@ -584,8 +584,7 @@ C
 C --- FORMATS
 C 
  1001 FORMAT (1P,' VITESSE MOYENNE SUR L ENSEMBLE DES ZONES = ',D13.6)
- 1002 FORMAT (1P,' MODE : NUMERO D ORDRE:',I3,'/ NUME_MODE:',I3,
-     &        '/ FREQ:',D13.6)
+ 1002 FORMAT (1P,' MODE : NUMERO D ORDRE:',I3,'/ FREQ:',D13.6)
  2001 FORMAT (A2,4A16)
  2002 FORMAT (A66)
 

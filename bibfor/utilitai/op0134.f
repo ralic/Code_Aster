@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,8 +132,8 @@ C
 C         
       ELSE
 C      
-         CALL UTMESS('F','OP0134','FONCTION A UNE OU DEUX VARIABLES 
-     +                                 ADMISE')
+         CALL UTMESS('F','OP0134','LA FONCTION NE DOIT AVOIR QU''UNE '
+     +                          //'OU DEUX VARIABLES')
 C     
       ENDIF
 C    

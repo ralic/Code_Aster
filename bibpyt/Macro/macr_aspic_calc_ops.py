@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 02/05/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                              FOND_FISS_1,FOND_FISS_2,CHARGE,RESU_THER,AFFE_MATERIAU,EQUILIBRE,
                              PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_INCR,COMP_ELAS,
                              THETA_3D,OPTION,SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
-                             INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE ,**args):          
+                             INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE,BORNES ,**args):          
   """
      Ecriture de la macro MACR_ASPIC_CALC
   """
@@ -717,6 +717,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                      R_INF      = tht3d['R_INF'],
                                      R_SUP      = tht3d['R_SUP'],
                                      TITRE      = montit,**motscles)
+          IMPR_TABLE(TABLE = __glocal, )
 #
 #          recherche du g max local
 #
@@ -758,13 +759,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
          else                                                                : ncham=[IMPRESSION['NOM_CHAM'],]
       if    len(ncham)==3       : motscles['NOM_CHAM'  ]=('DEPL','EQUI_ELNO_SIGM')
       elif (len(ncham)==1) and (ncham[0][:4]!='TEMP')  :
-                                  motscles['NOM_CHAM'  ]= ncham[0]['NOM_CHAM']
+                                  motscles['NOM_CHAM'  ]= ncham[0]
       elif (len(ncham)==2) and (ncham[0][:4]!='TEMP') and (ncham[1][:4]!='TEMP')  :
-                                  motscles['NOM_CHAM'  ]=(ncham[0]['NOM_CHAM'],ncham[1]['NOM_CHAM'])
+                                  motscles['NOM_CHAM'  ]=(ncham[0],ncham[1])
       elif (len(ncham)==2) and (ncham[0][:4]=='TEMP')  :
-                                  motscles['NOM_CHAM'  ]= ncham[1]['NOM_CHAM']
+                                  motscles['NOM_CHAM'  ]= ncham[1]
       elif (len(ncham)==2) and (ncham[1][:4]=='TEMP') :
-                                  motscles['NOM_CHAM'  ]= ncham[0]['NOM_CHAM']
+                                  motscles['NOM_CHAM'  ]= ncham[0]
       if   IMPRESSION['TOUT_ORDRE']!=None :
                                   motscles['TOUT_ORDRE']= IMPRESSION['TOUT_ORDRE']
       elif IMPRESSION['NUME_ORDRE']!=None :
@@ -781,11 +782,11 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       if IMPRESSION['FORMAT'] in ('IDEAS','CASTEM') :
         if    len(ncham)==3       : motscles['NOM_CHAM'  ]=('TEMP',)
         elif (len(ncham)==1) and (ncham[0][:4]=='TEMP') :
-                                    motscles['NOM_CHAM'  ]= ncham[0]['NOM_CHAM']
+                                    motscles['NOM_CHAM'  ]= ncham[0]
         elif (len(ncham)==2) and (ncham[0][:4]=='TEMP') :
-                                    motscles['NOM_CHAM'  ]= ncham[0]['NOM_CHAM']
+                                    motscles['NOM_CHAM'  ]= ncham[0]
         elif (len(ncham)==2) and (ncham[1][:4]=='TEMP') :
-                                    motscles['NOM_CHAM'  ]= ncham[1]['NOM_CHAM']
+                                    motscles['NOM_CHAM'  ]= ncham[1]
         if   IMPRESSION['TOUT_ORDRE']!=None :
                                     motscles['TOUT_ORDRE']= IMPRESSION['TOUT_ORDRE']
         elif IMPRESSION['NUME_ORDRE']!=None :
@@ -796,7 +797,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                     motsclei['VERSION'   ]= IMPRESSION['VERSION']
       if IMPRESSION['FORMAT']=='CASTEM' :
                                     motsclei['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-      mcfresu.append(_F(RESULTAT=nomres,**motscles))
+      mcfresu.append(_F(RESULTAT=resuth,**motscles))
     IMPR_RESU( MODELE = modele,
                RESU   = mcfresu,
                FORMAT=IMPRESSION['FORMAT'],**motsclei)

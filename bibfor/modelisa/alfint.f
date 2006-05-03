@@ -1,7 +1,7 @@
       SUBROUTINE ALFINT (CHMATZ, IMATE, NOMMAZ, TDEF, NOPARZ, NUMMAT,
      +                    PREC, CH19)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,8 +97,8 @@ C     ----------------------------------------------------
 C
 C --- CALCUL DE ALPHA A LA TEMPERATURE DE REFERENCE :
 C     ---------------------------------------------
-      CALL RCVALE(NOMMAT, PHENOM, 1, 'TEMP', TREF, 1, NOPARA, ALFREF,
-     +            CODRET, 'F ')
+      CALL RCVALE(NOMMAT, PHENOM, 1, 'TEMP    ', TREF, 1, NOPARA,
+     +            ALFREF, CODRET, 'F ')
 C
 C --- CREATION DE LA NOUVELLE FONCTION DEVANT CONTENIR LES VALEURS
 C --- INTERPOLEES DE ALPHA :

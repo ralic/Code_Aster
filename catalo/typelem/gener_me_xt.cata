@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -206,11 +206,7 @@ OPTION__
                                      E8NEUTI  PLONCHA  E33NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST
                               OUT__  E90NEUTR PDEXFEM
-    ENER_RELA           310   IN__   DDL_MECA PDEPSOL  DDL_MECA PDEPREF  E33NEUTR PPINTTO  E128NEUI PCNSETO
-                                     E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  NGEOMER  PGEOMER
-                                     N1NEUT_R PLSN     N1NEUT_R PLST 
-                              OUT__  E1NEUTR  PENERG1  E1NEUTR  PENERG2
-    ENER_RELA2          310   IN__   DDL_MECA PDEPSOL  E33NEUTR PPINTTO  E128NEUI PCNSETO
+    ENER_RELA2          310   IN__   DDL_MECA PDEPSOL  E33NEUTR PPINTTO  E128NEUI PCNSETO  CMATERC  PMATERC 
                                      E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST 
                               OUT__  E1NEUTR  PENERG1  E1NEUTR  PENERG2

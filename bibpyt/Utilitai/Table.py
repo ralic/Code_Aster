@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,6 +70,14 @@ class TableBase(object):
    (c'est surtout utile pour vérifier que l'extraction et les filtres sur les
    colonnes sont corrects).
    """
+   def __init__(self):
+      """Constructeur.
+      """
+      self.rows=None
+      self.para=None
+      self.type=None
+      self.titr=None
+   
    def __repr__(self):
       return self.ReprTable()
    def Croise(self, **kargs):
@@ -422,16 +430,23 @@ class Table(TableBase):
    def sort(self, CLES=None, ORDRE='CROISSANT'):
       """Tri de la table.
          CLES  : liste des clés de tri
-         ORDRE : CROISSANT ou DECROISSANT (de longueur 1 ou len(keys))
+         ORDRE : CROISSANT ou DECROISSANT
       """
       # par défaut, on prend tous les paramètres
-      if CLES==None:
-         CLES=self.para[:]
+      if CLES == None:
+         CLES = self.para[:]
+      # vérification des arguments
       if not type(CLES) in EnumTypes:
-         CLES=[CLES,]
+         CLES = [CLES]
       else:
-         CLES=list(CLES)
-      self.rows=sort_table(self.rows, self.para, CLES, (ORDRE=='DECROISSANT'))
+         CLES = list(CLES)
+      not_found = ', '.join([p for p in CLES if not p in self.para])
+      if not_found != '':
+         UTMESS('F', 'Table', 'Parametre(s) absent(s) de la table : %s' % not_found)
+      if not ORDRE in ('CROISSANT', 'DECROISSANT'):
+         UTMESS('F', 'Table', 'Valeur incorrecte pour ORDRE : %s' % ORDRE)
+      # tri
+      self.rows = sort_table(self.rows, self.para, CLES, (ORDRE=='DECROISSANT'))
 
 # ------------------------------------------------------------------------------
    def __delitem__(self, args):
@@ -444,7 +459,8 @@ class Table(TableBase):
       for item in args:
          del new_type[new_para.index(item)]
          new_para.remove(item)
-         for line in new_rows : del line[item] 
+         for line in new_rows:
+            del line[item] 
       return Table(new_rows, new_para, new_type, self.titr)
 
 # ------------------------------------------------------------------------------
@@ -742,6 +758,10 @@ class Colonne(TableBase):
       """Renvoie la liste des valeurs"""
       return [r.get(self.para,None) for r in self.Table]
 
+   def not_none_values(self):
+      """Renvoie la liste des valeurs non 'None'"""
+      return [val for val in self.values() if val != None]
+
 # ------------------------------------------------------------------------------
    # équivalences avec les opérateurs dans Aster
    LE=__le__
@@ -758,7 +778,7 @@ class Colonne(TableBase):
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-def sort_table(rows,l_para,w_para,reverse=False):
+def sort_table(rows, l_para, w_para, reverse=False):
    """Sort list of dict.
       rows     : list of dict
       l_para   : list of the keys of dict
@@ -766,17 +786,23 @@ def sort_table(rows,l_para,w_para,reverse=False):
    """
    c_para=[i for i in l_para if i not in w_para]
    new_rows=rows
+   # rename sort keys by "__" + number + para
+   # ("__" to avoid conflict with existing parameters)
    for i in w_para :
       new_key= '__'+str(w_para.index(i))+i
       for row in new_rows :
          row[new_key]=row[i]
          del row[i]
+   # rename others parameters by "___" + para
+   # ("___" to be after sort keys)
    for i in c_para :
       new_key= '___'+i
       for row in new_rows :
          row[new_key]=row[i]
          del row[i]
+   # sort
    new_rows.sort()
+   # reversed sort
    if reverse:
       new_rows.reverse()
    for i in w_para :
@@ -874,7 +900,7 @@ def merge(tb1, tb2, labels=[]):
 def _typaster(obj, prev=None, strict=False):
    """Retourne le type Aster ('R', 'I', Kdef) correspondant à l'objet obj.
    Si prev est fourni, on vérifie que obj est du type prev.
-   Si stric=False, on autorise que obj ne soit pas du type prev s'ils sont
+   Si strict=False, on autorise que obj ne soit pas du type prev s'ils sont
    tous les deux numériques ; dans ce cas, on retourne le "type enveloppe" 'R'.
    """
    dtyp={

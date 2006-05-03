@@ -1,5 +1,5 @@
       SUBROUTINE XJACFF(ELREFP,FPG,JINTER,IFA,CFACE,IPG,NNO,IGEOM,
-     &                                                      JAC,FF,ND)
+     &                                                    G,JAC,FF,ND)
       IMPLICIT NONE 
 
       REAL*8        JAC,FF(*),ND(3)
@@ -8,7 +8,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,6 +42,7 @@ C       NNO     : NOMBRE DE NOEUDS DE L'ELEMENT DE REF PARENT
 C       IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT DE REF PARENT
 C
 C     SORTIE
+C       G       : COORDONNÉES RÉELLES 3D DU POINT DE GAUSS
 C       JAC     : PRODUIT DU JACOBIEN ET DU POIDS
 C       FF      : FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C       ND      : NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT

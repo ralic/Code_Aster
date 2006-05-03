@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,8 @@ C --1-- RECUPERE LE MODULE D'YOUNG E
       NBVAL1 = 2
       NOVAL1(1) = 'E'
       NOVAL1(2) = 'NU'
-      CALL RCVALE(NOMMAT,'ELAS',0,' ',RBID,NBVAL1,NOVAL1,VAL1,CODRET,
+      KBID = ' '
+      CALL RCVALE(NOMMAT,'ELAS',0,KBID,RBID,NBVAL1,NOVAL1,VAL1,CODRET,
      &             'F ')
       IF ( CODRET(1).NE.'OK' .OR. CODRET(2).NE.'OK' )
      &  CALL UTMESS('F','OP0185_01','MODULE D''YOUNG ABSENT')
@@ -115,7 +116,8 @@ C ----- RECUPERE SY_02, S ET SU
         NOVAL3(1) = 'SY_02'
         NOVAL3(2) = 'SU'
         NOVAL3(3) = 'S'
-        CALL RCVALE(NOMMAT,'RCCM_FO',1,'TEMP',T0,NBVAL3,NOVAL3,VAL3,
+        KBID = 'TEMP'
+        CALL RCVALE(NOMMAT,'RCCM_FO',1,KBID,T0,NBVAL3,NOVAL3,VAL3,
      &              CODRET,'F ')
         IF ( CODRET(1).NE.'OK' .OR. CODRET(2).NE.'OK' )
      &    CALL UTMESS('F','OP0185_02','CARACTERISTIQUES'
@@ -129,7 +131,8 @@ C ----- RECUPERE SY_02, SH ET SU
         NOVAL3(1) = 'SY_02'
         NOVAL3(2) = 'SU'
         NOVAL3(3) = 'SH'
-        CALL RCVALE(NOMMAT,'RCCM',0,' ',RBID,NBVAL3,NOVAL3,VAL3,
+        KBID = ' '
+        CALL RCVALE(NOMMAT,'RCCM',0,KBID,RBID,NBVAL3,NOVAL3,VAL3,
      &              CODRET,'F ')
         IF ( CODRET(1).NE.'OK' .OR. CODRET(2).NE.'OK' )
      &    CALL UTMESS('F','OP0185_03','CARACTERISTIQUES'

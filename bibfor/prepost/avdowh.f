@@ -1,7 +1,7 @@
       SUBROUTINE AVDOWH( NBVEC, NBORDR, NOMMAT, NOMCRI, NCYCL, GDEQ,
      &                   DOMEL, NRUPT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,15 +85,15 @@ C234567                                                              012
                ADRS = (IVECT-1)*NBORDR + ICYCL
 
                IF ( CODRET .EQ. 'OK' ) THEN
-                  CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI',GDEQ(ADRS),
+                  CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',GDEQ(ADRS),
      &                     1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
 
                   CALL LIMEND( NOMMAT, GDEQ(ADRS), 'MANSON_C', LIMIT )
                   IF (LIMIT) THEN
                      NRUPT(ADRS)=R8MAEM()
                   ELSE
-                     CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI',GDEQ(ADRS),
-     &                           1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
+                     CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',
+     &                  GDEQ(ADRS),1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
                   ENDIF
                ENDIF
 
@@ -115,8 +115,8 @@ C234567                                                              012
                   IF (LIMIT) THEN
                      NRUPT(ADRS)=R8MAEM()
                   ELSE
-                     CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM',GDEQ(ADRS),
-     &                           1,'WOHLER',NRUPT(ADRS),CODRET,'F')
+                     CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',
+     &                  GDEQ(ADRS),1,'WOHLER  ',NRUPT(ADRS),CODRET,'F')
                   ENDIF
                ENDIF
 
