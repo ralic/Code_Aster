@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 02/05/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,8 +49,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   POST_RCCM        =self.get_cmd('POST_RCCM'       )
   DEFI_FOND_FISS   =self.get_cmd('DEFI_FOND_FISS'  )
   CALC_THETA       =self.get_cmd('CALC_THETA'      )
-  CALC_G_THETA_T   =self.get_cmd('CALC_G_THETA_T'  )
-  CALC_G_LOCAL_T   =self.get_cmd('CALC_G_LOCAL_T'  )
+  CALC_G           =self.get_cmd('CALC_G'          )
   IMPR_RESU        =self.get_cmd('IMPR_RESU'       )
 
   # La macro compte pour 1 dans la numerotation des commandes
@@ -664,19 +663,20 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                                 R_INF   = tht3d['R_INF'],
                                                 R_SUP   = tht3d['R_SUP'], ) )
 #
-#          --- commande CALC_G_THETA_T ---
+#          --- commande CALC_G (3D GLOBAL) ---
 #
           montit = 'G_THETA AVEC R_INF = '+str(tht3d['R_INF'])+' ET R_SUP = '+str(tht3d['R_SUP'])
           motscles={}
           if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
                                                           RELATION = COMP_ELAS['RELATION'],)
           if COMP_INCR!=None:  motscles['COMP_INCR']=  _F(RELATION = COMP_INCR['RELATION'],)
-          __gtheta = CALC_G_THETA_T( MODELE     = modele,
-                                     CHAM_MATER = affmat,
-                                     THETA      = __theta,
-                                     RESULTAT   = nomres,
-                                     TOUT_ORDRE = 'OUI',
-                                     TITRE      = montit,**motscles)
+          __gtheta = CALC_G ( MODELE     = modele,
+                              CHAM_MATER = affmat,
+                              THETA      = _F(THETA=__theta),
+                              OPTION     = 'CALC_G_GLOB',
+                              RESULTAT   = nomres,
+                              TOUT_ORDRE = 'OUI',
+                              TITRE      = montit,**motscles)
           IMPR_TABLE(TABLE = __gtheta, )
 #
 #           recherche du g max
@@ -688,35 +688,35 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                 mcfact.append(_F( NUME_ORDRE = born['NUME_ORDRE'] ,
                                   VALE_MIN   = born['VALE_MIN'  ] ,
                                   VALE_MAX   = born['VALE_MAX'  ]   ) )
-              __gbil = CALC_G_THETA_T( MODELE     = modele,
-                                       CHAM_MATER = affmat,
-                                       THETA      = __theta,
-                                       RESULTAT   = nomres,
-                                       TOUT_ORDRE = 'OUI',
-                                       COMP_ELAS  =  _F(TOUT     = 'OUI',
-                                                        RELATION = COMP_ELAS['RELATION'],),
-                                       TITRE    = montit,
-                                       OPTION   = OPTION,
-                                       BORNES   = mcfact,)
+              __gbil = CALC_G( MODELE     = modele,
+                               CHAM_MATER = affmat,
+                               THETA      = _F(THETA=__theta),
+                               RESULTAT   = nomres,
+                               TOUT_ORDRE = 'OUI',
+                               COMP_ELAS  =  _F(TOUT     = 'OUI',
+                                                RELATION = COMP_ELAS['RELATION'],),
+                               TITRE    = montit,
+                               OPTION   = 'G_MAX_GLOB',
+                               BORNES   = mcfact,)
               IMPR_TABLE(TABLE = __gbil, )
 #
-#          --- commande CALC_G_LOCAL_T ---
+#          --- commande CALC_G (3D LOCAL) ---
 #
           montit = 'G_LOCAL AVEC R_INF = '+str(tht3d['R_INF'])+' ET R_SUP = '+str(tht3d['R_SUP'])
           motscles={}
           if COMP_ELAS!=None:  motscles['COMP_ELAS'    ]=  _F(TOUT     = 'OUI',
                                                               RELATION = COMP_ELAS['RELATION'],)
           if FERME:
-                               motscles['LISSAGE_THETA']= 'LAGRANGE'
-                               motscles['LISSAGE_G'    ]= 'LAGRANGE'
-          __glocal = CALC_G_LOCAL_T( MODELE     = modele,
-                                     CHAM_MATER = affmat,
-                                     FOND_FISS  = fond3d[j],
-                                     RESULTAT   = nomres,
-                                     TOUT_ORDRE = 'OUI',
-                                     R_INF      = tht3d['R_INF'],
-                                     R_SUP      = tht3d['R_SUP'],
-                                     TITRE      = montit,**motscles)
+                               motscles['LISSAGE']=_F(LISSAGE_THETA= 'LAGRANGE',
+                                                      LISSAGE_G= 'LAGRANGE',)
+          __glocal = CALC_G( MODELE     = modele,
+                             CHAM_MATER = affmat,
+                             THETA=_F( FOND_FISS  = fond3d[j],
+                                       R_INF      = tht3d['R_INF'],
+                                       R_SUP      = tht3d['R_SUP'],),
+                             RESULTAT   = nomres,
+                             TOUT_ORDRE = 'OUI',
+                             TITRE      = montit,**motscles)
           IMPR_TABLE(TABLE = __glocal, )
 #
 #          recherche du g max local
@@ -726,24 +726,24 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
               motscles={}
               mcfact=[]
               if FERME:
-                        motscles['LISSAGE_THETA']= 'LAGRANGE'
-                        motscles['LISSAGE_G'    ]= 'LAGRANGE'
+                motscles['LISSAGE']=_F(LISSAGE_THETA= 'LAGRANGE',
+                                       LISSAGE_G= 'LAGRANGE',)
               for born in BORNES :
                 mcfact.append(_F( NUME_ORDRE = born['NUME_ORDRE'] ,
                                   VALE_MIN   = born['VALE_MIN'  ] ,
                                   VALE_MAX   = born['VALE_MAX'  ]   ) )
               motscles['BORNES']=mcfact
-              __glbil = CALC_G_LOCAL_T( MODELE     = modele,
-                                        CHAM_MATER = affmat,
-                                        FOND_FISS  = fond3d[j],
-                                        RESULTAT   = nomres,
-                                        TOUT_ORDRE = 'OUI',
-                                        COMP_ELAS  =  _F(TOUT     = 'OUI',
-                                                         RELATION = COMP_ELAS['RELATION'],),
-                                        TITRE      = montit,
-                                        OPTION     = 'CALC_G_MAX',
-                                        R_INF      = tht3d['R_INF'],
-                                        R_SUP      = tht3d['R_SUP'],**motscles)
+              __glbil = CALC_G( MODELE     = modele,
+                                CHAM_MATER = affmat,
+                                THETA=_F( FOND_FISS  = fond3d[j],
+                                          R_INF      = tht3d['R_INF'],
+                                          R_SUP      = tht3d['R_SUP'],),
+                                RESULTAT   = nomres,
+                                TOUT_ORDRE = 'OUI',
+                                COMP_ELAS  =  _F(TOUT     = 'OUI',
+                                                 RELATION = COMP_ELAS['RELATION'],),
+                                TITRE      = montit,
+                                OPTION     = 'G_MAX',**motscles)
               IMPR_TABLE(TABLE = __glbil, )
 #
 #     --- commande IMPR_RESU  ---

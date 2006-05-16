@@ -6,7 +6,7 @@
       REAL*8                         CONST(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 09/05/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,42 +68,115 @@ C
   20        CONTINUE
          ENDIF
       ENDIF
-
+C
+C --- MATRICE REELLE EN RESULTAT
+C
       IF ( TYPRES .EQ. 'R' ) THEN
-         DO 110 IVAL = 0, NEQ-1
-            IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
-               ZR(LRES+IVAL)=RCUM*ZR(LRES+IVAL)+CONST(1)*ZR(LMAT+IVAL)
+         IF ( TYPMAT .EQ. 'R' ) THEN
+            IF ( TYPCST(1:1) .EQ. 'R') THEN
+               DO 100 IVAL = 0, NEQ-1
+                  IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
+                     ZR(LRES+IVAL) = RCUM*ZR(LRES+IVAL) +
+     +                                           CONST(1)*ZR(LMAT+IVAL)
+                  ENDIF
+ 100           CONTINUE
+            ELSE
+               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
+               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
+               CALL UTFINM()
             ENDIF
- 110     CONTINUE
-      ELSEIF ( TYPMAT .EQ. 'R' ) THEN
-         IF ( TYPCST(1:1) .EQ. 'R') THEN
-            DO 210 IVAL = 0, NEQ-1
-               IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
-                 ZC(LRES+IVAL)=RCUM*ZC(LRES+IVAL)+CONST(1)*ZR(LMAT+IVAL)
-               ENDIF
- 210        CONTINUE
-          ELSEIF ( TYPCST(1:1) .EQ. 'C') THEN
-            C8CST = DCMPLX(CONST(1),CONST(2))
-            DO 220 IVAL = 0, NEQ-1
-               IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
-                  ZC(LRES+IVAL)=RCUM*ZC(LRES+IVAL)+C8CST*ZR(LMAT+IVAL)
-               ENDIF
- 220        CONTINUE
-          ENDIF
-      ELSE
-         IF( TYPCST(1:1).EQ. 'R') THEN
-           DO 310 IVAL = 0, NEQ-1
-              IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
-                ZC(LRES+IVAL)=RCUM*ZC(LRES+IVAL)+CONST(1)*ZC(LMAT+IVAL)
-              ENDIF
- 310       CONTINUE
-         ELSEIF ( TYPCST(1:1) .EQ. 'C' ) THEN
-           C8CST = DCMPLX(CONST(1),CONST(2))
-           DO 320 IVAL = 0, NEQ-1
-              IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
-                 ZC(LRES+IVAL)=RCUM*ZC(LRES+IVAL)+C8CST*ZC(LMAT+IVAL)
-              ENDIF
- 320       CONTINUE
+         ELSEIF ( TYPMAT .EQ. 'C' ) THEN
+            IF ( TYPCST(1:1) .EQ. 'R') THEN
+               DO 110 IVAL = 0, NEQ-1
+                  IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
+                     ZR(LRES+IVAL) = RCUM*ZR(LRES+IVAL) +
+     +                                           CONST(1)*ZC(LMAT+IVAL)
+                  ENDIF
+ 110           CONTINUE
+            ELSEIF ( TYPCST(1:1) .EQ. 'C') THEN
+               C8CST = DCMPLX(CONST(1),CONST(2))
+               DO 120 IVAL = 0, NEQ-1
+                  IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
+                     ZR(LRES+IVAL) = RCUM*ZR(LRES+IVAL) +
+     +                                              C8CST*ZC(LMAT+IVAL)
+                  ENDIF
+ 120           CONTINUE
+            ELSE
+               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
+               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
+               CALL UTFINM()
+            ENDIF
+         ELSE
+            CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+            CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+            CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
+            CALL UTFINM()
          ENDIF
+C
+C --- MATRICE COMPLEXE EN RESULTAT
+C
+      ELSEIF ( TYPRES .EQ. 'C' ) THEN
+         IF ( TYPMAT .EQ. 'C' ) THEN
+            IF ( TYPCST(1:1).EQ. 'R') THEN
+               DO 200 IVAL = 0, NEQ-1
+                  IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
+                     ZC(LRES+IVAL) = RCUM*ZC(LRES+IVAL) +
+     +                                           CONST(1)*ZC(LMAT+IVAL)
+                  ENDIF
+ 200           CONTINUE
+            ELSEIF ( TYPCST(1:1) .EQ. 'C' ) THEN
+               C8CST = DCMPLX(CONST(1),CONST(2))
+               DO 210 IVAL = 0, NEQ-1
+                  IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
+                     ZC(LRES+IVAL) = RCUM*ZC(LRES+IVAL) +
+     +                                              C8CST*ZC(LMAT+IVAL)
+                  ENDIF
+ 210           CONTINUE
+            ELSE
+               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
+               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
+               CALL UTFINM()
+            ENDIF
+         ELSEIF ( TYPMAT .EQ. 'R' ) THEN
+            IF ( TYPCST(1:1).EQ. 'R') THEN
+               DO 220 IVAL = 0, NEQ-1
+                  IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
+                     ZC(LRES+IVAL) = RCUM*ZC(LRES+IVAL) +
+     +                                           CONST(1)*ZR(LMAT+IVAL)
+                  ENDIF
+ 220           CONTINUE
+            ELSEIF ( TYPCST(1:1) .EQ. 'C' ) THEN
+               C8CST = DCMPLX(CONST(1),CONST(2))
+               DO 240 IVAL = 0, NEQ-1
+                  IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
+                     ZC(LRES+IVAL) = RCUM*ZC(LRES+IVAL) +
+     +                                              C8CST*ZR(LMAT+IVAL)
+                  ENDIF
+ 240           CONTINUE
+            ELSE
+               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
+               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
+               CALL UTFINM()
+            ENDIF
+         ELSE
+            CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+            CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+            CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
+            CALL UTFINM()
+         ENDIF
+      ELSE
+         CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
+         CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
+         CALL UTFINM()
+C
       ENDIF
+
       END

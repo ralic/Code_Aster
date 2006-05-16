@@ -2,7 +2,7 @@
      &                  TEMPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER NBCHMX
       PARAMETER (NBCHMX=16)
 
-      INTEGER JLCHIN,EXICHA
+      INTEGER JLCHIN,EXICHA,JFISS
       INTEGER IER,JCHAR,JINF,JLVE,LONLIS
       INTEGER IBID,IRET,NCHAR,ILVE,K,ICHA,II,IEXIS
       INTEGER NUMCHM,NUMORD,NCHIN,NBNOLI,JNOLI,IAUX
@@ -376,6 +376,21 @@ C           DANS LIGRCS.
                   LPAIN(NCHIN) = 'PGRADTH'
                   LCHIN(NCHIN) = GRADTH
                 END IF
+
+C               POUR LES ELEMENTS DE BORD X-FEM
+                CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
+                IF (IER.NE.0) THEN
+                  CALL JEVEUO(MODELE(1:8)//'.FISS','L',JFISS)  
+                  LPAIN(NCHIN + 1) = 'PPINTTO'
+                  LCHIN(NCHIN + 1) = ZK8(JFISS)//'.TOPOSE.PINTTO'
+                  LPAIN(NCHIN + 2) = 'PCNSETO'
+                  LCHIN(NCHIN + 2) = ZK8(JFISS)//'.TOPOSE.CNSETO'
+                  LPAIN(NCHIN + 3) = 'PHEAVTO'
+                  LCHIN(NCHIN + 3) = ZK8(JFISS)//'.TOPOSE.HEAVTO'
+                  LPAIN(NCHIN + 4) = 'PLONCHA'
+                  LCHIN(NCHIN + 4) = ZK8(JFISS)//'.TOPOSE.LONCHAM'
+                  NCHIN = NCHIN + 4
+                ENDIF
 
 C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
                 IF (NOMLIG(K).EQ.'.VEASS') THEN

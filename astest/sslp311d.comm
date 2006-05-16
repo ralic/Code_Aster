@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,9 +94,9 @@ THETA01A=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01A=CALC_G_THETA_T(    MODELE=MO,
+G01A=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA01A,
+                           THETA=_F(THETA=THETA01A),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
@@ -120,9 +120,9 @@ THETA01B=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01B=CALC_G_THETA_T(    MODELE=MO,
+G01B=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA01B,
+                           THETA=_F(THETA=THETA01B),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
 #                        SYME_CHAR : 'SYME'
@@ -147,9 +147,9 @@ THETA01C=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01C=CALC_G_THETA_T(    MODELE=MO,
+G01C=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA01C,
+                           THETA=_F(THETA=THETA01C),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
 #                        SYME_CHAR : 'SYME'
@@ -173,9 +173,9 @@ THETA01D=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01D=CALC_G_THETA_T(    MODELE=MO,
+G01D=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA01D,
+                           THETA=_F(THETA=THETA01D),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
 #                        SYME_CHAR : 'SYME'
@@ -207,9 +207,9 @@ THETA02A=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02A=CALC_G_THETA_T(    MODELE=MO,
+G02A=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA02A,
+                           THETA=_F(THETA=THETA02A),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
@@ -232,9 +232,9 @@ THETA02B=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02B=CALC_G_THETA_T(    MODELE=MO,
+G02B=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA02B,
+                           THETA=_F(THETA=THETA02B),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
@@ -258,9 +258,9 @@ THETA02C=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02C=CALC_G_THETA_T(    MODELE=MO,
+G02C=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA02C,
+                           THETA=_F(THETA=THETA02C),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
@@ -284,9 +284,9 @@ THETA02D=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02D=CALC_G_THETA_T(    MODELE=MO,
+G02D=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA02D,
+                           THETA=_F(THETA=THETA02D),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
@@ -306,7 +306,7 @@ FIN()
 ## CALCUL DE K1 ET K2 NON DISPONIBLE POUR UN BIMATERIAU
 ##
 #
-#GK01A = CALC_G_THETA_T ( MODELE : MO
+#GK01A = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA01A
 #                         FOND   : FOND1
@@ -316,7 +316,7 @@ FIN()
 #                         OPTION : 'CALC_K_G'
 #                      ) ;
 #
-#GK01B = CALC_G_THETA_T ( MODELE : MO
+#GK01B = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA01B
 #                         FOND   : FOND1
@@ -326,7 +326,7 @@ FIN()
 #                         OPTION : 'CALC_K_G'
 #                      ) ;
 #
-#GK01C = CALC_G_THETA_T ( MODELE : MO
+#GK01C = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA01C
 #                         FOND   : FOND1
@@ -336,7 +336,7 @@ FIN()
 #                         OPTION : 'CALC_K_G'
 #                      ) ;
 #
-#GK01D = CALC_G_THETA_T ( MODELE : MO
+#GK01D = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA01D
 #                         FOND   : FOND1
@@ -347,7 +347,7 @@ FIN()
 #                      ) ;
 #
 #
-#GK02A = CALC_G_THETA_T ( MODELE : MO
+#GK02A = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA02A
 #                         FOND   : FOND1
@@ -357,7 +357,7 @@ FIN()
 #                         OPTION : 'CALC_K_G'
 #                      ) ;
 #
-#GK02B = CALC_G_THETA_T ( MODELE : MO
+#GK02B = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA02B
 #                         FOND   : FOND1
@@ -367,7 +367,7 @@ FIN()
 #                         OPTION : 'CALC_K_G'
 #                      ) ;
 #
-#GK02C = CALC_G_THETA_T ( MODELE : MO
+#GK02C = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA02C
 #                         FOND   : FOND1
@@ -377,7 +377,7 @@ FIN()
 #                         OPTION : 'CALC_K_G'
 #                      ) ;
 #
-#GK02D = CALC_G_THETA_T ( MODELE : MO
+#GK02D = CALC_G ( MODELE : MO
 #                         DEPL   : DEP
 #                         THETA  : THETA02D
 #                         FOND   : FOND1

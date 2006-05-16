@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2005   AUTEUR F6BHHBO P.DEBONNIERES 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE TAUX DE RESTITUTION AVEC DEFORMATION INITIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,15 +98,23 @@ F=ASSE_VECTEUR(        VECT_ELEM=VE,
 K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
 
 DEPLA=RESO_LDLT(           MATR_FACT=K,
-                              CHAM_NO=F  )
+                              CHAM_NO=F  );
 
-G=CALC_G_THETA_T(          MODELE=MO,
-                              DEPL=DEPLA,
-                        CHAM_MATER=CM,
-                             THETA=THETA,
-                            EXCIT=_F(CHARGE=CHF,),
-                       PROPAGATION=0.0,
-                            OPTION='CALC_G_LAGR' )
+FOND=DEFI_FOND_FISS( MAILLAGE=M,
+                     FOND_FISS=_F( NOEUD = 'N3'),
+                     NORMALE=(0., 1., 0.,));
+
+G=CALC_G(  MODELE=MO,
+           DEPL=DEPLA,
+           CHAM_MATER=CM,
+           THETA=_F(MODULE = 1.0,
+                    R_INF = 1.,
+                    R_SUP = 49.,
+                    DIRECTION=(1.,0.,0.,),
+                    FOND_FISS=FOND),
+            EXCIT=_F(CHARGE=CHF,),
+            PROPAGATION=0.0,
+            OPTION='G_LAGR');
 
 #--------------------------------------------------------------------
 #                CALCUL AVEC THETA1                                 #
@@ -146,13 +154,17 @@ K1=FACT_LDLT(      reuse=K1,     MATR_ASSE=K1  )
 DEPLA1=RESO_LDLT(          MATR_FACT=K1,
                               CHAM_NO=F10  )
 
-G1=CALC_G_THETA_T(          MODELE=MO,
-                              DEPL=DEPLA1,
-                        CHAM_MATER=CM,
-                             THETA=THETA1,
-                            EXCIT=_F(CHARGE=CHF,),
-                       PROPAGATION=0.0,
-                            OPTION='CALC_G_LAGR' )
+G1=CALC_G( MODELE=MO,
+           DEPL=DEPLA1,
+           CHAM_MATER=CM,
+           THETA=_F(MODULE = 1.0,
+                    R_INF = 3.,
+                    R_SUP = 46.,
+                    DIRECTION=(1.,0.,0.,),
+                    FOND_FISS=FOND),
+           EXCIT=_F(CHARGE=CHF,),
+           PROPAGATION=0.0,
+           OPTION='G_LAGR');
 
 #--------------------------------------------------------------------
 #                CALCUL AVEC THETA2                                 #
@@ -192,13 +204,17 @@ K2=FACT_LDLT(      reuse=K2,     MATR_ASSE=K2  )
 DEPLA2=RESO_LDLT(          MATR_FACT=K2,
                               CHAM_NO=F20 )
 
-G2=CALC_G_THETA_T(          MODELE=MO,
-                               DEPL=DEPLA2,
-                         CHAM_MATER=CM,
-                              THETA=THETA2,
-                             EXCIT=_F(CHARGE=CHF,),
-                        PROPAGATION=0.0,
-                             OPTION='CALC_G_LAGR' )
+G2=CALC_G( MODELE=MO,
+           DEPL=DEPLA2,
+           CHAM_MATER=CM,
+           THETA=_F(MODULE = 1.0,
+                    R_INF = 0.5,
+                    R_SUP = 48.9,
+                    DIRECTION=(1.,0.,0.,),
+                    FOND_FISS=FOND),
+           EXCIT=_F(CHARGE=CHF,),
+           PROPAGATION=0.0,
+           OPTION='G_LAGR');
 
 #--------------------------------------------------------------------
 #                CALCUL AVEC THETA3                                 #
@@ -239,13 +255,17 @@ K3=FACT_LDLT(      reuse=K3,     MATR_ASSE=K3  )
 DEPLA3=RESO_LDLT(        MATR_FACT=K3,
                               CHAM_NO=F30 )
 
-G3=CALC_G_THETA_T(          MODELE=MO,
-                              DEPL=DEPLA3,
-                        CHAM_MATER=CM,
-                             THETA=THETA3,
-                            EXCIT=_F(CHARGE=CHF,),
-                       PROPAGATION=0.0,
-                            OPTION='CALC_G_LAGR' )
+G3=CALC_G( MODELE=MO,
+           DEPL=DEPLA3,
+           CHAM_MATER=CM,
+           THETA=_F(MODULE = 1.0,
+                    R_INF = 8.,
+                    R_SUP = 40.,
+                    DIRECTION=(1.,0.,0.,),
+                    FOND_FISS=FOND),
+           EXCIT=_F(CHARGE=CHF,),
+           PROPAGATION=0.0,
+           OPTION='G_LAGR');
 
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #

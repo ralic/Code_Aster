@@ -1,6 +1,6 @@
-      SUBROUTINE  GMLELT(MAXNOD, NBTYMA, NBMAIL, NBNOMA, NUCONN)
+      SUBROUTINE  GMLELT(IGMSH, MAXNOD, NBTYMA, NBMAIL, NBNOMA, NUCONN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C                                     D'UNE MAILLE : ASTER -> GMSH
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           INTEGER  MAXNOD, NBTYMA, NBMAIL,NBNOMA(NBTYMA),NUCONN(15,32)
+      INTEGER  IGMSH,MAXNOD,NBTYMA,NBMAIL,NBNOMA(NBTYMA),NUCONN(15,32)
 C -----  VARIABLES LOCALES
            CHARACTER*8 K8BID
            LOGICAL     EXISGR
@@ -66,10 +66,6 @@ C
 C --- INITIALISATION :
 C     --------------
       K8BID   = '        '
-C
-C --- RECUPERATION DES NUMEROS D'UNITE LOGIQUE ASSOCIES AUX FICHIERS :
-C     --------------------------------------------------------------
-      IGMSH = IUNIFI('GMSH')
 C
 C --- LECTURE DU NOMBRE D'ELEMENTS :
 C     ----------------------------

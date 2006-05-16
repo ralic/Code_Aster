@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -528,15 +528,19 @@ THETA3=CALC_THETA(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                        THETA=THETA0,
+G0_P=CALC_G(    RESULTAT=CHAMDEPP,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -545,15 +549,19 @@ GK0_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
 # COURONNE 1
 # ----------
 
-G1_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                        THETA=THETA1,
+G1_P=CALC_G(    RESULTAT=CHAMDEPP,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -562,15 +570,19 @@ GK1_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
 # COURONNE 2
 # ----------
 
-G2_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                        THETA=THETA2,
+G2_P=CALC_G(    RESULTAT=CHAMDEPP,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -579,15 +591,19 @@ GK2_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
 # COURONNE 3
 # ----------
 
-G3_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                        THETA=THETA3,
+G3_P=CALC_G(    RESULTAT=CHAMDEPP,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -600,15 +616,19 @@ GK3_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
 # COURONNE 0
 # ----------
 
-G0_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                        THETA=THETA0,
+G0_T=CALC_G(    RESULTAT=CHAMDEPT,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -617,15 +637,19 @@ GK0_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
 # COURONNE 1
 # ----------
 
-G1_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                        THETA=THETA1,
+G1_T=CALC_G(    RESULTAT=CHAMDEPT,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -634,15 +658,19 @@ GK1_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
 # COURONNE 2
 # ----------
 
-G2_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                        THETA=THETA2,
+G2_T=CALC_G(    RESULTAT=CHAMDEPT,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -651,15 +679,19 @@ GK2_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
 # COURONNE 3
 # ----------
 
-G3_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                        THETA=THETA3,
+G3_T=CALC_G(    RESULTAT=CHAMDEPT,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -676,15 +708,19 @@ GK3_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
 # COURONNE 0
 # ----------
 
-G0_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                        THETA=THETA0,
+G0_30=CALC_G(   RESULTAT=CHAMDEP0,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_30=CALC_G(   RESULTAT=CHAMDEP0,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -693,15 +729,19 @@ GK0_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
 # COURONNE 1
 # ----------
 
-G1_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                        THETA=THETA1,
+G1_30=CALC_G(   RESULTAT=CHAMDEP0,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_30=CALC_G(   RESULTAT=CHAMDEP0,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -710,15 +750,19 @@ GK1_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
 # COURONNE 2
 # ----------
 
-G2_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                        THETA=THETA2,
+G2_30=CALC_G(   RESULTAT=CHAMDEP0,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_30=CALC_G(   RESULTAT=CHAMDEP0,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -727,15 +771,19 @@ GK2_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
 # COURONNE 3
 # ----------
 
-G3_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                        THETA=THETA3,
+G3_30=CALC_G(   RESULTAT=CHAMDEP0,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_30=CALC_G(   RESULTAT=CHAMDEP0,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -749,15 +797,19 @@ GK3_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
 # COURONNE 0
 # ----------
 
-G0_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                        THETA=THETA0,
+G0_32=CALC_G(   RESULTAT=CHAMDEP1,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_32=CALC_G(   RESULTAT=CHAMDEP1,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -766,15 +818,19 @@ GK0_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
 # COURONNE 1
 # ----------
 
-G1_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                        THETA=THETA1,
+G1_32=CALC_G(   RESULTAT=CHAMDEP1,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_32=CALC_G(   RESULTAT=CHAMDEP1,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -783,16 +839,20 @@ GK1_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
 # COURONNE 2
 # ----------
 
-G2_32=CALC_G_THETA_T(   MODELE=MO,
+G2_32=CALC_G(   MODELE=MO,
                         RESULTAT=CHAMDEP1,
-                        THETA=THETA2,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_32=CALC_G(   RESULTAT=CHAMDEP1,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -801,15 +861,19 @@ GK2_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
 # COURONNE 3
 # ----------
 
-G3_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                        THETA=THETA3,
+G3_32=CALC_G(   RESULTAT=CHAMDEP1,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_32=CALC_G(   RESULTAT=CHAMDEP1,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -822,15 +886,19 @@ GK3_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
 # COURONNE 0
 # ----------
 
-G0_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                        THETA=THETA0,
+G0_33=CALC_G(   RESULTAT=CHAMDEP2,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_33=CALC_G(   RESULTAT=CHAMDEP2,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -839,15 +907,19 @@ GK0_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
 # COURONNE 1
 # ----------
 
-G1_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                        THETA=THETA1,
+G1_33=CALC_G(   RESULTAT=CHAMDEP2,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_33=CALC_G(   RESULTAT=CHAMDEP2,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -856,15 +928,19 @@ GK1_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
 # COURONNE 2
 # ----------
 
-G2_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                        THETA=THETA2,
+G2_33=CALC_G(   RESULTAT=CHAMDEP2,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_33=CALC_G(   RESULTAT=CHAMDEP2,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -873,15 +949,19 @@ GK2_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
 # COURONNE 3
 # ----------
 
-G3_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                        THETA=THETA3,
+G3_33=CALC_G(   RESULTAT=CHAMDEP2,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_33=CALC_G(   RESULTAT=CHAMDEP2,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -894,15 +974,19 @@ GK3_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
 # COURONNE 0
 # ----------
 
-G0_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                        THETA=THETA0,
+G0_335=CALC_G(  RESULTAT=CHAMDEP3,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_335=CALC_G(  RESULTAT=CHAMDEP3,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -911,15 +995,19 @@ GK0_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
 # COURONNE 1
 # ----------
 
-G1_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                        THETA=THETA1,
+G1_335=CALC_G(  RESULTAT=CHAMDEP3,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_335=CALC_G(  RESULTAT=CHAMDEP3,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -928,15 +1016,19 @@ GK1_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
 # COURONNE 2
 # ----------
 
-G2_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                        THETA=THETA2,
+G2_335=CALC_G(  RESULTAT=CHAMDEP3,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_335=CALC_G(  RESULTAT=CHAMDEP3,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -945,15 +1037,19 @@ GK2_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
 # COURONNE 3
 # ----------
 
-G3_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                         THETA=THETA3,
+G3_335=CALC_G(  RESULTAT=CHAMDEP3,
+                         THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
-                          THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_335=CALC_G(  RESULTAT=CHAMDEP3,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -966,15 +1062,19 @@ GK3_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
 # COURONNE 0
 # ----------
 
-G0_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                        THETA=THETA0,
+G0_34=CALC_G(   RESULTAT=CHAMDEP4,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_34=CALC_G(   RESULTAT=CHAMDEP4,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -983,15 +1083,19 @@ GK0_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
 # COURONNE 1
 # ----------
 
-G1_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                        THETA=THETA1,
+G1_34=CALC_G(   RESULTAT=CHAMDEP4,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                          THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_34=CALC_G(   RESULTAT=CHAMDEP4,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1000,15 +1104,19 @@ GK1_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
 # COURONNE 2
 # ----------
 
-G2_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                        THETA=THETA2,
+G2_34=CALC_G(   RESULTAT=CHAMDEP4,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_34=CALC_G(   RESULTAT=CHAMDEP4,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1017,15 +1125,19 @@ GK2_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
 # COURONNE 3
 # ----------
 
-G3_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                        THETA=THETA3,
+G3_34=CALC_G(   RESULTAT=CHAMDEP4,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_34=CALC_G(   RESULTAT=CHAMDEP4,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1038,15 +1150,19 @@ GK3_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
 # COURONNE 0
 # ----------
 
-G0_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                        THETA=THETA0,
+G0_345=CALC_G(  RESULTAT=CHAMDEP5,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_345=CALC_G(  RESULTAT=CHAMDEP5,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1055,15 +1171,19 @@ GK0_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
 # COURONNE 1
 # ----------
 
-G1_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                        THETA=THETA1,
+G1_345=CALC_G(  RESULTAT=CHAMDEP5,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                          THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_345=CALC_G(  RESULTAT=CHAMDEP5,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1072,15 +1192,19 @@ GK1_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
 # COURONNE 2
 # ----------
 
-G2_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                        THETA=THETA2,
+G2_345=CALC_G(  RESULTAT=CHAMDEP5,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_345=CALC_G(  RESULTAT=CHAMDEP5,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1089,15 +1213,19 @@ GK2_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
 # COURONNE 3
 # ----------
 
-G3_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                        THETA=THETA3,
+G3_345=CALC_G(  RESULTAT=CHAMDEP5,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_345=CALC_G(  RESULTAT=CHAMDEP5,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1110,15 +1238,19 @@ GK3_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
 # COURONNE 0
 # ----------
 
-G0_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                        THETA=THETA0,
+G0_35=CALC_G(   RESULTAT=CHAMDEP6,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                         THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_35=CALC_G(   RESULTAT=CHAMDEP6,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1127,15 +1259,19 @@ GK0_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
 # COURONNE 1
 # ----------
 
-G1_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                        THETA=THETA1,
+G1_35=CALC_G(   RESULTAT=CHAMDEP6,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                         THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_35=CALC_G(   RESULTAT=CHAMDEP6,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1144,15 +1280,19 @@ GK1_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
 # COURONNE 2
 # ----------
 
-G2_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                        THETA=THETA2,
+G2_35=CALC_G(   RESULTAT=CHAMDEP6,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                         THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_35=CALC_G(   RESULTAT=CHAMDEP6,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1161,15 +1301,19 @@ GK2_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
 # COURONNE 3
 # ----------
 
-G3_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                        THETA=THETA3,
+G3_35=CALC_G(   RESULTAT=CHAMDEP6,
+                        THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
-                         THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_35=CALC_G(   RESULTAT=CHAMDEP6,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1182,15 +1326,19 @@ GK3_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
 # COURONNE 0
 # ----------
 
-G0_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                        THETA=THETA0,
+G0_36=CALC_G(   RESULTAT=CHAMDEP7,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                          THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_36=CALC_G(   RESULTAT=CHAMDEP7,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1199,15 +1347,19 @@ GK0_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
 # COURONNE 1
 # ----------
 
-G1_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                         THETA=THETA1,
+G1_36=CALC_G(   RESULTAT=CHAMDEP7,
+                         THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_36=CALC_G_THETA_T(  RESULTAT=CHAMDEP7,
-                          THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_36=CALC_G(  RESULTAT=CHAMDEP7,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1216,15 +1368,19 @@ GK1_36=CALC_G_THETA_T(  RESULTAT=CHAMDEP7,
 # COURONNE 2
 # ----------
 
-G2_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                        THETA=THETA2,
+G2_36=CALC_G(   RESULTAT=CHAMDEP7,
+                        THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                          THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_36=CALC_G(   RESULTAT=CHAMDEP7,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1233,15 +1389,19 @@ GK2_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
 # COURONNE 3
 # ----------
 
-G3_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                         THETA=THETA3,
+G3_36=CALC_G(   RESULTAT=CHAMDEP7,
+                         THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
-                          THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_36=CALC_G(   RESULTAT=CHAMDEP7,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1254,15 +1414,19 @@ GK3_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
 # COURONNE 0
 # ----------
 
-G0_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                         THETA=THETA0,
+G0_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                          THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1271,15 +1435,19 @@ GK0_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
 # COURONNE 1
 # ----------
 
-G1_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                         THETA=THETA1,
+G1_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                          THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1288,15 +1456,19 @@ GK1_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
 # COURONNE 2
 # ----------
 
-G2_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                         THETA=THETA2,
+G2_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                          THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1305,15 +1477,19 @@ GK2_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
 # COURONNE 3
 # ----------
 
-G3_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                         THETA=THETA3,
+G3_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
-                          THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_38=CALC_G(   RESULTAT=CHAMDEP8,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1326,15 +1502,19 @@ GK3_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
 # COURONNE 0
 # ----------
 
-G0_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                        THETA=THETA0,
+G0_40=CALC_G(   RESULTAT=CHAMDEP9,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                          THETA=THETA0,
-                         FOND_FISS=FOND,
+GK0_40=CALC_G(   RESULTAT=CHAMDEP9,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.005,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1343,15 +1523,19 @@ GK0_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
 # COURONNE 1
 # ----------
 
-G1_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                        THETA=THETA1,
+G1_40=CALC_G(   RESULTAT=CHAMDEP9,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                          THETA=THETA1,
-                         FOND_FISS=FOND,
+GK1_40=CALC_G(   RESULTAT=CHAMDEP9,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.0075,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1360,15 +1544,19 @@ GK1_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
 # COURONNE 2
 # ----------
 
-G2_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                         THETA=THETA2,
+G2_40=CALC_G(   RESULTAT=CHAMDEP9,
+                         THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                          THETA=THETA2,
-                         FOND_FISS=FOND,
+GK2_40=CALC_G(   RESULTAT=CHAMDEP9,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.0075,
+                                   R_SUP = 0.01,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1377,15 +1565,19 @@ GK2_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
 # COURONNE 3
 # ----------
 
-G3_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                         THETA=THETA3,
+G3_40=CALC_G(   RESULTAT=CHAMDEP9,
+                         THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
-                          THETA=THETA3,
-                         FOND_FISS=FOND,
+GK3_40=CALC_G(   RESULTAT=CHAMDEP9,
+                         THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.005,
+                                   R_SUP = 0.03,
+                                   DIRECTION=(1., 0., 0.,),
+                                   FOND_FISS=FOND),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'

@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/12/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,13 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER       NBV, IFM, IRET, IRETEX, IRETNO, IRETOR, JEXTR,
-     +              JNORM, JORIG, NIV, N1, N2, IOC, ILEV
+      INTEGER       NBV, IFM, IRET,IRETEX,IRETNO,IRETOR,JEXTR,JNORM
+      INTEGER       JORIG,NIV,N1,N2, IOC, ILEV,NBNO,JSUP,IRETS,IRETI
+      INTEGER       NBMA,JLIMA,IM
       REAL*8        PS1, PS2, R8PREM, ZERO,DDOT
       CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2,FONLEV(2)
       CHARACTER*16  TYPE, OPER, TYPFON, MOTCLE(2), TYPMCL(2)
-      CHARACTER*24  NCNCIN
+      CHARACTER*24  NCNCIN,MSUP,FONNOE
       DATA FONLEV /'FOND_INF','FOND_SUP'/
 C DEB-------------------------------------------------------------------
 C
@@ -93,10 +94,15 @@ C
          TYPMCL(1) = 'GROUP_MA'
          TYPMCL(2) = 'MAILLE'
          CALL FONFIS ( RESU, NOMA, TYPFON, IOC,
-     +                    2, MOTCLE, TYPMCL, 'G' )
+     +                    2, MOTCLE, TYPMCL, 'G')
       ENDIF
       CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1)
       IF(ILEV.EQ.1)GOTO 10
+      IF (ILEV.EQ.0) THEN
+        CALL JELIRA (RESU//'.FOND      .NOEU' , 'LONMAX', NBNO, K8B)
+      ELSE
+        CALL JELIRA (RESU//'.FOND_INF  .NOEU' , 'LONMAX', NBNO, K8B)
+      ENDIF
 C
  490  CONTINUE
 C
@@ -162,6 +168,15 @@ C
           ENDIF
         ENDIF
 C
+C   EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
+C
+      CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRETS)
+      IF(IRETS.NE.0) THEN
+        CALL  GNORMF ( NBNO,NOMA,RESU,ILEV,TYPFON )
+      ENDIF
+
+
+C
 C IMPRESSION DES OBJETS
 C
       IF ( NIV .GT. 1 ) THEN
@@ -176,15 +191,13 @@ C
      &          'OBJET POUR LE MOT CLE FOND_FISS_SUP')
         ENDIF
 C
-        CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRET)
-        IF(IRET.NE.0) THEN
+        IF(IRETS.NE.0) THEN
           CALL JEIMPO(IFM,RESU//'.LEVRESUP  .MAIL',' ',
      &                  'OBJET POUR LE MOT CLE LEVRE_SUP')
-C
         ENDIF
 C
-        CALL JEEXIN(RESU//'.LEVREINF  .MAIL',IRET)
-        IF(IRET.NE.0) THEN
+        CALL JEEXIN(RESU//'.LEVREINF  .MAIL',IRETI)
+        IF(IRETI.NE.0) THEN
             CALL JEIMPO(IFM,RESU//'.LEVREINF  .MAIL',' ',
      &                'OBJET POUR LE MOT CLE LEVRE_INF')
         ENDIF
@@ -203,8 +216,19 @@ C
           CALL JEIMPO(IFM,RESU//'.DTAN_EXTREMITE',' ',
      &                  'OBJET POUR LE MOT CLE DTAN_EXTR')
         ENDIF
+C
+        IF(IRETS.NE.0) THEN
+          CALL JEIMPO(IFM,RESU//'.SUPNORM   .NOEU',' ',
+     &                  'NOEUDS SUR NORMALE AU FOND : LEVRE_SUP')
+        ENDIF
+C
+        IF(IRETI.NE.0) THEN
+          CALL JEIMPO(IFM,RESU//'.INFNORM   .NOEU',' ',
+     &                  'NOEUDS SUR NORMALE AU FOND : LEVRE_INF')
+        ENDIF
+
       ENDIF
 C
-C
+
       CALL JEDEMA()
       END

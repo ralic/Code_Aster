@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,21 +185,34 @@ K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
 MONDEPL=RESO_LDLT(        MATR_FACT=K,
                               CHAM_NO=F  )
 
-GLOC=CALC_G_LOCAL_T(        MODELE=MO,
-                              DEPL=MONDEPL,
-                        CHAM_MATER=CM,
-                              FOND_FISS=FF,
-                             THETA=THET,
-                       PROPAGATION=1.,
-                           OPTION='CALC_G_LGLO',
-                             DEGRE=4,
-                             R_INF=3.,
-                             R_SUP=33.,
-                        LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LEGENDRE',
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  )
-                    )
+GLOC=CALC_G(  MODELE=MO,
+              DEPL=MONDEPL,
+              CHAM_MATER=CM,
+              THETA=_F( FOND_FISS=FF,
+                        R_INF=3.,
+                        R_SUP=33.,),
+              THETA_LAGR=THET,
+              PROPAGATION=1.,
+              OPTION='G_LAGR',
+              LISSAGE=_F( DEGRE=4,
+                          LISSAGE_THETA='LAGRANGE',
+                          LISSAGE_G='LEGENDRE',),
+              COMP_ELAS=_F( RELATION = 'ELAS',     
+                            DEFORMATION = 'PETIT',)
+            );
+
+G=CALC_G(  MODELE=MO,
+              DEPL=MONDEPL,
+              CHAM_MATER=CM,
+              THETA=_F( FOND_FISS=FF,
+                        MODULE=7.7,
+                        R_INF=3.,
+                        R_SUP=33.,),
+              PROPAGATION=1.,
+              OPTION='G_LAGR_GLOB',
+              COMP_ELAS=_F( RELATION = 'ELAS',     
+                            DEFORMATION = 'PETIT',)
+            );
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G(S) LOCAL
@@ -309,6 +322,16 @@ TEST_TABLE(       TABLE=GLOC,
                               VALE_K = 'NO1259',      ),
                        VALE=1.3042039335826E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
                   PRECISION=1.E-9      )
+
+#--------------------------------------------------------------------
+#            TEST DE G GLOBAL NON REGRESSION (OPTION='G_LAGR_GLOB')
+#--------------------------------------------------------------------
+
+TEST_TABLE(       TABLE=G,
+                   NOM_PARA='G',
+                   VALE=5.8184759670407E-02,REFERENCE='NON_REGRESSION',VERSION='8.2.18',
+                   PRECISION=1.E-9)
+
 
 FIN( )
 #

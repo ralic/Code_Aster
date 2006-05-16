@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/05/2003   AUTEUR G8BHHXD X.DESROCHES 
+%& MODIF OPTIONS  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,10 @@ OPTION__
         PCACOQU  CACOQU
         PCAGEPO  CAGEPO
         PCAORIE  CAORIE
+        PPINTTO  NEUT_R 
+        PCNSETO  NEUT_I 
+        PHEAVTO  NEUT_I 
+        PLONCHA  NEUT_I 
    OUT__
 PVECTUR VDEP_R RESL__
 

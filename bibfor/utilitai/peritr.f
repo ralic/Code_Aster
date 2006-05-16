@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -237,16 +237,16 @@ C        --- IMPRESSION DU CHAMELEM ---
 
           IF (NT.NE.0) THEN
             IF (OPTCAL(2).EQ.'OUI') THEN
-              CALL MEMAX(CHELEM,2,MXVALE,IBID,VR,C16B,0,IBID)
+              CALL MEMAX('MAX',CHELEM,2,MXVALE,VR,0,IBID)
               DO 30 KK = 1,MXVALE
                 ZR(LVALE+KK-1) = VR(KK)
    30         CONTINUE
             ELSE IF (OPTCAL(2).EQ.'NON') THEN
-              CALL MEMOY(CHELEM,1,CHELEM,3,IBID,VR,C16B,0,IBID)
+              CALL MEMOY(CHELEM,1,CHELEM,3,VR,0,IBID)
               ZR(LVALE) = VR(1)
               ZR(LVALE+2) = VR(2)
               TRIAX = ZR(LVALE)
-              CALL MEMOY(CHELEM,5,CHELEM,3,IBID,VR,C16B,0,IBID)
+              CALL MEMOY(CHELEM,5,CHELEM,3,VR,0,IBID)
               ZR(LVALE+4) = VR(1)
               LNRSR0 = LNRSR0 + 0.283D0*SIGN(1.D0,TRIAX)*
      &                 EXP(1.5D0*ABS(TRIAX))*ZR(LVALE+4)
@@ -297,16 +297,16 @@ C        --- IMPRESSION DU CHAMELEM ---
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
               IF (OPTCAL(2).EQ.'OUI') THEN
-                CALL MEMAX(CHELEM,2,MXVALE,IBID,VR,C16B,NBMA,ZI(JAD))
+                CALL MEMAX('MAX',CHELEM,2,MXVALE,VR,NBMA,ZI(JAD))
                 DO 40 KK = 1,MXVALE
                   ZR(LVALE+KK-1) = VR(KK)
    40           CONTINUE
               ELSE IF (OPTCAL(2).EQ.'NON') THEN
-                CALL MEMOY(CHELEM,1,CHELEM,3,IBID,VR,C16B,NBMA,ZI(JAD))
+                CALL MEMOY(CHELEM,1,CHELEM,3,VR,NBMA,ZI(JAD))
                 ZR(LVALE) = VR(1)
                 ZR(LVALE+2) = VR(2)
                 TRIAX = ZR(LVALE)
-                CALL MEMOY(CHELEM,5,CHELEM,3,IBID,VR,C16B,NBMA,ZI(JAD))
+                CALL MEMOY(CHELEM,5,CHELEM,3,VR,NBMA,ZI(JAD))
                 ZR(LVALE+4) = VR(1)
                 LNRSR0 = LNRSR0 + 0.283D0*SIGN(1.D0,TRIAX)*
      &                   EXP(1.5D0*ABS(TRIAX))*ZR(LVALE+4)
@@ -355,16 +355,16 @@ C        --- IMPRESSION DU CHAMELEM ---
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)
               IF (OPTCAL(2).EQ.'OUI') THEN
-                CALL MEMAX(CHELEM,2,MXVALE,IBID,VR,C16B,1,NUME)
+                CALL MEMAX('MAX',CHELEM,2,MXVALE,VR,1,NUME)
                 DO 60 KK = 1,MXVALE
                   ZR(LVALE+KK-1) = VR(KK)
    60           CONTINUE
               ELSE IF (OPTCAL(2).EQ.'NON') THEN
-                CALL MEMOY(CHELEM,1,CHELEM,3,IBID,VR,C16B,1,NUME)
+                CALL MEMOY(CHELEM,1,CHELEM,3,VR,1,NUME)
                 ZR(LVALE) = VR(1)
                 ZR(LVALE+2) = VR(2)
                 TRIAX = ZR(LVALE)
-                CALL MEMOY(CHELEM,5,CHELEM,3,IBID,VR,C16B,1,NUME)
+                CALL MEMOY(CHELEM,5,CHELEM,3,VR,1,NUME)
                 ZR(LVALE+4) = VR(1)
                 LNRSR0 = LNRSR0 + 0.283D0*SIGN(1.D0,TRIAX)*
      &                   EXP(1.5D0*ABS(TRIAX))*ZR(LVALE+4)

@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,14 +40,14 @@ C       ----------------------------------------------------------------
         REAL*8          EPSED(6),       EPSEF(6) ,   DEPS(6)
         CHARACTER*8     MOD
 C       ----------------------------------------------------------------
-        IF (MATERF(NMAT,1).EQ.0) THEN
+        IF (INT(MATERF(NMAT,1)).EQ.0) THEN
 C
 C --    OPERATEUR ELASTIQUE LINEAIRE ISOTROPE
 C
            CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
            CALL LCOPIL ( 'ISOTROPE' , MOD , MATERD(1,1) , DKOOH )
            
-        ELSEIF (MATERF(NMAT,1).EQ.1) THEN
+        ELSEIF (INT(MATERF(NMAT,1)).EQ.1) THEN
 C
 C --    OPERATEUR ELASTIQUE LINEAIRE ORTHOTROPE
 C

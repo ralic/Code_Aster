@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,8 @@ def crea_mail_lig_coup(dimension,lignes,groups):
 
 
 ########################################################################
-def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,**args):
+def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
+               MODELE,GROUP_MA,MAILLE,**args):
   """
      Ecriture de la macro MACR_LIGN_COUPE
   """
@@ -210,12 +211,21 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
                                 PHENOMENE='THERMIQUE',
                                 MODELISATION='PLAN',),);
 
+  motscles={}
+  motscles['VIS_A_VIS']=[]
+  if GROUP_MA != None :
+    motscles['VIS_A_VIS'].append(_F(GROUP_MA_1 = GROUP_MA,TOUT_2='OUI'),)     
+  if MAILLE != None :
+    motscles['VIS_A_VIS'].append(_F(MAILLE_1 = MAILLE,TOUT_2='OUI'),)     
+    
   __recou=PROJ_CHAMP(METHODE='ELEM',
                      RESULTAT=RESULTAT,
                      MODELE_1=self.jdc.current_context[n_modele],
                      MODELE_2=__mocou,
                      TYPE_CHAM='NOEU',
-                     NOM_CHAM=NOM_CHAM,);
+                     NOM_CHAM=NOM_CHAM, **motscles);     
+
+
 
   # Expression des contraintes aux noeuds ou des déplacements dans le repere local
   __remodr=__recou

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,13 +158,16 @@ FF1=DEFI_FOND_FISS(MAILLAGE=M,
                    NORMALE=(0.0, -1.0, 0.0),
                   );
 
-GLMO1=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CM,
-                     OPTION='K_G_MODA',
-                     RESULTAT=MODE,
-                     TOUT_MODE = 'OUI',
-                     FOND_FISS=FF1,
-                     THETA=THET1,
+GLMO1=CALC_G(MODELE=MO,
+             CHAM_MATER=CM,
+             OPTION='K_G_MODA',
+             RESULTAT=MODE,
+             TOUT_MODE = 'OUI',
+             THETA=_F(FOND_FISS=FF1,
+                      MODULE=1.0,
+                      R_INF=5.E-6,
+                      R_SUP=5.E-5,
+                      DIRECTION = (-1.0, 0.0, 0.0),),
                     );
 
 IMPR_TABLE(TABLE =GLMO1);
@@ -301,14 +304,18 @@ for i in range(0,5) :
 
 
 ###TEST INFORMATIQUE         
-GLMO2=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CM,
-                     NUME_MODE = 1,
-                     OPTION='K_G_MODA',
-                     RESULTAT=MODE,
-                     FOND_FISS=FF1,
-                     THETA=THET1,
+GLMO2=CALC_G(MODELE=MO,
+             CHAM_MATER=CM,
+             NUME_MODE = 1,
+             OPTION='K_G_MODA',
+             RESULTAT=MODE,
+             THETA=_F(FOND_FISS=FF1,
+                      MODULE=1.0,
+                      R_INF=5.E-6,
+                      R_SUP=5.E-5,
+                      DIRECTION = (-1.0, 0.0, 0.0),),
                     );
+
 TEST_TABLE(TABLE=GLMO2,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_MODE',
@@ -318,16 +325,20 @@ TEST_TABLE(TABLE=GLMO2,
               REFERENCE = 'NON_REGRESSION',
              );
 
-GLMO3=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CM,
-                     OPTION='K_G_MODA',
-                     RESULTAT=MODE,
-                     FREQ = 3.46915E+03,
-                     CRITERE='RELATIF',
-                     PRECISION=1.E-3,
-                     FOND_FISS=FF1,
-                     THETA=THET1,
+GLMO3=CALC_G(MODELE=MO,
+             CHAM_MATER=CM,
+             OPTION='K_G_MODA',
+             RESULTAT=MODE,
+             FREQ = 3.46915E+03,
+             CRITERE='RELATIF',
+             PRECISION=1.E-3,
+             THETA=_F(FOND_FISS=FF1,
+                      MODULE=1.0,
+                      R_INF=5.E-6,
+                      R_SUP=5.E-5,
+                      DIRECTION = (-1.0, 0.0, 0.0),),
                     );
+
 TEST_TABLE(TABLE=GLMO3,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_MODE',

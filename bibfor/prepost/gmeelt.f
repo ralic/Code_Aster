@@ -1,6 +1,6 @@
-      SUBROUTINE  GMEELT(NBTYMA, NOMAIL, NBNOMA, NUCONN, NBMAIL)
+      SUBROUTINE  GMEELT(IMOD, NBTYMA, NOMAIL, NBNOMA, NUCONN, NBMAIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,14 +32,13 @@ C                                     D'UNE MAILLE : ASTER -> GMSH
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           INTEGER     NBTYMA, NBMAIL, NBNOMA(15),NUCONN(15,32)
+           INTEGER     IMOD, NBTYMA, NBMAIL, NBNOMA(15),NUCONN(15,32)
            CHARACTER*8 NOMAIL(*)
 C -----  VARIABLES LOCALES
            INTEGER      NEU2(32), IER
            CHARACTER*1  PRFNOE, PRFMAI
-           CHARACTER*4  CT(3)
            CHARACTER*8  CHGROU, CHTAB(32), CHMAIL, K8BID
-           CHARACTER*12 AUT, CHENTI
+           CHARACTER*12 CHENTI
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER            ZI
@@ -75,10 +74,6 @@ C
         CHTAB(I) = '        '
   10  CONTINUE
 C
-C --- RECUPERATION DE L'UNITE LOGIQUE DE SORTIE :
-C     -----------------------------------------
-      IMOD = IUNIFI('FICHIER-MODELE')
-C
 C --- RECUPERATION DES OBJETS DE TRAVAIL :
 C     ----------------------------------
       CALL JEVEUO('&&PREGMS.NUMERO.MAILLES','L',JNUMA)
@@ -98,11 +93,8 @@ C
 C
 C ---   ECRITURE DE LA DATE :
 C       -------------------
-C        CALL JJMMAA(CT,AUT)
         WRITE(UNIT=IMOD,FMT='(A,3X,A,3X,A)') NOMAIL(NTE),
      +    'NOM=INDEFINI',CHENTI
-C        WRITE(IMOD,'(11X,2A,11X,A,A2,A,A2,A,A4)') 'AUTEUR=',AUT,
-C     +    'DATE=',CT(1)(1:2),'/',CT(2)(1:2),'/',CT(3)
 C
         IJ = 0
 C

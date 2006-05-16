@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la source imposee et temp exterieure
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,9 +175,8 @@ RLTH=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH,
                    OPERATION='EXTRACTION',
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP')))
-# On utilise une autre table en attendant de trouver une solution pour
-# le mode "reentrant uniquement si SENSIBILITE"...
-RLTHPS=POST_RELEVE_T(#reuse=RLTH,
+
+RLTH=POST_RELEVE_T(reuse=RLTH,
                    ACTION=_F(RESULTAT = RETH,
                    INTITULE='TEMPERATURE',
                    NOM_CHAM='TEMP',
@@ -186,6 +185,7 @@ RLTHPS=POST_RELEVE_T(#reuse=RLTH,
                    NOM_CMP=('TEMP'),
                    SENSIBILITE=(PS1,PS2),
                    ))
+
 #
 # 4.4. Releve des temperatures pour les differences finies
 #
@@ -214,7 +214,72 @@ RLTH2P=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH2P,
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP')))
 
-# Le post-traitement est fait en POURSUITE en attendant la correction de la
-# copie du JDC en cas de SENSIBILITE...
+# 5. calcul de l'ecart entre la derivee et la difference finie
+#
+VERIF = FORMULE(NOM_PARA=('TEMP_M', 'TEMP_P', 'DTEMP'),
+                 VALE='abs((TEMP_P - TEMP_M)/(2.*EPSA) - DTEMP)')
+
+# 5.1. Pour PS1
+# renomme les temperatures en T+ et T-
+T1moins = CALC_TABLE(
+   TABLE=RLTH1M,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_M')),)
+T1plus = CALC_TABLE(
+   TABLE=RLTH1P,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_P')),)
+T1res = CALC_TABLE(
+   TABLE=RLTH,
+   SENSIBILITE=PS1,
+   ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'DTEMP')),
+           _F(OPERATION='COMB', TABLE=T1moins, NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='COMB', TABLE=T1plus,  NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='OPER', NOM_PARA='DIFF', FORMULE=VERIF),
+           _F(OPERATION='EXTR', NOM_PARA=('NOEUD','INST','DTEMP','DIFF','TEMP_M','TEMP_P'),),
+),)
+
+IMPR_TABLE(TABLE=T1res,
+           UNITE=6,)
+
+TEST_TABLE(
+   TABLE     = T1res,
+   NOM_PARA  = 'DIFF',
+   TYPE_TEST = 'MAX',
+   VALE      = 0.,
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-8,
+   REFERENCE = 'AUTRE_ASTER',
+)
+
+# 5.2. Pour PS2
+# renomme les temperatures en T+ et T-
+T2moins = CALC_TABLE(
+   TABLE=RLTH2M,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_M')),)
+T2plus = CALC_TABLE(
+   TABLE=RLTH2P,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_P')),)
+T2res = CALC_TABLE(
+   TABLE=RLTH,
+   SENSIBILITE=PS2,
+   ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'DTEMP')),
+           _F(OPERATION='COMB', TABLE=T2moins, NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='COMB', TABLE=T2plus,  NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='OPER', NOM_PARA='DIFF', FORMULE=VERIF),
+           _F(OPERATION='EXTR', NOM_PARA=('NOEUD','INST','DTEMP','DIFF','TEMP_M','TEMP_P'),),
+),)
+
+IMPR_TABLE(TABLE=T2res,
+           UNITE=6,)
+
+TEST_TABLE(
+   TABLE     = T2res,
+   NOM_PARA  = 'DIFF',
+   TYPE_TEST = 'MAX',
+   VALE      = 0.,
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-8,
+   REFERENCE = 'AUTRE_ASTER',
+)
+
 FIN()
 

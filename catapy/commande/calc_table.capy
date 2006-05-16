@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,7 @@ from Macro.calc_table_ops import calc_table_ops
 CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                      fr="Opérations sur une table",
                      reentrant='f',
+   regles=(DERIVABLE('TABLE'),),
    TABLE  = SIMP(statut='o',typ=table_sdaster),
    ACTION = FACT(statut='o', max='**',
                     fr = "Suite des opérations à effectuer sur la table",

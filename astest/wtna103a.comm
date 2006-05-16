@@ -1,4 +1,4 @@
-# MODIF  DATE 16/01/2006   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -298,7 +298,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='N12',
                   VALE=7957.6,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
+                  PRECISION=1.E-2,
                   REFERENCE='NON_REGRESSION',),);   
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -308,7 +308,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOEUD='N12',
                   VALE=9568.8,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
+                  PRECISION=1.E-2,
                   REFERENCE='AUTRE_ASTER',),);   
 
 TEST_RESU(RESU=_F(RESULTAT=U0,

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE . METHODE ARLEQUIN
 # SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,25 +94,30 @@ THETA01=CALC_THETA(MODELE=MO,
                                R_INF=1.875E-05,
                                R_SUP=7.5E-05,),);
 
-G01=CALC_G_THETA_T(MODELE=MO,
+G01=CALC_G(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   THETA=THETA01,
+                   THETA=_F(THETA=THETA01),
                    EXCIT=(_F(CHARGE=AR,),
                           _F(CHARGE=BL,),
                           _F(CHARGE=CH,),),
                    DEPL=DEPL,
                    SYME_CHAR='SANS',);
 
-GK01=CALC_G_THETA_T(MODELE=MO,
+GK01=CALC_G(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    THETA=THETA01,
+                    THETA=_F(
+                               DIRECTION=(0.7986,0.6018,0.0),
+                               MODULE=1.0,
+                               R_INF=1.875E-05,
+                               R_SUP=7.5E-05,
+                               FOND_FISS=FOND1),
                     EXCIT=(_F(CHARGE=AR,),
                           _F(CHARGE=BL,),
                           _F(CHARGE=CH,),),
                     DEPL=DEPL,
                     SYME_CHAR='SANS',
-                    OPTION='CALC_K_G',
-                    FOND_FISS=FOND1,);
+                    OPTION='CALC_K_G');
+
 
 LEVH=INTE_MAIL_2D(MAILLAGE=MA,
                   DEFI_CHEMIN=_F(GROUP_MA='LPOP8',),

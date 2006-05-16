@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2005   AUTEUR ADBHHFA Y.WADIER 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -354,9 +354,9 @@ for i in range(1,nbcour+1) :
                                   R_INF=Rinf[i],
                                   R_SUP=Rsup[i],),);
 
-  gtheta[i]=CALC_G_THETA_T(MODELE=MOD,
+  gtheta[i]=CALC_G(MODELE=MOD,
                     CHAM_MATER=CHMAT,
-                    THETA=theta[i],
+                    THETA=_F(THETA=theta[i]),
                     EXCIT=(_F(CHARGE=COND_LIM,),
                            _F(CHARGE=CHAD,),
                            _F(CHARGE=CHTEMP,)),

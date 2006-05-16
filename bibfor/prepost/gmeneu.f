@@ -1,6 +1,6 @@
-      SUBROUTINE  GMENEU(NBNODE)
+      SUBROUTINE  GMENEU(IMOD,NBNODE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C    NBNODE         IN    I         NOMBRE DE NOEUDS DU MAILLAGE
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           INTEGER  NBNODE
+           INTEGER  IMOD,NBNODE
 C -----  VARIABLES LOCALES
            CHARACTER*1  PRFNOE
            CHARACTER*4  CT(3)
@@ -67,10 +67,6 @@ C     ---------------
       CHFONE   = '%FORMAT=(1*NOM_DE_NOEUD,3*COORD)'
       CHENTI   = 'NBOBJ=      '
       CALL CODENT(NBNODE,'G',CHENTI(7:12))
-C
-C --- NUMERO D'UNITE LOGIQUE ASSOCIE AU FICHIER ASTER :
-C     -----------------------------------------------
-      IMOD = IUNIFI('FICHIER-MODELE')
 C
 C --- DATE :
 C     ----

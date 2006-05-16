@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -133,28 +133,28 @@ THETA3=CALC_THETA( MODELE=MODELE,
                                 R_SUP = 18.)
                                )
 
-G1=CALC_G_THETA_T( MODELE=MODELE,
+G1=CALC_G( MODELE=MODELE,
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=THETA1,
+                    THETA=_F(THETA=THETA1),
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-G2=CALC_G_THETA_T( MODELE=MODELE,
+G2=CALC_G( MODELE=MODELE,
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=THETA2,
+                    THETA=_F(THETA=THETA2),
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-G3=CALC_G_THETA_T( MODELE=MODELE,
+G3=CALC_G( MODELE=MODELE,
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=THETA3,
+                    THETA=_F(THETA=THETA3),
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
@@ -179,8 +179,8 @@ ACCE5=CREA_CHAMP(OPERATION='EXTR',
                 NOM_CHAM='ACCE',
                  )
 
-G4=CALC_G_THETA_T( MODELE=MODELE,
-                    THETA=THETA1,
+G4=CALC_G( MODELE=MODELE,
+                    THETA=_F(THETA=THETA1),
                     DEPL=DEPL5,
                     VITE=VITE5,
                     ACCE=ACCE5,

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,37 +131,42 @@ THETA=CALC_THETA(
                       R_SUP = 0.5),
                        )
 
-G=CALC_G_THETA_T(         RESULTAT=RESU,
-                          THETA=THETA,
-                          COMP_ELAS=_F(  RELATION = 'ELAS'),
-                   )
+G=CALC_G(  RESULTAT=RESU,OPTION='CALC_G_GLOB',
+           THETA=_F(THETA=THETA),
+           COMP_ELAS=_F(  RELATION = 'ELAS'),
+         );
 
-GBIL=CALC_G_THETA_T(
-                          THETA=THETA,
-                          RESULTAT=RESU,
-                          OPTION='G_BILINEAIRE',
-                          COMP_ELAS=_F(  RELATION = 'ELAS')
-                       )
 
-GMAX=CALC_G_THETA_T(
-                          THETA=THETA,
-                          RESULTAT=RESU,
-                          BORNES=(
-                          _F(  NUME_ORDRE = 1,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 2,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 3,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 4,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.)),
-                              OPTION='CALC_G_MAX',
-                          COMP_ELAS=_F(  RELATION = 'ELAS')
-                       )
+GBIL=CALC_G(  THETA=_F( FOND_FISS=FOND,
+                        MODULE = 1.,
+                        R_INF = 0.2,
+                        R_SUP = 0.5),
+              RESULTAT=RESU,
+              OPTION='G_BILI_GLOB',
+              COMP_ELAS=_F(  RELATION = 'ELAS')
+                       );
+
+GMAX=CALC_G(  THETA=_F( FOND_FISS=FOND,
+                        MODULE = 1.,
+                        R_INF = 0.2,
+                        R_SUP = 0.5),
+                        RESULTAT=RESU,
+                        BORNES=( _F( NUME_ORDRE = 1,
+                                     VALE_MIN = 0.,
+                                     VALE_MAX = 1.),
+                                 _F( NUME_ORDRE = 2,
+                                     VALE_MIN = 0.,
+                                     VALE_MAX = 1.),
+                                 _F( NUME_ORDRE = 3,
+                                     VALE_MIN = 0.,
+                                     VALE_MAX = 1.),
+                                 _F( NUME_ORDRE = 4,
+                                     VALE_MIN = 0.,
+                                     VALE_MAX = 1.)),
+                        OPTION='G_MAX_GLOB',
+                        COMP_ELAS=_F(  RELATION = 'ELAS')
+                       );
+
 
 IMPR_TABLE      ( UNITE=8,
                   TABLE           =  GMAX,

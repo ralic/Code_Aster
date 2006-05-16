@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,8 +96,6 @@ C     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
      &    (ZK16(ICOMPO).EQ.'VISC_CIN1_CHAB') .OR.
      &    (ZK16(ICOMPO).EQ.'VISC_CIN2_CHAB')) THEN
         IPOPP = 1
-      ELSE IF (ZK16(ICOMPO).EQ.'CHABOCHE') THEN
-        IPOPP = 13
       ELSE
         CALL UTMESS('F','TE0339','POUR L''OPTION '//
      &              '"RICE_TRACEY", LA RELATION "'//ZK16(ICOMPO)//

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,7 +101,6 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      LOGICAL       CERMES 
       INTEGER       NVIM,NVITH,ADVIME,ADVITH,ADVIHY,ADVICO
       INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT,NVIH,NVIC,NVIT
       REAL*8        P1,DP1,GRAP1(3),P2,DP2,GRAP2(3),T,DT,GRAT(3)
@@ -134,23 +133,14 @@ C ======================================================================
      +                   IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +                   ADDETE, NDIM, T0, P10, P20, PHI0, PVP0, 
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, CERMES, NVITH, RETCOM)
+     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM)
       IF (RETCOM.NE.0) THEN
          GOTO 9000
       ENDIF
 C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
-      IF (CERMES) THEN
-         CALL CACOGT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
-     +               NVIM,NVITH,YAMEC,YATE,ADDEME,ADCOME,ADVITH,
-     +               ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,
-     +               CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
-     +               DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,PVP0,
-     +               P10,P20,T0,SAT,RV0,G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,
-     +               G2,G3)
-      ELSE
-         CALL CALCCO(OPTION,MECA,THMC,THER,HYDR,IMATE,
+      CALL CALCCO(OPTION,MECA,THMC,THER,HYDR,IMATE,
      +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
      +                    NBPHA1,YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADVIHY,
      +                    ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
@@ -161,9 +151,8 @@ C ======================================================================
      +                    P10,P20,T0,SAT,RETCOM,CRIT,BIOT,
      +                    VIHRHO,VICPHI,VICPVP,VICSAT)
 
-         IF (RETCOM.NE.0) THEN
-            GOTO 9000
-         ENDIF
+      IF (RETCOM.NE.0) THEN
+         GOTO 9000
       ENDIF
 C ======================================================================
 C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 -
@@ -184,28 +173,18 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU FINALES ------------------------
 C ======================================================================
-      IF (.NOT.CERMES) THEN
-         CALL THMLEC(IMATE, THMC, MECA, HYDR, THER, T, P1, P2,
+      CALL THMLEC(IMATE, THMC, MECA, HYDR, THER, T, P1, P2,
      +               PHI, VINTP(1), PVP, PAD, RGAZ, BIOT, SATUR,
      +               DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
      +               DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
      +               DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,
      +               DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG,
      +               MAMOVG, FICKAD, DFADT, LAMBCT,ISOT)
-      ENDIF
 C ======================================================================
 C --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 C ======================================================================
       IF (YAP1.EQ.1) THEN
-         IF (CERMES) THEN
-            CALL CAFHGT(OPTION,THMC,HYDR,IMATE,NDIM,DIMDEF,
-     +                  DIMCON,NVIM,NVITH,YAMEC,YATE,ADDEP1,ADDEP2,
-     +                  ADCP11,ADCP12,ADCP21,ADDEME,ADDETE,CONGEP,
-     +                  DSDE,P1,P2,GRAP1,GRAP2,T,GRAT,PHI,PVP,RHO11,
-     +                  H11,H12,T0,SAT,RV0,G1F,J1D,J1F,J1C,
-     +                  J2,J3,G2,PESA)
-         ELSE
-             CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF, 
+          CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF, 
      +                    DIMCON,YAMEC,YATE,ADDEP1,ADDEP2, 
      +                    ADCP11,ADCP12,ADCP21,ADCP22,ADDEME,ADDETE,
      +                    CONGEM,CONGEP,DSDE,P1,P2,
@@ -219,23 +198,15 @@ C ======================================================================
      +                    VISCL, DVISCL, MAMOLG,CPG, LAMBT, DLAMBT,
      +                    VISCG,DVISCG, MAMOVG,
      +                    CPVG, VISCVG, DVISVG, RETCOM,ISOT)
-            IF ( RETCOM.NE.0) THEN
-               GOTO 9000
-            ENDIF
+         IF ( RETCOM.NE.0) THEN
+            GOTO 9000
          ENDIF
       ENDIF
 C ======================================================================
 C --- CALCUL DU FLUX THERMIQUE UNIQUEMENT SI YATE = 1 ------------------
 C ======================================================================
       IF (YATE.EQ.1) THEN
-         IF (CERMES) THEN
-            CALL CAFTGT(OPTION,THMC,HYDR,IMATE,NDIM,DIMDEF,
-     +                  DIMCON,NVIM,NVITH,YAMEC,YAP1,YAP2,
-     +                  ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE,
-     +                  CONGEP,DSDE,P1,T,GRAT,SAT)
-         ELSE
-
-            CALL CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
+         CALL CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
      +                 DIMCON,YAMEC,YAP1,NBPHA1,YAP2,
      +                 NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,
      +                 ADCOTE,CONGEM,CONGEP,
@@ -248,10 +219,9 @@ C ======================================================================
      +                 DLAMBT,
      +                 VISCG, DVISCG, MAMOVG, CPVG, VISCVG, DVISVG,
      +                 RETCOM,LAMBCT,RHO11,H11,H12)
-            IF ( RETCOM.NE.0) THEN
-               GOTO 9000
-            ENDIF
-         ENDIF 
+         IF ( RETCOM.NE.0) THEN
+            GOTO 9000
+         ENDIF
       ENDIF
 C ======================================================================
  9000 CONTINUE

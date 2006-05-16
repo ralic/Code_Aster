@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 #   TEST DU MODELE DE COUPLAGE D'UNE LOI DE FLUAGE DE GRANGER
 #   (GRANGER_FP) ET DES LOIS DE PLASTICITE/FISSURATION :
 #   BETON_DOUBLE_DP (DOUBLE CRITERE DE DRUCKER PRAGER),
-#   VMIS_ISOT_LINE ET CHABOCHE, EN DEPLACEMENT IMPOSE, 
+#   VMIS_ISOT_LINE , EN DEPLACEMENT IMPOSE, 
 #   EN MODELISATION D_PLAN, EN TRACTION UNIAXIALE (XX).
 #  
 #   - LES PARAMETRES DE LA LOI DE PLASTICITE/FISSURATION SONT CHOISIS
@@ -106,15 +106,6 @@ BETON=DEFI_MATERIAU(            ELAS_FO=_F( E = E,
                                             ECRO_TRAC_P_PIC = 'LINEAIRE'),
                               ECRO_LINE_FO=_F( D_SIGM_EPSI = ECRO,
                                             SY = FT,),
-                                  CHABOCHE=_F( R_I = 4.1,
-                                            R_0 = 4.0,
-                                            B = 0.0001,
-                                            K = 1.,
-                                            W = 0.,
-                                            A1 = 0.,
-                                            A2 = 0.,
-                                            C1 = 0.,
-                                            C2 = 0.)
                          )
 
 SECH1=CREA_CHAMP(   OPERATION='AFFE',
@@ -478,112 +469,6 @@ TEST_TABLE(  TABLE=RELEVE_3,
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
                     VALE=8.429335E-04,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
-           )
-
-################################################
-###    COUPLAGE    GRANGER_FP     CHABOCHE   ###
-################################################
-
-COUPLA3=STAT_NON_LINE( 
-                   TITRE='COUPLAGE FLUAGE/FISSURATION',
-                  MODELE=MO,EXCIT=(
-                   _F(  CHARGE = COND_LIM),
-                   _F(  CHARGE = TRAC,
-                           FONC_MULT = COEF_TR)),
-               INCREMENT=_F(  LIST_INST = LINST),
-              CHAM_MATER=CM,
-               COMP_INCR=_F(  RELATION = 'KIT_DDI',
-                           ITER_INTE_MAXI = 20,
-                           ITER_INTE_PAS = 0,
-                           RESI_INTE_RELA = 1.E-6,
-                           RELATION_KIT = ('GRANGER_FP',
-                                            'CHABOCHE',),
-                           DEFORMATION = 'PETIT',
-                           TOUT = 'OUI'),
-                  NEWTON=_F(  MATRICE = 'TANGENTE',
-                           REAC_INCR = 1,
-                           REAC_ITER = 5),
-             CONVERGENCE=_F(  ITER_GLOB_MAXI = 100,
-                           RESI_GLOB_RELA = 1.E-6)
-                            )
-
-COUPLA3=CALC_ELEM( reuse=COUPLA3, 
-                   OPTION=( 'SIEF_ELNO_ELGA',
-                            'EPGR_ELNO',
-                            'EPSP_ELNO', ),
-                   RESULTAT=COUPLA3 )
-
-RELEVE_4=POST_RELEVE_T(ACTION=( 
-                   _F(  RESULTAT = COUPLA3,
-                            INTITULE = 'SIEF',
-                            NOM_CHAM = 'SIEF_ELNO_ELGA',
-                            NOM_CMP = 'SIXX',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA3,
-                            INTITULE = 'EPSP',
-                            NOM_CHAM = 'EPSP_ELNO',
-                            TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA3,
-                            INTITULE = 'EPSF',
-                            NOM_CHAM = 'EPGR_ELNO',
-                            TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'),) 
-                       )
-
-
-TEST_TABLE(  TABLE=RELEVE_4,
-                NOM_PARA='SIXX',FILTRE=( 
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=3.205409+00,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='EPXX',FILTRE=( 
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=7.357178E-07,
-               PRECISION=2.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_4,
-                NOM_PARA='SIXX',FILTRE=( 
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.614199E+00,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='EPXX',FILTRE=( 
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=2.195350E-05,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='EPXX',FILTRE=( 
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.429339E-04,
                PRECISION=1.E-4,
                REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
            )

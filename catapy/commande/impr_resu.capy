@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,6 +67,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            b_sensibilite   =BLOC(condition="RESULTAT != None",
                                  fr="Définition des paramètres de sensibilité",
                                  ang="Definition of sensitivity parameters",
+             regles=(DERIVABLE('RESULTAT'),),
              SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),),

@@ -6,7 +6,7 @@
 C TOLE CRP_21        
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,15 +62,7 @@ C         IF    ( LOI(1:8) . EQ. 'ROUSS_PR' ) THEN
 C         CALL RSLRES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST,
 C     1                 TEMPF, YD,   YF,   DEPS,   DY,     R )
 C
-      IF     ( LOI(1:8) .EQ. 'CHABOCHE' ) THEN
-         CALL CHBRES ( MOD, NMAT, MATERD, MATERF,
-     1                 YD,   YF,   DEPS,   DY,     R )
-C
-      ELSEIF ( LOI(1:4) .EQ. 'OHNO' ) THEN
-         CALL ONORES ( MOD,  NMAT, MATERD, MATERF,
-     1                 YD,   YF,   DEPS,   DY,     R )
-C
-      ELSEIF ( LOI(1:5) .EQ. 'LMARC' ) THEN
+      IF ( LOI(1:5) .EQ. 'LMARC' ) THEN
          CALL LMARES ( MOD, NMAT, MATERD, MATERF,
      1                 TIMED, TIMEF, YD,  YF,     DEPS,   DY,     R )
 C

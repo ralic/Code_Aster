@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF gmsh Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@ except:
 
 
 
-def GMSH(mode, fichier, param, options=None) :
+def GMSH(mode, fichier, param, options=[]) :
 
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)

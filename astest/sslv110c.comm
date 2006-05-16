@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,30 +111,33 @@ THETA0=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
 
-G0=CALC_G_THETA_T( RESULTAT=RESU,SYME_CHAR='SYME',
+G0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
-                     THETA=THETA0,  EXCIT=_F(CHARGE=CH),  )
+                     THETA=_F(THETA=THETA0),  EXCIT=_F(CHARGE=CH),  )
 
 
-GLOC0=CALC_G_LOCAL_T( RESULTAT=RESU,SYME_CHAR='SYME',
-                        FOND_FISS=FISS1,
-                        DEGRE=7,   R_SUP_FO=RSUP0,   R_INF_FO=RINF0,
+GLOC0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
+                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP0,   R_INF_FO=RINF0),
+                        LISSAGE=_F(DEGRE=7),   
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                      )
 
-DGE=CALC_G_THETA_T(RESULTAT=RESU, SYME_CHAR='SYME',
+DGE=CALC_G(RESULTAT=RESU, SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
               SENSIBILITE = (YOUNG,), 
-                     THETA=THETA0,)
+                     THETA=_F(THETA=THETA0,))
 
-DGF=CALC_G_THETA_T(RESULTAT=RESU, SYME_CHAR='SYME',
+DGF=CALC_G(RESULTAT=RESU, SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
               SENSIBILITE = (FZ,), 
-                     THETA=THETA0, )
+                     THETA=_F(THETA=THETA0, ))
 
 #----------------------------------------------------------------------
 #                           COURONNE 2
@@ -145,32 +148,36 @@ THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
 
-G1=CALC_G_THETA_T(RESULTAT=RESU,SYME_CHAR='SYME',
+G1=CALC_G(RESULTAT=RESU,SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                      COMP_ELAS=_F( RELATION = 'ELAS',
                                 DEFORMATION = 'PETIT'),
-             THETA=THETA1,)
+             THETA=_F(THETA=THETA1,))
 
 
-GLOC1=CALC_G_LOCAL_T(RESULTAT=RESU,
-                       FOND_FISS=FISS1,SYME_CHAR='SYME',
-                       DEGRE=7,   R_SUP_FO=RSUP1,   R_INF_FO=RINF1,
-                        COMP_ELAS=_F( RELATION = 'ELAS',
+GLOC1=CALC_G(RESULTAT=RESU,
+                       THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP1,R_INF_FO=RINF1,),
+                       SYME_CHAR='SYME',
+                       LISSAGE=_F(DEGRE=7),   
+                       COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
                        )
 
-DGE1=CALC_G_THETA_T(     
+DGE1=CALC_G(     
                       RESULTAT=RESU, SYME_CHAR='SYME',
+                      OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                       SENSIBILITE = (YOUNG,), 
-                      THETA=THETA1,    )
+                      THETA=_F(THETA=THETA1,    ))
 
-DGF1=CALC_G_THETA_T(     
+DGF1=CALC_G(     
                       RESULTAT=RESU, SYME_CHAR='SYME',
+                      OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                       SENSIBILITE = (FZ,), 
-                      THETA=THETA1,    )
+                      THETA=_F(THETA=THETA1,    ))
 
 
 #----------------------------------------------------------------------
@@ -182,31 +189,35 @@ THETA2=CALC_THETA(   OPTION='COURONNE', MODELE=MO, FOND_FISS=FISS1,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
                                  )
 
-G2=CALC_G_THETA_T(   RESULTAT=RESU,  SYME_CHAR='SYME',
+G2=CALC_G(   RESULTAT=RESU,  SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                      COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
-                     THETA=THETA2,    )
+                     THETA=_F(THETA=THETA2,    ))
 
-GLOC2=CALC_G_LOCAL_T(  RESULTAT=RESU,  
-                       FOND_FISS=FISS1,SYME_CHAR='SYME',
-                       DEGRE=7,   R_SUP_FO=RSUP2,   R_INF_FO=RINF2,
+GLOC2=CALC_G(  RESULTAT=RESU,  
+                       THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,R_INF_FO=RINF2),
+                       SYME_CHAR='SYME',
+                       LISSAGE=_F(DEGRE=7),   
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                      DEFORMATION = 'PETIT'),
                         )
 
-DGE2=CALC_G_THETA_T(     
+DGE2=CALC_G(     
                       RESULTAT=RESU, SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                       SENSIBILITE = (YOUNG,), 
-                      THETA=THETA2,    )
+                      THETA=_F(THETA=THETA2,    ))
 
-DGF2=CALC_G_THETA_T(     
+DGF2=CALC_G(     
                       RESULTAT=RESU, SYME_CHAR='SYME',
+                       OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                       SENSIBILITE = (FZ,), 
-                      THETA=THETA2,    )
+                      THETA=_F(THETA=THETA2,    ))
 
 #----------------------------------------------------------------------
 #              TEST DE G SUR LES 3 COURONNES

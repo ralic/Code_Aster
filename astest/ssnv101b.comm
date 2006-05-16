@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,27 +53,35 @@ CPLAN=AFFE_MODELE(             MAILLAGE=CARRE,
                                             MODELISATION = 'C_PLAN',
                                             TOUT = 'OUI'))
 
+
+C1_I=187.*341.
+C2_I=29.*17184.
+
+# LE C_I DU MODELE VISC_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
 ACIER=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,
-                                            NU = .3,
-                                            ALPHA = 0.),
-                                CHABOCHE=_F(   R_I = 151.,
-                                            R_0 = 87.,
-                                            B = 2.3,
+                                    ELAS=_F(   E = 145200.,             
+                                            NU = .3,            
+                                            ALPHA = 0.,          ),
+                           CIN2_CHAB=_F(   R_I = 151.,           
+                                            R_0 = 87.,           
+                                            B = 2.3,             
                                             K = .43,
                                             W = 6.09,
-                                            A1 = 187.,
-                                            A2 = 29.,
-                                            C1 = 341.,
-                                            C2 = 17184.))
+                                            C1_I = C1_I,           
+                                            G1_0 = 341.,            
+                                            C2_I = C2_I,           
+                                            G2_0 = 17184.,            
+                                             ))
+
 
 MAT=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = ('MA1','MA2',),
                                            MATER = ACIER,
                                            TEMP_REF = 20.))
 
-LINST=DEFI_LIST_REEL(              DEBUT=.4,
-                              INTERVALLE=_F( JUSQU_A = 1.435, NOMBRE = 12))
+LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
+                              _F( JUSQU_A = 0.4, NOMBRE = 1),
+                              _F( JUSQU_A = 1.435, NOMBRE = 30)))
 
 TR_CS=AFFE_CHAR_MECA(             MODELE=CPLAN,DDL_IMPO=(
                  _F(  NOEUD = ('NO3','NO5',), DX = 0.),
@@ -100,9 +108,9 @@ SOLNL=STAT_NON_LINE(
                 FONC_MULT = COEF,
                 TYPE_CHARGE = 'FIXE_CSTE'),
                          COMP_INCR=_F( 
-                RELATION = 'CHABOCHE',
+                RELATION = 'VMIS_CIN2_CHAB',ALGO_C_PLAN='DEBORST',
                 DEFORMATION = 'PETIT',
-                ITER_INTE_MAXI = 20,
+                ITER_INTE_MAXI = 200,RESI_INTE_RELA=1.E-6,
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),
@@ -112,7 +120,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 50,
-                RESI_GLOB_RELA = 1.0E-4,)
+                RESI_GLOB_RELA = 1.0E-6,)
               )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
@@ -123,27 +131,24 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 12,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  INST=1.435,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 12,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  INST=1.435,
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST=1.435,PRECISION=0.02,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST=1.435,PRECISION=0.02,
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST=1.435,PRECISION=0.02,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 1.454E-1),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST=1.435,PRECISION=0.02,
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY',  VALE = 1.454E-1))
 
-# RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO_ELGA'  NUME_ORDRE: 12
-#                MAILLE:MA1  NOEUD:NO1
-#                NOM_CMP:'V13'             VALE:1.922E-1 )
                                                                      )
 
 FIN()

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3567,9 +3567,6 @@ PyObject *args;
    free(valres);
    free(codret);
    
-   Py_DECREF(t_nompar);
-   Py_DECREF(t_valpar);
-   Py_DECREF(t_nomres);
    return t_res;
 }
 

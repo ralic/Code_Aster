@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_JDC Noyau  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -448,3 +448,11 @@ NONE = None
           if hasattr(cata,nomcmd):
              return getattr(cata,nomcmd)
 
+   def append_reset(self,etape):
+       """
+          Ajoute une etape provenant d'un autre jdc a la liste des etapes
+          et remet à jour la parenté de l'étape et des concepts
+       """
+       self.etapes.append(etape)
+       etape.reparent(self)
+       etape.reset_jdc(self)

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,25 +163,29 @@ THETA0=CALC_THETA(       MODELE=MO,
                         DIRECTION=(1., 0., 0.,)
                      )
 
-G00=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA0,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS',
-                           COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'PETIT')
-                      )
+G00=CALC_G(        MODELE=MO,
+                       DEPL=DEP,
+                      THETA=_F(THETA=THETA0),
+                     EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                  SYME_CHAR='SANS',
+                   COMP_ELAS=_F( RELATION = 'ELAS',
+                              DEFORMATION = 'PETIT')
+              )
 
-GK00=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=THETA0,
-                                FOND_FISS=FOND,
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
-                      )
+GK00=CALC_G(        MODELE=MO,
+                        DEPL=DEP,
+                       THETA=_F(
+                          MODULE = 1.,
+                          R_INF = 3.75E-5,
+                          R_SUP = 7.50E-5,
+                          DIRECTION=(1., 0., 0.,),
+                          FOND_FISS=FOND),
+                      EXCIT=_F(CHARGE=CH,),
+                  CHAM_MATER=CHMAT,
+                   SYME_CHAR='SANS',
+                      OPTION='CALC_K_G'
+              )
 
 #
 #
@@ -196,25 +200,29 @@ THETA01=CALC_THETA(       MODELE=MO,
                          DIRECTION=(1., 0., 0.,)
                      )
 
-G01=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA01,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
-                          SYME_CHAR='SANS'
-                     )
+G01=CALC_G(        MODELE=MO,
+                       DEPL=DEP,
+                      THETA=_F(THETA=THETA01),
+                     EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                             DEFORMATION = 'PETIT'),
+                  SYME_CHAR='SANS'
+             )
 
-GK01=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=THETA01,
-                                FOND_FISS=FOND,
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
-                      )
+GK01=CALC_G(        MODELE=MO,
+                        DEPL=DEP,
+                       THETA=_F(
+                                 MODULE = 1.,
+                                 R_INF = 7.50E-5,
+                                 R_SUP = 1.125E-4,
+                                 DIRECTION=(1., 0., 0.,),
+                                 FOND_FISS=FOND),
+                      EXCIT=_F(CHARGE=CH,),
+                  CHAM_MATER=CHMAT,
+                   SYME_CHAR='SANS',
+                      OPTION='CALC_K_G'
+              )
 
 #
 #
@@ -229,26 +237,30 @@ THETA02=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G02=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA02,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
-                          SYME_CHAR='SANS'
-                     )
+G02=CALC_G( MODELE=MO,
+            DEPL=DEP,
+            THETA=_F(THETA=THETA02),
+            EXCIT=_F(CHARGE=CH,),
+            CHAM_MATER=CHMAT,
+            COMP_ELAS=_F( RELATION = 'ELAS',
+                          DEFORMATION = 'PETIT'),
+            SYME_CHAR='SANS'
+            )
 
 #
-GK02=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=THETA02,
-                                FOND_FISS=FOND,
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
-                      )
+GK02=CALC_G(MODELE=MO,
+            DEPL=DEP,
+            THETA=_F(
+                      MODULE = 1.,
+                      R_INF = 1.125E-4,
+                      R_SUP = 1.500E-4,
+                      DIRECTION=(1., 0., 0.,),
+                      FOND_FISS=FOND),
+            EXCIT=_F(CHARGE=CH,),
+            CHAM_MATER=CHMAT,
+            SYME_CHAR='SANS',
+            OPTION='CALC_K_G'
+            )
 
 #
 #
@@ -264,26 +276,30 @@ THETA03=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G03=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA03,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
-                          SYME_CHAR='SANS'
-                    )
+G03=CALC_G(        MODELE=MO,
+                       DEPL=DEP,
+                      THETA=_F(THETA=THETA03),
+                     EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                             DEFORMATION = 'PETIT'),
+                  SYME_CHAR='SANS'
+            )
 
 #
-GK03=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=THETA03,
-                                FOND_FISS=FOND,
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
-                      )
+GK03=CALC_G(        MODELE=MO,
+                        DEPL=DEP,
+                       THETA=_F(
+                                MODULE = 1.,
+                                R_INF = 1.500E-4,
+                                R_SUP = 1.875E-4,
+                                DIRECTION=(1., 0., 0.,),
+                                FOND_FISS=FOND),
+                      EXCIT=_F(CHARGE=CH,),
+                  CHAM_MATER=CHMAT,
+                   SYME_CHAR='SANS',
+                      OPTION='CALC_K_G'
+              )
 
 #
 #
@@ -299,26 +315,30 @@ THETA04=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G04=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA04,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
-                          SYME_CHAR='SANS'
-                    )
+G04=CALC_G(        MODELE=MO,
+                       DEPL=DEP,
+                      THETA=_F(THETA=THETA04),
+                     EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                             DEFORMATION = 'PETIT'),
+                  SYME_CHAR='SANS'
+            )
 
 #
-GK04=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=THETA04,
-                                FOND_FISS=FOND,
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
-                      )
+GK04=CALC_G(        MODELE=MO,
+                        DEPL=DEP,
+                       THETA=_F(
+                                 MODULE = 1.,
+                                 R_INF = 1.875E-4,
+                                 R_SUP = 2.250E-4,
+                                 DIRECTION=(1., 0., 0.,),
+                                 FOND_FISS=FOND),
+                      EXCIT=_F(CHARGE=CH,),
+                  CHAM_MATER=CHMAT,
+                   SYME_CHAR='SANS',
+                      OPTION='CALC_K_G'
+              )
 
 #
 #
@@ -334,26 +354,30 @@ THETA05=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G05=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA05,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
-                          SYME_CHAR='SANS'
-                    )
+G05=CALC_G(        MODELE=MO,
+                       DEPL=DEP,
+                      THETA=_F(THETA=THETA05),
+                     EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                  COMP_ELAS=_F( RELATION = 'ELAS',
+                             DEFORMATION = 'PETIT'),
+                  SYME_CHAR='SANS'
+            )
 
 #
-GK05=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=THETA05,
-                                FOND_FISS=FOND,
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
-                      )
+GK05=CALC_G(        MODELE=MO,
+                        DEPL=DEP,
+                       THETA=_F( 
+                                MODULE = 1.,
+                                R_INF = 2.250E-4,
+                                R_SUP = 3.000E-4,
+                                DIRECTION=(1., 0., 0.,),
+                                FOND_FISS=FOND),
+                      EXCIT=_F(CHARGE=CH,),
+                  CHAM_MATER=CHMAT,
+                   SYME_CHAR='SANS',
+                      OPTION='CALC_K_G'
+              )
 
 #
 #

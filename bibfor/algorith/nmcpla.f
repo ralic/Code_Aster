@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C               NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
-C                       COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
+C                       COMP(1) = RELATION DE COMPORTEMENT
 C                       COMP(2) = NB DE VARIABLES INTERNES
 C                       COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
 C               OPT     OPTION DE CALCUL A FAIRE
@@ -190,18 +190,12 @@ C
          ENDIF
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
-     &        CMP2(1)(1:8) .EQ. 'CHABOCHE'   .OR.
-     &        CMP2(1)(1:4) .EQ. 'OHNO'       .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
      &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
      &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
 C
               IF (CMP2(1)(1:8).EQ. 'ROUSS_PR')
      &            CALL RSLNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
-              IF (CMP2(1)(1:8) .EQ. 'CHABOCHE' )
-     &            CALL CHBNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
-              IF (CMP2(1)(1:4) .EQ. 'OHNO')
-     &            CALL ONONVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
               IF (CMP2(1)(1:5) .EQ. 'LMARC')
      &            CALL LMANVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
               IF (CMP2(1)(1:7) .EQ. 'NADAI_B')
@@ -345,8 +339,6 @@ C
      4                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
-     &        CMP2(1)(1:8) .EQ. 'CHABOCHE'   .OR.
-     &        CMP2(1)(1:4) .EQ. 'OHNO'       .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
      &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
      &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN

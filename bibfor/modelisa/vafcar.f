@@ -1,4 +1,4 @@
-      SUBROUTINE VAFCAR(TPGZ,MCLFZ,NMOBJZ,NPO,NDI,NCO,NCA,NBA,NMA,NGR,
+      SUBROUTINE VAFCAR(TPGZ,MCLFZ,NMOBJZ,NPO,NDI,NCO,NCA,NBA,NMA,
      +                  NGB,NUTYEL,NTYELE,CAR,NCAR,IVR,KIOC,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                  NTYELE(*),      IVR(*)
@@ -9,7 +9,7 @@
       CHARACTER*8       NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF MODELISA  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,12 +85,9 @@ C --- VERIFICATION DU BON TYPE DE L ELEMENT
       ELSEIF(MCLF(1:6).EQ.'MASSIF') THEN
          NPD = NPO + NDI + NCO + NCA + NBA + 1
          NPF = NPO + NDI + NCO + NCA + NBA + NMA
-      ELSEIF(MCLF(1:9).EQ.'ASSE_GRIL') THEN
-         NPD = NPO + NDI + NCO + NCA + NBA + NMA + 1
-         NPF = NPO + NDI + NCO + NCA + NBA + NMA + NGR
       ELSEIF(MCLF(1:6).EQ.'GRILLE') THEN
-         NPD = NPO + NDI + NCO + NCA + NBA + NMA + NGR + 1
-         NPF = NPO + NDI + NCO + NCA + NBA + NMA + NGR + NGB
+         NPD = NPO + NDI + NCO + NCA + NBA + NMA + 1
+         NPF = NPO + NDI + NCO + NCA + NBA + NMA + NGB
       ELSE   
          CALL UTDEBM('A','VAFCAR','MOCLE FACTEUR NON TRAITE :')
          CALL UTIMPK('S',MCLF,0,' ')

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                            NORMALE=(0., 1., 0.,)
                       )
 
-# TEST CALC_G_THETA  AVEC 3 COURONNES 
+# TEST CALC_G  AVEC 3 COURONNES 
 # ------------------------------
 
 THETA0=CALC_THETA(    MODELE=MO,
@@ -108,37 +108,37 @@ THETA2=CALC_THETA(    MODELE=MO,
                                      DIRECTION=(1., 0., 0.,)
                      )
 
-G_0=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA0,
-                    RESULTAT=CHAMDEP,
-                    TOUT_ORDRE='OUI',
-                    SYME_CHAR='SYME',
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
-                    );
+G_0=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA0),
+            RESULTAT=CHAMDEP,
+            TOUT_ORDRE='OUI',
+            SYME_CHAR='SYME',
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+            );
 
 IMPR_TABLE(TABLE=G_0,);
 
 LISTG = (30, 60,90,120,150);
-G_1=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA1,
-                    RESULTAT=CHAMDEP,
-                    NUME_ORDRE=LISTG,
-                    SYME_CHAR='SYME',
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
-                    );
+G_1=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA1),
+            RESULTAT=CHAMDEP,
+            NUME_ORDRE=LISTG,
+            SYME_CHAR='SYME',
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+            );
 
 IMPR_TABLE(TABLE=G_1,);
 
-G_2=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA2,
-                    RESULTAT=CHAMDEP,
-                    NUME_ORDRE=LISTG,
-                    SYME_CHAR='SYME',
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
-                    );
+G_2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA2),
+            RESULTAT=CHAMDEP,
+            NUME_ORDRE=LISTG,
+            SYME_CHAR='SYME',
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+            );
 
 IMPR_TABLE(TABLE=G_2,);
 #

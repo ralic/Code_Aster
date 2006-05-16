@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -303,7 +303,7 @@ C        ---------------------------------------------
         CALL RCVALA(ZI(IMATE),' ','ELAS',4,NOMPAR,VALPAR,2,NOMRES,
      &             VALRES, CODRET,'FM')
 
-        CALL RCVALA(ZI(IMATE),' ','ELAS',4,NOMPAR,VALPAR,2,NOMRES(3),
+        CALL RCVALA(ZI(IMATE),' ','ELAS',4,NOMPAR,VALPAR,1,NOMRES(3),
      &              VALRES(3),CODRET(3),'  ')
 
         E = VALRES(1)

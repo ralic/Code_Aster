@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,33 +169,33 @@ SIF = [None]*(nbc+1)
 
 for i in range(0,nbc) :
 
-   SIF[i]=CALC_G_LOCAL_T(MODELE=MODELEK,
-                     CHAM_MATER=CHAMPMA1,
-                     RESULTAT=UTOT1,
-                     SYME_CHAR='SANS',
-                     COMP_ELAS=_F(RELATION='ELAS',),
-                     OPTION='CALC_K_G',
-                     FISSURE=FISS,
-                     LISSAGE_THETA='LAGRANGE',
-                     LISSAGE_G='LAGRANGE',
-                     R_INF=RI[i],
-                     R_SUP=RS[i],
-                     INFO=2,);
+   SIF[i]=CALC_G(MODELE=MODELEK,
+                 CHAM_MATER=CHAMPMA1,
+                 RESULTAT=UTOT1,
+                 SYME_CHAR='SANS',
+                 COMP_ELAS=_F(RELATION='ELAS',),
+                 OPTION='CALC_K_G',
+                 THETA=_F(FISSURE=FISS,
+                          R_INF=RI[i],
+                          R_SUP=RS[i],),
+                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                            LISSAGE_G='LAGRANGE',),
+                 INFO=2,);
 
    IMPR_TABLE(TABLE=SIF[i],);
 
-SIF[nbc]=CALC_G_LOCAL_T(MODELE=MODELEK,
-                     CHAM_MATER=CHAMPMA1,
-                     RESULTAT=UTOT1,
-                     SYME_CHAR='SANS',
-                     COMP_ELAS=_F(RELATION='ELAS',),
-                     OPTION='CALC_K_G',
-                     FISSURE=FISS,
-                     LISSAGE_THETA='LAGRANGE',
-                     LISSAGE_G='LAGRANGE_NO_NO',
-                     R_INF=RI[0],
-                     R_SUP=RS[0],
-                     INFO=2,);
+SIF[nbc]=CALC_G(MODELE=MODELEK,
+                CHAM_MATER=CHAMPMA1,
+                RESULTAT=UTOT1,
+                SYME_CHAR='SANS',
+                COMP_ELAS=_F(RELATION='ELAS',),
+                OPTION='CALC_K_G',
+                THETA=_F(FISSURE=FISS,
+                         R_INF=RI[0],
+                         R_SUP=RS[0],),
+                LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                           LISSAGE_G='LAGRANGE_NO_NO',),
+                INFO=2,);
 
 IMPR_TABLE(TABLE=SIF[nbc],);
 

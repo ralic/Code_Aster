@@ -1,0 +1,2044 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 09/05/2006 - 18:40:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009651 DU 2006-04-06 06:54:34
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Test sdnl131a en version NEW8.2.16 sous linux Calibre 3
+FONCTIONNALITE
+   Le test sdnl131a s'arretait brutalement dans CALC_ELEM. Il s'agit d'un probleme de champ
+   donne en entree a CALCUL (LCHIN). Certains n'etaient pas definis et donc on passait
+   n'importe quoi. Ca plantait lorsque l'on testait le contenu de ces champs. Ca ne plantait
+   que sur certains linux, apparament l'alpha etait plus permissif.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnl131a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009705 DU 2006-04-25 14:36:56
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Stanley et resultat ELEM
+FONCTIONNALITE
+   Stanley ne gerait pas les champs ELEM, pourtant plus simple a traiter que les champs ELGA.
+   On ajoute cette fonctionnalite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009001 DU 2005-09-13 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   STANLEY et la sensibilite
+FONCTIONNALITE
+   On ajoute la possibilite de tracer depuis Stanley les champs sensibles. Dans le cas d'un
+   calcul sensible, on a une liste de plus dans la fenetre PRE_STANLEY permettant de
+   selectionner le resultat a tracer : normal ou sensible (par rapport a chacun des
+   parametres sensibles).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.31
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009585 DU 2006-03-22 16:40:31
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TITRE
+   Stanley ne donne pas acces aux groupe de mailles GM*
+FONCTIONNALITE
+   La limitation a ete levee. On peut dorenavent acceder aux groupes GM* definis dans le
+   maillage.
+   Il reste une petite limitation : on ne peut pas creer dans l'IHM Stanley des points ou des
+   chemins dont le nom commence par 'GM'.
+   
+   Note pour la correction v7 : prendre contact avec AA pour definir ce qui correspond
+   effectivement a cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR cambier      CAMBIER S.             DATE 04/05/2006 - 09:27:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009676 DU 2006-04-11 16:06:00
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   GENE_FONC_ALEA
+FONCTIONNALITE
+   L'interspectre de l'utilisateur a un pas de frequence
+   non constant, et ce pas est tres petit (3.49.10-3)pour
+   certaines frequences. Les valeurs des parametres de
+   l'algo de generation choisies par l'operateur
+   induisent alors naturellement une duree du signal genere
+   tres longue pour respecter la resolution frequentielle
+   du spectre (T=1/deltaF). Cela se fait au detriment du
+   pas de temps qui n'est alors pas assez petit (par
+   rapport a 1/2fmax, fmax etantla frequence max du
+   signal).
+   Le fortran est corrige pour privilegier le respect du
+   theoreme de Shannon et pour emettre une alarme si le
+   signal genere n'est alors pas conforme avec la
+   resolution de l'intespectre genere.
+   C'est ainsi plus conforme avec la doc et avec les usages
+   du traitement du signal.
+   L'utilisateur pouvait toutefois obtenir le signal
+   souhaite en imposant sa duree (mot cle DUREE_TIRAGE)
+   conforme avec la resolution frequentielle souhaitee (et
+   non celle de l'interspectre donne).
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.2.3
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas de l'utilisateur
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 09/05/2006 - 17:47:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009620 DU 2006-03-30 08:12:50
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : CS
+TITRE
+   NEW8.2.14, tests feti007b, sdll135d, sdnd105a s'arretent par manque de MEMOIRE
+(alphaserver)
+FONCTIONNALITE
+   N'ayant rien trouve d'anormal dans le fortran, on
+   suppose que les problemes de memoire apparus sont
+   seulement la consequence du fait que les allocations
+   memoire ne sont plus faites dans le meme ordre.
+   
+   On pourrait sans doute modifier les parametres de DEBUT
+   (PARTITION, ...) pour que ces tests utilisent moins de
+   memoire ... mais pour se simplifier la vie, on se
+   contente d'augmenter leur dotation :
+   
+   
+   Donc, on augmente la taille memoire des tests posant
+   probleme :
+   feti007b : 128 -> 256
+   sdll135d : 256 -> 384
+   sdnd105a :  64 -> 128
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage des tests
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009632 DU 2006-03-31 12:36:10
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TMA : CS
+TITRE
+   Bug dans COMB_MATR_ASSE mot cles COMB_R et PARTIE
+FONCTIONNALITE
+   Il y avait effectivement un bug dans la combinaison des
+   matrices complexes lorsque l'on voulait forcer le
+   resultat a etre reel.
+   
+   Ce bug est corrige.
+   
+   Remarque sur la validation : le bug n'apparait pas sur
+   les tests officiels. Comme l'emetteur de la fiche n'a
+   pas fourni d'etude mettant ce bug en evidence, sa
+   correction n'est pas demontree.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de tous les  tests utilisant COMB_R.
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009698 DU 2006-04-21 11:26:55
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : CS
+TITRE
+   Coherence d'arguments a l'appel de RCVALA
+FONCTIONNALITE
+   Le code a ete entierement verifie (340 routines appelant
+   RCVALA).
+   Apres controle, seules 2 routines etaient fautives :
+   te0431 (deja remarquee par Gerald) et TE0334.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de la liste restreinte
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 09/05/2006 - 14:25:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009710 DU 2006-04-26 15:47:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Nouveau mot cle dans MACR_LIGN_COUP
+FONCTIONNALITE
+   Evolution de MACR_LIGN_COUPE pour pouvoir extraire le deplacement sur un "chemin"
+   quelconque, appartenant a une des levres d'une fissure.
+   
+   Les deux levres etant confondues geometriquement, on doit restreindre la partie du
+   maillage a partir duquel on fait la projection : utilisation du mot cle VIS_A_VIS de
+   PROJ_CHAMP par exemple (mots cles GROUP_MA_1 et MAILLE_1)
+   
+   Le travail realise est le suivant :
+   - introduction de 2 nouveaux mots cles (facultatif) dans le catalogue de MACR_LIGN_COUP
+   :
+   GROUP_MA        =SIMP(statut='f',typ=grma),
+   MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+   
+   - si un de ces mots cles est renseigne : dans l'appel a PROJ_CHAMP dans
+   macr_ligne_coupe_ops.py, on ajoute VIS_A_VIS avec GROUP_MA_1=GROUP_MA (ou MAILLE1=MAILLE)
+   et TOUT_2='OUI'
+   Les deux mots cles ne peuvent etre presents simultanement (regle d'exclusion dans le
+   catalogue).
+   
+   Validation : par appel a cette nouvelle fonctionnalite dans la macro post_k1_k2_k3.py
+   (option TYPE_MAILLAGE='LIBRE'), cf. cas test sslv134b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.13
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009645 DU 2006-04-05 15:14:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DEFI_FOND_FISS : Noeuds sur les directions normales
+FONCTIONNALITE
+   Pour pouvoir reecrire en python de l'operateur POST_K1_K2_K3 (fiche 9300), il est
+   apparu
+   necessaire de
+   reporter l'operation de selection des noeuds des levres appartenant a des directions
+   normales au fond de
+   POST_K1_K2_K3 vers DEFI_FOND_FISS.
+   
+   L'evolution consiste juste a copier la routine exisante effectuant cette operation
+   (pkfond) vers DEFI_FOND_FISS. Les noeuds "normaux" des levres sont sauvergardes dans la
+   structure de donnees FOND_FISS, et seront utilises par la suite dans le nouvel
+   operateur
+   Python POST_K1_K2_K3.
+   
+   Details :
+   Creation de la routine gnormf, appelee par op0055, qui selectionne les noeuds des
+   levres
+   et ecriture dans :
+   "FOND_FISS   .SUPNORM   .NOEU"
+   et "FOND_FISS   .INFNORM   .NOEU'"
+   
+   Ajout du mot-cle PREC_NORM dans le catalogue : permet de definir la precision par
+   rapport
+   a la normale
+   pour les noeuds a retenir (meme parametre de precision que celui qui apparait
+   aujourd'hui
+   sous le mot cle PREC_VIS_A_VIS de POST_K1_K2_K3) :
+   distance(noeud, normale au fond) < PREC_NORM x (distance minimale entre 2 noeuds
+   successifs du fond)
+   (valeur par defaut : 0.1)
+   
+   Remarques :
+   - comme on ne connait pas la distance maxi par rapport au fond des noeuds a retenir (mot
+   cle ABSC_CURV_MAXI de POST_K1_K2_K3), on selectionne les 20 premiers noeuds (au
+   maximum).
+   - la routine gnormf n'est appelee que si le mot cle LEVRE_SUP est renseigne
+   
+   Validation : ajout de PREC_NORM dans sslv134b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.01
+VALIDATION
+   sslv134b
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009732 DU 2006-05-03 12:50:56
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   POST_K1_K2_K3 : Reecriture en python
+FONCTIONNALITE
+   La reecriture en python de POST_K1_K2_K3 vise a faciliter la maintenance et le
+   developpement de l'operateur.
+   
+   Cette reecriture n'a aucun impact pour l'utilisateur.
+   
+   * Details : creation de post_k1_k2_k3_ops.py
+   architecture de la routine :
+   - Recuperation donnees materiaux (avec eventuellement prise en compte de la
+   temperature
+   grace a la passerelle C/python)
+   
+   - si FOND_FISS :
+   + recuperation noeuds dans les directions normales dans la SD fond_fiss
+   + traitement mots cle NOEUD/SANS_NOEUD/GROUP_NO...
+   + Verification position des noeuds en vis-a-vis
+   
+   - boucle noeuds du fond
+   boucle instants
+   recuperation deplacement des levres
+   changement de repere et calcul de K
+   ecriture table resultat
+   
+   Suppression des 11 routines fortran (op0188, pkfond, pkcalc, pkchgr, pkmate, pkrecu,
+   pkrec2, pksyme, pktemp, pkdepl, pknoeu)
+   
+   * Remarque sur les temps de calcul : le passage de fortran a python s'accompagne d'une
+   legere augmentation du temps de calcul necessaire, mais ca reste un operateur tres
+   rapide
+   
+   
+   * Validation : passage de tous les cas test appelant POST_K1_K2_K3 + etudes perso +
+   modification sslv134b pour validation NOEUD/SANS_NOEUD
+   
+   
+   * Impact documentaire : signaler dans doc U4.82.05 de POST_K1_K2_K3 que c'est le mot
+   PREC_NORM de DEFI_FOND_FISS qui permet d'ajuster la precision dans la selection des
+   noeuds
+   normaux a la fissure
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   sslv134
+NB_JOURS_TRAV  : 14.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009300 DU 2005-12-22 12:41:01
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   POST_K1_K2_K3 sur maillage libre
+FONCTIONNALITE
+   A partir de la routine POST_K1_K2_K3 reecrite en python, on peut etendre facilement le
+   champ d'application de l'operateur aux maillages libres.
+   Les routines actuelles necessitent d'avoir des noeuds des levres sur des directions
+   normales au fond de fissure, coincident d'une levre a l'autre (= maillage regle, avec
+   par
+   exemple des tores autour du fond)
+   Dans le cas d'un maillage libre, on va interpoler le deplacement sur les directions
+   normales, a partir du
+   champ de resultat.
+   
+   Syntaxe
+   Creation d'un nouveau mot cle TYPE_MAILLAGE=
+   / 'REGLE' par defaut (calcul comme pour operateur actuel)
+   / 'LIBRE' (fonctionnalite developpee)
+   
+   Dans le cas LIBRE, l'utilisateur peut definir le nombre de noeuds a creer dans les
+   directions normales au fond de fissure (NB_NOEUD_COUPE), avec la distance maximale
+   ABSC_CURV_MAXI.
+   
+   TABL_K=POST_K1_K2_K3(RESULTAT=RESU,
+   MAILLAGE=MA,
+   FOND_FISS=FISS,
+   MODELISATION='3D',
+   MATER=MAT,
+   TYPE_MAILLAGE = 'LIBRE',
+   -->nouveau motcle (def. 'REGLE')
+   NB_NOEUD_COUPE=4, --> nouveau mot cle (defaut 5)
+   ABSC_CURV_MAXI=0.25,
+   VECT_K1 = (1., 0., 0.),);
+   
+   
+   Programmation
+   * Identification de la normale au fond de fissure (VN):
+   Pour chaque noeud du fond de fissure, on calcule le  vecteur tangent VT au fond a partir
+   des coordonnees des
+   noeuds, puis VN = produit_vectoriel(VT,VECT_K1)
+   Le vecteur VECT_K1, fourni par l'utilisateur, est la normale au plan de fissure.
+   
+   * Extraction du saut de deplacement sur les deux levres avec MACR_LIGN_COUPE
+   Point_origine = noeud du fond
+   Point_extremite = noeud du fond + ABSC_CURV_MAXI x VN
+   Le modele, necessaire pour MACR_LIGNE_COUPE, est recupere dans la SD RESULTAT.
+   
+   Une fois que les tableaux de deplacement sur les levres sont crees, on peut rejoindre
+   la
+   boucle normale du cas d'un maillage REGLE.
+   Comme pour le maillage regle, il faut que la fissure soit plane. Pour l'instant seule la
+   modelisation 3D est autorisee.
+   
+   Remarque :
+   Le nombre de noeuds NB_NOEUD_COUPE doit etre de preference de l'ordre de grandeur du
+   nombre de couches
+   d'elements entre le fond de fissure et ABSC_CURV_MAXI.
+   Sur un meme maillage (regle), il y a un petit ecart entre les deux methodes,
+   notemment si
+   le maillage comporte des elements de Barsoum, qui sont donc a eviter!
+   
+   Validation :
+   Ajout d'un calcul de K avec option LIBRE dans sslv134b (ecart max de 5% entre 'LIBRE' et
+   'REGLE')
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   sslv134b
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 09/05/2006 - 18:00:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009724 DU 2006-04-28 14:44:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Resorption de comportements et de fonctionnalites
+FONCTIONNALITE
+   Resorption du mot-cle 'CHABOCHE' dans C_COMP_INCR.CAPY, DEFI_MATERIAU.CAPY
+   __________________________________________________________________________
+   
+   
+   Ce modele est isofonctionnel avec le modele VISC_CIN2_CHAB (a condition pour celui-ci
+   de
+   ne pas fournir le mot-cle LEMAITRE
+   dans DEFI_MATERIAU).
+   De plus la dependance des coefficients materiau vis a vis de la temperature etait mal
+   prise en compte dans le modele CHABOCHE.
+   On ne conserve donc que les modeles integres sous VISC_CIN1_CHAB et VISC_CIN2_CHAB.
+   
+   Mais pour plus de lisiblite, et pour ne pas jouer sur la presence ou l'absence de
+   LEMAITRE
+   (notion incompatible avec le catalogue materiau), on propose d'ajouter les mots-cles
+   VMIS_CINx_CHAB,
+   designant les modeles de J.L.Chaboche elastoplastiques a un ou deux tenseurs
+   cinematiques.
+   Ces comportements utilisent les memes routines que VISC_CINx_CHAB. Les mot-cles
+   VISC_CINx_CHAB quant a eux
+   seront relatifs au modele viscocplastique.
+   
+   tests impactes :
+   ---------------
+   cente01a.comm: ATTENTION MODIF OUTIL METIER... suppression du STAT_NON_LINE avec CHABOCHE
+   (il reste des STAT_NON_LINE avec VISC_CINx_CHAB)
+   ssnp116a,b,c,d:suppression du STAT_NON_LINE avec CHABOCHE.
+   ssnv101a.comm:test de CHABOCHE seul 3D =>  on remplace par VMIS_CIN2_CHAB
+   ssnv101b.comm:test de CHABOCHE seul C_PLAN => on remplace par VMIS_CIN2_CHAB
+   ssnv101c.comm: 3D on enleve le STAT_NON_LINE CHABOCHE. il reste les SNL VISC_CIN1_CHAB et
+   VISC_CIN2_CHAB
+   ssnv101d.comm: D_PLAN  on enleve le STAT_NON_LINE CHABOCHE. il reste les SNL
+   VISC_CIN1_CHAB et VISC_CIN2_CHAB
+   
+   impact doc : CHABOCHE
+   ---------------------
+   R5.03.04 : modeles de Chaboche
+   V6.04.101  SSNV101
+   V6.03.116  SSNP116
+   U3.14.01
+   U3.13.05
+   U3.13.01
+   R5.03.14
+   D4.06.18
+   U4.51.11
+   
+   Resorption de OHNO : suppression dans C_COMP_INCR.CAPY, DEFI_MATERIAU.CAPY
+   __________________________________________________________________________
+   
+   Modele non documente et non maintenu.  Pour traiter les problemes de deformation
+   progressive,
+   il est conseille d'utiliser le modele elastoplastique ou elastoviscoplastique de
+   Taheri
+   (mot-cle VISC_TAHERI)
+   suppression des test SSNV107A SSNV107B
+   impact doc :
+   ---------------------
+   U4.51.11
+   
+   
+   Resorption de APPUI_REP
+   _______________________
+   
+   Obsolete par rapport a RIGI_PARASOL (liaison radier_sol)
+   suppression dans AFFE_MODELE et du test SSNV123A. Suppression des elements MECA_APPUI*
+   (gener_meapp2)
+   ---------------------
+   V6.04.123
+   V2.03.101
+   U4.41.01
+   
+   Resorption de ASSE_GRIL
+   _______________________
+   
+   Modelisation de grilles d'assemblages combustibles homogeneisees.
+   Application metier qui n'est plus utilisee aujourd'hui, et qui n'est pas documentee.
+   suppression dans AFFE_MODELE et AFFE_CARA_ELEM et dans le fortran. suppression de
+   l'element
+   MEGRQU4 (gener_measg2.cata)
+   
+   Resorption de la commande POST_SIMPLIFIE
+   _________________________________________
+   
+   Application metier (regles simplifiees specifiques) qui n'est plus utilisee
+   aujourd'hui,
+   et qui n'est pas documentee.
+   suppression de la commande et du test SSNX100A
+   
+   impact doc :
+   ---------------------
+   U5.02.00 presentation des tables
+   
+   Resorption de la commande DIST_LIGN_3D
+   _________________________________________
+   
+   Cette fonctionnalite n'est plus utiliee.
+   suppression de la commande et suppresion dans le test SDNL101A
+   
+   impact doc :
+   ------------
+   U4.MK.30
+   U5.01.21 S.D. dyna_trans
+   
+   Resorption de la commande DEFI_THER_JOULE
+   _________________________________________
+   
+   Cette fonctionnalite n'est plus utiliee.
+   suppression de la commande et du test HSNL100A
+   
+   impact doc :
+   ------------
+   V7.21.100
+   U4.MK.20
+   
+   Resorption de l'option INDU_MUTU
+   _________________________________________
+   
+   Cette option presente dans certains catalogues d'elements n'est jamais appelee.
+   supression des catalogues des elements de poutre, cable, barre, tuyau, et du catalogue de
+   l'option indu_mutu.
+   
+   impact doc :
+   ------------
+   U3.14.06 3D_INCO
+   U3.11.01 POU
+   U3.11.05 POU_D_T_GD
+   U3.11.04 POU_D_TG
+   La semaine prochaine : resorption des routines devenues inutiles (non appelees)
+   
+   En ce qui concerne le comportement VISCOCHAB, il a ete convenu avec le projet Fatigue
+   Thermique
+   d'evaluer le cout d'ecriture de la doc R a partir des notes existantes, ouvrant ainsi
+   la
+   possiblite de conserver ce modele.
+   Il ne sera donc pas resorbe dans la version STA8.3.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.04,V6.04.101,V6.03.116,U3.14.01,U3.13.05,U3.13.01,R5.03.14,D4.06.18,V6.04.118,R5.03.
+14,V7.22.125,V6.04.123,V2.03.101,U4.41.01,U5.02.00,U5.01.21,V7.21.100,U3.14.06,U3.11.01,U3
+.11.05,U3.11.04
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 006597 DU 2002-11-25 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   algorithme de recherche de zeros
+FONCTIONNALITE
+   FICHE 6597
+   4 ans apres l'emission de la fiche, la verification de RESI_INTE_RELA pour les
+   comportements elastovicoplastiques ne pose pas de probleme :
+   
+   NMVEEI (VENDOCHAB) : le test est bien relatif, mais il n'est pas normalise.  Prevu dans
+   le
+   cadre des evolutions sur cette loi (projet Pagodes)
+   NMVPCY : routine resorbee
+   NMCPLA : le test est bien en valeur relative.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR romeo        FERNANDES R.           DATE 09/05/2006 - 18:01:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008908 DU 2005-08-16 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   Resorption de lois de comportement en THM
+FONCTIONNALITE
+   On supprime l'appel aux lois de comportements :
+   * ELAS_THM
+   * SURF_ETAT_SATU
+   * SURF_ETAT_NSAT
+   * CAM_CLAY_THM
+   * LIQU_SATU_GAT
+   * LIQU_NSAT_GAT
+   
+   Sont impactes les fichiers :
+   catalogue : defi_materiau, c_comp_incr
+   fortran   : assthm, calcme, comthm, kitdec, nmthmc
+   
+   Sont supprimes :
+   fortran   : cacogt, cafhgt, nmpgat, statsr, statvt
+   cas-tests : wtnv118a, wtnv118b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astest
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009727 DU 2006-05-02 09:28:24
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   calcul des FORC_NODA en THM
+FONCTIONNALITE
+   Modification de la routine fnothm.
+   On encapsule le calcul des forces interieures
+   dans une nouvelle routine fonoda.
+   
+   quelques modifs dans les fichiers de commande :
+   en v8 : wtna103a (ajout de test depuis la v7)
+   wtna103b (modelisation inexistante en v7)
+   wtnv131a (modelisation inexistante en v7)
+   en v7 : wtnl103b (a ete supprime en v8)
+   wtnv118a (a ete supprime en v8)
+   
+   pour lesquels de legeres perturbations des TEST_RESU
+   sont observes. Il s'agit de differences inferieures a 1%
+   sur des tests en NON REGRESSION. Je modifie le pourcentage
+   d'erreur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astest
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 09/05/2006 - 18:01:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009058 DU 2005-09-29 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   pourvoir imposer des conditions de Neumann sur des bords X-FEM
+FONCTIONNALITE
+   besoin :
+   
+   on veut par exemple imposer une contrainte de cisaillement sur des elements X-FEM de bord.
+   Dans un premier temps, il faut introduire les elements X-FEM en 2D
+   (stage de Frank Haziza au LaMSID).
+   Ensuite, il faut adapter l'usage du mot-cle FORCE_FACE de AFFE_CHAR_MECA (et
+   AFFE_CHAR_MECA_F) aux elements X-FEM surfaciques.
+   
+   Solution :
+   
+   Suite au travail de Franck Haziza, les elements 2D X-FEM sont disponibles.
+   On peut donc a partir de ces elements creer des elements de face, tout comme pour
+   un cas
+   classique (sans X-FEM).
+   L'avantage de reutiliser les elements X-FEM, 2D, c'est que les informations concernant le
+   sous-decoupage en sous-triangles  pour l'integration numerique est deja disponible sur
+   ces
+   elements.
+   
+   La procedure de sous decoupage n'a pas ete modifiee, il a fallu juste bien faire la
+   difference entre la dimension du maillage  et la dimension des elements traites (3 et
+   2
+   dans notre cas, mais 2 et 2 pour des elements X-FEM en 2D)
+   
+   
+   La procedure est la suivante : les mailles lineaires de bords du maillage sont
+   transformees en mailles quadratiques (comme en 2D), puis elles sont affectees de la
+   modelisation 3D_FEM avec AFFE_MODELE
+   
+   modif dans phenomene_modelisation__.cata :
+   
+   MODELISATION__ '3D_XFEM'          DIM__ 3 3   CODE__ '3XX'
+   MAILLE__ HEXA20    ELEMENT__ MECA_X_HEXA20
+   MAILLE__ PENTA15   ELEMENT__ MECA_X_PENTA15
+   MAILLE__ TETRA10   ELEMENT__ MECA_X_TETRA10
+   MAILLE__ QUAD8     ELEMENT__ MECA_X_FACE8
+   MAILLE__ TRIA6     ELEMENT__ MECA_X_FACE6
+   
+   Ensuite, on determine le statut des mailles de bord suivant l'enrichissement de leurs
+   noeuds.
+   Et suivant le statut des mailles, on leur affecte un type d'element fini (MECA_XH_FACE3,
+   MECA_XH_FACE4, ....)
+   
+   Les nouveaux catalogues ajoutes sont :
+   gener_me_x_2.cata     qui renvoit sur les elements de bord classiques
+   gener_me_xh_2.cata    elements de bord coupes par la fissure
+   gener_me_xt_2.cata    elements de bord proches du fond
+   gener_me_xht_2.cata   elements de bord coupes par la fissure et proches du fond
+   
+   mais pour l'instant, seuls les elements de bord coupes par la fissure sont programmes.
+   
+   A la suite de l'affectation du type d'element fini, on procede a la re-orientation des
+   normales (xoripe.f)
+   En effet, on ne peut pas utiliser ORIE_PEAU_3D, car les normales a re-orienter sont
+   celles
+   des sous-elements !!
+   De plus, le fait de reorienter les normales des sous-elements change uniquement la
+   connectivite de ces sous -elements, informations locales aux elements, et donc le
+   maillage
+   initial n'est pas modifie.
+   On ne peut donc pas faire cette phase de re-orientation dans MODI_MAILLAGE, mais plutot
+   dans MODI_MODELE_XFEM.
+   Dans un 1er temps, on creee la liste des mailles de peau.
+   Ensuite, on recherche les mailles support (avec UTMASU).
+   Puis on cree le vecteur des normales exterieurs aux mailles support :
+   soient G2 le centre de gravite de la maille de peau, et G3 le centre de gravite de la
+   maille 3D, alors le vecterur G2G3 est un vecteur normal sortant de la maille 3D.
+   Finalement, on oriente les normales des sous tria.
+   
+   Les options de calcul disponibles sont
+   'CHAR_MECA_PRES_R'
+   'CHAR_MECA_PRES_F'
+   'CHAR_MECA_FR2D3D'
+   'CHAR_MECA_FF2D3D'
+   
+   Elles renvoient toutes vers un TE unique (te0036) alors qu'il y en a 4 differents pour
+   les
+   elements de gener_me3d_2.cata...
+   La principale difficulte se trouve au niveau du calcul des coordonnees du point de Gauss
+   des sous-elements dans le repere de reference de l'element parent (element de face). Il
+   faut definir un repere local 2D au sous-element.
+   
+   1) coord 2D dans le repere de reference du sous-element
+   2) coord 2D dans le repere local lie au sous-element
+   3) coord 2D dans le repere de reference de l'element de face
+   4) coord 3D dans le repere reel.
+   
+   grace au point 3, on peut determiner les fonctions de forme de l'element de face au point
+   de Gauss.
+   
+   grace au point 4, on peut evaluer la valeur de la pression au point de Gauss, par ex si on
+   donne une fonction de X Y Z.
+   
+   
+   Validation
+   
+   ssnv191a et b (VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 3D)
+   une structure complement coupee par une fissure horizontale
+   on applique une pression constante de compression sur les faces laterales
+   et ensuite une pression fonction de la hauteur. Cette fonction permet de mettre en
+   compression la partie au-dessus de la fissure des faces laterales, et en traction la
+   partie en dessous de la fissure.
+   
+   dans la 2eme modelisation, on fait pareil, mais avec des forces surfaciques a la place
+   des
+   pressions. Les resultats sont les memes.
+   
+   ssnv185i (TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM)
+   on applique un chargement d'ouverture (mode 1 pur) grace a des forces surfaciques
+   imposees
+   sur tout le bord de la structure. On avait deja la modelisation e qui faisait pareil avec
+   du dirichlet.
+   Les resultats en termes de K1 sont un peu moins bons (6% au lieu de 4%).
+   La solution analytique etant bien sur K1=1.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.185, V6.04.191
+VALIDATION
+   ssnv185i, ssnv191a, ssnv191b
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 09/05/2006 - 14:26:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009392 DU 2006-01-24 14:11:43
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TMA : DeltaCad
+TITRE
+   Suite 7982 : CALC_ELEM et recuperation de la charge
+FONCTIONNALITE
+   Au lieu de stocker dans la SD_RESULTAT le MODELE, CHAM_MATER, CARA_ELEM, et la SD Charge
+   a
+   la fin des pas de temps [op0070 (STAT_NON_LINE)] , on la stocke maintenant au debut des
+   pas de temps, des que le premier pas de temps a converge.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ETUDE JOINTE
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009304 DU 2005-12-27 10:39:40
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   cas-test specifique testant EXTR_COMP
+FONCTIONNALITE
+   Produire un cas-test informatique (zzzz) dont le role serait explicitement de valider
+   EXTR_COMP, ce qui evitera la presence de PAR_LOT='NON dans les cas-tests classiques.
+   
+   Le cas-test zzzz183a a ete modifie pour pouvoir afficher certaines valeurs de CHAMELEM
+   de
+   type ELGA ou ELEM. Pour cela, deux champs un de type ELGA et et l'autre de type ELEM ont
+   ete crees [CREA_CHAMP (DISC]) a partir d'un cham_no. Ensuite ces deux champs sont
+   exploites avec EXTR_COMP afin d'afficher des valeurs ponctuelles de ces champs. Leurs
+   valeurs sont testees par un TEST_RESU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz183A
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 09/05/2006 - 15:32:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009501 DU 2006-02-27 15:01:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Propagation des level sets pour X-FEM
+FONCTIONNALITE
+   Dans le cadre de propagation de level sets avec
+   XFEM,introduction de la commande PROPA_XFEM qui calcule la
+   fissure xfem au pas de temps de propagation suivant
+   En voici un exemple d'utilisation :
+   
+   for i in range(1,n) :
+   MODELE[i]=MODI_MODELE_XFEM(...,);
+   CHXFEM[i]=AFFE_CHAR_MECA(...,);
+   RESU[i]=STAT_NON_LINE(...,);
+   SIF[i]=CALC_G_LOCAL_T(...,);
+   
+   FISS[i]=PROPA_XFEM(MODELE=MODELE[i],
+   TABLE=SIF[i],
+   LOI_PROPA=_F(LOI='PARIS',
+   C=1.,
+   M=1.),
+   GROUP_MA_ENRI='VOL',
+   INFO=1,);
+   
+   Les arguments d'entree sont le modele xfem issu de
+   MODI_MODELE_XFEM, le tableau de facteur d'intensite de
+   contrainte en fond de fissure issu de CALC_G_LOCAL_T, le
+   groupe de maille enrichies, et les parametres concernant
+   la loi de propagation (pour l'instant, seul une loi de
+   Paris est accessible).
+   
+   La version restituee ne prend en compte, pour l'instant,
+   que le type de sollicitation 'K1 pur' (propagation
+   tangentielle).
+   
+   Le cas test restitue ssnv185j est une eprouvette fissure
+   en traction pure, on effectue une boucle, comme decrit
+   plus haut, sur 3 cycles en on vient tester, pour chaque
+   cycle, le K1 min & max, qui augmente bien en fonction de a
+   (longueur de fissure).
+   
+   Le catalogue python cree est :
+   
+   * propa_xfem.capy
+   
+   Les routines creees sont :
+   
+   * op0010.f
+   Routine de l'operateur propa_xfem, il fait appel aux
+   autres routines creees afin de calculer les level sets et
+   leurs gradients au pas de temps suivant, et d'enrichir la
+   SD comme dans defi_fiss_xfem.
+   
+   * xprvit.f
+   Recupere les coefficients de concentration de contrainte
+   en fond de fissure, calcule les vitesses de propagation en
+   fond de fissure, et etend celles-ci a tout le maillage par
+   projection.
+   
+   * xprcfl.f
+   Calcule les conditions CFL pour les phases de propagation
+   et reinitialisation.
+   
+   * te0118.f
+   Correspond a l'option de calcul 'CFL_XFEM' qui calcule les
+   longueurs caracteristiques et conditions CFL.
+   
+   * xpraju.f
+   Ajuste le champ de vitesse normale de propagation pour
+   eviter tout 'glissement' de la fissure deja existante.
+   
+   * xprls.f
+   Calcule les level sets et leurs gradient au pas de temp
+   suivant par resolution d'une equation de Hamilton-Jacobi
+   par un schema de Runge-Kutta d'ordre 2.
+   
+   * xprmil.f
+   Etend les level sets calculees aux noeuds milieux, afin de
+   les retrouver dans la meme definition qu'a la sortie de
+   defi_fiss_xfem.
+   
+   Les routines modifiees sont :
+   
+   * op0041.f
+   Routine de defi_fiss_xfem, modifiee pour stocker dans la
+   SD les informations concernant le fond de fissure que l'on
+   va rechercher par la suite danns propa_xfem.
+   
+   * te0533.f
+   Message d'alarme legerement modifie.
+   
+   Les catalogues crees sont :
+   
+   * cfl_xfem.cata
+   Calcul des conditions CFL.
+   
+   Les catalogues modifies sont :
+   
+   *
+   gener_me3d_2.cata,gener_me_x.cata,gener_me_xh.cata,gener_me
+   _xt.cata,gener_me_xht.cata :
+   Introduction de l'option de calcul CFL_XFEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.185
+VALIDATION
+   ssnv185j
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 09/05/2006 - 15:32:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009666 DU 2006-04-07 14:15:50
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TMA : CS
+TITRE
+   Bug dans la routine memax.f
+FONCTIONNALITE
+   Il y avait un bug dans la routine MEMAX qui faisait que
+   la recherche du max donnait 0. lorsque toutes les
+   valeurs etaient strictement negatives.
+   
+   Ce bug concernait uniquement POST_ELEM/RICE_TRACEY et
+   POST_ELEM/CHAR_LIMIT. Il est maintenant corrige (en NEW8
+   et NEW7).
+   
+   Resultats faux :
+   ----------------
+   Oui pour POST_ELEM/RICE_TRACEY lorsque toutes les
+   valeurs etaient strictement negatives. Le code trouvait
+   alors 0. au lieu du vrai maximum, mais on peut
+   considerer qu'un utilisateur averti doit s'en apercevoir.
+   
+   Pour POST_ELEM/CHAR_LIMIT, lorsque le bug se produisait,
+   le maximum trouve (0.) provoquait ensuite une division
+   par zero et ne conduisait donc pas a des resultats faux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas tests validant CHARGE_LIMITE et RICE_TRACEY
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 10/05/2006 - 11:34:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009716 DU 2006-04-27 13:03:53
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Pb avec DEFI_FICHIER (action = associer)
+FONCTIONNALITE
+   On ne pouvait pas faire :
+   DEFI_FICHIER(UNITE=33, FICHIER='...')
+   
+   PRE_GMSH(UNITE_GMSH=33)
+   ou
+   PRE_IDEAS(UNITE_IDEAS=33)
+   
+   Car les routines ne recevaient pas l'unite logique, elles utilisaient encore IUNIFI(...).
+   
+   Je modifie donc les routines pour transmettre les valeurs des unites logiques jusqu'aux
+   routines de lecture.
+   
+   Je fais le menage des 23 routines qui utilisent IUNIFI avec autre chose que 'MESSAGE',
+   'ERREUR', 'RESULTAT'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009442 DU 2006-02-08 15:50:45
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   concept reentrant et sensibilite
+FONCTIONNALITE
+   Trois points dans cette fiche :
+   
+   1. Recopie du JDC sensible : en PAR_LOT='OUI', on ajoute les MEMO_NOM_SENSI dans le jdc a
+   la place de l'utilisateur. Pour cela, on cree un nouveau jdc dans lequel on recopie les
+   etapes.
+   
+   Il y avait un probleme lors de la construction de ce nouveau jdc (par recopie) ; c'est
+   corrige. Je modifie senst03a en faisant le post-traitement sans faire de POURSUITE (qui
+   permettait de contourner le bug).
+   
+   
+   
+   2. Stocker dans le concept ce que la commande a calcule : valeur nominale, derivees par
+   rapport a PS1, PS2...
+   
+   Parmi les commandes traitant de la sensibilite, certaines produisent le concept nominal
+   et
+   ses derivees ("commandes de calcul" type MECA_STATIQUE, MODE_ITER_SIMULT), d'autres
+   uniquement le concept nominal ou les derivees.
+   Ce comportement est maintenant stocke au niveau du catalogue dans une regle :
+   
+   .              CONCEPT_SENSIBLE('ENSEMBLE' ou 'SEPARE')
+   
+   Un attribut '.sensi' de type dict est ajoute au concept resultat. Ses cles sont
+   '__nominal__' (+ de 8 caracteres pour se mettre a l'abri des conflits) + les noms des
+   parametres sensibles, et les valeurs l'objet etape courante.
+   
+   
+   
+   3. Validation des mots-cles simples :
+   
+   En cas de sensibilite, on peut avoir un concept dont la sd fortran associee est "vide"
+   car
+   seule la sd derivee existe. Les commandes recevant de tels concepts peuvent planter
+   salement !
+   
+   Au niveau du catalogue de la commande, on sait si derriere un mot-cle, on peut recevoir
+   un
+   concept derive ou non. La declaration se fait en utilisant une regle :
+   
+   .              DERIVABLE('RESULTAT')
+   
+   On verifie dans cette regle via l'attribut '.sensi' (cf. point precedent) que le
+   concept
+   nominal a ete calcule si SENSIBILITE est absent et/ou que les derivees par rapport
+   parametres sensibles fournis derriere SENSIBILITE sont disponibles.
+   
+   
+   
+   4. commandes reentrantes uniquement pour la sensibilite :
+   
+   POST_RELEVE_T et CALC_G_THETA etaient reentrantes seulement pour permettre d'enrichir un
+   concept nominal de son homologue sensible : une ASSD accessible a l'utilisateur et
+   plusieurs "sd" en fortran (une pour le resultat nominal, une pour chaque resultat
+   derive).
+   
+   On a introduit un mecanisme qui permet de dire que la commande peut etre reentrante
+   uniquement pour enrichir l'ASSD par une regle :
+   
+   .              REUSE_SENSIBLE()
+   
+   Exemple : on a calcule le concept nominal, on accepte que la commande soit reentrante si
+   le mot-cle SENSIBILITE est present et que la(les) derivee(s) demandee(s) n'ont pas
+   deja
+   ete calculee(s).
+   
+   
+   
+   
+   Les regles sont definies dans un nouveau module N_SENSIBILITE.py.
+   
+   Help on module N_SENSIBILITE:
+   
+   DESCRIPTION
+   Ce module contient les regles necessaires aux commandes sensibles
+   pour renseigner l'attribut etape.sd.sensi, gerer le caractere reentrant
+   sur presence de la sensibilite.
+   
+   CLASSES
+   CONCEPT_SENSIBLE
+   DERIVABLE
+   REUSE_SENSIBLE
+   
+   class CONCEPT_SENSIBLE
+   |  Regle permettant de renseigner au niveau du catalogue comment sera
+   |  rempli le concept (valeur nominale ou derivee(s) ou les deux...).
+   |
+   |  Methods defined here:
+   |
+   |  __init__(self, mode, mocle='SENSIBILITE')
+   |      Constructeur.
+   |      mode : maniere dont la commande rempli le concept
+   |         'ENSEMBLE' : concept nominal ET derivees en une seule passe
+   |         'SEPARE'   : concept nominal OU derivee (une ou plusieurs)
+   |      mocle : mot-cle contenant les parametres sensibles.
+   |
+   |  gettext(self)
+   |      Pour EFICAS
+   |
+   |  verif(self, args)
+   |      Retourne texte + 1 si ok, 0 si nook.
+   |      On stocke dans sd.sensi l'etape courante, c'est-a-dire celle qui
+   |      renseigne le concept si cela n'a pas deja ete fait (car verif est
+   |      appele a chaque validation).
+   
+   class DERIVABLE
+   |  Declare que le concept fourni derriere un mot-cle est derivable.
+   |  Sa presence ne suffit pas a le valider, il faut encore que son attribut
+   |  '.sensi' soit coherent avec le contenu du mot-cle SENSIBILITE (ou l'absence
+   |  de celui-ci).
+   |
+   |  Methods defined here:
+   |
+   |  __init__(self, mocle)
+   |      Constructeur.
+   |      mocle : mot-cle derivable.
+   |
+   |  gettext(self)
+   |      Pour EFICAS
+   |
+   |  verif(self, args)
+   
+   class REUSE_SENSIBLE
+   |  Limite le caractere reentrant de la commande.
+   |  On autorisera reuse seulement si le concept (au sens fortran) n'a pas deja
+   |  ete calcule (d'apres sd.sensi). Ce sera interdit dans les cas suivants :
+   |     - sd nominale calculee et SENSIBILITE absent
+   |     - PS1 dans SENSIBILITE et sd derivee par rapport a PS1 calculee
+   |
+   |  Methods defined here:
+   |
+   |  __init__(self, mocle='SENSIBILITE')
+   |      Constructeur.
+   |      mocle : mot-cle SENSIBILITE.
+   |
+   |  gettext(self)
+   |      Pour EFICAS
+   |
+   |  verif(self, args)
+   |      Retourne texte + 1 si ok, 0 si nook = reuse interdit.
+   |      Comme CONCEPT_SENSIBLE est appele avant (et a chaque validation),
+   |      on regarde si sd.sensi[ps] a ete renseigne par une etape precedente.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U1.03.01
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 09/05/2006 - 14:48:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009153 DU 2005-10-28 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   Fusion des operateurs CALC_G_LOCAL_T et CALC_G_THETA_T
+FONCTIONNALITE
+   Laobjectif de cette evolution est de fusionner les deux operateurs actuels de calcul du
+   taux de restitution daenergie G, CALC_G_LOCAL_T et CALC_G_THETA_T, en un seul operateur
+   CALC_G. Les fonctionnalites developpees dans les operateurs actuels ont ete
+   integralement
+   conservees dans CALC_G. A ces fonctionnalites, on a ajoute dans CALC_G la possibilite de
+   calculer THETA permettant ainsi de se dispenser de la commande CALC_THETA.
+   
+   1.Syntaxe de laoperateur CALC_G
+   
+   [table]	=	CALC_G
+   (	f  MODELE	=	mo,		[modele]
+   f  CHAM_MATER	=	mater,		[cham_mater]
+   
+   
+   # Recuperation ou creation du champ theta
+   o THETA	=_F(  o  / THETA = theta,   / [cham_no_DEPL_R]
+   [theta_geom]
+   /  o  / R_INF      = r,        [R]
+   / R_INF_FO   = rz,	[fonction]
+   o  / R_SUP      = R,	[R]
+   / R_SUP_FO   = Rz,	[fonction]
+   f  / MODULE     = mod,	[R]
+   / MODULE_FO  = modz,	[fonction]
+   f  / DIRE_THETA = chamno,   [cham_no_DEPL_R]
+   / DIRECTION  = (d1,d2,d3),[R]
+   o  / FOND_FISS  = ff,       [fond_fiss]
+   FISSURE    = fiss,     [fiss_xfem]
+   ),
+   
+   
+   # Recuperation du champ de deplacements
+   
+   o  /	  DEPL	=	depl,		 [cham_no_DEPL_R]
+   /   o  VITE	=	vite,		 [cham_no_DEPL_R]
+   o  ACCE	=	acce,	         [cham_no_DEPL_R]
+   /	  RESULTAT =	resu,	        /[evol_elas]
+   /[evol_noli]
+   /[dyna_trans]
+   /[mode_meca]
+   
+   # Si RESULTAT de type evol_elas, evol_noli ou dyna_trans
+   f	/ TOUT_ORDRE  =  'OUI',	    [DEFAUT]
+   / NUME_ORDRE  =  l_ordre,   [l_I]
+   / LIST_ORDRE  =  lis,	    [listis]
+   / INST	      =  l_inst,    [l_R]
+   / LIST_INST   =  l_reel,    [listr8]
+   
+   # Si RESULTAT de type mode_meca
+   f	/ TOUT_MODE  =	'OUI',	    [DEFAUT]
+   / NUME_MODE  =	l_ordre,    [l_I]
+   / LIST_MODE  =	lis,        [listis]
+   / FREQ       =  l_inst,     [l_R]
+   / LIST_FREQ  =	l_reel,	    [listr8]
+   f	| PRECISION  =	/ prec,	    [R]
+   / 1.0D-6,   [DEFAUT]
+   | CRITERE    =	/ aRELATIFa,[DEFAUT]
+   / aABSOLUa,
+   # Chargement
+   
+   f  EXCIT = (_F (	oiCHARGE    = charge,      [char_meca]
+   [char_cine_meca]
+   f FONC_MULT = fmult,       [fonction]
+   
+   [formule]
+   ),),
+   f  SYME_CHAR  =	 / 'SANS',	[DEFAUT]
+   / 'SYME',
+   / 'ANTI',
+   
+   
+   # Comportement
+   
+   f  /  COMP_ELAS	 = _F (
+   f   RELATION  =   / 'ELAS',            [DEFAUT]
+   / 'ELAS_VMIS_LINE',
+   / 'ELAS_VMIS_TRAC',
+   f   DEFORMATION	= / 'PETIT',	       [DEFAUT]
+   / 'GREEN',
+   f  /  TOUT        = 'OUI',              [DEFAUT]
+   /  | GROUP_MA  = lgrma,              [l_gr_maille]
+   | MAILLE    =  lma,               [l_maille]
+   ),
+   
+   /  COMP_INCR  =_F (
+   f   RELATION  =   / 'ELAS',            [DEFAUT]
+   / 'VMIS_ISOT_TRAC',
+   / 'VMIS_ISOT_LINE',
+   f   DEFORMATION = / 'PETIT',           [DEFAUT]
+   / 'PETIT_REAC',
+   f  /  TOUT        =  'OUI',            [DEFAUT]
+   /  |  GROUP_MA = lgrma ,            [l_gr_maille]
+   | MAILLE    = lma,               [l_maille]
+   ),
+   f   ETAT_INIT	=_F (
+   o  /  |  DEPL  = dep ,                   [cham_no_DEPL_R]
+   |  SIGM  = sig ,                   /[carte_SIEF_R]
+   /[cham_elem_SIEF_R]
+   ),
+   # Methode de discretisation de theta en fond de fissure (3D local)
+   
+   f    LISSAGE = _F(  f  LISSAGE_THETA = / 'LEGENDRE'  [DEFAUT]
+   / 'LAGRANGE'
+   f   LISSAGE_G  =    / 'LEGENDRE'  [DEFAUT]
+   / 'LAGRANGE'
+   / 'LAGRANGE_NO_NO'
+   f   DEGRE =	/ 0,
+   / 1,
+   / 2,
+   / 3,
+   / 4,
+   / 5 , [DEFAUT]
+   / 6,
+   / 7,
+   ),
+   
+   # Option demandee
+   
+   o   OPTION = /  'CALC_G' ,    [DEFAUT]
+   /  'CALC_G_GLOB' ,
+   /  'CALC_K_G',
+   /  'K_G_MODA' ,
+   /  'G_MAX' ,
+   /  'G_MAX_GLOB' ,
+   /  'G_BILI' ,
+   /  'G_BILI_GLOB' ,
+   /  'G_LAGR' ,
+   /  'G_LAGR_GLOB',
+   
+   f   BORNES  =_F (  o NUME_ORDRE =  num	,       [I]
+   o VALE_MIN   =  qmin,       [R]
+   o VALE_MAX 	 =  qmax,       [R]
+   ),
+   f  PROPAGATION     =  alpha,                   [R]
+   f  THETA_LAGR      =  theta,                   [theta_geom]
+   f  DIRE_THETA_LAGR =  dire_theta,              [cham_no_DEPL_R]
+   f  SENSIBILITE     =  (... voir [U4.50.02])
+   f  TITRE           =   titre,    [l_Kn]
+   
+   #	Impression dainformations
+   
+   f  INFO  =  /  1 ,                              [DEFAUT]
+   /  2 ,
+   
+   La syntaxe de laoperateur CALC_G est relativement la meme que celle des operateurs
+   CALC_G_LOCAL_T et CALC_G_THETA_T, cependant quelques differences y ont ete introduites et
+   sont presentees dans le paragraphe suivant.
+   
+   2.Differences syntaxique entre CALC_G et les 2 operateurs actuels
+   
+   2.1.Mot cle OPTION
+   
+   La terminologie des options de calcul a ete quelque peu modifiee pour permettre cette
+   fusion ; la correspondance entre les options de CALC_G_LOCAL_T/CALC_G_THETA_T et les
+   options de CALC_G est presentee ci-dessous:
+   
+   Correspondance entre les options de CALC_G_THETA_T et CALC_G :
+   - CALC_G (CALC_G_THETA_T) =
+   soit CALC_G (CALC_G) si la dimension du modele = 2
+   soit CALC_G_GLOB (CALC_G) si la dimension du modele = 3
+   - CALC_G_MAX(CALC_G_THETA_T) = G_MAX_GLOB(CALC_G)
+   - G_BILINEAIRE(CALC_G_THETA_T) = G_BILI_GLOB(CALC_G)
+   - CALC_G_LAGR(CALC_G_THETA_T) =
+   soit G_LAGR(CALC_G)si la dimension du modele = 2
+   soit G_LAGR_GLOB(CALC_G)si la dimension du modele = 3
+   - aucun changement pour : CALC_K_G, K_G_MODA
+   
+   Correspondance entre les options de CALC_G_LOCAL_T et CALC_G:
+   - CALC_G_MAX (CALC_G_LOCAL_T) = G_MAX (CALC_G)
+   - G_BILINEAIRE (CALC_G_LOCAL_T) = G_BILI (CALC_G)
+   - CALC_G_LGLO (CALC_G_LOCAL_T) = G_LAGR (CALC_G)
+   - aucun changement pour : CALC_G, CALC_K_G, K_G_MODA
+   
+   2.2.Mot cle THETA
+   
+   Dans la syntaxe de CALC_G, le champ theta est :
+   - soit calcule prealablement par un CALC_THETA puis transmis dans CALC_G par le mot cle
+   simple THETA sous le mot cle facteur THETA,
+   - soit calcule au sein meme de la commande CALC_G a partir des mots cles
+   R_INF/R_INF_FO,
+   R_SUP/R_SUP_FO, MODULE/MODULE_FO, FOND_FISS/FISSURE, DIRECTION/DIRE_THETA.
+   
+   Remarques :
+   - Pour les options autres que G_LAGR en 3D local, les mots cles MODULE/MODULE_FO naont
+   pas
+   lieu daetre renseignes pour laobtention de theta car ils sont automatiquement
+   calcules par
+   Code Aster.
+   - Le calcul de theta doit etre obligatoirement calcule dans la commande CALC_G en 2D pour
+   les options CALC_K_G et K_G_MODA,
+   - Pour la propagation lagrangienne en 3D local(OPTION G_LAGR), on dispose de 2 nouveaux
+   mots cles THETA_LAGR et DIRE_THETA_LAGR situes  laexterieur du bloc THETA pour eviter
+   toute confusion.
+   
+   2.3.Mot cle LISSAGE
+   
+   Les mots cles LISSAGE_G, LISSAGE_THETA et DEGRE de la commande CALC_G_LOCAL_T ont ete
+   regroupes sous le mot cle facteur LISSAGE
+   
+   3. Validation
+   
+   Les cas-tests de la base contenant les commandes CALC_G_THETA_T et CALC_G_LOCAL_T (89
+   cas-tests au total) ont ete mis a jour pour quaapparaisse uniquement la commande CALC_G.
+   
+   4. Exemple : Calcul de G local 3D (extrait de sslv110a)
+   
+   Ancienne syntaxe (CALC_G_LOCAL_T) :
+   GLOC0=CALC_G_LOCAL_T(  MODELE=MO,
+   RESULTAT=CHAMDEPL,
+   CHAM_MATER=CHMAT,
+   FOND_FISS=FISS1,
+   DEGRE=7,
+   TOUT_ORDRE='OUI',
+   SYME_CHAR='SYME',
+   COMP_ELAS=_F( RELATION = 'ELAS',
+   DEFORMATION = 'PETIT'),
+   R_SUP_FO=RSUP0,
+   R_INF_FO=RINF0,
+   EXCIT=_F(CHARGE=CH,),)
+   
+   Laequivalent avec la nouvelle syntaxe (CALC_G):
+   GLOC0=CALC_G(  MODELE=MO,
+   RESULTAT=CHAMDEPL,
+   CHAM_MATER=CHMAT,
+   THETA=_F(FOND_FISS=FISS1,
+   R_SUP_FO=RSUP0,
+   R_INF_FO=RINF0,),
+   LISSAGE=_F(DEGRE=7),
+   SYME_CHAR='SYME',
+   COMP_ELAS=_F( RELATION = 'ELAS',
+   DEFORMATION = 'PETIT'),
+   EXCIT=_F(CHARGE=CH,),)
+   
+   5. Impact dans les sources
+   
+   5.1. les fortrans
+   cakg3d, cakgmo, cgcrtb, gcour2, gcouro, gkmet3, gmeth1, gmeth3, gver2d, gveri2, 	gveri3,
+   gverig, mbilgl, mecagl, mecalg, medom1, memaxg, nmdorc, op0100, pkmate, 	rslesd.
+   
+   5.2. le catalogue de commandes
+   calc_g.capy
+   
+   5.3.les fichiers pythons
+   B_SENSIBILITE_COMMANDES_SENSIBLES.py, macr_aspic_calc_ops.py, macr_ascouf_calc_ops.py
+   
+   5.4 les cas-tests
+   ascou16a ascou18a ascou19a ascou23a aspic01b aspic07a hpla310a hpla311a hpla311b hplp100a
+   hplp100b hplp101a hplp101b hplp310a hplp311a hplp311b hplp311c hplp311d hplp311e hplp311f
+   hplp311g hplv102a hplv103a hplv103b sdls114a sdls114b sdlv123a sdlv123b ssla310a ssla311a
+   ssla311b ssla311c ssla311d sslp101b sslp101c sslp101d sslp101e sslp101f sslp102a sslp102b
+   sslp103a sslp310a sslp311a sslp311b sslp311c sslp311d sslp313a sslp313b sslp313c sslp314a
+   sslp314b sslp314c sslp314d sslp314e sslp314f sslv110a sslv110b sslv110c sslv110d sslv110e
+   sslv112a sslv112b sslv134a sslv134b sslv134c sslv134d sslv134e sslv134f sslv310a sslv311a
+   sslv312a sslv312b ssnp102a ssnp110a ssnp110b ssnp131a ssnp311a ssnp312a ssnp312b ssnv108a
+   ssnv166c ssnv185a ssnv185b ssnv185c ssnv185d ssnv185e ssnv185f ssnv185g ssnv185h
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03, U4.82.04,U2.05.01
+VALIDATION
+   cas test CALC_G*
+NB_JOURS_TRAV  : 27.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 10/05/2006 - 09:18:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007855 DU 2004-05-21 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 7.3)
+TITRE
+   Compilation/Surcharge des catalogues d'elements
+FONCTIONNALITE
+   C'est moi qui avait demande a Olivier d'emettre cette
+   fiche. Je pense donc que le probleme se posait a
+   l'epoque !
+   
+   Mais maintenant, tout va bien ... et je propose de
+   classer la fiche "sans suite".
+   
+   
+   Validation :
+   ------------
+   J'ai verifie que sur clayastr, ASTK + surcharge d'un
+   catalogue d'elements errone provoquait bien un message
+   d'erreur comprehensible.
+   
+   En revanche, je n'ai pas fait la meme verification sur
+   d'autres machines (Linux) et je n'ai pas verifie non
+   plus le listing obtenu par AGLA/asverif.
+   
+   -------------------------------------------------------
+   Details :
+   
+   Il y a 2 niveaux d'erreur possibles :
+   
+   1) erreur de syntaxe (par exemple, le mot cle OPTION__
+   mal place). ASTK liste alors les 10 lignes autour de
+   l'erreur et indique la ligne coupable.
+   
+   2) erreur lexicale (plus rare) par exemple : " OPTION__
+   #*U " car "#*U" n'est pas un "token" acceptable par le
+   lecteur. Dans ce cas, on numerote TOUT le fichier .cata
+   et on indique la ligne coupable. Le listing est plus
+   gros mais il reste comprehensible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essais persos
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009647 DU 2006-04-06 06:04:54
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   tests feti sous linux
+FONCTIONNALITE
+   J'ai introduit effectivement une coquille en 8.2.16 dans
+   la routine asmchc.
+   
+   Cette erreur est maintenant corrigee.
+   
+   Validation :
+   Une fois cette erreur corrigee, j'ai observe que tous
+   les tests "feti" (15) sont OK sur Linux Rocks (clpaster)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous les tests feti sur clpaster
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009653 DU 2006-04-06 08:38:37
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   NEW8.2.16, le test mumps03a termine en NOOK
+FONCTIONNALITE
+   Contrairement au titre de la fiche, en 8.2.16, le test
+   MUMPS03a ne s'est pas casse, il s'est repare !
+   
+   En realite, le charges cinematiques (en complexe)
+   etaient fausses depuis la nuit des temps (la partie
+   imaginaire etait oubliee !) et l'evolution 9623, en plus
+   des gains memoire et CPU, corrige cette anomalie.
+   
+   J'ai modifie le test MUMPS03A pour qu'il compare :
+   - matrice complexe + MULT_FRONT + charge dualisee
+   - matrice complexe + MULT_FRONT + charge eliminee
+   (charge cinematique)
+   - matrice complexe + MUMPS      + charge eliminee
+   (charge cinematique)
+   
+   En NEW8, les 3 resultats sont OK (identiques)
+   En STA8, Les 2 resultats "charge cinematique" sont
+   NOOK
+   
+   La correction a apportee a cette fiche (en plus de la
+   modif de test) est de corriger la version 7 pour qu'elle
+   ne produise plus de resultats faux a l'avenir.
+   
+   
+   
+   Pour faire simple, je propose simplement d'interdire en
+   V7 les charges cinematiques complexes
+   (AFFE_CHAR_CINE/ACOU_IMPO).
+   Cela ne devrait pas gener grand monde car le test
+   MUMPS03A est le seul a utiliser cette fonctionalite !
+   Je compte donc sur TMA/CS pour modifier NEW7/catapy :
+   supprimer AFFE_CHAR_CINE/ACOU_IMPO
+   
+   
+   
+   RESULTAT_FAUX :
+   ----------------
+   OUI pour AFFE_CHAR_CINE/ACOU_IMPO (depuis toujours) si
+   la valeur imposee a une partie imaginaire non nulle.
+   
+   IMPACT_DOC :
+   ------------
+   Si on remet a jour la doc U d'AFFE_CHAR_CINE en version
+   7, penser a supprimer ACOU_IMPO
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 1.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 1.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.03
+VALIDATION
+   passage du test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009697 DU 2006-04-21 11:06:14
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Bug sur factorisation en NEW8
+FONCTIONNALITE
+   On classe cette fiche "sans suite" car les fichiers
+   associes ont ete supprimes par inadvertance.
+   
+   Olivier Nicolas est au courant. Il va reproduire le
+   probleme et reemettre la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien !
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009738 DU 2006-05-05 07:34:14
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   commentaires imprecis dans CNCINV
+FONCTIONNALITE
+   les commentaires d'entete de la routine cncinv.f ont ete ameliores.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule          galenne E.GALENNE         4222      1      4
+ CASTEST AJOUT ssnv185i                      jmbhh01 J.M.PROIX          250    250      0
+ CASTEST AJOUT ssnv185j                       massin P.MASSIN           228    228      0
+ CASTEST AJOUT ssnv191a                      jmbhh01 J.M.PROIX          458    458      0
+ CASTEST AJOUT ssnv191b                      jmbhh01 J.M.PROIX          476    476      0
+ CASTEST MODIF ascou16a                      rezette C.REZETTE          398      8      4
+ CASTEST MODIF ascou18a                      rezette C.REZETTE          302     11     11
+ CASTEST MODIF ascou19a                      rezette C.REZETTE          400     11     11
+ CASTEST MODIF ascou23a                      rezette C.REZETTE          273      7      6
+ CASTEST MODIF aspic01b                      rezette C.REZETTE          608     29     21
+ CASTEST MODIF aspic07a                      rezette C.REZETTE          234      8      4
+ CASTEST MODIF cente01a                      jmbhh01 J.M.PROIX          989      1     76
+ CASTEST MODIF feti007b                      cibhhlv L.VIVAN            176      1      1
+ CASTEST MODIF hpla310a                      rezette C.REZETTE         1031     25     25
+ CASTEST MODIF hpla311a                      rezette C.REZETTE          289      9      9
+ CASTEST MODIF hpla311b                      rezette C.REZETTE          293      9      9
+ CASTEST MODIF hplp100a                      rezette C.REZETTE          310     33     21
+ CASTEST MODIF hplp100b                      rezette C.REZETTE          417     14     14
+ CASTEST MODIF hplp101a                      rezette C.REZETTE          459     55     31
+ CASTEST MODIF hplp101b                      rezette C.REZETTE          189     13     13
+ CASTEST MODIF hplp310a                      rezette C.REZETTE         1944    433    241
+ CASTEST MODIF hplp311a                      rezette C.REZETTE          475     54     31
+ CASTEST MODIF hplp311b                      rezette C.REZETTE          330     28     16
+ CASTEST MODIF hplp311c                      rezette C.REZETTE          377     37     21
+ CASTEST MODIF hplp311d                      rezette C.REZETTE          328     28     16
+ CASTEST MODIF hplp311e                      rezette C.REZETTE          376     37     21
+ CASTEST MODIF hplp311f                      rezette C.REZETTE          326     28     16
+ CASTEST MODIF hplp311g                      rezette C.REZETTE          369     37     21
+ CASTEST MODIF hplv102a                      rezette C.REZETTE          248      9      9
+ CASTEST MODIF hplv103a                      rezette C.REZETTE          624     66     62
+ CASTEST MODIF hplv103b                      rezette C.REZETTE          372     25     22
+ CASTEST MODIF mumps03a                      vabhhts J.PELLET            91     37     22
+ CASTEST MODIF sdll135d                      cibhhlv L.VIVAN            430      1      1
+ CASTEST MODIF sdls101a                      jmbhh01 J.M.PROIX          187      1     71
+ CASTEST MODIF sdls114a                      rezette C.REZETTE          403     21     10
+ CASTEST MODIF sdls114b                      rezette C.REZETTE          330      6      6
+ CASTEST MODIF sdlv123a                      rezette C.REZETTE          262      9      9
+ CASTEST MODIF sdlv123b                      rezette C.REZETTE          240     15     12
+ CASTEST MODIF sdnd105a                      cibhhlv L.VIVAN            211      1      1
+ CASTEST MODIF sdnl101a                      jmbhh01 J.M.PROIX         1058      1     11
+ CASTEST MODIF senst03a                     mcourtoi M.COURTOIS         285     71      6
+ CASTEST MODIF ssla310a                      rezette C.REZETTE          582     61     61
+ CASTEST MODIF ssla311a                      rezette C.REZETTE           90      3      3
+ CASTEST MODIF ssla311b                      rezette C.REZETTE           95      3      3
+ CASTEST MODIF ssla311c                      rezette C.REZETTE           90      3      3
+ CASTEST MODIF ssla311d                      rezette C.REZETTE           90      3      3
+ CASTEST MODIF sslp101b                      rezette C.REZETTE          416     54     31
+ CASTEST MODIF sslp101c                      rezette C.REZETTE          455     55     31
+ CASTEST MODIF sslp101d                      rezette C.REZETTE          259     60     19
+ CASTEST MODIF sslp101e                      rezette C.REZETTE          692    108     61
+ CASTEST MODIF sslp101f                      rezette C.REZETTE          366     53     37
+ CASTEST MODIF sslp102a                      rezette C.REZETTE          296     34     14
+ CASTEST MODIF sslp102b                      rezette C.REZETTE          275     15     15
+ CASTEST MODIF sslp103a                      rezette C.REZETTE          265     19     11
+ CASTEST MODIF sslp310a                      rezette C.REZETTE         1433    253    109
+ CASTEST MODIF sslp311a                      rezette C.REZETTE          465     25     25
+ CASTEST MODIF sslp311b                      rezette C.REZETTE          468     25     25
+ CASTEST MODIF sslp311c                      rezette C.REZETTE          462     25     25
+ CASTEST MODIF sslp311d                      rezette C.REZETTE          471     25     25
+ CASTEST MODIF sslp313a                      rezette C.REZETTE          625     10      6
+ CASTEST MODIF sslp313b                      rezette C.REZETTE          602     10      6
+ CASTEST MODIF sslp313c                      rezette C.REZETTE          266     12      7
+ CASTEST MODIF sslp314a                      rezette C.REZETTE          311     37     21
+ CASTEST MODIF sslp314b                      rezette C.REZETTE          327     37     21
+ CASTEST MODIF sslp314c                      rezette C.REZETTE          346     37     21
+ CASTEST MODIF sslp314d                      rezette C.REZETTE          162     10      6
+ CASTEST MODIF sslp314e                      rezette C.REZETTE          162     10      6
+ CASTEST MODIF sslp314f                      rezette C.REZETTE          161     10      6
+ CASTEST MODIF sslv110a                      rezette C.REZETTE          553     75     31
+ CASTEST MODIF sslv110b                      rezette C.REZETTE          285     31     19
+ CASTEST MODIF sslv110c                      rezette C.REZETTE          387     39     28
+ CASTEST MODIF sslv110d                      rezette C.REZETTE          292     25     19
+ CASTEST MODIF sslv110e                      rezette C.REZETTE          367     40     37
+ CASTEST MODIF sslv112a                      rezette C.REZETTE          337     34     11
+ CASTEST MODIF sslv112b                      rezette C.REZETTE          312     11     11
+ CASTEST MODIF sslv134a                      rezette C.REZETTE          324     17     15
+ CASTEST MODIF sslv134b                      rezette C.REZETTE          703      7      6
+ CASTEST MODIF sslv134c                      rezette C.REZETTE          227      4      3
+ CASTEST MODIF sslv134d                      rezette C.REZETTE         1314     19     16
+ CASTEST MODIF sslv134e                      rezette C.REZETTE          312     19     14
+ CASTEST MODIF sslv134f                      rezette C.REZETTE          339     41     38
+ CASTEST MODIF sslv310a                      rezette C.REZETTE          504     40     37
+ CASTEST MODIF sslv311a                      rezette C.REZETTE          381     12     11
+ CASTEST MODIF sslv312a                      rezette C.REZETTE          237     18     17
+ CASTEST MODIF sslv312b                      rezette C.REZETTE          237     17     16
+ CASTEST MODIF ssnp102a                      rezette C.REZETTE          504      9      9
+ CASTEST MODIF ssnp110a                      rezette C.REZETTE          281      8      8
+ CASTEST MODIF ssnp110b                      rezette C.REZETTE          281      8      8
+ CASTEST MODIF ssnp116a                      jmbhh01 J.M.PROIX          664      3    123
+ CASTEST MODIF ssnp116b                      jmbhh01 J.M.PROIX          477      2    117
+ CASTEST MODIF ssnp116c                      jmbhh01 J.M.PROIX          545      2    103
+ CASTEST MODIF ssnp116d                      jmbhh01 J.M.PROIX          374      2     58
+ CASTEST MODIF ssnp131a                      rezette C.REZETTE          418      3      3
+ CASTEST MODIF ssnp311a                      rezette C.REZETTE          815     34     34
+ CASTEST MODIF ssnp312a                      rezette C.REZETTE          924    113    113
+ CASTEST MODIF ssnp312b                      rezette C.REZETTE          871    111    111
+ CASTEST MODIF ssnv101a                      jmbhh01 J.M.PROIX          138     20     29
+ CASTEST MODIF ssnv101b                      jmbhh01 J.M.PROIX          155     26     21
+ CASTEST MODIF ssnv101c                      jmbhh01 J.M.PROIX          432      2     74
+ CASTEST MODIF ssnv101d                      jmbhh01 J.M.PROIX          464      2     78
+ CASTEST MODIF ssnv108a                      rezette C.REZETTE          277     27     22
+ CASTEST MODIF ssnv118a                      jmbhh01 J.M.PROIX          220      1      1
+ CASTEST MODIF ssnv118b                      jmbhh01 J.M.PROIX          371      1      1
+ CASTEST MODIF ssnv118c                      jmbhh01 J.M.PROIX          188      1      1
+ CASTEST MODIF ssnv166c                      rezette C.REZETTE          323     16     16
+ CASTEST MODIF ssnv185a                      rezette C.REZETTE          244     11     11
+ CASTEST MODIF ssnv185b                      rezette C.REZETTE          276      6      6
+ CASTEST MODIF ssnv185c                      rezette C.REZETTE          305     11     11
+ CASTEST MODIF ssnv185d                      rezette C.REZETTE          273      6      6
+ CASTEST MODIF ssnv185e                      rezette C.REZETTE          223      6      6
+ CASTEST MODIF ssnv185f                      rezette C.REZETTE          207      6      6
+ CASTEST MODIF ssnv185g                      rezette C.REZETTE          295     11     11
+ CASTEST MODIF ssnv185h                      rezette C.REZETTE          224     11     11
+ CASTEST MODIF wtna103a                      jmbhh01 J.M.PROIX          323      3      3
+ CASTEST MODIF wtna103b                      jmbhh01 J.M.PROIX          296      3      3
+ CASTEST MODIF wtnv131a                      jmbhh01 J.M.PROIX          286      2      2
+ CASTEST MODIF zzzz183a                     lebouvie F.LEBOUVIER        193      2     36
+ CASTEST SUPPR hsnl100a.comm                 jmbhh01 J.M.PROIX          297      0    297
+ CASTEST SUPPR ssnv107a.comm                 jmbhh01 J.M.PROIX          306      0    306
+ CASTEST SUPPR ssnv107b.comm                 jmbhh01 J.M.PROIX          283      0    283
+ CASTEST SUPPR ssnv123a.comm                 jmbhh01 J.M.PROIX          173      0    173
+ CASTEST SUPPR ssnx100a.comm                 jmbhh01 J.M.PROIX           80      0     80
+ CASTEST SUPPR wtnv118a.comm                 jmbhh01 J.M.PROIX          309      0    309
+ CASTEST SUPPR wtnv118b.comm                 jmbhh01 J.M.PROIX          305      0    305
+CATALOGU AJOUT options/cfl_xfem               massin P.MASSIN            27     27      0
+CATALOGU AJOUT typelem/gener_me_x_2          jmbhh01 J.M.PROIX          154    154      0
+CATALOGU AJOUT typelem/gener_me_xh_2         jmbhh01 J.M.PROIX          114    114      0
+CATALOGU AJOUT typelem/gener_me_xht_2        jmbhh01 J.M.PROIX          111    111      0
+CATALOGU AJOUT typelem/gener_me_xt_2         jmbhh01 J.M.PROIX          111    111      0
+CATALOGU MODIF compelem/phenomene_modelisation__    jmbhh01 J.M.PROIX          984      4     11
+CATALOGU MODIF options/char_meca_ff2d3d      jmbhh01 J.M.PROIX           34      5      1
+CATALOGU MODIF options/char_meca_fr2d3d      jmbhh01 J.M.PROIX           34      5      1
+CATALOGU MODIF options/char_meca_pres_f      jmbhh01 J.M.PROIX           37      5      1
+CATALOGU MODIF options/char_meca_pres_r      jmbhh01 J.M.PROIX           36      5      1
+CATALOGU MODIF typelem/gener_me2db1          jmbhh01 J.M.PROIX          208      1      3
+CATALOGU MODIF typelem/gener_me3d_2           massin P.MASSIN           159      4      1
+CATALOGU MODIF typelem/gener_me_x             massin P.MASSIN           605      3      1
+CATALOGU MODIF typelem/gener_me_xh            massin P.MASSIN           281     11      9
+CATALOGU MODIF typelem/gener_me_xht           massin P.MASSIN           283     11      9
+CATALOGU MODIF typelem/gener_me_xt            massin P.MASSIN           285     11      9
+CATALOGU MODIF typelem/gener_mebar1          jmbhh01 J.M.PROIX          214      1      3
+CATALOGU MODIF typelem/gener_mecab1          jmbhh01 J.M.PROIX          154      1      3
+CATALOGU MODIF typelem/gener_mecap1          jmbhh01 J.M.PROIX          147      1      3
+CATALOGU MODIF typelem/gener_mepct1          jmbhh01 J.M.PROIX          223      1      3
+CATALOGU MODIF typelem/gener_mepde1          jmbhh01 J.M.PROIX          262      1      4
+CATALOGU MODIF typelem/gener_mepdg1          jmbhh01 J.M.PROIX          213      1      3
+CATALOGU MODIF typelem/gener_mepdt1          jmbhh01 J.M.PROIX          256      1      4
+CATALOGU MODIF typelem/gener_mepgd1          jmbhh01 J.M.PROIX          196      1      3
+CATALOGU MODIF typelem/gener_mepmf2          jmbhh01 J.M.PROIX          215      1      3
+CATALOGU MODIF typelem/gener_metu61          jmbhh01 J.M.PROIX          269      1      3
+CATALOGU MODIF typelem/met3seg3              jmbhh01 J.M.PROIX          260      1      3
+CATALOGU MODIF typelem/met3seg4              jmbhh01 J.M.PROIX          260      1      3
+CATALOGU SUPPR commande/defi_ther_joule      jmbhh01 J.M.PROIX            0      0      0
+CATALOGU SUPPR commande/dist_lign_3d         jmbhh01 J.M.PROIX            0      0      0
+CATALOGU SUPPR commande/post_simplifie       jmbhh01 J.M.PROIX            0      0      0
+CATALOGU SUPPR options/indu_mutu             jmbhh01 J.M.PROIX            0      0      0
+CATALOGU SUPPR typelem/gener_meapp2          jmbhh01 J.M.PROIX            0      0      0
+CATALOGU SUPPR typelem/gener_measg2          jmbhh01 J.M.PROIX            0      0      0
+CATALOPY AJOUT commande/calc_g               rezette C.REZETTE          137    137      0
+CATALOPY AJOUT commande/propa_xfem            massin P.MASSIN            37     37      0
+CATALOPY MODIF commande/affe_cara_elem       jmbhh01 J.M.PROIX          521      2     17
+CATALOPY MODIF commande/affe_modele          jmbhh01 J.M.PROIX          211      1      3
+CATALOPY MODIF commande/calc_elem           mcourtoi M.COURTOIS         580      4      2
+CATALOPY MODIF commande/calc_g_theta_t      mcourtoi M.COURTOIS         117      5      2
+CATALOPY MODIF commande/calc_no             mcourtoi M.COURTOIS         104      4      2
+CATALOPY MODIF commande/calc_table          mcourtoi M.COURTOIS         108      2      1
+CATALOPY MODIF commande/crea_champ          mcourtoi M.COURTOIS         183      3      2
+CATALOPY MODIF commande/crea_table          mcourtoi M.COURTOIS          52      8      4
+CATALOPY MODIF commande/defi_fond_fiss       galenne E.GALENNE          100      2      1
+CATALOPY MODIF commande/defi_materiau        jmbhh01 J.M.PROIX         2588      2    316
+CATALOPY MODIF commande/detruire            mcourtoi M.COURTOIS          38      2      1
+CATALOPY MODIF commande/dyna_line_harm      mcourtoi M.COURTOIS          74      3      2
+CATALOPY MODIF commande/dyna_line_tran      mcourtoi M.COURTOIS         156      4      3
+CATALOPY MODIF commande/dyna_non_line       mcourtoi M.COURTOIS         371      3      2
+CATALOPY MODIF commande/extr_resu           mcourtoi M.COURTOIS          72      3      1
+CATALOPY MODIF commande/impr_co             mcourtoi M.COURTOIS          39      2      1
+CATALOPY MODIF commande/impr_resu           mcourtoi M.COURTOIS         151      2      1
+CATALOPY MODIF commande/impr_table          mcourtoi M.COURTOIS         108      2      1
+CATALOPY MODIF commande/macr_lign_coupe      galenne E.GALENNE           52      4      1
+CATALOPY MODIF commande/meca_statique       mcourtoi M.COURTOIS          99      3      2
+CATALOPY MODIF commande/mode_iter_inv       mcourtoi M.COURTOIS          95      2      1
+CATALOPY MODIF commande/mode_iter_simult    mcourtoi M.COURTOIS         142      2      1
+CATALOPY MODIF commande/norm_mode           mcourtoi M.COURTOIS          54      4      2
+CATALOPY MODIF commande/post_k1_k2_k3        galenne E.GALENNE           69      5      3
+CATALOPY MODIF commande/post_releve_t       mcourtoi M.COURTOIS         127      4      2
+CATALOPY MODIF commande/proj_champ          mcourtoi M.COURTOIS         108      5      2
+CATALOPY MODIF commande/recu_fonction       mcourtoi M.COURTOIS         240      4      2
+CATALOPY MODIF commande/stat_non_line       mcourtoi M.COURTOIS         341      3      2
+CATALOPY MODIF commande/test_fonction       mcourtoi M.COURTOIS          90      3      2
+CATALOPY MODIF commande/test_resu           mcourtoi M.COURTOIS         169      3      2
+CATALOPY MODIF commande/test_table          mcourtoi M.COURTOIS          60      3      2
+CATALOPY MODIF commande/ther_lineaire       mcourtoi M.COURTOIS          93      2      1
+CATALOPY MODIF commande/ther_non_line       mcourtoi M.COURTOIS         116      2      1
+CATALOPY MODIF commun/c_comp_incr            jmbhh01 J.M.PROIX          322      6     23
+CATALOPY MODIF entete/accas                   assire A.ASSIRE          1122      7      1
+ FORTRAN AJOUT algorith/fonoda               jmbhh01 J.M.PROIX          202    202      0
+ FORTRAN AJOUT algorith/op0010                massin P.MASSIN           353    353      0
+ FORTRAN AJOUT algorith/xoripe               jmbhh01 J.M.PROIX          312    312      0
+ FORTRAN AJOUT algorith/xpraju                massin P.MASSIN           106    106      0
+ FORTRAN AJOUT algorith/xprcfl                massin P.MASSIN           127    127      0
+ FORTRAN AJOUT algorith/xprls                 massin P.MASSIN           195    195      0
+ FORTRAN AJOUT algorith/xprmil                massin P.MASSIN           125    125      0
+ FORTRAN AJOUT algorith/xprvit                massin P.MASSIN           180    180      0
+ FORTRAN AJOUT calculel/cgcrtb               rezette C.REZETTE          303    303      0
+ FORTRAN AJOUT calculel/op0100               rezette C.REZETTE         1054   1054      0
+ FORTRAN AJOUT elements/gnormf               galenne E.GALENNE          466    466      0
+ FORTRAN AJOUT elements/te0036               jmbhh01 J.M.PROIX          346    346      0
+ FORTRAN AJOUT elements/te0118                massin P.MASSIN           106    106      0
+ FORTRAN MODIF algeline/mtxcnl               cibhhlv L.VIVAN            182     94     21
+ FORTRAN MODIF algeline/tldur8              mcourtoi M.COURTOIS         414      2      9
+ FORTRAN MODIF algorith/assthm               jmbhh01 J.M.PROIX          430      1      5
+ FORTRAN MODIF algorith/cakg3d               rezette C.REZETTE          398      4      4
+ FORTRAN MODIF algorith/cakgmo               rezette C.REZETTE          299      3      4
+ FORTRAN MODIF algorith/calcme               jmbhh01 J.M.PROIX          431      1    500
+ FORTRAN MODIF algorith/comthm               jmbhh01 J.M.PROIX          229      2     32
+ FORTRAN MODIF algorith/fnothm               jmbhh01 J.M.PROIX          129     16    181
+ FORTRAN MODIF algorith/gefact               cambier S.CAMBIER          473      9      6
+ FORTRAN MODIF algorith/gveri3               rezette C.REZETTE          179     18      7
+ FORTRAN MODIF algorith/kitdec               jmbhh01 J.M.PROIX           72      3     14
+ FORTRAN MODIF algorith/lccnvx               jmbhh01 J.M.PROIX           82      1      7
+ FORTRAN MODIF algorith/lcconv               jmbhh01 J.M.PROIX          112      2     12
+ FORTRAN MODIF algorith/lcelas               jmbhh01 J.M.PROIX           71      2      4
+ FORTRAN MODIF algorith/lcelin               jmbhh01 J.M.PROIX           83      3      3
+ FORTRAN MODIF algorith/lcinit               jmbhh01 J.M.PROIX           87      2      8
+ FORTRAN MODIF algorith/lcjacb               jmbhh01 J.M.PROIX           85      2     10
+ FORTRAN MODIF algorith/lcjela               jmbhh01 J.M.PROIX           62      2      4
+ FORTRAN MODIF algorith/lcjpla               jmbhh01 J.M.PROIX           72      1      7
+ FORTRAN MODIF algorith/lcmate               jmbhh01 J.M.PROIX          140      6     12
+ FORTRAN MODIF algorith/lcmmin               jmbhh01 J.M.PROIX          153      4      3
+ FORTRAN MODIF algorith/lcplas               jmbhh01 J.M.PROIX          132      2      4
+ FORTRAN MODIF algorith/lcresi               jmbhh01 J.M.PROIX           86      2     10
+ FORTRAN MODIF algorith/nmchab               jmbhh01 J.M.PROIX          695      3      3
+ FORTRAN MODIF algorith/nmchcr               jmbhh01 J.M.PROIX          150      3      3
+ FORTRAN MODIF algorith/nmchdp               jmbhh01 J.M.PROIX          209      4      7
+ FORTRAN MODIF algorith/nmcomp               jmbhh01 J.M.PROIX          746      5      5
+ FORTRAN MODIF algorith/nmcoup               jmbhh01 J.M.PROIX          188      3      5
+ FORTRAN MODIF algorith/nmcpla               jmbhh01 J.M.PROIX          465      2     10
+ FORTRAN MODIF algorith/nmdorc               rezette C.REZETTE          586      7      6
+ FORTRAN MODIF algorith/nmthmc               jmbhh01 J.M.PROIX          501      8     42
+ FORTRAN MODIF algorith/nmvprk               jmbhh01 J.M.PROIX          360      2      1
+ FORTRAN MODIF algorith/op0041                massin P.MASSIN           255     17      4
+ FORTRAN MODIF algorith/op0070              lebouvie F.LEBOUVIER        921      3      1
+ FORTRAN MODIF algorith/op0113               jmbhh01 J.M.PROIX          369     25     32
+ FORTRAN MODIF algorith/plasbe               jmbhh01 J.M.PROIX          511      2      2
+ FORTRAN MODIF algorith/plasti               jmbhh01 J.M.PROIX          477     16     15
+ FORTRAN MODIF algorith/redece               jmbhh01 J.M.PROIX          302      2      1
+ FORTRAN MODIF algorith/vechme               jmbhh01 J.M.PROIX          453     17      2
+ FORTRAN MODIF algorith/xajpin               jmbhh01 J.M.PROIX          100      8      3
+ FORTRAN MODIF algorith/xdecou               jmbhh01 J.M.PROIX          186     25      8
+ FORTRAN MODIF algorith/xdecov               jmbhh01 J.M.PROIX          392     34     39
+ FORTRAN MODIF algorith/xmmbca               jmbhh01 J.M.PROIX          171      6     12
+ FORTRAN MODIF algorith/xnrch3               jmbhh01 J.M.PROIX          428     21     11
+ FORTRAN MODIF assembla/asmchc               vabhhts J.PELLET           249      2      2
+ FORTRAN MODIF calculel/mbilgl               rezette C.REZETTE          398      1      1
+ FORTRAN MODIF calculel/mecagl               rezette C.REZETTE          392     10      5
+ FORTRAN MODIF calculel/mecalc                assire A.ASSIRE           524      1     10
+ FORTRAN MODIF calculel/mecalg               rezette C.REZETTE          474      5      4
+ FORTRAN MODIF calculel/medom1               rezette C.REZETTE          217      2      1
+ FORTRAN MODIF calculel/memax                 massin P.MASSIN           206    128    144
+ FORTRAN MODIF calculel/memoy                 massin P.MASSIN           219     33    164
+ FORTRAN MODIF calculel/op0055               galenne E.GALENNE          234     34     10
+ FORTRAN MODIF cataelem/inccat              mcourtoi M.COURTOIS         352      1      8
+ FORTRAN MODIF elements/gcour2               rezette C.REZETTE          475     13      3
+ FORTRAN MODIF elements/gcouro               rezette C.REZETTE          400     15      4
+ FORTRAN MODIF elements/gkmet3               rezette C.REZETTE          217     14      3
+ FORTRAN MODIF elements/gmeth1               rezette C.REZETTE          116      3      2
+ FORTRAN MODIF elements/gmeth3               rezette C.REZETTE          219     15      4
+ FORTRAN MODIF elements/gver2d               rezette C.REZETTE          208     28      6
+ FORTRAN MODIF elements/gveri2               rezette C.REZETTE          197     20      9
+ FORTRAN MODIF elements/gverig               rezette C.REZETTE          310     21      5
+ FORTRAN MODIF elements/psvari               jmbhh01 J.M.PROIX           79      1     10
+ FORTRAN MODIF elements/te0332               jmbhh01 J.M.PROIX          306      1      3
+ FORTRAN MODIF elements/te0334               cibhhlv L.VIVAN            425      2      2
+ FORTRAN MODIF elements/te0339               jmbhh01 J.M.PROIX          357      1      3
+ FORTRAN MODIF elements/te0431               cibhhlv L.VIVAN            283      2      2
+ FORTRAN MODIF elements/te0514               jmbhh01 J.M.PROIX          207     41     34
+ FORTRAN MODIF elements/te0532               jmbhh01 J.M.PROIX          241      4      4
+ FORTRAN MODIF elements/te0533                massin P.MASSIN           597      2      2
+ FORTRAN MODIF modelisa/acecel               jmbhh01 J.M.PROIX          207      6     16
+ FORTRAN MODIF modelisa/aceinc               jmbhh01 J.M.PROIX          296     15     33
+ FORTRAN MODIF modelisa/mode18               jmbhh01 J.M.PROIX          362      1      7
+ FORTRAN MODIF modelisa/op0019               jmbhh01 J.M.PROIX          476     23     38
+ FORTRAN MODIF modelisa/vafcar               jmbhh01 J.M.PROIX          151      4      7
+ FORTRAN MODIF modelisa/xdelco               jmbhh01 J.M.PROIX          187      5      1
+ FORTRAN MODIF prepost/cncinv                vabhhts J.PELLET           211     15     14
+ FORTRAN MODIF prepost/gmeelt               mcourtoi M.COURTOIS         225      4     12
+ FORTRAN MODIF prepost/gmeneu               mcourtoi M.COURTOIS         131      3      7
+ FORTRAN MODIF prepost/gmlelt               mcourtoi M.COURTOIS         202      3      7
+ FORTRAN MODIF prepost/gmlneu               mcourtoi M.COURTOIS         104      3      4
+ FORTRAN MODIF prepost/gmsast               mcourtoi M.COURTOIS          49      3      3
+ FORTRAN MODIF prepost/op0176               mcourtoi M.COURTOIS         207      3      4
+ FORTRAN MODIF prepost/pregms               mcourtoi M.COURTOIS         134      7      8
+ FORTRAN MODIF prepost/stbast               mcourtoi M.COURTOIS          50      2      2
+ FORTRAN MODIF stbtrias/ecrelt              mcourtoi M.COURTOIS         236      3      4
+ FORTRAN MODIF stbtrias/ecrneu              mcourtoi M.COURTOIS         248      4      4
+ FORTRAN MODIF stbtrias/lecelt              mcourtoi M.COURTOIS         107      3      3
+ FORTRAN MODIF stbtrias/lect82              mcourtoi M.COURTOIS          95      3      6
+ FORTRAN MODIF stbtrias/presup              mcourtoi M.COURTOIS         195     12     14
+ FORTRAN MODIF stbtrias/slecol              mcourtoi M.COURTOIS         118      2      5
+ FORTRAN MODIF stbtrias/slecor              mcourtoi M.COURTOIS         117      3      6
+ FORTRAN MODIF stbtrias/sleelt              mcourtoi M.COURTOIS         232      6      6
+ FORTRAN MODIF stbtrias/slegeo              mcourtoi M.COURTOIS         282      3      6
+ FORTRAN MODIF stbtrias/slegro              mcourtoi M.COURTOIS         349      4      7
+ FORTRAN MODIF stbtrias/sleneu              mcourtoi M.COURTOIS         211      3      4
+ FORTRAN MODIF stbtrias/snecol              mcourtoi M.COURTOIS         121      2      3
+ FORTRAN MODIF utilitai/memaxg               rezette C.REZETTE          186      3      2
+ FORTRAN MODIF utilitai/ops026              mcourtoi M.COURTOIS         102      2      2
+ FORTRAN MODIF utilitai/pechli                massin P.MASSIN           194      2      2
+ FORTRAN MODIF utilitai/peingl               jmbhh01 J.M.PROIX          709      1      2
+ FORTRAN MODIF utilitai/peritr                massin P.MASSIN           415     10     10
+ FORTRAN MODIF utilitai/rslesd               rezette C.REZETTE          442      2      1
+ FORTRAN SUPPR algorith/cacogt               jmbhh01 J.M.PROIX         1312      0   1312
+ FORTRAN SUPPR algorith/cafhgt               jmbhh01 J.M.PROIX          952      0    952
+ FORTRAN SUPPR algorith/chbcvg               jmbhh01 J.M.PROIX          305      0    305
+ FORTRAN SUPPR algorith/chbcvx               jmbhh01 J.M.PROIX           55      0     55
+ FORTRAN SUPPR algorith/chbini               jmbhh01 J.M.PROIX          167      0    167
+ FORTRAN SUPPR algorith/chbjac               jmbhh01 J.M.PROIX          260      0    260
+ FORTRAN SUPPR algorith/chbjpl               jmbhh01 J.M.PROIX           87      0     87
+ FORTRAN SUPPR algorith/chbmat               jmbhh01 J.M.PROIX          129      0    129
+ FORTRAN SUPPR algorith/chbnvi               jmbhh01 J.M.PROIX           64      0     64
+ FORTRAN SUPPR algorith/chbres               jmbhh01 J.M.PROIX          136      0    136
+ FORTRAN SUPPR algorith/nmpgat               jmbhh01 J.M.PROIX          691      0    691
+ FORTRAN SUPPR algorith/onocvg               jmbhh01 J.M.PROIX          306      0    306
+ FORTRAN SUPPR algorith/onocvx               jmbhh01 J.M.PROIX           63      0     63
+ FORTRAN SUPPR algorith/onoini               jmbhh01 J.M.PROIX          291      0    291
+ FORTRAN SUPPR algorith/onojac               jmbhh01 J.M.PROIX          595      0    595
+ FORTRAN SUPPR algorith/onojpl               jmbhh01 J.M.PROIX          180      0    180
+ FORTRAN SUPPR algorith/onomat               jmbhh01 J.M.PROIX          141      0    141
+ FORTRAN SUPPR algorith/ononvi               jmbhh01 J.M.PROIX           64      0     64
+ FORTRAN SUPPR algorith/onores               jmbhh01 J.M.PROIX          261      0    261
+ FORTRAN SUPPR algorith/statsr               jmbhh01 J.M.PROIX           76      0     76
+ FORTRAN SUPPR algorith/statvt               jmbhh01 J.M.PROIX          170      0    170
+ FORTRAN SUPPR elements/te0560               jmbhh01 J.M.PROIX          294      0    294
+ FORTRAN SUPPR modelisa/aceagr               jmbhh01 J.M.PROIX          175      0    175
+ FORTRAN SUPPR modelisa/acevgr               jmbhh01 J.M.PROIX          126      0    126
+ FORTRAN SUPPR postrele/op0185               jmbhh01 J.M.PROIX          233      0    233
+ FORTRAN SUPPR prepost/op0188                galenne E.GALENNE          358      0    358
+ FORTRAN SUPPR prepost/pkcalc                galenne E.GALENNE          336      0    336
+ FORTRAN SUPPR prepost/pkchgr                galenne E.GALENNE          135      0    135
+ FORTRAN SUPPR prepost/pkdepl                galenne E.GALENNE          280      0    280
+ FORTRAN SUPPR prepost/pkfond                galenne E.GALENNE          840      0    840
+ FORTRAN SUPPR prepost/pkmate                galenne E.GALENNE          155      0    155
+ FORTRAN SUPPR prepost/pknoeu                galenne E.GALENNE          116      0    116
+ FORTRAN SUPPR prepost/pkrec2                galenne E.GALENNE          114      0    114
+ FORTRAN SUPPR prepost/pkrecu                galenne E.GALENNE          185      0    185
+ FORTRAN SUPPR prepost/pksyme                galenne E.GALENNE          213      0    213
+ FORTRAN SUPPR prepost/pktemp                galenne E.GALENNE          160      0    160
+ FORTRAN SUPPR utilitai/op0121               jmbhh01 J.M.PROIX          227      0    227
+ FORTRAN SUPPR utilitai/op0133               jmbhh01 J.M.PROIX          301      0    301
+  PYTHON AJOUT Macro/post_k1_k2_k3_ops       galenne E.GALENNE          891    891      0
+  PYTHON AJOUT Noyau/N_SENSIBILITE          mcourtoi M.COURTOIS         178    178      0
+  PYTHON MODIF Accas/__init__               mcourtoi M.COURTOIS          79      2      1
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES    rezette C.REZETTE          255      2      1
+  PYTHON MODIF Build/B_SENSIBILITE_JDC      mcourtoi M.COURTOIS         497     11      6
+  PYTHON MODIF Execution/E_SUPERV           mcourtoi M.COURTOIS         338      5      6
+  PYTHON MODIF Macro/macr_ascouf_calc_ops    rezette C.REZETTE          683     14     18
+  PYTHON MODIF Macro/macr_aspic_calc_ops     rezette C.REZETTE          805     23     23
+  PYTHON MODIF Macro/macr_lign_coupe_ops     galenne E.GALENNE          376     13      3
+  PYTHON MODIF Noyau/N_ETAPE                mcourtoi M.COURTOIS         404     11      1
+  PYTHON MODIF Noyau/N_JDC                  mcourtoi M.COURTOIS         458      9      1
+  PYTHON MODIF Noyau/N_MACRO_ETAPE          mcourtoi M.COURTOIS         663     19      6
+  PYTHON MODIF Stanley/cata_champs            assire A.ASSIRE           228     32     12
+  PYTHON MODIF Stanley/gmsh                   assire A.ASSIRE           385      2      2
+  PYTHON MODIF Stanley/graphiqueTk            assire A.ASSIRE           564     24      8
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3073    567    409
+  PYTHON MODIF Stanley/xmgrace                assire A.ASSIRE           284      6      4
+  PYTHON MODIF Validation/V_MCCOMPO         mcourtoi M.COURTOIS         125      3      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   26        7047      7047             +7047
+ MODIF :  290      100889      4991    5630      -639
+ SUPPR :   51       12306             12306    -12306
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  367      120242     12038   17936     -5898 

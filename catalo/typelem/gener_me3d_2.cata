@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
+    E1NEUTR  = NEUT_R   ELEM__         (X1       )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EGTHETA  = G        ELEM__         (GTHETA   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
@@ -131,6 +132,8 @@ OPTION__
                                      CGEOMER  PORIGIN
                               OUT__  MVECTUR  PVECTU1  MVECTUR  PVECTU2  MVECTUR  PVECTU3  MVECTUR  PVECTU4
                                      MVECTUR  PVECTU5  MVECTUR  PVECTU6
+    CFL_XFEM            118   IN__   NGEOMER  PGEOMER  N1NEUT_R  PVTNO
+                              OUT__  E1NEUTR  PLONCAR  E1NEUTR  PCFLVT
     CHAR_MECA_FF2D3D    29    IN__   CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR2D3D    28    IN__   EFORCNO  PFR2D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER

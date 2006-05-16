@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,10 +50,9 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   IMPR_TABLE       =self.get_cmd('IMPR_TABLE'      )
   DEFI_FOND_FISS   =self.get_cmd('DEFI_FOND_FISS'  )
   CALC_THETA       =self.get_cmd('CALC_THETA'      )
-  CALC_G_THETA_T   =self.get_cmd('CALC_G_THETA_T'  )
-  CALC_G_LOCAL_T   =self.get_cmd('CALC_G_LOCAL_T'  )
-  POST_RCCM        =self.get_cmd('POST_RCCM'  )
-  POST_RELEVE_T    =self.get_cmd('POST_RELEVE_T'  )
+  CALC_G           =self.get_cmd('CALC_G'          )
+  POST_RCCM        =self.get_cmd('POST_RCCM'       )
+  POST_RELEVE_T    =self.get_cmd('POST_RELEVE_T'   )
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
@@ -631,12 +630,10 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
         motscles = {}
         if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
-        _nogthe=CALC_G_THETA_T(
-                               RESULTAT   =nomres,
-                               TOUT_ORDRE ='OUI',
-                               THETA      =_nothet,
-                               **motscles
-                               );
+        _nogthe=CALC_G( RESULTAT   =nomres,
+                        OPTION='CALC_G_GLOB',
+                        TOUT_ORDRE ='OUI',
+                        THETA      =_F(THETA=_nothet),**motscles);
 #
         IMPR_TABLE(TABLE=_nogthe,);
 #
@@ -645,21 +642,20 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
         if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
         if   TYPE_MAILLAGE =='FISS_COUDE' :
-                             motscles['LISSAGE_THETA']='LEGENDRE'
-                             motscles['LISSAGE_G']    ='LEGENDRE'
+                             motscles['LISSAGE']=_F(LISSAGE_THETA='LEGENDRE',
+                                                    LISSAGE_G='LEGENDRE',
+                                                    DEGRE=4,)
         elif TYPE_MAILLAGE =='FISS_AXIS_DEB' :
-                             motscles['LISSAGE_THETA']='LAGRANGE'
-                             motscles['LISSAGE_G']    ='LAGRANGE'
-        _nogloc=CALC_G_LOCAL_T(MODELE     =modele,
-                               RESULTAT   =nomres,
-                               TOUT_ORDRE ='OUI',
-                               CHAM_MATER =affmat,
-                               FOND_FISS  =fonfis,
-                               DEGRE      = 4,
-                               R_INF      = thet['R_INF'],
-                               R_SUP      = thet['R_SUP'],
-                               **motscles
-                               );
+                             motscles['LISSAGE']=_F(LISSAGE_THETA='LAGRANGE',
+                                                    LISSAGE_G='LAGRANGE',
+                                                    DEGRE=4,)
+        _nogloc=CALC_G (MODELE     =modele,
+                        RESULTAT   =nomres,
+                        TOUT_ORDRE ='OUI',
+                        CHAM_MATER =affmat,
+                        THETA=_F( FOND_FISS  =fonfis,
+                                  R_INF      = thet['R_INF'],
+                                  R_SUP      = thet['R_SUP'],),**motscles);
 
         IMPR_TABLE(TABLE=_nogloc,);
 #

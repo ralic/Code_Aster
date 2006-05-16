@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,18 +70,22 @@ THETA01=CALC_THETA(  MODELE=MO,
                      DIRECTION=(0.7986, 0.6018, 0.,)
                      )
 
-G01=CALC_G_THETA_T(  MODELE=MO,
+G01=CALC_G(  MODELE=MO,
                      DEPL=DEP,
-                     THETA=THETA01,
+                     THETA=_F(THETA=THETA01),
                      EXCIT=_F(CHARGE=CH,),
                      CHAM_MATER=CHMAT,
                      SYME_CHAR='SANS'
                    )
 
-GK01=CALC_G_THETA_T(    MODELE=MO,
+GK01=CALC_G(    MODELE=MO,
                             DEPL=DEP,
-                           THETA=THETA01,
-                            FOND_FISS=FOND1,
+                           THETA=_F(
+                                   MODULE = 1.,
+                                   R_INF = 0.00001875,
+                                   R_SUP = 0.000075,
+                                   DIRECTION=(0.7986, 0.6018, 0.,),
+                                   FOND_FISS=FOND1),
                           EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS',

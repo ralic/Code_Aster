@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,9 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                 fr="Résultat d'une commande globale"),
                                            
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
-                    'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),),
+                    'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
+             CONCEPT_SENSIBLE("SEPARE"),
+             DERIVABLE('RESULTAT'),),
      TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
      NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
      NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -569,7 +571,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                 PUIS_PULS       =SIMP(statut='f',typ='I'),
                 TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
                                  ),
-                                 
+             
      SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                            fr="Liste des paramètres de sensibilité.",
                            ang="List of sensitivity parameters"),

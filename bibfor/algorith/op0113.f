@@ -3,7 +3,7 @@
       INTEGER           IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,14 +48,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     
       REAL*8          CRIMAX
-      INTEGER         IFM,NIV,IBID,IRET,IMAIL,I,J,JJ,IGR1,IEL,IMA,J2
+      INTEGER         IBID,IRET,IMAIL,I,J,JJ,IGR1,IEL,IMA,J2
       INTEGER         IGR2
       INTEGER         JNOUT,ICONX1,ICONX2,JDMA,ZZNBNE,ZZCONX
       INTEGER         JTAB,J1,JINDIC,JG,IADRMA,JMAIL2,JMOFIS
       INTEGER         NBNOEU,NBMAIL,NBNO,NGR1,NBMA,N1,NBELT,NELT
       INTEGER         NMAENR,ITYPEL,Q(6),NB1
       INTEGER         ITYXH8(3),ITYXP6(3),ITYXT4(3),ITCPQ4(3)
-      INTEGER         ITCPT3(3),ITDPQ4(3),ITDPT3(3)
+      INTEGER         ITCPT3(3),ITDPQ4(3),ITDPT3(3),ITF4(3),ITF3(3)
       CHARACTER*8     MOD2,MOD1,FISS,K8BID,NOMA
       CHARACTER*16    MOTFAC,K16BID,NOTYPE  
       CHARACTER*19    LIGR1,LIGR2
@@ -67,10 +67,7 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL INFMAJ()
-      CALL INFNIV(IFM,NIV)
       
-      WRITE(IFM,*)'OP0113 : MODI MODELE'
-
       MOTFAC=' '
 
       CALL GETRES(MOD2,K16BID,K16BID)     
@@ -154,8 +151,6 @@ C       COLONNE 3 ET À O LA CASE DE TAB COLONNE 4
  140    CONTINUE
       ENDIF 
 
-      WRITE(IFM,*)'OP0113-1) : FIN DE CREATION DE TAB'
-
 C-----------------------------------------------------------------------
 C     2)  MODIFICATION DE TAB EN FONTION DE L'ENRICHISSEMENT
 C-----------------------------------------------------------------------
@@ -187,6 +182,14 @@ C-----------------------------------------------------------------------
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPTR6_XH'),ITDPT3(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPTR6_XT'),ITDPT3(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPTR6_XHT'),ITDPT3(3))
+
+      CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XH_FACE4'),ITF4(1))
+      CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XT_FACE4'),ITF4(2))
+      CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XHT_FACE4'),ITF4(3))
+      
+      CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XH_FACE3'),ITF3(1))
+      CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XT_FACE3'),ITF3(2))
+      CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XHT_FACE3'),ITF3(3))
 
       CALL JELIRA(LIEL1,'NMAXOC',NGR1,K8BID)
       DO 200 IGR1=1,NGR1
@@ -235,6 +238,16 @@ C-----------------------------------------------------------------------
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITDPT3(2)
             IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITDPT3(3)
             IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL       
+          ELSEIF (NOTYPE.EQ.'MECA_X_FACE8') THEN
+            IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITF4(1)
+            IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITF4(2)
+            IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITF4(3)
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
+          ELSEIF (NOTYPE.EQ.'MECA_X_FACE6') THEN
+            IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITF3(1)
+            IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITF3(2)
+            IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITF3(3)
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL       
           ELSE
             ZI(JJ+5)=ITYPEL
           ENDIF
@@ -247,25 +260,7 @@ C     ON COMPTE LE NB DE MAILLES DU LIGREL1 (= NB DE GREL DE LIEL2)
       DO 230 IMA=1,NBMA    
         IF (ZI(JTAB-1+5*(IMA-1)+5).NE.0) NELT=NELT+1
  230  CONTINUE
-      WRITE(IFM,*)'NB D''ELT DU LIEL2 =',NELT 
-      IF (NELT.EQ.0) CALL UTMESS('F','OP0113','AUCUNE MAILLE ENRICHIE')
-
-C     VISU  DE TAB 
-      IF (NIV.GT.1) THEN 
-        WRITE(IFM,*)'IMPRESSION DE TAB :'
-        WRITE(IFM,*)'-------------------'
-        WRITE(IFM,222)
- 222    FORMAT(8X,'GR1',2X,'GR2',2X,'GR3',2X,'GR0',2X,'ITYP')
-        DO 223 I=1,NBMA
-          Q(1)=I
-          DO 224 J=1,5 
-            Q(J+1)=ZI(JTAB-1+5*(I-1)+J)     
- 224      CONTINUE
-          WRITE(IFM,225)(Q(J),J=1,6)
- 223    CONTINUE
- 225    FORMAT(I5,4X,4(I1,4X),I3)
-      ENDIF  
-      WRITE(IFM,*)'OP0113-2) : FIN DE MODIFICATION DE TAB'
+      IF (NELT.EQ.0) CALL UTMESS('A','OP0113','AUCUNE MAILLE ENRICHIE')
 
 C-----------------------------------------------------------------------
 C     3)  CONSTRUCTION DU .LIEL2
@@ -287,7 +282,6 @@ C-----------------------------------------------------------------------
 
       CALL JELIRA(LIEL2,'NUTIOC',NB1,K8BID)
       CALL ASSERT(NB1.EQ.NELT)
-      WRITE(IFM,*)'OP0113-3) : FIN DE CREATION DU LIEL2'
 
 C-----------------------------------------------------------------------
 C     4)  CONSTRUCTION DU .MAILLE2
@@ -298,9 +292,7 @@ C-----------------------------------------------------------------------
       DO 400 IMA=1,NBMA
         ZI(JMAIL2-1+IMA)=ZI(JTAB-1+5*(IMA-1)+5)
  400  CONTINUE     
-      
-      WRITE(IFM,*)'OP0113-4) : FIN DE CREATION DU MAILLE2'
-      
+            
 C-----------------------------------------------------------------------
 C     5) DUPLICATION DU .NOMA, .NBNO
 C                ET DES .NEMA, .SSSA, .NOEUD S'ILS EXISTENT
@@ -346,8 +338,6 @@ C     --- CREATION DE L'OBJET .NOEUD_UTIL :
 
       CALL INITEL(LIGR2)
 
-      WRITE(IFM,*)'OP0113-5) : FIN DE DUPLICATION'
-
 C-----------------------------------------------------------------------
 C     6)  CALCUL DU DÉCOUPAGE EN SOUS-TETRAS, DES FACETTES DE CONTACT
 C         ET VERIFICATION DES CRITERES DE CONDITIONNEMENT
@@ -360,6 +350,9 @@ C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.CNSETO',6,'PCNSETO')
 C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.HEAVTO',6,'PHEAVTO' )
 C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.LONCHAM',6,'PLONCHA')
 C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.CRITER',6,'Pcriter')
+
+C     ORIENTATION DES FACETTES DE PEAU X-FEM (COMME ORIE_PEAU)
+      IF (DIMENS .EQ.3)       CALL XORIPE(MOD2,FISS)
 
 C     CALCUL DE LA TOPOLOGIE DES FACETTES DE CONTACT
       CALL XTOPOC(MOD2,FISS)

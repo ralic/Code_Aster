@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
             UIinfo={"groupes":("Résolution",)},
                    fr="Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
                       +" stationnaire ou transitoire" ,
+         regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          CHAM_MATER      =SIMP(statut='o',typ=(cham_mater) ),
          CARA_ELEM       =SIMP(statut='c',typ=(cara_elem) ),
@@ -32,7 +33,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
                                        "SECH_BAZANT",
                                        "SECH_NAPPE"
                                        ) ),
-      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
+         regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),

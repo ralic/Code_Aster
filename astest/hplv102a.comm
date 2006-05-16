@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,9 +133,9 @@ THETA1=CALC_THETA(MODELE=MO,
 CHAM1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',  OPERATION='EXTR',
                  RESULTAT=THETA1, NOM_CHAM='THETA',NUME_ORDRE=0,);
 
-G1=CALC_G_THETA_T(MODELE=MO,
+G1=CALC_G(MODELE=MO,
                   CHAM_MATER=CM,
-                  THETA=CHAM1,
+                  THETA=_F(THETA=CHAM1),
                   DEPL=DEPLA,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
@@ -148,9 +148,9 @@ THETA2=CALC_THETA(MODELE=MO,
                               R_INF=0.5,
                               R_SUP=4.5,),);
 
-G2=CALC_G_THETA_T(MODELE=MO,
+G2=CALC_G(MODELE=MO,
                   CHAM_MATER=CM,
-                  THETA=THETA2,
+                  THETA=_F(THETA=THETA2),
                   DEPL=DEPLA,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
@@ -163,9 +163,9 @@ THETA3=CALC_THETA(MODELE=MO,
                               R_INF=1.5,
                               R_SUP=3.5,),);
 
-G3=CALC_G_THETA_T(MODELE=MO,
+G3=CALC_G(MODELE=MO,
                   CHAM_MATER=CM,
-                  THETA=THETA3,
+                  THETA=_F(THETA=THETA3),
                   DEPL=DEPLA,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
@@ -178,9 +178,9 @@ THETA4=CALC_THETA(MODELE=MO,
                               R_INF=1.0,
                               R_SUP=4.5,),);
 
-G4=CALC_G_THETA_T(MODELE=MO,
+G4=CALC_G(MODELE=MO,
                   CHAM_MATER=CM,
-                  THETA=THETA4,
+                  THETA=_F(THETA=THETA4),
                   DEPL=DEPLA,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',

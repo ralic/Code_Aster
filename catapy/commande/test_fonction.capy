@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,8 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",
-           regles=(UN_PARMI('VALE_REFE','VALE_REFE_C', ),),
+           regles=(UN_PARMI('VALE_REFE','VALE_REFE_C',),
+                   DERIVABLE('FONCTION'),),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster,formule) ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                  fr="Paramètre de sensibilité.",

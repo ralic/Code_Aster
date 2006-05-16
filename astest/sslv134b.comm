@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,13 +94,13 @@ RINF=0.2
 
 GLOC=11.58648
 
-GLOC1=CALC_G_LOCAL_T(    MODELE=MO,
+GLOC1=CALC_G(    MODELE=MO,
                           DEPL=DEP,
                         EXCIT=_F(CHARGE=PRESSION,),
                         CHAM_MATER=CHMAT,
-                         FOND_FISS=FISS,
-                        R_SUP=RSUP,
-                        R_INF=RINF
+                        THETA=_F(FOND_FISS=FISS,
+                                 R_SUP=RSUP,
+                                 R_INF=RINF,),
                     )
 
 TEST_TABLE(       TABLE=GLOC1,
@@ -142,9 +142,10 @@ THETA1=CALC_THETA(      OPTION='COURONNE',
                                    R_SUP_FO = RAY_SUP1)
                     )
 
-G0=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP,
-                                THETA=THETA1,
+G0=CALC_G (        MODELE=MO,
+                             OPTION='CALC_G_GLOB',
+                               DEPL=DEP,
+                                THETA=_F(THETA=THETA1),
                                EXCIT=_F(CHARGE=PRESSION,),
                            CHAM_MATER=CHMAT
                        )

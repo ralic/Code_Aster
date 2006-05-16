@@ -1,6 +1,6 @@
-      SUBROUTINE  PREGMS
+      SUBROUTINE  PREGMS(IGMSH, IMOD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,14 +27,15 @@ C                  ECRITURE DU FICHIER .MAIL
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
+      INTEGER      IGMSH, IMOD
 C -----  VARIABLES LOCALES
-           PARAMETER (MAXNOD=32, NBTYMA=15)
-           CHARACTER*4  NOD, CT(3), ELM
-           CHARACTER*7  ENDNOD
-           CHARACTER*8  NOMAIL(NBTYMA), RQUOI
-           CHARACTER*12 AUT
-           CHARACTER*14 AUT1
-           INTEGER   NBNOMA(NBTYMA), NUCONN(NBTYMA,MAXNOD)
+      PARAMETER (MAXNOD=32, NBTYMA=15)
+      CHARACTER*4  NOD, CT(3), ELM
+      CHARACTER*7  ENDNOD
+      CHARACTER*8  NOMAIL(NBTYMA), RQUOI
+      CHARACTER*12 AUT
+      CHARACTER*14 AUT1
+      INTEGER   NBNOMA(NBTYMA), NUCONN(NBTYMA,MAXNOD)
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -67,8 +68,6 @@ C
 C --- RECUPERATION DES NUMEROS D'UNITE LOGIQUE DES FICHIERS :
 C     -----------------------------------------------------
       IMES  = IUNIFI('MESSAGE')
-      IGMSH = IUNIFI('GMSH')
-      IMOD  = IUNIFI('FICHIER-MODELE')
 C
 C --- AFFECTATION DE NOMAIL AVEC LE NOM DU TYPE DES ELEMENTS :
 C     ------------------------------------------------------
@@ -94,7 +93,7 @@ C     ---------------------------
 C
 C --- LECTURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .GMSH:
 C     ----------------------------------------------------------------
-      CALL GMLNEU(NBNODE)
+      CALL GMLNEU(IGMSH, NBNODE)
 C
 C --- FIN DE LA LECTURE DES NOEUDS :
 C     ----------------------------
@@ -106,15 +105,15 @@ C     ------------------------------------------------------
 C
 C --- LECTURE DES MAILLES ET DES GROUP_MA :
 C     -----------------------------------
-       CALL GMLELT(MAXNOD,NBTYMA,NBMAIL,NBNOMA,NUCONN)
+      CALL GMLELT(IGMSH,MAXNOD,NBTYMA,NBMAIL,NBNOMA,NUCONN)
 C
 C --- ECRITURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .MAIL:
 C     -----------------------------------------------------------------
-      CALL GMENEU(NBNODE)
+      CALL GMENEU(IMOD,NBNODE)
 C
 C --- ECRITURE DES MAILLES ET DES GROUP_MA DANS LE FICHIER .MAIL :
 C     ----------------------------------------------------------
-       CALL GMEELT(NBTYMA,NOMAIL,NBNOMA,NUCONN,NBMAIL)
+       CALL GMEELT(IMOD,NBTYMA,NOMAIL,NBNOMA,NUCONN,NBMAIL)
 C
 C --- MENAGE :
 C     ------

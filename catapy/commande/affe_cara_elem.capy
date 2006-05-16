@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
                     reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('POUTRE','BARRE','COQUE','CABLE','DISCRET','DISCRET_2D','MASSIF',
-                             'ASSE_GRIL','GRILLE','AFFE_SECT','AFFE_FIBRE','RIGI_PARASOL'),),
+                             'GRILLE','AFFE_SECT','AFFE_FIBRE','RIGI_PARASOL'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          INFO            =SIMP(statut='f',typ='I', defaut= 1 ,into=(1,2) ),
          VERIF           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=("MAILLE","NOEUD") ),
@@ -483,21 +483,6 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
            UNITE_RESU_IMPE =SIMP(statut='f',typ='I',defaut=30),
          ),
          
-#============================================================================
-         ASSE_GRIL       =FACT(statut='f',max='**',
-           regles=(UN_PARMI('MAILLE','GROUP_MA'),),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           CARA            =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("K_TR_D_N","K_TR_D_L_T","K_TR_D_L_N",) ),
-           VALE            =SIMP(statut='o',typ='R',max='**'),
-           PAS_T           =SIMP(statut='o',typ='R'),
-           PAS_N           =SIMP(statut='o',typ='R'),
-           ANGL_REP        =SIMP(statut='o',typ='R',max='**'),
-           COEF_ECHELLE    =SIMP(statut='o',typ='R'),
-         ),
-
-
 #============================================================================
          AFFE_SECT     =FACT(statut='f',max='**',
               regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),

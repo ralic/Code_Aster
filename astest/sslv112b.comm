@@ -1,4 +1,4 @@
-# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,21 +185,21 @@ K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
 MONDEPL=RESO_LDLT(           MATR_FACT=K,
                                  CHAM_NO=F )
 
-GLOC=CALC_G_LOCAL_T(        MODELE=MO,
-                              DEPL=MONDEPL,
-                        CHAM_MATER=CM,
-                              FOND_FISS=FF,
-                             THETA=THET,
-                       PROPAGATION=1.,
-                           OPTION='CALC_G_LGLO',
-                             DEGRE=4,
-                             R_INF=3.,
-                             R_SUP=33.,
-                        LISSAGE_THETA='LEGENDRE',
-                            LISSAGE_G='LEGENDRE',
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  )
-                    )
+GLOC=CALC_G(  MODELE=MO,
+              DEPL=MONDEPL,
+              CHAM_MATER=CM,
+              THETA=_F( FOND_FISS=FF,
+                        R_INF=3.,
+                        R_SUP=33.,),
+              THETA_LAGR=THET,
+              PROPAGATION=1.,
+              OPTION='G_LAGR',
+              LISSAGE=_F( DEGRE=4,
+                          LISSAGE_THETA='LEGENDRE',
+                          LISSAGE_G='LEGENDRE',),
+              COMP_ELAS=_F( RELATION = 'ELAS',     
+                            DEFORMATION = 'PETIT',)
+            );
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G(S) LOCAL

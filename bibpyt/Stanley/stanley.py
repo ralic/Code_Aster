@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 27/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,7 @@
     ETAT_RESU    Descripteur de la SD resultat (champs, parametres, ...)
     SELECTION    Selection realisee par l'utilisateur via l'interface graphique
     PARAMETRES
+    ERREUR
     STANLEY
     INTERFACE
     DRIVER
@@ -67,6 +68,8 @@ import ihm_parametres
 from Cata.cata import *
 from Accas import _F
 from types import *
+from Utilitai import Sensibilite
+
 
 # Salome
 try:
@@ -82,6 +85,8 @@ except:
 # Version du fichier des parametres Stanley
 __version_parametres__ = 1.0
 __fichier_last__ = 'last10.txt'
+ignore_prefixe  = 'S9999'
+
 
 cata = cata_champs.CATA_CHAMPS()
 
@@ -89,6 +94,9 @@ cata = cata_champs.CATA_CHAMPS()
 prev_onFatalError = aster.onFatalError()
 aster.onFatalError('EXCEPTION')
 texte_onFatalError = "Une erreur est intervenue. L'operation a ete annulee."
+
+# Texte sensibilite
+texte_sensibilite = "Résultat non dérivé"
 
 
 # ==============================================================================
@@ -700,14 +708,23 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
 class CONTEXTE:
 
-  def __init__(self, resultat, maillage, modele, cham_mater, cara_elem) :
+  def __init__(self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi) :
   
     self.resultat   = resultat
     self.maillage   = maillage
     self.modele     = modele
     self.cham_mater = cham_mater
     self.cara_elem  = cara_elem 
-  
+    self.para_sensi = para_sensi
+
+    self.resultat_sensible = None
+    if self.para_sensi:
+       nom_resu_sensible = Sensibilite.NomCompose(self.resultat, self.para_sensi)
+       self.resultat_sensible = resultat_jeveux(nom_resu_sensible)
+
+
+
+
 # ==============================================================================
 
 
@@ -758,25 +775,25 @@ class ETAT_GEOM:
     
    # les group_ma de dimension 3
     for gma in info_gma :
-      if gma[2] == 3 and gma[0][0]<>'_' and gma[0][0:2]<>'GM' : 
+      if gma[2] == 3 and gma[0][0]<>'_' : 
         self.volu.append(gma[0])
     self.volu.sort()
       
    # les group_ma de dimension 2
     for gma in info_gma :
-      if gma[2] == 2 and gma[0][0]<>'_' and gma[0][0:2]<>'GM' : 
+      if gma[2] == 2 and gma[0][0]<>'_' : 
         self.surf.append(gma[0])
     self.surf.sort()
       
    # les group_ma de dimension 1
     for gma in info_gma :
-      if gma[2] == 1 and gma[0][0]<>'_' and gma[0][0:2]<>'GM' : 
+      if gma[2] == 1 and gma[0][0]<>'_' : 
         self.lign.append(gma[0])
     self.lign.sort()
       
    # Les points (group_no a un seul noeud)
     for gno in info_gno :
-      if gno[1] == 1 and gno[0][0]<>'_' and gno[0][0:2]<>'GM' : 
+      if gno[1] == 1 and gno[0][0]<>'_' : 
         self.poin.append(gno[0])
     self.poin.sort()
 
@@ -836,43 +853,43 @@ class ETAT_GEOM:
     if ligne in self.orie.keys() :
       num = self.orie[ligne]
       return '_OR'+repr(num)
-      
+
     num = len(self.orie.keys()) + 1
     nom = '_OR'+repr(num)
     self.orie[ligne] = num
-    
+
     maillage = self.mail[ligne]
-    
+
     DEFI_GROUP(reuse = maillage,
       MAILLAGE = maillage,
       CREA_GROUP_NO = _F(GROUP_MA=ligne, NOM=nom, OPTION='NOEUD_ORDO')
       )
-      
-    return nom
-       
-       
 
-  def Fusion(self,ma) :
-  
+    return nom
+
+
+
+  def Fusion(self, ma) :
+
     """
       Fusionne un objet de classe ETAT_GEOM dans self
       
       IN ma   nom de l'objet a fusionner dans self
     """
-    
+
    # Verification qu'il n'y a pas de noms de group en commun
     for gp in ma.mail.keys() :
       if gp in self.mail.keys() :
         raise "Nom de groupe en commun ("+gp+") : fusion impossible"
-        
+
     self.volu = self.volu + ma.volu
     self.surf = self.surf + ma.surf
     self.lign = self.lign + ma.lign
     self.poin = self.poin + ma.poin
-    
+
     for cle in ma.mail.keys() :
       self.mail[cle] = ma.mail[cle]
-      
+
     for cle in ma.orie.keys() :
       self.orie[cle] = ma.orie[cle]
 
@@ -955,20 +972,33 @@ class ETAT_RESU:
         ch    champs references dans la SD et le catalogue
     """
 
-    self.va  = self.contexte.resultat.LIST_PARA() 
-#    self.va  = self.contexte.resultat.LIST_VARI_ACCES() 
-    self.cmp = self.contexte.resultat.LIST_NOM_CMP()       
-    self.ch  = self.contexte.resultat.LIST_CHAMPS()        
+
+    # Si on n'est pas en sensibilite...
+    if not self.contexte.para_sensi:
+       self.va  = self.contexte.resultat.LIST_PARA() 
+#       self.va  = self.contexte.resultat.LIST_VARI_ACCES() 
+       self.cmp = self.contexte.resultat.LIST_NOM_CMP()       
+       self.ch  = self.contexte.resultat.LIST_CHAMPS()        
+
+    # Si on est en sensibilite...
+    else:
+       nom_resu_sensible = Sensibilite.NomCompose(self.contexte.resultat, self.contexte.para_sensi)
+       resu_sensible = resultat_jeveux(nom_resu_sensible)
+
+       self.va  = resu_sensible.LIST_PARA() 
+#       self.va  = resu_sensible.LIST_VARI_ACCES() 
+       self.cmp = resu_sensible.LIST_NOM_CMP()       
+       self.ch  = resu_sensible.LIST_CHAMPS()        
 
     for nom_cham in self.ch.keys() :
       if nom_cham not in cata.Champs_presents() :
         del self.ch[nom_cham]
-# AA : pour ajouter automatiquement une option, il faut pouvoir determiner son support geometrique... On laisse pour le moment de coté.
+# AA : pour ajouter automatiquement une option deja calculée, il faut pouvoir determiner son support geometrique... On laisse pour le moment de coté.
 #        cata.Ajoute_Champs(nom_cham)
 
 
   def Deja_calcule(self, nom_cham, numeros) :
-  
+
     """
       Teste si un champ est deja calcule pour une liste de numeros d'ordre 
       IN :
@@ -984,7 +1014,7 @@ class ETAT_RESU:
       else :
         resu = 1
     return resu
-    
+
 
   def Etapes_calcul(self, nom_cham, numeros) :
   
@@ -1047,8 +1077,7 @@ class ETAT_RESU:
     return liste_ch
         
     
-  def Calcul(self, nom_cham, numeros) :
-  
+  def Calcul(self, nom_cham, numeros, options=None) :
     """
       Realise le calcul d'un champ pour une liste de numeros d'ordre
       
@@ -1060,10 +1089,10 @@ class ETAT_RESU:
     etapes = self.Etapes_calcul(nom_cham, numeros)
     if not etapes :
       raise 'Le champ ' + nom_cham + ' est inaccessible'
-      
+
     for nom_cham in etapes[1:] :
       try:
-        cata[nom_cham].Evalue(self.contexte, numeros)
+        cata[nom_cham].Evalue(self.contexte, numeros, options)
       except aster.error,err:
         UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
       except aster.FatalError,err:
@@ -1194,6 +1223,12 @@ class SELECTION:
     ('ELGA','SURFACE')    : 'GMSH',
     ('ELGA','CHEMIN')     : 'GRACE',
     ('ELGA','POINT')      : 'GRACE',
+
+    ('ELEM','MAILLAGE')   : 'GMSH',
+    ('ELEM','VOLUME')     : 'GMSH',
+    ('ELEM','SURFACE')    : 'GMSH',
+    ('ELEM','CHEMIN')     : 'GRACE',
+    ('ELEM','POINT')      : 'GRACE',
     }
  
   def __init__(self, contexte, etat_geom, etat_resu) :
@@ -1406,12 +1441,12 @@ class STANLEY:
     
   """
   
-  def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem) :
+  def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi) :
 
     # Gestion des erreurs
     self.erreur = ERREUR()
 
-    self.contexte   = CONTEXTE(resultat, maillage, modele, cham_mater, cara_elem)
+    self.contexte   = CONTEXTE(resultat, maillage, modele, cham_mater, cara_elem, para_sensi)
     self.etat_geom  = ETAT_GEOM(maillage)
     self.etat_resu  = ETAT_RESU(self.contexte)
     self.selection  = SELECTION(self.contexte,self.etat_geom,self.etat_resu)
@@ -1419,6 +1454,7 @@ class STANLEY:
 
     self.interface  = INTERFACE(self)
     self.selection.Interface(self.interface)
+
 
    # Drivers d'outils de post-traitement
     self.driver = {
@@ -1448,7 +1484,12 @@ class STANLEY:
     """
 
     if self.selection.statut == 'A_CALCULER' :
-      self.etat_resu.Calcul(self.selection.nom_cham, self.selection.numeros)      
+
+      # Options supplementaires a passer aux commandes CALC_ELEM/CALC_NO
+      options=None
+
+      # Calcul
+      self.etat_resu.Calcul(self.selection.nom_cham, self.selection.numeros, options)
       self.selection.Refresh()
 
 
@@ -1489,6 +1530,7 @@ class STANLEY:
                 liste = ['Animer', 'Ne pas animer']
                 options['animation_mode'] = SAISIE_MODE( liste, _("Animation") )
 
+    # Trace
     self.driver[self.selection.mode].Tracer(self.selection, options )    
 
 
@@ -1586,7 +1628,7 @@ class STANLEY:
 
   def Fermeture_Propre_Stanley(self):
      """
-        Ferme Stanley : cloture des drivers, effacement des concepts temporaires
+        Fermeture de Stanley : cloture les drivers, efface les concepts temporaires
      """
      for driver in self.driver.keys() :
         try :   
@@ -1607,10 +1649,22 @@ class STANLEY:
     if touche == 'q' : self.Quitter()
     if touche == 'c' : self.Calculer()
     if touche == 't' : self.Tracer()
+#     if touche == 'v' : self.Voir()
+# 
+#   def Voir(self):
+#     import pprint
+#     print 20*'/\__'
+#     pprint.pprint (RESU.LIST_PARA())
+#     print 20*'/\__'
+#     pprint.pprint (RESU.LIST_VARI_ACCES())
+#     print 20*'/\__'
+#     pprint.pprint (RESU.LIST_NOM_CMP())
+#     print 20*'/\__'
+#     pprint.pprint (RESU.LIST_CHAMPS())
+#     print 20*'/\__'
+
 
 # ==============================================================================
-
-
 
 class INTERFACE :
 
@@ -1840,21 +1894,20 @@ class INTERFACE :
     global info
     
     tk = Tk.Tk()
-    tk.title = "A propos de Stanley"
+    tk.title = _("A propos de Stanley")
 
     l = Tk.Label(tk,padx=15,pady=15,text=info)
     l.grid()
     
+
   def Bip(self) :
   
     """
       Emet un bip
     """
-    
     self.rootTk.bell()
-    
-    
-    
+
+
   def Requete_point(self) :
 
     """
@@ -1900,7 +1953,6 @@ class INTERFACE :
     """
 
     fonte = self.stan.parametres['fonte']
-
     infos = [
       ['Nom du chemin',1],
       ['Origine   (x,y,z)',3],
@@ -1925,44 +1977,16 @@ class INTERFACE :
     return nom,x0,y0,z0,x1,y1,z1,nbr
 
 
-  def Requete_para(self, l_para, l_defaut) :
-    """
-      Boite de dialogue pour definir une classe de parametres
-      
-      IN :
-        l_para   : liste des parametres a editer
-        l_defaut : liste des valeurs actuelles des parametres
-        
-      RETURN :
-        liste des valeurs des parametres
-    """
-
-    fonte = self.stan.parametres['fonte']
-    infos   = []
-    defaut  = []
-    nb_para = len(l_para)
-
-    for row in xrange(nb_para) :
-      infos.append( (l_para[row],1) )
-      defaut.append( [ l_defaut[row] ])
-    titre = "Edition des parametres"
-    reponse = SAISIE(infos, titre, defaut, fonte=fonte)
-
-    sortie = []
-    for row in xrange(nb_para) :
-      sortie.append(reponse[row][0])
-
-    return sortie
-
-
-
 # ==============================================================================
 
 class DRIVER :
 
   """
     Driver d'outils de post-traitement
-    Specialisation a chaque outil par heritage de cette classe
+
+    Il y a deux specialisations : DRIVER_ISOVALEURS et DRIVER_COURBES pour definir
+    les options communes des drivers d'isovaleurs et de courbes
+    Specialisation a chaque outil par heritage de ces classes
 
     Methodes publiques
       Fermer : ferme le terminal graphique
@@ -1978,7 +2002,6 @@ class DRIVER :
 
     self.terminal = None
     self.stan     = stan
-#    self.contexte = stan.contexte
 
 
   # ----------------------------------------------------------------------------
@@ -1988,15 +2011,15 @@ class DRIVER :
 
   # ----------------------------------------------------------------------------
   def Tracer(self, selection) : pass
-  
+
 
   # ----------------------------------------------------------------------------
   def Projeter(self, selection, contexte, geom) :
-  
+
     """
       Projection d'un champ au noeud sur l'entite geometrique de nom geom.
       Pour l'instant, l'entite geometrique se reduit a un chemin sur lequel
-      on affecte des elements barres.
+      on affecte des elements barres ou a un discret.
       
       selection : selection courante de type SELECTION
       contexte  : CONTEXTE pour la projection
@@ -2006,9 +2029,7 @@ class DRIVER :
       liste des concepts Aster a detruire.
     """
 
-#    l_detr = []
-
-   # Pas de projection si meme maillage 
+    # Pas de projection si meme maillage 
     __MA = selection.etat_geom.mail[geom]
     if __MA == contexte.maillage :
       return contexte, []
@@ -2032,14 +2053,20 @@ class DRIVER :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [], 2, texte)
 
+    motscles = { 'METHODE' : 'ELEM' }
+    if contexte.para_sensi:
+       motscles['SENSIBILITE'] = contexte.para_sensi
+
     try:
-      __RESU_P = PROJ_CHAMP(METHODE = 'ELEM',
+      __RESU_P = PROJ_CHAMP(
                             RESULTAT = contexte.resultat,
                             MODELE_1 = contexte.modele,
                             MODELE_2 = __MO_P,
                             NOM_CHAM = selection.nom_cham,
                             NUME_ORDRE = tuple(selection.numeros),
+                            **motscles
                            )
+
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [__MO_P], 2)
     except aster.FatalError,err:
@@ -2048,44 +2075,40 @@ class DRIVER :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [__MO_P], 2, texte)
 
-
-    return CONTEXTE(__RESU_P, __MA, __MO_P, None, None), [__MO_P, __RESU_P]
+    return CONTEXTE(__RESU_P, __MA, __MO_P, None, None, contexte.para_sensi), [__MO_P, __RESU_P]
 
 
   # ----------------------------------------------------------------------------
   def Ecla_Gauss(self, selection, contexte, options={}) :
-  
+
     """
       Projection aux points de Gauss (ECLA_PG)
 
       IN
         selection  selection courante de type SELECTION
         contexte   CONTEXTE du champ a eclater aux points de Gauss
+        options    options supplementaires
 
       RETURN
         CONTEXTE lie au nouveau resultat produit
         liste des concepts Aster a detruire
     """
 
+    if contexte.para_sensi:
+      UTMESS('A','STANLEY', _("La visualisation aux points de Gauss n'est pas permise avec la sensibilité") )
+      return False, []
+
     if selection.nom_cham not in ['SIEF_ELGA','VARI_ELGA','SIEF_ELGA_TEMP','FLUX_ELGA_TEMP']:
-#      raise SELECTION.NonDeveloppePG
       UTMESS('A','STANLEY',SELECTION.NonDeveloppePG)
       return False, []
 
-    if   contexte.resultat.__class__ == evol_elas : 
-      type_resu = 'EVOL_ELAS'
-    elif contexte.resultat.__class__ == evol_ther :
-      type_resu = 'EVOL_THER'
-    elif contexte.resultat.__class__ == evol_noli :
-      type_resu = 'EVOL_NOLI'
-    elif contexte.resultat.__class__ == dyna_trans :
-      type_resu = 'DYNA_TRANS'
-    elif contexte.resultat.__class__ == dyna_harmo :
-      type_resu = 'DYNA_HARMO'
-    elif contexte.resultat.__class__ == mode_meca :
-      type_resu = 'MODE_MECA'
+    if   contexte.resultat.__class__ == evol_elas  : type_resu = 'EVOL_ELAS'
+    elif contexte.resultat.__class__ == evol_ther  : type_resu = 'EVOL_THER'
+    elif contexte.resultat.__class__ == evol_noli  : type_resu = 'EVOL_NOLI'
+    elif contexte.resultat.__class__ == dyna_trans : type_resu = 'DYNA_TRANS'
+    elif contexte.resultat.__class__ == dyna_harmo : type_resu = 'DYNA_HARMO'
+    elif contexte.resultat.__class__ == mode_meca  : type_resu = 'MODE_MECA'
     else :
-#      raise SELECTION.NondeveloppeRS
       UTMESS('A','STANLEY',SELECTION.NondeveloppeRS)
       return False, []
 
@@ -2144,7 +2167,6 @@ class DRIVER :
         if   selection.geom[0] == 'VOLUME':  pmod = '3D'
         else:                                pmod = 'D_PLAN'
 
-
         try:
            __MO_G = AFFE_MODELE(
               MAILLAGE = __MA_G,
@@ -2162,7 +2184,451 @@ class DRIVER :
 
         ldetr = [__MA_G, __MO_G, __RESU_G]
 
-    return CONTEXTE(__RESU_G, __MA_G, __MO_G, None, None), ldetr
+    return CONTEXTE(__RESU_G, __MA_G, __MO_G, None, None, None), ldetr
+
+
+
+# ==============================================================================
+
+class DRIVER_ISOVALEURS(DRIVER):
+
+  """
+    Driver d'outils de post-traitement
+    Specialisation a chaque outil par heritage de cette classe
+    Specialisation pour les drivers d'isovaleurs
+
+    Methodes publiques
+      Options_Impr_Resu : defini le dictionnaire des options de la commande IMPR_RESU
+  """
+
+  def Options_Impr_Resu(self, contexte, selection, options={}):
+
+    """
+      Options d'IMPR_RESU communes à tous les drivers d'isovaleurs
+
+      IN
+        contexte   CONTEXTE du champ
+        selection  selection courante de type SELECTION
+        options    options supplementaires
+
+      RETURN
+        para       dictionnaire des parametres pour IMPR_RESU
+    """
+
+    type_champ = cata[selection.nom_cham].type
+
+    # Options de base
+    para = _F(RESULTAT   = contexte.resultat,
+              NOM_CHAM   = selection.nom_cham,
+              NUME_ORDRE = selection.numeros, 
+             )
+
+    if type_champ in ['NOEU','ELNO'] and selection.geom[0] in ['VOLUME','SURFACE'] :
+      para['GROUP_MA'] = selection.geom[1]    # non actif a cause de IMPR_RESU
+
+    if 'TOUT_CMP' not in selection.nom_cmp :
+      para['NOM_CMP'] = tuple(selection.nom_cmp)
+
+    # Options supplementaires du IMPR_RESU pour la SENSIBILITE
+    if contexte.para_sensi:
+      para['SENSIBILITE'] = contexte.para_sensi
+
+    # Options supplementaires du IMPR_RESU pour le tracé sur deformée
+    if options.has_key( 'case_sur_deformee' ):
+      if options['case_sur_deformee'] == 1:
+        if selection.nom_cham != 'DEPL':
+          if type_champ in ['ELGA', 'ELEM']:
+             UTMESS('A','STANLEY',"Attention : on ne peut pas tracer un champs aux points de Gauss sur la deformee...")
+          else:
+             UTMESS('I','STANLEY',"Le champ est trace avec la deformee")
+             if selection.nom_cham != 'DEPL':
+                para0 = _F(RESULTAT   = contexte.resultat,
+                           NOM_CHAM   = 'DEPL',
+                           NUME_ORDRE = selection.numeros,)
+                para = [ para, para0 ]
+
+    return para
+
+
+
+# ==============================================================================
+
+class DRIVER_GMSH(DRIVER_ISOVALEURS):
+
+  """
+    Driver d'outils de post-traitement
+    Specialisation pour GMSH
+
+    Methodes publiques
+      Tracer : genere le fichier de post-traitement (IMPR_RESU) et lance GMSH
+  """
+
+  def Tracer(self, selection, options={}) :
+
+    if self.terminal : self.terminal.Fermer()       # un seul terminal GMSH ouvert en meme temps
+    l_detr = []
+
+    # Unite logique du fichier pour GMSH
+    ul = 33
+
+    # Nom du fichier
+    gmshFileName = 'fort.'+str(ul)
+
+    contexte   = self.stan.contexte
+    type_champ = cata[selection.nom_cham].type
+
+    if type_champ == 'ELGA':
+      contexte, l_detr = self.Ecla_Gauss(selection, contexte, options)
+      if not contexte: return
+
+    # Parametres de la commande IMPR_RESU
+    para = self.Options_Impr_Resu(contexte, selection, options)
+
+    # Tracé au format GMSH
+    DEFI_FICHIER(UNITE = 33, INFO=1)
+    try:
+      IMPR_RESU( UNITE   = ul, 
+                 FORMAT  = 'GMSH',
+                 VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
+                 RESU    = para,
+               )
+    except aster.error,err:
+      self.erreur.Remonte_Erreur(err, [], 0)
+      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+      return
+    except aster.FatalError,err:
+      self.erreur.Remonte_Erreur(err, [], 0)
+      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+      return
+    except Exception,err:
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      self.erreur.Remonte_Erreur(err, [], 0, texte)
+      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+      return
+
+    DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+
+    if l_detr : 
+      DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+
+
+    self.terminal = gmsh.GMSH('POST', gmshFileName, self.stan.parametres, options)
+
+
+
+# ==============================================================================
+
+class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
+
+  """
+    Driver d'outils de post-traitement
+    Specialisation pour GMSH
+
+    Methodes publiques
+      Tracer : genere le fichier de post-traitement (IMPR_RESU) et lance GMSH
+  """
+
+##    def __init__( self, stan ):    
+##          DRIVER.__init__( self, stan )
+
+  def Tracer( self, selection, options={} ) :
+
+    if self.terminal : self.terminal.Fermer()
+    l_detr = []
+
+    # Unite logique pour le fichier MED
+    ul = 80
+
+    # Nom du fichier
+    medFileName = 'fort.'+str(ul)
+
+    contexte   = self.stan.contexte
+    type_champ = cata[selection.nom_cham].type
+        
+    if type_champ == 'ELGA' :
+      contexte, l_detr = self.Ecla_Gauss(selection, contexte)
+      if not contexte: return
+
+    # On efface le fichier si il existe deja
+    if os.path.isfile('fort.'+str(ul)):
+      try:    os.remove('fort.'+str(ul))
+      except: pass
+
+    DEFI_FICHIER(UNITE = ul, 
+                 TYPE  = 'LIBRE',);
+
+    # Parametres de la commande IMPR_RESU
+    para = self.Options_Impr_Resu(contexte, selection, options)
+
+    try:
+        IMPR_RESU(  FORMAT = 'MED',
+                    UNITE  = ul,
+                    RESU   = para )                        
+    except aster.error,err:
+        self.erreur.Remonte_Erreur(err, [], 0)
+        DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
+        return
+    except aster.FatalError,err:
+        self.erreur.Remonte_Erreur(err, [], 0)
+        DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
+        return
+    except Exception,err:
+        texte = "Cette action n'est pas realisable.\n"+str(err)
+        self.erreur.Remonte_Erreur(err, [], 0, texte)
+        DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
+        return
+                          
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
+        
+    if l_detr :
+        DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
+        
+                           
+    self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
+
+
+
+# ==============================================================================
+
+class DRIVER_COURBES(DRIVER) :
+
+  """
+    Driver d'outils de post-traitement
+    Specialisation a chaque outil par heritage de cette classe
+    Specialisation pour les drivers de tracer de courbes
+    
+    Methodes publiques
+      Extract : extrait la table contenant les valeurs a tracer
+  """
+
+  def Options_Post_Releve_T(self, contexte, selection, options={}): pass
+
+
+  def Extract(self, selection) :
+
+    """
+      Execute les commandes aster de creation de la table pour GRACE
+    """  
+
+    l_courbes = []
+    l_detr    = []
+
+    contexte   = self.stan.contexte
+    type_champ = cata[selection.nom_cham].type
+
+    if type_champ == 'ELGA' :
+      contexte, l_detr = self.Ecla_Gauss(selection, contexte)
+      if not contexte: return False
+
+    # Parametres communs a toutes les tables a calculer 
+    para = _F(INTITULE   = 'TB_GRACE',
+              NOM_CHAM   = selection.nom_cham,
+              OPERATION  = 'EXTRACTION'
+             )
+
+    if 'TOUT_CMP' in selection.nom_cmp :
+      para['TOUT_CMP'] = 'OUI'
+      l_nom_cmp = self.stan.etat_resu.cmp[selection.nom_cham]
+    else :
+      para['NOM_CMP'] = tuple(selection.nom_cmp)
+      l_nom_cmp = selection.nom_cmp
+
+
+    # Options supplementaires du IMPR_RESU pour la SENSIBILITE
+    if contexte.para_sensi:
+       para['SENSIBILITE'] = contexte.para_sensi
+       try:
+          MEMO_NOM_SENSI(NOM=( _F(NOM_SD='STNTBLGR',
+                                  PARA_SENSI=contexte.para_sensi,
+                                  NOM_COMPOSE='STNTBLG2')));
+       except: pass
+
+    if selection.geom[0] == 'POINT' :
+
+      para['NUME_ORDRE'] = selection.numeros
+      for point in selection.geom[1] :
+        contexte, detr = self.Projeter(selection, contexte, point) 
+        if not contexte: return False
+
+        l_detr += detr
+        para['RESULTAT'] = contexte.resultat
+        para['GROUP_NO'] = point
+
+        try:
+          STNTBLGR = POST_RELEVE_T(ACTION = para)
+        except aster.error,err:
+          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
+        except aster.FatalError,err:
+          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
+        except Exception,err:
+          texte = "Cette action n'est pas realisable.\n"+str(err)
+          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
+
+        for comp in l_nom_cmp :
+
+          vale_x = selection.vale_va
+          courbe = as_courbes.Courbe(vale_x,vale_x)
+
+          # Sensibilite
+          if contexte.para_sensi:
+             table_sensible_jeveux = table_jeveux( Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi) )
+             courbe.Lire_y(table_sensible_jeveux, comp)
+             nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
+          else:
+             courbe.Lire_y(STNTBLGR,comp)
+             nom = comp + ' --- ' + string.ljust(point,8)
+
+          l_courbes.append( (courbe, nom) )
+
+        DETRUIRE(CONCEPT = _F(NOM = STNTBLGR),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi)),INFO=1, ALARME='NON')
+        if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
+
+
+    elif selection.geom[0] == 'CHEMIN' :
+
+      chemin = selection.geom[1][0]
+
+      # Projection si necessaire
+      contexte, detr = self.Projeter(selection, contexte, chemin)
+      if not contexte: return False
+      l_detr += detr    
+
+      para['RESULTAT'] = contexte.resultat
+      para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
+
+      for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
+        para['NUME_ORDRE'] = no,
+        try:
+#          __GRACE = POST_RELEVE_T(ACTION = para)
+          STNTBLGR = POST_RELEVE_T(ACTION = para)
+        except aster.error,err:
+          return self.erreur.Remonte_Erreur(err, [], 1)
+        except aster.FatalError,err:
+          return self.erreur.Remonte_Erreur(err, [], 1)
+        except Exception,err:
+          texte = "Cette action n'est pas realisable.\n"+str(err)
+          return self.erreur.Remonte_Erreur(err, [], 1, texte)
+
+
+        for comp in l_nom_cmp :
+          courbe = as_courbes.Courbe()
+
+          # Sensibilite
+          if contexte.para_sensi:
+             table_sensible_jeveux = table_jeveux( Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi) )
+             courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
+             courbe.Lire_y(table_sensible_jeveux, comp)
+             nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
+#             nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+          else:
+             courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
+             courbe.Lire_y(STNTBLGR, comp)
+             nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+
+          l_courbes.append( (courbe, nom) )
+
+        DETRUIRE(CONCEPT = _F(NOM = STNTBLGR),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi)),INFO=1, ALARME='NON')
+
+      if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
+
+    else:
+      UTMESS('A','STANLEY',_("Cette action n'est pas realisable.") )
+      return False
+
+    return l_courbes
+
+
+
+# ==============================================================================
+
+class DRIVER_GRACE(DRIVER_COURBES) :
+
+  def Tracer(self, selection, options={}) :
+
+    # Extraction des resultats pour la selection requise
+    l_courbes = self.Extract(selection)
+    if not l_courbes: return
+
+    # Windows : utilisation de IMPR_COURBE car ne supporte pas les pipes avec xmgrace
+    if sys.platform == 'win32':
+
+      if selection.geom[0] == 'POINT' :
+        _x = selection.nom_va
+        _y = selection.nom_cham
+      elif selection.geom[0] == 'CHEMIN' :
+        _x = 'ABSC_CURV ' + selection.geom[1][0]
+        _y = selection.nom_cham
+      else:
+        _x = ''
+        _y = ''
+
+      _tmp  = []
+      for courbe in l_courbes :
+        acourbe = []
+        for l in string.split(repr(courbe[0])):
+          acourbe.append( float(l) )
+        lx = acourbe[0:len(acourbe):2]
+        ly = acourbe[1:len(acourbe):2]
+      
+        txt = { 'ABSCISSE': lx, 'ORDONNEE': ly, 'COULEUR': 2 }
+        _tmp.append( txt )
+
+      motscle2= {'COURBE': _tmp }
+
+      IMPR_FONCTION(FORMAT='XMGRACE',
+                    UNITE=53,
+                    PILOTE='INTERACTIF',
+#                    TITRE='Titre',
+#                    SOUS_TITRE='Sous-titre',
+                    LEGENDE_X=_x,
+                    LEGENDE_Y=_y,
+                    **motscle2
+                   )
+
+    # Unix/Linux
+    else:
+      # Ouverture ou rafraichissement du terminal si necessaire
+      xmgrace_exe=self.stan.parametres['grace']
+      if not xmgrace_exe.strip(): xmgrace_exe = aster.repout() + '/xmgrace'
+  
+      if not self.terminal : 
+         self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
+      else :
+         if not self.terminal.Terminal_ouvert() :
+            self.terminal.Fermer()
+            self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
+
+     # Trace proprement dit 
+      self.terminal.Nouveau_graphe()
+
+      for courbe in l_courbes :
+         self.terminal.Courbe(courbe[0],courbe[1])
+
+      if selection.geom[0] == 'POINT' :
+         self.terminal.Axe_x(selection.nom_va)
+         self.terminal.Axe_y(selection.nom_cham)
+      elif selection.geom[0] == 'CHEMIN' :
+         self.terminal.Axe_x('ABSC_CURV ' + selection.geom[1][0])
+         self.terminal.Axe_y(selection.nom_cham)
+
+
+
+# ==============================================================================
+
+class DRIVER_SALOME_COURBES(DRIVER_COURBES) :
+
+    def Tracer(self, selection, options={}) :
+
+       if self.terminal : self.terminal.Fermer()
+
+       # Extraction des resultats pour la selection requise
+       l_courbes = self.Extract( selection )
+
+       self.terminal = salomeVisu.COURBES( l_courbes, self.stan.parametres, selection )
+
+
 
 
 
@@ -2195,7 +2661,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
     P1  = sup_gmsh.Point(x0*(1+eps)+eps,y0*(1+eps)+eps,z0)
     L0  = sup_gmsh.Line(P0,P1)
     L0.Transfinite(1)
-#    mesh = sup_gmsh.Mesh()
     mesh = sup_gmsh.Mesh(gmsh=self.stan.parametres['gmsh'])
     mesh.Physical(nom,P0)
     mesh.Physical(nom_bid,L0)
@@ -2212,7 +2677,17 @@ class DRIVER_SUP_GMSH(DRIVER) :
 
 
     INDICE=_NUM
-    _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
+
+    try:
+      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
+    except aster.error,err:
+      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
+    except aster.FatalError,err:
+      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
+    except Exception,err:
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1, texte)
+
     DETRUIRE(CONCEPT = _F(NOM = ma), INFO=1, ALARME='NON')
     _NUM = _NUM + 1
 
@@ -2266,468 +2741,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
     return ETAT_GEOM(_MA[INDICE])
 
 
-
-    
-# ==============================================================================
-
-class DRIVER_GMSH(DRIVER) :
-
-  def Tracer(self, selection, options={}) :
-
-    if self.terminal : self.terminal.Fermer()       # un seul terminal GMSH ouvert en meme temps
-    l_detr = []
-
-    contexte   = self.stan.contexte
-    type_champ = cata[selection.nom_cham].type
-
-    if type_champ == 'ELGA':
-      contexte, l_detr = self.Ecla_Gauss(selection, contexte, options)
-      if not contexte: return
-
-
-    # Options du IMPR_RESU
-    para = _F(RESULTAT   = contexte.resultat,
-              NOM_CHAM   = selection.nom_cham,
-              NUME_ORDRE = selection.numeros, 
-             )
-
-    if type_champ in ['NOEU','ELNO'] and selection.geom[0] in ['VOLUME','SURFACE'] :
-      para['GROUP_MA'] = selection.geom[1]    # non actif a cause de IMPR_RESU
-
-    if 'TOUT_CMP' not in selection.nom_cmp :
-      para['NOM_CMP'] = tuple(selection.nom_cmp)
-
-
-    # Options supplementaires du IMPR_RESU pour le tracé sur deformée
-    if options.has_key( 'case_sur_deformee' ):
-      if options['case_sur_deformee'] == 1:
-        if type_champ != 'ELGA':
-          if selection.nom_cham != 'DEPL':
-            para0 = _F(RESULTAT   = contexte.resultat,
-                       NOM_CHAM   = 'DEPL',
-                       NUME_ORDRE = selection.numeros,)
-            para = [ para, para0 ]
-
-    # Tracé au format GMSH
-    DEFI_FICHIER(UNITE = 33, INFO=1)
-    try:
-      IMPR_RESU( UNITE   = 33, 
-                 FORMAT  = 'GMSH',
-                 VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
-                 RESU    = para,
-               )
-    except aster.error,err:
-      self.erreur.Remonte_Erreur(err, [], 0)
-      DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
-      return
-    except aster.FatalError,err:
-      self.erreur.Remonte_Erreur(err, [], 0)
-      DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
-      return
-    except Exception,err:
-      texte = "Cette action n'est pas realisable.\n"+str(err)
-      self.erreur.Remonte_Erreur(err, [], 0, texte)
-      DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
-      return
-
-    DEFI_FICHIER(ACTION='LIBERER', UNITE=33, INFO=1)
-
-    if l_detr : 
-      DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
-
-    if options.has_key( 'case_sur_deformee' ):
-      if options['case_sur_deformee'] == 1:
-        if type_champ == 'ELGA':
-          UTMESS('A','STANLEY',"Attention : on ne peut pas tracer un champs aux points de Gauss sur la deformee...")
-        else:
-          UTMESS('I','STANLEY',"Le champ est trace avec la deformee")
-
-    self.terminal = gmsh.GMSH('POST', 'fort.33', self.stan.parametres, options)
-
-
-# ==============================================================================
-
-class DRIVER_GRACE(DRIVER) :
-
-  CheminMultiple = _("Le trace de courbe ne peut se faire que sur un chemin unique")
-
-
-  def Tracer(self, selection, options={}) :
-
-    # Windows : utilisation de IMPR_COURBE car ne supporte pas les pipes avec xmgrace
-    if sys.platform == 'win32':
-      # Extraction des resultats pour la selection requise
-      l_courbes = self.Extract(selection)
-      if not l_courbes: return
-
-      if selection.geom[0] == 'POINT' :
-        _x = selection.nom_va
-        _y = selection.nom_cham
-      elif selection.geom[0] == 'CHEMIN' :
-        _x = 'ABSC_CURV ' + selection.geom[1][0]
-        _y = selection.nom_cham
-      else:
-        _x = ''
-        _y = ''
-
-      _tmp  = []
-      for courbe in l_courbes :
-        acourbe = []
-        for l in string.split(repr(courbe[0])):
-          acourbe.append( float(l) )
-        lx = acourbe[0:len(acourbe):2]
-        ly = acourbe[1:len(acourbe):2]
-      
-        txt = { 'ABSCISSE': lx, 'ORDONNEE': ly, 'COULEUR': 2 }
-        _tmp.append( txt )
-
-      motscle2= {'COURBE': _tmp }
-
-      IMPR_FONCTION(FORMAT='XMGRACE',
-                    UNITE=53,
-                    PILOTE='INTERACTIF',
-#                    TITRE='Titre',
-#                    SOUS_TITRE='Sous-titre',
-                    LEGENDE_X=_x,
-                    LEGENDE_Y=_y,
-                    **motscle2
-                   )
-
-    # Unix/Linux
-    else:
-     # Extraction des resultats pour la selection requise
-      l_courbes = self.Extract(selection)
-      if not l_courbes: return
-      else: pass
-
-      # Ouverture ou rafraichissement du terminal si necessaire
-      xmgrace_exe=self.stan.parametres['grace']
-      if not xmgrace_exe.strip(): xmgrace_exe = aster.repout() + '/xmgrace'
-  
-      if not self.terminal : 
-        self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
-      else :
-        if not self.terminal.Terminal_ouvert() :
-          self.terminal.Fermer()
-          self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
-  
-
-     # Trace proprement dit 
-      self.terminal.Nouveau_graphe()
-
-      for courbe in l_courbes :
-        self.terminal.Courbe(courbe[0],courbe[1])
-  
-      if selection.geom[0] == 'POINT' :
-        self.terminal.Axe_x(selection.nom_va)
-        self.terminal.Axe_y(selection.nom_cham)
-      elif selection.geom[0] == 'CHEMIN' :
-        self.terminal.Axe_x('ABSC_CURV ' + selection.geom[1][0])
-        self.terminal.Axe_y(selection.nom_cham)
-
-
-
-  # ----------------------------------------------------------------------------
-  def Extract(self, selection) :
-   
-    """
-      Execute les commandes aster de creation de la table pour GRACE
-    """  
-    
-    l_courbes = []
-    l_detr    = []
-       
-    contexte   = self.stan.contexte
-    type_champ = cata[selection.nom_cham].type
-   
-    if type_champ == 'ELGA' :
-      contexte, l_detr = self.Ecla_Gauss(selection, contexte)
-      if not contexte: return False
-
-
-   # Parametres communs a toutes les tables a calculer 
-    para = _F(INTITULE   = 'TB_GRACE',
-              NOM_CHAM   = selection.nom_cham,
-              OPERATION  = 'EXTRACTION'
-             )
-      
-    if 'TOUT_CMP' in selection.nom_cmp :
-      para['TOUT_CMP'] = 'OUI'
-      l_nom_cmp = self.stan.etat_resu.cmp[selection.nom_cham]
-    else :
-      para['NOM_CMP'] = tuple(selection.nom_cmp)
-      l_nom_cmp = selection.nom_cmp
-      
-      
-    
-    if selection.geom[0] == 'POINT' :
-    
-      para['NUME_ORDRE'] = selection.numeros
-      for point in selection.geom[1] :
-        contexte, detr = self.Projeter(selection, contexte, point) 
-        if not contexte: return False
-
-        l_detr += detr
-        para['RESULTAT'] = contexte.resultat
-        para['GROUP_NO'] = point
-
-        try:
-          __GRACE = POST_RELEVE_T(ACTION = para)
-        except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, [], 1)
-        except aster.FatalError,err:
-          return self.erreur.Remonte_Erreur(err, [], 1)
-        except Exception,err:
-          texte = "Cette action n'est pas realisable.\n"+str(err)
-          return self.erreur.Remonte_Erreur(err, [], 1, texte)
-
-        for comp in l_nom_cmp :
-          vale_x = selection.vale_va
-          courbe = as_courbes.Courbe(vale_x,vale_x)
-          courbe.Lire_y(__GRACE,comp)
-          nom = comp + ' --- ' + string.ljust(point,8)
-          l_courbes.append( (courbe, nom) )
-
-        DETRUIRE(CONCEPT = _F(NOM = __GRACE),INFO=1, ALARME='NON')
-        if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
-
-
-    elif selection.geom[0] == 'CHEMIN' :
-
-      chemin = selection.geom[1][0]
-
-     # projection si necessaire
-      contexte, detr = self.Projeter(selection, contexte, chemin)
-      if not contexte: return False
-      l_detr += detr    
-
-      para['RESULTAT'] = contexte.resultat
-      para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
-
-      for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
-        para['NUME_ORDRE'] = no,
-        try:
-          __GRACE = POST_RELEVE_T(ACTION = para)
-        except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, [], 1)
-        except aster.FatalError,err:
-          return self.erreur.Remonte_Erreur(err, [], 1)
-        except Exception,err:
-          texte = "Cette action n'est pas realisable.\n"+str(err)
-          return self.erreur.Remonte_Erreur(err, [], 1, texte)
-
-
-        for comp in l_nom_cmp :
-          courbe = as_courbes.Courbe()
-          courbe.Lire_x(__GRACE, 'ABSC_CURV')
-          courbe.Lire_y(__GRACE, comp)
-
-          nom_va = selection.nom_va
-          nom = comp + ' --- ' + nom_va + ' = ' + repr(va)
-          l_courbes.append( (courbe, nom) )
-
-        DETRUIRE(CONCEPT = _F(NOM = __GRACE),INFO=1, ALARME='NON')
-
-      if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
-
-    else:
-      UTMESS('A','STANLEY',_("Cette action n'est pas realisable.") )
-      return False
-
-    return l_courbes
-
-
-
-# ==============================================================================
-
-class DRIVER_SALOME_COURBES( DRIVER ) :
-    def Tracer(self, selection, options={}) :
-        if self.terminal : self.terminal.Fermer()
-              
-       # Extraction des resultats pour la selection requise
-        l_courbes = self.Extract( selection )
-                
-        self.terminal = salomeVisu.COURBES( l_courbes, self.stan.parametres, selection )
-          
-    
-    def Extract(self, selection) :
-        """
-        Execute les commandes aster de creation de la table pour GRACE
-        """  
-        
-        l_courbes = []
-        l_detr    = []
-           
-        contexte   = self.stan.contexte
-        type_champ = cata[selection.nom_cham].type
-       
-        if type_champ == 'ELGA' :
-          contexte, l_detr = self.Ecla_Gauss(selection, contexte)
-          if not contexte: return
-    
-       # Parametres communs a toutes les tables a calculer 
-        para = _F(
-          INTITULE   = 'TB_GRACE',
-          NOM_CHAM   = selection.nom_cham,
-          OPERATION  = 'EXTRACTION'
-          )
-          
-        if 'TOUT_CMP' in selection.nom_cmp :
-          para['TOUT_CMP'] = 'OUI'
-          l_nom_cmp = self.stan.etat_resu.cmp[selection.nom_cham]
-        else :
-          para['NOM_CMP'] = tuple(selection.nom_cmp)
-          l_nom_cmp = selection.nom_cmp
-          
-        
-        if selection.geom[0] == 'POINT' :
-        
-          para['NUME_ORDRE'] = selection.numeros
-          for point in selection.geom[1] :
-            contexte, detr = self.Projeter(selection, contexte, point) 
-            l_detr += detr
-            para['RESULTAT'] = contexte.resultat
-            para['GROUP_NO'] = point
-                        
-            try:
-                __GRACE = POST_RELEVE_T(ACTION = para)
-            except aster.error,err:
-                return self.erreur.Remonte_Erreur(err, [], 1)
-            except aster.FatalError,err:
-                return self.erreur.Remonte_Erreur(err, [], 1)
-            except Exception,err:
-                texte = "Cette action n'est pas realisable.\n"+str(err)
-                return self.erreur.Remonte_Erreur(err, [], 1, texte)          
-            
-            for comp in l_nom_cmp :
-              vale_x = selection.vale_va
-              courbe = as_courbes.Courbe(vale_x,vale_x)
-              courbe.Lire_y(__GRACE,comp)
-              nom = comp + ' --- ' + string.ljust(point,8)
-              l_courbes.append( (courbe, nom) )
-          
-            DETRUIRE(CONCEPT = _F(NOM = __GRACE),INFO=1)
-            if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1)
-            
-               
-        elif selection.geom[0] == 'CHEMIN' :
-        
-          chemin = selection.geom[1][0]
-         
-         # projection si necessaire
-          contexte, detr = self.Projeter(selection, contexte, chemin)
-          l_detr += detr    
-    
-          para['RESULTAT'] = contexte.resultat
-          para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
-    
-          for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
-            para['NUME_ORDRE'] = no,
-            
-            try:
-                __GRACE = POST_RELEVE_T(ACTION = para)
-            except aster.error,err:
-                return self.erreur.Remonte_Erreur(err, [], 1)
-            except aster.FatalError,err:
-                return self.erreur.Remonte_Erreur(err, [], 1)
-            except Exception,err:
-                texte = "Cette action n'est pas realisable.\n"+str(err)
-                return self.erreur.Remonte_Erreur(err, [], 1, texte)
-            
-            for comp in l_nom_cmp :
-              courbe = as_courbes.Courbe()
-              courbe.Lire_x(__GRACE, 'ABSC_CURV')
-              courbe.Lire_y(__GRACE, comp)
-    
-              nom_va = selection.nom_va
-              nom = comp + ' --- ' + nom_va + ' = ' + repr(va)
-              l_courbes.append( (courbe, nom) )
-    
-            DETRUIRE(CONCEPT = _F(NOM = __GRACE),INFO=1)
-    
-          if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1)
-    
-        else : raise 'ERREUR_DVP'    
-    
-        return l_courbes    
-
-
-# ==============================================================================
-
-class DRIVER_SALOME_ISOVALEURS( DRIVER) :
-    
-##    def __init__( self, stan ):    
-##          DRIVER.__init__( self, stan )
-
-    
-    def Tracer( self, selection, options={} ) :
-        if self.terminal : self.terminal.Fermer()
-                            
-        l_detr = []
-        contexte   = self.stan.contexte
-        type_champ = cata[selection.nom_cham].type
-            
-        if type_champ == 'ELGA' :
-            contexte, l_detr = self.Ecla_Gauss(selection, contexte)
-            if not contexte: return
-
-        # On efface le fichier si il existe deja
-        if os.path.isfile('fort.80'):
-          try:    os.remove('fort.80')
-          except: pass
-
-
-        DEFI_FICHIER(UNITE = 80, 
-                     TYPE  = 'LIBRE',);
-                                   
-        para = _F(
-          RESULTAT   = contexte.resultat,
-          NOM_CHAM   = selection.nom_cham,
-          NUME_ORDRE = selection.numeros 
-        )
-    
-        # CS_pbruno à voir.... test à faire selon type de visu ?
-        if type_champ in ['NOEU','ELNO'] and selection.geom[0] in ['VOLUME','SURFACE'] :
-            para['GROUP_MA'] = selection.geom[1]    # non actif a cause de IMPR_RESU
-    
-        if 'TOUT_CMP' not in selection.nom_cmp :
-            para['NOM_CMP'] = tuple(selection.nom_cmp)
-
-        try:
-            IMPR_RESU(  FORMAT  =   'MED',
-                        UNITE   =   80,
-                        RESU    =   para )                        
-        except aster.error,err:
-            self.erreur.Remonte_Erreur(err, [], 0)
-            DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-            return
-        except aster.FatalError,err:
-            self.erreur.Remonte_Erreur(err, [], 0)
-            DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-            return
-        except Exception,err:
-            texte = "Cette action n'est pas realisable.\n"+str(err)
-            self.erreur.Remonte_Erreur(err, [], 0, texte)
-            DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-            return
-                              
-        DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-        
-        medFileName = 'fort.80' 
-            
-        if l_detr :
-            DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
-            
-        if options.has_key( 'case_sur_deformee' ):
-            if options['case_sur_deformee'] == 1:
-                if type_champ == 'ELGA':
-                    UTMESS('A','STANLEY',_("Attention : on ne peut pas tracer un champs aux points de Gauss sur la deformee...") )
-                else:
-                    UTMESS('I','STANLEY',_("Le champ est trace avec la deformee") )
-                                
-        self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
-
-
 # ==============================================================================
 
 class PRE_STANLEY :
@@ -2741,7 +2754,8 @@ class PRE_STANLEY :
       frame_evol          : LIST_BOX champ selection des concepts Aster de type "evol_*"
       frame_cham_mater    : LIST_BOX champ selection des concepts Aster de type "cham_mater"
       frame_cara_elem     : LIST_BOX champ selection des concepts Aster de type "cara_elem"
-      
+      frame_para_sensi    : LIST_BOX champ selection des concepts Aster de type "para_sensi"
+
      Methode publique 
       Exec       : lancement du scan des evenements
       
@@ -2769,8 +2783,21 @@ class PRE_STANLEY :
     t_evol=[]
     t_cham_mater=[]
     t_cara_elem=[]
+    t_para_sensi=[]
+
+
+    lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'para_sensi' ]
 
     for i in self.jdc_recupere.sds_dict.keys( ):
+
+      # On supprime de la liste les concept issus de la sensibilite
+      if i[0:len(ignore_prefixe)] == ignore_prefixe :
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ in lst:
+          txt = _('Concept ignore : ') + i
+          UTMESS('I','STANLEY',txt)
+
+      else:
+
 #         print i,self.jdc_recupere.sds_dict[i].__class__.__name__,self.jdc_recupere.sds_dict[i]
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'maillage_sdaster':
           t_maillage.append( i )
@@ -2792,12 +2819,22 @@ class PRE_STANLEY :
           t_cham_mater.append( i )
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cara_elem_sdaster':
           t_cara_elem.append( i )
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'para_sensi':
+          t_para_sensi.append( i )
 
     self.t_maillage=t_maillage
     self.t_modele=t_modele
     self.t_evol=t_evol
     self.t_cham_mater=t_cham_mater
     self.t_cara_elem=t_cara_elem
+    self.t_para_sensi=t_para_sensi
+
+    self.t_maillage.sort()
+    self.t_modele.sort()
+    self.t_evol.sort()
+    self.t_cham_mater.sort()
+    self.t_cara_elem.sort()
+    self.t_para_sensi.sort()
 
     # Si un des concepts n'a pas été trouvé au moins une fois on arrete
     _lst = []
@@ -2814,15 +2851,82 @@ class PRE_STANLEY :
       UTMESS('A','STANLEY',txt)
       self.Sortir()
 
+
     else:
+
+      # Detecte les concepts associés a chaque resultat
+      self.concepts = self.Autodetecte_Concepts(self.t_evol)
+
+      # Detecte les parametres sensibles associés a chaque resultat
+      self.dico_para_sensi = self.Autodetecte_Para_Sensi(self.t_evol, self.t_para_sensi)
+
       # Sinon on continue
       self.Dessin()
       self.Scan_selection()               
+
+      # Preselectionne le dernier resultat de la liste et ses concepts correspondants
+      self.Change_selections()
+
       self.Exec()
 
 
+
+  def Autodetecte_Concepts(self, t_evol) :
+    """ 
+       Detecte les concepts associés à un resultat
+    """
+
+    dico = {}
+
+    liste_concept = [ 'MODL', 'MATE', 'CARA' ]
+    dico_concept  = { 'MODL': _("modele"), 'MATE': _("Champ matériau"), 'CARA': _("Cara_elem") }
+
+    for evol in t_evol:
+       dico[evol] = []
+
+       for concept in liste_concept:
+          ltmp_aster = aster.getvectjev( evol.ljust(19) + '.'+ concept )
+          l_tmp = []
+          if ltmp_aster:
+             for i in range(len(ltmp_aster)):
+                obj = ltmp_aster[i].strip()
+                if obj and obj not in l_tmp: l_tmp.append(obj)
+
+          if len(l_tmp)==1:
+             dico[evol].append( l_tmp[0] )
+
+          elif len(l_tmp)>1:
+             UTMESS('A','STANLEY',_("Il y a plusieurs concepts ") + dico_concept[concept] + _(" stockés dans la structure de donnée résultat.") )
+             dico[evol].append( None )
+          else:
+             dico[evol].append( None )
+
+    return dico
+
+
+
+  def Autodetecte_Para_Sensi(self, t_evol, t_para_sensi) :
+    """ 
+       Detecte les parametres sensibles d'un resultat
+    """
+
+    dico = {}
+
+    for evol in t_evol:
+       dico[evol] = []
+
+       for para_sensi in t_para_sensi:
+          resu_sensible = resultat_jeveux( Sensibilite.NomCompose(evol, para_sensi) )
+          if resu_sensible.nom:
+             test_existance = aster.getvectjev( resu_sensible.nom.ljust(19) + '.DESC' )
+             if test_existance:
+                dico[evol].append( para_sensi )
+
+    return dico
+
+
+
   def Exec(self) :
-  
     """ 
       Demarre le scan des evenements
     """
@@ -2831,16 +2935,50 @@ class PRE_STANLEY :
 
 
 
+  def Change_selections(self) :
+    """
+      Action sur les evenements
+        Selectionne les concepts modele, cham_mater et cara_elem du resultat courant
+        Definit la frequence de scan
+    """
+
+    evol = self.evol.courant[0]
+    modele = self.concepts[evol][0]
+    self.modele.Selectionne( modele )
+    cham_mater = self.concepts[evol][1]
+    self.cham_mater.Selectionne( cham_mater )
+    if self.t_cara_elem != []:
+       cara_elem = self.concepts[evol][2]
+       self.cara_elem.Selectionne( cara_elem )
+    if self.t_para_sensi != []:
+       if len(self.dico_para_sensi[evol])>0:
+          para = self.dico_para_sensi[evol][0]
+          t_para = copy.copy(self.dico_para_sensi[evol])
+          t_para.insert(0, texte_sensibilite)
+          self.para_sensi.Change( t_para, para )
+       else:
+          para = self.t_para_sensi[0]
+          t_para = copy.copy(self.t_para_sensi)
+          t_para.insert(0, texte_sensibilite)
+          self.para_sensi.Change( t_para, para )
+
+
   def Scan_selection(self) :
     """
       Action sur les evenements
         Scan les objets selectionnes
         Definit la frequence de scan
     """
+
+    # Si le resultat a changé on reselectionne les autres concepts
+    if self.evol.Scan():
+       self.Change_selections()
+
     self.after_id = self.rootTk.after(30, self.Scan_selection)
 
 
   def Lancer(self) :
+
      i=int(self.modele.listbox.curselection()[0])
      modele=self.t_modele[i]
      _maillag = aster.getvectjev( string.ljust(modele,8) + '.MODELE    .NOMA        ' )
@@ -2848,16 +2986,29 @@ class PRE_STANLEY :
 
      i=int(self.evol.listbox.curselection()[0])
      evol=self.t_evol[i]
+
      i=int(self.cham_mater.listbox.curselection()[0])
      cham_mater=self.t_cham_mater[i]
-     if self.t_cara_elem != []:
-       i=int(self.cara_elem.listbox.curselection()[0])
-       cara_elem=self.t_cara_elem[i]
-       self.Sortir()
-       STANLEY(self.jdc_recupere.sds_dict[evol],self.jdc_recupere.sds_dict[maillage],self.jdc_recupere.sds_dict[modele],self.jdc_recupere.sds_dict[cham_mater],self.jdc_recupere.sds_dict[cara_elem])
+
+     if self.t_cara_elem == []:
+        c_cara_elem=None
      else:
-       self.Sortir()
-       STANLEY(self.jdc_recupere.sds_dict[evol],self.jdc_recupere.sds_dict[maillage],self.jdc_recupere.sds_dict[modele],self.jdc_recupere.sds_dict[cham_mater],None)
+        i=int(self.cara_elem.listbox.curselection()[0])
+        cara_elem=self.t_cara_elem[i]
+        c_cara_elem = self.jdc_recupere.sds_dict[cara_elem]
+
+     if self.t_para_sensi == []:
+        c_para_sensi=None
+     else:
+        i=int(self.para_sensi.listbox.curselection()[0])
+        if i == 0: c_para_sensi=None
+        else:
+           para_sensi=self.t_para_sensi[i-1]
+           c_para_sensi = self.jdc_recupere.sds_dict[para_sensi]
+
+     self.Sortir()
+
+     STANLEY(self.jdc_recupere.sds_dict[evol], self.jdc_recupere.sds_dict[maillage], self.jdc_recupere.sds_dict[modele], self.jdc_recupere.sds_dict[cham_mater], c_cara_elem, c_para_sensi)
 
 
   def Sortir(self):
@@ -2884,17 +3035,17 @@ class PRE_STANLEY :
     frame_boutons.pack(side=Tk.LEFT,pady=10)
 
    # boite de saisie des champs
-    frame_modele = Tk.Frame(frame_selection)
-    frame_modele.pack(side=Tk.LEFT,padx=5)
-    MENU_RADIO_BOX(frame_modele, "modele",fonte=fonte)
-    self.modele = LIST_BOX(frame_modele,self.t_modele,Tk.SINGLE,self.t_modele[-1],fonte=fonte)
-      
-   # boite de saisie des champs
     frame_evol = Tk.Frame(frame_selection)
     frame_evol.pack(side=Tk.LEFT,padx=5)
     MENU_RADIO_BOX(frame_evol, "evol",fonte=fonte)
     self.evol = LIST_BOX(frame_evol,self.t_evol,Tk.SINGLE,self.t_evol[-1],fonte=fonte)
       
+   # boite de saisie des champs
+    frame_modele = Tk.Frame(frame_selection)
+    frame_modele.pack(side=Tk.LEFT,padx=5)
+    MENU_RADIO_BOX(frame_modele, "modele",fonte=fonte)
+    self.modele = LIST_BOX(frame_modele,self.t_modele,Tk.SINGLE,self.t_modele[-1],fonte=fonte)
+
    # boite de saisie des champs
     frame_cham_mater = Tk.Frame(frame_selection)
     frame_cham_mater.pack(side=Tk.LEFT,padx=5)
@@ -2907,6 +3058,13 @@ class PRE_STANLEY :
       frame_cara_elem.pack(side=Tk.LEFT,padx=5)
       MENU_RADIO_BOX(frame_cara_elem, "cara_elem",fonte=fonte)
       self.cara_elem = LIST_BOX(frame_cara_elem,self.t_cara_elem,Tk.SINGLE,self.t_cara_elem[-1],fonte=fonte)
+
+   # boite de saisie des champs
+    if self.t_para_sensi != []:
+      frame_para_sensi = Tk.Frame(frame_selection)
+      frame_para_sensi.pack(side=Tk.LEFT,padx=5)
+      MENU_RADIO_BOX(frame_para_sensi, "para_sensi",fonte=fonte)
+      self.para_sensi = LIST_BOX(frame_para_sensi,self.t_para_sensi,Tk.SINGLE,self.t_para_sensi[-1],fonte=fonte)
 
    # Boutons
     BOUTON(frame_boutons,'PaleGreen1','STANLEY',self.Lancer,fonte=fonte)

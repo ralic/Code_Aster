@@ -5,7 +5,7 @@
 C TOLE CRS_513
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C       TANT QU'IL Y AURA DES IUNIFI...
         CALL ULOPEN ( NFIS,' ','FICHIER-MODELE','NEW','O')
       ENDIF 
 C
-      CALL PRESUP ( LGRCOU )
+      CALL PRESUP ( NFIE, NFIS, LGRCOU )
 C
       WRITE(NFIS,*) 'FIN'
       REWIND NFIS

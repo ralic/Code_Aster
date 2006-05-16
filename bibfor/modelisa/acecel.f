@@ -1,19 +1,19 @@
       SUBROUTINE ACECEL (NOMA,NOMO,NBOCC,NBEPO,NBEDI,NBECO,NBECA,NBEBA,
-     +                   NBEMA,NBEGR,NBTEL,NTYELE,NPOUTR,NDISCR,
+     +                   NBEMA,NBTEL,NTYELE,NPOUTR,NDISCR,
      +                   NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL,NGRIBT,
      +                   JDLM,JDLN,IER)
                                           
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER           NBOCC(*),NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,
-     +                  NBEGR,NBTEL
+     +                  NBTEL
       INTEGER           NTYELE(*),NPOUTR,NDISCR,NCOQUE,NCABLE,NBARRE,
      +                  NMASSI,NGRILL,NGRIBT
 C
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,18 +104,14 @@ C
             IF(NUTYEL.EQ.NTYELE(I))NCABLE = NCABLE + 1
  44      CONTINUE
          DO 45 I = NBEPO+NBEDI+NBECO+NBECA+1 ,
-     +                   NBEPO+NBEDI+NBECO+NBECA+NBEBA
+     +             NBEPO+NBEDI+NBECO+NBECA+NBEBA
             IF(NUTYEL.EQ.NTYELE(I))NBARRE = NBARRE + 1
  45      CONTINUE
          DO 46 I= NBEPO+NBEDI+NBECO+NBECA+NBEBA+1 , 
-     +                  NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA
+     +            NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA
             IF(NUTYEL.EQ.NTYELE(I))NMASSI = NMASSI + 1
  46      CONTINUE
-         DO 47 I= NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+1 , 
-     +                  NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGR
-            IF(NUTYEL.EQ.NTYELE(I))NGRILL = NGRILL + 1
- 47      CONTINUE
-         DO 48 I= NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGR+1 , NBTEL
+         DO 48 I= NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+1 , NBTEL
             IF(NUTYEL.EQ.NTYELE(I))NGRIBT = NGRIBT + 1
  48      CONTINUE
 C
@@ -161,7 +157,7 @@ C     ----------------------------------------------
      +                  ' QUI NE CONTIENT PAS UN SEUL ELEMENT COQUE !')
          IER = IER + 1
       ENDIF
-      IF ((NBOCC(3).NE.0 .OR. NBOCC(14).NE.0) .AND. NDISCR.EQ.0) THEN
+      IF ((NBOCC(3).NE.0 .OR. NBOCC(13).NE.0) .AND. NDISCR.EQ.0) THEN
          CALL UTMESS('E',CMD,'VOUS NE POUVEZ AFFECTEE DES VALEURS'//
      +                           ' DE TYPE "DISCRET" AU MODELE '//NOMO//
      +                ' QUI NE CONTIENT PAS UN SEUL ELEMENT DISCRET !')
@@ -200,13 +196,7 @@ C     ----------------------------------------------
      +               ' OU MECANIQUE !')
          IER = IER + 1
       ENDIF
-      IF (NBOCC(11).NE.0 .AND. NGRILL.EQ.0) THEN
-         CALL UTMESS('E',CMD,'VOUS NE POUVEZ AFFECTER DES VALEURS'//
-     +                       ' DE TYPE "ASSE_GRIL" AU MODELE '//NOMO//
-     +              ' QUI NE CONTIENT PAS UN SEUL ELEMENT ASSE_GRIL')
-         IER = IER + 1
-      ENDIF
-      IF (NBOCC(12).NE.0 .AND. NGRIBT.EQ.0) THEN
+      IF (NBOCC(11).NE.0 .AND. NGRIBT.EQ.0) THEN
          CALL UTMESS('E',CMD,'VOUS NE POUVEZ AFFECTER DES VALEURS'//
      +                       ' DE TYPE "GRILLE" AU MODELE '//NOMO//
      +              ' QUI NE CONTIENT PAS UN SEUL ELEMENT GRILLE')

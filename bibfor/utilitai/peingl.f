@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,6 @@ C                      .VMIS_ISOT_TRAC
 C                      .VMIS_ECMI_LINE
 C                      .VMIS_ECMI_TRAC
 C                      .VMIS_CINE_LINE
-C                      .CHABOCHE
 C                      .VISC_CIN1_CHAB
 C                      .VISC_CIN2_CHAB
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2005   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G THERMO-ELASTIQUE 3D EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,10 +175,11 @@ THETA1=CALC_THETA(MODELE=MO,
                  );
 
 
-G1=CALC_G_THETA_T(MODELE=MO,
+G1=CALC_G(MODELE=MO,
+                  OPTION='CALC_G_GLOB',
                   DEPL=DEPLA,
                   CHAM_MATER=CM,
-                  THETA=THETA1,
+                  THETA=_F(THETA=THETA1),
                   EXCIT=_F(   CHARGE=CH,),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
@@ -195,10 +196,11 @@ THETA2=CALC_THETA(MODELE=MO,
                  );
 
 
-G2=CALC_G_THETA_T(MODELE=MO,
+G2=CALC_G(MODELE=MO,
+                  OPTION='CALC_G_GLOB',
                   DEPL=DEPLA,
                   CHAM_MATER=CM,
-                  THETA=THETA2,
+                  THETA=_F(THETA=THETA2),
                   SYME_CHAR='SYME',
                   EXCIT=_F(   CHARGE=CH,),
                   COMP_ELAS=_F( RELATION = 'ELAS',
@@ -215,10 +217,11 @@ THETA3=CALC_THETA(MODELE=MO,
                   );
 
 
-G3=CALC_G_THETA_T(MODELE=MO,
+G3=CALC_G(MODELE=MO,
                   DEPL=DEPLA,
+                  OPTION='CALC_G_GLOB',
                   CHAM_MATER=CM,
-                  THETA=THETA3,
+                  THETA=_F(THETA=THETA3),
                   SYME_CHAR='SYME',
                   EXCIT=_F( CHARGE=CH,),
                   COMP_ELAS=_F( RELATION = 'ELAS',
@@ -230,51 +233,51 @@ G3=CALC_G_THETA_T(MODELE=MO,
 #               CALCUL DE G, K1, K2, K3 LOCAUX                                   #
 #--------------------------------------------------------------------
  
-GKLOC1=CALC_G_LOCAL_T(   MODELE=MO,
+GKLOC1=CALC_G(   MODELE=MO,
                          DEPL=DEPLA,
                          CHAM_MATER=CM,
                          OPTION='CALC_K_G',
-                         FISSURE=FF2,
                          EXCIT=_F(CHARGE=CH,),
-                         R_INF=0.04,
-                         R_SUP=0.2,
+                         THETA=_F(FISSURE=FF2,
+                                  R_INF=0.04,
+                                  R_SUP=0.2),
                          SYME_CHAR='SYME',
-                         LISSAGE_THETA='LAGRANGE',
-                         LISSAGE_G='LAGRANGE',
+                         LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                                    LISSAGE_G='LAGRANGE'),
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT'),
                          INFO=1,
                      );
 IMPR_TABLE(      TABLE=GKLOC1,);
 
-GKLOC3=CALC_G_LOCAL_T(   MODELE=MO,
+GKLOC3=CALC_G(   MODELE=MO,
                          DEPL=DEPLA,
                          CHAM_MATER=CM,
                          OPTION='CALC_K_G',
-                         FISSURE=FF2,
                          EXCIT=_F(CHARGE=CH,),
-                         R_INF=0.08,
-                         R_SUP=0.28,
+                         THETA=_F(FISSURE=FF2,
+                                  R_INF=0.08,
+                                  R_SUP=0.28),
                          SYME_CHAR='SYME',
-                         LISSAGE_THETA='LAGRANGE',
-                         LISSAGE_G='LAGRANGE',
+                         LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                                    LISSAGE_G='LAGRANGE'),
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                        DEFORMATION = 'PETIT'),
                          INFO=1,
                      );
  
  
-GKLOC5=CALC_G_LOCAL_T(   MODELE=MO,
+GKLOC5=CALC_G(   MODELE=MO,
                          DEPL=DEPLA,
                          CHAM_MATER=CM,
                          OPTION='CALC_K_G',
-                         FISSURE=FF2,
                          EXCIT=_F(   CHARGE=CH,),
-                         R_INF=0.08,
-                         R_SUP=0.36,
+                         THETA=_F(FISSURE=FF2,
+                                  R_INF=0.08,
+                                  R_SUP=0.36),
                          SYME_CHAR='SYME',
-                         LISSAGE_THETA='LAGRANGE',
-                         LISSAGE_G='LAGRANGE',
+                         LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                                    LISSAGE_G='LAGRANGE'),
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                        DEFORMATION = 'PETIT'),
                          INFO=1,

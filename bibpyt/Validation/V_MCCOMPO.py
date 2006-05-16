@@ -1,4 +1,4 @@
-#@ MODIF V_MCCOMPO Validation  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF V_MCCOMPO Validation  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,6 +82,8 @@ class MCCOMPO:
       """
       #dictionnaire=self.dict_mc_presents(restreint='oui')
       dictionnaire=self.dict_mc_presents(restreint='non') # On verifie les regles avec les defauts affectés
+      #on ajoute l'objet detenteur de regles pour des validations plus sophistiquees (a manipuler avec precaution)
+      dictionnaire["self"]=self
       texte=''
       testglob = 1
       for r in self.definition.regles:

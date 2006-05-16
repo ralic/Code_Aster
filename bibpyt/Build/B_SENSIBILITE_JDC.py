@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,6 +297,7 @@ class SENSIBILITE_JDC :
           context_ini = None
 #
         new_jdc = self.jdc.definition(cata=self.jdc.cata,appli=self.jdc.appli,procedure="#\n",context_ini=context_ini)
+        new_jdc.actif_status=1
 #
 #### CD : Je suis oblige de reaffecter les attributs cpu au new_jdc. Ca ne me plait pas trop.
 #### CD : il y aurait sans doute moyen de faire mieux (via __init__ du N_JDC)
@@ -342,7 +343,9 @@ class SENSIBILITE_JDC :
           if hasattr(etape,'sd') :
         # 3.1. Copie telle quelle de l'étape initiale
 #            print "Lancement de la copie de ",etape.nom
-            new_etape = etape.full_copy(parent=new_jdc)
+            #on ne recopie pas l'etape (il ne faut oublier de lui donner comme parent le nouveau jdc : new_jdc)
+            #new_etape = etape.full_copy(parent=new_jdc)
+            new_etape = etape
 #            print "Fin de la copie de ",etape.nom
             if self.DEBUG :
               print ".. L'étape a été recopiée à l'identique."
@@ -357,8 +360,9 @@ class SENSIBILITE_JDC :
               enregistrement_tardif = 1
             else :
               enregistrement_tardif = 0
-              new_jdc.register(new_etape)
-#              print ". enregistrement immediat de  = ",etape.nom
+              #new_jdc.register(new_etape)
+              new_jdc.append_reset(new_etape)
+              #print ". enregistrement immediat de  = ",etape.nom
 
 # 3.3. Si l'étape produit une sd, on va la dériver dans chacun des cas suivants :
 #        . C'est la définition d'un paramètre sensible stricto sensu
@@ -457,8 +461,9 @@ class SENSIBILITE_JDC :
 
 # 3.3.4. Enregistrement final si cela n'a pas été fait
             if enregistrement_tardif :
-               new_jdc.register(new_etape)
-#               print ". enregistrement tardif de  = ",etape.nom
+                #new_jdc.register(new_etape)
+                new_jdc.append_reset(new_etape)
+                #print ". enregistrement tardif de  = ",etape.nom
 #
 # 3.4. Message éventuel
           if erreur :

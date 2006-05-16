@@ -1,4 +1,4 @@
-#@ MODIF graphiqueTk Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF graphiqueTk Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,7 +130,7 @@ class MENU_RADIO_BOX :
         self.select.set(liste[0])
 
 
-  def Activer(self) :
+  def Activer(self):
     self.methode(self.select.get())
 
 
@@ -226,18 +226,18 @@ class LIST_BOX :
     # Creation de la fenetre de selection 
     if hbar:
       self.listbox = Tk.Listbox( frame_parent, 
-                                      xscrollcommand  = hscrollbar.set,
-                                      yscrollcommand  = scrollbar.set,
-                                      selectmode      = type_selec,
-                                      exportselection = 0,
-                                      font = fonte,
+                                 xscrollcommand  = hscrollbar.set,
+                                 yscrollcommand  = scrollbar.set,
+                                 selectmode      = type_selec,
+                                 exportselection = 0,
+                                 font = fonte,
                                     )
     else :
       self.listbox = Tk.Listbox( frame_parent, 
-                                      yscrollcommand  = scrollbar.set,
-                                      selectmode      = type_selec,
-                                      exportselection = 0,
-                                      font = fonte,
+                                 yscrollcommand  = scrollbar.set,
+                                 selectmode      = type_selec,
+                                 exportselection = 0,
+                                 font = fonte,
                                     )
       
     # Remplissage
@@ -258,9 +258,18 @@ class LIST_BOX :
     except ValueError :
       pass
 
-    
-  def Change(self, liste,defaut = '') :
-  
+
+  def Selectionne(self, valeur) :
+
+      p = self.noms.index(valeur)
+      self.listbox.selection_clear(0,len(self.noms))
+      self.listbox.selection_set(p,p)
+      self.courant = [valeur]
+      self.indice  = [p]
+
+
+  def Change(self, liste, defaut = '') :
+
     self.listbox.delete(0,Tk.END)
     for chaine in liste :
       self.listbox.insert(Tk.END,chaine)
@@ -275,13 +284,13 @@ class LIST_BOX :
       self.indice  = [p]
     except ValueError :
       pass
-       
+
     
   def Scan(self) :
-      
+
     positions = map(int, self.listbox.curselection())
     positions.sort()    # on garde la selection du haut vers le bas
-    
+
     nouveau = []
     for pos in positions :
       nouveau.append(self.noms[pos])
@@ -304,26 +313,26 @@ class BOUTON :
 
     bouton = Tk.Button(frame, bg=couleur,text=nom, command=methode, font=fonte)
     bouton.pack(side=Tk.LEFT,padx=x,pady=y)  
-  
-  
+
+
 # ==============================================================================
 
 class DIALOGUE : 
 
   def __init__(self, *texte) :
-  
+
     self.rootTk = Tk.Tk()
     self.rootTk.wm_title('DIALOGUE ASTER')
-    
+
     frame_haut = Tk.Frame(self.rootTk,relief=Tk.RAISED,bd=2)
     frame_haut.pack(padx=5,pady=5)
     frame_bas = Tk.Frame(self.rootTk)
     frame_bas.pack(pady=0)
-    
+
     ch = ' '*50 + '\n'
     for ligne in texte :
       ch = ch + ligne + '\n'
-    
+
     le = LIGNE_ETAT(frame_haut)
     le.Affecter(ch)
 
@@ -338,14 +347,14 @@ class DIALOGUE :
 
 # ==============================================================================
 
-def SAISIE_MODE(l_infos,titre = "", fonte=__fontes__) :
+def SAISIE_MODE(l_infos, titre = "", fonte=__fontes__, type_selec=Tk.SINGLE) :
 
   """
     procede a la saisie d'un certain nombre de chaines
     voir classe C_SAISIE
   """
-  
-  saisie = C_SAISIE_MODE(l_infos,titre,fonte)
+
+  saisie = C_SAISIE_MODE(l_infos,titre,fonte,type_selec)
   return saisie.reponse
 
 
@@ -357,23 +366,25 @@ class C_SAISIE_MODE :
   """
 
 
-  def __init__(self,l_infos, titre, fonte=__fontes__) :
+  def __init__(self,l_infos, titre, fonte=__fontes__, type_selec=Tk.SINGLE) :
 
     self.root = Tk.Tk()
     self.root.title(titre)
     self.l_infos = l_infos
+    self.type_selec = type_selec
 
     frame = Tk.Frame(self.root)
     frame.grid(padx = 10, pady = 3)
 
     bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire_Mode)
-    bouton.grid(row = 1, column=0,pady = 3)  
-
+    bouton.grid(row= 1, column=0, pady = 3)  
 
     self.listbox = Tk.Listbox( frame, 
-                                    height=3,
-                                    exportselection = 0,
-                                  )
+                               height=3,
+                               exportselection = 0,
+                               selectmode      = type_selec,
+                              )
+
 
     # Remplissage
     for chaine in l_infos :
@@ -391,6 +402,11 @@ class C_SAISIE_MODE :
 
     items = int(self.listbox.curselection()[0])
     self.reponse = self.l_infos[items]
+
+    if self.type_selec == Tk.EXTENDED:
+      items = map(int, self.listbox.curselection())
+      self.reponse = map( lambda x: self.l_infos[x], items )
+
     self.root.quit()
 
 

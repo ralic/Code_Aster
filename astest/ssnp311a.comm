@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_131 FISSURE EN MODE 2 D'UNE EPROUVETTE ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,134 +225,134 @@ THETA3=CALC_THETA(       MODELE=MO,
                      )
 
 #
-# CALC_G_THETA POUR LES INSTANTS 22, 36, 50, 64
+# CALC_G POUR LES INSTANTS 22, 36, 50, 64
 #
-G220=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            THETA=THETA0,
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=22
-                      )
+G220=CALC_G(        RESULTAT=CHAMDEPL,
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    THETA=_F(THETA=THETA0),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=22
+              )
 
 #
-G360=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA0,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=36
-                      )
+G360=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA0),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=36
+              )
 
 #
-G500=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA0,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=50
-                      )
+G500=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA0),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=50
+              )
 
 #
-G640=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA0,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=64
-                      )
+G640=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA0),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=64
+              )
 
 #
-G221=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=22
-                      )
+G221=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA1),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=22
+              )
 
 #
-G361=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=36
-                      )
+G361=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA1),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=36
+              )
 
 #
-G501=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=50
-                      )
+G501=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA1),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=50
+              )
 
 #
-G641=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=64
-                      )
+G641=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA1),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=64
+              )
 
 #
-G222=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA2,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=22
-                      )
+G222=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA2),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=22
+              )
 
 #
-G362=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA2,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=36
-                      )
+G362=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA2),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=36
+              )
 
 #
-G502=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA2,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=50
-                      )
+G502=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA2),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=50
+              )
 
 #
-G642=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA2,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=64
-                      )
+G642=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA2),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=64
+              )
 
 #
-G223=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA3,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                          NUME_ORDRE=22
-                      )
+G223=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA3),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                  NUME_ORDRE=22
+              )
 
 #
-G363=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA3,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=36
-                      )
+G363=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA3),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=36
+              )
 
 #
-G503=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA3,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=50
-                      )
+G503=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA3),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=50
+              )
 
 #
-G643=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
-                            THETA=THETA3,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
-                            SYME_CHAR='SANS',
-                            NUME_ORDRE=64
-                      )
+G643=CALC_G(        RESULTAT=CHAMDEPL,
+                    THETA=_F(THETA=THETA3),
+                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
+                    SYME_CHAR='SANS',
+                    NUME_ORDRE=64
+              )
 
 #
 ##

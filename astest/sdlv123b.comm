@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -132,40 +132,43 @@ THETA3=CALC_THETA( MODELE=MODELE,
                                 R_SUP = 18.)
                                )
 
-G1=CALC_G_THETA_T( MODELE=MODELE,
+G1=CALC_G( MODELE=MODELE,
+                    OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=THETA1,
+                    THETA=_F(THETA=THETA1),
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-GL1=CALC_G_LOCAL_T( MODELE=MODELE,
-                    FOND_FISS=FF,
+GL1=CALC_G( MODELE=MODELE,
+                    THETA=_F(FOND_FISS=FF,
+                             R_INF = 3.,
+                             R_SUP = 10.),
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    R_INF = 3.,
-                    R_SUP = 10.,
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME',
-                    LISSAGE_THETA='LAGRANGE'
+                    LISSAGE=_F(LISSAGE_THETA='LAGRANGE'),
                   )
 
-G2=CALC_G_THETA_T( MODELE=MODELE,
+G2=CALC_G( MODELE=MODELE,
+                    OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=THETA2,
+                    THETA=_F(THETA=THETA2),
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-G3=CALC_G_THETA_T( MODELE=MODELE,
+G3=CALC_G( MODELE=MODELE,
                     RESULTAT=evol,
+                    OPTION='CALC_G_GLOB',
                     TOUT_ORDRE='OUI',
-                    THETA=THETA3,
+                    THETA=_F(THETA=THETA3),
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'

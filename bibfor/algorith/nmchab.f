@@ -2,7 +2,7 @@
      +                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
      +                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,9 +168,9 @@ C     -------------------------------------------------------------
       ENDIF
 C
       NBVAR=0
-      IF ( COMPOR(1)(1:14) .EQ. 'VISC_CIN1_CHAB' ) THEN
+      IF ( COMPOR(1)(6:14) .EQ. 'CIN1_CHAB' ) THEN
          NBVAR=1
-      ELSEIF ( COMPOR(1)(1:14) .EQ. 'VISC_CIN2_CHAB' ) THEN
+      ELSEIF ( COMPOR(1)(6:14) .EQ. 'CIN2_CHAB' ) THEN
          NBVAR=2
       ELSE
          CALL UTMESS('F','NMCHAB',

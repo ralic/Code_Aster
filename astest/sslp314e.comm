@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,19 +105,23 @@ THETA0=CALC_THETA(       MODELE=MO,
                     )
 
 #
-G0=CALC_G_THETA_T(        MODELE=MO,
+G0=CALC_G(        MODELE=MO,
                               DEPL=DEP,
-                             THETA=THETA0,
+                             THETA=_F(THETA=THETA0),
                             EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SANS'
                     )
 
 #
-GK01=CALC_G_THETA_T(        MODELE=MO,
+GK01=CALC_G(        MODELE=MO,
                                 DEPL=DEP,
-                               THETA=THETA0,
-                                FOND_FISS=FOND1,
+                               THETA=_F(
+                                    MODULE = 1.,
+                                    R_INF = 1.25E-5,
+                                    R_SUP = 5.E-4,
+                        DIRECTION=(-0.707106781, 0.707106781, 0.,),
+                                FOND_FISS=FOND1),
                              EXCIT=_F( CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                            SYME_CHAR='SANS',

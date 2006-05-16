@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,31 +166,31 @@ SIF2 = [None]*nbc
 
 for i in range(0,nbc) :
    
-   SIF1[i]=CALC_G_LOCAL_T(MODELE=MODELEIN,
-                         CHAM_MATER=CHAMPMA,                      
-                         RESULTAT=UTOT1,
-                         SYME_CHAR='SANS',
-                         COMP_ELAS=_F(RELATION='ELAS',),
-                         OPTION='CALC_K_G',
-                         FISSURE=FISS,
-                         LISSAGE_THETA='LAGRANGE',
-                         LISSAGE_G='LAGRANGE',
-                         R_INF=RI[i],
-                         R_SUP=RS[i],
-                         INFO=1,);
+   SIF1[i]=CALC_G(MODELE=MODELEIN,
+                  CHAM_MATER=CHAMPMA,                      
+                  RESULTAT=UTOT1,
+                  SYME_CHAR='SANS',
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(R_INF=RI[i],
+                           R_SUP=RS[i],
+                           FISSURE=FISS,),
+                  INFO=1,);
 
-   SIF2[i]=CALC_G_LOCAL_T(MODELE=MODELEIN,
-                         CHAM_MATER=CHAMPMA,                      
-                         RESULTAT=UTOT2,
-                         SYME_CHAR='SANS',
-                         COMP_ELAS=_F(RELATION='ELAS',),
-                         OPTION='CALC_K_G',
-                         FISSURE=FISS,
-                         LISSAGE_THETA='LAGRANGE',
-                         LISSAGE_G='LAGRANGE',
-                         R_INF=RI[i],
-                         R_SUP=RS[i],
-                         INFO=1,);
+   SIF2[i]=CALC_G(MODELE=MODELEIN,
+                  CHAM_MATER=CHAMPMA,                      
+                  RESULTAT=UTOT2,
+                  SYME_CHAR='SANS',
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(R_INF=RI[i],
+                           R_SUP=RS[i],
+                  FISSURE=FISS,),
+                  INFO=1,);
 
 
    IMPR_TABLE(TABLE=SIF1[i],);

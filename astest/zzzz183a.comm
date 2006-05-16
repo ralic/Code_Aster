@@ -1,4 +1,4 @@
-# MODIF  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL D UNE EOLIENNE, MODELISATION 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,40 +188,6 @@ TEST_TABLE(
              VERSION='7.3.12',
           )
 
-FIN( )
+FIN()
 
 
-"""
-#POURSUITE(PAR_LOT='NON',)
-
-print"<MACR_CALC_EOLIENNE> CHFATI = ",CHFATI,dir(CHFATI)
-endo1 = CHFATI.EXTR_COMP.valeurs('ENDO1',['GNOTEST'],0)
-print"<MACR_CALC_EOLIENNE> ENDO1 = ",endo1
-
-Pour EXTR_COMP ==>
-voir sur la machine Aster : /aster/v7/NEW7/catapy/entete/acas.capy
-
-ATTENTION : dans le fichier de commandes, il ne faut pas mettre de
-virgule apres la derniere paranthese de la macro-commande
-sinon endo1 est transforme en tuple, il faut alors remplacer FATI
-par FATI[0] dans les lignes qui suivent :
- 
-print"<ZZZZ183A> FATI = ",FATI,dir(FATI)
-endo1 = FATI.EXTR_COMP('ENDO1',['GNOTEST2'],1)
-endo_noeuds=endo1.noeud
-endo_valeurs=endo1.valeurs
-print"<ZZZZ183A> ENDO1 = ",endo1
-print"<ZZZZ183A> endo_noeuds = ",endo_noeuds
-print"<ZZZZ183A> endo_valeurs = ",endo_valeurs
-
-
-
-test1 = POST_RELEVE_T(
-             ACTION=_F( INTITULE='ENDOMMAGEMENT_1',
-                        NOEUD=('N4798','N4813','N4828','N4843'),
-                        CHAM_GD=FATI,
-                        NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z'),
-                        OPERATION='EXTRACTION',),)
-
-IMPR_TABLE(TABLE = test1,FORMAT_R='1PE24.12')
-"""

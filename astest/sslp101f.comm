@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DES DERIVEES DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,17 +80,17 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                           FOND_FISS=_F( NOEUD = 'N668'),
                        NORMALE=(0., 1., 0.,))
 
-G1=CALC_G_THETA_T(         MODELE=MO,
+G1=CALC_G(         MODELE=MO,
                              DEPL=DEP,
-                            THETA=THETA1,
+                            THETA=_F(THETA=THETA1),
                            EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
                        CHAM_MATER=CHMAT )
 
-DGE1=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
+DGE1=CALC_G(      RESULTAT=CHAMDEPL,
+                            THETA=_F(THETA=THETA1),
                         SENSIBILITE = (YOUNG,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -104,8 +104,8 @@ TEST_TABLE(            TABLE=DGE1,
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
-DGF1=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
+DGF1=CALC_G(      RESULTAT=CHAMDEPL,
+                            THETA=_F(THETA=THETA1),
                         SENSIBILITE = (FORC,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -122,10 +122,14 @@ TEST_TABLE(            TABLE=DGF1,
 #-----------------------------------------------------------------------
 # CALCUL K1 ET DERIVEES
 #-----------------------------------------------------------------------
-GK1=CALC_G_THETA_T(         MODELE=MO,
+GK1=CALC_G(         MODELE=MO,
                             RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                             FOND_FISS=FOND,
+                            THETA=_F(
+                                     MODULE = 1.,
+                                     R_INF = 22.04078,
+                                     R_SUP = 30.,
+                                     DIRECTION=( 1., 0., 0.,),
+                                     FOND_FISS=FOND),
                               EXCIT=_F( CHARGE = CH),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -133,11 +137,15 @@ GK1=CALC_G_THETA_T(         MODELE=MO,
                        CHAM_MATER=CHMAT ,
                            OPTION='CALC_K_G')
 
-DGKE1=CALC_G_THETA_T(         MODELE=MO,
+DGKE1=CALC_G(         MODELE=MO,
                      SENSIBILITE = (YOUNG,), 
                             RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                             FOND_FISS=FOND,
+                            THETA=_F(
+                                     MODULE = 1.,
+                                     R_INF = 22.04078,
+                                     R_SUP = 30.,
+                                     DIRECTION=( 1., 0., 0.,),
+                                     FOND_FISS=FOND),
                               EXCIT=_F( CHARGE = CH),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -156,11 +164,15 @@ TEST_TABLE(            TABLE=DGKE1,
 # CHARGEMENT FORCE CONTOUR
 #-----------------------------------------------------------------------
 
-DGKF1=CALC_G_THETA_T(         MODELE=MO,
+DGKF1=CALC_G(         MODELE=MO,
                      SENSIBILITE = (FORC,), 
                             RESULTAT=CHAMDEPL,
-                            THETA=THETA1,
-                             FOND_FISS=FOND,
+                            THETA=_F(
+                                     MODULE = 1.,
+                                     R_INF = 22.04078,
+                                     R_SUP = 30.,
+                                     DIRECTION=( 1., 0., 0.,),
+                                     FOND_FISS=FOND),
                               EXCIT=_F( CHARGE = CH),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -198,11 +210,15 @@ CHAMDEP=CALC_ELEM(reuse=CHAMDEP,RESULTAT=CHAMDEP,
               SENSIBILITE = (YOUNG,PRES), 
               OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
 
-DGKP1=CALC_G_THETA_T(         MODELE=MO,
+DGKP1=CALC_G(         MODELE=MO,
                      SENSIBILITE = (PRES,), 
                             RESULTAT=CHAMDEP,
-                            THETA=THETA1,
-                             FOND_FISS=FOND,
+                            THETA=_F(
+                                     MODULE = 1.,
+                                     R_INF = 22.04078,
+                                     R_SUP = 30.,
+                                     DIRECTION=( 1., 0., 0.,),
+                                     FOND_FISS=FOND),
                               EXCIT=_F( CHARGE = CHP),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -221,17 +237,17 @@ TEST_TABLE(            TABLE=DGKP1,
 #-----------------------------------------------------------------------
 # DEUXIEME COURONNE
 #-----------------------------------------------------------------------
-G2=CALC_G_THETA_T(         MODELE=MO,
+G2=CALC_G(         MODELE=MO,
                              DEPL=DEP,
-                            THETA=THETA2,
+                            THETA=_F(THETA=THETA2),
                            EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
                        CHAM_MATER=CHMAT )
 
-DGE2=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
-                            THETA=THETA2,
+DGE2=CALC_G(      RESULTAT=CHAMDEPL,
+                            THETA=_F(THETA=THETA2),
                         SENSIBILITE = (YOUNG,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -245,8 +261,8 @@ TEST_TABLE(            TABLE=DGE2,
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
-DGF2=CALC_G_THETA_T(      RESULTAT=CHAMDEPL,
-                            THETA=THETA2,
+DGF2=CALC_G(      RESULTAT=CHAMDEPL,
+                            THETA=_F(THETA=THETA2),
                         SENSIBILITE = (FORC,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -264,17 +280,17 @@ DEPL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  NOM_CHAM='DEPL', RESULTAT=CHAMDEP,
                          NUME_ORDRE=1 )
 
-G1P=CALC_G_THETA_T(         MODELE=MO,
+G1P=CALC_G(         MODELE=MO,
                              DEPL=DEPL,
-                            THETA=THETA1,
+                            THETA=_F(THETA=THETA1),
                          EXCIT=_F(CHARGE=CHP,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
                        CHAM_MATER=CHMAT )
 
-DGE1P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                            THETA=THETA1,
+DGE1P=CALC_G(     RESULTAT=CHAMDEP,
+                            THETA=_F(THETA=THETA1),
                         SENSIBILITE = (YOUNG,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -289,8 +305,8 @@ TEST_TABLE(            TABLE=DGE1P,
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
-DGF1P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                            THETA=THETA1,
+DGF1P=CALC_G(     RESULTAT=CHAMDEP,
+                            THETA=_F(THETA=THETA1),
                         SENSIBILITE = (PRES,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -305,9 +321,9 @@ TEST_TABLE(            TABLE=DGF1P,
                        VALE=4.6E-3,
                       PRECISION=5.E-3     )
 
-G2P=CALC_G_THETA_T(         MODELE=MO,
+G2P=CALC_G(         MODELE=MO,
                              DEPL=DEPL,
-                            THETA=THETA2,
+                            THETA=_F(THETA=THETA2),
                           EXCIT=_F( CHARGE=CHP,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -315,8 +331,8 @@ G2P=CALC_G_THETA_T(         MODELE=MO,
                        CHAM_MATER=CHMAT )
 
 
-DGE2P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                            THETA=THETA2,
+DGE2P=CALC_G(     RESULTAT=CHAMDEP,
+                            THETA=_F(THETA=THETA2),
                         SENSIBILITE = (YOUNG,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -331,8 +347,8 @@ TEST_TABLE(            TABLE=DGE2P,
                        VALE=-1.15E-8,
                       PRECISION=5.E-3     )
 
-DGF2P=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
-                            THETA=THETA2,
+DGF2P=CALC_G(     RESULTAT=CHAMDEP,
+                            THETA=_F(THETA=THETA2),
                         SENSIBILITE = (PRES,), 
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',

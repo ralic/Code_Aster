@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
 
 RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d'une fonction, l'évolution d'une grandeur en fonction d'une autre",
-                   reentrant='n',
+                   reentrant='f',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','OBSTACLE'),),
 
@@ -54,6 +54,8 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
          b_sensibilite   =BLOC(condition="RESULTAT != None",
                                  fr="Définition des paramètres de sensibilité",
                                  ang="Definition of sensitivity parameters",
+           regles=(CONCEPT_SENSIBLE('SEPARE'), REUSE_SENSIBLE(),
+                   DERIVABLE('RESULTAT'),),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),),

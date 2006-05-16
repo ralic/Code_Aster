@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -414,6 +414,12 @@ class resultat_sdaster(ASSD):
     if self.par_lot() :
       raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
     return aster.GetResu(self.get_name(), "PARAMETRES")
+
+class resultat_jeveux(resultat_sdaster):
+   """Classe permettant d'accéder à un resultat jeveux qui n'a pas d'ASSD associée,
+   c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
+   def __init__(self,nom_jeveux):
+      self.nom=nom_jeveux
 
 # -----------------------------------------------------------------------------
 class acou_harmo    (resultat_sdaster):pass

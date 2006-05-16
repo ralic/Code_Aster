@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,6 +131,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                       PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                  ),
              b_extr_resultat =BLOC(condition = "RESULTAT != None",
+                 regles=(DERIVABLE('RESULTAT'),),
                  SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                    fr="Paramètre de sensibilité.",
                                    ang="Sensitivity parameter"),
@@ -175,7 +176,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
          ),  # fin bloc b_extr
 
                 ),
-# FIN DU CATALOGUE : INFO,TITRE ET TYPAGE DU RESULAT :
+# FIN DU CATALOGUE : INFO,TITRE ET TYPAGE DU RESULTAT :
 #-----------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),

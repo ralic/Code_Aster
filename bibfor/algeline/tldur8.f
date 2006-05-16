@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMMAT
 C  ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
 C  ------------------------------------------------------------------
       INTEGER HCOL(*),ADIA(*),ABLO(*)
       INTEGER NPIVOT,NEQ,NBBLOC,ILDEB,ILFIN
-      INTEGER IMES,IUNIFI,IER,LDIAG,LTRAV,IBLOC,IL1,IL2,IAA,IL
+      INTEGER IER,LDIAG,LTRAV,IBLOC,IL1,IL2,IAA,IL
       INTEGER IAAS,IAAI,KL1,IMINI,IEQUA,I,JBLMIN,JBLOC,JL1,JL2
       INTEGER IABS,IABI,ILONG,IADIAI,IDEI,IADIAS,IDES,IDL,JNMINI
       INTEGER IADIGS,JEQUA,JLONG,JADIAS,JDES,JADIAI,JDEI,JDL,IBCL1
@@ -116,7 +116,6 @@ C  ------------------------------------------------------------------
 C  ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      IMES = IUNIFI('MES_FAC')
 C
       NOMA19 = NOMMAT
       UALF(1:19) = NOMMAT
@@ -398,12 +397,6 @@ C           --- ON COMPTE LES PIVOTS NEGATIFS --------------------------
   140   CONTINUE
         CALL JELIBE(JEXNUM(UALF,IBLOC))
         CALL JELIBE(JEXNUM(UALF,IBLOC+NBBLOC))
-        IF (IMES.GT.0) THEN
-          WRITE (IMES,*) '>>> FACTORISATION (LDLU_R8):',
-     +      ' FIN DU BLOC SUP ',IBLOC,' ET DU BLOC INF ',IBLOC + NBBLOC,
-     +      ' SUR ',NBBLOC + NBBLOC,' SOIT DU DDL ',IL1,' AU  DDL ',IL2,
-     +      ' INCLUS'
-        END IF
   150 CONTINUE
 C
   160 CONTINUE

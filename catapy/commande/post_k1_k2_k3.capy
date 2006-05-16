@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,8 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GALENNE E.GALENNE
-
-POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=table_sdaster,
+from Macro.post_k1_k2_k3_ops import post_k1_k2_k3_ops
+POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdaster,
                    fr="Calcul des facteurs d'intensité de contraintes en 2D et en 3D par extrapolation des sauts de déplacements"
                      +" sur les lèvres de la fissure",
                    reentrant='n',
@@ -33,6 +33,8 @@ POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=table_sdaster,
          FOND_FISS     =SIMP(statut='f',typ=fond_fiss),
          b_fond_fiss   =BLOC (condition="(FOND_FISS!= None)",
                          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
+                         TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
+                         NB_NOEUD_COUPE= SIMP(statut='f',typ='I' ,defaut=5 ),
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),

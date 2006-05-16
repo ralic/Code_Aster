@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 09/01/2006   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF __init__ Accas  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,3 +76,4 @@ from Noyau.N_utils import AsType
 
 from Noyau.N_VALIDATOR import Valid,RangeVal,OrdList,NoRepeat,LongStr,EnumVal,CardVal,TypeVal,InstanceVal,OrVal,AndVal,PairVal
 
+from Noyau.N_SENSIBILITE import CONCEPT_SENSIBLE, REUSE_SENSIBLE, DERIVABLE

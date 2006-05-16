@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,10 +87,8 @@ C
      2                   SIGF, VINF, IRTET )
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C
-      ELSEIF ( LOI(1:8) .EQ. 'CHABOCHE'    .OR.
-     1         LOI(1:5) .EQ. 'LMARC'       .OR.
+      ELSEIF ( LOI(1:5) .EQ. 'LMARC'       .OR.
      1         LOI(1:9) .EQ. 'VISCOCHAB'   .OR.
-     1         LOI(1:4) .EQ. 'OHNO  '      .OR.    
      1         LOI(1:8) .EQ. 'MONOCRIS'    .OR.    
      1         LOI(1:7) .EQ. 'IRRAD3M '    .OR.    
      1         LOI(1:7) .EQ. 'NADAI_B'     ) THEN

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN BARRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 #-----------------------------------------------------------------------
 #   TEST DU MODELE DE COUPLAGE D'UNE LOI DE FLUAGE DE GRANGER
 #   (GRANGER_FP) ET DES LOIS DE PLASTICITE/FISSURATION :
-#   NADAI_B, VMIS_ISOT_LINE ET CHABOCHE EN DEPLACEMENT IMPOSE,
+#   NADAI_B, VMIS_ISOT_LINE EN DEPLACEMENT IMPOSE,
 #    EN MODELISATION BARRE, EN TRACTION UNIAXIALE (XX).
 #  
 #   POUR SIMPLIFIER LA SOLUTION ANALYTIQUE DE REFERENCE :
@@ -82,15 +82,6 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                FONC_DESORP=DESORP,),
                     ECRO_LINE_FO=_F(D_SIGM_EPSI=ECRO,
                                     SY=FT,),
-                    CHABOCHE=_F(R_I=4.1,
-                                R_0=4.,
-                                B=0.0001,
-                                K=1.,
-                                W=0.,
-                                A1=0.,
-                                A2=0.,
-                                C1=0.,
-                                C2=0.,),
                     NADAI_B=_F(F_C=40.,
                                F_T=4.,
                                CRIT_E_C=1.,
@@ -190,9 +181,6 @@ COEF_TR=DEFI_FONCTION(NOM_PARA='INST',
 #####################################################################
 ################################################
 ###    COUPLAGE   GRANGER_FP  VMIS_ISOT_LINE      ###
-################################################
-################################################
-###    COUPLAGE    GRANGER_FP     CHABOCHE   ###
 ################################################
 
 #     THERMIQUE ET SECHAGE CST - SOLUTION ANALYTIQUE  ###
@@ -381,50 +369,6 @@ TEST_TABLE(TABLE=RELEVE_4,
            REFERENCE='NON_REGRESSION',
            VERSION='7.3.9',);
 
-COUPLA4=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=CM,
-                      CARA_ELEM=CARA,
-                      EXCIT=(_F(CHARGE=COND_LI2,),
-                             _F(CHARGE=TRAC,
-                                FONC_MULT=COEF_TR,),),
-                      COMP_INCR=_F(RELATION='KIT_DDI',
-                                   RELATION_KIT=('GRANGER_FP','CHABOCHE',),
-                                   DEFORMATION='PETIT',
-                                   ALGO_1D='DEBORST',
-                                   TOUT='OUI',
-                                   RESI_INTE_RELA=1.E-6,
-                                   ITER_INTE_MAXI=20,
-                                   ITER_INTE_PAS=0,),
-                      INCREMENT=_F(LIST_INST=LINST,),
-                      NEWTON=_F(MATRICE='ELASTIQUE',),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                     ITER_GLOB_MAXI=50,),
-                      SOLVEUR=_F(NPREC=9,),
-                      TITRE='COUPLAGE FLUAGE/FISSURATION',);
-
-COUPLA4=CALC_ELEM(reuse =COUPLA4,
-                  RESULTAT=COUPLA4,
-                  OPTION='SIEF_ELNO_ELGA',);
-
-RELEVE_5=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
-                                 GROUP_NO='B',
-                                 RESULTAT=COUPLA4,
-                                 NOM_CHAM='SIEF_ELNO_ELGA',
-                                 LIST_INST=LINST,
-                                 PRECISION=1.E-8,
-                                 NOM_CMP='N',
-                                 OPERATION='EXTRACTION',),);
-
-TEST_TABLE(TABLE=RELEVE_5,
-           FILTRE=(_F(NOM_PARA='INTITULE',
-                      VALE_K='SIEF',),
-                   _F(NOM_PARA='INST',
-                      VALE=10.0,),),
-           NOM_PARA='N',
-           VALE=3.077193,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='7.3.9',);
 
 
 FIN();

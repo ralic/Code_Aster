@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,9 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='o',
                                ang="List of sensitivity parameters"),
 
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
-                        'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),),
+                        'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
+                 CONCEPT_SENSIBLE("SEPARE"),
+                 DERIVABLE('RESULTAT'),),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),

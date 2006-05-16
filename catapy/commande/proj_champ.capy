@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,10 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          b_elem          =BLOC(condition="METHODE=='ELEM'",
                               fr="Utilisation des fonctions de forme du maillage initial",
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','LIST_INST','LIST_FREQ','LIST_ORDRE'),
-                   EXCLUS('TOUT_CHAM','NOM_CHAM',), ),
+                   EXCLUS('TOUT_CHAM','NOM_CHAM',),
+                   CONCEPT_SENSIBLE('SEPARE'),
+                   REUSE_SENSIBLE(),
+                   DERIVABLE('RESULTAT'),),
            RESULTAT        =SIMP(statut='o',typ=(evol_ther,evol_elas,evol_noli,dyna_trans,evol_char,
                                                  mode_meca,mode_stat_depl,base_modale) ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',

@@ -1,6 +1,6 @@
       SUBROUTINE GEFACT (DUREE,NOMINF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/05/2006   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -317,23 +317,26 @@ C     LA DUREE EST UNE INCONNUE
      +         'ON PREND LA PUISSANCE DE 2 SUPERIEURE')
               NBPOIN = 2**(INT(PUI2)+1)
             ENDIF
-            DFREQ = (FREQF-FREQI)/DBLE(NBPOIN-1)
-            IF ((DFREQ . GT. 2*PMIN ).AND. (PMIN.GT.0.D0)) THEN
+             DFREQ=FREQF/(NBPOIN-1)
+             FRINIT = FREQF - DBLE(NBPOIN)*DFREQ
+             IF (FRINIT . LT. 0.D0) FRINIT =0.D0
+             IF ((DFREQ . GT. PMIN ).AND. (PMIN.GT.0.D0)) THEN
               CALL UTDEBM('A','GEFACT','"NB_POIN" EST PETIT PAR '//
      +        'RAPPORT AU PAS DE DISCRETISATION DE L''INTERSPECTRE.') 
               CALL UTIMPI('L','NB_POIN = ',1,NBPOIN)
-              CALL UTIMPR('L','NOMBRE DE POINT INTERSPECTRE = ',1,
+              CALL UTIMPR('L','IL FAUDRAIT UN NBRE SUPERIEUR A : ',1,
      +          (FREQF-FREQI)/PMIN+1)
               CALL UTFINM()          
             ENDIF           
           ELSE
             IF (PMIN.GT.0.D0) THEN
-              NBPOIN = 2**(INT(LOG((FREQF-FREQI)/PMIN+1)/LOG(2.D0))+1)
+              DFREQ=PMIN
+              NBPOIN = 2**(INT(LOG(2.D0*FREQF/PMIN)/LOG(2.D0)))
               IF ( NBPOIN .LT. 256 ) NBPOIN =256
             ELSE
               NBPOIN =256 
+              DFREQ = (FREQF-FREQI)/DBLE(NBPOIN-1)
             ENDIF
-            DFREQ = (FREQF-FREQI)/DBLE(NBPOIN-1)
           ENDIF
           DUREE = 1.D0 / DFREQ
         ENDIF

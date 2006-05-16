@@ -17,7 +17,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,MILIEU
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       CHARACTER*8 NOMA,K8BID,RESU,NOEUD
       CHARACTER*8 LPAIN(23),LPAOUT(1),REPK
-      CHARACTER*16 OPTI,OPER
+      CHARACTER*16 OPTI
       CHARACTER*19 CHROTA,CHPESA,CF2D3D,CHPRES,CHVOLU,CF1D2D,CHEPSI
       CHARACTER*24 LIGRMO,TEMPE,CHGEOM,CHGTHI
       CHARACTER*24 CHTEMP,CHTREF,CHSIGI,CHDEPI
@@ -103,7 +103,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-      OPER = 'CALC_G_LOCAL_T'
+
       CALL INFNIV(IFM,NIV)
 
 C- RECUPERATION DU CHAMP GEOMETRIQUE
@@ -118,7 +118,7 @@ C- RECUPERATION DU COMPORTEMENT
         CALL GETVID(' ','RESULTAT',0,1,1,RESU,NRES)
         CALL DISMOI('F','TYPE_RESU',RESU,'RESULTAT',IBID,TYPE,IERD)
         IF (TYPE.NE.'EVOL_NOLI') THEN
-          CALL UTMESS('F',OPER,'RESULTAT N''EST PAS EN EVOL_NOLI')
+          CALL UTMESS('F','MECAGL','RESULTAT N''EST PAS EN EVOL_NOLI')
         END IF
         CALL RSEXCH(RESU,'SIEF_ELGA',IORD,CHSIG,IRET)
         IF (IRET.NE.0) THEN
@@ -206,7 +206,11 @@ C - TRAITEMENT DES CHARGES
         PA2D3D = 'PFR2D3D'
         PAPRES = 'PPRESSR'
         PEPSIN = 'PEPSINR'
-        OPTI = OPTION
+        IF (OPTION.EQ.'CALC_G') THEN
+             OPTI = OPTION
+        ELSE
+             OPTI = 'CALC_G_LGLO'
+        ENDIF
       END IF
 
 
@@ -264,7 +268,7 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
 
         LIGRMO = MODELE//'.MODELE'
         NCHIN = 15
-        IF ((OPTI.EQ.'CALC_G_F') .OR. (OPTI.EQ.'CALC_G_LGLO_F')) THEN
+        IF ((OPTI.EQ.'CALC_G_F') .OR. (OPTI.EQ.'CALC_G_LGLO_F'))THEN
           CHTIME = '&&MECAGL.CH_INST_R'
           CALL MECACT('V',CHTIME,'MODELE',LIGRMO,'INST_R',1,'INST',IBID,
      &                TIME,CBID,K8BID)
@@ -302,6 +306,7 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
             NCHIN = NCHIN + 2
           END IF
         END IF
+
         CALL CALCUL('S',OPTI,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &              'V')
         CALL MESOMM(CHGTHI,1,IBID,GTHI,CBID,0,IBID)

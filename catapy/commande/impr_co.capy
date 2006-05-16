@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ IMPR_CO=PROC(nom="IMPR_CO",op=17,
          CONTENU         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
          BASE            =SIMP(statut='f',typ='TXM',defaut="G",into=(" ","G","V","L") ),
          CONCEPT    =FACT(statut='f',max='**',
+             regles=(DERIVABLE('NOM'),),
              NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
              SENSIBILITE =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),
                                  fr="Paramètre de sensibilité.",

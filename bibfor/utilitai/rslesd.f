@@ -6,7 +6,7 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -160,6 +160,7 @@ C      IF((NOMCMD.NE.'CALC_G_LOCAL_T').AND.
 C     &   (NOMCMD.NE.'CALC_G_THETA_T'))THEN
       IF((NOMCMD.NE.'CALC_ERREUR'   ).AND.
      &   (NOMCMD.NE.'CALC_G_LOCAL_T').AND.
+     &   (NOMCMD.NE.'CALC_G'        ).AND.
      &   (NOMCMD.NE.'CALC_G_THETA_T'))THEN
 C      WRITE(6,*)'rslesd-GET_VID'
         CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)

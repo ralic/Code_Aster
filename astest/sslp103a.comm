@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,17 +135,21 @@ THETACP=CALC_THETA(    MODELE=MOCP,
                                  R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-GCP=CALC_G_THETA_T(      MODELE=MOCP,
+GCP=CALC_G(      MODELE=MOCP,
                          DEPL=UCP,
-                         THETA=THETACP,
+                         THETA=_F(THETA=THETACP),
                          EXCIT=_F( CHARGE = CHCP),
                          CHAM_MATER=CM )
 
-K1K2CP=CALC_G_THETA_T(      MODELE=MOCP,
+K1K2CP=CALC_G(      MODELE=MOCP,
                             DEPL=UCP,
-                            THETA=THETACP,
+                            THETA=_F(
+                                 MODULE = 1.,
+                                 R_INF = 10.,
+                                 R_SUP = 20.,
+                                 DIRECTION=( 8.6602540379E-01, 0.5, 0.,),
+                                 FOND_FISS=FOND,),
                             EXCIT=_F( CHARGE = CHCP),
-                            FOND_FISS=FOND,
                             CHAM_MATER=CM,
                             OPTION='CALC_K_G')
 
@@ -179,17 +183,21 @@ THETADP=CALC_THETA(    MODELE=MODP,
                                  R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-GDP=CALC_G_THETA_T(      MODELE=MODP,
+GDP=CALC_G(      MODELE=MODP,
                          DEPL=UDP,
                          EXCIT=_F( CHARGE = CHDP),
-                         THETA=THETADP,
+                         THETA=_F(THETA=THETADP),
                          CHAM_MATER=CM )
 
-K1K2DP=CALC_G_THETA_T(    MODELE=MODP,
+K1K2DP=CALC_G(    MODELE=MODP,
                           DEPL=UDP,
                           EXCIT=_F( CHARGE = CHDP),
-                          THETA=THETADP,
-                          FOND_FISS=FOND,
+                          THETA=_F(
+                                 MODULE = 1.,
+                                 R_INF = 10.,
+                                 R_SUP = 20.,
+                                 DIRECTION=( 8.6602540379E-01, 0.5, 0.,), 
+                                 FOND_FISS=FOND),
                           CHAM_MATER=CM,
                           OPTION='CALC_K_G')
 

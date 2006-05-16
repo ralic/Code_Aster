@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,9 +115,10 @@ THETA1=CALC_THETA(      OPTION='COURONNE',
                                    R_SUP_FO = RAY_SUP1)
                     )
 
-G0_C1=CALC_G_THETA_T(        MODELE=MO,
+G0_C1=CALC_G(        MODELE=MO,
+                            OPTION='CALC_G_GLOB',
                                  DEPL=DEP,
-                                THETA=THETA1,
+                                THETA=_F(THETA=THETA1),
                                EXCIT=_F( CHARGE = CH),
                            CHAM_MATER=CHMAT
                        )
@@ -125,24 +126,24 @@ G0_C1=CALC_G_THETA_T(        MODELE=MO,
 #
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
-GLO1_LE5=CALC_G_LOCAL_T(         RESULTAT=CHAMDEPL,
-                                     FOND_FISS=FISS1,
+GLO1_LE5=CALC_G(         RESULTAT=CHAMDEPL,
                                TOUT_ORDRE='OUI',
-                                 R_INF_FO=RAY_INF1,
-                                 R_SUP_FO=RAY_SUP1,
-                                    DEGRE=5,
-                        LISSAGE_THETA='LEGENDRE',
-                            LISSAGE_G='LEGENDRE'
+                               THETA=_F(FOND_FISS=FISS1,
+                                        R_INF_FO=RAY_INF1,
+                                        R_SUP_FO=RAY_SUP1),
+                               LISSAGE=_F(DEGRE=5,
+                                          LISSAGE_THETA='LEGENDRE',
+                                          LISSAGE_G='LEGENDRE'),
                          )
 
-GLOC1=CALC_G_LOCAL_T(         MODELE=MO,
+GLOC1=CALC_G(         MODELE=MO,
                                     DEPL=DEP,
                               CHAM_MATER=CHMAT,
-                                    FOND_FISS=FISS1,
-                                   DEGRE=5,
+                               THETA=_F(FOND_FISS=FISS1,
+                                        R_INF_FO=RAY_INF1,
+                                        R_SUP_FO=RAY_SUP1,),
+                               LISSAGE=_F(DEGRE=5,),
                                   EXCIT=_F( CHARGE = CH),
-                                R_INF_FO=RAY_INF1,
-                                R_SUP_FO=RAY_SUP1
                          )
 
 #
@@ -162,9 +163,10 @@ THETA2=CALC_THETA(      OPTION='COURONNE',
                     )
 
 #
-G0_C2=CALC_G_THETA_T(        MODELE=MO,
+G0_C2=CALC_G (        MODELE=MO,
+                           OPTION='CALC_G_GLOB',
                                  DEPL=DEP,
-                                THETA=THETA2,
+                                THETA=_F(THETA=THETA2),
                                EXCIT=_F( CHARGE = CH),
                            CHAM_MATER=CHMAT
                        )
@@ -172,24 +174,24 @@ G0_C2=CALC_G_THETA_T(        MODELE=MO,
 #
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
-GLO2_LE5=CALC_G_LOCAL_T(        RESULTAT=CHAMDEPL,
-                                     FOND_FISS=FISS1,
+GLO2_LE5=CALC_G(        RESULTAT=CHAMDEPL,
                                TOUT_ORDRE='OUI',
-                                 R_INF_FO=RAY_INF2,
-                                 R_SUP_FO=RAY_SUP2,
-                                    DEGRE=5,
-                        LISSAGE_THETA='LEGENDRE',
-                            LISSAGE_G='LEGENDRE'
+                               THETA=_F(FOND_FISS=FISS1, 
+                                        R_INF_FO=RAY_INF2,
+                                        R_SUP_FO=RAY_SUP2),
+                               LISSAGE=_F( DEGRE=5,
+                                           LISSAGE_THETA='LEGENDRE',
+                                           LISSAGE_G='LEGENDRE'),
                          )
 
-GLOC2=CALC_G_LOCAL_T(         MODELE=MO,
+GLOC2=CALC_G(         MODELE=MO,
                                     DEPL=DEP,
                               CHAM_MATER=CHMAT,
-                                    FOND_FISS=FISS1,
-                                   DEGRE=5,
+                                THETA=_F(FOND_FISS=FISS1,
+                                         R_INF_FO=RAY_INF2,
+                                         R_SUP_FO=RAY_SUP2),
+                               LISSAGE=_F(DEGRE=5),
                                   EXCIT=_F( CHARGE = CH),
-                                R_INF_FO=RAY_INF2,
-                                R_SUP_FO=RAY_SUP2
                          )
 
 #
@@ -209,9 +211,10 @@ THETA3=CALC_THETA(      OPTION='COURONNE',
                                    R_SUP_FO = RAY_SUP3)
                     )
 
-G0_C3=CALC_G_THETA_T(        MODELE=MO,
+G0_C3=CALC_G(        MODELE=MO,
+                            OPTION='CALC_G_GLOB',
                                  DEPL=DEP,
-                                THETA=THETA3,
+                                THETA=_F(THETA=THETA3),
                                EXCIT=_F( CHARGE = CH),
                            CHAM_MATER=CHMAT
                        )
@@ -219,24 +222,24 @@ G0_C3=CALC_G_THETA_T(        MODELE=MO,
 #
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
-GLO3_LE4=CALC_G_LOCAL_T(         RESULTAT=CHAMDEPL,
-                                     FOND_FISS=FISS1,
+GLO3_LE4=CALC_G(         RESULTAT=CHAMDEPL,
                                TOUT_ORDRE='OUI',
-                                 R_INF_FO=RAY_INF3,
-                                 R_SUP_FO=RAY_SUP3,
-                                    DEGRE=4,
-                        LISSAGE_THETA='LEGENDRE',
-                            LISSAGE_G='LEGENDRE'
+                               THETA=_F(FOND_FISS=FISS1,
+                                        R_INF_FO=RAY_INF3,
+                                        R_SUP_FO=RAY_SUP3),
+                               LISSAGE=_F( DEGRE=4,
+                                           LISSAGE_THETA='LEGENDRE',
+                                           LISSAGE_G='LEGENDRE'),
                          )
 
-GLOC3=CALC_G_LOCAL_T(         MODELE=MO,
+GLOC3=CALC_G(         MODELE=MO,
                                     DEPL=DEP,
                               CHAM_MATER=CHMAT,
-                                    FOND_FISS=FISS1,
-                                   DEGRE=4,
-                                  EXCIT=_F( CHARGE = CH),
-                                R_INF_FO=RAY_INF3,
-                                R_SUP_FO=RAY_SUP3
+                              THETA=_F(FOND_FISS=FISS1,
+                                       R_INF_FO=RAY_INF3,
+                                       R_SUP_FO=RAY_SUP3,),
+                               LISSAGE=_F(DEGRE=4,),
+                               EXCIT=_F( CHARGE = CH),
                          )
 
 #

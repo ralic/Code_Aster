@@ -3,7 +3,7 @@
       INTEGER             ICMD , ICOND, IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,7 +39,7 @@ C
       UNITE  = 999
       KNOM   = ' '
       KACC   = ' '
-      KTYP   = ' '
+      KTYP   = 'A'
       FICHIE = ' '
 C
       CALL GETVTX ( ' ', 'ACTION',  1,1,1, ACTION, N1 )

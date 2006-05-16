@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (CHABOCHE_FO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,19 +31,24 @@ TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
                                             MODELISATION = '3D',
                                             TOUT = 'OUI'))
 
+C1_I=187.*341.
+C2_I=29.*17184.
+
+# LE C_I DU MODELE VISC_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
 ACIER=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,
-                                            NU = .3,
-                                            ALPHA = 0.),
-                                CHABOCHE=_F(   R_I = 151.,
-                                            R_0 = 87.,
-                                            B = 2.3,
+                                    ELAS=_F(   E = 145200.,             
+                                            NU = .3,            
+                                            ALPHA = 0.,          ),
+                           CIN2_CHAB=_F(   R_I = 151.,           
+                                            R_0 = 87.,           
+                                            B = 2.3,             
                                             K = .43,
                                             W = 6.09,
-                                            A1 = 187.,
-                                            A2 = 29.,
-                                            C1 = 341.,
-                                            C2 = 17184.))
+                                            C1_I = C1_I,           
+                                            G1_0 = 341.,            
+                                            C2_I = C2_I,           
+                                            G2_0 = 17184.,            
+                                             ))
 
 MAT=AFFE_MATERIAU(            MAILLAGE=CUBE,
                                     AFFE=_F(  MAILLE = 'MA1',
@@ -76,25 +81,12 @@ SOLNL=STAT_NON_LINE(
                TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
                             MODELE=TROISD,
                         CHAM_MATER=MAT,
-                             EXCIT=_F( 
+                EXCIT=_F( 
                 CHARGE = TR_CS,
-                FONC_MULT = COEF,
-                TYPE_CHARGE = 'FIXE_CSTE'),
-                         COMP_INCR=_F( 
-                RELATION = 'CHABOCHE',
-                DEFORMATION = 'PETIT',
-                RESI_INTE_RELA = 1.E-8,
-                ITER_INTE_MAXI = 100,
-                TOUT = 'OUI'),
-                         INCREMENT=_F( 
-                LIST_INST = LINST),
-                            NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                REAC_INCR = 1,
-                REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                ITER_GLOB_MAXI = 150,
-                RESI_GLOB_RELA = 1.E-8)
+                FONC_MULT = COEF,),
+                COMP_INCR=_F( RELATION = 'VMIS_CIN2_CHAB',),
+                INCREMENT=_F(  LIST_INST = LINST),
+                NEWTON=_F(REAC_ITER = 1),
               )
 
 # 
@@ -118,7 +110,6 @@ TEST_RESU(RESU=(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,       
                             RESULTAT=SOLNL,
-                      #  NUME_ORDRE : 12
                               OPTION=( 'VARI_ELNO_ELGA',
                                        'EPSI_ELNO_DEPL', 
                                        'SIEF_ELNO_ELGA', 
@@ -131,16 +122,16 @@ TEST_RESU(RESU=(
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',  
+             NOM_CHAM = 'EPSI_ELNO_DEPL',  PRECISION = 1.1E-02,
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',  
+             NOM_CHAM = 'EPSI_ELNO_DEPL',  PRECISION = 1.1E-02,
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 1.454E-1),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'VARI_ELNO_ELGA', 
-             MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V13',  VALE = 1.922E-1))
+             NOM_CHAM = 'VARI_ELNO_ELGA', PRECISION = 1.1E-02,
+             MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 1.922E-1))
            )
 
 FIN( )

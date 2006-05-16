@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,9 @@
 MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
                    fr="Résoudre un problème de mécanique statique linéaire",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
-                   regles=(EXCLUS("INST","LIST_INST"),
-                           AU_MOINS_UN('CHAM_MATER','CARA_ELEM',), ),
+         regles=(EXCLUS("INST","LIST_INST"),
+                 AU_MOINS_UN('CHAM_MATER','CARA_ELEM',),
+                 CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,
          fr="le CHAM_MATER est nécessaire, sauf si le modèle ne contient que des éléments discrets (modélisations DIS_XXX)",

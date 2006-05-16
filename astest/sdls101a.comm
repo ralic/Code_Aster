@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE PLAQUE RECTANGULAIRE MINCE SUR MATELAS ELASTIQUE DKT - DST
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,76 +109,6 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
            NUME_MODE = 9,       VALE = 0.19731535E+03,
            REFERENCE = 'ANALYTIQUE')) )
-
-#
-# -------------------------------------------------------------------
-#                     MODE SUR APPUIS ELASTIQUES
-# -------------------------------------------------------------------
-#
-MO2=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-                   _F(  GROUP_MA = 'COQUE',
-                          PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'DKT'),
-                   _F(  GROUP_MA = 'APPUI',
-                          PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'APPUI_REP'))   )
-
-CH2=AFFE_CHAR_MECA(   MODELE=MO2, 
-                        DDL_IMPO=_F(  GROUP_NO = 'BORD',  DZ = 0.)   )
-
-CA2=AFFE_CARA_ELEM(   MODELE=MO2,
-                       COQUE=_F(  GROUP_MA = 'COQUE',  EPAIS = 0.01)  )
-
-RIGIEL=CALC_MATR_ELEM(          MODELE=MO2,
-                                   CHARGE=CH2,
-                               CHAM_MATER=CHMAT,
-                                CARA_ELEM=CA2,
-                                   OPTION='RIGI_MECA'    )
-
-MASSEL=CALC_MATR_ELEM(          MODELE=MO2,
-                                   CHARGE=CH2,
-                               CHAM_MATER=CHMAT,
-                                CARA_ELEM=CA2,
-                                   OPTION='MASS_MECA'    )
-
-NUM2=NUME_DDL(     MATR_RIGI=RIGIEL  )
-
-MATR2=ASSE_MATRICE(    MATR_ELEM=RIGIEL,      NUME_DDL=NUM2  )
-
-MATM2=ASSE_MATRICE(    MATR_ELEM=MASSEL,      NUME_DDL=NUM2  )
-
-MODE2=MODE_ITER_SIMULT(  MATR_A=MATR2,     MATR_B=MATM2,
-              CALC_FREQ=_F(  FREQ = ( 30.,  200., ),
-                          OPTION = 'BANDE')
-                        )
-
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.5E-2,
-           NUME_MODE = 4,       VALE = 0.38685429E+02,
-           REFERENCE = 'ANALYTIQUE'),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 5,       VALE = 0.70151657E+02,
-           REFERENCE = 'ANALYTIQUE'),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.9E-2,
-           NUME_MODE = 6,       VALE = 0.11065166E+03,
-           REFERENCE = 'ANALYTIQUE'),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.2E-2,
-           NUME_MODE = 7,       VALE = 0.12424034E+03, 
-           REFERENCE = 'ANALYTIQUE'),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.8E-2,
-           NUME_MODE = 8,      VALE = 0.14330092E+03,
-           REFERENCE = 'ANALYTIQUE'),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
-           NUME_MODE = 9,      VALE = 0.19789056E+03, 
-           REFERENCE = 'ANALYTIQUE'))   )
 
 #
 # -------------------------------------------------------------------

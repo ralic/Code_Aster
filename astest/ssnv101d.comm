@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 #       COMPARAISON DU MODELE DE CHABOCHE A 2 CENTRES (RELATION DE
-#       COMPORTEMENT 'CHABOCHE') AVEC LE MODELE DE CHABOCHE A UN
+#       COMPORTEMENT 'VISC_CIN1_CHAB') AVEC LE MODELE DE CHABOCHE A UN
 #       CENTRE (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 2D
 #       ET CELUI A DEUX CENTRES VISC_CIN2_CHAB DECLINE EN TROIS CAS :
 #       - 
@@ -59,19 +59,6 @@ DPLAN=AFFE_MODELE(             MAILLAGE=CARRE,
                                             MODELISATION = 'D_PLAN',  
                                             TOUT = 'OUI',              ))
 
-ACIER1=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,             
-                                            NU = .3,            
-                                            ALPHA = 0.,          ),
-                                CHABOCHE=_F(   R_I = 151.,           
-                                            R_0 = 87.,           
-                                            B = 2.3,             
-                                            K = 1.,             
-                                            W = 0.,             
-                                            A1 = 187.,            
-                                            A2 = 0.,             
-                                            C1 = 341.,            
-                                            C2 = 0.,              ))
 
 ACIER2=DEFI_MATERIAU(    
                                     ELAS=_F(   E = 145200.,             
@@ -135,11 +122,6 @@ ACIER5=DEFI_MATERIAU(
                                             G2_0 = 341.,            
                                              ))
 
-MAT1=AFFE_MATERIAU(            MAILLAGE=CARRE,
-                                    AFFE=_F(  MAILLE = ('MA1','MA2',),         
-                                           MATER = ACIER1,          
-                                           TEMP_REF = 20.,            ))
-
 MAT2=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = ('MA1','MA2',),         
                                            MATER = ACIER2,          
@@ -180,64 +162,6 @@ COEF=DEFI_FONCTION(      NOM_PARA='INST',
                           VALE=( 0.,  0.,
                                  1.,  50.,     ))
 
-SOLNL1=STAT_NON_LINE(            
-                           TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE D_PLAN',
-                                    MODELE=DPLAN,
-                                CHAM_MATER=MAT1,
-                                   EXCIT=_F(  CHARGE = TR_CS,          
-                                           FONC_MULT = COEF,       
-                                           TYPE_CHARGE = 'FIXE_CSTE',     ),
-                           COMP_INCR=_F(  RELATION = 'CHABOCHE',        
-                                           DEFORMATION = 'PETIT',  
-                                           ITER_INTE_MAXI = 20,       
-                                           TOUT = 'OUI',                ),
-                               INCREMENT=_F(  
-                                           LIST_INST = LINST,           ),
-                                  NEWTON=_F(  MATRICE = 'TANGENTE',         
-                                           REAC_INCR = 1,       
-                                           REAC_ITER = 1,               ),
-                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,      ))
-
-SOLNL1=CALC_ELEM( reuse=SOLNL1,              
-                                      INST=1.435,
-                                   OPTION=(
-                              'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
-                                  RESULTAT=SOLNL1 )
-
-SOLNL1=CALC_ELEM( reuse=SOLNL1,              
-                                      INST=1.435,
-                                    OPTION='EPSI_ELNO_DEPL',
-                                  RESULTAT=SOLNL1 )
-
-TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2, ),
-
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
-
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
-
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
-
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
-
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
-
- _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'NON_REGRESSION',  
-                MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V9',  VALE = 3.7160E-2,  ))
-                                                                     )
 
 SOLNL2=STAT_NON_LINE(            
                            TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE D_PLAN',

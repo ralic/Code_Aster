@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -642,9 +642,22 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
           new_etp.copy_intern(etp)
           self.etapes.append(new_etp)
 
+   def reset_jdc(self,new_jdc):
+       """
+          Reinitialise l'etape avec un nouveau jdc parent new_jdc
+       """
+       if self.sd and self.reuse == None :
+           self.parent.NommerSdprod(self.sd,self.sd.nom)
+       for concept in self.sdprods:
+           self.parent.NommerSdprod(concept,concept.nom)
 
-
-
-
-
-
+   def reparent(self,parent):
+       """
+         Cette methode sert a reinitialiser la parente de l'objet
+       """
+       N_ETAPE.ETAPE.reparent(self,parent)
+       #on ne change pas la parenté des concepts. On s'assure uniquement que le jdc en référence est le bon
+       for concept in self.sdprods:
+           concept.jdc=self.jdc
+       for e in self.etapes:
+           e.reparent(self)

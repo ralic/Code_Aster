@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -172,8 +172,6 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
     FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    INDU_MUTU           -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
     MASS_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   

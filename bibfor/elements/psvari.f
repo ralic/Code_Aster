@@ -5,7 +5,7 @@
       INTEGER            IPOP1,IPOP2,NBVARI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,15 +62,6 @@ C
       ELSE IF  (COMPOR.EQ.'ROUSS_VISC')  THEN
         IPOP1  = 1
         IPOP2  = NBVARI
-      ELSE IF  (COMPOR.EQ.'CHABOCHE') THEN
-        IF(DIMENS.EQ.'2D') THEN
-          IPOP1  = 9
-          IPOP2  = 10
-        ENDIF
-        IF(DIMENS.EQ.'3D') THEN
-          IPOP1  = 13
-          IPOP2  = 14
-        ENDIF
       ELSE IF (COMPOR.EQ.'MONOCRISTAL') THEN
         IPOP1 = NBVARI-1
         IPOP2 = NBVARI

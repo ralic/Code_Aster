@@ -1,4 +1,4 @@
-#@ MODIF xmgrace Stanley  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF xmgrace Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,9 +137,11 @@ class Xmgr :
     if self.Terminal_ouvert() :
       self.Send('Exit')
     self.pipe.close()
-    os.remove(self.nom_pipe)
-    for fich in glob.glob('xmgr.*.dat') :
-      os.remove(fich)
+    try:    os.remove(self.nom_pipe)
+    except: pass
+    for fich in glob.glob('xmgr.*.dat'):
+       try:    os.remove(fich)
+       except: pass
     TERMINAL = 0
 
 # --------------------------------------------------------------------

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/01/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -786,11 +786,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=2.0,),),);
 #
 
-D1=DIST_LIGN_3D(MODELE=MO,
-                RESULTAT=RESU,
-                TOUT_ORDRE='OUI',
-                GROUP_MA_1='CC1',
-                GROUP_MA_2='CC2',);
 # VERIFICATION   DEPLACEMENTS
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
@@ -843,11 +838,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.0002,
                    REFERENCE='NON_REGRESSION',
                    VERSION='6.02.02',),),);
-# VERIFICATION FONCTION
-
-TEST_FONCTION(VALEUR=_F(FONCTION=D1,
-                        VALE_PARA=4.0,
-                        VALE_REFE=6.6876,),);
 #---------------------------------------------------------------------
 
 RESU=CALC_ELEM(reuse =RESU,

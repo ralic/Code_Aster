@@ -4,7 +4,7 @@
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,12 +53,6 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
          CALL RSLCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
-C ======================================================================
-      ELSEIF ( LOI(1:8) .EQ. 'CHABOCHE' ) THEN
-         CALL CHBCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
-C ======================================================================
-      ELSEIF ( LOI(1:4) .EQ. 'OHNO'   ) THEN
-         CALL ONOCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:5) .EQ. 'LMARC'    ) THEN
          CALL LMACVX ( NMAT, MATERF, SIGF, VIND, SEUIL )

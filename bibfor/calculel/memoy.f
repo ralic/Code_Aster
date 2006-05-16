@@ -1,12 +1,11 @@
-      SUBROUTINE MEMOY (CHAMPA,NCPA,CHAMPB,NCPB,VI,VR,VC,NBMAIL,NUMAIL)
+      SUBROUTINE MEMOY ( CHAMPA, NCPA, CHAMPB, NCPB,VR,NBMAIL,NUMAIL)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     CHAMPA,     CHAMPB
-      INTEGER                  NCPA,     NCPB, VI(2),   NBMAIL,NUMAIL(*)
-      REAL*8                                      VR(2)
-      COMPLEX*16                                     VC(2)
+      CHARACTER*(*)     CHAMPA, CHAMPB
+      INTEGER           NCPA, NCPB, NBMAIL, NUMAIL(*)
+      REAL*8            VR(2)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +28,6 @@ C            EN PONDERANT PAR LA COMPOSANTE NCPB D'UN AUTRE CHAM_ELEM
 C            LA SEULE CONTRAINTE EST QUE TOUS LES TYPE_ELEMENT DU LIGREL
 C            CONNAISSENT LA GRANDEUR AVEC LA MEME LONGUEUR CUMULEE :
 C
-C            IDEM MESOMM
-C
 C IN  : CHAMPA :  NOM DU CHAMP A MOYENNER
 C IN  : CHAMPB :  NOM DU CHAMP DE PONDERATION
 C IN  : NCPA   :  NUMERO DE COMPOSANTE DU CHAMP A
@@ -38,12 +35,10 @@ C IN  : NCPB   :  NUMERO DE COMPOSANTE DU CHAMP B
 C IN  : NBMAIL :  = 0   , CALCUL SUR TOUT LE CHAM_ELEM
 C                 SINON , CALCUL SUR UNE PARTIE DU CHAM_ELEM
 C IN  : NUMAIL :  NUMERO DES MAILLES
-C OUT : VI     :  VECTEUR RESULTAT SI LA GRANDEUR EST ENTIERE.
-C OUT : VR     :  VECTEUR RESULTAT SI LA GRANDEUR EST REELLE.
-C OUT : VC     :  VECTEUR RESULTAT SI LA GRANDEUR EST COMPLEXE.
+C OUT : VR     :  VECTEUR RESULTAT
 C
 C       LE RESULTAT EST DONNE SOUS LA FORME DE DEUX COMPOSANTES
-C          (1) VALEUR DE LA MOYENNE (NB:VI(1) N'EXISTE PAS --> VR(1))
+C          (1) VALEUR DE LA MOYENNE 
 C          (2) SOMME DES VALEURS DU CHAMP DE PONDERATION
 C
 C ----------------------------------------------------------------------
@@ -65,7 +60,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     ------------------------------------------------------------------
       INTEGER      NBGREL, NBELEM, DIGDEL, LONG
-      CHARACTER*8  SCALAI, CAS
+      CHARACTER*8  SCALAI
       INTEGER      LONGT1, LONGT2, NCMPEL, MODE, J, IGD1, IGD2, LONGT
       REAL*8       RZERO
       CHARACTER*4  CVAL
@@ -97,27 +92,33 @@ C
 C
       CALL JEEXIN (CHAMP1//'.CELD',IBID)
       IF (IBID.EQ.0) CALL UTMESS('F','MEMOY',
-     &   CHAMP1//' DOIT ETRE UN CHAM_ELEM.')
+     &                            CHAMP1//' DOIT ETRE UN CHAM_ELEM.')
 
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
-      CALL CELVER(CHAMP1,'NBVARI_CST','STOP',IBID)
-      CALL CELVER(CHAMP1,'NBSPT_1','STOP',IBID)
+      CALL CELVER ( CHAMP1, 'NBVARI_CST', 'STOP', IBID )
+      CALL CELVER ( CHAMP1, 'NBSPT_1',    'STOP', IBID )
 
       CALL JEVEUO (CHAMP1//'.CELD','L',JCELD1)
-      IGD1 = ZI(JCELD1-1+1)
-      SCAL1= SCALAI(IGD1)
+      IGD1  = ZI(JCELD1-1+1)
+      SCAL1 = SCALAI(IGD1)
+      IF (SCAL1(1:1).NE.'R') THEN
+         CALL UTMESS('F','MEMOY','NE TRAITE QU''UN CHAM_ELEM REEL')
+      ENDIF
 C
       CALL JEEXIN (CHAMP2//'.CELD',IBID)
       IF (IBID.EQ.0) CALL UTMESS('F','MEMOY',
-     &    CHAMP2//' DOIT ETRE UN CHAM_ELEM.')
+     &                            CHAMP2//' DOIT ETRE UN CHAM_ELEM.')
 
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
-      CALL CELVER(CHAMP2,'NBVARI_CST','STOP',IBID)
-      CALL CELVER(CHAMP2,'NBSPT_1','STOP',IBID)
+      CALL CELVER ( CHAMP2, 'NBVARI_CST', 'STOP', IBID )
+      CALL CELVER  (CHAMP2, 'NBSPT_1',    'STOP', IBID )
 
       CALL JEVEUO (CHAMP2//'.CELD','L',JCELD2)
-      IGD2 = ZI(JCELD2-1+1)
-      SCAL2= SCALAI(IGD2)
+      IGD2  = ZI(JCELD2-1+1)
+      SCAL2 = SCALAI(IGD2)
+      IF (SCAL2(1:1).NE.'R') THEN
+         CALL UTMESS('F','MEMAX','NE TRAITE QU''UN CHAM_ELEM REEL')
+      ENDIF
 C
 C     -- ON VERIFIE LES LONGUEURS DE CHAQUE CHAMP:
 C     --------------------------------------------
@@ -166,185 +167,53 @@ C
 C     -- ON MET A ZERO LE VECTEUR "VSCAL":
 C     ------------------------------------
       DO 10, I = 1,2
-         IF ((SCAL1(1:1).EQ.'I').AND.(SCAL2(1:1).EQ.'I')) THEN
-            VI(I) = 0
-            CAS = 'I'
-         ELSE IF ((SCAL1(1:1).EQ.'C').OR.(SCAL2(1:1).EQ.'C')) THEN
-            VC(I) = DCMPLX(RZERO,RZERO)
-            CAS = 'C'
-         ELSE IF ((SCAL1(1:1).NE.'R').AND.(SCAL1(1:1).NE.'I').AND.
-     &            (SCAL1(1:1).NE.'C'))    THEN
-            CALL UTMESS('F','MEMOY','TYPE SCALAIRE INTERDIT :'//SCAL1)
-         ELSE IF ((SCAL2(1:1).NE.'R').AND.(SCAL2(1:1).NE.'I').AND.
-     &            (SCAL2(1:1).NE.'C'))    THEN
-            CALL UTMESS('F','MEMOY','TYPE SCALAIRE INTERDIT :'//SCAL2)
-         ELSE
-            VR(I) = RZERO
-            CAS = 'R'
-         ENDIF
+         VR(I) = RZERO
  10   CONTINUE
 C
-C        -- ON MOYENNE:
-C        --------------
-C        -- (CAS DES CHAM_ELEM):
-         CALL JEVEUO (CHAMP1//'.CELV','L',IAVAL1)
-         CALL JEVEUO (CHAMP2//'.CELV','L',IAVAL2)
-         IF (NBMAIL.LE.0) THEN
-            DO 2 ,J = 1,NBGR
-               MODE1=ZI(JCELD1-1+ZI(JCELD1-1+4+J) +2)
-               MODE2=ZI(JCELD2-1+ZI(JCELD2-1+4+J) +2)
-               IF ((MODE1.EQ.0 ).OR.(MODE2.EQ.0)) GOTO 2
+C --- ON MOYENNE :
+C     ------------
+C
+      CALL JEVEUO (CHAMP1//'.CELV','L',IAVAL1)
+      CALL JEVEUO (CHAMP2//'.CELV','L',IAVAL2)
+      IF (NBMAIL.LE.0) THEN
+         DO 2 ,J = 1,NBGR
+            MODE1 = ZI(JCELD1-1+ZI(JCELD1-1+4+J) +2)
+            MODE2 = ZI(JCELD2-1+ZI(JCELD2-1+4+J) +2)
+            IF ((MODE1.EQ.0 ).OR.(MODE2.EQ.0)) GOTO 2
+            NEL = NBELEM(LIGREL,J)
+            IDECG1 = ZI(JCELD1-1+ZI(JCELD1-1+4+J)+8)
+            IDECG2 = ZI(JCELD2-1+ZI(JCELD2-1+4+J)+8)
+            DO 3 , K = 1,NEL
+               VR(1) = VR(1) + ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
+     &                        *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
+               VR(2) = VR(2) + ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
+ 3          CONTINUE
+ 2       CONTINUE
+         VR(1) = VR(1)/VR(2)
+      ELSE
+         CALL JEVEUO (LIGREL//'.LIEL','L',JLIGR)
+         DO 30 IM = 1,NBMAIL
+            INUM = 0
+            DO 20 J = 1,NBGR
+               MODE1 = ZI(JCELD1-1+ZI(JCELD1-1+4+J) +2)
+               MODE2 = ZI(JCELD2-1+ZI(JCELD2-1+4+J) +2)
+               IF ((MODE1.EQ.0 ).OR.(MODE2.EQ.0)) GOTO 20
                NEL = NBELEM(LIGREL,J)
-               IDECG1=ZI(JCELD1-1+ZI(JCELD1-1+4+J)+8)
-               IDECG2=ZI(JCELD2-1+ZI(JCELD2-1+4+J)+8)
-               DO 3 , K = 1,NEL
-                  IF (CAS(1:1).EQ.'I') THEN
-                     VI(1)=VI(1)+ZI(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VI(2)=VI(2)+ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                  ELSE IF (CAS(1:1).EQ.'R') THEN
-                    IF((SCAL1(1:1).EQ.'R').AND.(SCAL2(1:1).EQ.'R')) THEN
-                     VR(1)=VR(1)+ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VR(2)=VR(2)+ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL1(1:1).NE.'R') THEN
-                     VR(1)=VR(1)+ZI(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VR(2)=VR(2)+ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL2(1:1).NE.'R') THEN
-                     VR(1)=VR(1)+ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VR(2)=VR(2)+ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ENDIF
-                  ELSE IF (CAS(1:1).EQ.'C') THEN
-                    IF((SCAL1(1:1).EQ.'C').AND.(SCAL2(1:1).EQ.'C')) THEN
-                     VC(1)=VC(1)+ZC(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL1(1:1).EQ.'I') THEN
-                     VC(1)=VC(1)+ZI(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL1(1:1).EQ.'R') THEN
-                     VC(1)=VC(1)+ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL2(1:1).EQ.'I') THEN
-                     VC(1)=VC(1)+ZC(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL2(1:1).EQ.'R') THEN
-                     VC(1)=VC(1)+ZC(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ENDIF
-                  ENDIF
- 3             CONTINUE
- 2          CONTINUE
-            IF (CAS.EQ.'I') THEN
-               IF (VI(2).EQ.0) THEN
-                  CALL UTMESS('F','MEMOY','LE CHAMPB N''EST PAS UNE'
-     &                        //' PONDERATION')
-               ENDIF
-               VR(1) = DBLE(VI(1))/DBLE(VI(2))
-               VI(1) = 9999999
-            ELSE IF (CAS.EQ.'R') THEN
-               IF (VR(2).EQ.0.D0) THEN
-                  CALL UTMESS('F','MEMOY','LE CHAMPB N''EST PAS UNE'
-     &                        //' PONDERATION')
-               ENDIF
-               VR(1) = VR(1)/VR(2)
-            ELSE IF (CAS.EQ.'C') THEN
-               IF (VC(1).EQ.DCMPLX(0.D0,0.D0)) THEN
-                  CALL UTMESS('F','MEMOY','LE CHAMPB N''EST PAS UNE'
-     &                        //' PONDERATION')
-               ENDIF
-               VC(1) = VC(1)/VC(2)
-            ENDIF
-         ELSE
-            CALL JEVEUO (LIGREL//'.LIEL','L',JLIGR)
-            DO 30 IM = 1,NBMAIL
-               INUM = 0
-               DO 20 J = 1,NBGR
-                  MODE1=ZI(JCELD1-1+ZI(JCELD1-1+4+J) +2)
-                  MODE2=ZI(JCELD2-1+ZI(JCELD2-1+4+J) +2)
-                  IF ((MODE1.EQ.0 ).OR.(MODE2.EQ.0)) GOTO 20
-                  NEL = NBELEM(LIGREL,J)
-                  IDECG1=ZI(JCELD1-1+ZI(JCELD1-1+4+J)+8)
-                  IDECG2=ZI(JCELD2-1+ZI(JCELD2-1+4+J)+8)
-                  DO 22 K = 1,NEL
-                     IEL = ZI(JLIGR+INUM+K-1)
-                     IF (IEL.NE.NUMAIL(IM)) GOTO 22
-                  IF (CAS(1:1).EQ.'I') THEN
-                     VI(1)=VI(1)+ZI(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VI(2)=VI(2)+ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                  ELSE IF (CAS(1:1).EQ.'R') THEN
-                    IF((SCAL1(1:1).EQ.'R').AND.(SCAL2(1:1).EQ.'R')) THEN
-                     VR(1)=VR(1)+ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VR(2)=VR(2)+ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL1(1:1).NE.'R') THEN
-                     VR(1)=VR(1)+ZI(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VR(2)=VR(2)+ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL2(1:1).NE.'R') THEN
-                     VR(1)=VR(1)+ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VR(2)=VR(2)+ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ENDIF
-                  ELSE IF (CAS(1:1).EQ.'C') THEN
-                    IF((SCAL1(1:1).EQ.'C').AND.(SCAL2(1:1).EQ.'C')) THEN
-                     VC(1)=VC(1)+ZC(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL1(1:1).EQ.'I') THEN
-                     VC(1)=VC(1)+ZI(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL1(1:1).EQ.'R') THEN
-                     VC(1)=VC(1)+ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZC(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL2(1:1).EQ.'I') THEN
-                     VC(1)=VC(1)+ZC(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZI(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ELSE IF (SCAL2(1:1).EQ.'R') THEN
-                     VC(1)=VC(1)+ZC(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
-     &                     *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                     VC(2)=VC(2)+ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
-                    ENDIF
-                  ENDIF
-                     GOTO 30
- 22               CONTINUE
-                  INUM = INUM + NEL + 1
- 20            CONTINUE
- 30         CONTINUE
-            IF (CAS.EQ.'I') THEN
-               IF (VI(2).EQ.0) THEN
-                  CALL UTMESS('F','MEMOY','LE CHAMPB N''EST PAS UNE'
-     &                        //' PONDERATION')
-               ENDIF
-               VR(1) = DBLE(VI(1))/DBLE(VI(2))
-               VI(1) = 9999999
-            ELSE IF (CAS.EQ.'R') THEN
-               IF (VR(2).EQ.0.D0) THEN
-                  CALL UTMESS('F','MEMOY','LE CHAMPB N''EST PAS UNE'
-     &                        //' PONDERATION')
-               ENDIF
-               VR(1) = VR(1)/VR(2)
-            ELSE IF (CAS.EQ.'C') THEN
-               IF (VC(1).EQ.DCMPLX(0.D0,0.D0)) THEN
-                  CALL UTMESS('F','MEMOY','LE CHAMPB N''EST PAS UNE'
-     &                        //' PONDERATION')
-               ENDIF
-               VC(1) = VC(1)/VC(2)
-            ENDIF
-         ENDIF
-C
-C
- 9999 CONTINUE
+               IDECG1 = ZI(JCELD1-1+ZI(JCELD1-1+4+J)+8)
+               IDECG2 = ZI(JCELD2-1+ZI(JCELD2-1+4+J)+8)
+               DO 22 K = 1,NEL
+                  IEL = ZI(JLIGR+INUM+K-1)
+                  IF (IEL.NE.NUMAIL(IM)) GOTO 22
+                  VR(1) =VR(1) + ZR(IAVAL1-1+IDECG1+(K-1)*LONGT1+NCPA-1)
+     &                          *ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
+                  VR(2)= VR(2) + ZR(IAVAL2-1+IDECG2+(K-1)*LONGT2+NCPB-1)
+                  GOTO 30
+ 22            CONTINUE
+               INUM = INUM + NEL + 1
+ 20         CONTINUE
+ 30      CONTINUE
+         VR(1) = VR(1)/VR(2)
+      ENDIF
 C
       CALL JEDEMA()
       END

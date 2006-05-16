@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,6 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     CSUROPT  = NEUT_K24 ELEM__         (Z1       )
-    EINDUCR  = NEUT_R   ELEM__         (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CMASDIA  = POSI     ELEM__         (POS      )
     ECOEQPG  = SIEF_R   ELGA__ BIZZ    (PM       PMPB     )
@@ -162,8 +161,6 @@ OPTION__
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    INDU_MUTU           246   IN__   CFLAPLA  PFLAPLA  NGEOMER  PGEOMER  CLISTMA  PLISTMA
-                              OUT__  EINDUCR  PINDUCR
     MASS_FLUI_STRU      141   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR

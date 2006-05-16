@@ -1,6 +1,6 @@
-      SUBROUTINE SLECOL(NBMAIL)
+      SUBROUTINE SLECOL(IMOD,NBMAIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,7 @@ C     !                                                              !
 C     ================================================================
 C     !                                                              !
 C     !  ROUTINES APPELES : CODENT                                   !
-C     !                          : IUNIFI (FONCTION)                 !
-C     !                          : CODNOP                            !
+C     !                   : CODNOP                                   !
 C     !                                                              !
 C     !  ROUTINE APPELANTE : PRESUP                                  !
 C     !                                                              !
@@ -60,8 +59,6 @@ C  ------------ FIN DECLARATION -------------
 C
 C  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
       CALL JEMARQ()
-      IMOD = IUNIFI('FICHIER-MODELE')
-C
 C
       PRFMAI = 'MA'
       ICMAX = 256

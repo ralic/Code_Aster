@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,101 +120,104 @@ FOND=DEFI_FOND_FISS(
                     DTAN_EXTR=(0., 1., 0.,)
                        )
 
-GL1=CALC_G_LOCAL_T(
+GL1=CALC_G(
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
                     RESULTAT=RESU,
-                    FOND_FISS=FOND,
-                    LISSAGE_THETA = 'LAGRANGE',
-                    LISSAGE_G = 'LAGRANGE',
-                    R_INF=0.1,
-                    R_SUP=1.0,
-                    TOUT_ORDRE='OUI'
-                  )
+                    THETA=_F( FOND_FISS=FOND,
+                              R_INF=0.1,
+                              R_SUP=1.0,),
+                    LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
+                                LISSAGE_G = 'LAGRANGE',),
+                    TOUT_ORDRE='OUI',
+                  );
 
-GL2=CALC_G_LOCAL_T(
+GL2=CALC_G(
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  0.50000E-01 ET R_SUP =  1.50000E+00',
                     RESULTAT=RESU,
-                    FOND_FISS=FOND,
-                    R_INF=0.5,
-                    R_SUP=1.5,
+                    THETA=_F( FOND_FISS=FOND,
+                              R_INF=0.5,
+                              R_SUP=1.5,),
                     TOUT_ORDRE='OUI'
                   )
 
-GLBIL1=CALC_G_LOCAL_T(
+
+GLBIL1=CALC_G(
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
                     RESULTAT=RESU,
-                    FOND_FISS=FOND,
-                    OPTION='G_BILINEAIRE',  
-                     LISSAGE_THETA = 'LAGRANGE',
-                     LISSAGE_G = 'LAGRANGE',
-                    R_INF=0.1,
-                    R_SUP=1.0,
+                    THETA=_F( R_INF=0.1,
+                              R_SUP=1.0,
+                              FOND_FISS=FOND,),
+                    OPTION='G_BILI',
+                    LISSAGE=_F(  LISSAGE_THETA = 'LAGRANGE',
+                                 LISSAGE_G = 'LAGRANGE',),
                     TOUT_ORDRE='OUI'
-                  )
+                    );
 
 
-GLBIL2=CALC_G_LOCAL_T(
-                    COMP_ELAS=(_F(RELATION='ELAS',),),
+GLBIL2=CALC_G(
   TITRE='G_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
-                    RESULTAT=RESU,
-                    FOND_FISS=FOND,
-                    OPTION='G_BILINEAIRE',  
-                    R_INF=0.5,
-                    R_SUP=1.5,
-                    TOUT_ORDRE='OUI'
-                  )
+      COMP_ELAS=(_F(RELATION='ELAS',),),
+      RESULTAT=RESU,
+      THETA=_F( R_INF=0.5,
+                R_SUP=1.5,
+                FOND_FISS=FOND,),
+      OPTION='G_BILI',
+      TOUT_ORDRE='OUI'
+                  );
 
-GLMAX1=CALC_G_LOCAL_T(   
+
+GLMAX1=CALC_G(   
   TITRE='GMAX_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
-                            RESULTAT=RESU,BORNES=( 
-                              _F(  NUME_ORDRE = 1,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 2,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 3,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 4,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.)),    
-                              OPTION='CALC_G_MAX',  
-                              FOND_FISS=FOND,
-                              LISSAGE_THETA = 'LAGRANGE',
-                              LISSAGE_G = 'LAGRANGE',
-                           R_INF=0.1,
-                           R_SUP=1.0,
-                           TOUT_ORDRE='OUI',
-                          COMP_ELAS=_F(  RELATION = 'ELAS',)
-                       )
+        RESULTAT=RESU,
+        BORNES=(
+          _F(  NUME_ORDRE = 1,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.),
+          _F(  NUME_ORDRE = 2,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.),
+          _F(  NUME_ORDRE = 3,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.),
+          _F(  NUME_ORDRE = 4,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.)),    
+          OPTION='G_MAX',
+          THETA=_F( FOND_FISS=FOND,
+                    R_INF=0.1,
+                    R_SUP=1.0,),
+         LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
+                      LISSAGE_G = 'LAGRANGE',),
+         TOUT_ORDRE='OUI',
+         COMP_ELAS=_F(  RELATION = 'ELAS',)
+   );
 
-GLMAX2=CALC_G_LOCAL_T(    
+GLMAX2=CALC_G(   
   TITRE='GMAX_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
-                            RESULTAT=RESU,BORNES=( 
-                              _F(  NUME_ORDRE = 1,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 2,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 3,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.),
-                                     _F(  NUME_ORDRE = 4,
-                                       VALE_MIN = 0.,
-                                       VALE_MAX = 1.)),    
-                              OPTION='CALC_G_MAX',  
-                              FOND_FISS=FOND,
-                           R_INF=0.5,
-                           R_SUP=1.5,
-                           TOUT_ORDRE='OUI',
-                          COMP_ELAS=_F(  RELATION = 'ELAS',)
-                       )
-
+        RESULTAT=RESU,
+        BORNES=(
+          _F(  NUME_ORDRE = 1,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.),
+          _F(  NUME_ORDRE = 2,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.),
+          _F(  NUME_ORDRE = 3,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.),
+          _F(  NUME_ORDRE = 4,
+               VALE_MIN = 0.,
+               VALE_MAX = 1.)),    
+          OPTION='G_MAX',
+          THETA=_F(  FOND_FISS=FOND,
+                     R_INF=0.5,
+                     R_SUP=1.5,),
+          TOUT_ORDRE='OUI',
+          COMP_ELAS=_F(  RELATION = 'ELAS',)
+   )
 
 
 IMPR_TABLE     ( TABLE = GL1,  )

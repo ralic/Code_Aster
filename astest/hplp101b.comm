@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2006   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,16 +86,16 @@ THETA0=CALC_THETA(       MODELE=MO,
                         DIRECTION=(1., 0., 0.,)
                      )
 
-G0=CALC_G_THETA_T(      RESULTAT=DEP,
-                        THETA=THETA0,
+G0=CALC_G(      RESULTAT=DEP,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SANS',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
 
-DG0=CALC_G_THETA_T(     RESULTAT=DEP,
+DG0=CALC_G(     RESULTAT=DEP,
                         SENSIBILITE = (FORC), 
-                        THETA=THETA0,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SANS',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
@@ -117,16 +117,16 @@ THETA01=CALC_THETA(       MODELE=MO,
                          DIRECTION=(1., 0., 0.,)
                      )
 
-G1=CALC_G_THETA_T(        RESULTAT=DEP,
-                          THETA=THETA01,
+G1=CALC_G(        RESULTAT=DEP,
+                          THETA=_F(THETA=THETA01),
                           COMP_ELAS=_F( RELATION = 'ELAS',
                                      DEFORMATION = 'PETIT'),
                           SYME_CHAR='SANS'
                      )
 
-DG1=CALC_G_THETA_T(      RESULTAT=DEP,
+DG1=CALC_G(      RESULTAT=DEP,
                          SENSIBILITE = (FORC), 
-                         THETA=THETA01,
+                         THETA=_F(THETA=THETA01),
                          SYME_CHAR='SANS',
                           COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
@@ -153,9 +153,9 @@ DEP2=CALC_ELEM(reuse=DEP2,RESULTAT=DEP2,
               OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
 
 
-DG2=CALC_G_THETA_T(     RESULTAT=DEP2,
+DG2=CALC_G(     RESULTAT=DEP2,
                         SENSIBILITE = (YOUNG), 
-                        THETA=THETA0,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SANS',
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
@@ -169,9 +169,9 @@ TEST_TABLE(       TABLE=DG2,
                       PRECISION=0.0005    )
 
 
-DG3=CALC_G_THETA_T(     RESULTAT=DEP2,
+DG3=CALC_G(     RESULTAT=DEP2,
                         SENSIBILITE = (YOUNG), 
-                        THETA=THETA01,
+                        THETA=_F(THETA=THETA01),
                         SYME_CHAR='SANS',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')

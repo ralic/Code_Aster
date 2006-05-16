@@ -11,7 +11,7 @@
      >                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -292,10 +292,6 @@ C ======================================================================
          LOI = 'LIQU_GAZ'
       ELSE IF ( (RTHMC-6.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_GAZ_ATM'
-      ELSE IF ( (RTHMC-7.0D0).LT.R8PREM() ) THEN
-         LOI = 'LIQU_SATU_GAT'
-      ELSE IF ( (RTHMC-8.0D0).LT.R8PREM() ) THEN
-         LOI = 'LIQU_NSAT_GAT'
       ELSE IF ( (RTHMC-9.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_AD_GAZ_VAPE'
       ENDIF

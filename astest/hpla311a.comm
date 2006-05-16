@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,13 +182,13 @@ THETA0=CALC_THETA(    MODELE=MO,
                      )
 
 #
-G00=CALC_G_THETA_T(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=THETA0,
-                           EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SYME'
-                     )
+G00=CALC_G(        MODELE=MO,
+                       DEPL=DEP,
+                      THETA=_F(THETA=THETA0),
+                   EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                  SYME_CHAR='SYME'
+             )
 
 #
 # LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
@@ -210,13 +210,13 @@ THETA01=CALC_THETA(    MODELE=MO,
                      )
 
 #
-G01=CALC_G_THETA_T(    MODELE=MO,
-                           DEPL=DEP,
-                          THETA=THETA01,
-                         EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                         SYME_CHAR='SYME'
-                     )
+G01=CALC_G(    MODELE=MO,
+                   DEPL=DEP,
+                  THETA=_F(THETA=THETA01),
+                 EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                 SYME_CHAR='SYME'
+             )
 
 #
 # LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
@@ -238,13 +238,13 @@ THETA02=CALC_THETA(    MODELE=MO,
                      )
 
 #
-G02=CALC_G_THETA_T(    MODELE=MO,
-                           DEPL=DEP,
-                          THETA=THETA02,
-                         EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                         SYME_CHAR='SYME'
-                     )
+G02=CALC_G(     MODELE=MO,
+                DEPL=DEP,
+                THETA=_F(THETA=THETA02),
+                EXCIT=_F(CHARGE=CH,),
+                CHAM_MATER=CHMAT,
+                SYME_CHAR='SYME'
+            )
 
 #
 # LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
@@ -266,13 +266,13 @@ THETA03=CALC_THETA(    MODELE=MO,
                      )
 
 #
-G03=CALC_G_THETA_T(    MODELE=MO,
-                           DEPL=DEP,
-                          THETA=THETA03,
-                         EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                         SYME_CHAR='SYME'
-                    )
+G03=CALC_G(    MODELE=MO,
+                   DEPL=DEP,
+                  THETA=_F(THETA=THETA03),
+                 EXCIT=_F(CHARGE=CH,),
+                 CHAM_MATER=CHMAT,
+                 SYME_CHAR='SYME'
+            )
 
 #
 # LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :

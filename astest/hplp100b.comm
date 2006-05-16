@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 # FISSURE) ET DE SA DERIVEE PAR RAPPORT A UNE VARIATION DE DOMAINE
 # PILOTEE PAR UNE FONCTION THETA SENSIBILITE, THETAS.
 # ON EFFECTUE DEUX CALCULS AVEC DES CHARGEMENTS UTILISES EN POST
-# TRAITEMENT PAR CALC_G_THETA_T, C'EST A DIRE QU'ILS N'ONT PAS
+# TRAITEMENT PAR CALC_G, C'EST A DIRE QU'ILS N'ONT PAS
 # SERVI POUR LE CALCUL ELASTIQUE LINEAIRE. UN MESSAGE D'ALARME
 # EST EMIS POUR SIGNALER CETTE INCOHERENCE. D'AUTRE PART ILS
 # SONT INTRINSEQUEMENT INDEPENDANTS DE LA VARIATION DE DOMAINE.
@@ -175,9 +175,9 @@ THETAF=CALC_THETA(      MODELE=MO,
 
 # CALCULS DE G ET DG PROPREMENT DIT
 
-G1=CALC_G_THETA_T(MODELE=MO,
+G1=CALC_G(MODELE=MO,
                   DEPL = DEPMES,
-                  THETA=THETAF,
+                  THETA=_F(THETA=THETAF),
                   EXCIT=(_F(CHARGE=CH),_F(CHARGE=F1),_F(CHARGE=F2),),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
@@ -185,11 +185,11 @@ G1=CALC_G_THETA_T(MODELE=MO,
                   CHAM_MATER=CM)
 IMPR_TABLE(TABLE=G1)
 
-G1=CALC_G_THETA_T(reuse=G1,
+G1=CALC_G(reuse=G1,
                   SENSIBILITE=(THETAS,),
                   MODELE=MO,
                   RESULTAT=OUTMES,
-                  THETA=THETAF,
+                  THETA=_F(THETA=THETAF),
                   EXCIT=(_F(CHARGE=CH),_F(CHARGE=F1),_F(CHARGE=F2),),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
@@ -198,9 +198,9 @@ G1=CALC_G_THETA_T(reuse=G1,
 
 IMPR_TABLE(TABLE=G1,SENSIBILITE=(THETAS,))
 
-G2=CALC_G_THETA_T(MODELE=MO,
+G2=CALC_G(MODELE=MO,
                   DEPL = DEPMES,
-                  THETA=THETAF,
+                  THETA=_F(THETA=THETAF),
                   EXCIT=_F(CHARGE=CH,),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
@@ -209,11 +209,11 @@ G2=CALC_G_THETA_T(MODELE=MO,
                   ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2)
 
-G2=CALC_G_THETA_T( reuse=G2,
+G2=CALC_G( reuse=G2,
                    SENSIBILITE=(THETAS,),
                    MODELE=MO,
                    RESULTAT=OUTMES,
-                   THETA=THETAF,
+                   THETA=_F(THETA=THETAF),
                    EXCIT=_F( CHARGE=CH,),
                    SYME_CHAR='SYME',
                    COMP_ELAS=_F( RELATION = 'ELAS',
@@ -333,9 +333,9 @@ F21=AFFE_CHAR_MECA_F(           MODELE=MO1,
 
 # CALCULS DE G* PROPREMENT DIT
 
-G3=CALC_G_THETA_T(         MODELE=MO1,
+G3=CALC_G(         MODELE=MO1,
                          DEPL = DEPMES1,
-                            THETA=THETAF,
+                            THETA=_F(THETA=THETAF),
                         EXCIT=(_F(CHARGE=CH1),_F(CHARGE=F11),_F(CHARGE=F21),),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
@@ -343,9 +343,9 @@ G3=CALC_G_THETA_T(         MODELE=MO1,
                        CHAM_MATER=CM1,
                            OPTION='CALC_G')
 
-G4=CALC_G_THETA_T(         MODELE=MO1,
+G4=CALC_G(         MODELE=MO1,
                          DEPL = DEPMES1,
-                            THETA=THETAF,
+                            THETA=_F(THETA=THETAF),
                            EXCIT=_F(CHARGE=CH1,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',

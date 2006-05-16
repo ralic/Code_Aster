@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,12 +54,6 @@ C       ----------------------------------------------------------------
      1           LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN           
           CALL  RSLJPL(LOI,IMAT,NMAT,MATER,TEMP,SIGF,VIN,VIND,DEPS,
      1                 THETA,DT,DSDE)
-C
-        ELSEIF ( LOI(1:8) .EQ. 'CHABOCHE'    ) THEN
-          CALL  CHBJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)
-C
-        ELSEIF ( LOI(1:4) .EQ. 'OHNO'      ) THEN
-          CALL  ONOJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)
 C
         ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B'    ) THEN
           CALL  INSJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)

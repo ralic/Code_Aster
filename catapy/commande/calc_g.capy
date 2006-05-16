@@ -1,0 +1,137 @@
+#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
+            fr="Calcul du taux de restitution d'énergie par la méthode theta en thermo-élasticité"
+                        +" et les facteurs d'intensité de contraintes.",
+                    reentrant='f',
+            UIinfo={"groupes":("Post traitements",)},
+         regles=(UN_PARMI('RESULTAT','DEPL'),
+                 PRESENT_PRESENT('VITE','ACCE'),
+                 EXCLUS('COMP_ELAS','COMP_INCR'),),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
+         CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+
+         THETA          =FACT(statut='o',
+         THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
+
+         b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",
+            regles=(UN_PARMI('R_INF','R_INF_FO'),
+                 EXCLUS('MODULE','MODULE_FO'),
+                 UN_PARMI('FOND_FISS','FISSURE'),
+                 PRESENT_PRESENT('R_INF','R_SUP'),
+                 PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),         
+             R_INF           =SIMP(statut='f',typ='R'),
+             R_SUP           =SIMP(statut='f',typ='R'),
+             MODULE          =SIMP(statut='f',typ='R'),
+             DIRE_THETA      =SIMP(statut='f',typ=cham_no_sdaster ),
+             DIRECTION       =SIMP(statut='f',typ='R',max='**'),
+             R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),             
+             MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
+             FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),),
+            ),
+
+         DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
+         VITE            =SIMP(statut='f',typ=cham_no_sdaster),
+         ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
+         RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
+
+         b_extrac        =BLOC(condition="RESULTAT != None",fr="extraction d un champ",
+           regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',
+                           'TOUT_MODE','NUME_MODE','LIST_MODE','FREQ','LIST_FREQ',),),
+           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+           TOUT_MODE       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+           LIST_MODE       =SIMP(statut='f',typ=listis_sdaster),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+           
+           b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)or(FREQ != None)or(LIST_FREQ != None)",
+             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+           ),
+         ),         
+         EXCIT           =FACT(statut='f',max='**',
+               CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+               FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+               TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
+         ),
+         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS") ),
+ 
+         COMP_ELAS       =FACT(statut='f',
+               RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
+                                     into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC") ),
+               ELAS            =SIMP(statut='f',typ='I',defaut=1,into=(1,) ),
+               ELAS_VMIS_LINE  =SIMP(statut='f',typ='I',defaut=1,into=(1,) ),
+               ELAS_VMIS_TRAC  =SIMP(statut='f',typ='I',defaut=1,into=(1,) ),
+               DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","GREEN") ),
+      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
+               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+               MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         ),  
+         COMP_INCR       =FACT(statut='f',
+               RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
+                                     into=("ELAS","VMIS_ISOT_TRAC","VMIS_ISOT_LINE","VMIS_CINE_LINE") ),
+               ELAS            =SIMP(statut='f',typ='I',defaut=1,into=(1,) ),
+               VMIS_ISOT_TRAC  =SIMP(statut='f',typ='I',defaut=2,into=(2,) ),
+               VMIS_ISOT_LINE  =SIMP(statut='f',typ='I',defaut=2,into=(2,) ),
+               DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","PETIT_REAC") ),
+      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
+               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+               MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         ),
+         ETAT_INIT       =FACT(statut='f',
+           SIGM            =SIMP(statut='f',typ=cham_elem_sdaster),
+           DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
+         ),
+          
+         LISSAGE         =FACT(statut='d',
+           DEGRE           =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),
+           LISSAGE_THETA   =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE"),),
+           LISSAGE_G       =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO"),),
+         ),
+
+         OPTION          =SIMP(statut='o',typ='TXM',max=1,defaut='CALC_G',
+              into=("CALC_G","CALC_G_GLOB","CALC_K_G","K_G_MODA","G_MAX","G_MAX_GLOB","G_BILI",
+                    "G_BILI_GLOB","G_LAGR","G_LAGR_GLOB"),),
+
+         b_g_max    =BLOC(condition="(OPTION=='G_MAX') or (OPTION=='G_MAX_GLOB')",
+           BORNES          =FACT(statut='o',max='**',
+                NUME_ORDRE     =SIMP(statut='o',typ='I'),
+                VALE_MIN       =SIMP(statut='o',typ='R'),
+                VALE_MAX       =SIMP(statut='o',typ='R'),
+                                ),
+         ),
+         PROPAGATION     =SIMP(statut='f',typ='R'),
+         THETA_LAGR      =SIMP(statut='f',typ=theta_geom),
+         DIRE_THETA_LAGR =SIMP(statut='f',typ=cham_no_sdaster),
+         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
+                           fr="Liste des paramètres de sensibilité.",
+                           ang="List of sensitivity parameters"),
+
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+);

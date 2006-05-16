@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,8 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          regles=(PRESENT_ABSENT('AMOR_REDUIT','MATR_AMOR'),
                  PRESENT_ABSENT('AMOR_REDUIT','LIST_AMOR'),
                  PRESENT_ABSENT('MATR_AMOR','LIST_AMOR'),
-                 UN_PARMI('FREQ','LIST_FREQ'),),
+                 UN_PARMI('FREQ','LIST_FREQ'),
+                 CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODELE          =SIMP(statut='f',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),

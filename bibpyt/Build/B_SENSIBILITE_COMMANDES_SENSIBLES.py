@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
          # commandes qui créent le concept nominal OU le(s) concept(s) dérivé(s)
          self.sensible_post       : ['CALC_ELEM',
                                      'CALC_G_THETA_T',
+                                     'CALC_G',
                                      'CALC_NO',
                                      #'CALC_TABLE',
                                      'CREA_CHAMP',

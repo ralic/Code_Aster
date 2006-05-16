@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/03/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -247,9 +247,6 @@ C
 C
 C --- DIVERS ----------------------------------------------------------
 C
-      ELSEIF ( TYPELE(1:10).EQ.'MECA_APPUI' ) THEN
-         TYPEMO = 'APPUI_REP'
-
       ELSEIF ( TYPELE.EQ.'MECABL2' ) THEN
          TYPEMO = 'CABLE'
 
@@ -282,9 +279,6 @@ C
 
       ELSEIF ( TYPELE(1:6).EQ.'MEAXFS' ) THEN
          TYPEMO = 'AXIS_FLUI_STRU'
-
-      ELSEIF ( TYPELE.EQ.'MEGRQU4' ) THEN
-         TYPEMO = 'ASSE_GRIL'
 
       ELSEIF ( TYPELE(1:9).EQ.'MEAB_FACE' ) THEN
          TYPEMO = '3D_ABSO'

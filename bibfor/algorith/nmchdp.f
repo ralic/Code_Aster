@@ -1,7 +1,7 @@
       SUBROUTINE NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,DEUXMU,
      &                  CRIT,SEUIL,ETA,DT,VALDEN,DP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C.======================================================================
-C      IMPLICIT REAL*8 (A-H,O-Z)
+C RESPONSABLE JMBHH01 J.M.PROIX
       IMPLICIT NONE
 C
 C      NMCHDP   -- CETTE ROUTINE CONCERNE L'INTEGRATION DE LA LOI
@@ -84,6 +84,7 @@ C     ===============
       TROIS  =  3.0D0
       DIX    = 10.0D0
       MU     = DEUXMU/DEUX
+      IRET=0
 C
 C --- EXAMEN DE LA SOLUTION DPE = 0 :
 C     =============================
@@ -187,14 +188,11 @@ C
   40  CONTINUE
 C
       CALL INFNIV(IFM,NIV)
-       WRITE (IFM,*) 'MODELE VISC_CINX_CHAB : ATTENTION' 
+       WRITE (IFM,*) 'MODELE CINX_CHAB : ATTENTION' 
        WRITE (IFM,*) 'PAS DE CONVERGENCE  A LA PRECISION DEMANDEE',PREC
        WRITE (IFM,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE',NITER
        WRITE (IFM,*) 'VALEURS DE DP ET F ACTUELLES',DP,Y(4)
        WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
-C       WRITE (IFM,*) ' '
-C       WRITE (IFM,*) 'ALLURE DE LA FONCTION : '
-C       WRITE (IFM,*) ' DP               F(DP) '
        Z = 0.D0
 C
        NBP = 1000
@@ -202,7 +200,6 @@ C
        DO 60 I = 1,NBP
         CALL NMCHCR(MAT,Z,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
      &               DEUXMU,ETA,DT,VALDEN,ZZ)
-C        WRITE(IFM,*) Z,ZZ
         Z = Z + DDP
   60   CONTINUE
       IRET = 1

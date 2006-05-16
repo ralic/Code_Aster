@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,8 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
                    PRESENT_PRESENT('NOEUD','NOM_CMP'),
                    PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
                    PRESENT_PRESENT('POINT','NOM_CMP'),
-                   UN_PARMI('VALE','VALE_I','VALE_C') ,),
+                   UN_PARMI('VALE','VALE_I','VALE_C'),
+                   DERIVABLE('RESULTAT'),),
            RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                  fr="Paramètre de sensibilité.",

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,11 +54,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
       REAL*8        NEWPT(3),P(3),PADIST,LONREF,CRIT
       INTEGER       IGEOM,JLSN,JGRLSN,JOUT1,JOUT2,JOUT3,JOUT4,JOUT5
-      INTEGER       JPTINT,JHEAV
+      INTEGER       JPTINT,JHEAV,IADZI,IAZK24,JDIM
       INTEGER       NINTER,NFACE,CFACE(5,3),CONNEC(6,4),NIT,NSE,NSETOT
       INTEGER       NPTS,CNSE(6,4),I,J,IT,NP,IPT,ISE,IN,NI,NSEMX,CPT
       LOGICAL       DEJA
-      INTEGER       NDIM,IBID
+      INTEGER       NDIM,IBID,NDIME
 C......................................................................
 
       CALL JEMARQ()
@@ -67,11 +67,22 @@ C   INFO: LE NB DE SOUS-TETRAS MAX POUR CHAQUE TETRA EST NSEMX=6 (3D)
 C   INFO: LE NB DE SOUS-TRIAS MAX POUR CHAQUE TRIA EST NSEMX=3 (2D)
       
       CALL ELREF1(ELP)
-      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
+      CALL ELREF4(' ','RIGI',NDIME,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
    
-      IF (NDIM .EQ. 3) THEN
+      CALL TECAEL(IADZI,IAZK24)
+      NOMA=ZK24(IAZK24)
+      CALL JEVEUO(NOMA//'.DIME','L',JDIM)
+      NDIM=ZI(JDIM-1+6)
+
+C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
+C     NDIM EST LA DIMENSION DU MAILLAGE
+C     NDIME EST DIMENSION DE L'ELEMENT FINI
+C     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
+C     NDIME = 2 ALORS QUE NDIM = 3
+
+      IF (NDIME.EQ. 3) THEN
          NSEMX=6
-      ELSE
+      ELSEIF (NDIME.EQ. 2) THEN
          NSEMX=3
       ENDIF
       
@@ -84,8 +95,10 @@ C     RECUPERATION DES ENTREES / SORTIE
       CALL JEVECH('PCNSETO','E',JOUT2)
       CALL JEVECH('PHEAVTO','E',JOUT3)
       CALL JEVECH('PLONCHA','E',JOUT4)
-      CALL JEVECH('PCRITER','E',JOUT5)
-
+      IF (NDIME.EQ.3) THEN
+        CALL JEVECH('PCRITER','E',JOUT5)
+      ENDIF
+      
       NP=0
       CPT=0
       NSETOT=0
@@ -122,49 +135,46 @@ C       ARCHIVAGE DE LONCHAM
  
 C       BOUCLE SUR LES NINTER POINTS D'INTERSETION
         CALL JEVEUO(PINTER,'L',JPTINT)
-        DO 110 IPT=1,NINTER
-          NEWPT(1)=ZR(JPTINT-1+NDIM*(IPT-1)+1)
-          NEWPT(2)=ZR(JPTINT-1+NDIM*(IPT-1)+2)
-          IF (NDIM .EQ. 3) 
-     &    NEWPT(3)=ZR(JPTINT-1+NDIM*(IPT-1)+3)
+        DO 200 IPT=1,NINTER
+          DO 210 J=1,NDIM
+            NEWPT(J)=ZR(JPTINT-1+NDIM*(IPT-1)+J)
+ 210      CONTINUE
 
 C         VERIF SI EXISTE DEJA DANS PINTERTO
           DEJA=.FALSE.
-          DO 111 I=1,NP
-            P(1) = ZR(JOUT1-1+NDIM*(I-1)+1)
-            P(2) = ZR(JOUT1-1+NDIM*(I-1)+2)
-            IF (NDIM .EQ. 3) 
-     &      P(3) = ZR(JOUT1-1+NDIM*(I-1)+3)
+          DO 220 I=1,NP
+            DO 221 J=1,NDIM
+              P(J) = ZR(JOUT1-1+NDIM*(I-1)+J)
+ 221        CONTINUE
             IF (PADIST(NDIM,P,NEWPT) .LT. (LONREF*1.D-3)) THEN
               DEJA = .TRUE.
               NI=I
             ENDIF
- 111      CONTINUE
+ 220      CONTINUE
           IF (.NOT.DEJA) THEN
             NP=NP+1
             IF (NP.GT.11) CALL UTMESS('F','TE0514','NOMBRE TOTAL DE '//
      &                         'POINTS D''INTERSECTION LIMITE A 11.')
 C           ARCHIVAGE DE PINTERTO
-            ZR(JOUT1-1+NDIM*(NP-1)+1)=ZR(JPTINT-1+NDIM*(IPT-1)+1)
-            ZR(JOUT1-1+NDIM*(NP-1)+2)=ZR(JPTINT-1+NDIM*(IPT-1)+2)
-            IF (NDIM .EQ. 3) 
-     &      ZR(JOUT1-1+NDIM*(NP-1)+3)=ZR(JPTINT-1+NDIM*(IPT-1)+3)
+            DO 230 J=1,NDIM
+              ZR(JOUT1-1+NDIM*(NP-1)+J)=ZR(JPTINT-1+NDIM*(IPT-1)+J)
+ 230        CONTINUE
 
 C           MISE A JOUR DU CNSE (TRANSFORMATION DES 100 EN 1000...)    
-            DO 112 ISE=1,NSE
-              DO 113 IN=1,NDIM+1
+            DO 240 ISE=1,NSE
+              DO 241 IN=1,NDIME+1
                 IF (CNSE(ISE,IN).EQ.100+IPT) CNSE(ISE,IN)=1000+NP
- 113          CONTINUE
- 112        CONTINUE
+ 241          CONTINUE
+ 240        CONTINUE
           ELSE
             DO 114 ISE=1,NSE
-              DO 115 IN=1,NDIM+1
+              DO 115 IN=1,NDIME+1
                 IF (CNSE(ISE,IN).EQ.100+IPT) CNSE(ISE,IN)=1000+NI
  115          CONTINUE
  114        CONTINUE
           ENDIF 
 
- 110    CONTINUE
+ 200    CONTINUE
  
 C       BOUCLE SUR LES NSE SOUS-ÉLÉMENTS
         DO 120 ISE=1,NSE
@@ -172,8 +182,8 @@ C       BOUCLE SUR LES NSE SOUS-ÉLÉMENTS
 C         ARCHIVAGE DE PHEAVTO
           ZI(JOUT3-1+NSEMX*(IT-1)+ISE)=ZR(JHEAV-1+ISE)
 C         ARCHIVAGE DE PCNSETO
-          DO 121 IN=1,NDIM+1          
-            ZI(JOUT2-1+(NDIM+1)*(CPT-1)+IN)=CNSE(ISE,IN)
+          DO 121 IN=1,NDIME+1          
+            ZI(JOUT2-1+(NDIME+1)*(CPT-1)+IN)=CNSE(ISE,IN)
  121      CONTINUE
  120    CONTINUE
  
@@ -186,14 +196,11 @@ C         ARCHIVAGE DE PCNSETO
 
 C     ARCHIVAGE DE LONCHAM
       ZI(JOUT4-1+NIT+2)=NP
-C      write(6,*)'ninter se ',NP
      
-      IF (NDIM .EQ. 2) GOTO 200
-      
-      CALL XCRVOL(IGEOM,ZR(JOUT1),ZI(JOUT2),ZI(JOUT3),ZI(JOUT4),CRIT)
-      ZR(JOUT5)=CRIT       
-  
- 200  CONTINUE
+      IF (NDIME .EQ. 3) THEN
+        CALL XCRVOL(IGEOM,ZR(JOUT1),ZI(JOUT2),ZI(JOUT3),ZI(JOUT4),CRIT)
+        ZR(JOUT5)=CRIT       
+      ENDIF
 C ----------------------------------------------------------------------
 
       CALL JEDEMA()

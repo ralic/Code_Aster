@@ -4,7 +4,8 @@
      &                      TIMED,TIMEF,VIND,SIGD  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +23,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C       ----------------------------------------------------------------
-C       CHABOCHE : CALCUL SOLUTION ESSAI DY = ( DSIG DX1 DX2 DP (DEPS3))
-C                               AVEC     Y  = ( SIG  X1  X2  P  (EPS3))
+C       MONOCRISTAL : CALCUL SOLUTION INITIALE
+C
 C       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION MATER

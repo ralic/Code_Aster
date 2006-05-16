@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,9 @@ NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
                fr="Normer des modes propres en fonction d'un critère choisi par l'utilisateur",
                reentrant='f',
             UIinfo={"groupes":("Résolution",)},
-         regles=(UN_PARMI('NORME','NOEUD','AVEC_CMP','SANS_CMP'),),
+         regles=(UN_PARMI('NORME','NOEUD','AVEC_CMP','SANS_CMP'),
+                 CONCEPT_SENSIBLE('SEPARE'),
+                 DERIVABLE('MODE'),),
          MODE       =SIMP(statut='o',typ=(mode_meca,mode_flamb) ),
          NORME      =SIMP(statut='f',typ='TXM',fr="Norme prédéfinie : masse généralisée, euclidienne,...",
                           into=("MASS_GENE","RIGI_GENE","EUCL","EUCL_TRAN","TRAN","TRAN_ROTA") ),

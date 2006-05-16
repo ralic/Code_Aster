@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,22 +144,22 @@ RAY_INF1=DEFI_CONSTANTE(   VALE=0.00075);
 RAY_SUP1=DEFI_CONSTANTE(   VALE=0.0025);
 
                       
-GLO1=CALC_G_LOCAL_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    RESULTAT=CHAMDEPL,
-                    SYME_CHAR='SYME',
-                    COMP_ELAS=_F(RELATION='ELAS',),
-                    OPTION='CALC_K_G',
-                    TOUT_ORDRE='OUI',
-                    FISSURE=FISS1,
-                    LISSAGE_THETA='LAGRANGE',
-                    LISSAGE_G='LAGRANGE',
-                    R_INF_FO=RAY_INF1,
-                    R_SUP_FO=RAY_SUP1,
-                    INFO=2,
-                    EXCIT=(_F( CHARGE = CL),
-                           _F( CHARGE = CH)),
-                   );
+GLO1=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            RESULTAT=CHAMDEPL,
+            SYME_CHAR='SYME',
+            COMP_ELAS=_F(RELATION='ELAS',),
+            OPTION='CALC_K_G',
+            TOUT_ORDRE='OUI',
+            THETA=_F(FISSURE=FISS1,
+                     R_INF_FO=RAY_INF1,
+                     R_SUP_FO=RAY_SUP1,),
+            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                       LISSAGE_G='LAGRANGE',),
+            INFO=2,
+            EXCIT=(_F( CHARGE = CL),
+                   _F( CHARGE = CH)),
+           );
 
 
 ###########################
@@ -332,22 +332,23 @@ CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                               _F( CHARGE = CH2))
                       );
                                        
-GLO2=CALC_G_LOCAL_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    RESULTAT=CHAMDEP2,
-                    SYME_CHAR='SYME',
-                    COMP_ELAS=_F(RELATION='ELAS',),
-                    OPTION='CALC_K_G',
-                    TOUT_ORDRE='OUI',
-                    FISSURE=FISS1,
-                    LISSAGE_THETA='LAGRANGE',
-                    LISSAGE_G='LAGRANGE',
-                    R_INF_FO=RAY_INF1,
-                    R_SUP_FO=RAY_SUP1,
-                    INFO=2,
-                    EXCIT=(_F( CHARGE = CL),
-                           _F( CHARGE = CH2)),
-                   );
+GLO2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            RESULTAT=CHAMDEP2,
+            SYME_CHAR='SYME',
+            COMP_ELAS=_F(RELATION='ELAS',),
+            OPTION='CALC_K_G',
+            TOUT_ORDRE='OUI',
+            THETA=_F(FISSURE=FISS1,
+                     R_INF_FO=RAY_INF1,
+                     R_SUP_FO=RAY_SUP1,),
+            LISSAGE=_F(
+                       LISSAGE_THETA='LAGRANGE',
+                       LISSAGE_G='LAGRANGE',),
+            INFO=2,
+            EXCIT=(_F( CHARGE = CL),
+                   _F( CHARGE = CH2)),
+           );
 
 TEST_TABLE(TABLE=GLO2,
            NOM_PARA='K1_LOCAL',

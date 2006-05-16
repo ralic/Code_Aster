@@ -5,7 +5,7 @@
       REAL*8        NEWPT(3),LONGAR,AL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,14 +57,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
+      CHARACTER*8     NOMA
       REAL*8          PADIST,P(3)
-      INTEGER         I,J,NDIM,IBID
+      INTEGER         I,J,NDIM,IBID,IADZI,IAZK24,JDIM
       LOGICAL         DEJA
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
    
-      CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
+      CALL TECAEL(IADZI,IAZK24)
+      NOMA=ZK24(IAZK24)
+      CALL JEVEUO(NOMA//'.DIME','L',JDIM)
+      NDIM=ZI(JDIM-1+6)
+
       
 C     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
       DEJA = .FALSE.

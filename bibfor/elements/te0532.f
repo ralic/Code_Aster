@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C......................................................................
       CALL JEMARQ()
 C
       IMPRIM=.FALSE.
-      INCOCA=1
+      INCOCA=0
  
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -203,7 +203,7 @@ C         INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
 
             IF (DN.GT.PREC) THEN
               ZI(JOUT2-1+ISSPG) = 1
-              INCOCA = 0
+              INCOCA = 1
             ELSE
              ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
             END IF           
@@ -213,7 +213,7 @@ C         ON REGARDE LA REACTION POUR LES POINTS SUPPOSÉS CONTACTANT :
 
             IF (REAC.GT.-1.D-3) THEN
               ZI(JOUT2-1+ISSPG) = 0
-              INCOCA = 0
+              INCOCA = 1
             ELSE
              ZI(JOUT2-1+ISSPG) = INDCO(ISSPG)
             END IF

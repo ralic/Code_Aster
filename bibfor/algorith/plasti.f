@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
+C RESPONSABLE JMBHH01 J.M.PROIX
 C       ================================================================
 C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO PLASTIQUE ET VISCO
 C       PLASTIQUE
@@ -62,23 +63,23 @@ C
 C       ----------------------------------------------------------------
 C       POINTS D ENTREES           ROUTINES  A ECRIRE POUR INTEGRATION
 C       A MODIFIER
-C                                  ROUSSELIER   CHABOCHE        XXXXXX
+C                                  ROUSSELIER    XXXXXX
 C
-C       (LCMATE)                   RSLMAT       CHBMAT          XXXMAT
-C       (LCCNVX)                   RSLCVX       CHBCVX          XXXCVX
-C       (LCELAS)                   RSLLIN      <LCELIN>        XXXELA
-C                                                              ,<LCELIN>
-C       (LCPLAS) (LCPLNL) (LCINIT) LCROUS       CHBINI          XXXINI
-C                         (LCRESI) LCROUS       CHBRES          XXXRES
-C                         (LCJACB) LCROUS       CHBJAC          XXXJAC
-C                         (LCCONV) LCROUS       CHBCVG          /XXXCVG/
-C                                                              ,<LCCTRL>
-C               ,(LCPLLI) (LCPL2M) -            -               XXXP2M
-C                         (LCPLMA) -            -               XXXPMA
-C       (LCJELA)                   <LCOPLI>     <LCOPLI>        XXXJEL
-C                                                              ,<LCOPLI>
-C       (LCJPLA)                   RSLJPL       CHBJPL          XXXJPL
-C       (LCJPLC)                   -            -               XXXJPC
+C       (LCMATE)                   RSLMAT        XXXMAT
+C       (LCCNVX)                   RSLCVX        XXXCVX
+C       (LCELAS)                   RSLLIN       XXXELA
+C                                               ,<LCELIN>
+C       (LCPLAS) (LCPLNL) (LCINIT) LCROUS        XXXINI
+C                         (LCRESI) LCROUS        XXXRES
+C                         (LCJACB) LCROUS        XXXJAC
+C                         (LCCONV) LCROUS        /XXXCVG/
+C                                               ,<LCCTRL>
+C               ,(LCPLLI) (LCPL2M) -             XXXP2M
+C                         (LCPLMA) -             XXXPMA
+C       (LCJELA)                   <LCOPLI>      XXXJEL
+C                                               ,<LCOPLI>
+C       (LCJPLA)                   RSLJPL        XXXJPL
+C       (LCJPLC)                   -             XXXJPC
 C
 C
 C       () = ROUTINES A MODIFIER ( POINT D'AIGUILLAGE )
@@ -149,7 +150,7 @@ C               KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
-C                       COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
+C                       COMP(1) = RELATION DE COMPORTEMENT (ROUSSELIER.)
 C                       COMP(2) = NB DE VARIABLES INTERNES
 C                       COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
 C               OPT     OPTION DE CALCUL A FAIRE

@@ -1,7 +1,7 @@
-      SUBROUTINE LECT82(NODE,NBNODE,INUM)
+      SUBROUTINE LECT82(IUNV,NODE,NBNODE,INUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,8 +29,6 @@ C     !  FONCTION: LECTURE DES NOEUDS DES TRACELINES IDEAS .      !
 C     !            !!!!!   (DATASET 82 !!!!!                      !
 C     !       (CF. DOCUMENT INTERFACE SUPERTAB-ASTER )            !
 C     =============================================================
-C     !                                                           !
-C     !  ROUTINE APPELE: IUNIFI (FONCTION)                        !
 C     !                                                           !
 C     !  ROUTINE APPELANTE: SLEELT                                !
 C     !                                                           !
@@ -64,7 +62,7 @@ C
 C  --> DECLARATION DES ARGUMENTS
 C     ============================================================
 C
-      INTEGER NODE(*),NBNODE,INUM,IDRO,IUNIFI,IUNV
+      INTEGER NODE(*),NBNODE,INUM,IDRO,IUNV
 C  --> DECLARATION DES VARIABLES LOCALES
       INTEGER NODLU(NBNODE)
 C  --> DECLARATION DES INDICES DE BOUCLES
@@ -72,7 +70,6 @@ C  --> DECLARATION DES INDICES DE BOUCLES
 C
 C     ---------- FIN DECLARATIONS -----------
 C
-      IUNV = IUNIFI('IDEAS')
       READ (IUNV,'(8I10)') (NODLU(J),J=1,NBNODE)
       IDRO=1
       INUM=1

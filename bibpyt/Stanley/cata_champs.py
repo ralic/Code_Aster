@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF cata_champs Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ class CHAMP :
   '''Informations sur les champs'''
 
 
-  def Calc_no(champ, contexte, numeros) :
+  def Calc_no(champ, contexte, numeros, options=None) :
 
     para = {
       'reuse'      : contexte.resultat,
@@ -51,9 +51,18 @@ class CHAMP :
     if contexte.cara_elem :
       para['CARA_ELEM'] = contexte.cara_elem
 
+    if contexte.para_sensi :
+      para['SENSIBILITE'] = contexte.para_sensi
+
     if champ.nom in ['FORC_NODA','REAC_NODA'] :  # une specificite a disparaitre
       para['MODELE'] = contexte.modele
 
+    # Options supplementaires passees a la commande
+    if options:
+       for cle in options.keys():
+          para[cle] = options[cle]
+
+    # Lancement de la commande
     try:
       apply(CALC_NO,(),para)
     except aster.error,err:
@@ -64,7 +73,7 @@ class CHAMP :
       UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
 
 
-  def Calc_elem(champ, contexte, numeros) :
+  def Calc_elem(champ, contexte, numeros, options=None) :
 
     para = {
       'reuse'      : contexte.resultat,
@@ -77,7 +86,16 @@ class CHAMP :
 
     if contexte.cara_elem :
       para['CARA_ELEM'] = contexte.cara_elem
-  
+
+    if contexte.para_sensi :
+      para['SENSIBILITE'] = contexte.para_sensi
+
+    # Options supplementaires passees a la commande
+    if options:
+       for cle in options.keys():
+          para[cle] = options[cle]
+
+    # Lancement de la commande
     try:
       apply(CALC_ELEM,(),para)
     except aster.error,err:
@@ -89,8 +107,8 @@ class CHAMP :
 
 
   def __init__(self, nom_cham, type_cham, heredite, comment, fonc) :
-   
-    assert type_cham in ['ELNO','ELGA','NOEU']
+
+    assert type_cham in ['ELNO','ELGA','NOEU','ELEM']
 
     self.nom      = nom_cham
     self.type     = type_cham 
@@ -103,13 +121,14 @@ class CHAMP :
       if type_cham == 'NOEU' :  self.fonc = CHAMP.Calc_no
       if type_cham == 'ELNO' :  self.fonc = CHAMP.Calc_elem
       if type_cham == 'ELGA' :  self.fonc = CHAMP.Calc_elem
-        
+      if type_cham == 'ELEM' :  self.fonc = CHAMP.Calc_elem
 
-  def Evalue(self, contexte, numeros) :
-    self.fonc(self, contexte, numeros)
-    
 
-        
+  def Evalue(self, contexte, numeros, options=None) :
+    self.fonc(self, contexte, numeros, options)
+
+
+
 # ----------------------------------------------------------------------
 
 class CATA_CHAMPS :
@@ -128,6 +147,7 @@ class CATA_CHAMPS :
     self('SIEF_ELNO_ELGA', 'ELNO',['SIEF_ELGA','SIEF_ELGA_DEPL'],"Contraintes aux noeuds par element")
     self('SIEF_NOEU_ELGA', 'NOEU',['SIEF_ELNO_ELGA'],            "Contraintes aux noeuds")
     self('FLUX_ELNO_TEMP', 'ELNO',['TEMP'],                      "Flux thermique aux noeuds par element")
+    self('FLUX_NOEU_TEMP', 'NOEU',['FLUX_ELNO_TEMP'],            "Flux thermique aux noeuds")
     self('VARI_ELNO_ELGA', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
     self('VARI_NOEU_ELGA', 'NOEU',['VARI_ELNO_ELGA'],            "Variables internes aux noeuds")
     self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],                 "Invariants des contraintes aux points de Gauss")
@@ -143,16 +163,18 @@ class CATA_CHAMPS :
     self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA_DEPL'],            "Invariants des deformations aux points de Gauss")
     self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
     self('EQUI_NOEU_EPSI', 'NOEU',['EQUI_ELNO_EPSI'],            "Invariants des deformations aux noeuds")
-    self('ERRE_ELEM_SIGM', 'ELGA',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
+    self('ERRE_ELEM_SIGM', 'ELEM',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
     self('ERRE_ELNO_ELEM', 'ELNO',['ERRE_ELEM_SIGM'],            "Indicateurs d'erreur en residu aux noeuds par element")
-    self('ERRE_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
+
+#    self('ERRE_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
+
     self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
     self('VALE_CONT'     , 'NOEU',[],                            "Informations sur l'etat de contact")
 
 # dyn
     self('VITE'          , 'NOEU',[],                            "Vitesses aux noeuds")
     self('ACCE'          , 'NOEU',[],                            "Accélérations aux noeuds")
-#    self('ECIN_ELEM_DEPL', 'ELEM',[],                            "Accélérations aux noeuds")
+    self('ECIN_ELEM_DEPL', 'ELEM',[],                            "Accélérations aux noeuds")
 
 
 # lineaire
@@ -186,8 +208,6 @@ class CATA_CHAMPS :
 
 
   def Champs_presents(self, type_resu='evol_noli') :
-#    return self.cata.keys()
-
     return self.cata.keys()
 
 
@@ -201,7 +221,7 @@ class CATA_CHAMPS :
       typech = None
 
     if typech:
-#      print 'Ajout de :', champ
+      print 'Ajout de :', champ
       self(champ     , typech,[], "")
 
 

@@ -12,7 +12,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
+C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_20
 C TOLE CRP_21
       IMPLICIT NONE
@@ -464,7 +464,9 @@ C PETITES DEFORMATIONS
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')
           ENDIF
-        ELSE IF (( COMPOR(1)(1:14).EQ. 'VISC_CIN1_CHAB') .OR.
+        ELSE IF (( COMPOR(1)(1:14).EQ. 'VMIS_CIN1_CHAB') .OR.
+     &           ( COMPOR(1)(1:14).EQ. 'VMIS_CIN2_CHAB') .OR.
+     &           ( COMPOR(1)(1:14).EQ. 'VISC_CIN1_CHAB') .OR.
      &           ( COMPOR(1)(1:14).EQ. 'VISC_CIN2_CHAB')) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             IF (TYPMOD(1).EQ.'C_PLAN') THEN
@@ -494,8 +496,6 @@ C
           END IF
         ELSE IF ( COMPOR(1)(1:8) .EQ. 'ROUSS_PR'   .OR.
      &            COMPOR(1)(1:10).EQ. 'ROUSS_VISC' .OR.
-     &            COMPOR(1)(1:8) .EQ. 'CHABOCHE'   .OR.
-     &            COMPOR(1)(1:4) .EQ. 'OHNO'       .OR.
      &            COMPOR(1)(1:5) .EQ. 'LMARC'      .OR.
      &            COMPOR(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
      &            COMPOR(1)(1:7 ).EQ. 'IRRAD3M'    .OR.

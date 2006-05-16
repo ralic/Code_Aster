@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_73 FISSURE RADIALE INTERNE A L'INTERFACE D'UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,44 +186,44 @@ THETA4=CALC_THETA(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 0
 # -----------------------------------
 
-G1_C0=CALC_G_THETA_T(    MODELE=MO,
+G1_C0=CALC_G(    MODELE=MO,
                           DEPL=DEP1,
-                         THETA=THETA0,
+                         THETA=_F(THETA=THETA0),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT1
                     )
 
-G2_C0=CALC_G_THETA_T(    MODELE=MO,
+G2_C0=CALC_G(    MODELE=MO,
                           DEPL=DEP2,
-                         THETA=THETA0,
+                         THETA=_F(THETA=THETA0),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT2
                     )
 
-G3_C0=CALC_G_THETA_T(    MODELE=MO,
+G3_C0=CALC_G(    MODELE=MO,
                           DEPL=DEP3,
-                         THETA=THETA0,
+                         THETA=_F(THETA=THETA0),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT3
                     )
 
-G4_C0=CALC_G_THETA_T(    MODELE=MO,
+G4_C0=CALC_G(    MODELE=MO,
                           DEPL=DEP4,
-                         THETA=THETA0,
+                         THETA=_F(THETA=THETA0),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT1
                     )
 
-G5_C0=CALC_G_THETA_T(    MODELE=MO,
+G5_C0=CALC_G(    MODELE=MO,
                           DEPL=DEP5,
-                         THETA=THETA0,
+                         THETA=_F(THETA=THETA0),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT2
                     )
 
-G6_C0=CALC_G_THETA_T(    MODELE=MO,
+G6_C0=CALC_G(    MODELE=MO,
                           DEPL=DEP6,
-                         THETA=THETA0,
+                         THETA=_F(THETA=THETA0),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT3
                     )
@@ -231,44 +231,44 @@ G6_C0=CALC_G_THETA_T(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 1
 # -----------------------------------
 
-G1_C1=CALC_G_THETA_T(    MODELE=MO,
+G1_C1=CALC_G(    MODELE=MO,
                           DEPL=DEP1,
-                         THETA=THETA1,
+                         THETA=_F(THETA=THETA1),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT1
                     )
 
-G2_C1=CALC_G_THETA_T(    MODELE=MO,
+G2_C1=CALC_G(    MODELE=MO,
                           DEPL=DEP2,
-                         THETA=THETA1,
+                         THETA=_F(THETA=THETA1),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT2
                     )
 
-G3_C1=CALC_G_THETA_T(    MODELE=MO,
+G3_C1=CALC_G(    MODELE=MO,
                           DEPL=DEP3,
-                         THETA=THETA1,
+                         THETA=_F(THETA=THETA1),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT3
                     )
 
-G4_C1=CALC_G_THETA_T(    MODELE=MO,
+G4_C1=CALC_G(    MODELE=MO,
                           DEPL=DEP4,
-                         THETA=THETA1,
+                         THETA=_F(THETA=THETA1),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT1
                     )
 
-G5_C1=CALC_G_THETA_T(    MODELE=MO,
+G5_C1=CALC_G(    MODELE=MO,
                           DEPL=DEP5,
-                         THETA=THETA1,
+                         THETA=_F(THETA=THETA1),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT2
                     )
 
-G6_C1=CALC_G_THETA_T(    MODELE=MO,
+G6_C1=CALC_G(    MODELE=MO,
                           DEPL=DEP6,
-                         THETA=THETA1,
+                         THETA=_F(THETA=THETA1),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT3
                     )
@@ -276,44 +276,44 @@ G6_C1=CALC_G_THETA_T(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 2
 # -----------------------------------
 
-G1_C2=CALC_G_THETA_T(    MODELE=MO,
+G1_C2=CALC_G(    MODELE=MO,
                           DEPL=DEP1,
-                         THETA=THETA2,
+                         THETA=_F(THETA=THETA2),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT1
                     )
 
-G2_C2=CALC_G_THETA_T(    MODELE=MO,
+G2_C2=CALC_G(    MODELE=MO,
                           DEPL=DEP2,
-                         THETA=THETA2,
+                         THETA=_F(THETA=THETA2),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT2
                     )
 
-G3_C2=CALC_G_THETA_T(    MODELE=MO,
+G3_C2=CALC_G(    MODELE=MO,
                           DEPL=DEP3,
-                         THETA=THETA2,
+                         THETA=_F(THETA=THETA2),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT3
                     )
 
-G4_C2=CALC_G_THETA_T(    MODELE=MO,
+G4_C2=CALC_G(    MODELE=MO,
                           DEPL=DEP4,
-                         THETA=THETA2,
+                         THETA=_F(THETA=THETA2),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT1
                     )
 
-G5_C2=CALC_G_THETA_T(    MODELE=MO,
+G5_C2=CALC_G(    MODELE=MO,
                           DEPL=DEP5,
-                         THETA=THETA2,
+                         THETA=_F(THETA=THETA2),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT2
                     )
 
-G6_C2=CALC_G_THETA_T(    MODELE=MO,
+G6_C2=CALC_G(    MODELE=MO,
                           DEPL=DEP6,
-                         THETA=THETA2,
+                         THETA=_F(THETA=THETA2),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT3
                     )
@@ -321,44 +321,44 @@ G6_C2=CALC_G_THETA_T(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 3
 # -----------------------------------
 
-G1_C3=CALC_G_THETA_T(    MODELE=MO,
+G1_C3=CALC_G(    MODELE=MO,
                           DEPL=DEP1,
-                         THETA=THETA3,
+                         THETA=_F(THETA=THETA3),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT1
                     )
 
-G2_C3=CALC_G_THETA_T(    MODELE=MO,
+G2_C3=CALC_G(    MODELE=MO,
                           DEPL=DEP2,
-                         THETA=THETA3,
+                         THETA=_F(THETA=THETA3),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT2
                     )
 
-G3_C3=CALC_G_THETA_T(    MODELE=MO,
+G3_C3=CALC_G(    MODELE=MO,
                           DEPL=DEP3,
-                         THETA=THETA3,
+                         THETA=_F(THETA=THETA3),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT3
                     )
 
-G4_C3=CALC_G_THETA_T(    MODELE=MO,
+G4_C3=CALC_G(    MODELE=MO,
                           DEPL=DEP4,
-                         THETA=THETA3,
+                         THETA=_F(THETA=THETA3),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT1
                     )
 
-G5_C3=CALC_G_THETA_T(    MODELE=MO,
+G5_C3=CALC_G(    MODELE=MO,
                           DEPL=DEP5,
-                         THETA=THETA3,
+                         THETA=_F(THETA=THETA3),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT2
                     )
 
-G6_C3=CALC_G_THETA_T(    MODELE=MO,
+G6_C3=CALC_G(    MODELE=MO,
                           DEPL=DEP6,
-                         THETA=THETA3,
+                         THETA=_F(THETA=THETA3),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT3
                     )
@@ -366,44 +366,44 @@ G6_C3=CALC_G_THETA_T(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 4
 # -----------------------------------
 
-G1_C4=CALC_G_THETA_T(    MODELE=MO,
+G1_C4=CALC_G(    MODELE=MO,
                           DEPL=DEP1,
-                         THETA=THETA4,
+                         THETA=_F(THETA=THETA4),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT1
                     )
 
-G2_C4=CALC_G_THETA_T(    MODELE=MO,
+G2_C4=CALC_G(    MODELE=MO,
                           DEPL=DEP2,
-                         THETA=THETA4,
+                         THETA=_F(THETA=THETA4),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT2
                     )
 
-G3_C4=CALC_G_THETA_T(    MODELE=MO,
+G3_C4=CALC_G(    MODELE=MO,
                           DEPL=DEP3,
-                         THETA=THETA4,
+                         THETA=_F(THETA=THETA4),
                         EXCIT=_F(CHARGE=CH1,),
                         CHAM_MATER=CHMAT3
                     )
 
-G4_C4=CALC_G_THETA_T(    MODELE=MO,
+G4_C4=CALC_G(    MODELE=MO,
                           DEPL=DEP4,
-                         THETA=THETA4,
+                         THETA=_F(THETA=THETA4),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT1
                     )
 
-G5_C4=CALC_G_THETA_T(    MODELE=MO,
+G5_C4=CALC_G(    MODELE=MO,
                           DEPL=DEP5,
-                         THETA=THETA4,
+                         THETA=_F(THETA=THETA4),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT2
                     )
 
-G6_C4=CALC_G_THETA_T(    MODELE=MO,
+G6_C4=CALC_G(    MODELE=MO,
                           DEPL=DEP6,
-                         THETA=THETA4,
+                         THETA=_F(THETA=THETA4),
                         EXCIT=_F(CHARGE=CH2,),
                         CHAM_MATER=CHMAT3
                     )

@@ -20,7 +20,7 @@
       LOGICAL UFONC,VFONC,EPSIU,EPSIV
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

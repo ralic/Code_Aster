@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,8 +237,9 @@ class SUPERV:
               print ">> JDC.py : FIN RAPPORT"
       if codret == 0 :
         if est_sensible :
-          j.supprime()
-          j = new_j
+            #ne pas appeler la methode supprime car on ne copie pas les etapes (risque de perte d'informations)
+            #j.supprime()
+            j = new_j
       else :
         self.MESSAGE("ERREUR AU DECODAGE DES SENSIBILITES - INTERRUPTION")
         return 1
@@ -294,29 +295,27 @@ class SUPERV:
 
 
    def ParLotMixte(self,j):
+       """
+       """
+       j.set_par_lot("NON")
+       try:
+           j.BuildExec()
+           ier=0
+           if not j.cr.estvide(): 
+               self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
+               ier=1
+               print ">> JDC.py : DEBUT RAPPORT"
+               print j.cr
+               print ">> JDC.py : FIN RAPPORT"
 
-      j.set_par_lot("NON")
+           if j.fico!=None :
+               open('fort.15', 'a').write(open('ficode', 'r').read())
 
-      try:
-         j.BuildExec()
-
-         ier=0
-         if not j.cr.estvide(): 
-            self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
-            ier=1
-            print ">> JDC.py : DEBUT RAPPORT"
-            print j.cr
-            print ">> JDC.py : FIN RAPPORT"
-
-         if j.fico!=None :
-            open('fort.15', 'a').write(open('ficode', 'r').read())
-
-         return ier
-
-      except :
-         self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
-         traceback.print_exc()
-         return 1   
+           return ier
+       except :
+           self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
+           traceback.print_exc()
+           return 1   
 
    def main(self):
       """

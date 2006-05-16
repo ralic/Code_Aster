@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE DMT94.132 EPROUVETTE CT BIMETALLIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,567 +217,567 @@ THETA4=CALC_THETA(MODELE=MO,
                               R_INF=3.0,
                               R_SUP=5.0,),);
 #
-# CALCUL DE G THETA POUR LE CHAMP THETA0
-# --------------------------------------
+# CALCUL DE G POUR LE CHAMP THETA0
+# --------------------------------
 
-G5_0=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA0,
-                    DEPL=DEP5,
-                    EXCIT=(_F(CHARGE=CL,),
-                           _F(CHARGE=CH,
-                              FONC_MULT=RAMPE,),),
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G5_0=CALC_G(MODELE=MO,
+           CHAM_MATER=CHMAT,
+           THETA=_F(THETA=THETA0),
+           DEPL=DEP5,
+           EXCIT=(_F(CHARGE=CL,),
+                  _F(CHARGE=CH,
+                     FONC_MULT=RAMPE,),),
+           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G10_0=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA0,
-                     DEPL=DEP10,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G10_0=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA0),
+            DEPL=DEP10,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G20_0=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA0,
-                     DEPL=DEP20,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G20_0=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA0),
+            DEPL=DEP20,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G30_0=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA0,
-                     DEPL=DEP30,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G30_0=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA0),
+            DEPL=DEP30,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G40_0=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA0,
-                     DEPL=DEP40,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G40_0=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA0),
+            DEPL=DEP40,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G70_0=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA0,
-                     DEPL=DEP70,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G70_0=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA0),
+            DEPL=DEP70,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G100_0=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA0,
-                      DEPL=DEP100,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G100_0=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA0),
+              DEPL=DEP100,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G130_0=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA0,
-                      DEPL=DEP130,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G130_0=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA0),
+              DEPL=DEP130,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G160_0=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA0,
-                      DEPL=DEP160,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G160_0=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA0),
+              DEPL=DEP160,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G190_0=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA0,
-                      DEPL=DEP190,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G190_0=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA0),
+              DEPL=DEP190,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G220_0=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA0,
-                      DEPL=DEP220,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G220_0=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA0),
+              DEPL=DEP220,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA1
 # --------------------------------------
 
-G5_1=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA1,
-                    DEPL=DEP5,
-                    EXCIT=(_F(CHARGE=CL,),
-                           _F(CHARGE=CH,
-                              FONC_MULT=RAMPE,),),
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G5_1=CALC_G(MODELE=MO,
+         CHAM_MATER=CHMAT,
+         THETA=_F(THETA=THETA1),
+         DEPL=DEP5,
+         EXCIT=(_F(CHARGE=CL,),
+                _F(CHARGE=CH,
+                   FONC_MULT=RAMPE,),),
+         COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G10_1=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA1,
-                     DEPL=DEP10,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G10_1=CALC_G(MODELE=MO,
+          CHAM_MATER=CHMAT,
+          THETA=_F(THETA=THETA1),
+          DEPL=DEP10,
+          EXCIT=(_F(CHARGE=CL,),
+                 _F(CHARGE=CH,
+                    FONC_MULT=RAMPE,),),
+          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G20_1=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA1,
-                     DEPL=DEP20,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G20_1=CALC_G(MODELE=MO,
+          CHAM_MATER=CHMAT,
+          THETA=_F(THETA=THETA1),
+          DEPL=DEP20,
+          EXCIT=(_F(CHARGE=CL,),
+                 _F(CHARGE=CH,
+                    FONC_MULT=RAMPE,),),
+          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G30_1=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA1,
-                     DEPL=DEP30,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G30_1=CALC_G(MODELE=MO,
+          CHAM_MATER=CHMAT,
+          THETA=_F(THETA=THETA1),
+          DEPL=DEP30,
+          EXCIT=(_F(CHARGE=CL,),
+                 _F(CHARGE=CH,
+                    FONC_MULT=RAMPE,),),
+          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G40_1=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA1,
-                     DEPL=DEP40,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G40_1=CALC_G(MODELE=MO,
+          CHAM_MATER=CHMAT,
+          THETA=_F(THETA=THETA1),
+          DEPL=DEP40,
+          EXCIT=(_F(CHARGE=CL,),
+                 _F(CHARGE=CH,
+                    FONC_MULT=RAMPE,),),
+          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G70_1=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA1,
-                     DEPL=DEP70,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G70_1=CALC_G(MODELE=MO,
+             CHAM_MATER=CHMAT,
+             THETA=_F(THETA=THETA1),
+             DEPL=DEP70,
+             EXCIT=(_F(CHARGE=CL,),
+                    _F(CHARGE=CH,
+                       FONC_MULT=RAMPE,),),
+             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G100_1=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA1,
-                      DEPL=DEP100,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G100_1=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA1),
+              DEPL=DEP100,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G130_1=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA1,
-                      DEPL=DEP130,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G130_1=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA1),
+              DEPL=DEP130,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G160_1=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA1,
-                      DEPL=DEP160,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G160_1=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA1),
+              DEPL=DEP160,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G190_1=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA1,
-                      DEPL=DEP190,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G190_1=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA1),
+              DEPL=DEP190,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G220_1=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA1,
-                      DEPL=DEP220,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G220_1=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA1),
+              DEPL=DEP220,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA2
 # --------------------------------------
 
-G5_2=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA2,
-                    DEPL=DEP5,
-                    EXCIT=(_F(CHARGE=CL,),
-                           _F(CHARGE=CH,
-                              FONC_MULT=RAMPE,),),
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G5_2=CALC_G(MODELE=MO,
+           CHAM_MATER=CHMAT,
+           THETA=_F(THETA=THETA2),
+           DEPL=DEP5,
+           EXCIT=(_F(CHARGE=CL,),
+                  _F(CHARGE=CH,
+                     FONC_MULT=RAMPE,),),
+           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G10_2=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA2,
-                     DEPL=DEP10,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G10_2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA2),
+            DEPL=DEP10,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G20_2=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA2,
-                     DEPL=DEP20,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G20_2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA2),
+            DEPL=DEP20,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G30_2=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA2,
-                     DEPL=DEP30,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G30_2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA2),
+            DEPL=DEP30,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G40_2=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA2,
-                     DEPL=DEP40,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G40_2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA2),
+            DEPL=DEP40,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G70_2=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA2,
-                     DEPL=DEP70,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G70_2=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA2),
+            DEPL=DEP70,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G100_2=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA2,
-                      DEPL=DEP100,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G100_2=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA2),
+              DEPL=DEP100,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G130_2=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA2,
-                      DEPL=DEP130,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G130_2=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA2),
+              DEPL=DEP130,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G160_2=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA2,
-                      DEPL=DEP160,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G160_2=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA2),
+              DEPL=DEP160,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G190_2=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA2,
-                      DEPL=DEP190,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G190_2=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA2),
+              DEPL=DEP190,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G220_2=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA2,
-                      DEPL=DEP220,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G220_2=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA2),
+              DEPL=DEP220,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA3
 # --------------------------------------
 
-G5_3=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA3,
-                    DEPL=DEP5,
-                    EXCIT=(_F(CHARGE=CL,),
-                           _F(CHARGE=CH,
-                              FONC_MULT=RAMPE,),),
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G5_3=CALC_G(MODELE=MO,
+           CHAM_MATER=CHMAT,
+           THETA=_F(THETA=THETA3),
+           DEPL=DEP5,
+           EXCIT=(_F(CHARGE=CL,),
+                  _F(CHARGE=CH,
+                     FONC_MULT=RAMPE,),),
+           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G10_3=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA3,
-                     DEPL=DEP10,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G10_3=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA3),
+            DEPL=DEP10,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G20_3=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA3,
-                     DEPL=DEP20,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G20_3=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA3),
+            DEPL=DEP20,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G30_3=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA3,
-                     DEPL=DEP30,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G30_3=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA3),
+            DEPL=DEP30,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G40_3=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA3,
-                     DEPL=DEP40,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G40_3=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA3),
+            DEPL=DEP40,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G70_3=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA3,
-                     DEPL=DEP70,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G70_3=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA3),
+            DEPL=DEP70,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G100_3=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA3,
-                      DEPL=DEP100,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G100_3=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA3),
+              DEPL=DEP100,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G130_3=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA3,
-                      DEPL=DEP130,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G130_3=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA3),
+              DEPL=DEP130,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G160_3=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA3,
-                      DEPL=DEP160,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G160_3=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA3),
+              DEPL=DEP160,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G190_3=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA3,
-                      DEPL=DEP190,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G190_3=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA3),
+              DEPL=DEP190,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G220_3=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA3,
-                      DEPL=DEP220,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G220_3=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA3),
+              DEPL=DEP220,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA4
 # --------------------------------------
 
-G5_4=CALC_G_THETA_T(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=THETA4,
-                    DEPL=DEP5,
-                    EXCIT=(_F(CHARGE=CL,),
-                           _F(CHARGE=CH,
-                              FONC_MULT=RAMPE,),),
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G5_4=CALC_G(MODELE=MO,
+           CHAM_MATER=CHMAT,
+           THETA=_F(THETA=THETA4),
+           DEPL=DEP5,
+           EXCIT=(_F(CHARGE=CL,),
+                  _F(CHARGE=CH,
+                     FONC_MULT=RAMPE,),),
+           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G10_4=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA4,
-                     DEPL=DEP10,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G10_4=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA4),
+            DEPL=DEP10,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G20_4=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA4,
-                     DEPL=DEP20,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G20_4=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA4),
+            DEPL=DEP20,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G30_4=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA4,
-                     DEPL=DEP30,
-                     EXCIT=(_F(CHARGE=CL,),
-                            _F(CHARGE=CH,
-                               FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G30_4=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA4),
+            DEPL=DEP30,
+            EXCIT=(_F(CHARGE=CL,),
+                   _F(CHARGE=CH,
+                      FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G40_4=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA4,
-                     DEPL=DEP40,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G40_4=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA4),
+            DEPL=DEP40,
+             EXCIT=(_F(CHARGE=CL,),
+                    _F(CHARGE=CH,
+                       FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G70_4=CALC_G_THETA_T(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     THETA=THETA4,
-                     DEPL=DEP70,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                     COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G70_4=CALC_G(MODELE=MO,
+            CHAM_MATER=CHMAT,
+            THETA=_F(THETA=THETA4),
+            DEPL=DEP70,
+             EXCIT=(_F(CHARGE=CL,),
+                    _F(CHARGE=CH,
+                       FONC_MULT=RAMPE,),),
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G100_4=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA4,
-                      DEPL=DEP100,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G100_4=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA4),
+              DEPL=DEP100,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G130_4=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA4,
-                      DEPL=DEP130,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G130_4=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA4),
+              DEPL=DEP130,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G160_4=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA4,
-                      DEPL=DEP160,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G160_4=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA4),
+              DEPL=DEP160,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G190_4=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA4,
-                      DEPL=DEP190,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G190_4=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA4),
+              DEPL=DEP190,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 
-G220_4=CALC_G_THETA_T(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      THETA=THETA4,
-                      DEPL=DEP220,
-                      EXCIT=(_F(CHARGE=CL,),
-                             _F(CHARGE=CH,
-                                FONC_MULT=RAMPE,),),
-                      COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+G220_4=CALC_G(MODELE=MO,
+              CHAM_MATER=CHMAT,
+              THETA=_F(THETA=THETA4),
+              DEPL=DEP220,
+              EXCIT=(_F(CHARGE=CL,),
+                     _F(CHARGE=CH,
+                        FONC_MULT=RAMPE,),),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
 #
 # TESTS DES RESULTATS COURONNE 0
 # -----------------------------------

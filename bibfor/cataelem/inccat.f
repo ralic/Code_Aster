@@ -1,6 +1,6 @@
       SUBROUTINE INCCAT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 12/05/97   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF CATAELEM  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,6 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C     INCLUDE($CIMPERR)
-C
-      COMMON /CIMP/IMP,IULMES,IULIST,IULVIG
 C
 C     EXCLUDE($CIMPERR)
 C
@@ -347,11 +345,6 @@ C
         PASDMP(IDMP) = 0
         TYOBDM(IDMP) = 0
    10 CONTINUE
-C
-      IULMES = IUNIFI('MESSAGE')
-      IULIST = IUNIFI('VIGILE ')
-      IULVIG = IUNIFI('VIGILE ')
-      IMP = 0
 C
       GOTO 9999
 

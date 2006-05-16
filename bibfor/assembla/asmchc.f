@@ -5,7 +5,7 @@
       INTEGER NELIM,ELIM(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 10/05/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,12 +70,12 @@ C                DEBUT DES INSTRUCTIONS
       CALL JEMARQ()
 
 C     -- ON DETRUIT LES OBJETS S'ILS EXISTENT DEJA :
+      MAT = MATAS
       CALL JEDETR(MAT//'.CCLL')
       CALL JEDETR(MAT//'.CCVA')
 
       IF (NELIM.EQ.0) GO TO 130
 C     -----------------------------------------------
-      MAT = MATAS
 
       CALL JEVEUO(MAT//'.REFA','L',JREFA)
       NU = ZK24(JREFA-1+2) (1:14)
