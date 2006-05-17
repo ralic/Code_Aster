@@ -1,4 +1,4 @@
-#@ MODIF N_FACT Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_FACT Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,6 +30,9 @@ import types
 import N_ENTITE
 import N_MCFACT
 import N_MCLIST
+from N__F import _F
+
+import N_OBJECT 
 
 class FACT(N_ENTITE.ENTITE):
    """
@@ -115,7 +118,7 @@ class FACT(N_ENTITE.ENTITE):
         elif type(self.defaut) == types.TupleType:
           val=self.defaut
               # Est ce utile ? Le défaut pourrait etre uniquement un dict
-        elif type(self.defaut) == types.DictType or isinstance(self.defaut,N_MCFACT._F):
+        elif type(self.defaut) == types.DictType or isinstance(self.defaut,_F):
           val=self.defaut
         else:
           # On ne devrait jamais passer par la
@@ -127,11 +130,16 @@ class FACT(N_ENTITE.ENTITE):
       l.init(nom = nom,parent=parent)
       if type(val) in (types.TupleType,types.ListType) :
          for v in val:
-            objet=self.class_instance(nom=nom,definition=self,val=v,parent=parent)
-            l.append(objet)
-      else:
+            if type(v) == types.DictType or isinstance(v, _F):
+               objet=self.class_instance(nom=nom,definition=self,val=v,parent=parent)
+               l.append(objet)
+            else:
+               l.append(N_OBJECT.ErrorObj(self,v,parent,nom))
+      elif type(val) == types.DictType or isinstance(val, _F):
          objet=self.class_instance(nom=nom,definition=self,val=val,parent=parent)
          l.append(objet)
+      else:
+         l.append(N_OBJECT.ErrorObj(self,val,parent,nom))
 
       return l
 

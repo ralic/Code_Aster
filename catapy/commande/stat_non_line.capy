@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,8 +70,8 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                      EXCLUS('EVOL_NOLI','VARI_NON_LOCAL',),
                      EXCLUS('NUME_ORDRE','INST'), ),
              DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
-             SIGM            =SIMP(statut='f',typ=(cham_elem_sdaster,carte_sdaster)),
-             VARI            =SIMP(statut='f',typ=cham_elem_sdaster),
+             SIGM            =SIMP(statut='f',typ=(cham_elem,carte_sdaster)),
+             VARI            =SIMP(statut='f',typ=cham_elem),
              VARI_NON_LOCAL  =SIMP(statut='f',typ=cham_no_sdaster),
              EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
              NUME_ORDRE      =SIMP(statut='f',typ='I'),
@@ -90,8 +90,8 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                      EXCLUS('EVOL_NOLI','VARI_NON_LOCAL',),
                      EXCLUS('NUME_ORDRE','INST'), ),
              DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
-             SIGM            =SIMP(statut='f',typ=(cham_elem_sdaster,carte_sdaster)),
-             VARI            =SIMP(statut='f',typ=cham_elem_sdaster),
+             SIGM            =SIMP(statut='f',typ=(cham_elem,carte_sdaster)),
+             VARI            =SIMP(statut='f',typ=cham_elem),
              VARI_NON_LOCAL  =SIMP(statut='f',typ=cham_no_sdaster),
              EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
              NUME_ORDRE      =SIMP(statut='f',typ='I'),

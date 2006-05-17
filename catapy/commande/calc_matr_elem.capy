@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          b_rigi_geom       =BLOC(condition = "OPTION=='RIGI_GEOM'",
            MODELE            =SIMP(statut='o',typ=modele_sdaster ),
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
-           SIEF_ELGA         =SIMP(statut='o',typ=cham_elem_sdaster ),
+           SIEF_ELGA         =SIMP(statut='o',typ=cham_elem ),
            MODE_FOURIER      =SIMP(statut='f',typ='I',defaut= 0 ),
          ),
 

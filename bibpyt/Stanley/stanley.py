@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 15/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ E. LORENTZ, P. BADEL, A. ASSIRE
 STANLEY
 """
 
-import sys, os, os.path, string, copy, tkFileDialog, cPickle, tkMessageBox
+import sys, os, os.path, string, copy, tkFileDialog, cPickle, tkMessageBox, time
 
 #import Tix as Tk
 import Tkinter as Tk
@@ -69,7 +69,7 @@ from Cata.cata import *
 from Accas import _F
 from types import *
 from Utilitai import Sensibilite
-
+from Macro.test_fichier_ops import md5file
 
 # Salome
 try:
@@ -1441,7 +1441,7 @@ class STANLEY:
     
   """
   
-  def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi) :
+  def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi, FICHIER_VALID=None) :
 
     # Gestion des erreurs
     self.erreur = ERREUR()
@@ -1451,6 +1451,7 @@ class STANLEY:
     self.etat_resu  = ETAT_RESU(self.contexte)
     self.selection  = SELECTION(self.contexte,self.etat_geom,self.etat_resu)
     self.parametres = PARAMETRES()    
+    self.FICHIER_VALID = FICHIER_VALID
 
     self.interface  = INTERFACE(self)
     self.selection.Interface(self.interface)
@@ -1595,7 +1596,7 @@ class STANLEY:
           self.parametres.Sauvegarder_Rapide(self.interface)
           self.parametres.Terminer(self.interface)
           self.Fermeture_Propre_Stanley()
-          STANLEY(self.contexte.resultat, self.contexte.maillage, self.contexte.modele, self.contexte.cham_mater, self.contexte.cara_elem)
+          STANLEY(self.contexte.resultat, self.contexte.maillage, self.contexte.modele, self.contexte.cham_mater, self.contexte.cara_elem, self.FICHIER_VALID)
 #          self.Select()
 
   def Voir(self) : 
@@ -1623,7 +1624,7 @@ class STANLEY:
         Ferme Stanley et relance Pre_Stanley
      """
      self.Fermeture_Propre_Stanley()
-     PRE_STANLEY()
+     PRE_STANLEY(self.FICHIER_VALID)
 
 
   def Fermeture_Propre_Stanley(self):
@@ -1993,6 +1994,7 @@ class DRIVER :
       Tracer : Trace la selection (a enrichir dans chaque classe heritee)
       Projeter : Projection d'un champ aux noeuds sur un chemin ou un point (chemin degenere)
       Ecla_Gauss : Projection d'un cham_elem_elga aux points de Gauss
+      Test_fichier_resu : En mode Validation, permet d'ecrire dans un fichier les md5 de tous les fichiers resultats produits
   """
 
   def __init__(self, stan) :
@@ -2187,6 +2189,52 @@ class DRIVER :
     return CONTEXTE(__RESU_G, __MA_G, __MO_G, None, None, None), ldetr
 
 
+  # ----------------------------------------------------------------------------
+  def Test_fichier_resu(self, driver, FICHIER, FICHIER_VALID, selection):
+    """
+       Permet de generer le md5 pour verifier la conformité du fichier de sortie
+    """
+
+    # Type de trace
+    if   driver == 'Isovaleurs':
+       NB_CHIFFRE = 4
+       EPSILON = 10E-10
+       regexp_ignore = []
+    elif driver == 'Courbes':
+       NB_CHIFFRE = 4
+       EPSILON = 10E-10
+       regexp_ignore=[]
+    elif driver == 'SalomeCourbes':
+       NB_CHIFFRE = 4
+       EPSILON = 10E-10
+       regexp_ignore=[]
+       return
+    elif driver == 'SalomeIsovaleurs':
+       NB_CHIFFRE = 4
+       EPSILON = 10E-10
+       regexp_ignore=[]
+       return
+    else:
+       return
+
+    try:
+       # calcule le md5sum du fichier
+       ier, mdsum = md5file(FICHIER, NB_CHIFFRE, EPSILON, regexp_ignore, info=1)
+       # Affichage de la ligne
+       txt = mdsum + ' - ' + FICHIER + ' - ' + ' - '.join( [str(selection.nom_cham), str(selection.nom_cmp), str(selection.numeros), str(selection.geom) ] )
+    except Exception,err:
+       texte = _("Probleme")+" :\n"+str(err)
+       UTMESS('A','STANLEY', texte )
+
+    try:
+       f=open(self.stan.FICHIER_VALID, 'a')
+       f.write(txt+'\n')
+       f.close()
+    except:
+       UTMESS('A','STANLEY', _("Impossible d'ouvrir en ecriture le fichier : " + self.stan.FICHIER_VALID) )
+
+    return
+
 
 # ==============================================================================
 
@@ -2308,8 +2356,14 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
 
     DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
 
+
+    # Ecriture du fichier de validation
+    if self.stan.FICHIER_VALID:
+       self.Test_fichier_resu(driver=selection.mode, FICHIER='fort.'+str(ul), FICHIER_VALID=self.stan.FICHIER_VALID, selection=selection)
+
+
     if l_detr : 
-      DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+       DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
 
 
     self.terminal = gmsh.GMSH('POST', gmshFileName, self.stan.parametres, options)
@@ -2600,7 +2654,7 @@ class DRIVER_GRACE(DRIVER_COURBES) :
             self.terminal.Fermer()
             self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
 
-     # Trace proprement dit 
+      # Trace proprement dit 
       self.terminal.Nouveau_graphe()
 
       for courbe in l_courbes :
@@ -2612,6 +2666,13 @@ class DRIVER_GRACE(DRIVER_COURBES) :
       elif selection.geom[0] == 'CHEMIN' :
          self.terminal.Axe_x('ABSC_CURV ' + selection.geom[1][0])
          self.terminal.Axe_y(selection.nom_cham)
+
+      # Ecriture du fichier de validation
+      if self.stan.FICHIER_VALID:
+         for fic in os.listdir('.'):
+            # Ne prend que les fichiers xmgr.i.j.dat
+            if (fic[0:5] == 'xmgr.') and (fic[-4:] == '.dat'):
+               self.Test_fichier_resu(driver=selection.mode, FICHIER=fic, FICHIER_VALID=self.stan.FICHIER_VALID, selection=selection)
 
 
 
@@ -2768,9 +2829,10 @@ class PRE_STANLEY :
   """
 
 
-  def __init__(self) :   
+  def __init__(self, FICHIER_VALID=None) :   
 
 
+    self.FICHIER_VALID = FICHIER_VALID
     self.para = PARAMETRES()
 
     self.rootTk    = Tk.Tk()       
@@ -2784,7 +2846,6 @@ class PRE_STANLEY :
     t_cham_mater=[]
     t_cara_elem=[]
     t_para_sensi=[]
-
 
     lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'para_sensi' ]
 
@@ -2991,6 +3052,7 @@ class PRE_STANLEY :
      cham_mater=self.t_cham_mater[i]
 
      if self.t_cara_elem == []:
+        cara_elem=None
         c_cara_elem=None
      else:
         i=int(self.cara_elem.listbox.curselection()[0])
@@ -2998,17 +3060,38 @@ class PRE_STANLEY :
         c_cara_elem = self.jdc_recupere.sds_dict[cara_elem]
 
      if self.t_para_sensi == []:
+        para_sensi=None
         c_para_sensi=None
      else:
         i=int(self.para_sensi.listbox.curselection()[0])
-        if i == 0: c_para_sensi=None
+        if i == 0:
+           para_sensi=None
+           c_para_sensi=None
         else:
            para_sensi=self.t_para_sensi[i-1]
            c_para_sensi = self.jdc_recupere.sds_dict[para_sensi]
 
      self.Sortir()
 
-     STANLEY(self.jdc_recupere.sds_dict[evol], self.jdc_recupere.sds_dict[maillage], self.jdc_recupere.sds_dict[modele], self.jdc_recupere.sds_dict[cham_mater], c_cara_elem, c_para_sensi)
+
+     # Ouvre le fichier de validation
+     if self.FICHIER_VALID:
+        nom_cas_test = self.jdc_recupere.fico
+        if not nom_cas_test: nom_cas_test='(pas de nom de cas-test)'
+
+        date = time.localtime()
+        txt = 50*'-'+'\n'+str(date[2])+'/'+str(date[1])+'/'+str(date[0])+' - '+str(date[3])+':'+str(date[4])+'\n'
+        txt += nom_cas_test + ' [' + ' / '.join([str(evol), str(modele), str(cham_mater), str(cara_elem), str(para_sensi)]) + ' ]\n'
+        try:
+           f=open(self.FICHIER_VALID, 'a')
+           f.write(txt)
+           f.close()
+        except:
+           UTMESS('A','STANLEY', _("Impossible d'ouvrir en ecriture le fichier : " + self.FICHIER_VALID) )
+           self.FICHIER_VALID = None
+
+     # Lancement de Stanley
+     STANLEY(self.jdc_recupere.sds_dict[evol], self.jdc_recupere.sds_dict[maillage], self.jdc_recupere.sds_dict[modele], self.jdc_recupere.sds_dict[cham_mater], c_cara_elem, c_para_sensi, self.FICHIER_VALID)
 
 
   def Sortir(self):

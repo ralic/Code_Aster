@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             COOVAV,COODSV,COOREV
       CHARACTER*24 MOMANU,MOMANO,CRMANU,CRMANO,CRGRNU,CRGRNO,LISI,LISK
       CHARACTER*24 PRFN1,PRFN2,NUME2,IADR,NUME1,MOMOTO,MOMUTO,PRFN
+      INTEGER NN1
       LOGICAL LOGIC
 C     ------------------------------------------------------------------
 
@@ -68,7 +69,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
       CALL GETRES ( NOMAOU, TYPCON, NOMCMD )
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMAIN, N1 )
+      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMAIN, NN1 )
 
 C ----------------------------------------------------------------------
 C               TRAITEMENT DU MOT CLE "ECLA_PG"
@@ -86,6 +87,10 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('CREA_FISS',NBJOIN)
       IF (NBJOIN.NE.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_FISS. ')
+        ENDIF
         CALL WKVECT('&&OP0167.NOMMC','V V K16',NBJOIN,JNOMMC)
         CALL WKVECT('&&OP0167.OCCMC','V V I',NBJOIN,JOCCMC)
         DO 2 I = 1,NBJOIN
@@ -104,7 +109,10 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('LINE_QUAD',NBMOMA)
       IF (NBMOMA.GT.0) THEN
-
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE LINE_QUAD. ')
+        ENDIF
         CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,1,1,PREFIX,N1)
         CALL GETVIS('LINE_QUAD','PREF_NUME' ,1,1,1,NDINIT,N1)
 
@@ -132,6 +140,10 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('QUAD_LINE',NBMOMA)
       IF (NBMOMA.GT.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE QUAD_LINE. ')
+        ENDIF
         MOTCLE(1) = 'MAILLE'
         MOTCLE(2) = 'GROUP_MA'
         MOTCLE(3) = 'TOUT'
@@ -157,7 +169,10 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC ( 'MODI_MAILLE', NBMOMA )
       IF ( NBMOMA .GT. 0 ) THEN
-
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE MODI_MAILLE. ')
+        ENDIF
         IQTR = 0
         DO 400 IOCC = 1,NBMOMA
           CALL GETVTX ( 'MODI_MAILLE', 'OPTION', IOCC,1,1, OPTION, N1)
@@ -197,6 +212,10 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC ( 'COQU_VOLU', NBVOLU )
       IF ( NBVOLU .NE. 0 ) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE COQU_VOLU. ')
+        ENDIF
 C
          CALL GETVR8 ('COQU_VOLU','EPAIS'      ,1,1,1,EPAIS,N1)
          CALL GETVTX ('COQU_VOLU','PREF_NOEUD' ,1,1,1,PRFNO,N1)
@@ -275,6 +294,10 @@ C ----------------------------------------------------------------------
       NBNOAJ = 0
 C
       IF (NBMOMA.NE.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE MODI_MAILLE. ')
+        ENDIF
         MOMANU = '&&OP0167.MO_MA.NUM'
         MOMANO = '&&OP0167.MO_MA.NOM'
 
@@ -369,6 +392,10 @@ C ----------------------------------------------------------------------
       CALL GETFAC('CREA_MAILLE',NBCRMA)
       NBMAJ1 = 0
       IF (NBCRMA.NE.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_MAILLE. ')
+        ENDIF
         CRMANU = '&&OP0167.CR_MA.NUM'
         CRMANO = '&&OP0167.CR_MA.NOM'
         CALL WKVECT(CRMANU,'V V I',NBMAIV,JCRMNU)
@@ -393,6 +420,10 @@ C ----------------------------------------------------------------------
       CALL GETFAC('CREA_GROUP_MA',NBGRMA)
       NBMAJ2 = 0
       IF (NBGRMA.NE.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_GROUP_MA. ')
+        ENDIF
         CRGRNU = '&&OP0167.CR_GR.NUM'
         CRGRNO = '&&OP0167.CR_GR.NOM'
         CALL WKVECT(CRGRNU,'V V I',NBMAIV,JCRGNU)
@@ -412,6 +443,10 @@ C ----------------------------------------------------------------------
       CALL GETFAC('CREA_POI1',NBCRP1)
       NBMAJ3 = 0
       IF (NBCRP1.NE.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_POI1. ')
+        ENDIF
         CALL JENONU(JEXNOM('&CATA.TM.NOMTM','POI1'),NTPOI)
 
 C        -- RECUPERATION DE LA LISTE DES NOEUD :
@@ -540,6 +575,10 @@ C --- DE L'INERTIE DE GAUCHISSEMENT :
 C     -----------------------------
       CALL GETFAC('REPERE',NREP)
       IF (NREP.NE.0) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE REPERE. ')
+        ENDIF
         CALL GETVID('REPERE','TABLE',1,1,0,K8B,NTAB)
         IF (NTAB.NE.0) THEN
           CALL GETVID('REPERE','TABLE',1,1,1,TABLE,NTAB)
@@ -854,8 +893,13 @@ C              TRAITEMENT DU MOT CLE DETR_GROUP_MA
 C ----------------------------------------------------------------------
 
       CALL GETFAC ( 'DETR_GROUP_MA', NBDGMA )
-      IF (NBDGMA.EQ.1) CALL CMDGMA(NOMAOU)
-
+      IF (NBDGMA.EQ.1) THEN
+        IF(NN1.EQ.0) THEN
+          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
+     +                'EST OBLIGATOIRE AVEC LE MOT-CLE DETR_GROUP_MA. ')
+        ENDIF
+        CALL CMDGMA(NOMAOU)
+      ENDIF
   300 CONTINUE
 
       CALL TITRE()

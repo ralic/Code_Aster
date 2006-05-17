@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
          ),
          
          b_forc_noda     =BLOC(condition = "OPTION=='FORC_NODA'",
-           SIEF_ELGA         =SIMP(statut='o',typ=cham_elem_sdaster),
+           SIEF_ELGA         =SIMP(statut='o',typ=cham_elem),
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem),
            MODELE            =SIMP(statut='f',typ=modele_sdaster),
          ),

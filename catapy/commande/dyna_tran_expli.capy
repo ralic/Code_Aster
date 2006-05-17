@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2006   AUTEUR EPIARD X.EPIARD 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,8 +96,8 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
            DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
            VITE            =SIMP(statut='f',typ=cham_no_sdaster),
            ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
-           SIGM            =SIMP(statut='f',typ=(cham_elem_sdaster,carte_sdaster)),
-           VARI            =SIMP(statut='f',typ=cham_elem_sdaster),
+           SIGM            =SIMP(statut='f',typ=(cham_elem,carte_sdaster)),
+           VARI            =SIMP(statut='f',typ=cham_elem),
            VARI_NON_LOCAL  =SIMP(statut='f',typ=cham_no_sdaster),
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
            NUME_ORDRE      =SIMP(statut='f',typ='I'),

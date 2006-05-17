@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -180,26 +180,11 @@ OPTION__
                                      ECONTNO  PSIGINR  NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR
                                      ZVARINO  PVARIPR  DDL_MECA PVITESS
                               OUT__  EGTHETA  PGTHETA
-    CALC_GLAG_EPSI_F    289   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF   DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
-    CALC_GLAG_EPSI_R    289   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
-                                     DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
     CALC_G_F            96    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFPNO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                                      DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS
-                              OUT__  EGTHETA  PGTHETA
-    CALC_G_LAGR         288   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
-    CALC_G_LAGR_F       288   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
-                                     DDL_MECA PTHETAR
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -387,6 +372,21 @@ OPTION__
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    G_LAGR              288   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF   DDL_MECA PTHETAR
+                              OUT__  EGTHETA  PGTHETA
+    G_LAGR_F            288   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     DDL_MECA PTHETAR
+                              OUT__  EGTHETA  PGTHETA
+    G_LAGR_EPSI_F       289   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF   DDL_MECA PTHETAR
+                              OUT__  EGTHETA  PGTHETA
+    G_LAGR_EPSI_R       289   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     DDL_MECA PTHETAR
+                              OUT__  EGTHETA  PGTHETA
     GRAD_ELGA_THETA     384   IN__   NGEOMER  PGEOMER  DDL_MECA PTHETAR
                               OUT__  EGRDUPG  PGRADUR
     GTHE_ELNO_ELGA      384   IN__   NGEOMER  PGEOMER  DDL_MECA PTHETAR

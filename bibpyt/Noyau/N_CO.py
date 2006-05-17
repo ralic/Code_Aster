@@ -1,4 +1,4 @@
-#@ MODIF N_CO Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_CO Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,7 @@
 
 from N_ASSD import ASSD
 from N_Exception import AsException
+from N_VALIDATOR import ValError
 import N_utils
 
 class CO(ASSD):
@@ -40,15 +41,11 @@ class CO(ASSD):
     else:
        self.nom=nom
 
-  def is_object(valeur):
-    """
-          Indique si valeur est d'un type conforme à la classe (retourne 1)
-          ou non conforme (retourne 0)
-    """
-    if hasattr(valeur,'_etape') :
-       # valeur est un concept CO qui a ete transforme par type_sdprod
-       if valeur.etape == valeur._etape:
-           # le concept est bien produit par l'etape
-           return 1
-    return 0
-
+  def __convert__(cls,valeur):
+      if hasattr(valeur,'_etape') :
+         # valeur est un concept CO qui a ete transforme par type_sdprod
+         if valeur.etape == valeur._etape:
+             # le concept est bien produit par l'etape
+             return valeur
+      raise ValError("Pas un concept CO")
+  __convert__=classmethod(__convert__)

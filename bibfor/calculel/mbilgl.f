@@ -20,7 +20,7 @@
       LOGICAL UFONC,VFONC,EPSIU,EPSIV
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     TOLE CRP_21
 
 C  - FONCTION REALISEE:   CALCUL DU TAUX DE RESTITUTION LOCAL D'ENERGIE
 
-C  IN    OPTION --> CALC_G_BILI / CALC_G_BILI_F
+C  IN    OPTION --> G_BILI / G_BILI_F
 C  IN    RESULT --> NOM UTILISATEUR DU RESULTAT ET TABLE
 C  IN    MODELE --> NOM DU MODELE
 C  IN    DEPLA  --> CHAMP DE DEPLACEMENT
@@ -59,8 +59,8 @@ C  IN    GLAGR  --> VRAI SI LISSAGE G_LAGRANGE (SINON LEGENDRE)
 C  IN    NDEG   --> DEGRE DU POLYNOME DE LEGENDRE
 C  IN    MILIEU --> .TRUE.  : ELEMENT QUADRATIQUE
 C                   .FALSE. : ELEMENT LINEAIRE
-C  IN    THETA  --> CHAMP DE PROPAGATION LAGRANGIENNE (SI CALC_G_LGLO)
-C  IN    ALPHA  --> PROPAGATION LAGRANGIENNE          (SI CALC_G_LGLO)
+C  IN    THETA  --> CHAMP DE PROPAGATION LAGRANGIENNE (SI G_LAGR)
+C  IN    ALPHA  --> PROPAGATION LAGRANGIENNE          (SI G_LAGR)
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
@@ -198,7 +198,7 @@ C - TRAITEMENT DES CHARGES U
         UPA23D = 'UPFF23D'
         UPAPRE = 'UPRESSF'
         UPEPSI = 'UEPSINF'
-        OPTI = 'CALC_G_BILI_F'
+        OPTI = 'G_BILI_F'
       ELSE
         UPAVOL = 'UPFRVOL'
         UPA23D = 'UPFR23D'
@@ -224,7 +224,7 @@ C - TRAITEMENT DES CHARGES V
         VPA23D = 'VPFF23D'
         VPAPRE = 'VPRESSF'
         VPEPSI = 'VEPSINF'
-        OPTI = 'CALC_G_BILI_F'
+        OPTI = 'G_BILI_F'
       ELSE
         VPAVOL = 'VPFRVOL'
         VPA23D = 'VPFR23D'
@@ -297,7 +297,7 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         
         LIGRMO = MODELE//'.MODELE'
         NCHIN = 20
-        IF (OPTI .EQ. 'CALC_G_BILI_F') THEN
+        IF (OPTI .EQ. 'G_BILI_F') THEN
           CHTIMU = '&&'//NOMPRO//'.CH_INST_R'
           CALL MECACT('V',CHTIMU,'MODELE',LIGRMO,'INST_R  ',1,'INST   ',
      &                IBID,TIMEU,CBID,K8BID)

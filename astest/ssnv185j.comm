@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,17 +143,17 @@ for i in range(1,4) :
                          ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
 
-   SIF[i]=CALC_G_LOCAL_T(MODELE=MODELE[i],
+   SIF[i]=CALC_G        (MODELE=MODELE[i],
                          CHAM_MATER=CHAMPMA1,
                          RESULTAT=RESU[i],
                          SYME_CHAR='SANS',
                          COMP_ELAS=_F(RELATION='ELAS',),
                          OPTION='CALC_K_G',
-                         FISSURE=FISS[i-1],
-                         LISSAGE_THETA='LAGRANGE',
-                         LISSAGE_G='LAGRANGE',
-                         R_INF=RI,
-                         R_SUP=RS,
+                         THETA=_F( FISSURE=FISS[i-1],
+                                   R_INF=RI,
+                                   R_SUP=RS,),
+                         LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
+                                     LISSAGE_G='LAGRANGE',),
                          INFO=1,);
 
    IMPR_TABLE(TABLE=SIF[i],);

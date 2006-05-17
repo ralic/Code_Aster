@@ -1,4 +1,4 @@
-#@ MODIF N_OBJECT Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_OBJECT Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,7 @@
     Ce module contient la classe OBJECT classe mère de tous les objets
     servant à controler les valeurs par rapport aux définitions
 """
+from N_CR import CR
 
 class OBJECT:
    """
@@ -98,4 +99,33 @@ class OBJECT:
       """
       self.parent=parent
       self.jdc=parent.jdc
+
+class ErrorObj(OBJECT):
+    """Classe pour objets errones : emule le comportement d'un objet tel mcsimp ou mcfact
+    """
+    def __init__(self,definition,valeur,parent,nom="err"):
+        self.nom=nom
+        self.definition=definition
+        self.valeur=valeur
+        self.parent=parent
+        self.mc_liste=[]
+        if parent :
+            self.jdc = self.parent.jdc
+            #self.niveau = self.parent.niveau
+            #self.etape = self.parent.etape
+        else:
+            # Pas de parent
+            self.jdc = None
+            #self.niveau = None
+            #self.etape = None
+    def isvalid(self,cr='non'):
+        return 0
+
+    def report(self):
+      """ génère le rapport de validation de self """
+      self.cr=CR()
+      self.cr.debut = "Mot-clé invalide : "+self.nom
+      self.cr.fin = "Fin Mot-clé invalide : "+self.nom
+      self.cr.fatal("Type non autorisé pour le mot-clé %s : '%s'" % (self.nom,self.valeur))
+      return self.cr
 

@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF N_VALIDATOR Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,208 @@
    Ce module contient toutes les classes necessaires pour
    implanter le concept de validateur dans Accas
 """
-import types,exceptions
+import types
+import string
+import traceback
 
-class ValError ( exceptions.Exception ):
-      pass
+class ValError(Exception):pass
 
-class Valid:
+def cls_mro(cls):
+    if hasattr(cls,"__mro__"):return cls.__mro__
+    mro=[cls]
+    for base in cls.__bases__:
+        mro.extend(cls_mro(base))
+    return mro
+
+class Protocol:
+    def __init__(self,name):
+        self.registry = {}
+        self.name = name
+        self.args={}
+
+    def register(self, T, A):
+        self.registry[T] = A
+
+    def adapt(self, obj):
+        # (a) verifier si l'objet peut s'adapter au protocole
+        adapt = getattr(obj, '__adapt__', None)
+        if adapt is not None:
+            # on demande à l'objet obj de réaliser lui-meme l'adaptation
+            return adapt(self)
+
+        # (b) verifier si un adapteur est enregistré (si oui l'utiliser)
+        if self.registry:
+            for T in cls_mro(obj.__class__):
+                if T in self.registry:
+                    return self.registry[T](obj,self,**self.args)
+
+        # (c) utiliser l'adapteur par defaut
+        return self.default(obj,**self.args)
+
+    def default(self,obj,**args):
+        raise TypeError("Can't adapt %s to %s" %
+                        (obj.__class__.__name__, self.name))
+
+class PProtocol(Protocol):
+    """Verificateur de protocole paramétré (classe de base)"""
+    #Protocole paramétré. Le registre est unique pour toutes les instances. La methode register est une methode de classe
+    registry={}
+    def __init__(self,name,**args):
+        self.name = name
+        self.args=args
+    def register(cls, T, A):
+        cls.registry[T] = A
+    register=classmethod(register)
+
+class ListProtocol(Protocol):
+    """Verificateur de protocole liste : convertit un objet quelconque en liste pour validation ultérieure"""
+    def default(self,obj):
+        if type(obj) == types.TupleType :
+            if obj[0] in ('RI','MP'):
+                #il s'agit d'un complexe ancienne mode. La cardinalite vaut 1
+                return (obj,)
+            else:
+                return obj
+        elif type(obj) == types.ListType :
+            return obj
+        elif obj == None :
+            # pas de valeur affecte. La cardinalite vaut 0
+            return obj
+        elif type(obj) == types.StringType :
+            #il s'agit d'une chaine. La cardinalite vaut 1
+            return (obj,)
+        else:
+            try:
+                # si l'objet supporte len, on a la cardinalite
+                length=len(obj)
+                return obj
+            except:
+                # sinon elle vaut 1
+                return (obj,)
+
+listProto=ListProtocol("list")
+
+class TypeProtocol(PProtocol):
+    """Verificateur de type parmi une liste de types possibles"""
+    #pas de registre par instance. Registre unique pour toutes les instances de TypeProtocol
+    registry={}
+    def __init__(self,name,typ=None):
+        PProtocol.__init__(self,name,typ=typ)
+        self.typ=typ
+
+    def default(self,obj,typ):
+        for type_permis in typ:
+            if type_permis == 'R':
+                if type(obj) in (types.IntType,types.FloatType,types.LongType):return obj
+            elif type_permis == 'I':
+                if type(obj) in (types.IntType,types.LongType):return obj
+            elif type_permis == 'C':
+                if self.is_complexe(obj):return obj
+            elif type_permis == 'TXM':
+                if type(obj)==types.StringType:return obj
+            elif type_permis == 'shell':
+                if type(obj)==types.StringType:return obj
+            elif type(type_permis) == types.ClassType:
+                if self.is_object_from(obj,type_permis):return obj
+            elif type(type_permis) == types.InstanceType:
+                try:
+                    if type_permis.__convert__(obj) : return obj
+                except:
+                    pass
+            else:
+                print "Type non encore géré %s" %`type_permis`
+
+        raise ValError("%s n'est pas d'un type autorisé: %s" % (repr(obj),typ))
+
+    def is_complexe(self,valeur):
+        """ Retourne 1 si valeur est un complexe, 0 sinon """
+        if type(valeur) in (types.ComplexType,types.IntType,types.FloatType,types.LongType):
+            # Pour permettre l'utilisation de complexes Python
+            return 1
+        elif type(valeur) != types.TupleType :
+            # On n'autorise pas les listes pour les complexes
+            return 0
+        elif len(valeur) != 3:
+            return 0
+        else:
+            # Un complexe doit etre un tuple de longueur 3 avec 'RI' ou 'MP' comme premiere
+            # valeur suivie de 2 reels.
+            if string.strip(valeur[0]) in ('RI','MP'):
+                try:
+                    v1=reelProto.adapt(valeur[1]),reelProto.adapt(valeur[2])
+                    return 1
+                except:
+                    return 0
+            else:
+                return 0
+
+    def is_object_from(self,objet,classe):
+        """
+           Retourne 1 si objet est une instance de la classe classe, 0 sinon
+        """
+        convert = getattr(classe, '__convert__', None)
+        if convert is not None:
+            # classe verifie les valeurs
+            try:
+                v=  convert(objet)
+                return v is not None
+            except:
+                return 0
+        # On accepte les instances de la classe et des classes derivees
+        return type(objet) == types.InstanceType and isinstance(objet,classe)
+
+reelProto=TypeProtocol("reel",typ=('R',))
+
+class CardProtocol(PProtocol):
+    """Verificateur de cardinalité """
+    #pas de registre par instance. Registre unique pour toutes les instances
+    registry={}
+    def __init__(self,name,min=1,max=1):
+        PProtocol.__init__(self,name,min=min,max=max)
+
+    def default(self,obj,min,max):
+        length=len(obj)
+        if length < min or length >max:
+            raise ValError("Nombre d'arguments de %s incorrect (min = %s, max = %s)" % (repr(obj),min,max) )
+        return obj
+
+class IntoProtocol(PProtocol):
+    """Verificateur de choix possibles : liste discrète ou intervalle"""
+    #pas de registre par instance. Registre unique pour toutes les instances
+    registry={}
+    def __init__(self,name,into=None,val_min='**',val_max='**'):
+        PProtocol.__init__(self,name,into=into,val_min=val_min,val_max=val_max)
+        self.val_min=val_min
+        self.val_max=val_max
+
+    def default(self,obj,into,val_min,val_max):
+        if into:
+            if obj not in into:
+                raise ValError("La valeur : %s  ne fait pas partie des choix possibles %s" % (repr(obj),into) )
+        else:
+            #on est dans le cas d'un ensemble continu de valeurs possibles (intervalle)
+            if type(obj) in (types.IntType,types.FloatType,types.LongType) :
+                if val_min == '**': val_min = obj -1
+                if val_max == '**': val_max = obj +1
+                if obj < val_min or obj > val_max :
+                    raise ValError("La valeur : %s est en dehors du domaine de validité [ %s , %s ]" % (repr(obj),self.val_min,self.val_max) )
+        return obj
+
+class MinStr:
+    #exemple de classe pour verificateur de type
+    #on utilise des instances de classe comme type (typ=MinStr(3,6), par exemple)
+    def __init__(self,min,max):
+        self.min=min
+        self.max=max
+
+    def __convert__(self,valeur):
+        if type(valeur) == types.StringType and self.min <= len(valeur) <= self.max:return valeur
+        raise ValError("%s n'est pas une chaine de longueur comprise entre %s et %s" % (valeur,self.min,self.max))
+
+    def __repr__(self):
+        return "TXM de longueur entre %s et %s" %(self.min,self.max)
+
+class Valid(PProtocol):
    """
         Cette classe est la classe mere des validateurs Accas
         Elle doit etre derivee 
@@ -37,12 +233,9 @@ class Valid:
         @ivar cata_info: raison de la validite ou de l'invalidite du validateur meme
         @type cata_info: C{string}
    """
-   def __init__(self,*tup,**args):
-       """ 
-           Cette methode sert a initialiser les attributs du validateur 
-       """
-       self.cata_info=""
-       raise "Must be implemented"
+   registry={}
+   def __init__(self,**args):
+       PProtocol.__init__(self,"valid",**args)
 
    def info(self):
        """
@@ -173,21 +366,6 @@ class Valid:
        """
        return into_courant
 
-   def is_param(self,valeur):
-       """
-           Cette méthode indique si valeur est un objet de type PARAMETRE
-           dont on cherchera à evaluer la valeur (valeur.valeur)
-       """
-       return type(valeur) == types.InstanceType and valeur.__class__.__name__ in ('PARAMETRE',)
-
-   def is_unknown(self,valeur):
-       """
-           Cette méthode indique si valeur est un objet de type inconnu
-           c'est à dire pas de type PARAMETRE
-       """
-       return type(valeur) == types.InstanceType and valeur.__class__.__name__ not in (
-                    'entier','reel','chaine', 'complexe','liste','PARAMETRE_EVAL','PARAMETRE')
-
 class ListVal(Valid):
    """
        Cette classe sert de classe mère pour tous les validateurs qui acceptent
@@ -211,6 +389,19 @@ class ListVal(Valid):
                  liste_choix.append(e)
           return liste_choix
 
+   def convert(self,valeur):
+       """
+          Méthode convert pour les validateurs de listes. Cette méthode
+          fait appel à la méthode convert_item sur chaque élément de la
+          liste.
+       """
+       if type(valeur) in (types.ListType,types.TupleType):
+          for val in valeur:
+              self.convert_item(val)
+          return valeur
+       else:
+          return self.convert_item(valeur)
+
    def verif(self,valeur):
        """
           Méthode verif pour les validateurs de listes. Cette méthode
@@ -218,8 +409,6 @@ class ListVal(Valid):
           liste. Si valeur est un paramètre, on utilise sa valeur effective
           valeur.valeur.
        """
-       if self.is_param(valeur):
-          valeur=valeur.valeur
        if type(valeur) in (types.ListType,types.TupleType):
           for val in valeur:
               if not self.verif_item(val):
@@ -228,164 +417,58 @@ class ListVal(Valid):
        else:
           return self.verif_item(valeur)
 
-class RangeVal(ListVal):
+class Compulsory(ListVal):
       """
-          Exemple de classe validateur : verification qu'une valeur
-          est dans un intervalle.
-          Pour une liste on verifie que tous les elements sont 
-          dans l'intervalle
-          Susceptible de remplacer les attributs "vale_min" "vale_max"
-          dans les catalogues
+          Validateur operationnel
+          Verification de la présence obligatoire d'un élément dans une liste
       """
-      def __init__(self,low,high):
-          self.low=low
-          self.high=high
-          self.cata_info="%s doit etre inferieur a %s" %(low,high)
-
-      def info(self):
-          return "valeur dans l'intervalle %s , %s" %(self.low,self.high)
-
-      def verif_item(self,valeur):
-          return valeur > self.low and valeur < self.high
-
-      def info_erreur_item(self) :
-          return "La valeur doit etre comprise entre %s et %s" % (self.low,
-                                                                  self.high)
-
-      def verif_cata(self):
-          if self.low > self.high : return 0
-          return 1
-
-class CardVal(Valid):
-      """
-          Exemple de classe validateur : verification qu'une liste est
-          d'une longueur superieur a un minimum (min) et inferieure
-          a un maximum (max).
-          Susceptible de remplacer les attributs "min" "max" dans les
-          catalogues
-      """
-      def __init__(self,min='**',max='**'):
-          self.min=min
-          self.max=max  
-          self.cata_info="%s doit etre inferieur a %s" % (min,max)
-
-      def info(self):
-          return "longueur de liste comprise entre  %s et %s" % (self.min,self.max)
-
-      def info_erreur_liste(self):
-          return "Le cardinal de la liste doit etre compris entre %s et %s" % (self.min,self.max)
-
-      def is_list(self):
-          return self.max == '**' or self.max > 1
-
-      def get_into(self,liste_courante=None,into_courant=None):
-          if into_courant is None:
-             return None
-          elif liste_courante is None:
-             return into_courant
-          elif self.max == '**':
-             return into_courant
-          elif len(liste_courante) < self.max:
-             return into_courant
-          else:
-             return []
-
-      def verif_item(self,valeur):
-          return 1
-
-      def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
-             if self.max != '**' and len(valeur) > self.max:return 0
-             if self.min != '**' and len(valeur) < self.min:return 0
-             return 1
-          else:
-             if self.max != '**' and 1 > self.max:return 0
-             if self.min != '**' and 1 < self.min:return 0
-             return 1
-
-      def verif_cata(self):
-          if self.min != '**' and self.max != '**' and self.min > self.max : return 0
-          return 1
-
-      def valide_liste_partielle(self,liste_courante=None):
-          validite=1
-          if liste_courante != None :
-             if len(liste_courante) > self.max :
-                validite=0
-          return validite
-
-class PairVal(ListVal):
-      """
-          Exemple de classe validateur : verification qu'une valeur
-          est paire.
-          Pour une liste on verifie que tous les elements sont
-          pairs
-      """
-      def __init__(self):
+      registry={}
+      def __init__(self,elem=()):
+          if type(elem) not in (types.ListType,types.TupleType): elem=(elem,)
+          Valid.__init__(self,elem=elem)
+          self.elem=elem
           self.cata_info=""
 
       def info(self):
-          return "valeur paire"
+          return "valeur %s obligatoire" % `self.elem`
 
-      def info_erreur_item(self):
-          return "La valeur saisie doit etre paire"
-
-      def verif_item(self,valeur):
-          if type(valeur) == types.InstanceType:
-             if self.is_param(valeur):
-                valeur=valeur.valeur
-             else:
-                return 0
-          return valeur % 2 == 0
-
-      def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
-             for val in valeur:
-                if val % 2 != 0:return 0
-             return 1
-          else:
-             if valeur % 2 != 0:return 0
-             return 1
-
-class EnumVal(ListVal):
-      """
-          Exemple de classe validateur : verification qu'une valeur
-          est prise dans une liste de valeurs.
-          Susceptible de remplacer l attribut "into" dans les catalogues
-      """
-      def __init__(self,into=()):
-          if type(into) not in (types.ListType,types.TupleType): into=(into,)
-          self.into=into
-          self.cata_info=""
-
-      def info(self):
-          return "valeur dans %s" % `self.into`
+      def default(self,valeur,elem):
+          return valeur
 
       def verif_item(self,valeur):
-          if valeur not in self.into:return 0
           return 1
+
+      def convert(self,valeur):
+          elem=list(self.elem)
+          for val in valeur:
+              v=self.adapt(val)
+              if v in elem:elem.remove(v)
+          if elem:
+              raise ValError("%s ne contient pas les elements obligatoires : %s " %(valeur,elem))
+          return valeur
 
       def has_into(self):
           return 1
 
-      def get_into(self,liste_courante=None,into_courant=None):
-          if into_courant is None:
-             liste_choix= list(self.into)
+      def verif(self,valeur):
+          if type(valeur) not in (types.ListType,types.TupleType):
+             liste=list(valeur)
           else:
-             liste_choix=[]
-             for e in into_courant:
-                 if e in self.into:
-                    liste_choix.append(e)
-          return liste_choix
+             liste=valeur
+          for val in self.elem :
+             if val not in liste : return 0
+          return 1
 
       def info_erreur_item(self):
           return "La valeur n'est pas dans la liste des choix possibles"
 
 class NoRepeat(ListVal):
       """
+          Validateur operationnel
           Verification d'absence de doublons dans la liste.
       """
       def __init__(self):
+          Valid.__init__(self)
           self.cata_info=""
 
       def info(self):
@@ -393,6 +476,17 @@ class NoRepeat(ListVal):
 
       def info_erreur_liste(self):
           return "Les doublons ne sont pas permis"
+
+      def default(self,valeur):
+          if valeur in self.liste : raise ValError("%s est un doublon" % valeur)
+          return valeur
+
+      def convert(self,valeur):
+          self.liste=[]
+          for val in valeur:
+              v=self.adapt(val)
+              self.liste.append(v)
+          return valeur
 
       def verif_item(self,valeur):
           return 1
@@ -424,9 +518,11 @@ class NoRepeat(ListVal):
 
 class LongStr(ListVal):
       """
+          Validateur operationnel
           Verification de la longueur d une chaine
       """
       def __init__(self,low,high):
+          ListVal.__init__(self,low=low,high=high)
           self.low=low
           self.high=high
           self.cata_info=""
@@ -437,21 +533,35 @@ class LongStr(ListVal):
       def info_erreur_item(self):
           return "Longueur de la chaine incorrecte"
 
+      def convert(self,valeur):
+          for val in valeur:
+              v=self.adapt(val)
+          return valeur
+
       def verif_item(self,valeur):
-          low=self.low
-          high=self.high
+          try:
+             self.adapt(valeur)
+             return 1
+          except:
+             return 0
+
+      def default(self,valeur,low,high):
+          if type(valeur) != types.StringType :
+             raise ValError("%s n'est pas une string" % repr(valeur))
           if valeur[0]=="'" and valeur[-1]=="'" :
              low=low+2
              high=high+2
-          if len(valeur) < low :return 0
-          if len(valeur) > high:return 0
-          return 1
+          if len(valeur) < low or len(valeur) > high :
+             raise ValError("%s n'est pas de la bonne longueur" % repr(valeur))
+          return valeur
 
 class OrdList(ListVal):
       """
+          Validateur operationnel
           Verification qu'une liste est croissante ou decroissante
       """
       def __init__(self,ord):
+          ListVal.__init__(self,ord=ord)
           self.ord=ord
           self.cata_info=""
 
@@ -461,22 +571,22 @@ class OrdList(ListVal):
       def info_erreur_liste(self) :
           return "La liste doit etre en ordre "+self.ord
 
-      def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
-             if self.ord=='croissant':
-                var=valeur[0]
-                for val in valeur[1:]:
-                   if val<var:return 0
-                   var=val
-                return 1
-             elif self.ord=='decroissant':
-                var=valeur[0]
-                for val in valeur[1:]:
-                   if val>var:return 0
-                   var=val
-                return 1
-          else:
-             return 1
+      def convert(self,valeur):
+          self.val=None
+          self.liste=valeur
+          for v in valeur:
+              self.adapt(v)
+          return valeur
+
+      def default(self,valeur,ord):
+          if self.ord=='croissant':
+              if self.val is not None and valeur<self.val:
+                  raise ValError("%s n'est pas par valeurs croissantes" % repr(self.liste))
+          elif self.ord=='decroissant':
+              if self.val is not None and valeur > self.val:
+                  raise ValError("%s n'est pas par valeurs decroissantes" % repr(self.liste))
+          self.val=valeur
+          return valeur
 
       def verif_item(self,valeur):
           return 1
@@ -501,121 +611,14 @@ class OrdList(ListVal):
                  liste_choix.append(e)
              return liste_choix
 
-CoercableFuncs = { types.IntType:     int,
-                   types.LongType:    long,
-                   types.FloatType:   float,
-                   types.ComplexType: complex,
-                   types.UnicodeType: unicode }
-
-class TypeVal(ListVal):
-      """
-          Cette classe est un validateur qui controle qu'une valeur
-          est bien du type Python attendu.
-          Pour une liste on verifie que tous les elements sont du bon type.
-      """
-      def __init__(self, aType):
-          if type(aType) != types.TypeType:
-             aType=type(aType)
-          self.aType=aType
-          try:
-             self.coerce=CoercableFuncs[ aType ]
-          except:
-             self.coerce = self.identity
-
-      def info(self):
-          return "valeur de %s" % self.aType
-
-      def identity ( self, value ):
-          if type( value ) == self.aType:
-             return value
-          raise ValError
-
-      def verif_item(self,valeur):
-          try:
-             self.coerce(valeur)
-          except:
-             return 0
-          return 1
-
-class InstanceVal(ListVal):
-      """
-          Cette classe est un validateur qui controle qu'une valeur est
-          bien une instance (au sens Python) d'une classe
-          Pour une liste on verifie chaque element de la liste
-      """
-      def __init__(self,aClass):
-          if type(aClass) == types.InstanceType:
-             aClass=aClass.__class__
-          self.aClass=aClass
-
-      def info(self):
-          return "valeur d'instance de %s" % self.aClass.__name__
-
-      def verif_item(self,valeur):
-          if not isinstance(valeur,self.aClass): return 0
-          return 1
-
-def ImpairVal(valeur):
-    """
-        Cette fonction est un validateur. Elle verifie que la valeur passee
-        est bien un nombre impair.
-    """
-    if type(valeur) in (types.ListType,types.TupleType):
-       for val in valeur:
-           if val % 2 != 1:return 0
-       return 1
-    else:
-       if valeur % 2 != 1:return 0
-       return 1
-
-ImpairVal.info="valeur impaire"
-    
-class F1Val(Valid):
-      """
-          Cette classe est un validateur de dictionnaire (mot cle facteur ?). Elle verifie
-          que la somme des cles A et B vaut une valeur donnee
-          en parametre du validateur
-      """
-      def __init__(self,somme=10):
-          self.somme=somme
-          self.cata_info=""
-
-      def info(self):
-          return "valeur %s pour la somme des cles A et B " % self.somme
-
-      def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
-             for val in valeur:
-                if not val.has_key("A"):return 0
-                if not val.has_key("B"):return 0
-                if val["A"]+val["B"]  != self.somme:return 0
-             return 1
-          else:
-             if not valeur.has_key("A"):return 0
-             if not valeur.has_key("B"):return 0
-             if valeur["A"]+valeur["B"]  != self.somme:return 0
-             return 1
-
-class FunctionVal(Valid):
-      """
-          Cette classe est un validateur qui est initialise avec une fonction
-      """
-      def __init__(self,function):
-          self.function=function
-
-      def info(self):
-          return self.function.info
-
-      def verif(self,valeur):
-          return self.function(valeur)
-
 class OrVal(Valid):
       """
+          Validateur operationnel
           Cette classe est un validateur qui controle une liste de validateurs
           Elle verifie qu'au moins un des validateurs de la liste valide la valeur
       """
       def __init__(self,validators=()):
-          if type(validators) not in (types.ListType,types.TupleType): 
+          if type(validators) not in (types.ListType,types.TupleType):
              validators=(validators,)
           self.validators=[]
           for validator in validators:
@@ -627,6 +630,14 @@ class OrVal(Valid):
 
       def info(self):
           return "\n ou ".join([v.info() for v in self.validators])
+
+      def convert(self,valeur):
+          for validator in self.validators:
+              try:
+                 return validator.convert(valeur)
+              except:
+                 pass
+          raise ValError("%s n'est pas du bon type" % repr(valeur))
 
       def info_erreur_item(self):
           l=[]
@@ -727,11 +738,12 @@ class OrVal(Valid):
 
 class AndVal(Valid):
       """
+          Validateur operationnel
           Cette classe est un validateur qui controle une liste de validateurs
           Elle verifie que tous les validateurs de la liste valident la valeur
       """
       def __init__(self,validators=()):
-          if type(validators) not in (types.ListType,types.TupleType): 
+          if type(validators) not in (types.ListType,types.TupleType):
              validators=(validators,)
           self.validators=[]
           for validator in validators:
@@ -743,6 +755,11 @@ class AndVal(Valid):
 
       def info(self):
           return "\n et ".join([v.info() for v in self.validators])
+
+      def convert(self,valeur):
+          for validator in self.validators:
+              valeur=validator.convert(valeur)
+          return valeur
 
       def info_erreur_item(self):
           chaine=""
@@ -877,3 +894,301 @@ def validatorFactory(validator):
        return AndVal(do_liste(validator))
     else:
        return validator
+
+# Ci-dessous : exemples de validateur (peu testés)
+
+class RangeVal(ListVal):
+      """
+          Exemple de classe validateur : verification qu'une valeur
+          est dans un intervalle.
+          Pour une liste on verifie que tous les elements sont 
+          dans l'intervalle
+          Susceptible de remplacer les attributs "vale_min" "vale_max"
+          dans les catalogues
+      """
+      def __init__(self,low,high):
+          self.low=low
+          self.high=high
+          self.cata_info="%s doit etre inferieur a %s" %(low,high)
+
+      def info(self):
+          return "valeur dans l'intervalle %s , %s" %(self.low,self.high)
+
+      def convert_item(self,valeur):
+          if valeur > self.low and valeur < self.high:return valeur
+          raise ValError("%s devrait etre comprise entre %s et %s" %(valeur,self.low,self.high))
+
+      def verif_item(self,valeur):
+          return valeur > self.low and valeur < self.high
+
+      def info_erreur_item(self) :
+          return "La valeur doit etre comprise entre %s et %s" % (self.low,
+                                                                  self.high)
+
+      def verif_cata(self):
+          if self.low > self.high : return 0
+          return 1
+
+class CardVal(Valid):
+      """
+          Exemple de classe validateur : verification qu'une liste est
+          d'une longueur superieur a un minimum (min) et inferieure
+          a un maximum (max).
+          Susceptible de remplacer les attributs "min" "max" dans les
+          catalogues
+      """
+      def __init__(self,min='**',max='**'):
+          self.min=min
+          self.max=max  
+          self.cata_info="%s doit etre inferieur a %s" % (min,max)
+
+      def info(self):
+          return "longueur de liste comprise entre  %s et %s" % (self.min,self.max)
+
+      def info_erreur_liste(self):
+          return "Le cardinal de la liste doit etre compris entre %s et %s" % (self.min,self.max)
+
+      def is_list(self):
+          return self.max == '**' or self.max > 1
+
+      def get_into(self,liste_courante=None,into_courant=None):
+          if into_courant is None:
+             return None
+          elif liste_courante is None:
+             return into_courant
+          elif self.max == '**':
+             return into_courant
+          elif len(liste_courante) < self.max:
+             return into_courant
+          else:
+             return []
+
+      def convert(self,valeur):
+          if type(valeur) in (types.ListType,types.TupleType):
+             l=len(valeur)
+          elif valeur is None:
+             l=0
+          else:
+             l=1
+          if self.max != '**' and l > self.max:raise ValError("%s devrait etre de longueur inferieure a %s" %(valeur,self.max))
+          if self.min != '**' and l < self.min:raise ValError("%s devrait etre de longueur superieure a %s" %(valeur,self.min))
+          return valeur
+
+      def verif_item(self,valeur):
+          return 1
+
+      def verif(self,valeur):
+          if type(valeur) in (types.ListType,types.TupleType):
+             if self.max != '**' and len(valeur) > self.max:return 0
+             if self.min != '**' and len(valeur) < self.min:return 0
+             return 1
+          else:
+             if self.max != '**' and 1 > self.max:return 0
+             if self.min != '**' and 1 < self.min:return 0
+             return 1
+
+      def verif_cata(self):
+          if self.min != '**' and self.max != '**' and self.min > self.max : return 0
+          return 1
+
+      def valide_liste_partielle(self,liste_courante=None):
+          validite=1
+          if liste_courante != None :
+             if len(liste_courante) > self.max :
+                validite=0
+          return validite
+
+class PairVal(ListVal):
+      """
+          Exemple de classe validateur : verification qu'une valeur
+          est paire.
+          Pour une liste on verifie que tous les elements sont
+          pairs
+      """
+      def __init__(self):
+          ListVal.__init__(self)
+          self.cata_info=""
+
+      def info(self):
+          return "valeur paire"
+
+      def info_erreur_item(self):
+          return "La valeur saisie doit etre paire"
+
+      def convert(self,valeur):
+          for val in valeur:
+             v=self.adapt(val)
+             if v % 2 != 0:raise ValError("%s contient des valeurs non paires" % repr(valeur))
+          return valeur
+
+      def default(self,valeur):
+          return valeur
+
+      def verif_item(self,valeur):
+          if type(valeur) == types.InstanceType:
+             return 0
+          return valeur % 2 == 0
+
+      def verif(self,valeur):
+          if type(valeur) in (types.ListType,types.TupleType):
+             for val in valeur:
+                if val % 2 != 0:return 0
+             return 1
+          else:
+             if valeur % 2 != 0:return 0
+             return 1
+
+class EnumVal(ListVal):
+      """
+          Exemple de classe validateur : verification qu'une valeur
+          est prise dans une liste de valeurs.
+          Susceptible de remplacer l attribut "into" dans les catalogues
+      """
+      def __init__(self,into=()):
+          if type(into) not in (types.ListType,types.TupleType): into=(into,)
+          self.into=into
+          self.cata_info=""
+
+      def info(self):
+          return "valeur dans %s" % `self.into`
+
+      def convert_item(self,valeur):
+          if valeur in self.into:return valeur
+          raise ValError("%s contient des valeurs hors des choix possibles: %s " %(valeur,self.into))
+
+      def verif_item(self,valeur):
+          if valeur not in self.into:return 0
+          return 1
+
+      def has_into(self):
+          return 1
+
+      def get_into(self,liste_courante=None,into_courant=None):
+          if into_courant is None:
+             liste_choix= list(self.into)
+          else:
+             liste_choix=[]
+             for e in into_courant:
+                 if e in self.into:
+                    liste_choix.append(e)
+          return liste_choix
+
+      def info_erreur_item(self):
+          return "La valeur n'est pas dans la liste des choix possibles"
+
+def ImpairVal(valeur):
+    """
+          Exemple de validateur
+        Cette fonction est un validateur. Elle verifie que la valeur passee
+        est bien un nombre impair.
+    """
+    if type(valeur) in (types.ListType,types.TupleType):
+       for val in valeur:
+           if val % 2 != 1:return 0
+       return 1
+    else:
+       if valeur % 2 != 1:return 0
+       return 1
+
+ImpairVal.info="valeur impaire"
+    
+class F1Val(Valid):
+      """
+          Exemple de validateur
+          Cette classe est un validateur de dictionnaire (mot cle facteur ?). Elle verifie
+          que la somme des cles A et B vaut une valeur donnee
+          en parametre du validateur
+      """
+      def __init__(self,somme=10):
+          self.somme=somme
+          self.cata_info=""
+
+      def info(self):
+          return "valeur %s pour la somme des cles A et B " % self.somme
+
+      def verif(self,valeur):
+          if type(valeur) in (types.ListType,types.TupleType):
+             for val in valeur:
+                if not val.has_key("A"):return 0
+                if not val.has_key("B"):return 0
+                if val["A"]+val["B"]  != self.somme:return 0
+             return 1
+          else:
+             if not valeur.has_key("A"):return 0
+             if not valeur.has_key("B"):return 0
+             if valeur["A"]+valeur["B"]  != self.somme:return 0
+             return 1
+
+class FunctionVal(Valid):
+      """
+          Exemple de validateur
+          Cette classe est un validateur qui est initialise avec une fonction
+      """
+      def __init__(self,function):
+          self.function=function
+
+      def info(self):
+          return self.function.info
+
+      def verif(self,valeur):
+          return self.function(valeur)
+
+CoercableFuncs = { types.IntType:     int,
+                   types.LongType:    long,
+                   types.FloatType:   float,
+                   types.ComplexType: complex,
+                   types.UnicodeType: unicode }
+
+class TypeVal(ListVal):
+      """
+          Exemple de validateur
+          Cette classe est un validateur qui controle qu'une valeur
+          est bien du type Python attendu.
+          Pour une liste on verifie que tous les elements sont du bon type.
+      """
+      def __init__(self, aType):
+          if type(aType) != types.TypeType:
+             aType=type(aType)
+          self.aType=aType
+          try:
+             self.coerce=CoercableFuncs[ aType ]
+          except:
+             self.coerce = self.identity
+
+      def info(self):
+          return "valeur de %s" % self.aType
+
+      def identity ( self, value ):
+          if type( value ) == self.aType:
+             return value
+          raise ValError
+
+      def convert_item(self,valeur):
+          return   self.coerce(valeur)
+
+      def verif_item(self,valeur):
+          try:
+             self.coerce(valeur)
+          except:
+             return 0
+          return 1
+
+class InstanceVal(ListVal):
+      """
+          Exemple de validateur
+          Cette classe est un validateur qui controle qu'une valeur est
+          bien une instance (au sens Python) d'une classe
+          Pour une liste on verifie chaque element de la liste
+      """
+      def __init__(self,aClass):
+          if type(aClass) == types.InstanceType:
+             aClass=aClass.__class__
+          self.aClass=aClass
+
+      def info(self):
+          return "valeur d'instance de %s" % self.aClass.__name__
+
+      def verif_item(self,valeur):
+          if not isinstance(valeur,self.aClass): return 0
+          return 1
+

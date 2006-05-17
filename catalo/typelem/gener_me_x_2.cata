@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF TYPELEM  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,16 +96,6 @@ OPTION__
                                      DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D  
                                      CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  EKTHETA  PGTHETA
-    CALC_G_BILI         298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINR  UEPSINR  
-                                     CEPSINR  VEPSINR  EFORCNO  UPFR23D  EFORCNO  VPFR23D  EPRESNO  UPRESSR 
-                                     EPRESNO  VPRESSR  CTEREFE  PTEREF
-                              OUT__  EGTHETA  PGTHETA     
-    CALC_G_BILI_F       298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINF  UEPSINF  
-                                     CEPSINF  VEPSINF  CTEREFE  PTEREF   CFORCEF  UPFF23D  CFORCEF  VPFF23D  
-                                     CPRESSF  UPRESSF  CPRESSF  VPRESSF  CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR 
-                              OUT__  EGTHETA  PGTHETA                                                  
     CALC_DG_E           280   IN__   DDL_MECA PDEPLAR  EFORCNO  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                                      DDL_MECA PTHETAR  DDL_MECA PDEPLSE
                               OUT__  EGTHETA  PGTHETA
@@ -142,6 +132,16 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRSU_R    422   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
+    G_BILI              298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINR  UEPSINR  
+                                     CEPSINR  VEPSINR  EFORCNO  UPFR23D  EFORCNO  VPFR23D  EPRESNO  UPRESSR 
+                                     EPRESNO  VPRESSR  CTEREFE  PTEREF
+                              OUT__  EGTHETA  PGTHETA     
+    G_BILI_F            298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINF  UEPSINF  
+                                     CEPSINF  VEPSINF  CTEREFE  PTEREF   CFORCEF  UPFF23D  CFORCEF  VPFF23D  
+                                     CPRESSF  UPRESSF  CPRESSF  VPRESSF  CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR 
+                              OUT__  EGTHETA  PGTHETA                                                  
     RIGI_MECA_PRSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR

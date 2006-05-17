@@ -11,7 +11,7 @@
       LOGICAL EXTIM
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C ======================================================================
 
 C     - FONCTION REALISEE:   CALCUL DU G BILINEAIRE EN 3D
 
-C IN   OPTION  --> CALC_G_BILI
+C IN   OPTION  --> G_BILI
 C IN   RESULT  --> NOM UTILISATEUR DU RESULTAT ET TABLE
 C IN   MODELE  --> NOM DU MODELE
 C IN   DEPLA1  --> CHAMP DE DEPLACEMENT U
@@ -98,7 +98,7 @@ C- RECUPERATION DE L'ETAT INITIAL
 
       CALL GETFAC('ETAT_INIT',INIT)
       IF (INIT.NE.0) THEN
-        CALL UTMESS('F','MEBILG','CALC_G_BILI : CHAMP INITIAL'//
+        CALL UTMESS('F','MEBILG','G_BILI : CHAMP INITIAL'//
      &              ' IMPOSSIBLE')
       END IF
 
@@ -161,7 +161,7 @@ C - TRAITEMENT DES CHARGES U
         UPA23D = 'UPFF23D'
         UPAPRE = 'UPRESSF'
         UPEPSI = 'UEPSINF'
-        OPTI = 'CALC_G_BILI_F'
+        OPTI = 'G_BILI_F'
       ELSE
         UPAVOL = 'UPFRVOL'
         UPA23D = 'UPFR23D'
@@ -187,7 +187,7 @@ C - TRAITEMENT DES CHARGES V
         VPA23D = 'VPFF23D'
         VPAPRE = 'VPRESSF'
         VPEPSI = 'VEPSINF'
-        OPTI = 'CALC_G_BILI_F'
+        OPTI = 'G_BILI_F'
       ELSE
         VPAVOL = 'VPFRVOL'
         VPA23D = 'VPFR23D'

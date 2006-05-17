@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF __init__ Accas  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

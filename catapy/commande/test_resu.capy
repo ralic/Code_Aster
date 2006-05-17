@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
                    PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
                    PRESENT_PRESENT('POINT','NOM_CMP'),
                    UN_PARMI('VALE','VALE_I','VALE_C'), ),
-           CHAM_GD         =SIMP(statut='o',typ=cham_elem_sdaster),
+           CHAM_GD         =SIMP(statut='o',typ=cham_elem),
            MAILLE          =SIMP(statut='f',typ=ma),
            POINT           =SIMP(statut='f',typ='I' ),
            SOUS_POINT      =SIMP(statut='f',typ='I'),

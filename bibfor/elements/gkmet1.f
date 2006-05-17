@@ -5,7 +5,7 @@
       CHARACTER*24    CHFOND,ABSCUR
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/05/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,14 +38,14 @@ C
 C SORTIE
 C
 C   IADGKS      --> ADRESSE DE VALEURS DE GKS 
-C                   (VALEUR DE G(S), K1(S), K2(S), K3(S))
+C                   (VALEUR DE G(S), K1(S), K2(S), K3(S), BETA(S))
 C   IADGKI      --> ADRESSE DE VALEURS DE GKTHI
 C                  (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 C   ABSCUR     --> VALEURS DES ABSCISSES CURVILIGNES S
 C ......................................................................
 C
       INTEGER         IADRT3,I,J,K,IFON,IADABS
-      REAL*8          XL,SOM(4),GKTHI(4),GKS(4),LEGS
+      REAL*8          XL,SOM(4),GKTHI(5),LEGS
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
@@ -82,7 +82,7 @@ C
 
       CALL GLEGEN(NDEG,NNOFF,XL,ABSCUR,ZR(IADRT3))
 C
-C     VALEURS DE G(S), K1(S), K2(S), K3(S)
+C     VALEURS DE G(S), K1(S), K2(S), K3(S), BETA(S)
 C
       DO 20 I=1,NNOFF
         DO 21 K=1,4
@@ -91,18 +91,22 @@ C
         DO 22 J=1,NDEG+1
           LEGS=ZR(IADRT3-1+(J-1)*NNOFF+I)
           DO 23 K=1,4
-            GKTHI(K)=ZR(IADRGK-1+(J-1)*4+K)  
+            GKTHI(K)=ZR(IADRGK-1+(J-1)*5+K)  
             SOM(K) = SOM(K) + GKTHI(K)*LEGS
- 23       CONTINUE     
+ 23       CONTINUE
  22     CONTINUE
         DO 24 K=1,4
-          ZR(IADGKS-1+(I-1)*4+K) = SOM(K)
- 24     CONTINUE      
+          ZR(IADGKS-1+(I-1)*5+K) = SOM(K)
+ 24     CONTINUE
+        IF (ZR(IADGKS-1+(I-1)*5+2).NE.0.D0)  ZR(IADGKS-1+(I-1)*5+5)= 
+     &     2.0D0*ATAN2(0.25D0*(ZR(IADGKS-1+(I-1)*5+1)/ZR(IADGKS-1+(I-1)
+     &     *5+1)-SIGN(1.0D0,ZR(IADGKS-1+(I-1)*5+2))*SQRT((ZR(IADGKS-1+
+     &     (I-1)*5+1)/ZR(IADGKS-1+(I-1)*5+2))**2.0D0+8.0D0)),1.0D0)
+
  20   CONTINUE
 
 C     VALEURS DE GI, K1I, K2I, K3I (ON RECOPIE SIMPLEMENT GKTHI)
-
-      DO 30 I=1,NNOFF*4
+      DO 30 I=1,NNOFF*5
         ZR(IADGKI-1+I)=ZR(IADRGK-1+I)
  30   CONTINUE
 

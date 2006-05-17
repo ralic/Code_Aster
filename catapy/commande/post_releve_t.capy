@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            INTITULE        =SIMP(statut='o',typ='TXM'),  
 
            CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
-                                                 cham_elem_sdaster,),),
+                                                 cham_elem,),),
            RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_ther,evol_noli,dyna_trans,
                                                  mode_meca,mode_flamb,mode_acou,base_modale,mode_stat,
                                                  mult_elas,fourier_elas,dyna_harmo,acou_harmo)),

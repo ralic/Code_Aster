@@ -1,4 +1,4 @@
-#@ MODIF N_GEOM Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_GEOM Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,15 +55,9 @@ class GEOM(ASSD):
    def get_name(self):
       return self.nom
 
-   def is_object(valeur):
-      """
-          Indique si valeur est d'un type conforme à la classe (1) 
-          ou non conforme (0)
-          La classe GEOM est utilisée pour tous les objets géométriques
-          Elle valide tout objet
-      """
-      return 1
-
+   def __convert__(cls,valeur):
+      return valeur
+   __convert__=classmethod(__convert__)
 
 class geom(GEOM):pass
 

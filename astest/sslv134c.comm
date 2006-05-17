@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,7 +91,7 @@ THETA01=CALC_THETA(    MODELE=MO,
                      )
 
 G0=CALC_G        (    MODELE=MO,
-                        OPTION='CALC_G_GLOB',
+                        OPTION='CALC_G',
                            DEPL=DEP,
                           THETA=_F(THETA=THETA01),
                          EXCIT=_F(CHARGE=PRESSION,),

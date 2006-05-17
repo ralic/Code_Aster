@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,8 @@ C ======================================================================
 C      CALCUL DU TAUX DE RESTITUTION D'ENERGIE ELEMENTAIRE
 C      ELEMENTS ISOPARAMETRIQUES 3D
 
-C      OPTION : 'CALC_G_LGLO'    (CHARGES REELLES)
-C               'CALC_G_LGLO_F'  (CHARGES FONCTIONS)
+C      OPTION : 'G_LAGR'    (CHARGES REELLES)
+C               'G_LAGR_F'  (CHARGES FONCTIONS)
 
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -83,7 +83,7 @@ C.......................................................................
       CALL JEVECH('PALPHAR','L',IALPH)
       CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PTEMPER','L',ITEMPE)
-      IF (OPTION.EQ.'CALC_G_LGLO_F') THEN
+      IF (OPTION.EQ.'G_LAGR_F') THEN
         FONC = .TRUE.
         CALL JEVECH('PFFVOLU','L',IFORF)
         CALL JEVECH('PTEMPSR','L',ITEMPS)

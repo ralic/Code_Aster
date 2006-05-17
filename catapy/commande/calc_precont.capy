@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,8 +75,8 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
                     EXCLUS('EVOL_NOLI','VARI_NON_LOCAL',),
                     EXCLUS('NUME_ORDRE','INST'), ),
             DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
-            SIGM            =SIMP(statut='f',typ=(carte_sdaster,cham_elem_sdaster)),
-            VARI            =SIMP(statut='f',typ=cham_elem_sdaster),
+            SIGM            =SIMP(statut='f',typ=(carte_sdaster,cham_elem)),
+            VARI            =SIMP(statut='f',typ=cham_elem),
             VARI_NON_LOCAL  =SIMP(statut='f',typ=cham_no_sdaster),
             EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
             NUME_ORDRE      =SIMP(statut='f',typ='I'),

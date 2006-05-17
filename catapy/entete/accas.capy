@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF ENTETE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -324,7 +324,7 @@ class carte_sdaster  (cham_gd_sdaster):pass
 
 # -----------------------------------------------------------------------------
 # cham_elem
-class cham_elem_sdaster(cham_gd_sdaster):
+class cham_elem(cham_gd_sdaster):
   def EXTR_COMP(self,comp,lgma,topo=0) :
       """ retourne les valeurs de la composante comp du champ sur la liste
         de groupes de mailles lgma avec eventuellement l'info de la

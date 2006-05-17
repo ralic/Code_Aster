@@ -4,7 +4,7 @@
        IMPLICIT   NONE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/11/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,10 +23,12 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     - FONCTION REALISEE:   CALCUL DU TAUX DE RESTITUTION D'ENERGIE
 
-C IN   OPTION  --> CALC_G_LAGR      (SI CHARGES REELLES)
-C              --> CALC_G_LAGR_F    (SI CHARGES FONCTIONS)
-C              --> CALC_GLAG_EPSI_R (DEFORMATIONS INITIALES REELLES)
-C              --> CALC_GLAG_EPSI_F (DEFORMATIONS INITIALES FONCTIONS)
+C IN   OPTION  --> G_LAGR      (SI CHARGES REELLES,ET LOCAL)
+C              --> G_LAGR_F    (SI CHARGES FONCTIONS,ET LOCAL)
+C              --> G_LAGR_GLOB    (SI CHARGES FONCTIONS,ET GLOBAL)
+C              --> G_LAGR_GLOB_F    (SI CHARGES FONCTIONS,ET GLOBAL)
+C              --> G_LAGR_EPSI_R (DEFORMATIONS INITIALES REELLES)
+C              --> G_LAGR_EPSI_F (DEFORMATIONS INITIALES FONCTIONS)
 C IN   RESULT  --> NOM UTILISATEUR DU RESULTAT ET TABLE
 C IN   MODELE  --> NOM DU MODELE
 C IN   DEPLA   --> CHAMP DE DEPLACEMENT
@@ -58,7 +60,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
       INTEGER IERD,IRET,IBID,IORD,I,NBCHIN,NBPRUP
-      INTEGER JTEMP,NCHAR,IFM,NIV
+      INTEGER JTEMP,NCHAR,IFM,NIV,DIME
 
       REAL*8 TIME,G,ALPHA,VAL(2)
 
@@ -164,6 +166,8 @@ C- CREATION DU CHAMP ALPHA
       LPAIN(10) = 'PALPHAR'
       LCHIN(10) = CHALPH
 
+      CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IRET)
+
       IF (FONC) THEN
         CHTIME = '&&MLAGRG.CH_INST_R'
         CALL MECACT('V',CHTIME,'MODELE',LIGRMO,'INST_R',1,'INST',IBID,
@@ -171,23 +175,33 @@ C- CREATION DU CHAMP ALPHA
         LPAIN(11) = 'PTEMPSR'
         LCHIN(11) = CHTIME
         IF (EPSI) THEN
-          OPTION = 'CALC_GLAG_EPSI_F'
+          OPTION = 'G_LAGR_EPSI_F'
           LPAIN(12) = 'PEPSINF'
           LCHIN(12) = CHEPSI
           NBCHIN = 12
         ELSE
-          OPTION = 'CALC_G_LAGR_F'
-          NBCHIN = 11
+          IF(DIME.EQ.2)THEN
+             OPTION = 'G_LAGR_F'
+             NBCHIN = 11
+          ELSE
+             OPTION = 'G_LAGR_GLOB_F'
+             NBCHIN = 11
+          ENDIF
         END IF
       ELSE
         IF (EPSI) THEN
-          OPTION = 'CALC_GLAG_EPSI_R'
+          OPTION = 'G_LAGR_EPSI_R'
           LPAIN(11) = 'PEPSINF'
           LCHIN(11) = CHEPSI
           NBCHIN = 11
         ELSE
-          OPTION = 'CALC_G_LAGR'
-          NBCHIN = 10
+          IF(DIME.EQ.2)THEN
+             OPTION = 'G_LAGR'
+             NBCHIN = 10
+          ELSE
+             OPTION = 'G_LAGR_GLOB'
+             NBCHIN = 10
+          ENDIF
         END IF
       END IF
       CALL CALCUL('S',OPTION,LIGRMO,NBCHIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,

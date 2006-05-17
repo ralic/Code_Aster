@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
 
-COMB_CHAM_ELEM=OPER(nom="COMB_CHAM_ELEM",op= 139,sd_prod=cham_elem_sdaster,reentrant='f',
+COMB_CHAM_ELEM=OPER(nom="COMB_CHAM_ELEM",op= 139,sd_prod=cham_elem,reentrant='f',
                     fr="Effectuer la combinaison linéaire de champs par éléments",
             UIinfo={"groupes":("Résultats et champs",)},
       regles=(UN_PARMI('COMB_R','COMB_C','COMB_FOURIER'),
@@ -26,19 +26,19 @@ COMB_CHAM_ELEM=OPER(nom="COMB_CHAM_ELEM",op= 139,sd_prod=cham_elem_sdaster,reent
       COMB_R          =FACT(statut='f',max='**',
         PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
         COEF_R          =SIMP(statut='o',typ='R'),
-        CHAM_ELEM       =SIMP(statut='o',typ=cham_elem_sdaster),
+        CHAM_ELEM       =SIMP(statut='o',typ=cham_elem),
       ),
       COMB_C          =FACT(statut='f',max='**',
         regles=(UN_PARMI('COEF_R','COEF_C', ),),
         COEF_R          =SIMP(statut='f',typ='R'),
         COEF_C          =SIMP(statut='f',typ='C'),
-        CHAM_ELEM       =SIMP(statut='o',typ=cham_elem_sdaster),
+        CHAM_ELEM       =SIMP(statut='o',typ=cham_elem),
       ),
       COMB_FOURIER    =FACT(statut='f',max='**',
         COEF_R          =SIMP(statut='f',typ='R',defaut= 1.),
         NUME_MODE       =SIMP(statut='o',typ='I'),
         TYPE_MODE       =SIMP(statut='o',typ='TXM',into=("SYME","ANTI") ),
-        CHAM_ELEM       =SIMP(statut='o',typ=cham_elem_sdaster),
+        CHAM_ELEM       =SIMP(statut='o',typ=cham_elem),
       ),
       ANGL            =SIMP(statut='f',typ='R' ),
 )  ;

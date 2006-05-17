@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
   for ch in MAJ_CHAM:
     t=ch['TYPE_CHAM']
     if t[0:5] == "NOEU_":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sdaster)
-    if t[0:2] == "EL":   self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sdaster)
+    if t[0:2] == "EL":   self.type_sdprod(ch['CHAM_MAJ'],cham_elem)
   return None
 
 

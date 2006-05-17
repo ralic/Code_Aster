@@ -21,7 +21,7 @@ C TOLE CRP_20
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -121,7 +121,7 @@ C                           1234567890123
         NOMA = ZK8(JNOMA)
 
 C    -----------------------------------------------------------
-C     POUR LES COMMANDES CALC_G_THETA_T,CALC_G_LOCAL_T,CALC_G
+C     POUR LA COMMANDE CALC_G
 C     SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST
 C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT 
 C     AVEC LES CARACTERISTIQUES SUIVANTES :
@@ -130,9 +130,7 @@ C                      DEFORMATION : PETIT
 C                      TOUT        : OUI
 C                    )
 
-        IF ((NOMCMD.EQ.'CALC_G_THETA_T') .OR.
-     &      (NOMCMD.EQ.'CALC_G_LOCAL_T') .OR.
-     &       NOMCMD.EQ.'CALC_G') THEN
+        IF(NOMCMD.EQ.'CALC_G') THEN
           CALL GETFAC('COMP_INCR',N2)
           CALL GETFAC('COMP_ELAS',N3)
           IF ((N2.EQ.0) .AND. (N3.EQ.0)) THEN

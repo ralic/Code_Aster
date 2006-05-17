@@ -1,0 +1,789 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 15/05/2006 - 16:29:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009744 DU 2006-05-11 13:57:24
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   Mode validation pour Stanley
+FONCTIONNALITE
+   On propose d'ajouter un mot-cle UNITE_VALIDATION a la commande STANLEY. Dans le cas ou ce
+   mot-cle est renseigne, Stanley utilise le fichier d'unite logique correspondante pour
+   ecrire les sommes md5 de tous les fichiers de post-traitement GMSH et XMGRACE produit lors
+   de la session de Stanley.
+   Le mot-cle est cache car ceci a pour but d'aider la recette de Stanley a chaque
+   stabilisation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.31
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 15/05/2006 - 17:17:55
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009551 DU 2006-03-14 10:08:58
+TYPE aide utilisation concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   calcul mecanique prenant en compte l'hydratation
+FONCTIONNALITE
+   On modifie le test ttnl03b pour monter qu'il est possible de faire un calcul
+   thermique (hydratation) sur un maillage lineaire et de chainer ce calcul
+   avec un calcul mecanique sur un maillage quadratique.
+   
+   
+   Calcul thermique avec le maillage lineaire. Puis creation d'un maillage
+   quadratique avec l'option LINE_QUAD .Calcul mecanique avec le maillage
+   quadratique.
+   
+   Utilisation de PROJ_CHAMP pour projeter le resultat thermique sur le
+   maillage quadratique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ttnl03b
+NB_JOURS_TRAV  : 0.8
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND C.              DATE 16/05/2006 - 14:26:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009740 DU 2006-05-09 13:36:23
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   validation des mots-cles simples dans Accas
+FONCTIONNALITE
+   Travaux C. Caremoli.
+   
+   Introduction
+   -------------
+   La modification proposee concerne le mecanisme de validation des mots-cles simples. Le
+   premier objectif est d'avoir un mecanisme homogene pour le traitement des objets simples
+   (entiers, reels, chaines, listes, etc.) et des objets speciaux comme les parametres ou
+   des
+   objets qui se comportent comme des : listes, reels, etc. Le deuxieme objectif est
+   d'unifier la mecanique de validation standard et celle des validateurs supplementaires
+   (validators=...). On en profite pour permettre l'ajout de verificateurs de types simples
+   ('I','R','C',...) et traiter un probleme rencontre par M Courtois avec les mots-cles
+   facteurs.
+   
+   Nouvelle mecanique de validation
+   ------------------------------------
+   Comme les validateurs supplementaires, la nouvelle mecanique s'appuie sur des objets
+   validateurs. Ces objets sont utilises pour verifier que les valeurs affectees aux
+   mots-cles simples sont valides. Ils peuvent egalement realiser une conversion des
+   valeurs
+   en fonction du protocole de validation.
+   
+   Etant donne un objet validateur objval, la validation d'une valeur val est realisee
+   comme
+   suit::
+   
+   
+   new_val=objval.adapt(val)
+   
+   Si le processus de validation/conversion se passe correctement, cet appel retourne un
+   objet qui est val dans la plupart des cas mais qui peut etre cet objet converti. Si la
+   validation/conversion n'est pas possible, une exception de type ValError  est levee par
+   le
+   validateur.
+   
+   On a 4 objets validateurs principaux:
+   
+   - un validateur/convertisseur de liste (de nom listProto dans N_VALIDATOR.py) qui
+   verifie que la valeur peut etre utilisee comme une liste ou qui la transforme en une
+   liste
+   si c'est possible (cas des objets PARAMETRE, par exemple).
+   - un validateur de types (attribut typeProto de l'objet MCSIMP) qui verifie si un
+   item
+   d'une liste est bien du type attendu (specification par typ de SIMP).
+   - un validateur d'into (attribut intoProto de l'objet MCSIMP) qui verifie si un item
+   d'une liste est bien dans une liste de choix donnee ou dans un intervalle (specification
+   par into, val_min et val_max de SIMP)
+   - un validateur de cardinalite (attribut cardProto de MCSIMP) qui verifie si la
+   valeur
+   fournie a une longueur comprise entre un min et un max (specification par min et max de
+   SIMP)
+   
+   Le processus de validation d'un mot-cle simple se trouve dans la methode isvalid de
+   MCSIMP. Son principe est le suivant:
+   
+   - Conversion de la valeur en liste : lval=listProto.adapt(valeur)
+   - Boucle sur les elements de la liste lval et verification du type de chaque item :
+   for item in lval : self.typeProto.adapt(item)
+   - Boucle sur les elements de la liste lval et verification du into pour chaque
+   item :
+   for item in lval : self.intoProto.adapt(item)
+   - Verification de la cardinalite de la liste lval : self.cardProto.adapt(lval)
+   
+   Les exceptions levees pendant ces appels sont recuperees et converties soit en message
+   dans le fichier compte-rendu soit en indicateur de validite.
+   
+   Les validateurs principaux
+   ------------------------------
+   Le validateur de liste
+   ==========================
+   Ce validateur est unique pour tous les mots-cles simples. Sa classe (de nom ListProtocol)
+   est definie dans le module N_VALIDATOR.py.
+   
+   Les validateurs de type
+   =========================
+   Chaque mot-cle a un validateur de type qui depend du type specifie au niveau du SIMP.
+   La
+   classe (de nom TypeProtocol) est definie dans  le module N_VALIDATOR.py. Cette classe est
+   parametrable en fonction du type.
+   
+   Les validateurs d'into
+   ==========================
+   Chaque mot-cle a un validateur d'into qui depend d'into, val_min et val_max specifies
+   au
+   niveau du SIMP. La classe (de nom IntoProtocol) est definie dans
+   le module N_VALIDATOR.py. Cette classe est parametrable avec into, val_min et val_max.
+   
+   Les validateurs de cardinalite
+   ===================================
+   Chaque mot-cle a un validateur de cardinalite qui depend de min et max specifies au
+   niveau
+   du SIMP. La classe (de nom CardProtocol) est definie dans le module N_VALIDATOR.py. Cette
+   classe est parametrable avec min et max.
+   
+   La mecanique de base de ces validateurs
+   ------------------------------------------
+   Un validateur est utilise en invoquant la methode adapt::
+   
+   new_val=validateur.adapt(val)
+   
+   La methode adapt traite cette invocation de 3 manieres differentes selon le type de la
+   valeur val:
+   
+   - Tout d'abord si la valeur a la methode __adapt__, le validateur transfere la
+   responsabilite de la validation a l'objet val ce qui revient a faire :
+   new_val=val.__adapt__(validateur)
+   - Sinon, si une fonction de validation a ete enregistree pour ce type, le validateur
+   lui transfere la responsabilite de la validation ce qui revient a faire :
+   new_val=fonction(val,validateur)
+   - Sinon, par defaut, le validateur invoque sa methode default ce qui revient a
+   faire :
+   new_val=validateur.defaut(val)
+   
+   On peut enregistrer une fonction de validation pour un type donne par::
+   
+   validateur.register(montype, fonction)
+   
+   Cette mecanique est celle des validateurs de base (classe Protocol de N_VALIDATOR.py)
+   comme listProto. En fait, la plupart des validateurs sont parametrables. La classe de
+   base
+   pour ceux-ci est PProtocol du meme module. Elle differe par la signature de la methode
+   default qui recoit egalement les parametres du validateur et par son constructeur.
+   
+   Exemple avec le validateur de cardinalite de liste::
+   
+   class CardProtocol(PProtocol):
+   def __init__(self,name,min=1,max=1):
+   PProtocol.__init__(self,name,min=min,max=max)
+   
+   def default(self,obj,min,max):
+   length=len(obj)
+   if length < min or length >max:
+   raise ValError("Nombre d'arguments de %s incorrect (min = %s, max = %s)" %
+   (repr(obj),min,max) )
+   return obj
+   
+   Remarques :
+   
+   - Le constructeur de la classe de base doit etre appele avec les parametres du
+   validateur pour qu'il les connaisse et les memorise. Ils doivent etre passes en tant
+   qu'arguments keyword (obligatoire).
+   
+   Les possibilites d'extension des verificateurs de type
+   ---------------------------------------------------------------------
+   Jusqu'a present, il etait possible d'ajouter des verificateurs de type au moyen des
+   validateurs supplementaires (validators de SIMP). Par exemple, le validateur LongStr
+   permet de valider une liste d'items qui sont des chaines de caracteres dont la longueur
+   peut etre controlee.
+   
+   Ce type de validation peut maintenant etre insere dans la mecanique de base. Il
+   suffit de
+   definir une classe qui est dotee de la methode __convert__ et d'utiliser une instance
+   de
+   cette classe en tant que specification de type.
+   
+   Exemple::
+   
+   class MinStr:
+   def __init__(self,min,max):
+   self.min=min
+   self.max=max
+   def __convert__(self,valeur):
+   if type(valeur) == types.StringType and self.min <= len(valeur) <=
+   self.max:return valeur
+   raise ValError("%s n'est pas une chaine de longueur comprise entre %s et %s" %
+   (valeur,self.min,self.max))
+   def __repr__(self):
+   return "TXM de longueur entre %s et %s" %(self.min,self.max)
+   
+   #definition du mot-cle simple dans le catalogue
+   toto=SIMP(typ=MinStr(3,8))
+   
+   En consequence, les validateurs specifies avec validators ne devraient plus etre
+   utilises
+   que pour la validation de listes : NoRepeat, Compulsory.
+   
+   Les possibilites d'assimilation d'objets a des types connus
+   ---------------------------------------------------------------------
+   Dans certains cas, on souhaite que des objets a priori non connus du mecanisme de
+   validation soient neanmoins valides. C'est le cas des objets PARAMETRE d'EFICAS mais il
+   peut y en avoir d'autres (concepts speciaux, par exemple).
+   
+   La solution pour permettre la validation de ce type d'objet est de les doter d'une
+   methode
+   de nom __adapt__ qui si elle existe sera appelee par la validation pour l'adapter a
+   l'objet.
+   
+   Le schema general de fonctionnement est le suivant:
+   
+   - Si l'objet a valider dispose de la methode __adapt__, le validateur l'appelle avec
+   l'objet validateur en argument : valeur.__adapt__(objval)
+   - L'objet doit realiser la validation soit par ses propres moyens soit en invoquant le
+   validateur avec une valeur effective.
+   
+   Exemple::
+   
+   class param:
+   def __init__(self,valeur):
+   self.valeur=valeur
+   def __adapt__(self,objval):
+   return objval.adapt(self.valeur)
+   
+   En general, il suffit d'appeler le validateur avec la valeur reelle a valider.
+   
+   Modifications sur les validateurs specifies avec validators=
+   ----------------------------------------------------------------
+   Ces validateurs doivent deriver de la classe Valid ou de la classe ListVal. Ces classes
+   sont maintenant des classes derivees de PProtocol.
+   
+   A ce titre les validateurs doivent implementer la methode default qui realise la
+   validation/conversion de base.  Ils doivent aussi implementer la methode convert qui est
+   appelee par le mecanisme de validation du Noyau. Cette methode recoit la
+   liste complete des valeurs. Ils doivent egalement implementer la methode verif_item
+   qui
+   indique a EFICAS si l'argument passe a la methode est valide en tant qu'item de liste.
+   
+   Exemple de classe validateur NoRepeat ::
+   
+   class NoRepeat(ListVal):
+   """
+   Validateur qui verifie si une liste ne contient pas d'item
+   present plus d'une fois (doublon).
+   """
+   def __init__(self):
+   Valid.__init__(self)
+   self.cata_info=""
+   
+   def info(self):
+   return ": pas de presence de doublon dans la liste"
+   
+   def info_erreur_liste(self):
+   return "Les doublons ne sont pas permis"
+   
+   def default(self,valeur):
+   if valeur in self.liste : raise ValError("%s est un doublon" % valeur)
+   return valeur
+   
+   def convert(self,valeur):
+   self.liste=[]
+   for val in valeur:
+   v=self.adapt(val)
+   self.liste.append(v)
+   return valeur
+   
+   def verif_item(self,valeur):
+   return 1
+   
+   Remarques :
+   - la methode verif_item retourne toujours 1 car le validateur controle la validite
+   de
+   la liste et pas des items.
+   - dans la methode convert, on realise la validation/conversion par appel a la
+   methode
+   adapt qui invoquera la methode default directement ou indirectement suivant la nature de
+   la valeur qui lui est passee.
+   
+   Probleme des mots cles facteurs dont la valeur n'est pas convertible en MCFACT
+   ----------------------------------------------------------------------------------
+   Il est possible de donner a un mot-cle facteur une valeur completement erronee::
+   
+   MO=AFFE_MODELE(AFFE=(_F(),"erreur"))
+   
+   Ce probleme a ete traite par conversion de cette valeur en objet errone (classe
+   ErrorVal
+   du module N_OBJECT.py).
+   Cet objet est semblable a un mot-cle simple et a un comportement suffisant pour produire
+   un compte-rendu d'erreur lisible et est compatible avec EFICAS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U1.03.00
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 16/05/2006 - 09:12:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009745 DU 2006-05-11 15:11:32
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   sslv134b : validation de POST_K1_K2_K3
+FONCTIONNALITE
+   Restitution du cas test sslv134b pour la validation de POST_K1_K2_K3 avec
+   TYPE_MAILLAGE='LIBRE'
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009749 DU 2006-05-12 09:03:10
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   CALC_G : impression avec lissage LEGENDRE
+FONCTIONNALITE
+   Mise en conformite de la routine gkmet1 (calcul et impression des valeurs de K et G pour
+   le lissage de Legendre - option CALC_K_G) : la routine n'avait pas ete modifiee apres
+   l'ajout dans les vecteurs de sortie de BETA (angle de propagation). Le tableau imprime
+   etait alors faux.
+   Validation : ajout du calcul de K avec lissage de Legendre dans le cas test sslv311a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv311a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pabhhhh      TARDIEU N.             DATE 15/05/2006 - 10:54:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009718 DU 2006-04-27 16:35:22
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW8.2.18, zzzz215a, b manquent de memoire et c NOOK sur Alphaserver
+FONCTIONNALITE
+   Pour les tests zzzz215a et b, il s'agit d'un manque de memoire que je corrige par passage
+   de 32 a 64 Mo.
+   
+   Pour le test zzzz215c, on constate une difference notable de 3% entre les architectures
+   Linux 32 bits et Unix 64 bits. Cette difference apparait lors de la projection d'un
+   champ
+   de pression constant par element (ELEM) d'un maillage vers un autre. On considere ici
+   un
+   maillage de cube en tetraedres. Or les noeuds situes sur les aretes du cube peuvent
+   etre
+   projetes sur une face ou une autre en fonction de "petites perturbations algorithmiques".
+   
+   La valeur du TEST_RESU est celle de l'AlphaServer, on met la tolerance a 3%.
+   
+   Peut-etre faut-il s'interroger sur la necessite de traiter les champs ELEM en
+   utilisant le
+   barycentre de l'element cible et non en passant par des champs ELNO.
+   Cette question risque de se poser quand on fera souvent des modelisations
+   multi-physiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage des tests
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009702 DU 2006-04-24 09:44:45
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TITRE
+   Message d'erreur plus clair pour extrapolation
+FONCTIONNALITE
+   Pour clarifier le message d'erreur, je modifie le fichier NMDEPR.F en particularisant le
+   message en fonction du code retour de la routine appelee pour l'interpolation.
+   
+   Le message est maintenant :
+   
+   <F> <STAT_NON_LINE> <NMDEPR> PB. INTERPOLATION PRESSION:
+   
+   EVOL_CHAR  : >RES_PROJ< INSTANT    :  8.3333E-02
+   
+   ON NE SAIT EXTRAPOLER LE CHAMP DE PRESSION PAR RAPPORT AU TEMPS
+   
+   MAIS SEULEMENT L'INTERPOLER
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage test zzzz215c modifie
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 16/05/2006 - 08:51:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009741 DU 2006-05-10 09:11:42
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : DeltaCad
+TITRE
+   Menage des routines CALC_G_*
+FONCTIONNALITE
+   Suite a la fusion des operateurs CALC_G_LOCAL_T et CALC_G_THETA_T (fiche 9153 -
+   restitution 09/05/06), il restait a supprimer les routines associees aux anciens
+   operateurs et a mettre en conformite les catalogues des elements avec les nouveaux noms
+   des options de calcul.
+   
+   Inventaires des sources impactes par cette AL :
+   
+   Fortran :
+   - modification :
+   cakg3d.f,cgcrtb.f,gcour2.f,gkmet3.f,gmeth1.f,gmeth2.f,gmeth3.f,gveri2.f,gveri3.f,
+   mbilgl.f,mebilg.f,mecagl.f,mecalg.f,medom1.f,mlagrg.f,mmaxgl.f,nmdorc.f,
+   op0100.f,rslesd.f,te0027.f,te0095.f,te0205.f,te0288.f,te0289.f,te0298.f,
+   te0382.f,te0383.f,te0280.f.
+   - suppression :
+   op0053.f, op0077.f
+   
+   Py :
+   Suppression de la chaine CALC_G_THETA_T dans B_SENSIBILITE_COMMANDES_SENSIBLES.py
+   
+   Cata :
+   - ajout : liste des nouveaux catalogues conformes aux noms des options de CALC_G :
+   calc_dgg_e.cata, calc_dgg_e_f.cata, calc_dgg_forc.cata, calc_dgg_forc_f.cata,
+   calc_g_glob.cata, calc_g_glob_f.cata, g_bili.cata, g_bili_f.cata,
+   g_lagr.cata, g_lagr_f.cata, g_lagr_glob.cata, g_lagr_glob_f.cata, g_lagr_epsi_f.cata,
+   g_lagr_epsi_r.cata
+   - suppression : liste des catalogues devenus inutiles :
+   calc_g_bili.cata, calc_g_bili_f.cata, calc_g_lagr.cata, calc_g_lagr_f.cata,
+   calc_glag_epsi_f.cata, calc_glag_epsi_r.cata, calc_g_lglo.cata, calc_g_lglo_f.cata
+   - modification : prise en compte de laajout et la suppression des catalogues ci-dessus
+   dans :
+   mecpqs4.cata, mecptr3.cata, mecptr6.cata, medpqs4.cata, medpqs8.cata,
+   medptr6.cata,gener_me3d_2.cata,gener_me3d_3.cata,gener_me_x.cata,gener_me_x_2.cata,
+   gener_meax_2.cata,gener_meaxs2.cata,gener_mecpl2.cata,gener_mecpl2_x.cata,
+   gener_medpl2.cata,gener_medpl2_x.cata,gener_meshb3.cata.
+   
+   Capy:
+   - modification : on reporte dans calc_g.capy laevolution de M.Courtois du 09/05/06
+   (fiche
+   9442) realisee dans calc_g_theta_t.capy.
+   - suppression :
+   calc_g_theta_t.capy, calc_g_local_t.capy
+   
+   Tests :
+   Mise a jour des cas-test ssnv185j, ssnv185i, sslv134c,ascou19a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste de 91 cas-tests contenant la commande CALC_G
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 16/05/2006 - 08:51:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009701 DU 2006-04-24 07:41:43
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : DeltaCad
+TITRE
+   Pb Lecture Base avec cham_elem_sdaster
+FONCTIONNALITE
+   1) Analyse
+   ----------
+   Il est impossible de lire une base contenant un CREA_CHAMP de
+   type "cham_elem_sdaster" => "NameError: name 'cham_elem_sdaste' is not
+   defined". Le probleme est lie au nom "cham_elem_sdaster" qui est ampute d'un
+   caractere cote fortran.
+   
+   2) Solution
+   -----------
+   La solution a constitue a remplacer "cham_elem_sdaster" par "cham_elem" dans
+   accas.capy et dans certains fichier catalogues de commandes.
+   Le type  "cham_elem" fait 9 caracteres et donc sans risque de conflit avec
+   les nommages de concepts (ce pourquoi le "_sdaster" a ete fait).
+   
+   
+   Ce probleme ne concerne que la V8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009606 DU 2006-03-28 14:13:25
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TMA : DeltaCad
+TITRE
+   Message  incomprehensible dans  CREA_MAILLAGE
+FONCTIONNALITE
+   Lionel Salmona (qui a reporte cette correction en NEW7) m'a fait gentiment
+   remarquer que je me suis emmele les pinceaux  dans la reponse precedente :
+   
+   Apres correction, pour tous les mots cles facteur (sauf ECLA_PG), on
+   verifie que l'utilisateur n'a pas oublie de renseigner le mot cle MAILLAGE.
+   
+   S'il l'a oublie, le code emet le message d'erreur fatale suivant :
+   
+   <F> LE MOT-CLE MAILLAGE EST OBLIGATOIRE AVEC LE MOT-CLE xxxx.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR thpapa       PAPACONSTANTINOU T.    DATE 16/05/2006 - 10:58:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008841 DU 2005-07-01 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   cas tests validation independante seisme
+FONCTIONNALITE
+   Suite a l'analyse des differents rapports issus du dossier
+   de validation independante du sesime, je propose la
+   suppresion de ce cas-test. Les raisons de cette decision
+   sont les suivantes :
+   
+   - le calcul de reference est decrit dans un rapport
+   externe dont on ne dispose plus. Il est de plus precise
+   qu'un certain nombre de parametres de ce calcul ne sont
+   donnes dans aucun document hormis le fichier de commande
+   Castem. Le pas de temps de calcul notamment est
+   introuvable car le fichier de commande Castem n'existe
+   plus.
+   Il est donc impossible d'expliquer les ecarts obtenus
+   entre Code_Aster et le calcul de reference Castem. (Ces
+   ecarts sont probablement dus a un dephasage mais sans
+   connaitre le pas de temps de calcul, il est impossible de
+   creuser cette piste).
+   
+   
+   - la doc V n'existe pas.
+   
+   Je propose donc de resorber ce cas-test car on dispose de
+   trop peu d'informations sur le calcul de reference.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SDNX300
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF ascou19a                      rezette C.REZETTE          400      6      6
+ CASTEST MODIF ssls126a                       durand C.DURAND           281      2      2
+ CASTEST MODIF ssls126b                       durand C.DURAND           285      2      2
+ CASTEST MODIF ssls127a                       durand C.DURAND           310      2      2
+ CASTEST MODIF ssls127b                       durand C.DURAND           310      2      2
+ CASTEST MODIF sslv134b                      galenne E.GALENNE          755     55      3
+ CASTEST MODIF sslv134c                      rezette C.REZETTE          227      2      2
+ CASTEST MODIF sslv311a                      galenne E.GALENNE          403     23      1
+ CASTEST MODIF ssns104a                       durand C.DURAND           385      5      5
+ CASTEST MODIF ssns104b                       durand C.DURAND           384      5      5
+ CASTEST MODIF ssnv185i                      rezette C.REZETTE          250      6      6
+ CASTEST MODIF ssnv185j                      rezette C.REZETTE          228      6      6
+ CASTEST MODIF ttnl03b                       cibhhlv L.VIVAN            358    115    194
+ CASTEST MODIF zzzz215a                      pabhhhh N.TARDIEU          167      1      1
+ CASTEST MODIF zzzz215b                      pabhhhh N.TARDIEU          161      1      1
+ CASTEST MODIF zzzz215c                      pabhhhh N.TARDIEU          152     13      8
+ CASTEST SUPPR sdnx300a.comm                  thpapa T.PAPACONSTANTINOU   3204      0   3204
+ CASTEST SUPPR sdnx300b.comm                  thpapa T.PAPACONSTANTINOU   2759      0   2759
+CATALOGU AJOUT options/calc_dgg_e            rezette C.REZETTE           46     46      0
+CATALOGU AJOUT options/calc_dgg_e_f          rezette C.REZETTE           47     47      0
+CATALOGU AJOUT options/calc_dgg_forc         rezette C.REZETTE           51     51      0
+CATALOGU AJOUT options/calc_dgg_forc_f       rezette C.REZETTE           52     52      0
+CATALOGU AJOUT options/calc_g_glob           rezette C.REZETTE           45     45      0
+CATALOGU AJOUT options/calc_g_glob_f         rezette C.REZETTE           46     46      0
+CATALOGU AJOUT options/g_bili                rezette C.REZETTE           45     45      0
+CATALOGU AJOUT options/g_bili_f              rezette C.REZETTE           46     46      0
+CATALOGU AJOUT options/g_lagr                rezette C.REZETTE           36     36      0
+CATALOGU AJOUT options/g_lagr_epsi_f         rezette C.REZETTE           36     36      0
+CATALOGU AJOUT options/g_lagr_epsi_r         rezette C.REZETTE           35     35      0
+CATALOGU AJOUT options/g_lagr_f              rezette C.REZETTE           37     37      0
+CATALOGU AJOUT options/g_lagr_glob           rezette C.REZETTE           34     34      0
+CATALOGU AJOUT options/g_lagr_glob_f         rezette C.REZETTE           35     35      0
+CATALOGU MODIF typelem/gener_me3d_2          rezette C.REZETTE          178     30     11
+CATALOGU MODIF typelem/gener_me3d_3          rezette C.REZETTE          635     41     29
+CATALOGU MODIF typelem/gener_me_x            rezette C.REZETTE          617     41     29
+CATALOGU MODIF typelem/gener_me_x_2          rezette C.REZETTE          154     11     11
+CATALOGU MODIF typelem/gener_meax_2          rezette C.REZETTE          585     16     16
+CATALOGU MODIF typelem/gener_meaxs2          rezette C.REZETTE          550     16     16
+CATALOGU MODIF typelem/gener_mecpl2          rezette C.REZETTE          576     16     16
+CATALOGU MODIF typelem/gener_mecpl2_x        rezette C.REZETTE          568     16     16
+CATALOGU MODIF typelem/gener_medpl2          rezette C.REZETTE          592     16     16
+CATALOGU MODIF typelem/gener_medpl2_x        rezette C.REZETTE          563     16     16
+CATALOGU MODIF typelem/gener_meshb3          rezette C.REZETTE          323     13      9
+CATALOGU MODIF typelem/mecpqs4               rezette C.REZETTE          528     16     16
+CATALOGU MODIF typelem/mecptr3               rezette C.REZETTE          561     16     16
+CATALOGU MODIF typelem/mecptr6               rezette C.REZETTE          557     16     16
+CATALOGU MODIF typelem/medpqs4               rezette C.REZETTE          539     16     16
+CATALOGU MODIF typelem/medpqs8               rezette C.REZETTE          538     16     16
+CATALOGU MODIF typelem/medptr6               rezette C.REZETTE          567     16     16
+CATALOGU SUPPR commande/calc_g_local_t       rezette C.REZETTE          138      0    138
+CATALOGU SUPPR commande/calc_g_local_t       rezette C.REZETTE          138      0    138
+CATALOGU SUPPR commande/calc_g_theta_t       rezette C.REZETTE          117      0    117
+CATALOGU SUPPR commande/calc_g_theta_t       rezette C.REZETTE          117      0    117
+CATALOGU SUPPR options/calc_g_bili           rezette C.REZETTE           45      0     45
+CATALOGU SUPPR options/calc_g_bili_f         rezette C.REZETTE           46      0     46
+CATALOGU SUPPR options/calc_g_lagr           rezette C.REZETTE           34      0     34
+CATALOGU SUPPR options/calc_g_lglo           rezette C.REZETTE           36      0     36
+CATALOGU SUPPR options/calc_g_lglo_f         rezette C.REZETTE           37      0     37
+CATALOGU SUPPR options/calc_glag_epsi_f      rezette C.REZETTE           36      0     36
+CATALOGU SUPPR options/calc_glag_epsi_r      rezette C.REZETTE           35      0     35
+CATALOPY MODIF commande/affe_char_ther       rezette C.REZETTE          204      2      2
+CATALOPY MODIF commande/calc_cham_elem       rezette C.REZETTE           66      2      2
+CATALOPY MODIF commande/calc_fatigue         rezette C.REZETTE           80      3      3
+CATALOPY MODIF commande/calc_g               rezette C.REZETTE          140      6      3
+CATALOPY MODIF commande/calc_g_local_t       rezette C.REZETTE          138      0      0
+CATALOPY MODIF commande/calc_g_local_t       rezette C.REZETTE          138      0    138
+CATALOPY MODIF commande/calc_g_theta_t       rezette C.REZETTE          117      0      0
+CATALOPY MODIF commande/calc_g_theta_t       rezette C.REZETTE          117      0    117
+CATALOPY MODIF commande/calc_matr_elem       rezette C.REZETTE          192      2      2
+CATALOPY MODIF commande/calc_precont         rezette C.REZETTE          149      3      3
+CATALOPY MODIF commande/calc_vect_elem       rezette C.REZETTE           76      2      2
+CATALOPY MODIF commande/comb_cham_elem       rezette C.REZETTE           45      5      5
+CATALOPY MODIF commande/crea_champ           rezette C.REZETTE          183      2      2
+CATALOPY MODIF commande/dyna_non_line        rezette C.REZETTE          371      5      5
+CATALOPY MODIF commande/dyna_tran_expli      rezette C.REZETTE          312      3      3
+CATALOPY MODIF commande/lire_champ           rezette C.REZETTE           64      2      2
+CATALOPY MODIF commande/macr_adap_mail       rezette C.REZETTE          348      2      2
+CATALOPY MODIF commande/macro_matr_asse      rezette C.REZETTE           97      2      2
+CATALOPY MODIF commande/post_elem            rezette C.REZETTE          408      6      6
+CATALOPY MODIF commande/post_releve_t        rezette C.REZETTE          127      2      2
+CATALOPY MODIF commande/recu_fonction        rezette C.REZETTE          240      2      2
+CATALOPY MODIF commande/stanley               assire A.ASSIRE            34      4      1
+CATALOPY MODIF commande/stat_non_line        rezette C.REZETTE          341      5      5
+CATALOPY MODIF commande/test_resu            rezette C.REZETTE          169      2      2
+CATALOPY MODIF entete/accas                   durand C.DURAND          1122      2      2
+CATALOPY MODIF entete/accas                  rezette C.REZETTE         1122      2      2
+ FORTRAN MODIF algeline/op0167               rezette C.REZETTE          922     50      6
+ FORTRAN MODIF algorith/cakg3d               rezette C.REZETTE          398      3      3
+ FORTRAN MODIF algorith/gveri3               rezette C.REZETTE          167      7     19
+ FORTRAN MODIF algorith/nmdepr               pabhhhh N.TARDIEU          261     11      2
+ FORTRAN MODIF algorith/nmdorc               rezette C.REZETTE          584      3      5
+ FORTRAN MODIF calculel/cgcrtb               rezette C.REZETTE          305      5      3
+ FORTRAN MODIF calculel/mbilgl               rezette C.REZETTE          398      7      7
+ FORTRAN MODIF calculel/mebilg               rezette C.REZETTE          293      5      5
+ FORTRAN MODIF calculel/mecagl               rezette C.REZETTE          388      8     12
+ FORTRAN MODIF calculel/mecalg               rezette C.REZETTE          486     21      9
+ FORTRAN MODIF calculel/medom1               rezette C.REZETTE          215      2      4
+ FORTRAN MODIF calculel/mlagrg               rezette C.REZETTE          242     24     10
+ FORTRAN MODIF calculel/op0100               rezette C.REZETTE         1067     23     10
+ FORTRAN MODIF elements/gcour2               rezette C.REZETTE          466      3     12
+ FORTRAN MODIF elements/gkmet1               galenne E.GALENNE          118     12      8
+ FORTRAN MODIF elements/gkmet3               rezette C.REZETTE          206      3     14
+ FORTRAN MODIF elements/gmeth1               rezette C.REZETTE          115      3      4
+ FORTRAN MODIF elements/gmeth2               rezette C.REZETTE          238      3      3
+ FORTRAN MODIF elements/gmeth3               rezette C.REZETTE          208      4     15
+ FORTRAN MODIF elements/gveri2               rezette C.REZETTE          186      7     18
+ FORTRAN MODIF elements/te0027               rezette C.REZETTE          560     10      6
+ FORTRAN MODIF elements/te0095               rezette C.REZETTE          327      4      4
+ FORTRAN MODIF elements/te0205               rezette C.REZETTE          612     13     13
+ FORTRAN MODIF elements/te0280               rezette C.REZETTE          338     14      6
+ FORTRAN MODIF elements/te0288               rezette C.REZETTE          309      4      4
+ FORTRAN MODIF elements/te0289               rezette C.REZETTE          525      3      3
+ FORTRAN MODIF elements/te0298               rezette C.REZETTE          300      4      4
+ FORTRAN MODIF elements/te0382               rezette C.REZETTE          303      4      4
+ FORTRAN MODIF elements/te0383               rezette C.REZETTE          287      4      4
+ FORTRAN MODIF utilitai/mmaxgl               rezette C.REZETTE          296      2      2
+ FORTRAN MODIF utilitai/rslesd               rezette C.REZETTE          438      2      6
+ FORTRAN SUPPR calculel/op0053               rezette C.REZETTE          890      0    890
+ FORTRAN SUPPR calculel/op0077               rezette C.REZETTE          646      0    646
+  PYTHON MODIF Accas/__init__                 durand C.DURAND            79      1      1
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES    rezette C.REZETTE          254      1      2
+  PYTHON MODIF Build/codex                    durand C.DURAND           150     10      5
+  PYTHON MODIF Macro/stanley_ops              assire A.ASSIRE            84     11      2
+  PYTHON MODIF Noyau/N_ASSD                   durand C.DURAND           120      4     18
+  PYTHON MODIF Noyau/N_CO                     durand C.DURAND            51      6      9
+  PYTHON MODIF Noyau/N_FACT                   durand C.DURAND           166     10      2
+  PYTHON MODIF Noyau/N_GEOM                   durand C.DURAND            63      4     10
+  PYTHON MODIF Noyau/N_OBJECT                 durand C.DURAND           131     31      1
+  PYTHON MODIF Noyau/N_VALIDATOR              durand C.DURAND          1194    603    288
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3156     93     10
+  PYTHON MODIF Validation/V_MCSIMP            durand C.DURAND           193     52    261
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   14         591       591              +591
+ MODIF :  102       37286      1734    1676       +58
+ SUPPR :   15        8278              8278     -8278
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  131       46155      2325    9954     -7629 

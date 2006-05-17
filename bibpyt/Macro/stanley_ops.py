@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_ops Macro  DATE 15/05/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
   from Accas import _F
   from Noyau.N_utils import AsType
   from Utilitai.Utmess import UTMESS
+  from Utilitai.UniteAster import UniteAster
 
   ier=0
 
@@ -41,6 +42,14 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
   if DISPLAY:
     UTMESS('I','STANLEY', 'Redefinition du DISPLAY vers : ' + DISPLAY)
     os.environ['DISPLAY'] = DISPLAY
+
+  # Mode validation de la non-regression
+  if args['UNITE_VALIDATION']:
+     UTMESS('I','STANLEY', 'Stanley fonctionne en mode validation de non-regresion')
+     UL = UniteAster()
+     FICHIER_VALID=UL.Nom(args['UNITE_VALIDATION'])
+  else:
+     FICHIER_VALID=None
 
   # On ne lance Stanley que si la variable DISPLAY est définie
   if os.environ.has_key('DISPLAY'):
@@ -57,7 +66,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
       else:
         stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,None)
     else:
-      stanley.PRE_STANLEY()
+      stanley.PRE_STANLEY(FICHIER_VALID)
 
   else:
       UTMESS('A','STANLEY',

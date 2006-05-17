@@ -1,4 +1,4 @@
-#@ MODIF codex Build  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#@ MODIF codex Build  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,13 +36,13 @@ def argv(args):
       de la ligne de commande passes dans args
       Interface avec le C
    """
-   print "codex.argv : ",args
+   #print "codex.argv : ",args
 
 def init(debug):
    """
       Deuxième fonction d'initialisation interfacee avec le FORTRAN
    """
-   print "codex.init : ", debug
+   #print "codex.init : ", debug
 
 def impers():
    return None
@@ -56,7 +56,7 @@ def opsexe(cmd,icmd,ipass,op):
       op est le numero de la macro
       icmd le numero de la commande dans le jeu de commandes
    """
-   print "codex.opsexe : ",cmd.nom,cmd,icmd,ipass,op
+   #print "codex.opsexe : ",cmd.nom,cmd,icmd,ipass,op
    ops[op](cmd)
    return 0
 
@@ -65,7 +65,7 @@ def oper(cmd,jxvrf,ipass,icmd):
       Fonction d'execution de l'operateur d'un operateur ou d'une
       procedure
    """
-   print "codex.oper : ",cmd.nom,icmd,ipass,jxvrf
+   #print "codex.oper : ",cmd.nom,icmd,ipass,jxvrf
 
 def debut(cmd,lot):
    """
@@ -140,6 +140,11 @@ def gcncon(type):
    global _count
    _count=_count+1
    return type + string.zfill(str(_count),7)
+
+def affiche(msg,text):
+    pass
+def fclose(unit):
+    pass
 
 
 

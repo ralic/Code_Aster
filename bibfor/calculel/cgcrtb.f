@@ -1,7 +1,7 @@
       SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,TROIDL,NDEP,NRES,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,7 +84,8 @@ C
           NOPRUP(3) = 'G_LOCAL'
           TYPRUP(3) = 'R'
         ENDIF
-      ELSEIF (OPTIO1.EQ.'CALC_DG_E') THEN
+      ELSEIF (OPTIO1.EQ.'CALC_DG_E'
+     &   .OR. OPTIO1.EQ.'CALC_DGG_E') THEN
         IF (NDEP .NE. 0 ) THEN
           NBPRUP = 1
           NOPRUP(1) = 'DG/DE'
@@ -98,7 +99,8 @@ C
           NOPRUP(3) = 'DG/DE'
           TYPRUP(3) = 'R'
         ENDIF
-      ELSEIF (OPTIO1.EQ.'CALC_DG_FORC')THEN
+      ELSEIF (OPTIO1.EQ.'CALC_DG_FORC'
+     &   .OR. OPTIO1.EQ.'CALC_DGG_FORC')THEN
         IF (NDEP .NE. 0 ) THEN
           NBPRUP = 1
           NOPRUP(1) = 'DG/DF'
