@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,9 +245,9 @@ C
 
       IF ( IRET .EQ. 0 ) THEN
          IF (FONREE.EQ.'REEL') THEN
-            CALL ALCAR2('G',CARTE,NOMA,'FORC_R')
+            CALL ALCART('G',CARTE,NOMA,'FORC_R')
          ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL ALCAR2('G',CARTE,NOMA,'FORC_F')
+            CALL ALCART('G',CARTE,NOMA,'FORC_F')
          ELSE
             CALL UTMESS('F','CAFONO','VALEUR INATTENDUE: '//FONREE)
          END IF
@@ -312,7 +312,7 @@ C
 C   ON CREE UNE CARTE POUR CHAQUE NOEUD AFFECTE ET ON NOTE TOUTES
 C   LES COMPOSANTES (NBCOMP)
 C
-            CALL NOCAR2(CARTE,-3,' ','NUM',1,' ',ZI(JL),LIEL,NBCOMP)
+            CALL NOCART(CARTE,-3,' ','NUM',1,' ',ZI(JL),LIEL,NBCOMP)
 C
          END IF
 

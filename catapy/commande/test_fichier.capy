@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,8 +25,8 @@ TEST_FICHIER=MACRO(nom="TEST_FICHIER", op=test_fichier_ops,
                    UIinfo={"groupes":("Impression",)},
                    fr="Tester la non régression de fichiers produits par des commandes aster",
    FICHIER          =SIMP(statut='o',typ='TXM',validators=LongStr(1,255)),
-   NB_CHIFFRE      =SIMP(statut='f',typ='I',defaut=6),
-   EPSILON         =SIMP(statut='f',typ='R',defaut=1.E-14),
+   NB_CHIFFRE      =SIMP(statut='o',typ='I',),   # defaut=6        pas de defaut, il faut
+   EPSILON         =SIMP(statut='o',typ='R',),   # defaut=1.E-12   se poser la question !
    EXPR_IGNORE     =SIMP(statut='f',typ='TXM',max='**',
                          fr="Liste d'expressions régulières permettant d'ignorer certaines lignes"),
    VALE_K          =SIMP(statut='o',typ='TXM' ),

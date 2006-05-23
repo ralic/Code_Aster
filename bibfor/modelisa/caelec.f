@@ -4,7 +4,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
       CALL GETFAC ( MOTCLF , NBFEL )
 C
       CARTE = CHAR//'.CHME.'//'FELEC'
-      CALL ALCAR2 ( 'G', CARTE, NOMA, 'FELECR')
+      CALL ALCART ( 'G', CARTE, NOMA, 'FELECR')
 C
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
@@ -78,7 +78,7 @@ C
       DO 100 I = 1, 7
          ZR(JVALV-1+I) = 0.D0
   100 CONTINUE
-      CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, 7 )
+      CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, 7 )
 C
       MESMAI = '&&CAELEC.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -139,12 +139,12 @@ C
 C
          IF ( NBTOU .NE. 0 ) THEN
 C
-            CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, 7 )
+            CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, 7 )
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
-            CALL NOCAR2 ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',7)
+            CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',7)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,9 +131,9 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       TMPNDK = CARTDK//'.NCMP'
       TMPVDK = CARTDK//'.VALV'
 C
-      CALL ALCAR2('G',CART(1),NOMA,'CADISK')
-      CALL ALCAR2('G',CART(2),NOMA,'CADISM')
-      CALL ALCAR2('G',CART(3),NOMA,'CADISA')
+      CALL ALCART('G',CART(1),NOMA,'CADISK')
+      CALL ALCART('G',CART(2),NOMA,'CADISM')
+      CALL ALCART('G',CART(3),NOMA,'CADISA')
       CALL JEVEUO(TMPNDK,'E',JDC(1))
       CALL JEVEUO(TMPVDK,'E',JDV(1))
       CALL JEVEUO(TMPNDM,'E',JDC(2))
@@ -155,14 +155,14 @@ C         AFIN DE POUVOIR CALCULER LES MATRICES K,M,A DANS TOUS LES CAS
          IF (I.EQ.1) THEN
             ZK8(JDC(I)+79)  = 'ETA     '
             ZR (JDV(I)+79)  = 0.D0
-            CALL NOCAR2(CART(I),1,' ',' ',0,' ',0,' ',80)
+            CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',80)
             IF (IXNW.NE.0) THEN
-               CALL NOCAR2(CART(I),-1,' ',' ',0,' ',0,LIGMO,80)
+               CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,80)
             ENDIF
          ELSE
-            CALL NOCAR2(CART(I),1,' ',' ',0,' ',0,' ',79)
+            CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',79)
             IF (IXNW.NE.0) THEN
-               CALL NOCAR2(CART(I),-1,' ',' ',0,' ',0,LIGMO,79)
+               CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,79)
             ENDIF
          ENDIF
  20   CONTINUE
@@ -204,7 +204,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
               CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
      +                    NCMP,L,IFM)
                DO 38 II = 1 , NG
-              CALL NOCAR2(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,' ',NCMP)
+              CALL NOCART(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,' ',NCMP)
  38            CONTINUE
  36         CONTINUE
          ENDIF
@@ -215,7 +215,7 @@ C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
             DO 40 I = 1,NCARAC
               CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
      +                    NCMP,L,IFM)
-               CALL NOCAR2(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',NCMP)
+               CALL NOCART(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',NCMP)
  40         CONTINUE
          ENDIF
 C
@@ -235,7 +235,7 @@ C                                                  DE GROUPES DE NOEUDS
                      DO 44 II = 1,NCARAC
                         CALL AFFDIS(NDIM,IREP,ETA,CAR(II),VAL,JDC,JDV,
      +                              IVR,IV,KMA,NCMP,L,IFM)
-                       CALL NOCAR2(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+                       CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      +                                                       LIGMO,NCMP)
  44                  CONTINUE
                   ENDIF
@@ -250,7 +250,7 @@ C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
                   DO 46 I = 1,NCARAC
                      CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,
      +                           IVR,IV,KMA,NCMP,L,IFM)
-                     CALL NOCAR2(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+                     CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      +                                                       LIGMO,NCMP)
  46               CONTINUE
                ENDIF

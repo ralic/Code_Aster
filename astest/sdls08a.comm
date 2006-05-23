@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -274,7 +274,7 @@ DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 TEST_FICHIER(FICHIER='fort.38',
              NB_CHIFFRE=4,
              EPSILON=1.E-4,
-             VALE_K='f0e1e9016f74cd228af225fc58ecd4ec',
+             VALE_K='6a3b03671c128f5b572f831090ec3696',
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
              REFERENCE='NON_REGRESSION',
              VERSION='8.0.21',

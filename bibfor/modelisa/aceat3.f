@@ -9,7 +9,7 @@
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),EPSI,ANGL4(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,7 +245,7 @@ C              MODI_METRIQUE
                ZR(JDVLVO-1+ICMP+4) = THETA
                ZR(JDVLVO-1+ICMP+5) = OMEGA
 
-               CALL NOCAR2(CARTOR,3,' ','NUM',1,' ',NUMMAI,' ',NBCMP)
+               CALL NOCART(CARTOR,3,' ','NUM',1,' ',NUMMAI,' ',NBCMP)
 C
                IF (IVR(3).EQ.1) THEN
                   CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)

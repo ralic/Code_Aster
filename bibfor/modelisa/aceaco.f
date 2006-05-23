@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       TMPNCO = CARTCO//'.NCMP'
       TMPVCO = CARTCO//'.VALV'
 C
-      CALL ALCAR2('G',CARTCO,NOMA,'CACOQU')
+      CALL ALCART('G',CARTCO,NOMA,'CACOQU')
       CALL JEVEUO(TMPNCO,'E',JDCC)
       CALL JEVEUO(TMPVCO,'E',JDVC)
 C
@@ -111,14 +111,14 @@ C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
          IF (NG.GT.0) THEN
             DO 20 I = 1 , NG
-               CALL NOCAR2(CARTCO,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',8)
+               CALL NOCART(CARTCO,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',8)
  20         CONTINUE
          ENDIF
 C
 C ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 C
          IF (NM.GT.0) THEN
-            CALL NOCAR2(CARTCO,3,' ','NOM',NM,ZK8(JDLS),0,' ',8)
+            CALL NOCART(CARTCO,3,' ','NOM',NM,ZK8(JDLS),0,' ',8)
          ENDIF
 C
  10   CONTINUE

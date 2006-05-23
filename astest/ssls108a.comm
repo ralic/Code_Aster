@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=35)
 TEST_FICHIER(FICHIER='./REPE_OUT/MA10.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='895b06118b8ec653113906f433bfbf75',
+             VALE_K='2c1b4d9afac623728eaae5d5169ee16f',
              REFERENCE='NON_REGRESSION',
              VERSION='7.2.23',
              INFO=1)
@@ -136,7 +136,7 @@ TEST_FICHIER(
              FICHIER= './REPE_OUT/DEP10.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='cc954bdd1d9cae465521cc85efd35a4f',
+             VALE_K='97fa74ddd0b527a0ab920e6f1d2d2f10',
              REFERENCE='NON_REGRESSION',
              VERSION='8.0.21',
              INFO=1)
@@ -156,7 +156,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 TEST_FICHIER(FICHIER='./REPE_OUT/MA12.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='895b06118b8ec653113906f433bfbf75',
+             VALE_K='2c1b4d9afac623728eaae5d5169ee16f',
              REFERENCE='NON_REGRESSION',
              VERSION='7.2.23',
              INFO=1)
@@ -176,7 +176,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 TEST_FICHIER(FICHIER='./REPE_OUT/DEP12.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='c3db57d6226b7220bb031b0f2492f3e0',
+             VALE_K='6f933faf3821599884069d35522e1fbe',
              REFERENCE='NON_REGRESSION',
              VERSION='8.0.21',
              INFO=1)

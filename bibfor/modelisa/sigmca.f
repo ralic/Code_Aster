@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C
          NUMAIL = ZI(JNUMAC+IDECMA+IMAIL-1)
          ZR(JVALV) = ( ZR(JTENS+IDECNO+IMAIL-1)
      &               + ZR(JTENS+IDECNO+IMAIL) ) / 2.0D0
-         CALL NOCAR2(CARSIG,3,K1B,'NUM',1,K1B,NUMAIL,' ',1)
+         CALL NOCART(CARSIG,3,K1B,'NUM',1,K1B,NUMAIL,' ',1)
   20  CONTINUE
 C
       CALL JEDEMA()

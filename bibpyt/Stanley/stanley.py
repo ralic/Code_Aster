@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 15/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -860,10 +860,20 @@ class ETAT_GEOM:
 
     maillage = self.mail[ligne]
 
-    DEFI_GROUP(reuse = maillage,
-      MAILLAGE = maillage,
-      CREA_GROUP_NO = _F(GROUP_MA=ligne, NOM=nom, OPTION='NOEUD_ORDO')
-      )
+    try:
+      DEFI_GROUP(reuse = maillage,
+                 MAILLAGE = maillage,
+                 CREA_GROUP_NO = _F(GROUP_MA=ligne, NOM=nom, OPTION='NOEUD_ORDO')
+                )
+    except aster.error,err:
+      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+      return None
+    except aster.FatalError,err:
+      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+      return None
+    except Exception,err:
+      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
+      return None
 
     return nom
 
@@ -2491,11 +2501,16 @@ class DRIVER_COURBES(DRIVER) :
     # Options supplementaires du IMPR_RESU pour la SENSIBILITE
     if contexte.para_sensi:
        para['SENSIBILITE'] = contexte.para_sensi
+
+       DETRUIRE(CONCEPT = _F(NOM = 'STNTBLG2'),INFO=1, ALARME='NON')
+
        try:
           MEMO_NOM_SENSI(NOM=( _F(NOM_SD='STNTBLGR',
                                   PARA_SENSI=contexte.para_sensi,
                                   NOM_COMPOSE='STNTBLG2')));
        except: pass
+
+    DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
 
     if selection.geom[0] == 'POINT' :
 
@@ -2534,7 +2549,7 @@ class DRIVER_COURBES(DRIVER) :
 
           l_courbes.append( (courbe, nom) )
 
-        DETRUIRE(CONCEPT = _F(NOM = STNTBLGR),INFO=1, ALARME='NON')
+        DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
         if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi)),INFO=1, ALARME='NON')
         if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
 
@@ -2554,15 +2569,14 @@ class DRIVER_COURBES(DRIVER) :
       for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
         para['NUME_ORDRE'] = no,
         try:
-#          __GRACE = POST_RELEVE_T(ACTION = para)
           STNTBLGR = POST_RELEVE_T(ACTION = para)
         except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, [], 1)
+          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except aster.FatalError,err:
-          return self.erreur.Remonte_Erreur(err, [], 1)
+          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:
           texte = "Cette action n'est pas realisable.\n"+str(err)
-          return self.erreur.Remonte_Erreur(err, [], 1, texte)
+          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
 
 
         for comp in l_nom_cmp :
@@ -2582,7 +2596,7 @@ class DRIVER_COURBES(DRIVER) :
 
           l_courbes.append( (courbe, nom) )
 
-        DETRUIRE(CONCEPT = _F(NOM = STNTBLGR),INFO=1, ALARME='NON')
+        DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
         if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi)),INFO=1, ALARME='NON')
 
       if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
@@ -3002,26 +3016,27 @@ class PRE_STANLEY :
         Selectionne les concepts modele, cham_mater et cara_elem du resultat courant
         Definit la frequence de scan
     """
-
-    evol = self.evol.courant[0]
-    modele = self.concepts[evol][0]
-    self.modele.Selectionne( modele )
-    cham_mater = self.concepts[evol][1]
-    self.cham_mater.Selectionne( cham_mater )
-    if self.t_cara_elem != []:
-       cara_elem = self.concepts[evol][2]
-       self.cara_elem.Selectionne( cara_elem )
-    if self.t_para_sensi != []:
-       if len(self.dico_para_sensi[evol])>0:
-          para = self.dico_para_sensi[evol][0]
-          t_para = copy.copy(self.dico_para_sensi[evol])
-          t_para.insert(0, texte_sensibilite)
-          self.para_sensi.Change( t_para, para )
-       else:
-          para = self.t_para_sensi[0]
-          t_para = copy.copy(self.t_para_sensi)
-          t_para.insert(0, texte_sensibilite)
-          self.para_sensi.Change( t_para, para )
+    try:
+       evol = self.evol.courant[0]
+       modele = self.concepts[evol][0]
+       self.modele.Selectionne( modele )
+       cham_mater = self.concepts[evol][1]
+       self.cham_mater.Selectionne( cham_mater )
+       if self.t_cara_elem != []:
+          cara_elem = self.concepts[evol][2]
+          self.cara_elem.Selectionne( cara_elem )
+       if self.t_para_sensi != []:
+          if len(self.dico_para_sensi[evol])>0:
+             para = self.dico_para_sensi[evol][0]
+             t_para = copy.copy(self.dico_para_sensi[evol])
+             t_para.insert(0, texte_sensibilite)
+             self.para_sensi.Change( t_para, para )
+          else:
+             para = self.t_para_sensi[0]
+             t_para = copy.copy(self.t_para_sensi)
+             t_para.insert(0, texte_sensibilite)
+             self.para_sensi.Change( t_para, para )
+    except: pass
 
 
   def Scan_selection(self) :
@@ -3033,7 +3048,8 @@ class PRE_STANLEY :
 
     # Si le resultat a changé on reselectionne les autres concepts
     if self.evol.Scan():
-       self.Change_selections()
+       try:    self.Change_selections()
+       except: pass
 
     self.after_id = self.rootTk.after(30, self.Scan_selection)
 

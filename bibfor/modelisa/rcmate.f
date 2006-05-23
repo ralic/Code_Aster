@@ -3,7 +3,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       CALL JEMARQ()
       CHAMAT = CHMAT//'.CHAMP_MAT'
 C
-      CALL ALCAR2 ( 'G', CHAMAT, NOMAIL, 'NEUT_F')
+      CALL ALCART ( 'G', CHAMAT, NOMAIL, 'NEUT_F')
       CALL JEVEUO ( CHAMAT(1:19)//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CHAMAT(1:19)//'.VALV', 'E', JVALV )
       OUI = 'X'
@@ -83,13 +83,13 @@ C
          CALL GETVID ( 'AFFE', 'MATER' , I,1,NM, ZK8(JVALV), NM )
          CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
          IF ( NT .NE. 0 ) THEN
-            CALL NOCAR2 ( CHAMAT, 1, K8B, K8B, 0, K8B, IBID, ' ', NM )
+            CALL NOCART ( CHAMAT, 1, K8B, K8B, 0, K8B, IBID, ' ', NM )
          ELSE
             CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2,MOTCLE(1),
      +                                      TYPMCL(1), MESMAI, NBMA )
             IF ( NBMA .NE. 0 ) THEN
                CALL JEVEUO ( MESMAI, 'L', JMAIL )
-               CALL NOCAR2 ( CHAMAT, 3, K8B, 'NUM', NBMA, K8B,
+               CALL NOCART ( CHAMAT, 3, K8B, 'NUM', NBMA, K8B,
      +                                              ZI(JMAIL), ' ', NM )
                CALL JEDETR ( MESMAI )
             ENDIF

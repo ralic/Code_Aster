@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,18 +275,17 @@ for num_calc in range(0,nb_calc1) :
 # MAILLAGE DE DEPART: MAT[num_calc]
 # MAILLAGE D'ARRIVE: MAT[num_calc1]
    MACR_ADAP_MAIL(
-              ADAPTATION=_F( 
-#                       UNIFORME = 'RAFFINEMENT',
-                       LIBRE = 'RAFF_DERA',                    
-                       MAILLAGE_N = MAT[num_calc],
-                       MAILLAGE_NP1 = MAT[num_calc1],
+              ADAPTATION='RAFF_DERA',  
+#              ADAPTATION=LIBRE = 'RAFFINEMENT_UNIFORME',
+                                          
+              MAILLAGE_N = MAT[num_calc],
+              MAILLAGE_NP1 = MAT[num_calc1],
 # POUR ADAPTATION LIBRE                
-                       RESULTAT_N=TEMP[num_calc],
-                       INDICATEUR='ERRE_ELEM_TEMP',
-                       NOM_CMP_INDICA='ERTREL',
-                       CRIT_RAFF_PE=0.2,
-                       CRIT_DERA_PE=0.1,                       
-                       ),
+              RESULTAT_N=TEMP[num_calc],
+              INDICATEUR='ERRE_ELEM_TEMP',
+              NOM_CMP_INDICA='ERTREL',
+              CRIT_RAFF_PE=0.2,
+              CRIT_DERA_PE=0.1,                       
               QUALITE='OUI',
               INTERPENETRATION='OUI',
               TAILLE='OUI',

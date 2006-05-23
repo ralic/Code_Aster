@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRCH, LIGRMO
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,9 +77,9 @@ C
 C
       CARTE = CHAR//'.CHTH.HECHP'
       IF (FONREE.EQ.'REEL') THEN
-        CALL ALCAR2 ( 'G', CARTE, NOMA, 'COEH_R')
+        CALL ALCART ( 'G', CARTE, NOMA, 'COEH_R')
       ELSE IF (FONREE.EQ.'FONC') THEN
-        CALL ALCAR2 ( 'G', CARTE, NOMA, 'COEH_F')
+        CALL ALCART ( 'G', CARTE, NOMA, 'COEH_F')
       ELSE
         CALL UTMESS('F','CAECHP','VALEUR INATTENDUE: '//FONREE )
       END IF
@@ -133,7 +133,7 @@ C
             CALL JEVEUO ( JEXNUM(LIEL,IGREL), 'E', JLIGR )
             CALL JELIRA ( JEXNUM(LIEL,IGREL), 'LONMAX', NBM, K8B )
             NBM = NBM - 1
-           CALL NOCAR2(CARTE,-3,' ','NUM',NBM,' ',ZI(JLIGR),LIGRCH,NCMP)
+           CALL NOCART(CARTE,-3,' ','NUM',NBM,' ',ZI(JLIGR),LIGRCH,NCMP)
 200      CONTINUE
 100   CONTINUE
       CALL JEDETC (' ','&&CAECHP',1)

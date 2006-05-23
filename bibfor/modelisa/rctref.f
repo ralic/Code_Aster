@@ -3,7 +3,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
       CHTREF = CHMAT//'.TEMPE_REF'
 C
 C
-      CALL ALCAR2 ( 'G', CHTREF, NOMAIL, 'TEMP_R' )
+      CALL ALCART ( 'G', CHTREF, NOMAIL, 'TEMP_R' )
 C
       CALL JEVEUO ( CHTREF(1:19)//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CHTREF(1:19)//'.VALV', 'E', JVALV )
@@ -77,13 +77,13 @@ C
             CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
 
             IF ( NT .NE. 0 ) THEN
-               CALL NOCAR2 ( CHTREF, 1, K8B, K8B, 0, K8B, IBID, ' ', 1 )
+               CALL NOCART ( CHTREF, 1, K8B, K8B, 0, K8B, IBID, ' ', 1 )
             ELSE
                CALL RELIEM(NOMODE, NOMAIL, 'NU_MAILLE', 'AFFE', I, 2,
      +                       MOTCLE(1), TYPMCL(1), MESMAI, NBMA )
                IF ( NBMA .NE. 0 ) THEN
                   CALL JEVEUO ( MESMAI, 'L', JMAIL )
-                  CALL NOCAR2 ( CHTREF, 3, K8B, 'NUM', NBMA, K8B,
+                  CALL NOCART ( CHTREF, 3, K8B, 'NUM', NBMA, K8B,
      +                                              ZI(JMAIL), ' ', 1 )
                   CALL JEDETR ( MESMAI )
                ENDIF

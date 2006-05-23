@@ -1,7 +1,7 @@
       SUBROUTINE ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,IT)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,7 @@ C
 C
 C     CREATION D'UNE CARTE
 C
-      CALL ALCAR2('G',NOMU//'.ABS_CURV  ',NOMU,'ABSC_R')
+      CALL ALCART('G',NOMU//'.ABS_CURV  ',NOMU,'ABSC_R')
       CALL JEVEUO(NOMU//'.ABS_CURV  .NCMP','E',IANCMP)
       CALL JEVEUO(NOMU//'.ABS_CURV  .VALV','E',IAVALV)
       ZK8(IANCMP)   = 'ABSC1'
@@ -212,7 +212,7 @@ C
         STOT = STOT+S
         ZR(IAVALV+1) = STOT
         ZR(IAB2+MI-1)= STOT
-        CALL NOCAR2(NOMU//'.ABS_CURV  ',3,' ','NUM',1,' ',IMA,' ',2)
+        CALL NOCART(NOMU//'.ABS_CURV  ',3,' ','NUM',1,' ',IMA,' ',2)
    10 CONTINUE
 C     CAS DES POI1
       DO 20 IPOI1 = 1,NBPOI1
@@ -225,7 +225,7 @@ C     CAS DES POI1
         ENDIF
         ZR(IAVALV  ) = S
         ZR(IAVALV+1) = S
-        CALL NOCAR2(NOMU//'.ABS_CURV  ',3,' ','NUM',1,' ',IMA,' ',2)
+        CALL NOCART(NOMU//'.ABS_CURV  ',3,' ','NUM',1,' ',IMA,' ',2)
    20 CONTINUE
       CALL JEDETC('V','&&ABSCUR',1)
       CALL JEDETC('V',NOMU//'.ABS_CURV  .VALV',1)

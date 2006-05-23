@@ -1,7 +1,7 @@
       SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE,INST)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -649,7 +649,7 @@ C ---- Element de Poutre
 C      3. CREATION DE LA CARTE :
 C      -------------------------
 
-      CALL ALCAR2('V',CARTE,NOMA,'NEUT_R')
+      CALL ALCART('V',CARTE,NOMA,'NEUT_R')
       CALL JEVEUO(CARTE//'.NCMP','E',JNCMP)
       CALL JEVEUO(CARTE//'.VALV','E',JVALV)
 
@@ -695,7 +695,7 @@ C      -------------------------
         ZR(JVALV-1+32) = INST(5)
         ZR(JVALV-1+33) = ZR(JJSUP+IZONE-1)
 
-        CALL NOCAR2(CARTE,-3,KBID,'NUM',1,KBID,-IPC,LIGREL,NCMP)
+        CALL NOCART(CARTE,-3,KBID,'NUM',1,KBID,-IPC,LIGREL,NCMP)
 
   110 CONTINUE
 

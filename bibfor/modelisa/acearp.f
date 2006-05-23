@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,9 +124,9 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CALL JEEXIN(TMPNDM,IXCA)
       IF (IXCA.NE.0) GOTO 11
 C
-      CALL ALCAR2('G',CART(1),NOMA,'CADISK')
-      CALL ALCAR2('G',CART(2),NOMA,'CADISM')
-      CALL ALCAR2('G',CART(3),NOMA,'CADISA')
+      CALL ALCART('G',CART(1),NOMA,'CADISK')
+      CALL ALCART('G',CART(2),NOMA,'CADISM')
+      CALL ALCART('G',CART(3),NOMA,'CADISA')
  11   CONTINUE
 C
       CALL JEVEUO(TMPNDK,'E',JDC(1))
@@ -371,7 +371,7 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
                   ENDIF
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
-                  CALL NOCAR2(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+                  CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
  28            CONTINUE
             ELSE
                DO 36 I = 1,NBNO
@@ -381,7 +381,7 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
      +                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
-                  CALL NOCAR2(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+                  CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      +                        LIGMO,NCMP)
  36            CONTINUE
             ENDIF

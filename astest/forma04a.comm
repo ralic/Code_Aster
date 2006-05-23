@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -301,10 +301,9 @@ for num_calc in range(0,nb_calc1) :
 # MAILLAGE DE DEPART: MA[num_calc]
 # MAILLAGE D'ARRIVE: MA[num_calc1]
    MACR_ADAP_MAIL(
-              ADAPTATION=_F( 
-                       UNIFORME = 'RAFFINEMENT',
+              ADAPTATION='RAFFINEMENT_UNIFORME',
                        MAILLAGE_N = MA[num_calc],
-                       MAILLAGE_NP1 = MA[num_calc1],),
+                       MAILLAGE_NP1 = MA[num_calc1],
               QUALITE='OUI',
               INTERPENETRATION='OUI',
               TAILLE='OUI',

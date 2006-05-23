@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*3  TOTO
       CHARACTER*8  NOMVAR(40),NOMCO,GTYPE,KTYPE,MTYPE,K8B
       CHARACTER*16 CTYPE
-      LOGICAL      EXISTE, EXISDG, LMODE, FIRST
+      LOGICAL      EXISTE, EXISDG, LMODE, FIRST, LNOCEN
 C     ------------------------------------------------------------------
 C
 C  --- INITIALISATIONS ----
@@ -322,6 +322,7 @@ C
       NBSMO = ZI(JLI-1+1)
       FIRST = .TRUE.
       ICOMA2 = 0
+      LNOCEN=.FALSE.
       DO 200 ISO = 1 , NBSMO
         FIRST  = .TRUE.
         NBGR  = ZI(JLI+(ISO-1)*(4+NBGREL)+3)
@@ -390,7 +391,10 @@ C
 C    --- CHAMELEM AUX NOEUDS ---
 C
              NNOE = NBNOMA(IEL)
-             IF (KTYPE.EQ.'QUAD9' .OR. KTYPE.EQ.'TRIA7') NNOE = NNOE-1
+             IF (KTYPE.EQ.'QUAD9' .OR. KTYPE.EQ.'TRIA7') THEN
+                NNOE = NNOE-1
+                LNOCEN=.TRUE.
+             ENDIF
              IF (KTYPE.EQ.'SEG4') NNOE = NNOE-2
              
              IF(NPCALC.NE.NNOE) THEN
@@ -455,6 +459,10 @@ C
          CALL JEDETR('&&IRCECA.VALE')
         ENDIF
  200  CONTINUE
+      IF(LNOCEN)THEN
+        CALL UTMESS('A','IRCECA','ON TRAITE LES TRIA7 '//
+     +      'QUAD9 EN OUBLIANT LE NOEUD CENTRE')
+      ENDIF
 C     ------------------------------------------------------------------
  9999 CONTINUE
       IF(.NOT.LRESU)  ZI(JLAST-1+5) = INUM

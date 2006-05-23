@@ -11,7 +11,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NOMST
       INTEGER      NBCHS,NBCMPT,ENTIER,NBSPT,NNOE
       INTEGER      IMPRE,IENTE,IMPEL,ILONG,IMODEL
-      LOGICAL      AFAIRE,LCMP
+      LOGICAL      AFAIRE,LCMP,LNOCEN
 C
 C  --- INITIALISATIONS ----
 C
@@ -96,6 +96,7 @@ C
       DO 1 I=1,NCMPMX
         ZL(ITABL-1+I)=.FALSE.
  1    CONTINUE
+      LNOCEN=.FALSE.
 C
 C  --- RECHERCHE DES GRANDEURS SUPERTAB ----
 C
@@ -290,8 +291,10 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPE),KTYPE)
                IF ( KTYPE .EQ. 'TRIA7' ) THEN
                   NNOE = NNOE - 1
+                  LNOCEN=.TRUE.
                ELSEIF ( KTYPE .EQ. 'QUAD9' ) THEN
                   NNOE = NNOE - 1
+                  LNOCEN=.TRUE.
                ELSEIF ( KTYPE .EQ. 'SEG4' ) THEN
                   NNOE = NNOE - 2
                  CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG2'),ITSEG2)
@@ -423,6 +426,10 @@ C
       IF (IENTE.EQ.0) WRITE (IFI,'(A)') '    -1'
    11 CONTINUE
    10 CONTINUE
+      IF(LNOCEN)THEN
+         CALL UTMESS('A','IRCECS','ON TRAITE LES TRIA7 QUAD9 '//
+     &      ' EN OUBLIANT LE NOEUD CENTRE')
+      ENDIF
 C
       CALL JEDETR('&&IRCECS.VRNOE')
       CALL JEDETR('&&IRCECS.VCNOE')

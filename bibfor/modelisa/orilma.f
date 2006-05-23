@@ -1,13 +1,13 @@
-      SUBROUTINE ORILMA ( NOMO, NOMA, NDIM, LISTMA, NBMAIL, NORIEN, 
+      SUBROUTINE ORILMA ( NOMA, NDIM, LISTMA, NBMAIL, NORIEN, NTRAIT,
      +                    REORIE, PREC )
       IMPLICIT NONE
-      INTEGER             NDIM, LISTMA(*), NBMAIL, NORIEN
-      CHARACTER*8         NOMA, NOMO
+      INTEGER             NDIM, LISTMA(*), NBMAIL, NORIEN, NTRAIT
+      CHARACTER*8         NOMA
       LOGICAL             REORIE
       REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,6 @@ C                 TESTER UNE SURFACE POUR UNE CONDITION AUX LIMITES
 C                 DE PRESSION
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    NOMO           IN    K8      NOM DU MODELE
 C    NOMA           IN    K8      NOM DU MAILLAGE
 C    NDIM           IN    I       DIMENSION DU PROBLEME
 C    LISTMA         IN    I       LISTE DES NUMEROS DE MAILLE
@@ -141,11 +140,12 @@ C
       IF ( DIME1 ) KDIM ='2D'
       IF ( DIME2 ) KDIM ='3D'
       NOMOB1 = '&&ORILMA.MAILLE_3D'
-      CALL UTMASU ( NOMO, NOMA, KDIM, NBMAIL, LISTMA, NOMOB1, PREC,
+      CALL UTMASU ( NOMA, KDIM, NBMAIL, LISTMA, NOMOB1, PREC,
      +                                                      ZR(JCOOR) )
       CALL JEVEUO ( NOMOB1, 'L', JM3D )
 C
       NORIEG = 0
+      NTRAIT = 0
 C     
       DO 100 IMA = 1 , NBMAIL
 C
@@ -154,7 +154,10 @@ C
          NBNMAI =  ZI(JNBN-1+IMA)
          JDESM  =  ZI(JDNO-1+IMA)
          NUMA3D =  ZI(JM3D-1+IMA)
-         IF ( NUMA3D .EQ. 0 ) GOTO 100
+         IF ( NUMA3D .EQ. 0 ) THEN
+            NTRAIT = NTRAIT + 1
+            GOTO 100
+         ENDIF
          NBNM3D = ZI(P2+NUMA3D+1-1) - ZI(P2+NUMA3D-1)
          JDES3D = ZI(P2+NUMA3D-1)
          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JTYMA+NUMA3D-1)),TYP3D)

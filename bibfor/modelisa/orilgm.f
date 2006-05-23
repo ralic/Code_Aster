@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*)       MODELZ
 C ======================================================================
-C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -52,7 +52,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
 C -----  VARIABLES LOCALES
       INTEGER       IBID, IFM , NIV, NBF1, NBF2, NBF3, IRET, NBPAR, 
      +              JNOMA, JJJ, JGRO, N1, N2, N3, NOEUD, IOCC,
-     +              IER, NDIM, IGR, NG, NBMAIL, NORIT, NORIEN
+     +              IER, NDIM, IGR, NG, NBMAIL, NORIT, NORIEN, NTRAIT
       REAL*8        VECT(3), R8B, PREC, ARMIN
       COMPLEX*16    CBID
       LOGICAL       REORIE, ORIVEC
@@ -144,11 +144,13 @@ C
             GMAT = ZK8(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
+            WRITE(IFM,1000) GMAT, NBMAIL
             NORIEN=0
-            CALL ORILMA ( MODELE, NOMA, NDIM,  ZI(JGRO), NBMAIL, NORIEN,
+            CALL ORILMA ( NOMA, NDIM,  ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
      +                    REORIE, PREC )
             NORIT = NORIT + NORIEN
-            WRITE(IFM,1000) GMAT, NORIEN
+            WRITE(IFM,1100) NORIEN
+            IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
  110     CONTINUE
          CALL JEDETR ( '&&ORILGM.WORK' )
  100  CONTINUE
@@ -167,11 +169,13 @@ C
             GMAT = ZK8(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
+            WRITE(IFM,1000) GMAT,  NBMAIL
             NORIEN=0
-            CALL ORILMA ( MODELE, NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, 
+            CALL ORILMA ( NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
      +                    REORIE, PREC )
             NORIT = NORIT + NORIEN
-            WRITE(IFM,1000) GMAT, NORIEN
+            WRITE(IFM,1100) NORIEN
+            IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
  210     CONTINUE
          CALL JEDETR ( '&&ORILGM.WORK' )
  200  CONTINUE
@@ -221,21 +225,23 @@ C
                GMAT = ZK8(JJJ+IGR-1)
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
+               WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
                CALL ORVLMA ( NOMA, ZI(JGRO), NBMAIL, NORIEN,
      +                                             VECT, NOEUD, PREC )
                NORIT = NORIT + NORIEN
-               WRITE(IFM,1000) GMAT, NORIEN
+               WRITE(IFM,1100) NORIEN
  310        CONTINUE
          ELSE
             DO 320 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
+               WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
                CALL ORNORM ( NOMA, ZI(JGRO), NBMAIL, REORIE, NORIEN )
                NORIT = NORIT + NORIEN
-               WRITE(IFM,1000) GMAT, NORIEN
+               WRITE(IFM,1100) NORIEN
  320        CONTINUE
          ENDIF
          CALL JEDETR ( '&&ORILGM.WORK' )
@@ -243,8 +249,10 @@ C
 C
       IF ( NORIT .NE. 0 )  WRITE(IFM,1010) NORIT
 C
- 1000 FORMAT('GROUP_MA: ',A8,I7,' MAILLE(S) REORIENTEE(S) ')
- 1010 FORMAT('AU TOTAL ', I7, ' MAILLE(S) REORIENTEE(S) ')
+ 1000 FORMAT('TRAITEMENT DU GROUP_MA: ',A8,' DE ',I7,' MAILLES')
+ 1100 FORMAT(24X,I7,' MAILLE(S) ONT ETE ORIENTEE(S)')
+ 1110 FORMAT(24X,I7,' MAILLE(S) N''ONT PAS ETE TRAITEE(S) ')
+ 1010 FORMAT('AU TOTAL ', I7, ' MAILLE(S) ORIENTEE(S) ')
 C
       CALL JEDEMA()
       END

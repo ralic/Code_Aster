@@ -3,7 +3,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTAR = NOMU//'.CARARCPO'
       TMPNAR = CARTAR//'.NCMP'
       TMPVAR = CARTAR//'.VALV'
-      CALL ALCAR2('G',CARTAR,NOMA,'CAARPO')
+      CALL ALCART('G',CARTAR,NOMA,'CAARPO')
       CALL JEVEUO(TMPNAR,'E',JDCC)
       CALL JEVEUO(TMPVAR,'E',JDVC)
       MLGCOO = NOMA//'.COORDO    .VALE'
@@ -146,7 +146,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   IMG = ZI(JDGM+IJM-1)
                   ZR(JDVC)   = XRC
                   ZR(JDVC+1) = XANG * DGRD
-                  CALL NOCAR2(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
+                  CALL NOCART(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
 576               CONTINUE
 556           CONTINUE
 
@@ -204,7 +204,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                       CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                       ZR(JDVC)   = RR
                       ZR(JDVC+1) = ANGL(3) + PI
-                      CALL NOCAR2(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
+                      CALL NOCART(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
 57                   CONTINUE
 557               CONTINUE
                ELSE
@@ -265,7 +265,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                       CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                       ZR(JDVC)   = RR
                       ZR(JDVC+1) = ANGL(3) + PI
-                      CALL NOCAR2(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
+                      CALL NOCART(CARTAR,3,' ','NUM',1,' ',IMG,' ',8)
 58                   CONTINUE
 558               CONTINUE
                ENDIF
@@ -283,7 +283,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
               DO 559 IJM=1,NM
                 ZR(JDVC)   = XRC
                 ZR(JDVC+1) = XANG * DGRD
-                CALL NOCAR2(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
      &                           0,' ',8)
 579               CONTINUE
 559           CONTINUE
@@ -338,7 +338,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                      ZR(JDVC)   = RR
                      ZR(JDVC+1) = ANGL(3) + PI
-                     CALL NOCAR2(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                     CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
      &                           0,' ',8)
 55                CONTINUE
                ELSE
@@ -393,7 +393,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                      ZR(JDVC)   = RR
                      ZR(JDVC+1) = ANGL(3) + PI
-                     CALL NOCAR2(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                     CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
      &                           0,' ',8)
 56                CONTINUE
                ENDIF

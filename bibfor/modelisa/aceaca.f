@@ -4,7 +4,7 @@
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTCA = NOMU//'.CARCABLE'
       TMPNCA = CARTCA//'.NCMP'
       TMPVCA = CARTCA//'.VALV'
-      CALL ALCAR2('G',CARTCA,NOMA,'CACABL')
+      CALL ALCART('G',CARTCA,NOMA,'CACABL')
       CALL JEVEUO(TMPNCA,'E',JDCC)
       CALL JEVEUO(TMPVCA,'E',JDVC)
 
@@ -99,16 +99,16 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCA
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
          IF (NG.GT.0) THEN
             DO 20 I = 1 , NG
-              CALL NOCAR2(CARTCA ,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',2)
-              CALL NOCAR2(CARTCF,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',1)
+              CALL NOCART(CARTCA ,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',2)
+              CALL NOCART(CARTCF,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',1)
  20         CONTINUE
          ENDIF
 C
 C -      "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 C
          IF (NM.GT.0) THEN
-            CALL NOCAR2(CARTCA ,3,' ','NOM',NM,ZK8(JDLS),0,' ',2)
-            CALL NOCAR2(CARTCF,3,' ','NOM',NM,ZK8(JDLS),0,' ',1)
+            CALL NOCART(CARTCA ,3,' ','NOM',NM,ZK8(JDLS),0,' ',2)
+            CALL NOCART(CARTCF,3,' ','NOM',NM,ZK8(JDLS),0,' ',1)
          ENDIF
 C
  10   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 
-
+import os.path
 from math import sqrt,cos,sin,pi,tan,log,fabs,ceil,fmod,floor
 import aster
 import string
@@ -1484,8 +1484,7 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
   texte=texte+'nivmag   = '+str(NIVMAG)       +POIVIR
   texte=texte+'*\n'
   texte=texte+'* FIN PARAMETRES UTILISATEUR\n'
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'ascouf_fiss_v4.datg'+"';\n"
+  texte = texte + open(os.path.join(loc_datg, 'ascouf_fiss_v4.datg'), 'r').read()
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
   fdgib.close()
@@ -1602,8 +1601,7 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
      texte=texte+" sousep .                      1  = 'non'"+POIVIR
   texte=texte+'*\n'
   texte=texte+'* FIN PARAMETRES UTILISATEUR \n'
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'ascouf_ssep_mono_v1.datg'+"'"+POIVIR
+  texte = texte + open(os.path.join(loc_datg, 'ascouf_ssep_mono_v1.datg'), 'r').read()
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
   fdgib.close()
@@ -1744,8 +1742,7 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
   texte=texte+'axisym  = table '+POIVIR
   texte=texte+'sousep  = table '+POIVIR
   texte=texte+'* \n'     
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'ascouf_ssep_mult_v1.datg'+"';\n"
+  texte = texte + open(os.path.join(loc_datg, 'ascouf_ssep_mult_v1.datg'), 'r').read()
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
   fdgib.close()
@@ -2013,8 +2010,7 @@ def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SU
   texte=texte+'nzgv     = '+str(NZGV)         +POIVIR
   texte=texte+'*\n'
   texte=texte+'* FIN PARAMETRES UTILISATEUR\n'
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'ascouf_regl_v1.datg'+"';\n"
+  texte = texte + open(os.path.join(loc_datg, 'ascouf_regl_v1.datg'), 'r').read()
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
   fdgib.close()

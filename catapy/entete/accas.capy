@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF ENTETE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,12 +49,37 @@ class entier   (ASSD):
    def __init__(self,valeur=None,**args):
       ASSD.__init__(self,**args)
       self.valeur=valeur
+
+   def __adapt__(self,validator):
+      if validator.name == "list":
+          #validateur liste,cardinalité
+          return (self,)
+      elif validator.name == "type":
+          #validateur type
+          return validator.adapt(self.valeur or 0)
+      else:
+          #validateur into et valid
+          return self
+
 class reel(ASSD):
    def __init__(self,valeur=None,**args):
       ASSD.__init__(self,**args)
       self.valeur=valeur
+
    def __call__(self):
       return self.valeur
+
+   def __adapt__(self,validator):
+      if validator.name == "list":
+          #validateur liste,cardinalité
+          return (self,)
+      elif validator.name == "type":
+          #validateur type
+          return validator.adapt(self.valeur or 0.)
+      else:
+          #validateur into et valid
+          return self
+
 
 # -----------------------------------------------------------------------------
 # Type geometriques

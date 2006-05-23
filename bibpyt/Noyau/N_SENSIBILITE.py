@@ -1,4 +1,4 @@
-#@ MODIF N_SENSIBILITE Noyau  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_SENSIBILITE Noyau  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,6 +60,8 @@ class CONCEPT_SENSIBLE(REGLE):
       obj = args["self"]
       etape = obj.etape
       id_etape = '%s_%s' % (etape.id, id(etape))
+      if etape.sd == None:
+          return '',1
       if not hasattr(etape.sd,"sensi"):
          etape.sd.sensi = {}
       # si ENSEMBLE, la sd nominale est forcément produite

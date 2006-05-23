@@ -6,7 +6,7 @@
       CHARACTER*(*) LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,9 +76,9 @@ C     ------------------------------------------------------------------
       CARTE = CHAR//'.CHME.PRESS'
       IF (IALLOC.EQ.0) THEN
         IF (FONREE.EQ.'REEL') THEN
-          CALL ALCAR2('G',CARTE,NOMA,'PRES_R')
+          CALL ALCART('G',CARTE,NOMA,'PRES_R')
         ELSEIF (FONREE.EQ.'FONC') THEN
-          CALL ALCAR2('G',CARTE,NOMA,'PRES_F')
+          CALL ALCART('G',CARTE,NOMA,'PRES_F')
         ELSE
           CALL UTMESS('F','CAFOND','VALEUR INATTENDUE: '//FONREE)
         END IF
@@ -97,7 +97,7 @@ C --- STOCKAGE DE PRESSIONS NULLES SUR TOUT LE MAILLAGE
         ELSE
           ZK8(JVALV) = '&FOZERO'
         ENDIF
-        CALL NOCAR2(CARTE,1,' ','NOM',0,' ',0,LIGRMO,NCMP)
+        CALL NOCART(CARTE,1,' ','NOM',0,' ',0,LIGRMO,NCMP)
       END IF
 
       MESMAI = '&&CAFOND.MAILLES_INTE'
@@ -209,7 +209,7 @@ C ------ AFFECTATION DE LA PRESSION CORRESPONDANTE AUX MAILLES
             CALL UTFINM()
           END IF
    10   CONTINUE
-        CALL NOCAR2(CARTE,3,K8B,'NUM',NBMAP,K8B,ZI(JMAP),' ',NCMP)
+        CALL NOCART(CARTE,3,K8B,'NUM',NBMAP,K8B,ZI(JMAP),' ',NCMP)
 
         CALL JEDETR(MESMAI)
         CALL JEDETR(MESMAP)

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -616,7 +616,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     fonfis=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
                           LEVRE_SUP=_F(GROUP_MA='FACE1'),
                           LEVRE_INF=_F(GROUP_MA='FACE2'),
-                          INFO=2,**motscles
+                          INFO=INFO,**motscles
                           );
     if THETA_3D!=None :
       for thet in THETA_3D:

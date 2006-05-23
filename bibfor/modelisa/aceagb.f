@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       TMPVGR = CARTGR//'.VALV'
 C
       IF ( NBCACO .EQ. 0 ) THEN
-         CALL ALCAR2('G',CARTGR,NOMA,'CACOQU')
+         CALL ALCART('G',CARTGR,NOMA,'CACOQU')
       ENDIF
 
       CALL JEVEUO(TMPNGR,'E',JDCC)
@@ -117,13 +117,13 @@ C
 C ---     "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
            IF (NG.GT.0) THEN
               DO 20 I = 1 , NG
-                 CALL NOCAR2(CARTGR,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',5)
+                 CALL NOCART(CARTGR,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',5)
  20           CONTINUE
            ENDIF
 C
 C ---     "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
            IF (NM.GT.0) THEN
-             CALL NOCAR2(CARTGR,3,' ','NOM',NM,ZK8(JDLS),0,' ',5)
+             CALL NOCART(CARTGR,3,' ','NOM',NM,ZK8(JDLS),0,' ',5)
            ENDIF
 C
         ELSE
@@ -207,7 +207,7 @@ C
              ZR(JDVC+1) = ANG(1) * R8RDDG()
              ZR(JDVC+2) = ANG(2) * R8RDDG()
 C
-             CALL NOCAR2(CARTGR,3,' ','NUM',1,K8B,NUMA,' ',5)
+             CALL NOCART(CARTGR,3,' ','NUM',1,K8B,NUMA,' ',5)
 C
  200       CONTINUE
         ENDIF

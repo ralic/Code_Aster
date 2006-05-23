@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,44 +19,44 @@
 # ======================================================================
 
 
-
-from math import sqrt,cos,sin,pi,pow,tan
+import os.path
+from math import sqrt, cos, sin, pi, pow, tan
 
 # Ecriture du fichier GIBI principal (dgib) - ASPID0
 def write_file_dgib_ASPID0(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2, ZMAX, H,
                            ALPHA, JEU, EPC, DEC, XMAX, TYPMAI, THETA, TYPELE,
-                           ITYPSO, DPENE, NIVMAG, loc_datg) :
-
+                           ITYPSO, DPENE, NIVMAG, loc_datg):
   import aster
 # Ouverture du fichier d'entrée de commandes
   fdgib=open(nomFichierDATG,'w')
-  POIVIR = ' ;                                         \n'
-  texte='****************************************************************\n'
-  texte=texte+'opti echo 0 ;                                                   \n'
-  texte=texte+'epT1   = '+str(EPT1)         +POIVIR
-  texte=texte+'DeT1   = '+str(DET1)         +POIVIR
-  texte=texte+'d1     = '+str(D1)           +POIVIR
-  texte=texte+'d2     = '+str(D2)           +POIVIR
-  texte=texte+'epT2   = '+str(EPT2)         +POIVIR
-  texte=texte+'DeT2   = '+str(DET2)         +POIVIR
-  texte=texte+'Zmax   = '+str(ZMAX)         +POIVIR
-  texte=texte+'type_s = '+str(ITYPSO)       +POIVIR
-  texte=texte+'d_pene = '+str(DPENE)        +POIVIR
-  texte=texte+'h      = '+str(H)            +POIVIR
-  texte=texte+'angl_s = '+str(ALPHA)        +POIVIR
-  texte=texte+'jeu    = '+str(JEU)          +POIVIR
-  texte=texte+'epC    = '+str(EPC)          +POIVIR
-  texte=texte+'DeC    = '+str(DEC)          +POIVIR
-  texte=texte+'Xmax   = '+str(XMAX)         +POIVIR
-  texte=texte+'typmai =  MOT '+TYPMAI       +POIVIR
-  texte=texte+'theta  = '+str(THETA)        +POIVIR
-  texte=texte+'typele =  MOT '+TYPELE       +POIVIR
-  texte=texte+'typ_eque = MOT '+'SAINE'     +POIVIR
-  texte=texte+'nivmag = '+str(NIVMAG)       +POIVIR
-  texte=texte+'*                                                               \n'
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'aspic.datg'+"';\n"
-  aster.affiche('MESSAGE',texte)
+  texte = """
+****************************************************************
+opti echo 0;
+epT1     = %s;
+DeT1     = %s;
+d1       = %s;
+d2       = %s;
+epT2     = %s;
+DeT2     = %s;
+Zmax     = %s;
+type_s   = %s;
+d_pene   = %s;
+h        = %s;
+angl_s   = %s;
+jeu      = %s;
+epC      = %s;
+DeC      = %s;
+Xmax     = %s;
+typmai   = MOT %s;
+theta    = %s;
+typele   = MOT %s;
+typ_eque = MOT SAINE;
+nivmag   = %s;
+****************************************************************
+""" % (EPT1, DET1, D1, D2, EPT2, DET2, ZMAX, ITYPSO, DPENE, H,
+       ALPHA, JEU, EPC, DEC, XMAX, TYPMAI, THETA, TYPELE, NIVMAG)
+  aster.affiche('MESSAGE',texte + ' + aspic.datg...\n')
+  texte = texte + open(os.path.join(loc_datg, 'aspic.datg'), 'r').read()
   fdgib.write(texte)
   fdgib.close()
 
@@ -105,9 +105,8 @@ def write_file_dgib_ASPID1(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
   texte=texte+'typ_eque = MOT '+'FISS_LON'  +POIVIR
   texte=texte+'nivmag = '+str(NIVMAG)       +POIVIR
   texte=texte+'*                                                               \n'
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'aspic_v2.datg'+"';\n"
-  aster.affiche('MESSAGE',texte)
+  aster.affiche('MESSAGE',texte + ' + aspic_v2.datg...\n')
+  texte = texte + open(os.path.join(loc_datg, 'aspic_v2.datg'), 'r').read()
   fdgib.write(texte)
   fdgib.close()
 
@@ -396,9 +395,8 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
   texte=texte+'nivmag = '+str(NIVMAG)       +POIVIR
   texte=texte+'*                                                               \n'
   texte=texte+'list epc ;\n'
-  texte=texte+'opti donn '
-  texte=texte+"'"+loc_datg+'aspic.datg'+"';\n"
-  aster.affiche('MESSAGE',texte)
+  aster.affiche('MESSAGE',texte + ' + aspic.datg...\n')
+  texte = texte + open(os.path.join(loc_datg, 'aspic.datg'), 'r').read()
   fdgib.write(texte)
   fdgib.close()
 

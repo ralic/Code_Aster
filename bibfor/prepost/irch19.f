@@ -6,7 +6,7 @@
      >                    LRESU,FORMR,NIVE )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/02/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C     -- EMBRANCHEMENT DE L'ECRITURE AU FORMAT MED
 C     -- POUR LES AUTRES, PROCEDURE CLASSIQUE
 C
       IF (FORM(1:3).EQ.'MED') THEN
-         CALL IRCHME ( IFI, CH19,
+         CALL IRCHME ( IFI, CH19,NOMO,
      >                 LRESU, NOMSD8, NOSIM8, NOMPA8, NOSY16,
      >                 TYCH, NUMORD,
      >                 NBCMP, NOMCMP,

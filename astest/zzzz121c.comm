@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,15 +135,14 @@ REMEZERO=CALC_ELEM( reuse=REMEZERO,   RESULTAT=REMEZERO,
 # 4. ADAPTATION DU MAILLAGE DE ZERO VERS UN
 #
 MACR_ADAP_MAIL(
-              ADAPTATION=_F( 
-                       LIBRE = 'RAFFINEMENT',
-                       MAILLAGE_N = MZERO,
-                       MAILLAGE_NP1 = CO("MUN"),
-                       RESULTAT_N = REMEZERO,
-                       INDICATEUR = 'ERRE_ELEM_SIGM',
-                       NOM_CMP_INDICA = 'ERREST' ,
-                       NUME_ORDRE = 3,
-                       CRIT_RAFF_PE = 0.03),
+              ADAPTATION='RAFFINEMENT',
+              MAILLAGE_N = MZERO,
+              MAILLAGE_NP1 = CO("MUN"),
+              RESULTAT_N = REMEZERO,
+              INDICATEUR = 'ERRE_ELEM_SIGM',
+              NOM_CMP_INDICA = 'ERREST' ,
+              NUME_ORDRE = 3,
+              CRIT_RAFF_PE = 0.03,
               MAJ_CHAM=_F( 
                        RESULTAT   = RETHZERO,
                        NOM_CHAM   = 'TEMP',
@@ -264,16 +263,15 @@ TEST_RESU(RESU=(
 #               . AUTRES OPTIONS D'ANALYSE DU MAILLAGE
 #
 MACR_ADAP_MAIL(
-              ADAPTATION=_F( 
-                       LIBRE = 'RAFF_DERA',
-                       MAILLAGE_N = MUN,
-                       MAILLAGE_NP1 = CO("MDEUX"),
-                       RESULTAT_N = REMEUN,
-                       INDICATEUR = 'ERRE_ELEM_SIGM',
-                       NOM_CMP_INDICA = 'ERREST' ,
-                       INST = 8.0,
-                       CRIT_RAFF_PE = 0.03,
-                       CRIT_DERA_PE = 0.25),
+              ADAPTATION='RAFF_DERA',
+              MAILLAGE_N = MUN,
+              MAILLAGE_NP1 = CO("MDEUX"),
+              RESULTAT_N = REMEUN,
+              INDICATEUR = 'ERRE_ELEM_SIGM',
+              NOM_CMP_INDICA = 'ERREST' ,
+              INST = 8.0,
+              CRIT_RAFF_PE = 0.03,
+              CRIT_DERA_PE = 0.25,
               MAJ_CHAM=(_F( 
                        RESULTAT   = RETHUN,
                        NOM_CHAM   = 'TEMP',

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,14 +125,14 @@ RESUZERO=CALC_ELEM(reuse =RESUZERO,
 #
 # 4. ADAPTATION DU MAILLAGE DE ZERO VERS UN
 
-MACR_ADAP_MAIL(LANGUE='ANGLAIS',
-               ADAPTATION=_F(LIBRE='RAFFINEMENT',
-                             MAILLAGE_N=MZERO,
-                             MAILLAGE_NP1=CO('MUN'),
-                             RESULTAT_N=RESUZERO,
-                             INDICATEUR='ERRE_ELEM_SIGM',
-                             NOM_CMP_INDICA='ERREST',
-                             CRIT_RAFF_REL=0.9,),
+MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
+               LANGUE='ANGLAIS',
+               MAILLAGE_N=MZERO,
+               MAILLAGE_NP1=CO('MUN'),
+               RESULTAT_N=RESUZERO,
+               INDICATEUR='ERRE_ELEM_SIGM',
+               NOM_CMP_INDICA='ERREST',
+               CRIT_RAFF_REL=0.9,
                QUALITE='OUI',
                INTERPENETRATION='NON',);
 #
@@ -252,15 +252,15 @@ DEPLUN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   NUME_ORDRE=1,);
 #
 
-MACR_ADAP_MAIL(ADAPTATION=_F(LIBRE='RAFF_DERA',
-                             MAILLAGE_N=MUN,
-                             MAILLAGE_NP1=CO('MDEUX'),
-                             CHAM_GD=INDIC,
-                             NOM_CMP_INDICA='ERREST',
-                             CRIT_RAFF_REL=0.9,
-                             CRIT_DERA_REL=0.25,
-                             NIVE_MAX=8,
-                             NIVE_MIN=0,),
+MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
+               MAILLAGE_N=MUN,
+               MAILLAGE_NP1=CO('MDEUX'),
+               CHAM_GD=INDIC,
+               NOM_CMP_INDICA='ERREST',
+               CRIT_RAFF_REL=0.9,
+               CRIT_DERA_REL=0.25,
+               NIVE_MAX=8,
+               NIVE_MIN=0,
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPLDEUX'),
                            TYPE_CHAM='NOEU_DEPL_R',
                            CHAM_GD=DEPLUN,),
@@ -365,9 +365,9 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLDEUX,
 #               . NI RAFFINEMENT, NI DERAFFINEMENT
 #               . MISE A JOUR DE CHAMP
 
-MACR_ADAP_MAIL(ADAPTATION=_F(UNIFORME='RIEN',
-                             MAILLAGE_N=MDEUX,
-                             MAILLAGE_NP1=CO('MTROI'),),
+MACR_ADAP_MAIL(ADAPTATION='RIEN',
+               MAILLAGE_N=MDEUX,
+               MAILLAGE_NP1=CO('MTROI'),
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPLTROI'),
                            TYPE_CHAM='NOEU_DEPL_R',
                            RESULTAT=RESUDEUX,

@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,7 +160,7 @@ C
 C ---     REORIENTATION DES MAILLES DU GROUP_MA :
 C         -------------------------------------
           NORIEN = 0
-          CALL ORILMA ( MODELE, NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN,
+          CALL ORILMA (  NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
      +                  .TRUE., PREC )
 C
           NBMA = NBMA + NBMAIL
@@ -226,7 +226,7 @@ C       ---------------
 C ---     SI LA CARTE N'EXISTE PAS, ON LA CREE :
 C         ------------------------------------
         CALL JEEXIN(CARFLU//'.VALV',IRET1)
-        IF (IRET1.EQ.0)  CALL ALCAR2('G', CARFLU, NOMA, 'FLUN_R')
+        IF (IRET1.EQ.0)  CALL ALCART('G', CARFLU, NOMA, 'FLUN_R')
 C
         CALL JEVEUO(CARFLU//'.NCMP','E',JNCMP)
         CALL JEVEUO(CARFLU//'.VALV','E',JVALV)
@@ -241,7 +241,7 @@ C
         ZR(JVALV+2-1) = ZERO
         ZR(JVALV+3-1) = ZERO
 C
-        CALL NOCAR2(CARFLU,1,' ','NOM',0,' ',0,LIGRMO,NCMP)
+        CALL NOCART(CARFLU,1,' ','NOM',0,' ',0,LIGRMO,NCMP)
 C
         ICMP = 0
         DO 30 IGR = 1, NGR
@@ -252,7 +252,7 @@ C
 C
         IF (ICMP.NE.0) THEN
           DO 40 IGR = 1, NGR
-            CALL NOCAR2(CARFLU,2,ZK8(IDGRMA+IGR-1),'NOM',0,' ',0,
+            CALL NOCART(CARFLU,2,ZK8(IDGRMA+IGR-1),'NOM',0,' ',0,
      +                  LIGRMO,ICMP)
   40      CONTINUE
         ENDIF

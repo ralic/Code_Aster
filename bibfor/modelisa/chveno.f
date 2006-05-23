@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,13 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
      +              NBOBJ, IOBJ, NBMC, IC, UTMOTP, NORIEN, NBPAR, IRET,
      +              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL,NUMA,IBID,
      +              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
-     +              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA
+     +              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA, NTRAIT
       PARAMETER    ( NBT = 6 )
       REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
       LOGICAL       GETEXM, REORIE, MCFL(NBT), PLAQUE
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL, MODL
+      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL
       CHARACTER*16  MCFT(NBT), MOTFAC, VALMC(4), TYPMC(4), CONCEP, CMD
       CHARACTER*16  APPAR
       CHARACTER*19  NOMT19
@@ -80,7 +80,6 @@ C
 C     NOMBRE DE MOTS-CLES FACTEUR A VERIFIER
       NBMFAC = NBT
 C
-      MODL  = NOMO
       NOMMA = NOMA
       GRMAMA = NOMMA//'.GROUPEMA'
       MAILMA = NOMMA//'.NOMMAI'
@@ -287,8 +286,8 @@ C
                       CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
      +                                                          NORIE1 )
                     ELSE
-                      CALL ORILMA ( MODL, NOMMA, NDIM, ZI(JGRO), NBMAIL,
-     +                                         NORIE1, REORIE, PREC )
+                      CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL,
+     +                                    NORIE1, NTRAIT, REORIE, PREC )
                     ENDIF
                   ELSE
                     CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
@@ -376,8 +375,8 @@ C
                       CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
      +                                                          NORIE1 )
                     ELSE
-                      CALL ORILMA ( MODL, NOMMA, NDIM, ZI(JNMA), NBOBJ, 
-     +                                         NORIE1, REORIE, PREC )
+                      CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ, 
+     +                                    NORIE1, NTRAIT, REORIE, PREC )
                     ENDIF
                   ELSE
                      CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,

@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_eolienne Outils  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -436,8 +436,7 @@ def mail_eolienne(H_TOTALE, H_BASE, H_IMMERGEE, H_MOYEU, H_JONCTION, DECAL_PALES
 #  loc_datg = "/home/eolien/DATG/"
   loc_datg = aster.repdex()
   fdgib.write("* \n")   
-  fdgib.write("opti donn ")   
-  fdgib.write("'"+loc_datg+'calc_eolienne.datg'+"' ;\n")   
+  fdgib.write(open(os.path.join(loc_datg, 'calc_eolienne.datg'), 'r').read())
 
 # 4.3 ==> Fermeture du fichier de donnees GIBI
 

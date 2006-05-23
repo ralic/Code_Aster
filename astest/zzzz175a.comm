@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,16 +180,14 @@ for num_calc in range(nbre_calcul):
 #
     Mad2[num_calc+1]=CO('Mad2_%d' % (num_calc+1))
 #
-    MACR_ADAP_MAIL( ADAPTATION=_F( 
-                       LIBRE = 'RAFFINEMENT',
-                       MAILLAGE_N = Mad2[num_calc],
-                       MAILLAGE_NP1 = Mad2[num_calc+1],
-                       RESULTAT_N = resu[num_calc],
-                       INDICATEUR = 'ERRE_ELEM_SIGM',
-                       NOM_CMP_INDICA = 'ERREST' ,
-                       INST=inst_fin,
-                       CRIT_RAFF_PE = 0.02,
-                       ),
+    MACR_ADAP_MAIL( ADAPTATION= 'RAFFINEMENT',
+                    MAILLAGE_N = Mad2[num_calc],
+                    MAILLAGE_NP1 = Mad2[num_calc+1],
+                    RESULTAT_N = resu[num_calc],
+                    INDICATEUR = 'ERRE_ELEM_SIGM',
+                    NOM_CMP_INDICA = 'ERREST' ,
+                    INST=inst_fin,
+                    CRIT_RAFF_PE = 0.02,
                     MAILLAGE_FRONTIERE = maill_fr,
                     QUALITE='OUI',
                     TAILLE='OUI',

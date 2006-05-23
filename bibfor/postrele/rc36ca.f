@@ -5,7 +5,7 @@
       CHARACTER*24        CHCARA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,7 @@ C
 C
       K19B = CARAEL//'.CARGENPO'
       CES  = '&&RC36CA.CARGENPO'
-      CALL CARCES ( K19B, 'ELNO', K8B, 'V', CES, IRET )
+      CALL CARCES ( K19B, 'ELNO', ' ', 'V', CES, IRET )
 C
       NBCMP = 4
       NOCMP(1) = 'IY1'
@@ -134,7 +134,7 @@ C
 C
       K19B = CARAEL//'.CARGEOPO'
       CES  = '&&RC36CA.CARGEOPO'
-      CALL CARCES ( K19B, 'ELNO', K8B, 'V', CES, IRET )
+      CALL CARCES ( K19B, 'ELNO', ' ', 'V', CES, IRET )
 C
       NBCMP = 4
       NOCMP(1) = 'R1'

@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
 C     1- ALLOCATION DE LA CARTE
 C     --------------------------------------------
       CARTE = CARTZ
-      CALL ALCAR2 ( BASE, CARTE, NOMA, GRAN )
+      CALL ALCART ( BASE, CARTE, NOMA, GRAN )
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
 C
@@ -88,7 +88,7 @@ C
             ZK8(JNCMP-1+K) = ZK8(IAD-1+K)
             ZR(JVALV-1+K) = 0.D0
    10    CONTINUE
-         CALL NOCAR2( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
+         CALL NOCART( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
       END IF
 C
 C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
@@ -138,13 +138,13 @@ C       TEST SUR LES DONNEES INTRODUITES
 C
         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
         IF ( NBTOU .NE. 0 ) THEN
-          CALL NOCAR2(CARTE,1,' ','NOM',0,' ',0,' ',NBCMP)
+          CALL NOCART(CARTE,1,' ','NOM',0,' ',0,' ',NBCMP)
 C
         ELSE
            CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                 MOTCLS, TYPMCL, MESMAI, NBMAIL )
            CALL JEVEUO ( MESMAI, 'L', JMAIL )
-           CALL NOCAR2(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
+           CALL NOCART(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
            CALL JEDETR ( MESMAI )
         ENDIF
    30 CONTINUE

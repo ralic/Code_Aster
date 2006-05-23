@@ -4,7 +4,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
          CALL CODENT ( IOCC, 'D0', LISTMA(15:16) )
          CALL CODENT ( IOCC, 'D0', LTRANS(15:16) )
 C
-         CALL ALCAR2 ( 'G', CARTE, NOMA, 'LISTMA')
+         CALL ALCART ( 'G', CARTE, NOMA, 'LISTMA')
 C
          CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
          CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
@@ -97,7 +97,7 @@ C
          ZK8(JNCMP+1) = 'TRANS'
          ZK16(JVALV)   = ' '
          ZK16(JVALV+1) = ' '
-         CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, 2)
+         CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, 2)
 C
          CALL WKVECT ( LTRANS, 'G V R', 6 , JTRAN )
          ZR(JTRAN)   = 0.D0
@@ -147,7 +147,7 @@ C
  14            CONTINUE
                CALL JEDETR ( MESMA2 )
             ENDIF
-            CALL NOCAR2 ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, 2 )
+            CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, 2 )
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
@@ -170,7 +170,7 @@ C
  18            CONTINUE
                CALL JEDETR ( MESMA2 )
             ENDIF
-            CALL NOCAR2 ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',2)
+            CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',2)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

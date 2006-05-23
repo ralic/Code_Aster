@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -704,9 +704,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
 #   ---------- CALCUL PROP. MATERIAU AVEC TEMPERATURE -----------  
         if Tempe3D :
            tempeno=tabtemp.NOEUD==Lnofon[ino]
-           tempeno=tempeno.INST.__eq__(VALE=inst,CRITERE=CRITERE,PRECISION=PRECISION)
+           tempeno=tempeno.INST.__eq__(VALE=inst,CRITERE='ABSOLU',PRECISION=PRECISION)
            nompar = ('TEMP',)
-           valpar = (tempeno.values(),)
+           valpar = (tempeno.TEMP.values()[0],)
            nomres=['E','NU']
            valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
            e = valres[0]

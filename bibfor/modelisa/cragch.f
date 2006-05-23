@@ -1,7 +1,7 @@
       SUBROUTINE CRAGCH (LONG, TYPCOE, TYPVAL, LIGRCH)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,19 +102,19 @@ C
          NOMA = ZK8(JNOMA)
 C
          IF (TYPCOE.EQ.'REEL'.OR. TYPCOE.EQ.'FONC') THEN
-             CALL ALCAR2('G',CA1, NOMA, 'DDLM_R')
+             CALL ALCART('G',CA1, NOMA, 'DDLM_R')
          ELSE IF (TYPCOE.EQ.'COMP') THEN
-             CALL ALCAR2('G',CA1, NOMA, 'DDLM_C')
+             CALL ALCART('G',CA1, NOMA, 'DDLM_C')
          ELSE
             CALL UTMESS('F','CRAGCH','VALEUR INATTENDUE: '//TYPCOE )
          ENDIF
 C
          IF (TYPVAL.EQ.'REEL') THEN
-            CALL ALCAR2('G',CA2, NOMA, 'DDLI_R')
+            CALL ALCART('G',CA2, NOMA, 'DDLI_R')
          ELSE IF (TYPVAL.EQ.'FONC') THEN
-            CALL ALCAR2('G',CA2, NOMA, 'DDLI_F')
+            CALL ALCART('G',CA2, NOMA, 'DDLI_F')
          ELSE IF (TYPVAL.EQ.'COMP') THEN
-            CALL ALCAR2('G',CA2, NOMA, 'DDLI_C')
+            CALL ALCART('G',CA2, NOMA, 'DDLI_C')
          ELSE
             CALL UTMESS('F','CRAGCH','VALEUR INATTENDUE: '//TYPVAL )
          END IF
@@ -135,8 +135,8 @@ C ---       LA TAILLE DES CARTES .CMULT ET .CIMPO EST    ---
 C ---       INSUFFISANTE ON LES REDIMENSIONNE DE MANIERE ---
 C ---       ADEQUATE                                     ---
           LONGUT = NEDIT + LONG
-          CALL AGCAR2(LONGUT, CA1)
-          CALL AGCAR2(LONGUT, CA2)
+          CALL AGCART(LONGUT, CA1)
+          CALL AGCART(LONGUT, CA2)
 
 C ---     AGRANDISSEMENT DE CA1.LIMA :
           CALL JEDUPO(CA1//'.LIMA','V',CA1//'.TRAV',.FALSE.)

@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF cata_champs Stanley  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,6 +148,7 @@ class CATA_CHAMPS :
     self('SIEF_NOEU_ELGA', 'NOEU',['SIEF_ELNO_ELGA'],            "Contraintes aux noeuds")
     self('FLUX_ELNO_TEMP', 'ELNO',['TEMP'],                      "Flux thermique aux noeuds par element")
     self('FLUX_NOEU_TEMP', 'NOEU',['FLUX_ELNO_TEMP'],            "Flux thermique aux noeuds")
+    self('FLUX_ELGA_TEMP', 'ELGA',[],                            "Flux thermique aux points de Gauss")
     self('VARI_ELNO_ELGA', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
     self('VARI_NOEU_ELGA', 'NOEU',['VARI_ELNO_ELGA'],            "Variables internes aux noeuds")
     self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],                 "Invariants des contraintes aux points de Gauss")

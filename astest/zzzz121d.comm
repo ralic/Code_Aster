@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,13 +188,13 @@ CALC_NO( reuse=RESU_0 ,RESULTAT= RESU_0 , OPTION='SIGM_NOEU_DEPL' )
 #
 # 4. Adaptation du maillage de 0 vers 1
 #
-MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFFINEMENT',
-                                  MAILLAGE_N = M_0,
-                                  MAILLAGE_NP1 = CO("M_1"),
-                                  RESULTAT_N = RESU_0,
-                                  INDICATEUR = 'ERRE_ELEM_SIGM',
-                                  NOM_CMP_INDICA = 'ERREST' ,
-                                  CRIT_RAFF_PE = 0.03),
+MACR_ADAP_MAIL ( ADAPTATION = 'RAFFINEMENT',
+                 MAILLAGE_N = M_0,
+                 MAILLAGE_NP1 = CO("M_1"),
+                 RESULTAT_N = RESU_0,
+                 INDICATEUR = 'ERRE_ELEM_SIGM',
+                 NOM_CMP_INDICA = 'ERREST' ,
+                 CRIT_RAFF_PE = 0.03,
                  MAILLAGE_FRONTIERE = ARC,
                  QUALITE='OUI',
                  INTERPENETRATION = 'OUI',
@@ -261,14 +261,14 @@ CALC_NO( reuse=RESU_1 ,RESULTAT= RESU_1 , OPTION='SIGM_NOEU_DEPL' )
 #    On en profite pour tester des mises a jour de champs aux noeuds et aux elements
 #    a un moment complique : des triangles deviennent des quadrangles et reciproquement.
 #
-MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFF_DERA',
-                                  MAILLAGE_N = M_1,
-                                  MAILLAGE_NP1 = CO("M_2"),
-                                  RESULTAT_N = RESU_1,
-                                  INDICATEUR = 'ERRE_ELEM_SIGM',
-                                  NOM_CMP_INDICA = 'ERREST' ,
-                                  CRIT_RAFF_PE = 0.03,
-                                  CRIT_DERA_PE = 0.20),
+MACR_ADAP_MAIL ( ADAPTATION = 'RAFF_DERA',
+                 MAILLAGE_N = M_1,
+                 MAILLAGE_NP1 = CO("M_2"),
+                 RESULTAT_N = RESU_1,
+                 INDICATEUR = 'ERRE_ELEM_SIGM',
+                 NOM_CMP_INDICA = 'ERREST' ,
+                 CRIT_RAFF_PE = 0.03,
+                 CRIT_DERA_PE = 0.20,
                  MAILLAGE_FRONTIERE = ARC,
                  QUALITE='OUI',
                  MAJ_CHAM = ( _F( RESULTAT = RESU_1,
@@ -350,14 +350,14 @@ CALC_NO( reuse=RESU_2 ,RESULTAT= RESU_2 , OPTION='SIGM_NOEU_DEPL' )
 #
 # 8. Adaptation du maillage de 2 vers 3
 #
-MACR_ADAP_MAIL ( ADAPTATION = _F( LIBRE = 'RAFF_DERA',
-                                  MAILLAGE_N = M_2,
-                                  MAILLAGE_NP1 = CO("M_3"),
-                                  RESULTAT_N = RESU_2,
-                                  INDICATEUR = 'ERRE_ELEM_SIGM',
-                                  NOM_CMP_INDICA = 'ERREST' ,
-                                  CRIT_RAFF_PE = 0.03,
-                                  CRIT_DERA_PE = 0.20),
+MACR_ADAP_MAIL ( ADAPTATION = 'RAFF_DERA',
+                 MAILLAGE_N = M_2,
+                 MAILLAGE_NP1 = CO("M_3"),
+                 RESULTAT_N = RESU_2,
+                 INDICATEUR = 'ERRE_ELEM_SIGM',
+                 NOM_CMP_INDICA = 'ERREST' ,
+                 CRIT_RAFF_PE = 0.03,
+                 CRIT_DERA_PE = 0.20,
                  MAILLAGE_FRONTIERE = ARC,
                  QUALITE='OUI',
                )

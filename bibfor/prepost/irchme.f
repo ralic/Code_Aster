@@ -1,4 +1,4 @@
-      SUBROUTINE IRCHME ( IFI, CHANOM,
+      SUBROUTINE IRCHME ( IFI, CHANOM, NOMO,
      >                    LRESU, NORESU, NOSIMP, NOPASE, NOMSYM,
      >                    TYPECH, NUMORD,
      >                    NBCMP,  NOMCMP, 
@@ -6,7 +6,7 @@
      >                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/02/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,7 @@ C        AU FORMAT MED
 C     ENTREES:
 C        IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C        CHANOM : NOM ASTER DU CHAM A ECRIRE
+C        NOMO   : NOM DU MODELE
 C        LRESU  : .TRUE.  : INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
 C                 .FALSE. : IMPRESSION D'UN CHAMP GRANDEUR
 C        NORESU : NOM DU RESULTAT D'OU PROVIENT LE CHAMP A IMPRIMER.
@@ -66,7 +67,7 @@ C
       CHARACTER*8 NORESU, NOSIMP, NOPASE, TYPECH
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
-      CHARACTER*(*)  NOMCMP(*)
+      CHARACTER*(*)  NOMCMP(*),NOMO
 C
       LOGICAL LRESU
 C
@@ -199,18 +200,25 @@ C 1.3. ==> NOM DU MODELE ASSOCIE, DANS LE CAS D'UNE STRUCTURE RESULTAT
 C
       IF ( CODRET.EQ.0 ) THEN
 C
-      IF ( LRESU ) THEN
-C
-        CALL RSADPA ( NORESU, 'L', 1, 'MODELE', NUMORD, 0, IAUX,
-     &                SAUX08 )
-        MODELE = ZK8(IAUX)
-C
-      ELSE
-C
-        MODELE = '        '
-C                 12345678
-C
-      ENDIF
+        IF(TYPECH(1:4).NE.'ELGA')THEN
+          MODELE = ' '
+        ELSE
+          IF ( LRESU ) THEN
+            CALL RSADPA ( NORESU, 'L', 1, 'MODELE', NUMORD, 0, IAUX,
+     &                  SAUX08 )
+            MODELE = ZK8(IAUX)
+          ELSE
+            MODELE = NOMO
+          ENDIF
+          CALL JEEXIN ( MODELE//'.MAILLE', IRET)
+          IF(IRET.EQ.0)THEN
+            CALL UTDEBM('F','IRCHME','L OBJET')
+            CALL UTIMPK('S',' ',1,MODELE//'.MAILLE')
+            CALL UTIMPK('S',' N EXISTE PAS.',0,' ')
+            CALL UTIMPK('L','VEUILLEZ RENSEIGNER LE MODELE.',0,' ')
+            CALL UTFINM()
+          ENDIF
+        ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,13001) MODELE

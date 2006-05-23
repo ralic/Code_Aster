@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       CHARACTER*24 NOMNOE,NOOBJ
 
 C--- Variables pour le mot-clef "LIAISON = ENCASTRE"
-      INTEGER      NDLIA,LIAIMP,INDIK8,INOM,NBCMP,IRET
+      INTEGER      NDLIA,LIAIMP,INDIK8,INOM,NBCMP,JCOMPT
       INTEGER      ICMP1,ICMP2,ICMP3,ICMP4,ICMP5,ICMP6
       LOGICAL      EXISDG
       CHARACTER*8  NOMG
@@ -253,7 +253,7 @@ C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
           END IF
         END IF
 
-        IRET = 0
+        CALL WKVECT('&&CADDLI.ICOMPT','V V I',MAX(NDDLA,1),JCOMPT)
         DO 90 K = 1,NBNO
           INO = ZI(IALINO-1+K)
           CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
@@ -315,7 +315,6 @@ C           DETERMINATION DU NOM DE LA SD CACHEE FONCTION
             CALL AFRELA(COEFR,CBID,DDL,NOMN,0,RBID,1,RBID,CBID,NOMFON,
      &                  'REEL','FONC','12',0.D0,LISREL)
 
-            IRET = 1
 C         -- AUTRES CAS:
 C         ---------------
           ELSE
@@ -323,11 +322,18 @@ C         ---------------
      &                  ZI(JPRNM-1+ (INO-1)*NBEC+1),NDDLA,FONREE,NOMN,
      &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
      &                  ZR(JDIREC+3*(INO-1)),0,LISREL,
-     &                  ZK8(INOM),NBCMP,IRET)
+     &                  ZK8(INOM),NBCMP,ZI(JCOMPT))
           END IF
    90   CONTINUE
-        IF ( IRET .EQ. 0 ) CALL UTMESS('F','CADDLI',
-     &                     'AUCUN NOEUD NE CONNAIT LES DDL FOURNIS')
+
+C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
+        IF (VALLIA.NE.'ENCASTRE') THEN
+          DO 91,K=1,NDDLA
+             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL UTMESS('F','CADDLI',
+     &                  'AUCUN NOEUD NE CONNAIT LE DDL: '//MOTCLE(K))
+  91      CONTINUE
+        ENDIF
+        CALL JEDETR('&&CADDLI.ICOMPT')
 
         CALL JEDETR('&&CADDLI.VALDDL')
         CALL JEDETR('&&CADDLI.DIRECT')

@@ -1,14 +1,14 @@
-      SUBROUTINE UTMASU ( MODL, MAIL, KDIM, NLIMA, LIMA, NOMOB1, PREC,
+      SUBROUTINE UTMASU ( MAIL, KDIM, NLIMA, LIMA, NOMOB1, PREC,
      +                    COOR )
       IMPLICIT NONE
       INTEGER             LIMA(*), NLIMA
       REAL*8              PREC, COOR(*)
       CHARACTER*2         KDIM
-      CHARACTER*8         MODL, MAIL
+      CHARACTER*8         MAIL
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,7 +32,6 @@ C     MAILLE PEAU 1D => MAILLE SUPPORT 2D
 C
 C   ARGUMENT EN ENTREE
 C   ------------------
-C     MODL   : NOM DE L'OJB REPRESENTANT LE MODELE
 C     MAIL   : NOM DE L'OJB REPRESENTANT LE MAILLAGE
 C     KDIM   : '3D' RECHERCHE LES MAILLES 3D VOISINES
 C              '2D' RECHERCHE LES MAILLES 2D VOISINES
@@ -62,32 +61,26 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IRET, IM1, IM2
       INTEGER       IMA, NUMA, NNOE, INO, NBM, I, K, INDI, NNOEM, NNOE1
-      INTEGER       LISNOE(27), LISMA(1000), JMODL
-      LOGICAL       MAOK
+      INTEGER       IFM , NIV
+      INTEGER       LISNOE(27)
+      LOGICAL       FIRST
       CHARACTER*1   TYPERR
       CHARACTER*8   K8B, NOMAIL, NOMA1, NOMA2
       CHARACTER*24  NOMAVO
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
+      CALL INFNIV ( IFM , NIV )
+      FIRST = .FALSE.
+C
 C --- APPEL A LA CONNECTIVITE :
 C     -----------------------
       CALL JEVEUO ( JEXATR(MAIL//'.CONNEX','LONCUM'), 'L', P2 )
       CALL JEVEUO ( MAIL//'.CONNEX', 'L', P1 )
-      CALL JEVEUO ( MODL//'.MAILLE', 'L', JMODL )
 C
 C --- CREATION DE LA SD :
 C     -----------------
       CALL WKVECT ( NOMOB1, 'V V I' , NLIMA, JM3D )
-C
-C --- ON VERIFIE QUE LES MAILLES APPARTIENNENT AU MODELE :
-C     --------------------------------------------------
-      MAOK = .FALSE. 
-      DO 20 IMA = 1, NLIMA
-         NUMA = LIMA(IMA)
-         IF ( ZI(JMODL-1+NUMA) .NE. 0 ) MAOK = .TRUE. 
- 20   CONTINUE
-      IF ( .NOT. MAOK ) GOTO 9999
 C
 C --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 C     ---------------------------------------------
@@ -101,6 +94,7 @@ C     -----------------
       DO 100 IMA = 1, NLIMA
          NUMA = LIMA(IMA)
          NNOE = ZI(P2+NUMA)-ZI(P2-1+NUMA)
+         IF ( NNOE .GT. 27 ) CALL UTMESS('F','UTMASU','NNO > 27' )
          DO 80 INO = 1,NNOE
             LISNOE(INO) = ZI(P1-1+ZI(P2+NUMA-1)+INO-1)
   80     CONTINUE
@@ -111,7 +105,6 @@ C     -----------------
          DO 10 I = 1, NBMAT
             IM2 = ZI(P3+ZI(P4+IMA-1)-1+I-1)
             IF ( IM2 .EQ. 0 ) GOTO 10
-            IF ( ZI(JMODL-1+IM2) .EQ. 0 ) GOTO 10
             IF ( ZI(P1+ZI(P2+IM2-1)-1) .EQ. 0 ) GOTO 10
             NNOEM = ZI(P2+IM2) - ZI(P2-1+IM2)
 
@@ -145,17 +138,23 @@ C     -----------------
 C
  10      CONTINUE
 C
-         IF ( NBM .EQ. 0 ) THEN
+         IF ( NBM .EQ. 0 .AND. NIV.GT.1 ) THEN
             CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),NOMAIL)
-            CALL UTMESS('A','UTMASU','LA MAILLE DE PEAU '//
-     +              NOMAIL//' NE S''APPUIE SUR AUCUNE MAILLE SUPPORT')
+            IF ( FIRST ) THEN
+               CALL UTIMPK('L','   MAILLE: ', 1, NOMAIL )
+            ELSE
+               CALL UTDEBM('A','UTMASU','DES MAILLES DE PEAU '//
+     +                     'NE S''APPUIENT SUR AUCUNE MAILLE SUPPORT')
+               CALL UTIMPK('L','   MAILLE: ', 1, NOMAIL )
+            ENDIF
+            FIRST = .TRUE.
          ENDIF
 C
  100  CONTINUE
 C
-      CALL JEDETR ( NOMAVO )
+      IF ( FIRST ) CALL UTFINM()
 C
- 9999 CONTINUE
+      CALL JEDETR ( NOMAVO )
 C
       CALL JEDEMA()
 C

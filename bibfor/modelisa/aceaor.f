@@ -6,7 +6,7 @@
       CHARACTER*16      NOMELE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -299,7 +299,7 @@ C
 C --- AFFECTATION DES VALEURS DU TAMPON DANS LA CARTE ORIENTATION :
 C     -------------------------------------------------------------
       IF ( NOCAOR .GT. 0  ) THEN
-         CALL ALCAR2('G',CARTOR,NOMA,'CAORIE')
+         CALL ALCART('G',CARTOR,NOMA,'CAORIE')
          CALL JEVEUO(TMPNOR,'E',JDCMPO)
          CALL JEVEUO(TMPVOR,'E',JDVLVO)
          ZK8(JDCMPO)   = 'ALPHA'
@@ -318,7 +318,7 @@ C ---    RECUPERATION DES NUMEROS DES NOMS DES ELEMENTS
                   ZR(JDVLVO)    = ZR(JDOR+NUMMAI*3-3)
                   ZR(JDVLVO+1)  = ZR(JDOR+NUMMAI*3-2)
                   ZR(JDVLVO+2)  = ZR(JDOR+NUMMAI*3-1)
-                  CALL NOCAR2(CARTOR,3,' ','NUM',1,' ',NUMMAI,' ',3)
+                  CALL NOCART(CARTOR,3,' ','NUM',1,' ',NUMMAI,' ',3)
                   GOTO 68
                  ENDIF
                ENDIF
@@ -334,7 +334,7 @@ C ---    AFFECTATION DES MAILLES TARDIVES DU MODELE (TYPE DISCRET)
                   ZR(JDVLVO)    = ZR(JDOR+(I+NBMAIL)*3-3)
                   ZR(JDVLVO+1)  = ZR(JDOR+(I+NBMAIL)*3-2)
                   ZR(JDVLVO+2)  = ZR(JDOR+(I+NBMAIL)*3-1)
-                  CALL NOCAR2(CARTOR,-3,' ','NUM',1,' ',-I,
+                  CALL NOCART(CARTOR,-3,' ','NUM',1,' ',-I,
      +                                            NOMO//'.MODELE    ',3)
                   GOTO 72
 C              ENDIF

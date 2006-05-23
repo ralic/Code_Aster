@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,8 +144,8 @@ C     --------------------------------------------
 
         CART1 = CHMAT//'.'//LIVARC(KVARC)//'.1'
         CART2 = CHMAT//'.'//LIVARC(KVARC)//'.2'
-        CALL ALCAR2('G',CART1,NOMAIL,'NEUT_R')
-        CALL ALCAR2('G',CART2,NOMAIL,'NEUT_K16')
+        CALL ALCART('G',CART1,NOMAIL,'NEUT_R')
+        CALL ALCART('G',CART2,NOMAIL,'NEUT_K16')
         CALL JEVEUO(CART1//'.NCMP','E',JNCMP1)
         CALL JEVEUO(CART1//'.VALV','E',JVALV1)
         CALL JEVEUO(CART2//'.NCMP','E',JNCMP2)
@@ -252,14 +252,14 @@ C         TOUT='OUI' PAR DEFAUT :
           IF (NBGM1+NBM1.EQ.0) NBTOU=1
 
           IF (NBTOU.NE.0) THEN
-            CALL NOCAR2(CART1,1,' ','NOM',0,' ',0,' ',NCMP)
-            CALL NOCAR2(CART2,1,' ','NOM',0,' ',0,' ',6)
+            CALL NOCART(CART1,1,' ','NOM',0,' ',0,' ',NCMP)
+            CALL NOCART(CART2,1,' ','NOM',0,' ',0,' ',6)
           ELSE
             CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE',MOFAC,IOCC,2,MOTCLE,
      &                  TYPMCL,MESMAI,NBMA)
             CALL JEVEUO(MESMAI,'L',JMA)
-            CALL NOCAR2(CART1,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',NCMP)
-            CALL NOCAR2(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',4)
+            CALL NOCART(CART1,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',NCMP)
+            CALL NOCART(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',4)
             CALL JEDETR(MESMAI)
           END IF
 

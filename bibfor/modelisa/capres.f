@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,9 +66,9 @@ C
       CARTE = CHAR//'.CHME.PRESS'
 C
       IF (FONREE.EQ.'REEL') THEN
-         CALL ALCAR2 ( 'G', CARTE, NOMA, 'PRES_R')
+         CALL ALCART ( 'G', CARTE, NOMA, 'PRES_R')
       ELSEIF (FONREE.EQ.'FONC') THEN
-         CALL ALCAR2 ( 'G', CARTE, NOMA, 'PRES_F')
+         CALL ALCART ( 'G', CARTE, NOMA, 'PRES_F')
       ELSE
          CALL UTMESS('F','CAPRES','VALEUR INATTENDUE: '//FONREE )
       END IF
@@ -89,7 +89,7 @@ C
          ZK8(JVALV)   = '&FOZERO'
          ZK8(JVALV+1) = '&FOZERO'
       END IF
-      CALL NOCAR2 (CARTE,1,' ','NOM',0,' ',0,LIGRMO,NCMP)
+      CALL NOCART (CARTE,1,' ','NOM',0,' ',0,LIGRMO,NCMP)
 C
       MESMAI = '&&CAPRES.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -113,13 +113,13 @@ C
 C
          IF ( NBTOU .NE. 0 ) THEN
 C
-            CALL NOCAR2(CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
+            CALL NOCART(CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
-            CALL NOCAR2 (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
+            CALL NOCART (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

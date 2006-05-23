@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,11 +68,11 @@ C
       CARTE2 = CHAR//'.CHTH.T_EXT'
 C
       IF (FONREE.EQ.'REEL') THEN
-         CALL ALCAR2 ( 'G', CARTE1, NOMA, 'COEH_R')
-         CALL ALCAR2 ( 'G', CARTE2, NOMA, 'TEMP_R')
+         CALL ALCART ( 'G', CARTE1, NOMA, 'COEH_R')
+         CALL ALCART ( 'G', CARTE2, NOMA, 'TEMP_R')
       ELSE IF (FONREE.EQ.'FONC') THEN
-         CALL ALCAR2 ( 'G', CARTE1, NOMA, 'COEH_F')
-         CALL ALCAR2 ( 'G', CARTE2, NOMA, 'TEMP_F')
+         CALL ALCART ( 'G', CARTE1, NOMA, 'COEH_F')
+         CALL ALCART ( 'G', CARTE2, NOMA, 'TEMP_F')
       ELSE
          CALL UTMESS('F','CAECHA','VALEUR INATTENDUE: '//FONREE )
       END IF
@@ -106,8 +106,8 @@ C
          ZK8(JVALV2-1+2) = '&FOZERO'
          ZK8(JVALV2-1+3) = '&FOZERO'
       END IF
-      CALL NOCAR2 ( CARTE1,1,' ','NOM',0,' ',0, LIGRMO, NCMP )
-      CALL NOCAR2 ( CARTE2,1,' ','NOM',0,' ',0, LIGRMO, NCMP )
+      CALL NOCART ( CARTE1,1,' ','NOM',0,' ',0, LIGRMO, NCMP )
+      CALL NOCART ( CARTE2,1,' ','NOM',0,' ',0, LIGRMO, NCMP )
 C
       MESMAI = '&&CAECHA.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -198,16 +198,16 @@ C
 C
          CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
-            CALL NOCAR2 (CARTE1,1,' ','NOM',0,' ', 0,LIGRMO,NCMP1)
-            CALL NOCAR2 (CARTE2,1,' ','NOM',0,' ', 0,LIGRMO,NCMP2)
+            CALL NOCART (CARTE1,1,' ','NOM',0,' ', 0,LIGRMO,NCMP1)
+            CALL NOCART (CARTE2,1,' ','NOM',0,' ', 0,LIGRMO,NCMP2)
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
-            CALL NOCAR2(CARTE1,3,' ','NOM',NBMA,ZK8(JMA),0,LIGRMO,NCMP1)
-            CALL NOCAR2(CARTE2,3,' ','NOM',NBMA,ZK8(JMA),0,LIGRMO,NCMP2)
+            CALL NOCART(CARTE1,3,' ','NOM',NBMA,ZK8(JMA),0,LIGRMO,NCMP1)
+            CALL NOCART(CARTE2,3,' ','NOM',NBMA,ZK8(JMA),0,LIGRMO,NCMP2)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

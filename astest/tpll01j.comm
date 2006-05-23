@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,19 +77,17 @@ for k in range(1,nbcalc):
 #
      M[k+1]=CO('M_%d' % (k+1))
 
-     MACR_ADAP_MAIL(
-                  ADAPTATION=_F( 
-                       LIBRE = 'RAFFINEMENT',
-                       MAILLAGE_N = M[k],
-                       MAILLAGE_NP1 = M[k+1],
-                       RESULTAT_N = RESU[k],
-                       INDICATEUR = 'ERRE_ELEM_TEMP',
-                       NUME_ORDRE = 0,
-                       NOM_CMP_INDICA = 'ERTABS',
-                       CRIT_RAFF_PE = 0.02,
-                       NIVE_MAX = 5),
-                 QUALITE='OUI',
-                 INTERPENETRATION='NON' )
+     MACR_ADAP_MAIL( ADAPTATION='RAFFINEMENT',
+                     MAILLAGE_N = M[k],
+                     MAILLAGE_NP1 = M[k+1],
+                     RESULTAT_N = RESU[k],
+                     INDICATEUR = 'ERRE_ELEM_TEMP',
+                     NUME_ORDRE = 0,
+                     NOM_CMP_INDICA = 'ERTABS',
+                     CRIT_RAFF_PE = 0.02,
+                     NIVE_MAX = 5,
+                     QUALITE='OUI',
+                     INTERPENETRATION='NON' )
 
 # Tests de non-regression de ERRE_ELEM_TEMP/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD

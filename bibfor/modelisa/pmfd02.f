@@ -1,6 +1,6 @@
       SUBROUTINE PMFD02(NOMA,CESDEC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C     ------------------------------------------------------------------
 
 
       CARTE='&&PMFD02.NBSP_I'
-      CALL ALCAR2 ( 'V', CARTE, NOMA, 'NBSP_I' )
+      CALL ALCART ( 'V', CARTE, NOMA, 'NBSP_I' )
 
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
@@ -105,7 +105,7 @@ C     -----------------------------------------------------------
         ZI(JVALV-1+1) =  NBCOU
 
         CALL JEVEUO (MESMAI , 'L', JMA )
-        CALL NOCAR2 ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
      +                ZI(JMA), ' ', 1 )
         CALL JEDETR(MESMAI)
    10 CONTINUE
@@ -123,7 +123,7 @@ C     -----------------------------------------------------------
         ZI(JVALV-1+1) =  NBCOU
 
         CALL JEVEUO (MESMAI , 'L', JMA )
-        CALL NOCAR2 ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
      +                ZI(JMA), ' ', 1 )
         CALL JEDETR(MESMAI)
    20 CONTINUE
@@ -144,7 +144,7 @@ C     -----------------------------------------------------------
         ZI(JVALV-1+2) =  NBSEC
 
         CALL JEVEUO (MESMAI , 'L', JMA )
-        CALL NOCAR2 ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
      +                ZI(JMA), ' ', 2 )
         CALL JEDETR(MESMAI)
    30 CONTINUE

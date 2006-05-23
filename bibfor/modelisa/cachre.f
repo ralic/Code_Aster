@@ -8,7 +8,7 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,11 +75,11 @@ C
       CARTE  = CHAR(1:8)//'.CHME.'//PARAM(1:5)
 C
       IF (FONREE.EQ.'REEL') THEN
-         CALL ALCAR2 ('G', CARTE , NOMA , 'FORC_R')
+         CALL ALCART ('G', CARTE , NOMA , 'FORC_R')
       ELSE IF (FONREE.EQ.'FONC') THEN
-         CALL ALCAR2 ('G', CARTE , NOMA , 'FORC_F')
+         CALL ALCART ('G', CARTE , NOMA , 'FORC_F')
       ELSE IF (FONREE.EQ.'COMP') THEN
-         CALL ALCAR2 ('G', CARTE , NOMA , 'FORC_C')
+         CALL ALCART ('G', CARTE , NOMA , 'FORC_C')
       ELSE
          CALL UTMESS('F','CACHRE','VALEUR INATTENDUE: '//FONREE(1:4) )
       ENDIF
@@ -115,7 +115,7 @@ C
       ELSE
          CALL UTMESS('F','CACHRE','VALEUR INATTENDUE: '//FONREE )
       ENDIF
-      CALL NOCAR2 ( CARTE, 1,' ','NOM', 0,' ', 0, LIGRMO, 8 )
+      CALL NOCART ( CARTE, 1,' ','NOM', 0,' ', 0, LIGRMO, 8 )
 C
       MESMAI = '&&CACHRE.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -409,13 +409,13 @@ C
 C
          IF ( NBTOU .NE. 0 ) THEN
 C
-            CALL NOCAR2 (CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP )
+            CALL NOCART (CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP )
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
-            CALL NOCAR2 (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
+            CALL NOCART (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
             CALL JEDETR ( MESMAI )
          ENDIF
 C

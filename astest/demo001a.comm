@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,15 +91,13 @@ for k in range(3):
                  RESULTAT=RESUELAS);  
                                 
    MAIL[k+1]=CO('MAIL_%d' % (k+1))
-   MACR_ADAP_MAIL( ADAPTATION=_F( 
-                   LIBRE = 'RAFFINEMENT',
+   MACR_ADAP_MAIL( ADAPTATION='RAFFINEMENT',
                    MAILLAGE_N = MAIL[k],
                    MAILLAGE_NP1 = MAIL[k+1],
                    RESULTAT_N = RESUELAS,
                    INDICATEUR = 'ERRE_ELEM_SIGM',
                    NOM_CMP_INDICA = 'ERREST' ,
                    CRIT_RAFF_PE = 0.08,
-                   ),
                 MAILLAGE_FRONTIERE = MAILFRON,
                 QUALITE='OUI',
                 TAILLE='OUI',

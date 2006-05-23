@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,16 @@
 from Macro.macr_adap_mail_ops import macr_adap_mail_ops
 
 def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
-  maillage_np1=ADAPTATION['MAILLAGE_NP1']
+#
+# 0. Typage des structures produites
+#
+  maillage_np1=args['MAILLAGE_NP1']
   self.type_sdprod(maillage_np1,maillage_sdaster)
+#
+  if ( args['MAILLAGE_NP1_ANNEXE'] is not None ) :
+    maillage_np1_annexe=args['MAILLAGE_NP1_ANNEXE']
+    self.type_sdprod(maillage_np1_annexe,maillage_sdaster)
+#
   if MAJ_CHAM == None:return None
 # Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
   for ch in MAJ_CHAM:
@@ -40,309 +48,392 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 1. Le niveau d'information
 #
-         INFO           = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+  INFO = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 #
 # 2. Version de HOMARD
 #
-         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_7",
-                               into=("V7_7", "V7_N", "V7_N_PERSO", "V8_N"),
-                           fr="Version de HOMARD",
-                           ang="HOMARD release"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V8_2",
+                        into=("V8_2", "V8_N", "V8_N_PERSO"),
+                        fr="Version de HOMARD",
+                        ang="HOMARD release"),
 #
-# 3. Langue des messages issus de HOMARD
+# 3. Langue des messages produits par HOMARD
 #
-         LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",    
-                               into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
-                           fr="Langue des messages issus de HOMARD.",
-                           ang="Language for HOMARD messages." ),
+  LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",    
+                into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
+                fr="Langue des messages produits par HOMARD.",
+                ang="Language for HOMARD messages." ),
 #
-# 4. Gestion des éléments autres que des simplexes
-#       0 : autres elements refuses
-#       1 : raffinement sur les simplexes, mais autres acceptes
-#       2 : tous (defaut)
+# 4. Les maillages
+# 4.1. Quel que soit le type de traitement, il faut donner  :
+#      A. Le concept du maillage initial (entree)
+#      B. Le concept du maillage final (sortie)
 #
-         NON_SIMPLEXE   = SIMP(statut='f',typ='I',defaut=2,into=(0,1,2),
-                          fr="Type d'éléments acceptés.",
-                          ang="Type of authorized elements." ),
+  MAILLAGE_N   = SIMP(statut='o',typ=maillage_sdaster,
+                      fr="Maillage avant adaptation",
+                      ang="Mesh before adaptation" ),
 #
-# 5. Le type de traitement :
+  MAILLAGE_NP1 = SIMP(statut='o',typ=CO,
+                      fr="Maillage apres adaptation",
+                      ang="Mesh after adaptation" ),
 #
-         ADAPTATION      =FACT(statut='o',
-                           fr="Type d'adaptation",
-                           ang="Type of adaptation",
+# 4.2. Eventuellement, on peut produire un maillage annexe
+#      Actuellement, c'est le maillage n+1, mais de degré différent.
 #
-# 5.1. Deux choix d'adaptation exclusifs :
+  MAILLAGE_NP1_ANNEXE = SIMP(statut='f',typ=CO,
+                             fr="Maillage annexe apres adaptation",
+                             ang="Additional mesh after adaptation" ),
 #
-# 5.1.
-#      A. Pilote par une consigne, avec trois variantes :
-#         . Raffinement et deraffinement
-#         . Raffinement seul
-#         . Deraffinement seul
-#      B. Uniforme, avec trois variantes :
-#         . Raffinement seul
-#         . Deraffinement seul
-#         . Rien : le maillage est le meme a la sortie et a l'entree
+# 5. Le pilotage de l'adaptation, avec les variantes suivantes :
+#  . Raffinement et deraffinement, selon un champ d'indicateurs d'erreur
+#  . Raffinement seul, selon un champ d'indicateurs d'erreur
+#  . Deraffinement seul, selon un champ d'indicateurs d'erreur
+#  . Raffinement uniforme : toutes les mailles sont divisées
+#  . Deraffinement uniforme : toutes les mailles sont regroupées
+#  . Rien : le maillage est le meme a la sortie et a l'entree
 #
-           regles=(
-                   UN_PARMI('LIBRE','UNIFORME'),
-                  ),
-           LIBRE          = SIMP(statut='f',typ='TXM',
-                                 into=("RAFF_DERA","RAFFINEMENT","DERAFFINEMENT"),    
-                           fr="Adaptation selon un indicateur d'erreur.",
-                           ang="Adaptation among an error indicator" ),
-           UNIFORME       = SIMP(statut='f',typ='TXM',
-                                 into=("RAFFINEMENT","DERAFFINEMENT","RIEN"),    
-                           fr="Adaptation uniforme.",
-                           ang="Uniform adaptation" ),
+  ADAPTATION = SIMP(statut='f',typ='TXM',
+                    into=("RAFF_DERA","RAFFINEMENT","DERAFFINEMENT","RAFFINEMENT_ZONE", \
+                          "RAFFINEMENT_UNIFORME","DERAFFINEMENT_UNIFORME","RIEN"),    
+                    fr="Pilotage de l'adaptation : selon un indicateur d'erreur ou uniforme.",
+                    ang="Adaptation control : among an error indicator or uniform" ),
 #
-# 5.2. Quel que soit le type de traitement, il faut donner  :
-#      A. Le concept du maillage initial
-#      B. Le concept du maillage final
+# 6. Pour de l'adaptation libre, il faut un indicateur d'erreur
 #
-           MAILLAGE_N     = SIMP(statut='o',typ=maillage_sdaster,
-                           fr="Maillage avant adaptation",
-                           ang="Mesh before adaptation" ),
-           MAILLAGE_NP1   = SIMP(statut='o',typ=CO,
-                           fr="Maillage apres adaptation",
-                           ang="Mesh after adaptation" ),
+  b_indicateur_d_erreur = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                              (ADAPTATION == 'RAFFINEMENT') or \
+                                              (ADAPTATION == 'DERAFFINEMENT') " ,
+                                fr="Pour une adaptation libre, choix de l'indicateur d'erreur ou d'une zone à raffiner",
+                                ang="For free adaptation, selection of error indicator or zone",
 #
-# 5.3. Pour de l'adaptation libre, il faut un indicateur d'erreur et/ou des definitions de zones
+    regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
 #
-           b_indicateur_d_erreur   =BLOC( condition = " LIBRE != None " ,
-                           fr="Choix de l'indicateur d'erreur",
-                           ang="Selection of error indicator",
+# 6.1. Repérage de la zone à raffiner à l'aide d'un indicateur
 #
-# 5.3.1. L'indicateur
+# 6.1.1. Sous forme de champ de grandeur
 #
-                           regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
+    CHAM_GD    = SIMP(statut='f',typ=cham_gd_sdaster,
+                      fr="Champ de grandeur Code_Aster contenant l'indicateur d'erreur",
+                      ang="Code_Aster champ de grandeur with error indicator" ),
 #
-# 5.3.1.1. Sous forme de champ de grandeur
+# 6.1.2. Sous forme de concept resultat_sdaster
 #
-                           CHAM_GD        =SIMP(statut='f',typ=cham_gd_sdaster,
-                           fr="Champ de grandeur Code_Aster contenant l'indicateur d'erreur",
-                           ang="Champ de grandeur with error indicator" ),
+    RESULTAT_N = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
+                      fr="Concept resultat Code_Aster contenant l'indicateur d'erreur",
+                      ang="Code_Aster result with error indicator" ),
 #
-# 5.3.1.2. Sous forme de concept resultat_sdaster
+    b_champ_indicateur = BLOC(condition="(RESULTAT_N != None)",
+      INDICATEUR = SIMP(statut='o',typ='TXM',     
+                        fr="Champ de l'indicateur d'erreur dans le résultat",
+                        ang="Error indicator field in the result structure" ),
+    ),
 #
-                           RESULTAT_N     = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
-                           fr="Concept resultat Code_Aster contenant l'indicateur d'erreur",
-                           ang="Result with error indicator" ),
+# 6.1.3. La composante retenue
 #
-                           b_champ_indicateur     =BLOC(condition="(RESULTAT_N != None)",
-                             INDICATEUR     = SIMP(statut='o',typ='TXM',     
-                             fr="Champ de l'indicateur d'erreur",
-                             ang="Error indicator field" ),
-                                                       ),
+    b_composante = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
+                        fr="Choix de la composante pour l'indicateur",
+                        ang="Component selection for error indicator",
 #
-# 5.3.2. La composante retenue
+      NOM_CMP_INDICA = SIMP(statut='o',typ='TXM',
+                            fr="Composante retenue pour l'indicateur d'erreur",
+                            ang="Selected component for error indicator" ),
 #
-                           NOM_CMP_INDICA = SIMP(statut='o',typ='TXM',
-                           fr="Composante retenue",
-                           ang="Selected component" ),
+    ),
 #
-# 5.3.3. Le paramètre temporel pour l'indicateur
+# 6.1.4. Le paramètre temporel pour l'indicateur
 #
-                           b_parametre_temporel     =BLOC(condition="(RESULTAT_N != None)",
+    b_parametre_temporel = BLOC(condition="(RESULTAT_N != None)",
+                                fr="Choix éventuel du paramètre temporel pour l'indicateur",
+                                ang="Time selection for error indicator (option)",
 #
-                           regles=(EXCLUS('NUME_ORDRE','INST'),),
+      regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 5.3.3.1. Soit le numero d'ordre
+# 6.1.4.1. Soit le numero d'ordre
 #
-                           NUME_ORDRE     = SIMP(statut='f',typ='I',
-                           fr="Numero d ordre",
-                           ang="Rank" ),  
+      NUME_ORDRE = SIMP(statut='f',typ='I',
+                        fr="Numero d ordre",
+                        ang="Rank" ),  
 #
-# 5.3.3.2. Soit l'instant
-# 5.3.3.2.1. Sa valeur
+# 6.1.4.2. Soit l'instant
+# 6.1.4.2.1. Sa valeur
 #
-                           INST           = SIMP(statut='f',typ='R',
-                           fr="Instant associé",
-                           ang="Instant" ),
+      INST       = SIMP(statut='f',typ='R',
+                        fr="Instant associé",
+                        ang="Instant" ),
 #
-# 5.3.3.2.2. La précision du choix de l'instant
+# 6.1.4.2.2. La précision du choix de l'instant
 #
-                           b_precision     =BLOC(condition="(INST != None)",
-                             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
-                             fr="Précision sur le choix de l'instant associé",
-                             ang="Accuracy over instant choice" ),
-                             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
-                             fr="Critère de précision sur le choix de l'instant associé",
-                             ang="Accuracy criterium over instant choice" ),
-                                                ),
+      b_precision = BLOC(condition="(INST != None)",
+                         fr="Choix de la précision du choix de l'instant",
+                         ang="Selection for instant choice",
+        PRECISION = SIMP(statut='f',typ='R',defaut=1.0E-3,
+                         fr="Précision sur le choix de l'instant associé",
+                         ang="Accuracy over instant choice" ),
+        CRITERE   = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
+                         fr="Critère de précision sur le choix de l'instant associé",
+                         ang="Accuracy criterium over instant choice" ),
+      ),
 #
-                                                         ),
+    ),
 #
-                           ) ,
+  ) ,
 #
-# 5.4. Les criteres pour de l'adaptation libre :
+# 7. Les criteres pour de l'adaptation libre avec un indicateur d'erreur :
 #        absolu, relatif, en proportion d'entite
-# 5.4.1. Pour le raffinement :
+# 7.1. Pour le raffinement :
 #
-           b_critere_de_raffinement =BLOC( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'RAFFINEMENT' ) " ,
-                           fr="Critère de raffinement.",
-                           ang="Refinement threshold.",
-                           regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE' ),),
-                           CRIT_RAFF_ABS  = SIMP(statut='f',typ='R',
-                                                   fr="Critère absolu",
-                                                   ang="Absolute threshold" ),  
-                           CRIT_RAFF_REL  = SIMP(statut='f',typ='R',
-                                                   fr="Critère relatif : fraction entre 0 et 1",
-                                                   ang="Relative threshold : ratio between 0 and 1" ),  
-                           CRIT_RAFF_PE   = SIMP(statut='f',typ='R',
-                                                   fr="Pourcentage d'éléments : fraction entre 0 et 1",
-                                                   ang="Percentage of elements : ratio between 0 and 1" ),  
-                           ) ,
+  b_critere_de_raffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                                 (ADAPTATION == 'RAFFINEMENT') " ,
+                                fr="Critère de raffinement.",
+                                ang="Refinement threshold.",
 #
-# 5.4.2. Pour le deraffinement :
+    regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE' ),),
 #
-           b_critere_de_deraffinement =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'DERAFFINEMENT' ) " ,
-                           fr="Critère de déraffinement.",
-                           ang="Unrefinement threshold.",
-                           regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE' ),),
-                           CRIT_DERA_ABS  = SIMP(statut='f',typ='R' ,
-                                                 fr="Critère absolu",
-                                                 ang="Absolute threshold" ),  
-                           CRIT_DERA_REL  = SIMP(statut='f',typ='R',
-                                                 fr="Critère relatif : fraction entre 0 et 1",
-                                                 ang="Relative threshold : ratio between 0 and 1" ),  
-                           CRIT_DERA_PE   = SIMP(statut='f',typ='R',
-                                                 fr="Pourcentage d'éléments : fraction entre 0 et 1",
-                                                 ang="Percentage of elements : ratio between 0 and 1" ),  
-                           ) ,
+    CRIT_RAFF_ABS = SIMP(statut='f',typ='R',
+                         fr="Critère absolu",
+                         ang="Absolute threshold" ),  
+    CRIT_RAFF_REL = SIMP(statut='f',typ='R',
+                         fr="Critère relatif : fraction réelle entre 0. et 1.",
+                         ang="Relative threshold : ratio between 0. and 1." ),  
+    CRIT_RAFF_PE  = SIMP(statut='f',typ='R',
+                         fr="Pourcentage d'éléments : fraction réelle entre 0. et 1.",
+                         ang="Percentage of elements : ratio between 0. and 1." ),  
+  ) ,
 #
-# 5.5. Les niveaux extremes pour le maillage adapte
-# 5.5.1. Pour le raffinement :
+# 7.2. Pour le deraffinement :
 #
-           b_niveau_maximum =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'RAFFINEMENT' ) or \
-                                                  ( UNIFORME == 'RAFFINEMENT' ) " ,
+  b_critere_de_deraffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                                   (ADAPTATION == 'DERAFFINEMENT') " ,
+                                     fr="Critère de déraffinement.",
+                                     ang="Unrefinement threshold.",
+#
+    regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE' ),),
+#
+    CRIT_DERA_ABS = SIMP(statut='f',typ='R' ,
+                         fr="Critère absolu",
+                         ang="Absolute threshold" ),  
+    CRIT_DERA_REL = SIMP(statut='f',typ='R',
+                         fr="Critère relatif : fraction réelle entre 0. et 1.",
+                         ang="Relative threshold : ratio between 0. and 1." ),  
+    CRIT_DERA_PE  = SIMP(statut='f',typ='R',
+                         fr="Pourcentage d'éléments : fraction réelle entre 0. et 1.",
+                         ang="Percentage of elements : ratio between 0. and 1." ),  
+  ) ,
+#
+# 8. Pour de l'adaptation par zone, définitions des zones
+# Remarque : on impose le 3D
+#
+  b_zone = BLOC( condition = " (ADAPTATION == 'RAFFINEMENT_ZONE') " ,
+                                fr="Pour une adaptation selon une zone à raffiner",
+                                ang="For adaptation among zone",
+    ZONE = FACT(statut='f',max='**',
+                  fr="Définition de zones à raffiner.",
+                  ang="Refined zone definition.",
+#
+      regles=(AU_MOINS_UN('X_MINI','X_CENTRE'),
+              EXCLUS('X_MINI','X_CENTRE',),
+              PRESENT_PRESENT('X_MINI','X_MAXI','Y_MINI','Y_MAXI','Z_MINI','Z_MAXI'),
+              PRESENT_PRESENT('X_CENTRE','Y_CENTRE','Z_CENTRE','RAYON'),),
+#
+# 6.2.1. Une boite parallelepipedique
+#
+      X_MINI = SIMP(statut='f',typ='R',
+                    fr="Abscisse minimum de la boite",
+                    ang="Minimum X for the box"),
+      X_MAXI = SIMP(statut='f',typ='R',
+                    fr="Abscisse maximum de la boite",
+                    ang="Maximum X for the box"),
+#
+      Y_MINI = SIMP(statut='f',typ='R',
+                    fr="Orodnnée minimum de la boite",
+                    ang="Minimum Y for the box"),
+      Y_MAXI = SIMP(statut='f',typ='R',
+                    fr="Abscisse maximum de la boite",
+                    ang="Maximum Y for the box"),
+#
+      Z_MINI = SIMP(statut='f',typ='R',
+                    fr="Cote minimum de la boite",
+                    ang="Minimum Z for the box"),
+      Z_MAXI = SIMP(statut='f',typ='R',
+                    fr="Cote maximum de la boite",
+                    ang="Maximum Z for the box"),
+#
+# 6.2.2. Une sphere
+#
+      X_CENTRE = SIMP(statut='f',typ='R',
+                      fr="Abscisse du centre de la sphere",
+                      ang="X for the center of the sphere"),
+      Y_CENTRE = SIMP(statut='f',typ='R',
+                      fr="Ordonnee du centre de la sphere",
+                      ang="Y for the center of the sphere"),
+      Z_CENTRE = SIMP(statut='f',typ='R',
+                      fr="Cote du centre de la sphere",
+                      ang="Z for the center of the sphere"),
+      RAYON = SIMP(statut='f',typ='R',
+                   fr="Rayon de la sphere",
+                   ang="Radius of the sphere"),
+#
+    ) ,
+#
+  ) ,
+#
+# 9. Les niveaux extremes pour le maillage adapte
+# 9.1. Pour le raffinement :
+#
+  b_niveau_maximum = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                         (ADAPTATION == 'RAFFINEMENT') or \
+                                         (ADAPTATION == 'RAFFINEMENT_UNIFORME') or \
+                                         (ADAPTATION == 'RAFFINEMENT_ZONE') " ,
                            fr="Niveau maximum de profondeur de raffinement",
                            ang="Maximum level for refinement",
-                           NIVE_MAX       = SIMP(statut='f',typ='I' ),
-                           ) ,
+    NIVE_MAX = SIMP(statut='f',typ='I',
+                    fr="Niveau maximum de profondeur de raffinement",
+                    ang="Maximum level for refinement"),
+  ) ,
 #
-# 5.5.2. Pour le deraffinement :
+# 9.2. Pour le deraffinement :
 #
-           b_niveau_minimum =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'DERAFFINEMENT' ) or \
-                                                  ( UNIFORME == 'DERAFFINEMENT' ) " ,
+  b_niveau_minimum = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                         (ADAPTATION == 'DERAFFINEMENT') or \
+                                         (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
                            fr="Niveau minimum de profondeur de déraffinement",
                            ang="Minimum level for unrefinement",
-                           NIVE_MIN       = SIMP(statut='f',typ='I' ),
-                           ) ,
+    NIVE_MIN = SIMP(statut='f',typ='I',
+                    fr="Niveau minimum de profondeur de déraffinement",
+                    ang="Minimum level for unrefinement"),
+  ) ,
 #
-         ),
+# 10. Suivi d'une frontiere
 #
-# 6. Suivi d'une frontiere
-#
-         MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
+  MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
                            fr="Maillage de la frontiere à suivre",
                            ang="Boundary mesh" ),
 #
-         b_frontiere   =BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
-                           fr="Groupes définissant la frontière",
-                           ang="Groups which define the boundary",
-                           GROUP_MA       = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
-                           ) ,
+  b_frontiere = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
+                      fr="Information complémentaire sur la frontière",
+                      ang="Further information about boundary",
 #
-# 7. Mise à jour de champs sur le nouveau maillage
+    GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                    fr="Liste des groupes de mailles définissant la frontière",
+                    ang="Mesh groups which define the boundary" ),
 #
-         MAJ_CHAM        =FACT(statut='f',max='**',
-                           fr="Mise à jour de champs sur le nouveau maillage.",
-                           ang="Updating of fields over the new mesh.",
+  ) ,
 #
-# 7.1. Le nom du champ qui contiendra le resultat de la mise a jour
+# 11. Mise à jour de champs sur le nouveau maillage
 #
-           CHAM_MAJ       = SIMP(statut='o',typ=CO,
-                           fr="Nom du champ qui contiendra le champ mis à jour",
-                           ang="Name of the field for the updated field"),
+  MAJ_CHAM = FACT(statut='f',max='**',
+                  fr="Mise à jour de champs sur le nouveau maillage.",
+                  ang="Updating of fields over the new mesh.",
 #
-# 7.2. Le type du champ qui contiendra le resultat de la mise a jour
+# 11.1. Le nom du champ de grandeur qui contiendra le resultat de la mise a jour
 #
-           TYPE_CHAM      = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO(),
-                           fr="Type du champ qui contiendra le champ mis à jour",
-                           ang="Type of the field for the updated field" ),
+    CHAM_MAJ = SIMP(statut='o',typ=CO,
+                    fr="Nom du champ de grandeur qui contiendra le champ mis à jour",
+                    ang="Name of the field for the updated field"),
 #
-# 7.3. Le champ a interpoler
+# 11.2. Le type du champ qui contiendra le resultat de la mise a jour
 #
-           regles=(UN_PARMI('CHAM_GD','RESULTAT')),
+    TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO(),
+                     fr="Type du champ qui contiendra le champ mis à jour",
+                     ang="Type of the field for the updated field" ),
 #
-# 7.3.1. Sous forme de champ de grandeur
+# 11.3. Le champ a interpoler
 #
-           CHAM_GD        =SIMP(statut='f',typ=cham_gd_sdaster,
-                           fr="Champ de grandeur Code_Aster contenant le champ à mettre à jour",
-                           ang="Champ de grandeur with field to be updated" ),
+    regles=(UN_PARMI('CHAM_GD','RESULTAT')),
 #
-# 7.3.2. Le nom du resultat du champ a interpoler
+# 11.3.1. Sous forme de champ de grandeur
 #
-           RESULTAT       = SIMP(statut='f',
-                                 typ=(evol_elas,evol_noli,evol_ther),
-                           fr="Resultat contenant le champ à mettre à jour",
-                           ang="Result with field to be updated" ),
+    CHAM_GD = SIMP(statut='f',typ=cham_gd_sdaster,
+                   fr="Champ de grandeur Code_Aster contenant le champ à mettre à jour",
+                   ang="Champ de grandeur with field to be updated" ),
 #
-           NOM_CHAM       = SIMP(statut='f',typ='TXM',
-                           fr="Nom du champ à mettre à jour",
-                           ang="Name of the field to be updated" ),
+# 11.3.2. Sous forme de champ dans un resultat
 #
-# 7.4. Le paramètre temporel pour le champ a interpoler
+    RESULTAT = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther),
+                    fr="Resultat contenant le champ à mettre à jour",
+                    ang="Result with field to be updated" ),
 #
-                           b_parametre_temporel     =BLOC(condition="(RESULTAT != None)",
+    NOM_CHAM = SIMP(statut='f',typ='TXM',
+                    fr="Nom du champ à mettre à jour",
+                    ang="Name of the field to be updated" ),
 #
-                           regles=(EXCLUS('NUME_ORDRE','INST'),),
+# 11.4. Le paramètre temporel pour le champ a interpoler
 #
-# 7.4.1. Soit le numero d'ordre
+    b_parametre_temporel = BLOC(condition="(RESULTAT != None)",
+                                fr="Choix éventuel du paramètre temporel pour l'indicateur",
+                                ang="Time selection for error indicator (option)",
 #
-           NUME_ORDRE     = SIMP(statut='f',typ='I',
-                           fr="Numero d ordre du champ à mettre à jour",
-                           ang="Rank of the field to be updated" ),
+      regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 7.4.2. Soit l'instant
-# 7.4.2.1. Sa valeur
+# 11.4.1. Soit le numero d'ordre
 #
-           INST           = SIMP(statut='f',typ='R',
-                           fr="Instant associé",
-                           ang="Instant" ),
+      NUME_ORDRE = SIMP(statut='f',typ='I',
+                        fr="Numero d ordre du champ à mettre à jour",
+                        ang="Rank of the field to be updated" ),
 #
-# 7.4.2.2. La précision du choix de l'instant
+# 11.4.2. Soit l'instant
+# 11.4.2.1. Sa valeur
 #
-                           b_precision     =BLOC(condition="(INST != None)",
-                             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
-                             fr="Précision sur le choix de l'instant associé",
-                             ang="Accuracy over instant choice" ),
-                             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
-                             fr="Critère de précision sur le choix de l'instant associé",
-                             ang="Accuracy criterium over instant choice" ),),
+      INST = SIMP(statut='f',typ='R',
+                  fr="Instant associé",
+                  ang="Instant" ),
 #
-                                                         ),
-         ),
+# 11.4.2.2. La précision du choix de l'instant
 #
-# 8. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
-# 8.1. Nombre de noeuds et éléments
+      b_precision = BLOC(condition="(INST != None)",
+                         fr="Choix de la précision du choix de l'instant",
+                         ang="Selection for instant choice",
 #
-         NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+        PRECISION = SIMP(statut='f',typ='R',defaut=1.0E-3,
+                         fr="Précision sur le choix de l'instant associé",
+                         ang="Accuracy over instant choice" ),
+#
+        CRITERE = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
+                       fr="Critère de précision sur le choix de l'instant associé",
+                       ang="Accuracy criterium over instant choice" ),
+#
+      ),
+#
+    ),
+  ),
+#
+# 12. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
+# 12.1. Nombre de noeuds et éléments
+#
+  NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Nombre de noeuds et éléments du maillage",
                           ang="Number of nodes and éléments in the mesh" ),
 #
-# 8.2. Determination de la qualité des éléments du maillage
+# 12.2. Determination de la qualité des éléments du maillage
 #
-         QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+  QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Qualité du maillage",
                           ang="Mesh quality" ),
 #
-# 8.3. Connexite du maillage
+# 12.3. Connexite du maillage
 #
-         CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+  CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Connexité du maillage.",
                           ang="Mesh connexity." ),
 #
-# 8.4. Taille des sous-domaines du maillage
+# 12.4. Taille des sous-domaines du maillage
 #
-         TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+  TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Tailles des sous-domaines du maillage.",
                           ang="Sizes of mesh sub-domains." ),
 #
-# 8.5. Controle de la non-interpenetration des éléments
+# 12.5. Controle de la non-interpenetration des éléments
 #
-         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+  INTERPENETRATION= SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Controle de la non interpénétration des éléments.",
                           ang="Overlapping checking." ),
 #
-)  ;
+# 13. Gestion des éléments autres que ceux compatibles avec HOMARD
+#       "REFUSER" : ils sont refuses (defaut)
+#       "IGNORER" : ils sont ignorés
+#
+  ELEMENTS_NON_HOMARD = SIMP(statut='f',typ='TXM',defaut="REFUSER",into=("REFUSER","IGNORER"),
+                             fr="Acceptation d'éléments incompatibles avec HOMARD",
+                             ang="Incompatible elements for HOMARD" ),
+#
+) ;

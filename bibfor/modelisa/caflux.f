@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,11 +114,11 @@ C
       CART1= CHAR//'.CHTH.FLURE'
       CART2= CHAR//'.CHTH.FLUR2'
       IF (FONREE.EQ.'REEL') THEN
-         IF (ICRE1) CALL ALCAR2('G',CART1,NOMA,'FLUN_R')
-         IF (ICRE2) CALL ALCAR2('G',CART2,NOMA,'FLUX_R')
+         IF (ICRE1) CALL ALCART('G',CART1,NOMA,'FLUN_R')
+         IF (ICRE2) CALL ALCART('G',CART2,NOMA,'FLUX_R')
       ELSE IF (FONREE.EQ.'FONC') THEN
-         IF (ICRE1) CALL ALCAR2('G',CART1,NOMA,'FLUN_F')
-         IF (ICRE2) CALL ALCAR2('G',CART2,NOMA,'FLUX_F')
+         IF (ICRE1) CALL ALCART('G',CART1,NOMA,'FLUN_F')
+         IF (ICRE2) CALL ALCART('G',CART2,NOMA,'FLUX_F')
       ELSE
          CALL UTMESS('F','CAFLUX','VALEUR INATTENDUE: '//FONREE )
       END IF
@@ -148,7 +148,7 @@ C
             ZK8(JVALV1-1+2) = '&FOZERO'
             ZK8(JVALV1-1+3) = '&FOZERO'
           END IF
-         CALL NOCAR2 (CART1, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO,NCMP)
+         CALL NOCART (CART1, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO,NCMP)
       END IF
 C
        IF (ICRE2) THEN
@@ -165,7 +165,7 @@ C
             ZK8(JVALV2-1+2) = '&FOZERO'
             ZK8(JVALV2-1+3) = '&FOZERO'
           END IF
-         CALL NOCAR2 (CART2, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO,NCMP)
+         CALL NOCART (CART2, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO,NCMP)
       END IF
 C
       MESMAI = '&&CAFLUX.MES_MAILLES'
@@ -298,10 +298,10 @@ C
 C
          IF ( NBTOU .NE. 0 ) THEN
             IF (NCMP1.GT.0) THEN
-               CALL NOCAR2 (CART1,1,' ','NOM',0,' ', 0,LIGRMO,NCMP1)
+               CALL NOCART (CART1,1,' ','NOM',0,' ', 0,LIGRMO,NCMP1)
             END IF
             IF (NCMP2.GT.0) THEN
-               CALL NOCAR2 (CART2,1,' ','NOM',0,' ', 0,LIGRMO,NCMP2)
+               CALL NOCART (CART2,1,' ','NOM',0,' ', 0,LIGRMO,NCMP2)
             END IF
 C
          ELSE
@@ -310,11 +310,11 @@ C
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
             IF (NCMP1.GT.0) THEN
-               CALL NOCAR2 (CART1,3,' ','NOM',NBMA,ZK8(JMA),0,
+               CALL NOCART (CART1,3,' ','NOM',NBMA,ZK8(JMA),0,
      +                                                    LIGRMO,NCMP1)
             ENDIF
             IF (NCMP2.GT.0) THEN
-               CALL NOCAR2 (CART2,3,' ','NOM',NBMA,ZK8(JMA),0,
+               CALL NOCART (CART2,3,' ','NOM',NBMA,ZK8(JMA),0,
      +                                                    LIGRMO,NCMP2)
             ENDIF
             CALL JEDETR ( MESMAI )

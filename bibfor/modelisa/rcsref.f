@@ -1,6 +1,6 @@
       SUBROUTINE RCSREF ( CHMAT, NOMAIL, NOMODE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
 
       IF (NBSRF.NE.0) THEN
 
-        CALL ALCAR2 ( 'G', CHSREF, NOMAIL, 'TEMP_R' )
+        CALL ALCART ( 'G', CHSREF, NOMAIL, 'TEMP_R' )
         CALL JEVEUO ( CHSREF(1:19)//'.NCMP', 'E', JNCMP )
         CALL JEVEUO ( CHSREF(1:19)//'.VALV', 'E', JVALV )
 
@@ -84,13 +84,13 @@ C
               ZR(JVALV) = SREF
               CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
               IF ( NT .NE. 0 ) THEN
-                CALL NOCAR2 ( CHSREF,1,K8B,K8B,0,K8B,IBID, ' ',1 )
+                CALL NOCART ( CHSREF,1,K8B,K8B,0,K8B,IBID, ' ',1 )
               ELSE
                 CALL RELIEM(NOMODE, NOMAIL, 'NU_MAILLE', 'AFFE', I, 2,
      +                       MOTCLE(1), TYPMCL(1), MESMAI, NBMA )
                 IF ( NBMA .NE. 0 ) THEN
                   CALL JEVEUO ( MESMAI, 'L', JMAIL )
-                  CALL NOCAR2 ( CHSREF, 3, K8B, 'NUM', NBMA, K8B,
+                  CALL NOCART ( CHSREF, 3, K8B, 'NUM', NBMA, K8B,
      +                                              ZI(JMAIL), ' ', 1 )
                   CALL JEDETR ( MESMAI )
                  ENDIF

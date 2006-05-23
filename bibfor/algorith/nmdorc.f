@@ -21,7 +21,7 @@ C TOLE CRP_20
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -271,7 +271,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
           CALL UTFINM()
           CALL UTMESS('F','NMDORC','ARRET SUR ERREURS')
         END IF
-        CALL ALCAR2('V',COMPOR,NOMA,NOMGRD)
+        CALL ALCART('V',COMPOR,NOMA,NOMGRD)
         CALL JEVEUO(COMPOR//'.NCMP','E',JNCMP)
         CALL JEVEUO(COMPOR//'.VALV','E',JVALV)
 
@@ -283,7 +283,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
         IF (CRILOC) THEN
 C CARTE DES CRITERES DE CONVERGENCES LOCAUX
           CALL GETVR8(' ','PARM_THETA',0,1,1,THETA ,IRET)
-          CALL ALCAR2('V',CARCRI,NOMA,'CARCRI')
+          CALL ALCART('V',CARCRI,NOMA,'CARCRI')
           CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JCRIT)
           CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALC)
 
@@ -502,7 +502,7 @@ C ======================================================================
      &                  TYPMCL,MESMAI,NBMA)
             IF (NBMA.NE.0) THEN
               CALL JEVEUO(MESMAI,'L',JMA)
-              CALL NOCAR2(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
+              CALL NOCART(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NCMPMA)
               IF (CRILOC) THEN
                 CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)
@@ -528,14 +528,14 @@ C la variable  ZR(JVALC+1) n'est pas utilisee
                 IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
-                CALL NOCAR2(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
+                CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NBCRIT)
               ENDIF
               CALL JEDETR(MESMAI)
             ELSE
 C ------- PAR DEFAUT C'EST TOUT='OUI'
 C            CALL GETVTX ( MOCLEF(I), 'TOUT'  , K,1,1, OUI   , NT )
-              CALL NOCAR2(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
+              CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
               IF (CRILOC) THEN
 C    LECTURE DES PARAMETRES
                 CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO  ,IRET)
@@ -560,7 +560,7 @@ C la variable  ZR(JVALC+1) n'est pas utilisee
                 IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
                 IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
-                CALL NOCAR2(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
+                CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
               ENDIF
             END IF
 

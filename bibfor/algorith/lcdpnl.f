@@ -2,7 +2,7 @@
      &                  TM,TP,TREF,DEPS,VIM,VIP,SIG,DSIDEP,PROJ,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 22/05/2006   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,14 +89,12 @@ C =====================================================================
 C --- CORRECTION NON LOCALE -------------------------------------------
 C =====================================================================
       IF (RESI) THEN
-         TRE  = EPSM(1,1)+EPSM(2,1)+EPSM(3,1)
-     &        + DEPS(1,1)+DEPS(2,1)+DEPS(3,1)
-         TRER = EPSM(1,2)+EPSM(2,2)+EPSM(3,2)
-     &        + DEPS(1,2)+DEPS(2,2)+DEPS(3,2)
+         TRE  = DEPS(1,1)+DEPS(2,1)+DEPS(3,1)
+         TRER = DEPS(1,2)+DEPS(2,2)+DEPS(3,2)
 
          DO 100 I = 1,NDIMSI
             SIG(I) = SIG(I) + LAMBDA*(TRE - TRER)*KRON(I)
-     &           + DEUXMU*(EPSM(I,1)+DEPS(I,1)-EPSM(I,2)-DEPS(I,2))
+     &                                  + DEUXMU*(DEPS(I,1)-DEPS(I,2))
  100     CONTINUE
       ENDIF
 
