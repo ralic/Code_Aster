@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,14 +144,12 @@ GCP=CALC_G(      MODELE=MOCP,
 K1K2CP=CALC_G(      MODELE=MOCP,
                             DEPL=UCP,
                             THETA=_F(
-                                 MODULE = 1.,
-                                 R_INF = 10.,
-                                 R_SUP = 20.,
-                                 DIRECTION=( 8.6602540379E-01, 0.5, 0.,),
+                                 THETA = THETACP,
                                  FOND_FISS=FOND,),
                             EXCIT=_F( CHARGE = CHCP),
                             CHAM_MATER=CM,
                             OPTION='CALC_K_G')
+
 
 #---------------------------------------------------------------------
 #          MODELISATION ET CALCUL EN DEFORMATIONS PLANES
@@ -193,11 +191,8 @@ K1K2DP=CALC_G(    MODELE=MODP,
                           DEPL=UDP,
                           EXCIT=_F( CHARGE = CHDP),
                           THETA=_F(
-                                 MODULE = 1.,
-                                 R_INF = 10.,
-                                 R_SUP = 20.,
-                                 DIRECTION=( 8.6602540379E-01, 0.5, 0.,), 
-                                 FOND_FISS=FOND),
+                                THETA = THETADP,
+                                FOND_FISS=FOND),
                           CHAM_MATER=CM,
                           OPTION='CALC_K_G')
 

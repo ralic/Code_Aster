@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF CALCULEL  DATE 29/05/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C RESPONSABLE                            VABHHTS J.PELLET
+C TOLE CRP_20
       IMPLICIT NONE
       CHARACTER*(*) CESZ,CELZ,BASEZ,LIGREZ,OPTINI,NOMPAZ
       CHARACTER*3 PROL0
@@ -76,7 +77,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER ICMP,NEC,JCESK,JCESD,JCESV,JCESL,GD
-      INTEGER IRET,IBID,JNUCMP,JNUCM1,JCESC
+      INTEGER IRET,IBID,JNUCM2,JNUCM1,JCESC
       INTEGER NCMPMX,NCMP1,JCMPGD,ICMP1,K,IOPT,IADG
       INTEGER JCELV,INDIK8,NEQ,NBVCES,JCOPI,NBVCOP
       INTEGER IGR,IEL,IALIEL,ILLIEL,JCELD,NBGR,IMOLO,JMOLO
@@ -144,12 +145,12 @@ C        COMPOSANTES DE CES ONT ETE RECOPIEES
       CALL DISMOI('F','NUM_GD',NOMGD,'GRANDEUR',GD,KBID,IBID)
 
 
-C     1- REMPLISSAGE DE .TMP_NUCMP ET .TMP_NUCM1 (SI NOMGD /='VARI_R'):
+C     1- REMPLISSAGE DE .NUCM2 ET .NUCM1 (SI NOMGD /='VARI_R'):
 C     -----------------------------------------------------------------
       CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMPGD)
       IF (NOMGD.NE.'VARI_R') THEN
-        CALL WKVECT('&&CESCEL.TMP_NUCMP','V V I',NCMPMX,JNUCMP)
-        CALL WKVECT('&&CESCEL.TMP_NUCM1','V V I',NCMP1,JNUCM1)
+        CALL WKVECT('&&CESCEL.NUCM1','V V I',NCMP1,JNUCM1)
+        CALL WKVECT('&&CESCEL.NUCM2','V V I',NCMPMX,JNUCM2)
 
         DO 10,ICMP1 = 1,NCMP1
           NOMCMP = ZK8(JCESC-1+ICMP1)
@@ -157,10 +158,32 @@ C     -----------------------------------------------------------------
           IF (ICMP.EQ.0) CALL UTMESS('F','CESCEL','LA CMP:'//NOMCMP//
      &                               ' N''APPARTIENT PAS A LA GRANDEUR:'
      &                               //NOMGD)
-          ZI(JNUCMP-1+ICMP) = ICMP1
+          ZI(JNUCM2-1+ICMP) = ICMP1
           ZI(JNUCM1-1+ICMP1) = ICMP
    10   CONTINUE
       END IF
+
+
+C     -- ALLOCATION ET REMPLISSAGE DE 2 PETITS VECTEURS D'INDIRECTION
+C       ENTRE LES CMPS (SI VARI_R) :
+C     ----------------------------------------------------------------
+      IF (NOMGD.EQ.'VARI_R') THEN
+        NCMPMX=0
+        DO 11,ICMP1 = 1,NCMP1
+          NOMCMP = ZK8(JCESC-1+ICMP1)
+          READ (NOMCMP(2:8),'(I7)') ICMP
+          NCMPMX=MAX(NCMPMX,ICMP)
+ 11     CONTINUE
+        CALL ASSERT(NCMPMX.GT.0)
+        CALL WKVECT('&&CESCEL.NUCM1','V V I',NCMP1,JNUCM1)
+        CALL WKVECT('&&CESCEL.NUCM2','V V I',NCMPMX,JNUCM2)
+        DO 12,ICMP1 = 1,NCMP1
+          NOMCMP = ZK8(JCESC-1+ICMP1)
+          READ (NOMCMP(2:8),'(I7)') ICMP
+          ZI(JNUCM2-1+ICMP)= ICMP1
+          ZI(JNUCM1-1+ICMP1)= ICMP
+ 12     CONTINUE
+      ENDIF
 
 
 
@@ -202,27 +225,30 @@ C     ----------------------------------------------
       CALL JEVEUO(DCEL//'.CESV','E',JDCELV)
       CALL JEVEUO(DCEL//'.CESL','E',JDCELL)
       DO 60,IMA = 1,NBMA
+C       -- NBRE DE SOUS-POINTS :
         CALL CESEXI('C',JDCELD,JDCELL,IMA,1,1,1,IAD)
-        IF (IAD.GE.0) CALL UTMESS('F','CESCEL','1')
+        CALL ASSERT(IAD.LT.0)
         ZL(JDCELL-1-IAD) = .TRUE.
         ZI(JDCELV-1-IAD) = ZI(JCESD-1+5+4* (IMA-1)+2)
 
+C       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
         CALL CESEXI('C',JDCELD,JDCELL,IMA,1,1,2,IAD)
-        IF (IAD.GE.0) CALL UTMESS('F','CESCEL','2')
+        CALL ASSERT(IAD.LT.0)
         ZL(JDCELL-1-IAD) = .TRUE.
         IF (NOMGD.EQ.'VARI_R') THEN
           NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
           NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
           NBCMP = ZI(JCESD-1+5+4* (IMA-1)+3)
           ICMPMX = 0
-          DO 50,IPT = 1,NBPT
-            DO 40,ISP = 1,NBSP
-              DO 30,ICMP = 1,NBCMP
-                CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD2)
+          DO 30,ICMP1 = 1,NBCMP
+            ICMP=ZI(JNUCM1-1+ICMP1)
+            DO 50,IPT = 1,NBPT
+              DO 40,ISP = 1,NBSP
+                CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP1,IAD2)
                 IF (IAD2.GT.0) ICMPMX = ICMP
-   30         CONTINUE
-   40       CONTINUE
-   50     CONTINUE
+   40         CONTINUE
+   50       CONTINUE
+   30     CONTINUE
           ZI(JDCELV-1-IAD) = ICMPMX
         ELSE
           ZI(JDCELV-1-IAD) = 0
@@ -304,7 +330,7 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
             DO 130,ICMP = 1,NCMPMX
               IF (EXISDG(ZI(IADG),ICMP)) THEN
                 ICO = ICO + 1
-                ICMP1 = ZI(JNUCMP-1+ICMP)
+                ICMP1 = ZI(JNUCM2-1+ICMP)
                 IF (ICMP1.EQ.0) THEN
                   IF (PROL) THEN
                     GO TO 130
@@ -434,8 +460,9 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
             DO 180,IPT = 1,NBPT
               DO 170,ISPT = 1,NBSPT
                 DO 160,ICMP = 1,NCDYN
-
-                  CALL CESEXI('C',JCESD,JCESL,NUMA,IPT,ISPT,ICMP,IAD)
+                  ICMP1 = ZI(JNUCM2-1+ICMP)
+                  IF (ICMP1.EQ.0) GOTO 160
+                  CALL CESEXI('C',JCESD,JCESL,NUMA,IPT,ISPT,ICMP1,IAD)
                   IF (IAD.LE.0) THEN
                     IF (PROL) THEN
                       GO TO 160
@@ -484,8 +511,8 @@ C     ------------------------------------------------------
 
       CALL DETRSD('CHAM_ELEM_S',DCEL)
       CALL JEDETR('&&CESCEL.COPI')
-      CALL JEDETR('&&CESCEL.TMP_NUCMP')
-      CALL JEDETR('&&CESCEL.TMP_NUCM1')
+      CALL JEDETR('&&CESCEL.NUCM1')
+      CALL JEDETR('&&CESCEL.NUCM2')
       CALL JEDETR('&&CESCEL.LONG_PT')
       CALL JEDETR('&&CESCEL.LONG_PT_CUMU')
 

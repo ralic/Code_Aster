@@ -1,0 +1,532 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 29/05/2006 - 16:41:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009628 DU 2006-03-31 07:23:05
+TYPE anomalie concernant Eficas (VERSION 1.10)
+TITRE
+   Indentation Eficas
+FONCTIONNALITE
+   Les problemes de presentation du fichier source (indentation peu claire) ont ete
+   corriges
+   en v1.10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009607 DU 2006-03-28 15:26:45
+TYPE anomalie concernant Eficas (VERSION 1.9)
+TITRE
+   Impossible de sauver un fichier dans EFICAS
+FONCTIONNALITE
+   Des commentaires du genre
+   >>
+   H = 10. #valeur Y en haut de la fondation;
+   <<
+   posent problemes a EFICAS.
+   Ils ne peuvent pas etre crees dans EFICAS et ne peuvent pas etre sauves lorsqu'ils
+   ont ete
+   ecrits dans un editeur.
+   Pour eviter des conflits, on interdit a EFICAS d'ouvrir les fichiers contenant ce genre
+   de
+   syntaxe, tant que l'utilisateur ne les a pas formattes selon les standards d'EFICAS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009605 DU 2006-03-28 08:59:56
+TYPE anomalie concernant Eficas (VERSION 1.10)
+TITRE
+   Eficas Validateurs et parametres
+FONCTIONNALITE
+   La gestion des parametres a ete revue dans la version 1.10 d'EFICAS.
+   Les validateurs des mots clefs verifient maintenant que les valeurs des parametres sont
+   licites.
+   On peut utiliser sans risques parametres et mots clefs derriere les mots clefs.
+   
+   ps : pour les question d'ergonomie (taille des fontes, hauteur de la zone de message), cf
+   fiche 9289.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009591 DU 2006-03-23 15:35:54
+TYPE anomalie concernant Eficas (VERSION 1.9)
+TITRE
+   Eficas et sauvegarde de fichier
+FONCTIONNALITE
+   erreur non reproductible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009287 DU 2005-12-20 08:53:04
+TYPE anomalie concernant Eficas (VERSION 1.9)
+TITRE
+   Eficas : filtre a l'ouverture de fichiers poursuite
+FONCTIONNALITE
+   Eficas donne maintenant la possiblite, dans sa boite de selection, de  voir :
+   - soit tous les fichiers de commande (*.comm)
+   - soit tous les fichiers (*)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009177 DU 2005-11-08 00:00:00
+TYPE anomalie concernant Eficas (VERSION 1.9)
+TITRE
+   eficas 1.8   filtre des commandes
+FONCTIONNALITE
+   Le pb de tkinter qui bloquait le filtre de choix de commandes sur certaines versions de
+   Linux a ete contourne.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   recette EFICAS
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008822 DU 2005-06-28 00:00:00
+TYPE anomalie concernant Eficas (VERSION 1.9)
+TITRE
+   Bug Eficas
+FONCTIONNALITE
+   L'utilisation du surligne dans les listes de valeurs a selectionner pouvait porter a
+   confusion.
+   En effet, le surligne etait utilise pour indiquer aussi bien une valeur selectionnee
+   que
+   la position d'entree d'une nouvelle valeur. L'utilisateur pouvait donc croire qu'une
+   valeur etait selectionnee alors qu'elle ne l'etait pas.
+   Il se demandait alors pourquoi il n'agissait pas sur elle.
+   En selectionnant systematiquement les valeurs surlignees, on evite la confusion.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009289 DU 2005-12-20 09:26:10
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   eficas : largeur de la zone de message
+FONCTIONNALITE
+   la zone de message dans EFICAS a ete elargie pour la rendre plus visible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009015 DU 2005-09-19 00:00:00
+TYPE evolution concernant Eficas (VERSION 7.5)
+TITRE
+   eficas et saisie des fonctions
+FONCTIONNALITE
+   Pour rendre le fichier de commande "source" plus lisible, EFICAS ecrit les fonctions en
+   colonnes (deux pour les fonctions reelles et trois pour les focntion complexes).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008805 DU 2005-06-24 00:00:00
+TYPE evolution concernant Eficas (VERSION 8.1)
+TITRE
+   EFICAS operations sur des parametres derriere un MCSIMP
+FONCTIONNALITE
+   EFICAS 1.10 accepte les operations sur les parametres derriere un mot-clef.
+   Par exemple VALE=(P1+2.*P2)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008804 DU 2005-06-24 00:00:00
+TYPE evolution concernant Eficas (VERSION 8.1)
+TITRE
+   EFICAS evaluation des reels sous forme de formule derriere un mot clef
+FONCTIONNALITE
+   EFICAS n'evalue plus les fonctions derriere les mots clefs mais conserve l'expression de
+   la formule.
+   
+   Par exemple VALE=DEPLSIM(.0) n'est plus transforme en VALE=.8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008357 DU 2005-01-06 00:00:00
+TYPE evolution concernant Eficas (VERSION 8.0)
+TITRE
+   EFICAS propositions d'amelioration pour l'ergonomie
+FONCTIONNALITE
+   Les points suivans d'amelioration d'ergonomie ont ete realises :
+   o Valider une commande surlignee par un simple retour chariot
+   o Pouvoir creer un fichier include
+   o Personnaliser les couleurs de l'interface
+   o Inclure un bouton d'ajout d'une occurrence d'un mot clef qui peut etre repete
+   o Ouvrir automatiquement dans un autre onglet le fichier poursuivi
+   o Rendre utilisable la touche "entree" du pave numerique
+   o Pouvoir changer la selection dans une fenetre par les fleches du clavier
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 29/05/2006 - 18:43:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009796 DU 2006-05-24 07:42:12
+TYPE express concernant Code_Aster (VERSION 8.2)
+TITRE
+   CALC_G : options CALC_K_G/K_G_MODA
+FONCTIONNALITE
+   Depuis la 8.2.20, un calcul de K en 2D (options CALC_K_G et K_G_MODA) a partir d'un champ
+   theta calcule precedemment par l'operateur CALC_THETA n'etait plus possible... alors
+   qu'avec l'operateur CALC_G_THETA_T c'etait la seule possibilite !
+   On retablit cette possibilite. Pour tous calculs 2D, l'utilisateur a donc le choix entre
+   fournir un champ theta ou en demander le calcul dans CALC_G.
+   
+   Routine modifiee : op0100 uniquement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03
+VALIDATION
+   hplp101a,sdls114a,sslp103a,sslp310a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009649 DU 2006-04-06 06:26:36
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   test sdls114b en version NEW8.2.16 sous linux
+FONCTIONNALITE
+   Correction de deux anomalies :
+   
+   * mauvais dimensionnement du vecteur GKTHI dans cakgmo (->plantage sur clpaster en
+   nodebug)
+   
+   - plusieurs variables non initialisees dans gcour3 (mais detruites !) (->plantage sur
+   clpaster en debgjeveux)
+   On note au passage que l'ensemble des tests calculant K en 3D (sdls114b, hplv103a/b,
+   hplv103b, ssnv185...) plantaient en mode debgjeveux (et sans doute depuis longtemps !)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls114b, hplv103a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009799 DU 2006-05-29 09:02:16
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   sslp101f sous Calibre (clp50a8)
+FONCTIONNALITE
+   Plante uniquement en nodebug et pas souvent !
+   
+   Remontee d'erreur :
+   #0  s_copy (a=0xbfff8f80 "________GLOBALE ________$$ORIG  \fÛÿ¿PÙÿ¿\bÛÿ¿\001",
+   b=0x9da7bb20 <Address 0x9da7bb20 out of bounds>, la=-1649951936, lb=32)
+   at ../../../../gcc-3.2.3/libf2c/libF77/s_copy.c:26
+   26      ../../../../gcc-3.2.3/libf2c/libF77/s_copy.c: No such file or directory.
+   in ../../../../gcc-3.2.3/libf2c/libF77/s_copy.c
+   (gdb) where
+   #0  s_copy (a=0xbfff8f80 "________GLOBALE ________$$ORIG  \fÛÿ¿PÙÿ¿\bÛÿ¿\001",
+   b=0x9da7bb20 <Address 0x9da7bb20 out of bounds>, la=-1649951936, lb=32)
+   at ../../../../gcc-3.2.3/libf2c/libF77/s_copy.c:26
+   #1  0x080b6f9c in jjcren_ ()
+   #2  0x080bbcbc in jjvern_ ()
+   #3  0x080a6b02 in jedetr_ ()
+   #4  0x0811d2b9 in assde1_ ()
+   #5  0x080f1b6d in detrsd_ ()
+   #6  0x086eeca5 in mecalg_ ()
+   
+   En debug, ca passe. Des qu'on surcharge, le test passe aussi. Ca ressemble beaucoup
+   a la
+   fiche 9796 : chaines non initialisees dans op0100 (qui appelle mecalg).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslp101f
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 29/05/2006 - 15:29:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009800 DU 2006-05-29 09:03:41
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   yyyy106b en erreur fatale en 8.2.22
+FONCTIONNALITE
+   Dans les commentaires du test, on voit qu'effectivement, les groupes MC4_PLA et MC2_COR
+   sont en "sandwich" entre deux volumes :
+   
+   # LE GROUPE MC4_PLA  EST COMPRIS ENTRE DEUX VOLUMES : E_JOI ET E_PLA
+   # MODI_MAILLAGE NE SAIT PAS TRAITER CE CAS
+   # ON CREE DONC UN MODELE SPECIAL SANS E_JOI POUR MODI_MAILLAGE
+   
+   Maintenant que MODI_MAILLAGE traite toutes les mailles du maillage, ceal ne peut plus
+   passer de la sorte. La suggestion de Lionel etait bonne : il suffit alors d'utiliser
+   ORIE_NORM_COQUE, qui ne cherche pas a s'appuyer sur des mailles volumiques, mais assure
+   la
+   continuite des normales sur chaque groupe de mailles surfaciques.
+   
+   Les tests YYYY106A et YYYY106B sont ainsi modifies et sont OK sur Alpha et Claut606
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   yyyy106
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mjbhhpe      FLEJOU J.L.            DATE 29/05/2006 - 17:00:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009786 DU 2006-05-19 13:43:12
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Loi IRRAD3M
+FONCTIONNALITE
+   Les modifications precedemment proposees sont realisees.
+   
+   Dichotomie
+   ----------
+   Dans la plage d'irradiation et de temperature il existe toujours un n dans [ Eu-pe ,
+   infini] qui annule la fonction.
+   Il peut exister des cas, notamment dans les tests ou la fonction seuil est rejetee a
+   l'infini pour pouvoir tester certaine partie du comportement. Dans ce cas pour n dans [
+   Eu-pe , infini] la fonction peut soit etre toujours positive ou negative, ce cas est
+   traite comme indique dans la note HT-26/05/045. Il n'y a pas de recherche par
+   dichotomie.
+   
+   
+   Catalogue
+   ---------
+   Quelques modifications en relation avec les remarques precedentes
+   |   modif : R est maintenant une fonction
+   |   ajout : ZETA est une fonction. Si elle n'est pas presente elle vaut 1.
+   
+   
+   Cas Tests
+   ---------
+   SSNA117b : la reference est modifiee pour etre comparee a la solution analytique.
+   SSNA117C : la reference est modifiee pour etre comparee a la solution analytique.
+   SSNA117A : le cas test est en fait 0D. La comparaison est faite par rapport a une
+   methode
+   explicite de Runge kutta d'ordre 4.
+   SSNA118A, SSNP132A, SSNV190A : reference AUTRE_ASTER, avec une liste de chargement plus
+   fine. Dans l'attente d'une nouvelle validation par un outil exterieur.
+   
+   Les Docs qui sont encore dans le circuit de validation seront modifiees en consequence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.2.9
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.01.117,V6.01.118,V6.03.132,V6.04.190
+VALIDATION
+   passage cas tests, solutions analytiques
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 29/05/2006 - 11:30:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009787 DU 2006-05-19 15:59:59
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Anomalie dans l'operation 'ASSE' de l'operateur 'CREA_CHAMP'
+FONCTIONNALITE
+   Correction d'une anomalie dans la routine CESCEL pouvant provoquer des
+   resultats faux dans le cas suivant :
+   
+   
+   
+   SIG_0=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
+   PROL_ZERO='OUI', MODELE=MODELE2,
+   ASSE=_F( TOUT = 'OUI',  CHAM_GD = CHNEUTR1,
+   NOM_CMP =       ('X1', 'X2', ),
+   NOM_CMP_RESU =  ('V3', 'V5', )))
+   
+   
+   
+   
+   Le probleme ne pouvait se produire que si :
+   - OPERATION='ASSE'
+   - TYPE_CHAM='ELxx_VARI_R'
+   - PROL_ZERO='OUI'
+   - NOM_CMP_RESU =  ('V3', 'V5') : TOUTES les CMPS ('V1', ..., 'V5') ne
+   sont pas produites.
+   
+   Le consequence de ce bug etait un  decalage des "CMPS".
+   
+   
+   Au lieu d'obtenir :
+   V1   V2   V3   V4   V5
+   0    0    x3   0    x5
+   
+   
+   On obtenait :
+   V1   V2   V3   V4   V5
+   x3   x5   0    0    0
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 6.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 6.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de l'etude associee
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009793 DU 2006-05-23 14:48:22
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   test feti007a NOOK sur clp50a8
+FONCTIONNALITE
+   test feti007a NOOK sur clp50a8 en version 8.2.21 :
+   ----------------------------------------------------
+   
+   J'augmente legerement la tolerance sur le TEST_RESU / GROUP_NO='TEST4' /
+   NOM_CMP='DY':
+   147c147
+   <           CRITERE = 'RELATIF', PRECISION = 1.E-3,
+   ---
+   >           CRITERE = 'RELATIF', PRECISION = 1.5E-3,
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests incrimine
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF feti007a                      vabhhts J.PELLET           179      2      2
+ CASTEST MODIF hplp101a                      galenne E.GALENNE          443      5     21
+ CASTEST MODIF sdls114a                      galenne E.GALENNE          399      3      7
+ CASTEST MODIF sslp103a                      galenne E.GALENNE          260      4      9
+ CASTEST MODIF sslp310a                      galenne E.GALENNE         1297     35    171
+ CASTEST MODIF ssna117a                      mjbhhpe J.L.FLEJOU         236     18     19
+ CASTEST MODIF ssna117b                      mjbhhpe J.L.FLEJOU         235     36     21
+ CASTEST MODIF ssna117c                      mjbhhpe J.L.FLEJOU         167     33     27
+ CASTEST MODIF ssna118a                      mjbhhpe J.L.FLEJOU         428     64     61
+ CASTEST MODIF ssnp132a                      mjbhhpe J.L.FLEJOU         337     69     61
+ CASTEST MODIF ssnv190a                      mjbhhpe J.L.FLEJOU         341     52     45
+ CASTEST MODIF yyyy106a                      jmbhh01 J.M.PROIX          683    504    722
+ CASTEST MODIF yyyy106b                      jmbhh01 J.M.PROIX          660    490    568
+CATALOGU SUPPR commande/calc_g_local_t       galenne E.GALENNE          138      0    138
+CATALOGU SUPPR commande/calc_g_theta_t       galenne E.GALENNE          117      0    117
+CATALOPY MODIF commande/calc_g               galenne E.GALENNE          140      5      5
+CATALOPY MODIF commande/defi_materiau        mjbhhpe J.L.FLEJOU        2589      9      8
+ FORTRAN MODIF algorith/cakgmo               galenne E.GALENNE          299      2      2
+ FORTRAN MODIF algorith/gcour3               galenne E.GALENNE          260      9     27
+ FORTRAN MODIF algorith/irrcvg               mjbhhpe J.L.FLEJOU         112     35     21
+ FORTRAN MODIF algorith/irrcvx               mjbhhpe J.L.FLEJOU          83     38     22
+ FORTRAN MODIF algorith/irrini               mjbhhpe J.L.FLEJOU         175     27     18
+ FORTRAN MODIF algorith/irrjac               mjbhhpe J.L.FLEJOU         310     68     90
+ FORTRAN MODIF algorith/irrmat               mjbhhpe J.L.FLEJOU         397    264    206
+ FORTRAN MODIF algorith/irrres               mjbhhpe J.L.FLEJOU         178     80     59
+ FORTRAN MODIF calculel/cescel               vabhhts J.PELLET           520     43     16
+ FORTRAN MODIF calculel/op0100               galenne E.GALENNE         1074     10      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   25       11802      1905    2213      -308
+ SUPPR :    2         255               255      -255
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   27       12057      1905    2468      -563 

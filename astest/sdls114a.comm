@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,12 +332,8 @@ GLMO3=CALC_G(MODELE=MO,
              FREQ = 3.46915E+03,
              CRITERE='RELATIF',
              PRECISION=1.E-3,
-             THETA=_F(FOND_FISS=FF1,
-                      MODULE=1.0,
-                      R_INF=5.E-6,
-                      R_SUP=5.E-5,
-                      DIRECTION = (-1.0, 0.0, 0.0),),
-                    );
+             THETA=_F(THETA=THET1,
+                      FOND_FISS = FF1),);
 
 TEST_TABLE(TABLE=GLMO3,
               NOM_PARA='K1',

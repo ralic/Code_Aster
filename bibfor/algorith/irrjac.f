@@ -7,7 +7,7 @@
       INTEGER       NMAT,NMOD,KPG,KSP
       REAL*8        MATERF(NMAT,2),YF(*),DY(*),DRDY(NMOD,NMOD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/05/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C      NMOD   :  DIMENSION DECLAREE DRDY
 C  OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C  ----------------------------------------------------------------
       REAL*8          FKOOH(6,6),ID(6),K,N,P0,AI0,IRRAD,IRRAF,SIGF(6)
-      REAL*8          ETAIS,PF,DP,DPI,DPHI,S,DEV(6),DFDS(6)
+      REAL*8          ETAIS,PF,DP,DPI,DPHI,S,DEV(6),DFDS(6),ZETA
       REAL*8          DRSDS(6,6),DRSDP(6),DRSDE(6),DRSDI(6),DRSDG(6)
       REAL*8          DRPDS(6),DRPDP,DRPDE,DRPDI,DRPDG
       REAL*8          DREDS(6),DREDP,DREDE,DREDI,DREDG
@@ -59,29 +59,43 @@ C  ----------------------------------------------------------------
       REAL*8          DRSDE3(6),DRPDE3,DREDE3,DRIDE3,DRGDE3
       REAL*8          DQDS(4),DQDP,DQDE,DQDI,DQDG,DQDE3,R8PREM
       REAL*8          LCNRTS,SR,DDFDDS(6,6),ETAIF,DEDE3(6),HOOKF(6,6)
+      REAL*8          PK,KAPPA,R02,PE,PENPE,SPE,DPHI2
       INTEGER         NDT,NDI,IRET,I,J
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
       DATA   ID       / 1.D0,  1.D0,  1.D0,  0.D0,  0.D0,  0.D0/
-      DATA DEDE3      / 0.D0  , 0.D0  , -1.D0  , 0.D0 , 0.D0 , 0.D0/
+      DATA DEDE3      / 0.D0,  0.D0, -1.D0,  0.D0,  0.D0,  0.D0/
 
       CALL LCOPIL ( 'ISOTROPE' , MOD , MATERF(1,1) , FKOOH )
       CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
       CALL RCVARC ('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
       CALL RCVARC ('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
+      DPHI  = IRRAF-IRRAD
 
+C     RECUPERATION DES INCREMENTS DES VARIABLES INTERNES
+      DP    = DY(NDT+1)
+      DPI   = DY(NDT+3)
+
+C     RECUPERATION DES VARIABLES INTERNES A t+
       CALL LCEQVN ( NDT , YF(1), SIGF )
-      DP=DY(NDT+1)
-      PF=YF(NDT+1)
-      ETAIF=YF(NDT+2)
-      DPI=DY(NDT+3)
-      DPHI=IRRAF-IRRAD
-      K=MATERF(1,2)
-      N=MATERF(2,2)
-      P0=MATERF(3,2)
-      AI0=MATERF(4,2)
-      ETAIS=MATERF(5,2)
+      PF    = YF(NDT+1)
+      ETAIF = YF(NDT+2)
+
+C     CARACTERISTIQUES MATERIAUX
+      AI0   = MATERF(4,2)
+      ETAIS = MATERF(5,2)
+      K     = MATERF(7,2)
+      N     = MATERF(8,2)
+      P0    = MATERF(9,2)
+      KAPPA = MATERF(10,2)
+      R02   = MATERF(11,2)
+      ZETA  = MATERF(12,2)
+      PENPE = MATERF(13,2)
+      PK    = MATERF(14,2)
+      PE    = MATERF(15,2)
+      SPE   = MATERF(16,2)
+
       CALL LCDEVI ( SIGF , DEV )
       S =  LCNRTS ( DEV )
       IF ( S.EQ.0.D0) THEN
@@ -90,149 +104,123 @@ C     ----------------------------------------------------------------
         CALL LCPRSV ( 1.5D0 / S , DEV , DFDS )
       ENDIF
    
-      IF ( ((PF+P0).EQ.0.D0).AND.(N.EQ.0.D0)) THEN
-        SR = K
-      ELSE
-        SR = K*(PF+P0)**N
-      ENDIF
 C - DRSDS
-        
-      CALL IRRFSS  (SIGF,DDFDDS)
-      CALL LCPRSM ((DP+DPI),DDFDDS,DRSDS)
-      CALL LCSOMA (FKOOH,DRSDS,DRSDS)
-
-
+      CALL IRRFSS(SIGF,DDFDDS)
+      CALL LCPRSM((DP+DPI),DDFDDS,DRSDS)
+      CALL LCSOMA(FKOOH,DRSDS,DRSDS)
 C - DRSDP
-      
       CALL LCEQVN(NDT,DFDS,DRSDP)
-
 C - DRSDE
-      
       CALL LCINVE(0.D0,DRSDE)
-      
 C - DRSDI
-      IF ( ETAIF.GT.ETAIS) THEN
+      IF (ETAIF.GT.ETAIS) THEN
         CALL LCEQVN(NDT,DFDS,DRSDI)
       ELSE
         CALL LCINVE(0.D0,DRSDI)
       ENDIF
 C - DRSDG
-
       CALL LCEQVN(NDT,ID,DRSDG)
 
+C - LOI DE COMPORTEMENT
+      IF      ( PF .LT. PK ) THEN
+         SR = KAPPA*R02
+      ELSE IF ( PF .LT. PE ) THEN
+         SR = PENPE*(PF - PE) + SPE
+      ELSE
+         SR = K*((PF + P0)**N)
+      ENDIF
 C - DRPDS
-
       IF (((S.GE.SR).AND.(DP.GE.0.D0)).OR.(DP.GT.R8PREM())) THEN
         CALL LCEQVN(NDT,DFDS,DRPDS)
-        CALL LCPRSV((1.D0/HOOKF(1,1)),DFDS,DRPDS)
+        CALL LCPRSV((1.D0/HOOKF(1,1)),DRPDS,DRPDS)
       ELSE
         CALL LCINVE(0.D0,DRPDS)
       ENDIF
-
 C - DRPDP
       IF (((S.GE.SR).AND.(DP.GE.0.D0)).OR.(DP.GT.R8PREM())) THEN
-        IF ( N.EQ.0.D0) THEN
-          DRPDP=0.D0
-        ELSE
-          DRPDP=(-N*K*(PF+P0)**(N-1.D0))/HOOKF(1,1)
-        ENDIF
-      ELSE 
-        DRPDP=1.D0
+         IF      ( PF .LT. PK ) THEN
+            DRPDP = 0.D0
+         ELSE IF ( PF .LT. PE ) THEN
+            DRPDP = -PENPE/HOOKF(1,1)
+         ELSE
+            DRPDP = (-N*K*((PF+P0)**(N-1.D0)))/HOOKF(1,1)
+         ENDIF
+      ELSE
+        DRPDP = 1.0D0
       ENDIF
-
 C - DRPDE
-      
       DRPDE=0.D0
-
 C - DRPDI
-      
       DRPDI=0.D0
-      
 C - DRPDG
-
       DRPDG=0.D0
 
 C - DREDS
-
-      CALL LCPRSV ((-DPHI/HOOKF(1,1)),DFDS,DREDS)
-
+      CALL LCPRSV ((-DPHI*ZETA/HOOKF(1,1)),DFDS,DREDS)
 C - DREDP
-
       DREDP=0.D0
-
 C - DREDE
-
       DREDE=1.D0/HOOKF(1,1)
-
 C - DREDI
-
       DREDI=0.D0
-
 C - DREDG
-
       DREDG=0.D0
 
 C - DRIDS
+C      IF ( ETAIF .GT. ETAIS ) THEN
+C        CALL LCPRSV((-DPHI*AI0*ZETA),DFDS,DRIDS)
+C      ELSE
+C        CALL LCINVE(0.D0,DRIDS)
+C      ENDIF
+C      IF ( DPHI .GT. 0.0 ) THEN
+C         IF ( ETAIF .GT. ETAIS ) THEN
+C            IF ( ETAID .GT. ETAIS ) THEN
+C               CALL LCPRSV((-DPHI*AI0*ZETA),DFDS,DRIDS)
+C            ELSE
+C               DPHI = ETAIF - ETAIS
+C               CALL LCPRSV((-DPHI*AI0),DFDS,DRIDS)
+C            ENDIF
+C         ELSE
+C            CALL LCINVE(0.D0,DRIDS)
+C         ENDIF
+C      ELSE
+C         CALL LCINVE(0.D0,DRIDS)
+C      ENDIF
 
-      IF (ETAIF.GT.ETAIS) THEN
-        CALL LCPRSV((-DPHI*AI0),DFDS,DRIDS)
-      ELSE
-        CALL LCINVE(0.D0,DRIDS)
-      ENDIF
-
+      CALL LCINVE(0.D0,DRIDS)
 C - DRIDP
       DRIDP=0.D0
-
 C - DRIDE
-      DRIDE=0.D0
-
+      DRIDE= -AI0
 C - DRIDI
       DRIDI=1.D0
-      
 C - DRIDG
       DRIDG=0.D0
 
 C - DRGDS
       CALL LCINVE(0.D0,DRGDS)
-
 C - DRGDP
       DRGDP=0.D0
-
 C - DRGDE
       DRGDE=0.D0
-
 C - DRGDI
       DRGDI=0.D0
-
 C - DRGDG
       DRGDG=1.D0
 
 C - CONTRAINTES PLANES
-
       IF( MOD(1:6).EQ.'C_PLAN' ) THEN
-
 C - DRSDE3
-
         CALL LCEQVN(NDT,DEDE3,DRSDE3)
-
 C - DRPDE3
-        
         DRPDE3=0.D0
-
 C - DREDE3
-
         DREDE3=0.D0
-
 C - DRIDE3
-
         DRIDE3=0.D0
-
 C - DRGDE3
-
         DRGDE3=0.D0
-
 C - DQDS
-
         DQDS(1)= (-(DP+DPI)*(HOOKF(3,3)*DDFDDS(3,1) + 
      &                HOOKF(3,1)*DDFDDS(1,1) +
      &                HOOKF(3,2)*DDFDDS(2,1) +
@@ -249,30 +237,20 @@ C - DQDS
      &                HOOKF(3,1)*DDFDDS(1,4) +
      &                HOOKF(3,2)*DDFDDS(2,4) +
      &                HOOKF(3,4)*DDFDDS(4,4)))/HOOKF(1,1)
-
 C - DQDP
         DQDP = (- HOOKF(3,1)*DFDS(1) - HOOKF(3,2)*DFDS(2)
      &        - HOOKF(3,3)*DFDS(3) - HOOKF(3,4)*DFDS(4))/HOOKF(1,1)
-
 C - DQDE
-      
         DQDE=0.D0
-
 C - DQDI
-      
         DQDI = (- HOOKF(3,1)*DFDS(1) - HOOKF(3,2)*DFDS(2)
      &         - HOOKF(3,3)*DFDS(3) - HOOKF(3,4)*DFDS(4))/HOOKF(1,1)
-
-
 C - DQDG
-      
         DQDG=-HOOKF(3,3)/HOOKF(1,1)
-
 C - DQDE3
-      
         DQDE3=HOOKF(3,3)/HOOKF(1,1)
-
       ENDIF
+
 C - ASSEMBLAGE
 
 C - DRDY(T+DT)  =  DRSDS  DRSDP  DRSDE  DRSDI DRSDG (DRSDE3) 

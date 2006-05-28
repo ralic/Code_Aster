@@ -1,6 +1,6 @@
       SUBROUTINE OP0100(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -277,6 +277,15 @@ C------------------------------------------
            ENDIF
          ENDIF
       ENDIF
+      IF(DIME.EQ.2)THEN
+        IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA')THEN
+          CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,K8B,N1)
+          IF(N1.EQ.0)THEN
+             CALL UTMESS('F',NOMPRO,'MOT CLE FOND_FISS'//
+     &          ' OBLIGATOIRE POUR L OPTION '//OPTION)
+          ENDIF
+        ENDIF
+      ENDIF
 C
 C----------------
 C 2.7. ==> THETA
@@ -290,10 +299,6 @@ C----------------
       IF(IRET.NE.0.AND.OPTION.EQ.'G_LAGR'.AND.TROIDL)THEN
         CALL UTMESS('F',NOMPRO,'POUR L OPTION '//OPTION//'(3D LOCAL)'//
      &     ' UTILISER LE MOT CLE THETA_LAGR')
-      ENDIF
-      IF(IRET.NE.0.AND.OPTION.EQ.'CALC_K_G'.AND.DIME.EQ.2)THEN
-        CALL UTMESS('F',NOMPRO,'POUR L OPTION '//OPTION//', THETA'//
-     &     ' DOIT ETRE CALCULE DANS '//NOMPRO)
       ENDIF
 
 C ---  2.7.1 : THETA FOURNI

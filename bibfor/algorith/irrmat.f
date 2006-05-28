@@ -1,8 +1,8 @@
-        SUBROUTINE IRRMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,ITMAX,RELA,VIND,
+      SUBROUTINE IRRMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,ITMAX,RELA,VIND,
      &                 TEMPD,TEMPF,MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/05/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,318 +20,376 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 
-       IMPLICIT NONE
-       CHARACTER*8 MOD
-       CHARACTER*3 MATCST
-       CHARACTER*(*) FAMI
-       INTEGER IMAT,NMAT,NDT,NDI,NR,NVI,KPG,KSP,IRET,ITMAX
-       REAL*8  TEMPD,TEMPF,MATERD(NMAT,2),MATERF(NMAT,2),NC,FC,RELA
-       REAL*8  VIND(*)
+      IMPLICIT NONE
+      CHARACTER*8   MOD
+      CHARACTER*3   MATCST
+      CHARACTER*(*) FAMI
+      INTEGER IMAT,NMAT,NDT,NDI,NR,NVI,KPG,KSP,IRET,ITMAX
+      REAL*8  TEMPD,TEMPF,MATERD(NMAT,2),MATERF(NMAT,2),NC,FC,RELA
+      REAL*8  VIND(*)
 
-C       ----------------------------------------------------------------
-C       IRRAD3M   : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
-C                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
-C                  MATER(*,1) = E , NU , ALPHA
-C                  MATER(*,2) = R02 EPSILON_U RM AI0 ETAI_S R ALPHA PHI0
-C       ----------------------------------------------------------------
-C       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
-C           KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
-C           IMAT   :  ADRESSE DU MATERIAU CODE
-C           MOD    :  TYPE DE MODELISATION
-C           NMAT   :  DIMENSION  DE MATER
-C           ITMAX  :  NOMBRE D ITERATION MAX
-C           RELA   :  TOLERANCE RELATIVE DES VALEURTS MATERIAUX
-C           VIND   :  VARIABLES INTERNES A T
-C           TEMPD  :  TEMPERATURE  A T
-C           TEMPF  :  TEMPERATURE  A T+DT
-C       OUT MATERD :  COEFFICIENTS MATERIAU A T
-C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C                     MATER(*,1) = CARACTERISTIQUES   ELASTIQUES
-C                     MATER(*,2) = CARACTERISTIQUES   AUTRE
-C           MATCST :  'OUI' SI  MATERIAU A T = MATERIAU A T+DT
-C                     'NON' SINON
-C           NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
-C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
-C           NR     :  NB DE COMPOSANTES SYSTEME NL
-C           NVI    :  NB DE VARIABLES INTERNES
-C       ----------------------------------------------------------------
-       INTEGER     I,ITERAT
-       CHARACTER*2 CERR(12)
-       CHARACTER*8 NOMC(12)
-       REAL*8      MAT(9),R,P0,N,PAS,IRRAD,IRRAF,P,PE,K,A,B
-       DATA PE        /2.D-3/
+C     ----------------------------------------------------------------
+C     IRRAD3M   : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
+C                 NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
+C                MATER(*,1) = E , NU , ALPHA
+C     ----------------------------------------------------------------
+C     IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C         KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
+C         IMAT   :  ADRESSE DU MATERIAU CODE
+C         MOD    :  TYPE DE MODELISATION
+C         NMAT   :  DIMENSION  DE MATER
+C         ITMAX  :  NOMBRE D ITERATION MAX
+C         RELA   :  TOLERANCE RELATIVE DES VALEURS MATERIAUX
+C         VIND   :  VARIABLES INTERNES A T
+C         TEMPD  :  TEMPERATURE  A T
+C         TEMPF  :  TEMPERATURE  A T+DT
+C     OUT MATERD :  COEFFICIENTS MATERIAU A T
+C         MATERF :  COEFFICIENTS MATERIAU A T+DT
+C                   MATER(*,1) = CARACTERISTIQUES   ELASTIQUES
+C                   MATER(*,2) = CARACTERISTIQUES   AUTRE
+C         MATCST :  'OUI' SI  MATERIAU A T = MATERIAU A T+DT
+C                   'NON' SINON
+C         NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
+C         NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
+C         NR     :  NB DE COMPOSANTES SYSTEME NL
+C         NVI    :  NB DE VARIABLES INTERNES
+C     ----------------------------------------------------------------
+      INTEGER     I,ITERAT
+      CHARACTER*2 CERR(13)
+      CHARACTER*8 NOMC(13),VALM(2)
+      REAL*8      MAT(10),P0,PAS,IRRAD,IRRAF,PE,K,A,B,IRRAT,TEMPT
+
+      REAL*8      R02,EU,RM,AI0,ETAIS,RR,ALPHA,PHI0,KAPPA,ZETA
+      REAL*8      N0,N1,F0,F1,PASN,EXPPH,SPE,VALR(2)
+
+      DATA PE    /2.0D-3/
+
+
+C     NOM               a t-           a t-+dt/2      a t+ (t-+dt)
+C     -------------------------------------------------------------
+C     E                 MATERD(1,1)                   MATERF(1,1)
+C     NU                MATERD(2,1)                   MATERF(2,1)
+C     ALPHA             MATERD(3,1)                   MATERF(3,1)
+
+C     AI0               MATERD(4,2)                   MATERF(4,2)
+C     ETAI_S            MATERD(5,2)                   MATERF(5,2)
+C     AG                MATERD(6,2)                   MATERF(6,2)
+C     K                 MATERD(7,2)                   MATERF(7,2)
+C     N                 MATERD(8,2)                   MATERF(8,2)
+C     P0                MATERD(9,2)                   MATERF(9,2)
+C     KAPPA             MATERD(10,2)                  MATERF(10,2)
+C     R02               MATERD(11,2)                  MATERF(11,2)
+C     ZETA              MATERD(12,2)                  MATERF(12,2)
+C     PENTE EN PE       MATERD(13,2)                  MATERF(13,2)
+C     PK                MATERD(14,2)                  MATERF(14,2)
+C     PE                MATERD(15,2)                  MATERF(15,2)
+C     CONTRAINTE EN PE  MATERD(16,2)                  MATERF(16,2)
+
+C     AG                               MATERF(17,2)
+C     ZETA                             MATERF(18,2)
+
+
 C -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
-C
-       CALL IRRNVI ( MOD , NDT , NDI, NR )
-       
-       NVI = 5
-       P=VIND(1)
+      CALL IRRNVI ( MOD , NDT , NDI, NR )
+      NVI = 5
+
 C =================================================================
 C --- DEFINITION DES CHAMPS ---------------------------------------
 C =================================================================
+      NOMC(1)  = 'E       '
+      NOMC(2)  = 'NU      '
+      NOMC(3)  = 'ALPHA   '
+      NOMC(4)  = 'R02     '
+      NOMC(5)  = 'EPSI_U  '
+      NOMC(6)  = 'RM      '
+      NOMC(7)  = 'AI0     '
+      NOMC(8)  = 'ETAI_S  '
+      NOMC(9)  = 'R       '
+      NOMC(10) = 'ALPHA   '
+      NOMC(11) = 'PHI0    '
+      NOMC(12) = 'KAPPA   '
+      NOMC(13) = 'ZETA    '
 
-       NOMC(1)  = 'E        '
-       NOMC(2)  = 'NU       '
-       NOMC(3)  = 'ALPHA    '
-       NOMC(4)  = 'R02      '
-       NOMC(5)  = 'EPSILON_U'
-       NOMC(6)  = 'RM       '
-       NOMC(7)  = 'AI0      '
-       NOMC(8)  = 'ETAI_S   '
-       NOMC(9)  = 'R        '
-       NOMC(10) = 'ALPHA    '
-       NOMC(11) = 'PHI0     '
-       NOMC(12) = 'KAPPA    '
-       CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
-        
-       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,'TEMP',TEMPD,
-     +               3,NOMC,MATERD(1,1),CERR(1), 'FM' )
-
-       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',1,'TEMP',TEMPD,
-     +               9,NOMC(4),MAT,CERR(3), 'FM' )
-
-       
-C     RECUPERATION DES DONNEES DE LA LOI SEUIL_PLASTIQUE = K*(P+P0)**N
-C     METHODE DE DICHOTOMIE POUR CALCULER LES VALEURS A L INSTANT -
-      NC=MAT(2)
-      IF ( NC.NE.0.D0) THEN
-        FC=1-((MAT(3)/MAT(1))*EXP(MAT(2))*(PE+NC-MAT(2))**NC)/
-     &     (NC**NC)
-      ELSE
-        FC=1-(MAT(3)/MAT(1))*EXP(MAT(2))
-      ENDIF
-
-      PAS=MAT(2)/2.D0
-
-      ITERAT=0
-
- 1    CONTINUE
-      
-      ITERAT=ITERAT+1
-
-C     CONVERGENCE ?
-      IF (ABS(FC).LE.RELA) THEN
-C       VALEUR DE N
-        MATERD(2,2)=NC
-C       VALEUR DE K
-        IF ( MATERD(2,2).NE.0.D0) THEN
-          MATERD(1,2)=MAT(3)*EXP(MAT(2))/(MATERD(2,2)**MATERD(2,2))
-        ELSE
-          MATERD(1,2)=MAT(3)*EXP(MAT(2))
-        ENDIF
-C       VALEUR DE P0
-        MATERD(3,2)=MATERD(2,2)-MAT(2)
-      ELSE
-        IF (ITERAT.LT.ITMAX) THEN
-          PAS=PAS/2.D0
-          IF (FC.GT.0.D0) THEN
-            NC=NC+PAS
-          ELSE
-            NC=NC-PAS
-          ENDIF
-          IF (NC.NE.0.D0) THEN
-            IF ( (PE+NC).GT.MAT(2)) THEN
-              FC=1.D0-((MAT(3)/MAT(1))*EXP(MAT(2))*(PE+NC-MAT(2))**NC)
-     &              /(NC**NC)
-            ELSE
-              IF (FC.GT.0.D0) THEN
-                NC=NC-PAS
-              ELSE
-                NC=NC+PAS
-              ENDIF
-            ENDIF
-          ELSE
-            FC=1.D0-(MAT(3)/MAT(1))*EXP(MAT(2))
-          ENDIF
-          GOTO 1
-        ELSE
-C       VALEUR DE K
-          IF ( MAT(2).NE.0.D0) THEN
-            MATERD(1,2)=MAT(3)/(MAT(2)**MAT(2))
-          ELSE
-            MATERD(1,2)=MAT(3)
-          ENDIF
-
-C       VALEUR DE N
-          MATERD(2,2)=MAT(2)
-C       VALEUR DE P0
-          MATERD(3,2)=0.D0
-        ENDIF
-      ENDIF
-      K=MATERD(1,2)
-      N=MATERD(2,2)
-      P0=MATERD(3,2)
-C  AFFECTATION DES VALEURS PLASTIQUES
-C  ECRETAGE DE LA LOI POUR LES FAIBLES VALEURS DE P
-
-      IF (N.EQ.0.D0) THEN
-        MATERD(1,2)=K
-        MATERD(2,2)=0.D0
-        MATERD(3,2)=0.D0
-      ELSE
-        IF ((P.GE.PE).AND.((K*(P+P0)**N).GT.
-     &       (MAT(9)*MAT(1)))) THEN
-          MATERD(1,2)=K
-          MATERD(2,2)=N
-          MATERD(3,2)=P0
-        ELSE
-          A=N*K*((PE+P0)**(N-1.D0))
-          B=K/A*(PE+P0)**N-PE
-          IF ( A*(P+B).LT.MAT(9)*MAT(1)) THEN
-            MATERD(1,2)=MAT(9)*MAT(1)
-            MATERD(2,2)=0.D0
-            MATERD(3,2)=0.D0
-          ELSE
-            MATERD(1,2)=A
-            MATERD(2,2)=1.D0
-            MATERD(3,2)=B
-          ENDIF
-        ENDIF
-      ENDIF
-
-C  VALEUR DE AI0
-      MATERD(4,2)=MAT(4)
-C  VALEUR DE ETAI_S
-      MATERD(5,2)=MAT(5)
-C  VALEUR DE AG
-      MATERD(6,2)=MAT(6)*(1-EXP(MAT(7)*(MAT(8)-IRRAD))/
-     &                   (1+EXP(MAT(7)*(MAT(8)-IRRAD))))/3.D0
-
-C -     RECUPERATION MATERIAU A TEMPF ET IRRAF 
+C === ================================================  
 C
-       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,'TEMP',TEMPF,
-     +               3,NOMC(1),MATERF(1,1),CERR(1), 'FM' )
+C     RECUPERATION MATERIAU A TEMPD ET IRRAD
+C
+C === ================================================  
+C     CARACTERISTIQUES ELASTIQUES A TEMP- ET IRRA-   
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,'TEMP',TEMPD,
+     +            3,NOMC,MATERD(1,1),CERR(1), 'FM' )
 
-       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','IRRAD3M',1,'TEMP',TEMPF,
-     +               9,NOMC(4),MAT,CERR(3), 'FM' )
+C     IRRADIATION A T-
+      CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
+C     CARACTERISTIQUES MATERIAU A TEMP- ET IRRA-
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',1,'TEMP',TEMPD,
+     +            10,NOMC(4),MAT,CERR(4), 'FM' )
 
-       CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
-C     METHODE DE DICHOTOMIE POUR CALCULER LES VALEURS A L INSTANT +
-
-C     POUR LA PLASTICITE, LES COEFFICIENTS DE LA COURBE SONT
-C     SUSCEPTIBLES DE CHANGER SELON LA VALEUR DE LA DEFORMATION
-C     PLASTIQUE CUMULE ( LOI LINEAIRE POUR LES FAIBLES VALEURS ).
-C     ON STOCKE LES COEFFICIENTS K,P0 ET N DE LA LOI PUISSANCE
-C     A LA PLACE 7,8 ET 9.
-C     LES VRAIS COEFFICIENTS DE LA LOI SONT CALCULE DANS IRRRES
-C     POUR L INCREMENT DE DEFORMATION PLASTIQUE ACTUEL ET STOCKE
-C     DANS LE TABLEAU A LA PLACE 1,2 ET 3.
-C     POUR LE CALCUL ELASTIQUE FAIT DANS LCELAS, ON STOCKE EN
-C     1,2 ET 3 LES COEFFICIENTS EN SUPPOSANT UN INCREMENT PUREMENT 
-C     ELASTIQUE ( DEFORMATION PLASTIQUE CUMULE INCHANGE )
-
-
-      NC=MAT(2)
-      IF ( NC.NE.0.D0) THEN
-        FC=1-((MAT(3)/MAT(1))*EXP(MAT(2))*(PE+NC-MAT(2))**NC)/
-     &     (NC**NC)
+C     POUR PLUS DE CLARETE, JE RENOMME LES GRANDEURS
+      IF ( CERR(13) .EQ. 'OK' ) THEN
+         ZETA = MAT(10)
       ELSE
-        FC=1-(MAT(3)/MAT(1))*EXP(MAT(2))
+         ZETA = 1.0D0
       ENDIF
+      R02   = MAT(1)
+      EU    = MAT(2)
+      RM    = MAT(3)
+      AI0   = MAT(4)
+      ETAIS = MAT(5)
+      RR    = MAT(6)
+      ALPHA = MAT(7)
+      PHI0  = MAT(8)
+      KAPPA = MAT(9)
 
-      PAS=MAT(2)/2.D0
-      ITERAT=0
-
-10    CONTINUE
-
-      ITERAT=ITERAT+1
-
-C   CONVERGENCE ?
-      IF (ABS(FC).LE.RELA) THEN
-C   VALEUR DE N
-        MATERF(8,2)=NC
-C   VALEUR DE K
-        IF (MATERF(8,2).NE.0.D0) THEN
-          MATERF(7,2)=MAT(3)*EXP(MAT(2))/(MATERF(8,2)**MATERF(8,2))
-        ELSE
-          MATERF(7,2)=MAT(3)*EXP(MAT(2))
-        ENDIF
-C   VALEUR DE P0
-        MATERF(9,2)=MATERF(8,2)-MAT(2)
+C     CALCUL DE LA PUISSANCE PAR DICHOTOMIE
+C       - LA FONCTION EST MONOTONE DECROISSANTE
+C       - NORMALISATION PAR R02
+C     F(n) = 1.0 - RM*EXP(EU)*((PE+n-EU)**n)/((n**n)*R02)
+C     F1 = Limite F(n)       F0 = Limite F(n)
+C          n->infini              n->0+
+      N0 = EU - PE
+      F1 = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
+      F0 = 1.0D0 - RM*EXP(EU)/R02
+      IF ( ((N0.GT.0.0D0).AND.(F1.GE.0.0D0)) .OR.
+     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) ) THEN
+C        VALEURS PAR DEFAUT
+         N1 = EU
+C        VALEUR DE K , N
+         IF ( N1 .GT. 0.0D0 ) THEN
+            MATERD(7,2) = RM*EXP(EU)/(N1**N1)
+            MATERD(8,2) = N1
+         ELSE
+            MATERD(7,2) = RM
+            MATERD(8,2) = 0.0D0
+         ENDIF
+C        VALEUR DE P0
+         MATERD(9,2) = 0.0D0
+C        -----------------
+         K   = MATERD(7,2)
+         SPE = K*(PE**N1)
+         A   = N1*K*(PE**(N1-1.D0))
       ELSE
-        IF (ITERAT.LT.ITMAX) THEN
-          PAS=PAS/2.D0
-          IF (FC.GT.0.D0) THEN
-            NC=NC+PAS
-          ELSE
-            NC=NC-PAS
-          ENDIF
-          IF (NC.NE.0.D0) THEN
-            IF ( (PE+NC).GT.MAT(2)) THEN
-              FC=1.D0-((MAT(3)/MAT(1))*EXP(MAT(2))*(PE+NC-MAT(2))**NC)
-     &              /(NC**NC)
-            ELSE
-              IF (FC.GT.0.D0) THEN
-                NC=NC-PAS
-              ELSE
-                NC=NC+PAS
-              ENDIF
+         IF ( N0 .GT. 0.0D0 ) THEN
+            F0   = 1.0D0
+            PASN = N0/10.0D0
+         ELSE
+            N0   = 0.0D0
+            PASN = PE/10.0D0
+         ENDIF
+         ITERAT = 0
+         N1     = N0
+C        WHILE TRUE
+10       CONTINUE
+            N1 = N1 + PASN
+            F1 = 1.0D0 - RM*EXP(EU)*((PE+N1-EU)**N1)/((N1**N1)*R02)
+            IF ( ABS(F1) .LE. RELA ) GOTO 12
+            ITERAT=ITERAT+1
+            IF (ITERAT.GT.ITMAX) THEN
+               CALL UTMESS ('F','IRRMAT','LA DICHOTOMIE POUR IRRAD3M'//
+     &            ' N A PAS TROUVE DE SOLUTION POUR LE NOMBRE'//
+     &            ' D ITERATION DONNE.')
             ENDIF
-          ELSE
-            FC=1.D0-(MAT(3)/MAT(1))*EXP(MAT(2))
-          ENDIF
-          GOTO 10
-        ELSE
-          CALL UTMESS ('A','IRRMAT','LA PARTIE PLASTIQUE DE LA'//
-     &  ' LOI DE COMPORTEMENT NE PEUT S ECRIRE SOUS LA FORME'//
-     &  ' K*(P+P0)**N. SOIT LE NOMBRE D ITERATION (ITER_INTE_MAXI)'//
-     &  ' N EST PAS ASSEZ GRAND SOIT LA SOLUTION THEORIQUE N EXISTE'//
-     &  ' PAS. ON PREND LA LIMITE D ELASTICITE SOUS LA FORME K*P**N')
-C     VALEUR DE K
-          IF (MAT(2).NE.0.D0) THEN
-            MATERF(7,2)=MAT(3)/(MAT(2)**MAT(2))
-          ELSE
-            MATERF(7,2)=MAT(3)
-          ENDIF
-C     VALEUR DE N
-          MATERF(8,2)=MAT(2)
-C     VALEUR DE P0
-          MATERF(9,2)=0.D0
-        ENDIF
+            IF ( F1*F0 .GT. 0.0D0 ) THEN
+               F0 = F1
+               N0 = N1
+            ELSE
+               PASN = PASN * 0.5D0
+               N1 = N0
+            ENDIF
+         GOTO 10
+12       CONTINUE
+C        VALEUR DE K
+         MATERD(7,2) = RM*EXP(EU)/(N1**N1)
+C        VALEUR DE N
+         MATERD(8,2) = N1
+C        VALEUR DE P0
+         MATERD(9,2) = N1 - EU
+C        ---------------------
+         K   = MATERD(7,2)
+         P0  = MATERD(9,2)
+         SPE = K*((PE+P0)**N1)
+         A   = N1*K*((PE+P0)**(N1-1.D0))
       ENDIF
-
-      K=MATERF(7,2)
-      N=MATERF(8,2)
-      P0=MATERF(9,2)
-      
-C     AFFECTATION DES VALEURS PLASTIQUES
-C     ECRETAGE DE LA LOI POUR LES FAIBLES VALEURS DE P
-
-      IF (N.EQ.0.D0) THEN
-        MATERF(1,2)=K
-        MATERF(2,2)=0.D0
-        MATERF(3,2)=0.D0
+      IF ( A .GT. 0.0D0 ) THEN
+C        VALEUR DE LA PENTE EN PE
+         MATERD(13,2) = A
+C        VALEUR DE PK
+         MATERD(14,2) = PE - (SPE - KAPPA*R02)/A
       ELSE
-        IF ((P.GE.PE).AND.((K*(P+P0)**N).GT.
-     &       (MATERF(10,2)*MATERF(11,2)))) THEN
-          MATERF(1,2)=K
-          MATERF(2,2)=N
-          MATERF(3,2)=P0
-        ELSE
-          A=N*K*(PE+P0)**(N-1.D0)
-          B=K/A*(PE+P0)**N-PE
-          IF ( A*(PE+B).LT.MAT(9)*MAT(1)) THEN
-            MATERF(1,2)=MAT(9)*MAT(1)
-            MATERF(2,2)=0.D0
-            MATERF(3,2)=0.D0
-          ELSE
-            MATERF(1,2)=A
-            MATERF(2,2)=1.D0
-            MATERF(3,2)=B
-          ENDIF
-        ENDIF
+C        VALEUR DE LA PENTE EN PE
+         MATERD(13,2) = 0.0D0
+C        VALEUR DE PK
+         MATERD(14,2) = 0.0D0
       ENDIF
 C     VALEUR DE AI0
-      MATERF(4,2)=MAT(4)
+      MATERD(4,2) = AI0
 C     VALEUR DE ETAI_S
-      MATERF(5,2)=MAT(5)
+      MATERD(5,2) = ETAIS
 C     VALEUR DE AG
-      MATERF(6,2)=MAT(6)*(1-EXP(MAT(7)*(MAT(8)-IRRAF))/
-     &                   (1+EXP(MAT(7)*(MAT(8)-IRRAF))))/3.D0
+      EXPPH = EXP(ALPHA*(PHI0-IRRAD))
+      MATERD(6,2) = RR*(1.0D0-EXPPH/(1.0D0+EXPPH))/3.0D0
 C     VALEUR DE KAPPA
-      MATERF(10,2)=MAT(9)
-C     VALEUR DE R0.2
-      MATERF(11,2)=MAT(1)
+      MATERD(10,2) = KAPPA
+C     VALEUR DE R02
+      MATERD(11,2) = R02
+C     VALEUR DE ZETA
+      MATERD(12,2) = ZETA
+C     VALEUR DE PE
+      MATERD(15,2) = PE
+C     VALEUR DE LA CONTRAINTE EN PE
+      MATERD(16,2) = SPE
+
+
+C === ================================================  
+C
+C     RECUPERATION MATERIAU A TEMPF ET IRRAF
+C
+C === ================================================  
+C     CARACTERISTIQUES ELASTIQUES A TEMP+ ET IRRA+
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,'TEMP',TEMPF,
+     +            3,NOMC(1),MATERF(1,1),CERR(1), 'FM' )
+
+C     IRRADIATION A T+
+      CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
+C     CARACTERISTIQUES MATERIAU A TEMP+ ET IRRA+
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','IRRAD3M',1,'TEMP',TEMPF,
+     +            10,NOMC(4),MAT,CERR(4), 'FM' )
+
+C     POUR PLUS DE CLARETE
+      IF ( CERR(13) .EQ. 'OK' ) THEN
+         ZETA = MAT(10)
+      ELSE
+         ZETA = 1.0D0
+      ENDIF
+      R02   = MAT(1)
+      EU    = MAT(2)
+      RM    = MAT(3)
+      AI0   = MAT(4)
+      ETAIS = MAT(5)
+      RR    = MAT(6)
+      ALPHA = MAT(7)
+      PHI0  = MAT(8)
+      KAPPA = MAT(9)
+
+C     CALCUL DE LA PUISSANCE PAR DICHOTOMIE
+C       - LA FONCTION EST MONOTONE DECROISSANTE
+C       - NORMALISATION PAR R02
+C     F(n) = 1.0 - RM*EXP(EU)*((PE+n-EU)**n)/((n**n)*R02)
+C     F1 = Limite F(n)       F0 = Limite F(n)
+C          n->infini              n->0+
+      N0 = EU - PE
+      F1 = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
+      F0 = 1.0D0 - RM*EXP(EU)/R02
+      IF ( ((N0.GT.0.0D0).AND.(F1.GT.0.0D0)) .OR.
+     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) ) THEN
+C        VALEURS PAR DEFAUT
+         N1 = EU
+C        VALEUR DE K , N
+         IF ( N1 .GT. 0.0D0 ) THEN
+            MATERF(7,2) = RM*EXP(EU)/(N1**N1)
+            MATERF(8,2) = N1
+         ELSE
+            MATERF(7,2) = RM
+            MATERF(8,2) = 0.0D0
+         ENDIF
+C        VALEUR DE P0
+         MATERF(9,2) = 0.0D0 
+C        -----------------
+         K   = MATERF(7,2)
+         SPE = K*(PE**N1)
+         A   = N1*K*(PE**(N1-1.D0))
+      ELSE
+         IF ( N0 .GT. 0.0D0 ) THEN
+            F0   = 1.0D0
+            PASN = N0/10.0D0
+         ELSE
+            N0   = 0.0D0
+            PASN = PE/10.0D0
+         ENDIF
+         ITERAT = 0
+         N1     = N0
+C        WHILE TRUE
+20       CONTINUE
+            N1 = N1 + PASN
+            F1 = 1.0D0 - RM*EXP(EU)*((PE+N1-EU)**N1)/((N1**N1)*R02)
+            IF ( ABS(F1) .LE. RELA ) GOTO 22
+            ITERAT=ITERAT+1
+            IF (ITERAT.GT.ITMAX) THEN
+               CALL UTMESS ('F','IRRMAT','LA DICHOTOMIE POUR IRRAD3M'//
+     &            ' N A PAS TROUVE DE SOLUTION POUR LE NOMBRE'//
+     &            ' D ITERATION DONNE.')
+            ENDIF
+            IF ( F1*F0 .GT. 0.0D0 ) THEN
+               F0 = F1
+               N0 = N1
+            ELSE
+               PASN = PASN * 0.5D0
+               N1 = N0
+            ENDIF
+         GOTO 20
+22       CONTINUE
+C        VALEUR DE K
+         MATERF(7,2) = RM*EXP(EU)/(N1**N1)
+C        VALEUR DE N
+         MATERF(8,2) = N1
+C        VALEUR DE P0
+         MATERF(9,2) = N1 - EU
+C        ---------------------
+         K   = MATERF(7,2)
+         P0  = MATERF(9,2)
+         SPE = K*((PE+P0)**N1)
+         A   = N1*K*((PE+P0)**(N1-1.D0))
+      ENDIF
+      IF ( A .GT. 0.0D0 ) THEN
+C        VALEUR DE LA PENTE EN PE
+         MATERF(13,2) = A
+C        VALEUR DE PK
+         MATERF(14,2) = PE - (SPE - KAPPA*R02)/A
+      ELSE
+C        VALEUR DE LA PENTE EN PE
+         MATERF(13,2) = 0.0D0
+C        VALEUR DE PK
+         MATERF(14,2) = 0.0D0
+      ENDIF
+C     VALEUR DE AI0
+      MATERF(4,2) = AI0
+C     VALEUR DE ETAI_S
+      MATERF(5,2) = ETAIS
+C     VALEUR DE AG
+      EXPPH = EXP(ALPHA*(PHI0-IRRAF))
+      MATERF(6,2) = RR*(1.0D0-EXPPH/(1.0D0+EXPPH))/3.0D0
+C     VALEUR DE KAPPA
+      MATERF(10,2) = KAPPA
+C     VALEUR DE R02
+      MATERF(11,2) = R02
+C     VALEUR DE ZETA
+      MATERF(12,2) = ZETA
+C     VALEUR DE PE
+      MATERF(15,2) = PE
+C     VALEUR DE LA CONTRAINTE EN PE
+      MATERF(16,2) = SPE
+
+
+C     AG   DEPEND :
+C           DE L'IRRADIATION
+C           DE LA TEMPERATURE
+C     ZETA DEPEND
+C           DE LA TEMPERATURE
+      NOMC(1) = 'R       '
+      NOMC(2) = 'ZETA    '
+      NOMC(3) = 'ALPHA   '
+      NOMC(4) = 'PHI0    '
+      VALM(1) = 'TEMP'
+      VALM(2) = 'IRRA'
+      VALR(1) = (TEMPF + TEMPD)*0.5D0
+      VALR(2) = (IRRAF + IRRAD)*0.5D0
+      CALL RCVALA(IMAT,' ','IRRAD3M',2,VALM(1),VALR(1),
+     +            4,NOMC(1),MAT(1),CERR(1), 'FM' )
+
+      EXPPH = EXP(MAT(3)*(MAT(4)-VALR(2)))
+      MATERF(17,2) = MAT(1)*(1.0D0-EXPPH/(1.0D0+EXPPH))/3.0D0
+      MATERF(18,2) = MAT(2)
+
 C -   MATERIAU CONSTANT ?
 C -   ON NE PEUT PAS SAVOIR A L AVANCE DONC NON
       MATCST = 'NON'

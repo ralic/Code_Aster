@@ -9,7 +9,7 @@
       CHARACTER*(*) FAMI
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/05/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,121 +46,130 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
       REAL*8 HOOK(6,6),DEV(6),S,DFDS(6),VTMP1(6),VTMP2(6)
       REAL*8 DPHI,ID3D(6),NUN, SIG(6), P, ETAI
-      REAL*8 K,N,P0,AI0,ETAIS,AG, IRRAD, IRRAF
+      REAL*8 K,N,P0,AI0,ETAIS,AG, IRRAD, IRRAF, ZETA
       REAL*8 DETAI, DPI, DP, DG, YY, XX, ZZ, DSIG
+      REAL*8 KAPPA,PENPE,PE,PK
       INTEGER NDT, NDI, IRET, I
       DATA ID3D /1.D0, 1.D0, 1.D0, 0.D0, 0.D0, 0.D0/
-      
 
       IF ( TYPESS .EQ. -1 ) TYPESS = 2
       CALL LCEQVN ( NDT , YD(1)       , SIG )
-      P=YD(NDT+1)
-      ETAI=YD(NDT+2)
+      P    = YD(NDT+1)
+      ETAI = YD(NDT+2)
 
-C PARAMETRES MATERIAUX
-      K=MATERF(1,2)
-      N=MATERF(2,2)
-      P0=MATERF(3,2)
-      AI0=MATERF(4,2)
-      ETAIS=MATERF(5,2)
-      AG=MATERF(6,2)
-      NUN = MATERF(2,1) / (1.D0-MATERF(2,1))
+C     PARAMETRES MATERIAUX
+      AI0   = MATERF(4,2)
+      ETAIS = MATERF(5,2)
+      AG    = MATERF(6,2)
+      K     = MATERF(7,2)
+      N     = MATERF(8,2)
+      P0    = MATERF(9,2)
+      ZETA  = MATERF(12,2)
+      PENPE = MATERF(13,2)
+      PK    = MATERF(14,2)
+      PE    = MATERF(15,2)
+
+C     POUR LES CONTRAINTES PLANES
+      NUN   = MATERF(2,1) / (1.D0-MATERF(2,1))
 
       TYPESS=1
 C     SOLUTION NULLE ( TYPESS=0) OU ELASTIQUE ( TYPESS=1)
       IF ( TYPESS .EQ. 0 .OR. TYPESS .EQ. 1 ) THEN
-        CALL LCINVN( NDT+4 , 0.D0 , DY )
-        IF(MOD(1:6).EQ.'C_PLAN') THEN
-           DEPS(3) = 0.D0
-           DY(NDT+5)=0.D0
-        ENDIF
+         CALL LCINVN( NDT+4 , 0.D0 , DY )
+         IF(MOD(1:6).EQ.'C_PLAN') THEN
+            DEPS(3) = 0.D0
+            DY(NDT+5)=0.D0
+         ENDIF
 
-        IF ( TYPESS.EQ.1) THEN
-          CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
-          CALL LCPRMV (HOOK,DEPS,DY)
-        ENDIF
+         IF ( TYPESS.EQ.1) THEN
+            CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
+            CALL LCPRMV (HOOK,DEPS,DY)
+         ENDIF
         
-C       SOLUTION EXPLICITE
+C        SOLUTION EXPLICITE
       ELSE IF (TYPESS.EQ.2) THEN
-        CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
-        CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
-        CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
-        DPHI=IRRAF-IRRAD
+         CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
+         CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
+         CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
+         DPHI=IRRAF-IRRAD
         
-        CALL LCDEVI(SIG,DEV)
-        CALL LCNRVE ( DEV  , S )
-        S =  SQRT ( 1.5D0 ) * S
+         CALL LCDEVI(SIG,DEV)
+         CALL LCNRVE ( DEV  , S )
+         S =  SQRT ( 1.5D0 ) * S
 
 C DETAI
-        DETAI=S*DPHI
+         DETAI=ZETA*S*DPHI
 C DPI
-        IF ((ETAI+DETAI).LT.ETAIS) THEN
-          DPI=0.D0
-        ELSE
-          DPI=AI0*DPHI
-        ENDIF
+         IF ((ETAI+DETAI).LT.ETAIS) THEN
+C         IF (ETAI.LT.ETAIS) THEN
+            DPI=0.D0
+         ELSE
+            DPI=ZETA*AI0*DPHI*S
+         ENDIF
 C DG
-        DG=AG*DPHI
+         DG=AG*DPHI
 
 C DP    
-        IF ( S .EQ. 0.D0)THEN
-          DP   = 0.D0
-          DO 1, I=1,6
-            DFDS(I) = 0.D0
- 1        CONTINUE
-        ELSE
-          CALL LCPRSV(1.5D0/S,DEV,DFDS)
-          CALL LCPRSV(DPI,DFDS,VTMP1)
-          CALL LCDIVE(DEPS,VTMP1,VTMP1)
-          CALL LCPRSV(DG,ID3D,VTMP2)
-          CALL LCDIVE(VTMP1,VTMP2,VTMP1)
-          CALL LCPRMV(HOOK,VTMP1,VTMP1)
-          CALL LCPRSC(DFDS,VTMP1,YY)
-          IF (N.NE.0.D0) THEN
-            ZZ = N*K*(P+P0)**(N-1)
-          ELSE
-            ZZ = 0.D0
-          ENDIF
-          CALL LCPRMV(HOOK,DFDS,VTMP1)
-          CALL LCPRSC(DFDS,VTMP1,XX)
+         IF ( S .EQ. 0.D0)THEN
+            DP   = 0.D0
+            DO 1, I=1,6
+               DFDS(I) = 0.D0
+ 1          CONTINUE
+         ELSE
+            CALL LCPRSV(1.5D0/S,DEV,DFDS)
+            CALL LCPRSV(DPI,DFDS,VTMP1)
+            CALL LCDIVE(DEPS,VTMP1,VTMP1)
+            CALL LCPRSV(DG,ID3D,VTMP2)
+            CALL LCDIVE(VTMP1,VTMP2,VTMP1)
+            CALL LCPRMV(HOOK,VTMP1,VTMP1)
+            CALL LCPRSC(DFDS,VTMP1,YY)
 
-          XX=XX-ZZ
+            IF      ( P .LT. PK ) THEN
+               ZZ = 0.0D0
+            ELSE IF ( P .LT. PE ) THEN
+               ZZ = PENPE
+            ELSE
+               ZZ = N*K*(P+P0)**(N-1.0D0)
+            ENDIF
+            CALL LCPRMV(HOOK,DFDS,VTMP1)
+            CALL LCPRSC(DFDS,VTMP1,XX)
 
-          DP= YY/XX
-        ENDIF  
+            XX=XX+ZZ
+
+            DP= YY/XX
+         ENDIF  
 
 C - (DEPS(3))
-        IF(MOD(1:6).EQ.'C_PLAN')THEN
-          DEPS(3) = NUN * ((DP+DPI)*(DFDS(1)+DFDS(2))+
+         IF(MOD(1:6).EQ.'C_PLAN')THEN
+            DEPS(3) = NUN * ((DP+DPI)*(DFDS(1)+DFDS(2))+
      &              2.D0*DG-DEPS(1)-DEPS(2))+ DFDS(3)*(DP+DPI)+DG
-        ENDIF
+         ENDIF
 
 C DSIG
-        CALL LCPRSV((DPI+DP),DFDS,VTMP1)
-        CALL LCDIVE(DEPS,VTMP1,VTMP1)
-        CALL LCPRSV(DG,ID3D,VTMP2)
-        CALL LCDIVE(VTMP1,VTMP2,VTMP1)
-        CALL LCPRMV(HOOK,VTMP1,DSIG)
-
+         CALL LCPRSV((DPI+DP),DFDS,VTMP1)
+         CALL LCDIVE(DEPS,VTMP1,VTMP1)
+         CALL LCPRSV(DG,ID3D,VTMP2)
+         CALL LCDIVE(VTMP1,VTMP2,VTMP1)
+         CALL LCPRMV(HOOK,VTMP1,DSIG)
 C - DY
-        CALL LCEQVN ( NDT , DSIG   , DY(1) )
-        DY(NDT+1)=DP
-        DY(NDT+2)=DETAI
-        DY(NDT+3)=DPI
-        DY(NDT+4)=DG
-        IF(MOD(1:6).EQ.'C_PLAN')THEN
-          DY(NDT+5) = DEPS(3)
-          DY(3)     = 0.D0
-        ENDIF
+         CALL LCEQVN ( NDT , DSIG   , DY(1) )
+         DY(NDT+1)=DP
+         DY(NDT+2)=DETAI
+         DY(NDT+3)=DPI
+         DY(NDT+4)=DG
+         IF(MOD(1:6).EQ.'C_PLAN')THEN
+            DY(NDT+5) = DEPS(3)
+            DY(3)     = 0.D0
+         ENDIF
 
 C - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 C
       ELSEIF ( TYPESS .EQ. 3 ) THEN
-        CALL LCINVN ( NDT+4  , ESSAI , DY )
-        IF ( MOD(1:6).EQ.'C_PLAN' )THEN
-          DEPS(3) = ESSAI
-          DY(3) = 0.D0
-        ENDIF
+         CALL LCINVN ( NDT+4  , ESSAI , DY )
+         IF ( MOD(1:6).EQ.'C_PLAN' )THEN
+            DEPS(3) = ESSAI
+            DY(3) = 0.D0
+         ENDIF
       ENDIF
 C
       END

@@ -2,7 +2,7 @@
      &                R,RINI,IRTETI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/05/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,51 +44,65 @@ C       ----------------------------------------------------------------
         REAL*8          TOLER,  ESSAI,  DDY(NR), DY(NR), R(NR),RINI(NR)
 C       ----------------------------------------------------------------
 C
-        REAL*8          ERRDY(NR), ERRR(NR)
+        REAL*8          ERRDY(NR), ERRR(NR),ERINI,ER,R8PREM
         INTEGER         I
 C       ----------------------------------------------------------------
 C
+C     CALCUL DE LA NORME DE RINI ET DE R(Y)
+      CALL LCNRVN ( NR , R ,    ER )
+C     ER < R8PREM , DANS TOUS LES CAS ON A CONVERGE
+      IF ( ER .LE. R8PREM() ) THEN
+         IRTETI = 0
+         GOTO 9999      
+      ENDIF
+      CALL LCNRVN ( NR , RINI , ERINI )
+
+
+C      write(*,'(3E16.8,I5)') TOLER,ERINI,ER,NR
+      IF ( ITER .LT. ITMAX ) THEN
+C        SI LES 2 SONT < TOLER ON A CONVERGE
+C         IF ( (ERINI .LE. TOLER).AND.(ER .LE. TOLER) ) THEN
+C            IRTETI = 0
+C            GOTO 9999      
+C         ENDIF
+C        SI ER/ERINI < TOLER ON A CONVERGE
+         IF ( (ER/ERINI) .LE. TOLER ) THEN
+            IRTETI = 0
+            GOTO 9999      
+         ENDIF
+      ENDIF
+
 C -   EVALUATION  DE L'ERREUR RELATIVE EN DY, ERR =  !!DDY!!/!!DY!!
       CALL LCVERR ( DY, DDY, NR, 0, ERRDY  )
 C -   EVALUATION  DE L'ERREUR RELATIVE EN RESIDU, ERR = !!R!!/!!RINI!!
       CALL LCVERR ( RINI, R, NR, 0, ERRR  )
-C
-C
-C -         ITER < ITMAX
-C           ------------
-C
 
+C -   ITER < ITMAX
       IF ( ITER .LT. ITMAX ) THEN
-C
-C -             CONVERGENCE
-C
-          IF ( ERRR(1) .LE. TOLER ) THEN
-             IRTETI = 0
-             GOTO 9999
-          ENDIF
-
-C -     NON CONVERGENCE ITERATION SUIVANTE
-C
-          IRTETI = 1
-          GOTO 9999
-C
-C -         ITER >= ITMAX
-C           ------------
-C
-      ELSE
-      
+C -      CONVERGENCE    MAX(R,RINI)
          IF ( ERRR(1) .LE. TOLER ) THEN
             IRTETI = 0
             GOTO 9999
-C
-C        RESIDU NON NUL MAIS SOLUTION STABLE. ON ACCEPTE
-         ELSEIF ( ERRDY(1) .LE. TOLER ) THEN
+         ENDIF
+
+C -      NON CONVERGENCE ITERATION SUIVANTE
+         IRTETI = 1
+         GOTO 9999
+
+C -   ITER >= ITMAX
+      ELSE
+
+         IF ( ERRR(1) .LE. TOLER ) THEN
             IRTETI = 0
             GOTO 9999
+
+C        RESIDU NON NUL MAIS SOLUTION STABLE. ON ACCEPTE : MAX(DDY,DY)
+C         ELSEIF ( ERRDY(1) .LE. TOLER ) THEN
+C            IRTETI = 0
+C            GOTO 9999
          ENDIF
-C
+
 C -      NON CONVERGENCE ET ITMAX ATTEINT
-C
          IRTETI = 3
          GOTO 9999       
       ENDIF

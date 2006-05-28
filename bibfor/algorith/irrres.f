@@ -11,7 +11,7 @@
       REAL*8      YD(*),YF(*),DEPS(6),DY(*),R(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/05/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,19 +29,20 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 
-      REAL*8      DFDS(6),ID3D(6),SF,A,B
-      REAL*8      IRRAD,IRRAF,DPHI,SIGD(6),SIGF(6),DKOOH(6,6)
-      REAL*8      FKOOH(6,6),HOOKF(6,6),K,N,P0,AI0,ETAIS,AG,P
-      REAL*8      DP,DETAI,DPI,DG,ETAIF,S,EPSEF(6),EPSD(6),PE
-      REAL*8      DEPSA(6),DEPSG(6),DEV(6),EPSED(6),LCNRTS
-      REAL*8      RS(6),RP,RE,RPI,RG,QF,DSIG(6),R8PREM
-      INTEGER     NDT, NDI,IRET
+      REAL*8    DFDS(6),ID3D(6),SF,A,B
+      REAL*8    IRRAD,IRRAF,DPHI,SIGD(6),SIGF(6),DKOOH(6,6)
+      REAL*8    FKOOH(6,6),HOOKF(6,6),K,N,P0,AI0,ETAIS,AG,P,ZETA
+      REAL*8    DP,DETAI,DPI,DG,ETAIF,S,EPSEF(6),EPSD(6),PE,KAPPA,R02
+      REAL*8    DEPSA(6),DEPSG(6),DEV(6),EPSED(6),LCNRTS
+      REAL*8    RS(6),RP,RE,RPI,RG,QF,DSIG(6),R8PREM
+      REAL*8    PK,PENPE,SPE,SD,DEVD(6)
+      REAL*8    AGD,ZETAD,AG2,ZETA2,ETAID,XXX,DPHI2,YYY
+      INTEGER   NDT, NDI,IRET,II
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
       
       DATA ID3D /1.D0, 1.D0, 1.D0, 0.D0, 0.D0, 0.D0/
-      DATA PE        /2.D-3/
 
       CALL LCEQVN ( NDT , YF(1), SIGF)
       CALL LCEQVN ( NDT , YD(1), SIGD)
@@ -49,50 +50,44 @@ C     ----------------------------------------------------------------
       CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERF(1,1) , FKOOH )
       CALL LCOPLI  ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
       
-      P=YF(NDT+1)
-      
-C     AFFECTATION DES VALEURS PLASTIQUES
-C     ECRETAGE DE LA LOI POUR LES FAIBLES VALEURS DE P
-      IF (MATERF(8,2).EQ.0.D0) THEN
-        MATERF(1,2)=MATERF(7,2)
-        MATERF(2,2)=0.D0
-        MATERF(3,2)=0.D0
-      ELSE
-        IF ((P.GE.PE).AND.((MATERF(7,2)*(P+MATERF(9,2))**MATERF(8,2))
-     &      .GT.(MATERF(10,2)*MATERF(11,2)))) THEN
-          MATERF(1,2)=MATERF(7,2)
-          MATERF(2,2)=MATERF(8,2)
-          MATERF(3,2)=MATERF(9,2)
-        ELSE
-          A=MATERF(8,2)*MATERF(7,2)*
-     &      ((PE+MATERF(9,2))**(MATERF(8,2)-1.D0))
-          B=(MATERF(7,2)/A)*(PE+MATERF(9,2))**MATERF(8,2)-PE
+C     RECUPERATION DES CARACTERISTIQUES MATERIAUX A t+
+      AI0   = MATERF(4,2)
+      ETAIS = MATERF(5,2)
+      AG    = MATERF(6,2)
+      K     = MATERF(7,2)
+      N     = MATERF(8,2)
+      P0    = MATERF(9,2)
+      KAPPA = MATERF(10,2)
+      R02   = MATERF(11,2)
+      ZETA  = MATERF(12,2)
+      PENPE = MATERF(13,2)
+      PK    = MATERF(14,2)
+      PE    = MATERF(15,2)
+      SPE   = MATERF(16,2)
+C     RECUPERATION DES CARACTERISTIQUES MATERIAUX A t-
+      AGD   = MATERD(6,2)
+      ZETAD = MATERD(12,2)
+C     RECUPERATION DES CARACTERISTIQUES MATERIAUX A t- + dt/2
+      AG2   = MATERF(17,2)
+      ZETA2 = MATERF(18,2)
 
-          IF ((A*(P+B)).LT.(MATERF(10,2)*MATERF(11,2))) THEN
-            MATERF(1,2)=MATERF(10,2)*MATERF(11,2)
-            MATERF(2,2)=0.D0
-            MATERF(3,2)=0.D0
-          ELSE
-            MATERF(1,2)=A
-            MATERF(2,2)=1.D0
-            MATERF(3,2)=B
-          ENDIF
-        ENDIF
-      ENDIF
-      K=MATERF(1,2)
-      N=MATERF(2,2)
-      P0=MATERF(3,2)
-      AI0=MATERF(4,2)
-      ETAIS=MATERF(5,2)
-      AG=MATERF(6,2)
-      DP = DY(NDT+1)
+
+C     RECUPERATION DES VARIABLES INTERNES A t+
+      P     = YF(NDT+1)
+      ETAIF = YF(NDT+2)
+C     RECUPERATION DES VARIABLES INTERNES A t-
+      ETAID = YD(NDT+2)
+
+C     RECUPERATION DES INCREMENTS DES VARIABLES INTERNES
+      DP    = DY(NDT+1)
       DETAI = DY(NDT+2)
-      DPI = DY(NDT+3)
-      DG = DY(NDT+4)
-      ETAIF=YF(NDT+2)
+      DPI   = DY(NDT+3)
+      DG    = DY(NDT+4)
+
       CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
       CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
       DPHI=IRRAF-IRRAD
+
       CALL LCDEVI(SIGF,DEV)
       S = LCNRTS (DEV)
       IF ( S.EQ.0.D0) THEN
@@ -102,11 +97,9 @@ C     ECRETAGE DE LA LOI POUR LES FAIBLES VALEURS DE P
       ENDIF
       CALL LCPRMV(FKOOH,SIGF,EPSEF)
       CALL LCPRMV(DKOOH,SIGD,EPSED)
-      
-      CALL LCPRSV ( (DP+DPI), DFDS, DEPSA )
-      
-      CALL LCPRSV ( DG, ID3D, DEPSG )
-     
+      CALL LCPRSV((DP+DPI),DFDS,DEPSA)
+      CALL LCPRSV(DG,ID3D,DEPSG)
+
 C   RESIDU EN SIGMA
       CALL LCDIVE(EPSEF,EPSED,RS)
       CALL LCSOVE(RS,DEPSA,RS)
@@ -115,37 +108,64 @@ C   RESIDU EN SIGMA
       CALL LCPRSV(-1.D0,RS,RS)
 
 C  RESIDU EN DEFORMATION PLASTIQUE
-      IF ( ((P+P0).EQ.0.D0).AND.(N.EQ.0.D0)) THEN
-        SF=K
+      IF      ( P .LT. PK ) THEN
+         SF = KAPPA*R02
+      ELSE IF ( P .LT. PE ) THEN
+         SF = PENPE*(P - PE) + SPE
       ELSE
-        SF=K*(P+P0)**N
+         SF = K*(P+P0)**N
+      ENDIF
+      IF (((S.GE.SF).AND.(DP.GE.0.D0)).OR.(DP.GT.R8PREM())) THEN
+         RP = -(S-SF)/HOOKF(1,1)
+      ELSE
+         RP = -DP
       ENDIF
 
-      IF (((S.GE.SF).AND.(DP.GE.0.D0)).OR.(DP.GT.R8PREM())) THEN
-        RP=-(S-SF)/HOOKF(1,1)
-      ELSE
-        RP=-DP
-      ENDIF
+C     CONTRAINTE EQUIVALENTE A t-
+      CALL LCDEVI(SIGD,DEVD)
+      SD = LCNRTS(DEVD)
 
 C  RESIDU PAR RAPPORT A ETA
-      RE=-(DETAI-S*DPHI)/HOOKF(1,1)
+C      XXX =  (ZETAD*SD + ZETA*S)/2.0
+      YYY =  (ZETAD*SD + ZETA2*(SD+S)*2.0D0 + ZETA*S)/6.0D0
+C      write(*,'(7E15.6)') XXX,YYY,S,SD,ZETAD,ZETA2,ZETA
+      RE  = -( DETAI - YYY*DPHI )/HOOKF(1,1)
+
 
 C  RESIDU EN DEFORMATION D IRRADIATION
-      IF (ETAIF.GT.ETAIS) THEN
-        RPI=-(DPI-AI0*S*DPHI)
+C      IF ( ETAIF .GT. ETAIS ) THEN
+C         RPI= -( DPI - AI0*DETAI )
+C      ELSE
+C         RPI= -DPI
+C      ENDIF
+
+      IF ( ETAIF .GT. ETAIS ) THEN
+         IF ( ETAID .LT. ETAIS) THEN
+            DETAI = DETAI - (ETAIS - ETAID)
+         ENDIF
+         RPI = -( DPI - AI0*DETAI )
       ELSE
-        RPI=-DPI
+         RPI = - DPI
       ENDIF
 
 C  RESIDU PAR RAPPORT AU GONFLEMENT
-      RG=-(DG-AG*DPHI)
+      IF ( DPHI .GT. 0.0D0 ) THEN
+C        EVALUATION NIVEAU 1   
+C         RG= -( DG - AG*DPHI)
+C        EVALUATION NIVEAU 2
+C         RG= -( DG - AG2*DPHI )
+C        EVALUATION NIVEAU 4
+         RG= -( DG - (AGD+4.0D0*AG2+AG)*DPHI/6.0D0 )
+      ELSE
+         RG = - DG
+      ENDIF
 
 C  RESIDU PAR RAPPORT A LA DEFORMATION ( C_PLAN )
       IF ( MOD(1:6) .EQ. 'C_PLAN' ) THEN
-      QF = (- HOOKF(3,3) *  EPSEF(3)
-     &     - HOOKF(3,1) *  EPSEF(1)
-     &     - HOOKF(3,2) *  EPSEF(2)
-     &     - HOOKF(3,4) *  EPSEF(4))/HOOKF(1,1)
+         QF = (-HOOKF(3,3)*EPSEF(3)
+     &         -HOOKF(3,1)*EPSEF(1)
+     &         -HOOKF(3,2)*EPSEF(2)
+     &         -HOOKF(3,4)*EPSEF(4))/HOOKF(1,1)
       ENDIF
       
       CALL LCEQVN ( NDT , RS     , R(1) )
@@ -153,5 +173,6 @@ C  RESIDU PAR RAPPORT A LA DEFORMATION ( C_PLAN )
       R(NDT+2)=RE
       R(NDT+3)=RPI
       R(NDT+4)=RG
+      
       IF ( MOD(1:6).EQ.'C_PLAN' ) R(NDT+5) = QF
       END

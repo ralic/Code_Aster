@@ -1,4 +1,5 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+
+# MODIF  DATE 29/05/2006   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,715 +25,636 @@
 # ON CREE DONC UN MODELE SPECIAL SANS E_JOI POUR MODI_MAILLAGE
 # CE TEST PREND 5000 SECONDES CPU EN 6.0.32
 
-DEBUT(CODE=_F( NOM = 'YYYY106B',NIV_PUB_WEB='INTRANET'))
+DEBUT(CODE=_F(NOM='YYYY106B',
+              NIV_PUB_WEB='INTRANET',),);
 
 MA=LIRE_MAILLAGE(UNITE=21,
-                 FORMAT='MED')
+                 FORMAT='MED',);
 
-MOD=AFFE_MODELE(
+MOD=AFFE_MODELE(MAILLAGE=MA,
                 INFO=1,
-                AFFE=_F( TOUT = 'OUI',
-                      PHENOMENE = 'THERMIQUE',
-                      MODELISATION = '3D',),
-                MAILLAGE=MA)
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='THERMIQUE',
+                        MODELISATION='3D',),);
 
-THERDEP=LIRE_RESU(  FORMAT='MED',
-                    MAILLAGE=MA,
-                    TYPE_RESU='EVOL_THER',
-                    FORMAT_MED=_F(
-                        NOM_CHAM_MED='THERDEP_TEMP____________________',
-                        NOM_CHAM='TEMP',),
-                    TOUT_ORDRE='OUI',
-                    UNITE=21)
+THERDEP=LIRE_RESU(TYPE_RESU='EVOL_THER',
+                  FORMAT='MED',
+                  MAILLAGE=MA,
+                  UNITE=21,
+                  FORMAT_MED=_F(
+                  NOM_CHAM='TEMP',
+                  NOM_CHAM_MED='THERDEP_TEMP____________________',),
+                  TOUT_ORDRE='OUI',);
 
 PRE_IDEAS(UNITE_IDEAS=19,
-          UNITE_MAILLAGE=20)
+          UNITE_MAILLAGE=20,);
 
 MA1=LIRE_MAILLAGE(UNITE=20,
-                  INFO=1,
-                  VERI_MAIL=_F( APLAT = 1.E-3,),
-                  FORMAT='ASTER')
+                  FORMAT='ASTER',
+                  VERI_MAIL=_F(APLAT=1.E-3,),
+                  INFO=1,);
 
-MOD1=AFFE_MODELE(
+MOD1=AFFE_MODELE(MAILLAGE=MA1,
                  INFO=1,
-                 AFFE=_F( TOUT = 'OUI',
-                       PHENOMENE = 'THERMIQUE',
-                       MODELISATION = '3D',),
-                 MAILLAGE=MA1)
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='3D',),);
 
 TEMP2=PROJ_CHAMP(METHODE='ELEM',
-                 MODELE_2=MOD1,
+                 RESULTAT=THERDEP,
                  MODELE_1=MOD,
-                 TOUT_ORDRE='OUI',
-                 RESULTAT=THERDEP)
+                 MODELE_2=MOD1,
+                 TOUT_ORDRE='OUI',);
 
-CARAMAIL=RECU_TABLE(NOM_TABLE='CARA_GEOM',
-                    CO=MA1)
+CARAMAIL=RECU_TABLE(CO=MA1,
+                    NOM_TABLE='CARA_GEOM',);
 
-IMPR_TABLE(FORMAT_R='1PE12.5',
-           TABLE=CARAMAIL,
+IMPR_TABLE(TABLE=CARAMAIL,
            FORMAT='TABLEAU',
-           UNITE=8,)
+           UNITE=8,
+           FORMAT_R='1PE12.5',);
 
-MODMECA=AFFE_MODELE(
+MODMECA=AFFE_MODELE(MAILLAGE=MA1,
                     INFO=1,
-                    AFFE=_F( TOUT = 'OUI',
-                          PHENOMENE = 'MECANIQUE',
-                          MODELISATION = '3D',),
-                    MAILLAGE=MA1)
-
-
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
 # obligatoire pour le groupe mc4_pla
 # puisque modi_maillage ne sait pas traiter
 # il est compris entre deux volumes : e_joi et e_pla
 # on cree donc un modele special sans e_joi pour modi_maillage
 
-MODMODI  = AFFE_MODELE     (
-                             MAILLAGE=MA1,
-                              AFFE=_F(
-                      PHENOMENE      = 'MECANIQUE',
-                      MODELISATION   =  '3D',
- GROUP_MA=(
-'E_CHA',
-'E_COR',
-'E_ECR',
-'E_GOU',
-'E_PLA',
-'E_RON',
-'E_STE',
-'M_INT',
-'M_XMIN',
-'MC11_COR',
-'MC11_PLA',
-'MC12_COR',
-'MC12_PLA',
-'MC13_COR',
-'MC13_PLA',
-'MC2_COR',
-'MC2_JOI',
-'MC31_CHA',
-'MC31_PLA',
-'MC32_CHA',
-'MC32_PLA',
-'MC33_CHA',
-'MC33_PLA',
-'MC4_JOI',
-'MC4_PLA',
-                              )
-                              )
-                       )
+MODMODI=AFFE_MODELE(MAILLAGE=MA1,
+                    AFFE=_F(GROUP_MA=('E_CHA','E_COR','E_ECR','E_GOU','E_PLA','E_RON','E_STE','M_INT','M_XMIN','MC11_COR',
+                                       'MC11_PLA','MC12_COR','MC12_PLA','MC13_COR','MC13_PLA','MC2_COR','MC2_JOI',
+                                       'MC31_CHA','MC31_PLA','MC32_CHA','MC32_PLA','MC33_CHA','MC33_PLA','MC4_JOI',
+                                       'MC4_PLA',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
 
-MA1=MODI_MAILLAGE(   reuse=MA1,
-                            MAILLAGE=MA1,
-                              MODELE=MODMODI,ORIE_PEAU_3D=(
+MA1=MODI_MAILLAGE(reuse =MA1,
+                  MAILLAGE=MA1,
+                  ORIE_PEAU_3D=(
+                                _F(GROUP_MA='M_XMIN',),
+                                _F(GROUP_MA='M_INT',),
+                                ),
+                  MODELE=MODMODI,
+                  INFO=1,);
 
-                              _F(
-                      GROUP_MA = 'MC4_JOI'),
-                              _F(
-                      GROUP_MA = 'MC2_JOI'),
-                              _F(
-                      GROUP_MA = 'M_XMIN'),
-                              _F(
-                      GROUP_MA = 'M_INT')),
-                                 INFO=1
-                       )
-
-MA1=MODI_MAILLAGE(   reuse=MA1,
-                            MAILLAGE=MA1,
-                              MODELE=MODMODI,ORIE_PEAU_3D=(
-
-                              _F(
-                      GROUP_MA = 'MC4_PLA'),
-                              _F(
-                      GROUP_MA = 'MC2_COR'),
-                              _F(
-                      GROUP_MA = 'MC11_PLA'),
-                              _F(
-                      GROUP_MA = 'MC11_COR'),
-                              _F(
-                      GROUP_MA = 'MC12_PLA'),
-                              _F(
-                      GROUP_MA = 'MC12_COR'),
-                              _F(
-                      GROUP_MA = 'MC13_PLA'),
-                              _F(
-                      GROUP_MA = 'MC13_COR')),
-                                 INFO=1
-                       )
+MA1=MODI_MAILLAGE(reuse =MA1,
+                  MAILLAGE=MA1,
+                  ORIE_PEAU_3D=(
+                                _F(GROUP_MA='MC11_PLA',),
+                                _F(GROUP_MA='MC11_COR',),
+                                _F(GROUP_MA='MC12_PLA',),
+                                _F(GROUP_MA='MC12_COR',),
+                                _F(GROUP_MA='MC13_PLA',),
+                                _F(GROUP_MA='MC13_COR',),
+                                ),
+                  MODELE=MODMODI,
+                  ORIE_NORM_COQUE=(
+                                _F(GROUP_MA='MC4_PLA',),
+                      _F(GROUP_MA='MC2_COR',),
+                  ),
+                  INFO=1,);
 
 NUF=DEFI_CONSTANTE(NOM_RESU='TOUTRESU',
-                   VALE=0.3)
+                   VALE=0.3,);
 
-EF_32=DEFI_FONCTION(INTERPOL='LIN',
+EF_32=DEFI_FONCTION(NOM_PARA='TEMP',
                     NOM_RESU='TOUTRESU',
+                    VALE=
+                    (0.0,1.98500000000E11,20.0,1.97000000000E11,50.0,1.95000000000E11,100.0,
+                           1.91500000000E11,150.0,1.87500000000E11,200.0,1.84000000000E11,),
+                    INTERPOL='LIN',
+                    PROL_DROITE='LINEAIRE',
                     PROL_GAUCHE='LINEAIRE',
-                    NOM_PARA='TEMP',
+                    INFO=1,);
 
-                    VALE=(0.0,1.98500000000E11,
-                           20.0,1.97000000000E11,50.0,
-                           1.95000000000E11,100.0,1.91500000000E11,
-                           150.0,1.87500000000E11,200.0,
-                           1.84000000000E11,),
-                    INFO=1,
-                    PROL_DROITE='LINEAIRE')
-
-ALF_32=DEFI_FONCTION(INTERPOL='LIN',
+ALF_32=DEFI_FONCTION(NOM_PARA='TEMP',
                      NOM_RESU='TOUTRESU',
+                     VALE=(20.0,1.554E-05,50.0,1.572E-05,100.0,1.6E-05,150.0,1.63E-05,200.0,1.66E-05,),
+                     INTERPOL='LIN',
+                     PROL_DROITE='LINEAIRE',
                      PROL_GAUCHE='LINEAIRE',
-                     NOM_PARA='TEMP',
+                     INFO=1,);
 
-                     VALE=(20.0,1.554E-05,50.0,
-                            1.572E-05,100.0,1.6E-05,150.0,1.63E-05,
-                            200.0,1.66E-05,),
-                     INFO=1,
-                     PROL_DROITE='LINEAIRE')
+ACIE_32=DEFI_MATERIAU(ELAS_FO=_F(E=EF_32,
+                                 NU=NUF,
+                                 TEMP_DEF_ALPHA=20.0,
+                                 PRECISION=1.0,
+                                 ALPHA=ALF_32,
+                                 K_DESSIC=0.0,
+                                 B_ENDOGE=0.0,),
+                      INFO=1,);
 
-ACIE_32=DEFI_MATERIAU(INFO=1,
-                      ELAS_FO=_F( NU = NUF,
-                               TEMP_DEF_ALPHA=20.0,
-                               ALPHA = ALF_32,
-                               K_DESSIC = 0.0,
-                               PRECISION = 1.0,
-                               B_ENDOGE = 0.0,
-                               E = EF_32,))
-
-EF_22=DEFI_FONCTION(INTERPOL='LIN',
+EF_22=DEFI_FONCTION(NOM_PARA='TEMP',
                     NOM_RESU='TOUTRESU',
+                    VALE=
+                    (0.0,2.16500000000E11,20.0,2.15400000000E11,50.0,2.13000000000E11,100.0,
+                           2.09400000000E11,150.0,2.06000000000E11,200.0,2.01800000000E11,),
+                    INTERPOL='LIN',
+                    PROL_DROITE='LINEAIRE',
                     PROL_GAUCHE='LINEAIRE',
-                    NOM_PARA='TEMP',
+                    INFO=1,);
 
-                    VALE=(0.0,2.16500000000E11,
-                           20.0,2.15400000000E11,50.0,
-                           2.13000000000E11,100.0,2.09400000000E11,
-                           150.0,2.06000000000E11,200.0,
-                           2.01800000000E11,),
-                    INFO=1,
-                    PROL_DROITE='LINEAIRE')
-
-ALF_22=DEFI_FONCTION(INTERPOL='LIN',
+ALF_22=DEFI_FONCTION(NOM_PARA='TEMP',
                      NOM_RESU='TOUTRESU',
+                     VALE=(20.0,9.42E-06,50.0,9.6E-06,100.0,9.96E-06,150.0,1.02E-05,200.0,1.044E-05,),
+                     INTERPOL='LIN',
+                     PROL_DROITE='LINEAIRE',
                      PROL_GAUCHE='LINEAIRE',
-                     NOM_PARA='TEMP',
+                     INFO=1,);
 
-                     VALE=(20.0,9.42E-06,50.0,
-                            9.6E-06,100.0,9.96E-06,150.0,1.02E-05,
-                            200.0,1.044E-05,),
-                     INFO=1,
-                     PROL_DROITE='LINEAIRE')
+ACIE_22=DEFI_MATERIAU(ELAS_FO=_F(E=EF_22,
+                                 NU=NUF,
+                                 TEMP_DEF_ALPHA=20.0,
+                                 PRECISION=1.0,
+                                 ALPHA=ALF_22,
+                                 K_DESSIC=0.0,
+                                 B_ENDOGE=0.0,),
+                      INFO=1,);
 
-ACIE_22=DEFI_MATERIAU(INFO=1,
-                      ELAS_FO=_F( NU = NUF,
-                               TEMP_DEF_ALPHA=20.0,
-                               ALPHA = ALF_22,
-                               K_DESSIC = 0.0,
-                               PRECISION = 1.0,
-                               B_ENDOGE = 0.0,
-                               E = EF_22,))
+EF_11=DEFI_FONCTION(NOM_PARA='TEMP',
+                    VALE=
+                    (0.0,2.05000000000E11,20.0,2.04000000000E11,50.0,2.03000000000E11,100.0,2.E11,150.0,
+                           1.97000000000E11,200.0,1.93000000000E11,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
 
-EF_11=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
-                    NOM_PARA='TEMP',
+ALF_11=DEFI_FONCTION(NOM_PARA='TEMP',
+                     VALE=(20.0,1.092E-05,50.0,1.114E-05,100.0,1.15E-05,150.0,1.187E-05,200.0,1.224E-05,),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',);
 
-                    VALE=(0.0,2.05000000000E11,
-                           20.0,2.04000000000E11,50.0,
-                           2.03000000000E11,100.0,2.E11,150.0,
-                           1.97000000000E11,200.0,
-                           1.93000000000E11,),
-                    PROL_DROITE='LINEAIRE')
+ACIE_11=DEFI_MATERIAU(ELAS_FO=_F(E=EF_11,
+                                 NU=NUF,
+                                 TEMP_DEF_ALPHA=20.0,
+                                 ALPHA=ALF_11,),);
 
-ALF_11=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
-                     NOM_PARA='TEMP',
+GRAP=DEFI_MATERIAU(ELAS=_F(E=1.00E6,
+                           NU=0.4,
+                           ALPHA=0.0,),);
 
-                     VALE=(20.0,1.092E-05,50.0,
-                            1.114E-05,100.0,1.15E-05,150.0,
-                            1.187E-05,200.0,1.224E-05,),
-                     PROL_DROITE='LINEAIRE')
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=(_F(GROUP_MA=('E_COR','E_PLA',),
+                             MATER=ACIE_32,
+                             TEMP_REF=20.0,),
+                          _F(GROUP_MA='E_GOU',
+                             MATER=ACIE_22,
+                             TEMP_REF=20.0,),
+                          _F(GROUP_MA=('E_ECR','E_RON',),
+                             MATER=ACIE_22,
+                             TEMP_REF=20.0,),
+                          _F(GROUP_MA='E_CHA',
+                             MATER=ACIE_11,
+                             TEMP_REF=20.0,),
+                          _F(GROUP_MA='E_STE',
+                             MATER=ACIE_32,
+                             TEMP_REF=20.0,),
+                          _F(GROUP_MA='E_JOI',
+                             MATER=GRAP,
+                             TEMP_REF=20.0,),),);
 
-ACIE_11=DEFI_MATERIAU(ELAS_FO=_F( NU = NUF,
-                               TEMP_DEF_ALPHA=20.0,
-                               ALPHA = ALF_11,
-                               E = EF_11,))
-
-GRAP=DEFI_MATERIAU(ELAS=_F( NU = 0.4,
-                         ALPHA = 0.0,
-                         E = 1.00E6,))
-
-CHMAT=AFFE_MATERIAU(AFFE=(_F( TEMP_REF = 20.0,
-                          MATER = ACIE_32,
-                          GROUP_MA = ('E_COR','E_PLA',),),
-                    _F( TEMP_REF = 20.0,
-                          MATER = ACIE_22,
-                          GROUP_MA = 'E_GOU',),
-                    _F( TEMP_REF = 20.0,
-                          MATER = ACIE_22,
-                          GROUP_MA = ('E_ECR','E_RON',),),
-                    _F( TEMP_REF = 20.0,
-                          MATER = ACIE_11,
-                          GROUP_MA = 'E_CHA',),
-                    _F( TEMP_REF = 20.0,
-                          MATER = ACIE_32,
-                          GROUP_MA = 'E_STE',),
-                    _F( TEMP_REF = 20.0,
-                          MATER = GRAP,
-                          GROUP_MA = 'E_JOI',)),
-                    MAILLAGE=MA1)
-
-CHMLIA1=AFFE_CHAR_MECA(VERI_NORM='OUI',DDL_IMPO=(
-                       _F( DX = 0.0,
-                                 GROUP_NO = 'N_XMAX',),
-                       _F( DZ = 0.0,
-                                 GROUP_NO = 'N_Z0',),
-                       _F( DY = 0.0,
-                                 GROUP_NO = 'N_XMAX_M',)),
-                       INFO=1,
+CHMLIA1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                        MODELE=MODMECA,
-
-                       LIAISON_UNIF=_F( DDL = 'DX',
-                                     GROUP_NO = 'N_XMIN',),
-                       )
+                       DDL_IMPO=(_F(GROUP_NO='N_XMAX',
+                                    DX=0.0,),
+                                 _F(GROUP_NO='N_Z0',
+                                    DZ=0.0,),
+                                 _F(GROUP_NO='N_XMAX_M',
+                                    DY=0.0,),),
+                       LIAISON_UNIF=_F(GROUP_NO='N_XMIN',
+                                       DDL='DX',),
+                       INFO=1,);
 
 CHMC1=AFFE_CHAR_MECA(VERI_NORM='OUI',
-                     INFO=1,
                      MODELE=MODMECA,
-                 LIAISON_GROUP=(_F( COEF_MULT_1 = 1.0,
-                                    DDL_1 = 'DY',
-                                    COEF_MULT_2 = -1.0,
-                                    COEF_IMPO = 0.0,
-                                    GROUP_MA_1 = 'MC31_PLA',
-                                    GROUP_MA_2 = 'MC31_CHA',
-                                    DDL_2 = 'DY',),
-                                _F( COEF_MULT_1 = 1.0,
-                                    DDL_1 = 'DY',
-                                    COEF_MULT_2 = -1.0,
-                                    COEF_IMPO = 0.0,
-                                    GROUP_MA_1 = 'MC32_PLA',
-                                    GROUP_MA_2 = 'MC32_CHA',
-                                    DDL_2 = 'DY',),
-                                _F( COEF_MULT_1 = 1.0,
-                                    DDL_1 = 'DY',
-                                    COEF_MULT_2 = -1.0,
-                                    COEF_IMPO = 0.0,
-                                    GROUP_MA_1 = 'MC33_PLA',
-                                    GROUP_MA_2 = 'MC33_CHA',
-                                    DDL_2 = 'DY',)),
-                CONTACT=( _F( GROUP_MA_MAIT = 'MC11_PLA',
-                              GROUP_MA_ESCL = 'MC11_COR',
-                              REAC_GEOM = 'SANS',),
-                          _F( GROUP_MA_MAIT = 'MC12_PLA',
-                              GROUP_MA_ESCL = 'MC12_COR',
-                              REAC_GEOM = 'SANS',),
-                          _F( GROUP_MA_MAIT = 'MC13_PLA',
-                              GROUP_MA_ESCL = 'MC13_COR',
-                              REAC_GEOM = 'SANS',)),
-                     )
+                     LIAISON_GROUP=(_F(GROUP_MA_1='MC31_PLA',
+                                       GROUP_MA_2='MC31_CHA',
+                                       DDL_1='DY',
+                                       COEF_MULT_1=1.0,
+                                       DDL_2='DY',
+                                       COEF_MULT_2=-1.0,
+                                       COEF_IMPO=0.0,),
+                                    _F(GROUP_MA_1='MC32_PLA',
+                                       GROUP_MA_2='MC32_CHA',
+                                       DDL_1='DY',
+                                       COEF_MULT_1=1.0,
+                                       DDL_2='DY',
+                                       COEF_MULT_2=-1.0,
+                                       COEF_IMPO=0.0,),
+                                    _F(GROUP_MA_1='MC33_PLA',
+                                       GROUP_MA_2='MC33_CHA',
+                                       DDL_1='DY',
+                                       COEF_MULT_1=1.0,
+                                       DDL_2='DY',
+                                       COEF_MULT_2=-1.0,
+                                       COEF_IMPO=0.0,),),
+                     CONTACT=(_F(GROUP_MA_MAIT='MC11_PLA',
+                                 GROUP_MA_ESCL='MC11_COR',
+                                 REAC_GEOM='SANS',),
+                              _F(GROUP_MA_MAIT='MC12_PLA',
+                                 GROUP_MA_ESCL='MC12_COR',
+                                 REAC_GEOM='SANS',),
+                              _F(GROUP_MA_MAIT='MC13_PLA',
+                                 GROUP_MA_ESCL='MC13_COR',
+                                 REAC_GEOM='SANS',),),
+                     INFO=1,);
 
 CHMS1=AFFE_CHAR_MECA(VERI_NORM='OUI',
-                     INFO=1,
                      MODELE=MODMECA,
-                     LIAISON_GROUP=(
-                     _F( COEF_MULT_1 = 1.0,
-                                    DDL_1 = 'DX',
-                                    COEF_MULT_2 = -1.0,
-                                    COEF_IMPO = 0.0,
-                                    GROUP_NO_1 = 'NC5_GOU',
-                                    GROUP_NO_2 = 'NC5_ECR',
-                                    DDL_2 = 'DX',),
-                     _F( COEF_MULT_1 = 1.0,
-                                    DDL_1 = 'DY',
-                                    COEF_MULT_2 = -1.0,
-                                    COEF_IMPO = 7.E-05,
-                                    GROUP_NO_1 = 'NC5_GOU',
-                                    GROUP_NO_2 = 'NC5_ECR',
-                                    DDL_2 = 'DY',),
-                     _F( COEF_MULT_1 = 1.0,
-                                    DDL_1 = 'DZ',
-                                    COEF_MULT_2 = -1.0,
-                                    COEF_IMPO = 0.0,
-                                    GROUP_NO_1 = 'NC5_GOU',
-                                    GROUP_NO_2 = 'NC5_ECR',
-                                    DDL_2 = 'DZ',)),
-                     )
+                     LIAISON_GROUP=(_F(GROUP_NO_1='NC5_GOU',
+                                       GROUP_NO_2='NC5_ECR',
+                                       DDL_1='DX',
+                                       COEF_MULT_1=1.0,
+                                       DDL_2='DX',
+                                       COEF_MULT_2=-1.0,
+                                       COEF_IMPO=0.0,),
+                                    _F(GROUP_NO_1='NC5_GOU',
+                                       GROUP_NO_2='NC5_ECR',
+                                       DDL_1='DY',
+                                       COEF_MULT_1=1.0,
+                                       DDL_2='DY',
+                                       COEF_MULT_2=-1.0,
+                                       COEF_IMPO=7.E-05,),
+                                    _F(GROUP_NO_1='NC5_GOU',
+                                       GROUP_NO_2='NC5_ECR',
+                                       DDL_1='DZ',
+                                       COEF_MULT_1=1.0,
+                                       DDL_2='DZ',
+                                       COEF_MULT_2=-1.0,
+                                       COEF_IMPO=0.0,),),
+                     INFO=1,);
 
-FONCS=DEFI_FONCTION(INTERPOL='LIN',
+FONCS=DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='TOUTRESU',
-                    PROL_GAUCHE='EXCLU',
-                    NOM_PARA='INST',
                     VALE=(-2.0,0.0,-1.0,1.0,9000.0,1.0,),
-                    INFO=1,
-                    PROL_DROITE='EXCLU')
+                    INTERPOL='LIN',
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',
+                    INFO=1,);
 
-T20=CREA_CHAMP(INFO=1,
-               AFFE=_F( VALE = 20.0,
-                     NOM_CMP = 'TEMP',
-                     TOUT = 'OUI',),
-               TYPE_CHAM='NOEU_TEMP_R',
+T20=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+               OPERATION='AFFE',
                MAILLAGE=MA1,
-               OPERATION='AFFE')
+               AFFE=_F(
+               TOUT='OUI',
+               NOM_CMP='TEMP',
+               VALE=20.0,),
+               INFO=1,);
 
-T286=CREA_CHAMP(INFO=1,
-                AFFE=_F( VALE = 286.0,
-                      NOM_CMP = 'TEMP',
-                      TOUT = 'OUI',),
-                TYPE_CHAM='NOEU_TEMP_R',
+T286=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
                 MAILLAGE=MA1,
-                OPERATION='AFFE')
+                AFFE=_F(
+                TOUT='OUI',
+                NOM_CMP='TEMP',
+                VALE=286.0,),
+                INFO=1,);
 
-THERCST=CREA_RESU(OPERATION='AFFE', NOM_CHAM='TEMP',
+THERCST=CREA_RESU(OPERATION='AFFE',
                   TYPE_RESU='EVOL_THER',
+                  NOM_CHAM='TEMP',
                   AFFE=(
-                  _F( INST = -2.0,CHAM_GD = T20,),
-                  _F( INST = -1.0,CHAM_GD = T20,),
-                  _F( INST =  0.0,CHAM_GD = T20,),
-                  _F( INST =  1.0,CHAM_GD = T286,),
-                  _F( INST =  2.0,CHAM_GD = T286,)
-                   ),
-                 )
+                  _F(CHAM_GD=T20,
+                     INST=-2.0,),
+                  _F(CHAM_GD=T20,
+                     INST=-1.0,),
+                  _F(CHAM_GD=T20,
+                     INST=0.0,),
+                  _F(CHAM_GD=T286,
+                     INST=1.0,),
+                  _F(CHAM_GD=T286,
+                     INST=2.0,),),);
 
 CHT286=AFFE_CHAR_MECA(VERI_NORM='OUI',
-                      INFO=1,
                       MODELE=MODMECA,
-
                       TEMP_CALCULEE=THERCST,
-                      )
+                      INFO=1,);
 
-LR3=DEFI_LIST_REEL(INTERVALLE=(_F( JUSQU_A = -1.0,
-                               NOMBRE = 1,),
-                   _F( JUSQU_A = 0.0,
-                               NOMBRE = 1,),
-                   _F( JUSQU_A = 1.0,
-                               NOMBRE = 1,),
-                   _F( JUSQU_A = 180.0,
-                               NOMBRE = 1,)),
-                   DEBUT=-2.0,
-                   INFO=1)
+LR3=DEFI_LIST_REEL(DEBUT=-2.0,
+                   INTERVALLE=(_F(JUSQU_A=-1.0,
+                                  NOMBRE=1,),
+                               _F(JUSQU_A=0.0,
+                                  NOMBRE=1,),
+                               _F(JUSQU_A=1.0,
+                                  NOMBRE=1,),
+                               _F(JUSQU_A=180.0,
+                                  NOMBRE=1,),),
+                   INFO=1,);
 
-CHMP1=AFFE_CHAR_MECA(MODELE=MODMECA,VERI_NORM='NON',
-                     PRES_REP=(
-                     _F( PRES = 1.6000000E7,
-                               GROUP_MA = 'M_INT',),
-                     _F( PRES = 1.6000000E7,
-                               GROUP_MA = 'MC11_COR',),
-                     _F( PRES = 1.6000000E7,
-                               GROUP_MA = 'MC11_PLA',),
-                     _F( PRES = -1.0250000E7,
-                               GROUP_MA = 'M_XMIN',),
-                     _F( PRES = 1.6000000E7,
-                               GROUP_MA = 'MC2_COR',),
-                     _F( PRES = 1.6000000E7,
-                               GROUP_MA = 'MC4_PLA',)))
+CHMP1=AFFE_CHAR_MECA(VERI_NORM='NON',
+                     MODELE=MODMECA,
+                     PRES_REP=(_F(GROUP_MA='M_INT',
+                                  PRES=1.6000000E7,),
+                               _F(GROUP_MA='MC11_COR',
+                                  PRES=1.6000000E7,),
+                               _F(GROUP_MA='MC11_PLA',
+                                  PRES=1.6000000E7,),
+                               _F(GROUP_MA='M_XMIN',
+                                  PRES=-1.0250000E7,),
+                               _F(GROUP_MA='MC2_COR',
+                                  PRES=1.6000000E7,),
+                               _F(GROUP_MA='MC4_PLA',
+                                  PRES=1.6000000E7,),),);
 
 FONCP=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(-2.0,0.0,-1.0,0.0,0.0,1.0,9000.0,1.0,))
+                    VALE=(-2.0,0.0,-1.0,0.0,0.0,1.0,9000.0,1.0,),);
 
-DEP=STAT_NON_LINE(CHAM_MATER=CHMAT,
-                  MODELE=MODMECA,
-                  COMP_INCR=_F( RELATION = 'ELAS',
-                             DEFORMATION = 'PETIT',
-                             GROUP_MA = ('E_COR','E_CHA','E_PLA',
-                                        'E_ECR','E_GOU','E_JOI',
-                                        'E_RON','E_STE',),
-
-                                        ),
-                  INCREMENT=_F( INST_FIN = 1.0,
-                             PRECISION = 1.E-3,
-                             SUBD_PAS = 1,
-                             LIST_INST = LR3,
-                             COEF_SUBD_PAS_1 = 1.0,
-                             EVOLUTION = 'CHRONOLOGIQUE',),
-                  NEWTON=_F( REAC_ITER = 1,
-                          MATRICE = 'TANGENTE',
-                          REAC_INCR = 1,),EXCIT=(
-                  _F( CHARGE = CHMLIA1,
-                         TYPE_CHARGE = 'FIXE_CSTE',),
-                  _F( CHARGE = CHMC1,
-                         TYPE_CHARGE = 'FIXE_CSTE',),
-                  _F( CHARGE = CHMS1,
-                         TYPE_CHARGE = 'FIXE_CSTE',
-                         FONC_MULT = FONCS,),
-                  _F( CHARGE = CHT286,
-                         TYPE_CHARGE = 'FIXE_CSTE',),
-                  _F( CHARGE = CHMP1,
-                         TYPE_CHARGE = 'FIXE_CSTE',
-                         FONC_MULT = FONCP,)))
+DEP=STAT_NON_LINE(MODELE=MODMECA,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=(_F(CHARGE=CHMLIA1,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHMC1,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHMS1,
+                            FONC_MULT=FONCS,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHT286,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHMP1,
+                            FONC_MULT=FONCP,
+                            TYPE_CHARGE='FIXE_CSTE',),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',
+                               GROUP_MA=('E_COR','E_CHA','E_PLA','E_ECR','E_GOU','E_JOI','E_RON','E_STE',),),
+                  INCREMENT=_F(LIST_INST=LR3,
+                               EVOLUTION='CHRONOLOGIQUE',
+                               INST_FIN=1.0,
+                               PRECISION=1.E-3,
+                               SUBD_PAS=1,
+                               COEF_SUBD_PAS_1=1.0,),
+                  NEWTON=_F(REAC_INCR=1,
+                            MATRICE='TANGENTE',
+                            REAC_ITER=1,),);
 
 CHTHER=AFFE_CHAR_MECA(VERI_NORM='OUI',
-                      INFO=1,
                       MODELE=MODMECA,
-
                       TEMP_CALCULEE=TEMP2,
-                      )
+                      INFO=1,);
 
-DEP=STAT_NON_LINE(reuse=DEP,CHAM_MATER=CHMAT, INFO=2,
-                   MODELE=MODMECA,
-                   COMP_INCR=_F( RELATION = 'ELAS',
-                              DEFORMATION = 'PETIT',
-                              GROUP_MA = ('E_COR','E_CHA','E_PLA',
-                                         'E_ECR','E_GOU','E_JOI',
-                                         'E_RON','E_STE',),
+DEP=STAT_NON_LINE(reuse =DEP,
+                  MODELE=MODMECA,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=(_F(CHARGE=CHMLIA1,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHMC1,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHMS1,
+                            FONC_MULT=FONCS,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHMP1,
+                            FONC_MULT=FONCP,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CHTHER,
+                            TYPE_CHARGE='FIXE_CSTE',),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',
+                               GROUP_MA=('E_COR','E_CHA','E_PLA','E_ECR','E_GOU','E_JOI','E_RON','E_STE',),),
+                  ETAT_INIT=_F(
+                  EVOL_NOLI=DEP,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',),
+                  INCREMENT=_F(LIST_INST=LR3,
+                               EVOLUTION='CHRONOLOGIQUE',
+                               INST_FIN=180.0,
+                               PRECISION=1.E-3,
+                               SUBD_PAS=1,
+                               COEF_SUBD_PAS_1=1.0,),
+                  NEWTON=_F(REAC_INCR=1,
+                            MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  SOLVEUR=_F(METHODE='MULT_FRONT',
+                             RENUM='METIS',),
+                  INFO=2,);
 
-                                         ),
-                   INCREMENT=_F( INST_FIN = 180.0,
-                              PRECISION = 1.E-3,
-                              SUBD_PAS = 1,
-                              LIST_INST = LR3,
-                              COEF_SUBD_PAS_1 = 1.0,
-                              EVOLUTION = 'CHRONOLOGIQUE',),
-                   NEWTON=_F( REAC_ITER = 1,
-                           MATRICE = 'TANGENTE',
-                           REAC_INCR = 1,),
-                   SOLVEUR=_F( METHODE = 'MULT_FRONT',
-                            RENUM = 'METIS',),EXCIT=(
-                   _F( CHARGE = CHMLIA1,
-                          TYPE_CHARGE = 'FIXE_CSTE',),
-                   _F( CHARGE = CHMC1,
-                          TYPE_CHARGE = 'FIXE_CSTE',),
-                   _F( CHARGE = CHMS1,
-                          TYPE_CHARGE = 'FIXE_CSTE',
-                          FONC_MULT = FONCS,),
-                   _F( CHARGE = CHMP1,
-                          TYPE_CHARGE = 'FIXE_CSTE',
-                          FONC_MULT = FONCP,),
-                   _F( CHARGE = CHTHER,
-                          TYPE_CHARGE = 'FIXE_CSTE',)),
-                   ETAT_INIT=_F( CRITERE = 'RELATIF',
-                              EVOL_NOLI = DEP,
-                              PRECISION = 1.E-3,))
+DEP=CALC_ELEM(reuse =DEP,
+              MODELE=MODMECA,
+              CHAM_MATER=CHMAT,
+              RESULTAT=DEP,
+              PRECISION=1.E-3,
+              CRITERE='RELATIF',
+              GROUP_MA='E_GOU',
+              OPTION='SIEF_ELNO_ELGA',
+              NORME='VMIS',
+              NUME_COUCHE=1,
+              NIVE_COUCHE='MOY',
+              ANGLE=0,
+              EXCIT=(
+              _F(CHARGE=CHMLIA1,
+                 TYPE_CHARGE='FIXE',),
+              _F(CHARGE=CHMC1,
+                 TYPE_CHARGE='FIXE',),
+              _F(CHARGE=CHMS1,
+                 TYPE_CHARGE='FIXE',),
+              _F(CHARGE=CHMP1,
+                 TYPE_CHARGE='FIXE',),
+              _F(CHARGE=CHTHER,
+                 TYPE_CHARGE='FIXE',),),);
 
-DEP=CALC_ELEM(reuse=DEP,NIVE_COUCHE='MOY',
-               RESULTAT=DEP,
-               NUME_COUCHE=1,
-               NORME='VMIS',
-               PRECISION=1.E-3,
+SIG0=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTE SYY DANS LE GOUJON 0',
+                             NOEUD='N5495',
+                             FORMAT_C='MODULE',
+                             RESULTAT=DEP,
+                             NOM_CHAM='SIEF_ELNO_ELGA',
+                             TOUT_ORDRE='OUI',
+                             PRECISION=1.E-06,
+                             CRITERE='RELATIF',
+                             NOM_CMP='SIYY',
+                             REPERE='GLOBAL',
+                             MOYE_NOEUD='OUI',
+                             OPERATION='EXTRACTION',),
+                   INFO=1,);
 
-               CRITERE='RELATIF',
-               CHAM_MATER=CHMAT,
-               MODELE=MODMECA,
-               ANGLE=0,
-               OPTION='SIEF_ELNO_ELGA',
-               GROUP_MA='E_GOU',EXCIT=(
-               _F( CHARGE = CHMLIA1,
-                      TYPE_CHARGE = 'FIXE',),
-               _F( CHARGE = CHMC1,
-                      TYPE_CHARGE = 'FIXE',),
-               _F( CHARGE = CHMS1,
-                      TYPE_CHARGE = 'FIXE',),
-               _F( CHARGE = CHMP1,
-                      TYPE_CHARGE = 'FIXE',),
-               _F( CHARGE = CHTHER,
-                      TYPE_CHARGE = 'FIXE',)))
+SIG1=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTE SYY DANS LE GOUJON 1',
+                             NOEUD='N5642',
+                             FORMAT_C='MODULE',
+                             RESULTAT=DEP,
+                             NOM_CHAM='SIEF_ELNO_ELGA',
+                             TOUT_ORDRE='OUI',
+                             PRECISION=1.E-06,
+                             CRITERE='RELATIF',
+                             NOM_CMP='SIYY',
+                             REPERE='GLOBAL',
+                             MOYE_NOEUD='OUI',
+                             OPERATION='EXTRACTION',),
+                   INFO=1,);
 
-SIG0=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'N5495',
-                           OPERATION = 'EXTRACTION',
-                           FORMAT_C = 'MODULE',
-                           REPERE = 'GLOBAL',
-                           MOYE_NOEUD = 'OUI',
-                           INTITULE = 'CONTRAINTE SYY DANS LE GOUJON 0',
-                           NOM_CMP = 'SIYY',
-                           RESULTAT = DEP,
-                           NOM_CHAM = 'SIEF_ELNO_ELGA',
-                           PRECISION = 1.E-06,
-                           CRITERE = 'RELATIF',
-                           TOUT_ORDRE = 'OUI',))
+SIG2=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTE SYY DANS LE GOUJON 2',
+                             NOEUD='N5789',
+                             FORMAT_C='MODULE',
+                             RESULTAT=DEP,
+                             NOM_CHAM='SIEF_ELNO_ELGA',
+                             TOUT_ORDRE='OUI',
+                             PRECISION=1.E-06,
+                             CRITERE='RELATIF',
+                             NOM_CMP='SIYY',
+                             REPERE='GLOBAL',
+                             MOYE_NOEUD='OUI',
+                             OPERATION='EXTRACTION',),
+                   INFO=1,);
 
-SIG1=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'N5642',
-                           OPERATION = 'EXTRACTION',
-                           FORMAT_C = 'MODULE',
-                           REPERE = 'GLOBAL',
-                           MOYE_NOEUD = 'OUI',
-                           INTITULE = 'CONTRAINTE SYY DANS LE GOUJON 1',
-                           NOM_CMP = 'SIYY',
-                           RESULTAT = DEP,
-                           NOM_CHAM = 'SIEF_ELNO_ELGA',
-                           PRECISION = 1.E-06,
-                           CRITERE = 'RELATIF',
-                           TOUT_ORDRE = 'OUI',))
+SIG3=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTE SYY DANS LE GOUJON 3',
+                             NOEUD='N5936',
+                             FORMAT_C='MODULE',
+                             RESULTAT=DEP,
+                             NOM_CHAM='SIEF_ELNO_ELGA',
+                             TOUT_ORDRE='OUI',
+                             PRECISION=1.E-06,
+                             CRITERE='RELATIF',
+                             NOM_CMP='SIYY',
+                             REPERE='GLOBAL',
+                             MOYE_NOEUD='OUI',
+                             OPERATION='EXTRACTION',),
+                   INFO=1,);
 
-SIG2=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'N5789',
-                           OPERATION = 'EXTRACTION',
-                           FORMAT_C = 'MODULE',
-                           REPERE = 'GLOBAL',
-                           MOYE_NOEUD = 'OUI',
-                           INTITULE = 'CONTRAINTE SYY DANS LE GOUJON 2',
-                           NOM_CMP = 'SIYY',
-                           RESULTAT = DEP,
-                           NOM_CHAM = 'SIEF_ELNO_ELGA',
-                           PRECISION = 1.E-06,
-                           CRITERE = 'RELATIF',
-                           TOUT_ORDRE = 'OUI',))
+DEP_11C=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT A 180S BORD INTERNE DU CORPS',
+                                GROUP_NO='NC11_COR',
+                                FORMAT_C='MODULE',
+                                RESULTAT=DEP,
+                                NOM_CHAM='DEPL',
+                                INST=180.0,
+                                PRECISION=1.E-06,
+                                CRITERE='RELATIF',
+                                NOM_CMP='DY',
+                                REPERE='GLOBAL',
+                                MOYE_NOEUD='OUI',
+                                OPERATION='EXTRACTION',),
+                      INFO=1,);
 
-SIG3=POST_RELEVE_T(INFO=1,
-                   ACTION=_F( NOEUD = 'N5936',
-                           OPERATION = 'EXTRACTION',
-                           FORMAT_C = 'MODULE',
-                           REPERE = 'GLOBAL',
-                           MOYE_NOEUD = 'OUI',
-                           INTITULE = 'CONTRAINTE SYY DANS LE GOUJON 3',
-                           NOM_CMP = 'SIYY',
-                           RESULTAT = DEP,
-                           NOM_CHAM = 'SIEF_ELNO_ELGA',
-                           PRECISION = 1.E-06,
-                           CRITERE = 'RELATIF',
-                           TOUT_ORDRE = 'OUI',))
+DEP_11P=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT A 180S BORD INTERNE PLAQUE',
+                                GROUP_NO='NC11_PLA',
+                                FORMAT_C='MODULE',
+                                RESULTAT=DEP,
+                                NOM_CHAM='DEPL',
+                                INST=180.0,
+                                PRECISION=1.E-06,
+                                CRITERE='RELATIF',
+                                NOM_CMP='DY',
+                                REPERE='GLOBAL',
+                                MOYE_NOEUD='OUI',
+                                OPERATION='EXTRACTION',),
+                      INFO=1,);
 
-DEP_11C=POST_RELEVE_T(INFO=1,
-                      ACTION=_F( OPERATION = 'EXTRACTION',
-                              FORMAT_C = 'MODULE',
-                              REPERE = 'GLOBAL',
-                              MOYE_NOEUD = 'OUI',
-                              INTITULE = 'DEPLACEMENT A 180S BORD INTERNE DU CORPS',
+DEP_12C=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT A 180S BORD EXTERNE DU CORPS',
+                                GROUP_NO='NC12_COR',
+                                FORMAT_C='MODULE',
+                                RESULTAT=DEP,
+                                NOM_CHAM='DEPL',
+                                INST=180.0,
+                                PRECISION=1.E-06,
+                                CRITERE='RELATIF',
+                                NOM_CMP='DY',
+                                REPERE='GLOBAL',
+                                MOYE_NOEUD='OUI',
+                                OPERATION='EXTRACTION',),
+                      INFO=1,);
 
-                           GROUP_NO = 'NC11_COR',
-                              NOM_CMP = 'DY',
-                              RESULTAT = DEP,
-                              NOM_CHAM = 'DEPL',
-                              INST = 180.0,
-                              PRECISION = 1.E-06,
-                              CRITERE = 'RELATIF',))
-
-DEP_11P=POST_RELEVE_T(INFO=1,
-                      ACTION=_F( OPERATION = 'EXTRACTION',
-                              FORMAT_C = 'MODULE',
-                              REPERE = 'GLOBAL',
-                              MOYE_NOEUD = 'OUI',
-                              INTITULE = 'DEPLACEMENT A 180S BORD INTERNE PLAQUE',
-
-                             GROUP_NO = 'NC11_PLA',
-                              NOM_CMP = 'DY',
-                              RESULTAT = DEP,
-                              NOM_CHAM = 'DEPL',
-                              INST = 180.0,
-                              PRECISION = 1.E-06,
-                              CRITERE = 'RELATIF',))
-
-DEP_12C=POST_RELEVE_T(INFO=1,
-                      ACTION=_F( OPERATION = 'EXTRACTION',
-                              FORMAT_C = 'MODULE',
-                              REPERE = 'GLOBAL',
-                              MOYE_NOEUD = 'OUI',
-                              INTITULE = 'DEPLACEMENT A 180S BORD EXTERNE DU CORPS',
-
-                           GROUP_NO = 'NC12_COR',
-                              NOM_CMP = 'DY',
-                              RESULTAT = DEP,
-                              NOM_CHAM = 'DEPL',
-                              INST = 180.0,
-                              PRECISION = 1.E-06,
-                              CRITERE = 'RELATIF',))
-
-DEP_12P=POST_RELEVE_T(INFO=1,
-                      ACTION=_F( OPERATION = 'EXTRACTION',
-                              FORMAT_C = 'MODULE',
-                              REPERE = 'GLOBAL',
-                              MOYE_NOEUD = 'OUI',
-                              INTITULE = 'DEPLACEMENT A 180S BORD EXTERNE PLAQUE',
-
-                             GROUP_NO = 'NC12_PLA',
-                              NOM_CMP = 'DY',
-                              RESULTAT = DEP,
-                              NOM_CHAM = 'DEPL',
-                              INST = 180.0,
-                              PRECISION = 1.E-06,
-                              CRITERE = 'RELATIF',))
+DEP_12P=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT A 180S BORD EXTERNE PLAQUE',
+                                GROUP_NO='NC12_PLA',
+                                FORMAT_C='MODULE',
+                                RESULTAT=DEP,
+                                NOM_CHAM='DEPL',
+                                INST=180.0,
+                                PRECISION=1.E-06,
+                                CRITERE='RELATIF',
+                                NOM_CMP='DY',
+                                REPERE='GLOBAL',
+                                MOYE_NOEUD='OUI',
+                                OPERATION='EXTRACTION',),
+                      INFO=1,);
 
 TEST_TABLE(TABLE=SIG0,
-           FILTRE=_F( NOM_PARA = 'INST',
-                   VALE = 180.0,),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=1.1605199868865E+08,
+           VALE=116051998.689,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=SIG1,
-           FILTRE=_F( NOM_PARA = 'INST',
-                   VALE = 180.0,),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=1.0263358985157E+08,
+           VALE=102633589.852,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=SIG2,
-           FILTRE=_F( NOM_PARA = 'INST',
-                   VALE = 180.0,),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=9.6051641870572E+07,
+           VALE=96051641.8706,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=SIG3,
-           FILTRE=_F( NOM_PARA = 'INST',
-                   VALE = 180.0,),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=1.0150401335099E+08,
+           VALE=101504013.351,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=DEP_11C,
-           FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'N10172',),
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N10172',),
            NOM_PARA='DY',
-           VALE=5.8142726612845E-04,
+           VALE=0.000581427266128,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=DEP_11P,
-           FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'N6388',),
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6388',),
            NOM_PARA='DY',
-           VALE=6.6054802495497E-04,
+           VALE=0.000660548024955,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=DEP_12C,
-           FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'N10179',),
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N10179',),
            NOM_PARA='DY',
-           VALE=6.4271592695991E-04,
+           VALE=0.00064271592696,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
 TEST_TABLE(TABLE=DEP_12P,
-           FILTRE=_F( NOM_PARA = 'NOEUD',
-                   VALE_K = 'N6395',),
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6395',),
            NOM_PARA='DY',
-           VALE=6.5154376165749E-04,
+           VALE=0.000651543761657,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.32')
+           VERSION='6.0.32',);
 
-
-TAB11C=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                              INTITULE='NC11_COR',
-                              GROUP_NO='NC11_COR',
-                              TOUT_CMP='OUI',
-                              INST = 180. ,
-                              RESULTAT=DEP,
-                              NOM_CHAM='VALE_CONT',),);
+TAB11C=POST_RELEVE_T(ACTION=_F(INTITULE='NC11_COR',
+                               GROUP_NO='NC11_COR',
+                               RESULTAT=DEP,
+                               NOM_CHAM='VALE_CONT',
+                               INST=180.,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=TAB11C,);
 
-TAB12C=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                              INTITULE='NC12_COR',
-                              TOUT_CMP='OUI',
-                              GROUP_NO='NC12_COR',
-                              INST = 180. ,
-                              RESULTAT=DEP,
-                              NOM_CHAM='VALE_CONT',),);
+TAB12C=POST_RELEVE_T(ACTION=_F(INTITULE='NC12_COR',
+                               GROUP_NO='NC12_COR',
+                               RESULTAT=DEP,
+                               NOM_CHAM='VALE_CONT',
+                               INST=180.,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=TAB12C,);
 
+JEU11=RECU_FONCTION(TABLE=TAB11C,
+                    PARA_X='COOR_X',
+                    PARA_Y='JEU',);
 
+JEU12=RECU_FONCTION(TABLE=TAB12C,
+                    PARA_X='COOR_X',
+                    PARA_Y='JEU',);
 
-JEU11 = RECU_FONCTION (TABLE = TAB11C,
-                        PARA_X = 'COOR_X',
-                        PARA_Y = 'JEU',
-                        );
-JEU12 = RECU_FONCTION (TABLE = TAB12C,
-                        PARA_X = 'COOR_X',
-                        PARA_Y = 'JEU',
-                        );
-
-
-
-
-FIN()
+FIN();

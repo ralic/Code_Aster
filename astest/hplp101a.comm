@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -212,12 +212,8 @@ G01=CALC_G(        MODELE=MO,
 
 GK01=CALC_G(        MODELE=MO,
                         DEPL=DEP,
-                       THETA=_F(
-                                 MODULE = 1.,
-                                 R_INF = 7.50E-5,
-                                 R_SUP = 1.125E-4,
-                                 DIRECTION=(1., 0., 0.,),
-                                 FOND_FISS=FOND),
+                       THETA=_F(THETA = THETA01,
+                                FOND_FISS=FOND),
                       EXCIT=_F(CHARGE=CH,),
                   CHAM_MATER=CHMAT,
                    SYME_CHAR='SANS',
@@ -250,12 +246,8 @@ G02=CALC_G( MODELE=MO,
 #
 GK02=CALC_G(MODELE=MO,
             DEPL=DEP,
-            THETA=_F(
-                      MODULE = 1.,
-                      R_INF = 1.125E-4,
-                      R_SUP = 1.500E-4,
-                      DIRECTION=(1., 0., 0.,),
-                      FOND_FISS=FOND),
+            THETA=_F(THETA = THETA02,
+                     FOND_FISS=FOND),
             EXCIT=_F(CHARGE=CH,),
             CHAM_MATER=CHMAT,
             SYME_CHAR='SANS',
@@ -289,11 +281,7 @@ G03=CALC_G(        MODELE=MO,
 #
 GK03=CALC_G(        MODELE=MO,
                         DEPL=DEP,
-                       THETA=_F(
-                                MODULE = 1.,
-                                R_INF = 1.500E-4,
-                                R_SUP = 1.875E-4,
-                                DIRECTION=(1., 0., 0.,),
+                       THETA=_F(THETA = THETA03,
                                 FOND_FISS=FOND),
                       EXCIT=_F(CHARGE=CH,),
                   CHAM_MATER=CHMAT,
@@ -328,11 +316,7 @@ G04=CALC_G(        MODELE=MO,
 #
 GK04=CALC_G(        MODELE=MO,
                         DEPL=DEP,
-                       THETA=_F(
-                                 MODULE = 1.,
-                                 R_INF = 1.875E-4,
-                                 R_SUP = 2.250E-4,
-                                 DIRECTION=(1., 0., 0.,),
+                       THETA=_F( THETA = THETA04,
                                  FOND_FISS=FOND),
                       EXCIT=_F(CHARGE=CH,),
                   CHAM_MATER=CHMAT,

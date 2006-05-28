@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,12 +31,13 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
 
          THETA          =FACT(statut='o',
-         THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
-
+           THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
+           FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
+           FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),
+           regles=(EXCLUS('FOND_FISS','FISSURE'),),
          b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",
             regles=(UN_PARMI('R_INF','R_INF_FO'),
                  EXCLUS('MODULE','MODULE_FO'),
-                 UN_PARMI('FOND_FISS','FISSURE'),
                  PRESENT_PRESENT('R_INF','R_SUP'),
                  PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),         
              R_INF           =SIMP(statut='f',typ='R'),
@@ -47,8 +48,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
              R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),             
              MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
-             FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),),
+             ),
             ),
 
          DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
