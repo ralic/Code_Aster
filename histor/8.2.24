@@ -1,0 +1,164 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 30/05/2006 - 14:25:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009592 DU 2006-03-23 18:04:05
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TITRE
+   Utilisation des datg dans aspic/ascouf
+FONCTIONNALITE
+   Quand le repertoire d'installation est long, par exemple : /local/utilisateur/aster, le
+   chemin d'acces aux fichiers datg peut faire plus de 70 caracteres (avec le nom du
+   fichier).
+   Dans GIBI, on ne peut pas faire "opti donn '...';" avec un chemin de plus de 72
+   caracteres, les tests aspic/ascouf plantent alors.
+   
+   La solution consiste a inclure le contenu du fichier datg dans le .dgib construit au lieu
+   de faire "opti donn".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   35 tests aspic_mail, ascouf_mail, calc_eolienne
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 30/05/2006 - 14:25:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009775 DU 2006-05-17 08:24:58
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   MODI_MAILLAGE + ORIE_PEAU_3D
+FONCTIONNALITE
+   Une etude qui passait en STA8 ne passait plus en NEW8 du fait de la non-
+   reorientation de certaines mailles de peau.
+   
+   La raison de ce probleme etait que l'on avait decide de ne reorienter que
+   les mailles appartenant au modele. Dans cette etude, l'utilisateur utilise
+   des mailles non modelisees pour decrire des conditions de contact.
+   
+   On decide donc d'assouplir la realisation de ORIE_PEAU_2D/3D :
+   
+   si la maille de peau est la peau d'une maille volumique :
+   - on la reoriente
+   sinon :
+   - on l'ignore.
+   
+   A la fin du traitement, on imprime pour chaque groupe de mailles traite :
+   - le nombre de mailles reorientees
+   - le nombre de mailles ignorees
+   
+   Remarque :
+   ----------
+   Dans l'exemple suivant, on peutse demander s'il ne faudrait pas arreter
+   l'utilisateur qui veut reorienter LBATI alors qu'aucune maille de LBATI
+   n'est la peau d'une maille volumique !
+   Mais comme on a decide d'etre sympa (voir laxiste ?) ...
+   
+   -------------------------------------------------------------------------
+   corrections realisees :
+   
+   MA=MODI_MAILLAGE(reuse = MA,
+   MAILLAGE=MA,
+   ORIE_PEAU_2D=(_F(GROUP_MA='LPRESV'),
+   _F(GROUP_MA='LPRESH'),
+   _F(GROUP_MA='LCONTA'),
+   _F(GROUP_MA='LBATI')),
+   MODELE=MO,
+   INFO=1,
+   );
+   
+   TRAITEMENT DU GROUP_MA: LPRESV   DE      32 MAILLES
+   32 MAILLE(S) ONT ETE ORIENTEE(S)
+   TRAITEMENT DU GROUP_MA: LPRESH   DE      10 MAILLES
+   10 MAILLE(S) ONT ETE ORIENTEE(S)
+   TRAITEMENT DU GROUP_MA: LCONTA   DE      32 MAILLES
+   0 MAILLE(S) ONT ETE ORIENTEE(S)
+   TRAITEMENT DU GROUP_MA: LBATI    DE      32 MAILLES
+   0 MAILLE(S) ONT ETE ORIENTEE(S)
+   32 MAILLE(S) N'ONT PAS ETE TRAITEE(S)
+   AU TOTAL      42 MAILLE(S) ORIENTEE(S)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude associee
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 30/05/2006 - 14:25:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009801 DU 2006-05-29 09:05:27
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   ssls108a NOOK sous Calibre + Rocks
+FONCTIONNALITE
+   Je modifie la tolerance : epsilon = 1.e-10 (au lieu de 1.e-12).
+   
+   En effet, les valeurs pertinentes sont de l'ordre de 1.e-6, c'est donc tangent en
+   demandant 6 chiffres significatifs.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls108a sur clpaster, clp50a8, clayastr
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009783 DU 2006-05-19 07:51:49
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   DETRUIRE
+FONCTIONNALITE
+   Depuis la modif de DETRUIRE pour la sensibilite, si on peut faire :
+   .   DETRUIRE(CONCEPT=_F(NOM=(c1, c2),),)
+   
+   mais pas :
+   .   DETRUIRE(CONCEPT=(_F(NOM=c1), _F(NOM=c2),),)
+   
+   Un objet temporaire n'est pas detruit dans la boucle sur le mcfact CONCEPT.
+   J'ajoute le JEDETR pour corriger.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test elementaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF ssls108a                     mcourtoi M.COURTOIS         186      8      8
+ FORTRAN MODIF supervis/ops007              mcourtoi M.COURTOIS         138      2      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    2         324        10       9        +1
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    2         324        10       9        +1 

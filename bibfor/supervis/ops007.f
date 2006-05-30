@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 03/04/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF SUPERVIS  DATE 30/05/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,6 +102,7 @@ C   (SAUF SI ON DEMANDE A LES SUPPRIMER DANS UNE MACRO PAR EXEMPLE)
 310                CONTINUE
                  ENDIF
 300           CONTINUE
+              CALL JEDETR('&&OPS007.LISTE_CO')
             ENDIF
  3       CONTINUE
 
