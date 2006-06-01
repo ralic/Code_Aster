@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco scotch  DATE 17/01/2006   AUTEUR ASSIRE A.ASSIRE */
+/* MODIF fetsco scotch  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 #include "common.h"
 #include "scotch.h"
 
-#if  defined IRIX || P_LINUX || TRU64 || SOLARIS || SOLARIS64
+#if  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS || SOLARIS64
 void fetsco_ ( int *nbmato, int *nblien, int *connect, int *idconnect, int *nbpart, int *mapsd, int *edlo, int *velo,int err)
 #elif defined HPUX
 void fetsco ( int *nbmato, int *nblien, int *connect, int *idconnect, int *nbpart, int *mapsd, int *edlo, int *velo,int err)

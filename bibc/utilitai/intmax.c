@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF INTMAX UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF INTMAX UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,14 +20,14 @@
 /* ------------------------------------------------------------------ */
 #ifdef CRAY
 /*    On ne fait rien : on utilise la fonction INTMAX systeme */
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long intmax_(long *n, long *dx, long *incx)
 #elif defined HPUX
    long intmax(long *n, long *dx, long *incx)
 #elif defined PPRO_NT
    extern long __stdcall INTMAX (long *n, long *dx, long *incx)
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 {
 extern long blimax_(long *n, long *dx, long *incx);
 long v;

@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------*/
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTNPRO utilitai  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU */
+/* MODIF GTNPRO utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,7 +27,7 @@
 #endif
 #ifdef CRAY
    long GTNPRO()
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long gtnpro_()
 #elif defined HPUX
    long gtnpro()

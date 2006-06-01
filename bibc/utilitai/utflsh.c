@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTFLSH UTILITAI  DATE 31/05/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTFLSH UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -26,7 +26,7 @@ extern int fflush();
 
 #ifdef CRAY
    void UTFLSH ( int *codret )
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    void utflsh_ ( int *codret )
 #elif defined HPUX
    void utflsh ( int *codret )

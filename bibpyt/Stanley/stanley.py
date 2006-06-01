@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF stanley Stanley  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,7 +269,7 @@ class PARAMETRES :
 
       # Parametres Graphiques specifiques a Gmsh, Xmgrace, Salome
       'TAILLE_MIN'            : { 'label': _("Gmsh : Taille minimale"),           'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': '', },
-      'SHRINK'                : { 'label': _("Gmsh : Shrink"),                    'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
+      'SHRINK'                : { 'label': _("Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
       'SKIN'                  : { 'label': _("Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _("Parametre pour Gmsh : affichage sur la peau uniquement."), },
       'version_fichier_gmsh'  : { 'label': _("Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _("Parametre pour Gmsh : version du fichier resultat."), },
 

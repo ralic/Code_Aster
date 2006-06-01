@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
+/* MODIF hdfopd hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,7 +27,7 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long hdfopd_( long *idf, char *nomg, char *nomd, long lg, long ln )
 #elif defined HPUX
    long hdfopd ( long *idf, char *nomg, char *nomd, long lg, long ln )

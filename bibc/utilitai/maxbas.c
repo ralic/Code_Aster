@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MAXBAS utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MAXBAS utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,7 +19,7 @@
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
 #include <stdio.h>
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
    double maxbas_(double* val)
 #elif defined HPUX
    double maxbas(double* val)

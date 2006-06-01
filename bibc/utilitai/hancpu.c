@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hancpu utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hancpu utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,7 +31,7 @@ void hancpu(int sig)
 #ifdef CRAY
    SIGCPU();
 #endif
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64
+#if defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64
    sigcpu_();
 #endif
 exit(sig);

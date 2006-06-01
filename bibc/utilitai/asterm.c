@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 03/06/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF main utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -32,10 +32,10 @@
 # define DSCRUTE(val)
 # define ASSERT(condition)
 
-#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <sys/utsname.h> /* Pour le nom de la machine d'execution */
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #define INIAST iniast_
 #define LMEMEX lmemex_
 #define ISINTE isinte_
@@ -152,7 +152,7 @@ void strcpBS (char *namin, char *namaj , int l , long *ll)
 	char *p,*q;
 #if defined CRAY
 #define BS  '/'
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #define BS  '/'
 #elif defined PPRO_NT
 #define BS  0x5c
@@ -205,7 +205,7 @@ void asterm(long argc,char** argv)
 	vdate[8] = '\0' ;
 #if defined PPRO_NT
 	VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ldate,&ilog);
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 	VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ilog,&ldate);
 #endif
 	*argv ++;
@@ -216,7 +216,7 @@ void asterm(long argc,char** argv)
 		char *pn,*os,*mach;
 		long fino=0;
 
-#if defined CRAY || HPUX || SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || HPUX || SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 		struct utsname un;
 		uname(&un);
 		pn=un.nodename;
@@ -243,12 +243,12 @@ void asterm(long argc,char** argv)
 		NODNAM(&fino,nodename,nomos,nomcpu);
 #elif defined PPRO_NT
 		NODNAM(&fino,nodename,l_nom,nomos,l_nom,nomcpu,l_nom);
-#elif defined HPUX || SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined HPUX || SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 		NODNAM(&fino,nodename,nomos,nomcpu,l_nom,l_nom,l_nom);
 #endif
 	}
 
-#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 	g_memory[0] = '\0';
 	g_tpmax[0] = '\0';
 #endif
@@ -258,7 +258,7 @@ void asterm(long argc,char** argv)
 #if defined CRAY
 #define REP_SPY "/aster/stat/"
 #define LREP  12
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #define REP_SPY "/export/docaster/asa/aster/stat/"
 #define LREP  32
 #elif defined PPRO_NT
@@ -274,7 +274,7 @@ void asterm(long argc,char** argv)
 		ll = LREP;
 #if defined CRAY
 		REPSPY(&fi,&ll,rep_spy);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 		l_rep = strlen(rep_spy);
 		REPSPY(&fi,&ll,rep_spy,l_rep);
 #endif
@@ -284,7 +284,7 @@ void asterm(long argc,char** argv)
    pour les scripts appelables depuis aster et pour les
    donnees lues depuis aster
 */
-#if defined CRAY || IRIX || TRU64 || SOLARIS64 
+#if defined CRAY || IRIX || TRU64 || LINUX64 || SOLARIS64 
 #define REP_MAT "/aster/materiau/"
 #define REP_OUT "/aster/outils/"
 #define REP_DON "/aster/donnees/"
@@ -306,21 +306,21 @@ void asterm(long argc,char** argv)
 		ll = strlen(rep_mat);
 #if defined CRAY
 		REPMAT(&fi,&ll,rep_mat);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 		REPMAT(&fi,&ll,rep_mat,l_rep);
 #endif
 		strcpy(rep_out,REP_OUT);
 		ll = strlen(rep_out);
 #if defined CRAY
 		REPOUT(&fi,&ll,rep_out);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 		REPOUT(&fi,&ll,rep_out,l_rep);
 #endif
 		strcpy(rep_don,REP_DON);
 		ll = strlen(rep_don);
 #if defined CRAY
 		REPDEX(&fi,&ll,rep_don);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 		REPDEX(&fi,&ll,rep_don,l_rep);
 #endif
 	}
@@ -502,7 +502,7 @@ void asterm(long argc,char** argv)
 			*q='\0';
 #if defined CRAY
 			ORIGIN(&fi,ori);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 			l_ori = strlen(ori);
 			ORIGIN(&fi,ori,l_ori);
 #endif

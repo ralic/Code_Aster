@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF STRMOV UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF STRMOV UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,14 +19,14 @@
 #include <string.h>
 #if defined CRAY
 /* on appelle la version systeme sur CRAY */
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void strmov_(char *src, long *isb,long *num,char *dest, long *idb)
 #elif defined HPUX
   void strmov(char *src, long *isb,long *num,char *dest, long *idb)
 #elif defined PPRO_NT
   void __stdcall STRMOV(char *src,unsigned long len_src, long *isb,long *num,char *dest, long *idb)
 #endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 {
     memcpy(dest+*idb-1,src+*isb-1,*num);
 }

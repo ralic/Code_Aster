@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnbo hdf  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfnbo hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,7 +27,7 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long hdfnbo_(long *idf, char *nomgr, long ln )
 #elif defined HPUX
    long hdfnbo(long *idf, char *nomgr, long ln )

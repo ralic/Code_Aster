@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IODR utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF IODR utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -30,10 +30,10 @@
 
 #elif defined SOLARIS || PPRO_NT || HPUX || IRIX_32 || P_LINUX  
 #define OFF_INIT 4
-#elif defined IRIX_64 || TRU64 || SOLARIS64
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
 #define OFF_INIT 8
 #endif 
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
@@ -102,14 +102,14 @@ while ((*p != '\0') && (*p != ' ')) {
 *q='\0';
 }
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void  opendr_ ( char *dfname,long *indx,long *lgti,long *indic,long *ierr,unsigned long len_dfname)
 #elif defined HPUX
   void opendr ( char *dfname,long *indx,long *lgti,long *indic,long *ierr,unsigned long len_dfname)
 #elif defined PPRO_NT
   void __stdcall OPENDR ( char *dfname,unsigned long len_dfname,long *indx,long *lgti,long *indic,long *ierr)
 #endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 {
     long iu,nbread;
     char fname[24];
@@ -142,14 +142,14 @@ while ((*p != '\0') && (*p != ' ')) {
     }
 }
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void closdr_( char *dfname,long *ierr,unsigned long len_dfname)
 #elif defined HPUX
   void closdr( char *dfname,long *ierr,unsigned long len_dfname)
 #elif defined PPRO_NT
   void __stdcall CLOSDR( char *dfname,unsigned long len_dfname,long *ierr)
 #endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 {
     long iu;
     char fname[24];
@@ -170,14 +170,14 @@ while ((*p != '\0') && (*p != ' ')) {
     }
 }
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void readdr_( char *dfname,void *buf,long *nbytes,long *irec,long *ierr,unsigned long len_dfname)
 #elif defined HPUX
   void readdr ( char *dfname,void *buf,long *nbytes,long *irec,long *ierr,unsigned long len_dfname)
 #elif defined PPRO_NT
   void __stdcall READDR( char *dfname,unsigned long len_dfname,void *buf,long *nbytes,long *irec,long *ierr)
 #endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 {
     long offset;
     long iu,nbval,nbseek;
@@ -208,14 +208,14 @@ while ((*p != '\0') && (*p != ' ')) {
 
 }
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void writdr_( char *dfname,void *buf,long *nbytes,long *irec,long *indic,long *s,long *ierr,unsigned long len_dfname)
 #elif defined HPUX
   void writdr( char *dfname,void *buf,long *nbytes,long *irec,long *indic,long *s,long *ierr,unsigned long len_dfname)
 #elif defined PPRO_NT
   void __stdcall WRITDR( char *dfname,unsigned long len_dfname,void *buf,long *nbytes,long *irec,long *indic,long *s,long *ierr)
 #endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 {
     long offset;
     long iu,nbval,nbseek,nbwrite;

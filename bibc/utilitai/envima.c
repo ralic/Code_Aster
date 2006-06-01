@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
+/* MODIF ENVIMA UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -72,7 +72,7 @@ static double R8PREC   = DBL_EPSILON ;
 static int R8UND[2]    = { 0x00000001 , 0x7ff00000 };
 static long   ISMFIC   = 12582912;
 
-#elif defined TRU64 || SOLARIS64 
+#elif defined TRU64 || LINUX64 || SOLARIS64 
 
 static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
 static long   ISMAX    = LONG_MAX ;
@@ -98,7 +98,7 @@ static long   ISMFIC   = 12582912;
 
 #define  R8_T0   273.15
 
-#if defined CRAY || SOLARIS || HPUX || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64  || PPRO_NT || P_LINUX
+#if defined CRAY || SOLARIS || HPUX || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64  || PPRO_NT || P_LINUX
 #define  R8GAME (sqrt(R8MAX*((double)1.-R8PREC)))
 #else
 #define  R8PREC (*(double*)R8UNPE-*(double*)R8UN)
@@ -117,7 +117,7 @@ static long   ISMFIC   = 12582912;
 int LCRAEM () {int l;l = _btol(1);return l;}
 #elif defined SOLARIS || IRIX_32
 int lcraem_() {return 0;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long lcraem_() {return 0;}
 #elif defined HPUX
 int lcraem() {return 0;}
@@ -139,7 +139,7 @@ int lbisem_ () {return 32;}
 int lbisem () {return 32;}
 #elif defined IRIX_32
 int lbisem_ () {return 32;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long lbisem_ () {return 64;}
 #elif defined P_LINUX
 int lbisem_ () {return 32;}
@@ -157,7 +157,7 @@ int luisem_ () {return 4;}
 int luisem () {return 4;}
 #elif defined IRIX_32
 int luisem_ () {return 4;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long luisem_ () {return 8;}
 #elif defined P_LINUX
 int luisem_ () {return 4;}
@@ -175,7 +175,7 @@ int lolsem_ () {return 4;}
 int lolsem () {return 4;}
 #elif defined IRIX_32
 int lolsem_ () {return 4;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long lolsem_ () {return 8;}
 #elif defined P_LINUX
 int lolsem_ () {return 4;}
@@ -191,7 +191,7 @@ int loisem_ () {return 4;}
 int loisem () {return 4;}
 #elif defined IRIX_32
 int loisem_ () {return 4;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long loisem_ () {return 8;}
 #elif defined P_LINUX
 int loisem_ () {return 4;}
@@ -203,7 +203,7 @@ int __stdcall LOISEM () {return 4;}
 int LOR8EM  () {return 8;}
 #elif defined SOLARIS || IRIX_32
 int lor8em_ () {return 8;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long lor8em_ () {return 8;}
 #elif defined HPUX
 int lor8em () {return 8;}
@@ -217,7 +217,7 @@ int __stdcall LOR8EM () {return 8;}
 int LOC8EM  () {return 16;}
 #elif defined SOLARIS || IRIX_32
 int loc8em_ () {return 16;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long loc8em_ () {return 16;}
 #elif defined HPUX
 int loc8em () {return 16;}
@@ -236,7 +236,7 @@ int ISNNEM  () {return (int)ISUND;}
 int isnnem_ () {return (int)ISUND;}
 #elif defined HPUX
 int isnnem () {return (int)ISUND;}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long isnnem_ () {return (long)ISUND;}
 #elif defined P_LINUX
 int isnnem_ () {return (int)ISUND;}
@@ -253,7 +253,7 @@ int ncisem_ () {return 9;}
 int ncisem () {return 9;}
 #elif defined IRIX_32
 int ncisem_() {return 9;} /* ???????????????? */
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long ncisem_() {return 19;} /* ???????????????? */
 #elif defined P_LINUX
 int ncisem_ () {return 9;}
@@ -269,7 +269,7 @@ int ncr8em_ () {return 16;}
 int ncr8em () {return 16;}
 #elif defined IRIX_32
 int ncr8em_ () {return 16;} /* ???????????????? */
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long ncr8em_ () {return 16;} /* ???????????????? */
 #elif defined P_LINUX
 int ncr8em_ () {return 16;}
@@ -286,7 +286,7 @@ int ISMAEM  () {return ISMAX;}
 int ismaem_ () {return (int)ISMAX;}
 #elif defined HPUX
 int ismaem () {return (int)ISMAX;}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long ismaem_ () {return (long)ISMAX;}
 #elif defined P_LINUX
 int ismaem_ () {return (int)ISMAX;}
@@ -300,7 +300,7 @@ int __stdcall ISMAEM () {return (int)ISMAX;}
 int LOUAEM  () {return 8;}
 #elif defined SOLARIS || IRIX_32
 int louaem_ () {return 1;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long louaem_ () {return 1;}
 #elif defined HPUX
 int louaem () {return 1;}
@@ -317,7 +317,7 @@ int __stdcall LOUAEM () {return 1;}
 int LOFIEM  () {return 523468800/1024;}
 #elif defined SOLARIS || IRIX_32 
 int lofiem_ () {return 2000*1024;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 int lofiem_ () {return 12582912;}
 #elif defined HPUX
 int lofiem ()  {return 2000*1024;}
@@ -335,7 +335,7 @@ int MOFIEM  () {return ISMFIC;}
 int mofiem_ () {return ISMFIC;}
 #elif defined HPUX
 int mofiem () {return ISMFIC;}
-#elif defined IRIX_32  || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32  || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long mofiem_ () {return ISMFIC;}
 #elif defined P_LINUX
 int mofiem_ () {return ISMFIC;}
@@ -351,7 +351,7 @@ int ISPBEM  (int *jb) {return (int)pow(2.,(*jb-1));}
 int ispbem_ (int *jb) {return (int)pow(2.,(*jb-1));}
 #elif defined HPUX
 int ispbem (int *jb) {return (int)pow(2.,(*jb-1));}
-#elif defined IRIX_32  || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32  || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long ispbem_ (long *jb) {return (long)pow(2.,(*jb-1));}
 #elif defined P_LINUX
 int ispbem_ (int *jb) {return (int)pow(2.,(*jb-1));}
@@ -365,7 +365,7 @@ int __stdcall ISPBEM (int *jb) {return (int)pow(2.,(*jb-1));}
 int ISBAEM ()  {return 2;}
 #elif defined SOLARIS || IRIX_32
 int isbaem_ ()  {return 2;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long isbaem_ ()  {return 2;}
 #elif defined HPUX
 int isbaem ()  {return 2;}
@@ -385,7 +385,7 @@ int islbem_ () {return 53;}
 int islbem () {return 53;}
 #elif defined IRIX_32
 int islbem_ () {return 53;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long islbem_ () {return 53;}
 #elif defined P_LINUX
 int islbem_ () {return 53;}
@@ -403,7 +403,7 @@ int iemaem_ () {return 1024;}
 int iemaem () {return 1024;}
 #elif defined IRIX_32
 int iemaem_ () {return 1024;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long iemaem_ () {return 1024;}
 #elif defined P_LINUX
 int iemaem_ () {return 1024;}
@@ -421,7 +421,7 @@ int iemiem_ () {return -1021;}
 int iemiem () {return -1021;}
 #elif defined IRIX_32
 int iemiem_ () {return -1021;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long iemiem_ () {return -1021;}
 #elif defined P_LINUX
 int iemiem_ () {return -1021;}
@@ -439,7 +439,7 @@ double RMIREM  () {return pow(2,-47);}
 double rmirem_ () {return pow(2,-53);}
 #elif defined HPUX
 double rmirem () {return pow(2,-53);}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double rmirem_ () {return pow(2,-53);}
 #elif defined P_LINUX
 double rmirem_ () {return pow(2,-53);}
@@ -456,7 +456,7 @@ double RMAREM  () {return pow(2,-46);}
 double rmarem_ () {return pow(2,-52);}
 #elif defined HPUX
 double rmarem () {return pow(2,-52);}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double rmarem_ () {return pow(2,-52);}
 #elif defined P_LINUX
 double rmarem_ () {return pow(2,-52);}
@@ -473,7 +473,7 @@ double RMINEM  () {return pow(2,-8190);}
 double rminem_ () {return pow(2,-1022);}
 #elif defined HPUX
 double rminem () {return pow(2,-1022);}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double rminem_ () {return pow(2,-1022);}
 #elif defined P_LINUX
 double rminem_ () {return pow(2,-1022);}
@@ -490,7 +490,7 @@ double RMAXEM  () {return (pow(2,8190)*(1.-pow(2,-47)));}
 double rmaxem_ () {return (pow(2,1023)*(1.-pow(2,-53)));}
 #elif defined HPUX
 double rmaxem () {return (pow(2,1023)*(1.-pow(2,-53)));}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double rmaxem_ () {return (pow(2,1023)*(1.-pow(2,-53)));}
 #elif defined P_LINUX
 double rmaxem_ () {return (pow(2,1023)*(1.-pow(2,-53)));}
@@ -512,7 +512,7 @@ double r8nnem ()  {return *(double*)R8UND;}
 double r8nnem_ () {return *(double*)R8UND;}
 #elif defined IRIX_64 
 double r8nnem_ () {return *(double*)R8UND;}
-#elif defined TRU64 || SOLARIS64 
+#elif defined TRU64 || LINUX64 || SOLARIS64 
 double r8nnem_ () {return *(double*)R8UND;}
 #elif defined P_LINUX
 double r8nnem_ () {return *(double*)R8UND;}
@@ -524,7 +524,7 @@ double __stdcall R8NNEM () {return *(double*)R8UND;}
 
 #if   defined CRAY
 double R8MAEM  () {return R8MAX;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64  || P_LINUX
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64  || P_LINUX
 double r8maem_ () {return R8MAX;}
 #elif defined HPUX
 double r8maem () {return R8MAX;}
@@ -536,7 +536,7 @@ double __stdcall R8MAEM () {return R8MAX;}
 
 #if   defined CRAY
 double R8MIEM  () {return R8MIN;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64  || P_LINUX
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64  || P_LINUX
 double r8miem_ () {return R8MIN;}
 #elif defined HPUX
 double r8miem () {return R8MIN;}
@@ -548,7 +548,7 @@ double __stdcall R8MIEM () {return R8MIN;}
 
 #if   defined CRAY
 long R8VIDE  () {long *p; p=&ISUND; return(*p);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8vide_ () {return R8MAX;}
 #elif defined HPUX
 double r8vide () {return R8MAX;}
@@ -563,7 +563,7 @@ double __stdcall R8VIDE () {return R8MAX;}
 
 #if   defined CRAY
 double R8BAEM  () {return (double)2.;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8baem_ () {return (double)2.;}
 #elif defined HPUX
 double r8baem () {return (double)2.;}
@@ -577,7 +577,7 @@ double __stdcall R8BAEM () {return (double)2.;}
 
 #if   defined CRAY
 double R8PREM  () {return (double)R8PREC;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8prem_ () {return R8PREC;}
 #elif defined HPUX
 double r8prem () {return R8PREC;}
@@ -592,7 +592,7 @@ double __stdcall R8PREM () {return R8PREC;}
 
 #if   defined CRAY
 double R8GAEM  () {return (double)R8GAME;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8gaem_ () {return (double)R8GAME;}
 #elif defined HPUX
 double r8gaem () {return (double)R8GAME;}
@@ -609,7 +609,7 @@ double __stdcall R8GAEM () {return (double)R8GAME;}
 
 #if   defined CRAY
 double R8T0  () {return (double)R8_T0;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8t0_ () {return (double)R8_T0;}
 #elif defined HPUX
 double r8t0 () {return (double)R8_T0;}
@@ -623,7 +623,7 @@ double __stdcall R8T0 () {return (double)R8_T0;}
 
 #if   defined CRAY
 double R8PI  () {return (double)R8_PI;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8pi_ () {return (double)R8_PI;}
 #elif defined HPUX
 double r8pi () {return (double)R8_PI;}
@@ -637,7 +637,7 @@ double __stdcall R8PI () {return (double)R8_PI;}
 
 #if   defined CRAY
 double R8DEPI  () {return (double)((double)2.*(double)R8_PI);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8depi_ () {return (double)((double)2.*(double)R8_PI);}
 #elif defined HPUX
 double r8depi () {return (double)((double)2.*(double)R8_PI);}
@@ -651,7 +651,7 @@ double __stdcall R8DEPI () {return (double)((double)2.*(double)R8_PI);}
 
 #if   defined CRAY
 double R8DGRD  () {return (double)((double)R8_PI/(double)180.);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8dgrd_ () {return (double)((double)R8_PI/(double)180.);}
 #elif defined HPUX
 double r8dgrd () {return (double)((double)R8_PI/(double)180.);}
@@ -665,7 +665,7 @@ double __stdcall R8DGRD () {return (double)((double)R8_PI/(double)180.);}
 
 #if   defined CRAY
 double R8RDDG  () {return (double)((double)180./(double)R8_PI);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 double r8rddg_ () {return (double)((double)180./(double)R8_PI);}
 #elif defined HPUX
 double r8rddg () {return (double)((double)180./(double)R8_PI);}
@@ -683,7 +683,7 @@ int llbloc_ () {return 64;}
 int llbloc () {return 64;}
 #elif defined IRIX_32
 int llbloc_ () {return 64;}
-#elif defined IRIX_64 || TRU64 || SOLARIS64 
+#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64 
 long llbloc_ () {return 96;}
 #elif defined P_LINUX
 int llbloc_ () {return 32;}

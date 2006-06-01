@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MVSCAN ALGELINE  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MVSCAN ALGELINE  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 #include <stdio.h>
 #ifdef CRAY
 /*
@@ -61,7 +61,7 @@
   long *indx, *pntr, *descriptor;
   double *scratch;
   long *nrows;
-#elif defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX 
+#elif defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX 
    void mvscan_ (double *result, double *matrix, double *vector,
                  long *indx, long *pntr, long *descriptor, long *nrows, double *scratch)
 #elif defined HPUX
@@ -72,7 +72,7 @@
                           long *indx, long *pntr, long *descriptor, long *nrows, double *scratch)
 #endif
 {
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || TRU64 || SOLARIS64 || P_LINUX 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX 
    void abort(void);
    printf("\n Arret provoque dans MVSCAN \n");
    abort();

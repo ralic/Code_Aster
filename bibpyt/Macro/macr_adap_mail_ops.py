@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,10 +207,11 @@ def macr_adap_mail_ops ( self,
 #
         dico = {}
         dico["Type_Champ"] = "CHAMP_MAJ"
-        Liste_aux = [ "CHAM_MAJ", "TYPE_CHAM", "NOM_CHAM" ]
+        Liste_aux = [ "CHAM_MAJ", "TYPE_CHAM" ]
         if ( maj_cham["RESULTAT"] != None ) :
           lresu = 1
           Liste_aux.append("RESULTAT")
+          Liste_aux.append("NOM_CHAM")
           if ( maj_cham["NUME_ORDRE"] != None ) :
             dico["NUME_ORDRE"] = maj_cham["NUME_ORDRE"]
           elif ( maj_cham["INST"] != None ) :
@@ -663,8 +664,8 @@ def macr_adap_mail_ops ( self,
 #
 # 5.7. ==> Impression eventuelle des fichiers créés
 #
-#gn#gn  print "Répertoire ",Rep_Calc_HOMARD_global
-  os.system("ls -la "+Rep_Calc_HOMARD_global)
+#gn  print "Répertoire ",Rep_Calc_HOMARD_global
+#gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
   if ( INFO > 1 ) :
     L_aux = ["HOMARD.Donnees" , "HOMARD.Configuration"]
   else :

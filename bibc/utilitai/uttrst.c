@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTRST UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTRST UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -45,7 +45,7 @@ void UTTRST ( float *t_rst )
 
   *t_rst = t_lim - t_csm[0] - t_csm[1];
 }
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 void uttrst_ ( double *t_rst )
 {
   double t_csm[2] , t_lim;

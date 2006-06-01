@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hanfpe utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hanfpe utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,12 +24,12 @@
 **  Il n'y a pas de passage d'argument pour minimiser les problemes
 **  d'interfacage FORTRAN/C et reciproquement
 */
-#if defined CRAY || SOLARIS || HPUX|| IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || HPUX|| IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <stdio.h>
 #include <stdlib.h>
 #endif
 
-#if defined CRAY || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    void hanfpe (int sig)
 #elif defined SOLARIS
 #include <siginfo.h>
@@ -43,7 +43,7 @@ void exit (int status) ;
 #ifdef CRAY
    UTMFPE();
    exit(sig);
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    utmfpe_();
    exit(sig);
 #elif defined HPUX

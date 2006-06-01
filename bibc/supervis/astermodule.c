@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE */
+/* MODIF astermodule supervis  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -82,7 +82,7 @@
 /* Operateur de concatenation */
 #define  _(A,B)   A##B
 
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+#if defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
 #define F_FUNC(UN,LN)                            _(LN,_)
 
 #elif defined HPUX
@@ -93,7 +93,7 @@
 
 #endif
 
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX || HPUX
+#if defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX || HPUX
 #define STDCALL(UN,LN)                           F_FUNC(UN,LN)
 
 #define CALLSS(UN,LN,a,b)                        F_FUNC(UN,LN)(a,b,strlen(a),strlen(b))
@@ -270,7 +270,7 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #if defined(SOLARIS) || defined(P_LINUX) || defined(PPRO_NT) || defined(HPUX)
 #define INTEGER long
 #else
-#if defined IRIX || TRU64 || SOLARIS64
+#if defined IRIX || TRU64 || LINUX64 || SOLARIS64
 #define INTEGER long
 #else
 #error Environnement INDEFINI pour INTEGER

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTSEP UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF GTSEP UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 
 #ifdef CRAY
    long GTSEP(char *sep)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long gtsep_(char *sep, int ll)
 #elif defined HPUX
    long gtsep(char *sep, int ll)
@@ -28,7 +28,7 @@
    extern long __stdcall GTSEP(char *sep,unsigned int ll)
 #endif
 {
-#if defined CRAY || SOLARIS || IRIX || HPUX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || IRIX || HPUX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #define BS  '/'
 
 #elif defined PPRO_NT

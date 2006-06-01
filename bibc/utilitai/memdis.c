@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMDIS UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MEMDIS UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #ifdef CRAY
    long MEMDIS(long *L, long **iadm, long *taille_mo, long *lfree)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long memdis_(long *L, long **iadm, long *taille_mo, long *lfree)
 #elif defined HPUX
    long memdis(long *L, long **iadm, long *taille_mo, long *lfree)
@@ -50,7 +50,7 @@ dim=dim+delta;
 if ( *lfree == 1 ) {
 #ifdef CRAY
    cfree ( retour , dim , sizeof(long) ) ;
-#elif defined SOLARIS || IRIX || PPRO_NT || HPUX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || PPRO_NT || HPUX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    free (retour );
 #endif
    iadm = NULL;

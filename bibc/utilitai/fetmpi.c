@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF FETMPI UTILITAI  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU */
+/* MODIF FETMPI UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,7 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
   void fetmpi_(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
              char *k124,char *k224,char *k324,float *argr1,unsigned long lk124,unsigned long lk224,unsigned long lk324)
 #elif defined HPUX
@@ -28,7 +28,7 @@
 #endif
 {
 #if defined MPI_FETI
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
   extern void fetam_(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
                    char *k124,char *k224,char *k324,float *argr1,unsigned long lk124,unsigned long lk224,unsigned long lk324);
   fetam_(opt,nbsd,ifm,niv,rang,nbproc,k124,k224,k324,argr1,lk124,lk224,lk324);
@@ -42,7 +42,7 @@
   FETAM(opt,nbsd,ifm,niv,rang,nbproc,k124,lk124,k224,lk224,k324,lk324,argr1);
 #endif
 #else
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
   extern void fetsm_(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc);
   fetsm_(opt,nbsd,ifm,niv,rang,nbproc);
 #elif defined HPUX

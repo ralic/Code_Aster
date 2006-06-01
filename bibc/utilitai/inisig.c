@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE */
+/* MODIF inisig utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,7 +31,7 @@
 extern int errno;
 void hancpu (int sig);
 
-#if defined CRAY || HPUX || P_LINUX || TRU64  || SOLARIS64
+#if defined CRAY || HPUX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
   void hanfpe (int sig);
   void stptrap ( int sig) ;
   void stpusr1 ( int sig) ;
@@ -51,9 +51,14 @@ void hancpu (int sig);
   void stptrap(int sig);
 #endif
 
+#ifdef P_LINUX || LINUX64
+#define _GNU_SOURCE 1
+#include <fenv.h>
+#endif
+
 #ifdef CRAY
   void INISIG( void )
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void inisig_( void )
 #elif defined HPUX
   void inisig( void )
@@ -62,7 +67,7 @@ void hancpu (int sig);
 #endif
 {
 int ier;
-#if defined CRAY || SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+#if defined CRAY || SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
   struct sigaction action_CPU_LIM;
 #endif
 #if defined IRIX
@@ -75,7 +80,7 @@ int ier;
 /*            */
 /* CPU LIMITE */
 /*            */
-#if defined CRAY || SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+#if defined CRAY || SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
   action_CPU_LIM.sa_handler=hancpu;
   sigemptyset(&action_CPU_LIM.sa_mask);
   action_CPU_LIM.sa_flags=0;
@@ -83,7 +88,7 @@ int ier;
 
 #ifdef CRAY
    sigaction(SIGCPULIM,&action_CPU_LIM,NULL);
-#elif defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+#elif defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
    sigaction(SIGXCPU  ,&action_CPU_LIM,NULL);
 #endif
 
@@ -103,14 +108,12 @@ int ier;
 
 #elif defined P_LINUX
 
-#define _GNU_SOURCE 1
-#include <fenv.h>
    /* Enable some exceptions. At startup all exceptions are masked. */
    feenableexcept(FE_DIVBYZERO|FE_OVERFLOW);
 
    signal(SIGFPE,  hanfpe);
 
-#elif defined HPUX || TRU64  || SOLARIS64
+#elif defined HPUX || TRU64 || LINUX64  || SOLARIS64
    signal(SIGFPE,  hanfpe);
 #elif defined PPRO_NT
 #define _EXC_MASK  _EM_INEXACT + _EM_UNDERFLOW
@@ -122,7 +125,7 @@ int ier;
 /*                          */
 /* Arret par CRTL C         */
 /*                          */
-#if defined PPRO_NT || IRIX || TRU64 || P_LINUX
+#if defined PPRO_NT || IRIX || TRU64 || LINUX64 || P_LINUX
    signal(SIGINT,  stptrap);
 #endif
 
@@ -131,7 +134,7 @@ int ier;
 /*                          */
 /* Note : l'arret par SIGUSR1 ne fonctionne pas sous MSVC,
    il faudra essayer de trouver autre chose... */
-#if defined IRIX || TRU64 || P_LINUX
+#if defined IRIX || TRU64 || LINUX64 || P_LINUX
    signal(SIGUSR1,  stpusr1);
 #endif
 }
@@ -147,7 +150,7 @@ void stpusr1 (int sig)
 #ifdef CRAY
    SIGUSR();
 #endif
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+#if defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
    sigusr_();
 #endif
 exit(sig);

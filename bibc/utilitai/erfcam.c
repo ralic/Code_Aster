@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ERFCAM UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ERFCAM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 #include <math.h>
 #if defined CRAY
    double ERFCAM(double *x)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    double erfcam_(double *x)
 #elif defined HPUX 
    double erfcam(double *x)
@@ -28,7 +28,7 @@
    double __stdcall ERFCAM(double *x)
 #endif
 {
-#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   double y;
   y = erfc(*x);
   return(y);

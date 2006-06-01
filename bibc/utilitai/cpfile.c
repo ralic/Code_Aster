@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 30/11/2004   AUTEUR D6BHHHH M.ASA */
+/* MODIF CPFILE UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,7 +25,7 @@
  
 extern int errno;
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 void cpfile_(char *action, char *nom1, char *nom2, unsigned long la, unsigned long lnom1, unsigned long lnom2)
 
 #elif defined HPUX

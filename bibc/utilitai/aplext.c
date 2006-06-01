@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 13/09/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF APLEXT UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,7 +25,7 @@
 
  extern int errno;
 
-#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -36,7 +36,7 @@
 #include <fortran.h>
 void APLEXT(long *niv,long *nbd, _fcd nomF, long *ier)
 
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 void aplext_(long *niv,long *nbd, char *nom, long *ier, unsigned long lnom)
 
 #elif defined HPUX
@@ -167,7 +167,7 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
                   fprintf(stdout,"cpu limit exceeded");
                   break;
 #endif
-#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
                case SIGXCPU  :
                   fprintf(stderr,"cpu limit exceeded");
                   fprintf(stdout,"cpu limit exceeded");

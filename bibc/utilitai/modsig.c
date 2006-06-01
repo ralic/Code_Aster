@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF modsig utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF modsig utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -41,7 +41,7 @@
 #include <signal.h>
 #include <string.h>
 
-#if defined CRAY || HPUX || IRIX || P_LINUX || TRU64  || SOLARIS64
+#if defined CRAY || HPUX || IRIX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
   void hanfpe (int sig);
 #elif defined SOLARIS
 #include <siginfo.h>
@@ -55,7 +55,7 @@
 #ifdef CRAY
 #include <fortran.h>
   void MODSIG( long *enable, _fcd  *TypeErreurF)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   void modsig_( long *enable, char *TypeErreur, unsigned long lte)
 #elif defined HPUX
   void modsig( long *enable, char *TypeErreur, unsigned long lte)
@@ -112,7 +112,7 @@
    else if ( valsig[1] < 0 ) {ieee_handler("clear","overflow",hanfpe);}
    if      ( valsig[2] > 0 ) {ieee_handler("set","division",hanfpe);}
    else if ( valsig[2] < 0 ) {ieee_handler("clear","division",hanfpe);}
-#elif defined HPUX || IRIX || P_LINUX || TRU64  || SOLARIS64
+#elif defined HPUX || IRIX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
    signal(SIGFPE,  hanfpe);
 #elif defined PPRO_NT
    unsigned int  _controlfp (unsigned int new, unsigned int mask);

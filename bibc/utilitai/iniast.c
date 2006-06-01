@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF iniast utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -23,7 +23,7 @@
 
 #if defined CRAY
    long INIAST(long *r1, long *r2, long *r3)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #define INIAST iniast_
    long iniast_(long *r1, long *r2, long *r3)
 #elif defined HPUX
@@ -43,7 +43,7 @@ char vdate[9];
 
 #if defined CRAY
    extern void ERRLIC(void);
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #define ERRLIC errlic_
 #define VERSIO versio_
 #define DATE date_
@@ -66,7 +66,7 @@ char vdate[9];
  vdate[8] = '\0' ;
 #if defined PPRO_NT
  VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ldate,&ilog);
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
  VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ilog,&ldate);
 #endif
  sscanf(vdate,"%d/%d/%d",&a1,&a2,&a3);
@@ -74,7 +74,7 @@ char vdate[9];
 /* calcul du nombre de jours à la louche */
  delta=(a3-v[0]-1900)*365+(a2+15-v[1])*30+a1-v[2];
  if (delta < 0 ) {
-#if defined TRU64 || NO_EXPIR
+#if defined TRU64 || LINUX64 || NO_EXPIR
 #else
      ERRLIC();
 #endif

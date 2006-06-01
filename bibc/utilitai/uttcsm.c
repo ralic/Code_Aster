@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -22,7 +22,7 @@
 /* temps(sec) consommes user et systeme pour ce processus   	 	*/
 
 #ifdef CRAY
-#elif defined  SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined  SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <sys/times.h>
 #include <time.h>
 #elif defined  PPRO_NT
@@ -46,13 +46,13 @@ void UTTCSM ( float *t_csm )
  t_csm[0] = t_usr_csm;
  t_csm[1] = t_sys_csm;
 }
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 void uttcsm_(double *t_csm)
 {
  struct tms temps;
  times (&temps);
- t_csm[0]=(double)temps.tms_utime/(double)CLK_TCK;
- t_csm[1]=(double)temps.tms_stime/(double)CLK_TCK;
+ t_csm[0]=(double)temps.tms_utime/(double)CLOCKS_PER_SEC;
+ t_csm[1]=(double)temps.tms_stime/(double)CLOCKS_PER_SEC;
 }
 #elif defined PPRO_NT
 void __stdcall UTTCSM(double *t_csm)
@@ -65,8 +65,8 @@ void uttcsm(double *t_csm)
 {
  struct tms temps;
  times (&temps);
- t_csm[0]=(double)temps.tms_utime/(double)CLK_TCK;
- t_csm[1]=(double)temps.tms_stime/(double)CLK_TCK;
+ t_csm[0]=(double)temps.tms_utime/(double)CLOCKS_PER_SEC;
+ t_csm[1]=(double)temps.tms_stime/(double)CLOCKS_PER_SEC;
 }
 #elif defined PPRO_NT
 void __stdcall UTTCSM(double *t_csm)

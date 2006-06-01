@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTCWD UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF GTCWD UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 
 #ifdef CRAY
    long GTCWD(char *rep)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
    long gtcwd_(char *rep,unsigned long ll)
 #elif defined HPUX
    long gtcwd(char *rep,unsigned long ll)
@@ -33,7 +33,7 @@ extern GETCWD(char *rep);
 long ier;
 ier = GETCWD(rep) ;
 
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 extern long getcwd_(char *rep,unsigned long ll);
 long ier;
 ier = getcwd_(rep,ll) ;

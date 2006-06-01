@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTLIM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -26,7 +26,7 @@ extern char g_tpmax[];
 #include <sys/category.h>
 #include <sys/resource.h>
 #include <time.h>
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <sys/time.h>
 #include <sys/resource.h>
 #endif
@@ -72,7 +72,7 @@ void uttlim ( double *t_lim )
 	*t_lim = (double) LONG_MAX;
   }
 }
-#elif  defined IRIX || P_LINUX || TRU64 || SOLARIS64 
+#elif  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <float.h>
 #include <limits.h>
 void uttlim_ ( double *t_lim )

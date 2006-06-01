@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,11 +88,12 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #  . Raffinement et deraffinement, selon un champ d'indicateurs d'erreur
 #  . Raffinement seul, selon un champ d'indicateurs d'erreur
 #  . Deraffinement seul, selon un champ d'indicateurs d'erreur
+#  . Raffinement seul, selon des zones geometriques
 #  . Raffinement uniforme : toutes les mailles sont divisées
 #  . Deraffinement uniforme : toutes les mailles sont regroupées
 #  . Rien : le maillage est le meme a la sortie et a l'entree
 #
-  ADAPTATION = SIMP(statut='f',typ='TXM',
+  ADAPTATION = SIMP(statut='o',typ='TXM',
                     into=("RAFF_DERA","RAFFINEMENT","DERAFFINEMENT","RAFFINEMENT_ZONE", \
                           "RAFFINEMENT_UNIFORME","DERAFFINEMENT_UNIFORME","RIEN"),    
                     fr="Pilotage de l'adaptation : selon un indicateur d'erreur ou uniforme.",
@@ -353,15 +354,21 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                     fr="Resultat contenant le champ à mettre à jour",
                     ang="Result with field to be updated" ),
 #
-    NOM_CHAM = SIMP(statut='f',typ='TXM',
-                    fr="Nom du champ à mettre à jour",
-                    ang="Name of the field to be updated" ),
+    b_nom_du_champ = BLOC(condition="(RESULTAT != None)",
+                          fr="Choix éventuel du nom du champ à interpoler",
+                          ang="Selection for the name of the field (option)",
+#
+      NOM_CHAM = SIMP(statut='o',typ='TXM',
+                      fr="Nom du champ à mettre à jour",
+                      ang="Name of the field to be updated" ),
+#
+    ),
 #
 # 11.4. Le paramètre temporel pour le champ a interpoler
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT != None)",
-                                fr="Choix éventuel du paramètre temporel pour l'indicateur",
-                                ang="Time selection for error indicator (option)",
+                                fr="Choix éventuel du paramètre temporel pour le champ à interpoler",
+                                ang="Time selection for the field (option)",
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #

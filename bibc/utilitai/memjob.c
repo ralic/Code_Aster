@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF memjob utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF memjob utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 extern char g_memory[];
 #include <string.h>
 #include <stdio.h>
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <sys/resource.h>
 #include <sys/time.h>
    long memjob_(void)
@@ -67,7 +67,7 @@ extern char g_memory[];
          return ((long)memmega);
          }
       }
-#elif defined PPRO_NT || HPUX || IRIX || P_LINUX || TRU64  || SOLARIS64
+#elif defined PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
    int imem;
    if ( strlen(g_memory) != '\0' ) {
         sscanf(g_memory,"%d",&imem);

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MKDESC ALGELINE  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MKDESC ALGELINE  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ------------------------------------------------------------------ */
 #include <stdio.h>
 #ifdef CRAY
@@ -61,7 +61,7 @@
 
    extern void compsf();
    void MKDESC (long *descriptor, long *pntr, long *nrows, long *scratch)
-#elif defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX 
+#elif defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX 
    void mkdesc_ (long *descriptor, long *pntr, long *nrows, long *scratch)
 #elif defined HPUX
    void mkdesc (long *descriptor, long *pntr, long *nrows, long *scratch)
@@ -69,7 +69,7 @@
    void __stdcall MKDESC (long *descriptor, long *pntr, long *nrows, long *scratch)
 #endif
 {
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || TRU64 || SOLARIS64 || P_LINUX 
+#if defined SOLARIS || PPRO_NT || HPUX || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX 
    void abort(void);
    printf("\n Arret provoque dans MKDESC \n");
    abort();

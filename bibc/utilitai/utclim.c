@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTCLIM UTILITAI  DATE 22/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF UTCLIM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,7 +27,7 @@ extern char g_tpmax[];
 #include <string.h>
 #include <stdio.h>
 
-#if  defined IRIX || P_LINUX || TRU64 || SOLARIS || SOLARIS64 
+#if  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS || SOLARIS64 
 void utclim_ ( long *t_fin )
 #elif defined HPUX 
 void utclim ( long *t_fin )
