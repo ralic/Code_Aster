@@ -1,0 +1,60 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 08/06/2006 - 15:49:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009824 DU 2006-06-07 14:50:41
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+NB_JOURS_TRAV  : 0.5
+TITRE
+   Mesure temps CPU
+FONCTIONNALITE
+   La correction d'un probleme de compilation rencontre sur certaines machines a introduit
+   une erreur dans la mesure du temps CPU.
+   Le temps consomme est ainsi sous-estime. Il en resulte que le mecanisme permettant
+   d'arreter proprement un calcul iteratif (par ex. STAT_NON_LINE/DYNA_NON_LINE) ne se
+   declenchait plus.
+   
+   La correction est faite dans "uttcsm.c".
+   
+   On restitue le test zzzz107b qui verifie que l'exception ArretCPUError est levee (idem
+   ssna111a avec un temps CPU beaucoup trop faible 30s au lieu de 300).
+   Remarque : en mode "etude" (par opposition a astout), le diagnostic de ce test reste
+   CPU_LIMIT.
+   
+   Le probleme est juge suffisamment important pour faire un increment de version
+   supplementaire sur la 8.2 et stabiliser la version 8.3 sur la base de la 8.2.26 (et non
+   de
+   la 8.2.25).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz107b
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF utilitai/uttcsm              mcourtoi M.COURTOIS          93     23      7
+ CASTEST AJOUT zzzz107b                     mcourtoi M.COURTOIS         138    138      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         138       138              +138
+ MODIF :    1          93        23       7       +16
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    2         231       161       7      +154 

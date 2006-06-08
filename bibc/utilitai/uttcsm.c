@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 08/06/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,6 +29,22 @@
 #include <time.h>
 #endif
 
+/*
+   Avec les versions de GCC >= 4, CLK_TCK n'est plus défini.
+   Il faut dans ce cas utiliser CLOCKS_PER_SEC.
+   ATTENTION car, inversement, CLOCKS_PER_SEC ne donne pas les
+   bons temps avec les versions GCC < 4.
+   
+   Quand les deux sont définis, il y a un facteur 10000 entre
+   les deux (CLOCKS_PER_SEC = 1e6, CLK_TCK = 100). A priori,
+   cela semble lier à l'utilisation de times() ou getrusage()
+*/
+#ifndef CLK_TCK
+   #define __USED_CLOCKS_PER_SEC CLOCKS_PER_SEC
+#else
+   #define __USED_CLOCKS_PER_SEC CLK_TCK
+#endif
+
 
 #ifdef CRAY
 void UTTCSM ( float *t_csm )
@@ -51,13 +67,13 @@ void uttcsm_(double *t_csm)
 {
  struct tms temps;
  times (&temps);
- t_csm[0]=(double)temps.tms_utime/(double)CLOCKS_PER_SEC;
- t_csm[1]=(double)temps.tms_stime/(double)CLOCKS_PER_SEC;
+ t_csm[0]=(double)temps.tms_utime/(double)__USED_CLOCKS_PER_SEC;
+ t_csm[1]=(double)temps.tms_stime/(double)__USED_CLOCKS_PER_SEC;
 }
 #elif defined PPRO_NT
 void __stdcall UTTCSM(double *t_csm)
 {
- t_csm[0]=(double)clock()/CLOCKS_PER_SEC;
+ t_csm[0]=(double)clock()/__USED_CLOCKS_PER_SEC;
  t_csm[1]=(double)0.;
 }
 #elif defined HPUX
@@ -65,13 +81,13 @@ void uttcsm(double *t_csm)
 {
  struct tms temps;
  times (&temps);
- t_csm[0]=(double)temps.tms_utime/(double)CLOCKS_PER_SEC;
- t_csm[1]=(double)temps.tms_stime/(double)CLOCKS_PER_SEC;
+ t_csm[0]=(double)temps.tms_utime/(double)__USED_CLOCKS_PER_SEC;
+ t_csm[1]=(double)temps.tms_stime/(double)__USED_CLOCKS_PER_SEC;
 }
 #elif defined PPRO_NT
 void __stdcall UTTCSM(double *t_csm)
 {
- t_csm[0]=(double)clock()/CLOCKS_PER_SEC;
+ t_csm[0]=(double)clock()/__USED_CLOCKS_PER_SEC;
  t_csm[1]=(double)0.;
 }
 #endif
