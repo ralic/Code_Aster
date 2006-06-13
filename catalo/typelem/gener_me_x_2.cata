@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+%& MODIF TYPELEM  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,14 @@ MODE_LOCAL__
                                         X13      X14      X15      X16      X17      X18       
                                         X19      X20      X21      X22      X23      X24      
                                         X25      X26      X27       )
-
+    E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       )
+    E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18    )
+    E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
+    E8NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8      )
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
 
@@ -151,4 +158,6 @@ OPTION__
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
+    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+                              OUT__  E9NEUTR PPINTTO  E18NEUI  PCNSETO   E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
 

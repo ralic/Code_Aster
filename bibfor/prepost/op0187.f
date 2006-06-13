@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
      &        JREFE,JVAL,NBMAGT,JNBNIM,JNBSEM,NBSEM,JNGMF,IPOMA,INUMA,
      &        IREGM,NUMAF,NUMSE,NBUTI,JJ,JNBNFG,ITET,JCNS,NMVTNF,I1,I2,
      &        JPIN,NUMNI,INO,KTET,IMA,JC,NBNIM,ICNS,NLIG,IOCC,NBNONO,
-     &        NBHEA,NTET,TYPSE,IC,DIM,
+     &        NBHEA,NTET,TYPSE,IC,DIM,JFACE,IFACE,JMMF,J1,J2,J3,KMMF,
      &        NXIS,NBNIS,JNIS,JNISID,JCOFE,INIS,NUISP,NUISM,NBCNS,NBPIN,
      &        JCORF,ILOC,JNBSE,IIND,JSE,JIIND,JIINDP,NBGEL,NBMAGL,JCOFL,
      &        IIPIN,JJCNS,IICNS,JJPIN,IGREL,NBGREL,JWXFEM,JL,JDIMI,JJSE,
@@ -89,16 +89,8 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
       ENDIF
 C
       CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)  
-C
-      IF(DIM.EQ.3)THEN
-        NBCNS=128
-        NBPIN=33
-        NBHEA=36
-      ELSEIF(DIM.EQ.2)THEN
-        NBCNS=18
-        NBPIN=6
-        NBHEA=6
-      ENDIF
+      LIEL=MO//'.MODELE    .LIEL'
+      CALL JELIRA(LIEL,'NMAXOC',NBGREL,KBID)
 C
 C --- NOM DU MAILLAGE D'ENTREE : MA
       CALL JEVEUO(MO//'.MODELE    .NOMA','L',JNOMA)
@@ -110,6 +102,11 @@ C
 C --- NOMBRE DE MAILLES DU MAILLAGE INITIAL :  NBTMA
       CALL JEVEUO(MA//'.DIME','L',JDIMI)
       NBTMA=ZI(JDIMI+2)
+      CALL WKVECT('&&OP0187.MAIL_MODEL_FISS','V V I',NBTMA,JMMF)
+      DO 9 I=1,NBTMA
+        ZI(JMMF+I-1)=0
+ 9    CONTINUE
+
       NBTNO=ZI(JDIMI)
 C     NOMBRE DE MAILLES X-FEM :  NBMF
 C     ON DESIGNERA PAR MAILLES X-FEM LES MAILLES VOISINES DE LA FISSURES
@@ -122,6 +119,10 @@ C      DE LA FISSURE)
       CALL JEEXIN(HEAV,IRET)
       IF(IRET.NE.0)THEN
          CALL JELIRA(HEAV,'LONMAX',NBHEAV,KBID)
+         CALL JEVEUO(HEAV,'E',J1)
+         DO 8 I=1,NBHEAV
+           ZI(JMMF+ZI(J1+I-1)-1)=1
+ 8       CONTINUE
       ELSE
          NBHEAV=0
       ENDIF
@@ -129,6 +130,10 @@ C      DE LA FISSURE)
       CALL JEEXIN(CTIP,IRET)
       IF(IRET.NE.0)THEN
          CALL JELIRA(CTIP,'LONMAX',NBCTIP,KBID)
+         CALL JEVEUO(CTIP,'E',J2)
+         DO 7 I=1,NBCTIP
+           ZI(JMMF+ZI(J2+I-1)-1)=1
+ 7       CONTINUE
       ELSE
          NBCTIP=0
       ENDIF
@@ -136,13 +141,16 @@ C      DE LA FISSURE)
       CALL JEEXIN(HECT,IRET)
       IF(IRET.NE.0)THEN
          CALL JELIRA(HECT,'LONMAX',NBHECT,KBID)
+         CALL JEVEUO(HECT,'E',J3)
+         DO 6 I=1,NBHECT
+           ZI(JMMF+ZI(J3+I-1)-1)=1
+ 6       CONTINUE
       ELSE
          NBHECT=0
       ENDIF
-      NBMF=NBHEAV+NBCTIP+NBHECT
 
-C     NOMBRE DE MAILLES NON-XFEM : NBMNF
-      NBMNF=NBTMA-NBMF
+C     NOMBRE DE MAILLES FISSUREES
+      NBMF=NBHEAV+NBCTIP+NBHECT
 C
 C --- CREATION DE TABLEAUX DE TRAVAIL ET RECUPERATION DE DIMENSIONS:
 C     T1 - TABLEAU DES MAILLES X-FEM :ZI(JWXFEM)     
@@ -169,7 +177,9 @@ C     T10 - TABLEAU DES MAIILES XFEM AYANT POUR NOEUD D'INTERSECTION
 C     QUE DES NOEUDS SOMMETS.
       CALL WKVECT('&&OP0187.MA_NSNI','V V I',NBMF,JMANIS)
 C     T11 - TABLEAU INDICATEUR ASSOCIE A T10
-      CALL WKVECT('&&OP0187.IND_NSNI','V V I',NBMF,JNDNIS)
+      CALL WKVECT('&&OP0187.IND_NSNI','V V I',NBTMA,JNDNIS)
+C     T12 - TABLEAU D'INDICES DES ELEMENTS DE BORD:ZI(JFACE)
+      CALL WKVECT('&&OP0187.FACE','V V I',NBMF,JFACE)
 C
       DO 10 I=1,NBTMA
          ZI(JIND+I-1)=0
@@ -178,15 +188,13 @@ C
       DO 11 I=1,NBTNO
          ZI(JH20N+I-1)=0
  11   CONTINUE
-      DO 12 I=1,NBMF
+      DO 12 I=1,NBTMA
          ZI(JNDNIS+I-1)=0
  12   CONTINUE
 C
 C     ON PARCOURT LE LIGREL:
       CALL JEVEUO(FISS//'.TOPOSE.LON.CELV','L',JLON)
       CALL JEVEUO(FISS//'.TOPOSE.CNS.CELV','L',JCNS)
-      LIEL=MO//'.MODELE    .LIEL'
-      CALL JELIRA(LIEL,'NMAXOC',NBGREL,KBID)
       IOCC=0
       KK=0
       IICNS=0
@@ -201,13 +209,29 @@ C     ON PARCOURT LE LIGREL:
          CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
          NUTYEL=ZI(IGREL+NBMAGL-1)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NOTYPE)
+         IFACE=0
          IF(DIM.EQ.3)THEN
              IF(NOTYPE(1:6).NE.'MECA_X') GOTO 40
+             IF(NOTYPE(8:11).EQ.'FACE' .OR. NOTYPE(9:12).EQ.'FACE' .OR.
+     &          NOTYPE(10:13).EQ.'FACE')THEN
+                NBCNS=18
+                NBPIN=9
+                NBHEA=6
+                IFACE=1
+             ELSE
+                NBCNS=128
+                NBPIN=33
+                NBHEA=36
+             ENDIF
          ELSE
              IF(NOTYPE(8:9).NE.'_X')GOTO 40
+             NBCNS=18
+             NBPIN=6
+             NBHEA=6
          ENDIF
          DO 50 J=1,NBMAGL-1
            IMA=ZI(IGREL+J-1)
+           ZI(JMMF+IMA-1)=0 
            IOCC=IOCC+1
            I1=ZI(JLON+8*(IOCC-1))
            IF(I1.NE.0)THEN
@@ -241,6 +265,7 @@ C               NOEUDS D'INTERSECTION QUE DES NOEUDS SOMMETS
                 CALL JEDETR('&&OP0187.1000')
              ENDIF
              ZI(JWXFEM+KK-1)=IMA
+             ZI(JFACE+KK-1)=IFACE
              ZI(JIND+IMA-1)=KK
              ZI(JJCNS+KK-1)=IICNS
              ZI(JJPIN+KK-1)=IIPIN
@@ -277,12 +302,14 @@ C            LINEARISER
                       NBNOMI=6
                       ZI(JH20M+IMA-1)=18
                 ENDIF
-             ELSEIF(NOTYPE.EQ.'MECPTR6_X')THEN
+             ELSEIF(NOTYPE.EQ.'MECPTR6_X'.OR.NOTYPE.EQ.'MEDPTR6_X'.OR.
+     &              NOTYPE.EQ.'MECA_X_FACE6')THEN
                CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMA),'L',JCO)
                NBNOSO=3
                NBNOMI=3
                ZI(JH20M+IMA-1)=7
-             ELSEIF(NOTYPE.EQ.'MECPQU8_X')THEN
+             ELSEIF(NOTYPE.EQ.'MECPQU8_X'.OR.NOTYPE.EQ.'MEDPQU8_X'.OR.
+     &              NOTYPE.EQ.'MECA_X_FACE8')THEN
                NBNOSO=4
                NBNOMI=4
                ZI(JH20M+IMA-1)=12
@@ -298,6 +325,14 @@ C            LINEARISER
  40   CONTINUE
 C
       NBNOIS=NBNOIS/2
+
+C     ON AJUSTE LE NOMBRE DE MAILLES FISSUREES (CELLES DU MODELE XFEM)
+      KMMF=0
+      DO 5 I=1,NBTMA
+        IF(ZI(JMMF+I-1).EQ.1)KMMF=KMMF+1
+ 5    CONTINUE
+      NBMF=NBMF-KMMF    
+      NBMNF=NBTMA-NBMF
 C
 C     ===============================================================
 C      2. CONTRIBUTION DES NOEUDS ET DES MAILLES NON XFEM POUR
@@ -446,16 +481,19 @@ C
 C
 C     I- ON PARCOURT LES MAILLES X-FEM
 C     --------------------------------
-      IF(DIM.EQ.3)THEN
-          NTET=4
-          TYPSE=18
-      ELSE
-          NTET=3
-          TYPSE=7
-      ENDIF
+C
       DO 100 I=1,NBMF
 C        NUMERO DE LA MAILLE X-FEM
          NUMAF=ZI(JWXFEM+I-1)
+         IF(ZI(JFACE+I-1).EQ.1.OR.DIM.EQ.2)THEN
+             NBHEA=6
+             NTET=3
+             TYPSE=7
+         ELSE
+             NBHEA=36
+             NTET=4
+             TYPSE=18
+         ENDIF
 C        NOMBRE DE NOEUDS SOMMETS:
          IF(ZI(JTYP+NUMAF-1).EQ.25)THEN
                  NBNOSO=8

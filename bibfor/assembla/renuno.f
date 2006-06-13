@@ -1,6 +1,6 @@
       SUBROUTINE RENUNO(NU,RENUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,8 +140,14 @@ C     --------------------------------------------------------------
       IF (RENUM(1:4).EQ.'RCMK') THEN
 C     -- 'REVERSE-CUTHIL-MAC-KEE':
         CALL RERCMK(NU,MO,MA,NLILI,NM,NL,NBNTT)
-      ELSE IF (RENUM(1:4).EQ.'SANS' .OR. RENUM(1:2).EQ.'MD' .OR.
-     &         RENUM(1:5).EQ.'METIS') THEN
+      ELSE IF (RENUM(1:4).EQ.'SANS'  .OR.
+     &         RENUM(1:2).EQ.'MD'    .OR.
+     &         RENUM(1:5).EQ.'METIS' .OR.
+     &         RENUM(1:3).EQ.'AMD'   .OR.
+     &         RENUM(1:3).EQ.'AMF'   .OR.
+     &         RENUM(1:4).EQ.'QAMD'  .OR.
+     &         RENUM(1:4).EQ.'PORD'  .OR.
+     &         RENUM(1:4).EQ.'AUTO'   )THEN
 C     -- 'SANS RENUMEROTATION CUTHIL-MAC-KEE':
         ICO = 0
         DO 10,I = 1,NM

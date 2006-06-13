@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/06/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,82 +30,73 @@ MASRES=LIRE_MAILLAGE( )
 
 #
 
-MODELE=AFFE_MODELE(  MAILLAGE=MASRES,AFFE=(
-                       _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DIS_T'),  
-             _F(  NOEUD = ('B','C',),  PHENOMENE = 'MECANIQUE',
-        MODELISATION = 'DIS_T'))       )
+MODELE=AFFE_MODELE(  MAILLAGE=MASRES,
+                     AFFE=( _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T'),  
+                            _F(  NOEUD = ('B','C',),  PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T'))       )
 
 #
-RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-
-                _F(  GROUP_MA = 'AMORT',
-                          CARA = 'K_T_D_L',
-                          VALE = (28000., .001, .001,),
-                          AMOR_HYST = 0.1),
-
-                _F(  MAILLE = 'K2',
-                          CARA = 'K_T_D_L',
-                          VALE = (28000., .001, .001,)),
-
-                _F(  NOEUD = 'B',
-                          CARA = 'M_T_D_N',
-                          VALE = ( 10.,)),
-
-                _F(  NOEUD = 'C',
-                          CARA = 'M_T_D_N',
-                          VALE = ( 5.,)))
+RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
+                        DISCRET=( _F(  GROUP_MA = 'AMORT',
+                                       CARA = 'K_T_D_L',
+                                       VALE = (28000., .001, .001,),
+                                       AMOR_HYST = 0.1), 
+                                  _F(  MAILLE = 'K2',
+                                       CARA = 'K_T_D_L',
+                                       VALE = (28000., .001, .001,)),
+                                  _F(  NOEUD = 'B',
+                                       CARA = 'M_T_D_N',
+                                       VALE = ( 10.,)),
+                                  _F(  NOEUD = 'C',
+                                       CARA = 'M_T_D_N',
+                                       VALE = ( 5.,)))
                         )
 
 #
-CONDLIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                         _F(  TOUT = 'OUI', DY = 0., DZ = 0.),
-                                  _F(  NOEUD = 'A',  DX = 0.)) 
+CONDLIM=AFFE_CHAR_MECA(  MODELE=MODELE,
+                         DDL_IMPO=( _F(  TOUT = 'OUI', DY = 0., DZ = 0.),
+                                    _F(  NOEUD = 'A',  DX = 0.)) 
                         )
 
 FORCENO=AFFE_CHAR_MECA(  MODELE=MODELE,
                          FORCE_NODALE=_F(  NOEUD = 'C', FX = 100.)  )
 
-RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='RIGI_MECA',
-                            CARA_ELEM=RIGMAS,  CHARGE=CONDLIM     )
 
-MASSELEM=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='MASS_MECA',
-                            CARA_ELEM=RIGMAS,  CHARGE=CONDLIM     )
-
-RIGCMPLX=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='RIGI_MECA_HYST',
-                            RIGI_MECA=RIGIELEM,    CARA_ELEM=RIGMAS, 
-                            CHARGE=CONDLIM )
+MACRO_MATR_ASSE(   MODELE=MODELE,
+                   CARA_ELEM=RIGMAS,
+                   CHARGE=CONDLIM ,
+                   NUME_DDL=CO("INCONNUS"),
+                   MATR_ASSE=(  _F(  MATRICE = CO("MATRRIGM"), OPTION = 'RIGI_MECA'),
+                                _F(  MATRICE = CO("MATRMASS"), OPTION = 'MASS_MECA'),
+                                _F(  MATRICE = CO("MATRRIGI"), OPTION = 'RIGI_MECA_HYST')
+                              )
+                   )
 
 SCNDMEMB=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
                             CARA_ELEM=RIGMAS,  CHARGE=FORCENO     )
 
-INCONNUS=NUME_DDL(  MATR_RIGI=RIGCMPLX )
-
-MATRRIGI=ASSE_MATRICE(  MATR_ELEM=RIGCMPLX,  NUME_DDL=INCONNUS )
-
-MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=INCONNUS )
-
 VECTASS=ASSE_VECTEUR(  VECT_ELEM=SCNDMEMB,  NUME_DDL=INCONNUS )
+
 
 # DEFINITION DES PULSATIONS/FREQUENCES DE LA REPONSE HARMONIQUE
 #-------------------------------------------------
 #
 
-L_REEL=( 0., 3.3687, 6.4848, 8.0006, 11.8746, 13.4747,
-              15.5802, 21.0543, )
+L_REEL=( 0., 3.3687, 6.4848, 8.0006, 11.8746, 13.4747, 15.5802, 21.0543, )
 
 LISFREQ=DEFI_LIST_REEL(  VALE=L_REEL )
 
 REPHARM=DYNA_LINE_HARM(     MATR_MASS=MATRMASS,
-                              MATR_RIGI=MATRRIGI,
-                              LIST_FREQ=LISFREQ,
-                                  EXCIT=_F(  VECT_ASSE = VECTASS,  
+                            MATR_RIGI=MATRRIGI,
+                            LIST_FREQ=LISFREQ,
+                                EXCIT=_F( VECT_ASSE = VECTASS,  
                                           COEF_MULT = 1., 
-  PHAS_DEG = 0.)
-                         )
+                                          PHAS_DEG = 0.)
+                      )
 
 F1=RECU_FONCTION(  RESULTAT=REPHARM,    NOM_CHAM='DEPL',  
-                       LIST_FREQ=LISFREQ,   NOEUD='C',  NOM_CMP='DX'  )
+                   LIST_FREQ=LISFREQ,   NOEUD='C',  NOM_CMP='DX'  )
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = F1,   VALE_PARA = 0.,   
                           PRECISION = 5.E-03,

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,6 +197,23 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
+
+#----------------------------------------------
+#             IMPRESSION
+#----------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
+
+DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
+                    MODELE=MODELEK,
+                    NOM_CHAM='DEPL',
+                    RESULTAT=UTOT1)
+
+DEFI_FICHIER(UNITE=81)
+IMPR_RESU(FORMAT='IDEAS',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM))
+
+DEFI_FICHIER(UNITE=82)
+IMPR_RESU(FORMAT='IDEAS',UNITE=82,RESU=_F(RESULTAT=DEPL))
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM

@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF JEVEUX  DATE 13/06/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,7 @@ C
             NL = LONOI / (NB* LT)
             ND = (MOD( LONOI , NB*LT )) / LT
             WRITE ( FMT,'(I2,''(A1,'',I2,''A1,A1)'')' ) NB,LT
-            WRITE ( UNIT , '((I7,'' - '','//FMT//'))')
+            WRITE ( UNIT , '(I7,'' - '','//FMT//')')
      &              ( NB*(L-1)+1,
      &         ('>',(K1ZON( JI+LT*((K-1)+(L-1)*NB)+J-1 ),J=1,LT),'<',
      &                                       K= 1,NB ) , L = 1,NL )
@@ -196,7 +196,7 @@ C
          NL = NM / NB
          ND = MOD(NM,NB)
          WRITE ( FMT,'(I2,''(A1,'',I2,''A1,A1)'')' ) NB,LT
-         WRITE ( UNIT , '((I7,'' - '','//FMT//'))')
+         WRITE ( UNIT , '(I7,'' - '','//FMT//')')
      &        ( NB*(L-1)+1,
      &      ('>',(K1ZON( JI+LT*((K-1)+(L-1)*NB)+J-1 ),J=1,LT),'<',
      &                                      K= 1,NB ) , L = 1,NL )

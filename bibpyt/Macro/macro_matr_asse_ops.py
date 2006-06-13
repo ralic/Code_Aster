@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_asse_ops Macro  DATE 12/06/2006   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 
 def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
-                        SOLVEUR,NUME_DDL,CHARGE,INST,**args):
+                        SOLVEUR,NUME_DDL,CHARGE,CHAR_CINE,INST,**args):
   """
      Ecriture de la macro MACRO_MATR_ASSE
   """
@@ -104,6 +104,10 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
 
 
     motscles={'OPTION':option}
+    if option == 'RIGI_MECA_HYST':
+       if (not lrigel):
+          UTMESS('F', "MACRO_MATR_ASSE", "POUR CALCULER RIGI_MECA_HYST, IL FAUT AVOIR CALCULE RIGI_MECA AUPARAVANT (DANS LE MEME APPEL)")
+       motscles['RIGI_MECA']   =rigel
     if option == 'AMOR_MECA':
        if (not lrigel or not lmasel):
           UTMESS('F', "MACRO_MATR_ASSE", "POUR CALCULER AMOR_MECA, IL FAUT AVOIR CALCULE RIGI_MECA ET MASS_MECA AUPARAVANT (DANS LE MEME APPEL)")
@@ -145,5 +149,10 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
       num=numeddl
 
     self.DeclareOut('mm',m['MATRICE'])
-    mm=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=num)
+    motscles={'OPTION':option}
+    if CHAR_CINE != None: 
+      mm=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=num,CHAR_CINE=CHAR_CINE)
+    else:
+      mm=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=num)
+
   return ier

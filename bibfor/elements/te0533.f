@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 13/06/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -387,9 +387,9 @@ C                 MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
                     METR(2,2)=DDOT(NDIM,TAU2(1,NLI),1,TAU2(1,NLJ),1)
                   ENDIF
 
-                  DO 152 K = 1,2
-                    DO 153 L = 1,2
-                      
+                  DO 152 K = 1,NDIM-1
+                    DO 153 L = 1,NDIM-1
+
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &                           + FFI * FFJ * METR(K,L) * JAC * MULT
 

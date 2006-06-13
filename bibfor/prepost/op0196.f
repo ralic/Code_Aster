@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ------------------------------------------------------------------
      &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,DEBXHT,
      &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS,
      &        JTYPMA,NBNOSO,NBHEAV,NBCTIP,NBHECT, JWXFEM, NBINMX,FINXHT,
-     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM
+     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM,JMMF,J1,J2,J3,KMMF
       REAL*8  INST,EPS,R8B,RBID
       PARAMETER(EPS=1.D-10, NBINMX=9)
       CHARACTER*1  KBID
@@ -96,14 +96,6 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
 C
 C --- DIMENSION GEOMETRIQUE
       CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)  
-
-      IF(DIM.EQ.3)THEN
-        NBCNS=128
-        NBHEA=36
-      ELSEIF(DIM.EQ.2)THEN
-        NBCNS=18
-        NBHEA=6
-      ENDIF
 
 C --- RECUPERATION DU CHAMP GEOMETRIQUE
       CALL MEGEOM(MO,' ',EXIGEO,CHGEOM)
@@ -163,7 +155,7 @@ C             EXTRACTION DES DEPLACEMENTS
               INST=ZR(JINST)
               CALL RSEXCH(RESUCO,NOMCHA,IORD,CHNO,IRET)
 C
-C              CALL IMPRSD('CHAMP',CHNO,8,'--- CHAMP DEPL SD_RES---')
+              CALL IMPRSD('CHAMP',CHNO,8,'--- CHAMP DEPL SD_RES---')
 C
 C             PASSAGE : CHAMP --> CHAMP_S
               CALL CNOCNS(CHNO,'V',CHNOS)
@@ -277,18 +269,28 @@ C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
               CALL JEVEUO(CHAMS//'.CESK','L',JCESK)
               CALL JEVEUO(CHAMS//'.CESL','L',JCESL)
               CALL JEVEUO(CHAMS//'.CESC','L',JCESC)
-
+C
               CALL JEVEUO(ZK8(JFISS)//'.TOPOSE.LON.CELV','L',JLON)
               CALL JEVEUO(ZK8(JFISS)//'.TOPOSE.CNS.CELV','L',JCNS)
               LIEL=MO//'.MODELE    .LIEL'
               CALL JELIRA(LIEL,'NMAXOC',NBGREL,KBID)
               CALL JEVEUO(ZK8(JFISS)//'.LNNO      .VALE','L',JLNNO)
 
+              CALL JEVEUO(ZK8(JCNSK1)//'.DIME','L',JDIM)
+              CALL WKVECT('&&OP0196.MA_MO_FISS','V V I',ZI(JDIM+2),JMMF)
+              DO 9 I=1,ZI(JDIM+2)
+               ZI(JMMF+I-1)=0
+ 9            CONTINUE
+
 C             NOMBRE DE MAILLES XFEM : NBMX
               HEAV=ZK8(JFISS)//'.MAILFISS  .HEAV'
               CALL JEEXIN(HEAV,IRET)
               IF(IRET.NE.0)THEN
                 CALL JELIRA(HEAV,'LONMAX',NBHEAV,KBID)
+                CALL JEVEUO(HEAV,'E',J1)
+                DO 8 I=1,NBHEAV
+                  ZI(JMMF+ZI(J1+I-1)-1)=1
+ 8              CONTINUE
               ELSE
                 NBHEAV=0
               ENDIF
@@ -296,6 +298,10 @@ C             NOMBRE DE MAILLES XFEM : NBMX
               CALL JEEXIN(CTIP,IRET)
               IF(IRET.NE.0)THEN
                 CALL JELIRA(CTIP,'LONMAX',NBCTIP,KBID)
+                CALL JEVEUO(CTIP,'E',J2)
+                DO 7 I=1,NBCTIP
+                  ZI(JMMF+ZI(J2+I-1)-1)=1
+ 7              CONTINUE
               ELSE
                 NBCTIP=0
               ENDIF
@@ -303,6 +309,10 @@ C             NOMBRE DE MAILLES XFEM : NBMX
               CALL JEEXIN(HECT,IRET)
               IF(IRET.NE.0)THEN
                 CALL JELIRA(HECT,'LONMAX',NBHECT,KBID)
+                CALL JEVEUO(HECT,'E',J3)
+                DO 6 I=1,NBHECT
+                 ZI(JMMF+ZI(J3+I-1)-1)=1
+ 6              CONTINUE
               ELSE
                 NBHECT=0
               ENDIF
@@ -311,10 +321,10 @@ C             NOMBRE DE MAILLES XFEM : NBMX
 C             TABLEAU DES MAILLES XFEM
               CALL WKVECT('&&OP0196.MAIL_XFEM','V V I',NBMX,JWXFEM)
 C             TABLEAU INDICATEUR DE MAILLES FISSUREES
-              CALL JEVEUO(ZK8(JCNSK1)//'.DIME','L',JDIM)
+
               CALL WKVECT('&&'//NOMPRO//'.IND_MAIL','V V I',
      &                    ZI(JDIM+2),JINDMF)
-C            
+            
 C             TABLEAU DE POSITION DANS '.TOPOSE.CSETTO': ZI(JJCNS)
               CALL WKVECT('&&OP0196.POSI_CNS','V V I',NBMX,JJCNS)
 C             TABLEAU DE POSITION DANS '.TOPOSE.HEAVTO': ZI(JJHEA)
@@ -336,13 +346,24 @@ C             BOUCLE SUR LES GRELS:
                  CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',
      &                ZI(IGREL+NBMAGL-1)),NOTYPE)
                  IF(DIM.EQ.3)THEN
-                    IF(NOTYPE(1:6).NE.'MECA_X') GOTO 140
+                  IF(NOTYPE(1:6).NE.'MECA_X') GOTO 140
+                   IF(NOTYPE(8:11).EQ.'FACE' .OR. NOTYPE(9:12).EQ.'FACE'
+     &               .OR. NOTYPE(10:13).EQ.'FACE')THEN
+                     NBCNS=18
+                     NBHEA=6
+                   ELSE
+                     NBCNS=128
+                     NBHEA=36
+                   ENDIF
                  ELSE
-                    IF(NOTYPE(8:9).NE.'_X')GOTO 140
+                   IF(NOTYPE(8:9).NE.'_X')GOTO 140
+                   NBCNS=18
+                   NBHEA=6
                  ENDIF
 C                BOUCLE SUR LES MAILLES DU GREL:
                  DO 150 J=1,NBMAGL-1
                     IMA=ZI(IGREL+J-1)
+                    ZI(JMMF+IMA-1)=0 
                     IOCC=IOCC+1
                     I1=ZI(JLON+8*(IOCC-1))
                     IF(I1.NE.0)THEN
@@ -378,6 +399,12 @@ C                BOUCLE SUR LES MAILLES DU GREL:
  150             CONTINUE
  140          CONTINUE
 C
+              KMMF=0
+              DO 5 I=1,ZI(JDIM+2)
+                IF(ZI(JMMF+I-1).EQ.1)KMMF=KMMF+1
+ 5            CONTINUE
+              NBMX=NBMX-KMMF    
+
 C             LISTE DES NOEUDS NX : ZI(JLNONX)
               CALL JEVEUO(MA//'.DIME','L',JDIM)
               CALL JENONU(JEXNOM(MA//'.NOMNOE','NXP1'),NUNXP)
@@ -420,14 +447,19 @@ C
      &                ZI(JTYPMA+ZI(JWXFEM+I-1)-1)),TYPMA)
                  IF(TYPMA(1:4).EQ.'HEXA')THEN
                        NBNOSO=8
+                       NBCNS=128
                  ELSEIF(TYPMA(1:4).EQ.'PENT')THEN
                        NBNOSO=6
+                       NBCNS=128
                  ELSEIF(TYPMA(1:4).EQ.'TETR')THEN
                        NBNOSO=4
+                       NBCNS=128
                  ELSEIF(TYPMA(1:4).EQ.'TRIA')THEN
                        NBNOSO=3
+                       NBCNS=18
                  ELSEIF(TYPMA(1:4).EQ.'QUAD')THEN
                        NBNOSO=4
+                       NBCNS=18
                  ENDIF
 C
                   CALL WKVECT('&&OP0196.NO_LOC','V V I',NBNOSO,JNOLOC)

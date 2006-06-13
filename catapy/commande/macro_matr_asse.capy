@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/06/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,6 +53,7 @@ MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
          INST            =SIMP(statut='f',typ='R',defaut=0.),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou),validators=NoRepeat(),max='**'),
+         CHAR_CINE       =SIMP(statut='f',typ=(char_cine_meca,char_cine_ther,char_cine_acou) ),
          NUME_DDL        =SIMP(statut='o',typ=(nume_ddl_sdaster,CO)),
          SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",

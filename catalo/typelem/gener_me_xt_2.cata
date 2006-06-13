@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF TYPELEM  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ MODE_LOCAL__
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA  )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6 ) 
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
@@ -80,12 +81,18 @@ MODE_LOCAL__
     E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18    )
-    E33NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
+    E20NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33       )
+                                        X13      X14      X15      X16      X17      X18 
+                                        X19      X20   )
+    E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       )
+    E30NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18 
+                                        X19      X20      X21      X22      X23      X24 
+                                        X25      X26      X27      X28      X29      X30 )
+
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
 
@@ -101,8 +108,12 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
+    DEPL_POST_XFEM      515   IN__   E18NEUI PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E6NEUTI PHEAVTO
+                                     E8NEUTI  PLONCHA  E9NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST
+                              OUT__  E30NEUTR PDEXFEM
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E33NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                              OUT__  E9NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
                                      E1NEUTR  PCRITER
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R

@@ -1,6 +1,6 @@
-      SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,EPS)
+      SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,EPS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*)  KTYPZ,SYMZ
+      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ
       INTEGER PCPIVZ
       REAL*8 EPS
 C ----------------------------------------------------------
@@ -30,6 +30,10 @@ C                  ' ' -> DEFAUT
 C IN I   PCPIVZ  : POURCENTAGE DE MEMOIRE POUR PIVOTAGE TARDIF
 C                  0   -> DEFAUT
 C IN K   KTYPZ   : TYPE DE FACTORISATION /SYMGEN/SYMDEF/NONSYM
+C                  ' ' -> DEFAUT
+C IN K   KTYPSZ   : TYPE DE SCALING /SANS/AUTO
+C                  ' ' -> DEFAUT
+C IN K   KTYPRZ   : TYPE DE RENUMEROTATION /AMD/AMF/PORD/METIS/QAMD/AUTO
 C                  ' ' -> DEFAUT
 C IN R   EPS     : ERREUR MAX RELATIVE ACCEPTEE POUR LA SOLUTION
 C                  0.  -> DEFAUT
@@ -60,7 +64,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
       INTEGER      I,IBID
       INTEGER      ISLVK,ISLVI,ISLVR,PCPIV
       CHARACTER*3  SYME
-      CHARACTER*8  K8BID,KTYPR
+      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS
       CHARACTER*19 SOLVEU
 
 C------------------------------------------------------------------
@@ -68,6 +72,8 @@ C------------------------------------------------------------------
       SOLVEU=SOLVEZ
       SYME=SYMZ
       KTYPR=KTYPZ
+      KTYPS=KTYPSZ
+      KTYPRN=KTYPRZ
       PCPIV=PCPIVZ
       EPSMAX=EPS
 
@@ -78,14 +84,21 @@ C     -------------------------------------------------
 
 C     PCENT_PIVOT :
 C     ------------
-      IF (PCPIV.EQ.0) PCPIV=20
+      IF (PCPIV.EQ.0) PCPIV=80
 
 
 C     TYPE_RESOL :
 C     ------------
       IF (KTYPR.EQ.' ') KTYPR='AUTO'
 
+C     TYPE_SCALING :
+C     ------------
+      IF (KTYPS.EQ.' ') KTYPS='AUTO'
 
+C     TYPE_RENUM :
+C     ------------
+      IF (KTYPRN.EQ.' ') KTYPRN='AUTO'
+      
 C     ERRE_RELA_MAX :
 C     ------------
       IF (EPSMAX.EQ.0.D0) EPSMAX=1.D-6
@@ -98,9 +111,9 @@ C     ---------------------------------------------------
       CALL WKVECT(SOLVEU//'.SLVI','V V I',6,ISLVI)
 
       ZK24(ISLVK-1+1) = 'MUMPS'
-      ZK24(ISLVK-1+2) = 'XXXXXX'
+      ZK24(ISLVK-1+2) = KTYPS
       ZK24(ISLVK-1+3) = KTYPR
-      ZK24(ISLVK-1+4) = 'SANS'
+      ZK24(ISLVK-1+4) = KTYPRN
       ZK24(ISLVK-1+5) = SYME
 
       ZI(ISLVI-1+1) = -9999

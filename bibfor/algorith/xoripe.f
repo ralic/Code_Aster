@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 13/06/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE GENIAUT S.GENIAUT
 C
 C        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
 C                    
@@ -63,6 +63,9 @@ C
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
+
+C     NOMBRE DE SOUS-TRIA RE-ORIENTES
+      NSEORI=0.D0
 
 C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 C     NDIM EST LA DIMENSION DU MAILLAGE
@@ -218,9 +221,6 @@ C     ------------------------------------------------------------------
         CALL JEVEUO(CHS(ICH)//'.CESV','E',JCESV(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESL','L',JCESL(ICH))
  40   CONTINUE
-
-C     NOMBRE DE SOUS-TRIA RE-ORIENTES
-      NSEORI=0.D0
 
       DO 400 IMA=1,NBMAIL
 

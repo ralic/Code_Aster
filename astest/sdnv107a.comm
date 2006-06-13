@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
+# MODIF  DATE 13/06/2006   AUTEUR GREFFET N.GREFFET 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -508,11 +508,11 @@ RESMO2=REST_BASE_PHYS(    RESU_GENE=RESGEN,
                                         )
                         
 LINSDYN=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=0.02,
-                                     NOMBRE=40,),);
+                       INTERVALLE=_F(JUSQU_A=0.014,
+                                     NOMBRE=28,),);
 LINSDY2=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=0.02,
-                                     NOMBRE=1200,),);
+                       INTERVALLE=_F(JUSQU_A=0.014,
+                                     NOMBRE=1680,),);
 
 #
 # DEFINITION DE LA FONCTION D EVOLUTION DE FY
@@ -572,12 +572,6 @@ TEST_RESU( RESU=_F( RESULTAT = DYTREX,
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = 4.13173E+00))
                   
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'ACCE',      INST=5.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -3.62411E+03))
                                     
 TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
                     REFERENCE='NON_REGRESSION',
@@ -586,19 +580,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYTREX,
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = -1.00389E-02))
                                      
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'VITE',      INST=1.25E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -4.17518E+00))
                   
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'ACCE',      INST=1.4E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 4.32656E+03))
                                                       
 TEST_RESU( RESU=_F( RESULTAT = DYTREX, REFERENCE = 'AUTRE_ASTER', 
                   NOM_CHAM = 'DEPL',      INST=5.E-3, 
@@ -613,19 +595,7 @@ TEST_RESU( RESU=_F( RESULTAT = RESUGLO,
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = 1.12284E-02))
                                      
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'VITE',      INST=3.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 4.13173E+00))
                   
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'ACCE',      INST=5.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -3.62411E+03))
                                     
 TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
                     REFERENCE='NON_REGRESSION',
@@ -634,19 +604,7 @@ TEST_RESU( RESU=_F( RESULTAT = RESUGLO,
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = -1.00389E-02))
                                      
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'VITE',      INST=1.25E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -4.17518E+00))
                   
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'ACCE',      INST=1.4E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 4.32656E+03))
                                     
 TEST_RESU( RESU=_F( RESULTAT = RESUGLO, REFERENCE = 'AUTRE_ASTER', 
                   NOM_CHAM = 'DEPL',      INST=5.E-3, 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,11 +70,13 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-           b_mumps          =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
-             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('NONSYM','SYMGEN','SYMDEF','AUTO')),
-             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
+           b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
+             SCALING         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
+             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=80,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,),
-           ),
+             ),
          ),
          PARM_THETA      =SIMP(statut='f',typ='R',defaut= 0.57),
          ARCHIVAGE       =FACT(statut='f',

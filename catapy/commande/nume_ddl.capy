@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,8 +34,8 @@ NUME_DDL=OPER(nom="NUME_DDL",op=11,sd_prod=nume_ddl_sdaster,reentrant='n',
          b_ldlt          =BLOC(condition="METHODE=='LDLT'",fr="paramètres associés à la méthode LDLT",
            RENUM           =SIMP(statut='f',typ='TXM',into=("RCMK","SANS"),defaut="RCMK"  ),
          ),
-         b_mumps          =BLOC(condition="METHODE=='MUMPS'",fr="paramètres associés à la méthode MUMPS",
-           RENUM           =SIMP(statut='f',typ='TXM',into=("SANS",),defaut="SANS"  ),
+         b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+           RENUM         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
          ),
          b_gcpc          =BLOC(condition="METHODE=='GCPC'",fr="paramètres associés à la méthode gradient conjugué",
            RENUM           =SIMP(statut='f',typ='TXM',into=("RCMK","SANS"),defaut="RCMK"  ),
