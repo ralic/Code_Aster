@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
            NOEU_CALCUL     =SIMP(statut='f',typ=no),
            NOEU_MESURE     =SIMP(statut='f',typ=no),
                          ),
+         NOM_PARA        =SIMP(statut='f',typ='TXM',max='**'),
          RESOLUTION      =FACT(statut='f',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="LU",into=("LU","SVD",) ),
            b_svd =BLOC(condition="METHODE=='SVD'",

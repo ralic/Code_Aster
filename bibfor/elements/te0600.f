@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C =====================================================================
       INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,IFORC,JCRET
-      INTEGER IPOID2,IVF2
+      INTEGER IPOID2,IVF2 ,IMATN
       INTEGER IDFDE2,NPI,NPG,NVIM
 C
       INTEGER RETLOI,IRET,IRETP,IRETM
@@ -71,7 +71,7 @@ C =====================================================================
       CHARACTER*8 TYPMOD(2)
 C =====================================================================
       INTEGER    ISMAEM,LI,KP,J,L,K
-      REAL*8      R8BID,RHO,COEF,RX,PG(31),SOMM(31)
+      REAL*8      R8BID,RHO,COEF,RX,PG(31),SOMM(31),ALPHA,TEMP
       CHARACTER*2 CODRET
       LOGICAL     AXI
 C =====================================================================
@@ -130,7 +130,7 @@ C IVF       FONCTIONS DE FORMES QUADRATIQUES
 C IVF2      FONCTIONS DE FORMES LINEAIRES
 C =====================================================================
       LOGICAL FNOEVO
-      REAL*8 DT
+      REAL*8 DT,E
 C =====================================================================
 C --- SUIVANT ELEMENT, DEFINITION DES CARACTERISTIQUES : --------------
 C --- CHOIX DU TYPE D'INTEGRATION -------------------------------------
@@ -163,6 +163,33 @@ C =====================================================================
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PCONTMR','L',ICONTM)
          CALL JEVECH('PTEREF', 'L',ITREF )
+
+
+
+
+C        UN EXEMPLE DE RECUPERATION DU MATERIAU AUX NOEUDS :
+C        ----------------------------------------------------
+C          CALL JEVECH('PMATERN','L',IMATN )
+C          DO INO=1,6
+C            TEMP=10*INO
+C            WRITE(6,*) 'AJACOT INO,TEMP,=',INO,TEMP
+C            CALL RCVALA(ZI(IMATE-1+1),' ','ELAS',
+C    +             1,'TEMP',TEMP,
+C    +             1,'ALPHA',ALPHA,CODRET,'FM')
+C            WRITE(6,*) 'AJACOT MAILLE,ALPHA,CODRET=',INO,ALPHA,CODRET
+C 
+C            CALL RCVALA(ZI(IMATN-1+INO),' ','ELAS',
+C    +             1,'TEMP',TEMP,
+C    +             1,'ALPHA',ALPHA,CODRET,'FM')
+C            WRITE(6,*) 'AJACOT INO,ALPHA,CODRET=',INO,ALPHA,CODRET
+C          ENDDO
+C          CALL ASSERT(.FALSE.)
+
+
+
+
+
+
 
          READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
 C =====================================================================
@@ -199,7 +226,7 @@ C =====================================================================
      +                ZR(ICONTM),ZR(IVARIM),ZR(IVARIM),DEFGEM,DEFGEP,
      +                DRDS,DSDE,B,DFDI, DFDI2, R,ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
      +                NBVARI,NDDLS,NDDLM,
      +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,MODINT,
      +                RETLOI)
@@ -215,7 +242,7 @@ C =====================================================================
      +                ZR(ICONTP),ZR(IVARIM),ZR(IVARIP),DEFGEM,DEFGEP,
      +                DRDS,DSDE,B,DFDI, DFDI2, R,ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
      +                NBVARI,NDDLS,NDDLM,
      +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,MODINT,
      +                RETLOI)
@@ -286,10 +313,10 @@ C =====================================================================
  90               CONTINUE
                   DO 95 I = 1,NNOM
                      K = (KP-1)*NNO
-                     ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) = 
+                     ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IPESA+2)*ZR(IVF+K+I+NNOS-1)
- 95               CONTINUE   
+ 95               CONTINUE
                ELSE
 
                   DO 100 I = 1,NNOS
@@ -382,7 +409,7 @@ C ======================================================================
                ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I+NNOS-1)
- 171        CONTINUE 
+ 171        CONTINUE
  180     CONTINUE
       END IF
 C ======================================================================
@@ -463,7 +490,7 @@ C ======================================================================
          NCMP = DIMCON
          CALL JEVECH('PCONTRR', 'L',ICHG)
          CALL JEVECH('PSIEFNOR','E',ICHN)
-         
+
          NVIM = MECANI(5)
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
@@ -473,12 +500,12 @@ C ======================================================================
       IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
          CALL JEVECH('PVARIGR','L',ICHG)
          CALL JEVECH('PVARINR','E',ICHN)
-         
+
          CALL JEVECH('PCOMPOR','L',ICOMPO)
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
          READ (ZK16(ICOMPO-1+7+9+4),'(I16)') NVIM
          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-         
+
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
@@ -486,7 +513,7 @@ C --- OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL ------------------------
 C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
-     
+
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PDEPLAR','L',IDEPLA)
          CALL JEVECH('PDEFORR','E',IDEFO)

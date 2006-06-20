@@ -8,7 +8,7 @@
      &                  LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       CHARACTER*24 DEPMOI,K24BID
       CHARACTER*24 MERIGI,VERESI,VEDIRI
       CHARACTER*24 MASSE,LIMAT(3)
-      CHARACTER*4 TYPMAT,TYPE(3)
+      CHARACTER*4 TYPMAT,TYPCST(3)
       INTEGER IACHAR,JINFC,IACHA2,I,NBCHAR,NBMAT
 
 
@@ -134,9 +134,9 @@ C ----------------------------------------------------------------------
       COEF2(1) = UN
       COEF2(2) = COEACC
       COEF2(3) = COEVIT
-      TYPE(1) = 'R'
-      TYPE(2) = 'R'
-      TYPE(3) = 'R'
+      TYPCST(1) = 'R'
+      TYPCST(2) = 'R'
+      TYPCST(3) = 'R'
       TYPMAT   = 'R'
 
 
@@ -185,8 +185,7 @@ C -- CALCUL DE LA MATRICE MATASS
          NBMAT = 1
          CALL DETRSD('MATR_ASSE',MATASS)
          CALL MTDEFS(MATASS,MASSE,'V',TYPMAT)
-         CALL MTCMBL(NBMAT,TYPE,COEF2,TYPE,LIMAT,TYPMAT,MATASS,
-     &               NOMDDL,' ',' ',.TRUE.)
+         CALL MTCMBL(NBMAT,TYPCST,COEF2,LIMAT,MATASS,NOMDDL,' ')
 C      FACTORISATION
          CALL PRERES(SOLVEU,'V',IERR,MAPREC,MATASS)
          IF (IERR.EQ.1)  LICCVG = 1

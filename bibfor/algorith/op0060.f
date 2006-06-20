@@ -1,21 +1,21 @@
       SUBROUTINE OP0060(IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE O.NICOLAS
 C TOLE CRP_20
@@ -26,9 +26,9 @@ C     FLUIDE-STRUCTURE
 C     ------------------------------------------------------------------
 C
       IMPLICIT NONE
-C  
+C
 C 0.1. ==> ARGUMENTS
-C  
+C
       INTEGER  IERR
 C
 C 0.2. ==> COMMUNS
@@ -67,9 +67,9 @@ C
       CHARACTER*8 BASENO, CONCEP,RESUCO
       CHARACTER*19 VECASS,  RESULT
       CHARACTER*13 INPSCO
-             
-      CHARACTER*3 K3PASE    
-        
+
+      CHARACTER*3 K3PASE
+
       INTEGER NBSYM, I, J, NBVECT, IVECT, N1, N2, TYPESE
       INTEGER LAMOR1, LAMOR, LIMPE, LFREQ, NBFREQ
       INTEGER NVA, NEQ, NBMOD2, NBBLOC, NBAMOR, N, NTERM, NBMAT, NBMODE
@@ -82,13 +82,13 @@ C
 
       INTEGER       LMAT(4),LPRO
       LOGICAL       LVECAS, CHCOMP, SENSCH, NEWCAL
-      
+
       REAL*8   DEPI, R8DEPI, DGRD, R8DGRD, OMEGA2, FREQ, OMEGA
       REAL*8   RVAL, ACRIT, PHASE, TIME, ALPHA
       REAL*8        COEF(6), TPS1(4),RESURE,RESUIM
       COMPLEX*16    CALPHA, CVAL,CALP
-      
-      CHARACTER*1   TYPRES, TYPMAT(3), TYPCST(4), ROUC(2), BL
+
+      CHARACTER*1   TYPRES, TYPCST(4), BL
       CHARACTER*8   NOMDDL, NOMSYM(3), PARA, LISTAM, NOPASE, BLAN8
       CHARACTER*14  NUMDDL,NUMDL1,NUMDL2,NUMDL3
       CHARACTER*16  TYPCON, NOMCMD, TYSD
@@ -98,7 +98,6 @@ C
       CHARACTER*24  VDEPL, VAPRIN, VADIRI, VACHAM, NDYNAM, NOMAT(4)
 
 C     ------------------------------------------------------------------
-      DATA          ROUC/'R','C'/
 C     -----------------------------------------------------------------
 C
 C===============
@@ -122,7 +121,7 @@ C               123456789012345678901234
       DGRD  = R8DGRD()
       TYPRES = 'C'
       LAMOR1 = 0
-      
+
 C====
 C 1.2. ==> NOM DES STRUCTURES
 C====
@@ -130,7 +129,7 @@ C====
 
 C              12345678 90123
       INPSCO = BASENO//'_PSCO'
-      
+
 C              12345678 9012345678901234
       INFCHA = BASENO//'.INFCHA'
       FOMULT = INFCHA // '.FCHA'
@@ -148,7 +147,7 @@ C
 C On verifie si le concept est reentrant
       NEWCAL = .TRUE.
       CALL JEEXIN(CONCEP//'           .DESC',IBID)
-      IF (IBID.NE.0) THEN 
+      IF (IBID.NE.0) THEN
         CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,IBID)
         IF (IBID.NE.0) THEN
           CALL GETTCO(RESUCO,TYSD)
@@ -162,12 +161,12 @@ C Le concept est reentrant et la sortie est identique a l'entree
           ELSE
             CALL UTMESS('F','OP0060','CONCEPT REENTRANT : '//
      &                  '"RESULTAT" EST D''UN TYPE DIFFERENT')
-          ENDIF  
+          ENDIF
         ELSE
           NEWCAL = .TRUE.
         ENDIF
-      ENDIF   
-            
+      ENDIF
+
 C====
 C 2.1. ==> VERIFICATIONS DE PREMIER NIVEAU
 C====
@@ -198,7 +197,7 @@ C====
      &   ' SORTIE NE DOIVENT PAS ETRE DE TYPE GENE SI SENSI.')
       ENDIF
 
-C===     
+C===
 C 2.3 ==> LISTE DES FREQUENCES POUR LE CALCUL ---
 C====
       CALL GETVID(BL,'LIST_FREQ',0,1,1,LIFREQ,N1)
@@ -235,29 +234,29 @@ C     ---  "VECT_ASSE"
 C     ---  CHARGE RELLE
 C     ---  CHARGE COMPLEXE
 C====
-C 2.5.1 IDENTIFICATION DU TYPE DE CHARGEMENT EN ENTREE ET TEST 
+C 2.5.1 IDENTIFICATION DU TYPE DE CHARGEMENT EN ENTREE ET TEST
       LVECAS = .FALSE.
       SENSCH = .FALSE.
-      
+
       CALL GETVID('EXCIT','VECT_ASSE',1,1,0,CHAMNO,NVA)
-      IF ( NVA .NE. 0 )    LVECAS = .TRUE.            
+      IF ( NVA .NE. 0 )    LVECAS = .TRUE.
 
 C   SENSCH = .TRUE. SI IL Y A UN CALCUL DE SENSIBILITE SUR 1 CHARGEMENT
       DO 251 , NRPASE = 1 , NBPASE
         CALL PSNSLE ( INPSCO, NRPASE, 1, NOPASE )
         CALL METYSE ( NBPASE, INPSCO, NOPASE, TYPESE, K24BID )
         IF ( TYPESE.EQ.2 .OR. TYPESE.EQ.5 ) THEN
-          SENSCH = .TRUE.                
+          SENSCH = .TRUE.
         ENDIF
  251  CONTINUE
 
       IF (LVECAS .AND. SENSCH) THEN
         CALL UTMESS('F','OP0060','POUR L''INSTANT, ON NE PEUT PAS'//
      &      ' DERIVER AVEC UN VECT_ASSE EN ENTREE DE DYNA_LINE_HARM.')
-      ENDIF 
+      ENDIF
 C
 C 2.5.2  "VECT_ASSE" EN ENTREE: IL FAUT JUSTE RECUPERER LES DIFFERENTS
-C                                                              VECTEURS 
+C                                                              VECTEURS
       IF ( LVECAS ) THEN
         CALL GETFAC('EXCIT',NBVECT)
 
@@ -298,14 +297,14 @@ C                                                              VECTEURS
           CARELE   = BLAN24
           CALL NMDOME ( MODELE, MATE, CARELE, INFCHA, NBPASE, INPSCO,
      &                  BLAN8, IBID)
-          FOMULT = INFCHA // '.FCHA'        
+          FOMULT = INFCHA // '.FCHA'
         ENDIF
-  
+
       ELSE
 C
 C 2.5.3  TYPE "CHARGE" EN ENTREE
-C 
-        CALL DYLACH( NBPASE, INPSCO, INFCHA, FOMULT, MODELE, MATE,    
+C
+        CALL DYLACH( NBPASE, INPSCO, INFCHA, FOMULT, MODELE, MATE,
      &                                 CARELE, VADIRI, VACHAM)
 
       ENDIF
@@ -317,7 +316,8 @@ C====
       RAIDE=BLAN8
       MASSE=BLAN8
       AMOR=BLAN8
-      CALL DYLEMA (BASENO, NBMAT, NOMAT, RAIDE, MASSE, AMOR, IMPE)      
+      CALL DYLEMA (BASENO, NBMAT, NOMAT, RAIDE, MASSE, AMOR, IMPE)
+      CALL ASSERT(NBMAT.LE.4)
       CALL GETVID(BL,'MATR_AMOR'    ,0,1,1,K19BID ,LAMOR)
       CALL GETVID(BL,'MATR_IMPE_PHI',0,1,1,K19BID ,LIMPE)
       CALL GETVR8(' ','AMOR_REDUIT',0,1,0,R8BID,N1)
@@ -325,7 +325,7 @@ C====
       IF (N1.NE.0.OR.N2.NE.0)    LAMOR1 = 1
 
 C ---------------------------------------------------------------
-C     TEST POUR VERIFIER QUE LES MATRICES SONT TOUTES BASEES SUR 
+C     TEST POUR VERIFIER QUE LES MATRICES SONT TOUTES BASEES SUR
 C     LA MEME NUMEROTATION
 C ---------------------------------------------------------------
       NUMDL1=BL
@@ -343,17 +343,17 @@ C ---------------------------------------------------------------
       ENDIF
       IF ((NUMDL1.NE.NUMDL2).OR.(NUMDL1.NE.NUMDL3).OR.
      & (NUMDL2.NE.NUMDL3)) THEN
-      CALL UTMESS('F','OP0060','LES MATRICES NE POSSEDENT PAS TOUTES' 
+      CALL UTMESS('F','OP0060','LES MATRICES NE POSSEDENT PAS TOUTES'
      &   //' LA MEME NUMEROTATION ')
       ELSE
-         NUMDDL=NUMDL2 
+         NUMDDL=NUMDL2
       ENDIF
 
 C============================================
 C 3. ==> ALLOCATION DES RESULTATS
 C============================================
 C
-      IF (NEWCAL) CALL UTCRRE(NBPASE,INPSCO,NBFREQ)      
+      IF (NEWCAL) CALL UTCRRE(NBPASE,INPSCO,NBFREQ)
 
 C     COMPLEMENT : RENSEIGNEMENT DU .REFD
       DO 31 , NRPASE = 0 , NBPASE
@@ -377,7 +377,7 @@ C     COMPLEMENT : RENSEIGNEMENT DU .REFD
         ZK24(LREFE+4) = ' '
         ZK24(LREFE+5) = ' '
         CALL JELIBE(RESULT//'.REFD')
- 31   CONTINUE     
+ 31   CONTINUE
 C
 
 C============================================
@@ -391,7 +391,6 @@ C====
 
       DO 41 I=1, NBMAT
          CALL JEVEUO(NOMAT(I),'L',LMAT(I))
-         TYPMAT(I) = ROUC(ZI(LMAT(I)+3))
  41   CONTINUE
       NEQ = ZI(LMAT(1)+2)
       TYPCST(1) = 'R'
@@ -436,7 +435,7 @@ C
         IF (LIMPE.NE.0) THEN
           COEF(ICOEF+1) = 0.D0
           COEF(ICOEF+2) = COEF(2) * DEPI * FREQ
-        ENDIF         
+        ENDIF
 C
 C 4.2.2     --- CALCUL DU SECOND MEMBRE STANDARD---
 C
@@ -447,7 +446,7 @@ C
         IF ( LVECAS ) THEN
           DO 121 IEQ  = 0,NEQ-1
             ZC(LSECMB+IEQ) = DCMPLX(0.D0,0.D0)
-  121       CONTINUE         
+  121       CONTINUE
             ALPHA = 1.D0
             DO 124 IVECT = 1,NBVECT
               IF (ZK24(LFON+IVECT-1).EQ.' ') THEN
@@ -457,7 +456,7 @@ C
      &                                                      LPRO)
                 IF (ZK16(LPRO).EQ.'FONCT_C') THEN
                   CALL FOINTC(ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
-     .                        RESURE,RESUIM,IER)
+     &                        RESURE,RESUIM,IER)
                   CALP=DCMPLX(RESURE,RESUIM)
                 ELSE
                   CALL FOINTE('F ',ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
@@ -477,7 +476,7 @@ C
   122           CONTINUE
               ELSEIF ( ZK8(LTYPVE+IVECT-1)(1:1) .EQ. 'C' ) THEN
                 DO 123 IEQ  = 0,NEQ-1
-                  ZC(LSECMB+IEQ) = ZC(LSECMB+IEQ) + 
+                  ZC(LSECMB+IEQ) = ZC(LSECMB+IEQ) +
      &                                 CALPHA*ZC(IADR+IEQ)
   123           CONTINUE
               ELSE
@@ -497,10 +496,9 @@ C
 
 C 4.2.3     --- CALCUL DE LA MATRICE DYNAMIQUE ---
 C
-C                 12345678        
+C                 12345678
         NOMDDL = '        '
-        CALL MTCOMB(NBMAT,TYPCST,COEF,TYPMAT,NOMAT,TYPRES,
-     &                            NDYNAM, NOMDDL,'V')
+        CALL MTCMBL(NBMAT,TYPCST,COEF,NOMAT,NDYNAM, NOMDDL,' ')
 
 C
 C 4.2.4     --- FACTORISATION DE LA MATRICE DYNAMIQUE ---
@@ -522,8 +520,8 @@ C
 C
 C 4.2.6    --- TRAITEMENT DES DERIVATIONS , LORSQU IL Y EN A
 C
-C   4.2.6.A  SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL 
-C               
+C   4.2.6.A  SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL
+C
         IF (NBPASE.GT.0) THEN
 C         NOM DES STRUCTURES,   JAUX=4 => VARIABLE PRINCIPALE
           JAUX = 4
@@ -534,7 +532,7 @@ C         NOM DES STRUCTURES,   JAUX=4 => VARIABLE PRINCIPALE
           CALL JEVEUO(VDEPL(1:19)//'.VALE','E',LVALE)
           DO 426 IEQ = 0, NEQ-1
             ZC(LVALE+IEQ) = ZC(LSECMB+IEQ)
-  426     CONTINUE  
+  426     CONTINUE
 C
 C   4.2.6.B   CALCUL ET/OU ASSEMBLAGE DES DIFF. 2NDS MEMBRES DERIVES
 C
@@ -562,7 +560,7 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
           IAUX = NRPASE
           JAUX = 3
           CALL PSNSLE ( INPSCO, IAUX, JAUX, RESULT )
-       
+
           DO 130 INOM =1, NBSYM
             CALL RSEXCH(RESULT,NOMSYM(INOM),IFREQ+NBOLD,CHAMNO,IER)
             IF ( IER .EQ. 0 ) THEN
@@ -580,7 +578,7 @@ C           RECOPIE DANS L'OBJET RESULTAT  ---
                DO 131 IEQ = 0, NEQ-1
                   ZC(LVALE+IEQ) = ZC(LSECMB+NEQ*NRPASE+IEQ)
   131          CONTINUE
-CR COPISD('CHAMP_GD','V',CHAMNO ,VDEPL(1:19))  
+CR COPISD('CHAMP_GD','V',CHAMNO ,VDEPL(1:19))
             ELSEIF ( NOMSYM(INOM) .EQ. 'VITE' ) THEN
                CVAL = DCMPLX(0.D0,DEPI*FREQ)
                DO 132 IEQ = 0, NEQ-1
@@ -615,13 +613,13 @@ C
             CALL UTFINM()
             GOTO 9999
         ENDIF
-C         
-C FIN BOUCLE FREQUENCE         
+C
+C FIN BOUCLE FREQUENCE
  42   CONTINUE
 
        CALL TITRE
 C
-C 
+C
  9999 CONTINUE
 C
 99999 CONTINUE

@@ -1,11 +1,9 @@
-      SUBROUTINE ASMCHC(BASE,MATAS,ELIM,NELIM)
+      SUBROUTINE ASMCHC(MATAS)
       IMPLICIT NONE
       CHARACTER*(*) MATAS
-      CHARACTER*1 BASE
-      INTEGER NELIM,ELIM(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 10/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,24 +23,11 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C OBJET :
 C        TRAITEMENT DES CHARGES CINEMATIQUES DANS UNE MATRICE ASSEMBLEE
-C        CALCUL DES OBJETS  .CCLL ET .CCVA
+C        CALCUL DES OBJETS  .CCLL,  .CCVA,  .CCJJ
 C-----------------------------------------------------------------------
-C IN   BASE    K*1     : 'G','V' BASE SUR LAQUELLE EST MATAS
 C VAR  MATAS   K*19    : NOM DE LA MATR_ASSE
-C IN   ELIM    I(*)    : TABLEAU ENTIER DE DIM = NEQ DONNANT LES
-C                        LES NUMEROS DES EQUATIONS A ELIMINER ET LEUR
-C                        NUMERO D'ELIMINATION
-C                        ELIM(IEQ) = / 0      -> PAS ELIMINE
-C                                    / IELIM  -> ELIMINE
-C IN   NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
-C                        (= MAX(IELIM))
-C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
       CHARACTER*32 JEXNUM
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
-C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -58,27 +43,65 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
+      CHARACTER*1 BASE
       CHARACTER*8 KBID
       CHARACTER*14 NU
       CHARACTER*19 MAT,NOMSTO
-      INTEGER TYPMAT,IELIM,JELIM,KDEB,KFIN,NCCVA
-      INTEGER NEQ,JSMHC,JSMDI,JVALM,JCCVA,JCCLL
-      INTEGER JREFA,IRET2,JNEQU,IEQ,K,JEQ,DECIEL,NTERM
-      INTEGER IRET,NBLOCM,JCCJJ,JREMP,DECJEL,IREMP
+      INTEGER TYPMAT,IELIM,JELIM,KDEB,KFIN,NCCVA,KKELI
+      INTEGER JSMHC,JSMDI,JVALM,JVALM2,JCCVA,JCCLL,NELIM
+      INTEGER JREFA,IRET2,JNEQU,IEQ,K,JEQ,DECIEL,NTERM,NEQ,IER
+      INTEGER IRET,NBLOCM,JCCJJ,JREMP,DECJEL,IREMP,JCCID,KETA,IBID
+      LOGICAL NONSYM
 C----------------------------------------------------------------------
-C                DEBUT DES INSTRUCTIONS
       CALL JEMARQ()
+      MAT = MATAS
+      CALL JXVERI(' ',' ')
+C     CALL VERISD('MATRICE',MAT)
+      CALL JEEXIN(MAT//'.CCVA',IER)
+      CALL ASSERT(IER.EQ.0)
+      CALL JEEXIN(MAT//'.CCID',IER)
+      IF (IER.EQ.0) GOTO 9999
+
+      CALL JELIRA(MAT//'.REFA','CLAS',IBID,BASE)
+      CALL JEVEUO(MAT//'.REFA','E',JREFA)
+      NU = ZK24(JREFA-1+2)(1:14)
+      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      NEQ = ZI(JNEQU)
+
 
 C     -- ON DETRUIT LES OBJETS S'ILS EXISTENT DEJA :
-      MAT = MATAS
+      CALL ASSERT(ZK24(JREFA-1+3).NE.'ELIMF')
       CALL JEDETR(MAT//'.CCLL')
       CALL JEDETR(MAT//'.CCVA')
+      CALL JEDETR(MAT//'.CCJJ')
 
-      IF (NELIM.EQ.0) GO TO 130
-C     -----------------------------------------------
+C     -- CALCUL DE ELIM(*) ET NELIM :
+C     -----------------------------------
+C     ELIM    I(*)    : TABLEAU ENTIER DE DIM = NEQ DONNANT LES
+C                       LES NUMEROS DES EQUATIONS A ELIMINER ET LEUR
+C                       NUMERO D'ELIMINATION
+C                       ZI(KKELI-1+IEQ) = / 0      -> PAS ELIMINE
+C                                         / IELIM  -> ELIMINE
+C     NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
+      CALL WKVECT('&&ASMCHC.ELIM','V V I',NEQ,KKELI)
+      CALL JEVEUO(MAT//'.CCID','L',JCCID)
+      NELIM=0
+      DO 1, IEQ=1,NEQ
+         KETA=ZI(JCCID-1+IEQ)
+         CALL ASSERT(KETA.EQ.1 .OR. KETA.EQ.0)
+         IF (KETA.EQ.1) THEN
+            NELIM=NELIM+1
+            ZI(KKELI-1+IEQ)=NELIM
+         ELSE
+            ZI(KKELI-1+IEQ)=0
+         ENDIF
+1     CONTINUE
 
-      CALL JEVEUO(MAT//'.REFA','L',JREFA)
-      NU = ZK24(JREFA-1+2) (1:14)
+
+
+      IF (NELIM.EQ.0) GO TO 9999
+C     -----------------------------------------------------------------
+
       NOMSTO = NU//'.SMOS'
 
 
@@ -87,8 +110,6 @@ C     -----------------------------------------------
       CALL JEVEUO(NOMSTO//'.SMHC','L',JSMHC)
       CALL JEVEUO(NOMSTO//'.SMDI','L',JSMDI)
 
-      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
-      NEQ = ZI(JNEQU)
 
 
 C     -- CALCUL DE .CCLL :
@@ -99,13 +120,13 @@ C     -----------------------------------------
       DO 21 IEQ = 1,NEQ
         KDEB = KFIN + 1
         KFIN = ZI(JSMDI-1+IEQ)
-        IELIM = ELIM(IEQ)
+        IELIM = ZI(KKELI-1+IEQ)
 
         IF (IELIM.NE.0) THEN
           ZI(JCCLL-1+3*(IELIM-1)+1) = IEQ
           DO 11, K=KDEB, KFIN - 1
             JEQ = ZI(JSMHC-1+K)
-            JELIM = ELIM(JEQ)
+            JELIM = ZI(KKELI-1+JEQ)
             IF (JELIM.EQ.0)
      &         ZI(JCCLL-1+3*(IELIM-1)+2)=ZI(JCCLL-1+3*(IELIM-1)+2) +1
    11     CONTINUE
@@ -113,7 +134,7 @@ C     -----------------------------------------
         ELSE
           DO 12 K = KDEB,KFIN - 1
             JEQ = ZI(JSMHC-1+K)
-            JELIM = ELIM(JEQ)
+            JELIM = ZI(KKELI-1+JEQ)
             IF (JELIM.NE.0)
      &         ZI(JCCLL-1+3*(JELIM-1)+2)=ZI(JCCLL-1+3*(JELIM-1)+2) +1
    12     CONTINUE
@@ -132,17 +153,18 @@ C     -----------------------------------------
       NCCVA=DECIEL
 
 
-C     -- RECUPERATION DE .VALM ET TYPMAT :
+C     -- RECUPERATION DE .VALM
+C        CALCUL DE TYPMAT ET NONSYM :
 C     ------------------------------------
       CALL JELIRA(JEXNUM(MAT//'.VALM',1),'TYPE',IRET,KBID)
       TYPMAT = 1
       IF (KBID(1:1).EQ.'C') TYPMAT = 2
+      NONSYM=.FALSE.
       CALL JELIRA(MAT//'.VALM','NMAXOC',NBLOCM,KBID)
       CALL ASSERT(NBLOCM.EQ.1 .OR. NBLOCM.EQ.2)
-      IF (NBLOCM.EQ.2) CALL UTMESS('F','ASMCHC',
-     &          'MATRICE NON-SYMETRIQUE => CHARGE CINEMATIQUE INTERDITE'
-     &                             )
+      IF (NBLOCM.EQ.2) NONSYM=.TRUE.
       CALL JEVEUO(JEXNUM(MAT//'.VALM',1),'E',JVALM)
+      IF (NONSYM) CALL JEVEUO(JEXNUM(MAT//'.VALM',2),'E',JVALM2)
 
 
 C     -- ALLOCATION DE .CCVA ET .CCJJ :
@@ -159,21 +181,37 @@ C     -----------------------------------------
       DO 121 IEQ = 1,NEQ
         KDEB = KFIN + 1
         KFIN = ZI(JSMDI-1+IEQ)
-        IELIM = ELIM(IEQ)
+        IELIM = ZI(KKELI-1+IEQ)
 
         IF (IELIM.NE.0) THEN
           DECIEL=ZI(JCCLL-1+3*(IELIM-1)+3)
           DO 111, K=KDEB, KFIN - 1
             JEQ = ZI(JSMHC-1+K)
-            JELIM = ELIM(JEQ)
+            JELIM = ZI(KKELI-1+JEQ)
             IF (JELIM.EQ.0) THEN
                ZI(JREMP-1+IELIM)=ZI(JREMP-1+IELIM)+1
                IREMP=ZI(JREMP-1+IELIM)
                ZI(JCCJJ-1+DECIEL+IREMP)=JEQ
                IF (TYPMAT.EQ.1) THEN
-                 ZR(JCCVA-1+DECIEL+IREMP)= ZR(JVALM-1+K)
+                 IF (NONSYM) THEN
+                   IF (JEQ.GE.IEQ) THEN
+                     ZR(JCCVA-1+DECIEL+IREMP)= ZR(JVALM-1+K)
+                   ELSE
+                     ZR(JCCVA-1+DECIEL+IREMP)= ZR(JVALM2-1+K)
+                   ENDIF
+                 ELSE
+                   ZR(JCCVA-1+DECIEL+IREMP)= ZR(JVALM-1+K)
+                 ENDIF
                ELSE
-                 ZC(JCCVA-1+DECIEL+IREMP)= ZC(JVALM-1+K)
+                 IF (NONSYM) THEN
+                   IF (JEQ.GE.IEQ) THEN
+                     ZC(JCCVA-1+DECIEL+IREMP)= ZC(JVALM-1+K)
+                   ELSE
+                     ZC(JCCVA-1+DECIEL+IREMP)= ZC(JVALM2-1+K)
+                   ENDIF
+                 ELSE
+                   ZC(JCCVA-1+DECIEL+IREMP)= ZC(JVALM-1+K)
+                 ENDIF
                ENDIF
             ENDIF
   111     CONTINUE
@@ -181,23 +219,38 @@ C     -----------------------------------------
         ELSE
           DO 112 K = KDEB,KFIN - 1
             JEQ = ZI(JSMHC-1+K)
-            JELIM = ELIM(JEQ)
+            JELIM = ZI(KKELI-1+JEQ)
             DECJEL=ZI(JCCLL-1+3*(JELIM-1)+3)
             IF (JELIM.NE.0) THEN
                ZI(JREMP-1+JELIM)=ZI(JREMP-1+JELIM)+1
                IREMP=ZI(JREMP-1+JELIM)
                ZI(JCCJJ-1+DECJEL+IREMP)=IEQ
                IF (TYPMAT.EQ.1) THEN
-                 ZR(JCCVA-1+DECJEL+IREMP)= ZR(JVALM-1+K)
+                 IF (NONSYM) THEN
+                   IF (JEQ.GE.IEQ) THEN
+                     ZR(JCCVA-1+DECJEL+IREMP)= ZR(JVALM-1+K)
+                   ELSE
+                     ZR(JCCVA-1+DECJEL+IREMP)= ZR(JVALM2-1+K)
+                   ENDIF
+                 ELSE
+                   ZR(JCCVA-1+DECJEL+IREMP)= ZR(JVALM-1+K)
+                 ENDIF
                ELSE
-                 ZC(JCCVA-1+DECJEL+IREMP)= ZC(JVALM-1+K)
+                 IF (NONSYM) THEN
+                   IF (JEQ.GE.IEQ) THEN
+                     ZC(JCCVA-1+DECJEL+IREMP)= ZC(JVALM-1+K)
+                   ELSE
+                     ZC(JCCVA-1+DECJEL+IREMP)= ZC(JVALM2-1+K)
+                   ENDIF
+                 ELSE
+                   ZC(JCCVA-1+DECJEL+IREMP)= ZC(JVALM-1+K)
+                 ENDIF
                ENDIF
             ENDIF
   112     CONTINUE
         END IF
 
   121 CONTINUE
-      CALL JEDETR('&&ASMCHC.REMPLIS')
 
 
 
@@ -207,13 +260,15 @@ C---------------------------------------------------------------------
       DO 221 IEQ = 1,NEQ
         KDEB = KFIN + 1
         KFIN = ZI(JSMDI-1+IEQ)
-        IELIM = ELIM(IEQ)
+        IELIM = ZI(KKELI-1+IEQ)
 
         IF (IELIM.NE.0) THEN
           IF (TYPMAT.EQ.1) THEN
             ZR(JVALM-1+KFIN)=1.D0
+            IF (NONSYM) ZR(JVALM2-1+KFIN)=1.D0
           ELSE
             ZC(JVALM-1+KFIN)=DCMPLX(1.D0,0.D0)
+            IF (NONSYM) ZC(JVALM2-1+KFIN)=DCMPLX(1.D0,0.D0)
           ENDIF
         ENDIF
 
@@ -221,20 +276,24 @@ C---------------------------------------------------------------------
           DO 211, K=KDEB, KFIN -1
             IF (TYPMAT.EQ.1) THEN
               ZR(JVALM-1+K)=0.D0
+              IF (NONSYM) ZR(JVALM2-1+K)=0.D0
             ELSE
               ZC(JVALM-1+K)=DCMPLX(0.D0,0.D0)
+              IF (NONSYM) ZC(JVALM2-1+K)=DCMPLX(0.D0,0.D0)
             ENDIF
   211     CONTINUE
 
         ELSE
           DO 212 K = KDEB, KFIN -1
             JEQ = ZI(JSMHC-1+K)
-            JELIM = ELIM(JEQ)
+            JELIM = ZI(KKELI-1+JEQ)
             IF (JELIM.NE.0) THEN
               IF (TYPMAT.EQ.1) THEN
                 ZR(JVALM-1+K)=0.D0
+                IF (NONSYM) ZR(JVALM2-1+K)=0.D0
               ELSE
                 ZC(JVALM-1+K)=DCMPLX(0.D0,0.D0)
+                IF (NONSYM) ZC(JVALM2-1+K)=DCMPLX(0.D0,0.D0)
               ENDIF
             ENDIF
   212     CONTINUE
@@ -242,8 +301,14 @@ C---------------------------------------------------------------------
 
   221 CONTINUE
 
+      ZK24(JREFA-1+3)='ELIMF'
 
 
-  130 CONTINUE
+
+
+ 9999 CONTINUE
+      CALL JEDETR('&&ASMCHC.REMPLIS')
+      CALL JEDETR('&&ASMCHC.ELIM')
+C     CALL VERISD('MATRICE',MAT)
       CALL JEDEMA()
       END

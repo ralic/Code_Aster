@@ -1,0 +1,91 @@
+# MODIF  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+# TITRE VALIDATION DE AFFE_CHAR_CINE (REEL/NON-SYMETRIQUE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ======================================================================
+#
+#   Ce test sert a valider les charges cinematiques (AFFE_CHAR_CINE)
+#   avec une matrice reelle NON-SYMETRIQUE.
+#
+#   On compare les resultats obtenus avec AFFE_CHAR_MECA et AFFE_CHAR_CINE
+#
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'ZZZZ213B',NIV_PUB_WEB='INTERNET'))
+
+MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 450000.,    NU = 0.3) )
+MAILLA_1=LIRE_MAILLAGE(   )
+MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1, CREA_GROUP_MA=_F(  NOM = 'TOUT',  TOUT = 'OUI') )
+CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1, AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, VERIF='MAILLE',
+                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D', PHENOMENE = 'MECANIQUE') )
+
+
+CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,DDL_IMPO=(
+                          _F( GROUP_NO = 'G_10', DY = 7., DRX = 0.,        DRZ = 0.),
+                          _F( GROUP_NO = 'G_20',  DX = 4., DRY = 0., DRZ = 0.),
+                          _F( GROUP_NO = 'G_30',  DX = 4., DY = 7., DZ = -5., DRX = 0., DRY = 0., DRZ = 0.),
+                          _F( GROUP_NO = 'G_40',  DX = 4., DY = 7., DZ = -5., DRX = 0., DRY = 0., DRZ = 0.)) )
+
+CHARGC_1=AFFE_CHAR_CINE(MODELE=MODELE_1,MECA_IMPO=(
+                          _F( GROUP_NO = 'G_10',         DY = 7., DRX = 0.,        DRZ = 0.),
+                          _F( GROUP_NO = 'G_20',  DX = 4., DRY = 0., DRZ = 0.),
+                          _F( GROUP_NO = 'G_30',  DX = 4., DY = 7., DZ = -5., DRX = 0., DRY = 0., DRZ = 0.),
+                          _F( GROUP_NO = 'G_40',  DX = 4., DY = 7., DZ = -5., DRX = 0., DRY = 0., DRZ = 0.)) )
+
+CHARGE_2=AFFE_CHAR_MECA(MODELE=MODELE_1, FORCE_COQUE=_F( TOUT = 'OUI',      PRES = 0.5) )
+PRES=DEFI_FONCTION(  NOM_PARA='X',  VALE=(-104., 0.5,  104., 0.5,) )
+CHARGE_F=AFFE_CHAR_MECA_F(MODELE=MODELE_1, FORCE_COQUE=_F( TOUT = 'OUI',PRES = PRES) )
+
+CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1, COQUE=_F(  GROUP_MA = 'TOUT',  EPAIS = 0.125) )
+D_FONC=DEFI_FONCTION( NOM_PARA='INST', VALE=( 0., 0., 1., 1., ),)
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0, INTERVALLE=_F(  JUSQU_A = 0.1, NOMBRE = 1) )
+
+
+# LE 1ER CALCUL (AVEC AFFE_CHAR_MECA) SERT DE REFERENCE :
+#---------------------------------------------------------
+NONLIN1=STAT_NON_LINE( MODELE=MODELE_1, CHAM_MATER=CH_MAT_1, CARA_ELEM=CARAC_1,
+       EXCIT=(  _F( CHARGE = CHARGE_1),
+                _F( CHARGE = CHARGE_2, FONC_MULT = D_FONC, TYPE_CHARGE = 'SUIV'),
+                _F( CHARGE = CHARGE_F, FONC_MULT = D_FONC, TYPE_CHARGE = 'SUIV')),
+       COMP_ELAS=_F( RELATION = 'ELAS', DEFORMATION = 'GREEN_GR'),
+       INCREMENT=_F(LIST_INST = L_INST),
+       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8, ITER_GLOB_MAXI = 20,  ARRET = 'OUI'),
+       NEWTON=_F( REAC_ITER = 1) )
+
+TEST_RESU(  RESU=_F(  RESULTAT = NONLIN1, INST = 0.1, NOM_CHAM = 'DEPL', CRITERE = 'RELATIF', GROUP_NO = 'G_11', NOM_CMP = 'DZ',
+                      REFERENCE='NON_REGRESSION', VALE = -5.0335779463535E+00) )
+
+
+# LE 2EME CALCUL (AVEC AFFE_CHAR_CINE) SERT A VALIDER LES CHARGES CINEMATIQUES AVEC UNE MATRICE NON-SYMETRIQUE:
+#--------------------------------------------------------------------------------------------------------------
+NONLIN2=STAT_NON_LINE( MODELE=MODELE_1, CHAM_MATER=CH_MAT_1, CARA_ELEM=CARAC_1,
+       EXCIT=(  _F( CHARGE = CHARGC_1),
+                _F( CHARGE = CHARGE_2, FONC_MULT = D_FONC, TYPE_CHARGE = 'SUIV'),
+                _F( CHARGE = CHARGE_F, FONC_MULT = D_FONC, TYPE_CHARGE = 'SUIV')),
+       COMP_ELAS=_F( RELATION = 'ELAS', DEFORMATION = 'GREEN_GR'),
+       INCREMENT=_F(LIST_INST = L_INST),
+       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8, ITER_GLOB_MAXI = 20,  ARRET = 'OUI'),
+       NEWTON=_F( REAC_ITER = 1) )
+
+TEST_RESU(  RESU=_F(  RESULTAT = NONLIN2, INST = 0.1, NOM_CHAM = 'DEPL', CRITERE = 'RELATIF', GROUP_NO = 'G_11', NOM_CMP = 'DZ',
+                      REFERENCE='AUTRE_ASTER', VALE = -5.0335779463535E+00) )
+
+#
+FIN( )
+#

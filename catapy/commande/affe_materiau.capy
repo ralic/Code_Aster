@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +24,8 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
 
-         #  affectation du nom du matériau :
-         #  -------------------------------
+         #  affectation du nom du matériau (par mailles):
+         #  ----------------------------------------------
          AFFE            =FACT(statut='o',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -34,6 +34,16 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
            TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            SECH_REF        =SIMP(statut='f',typ='R',val_min=0.E+0),
+         ),
+
+         #  affectation du nom du matériau (par noeuds):
+         #  ----------------------------------------------
+         AFFE_NOEUD        =FACT(statut='f',max='**',
+           regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           MATER           =SIMP(statut='o',typ=mater_sdaster,max=1),
          ),
 
          #  affectation des variables de commande :

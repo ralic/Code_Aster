@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,8 +99,8 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                    PRESENT_ABSENT('GROUP_MA','NOEUD_2','GROUP_NO_2'),
                    PRESENT_ABSENT('MAILLE','NOEUD_2','GROUP_NO_2'),),
            INTITULE        =SIMP(statut='f',typ='TXM' ),
-           GROUP_MA        =SIMP(statut='f',typ=grma),
-           MAILLE          =SIMP(statut='f',typ=ma),
+           GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma,max='**'),
            NOEUD_1         =SIMP(statut='f',typ=no),
            NOEUD_2         =SIMP(statut='f',typ=no),
            GROUP_NO_1      =SIMP(statut='f',typ=grno),

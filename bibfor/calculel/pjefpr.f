@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,17 +62,19 @@ C
 
 C
       INTEGER       IBID, IE, JCONO, IRET, JORDR, NBORDR, I, IORDR
-      INTEGER       IAINS1, IAINS2, NBSYM, ISYM, ICO
+      INTEGER       IAINS1, IAINS2, NBSYM, ISYM, ICO, IND, J, NBMAX
+      PARAMETER     (NBMAX=50)
+      INTEGER       IPAR, IPAR1, IPAR2
       LOGICAL       ACCENO
-      CHARACTER*8   KB, MA1, MA2, NUME,PROL0,K8B
+      CHARACTER*8   KB, MA1, MA2, NUME,PROL0,K8B, TYP1, TYP2
       CHARACTER*16  NOMSYM(200)
       CHARACTER*19  CH1, CH2, PRFCHN,LIGREL,PRFCH2
-      CHARACTER*19 NOMS2,REFE
+      CHARACTER*19  NOMS2,REFE, KPAR(NBMAX)
       INTEGER IACONB,IACONU,NBNO2,JPJM1,IACNX1,ILCNX1,IDECAL,INO2
       INTEGER KMA1,NBNO1,IMA1,NBMA1,INO1
       INTEGER NUNO1A,NUNO1B
       INTEGER IER,LMATAS
-
+      
 C     FONCTIONS FORMULES :
 
 C DEB -----------------------------------------------------------------
@@ -124,7 +126,6 @@ C    On essaye de recuperer la numerotation imposee
         PRFCH2=NUME(1:8)//'      .NUME'
       ENDIF
 
-
 C     2- ON CALCULE LES CHAMPS RESULTATS :
 C     ------------------------------------
       ICO=0
@@ -159,12 +160,13 @@ C       -- PROJECTION DU CHAMP SI POSSIBLE :
           CALL RSNOCH ( RESU2, NOMSYM(ISYM), IORDR, ' ' )
 
 C       -- Attribution des attributs du concept resultat
-          IF ((TYPRES(1:9).EQ.'MODE_MECA').OR.
-     &     (TYPRES(1:4).EQ.'BASE')) THEN
+C         Extraction des parametres modaux à sauver dans le resultat
+          IF ((TYPRES(1:9).EQ.'MODE_MECA') .OR.
+     &     (TYPRES(1:4).EQ.'BASE')) THEN     
               CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
               CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
-              ZR(IAINS2)=ZR(IAINS1)
+              ZR(IAINS2)=ZR(IAINS1)              
 C             Recuperation de nume_mode
               CALL JEEXIN (RESU1//'           .NUMO', IRET )
               IF ( IRET.NE.0 ) THEN
@@ -177,11 +179,37 @@ C             Recuperation de nume_mode
               CALL RSADPA ( RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'NOEUD_CMP',IORDR,0,IAINS2,KB)
               ZK16(IAINS2)=ZK16(IAINS1)
-          ELSE
+          ELSEIF ((TYPRES(1:4) .EQ. 'EVOL') .OR.
+     &        (TYPRES(1:4) .EQ. 'DYNA')) THEN
             CALL RSADPA ( RESU1,'L',1,'INST',IORDR,0,IAINS1,KB)
             CALL RSADPA ( RESU2,'E',1,'INST',IORDR,0,IAINS2,KB)
             ZR(IAINS2)=ZR(IAINS1)
+          ELSE 
+C            on fait rien
           ENDIF
+
+C         REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
+          CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
+ 
+          DO 15 IND=1,IPAR
+             CALL RSADPA ( RESU1,'L',1,KPAR(IND),
+     &                     IORDR,1,IPAR1,TYP1)
+             CALL RSADPA ( RESU2,'E',1,KPAR(IND),
+     &                     IORDR,0,IPAR2,TYP2)
+             IF (TYP1(1:1) .EQ. 'I') THEN
+                ZI(IPAR2) = ZI(IPAR1)
+             ELSEIF (TYP1(1:1) .EQ. 'R') THEN
+                ZR(IPAR2) = ZR(IPAR1)
+             ELSEIF (TYP1(1:2) .EQ. 'K8') THEN
+                ZK8(IPAR2) = ZK8(IPAR1)
+             ELSEIF (TYP1(1:3) .EQ. 'K16') THEN
+                ZK16(IPAR2) = ZK16(IPAR1)
+             ELSEIF (TYP1(1:3) .EQ. 'K32') THEN
+                ZK32(IPAR2) = ZK32(IPAR1)
+             ELSE 
+C               ON NE FAIT RIEN
+             ENDIF
+ 15       CONTINUE
           ICO=ICO+1
 
  5      CONTINUE

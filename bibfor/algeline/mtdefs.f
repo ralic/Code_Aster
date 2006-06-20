@@ -3,7 +3,7 @@
       CHARACTER*(*)       MATOUT, MATIN, BASE, TYPC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,74 +57,71 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                  ZK32
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*6      PGC, PGCANC
-      COMMON  /NOMAJE/ PGC
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER       NBVAL,IVAL, LMATOU, LMATIN
+      INTEGER       NBVAL,IVAL, JREFAO, JREFAI
       CHARACTER*1   CLASSE, TYPE
       CHARACTER*2   TYMA
       CHARACTER*8   CBID
       CHARACTER*19  NOMOUT, NOMIN
-      CHARACTER*24  VALE, REFE , LIME
+      CHARACTER*24  VALM, REFA , LIME
       CHARACTER*32  JEXNUM
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      PGCANC = PGC
-      PGC    = 'MTDEFS'
       CLASSE = BASE(1:1)
-C
-C     --- RECUPERATION DES INFORMATIONS DE REFERENCE DE MATIN ---
+
       NOMIN = MATIN
-      REFE = NOMIN//'.REFA'
-      CALL JELIRA(REFE,'LONMAX',NBVAL,CBID)
-      CALL JEVEUO(REFE,'L',LMATIN)
-C
-C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A MATOUT ---
       NOMOUT = MATOUT
-      REFE = NOMOUT//'.REFA'
-      CALL JECREO(REFE,CLASSE//' V K24')
-      CALL JEECRA(REFE,'LONMAX',NBVAL,'  ')
-      CALL JEVEUO(REFE,'E',LMATOU)
+
+C     -- OBJET .REFA :
+C     ----------------------------
+      REFA = NOMIN//'.REFA'
+      CALL JELIRA(REFA,'LONMAX',NBVAL,CBID)
+      CALL JEVEUO(REFA,'L',JREFAI)
+      REFA = NOMOUT//'.REFA'
+      CALL JECREO(REFA,CLASSE//' V K24')
+      CALL JEECRA(REFA,'LONMAX',NBVAL,'  ')
+      CALL JEVEUO(REFA,'E',JREFAO)
       DO 10 IVAL=0,NBVAL-1
-         ZK24(LMATOU+IVAL) = ZK24(LMATIN+IVAL)
+         ZK24(JREFAO+IVAL) = ZK24(JREFAI+IVAL)
   10  CONTINUE
-C
-C     --- LIBERATION (AVEC I/O EN DIFFERE) ---
-      REFE = NOMIN//'.REFA'
-C
-C
-C     --- RECOPIE DES .LIME:
+
+      REFA = NOMIN//'.REFA'
+
+
+C     -- RECOPIE DU .LIME:
+C     --------------------------
       LIME = NOMIN//'.LIME'
-      CALL JELIRA(LIME,'LONMAX',NBVAL,CBID)
-      CALL JEVEUO(LIME,'L',LMATIN)
+      CALL JEEXIN(LIME,IRET)
+      IF (IRET.GT.0) THEN
+        CALL JELIRA(LIME,'LONMAX',NBVAL,CBID)
+        CALL JEVEUO(LIME,'L',JREFAI)
 C
-      LIME = NOMOUT//'.LIME'
-      CALL JECREO(LIME,CLASSE//' V K8')
-      CALL JEECRA(LIME,'LONMAX',NBVAL,'  ')
-      CALL JEVEUO(LIME,'E',LMATOU)
-      DO 15 IVAL=0,NBVAL-1
-         ZK8(LMATOU+IVAL) = ZK8(LMATIN+IVAL)
-  15  CONTINUE
-      LIME = NOMIN//'.LIME'
-C
-C     ------------- CREATION DE LA COLLECTION DES VALEURS --------------
-C
-C     --- TYPE DES VALEURS, NOMBRE DE BLOCS, LONGUEUR D'UN BLOC ---
-      VALE = NOMIN//'.VALM'
+        LIME = NOMOUT//'.LIME'
+        CALL JECREO(LIME,CLASSE//' V K8')
+        CALL JEECRA(LIME,'LONMAX',NBVAL,'  ')
+        CALL JEVEUO(LIME,'E',JREFAO)
+        DO 15 IVAL=0,NBVAL-1
+           ZK8(JREFAO+IVAL) = ZK8(JREFAI+IVAL)
+  15    CONTINUE
+      ENDIF
+
+
+C     -- CREATION DE LA COLLECTION .VALM :
+C     --------------------------------------------------------------
+      VALM = NOMIN//'.VALM'
       TYPE = TYPC(1:1)
-      IF (TYPE.EQ.' ' ) CALL JELIRA(VALE,'TYPE',IVAL,TYPE)
-      CALL JELIRA(VALE,'NMAXOC',NBBLOC,CBID)
-      CALL JELIRA(JEXNUM(VALE,1),'LONMAX',LGBLOC,CBID)
-C
-C     --- CREATION DE LA COLLECTION DES VALEURS DE MATOUT ---
-      VALE = NOMOUT//'.VALM'
-      CALL JECREC(VALE,CLASSE//' V '//TYPE,
+      IF (TYPE.EQ.' ' ) CALL JELIRA(VALM,'TYPE',IVAL,TYPE)
+      CALL JELIRA(VALM,'NMAXOC',NBBLOC,CBID)
+      CALL JELIRA(JEXNUM(VALM,1),'LONMAX',LGBLOC,CBID)
+      VALM = NOMOUT//'.VALM'
+      CALL JECREC(VALM,CLASSE//' V '//TYPE,
      +                           'NU','DISPERSE','CONSTANT',NBBLOC)
-      CALL JEECRA(VALE,'LONMAX',LGBLOC,CBID)
+      CALL JEECRA(VALM,'LONMAX',LGBLOC,CBID)
       DO 20 IBLOC = 1, NBBLOC
-         CALL JECROC( JEXNUM(VALE,IBLOC) )
+         CALL JECROC( JEXNUM(VALM,IBLOC) )
   20  CONTINUE
-      PGC = PGCANC
+
+
       CALL JEDEMA()
       END

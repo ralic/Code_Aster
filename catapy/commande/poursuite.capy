@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 16/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
                 fr="Poursuite d'une étude à partir de la sauvegarde au format JEVEUX ou HDF de sa base globale",
@@ -22,7 +22,7 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
             UIinfo={"groupes":("Gestion du travail",)},
                 op_init = ops.POURSUITE_context,fichier_ini = 1,
          FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
-                               typ='TXM',defaut="NON",into=("OUI","NON",) ), 
+                               typ='TXM',defaut="NON",into=("OUI","NON",) ),
          PAR_LOT         =SIMP(fr="mode de traitement des commandes",statut='f',typ='TXM',
                            into=("OUI","NON"),defaut="OUI"),
          IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
@@ -51,6 +51,8 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
          DEBUG           =FACT(fr="option de déboggage reservée aux développeurs",
                                statut='f',min=1,max=1,
            JXVERI          =SIMP(fr="vérifie l intégrité de la segmentation mémoire",
+                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
+           SDVERI          =SIMP(fr="vérifie la conformité des SD produites par les commandes",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            JEVEUX          =SIMP(fr="force les déchargement sur disque",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),

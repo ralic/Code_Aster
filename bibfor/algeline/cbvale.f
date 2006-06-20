@@ -1,12 +1,11 @@
-      SUBROUTINE CBVALE(NBCOMB,TYPCST,CONST,TYPMAT,LMAT,TYPRES,LRES,
-     &                  DDLEXC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE CBVALE(NBCOMB,TYPCST,CONST,LMAT,TYPRES,LRES,DDLEXC)
+      IMPLICIT NONE
       INTEGER NBCOMB,LMAT(*),LRES
-      CHARACTER*(*) TYPCST(*),TYPMAT(*),TYPRES,DDLEXC
+      CHARACTER*(*) DDLEXC,TYPCST(*),TYPRES
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +28,9 @@ C          MAIS PEUVENT ETRE A ELEMENTS REELS OU COMPLEXES
 C       *  LES SCALAIRES SONT REELS OU COMPLEXES
 C     -----------------------------------------------------------------
 C IN  I  NBCOMB = NOMBRE DE MATRICES A COMBINER
-C IN  K* TYPCST = TYPE DES CONSTANTES (R OU C OU I)
 C IN  R  CONST  = TABLEAU DE R*8    DES COEFICIENTS
-C IN  K* TYPMAT = TYPE DES MATRICES   (R OU C)
 C IN  I  LMAT = TABLEAU DES POINTEURS DES MATRICES
-C IN  K* TYPRES = TYPE DES MATRICES   (R OU C)
+C IN  K1 TYPRES = TYPE DE LA MATRICE RESULTAT   (R/C)
 C IN  I  LRES = POINTEUR DE MATRICE RESULTAT
 C IN  K* DDLEXC = NOM DES DDLS A EXCLURE (CONCRETEMENT IL S'AGIT
 C                                         DES LAGRANGE)
@@ -60,19 +57,20 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     -----------------------------------------------------------------
 C     LGBLOC = LONGUEUR DES BLOCS
-      INTEGER LGBLOC,TYPSYM,MATSYM,HCOL
+      INTEGER LGBLOC
+      LOGICAL SYMR,SYMI
 C     -----------------------------------------------------------------
-      CHARACTER*1 CH1,CLAS
-      CHARACTER*4 CBID
-      CHARACTER*19 MATRES,MATI,MATSTO
-      CHARACTER*24 VALE,VALER
+      CHARACTER*1 CLAS,TYPMAT
+      CHARACTER*19 MATRES,MATI
+      CHARACTER*24 VALMR,VALMI,MAT1
       CHARACTER*8 NOMDDL
       CHARACTER*14 NUME
       CHARACTER*19 NOMA
-      CHARACTER*24 MAT1
-
-      REAL*8 ZERO
-      COMPLEX*16 CZERO,C8CST
+      CHARACTER*2 ROUC
+      INTEGER NEQ,IBID,MXDDL,IERD,LDDL,JSMDI,JREFA,JSMHC,K
+      INTEGER IVAL,ICONST,IMAT,JVAMR1,JVAMR2,JVAMI1,JVAMI2
+      REAL*8 ZERO,R8CST,RBID,R8VIDE
+      COMPLEX*16 CZERO,C8CST,CBID
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0
@@ -83,7 +81,7 @@ C     -----------------------------------------------------------------
       MATRES = ZK24(ZI(LRES+1))
       NEQ = ZI(LRES+2)
       CALL JELIRA(MATRES//'.REFA','CLAS',IBID,CLAS)
-      VALER = MATRES//'.VALM'
+      VALMR = MATRES//'.VALM'
       LGBLOC = ZI(LRES+14)
 
 
@@ -98,201 +96,137 @@ C     II) RECUPERATION DES POSITIONS DES DDL
       CALL WKVECT('&&CBVALE','V V I',NEQ*MXDDL,LDDL)
       CALL PTEDDL('NUME_DDL',NUME,MXDDL,NOMDDL,NEQ,ZI(LDDL))
 
-      TYPSYM = ZI(LRES+4)
-      CALL ASSERT(TYPSYM.EQ.0 .OR. TYPSYM.EQ.1)
-C     TYPSYM=0 -> NON SYMETRIQUE ; TYPSYM=1 ->  SYMETRIQUE
+      SYMR = ZI(LRES+4) .EQ. 1
+      CALL ASSERT(TYPRES.EQ.'R' .OR. TYPRES.EQ.'C')
 
-C --- AFFECTATION DE L'ETAT DE LA PREMIERE MATRICE COMBINER
-C --- A LA MATRICE RESULTAT
 
       CALL MTDSC2(ZK24(ZI(LRES+1)),'SMDI','L',JSMDI)
-      CALL JEVEUO(ZK24(ZI(LRES+1))(1:19)//'.REFA','L',JREFA)
-      CALL JEVEUO(ZK24(JREFA-1+2)(1:14)//'.SMOS.SMHC','L',JSMHC)
-
-C --- BOUCLE SUR LES BLOCS DE LA MATRICE RESULTAT
+      CALL JEVEUO(ZK24(ZI(LRES+1)) (1:19)//'.REFA','L',JREFA)
+      CALL JEVEUO(ZK24(JREFA-1+2) (1:14)//'.SMOS.SMHC','L',JSMHC)
 
 
-        CALL JEVEUO(JEXNUM(VALER,1),'E',IATRES)
-        IF (TYPSYM.EQ.0) THEN
-          CALL JEVEUO(JEXNUM(VALER,2),'E',IATREI)
-        END IF
-        IF (TYPRES(1:1).EQ.'R') THEN
-          DO 10 IVAL = IATRES,IATRES + LGBLOC - 1
+      CALL JEVEUO(JEXNUM(VALMR,1),'E',JVAMR1)
+      IF (.NOT.SYMR) CALL JEVEUO(JEXNUM(VALMR,2),'E',JVAMR2)
+
+
+C --- MISE A ZERO DE LA MATRICE RESULTAT :
+C     ----------------------------------------
+      IF (TYPRES.EQ.'R') THEN
+        DO 10 IVAL = JVAMR1,JVAMR1 + LGBLOC - 1
+          ZR(IVAL) = ZERO
+   10   CONTINUE
+        IF (.NOT.SYMR) THEN
+          DO 20 IVAL = JVAMR2,JVAMR2 + LGBLOC - 1
             ZR(IVAL) = ZERO
-   10     CONTINUE
-
-          IF (TYPSYM.EQ.0) THEN
-            DO 20 IVAL = IATREI,IATREI + LGBLOC - 1
-              ZR(IVAL) = ZERO
-   20       CONTINUE
-          END IF
-        ELSE IF (TYPRES(1:1).EQ.'C') THEN
-          DO 30 IVAL = IATRES,IATRES + LGBLOC - 1
-            ZC(IVAL) = CZERO
-   30     CONTINUE
-
-        ELSE
-          CH1 = TYPRES(1:1)
-          CALL UTMESS('F','CBVALE_1','TYPE DE MATRICE RESULTAT "'//CH1//
-     &                '" INCONNU.')
+   20     CONTINUE
         END IF
+
+      ELSE IF (TYPRES.EQ.'C') THEN
+        DO 30 IVAL = JVAMR1,JVAMR1 + LGBLOC - 1
+          ZC(IVAL) = CZERO
+   30   CONTINUE
+        IF (.NOT.SYMR) THEN
+          DO 40 IVAL = JVAMR2,JVAMR2 + LGBLOC - 1
+            ZC(IVAL) = CZERO
+   40     CONTINUE
+        END IF
+      END IF
+
 
 C --- BOUCLE SUR LES MATRICES A COMBINER ---
-        ICONST = 1
-        DO 40 IMAT = 1,NBCOMB
-
-C ---    NOM DE LA MATRICE A COMBINER
-
-          MATI = ZK24(ZI(LMAT(IMAT)+1))
-          VALE = MATI//'.VALM'
-          CALL JEVEUO(JEXNUM(VALE,1),'L',IATMAT)
-          MATSYM = ZI(LMAT(IMAT)+4)
-          IF (MATSYM.EQ.0) THEN
-            CALL JEVEUO(JEXNUM(VALE,2),'E',IATMAI)
-          END IF
-
-C --- LA MATRICE RESULTAT EST REELLE
-
-          IF (TYPRES(1:1).EQ.'R') THEN
-
-C ---          LA MATRICE A COMBINER EST REELLE
-
-            IF (TYPMAT(IMAT) (1:1).EQ.'R') THEN
-
-C ---              CAS D'UN MATRICE SYMETRIQUE
-
-                IF (TYPSYM.EQ.1) THEN
-                  CALL RRRSSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),CONST(ICONST),ZR(IATMAT),
-     &                        ZR(IATRES))
-
-C ----             CAS D'UN MATRICE NON-SYMETRIQUE
-
-                ELSE IF (TYPSYM.EQ.0) THEN
-                  IF (MATSYM.EQ.1) THEN
-                    CALL RRRNSM(NEQ,ZI(JSMHC),
-     &                          ZI(JSMDI),ZI(LDDL),CONST(ICONST),
-     &                          ZR(IATMAT),ZR(IATRES),ZR(IATREI))
-                  ELSE IF (MATSYM.EQ.0) THEN
-                    CALL RRRNNM(NEQ,ZI(JSMHC),
-     &                          ZI(JSMDI),ZI(LDDL),CONST(ICONST),
-     &                          ZR(IATMAT),ZR(IATMAI),ZR(IATRES),
-     &                          ZR(IATREI))
-                  END IF
-                END IF
+C     ----------------------------------------
+      ICONST = 1
+      DO 50 IMAT = 1,NBCOMB
+        IF (TYPCST(IMAT).EQ.'R') THEN
+            R8CST = CONST(ICONST)
+            C8CST = DCMPLX(R8VIDE(),R8VIDE())
+            ICONST=ICONST+1
+        ELSE
+            R8CST = R8VIDE()
+            C8CST = DCMPLX(CONST(ICONST),CONST(ICONST+1))
+            ICONST=ICONST+2
+        ENDIF
+        MATI = ZK24(ZI(LMAT(IMAT)+1))
+        VALMI = MATI//'.VALM'
+        CALL JELIRA(VALMI,'TYPE',IBID,TYPMAT)
+        CALL ASSERT(TYPMAT.EQ.'R' .OR. TYPMAT.EQ.'C')
+        CALL JEVEUO(JEXNUM(VALMI,1),'L',JVAMI1)
+        SYMI = ZI(LMAT(IMAT)+4) .EQ. 1
+        IF (.NOT.SYMI) CALL JEVEUO(JEXNUM(VALMI,2),'L',JVAMI2)
+        ROUC=TYPRES(1:1)//TYPCST(IMAT)(1:1)
 
 
-C ---      CAS OU LA MATRICE RESULTANTE EST REELLE ET LA MATRICE
-C ---      A COMBINER EST COMPLEXE
-
-            ELSE IF (TYPMAT(IMAT) (1:1).EQ.'C') THEN
-
-C ---        LE COEFFICIENT MULTIPLICATEUR EST REEL
-
-              IF (TYPCST(IMAT) (1:1).EQ.'R') THEN
-                  CALL RCRSSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),CONST(ICONST),ZC(IATMAT),
-     &                        ZR(IATRES))
-
-C ---        LE COEFFICIENT MULTIPLICATEUR EST IMAGINAIRE PUR
-
-              ELSE IF (TYPCST(IMAT) (1:1).EQ.'I') THEN
-                  CALL RCISSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),CONST(ICONST),ZC(IATMAT),
-     &                        ZR(IATRES))
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST DE TYPE INCONNU
-
+        IF (TYPRES.EQ.'R') THEN
+C       --------------------------
+          IF (TYPMAT.EQ.'R') THEN
+C         --------------------------
+            CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                  C8CST,ZR(JVAMI1),ZR(JVAMR1),CBID)
+            IF (.NOT.SYMR) THEN
+              IF (SYMI) THEN
+                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZR(JVAMI1),ZR(JVAMR2),CBID)
               ELSE
-                CH1 = TYPCST(IMAT) (1:1)
-                CALL UTMESS('F','CBVALE_2','TYPE INCONNU: '//CH1)
+                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZR(JVAMI2),ZR(JVAMR2),CBID)
               END IF
-
-C ---       LA MATRICE A COMBINER EST DE TYPE INCONNU
-
-            ELSE
-              CH1 = TYPMAT(IMAT) (1:1)
-              CALL UTMESS('F','CBVALE_3','TYPE INCONNU: '//CH1)
             END IF
 
-C --- LA MATRICE RESULTAT EST COMPLEXE
-
-          ELSE IF (TYPRES(1:1).EQ.'C') THEN
-
-C ---        LA MATRICE A COMBINER EST REELLE
-
-            IF (TYPMAT(IMAT) (1:1).EQ.'R') THEN
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST REEL
-
-              IF (TYPCST(IMAT) (1:1).EQ.'R') THEN
-                  CALL CRRSSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),CONST(ICONST),ZR(IATMAT),
-     &                        ZC(IATRES))
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST COMPLEXE
-
-              ELSE IF (TYPCST(IMAT) (1:1).EQ.'C') THEN
-                C8CST = DCMPLX(CONST(ICONST),CONST(ICONST+1))
-                  CALL CRCSSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),C8CST,ZR(IATMAT),ZC(IATRES))
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST DE TYPE INCONNU
-
+          ELSE IF (TYPMAT.EQ.'C') THEN
+C         --------------------------
+            CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                  C8CST,ZC(JVAMI1),ZR(JVAMR1),CBID)
+            IF (.NOT.SYMR) THEN
+              IF (SYMI) THEN
+                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZC(JVAMI1),ZR(JVAMR2),CBID)
               ELSE
-                CH1 = TYPCST(IMAT) (1:1)
-                CALL UTMESS('F','CBVALE_4','TYPE INCONNU: '//CH1)
+                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZC(JVAMI2),ZR(JVAMR2),CBID)
               END IF
-
-C ---        LA MATRICE A COMBINER EST COMPLEXE
-
-            ELSE IF (TYPMAT(IMAT) (1:1).EQ.'C') THEN
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST REEL
-
-              IF (TYPCST(IMAT) (1:1).EQ.'R') THEN
-                  CALL CCRSSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),CONST(ICONST),ZC(IATMAT),
-     &                        ZC(IATRES))
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST REEL
-
-              ELSE IF (TYPCST(IMAT) (:1).EQ.'C') THEN
-                C8CST = DCMPLX(CONST(ICONST),CONST(ICONST+1))
-                  CALL CCCSSM(NEQ,ZI(JSMHC),ZI(JSMDI),
-     &                        ZI(LDDL),C8CST,ZC(IATMAT),ZC(IATRES))
-
-C ---          LE COEFFICIENT MULTIPLICATEUR EST DE TYPE INCONNU
-
-              ELSE
-                CH1 = TYPCST(IMAT) (1:1)
-                CALL UTMESS('F','CBVALE_5','TYPE INCONNU: '//CH1)
-              END IF
-
-C ---        LA MATRICE A COMBINER EST DE TYPE INCONNU
-
-            ELSE
-              CH1 = TYPMAT(IMAT) (1:1)
-              CALL UTMESS('F','CBVALE_6','TYPE INCONNU: '//CH1)
             END IF
           END IF
-          ICONST = ICONST + 1
-          IF (TYPCST(IMAT) (1:1).EQ.'C') ICONST = ICONST + 1
-          CALL JELIBE(JEXNUM(VALE,1))
-          IF (MATSYM.EQ.0) THEN
-            CALL JELIBE(JEXNUM(VALE,2))
+
+
+        ELSE IF (TYPRES.EQ.'C') THEN
+C       --------------------------
+          IF (TYPMAT.EQ.'R') THEN
+C         --------------------------
+            CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                  C8CST,ZR(JVAMI1),RBID,ZC(JVAMR1))
+            IF (.NOT.SYMR) THEN
+              IF (SYMI) THEN
+                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZR(JVAMI1),RBID,ZC(JVAMR2))
+              ELSE
+                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZR(JVAMI2),RBID,ZC(JVAMR2))
+              END IF
+            END IF
+
+          ELSE IF (TYPMAT.EQ.'C') THEN
+C         --------------------------
+            CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                  C8CST,ZC(JVAMI1),RBID,ZC(JVAMR1))
+            IF (.NOT.SYMR) THEN
+              IF (SYMI) THEN
+                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZC(JVAMI1),RBID,ZC(JVAMR2))
+              ELSE
+                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+     &                      C8CST,ZC(JVAMI2),RBID,ZC(JVAMR2))
+              END IF
+            END IF
           END IF
-C ---   FIN DE LA BOUCLE SUR LES MATRICES A COMBINER
-   40   CONTINUE
-        CALL JELIBE(JEXNUM(VALER,1))
-        IF (TYPSYM.EQ.0) THEN
-          CALL JELIBE(JEXNUM(VALER,2))
         END IF
-C --- FIN DE LA BOUCLE SUR LES BLOCS DE LA MATRICE RESULTAT
+
+
+        CALL JELIBE(JEXNUM(VALMI,1))
+        IF (.NOT.SYMI) CALL JELIBE(JEXNUM(VALMI,2))
+   50 CONTINUE
+
 
 
       CALL JEDETR('&&CBVALE')
-
-
       CALL JEDEMA()
       END

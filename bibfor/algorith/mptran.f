@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,6 +132,8 @@ C        -> EXISTENCE DES CHAMPS DANS LA STRUCTURE DE DONNEES MESURE
           ENDIF
         ENDIF
 
+
+
 C RECUPERATION DE L ABSCISSE
         IF((TYPRES(1:9).EQ.'HARM_GENE').OR.
      &     (TYPRES(1:9).EQ.'MODE_GENE')) THEN
@@ -171,7 +173,6 @@ C TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
 
 C FIN BOUCLE SUR NUMERO ORDRE
  110   CONTINUE
-
 C GESTION PARAMETRES DE REGULARISATION
       CALL GETVR8 ('RESOLUTION','COEF_PONDER',1,1,0, R8BID, NCOEF)
       CALL GETVID
@@ -268,8 +269,10 @@ C FIN GESTION PARAMETRES DE REGULARISATION
 
 C INITIALISATION POUR ALLOCATION DU TRAN_GENE
 C
-      LPSTO = .FALSE.
-      DT = (ZR(LABS-1 +NBABS) - ZR(LABS))/NBABS
+      IF (TYPRES(1:9).EQ.'TRAN_GENE') THEN
+         LPSTO = .FALSE.
+         DT = (ZR(LABS-1 +NBABS) - ZR(LABS))/NBABS
+      ENDIF
 C
 C RECUPERATION DE LA MATRICE MODALE PROJETEE 
 C
@@ -302,44 +305,44 @@ C
 C On cree une sd de type mode_gene
            CALL RSCRSD (NOMRES, 'MODE_GENE', NBABS )           
 C On remplie la sd de type mode_gene a partir de la base d'expansion 
-           CALL MDALLR(NOMRES, NOMBAS,NBMODE,NBABS,ZR(JDEP),CBID,
-     &                 ZR(LABS), ZCMPLX)
+           CALL MDALLR(NOMMES,NOMRES, NOMBAS,NBMODE,NBABS,ZR(JDEP),
+     &                 CBID,ZCMPLX)
          ENDIF
 C
       ELSE
 C SECOND MEMBRE COMPLEXE
         IF (TYPRES(1:9).EQ.'HARM_GENE') THEN
-        CALL MDALLC
-     &    (NOMRES, NOMBAS, K8B, K8B, K8B, NBMODE,
-     &     NBABS, NULL, 
-     &     NULL, K8BID, NULL, 
-     &    JDEP, JVIT, JACC, JORDR, JABS,
-     &    JREDC, JREDD, K8B)
+           CALL MDALLC
+     &         (NOMRES, NOMBAS, K8B, K8B, K8B, NBMODE,
+     &          NBABS, NULL, 
+     &          NULL, K8BID, NULL, 
+     &          JDEP, JVIT, JACC, JORDR, JABS,
+     &          JREDC, JREDD, K8B)
 
-        CALL MPINVC (NBMESU, NBMODE, NBABS, 
-     &              ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS), 
-     &              LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
-       ELSEIF (TYPRES(1:9).EQ.'MODE_GENE') THEN
-          CALL WKVECT (NOMCMD//'.RETA', 'V V C', NBMODE*NBABS, JDEP)
-          CALL WKVECT (NOMCMD//'.RET1', 'V V C', NBMODE*NBABS, JVIT)
-          CALL WKVECT (NOMCMD//'.RET2', 'V V C', NBMODE*NBABS, JACC)
-          CALL MPINVC (NBMESU, NBMODE, NBABS,
-     &              ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS), 
-     &              LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
+           CALL MPINVC (NBMESU, NBMODE, NBABS, 
+     &                  ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS), 
+     &                  LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
+        ELSEIF (TYPRES(1:9).EQ.'MODE_GENE') THEN
+           CALL WKVECT (NOMCMD//'.RETA', 'V V C', NBMODE*NBABS, JDEP)
+           CALL WKVECT (NOMCMD//'.RET1', 'V V C', NBMODE*NBABS, JVIT)
+           CALL WKVECT (NOMCMD//'.RET2', 'V V C', NBMODE*NBABS, JACC)
+           CALL MPINVC (NBMESU, NBMODE, NBABS,
+     &                  ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS), 
+     &                  LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
 C On cree une sd de type mode_gene
            CALL RSCRSD (NOMRES, 'MODE_GENE', NBABS )           
-C On remplie la sd de type mode_gene a partir de la base d'expansion 
-           CALL MDALLR(NOMRES, NOMBAS,NBMODE,NBABS,RBID,ZC(JDEP),
-     &                 ZR(LABS),ZCMPLX)
-       ELSE
-        CALL UTMESS ('F', NOMROU,
-     &        'INCOMPATIBILITE NOM_PARA ET DONNEES MESUREES ')
-       ENDIF
+C On remplie la sd de type mode_gene a partir de la base d'expansion
+           CALL MDALLR(NOMMES, NOMRES, NOMBAS,NBMODE,NBABS,RBID,
+     &                 ZC(JDEP),ZCMPLX)
+        ELSE
+           CALL UTMESS ('F', NOMROU,
+     &            'INCOMPATIBILITE NOM_PARA ET DONNEES MESUREES ')
+        ENDIF
 C
       ENDIF
 C
 C REMPLISSAGE DES OBJETS MANQUANTS
-C
+C  
       CALL JEVEUO (NOMRES//'           .ORDR', 'E', JORDR)
       IF (TYPRES(1:9).NE.'TRAN_GENE') THEN
         CALL JEVEUO (NOMRES//'           .FREQ', 'E', JABS)

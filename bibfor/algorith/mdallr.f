@@ -1,8 +1,8 @@
-      SUBROUTINE MDALLR (NOMRES,BASEMO,NBMODE,NBSAUV,VECPR8,VECPC8,
-     &                   FREQ,ZCMPLX)
+      SUBROUTINE MDALLR (RESU1,RESU2,BASEMO,NBMODE,NBSAUV,VECPR8,VECPC8,
+     &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,8 @@ C     ------------------------------------------------------------------
 C IN  : NOMRES : NOM DU CONCEPT RESULTAT
 C IN  : NBMODE : NOMBRE DE MODES
 C IN  : NBSAUV : NOMBRE DE PAS CALCULE (INITIAL COMPRIS)
+C IN  : DATAx  : DONNEES MODALES AU COMPLET (x=I POUR ENTIER, x=K POUR
+C                CHAR, x=R POUR REEL)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -49,27 +51,19 @@ C
      &                 IMODE,IER,JREFE,IBID,LVALE,J1REFE,I,J,
      &                 LDCONL,IBLO,JREFA
       LOGICAL          LREFE,ZCMPLX
-      CHARACTER*8      NOMRES,CBID,MATGEN,K8B,BASEMO
+      CHARACTER*8      RESU1,RESU2,CBID,MATGEN,K8B,BASEMO,TYP
       CHARACTER*14     NUGENE
       CHARACTER*16     NOMCMD
       CHARACTER*19     CHAMNO
       CHARACTER*24     RAIDE
-      REAL*8           VECPR8(NBMODE,*),FREQ(*)
+      REAL*8           VECPR8(NBMODE,*)
       COMPLEX*16       VECPC8(NBMODE,*)
 C
-      INTEGER NBPARI, NBPARR, NBPARK, NBPARA, MXDDL,LADPA
-      PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=1, NBPARA=17 )
-      CHARACTER*24 NOPARA(NBPARA)
-      CHARACTER*32  JEXNUM
+      INTEGER          NBMAX, IPAR, IPAR1, IPAR2
+      PARAMETER        (NBMAX=50)
+      CHARACTER*24     KPAR(NBMAX)      
+      CHARACTER*32     JEXNUM
 
-C     ------------------------------------------------------------------
-      DATA  NOPARA /        'NUME_MODE'       , 'NORME'           ,
-     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
-     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
-     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
-     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
-     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
-C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       LREFE = .TRUE.
@@ -87,10 +81,13 @@ C CREATION DE LA MATRICE GENERALISE SUPPORT
       ZK24(JREFA-1+10) = 'GENE'
       CALL WKVECT(MATGEN//'           .LIME','V V K8',1,LDLIM)
       ZK8(LDLIM)=NUGENE
-
+      
+C recuperation des parametres a garder dans le modele gene
+      CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
+      
       DO 100 IMODE = 1, NBSAUV
 C        --- VECTEUR PROPRE ---
-        CALL RSEXCH (NOMRES, 'DEPL', IMODE, CHAMNO, IER )
+        CALL RSEXCH (RESU2, 'DEPL', IMODE, CHAMNO, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 .AND. LREFE ) THEN
           IF (.NOT. ZCMPLX) THEN
@@ -108,28 +105,33 @@ C        --- VECTEUR PROPRE ---
               ZR(LVALE+IER-1) = VECPR8(IER,IMODE)
           ELSE
               ZC(LVALE+IER-1) = VECPC8(IER,IMODE)
-          ENDIF
+          ENDIF    
  110    CONTINUE
-        CALL RSNOCH (NOMRES, 'DEPL', IMODE, ' ' )
-
-           DO 200 I = 1 , NBPARI
-              CALL RSADPA(NOMRES,'E',1,NOPARA(I),IMODE,0,LADPA,K8B)
-              ZI(LADPA) = I
- 200       CONTINUE
-           DO 210 I = 1 , NBPARK
-              CALL RSADPA(NOMRES,'E',1,NOPARA(NBPARI+I),IMODE,
-     &        0,LADPA,K8B)
-              ZK24(LADPA) = ' '
- 210       CONTINUE
-           J = NBPARI + NBPARK
-           DO 220 I = 1 , NBPARR
-              CALL RSADPA(NOMRES,'E',1,NOPARA(J+I),IMODE,0,LADPA,K8B)
-              ZR(LADPA) = FREQ(IMODE)
- 220       CONTINUE
-
+        CALL RSNOCH (RESU2, 'DEPL', IMODE, ' ' )
+        
+        DO 200 I = 1 , IPAR
+           CALL RSADPA(RESU1,'L',1,KPAR(I),IMODE,1,IPAR1,TYP)
+           CALL RSADPA(RESU2,'E',1,KPAR(I),IMODE,0,IPAR2,K8B)
+           IF (TYP(1:1) .EQ. 'I') THEN
+              WRITE(6,*) 'ZI(',IPAR1,') = ', ZI(IPAR1)
+              ZI(IPAR2) = ZI(IPAR1)
+           ELSEIF (TYP(1:1) .EQ. 'R') THEN
+              WRITE(6,*) 'ZR(',IPAR1,') = ', ZR(IPAR1)
+              ZR(IPAR2) = ZR(IPAR1)
+           ELSEIF (TYP(1:2) .EQ. 'K8') THEN
+              WRITE(6,*) 'ZK8(',IPAR1,') = ', ZK8(IPAR1)
+              ZK8(IPAR2) = ZK8(IPAR1)
+           ELSEIF (TYP(1:3) .EQ. 'K16') THEN
+              WRITE(6,*) 'ZK16(',IPAR1,') = ', ZK16(IPAR1)
+              ZK16(IPAR2) = ZK16(IPAR1)
+           ELSEIF (TYP(1:3) .EQ. 'K32') THEN
+              WRITE(6,*) 'ZK32(',IPAR1,') = ', ZK32(IPAR1)
+              ZK32(IPAR2) = ZK32(IPAR1)
+           ENDIF
+ 200    CONTINUE
  100  CONTINUE
 
-      CALL VPCREA(0,NOMRES,' ',' ',' ',' ',IER)
+      CALL VPCREA(0,RESU2,' ',' ',' ',' ',IER)
 C     CALL VERISD('NUME_DDL',NUGENE)
 C     CALL VERISD('MATRICE',MATGEN)
       CALL JEDETC (' ',NUGENE,1)

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF SUPERVIS  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,13 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       REAL*8           TBLOC
       COMMON /RTBLJE/  TBLOC
+
+C     COMMON DEBUI1  : INF. GENERALES DES COMMANDES DEBUT/POURSUITE :
+C       - ISDVER :  /0 -> SDVERI='NON'
+C                   /1 -> SDVERI='OUI'
+C         ISDVER EST UTILISE PAR LA ROUTINE VERIS3
+      INTEGER          ISDVER
+      COMMON /DEBUI1/  ISDVER
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
       CHARACTER*16 NOMCMD,CBID,MEMOIR, CMPIN, CMPOUT
@@ -61,6 +68,15 @@ C
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( REPONS .EQ. 'OUI') THEN
          CALL UTMESS('I','IBDBGS','DEBUG JXVERI DEMANDE  ')
+      ENDIF
+
+      CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
+      CALL GETRES(CBID,CBID,NOMCMD)
+      IF ( REPONS .EQ. 'OUI') THEN
+         ISDVER=1
+         CALL UTMESS('I','IBDBGS','DEBUG SDVERI DEMANDE  ')
+      ELSE
+         ISDVER=0
       ENDIF
 
       CALL GETVTX('DEBUG','JEVEUX',1,1,1,REPONS,L)

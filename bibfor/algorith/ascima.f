@@ -1,6 +1,7 @@
-      SUBROUTINE ASCIMA(CHARGE,INFCHA,NUMEDD,MATASS)
+      SUBROUTINE ASCIMA (CHARGE,INFCHA,NUMEDD,MATASS,CUMUL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,37 +19,41 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*24 CHARGE,INFCHA
-      CHARACTER*(*) NUMEDD,MATASS
+      CHARACTER*24       CHARGE,INFCHA
+      CHARACTER*(*)      NUMEDD,MATASS
 C ----------------------------------------------------------------------
-C     ASSEMBLAGE DES MATRICES
+C  BUT : ON NOTE LES DDLS ELIMINES PAR LES CHARGES CINEMATIQUES
+C
+C  REMARQUE : LE RESTE DU TRAITEMENT DES CHARGES CINEMATIQUES EST FAIT
+C             AU DERNIER MOMENT (ASMCHC+CSMBGG)
 C
 C IN  CHARGE  : LISTE DES CHARGES
 C IN  INFCHA  : INFORMATION SUR LES CHARGES
 C IN  NUMEDD  : NUMEROTATION DU SYSTEME
-C VAR MATASS  : MATRICE ASSEMBLEE AVEC ELIMINATION DES DDLS IMPOSES PAR
-C               DES CHARGES CINEMATIQUES
+C VAR MATASS  : MATRICE ASSEMBLEE : CREATION / MISE A JOUR DE .CCID
+C IN  CUMUL   : 'ZERO' / 'CUMU'
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
+      CHARACTER*4 CUMUL
       CHARACTER*8 KBID
       CHARACTER*24 LCHCI
 C----------------------------------------------------------------------
@@ -56,25 +61,24 @@ C                DEBUT DES INSTRUCTIONS
 C----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEEXIN(CHARGE,IRET)
-      IF (IRET.EQ.0) GO TO 20
+      IF (IRET.EQ.0) GOTO 9999
       LCHCI = '&&ASCIMA.LCHCI'
       CALL JEVEUO(CHARGE,'L',IDCHA)
       CALL JEVEUO(INFCHA,'L',IDINFC)
       NCHARG = ZI(IDINFC)
       CALL WKVECT(LCHCI,'V V K24',NCHARG,IDCHCI)
       NCHCI = 0
-      DO 10 ICH = 1,NCHARG
+      DO 1 ICH = 1,NCHARG
         IF (ZI(IDINFC+ICH).LT.0) THEN
-          NCHCI = NCHCI + 1
+          NCHCI = NCHCI+1
           ZK24(IDCHCI-1+NCHCI) = ZK24(IDCHA-1+ICH)
-        END IF
+        ENDIF
+1     CONTINUE
 
-   10 CONTINUE
-      IF (NCHCI.NE.0) THEN
-        CALL ASSCHC('V',MATASS,NCHCI,ZK24(IDCHCI),NUMEDD)
-      END IF
-
+      IF ( NCHCI.NE.0 )
+     &    CALL ASSCHC(MATASS,NCHCI,ZK24(IDCHCI),NUMEDD,CUMUL)
       CALL JEDETR(LCHCI)
-   20 CONTINUE
+
+ 9999 CONTINUE
       CALL JEDEMA()
       END

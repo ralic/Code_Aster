@@ -6,7 +6,7 @@
       REAL*8 VECT(*),XSOL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +53,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*19 MATAS
 
       CALL JEMARQ()
-      CALL JEVEUO(ZK24(ZI(LMAT+1)) (1:19)//'.REFA','L',JREFA)
+      MATAS=ZK24(ZI(LMAT+1))(1:19)
+      CALL JEVEUO(MATAS//'.REFA','L',JREFA)
+      IF (ZK24(JREFA-1+3).EQ.'ELIML') CALL MTMCHC(MATAS,'ELIMF')
 
       CALL JEVEUO(ZK24(JREFA-1+2)(1:14)//'.SMOS.SMHC','L',JSMHC)
 

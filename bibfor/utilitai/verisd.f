@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPESD,NOMSD
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -236,7 +236,9 @@ C     -----------------------------------
 
         CALL VERIS2('MAILLAGE',ZK24(JREFA-1+1))
         CALL VERIS2('NUME_DDL',ZK24(JREFA-1+2))
-        CALL ASSERT(ZK24(JREFA-1+3).EQ.' ')
+        CALL ASSERT( (ZK24(JREFA-1+3).EQ.' ')
+     &          .OR. (ZK24(JREFA-1+3).EQ.'ELIML')
+     &          .OR. (ZK24(JREFA-1+3).EQ.'ELIMF'))
 
         IF (ZK24(JREFA-1+5).EQ.' ') THEN
            CALL ASSERT(ZK24(JREFA-1+6).EQ.' ')
@@ -260,10 +262,10 @@ C     -----------------------------------
 
 C       EXCEP1) LA MATRICE DE CONTACT DE STAT_NON_LINE
 C       EST TOUJOURS LIGNE DE CIEL :
-        IF (CH19.EQ.'&&OP0070.RESOC.MATR') GOTO 10
+        IF (CH19.EQ.'&&OP0070.RESOC.MATR') GOTO 9999
 
 C       EXCEP2) UNE MATRICE FETI N'A PAS DE .VALM :
-        IF (ZK24(JREFA-1+5).EQ.'FETI') GOTO 10
+        IF (ZK24(JREFA-1+5).EQ.'FETI') GOTO 9999
 
         CALL VERIOB(CH19//'.VALM','EXIS',0)
         CALL JELIRA(CH19//'.VALM','DOCU',IBID,DOCU1)
@@ -278,6 +280,23 @@ C       EXCEP2) UNE MATRICE FETI N'A PAS DE .VALM :
             CALL VERIOB(CH19//'.UALF','NOEXIS',0)
             CALL VERIOB(CH19//'.VALF','NOEXIS',0)
             CALL VERIOB(CH19//'.WALF','NOEXIS',0)
+        ENDIF
+
+        IF (ZK24(JREFA-1+3).EQ.' ') THEN
+            CALL VERIOB(CH19//'.CCID','NOEXIS',0)
+            CALL VERIOB(CH19//'.CCVA','NOEXIS',0)
+            CALL VERIOB(CH19//'.CCLL','NOEXIS',0)
+            CALL VERIOB(CH19//'.CCJJ','NOEXIS',0)
+        ELSE IF (ZK24(JREFA-1+3).EQ.'ELIML') THEN
+            CALL VERIOB(CH19//'.CCID','EXIS',0)
+            CALL VERIOB(CH19//'.CCVA','NOEXIS',0)
+            CALL VERIOB(CH19//'.CCLL','NOEXIS',0)
+            CALL VERIOB(CH19//'.CCJJ','NOEXIS',0)
+        ELSE IF (ZK24(JREFA-1+3).EQ.'ELIMF') THEN
+            CALL VERIOB(CH19//'.CCID','EXIS',0)
+            CALL VERIOB(CH19//'.CCVA','EXIS',0)
+            CALL VERIOB(CH19//'.CCLL','EXIS',0)
+            CALL VERIOB(CH19//'.CCJJ','EXIS',0)
         ENDIF
 
 
@@ -333,7 +352,6 @@ C       CALL VERIS2('????',ZK24(JREFA-1+1))
         CALL ASSERT(DOCU1.EQ.' ')
         IF (ZK24(JREFA-1+9).EQ.'MS') CALL ASSERT(I1.EQ.1)
         IF (ZK24(JREFA-1+9).EQ.'MR') CALL ASSERT(I1.EQ.2)
-
 
         IF (ZK24(JREFA-1+8).EQ.' '.OR.
      &      ZK24(JREFA-1+8).EQ.'ASSE') THEN
@@ -512,10 +530,10 @@ C     -----------------------------------
 
 
       ELSE
-        CALL UTMESS('A','VERISD',' LE MOT CLE :'//TYP2SD//
-     &              ' N EST PAS PREVU.')
+        CALL UTMESS('I','VERISD',' LE MOT CLE :'//TYP2SD//
+     &              ' N EST PAS ENCORE PREVU.')
       END IF
 
-   10 CONTINUE
+ 9999 CONTINUE
       CALL JEDEMA()
       END

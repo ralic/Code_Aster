@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -282,10 +282,6 @@ C---- MATR_ASSE MAITRE LIEE AU DOMAINE GLOBAL
             CALL JEVEUO(KMAREF,'L',JREFA)
             CALL ASSERT(ZK24(JREFA-1+2) (1:14).EQ.K14B)
             CALL JEDETR(KMAREF(1:19)//'.LIME')
-            CALL JEDETR(KMAREF(1:19)//'.CCID')
-            CALL JEDETR(KMAREF(1:19)//'.CCLL')
-            CALL JEDETR(KMAREF(1:19)//'.CCJJ')
-            CALL JEDETR(KMAREF(1:19)//'.CCVA')
             CALL JEDETR(KMAREF(1:19)//'.JDRF')
             CALL JEDETR(KMAREF(1:19)//'.JDDC')
             CALL JEDETR(KMAREF(1:19)//'.JDFF')

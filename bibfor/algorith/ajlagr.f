@@ -3,7 +3,7 @@
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      NEQ, HBLOC, NBBLOC, MXDDL, STOCKA
       REAL*8       ZERO, UN, MMAX, KMAX, COEF, LCOEF(2)
-      CHARACTER*1  TYPMAT, TYPMA2, LTYPE(2)
+      CHARACTER*1  TYPMAT, TYPMA2, TYPCST(2)
       CHARACTER*8  RAID, MASS, MASI, NOMDDL, MATRER
       CHARACTER*14 NUMDDL, NU2DDL
       CHARACTER*19 RIGI2,MASS2,MATRE2,MASIN2
@@ -91,14 +91,14 @@ C
 C
       IF ( TYPMA2 .NE. TYPMAT ) THEN
         CALL UTDEBM('F','AJLAGR','LES TYPES DES DEUX MATRICES SONT '//
-     +                           'DIFFERENTS')
+     &                           'DIFFERENTS')
         CALL UTIMPK('L','TYPE DE LA MATRICE DE RAIDEUR : ',1,TYPMAT)
         CALL UTIMPK('L','TYPE DE LA MATRICE DE MASSE   : ',1,TYPMA2)
         CALL UTFINM( )
       ENDIF
       IF ( NU2DDL .NE. NUMDDL ) THEN
         CALL UTDEBM('F','AJLAGR','LES NUMEROTATIONS DES DEUX MATRICES '
-     +                         //'SONT DIFFERENTES')
+     &                         //'SONT DIFFERENTES')
         CALL UTIMPK('L','NUMEROTATION MATRICE DE RAIDEUR : ',1,NUMDDL)
         CALL UTIMPK('L','NUMEROTATION MATRICE DE MASSE   : ',1,NU2DDL)
         CALL UTFINM( )
@@ -162,10 +162,9 @@ C
       NOMDDL = ' '
       LCOEF(1) = 1.D0
       LCOEF(2) = 1.D0
-      LTYPE(1) = TYPMAT
-      LTYPE(2) = TYPMAT
-      CALL MTCOMB(NBMAT,LTYPE,LCOEF,LTYPE,NMAT,TYPMAT,
-     .            NMATI,NOMDDL,'V')
+      TYPCST(1) = TYPMAT
+      TYPCST(2) = TYPMAT
+      CALL MTCMBL(NBMAT,TYPCST,LCOEF,NMAT,NMATI,NOMDDL,' ')
 C
       NOMDDL = 'LAGR    '
       MXDDL  = 1

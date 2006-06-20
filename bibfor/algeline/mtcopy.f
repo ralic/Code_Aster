@@ -3,7 +3,7 @@
       CHARACTER*(*) MATIN,MATOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C     ------------------------------------------------------------------
 C     PRECAUTION D'EMPLOI :
 C        1) LA MATRICE "MATOUT" DOIT EXISTER ET AVOIR LA MEME STRUCTURE
 C     QUE "MATIN"
-C        2) ON RECOPIE LES .CCID, .CCLL, .CCVA DE MATIN DANS
-C     MATOUT, SI MATOUT POSSEDAIT DEJA CES CHAMPS ON LES DETRUITS.
+C        2) ON RECOPIE LE .CCID DE MATIN DANS
+C     MATOUT, SI MATOUT POSSEDAIT DEJA CE CHAMP ON LE DETRUIT.
 C     ------------------------------------------------------------------
 C     RAPPEL :   UNE MATRICE  "MAT" EXISTE
 C          S'IL EXISTE UN OBJET SIMPLE  MAT//"REFE"
@@ -54,12 +54,10 @@ C
 C     ------------------------------------------------------------------
       INTEGER LMATOU,LMATIN
       REAL*8 UN
-      CHARACTER*1 TYPE(2)
       CHARACTER*8 NOMDDL
       CHARACTER*19 MATI19,MATO19,KBID
       CHARACTER*24 NMATOU,NMATIN
 C     ------------------------------------------------------------------
-      DATA TYPE/'R','C'/
       DATA NOMDDL/'        '/
 C     ------------------------------------------------------------------
 C
@@ -96,10 +94,7 @@ C
         UN = 1.D0
 C
 C --- RECOPIE DU .VALE ET DE .CCID, .CCLL, .CCVA
-        CALL MTCOMB(1,'R',UN,TYPE(ZI(LMATIN+3)),NMATIN,
-     &              TYPE(ZI(LMATOU+3)),NMATOU,NOMDDL,'V')
-C
-C        --- LIBERATION DES DESCRIPTEURS ---
+        CALL MTCMBL(1,'R',UN,NMATIN,NMATOU,NOMDDL,' ')
       END IF
 C
       CALL JEDEMA()

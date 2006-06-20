@@ -1,10 +1,8 @@
-      SUBROUTINE CIDIA1(TYPRES,LRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER LRES
-      CHARACTER*(*) TYPRES
+      SUBROUTINE CIDIA1()
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,92 +19,5 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     MISE A 1 DES TERMES DIAGONAUX DES LIGNES ELIMINEES
-C     DE LA MATRICE DONT L'ADRESSE DU DESCRIPTEUR EST LRES
-C     -----------------------------------------------------------------
-C IN   K* TYPRES = TYPE DES MATRICES   (R OU C)
-C VAR  I  LRES   = POINTEUR DE LA MATRICE DONT ON REND EGAL A 1
-C                  LES TERMES DIAGONAUX DES LIGNES ELIMINEES
-
-C     -----------------------------------------------------------------
-
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,NONSYM
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-
-C     -----------------------------------------------------------------
-C     -----------------------------------------------------------------
-      CHARACTER*19 MATRES
-      CHARACTER*24 VALM
-
-      COMPLEX*16 CUN
-C     -----------------------------------------------------------------
-      CALL JEMARQ()
-
-      UN = 1.0D0
-      CUN = (1.0D0,0.0D0)
-
-      MATRES = ZK24(ZI(LRES+1))
-      VALM = MATRES//'.VALM'
-
-      CALL JEVEUO(MATRES//'.CCID','L',JCCID)
-
-      NONSYM=ZI(LRES+4).EQ.0
-      CALL MTDSC2(ZK24(ZI(LRES+1)),'SMDI','L',JSMDI)
-
-
-      CALL JEVEUO(JEXNUM(VALM,1),'E',JVALMS)
-      IF (NONSYM) CALL JEVEUO(JEXNUM(VALM,2),'E',JVALMI)
-
-      IL1 = 1
-      IL2 = ZI(LRES+2)
-      IF (TYPRES(1:1).EQ.'R') THEN
-        DO 10 IEQUA = IL1,IL2
-          IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
-            ZR(JVALMS+ZI(JSMDI+IEQUA-1)-1) = UN
-          END IF
-   10   CONTINUE
-
-        IF (NONSYM) THEN
-          DO 20 IEQUA = IL1,IL2
-            IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
-              ZR(JVALMI+ZI(JSMDI+IEQUA-1)-1) = UN
-            END IF
-   20     CONTINUE
-        END IF
-
-      ELSE IF (TYPRES(1:1).EQ.'C') THEN
-        DO 30 IEQUA = IL1,IL2
-          IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
-            ZC(JVALMS+ZI(JSMDI+IEQUA-1)-1) = CUN
-          END IF
-   30   CONTINUE
-
-        IF (NONSYM) THEN
-          DO 40 IEQUA = IL1,IL2
-            IF (ZI(JCCID+IEQUA-1).EQ.1) THEN
-              ZC(JVALMI+ZI(JSMDI+IEQUA-1)-1) = CUN
-            END IF
-   40     CONTINUE
-        END IF
-
-      END IF
-
-
-
-      CALL JEDEMA()
+      CALL ASSERT(.FALSE.)
       END

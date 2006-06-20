@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,8 +125,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
-                   SOLVEUR=_F(METHODE='LDLT',SYME='OUI',
-                              ),
+                   SOLVEUR=_F(METHODE='LDLT',SYME='NON',),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
                                 LIST_INST=L_SAUV),
                    );
@@ -201,10 +200,10 @@ TEST_TABLE(TABLE=TABJEU,
                      VALE_I   = 10),
            NOM_PARA ='JEU',
            CRITERE  = 'RELATIF',
-           PRECISION=1.E-5,
-           VALE     =2.6800112927879E-02,
+           PRECISION= 1.E-5,
+           VALE     = 2.6799840884025E-02,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '6.3.20' )
+           VERSION  = '8.2.20' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',

@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,20 +54,21 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      I,IADREF,IADRIF,IAREFE,IBID,IDBASE,IER,IORD,IRET,
      +             ITRESU,JBID,LDNEW,LLCHOL,LLINSK,LLNUEQ,LREFE,
-     +             NBMOD,NBNOT,NEQ,NNO,NUMO,IADPAR(5),NBMO2,
+     +             NBMOD,NBNOT,NEQ,NNO,NUMO,IADPAR(6),NBMO2,
      +             LLREF1,LLREF2,LLREF3,LLREF4,LLREF5,LLREF6
-      REAL*8       FREQ,GENEK,GENEM,OMEG2,RBID
+      REAL*8       FREQ,GENEK,GENEM,OMEG2,RBID,XSI
       COMPLEX*16   CBID
       CHARACTER*1  K1BID
       CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN
       CHARACTER*14 NUMDDL
-      CHARACTER*16 DEPL,NOMPAR(5),TYPREP
+      CHARACTER*16 DEPL,NOMPAR(6),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
       CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD,BASMO2
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
-      DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE'/
+      DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',
+     &             'AMOR_REDUIT'/
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -193,22 +194,24 @@ C
             CALL VTCREA ( CHAMNE, CREFE, 'G', 'R',NEQ )
             CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )
 C
-            CALL RSADPA ( RESGEN, 'L', 5,NOMPAR, IORD,0,IADPAR,KBID)
+            CALL RSADPA ( RESGEN, 'L', 6,NOMPAR, IORD,0,IADPAR,KBID)
             FREQ  = ZR(IADPAR(1))
             GENEK = ZR(IADPAR(2))
             GENEM = ZR(IADPAR(3))
             OMEG2 = ZR(IADPAR(4))
             NUMO  = ZI(IADPAR(5))
+            XSI   = ZR(IADPAR(6))
 
             CALL MDGEPH ( NEQ,NBMO2, ZR(IDBASE), ZR(LLCHOL), ZR(LDNEW))
    
             CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
-            CALL RSADPA ( NOMRES, 'E', 5,NOMPAR, I,0,IADPAR,KBID)
+            CALL RSADPA ( NOMRES, 'E', 6,NOMPAR, I,0,IADPAR,KBID)
             ZR(IADPAR(1)) = FREQ
             ZR(IADPAR(2)) = GENEK
             ZR(IADPAR(3)) = GENEM
             ZR(IADPAR(4)) = OMEG2
             ZI(IADPAR(5)) = NUMO
+            ZI(IADPAR(6)) = XSI
 C
             CALL JELIBE(CHAMOL)
 10       CONTINUE
@@ -265,22 +268,25 @@ C
             CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
             CALL JEVEUO(CHAMNO//'.VALE','E',LDNEW)
 C
-            CALL RSADPA ( RESGEN, 'L', 5,NOMPAR, IORD,0, IADPAR,KBID)
+            CALL RSADPA ( RESGEN, 'L', 6,NOMPAR, IORD,0, IADPAR,KBID)
             FREQ  = ZR(IADPAR(1))
             GENEK = ZR(IADPAR(2))
             GENEM = ZR(IADPAR(3))
             OMEG2 = ZR(IADPAR(4))
             NUMO  = ZI(IADPAR(5))
-
+            XSI   = ZR(IADPAR(6))
+            
             CALL MDGEPH ( NEQ,NBMO2,ZR(IDBASE),ZR(LLCHOL),ZR(LDNEW))
 
             CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
-            CALL RSADPA ( NOMRES, 'E', 5,NOMPAR, I,0, IADPAR,KBID)
+
+            CALL RSADPA ( NOMRES, 'E', 6,NOMPAR, I,0, IADPAR,KBID)
             ZR(IADPAR(1)) = FREQ
             ZR(IADPAR(2)) = GENEK
             ZR(IADPAR(3)) = GENEM
             ZR(IADPAR(4)) = OMEG2
             ZI(IADPAR(5)) = NUMO
+            ZR(IADPAR(6)) = XSI
 C
             CALL JELIBE(CHAMOL)
 20       CONTINUE

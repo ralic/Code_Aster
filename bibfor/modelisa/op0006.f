@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       PARAMETER (NMXFAC=20,NMXCMP=20)
       CHARACTER*16 MOTFAC(NMXFAC),LIMFAC(NMXFAC),MOFAC
       CHARACTER*19 CART1,CART2
-      CHARACTER*8  NOVARC,NOVAR1,LIVARC(NMXFAC)
+      CHARACTER*8  NOVARC,NOVAR1,NOVAR2,LIVARC(NMXFAC)
       REAL*8 VRCREF(NMXCMP),R8VIDE
       LOGICAL ERRGD
 C ----------------------------------------------------------------------
@@ -69,19 +69,23 @@ C ----------------------------------------------------------------------
       CALL GETRES(CHMAT,TYPE,NOMCMD)
       CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIL,N1)
 
-
-C     1- TRAITEMENT DU MOT CLE AFFE :
-C     -----------------------------------------
+      MESMAI = '&&OP0006.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
 
-      MESMAI = '&&OP0006.MES_MAILLES'
 
+C     1- TRAITEMENT DU MOT CLE AFFE :
+C     -----------------------------------------
       CALL RCMATE(CHMAT,NOMAIL,NOMODE)
       CALL RCTREF(CHMAT,NOMAIL,NOMODE)
       CALL RCSREF(CHMAT,NOMAIL,NOMODE)
+
+
+C     1-bis TRAITEMENT DU MOT CLE AFFE_NOEUD :
+C     -----------------------------------------
+      CALL RCMATN(CHMAT,NOMAIL)
 
 
 C     2- TRAITEMENT DES VARIABLES DE COMMANDE :
@@ -187,13 +191,17 @@ C       ------------------------------------------------------------
 
 
         DO 80,IOCC = 1,NBOCCV
+          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,1,1,NOVAR2,N1)
+          CALL ASSERT(N1.EQ.1)
+          IF (NOVAR2.NE.NOVARC) GO TO 80
 
 C         2-3 CALCUL DE  VRCREF(:) :
 C         ---------------------------
-          EXIST = GETEXM(MOFAC,'VALE_REF')
-          IF (EXIST) THEN
             CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
+          CALL ASSERT(N1.GE.0)
+          IF (N1.GT.0) THEN
             CALL ASSERT(N1.EQ.NCMP)
+            CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
           ELSE
             DO 60,K = 1,NCMP
               VRCREF(K) = R8VIDE()
@@ -255,8 +263,8 @@ C         TOUT='OUI' PAR DEFAUT :
             CALL NOCART(CART1,1,' ','NOM',0,' ',0,' ',NCMP)
             CALL NOCART(CART2,1,' ','NOM',0,' ',0,' ',6)
           ELSE
-            CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE',MOFAC,IOCC,2,MOTCLE,
-     &                  TYPMCL,MESMAI,NBMA)
+            CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE_VARC',IOCC,
+     &                  2,MOTCLE,TYPMCL,MESMAI,NBMA)
             CALL JEVEUO(MESMAI,'L',JMA)
             CALL NOCART(CART1,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',NCMP)
             CALL NOCART(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',4)

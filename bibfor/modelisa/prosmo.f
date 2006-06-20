@@ -1,6 +1,6 @@
-      SUBROUTINE PROSMO(MATREZ,LIMAT,NBMAT,BASEZ,NUMEDD,FACSYM)
+      SUBROUTINE PROSMO(MATREZ,LIMAT,NBMAT,BASEZ,NUMEDD,LSYM,ROUC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     PROSMO  --  LE BUT DE CETTE ROUTINE EST DE CONSTRUIRE LA MATR_ASSE
 C                 DE NOM MATRES QUI VA RESULTER DE LA COMBINAISON
@@ -43,10 +43,10 @@ C                                 LA MATR_ASSE MATREZ
 C        SI NUMEDD  =' ', LE NOM DU NUME_DDL SERA OBTENU PAR GCNCON
 C        SI NUMEDD /=' ', ON PRENDRA NUMEDD COMME NOM DE NUME_DDL
 
-C    FACSYM   IN    L   /.TRUE. : ON FAIT LA FACTORISATION SYMBOLIQUE
-C                                 DE LA MATRICE (MLTPRE)
-C                       /.FALSE. : ON NE LA FAIT PAS
-
+C    LSYM           IN    L      /.TRUE.  : MATRICE SYMETRIQUE
+C                                /.FALSE. : MATRICE NON-SYMETRIQUE
+C    ROUC           IN    K1     /'R ' : MATRICE REELLE
+C                                /'C'  : MATRICE COMPLEXE
 
 C.========================= DEBUT DES DECLARATIONS ====================
 C ----- COMMUNS NORMALISES  JEVEUX
@@ -56,7 +56,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,FACSYM
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -64,21 +64,23 @@ C ----- COMMUNS NORMALISES  JEVEUX
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+      CHARACTER*32 JEXNUM
 C -----  ARGUMENTS
       INTEGER NBMAT
+      LOGICAL LSYM
       CHARACTER*(*) MATREZ,BASEZ,NUMEDD
-      CHARACTER*24 LIMAT(NBMAT)
+      CHARACTER*(*) LIMAT(NBMAT)
+      CHARACTER*1 ROUC
 C -----  VARIABLES LOCALES
       CHARACTER*1 K1BID,BASE
-      CHARACTER*8 METHOD
       CHARACTER*14 NUMDDL,NUMDD1,NUMDDI
       CHARACTER*19 MATRES,MAT1,MATI
-      CHARACTER*19 PFCHNO
-      CHARACTER*24 KSMHC,KSMDI,KSDME,KREFA,KCONL,KVALM
-      CHARACTER*24 KHCO1,KREFE,KREFI
-      CHARACTER*24 KLISTE
-      CHARACTER*6 KNUMI
+      CHARACTER*24 KSMHC,KSMDI,KREFA,KCONL,KVALM
+      CHARACTER*24 KREFI,KLISTE
+      INTEGER LGBL,JHTC,I,IADI,JEQ,NBTER,JIBL,JPBL,IBL1,LCUMU,KBL,JBL1
+      INTEGER IBLAV,IDHCOI,ICUM,ISMDI,LSMHC,NTERM,IDSMHC,L,JSMDE
+      INTEGER ITBLOC,NBLOC,KBLOC,JREFA,IDREFI,IDCONL,IEQ,IBID
+      INTEGER IER,JSMDE1,NEQ,K
 
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
@@ -95,13 +97,14 @@ C     ----------------------------
       IF (NUMEDD.EQ.' ') THEN
         CALL GCNCON('_',NUMDDL(1:8))
         NUMDDL(9:14) = '.NUDDL'
+
       ELSE
         NUMDDL = NUMEDD
       END IF
 
 C --- NOM DE LA PREMIERE MATR_ASSE :
 C     ----------------------------
-      MAT1 = LIMAT(1) (1:19)
+      MAT1 = LIMAT(1)
 
 C --- RECUPERATION DU NUME_DDL ATTACHE A LA PREMIERE MATR_ASSE  :
 C     --------------------------------------------------------
@@ -145,19 +148,20 @@ C        TROP DE MEMOIRE
 C     =========================================================
       KLISTE = '&&PROSMO.KLISTE'
 C     RECUPERATION DE LA TAILLE DES BLOCS DONNEE DANS LA COMMANDE DEBUT:
-      TMAX=JEVTBL()
+      TMAX = JEVTBL()
       LGBL = INT(TMAX*1024)
 
 C     7-1) HTC : HAUTEUR CUMULEE DE KLISTE(JEQ)
 C     --------------------------------------------------------
       CALL WKVECT('&&PROSMO.HTC','V V I',NEQ,JHTC)
       DO 20 I = 1,NBMAT
-        MATI = LIMAT(I) (1:19)
+        MATI = LIMAT(I)
         CALL DISMOI('F','NOM_NUME_DDL',MATI,'MATR_ASSE',IBID,NUMDDI,IER)
         CALL JEVEUO(NUMDDI//'.SMOS.SMDI','L',IADI)
         DO 10,JEQ = 1,NEQ
           IF (JEQ.EQ.1) THEN
             NBTER = 1
+
           ELSE
             NBTER = ZI(IADI-1+JEQ) - ZI(IADI-1+JEQ-1)
           END IF
@@ -186,7 +190,7 @@ C       -- SI ON CHANGE DE BLOC :
 
 C     7-3) ALLOCATION DE KLISTE :
 C     ------------------------------------------------------------
-      IF (IBL1.EQ.1) LGBL=LCUMU
+      IF (IBL1.EQ.1) LGBL = LCUMU
       CALL JECREC(KLISTE,'V V I','NU','DISPERSE','CONSTANT',IBL1)
       CALL JEECRA(KLISTE,'LONMAX',LGBL,K1BID)
       DO 40 KBL = 1,IBL1
@@ -201,7 +205,7 @@ C     ------------------------------------------------------------
       IBLAV = 1
       CALL JEVEUO(JEXNUM(KLISTE,IBLAV),'E',JBL1)
       DO 70 I = 1,NBMAT
-        MATI = LIMAT(I) (1:19)
+        MATI = LIMAT(I)
         CALL DISMOI('F','NOM_NUME_DDL',MATI,'MATR_ASSE',IBID,NUMDDI,IER)
         CALL JEVEUO(NUMDDI//'.SMOS.SMDI','L',IADI)
         CALL JEVEUO(NUMDDI//'.SMOS.SMHC','L',IDHCOI)
@@ -209,6 +213,7 @@ C     ------------------------------------------------------------
         DO 60,JEQ = 1,NEQ
           IF (JEQ.EQ.1) THEN
             NBTER = 1
+
           ELSE
             NBTER = ZI(IADI-1+JEQ) - ZI(IADI-1+JEQ-1)
           END IF
@@ -258,6 +263,7 @@ C       ON TRIE ET ORDONNE LA COLONNE (EN PLACE)
         IF (JEQ.EQ.1) THEN
           CALL ASSERT(NTERM.EQ.1)
           ZI(ISMDI+1-1) = NTERM
+
         ELSE
           ZI(ISMDI+JEQ-1) = ZI(ISMDI+ (JEQ-1)-1) + NTERM
         END IF
@@ -316,20 +322,20 @@ C --- (NOMBRE DE TERMES NON NULS DE LA MATRICE)
 C     12) CREATION ET AFFECTATION DE LA COLLECTION .VALM
 C     ===================================================
       KVALM = MATRES//'.VALM'
+      CALL JEDETR(KVALM)
+      IF (LSYM) THEN
+        NBLOC = 1
 
-      NBLOC = 1
+      ELSE
+        NBLOC = 2
+      END IF
+      CALL JECREC(KVALM,BASE//' V '//ROUC,'NU','DISPERSE',
+     &            'CONSTANT',NBLOC)
+      CALL JEECRA(KVALM,'LONMAX',ITBLOC,' ')
+      DO 110,KBLOC = 1,NBLOC
+        CALL JECROC(JEXNUM(KVALM,KBLOC))
+  110 CONTINUE
 
-      CALL JEEXIN(KVALM,IER)
-      IF ( IER.EQ.0) THEN
-         CALL JECREC(KVALM,BASE//' V R','NU','DISPERSE',
-     &               'CONSTANT',NBLOC)
-
-         CALL JEECRA(KVALM,'LONMAX',ITBLOC,' ')
-
-         CALL JECROC(JEXNUM(KVALM,NBLOC))
-         CALL JEVEUO(JEXNUM(KVALM,NBLOC),'E',IDKVAL)
-         CALL JELIBE(JEXNUM(KVALM,NBLOC))
-      ENDIF
 
 C     13) CREATION ET AFFECTATION DU TABLEAU .REFA
 C     ============================================================
@@ -337,21 +343,28 @@ C     ============================================================
       KCONL = MATRES//'.CONL'
       CALL JEEXIN(KREFA,IER)
       IF (IER.EQ.0) THEN
-         CALL WKVECT(KREFA,BASE//' V K24',10,JREFA)
+        CALL WKVECT(KREFA,BASE//' V K24',10,JREFA)
+
       ELSE
-         CALL JEVEUO(KREFA,'E',JREFA)
-      ENDIF
+        CALL JEVEUO(KREFA,'E',JREFA)
+      END IF
       ZK24(JREFA-1+2) = NUMDDL
-      ZK24(JREFA-1+9) = 'MS'
+      IF (LSYM) THEN
+        ZK24(JREFA-1+9) = 'MS'
+
+      ELSE
+        ZK24(JREFA-1+9) = 'MR'
+      END IF
       ZK24(JREFA-1+10) = 'NOEU'
 
       DO 120 I = 1,NBMAT
-        MATI = LIMAT(I) (1:19)
+        MATI = LIMAT(I)
         KREFI = MATI//'.REFA'
         CALL JEVEUO(KREFI,'L',IDREFI)
         IF (ZK24(IDREFI+1-1).NE.' ') THEN
           ZK24(JREFA-1+1) = ZK24(IDREFI+1-1)
           GO TO 130
+
         END IF
   120 CONTINUE
   130 CONTINUE

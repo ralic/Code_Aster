@@ -3,7 +3,7 @@
       CHARACTER*(*) OBJ1,OBJ2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,8 @@ C  IN  K*    OBJ1   : NOM DU 1ER OBJET JEVEUX
 C  IN  K*    OBJ2   : NOM DU 2EME OBJET JEVEUX
 
 C     RESULTAT:
-C       IDENOB : .TRUE.    SI OBJ1 == OBJ2
+C       IDENOB : .TRUE.    SI OBJ1(*) == OBJ2(*)
+C                    OU SI OBJ1 ET OBJ2 SONT INEXISTANTS TOUS LES 2
 C                .FALSE.   SINON
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -64,8 +65,11 @@ C -DEB------------------------------------------------------------------
 
       CALL JEEXIN(OB1,IRET1)
       CALL JEEXIN(OB2,IRET2)
-      IF (IRET1*IRET2.EQ.0) THEN
-        GO TO 210
+      IF (IRET1.EQ.0) THEN
+        IF (IRET2.GT.0) GO TO 210
+        GO TO 220
+      ELSE
+        IF (IRET2.EQ.0) GO TO 210
       END IF
 
 

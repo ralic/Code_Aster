@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
              SCALING         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=80,),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              ),
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
          ),

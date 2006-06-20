@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C                1 : SYMETRIQUE
 C     ZI(+5) : INUTILISE
 C     ZI(+6) : INUTILISE
 C     ZI(+7) : NOMBRE DE DDLS IMPOSES PAR DES CHARGES CINEMATIQUES DANS
-C              LA MATRICE ASSEMBLEE = NIMPO
+C              LA MATRICE ASSEMBLEE = NELIM
 C
 C     ZI(+10) : INUTILISE
 C     ZI(+11) : INUTILISE
@@ -179,20 +179,21 @@ C     -- POUR TRAITER LE CAS OU ON A DETRUIT VOLONTAIREMENT LE .VALM
       END IF
 
 
-C     -- LMAT+14
-C     ----------
-      ZI(LMAT+14) = ZI(JSMDE-1+2)
-
-
 C     -- LMAT+7    (SI CHARGES CINEMATIQUES) :
 C     -------------------------------------------------
-      CALL JEEXIN(MAT19//'.CCLL',IER)
+      CALL JEEXIN(MAT19//'.CCID',IER)
       IF (IER.NE.0) THEN
-        CALL JELIRA(MAT19//'.CCLL','LONMAX',LCCLL,KBID)
-        ZI(LMAT+7) = LCCLL/3
+        CALL JEVEUO(MAT19//'.CCID','L',JCCID)
+        CALL JELIRA(MAT19//'.CCID','LONMAX',LCCID,KBID)
+        ZI(LMAT+7) = ZI(JCCID-1+LCCID+1)
       ELSE
         ZI(LMAT+7) = 0
       END IF
+
+
+C     -- LMAT+14
+C     ----------
+      ZI(LMAT+14) = ZI(JSMDE-1+2)
 
 
    20 CONTINUE

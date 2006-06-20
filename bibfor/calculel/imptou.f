@@ -3,7 +3,7 @@
       CHARACTER*(*) BASE,TOUS,MESS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8 SOMMR
 
       CALL JEMARQ()
+C     GO TO 9999
       BAS1=BASE
 
 
@@ -94,6 +95,7 @@ C     4. MENAGE
 C     --------------------------------------------------------------
       CALL JEDETR('&&IMPTOU.LISTE')
 
+ 9999 CONTINUE
       CALL JEDEMA()
  1001 FORMAT (A10,A25,I7,I7,A4,I7,I12,I12,E15.8)
 

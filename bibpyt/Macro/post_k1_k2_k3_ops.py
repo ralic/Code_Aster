@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 19/06/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,13 @@ def cross_product(a,b):
     cross[1] = a[2]*b[0]-a[0]*b[2]
     cross[2] = a[0]*b[1]-a[1]*b[0]
     return cross
-    
+ 
+def moy(t):
+    m = 0
+    for value in t :
+      m += value
+    return (m/len(t))
+     
 def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
                    TABL_DEPL_SUP,TABL_DEPL_INF,ABSC_CURV_MAXI,PREC_VIS_A_VIS,
                    TOUT_ORDRE,NUME_ORDRE,LIST_ORDRE,INST,LIST_INST,SYME_CHAR,
@@ -77,9 +83,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    CALC_TABLE    = self.get_cmd('CALC_TABLE')
-   IMPR_TABLE    = self.get_cmd('IMPR_TABLE')
    POST_RELEVE_T    = self.get_cmd('POST_RELEVE_T')
    DETRUIRE      = self.get_cmd('DETRUIRE')
+   DEFI_GROUP      = self.get_cmd('DEFI_GROUP')
    MACR_LIGN_COUPE      = self.get_cmd('MACR_LIGN_COUPE')
 
 #   ------------------------------------------------------------------
@@ -260,18 +266,39 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         l_coorf =  [[ns[i],xs[i],ys[i],zs[i]] for i in range(0,nbt)]
         l_coorf = [(i[0],i[1:]) for i in l_coorf]
         d_coorf = dict(l_coorf) 
+# Coordonnee d un pt quelconque des levres pr determination sens de propagation
+        cmail=aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMMAI')
+        for i in range(len(cmail)) :
+            if cmail[i] == ListmaS[0] : break
+        colcnx=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.CONNEX')
+        cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
+        NO_TMP = []
+        for k in range(len(colcnx[i+1])) : NO_TMP.append(cnom[colcnx[i+1][k]-1])
+        __NCOLEV=POST_RELEVE_T(ACTION=_F(INTITULE='Tab pour coordonnees pt levre',
+                                          NOEUD = NO_TMP,
+                                           RESULTAT=RESULTAT,
+                                           NOM_CHAM='DEPL',NUME_ORDRE=1,NOM_CMP=('DX',),
+                                           OPERATION='EXTRACTION',),);
+        tcoorl=__NCOLEV.EXTR_TABLE()
+        DETRUIRE(CONCEPT=_F(NOM=__NCOLEV),INFO=1) 
+        nbt = len(tcoorl['NOEUD'].values()['NOEUD'])
+        xl=moy(tcoorl['COOR_X'].values()['COOR_X'][:nbt])
+        yl=moy(tcoorl['COOR_Y'].values()['COOR_Y'][:nbt])
+        zl=moy(tcoorl['COOR_Z'].values()['COOR_Z'][:nbt])
+        Plev = array([xl, yl, zl])
 # Calcul des normales a chaque noeud du fond
         v1 =  array(VECT_K1)
         VN = [None]*Nbfond
         absfon = [0,]
         DTANOR = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_ORIGINE')
+        Pfon2 = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
+        VLori = Pfon2 - Plev
         if DTANOR != None :
           VN[0] = array(DTANOR)
         else :
-          Pfon2 = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
           Pfon3 = array([d_coorf[LNOFO[1]][0],d_coorf[LNOFO[1]][1],d_coorf[LNOFO[1]][2]])
           VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-          VN[i] = array(cross_product(VT,v1))
+          VN[0] = array(cross_product(VT,v1))
         for i in range(1,Nbfond-1):
           Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
           Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
@@ -285,6 +312,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         i = Nbfond-1
         Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
         Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
+        VLextr = Pfon2 - Plev
         absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
         absfon.append(absf)
         DTANEX = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_EXTREMITE')
@@ -295,6 +323,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
           VN[i] = array(cross_product(VT,v1))
         dicoF = dict([(LNOFO[i],absfon[i]) for i in range(Nbfond)])  
         dicVN = dict([(LNOFO[i],VN[i]) for i in range(Nbfond)])
+#Sens de la tangente       
+        v = cross_product(VLori,VLextr)
+        sens = sign(dot(transpose(v),v1))
 #Extraction dep sup/inf sur les normales          
         TlibS = [None]*Nbf1
         TlibI = [None]*Nbf1
@@ -308,7 +339,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         MODEL = self.jdc.sds_dict[MOD[0]]
         for i in range(Nbf1):
           Porig = array(d_coorf[Lnf1[i]] )
-          Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
+          if Lnf1[i]==LNOFO[0] and DTANOR : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
+          elif Lnf1[i]==LNOFO[Nbfond-1] and DTANEX : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
+          else : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]*sens
           TlibS[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
                 NOM_CHAM='DEPL',MODELE=MODEL, MAILLE = ListmaS,
                 LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),

@@ -1,7 +1,7 @@
       SUBROUTINE CFFROT(MAT,MAF1,MAF2,MAFROT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
       INTEGER       IBID, IER
       REAL*8        COEFMU(2)
-      CHARACTER*1   TYPMAT(2), TYPCST(2)
+      CHARACTER*1   TYPCST(2)
       CHARACTER*14  NUMEF1, NUMEF2
       CHARACTER*24  LIMAT(2)
 C ----------------------------------------------------------------------
@@ -74,13 +74,11 @@ C
       COEFMU(2) = -1.0D0
       TYPCST(1) = 'R'
       TYPCST(2) = 'R'
-      TYPMAT(1) = 'R'
-      TYPMAT(2) = 'R'
 C
 C --- COMBINAISON LINEAIRE MAFROT=MAF1-MAF2
 C
-      CALL MTCMBL(2,TYPCST,COEFMU,TYPMAT,LIMAT,'R',MAFROT,
-     &           ' ','V',' ',.FALSE.)
+      CALL MTDEFS(MAFROT,MAF1,'V','R')
+      CALL MTCMBL(2,TYPCST,COEFMU,LIMAT,MAFROT,' ',' ')
 C
 C --- DESTRUCTION DES NUME_DDL
 C

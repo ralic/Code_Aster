@@ -1,9 +1,9 @@
       SUBROUTINE OP0031(IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,20 +41,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*1 FTYPE(2)
+      CHARACTER*1 TYPRES
       CHARACTER*6 COMBRC
-      CHARACTER*8 MATRES,TYPRES,CBID,MATRI1
+      CHARACTER*8 MATRES,MATRI1,PARTIE
       CHARACTER*8 NOMDDL,MODE
       CHARACTER*14 NUMGEN
       CHARACTER*16 CONCEP,NOMCMD,TYPREP,REP2
-      CHARACTER*24 CNOM,CCOEF,CTYPEC,CTYPEM,CPTRM,CPTNOM,NMTRES
+      CHARACTER*24 CNOM,CCOEF,CTYPEC
       REAL*8 R8VAL(2)
+      LOGICAL LCOEFC
       COMPLEX*16 CVAL
+      INTEGER NBOCAG,NBOCCR,NBOCCC,NBOCC,LDESC,L,IREF1,IREF2,I,LNOM,IOCC
+      INTEGER IBID,LCOEF,LTYPEC,NBCST,LR,IMAT,LC,IRET,IDES1,K
 C     ------------------------------------------------------------------
-      DATA FTYPE/'R','C'/
-      DATA NOMDDL/'        '/
 C     ------------------------------------------------------------------
-C
+
       CALL JEMARQ()
       CALL INFMAJ()
       CALL GETRES(MATRES,CONCEP,NOMCMD)
@@ -65,7 +66,7 @@ C
          CALL AMOGEN(MATRES)
          GOTO 9999
       ENDIF
-C
+
       CALL GETFAC('COMB_R',NBOCCR)
       CALL GETFAC('COMB_C',NBOCCC)
       IF (NBOCCR.NE.0) THEN
@@ -77,10 +78,11 @@ C
          TYPRES = 'C'
          COMBRC = 'COMB_C'
       ENDIF
-C
-C CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
+
+
 
       IF (TYPREP(1:14).EQ.'MATR_ASSE_GENE') THEN
+C         CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
           CALL WKVECT(MATRES//'           .DESC','G V I',3,LDESC)
           IF(NBOCC.NE.0) THEN
             CALL GETVID(COMBRC,'MATR_ASSE',1,1,1,MATRI1,L)
@@ -97,121 +99,80 @@ C CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
             ENDIF
           ENDIF
       ENDIF
-C
-      CNOM = '&&OP0031.MATRICE_LISTE  '
+
+
+      CNOM = '&&OP0031.LISTE_MATRICE'
       CALL WKVECT(CNOM,'V V K8',NBOCC,LNOM)
       DO 10 IOCC = 0,NBOCC - 1
          CALL GETVID(COMBRC,'MATR_ASSE',IOCC+1,1,1,ZK8(LNOM+IOCC),L)
    10 CONTINUE
-C     ------------------------------------------------------------------
-C     ---  SUITE DES CONTROLES (SECOND NIVEAU: AVANT EXECUTION) ---
-C
-C
-      CALL GETVTX(' ','SANS_CMP',1,1,1,NOMDDL,NNOMDL)
-      IF (NNOMDL.NE.0) THEN
-           IF (NOMDDL(1:4).NE.'LAGR') THEN
-              CALL UTMESS('F','OP0031',
-     &                  'LES SEULS DDLS QUE L"ON PEUT EXCLURE '//
-     &                  'D"UNE COMBINAISON LINEAIRE DE MATRICE '//
-     &                  'SONT DE TYPE "LAGR" ET NON DE TYPE : '//
-     &                  NOMDDL)
-           ENDIF
-      ENDIF
-      CCOEF = '&&OP0031.COEF_VALEURS   '
+
+
+      NOMDDL=' '
+      CALL GETVTX(' ','SANS_CMP',1,1,1,NOMDDL,IBID)
+
+
+C     --- RECUPERATION DES COEFFICIENTS :
+C     ------------------------------------
+C       REMARQUE : POUR PARTIE='IMAG', ON FAIT COEF=-J*COEF
+
+      CCOEF = '&&OP0031.COEF_VALEURS'
       CALL WKVECT(CCOEF,'V V R',2*NBOCC,LCOEF)
-      CTYPEC = '&&OP0031.COEF_TYPE      '
+      CTYPEC = '&&OP0031.COEF_TYPE'
       CALL WKVECT(CTYPEC,'V V K8',NBOCC,LTYPEC)
-C
+
       NBCST = 0
       DO 25 IOCC = 0,NBOCC - 1
          CALL GETVR8(COMBRC,'COEF_R',IOCC+1,1,1,R8VAL,LR)
          IF (LR.EQ.1) THEN
-           ZR(LCOEF+NBCST) = R8VAL(1)
-           NBCST = NBCST + 1
-           ZK8(LTYPEC+IOCC) = 'R'
+           LCOEFC=.FALSE.
+           IF (COMBRC.EQ.'COMB_R') THEN
+             PARTIE=' '
+             CALL GETVTX(COMBRC,'PARTIE',IOCC+1,1,1,PARTIE,IBID)
+             IF (PARTIE.EQ.'IMAG') LCOEFC=.TRUE.
+           ENDIF
+
+           IF (.NOT.LCOEFC) THEN
+             ZR(LCOEF+NBCST) = R8VAL(1)
+             NBCST = NBCST + 1
+             ZK8(LTYPEC+IOCC) = 'R'
+           ELSE
+             ZR(LCOEF+NBCST)   = 0.D0
+             ZR(LCOEF+NBCST+1) = -1.D0*R8VAL(1)
+             NBCST = NBCST + 2
+             ZK8(LTYPEC+IOCC) = 'C'
+           ENDIF
          ELSE
            CALL GETVC8(COMBRC,'COEF_C',IOCC+1,1,1,CVAL,LC)
+           CALL ASSERT(LC.EQ.1)
            ZR(LCOEF+NBCST)   = DBLE(CVAL)
            ZR(LCOEF+NBCST+1) = DIMAG(CVAL)
            NBCST = NBCST + 2
            ZK8(LTYPEC+IOCC) = 'C'
          ENDIF
    25 CONTINUE
-C
-C     --- CONTROLE DES REFERENCES ---
+
+
+C     --- CONTROLE DES REFERENCES :
+C     --------------------------------
       DO 30 IOCC = 0,NBOCC - 2
          CALL VRREFE(ZK8(LNOM+IOCC),ZK8(LNOM+IOCC+1),IRET)
          IF (IRET.NE.0) THEN
             CALL UTMESS('F','OP0031',
-     +        'ERR_31A: LES "MATR_ASSE"'//ZK8(LNOM+IOCC)//'"  ET  "'//
-     +         ZK8(LNOM+IOCC+1)//
-     +        '"  NE SONT PAS COMBINABLES.')
+     &        'ERR_31A: LES "MATR_ASSE"'//ZK8(LNOM+IOCC)//'"  ET  "'//
+     &         ZK8(LNOM+IOCC+1)//
+     &        '"  NE SONT PAS COMBINABLES.')
          ENDIF
    30 CONTINUE
+
+
+
+C     -- COMBINAISON DES MATRICES :
 C     ------------------------------------------------------------------
-      CTYPEM = '&&OP0031.TYPE_MATRICE   '
-      CALL WKVECT(CTYPEM,'V V K8',NBOCC,LTYPEM)
-      CPTRM = '&&OP0031.PTR_MATRICE   '
-      CALL WKVECT(CPTRM,'V V IS',NBOCC,LPTR)
-      CPTNOM= '&&OP0031.NOM_MATRICE   '
-      CALL WKVECT(CPTNOM,'V V K24',NBOCC,LNOMMA)
-      IF (NBOCCC.GT.0) THEN
-      ELSE
-      ENDIF
-      DO 90 IMAT = 0,NBOCC - 1
-         CALL MTDSCR(ZK8(LNOM+IMAT))
-         ZK24(LNOMMA+IMAT)=ZK8(LNOM+IMAT)//'           .&INT'
-         CALL JEVEUO(ZK8(LNOM+IMAT)//'           .&INT','E',
-     &               ZI(LPTR+IMAT))
-         ZK8(LTYPEM+IMAT) = FTYPE( ZI(ZI(LPTR+IMAT)+3) )
-   90 CONTINUE
-      IF (TYPRES.EQ.'R') THEN
-         IRET = 0
-         DO 91 IMAT = 0,NBOCC - 1
-            IF ( ZK8(LTYPEM+IMAT) .EQ. 'C' ) THEN
-               CALL GETVTX(COMBRC,'PARTIE',1,1,1,ZK8(LTYPEC+IMAT),L)
-               IF ( L .EQ. 0) IRET = IRET + 1
-            ELSE
-               CALL GETVTX(COMBRC,'PARTIE',1,1,0,ZK8(LTYPEC+IMAT),L)
-               IF ( L .NE. 0) THEN
-                CALL UTMESS('A','OP0031','ON NE TIENT PAS COMPTE DE '//
-     +                  'L''INFORMATION "PARTIE" POUR UNE MATRICE '//
-     +                  'REELLE.')
-               ENDIF
-            ENDIF
- 91      CONTINUE
-         IF ( IRET .GT. 0 ) THEN
-            CALL UTMESS('F','OP0031','LE TYPE DE LA MATRICE RESULTAT'//
-     +                  ' NE PEUT ETRE REEL PUISQU''IL Y A UNE (OU '//
-     +                  'DES)  MATRICE(S) A COEFFICIENTS COMPLEXES '//
-     +                  'ET QUE L''ON EN EXTRAIT NI PARTIE REELLE '//
-     +                  'NI PARTIE IMAGINAIRE. ')
-         ENDIF
-      ENDIF
-C
-C     --- CREATION OU VERIFICATION DE COHERENCE DE LA MATRICE RESULTAT -
-      CALL MTEXIS(MATRES,IRET)
-      IF (IRET.EQ.0) THEN
-C        --- ON CREE ---
-         CALL MTDEFS(MATRES,ZK8(LNOM),'G',TYPRES)
-      ELSE
-C        --- ON VERIFIE ---
-         CALL VRREFE(MATRES,ZK8(LNOM),IRET)
-         IF (IRET.NE.0) THEN
-            CALL UTMESS('F','OP0031',
-     +                  'LA "MATASS" RESULAT "'//MATRES//'"  ET  "'//
-     +                  ZK8(LNOM)//
-     +                  '"  N''ONT LE MEME DOMAINE DE DEFINITION.')
-         ENDIF
-      ENDIF
-      CALL MTDSCR(MATRES)
-      NMTRES=MATRES//'           .&INT'
-C     ------------------------------------------------------------------
-C        --- COMBINAISON DES MATRICES ---
-      CALL MTCOMB(NBOCC,ZK8(LTYPEC),ZR(LCOEF),
-     +                     ZK8(LTYPEM),ZK24(LNOMMA),TYPRES,NMTRES,
-     .                     NOMDDL,'V')
-C     ------------------------------------------------------------------
+      CALL MTDEFS(MATRES,ZK8(LNOM),'G',TYPRES)
+      CALL MTCMBL(NBOCC,ZK8(LTYPEC),ZR(LCOEF),ZK8(LNOM),MATRES,NOMDDL,'
+     &')
+
  9999 CONTINUE
       CALL JEDEMA()
       END

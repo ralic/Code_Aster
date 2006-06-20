@@ -1,4 +1,4 @@
-# MODIF  DATE 20/12/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 19/06/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,30 +127,23 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='BI_PLAN_Y')
 ###### CALCULS TRANSITOIRES SUR BASE MODALE
 ###
 #
-TRAN_GE1=DYNA_TRAN_MODAL(   METHODE='EULER',
+TRAN_GE1=DYNA_TRAN_MODAL(      METHODE='EULER',
                              MASS_GENE=M_PROJ, 
                              RIGI_GENE=K_PROJ, 
-                                EXCIT=_F( VECT_GENE = F_PROJ,
-                                       COEF_MULT = 1000.),
-                             INCREMENT=_F(  INST_INIT = 0.,
-                                         INST_FIN = 1.,
-                                         PAS = 2.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 5),
-                            CHOC=( _F( INTITULE = 'CHOC1',
-                                       GROUP_NO_1 = 'GROUP1',
-                                       GROUP_NO_2 = 'GROUP2',
-                                       OBSTACLE = OBSTACLE,
-                                       NORM_OBST = (1., 0., 0.,),
-                                       DIST_1 = 0.0995,
-                                       DIST_2 = 0.0995,
-                                       RIGI_NOR = 1.E+8),
-                                   _F( INTITULE = 'CHOC2',
-                                       MAILLE = 'MC1',
-                                       OBSTACLE = OBSTACLE,
-                                       NORM_OBST = (1., 0., 0.,),
-                                       DIST_1 = 0.0995,
-                                       DIST_2 = 0.0995,
-                                       RIGI_NOR = 1.E+8)) 
+                                 EXCIT=_F( VECT_GENE = F_PROJ,
+                                           COEF_MULT = 1000.),
+                             INCREMENT=_F( INST_INIT = 0.,
+                                           INST_FIN = 1.,
+                                           PAS = 2.E-4),
+                             ARCHIVAGE=_F( PAS_ARCH = 5),
+                                  CHOC=_F( INTITULE = 'CHOC1_2',
+                                           GROUP_MA = 'GMC12',
+                                           OBSTACLE = OBSTACLE,
+                                           NORM_OBST = (1., 0., 0.,),
+                                           DIST_1 = 0.0995,
+                                           DIST_2 = 0.0995,
+                                           RIGI_NOR = 1.E+8  ) ,
+                                  INFO=2, 
                              )
 
 #
@@ -191,21 +184,13 @@ TRAN_GE3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                                          INST_FIN = 1.,
                                          PAS = 2.E-4),
                             ARCHIVAGE=_F( PAS_ARCH = 5),
-                            CHOC=( _F( INTITULE = 'CHOC1',
-                                       GROUP_MA = 'GMC2',
+                            CHOC=  _F( INTITULE = 'CHOC1_2',
+                                       MAILLE = ( 'MC1', 'MC2' ),
                                        OBSTACLE = OBSTACLE,
                                        NORM_OBST = (1., 0., 0.,),
                                        DIST_1 = 0.0995,
                                        DIST_2 = 0.0995,
-                                       RIGI_NOR = 1.E+8),
-                                   _F( INTITULE = 'CHOC2',
-                                       NOEUD_1 = 'M8',
-                                       NOEUD_2 = 'O8',
-                                       OBSTACLE = OBSTACLE,
-                                       NORM_OBST = (1., 0., 0.,),
-                                       DIST_1 = 0.0995,
-                                       DIST_2 = 0.0995,
-                                       RIGI_NOR = 1.E+8))
+                                       RIGI_NOR = 1.E+8  ),
                             )
 
 #
@@ -383,7 +368,7 @@ FONC2=RECU_FONCTION(   RESU_GENE=TRAN_GE1,
                          LIST_PARA=LISTINST,
                            PARA_X='INST',
                            PARA_Y='FN',
-                         INTITULE='CHOC1')
+                         INTITULE='CHOC1_2')
 
 #
 ## IMPRESSION D'UN DEPLACEMENT

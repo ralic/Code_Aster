@@ -4,7 +4,7 @@
       CHARACTER*16        TYPFON
       INTEGER              NBNOFO,ILEV
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 19/06/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NUMORI,NO1, NO2, NO3,JINTS,NBTRLS,IERA,JTGOR,JTGEX
       INTEGER       NUMFIN,ISYM,KNOLI,JINF,JNOLI,NBNOLI,JCOORI,JINTI
       INTEGER       NBTRLI,INO,INOS,NBS,NUMUN,JTS,JTI,NBI,INOI
-      INTEGER       NUMTMP
+      INTEGER       NUMTMP,JNOFOS
       REAL*8        X0(3),X1, X2, Y1, Y2, Z1, Z2,D,VECNOR(3),VP(3),DMIN
       REAL*8        TGOR(3),D1,D2,TGEX(3),DMAX,PREC,PRECO,PS,VECTAN(3)
       REAL*8        PRECN
@@ -80,6 +80,8 @@ C     ------------------------------------------------------------------
       ELSE
         FONNOE =RESU//'.FOND_INF  .NOEU'
         CALL JEVEUO ( FONNOE, 'L', JNOFO )
+        FONNOE =RESU//'.FOND_SUP  .NOEU'
+        CALL JEVEUO ( FONNOE, 'L', JNOFOS )
       ENDIF
     
 
@@ -398,7 +400,7 @@ C        DEFINISSANT LA LEVRE SUPERIEURE - SAUVEGARDE
          
 C ---- ORDRE DES NOEUDS                  
          IF (ILEV.NE.0) THEN
-           NUMORI =  ZI(JNOLS+ZI(JINTS+1-1)-1)
+           CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFOS+INF-1)), NUMORI )
          ENDIF
          NUMFIN = NUMORI
          DMAX = 0.D0

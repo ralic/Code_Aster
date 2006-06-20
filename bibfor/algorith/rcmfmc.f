@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHMAT , MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,37 +42,48 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNUM , JEXNOM  , JEXATR
+      CHARACTER*32       JEXNUM , JEXNOM
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NBCVRC,JVCNOM
       COMMON /CAII14/NBCVRC,JVCNOM
 
-      INTEGER        NBVAL, JCART, IRET, IRETC, JVALE, IGD, JDESC, KK
+      INTEGER        NBVAL, JCHEV, IRET, IRETC, JVALE, IGD, JDESC, KK
       INTEGER        NBGRP, I, ICOMPT, IGRP, INGRP,NBCMP,IER,J,K,NBMAT
-      INTEGER        INBMAT,ISMAEM
+      INTEGER        INBMAT,ISMAEM ,JCHNV
       CHARACTER*4    KNUMAT,KBID
       CHARACTER*8    K8B, MATERI,NOMGD
       CHARACTER*19   CODI, CH19
-      CHARACTER*24   CH24
+      CHARACTER*19   CHEMAT,CHNMAT,MATN
+      LOGICAL LCHN
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
       MATERI = CHMAT(1:8)
-      CH24 = MATERI//'.CHAMP_MAT'
+      CHEMAT = MATERI//'.CHAMP_MAT'
+      CHNMAT = MATERI//'.CHAMP_MATN'
       MATE = MATERI//'.MATE_CODE'
-      CALL JELIRA ( CH24(1:19)//'.VALE', 'LONMAX', NBVAL, K8B )
-      CALL JEVEUO ( CH24(1:19)//'.VALE', 'L', JCART )
+      MATN = MATERI//'.MATN_CODE'
+      CALL JELIRA ( CHEMAT//'.VALE', 'LONMAX', NBVAL, K8B )
+      CALL JEVEUO ( CHEMAT//'.VALE', 'L', JCHEV )
+      CALL JEEXIN ( CHNMAT//'.VALE', IRET)
+      LCHN=IRET.GT.0
 
+
+C     -- SI LES OBJETS .CODI EXISTENT, C'EST QUE L'ON A DEJA APPELE
+C        LA ROUTINE RCMFMC. TOUT EST DEJA FAIT :
+C     ----------------------------------------------------------
       CALL JEEXIN ( MATE(1:19)//'.VALE', IRET )
       IF ( IRET .NE. 0 ) THEN
-        CH19 = ZK8(JCART)
+        CH19 = ZK8(JCHEV)
         CALL JEEXIN ( CH19//'.CODI', IRETC )
         IF ( IRETC .NE. 0 ) GOTO 9999
       ENDIF
 
+
 C     -- MISE A JOUR DU COMON CAII13 POUR RCVARC :
+C     -----------------------------------------------
       CALL JEEXIN(MATERI//'.CVRCNOM',IRET)
       IF ( IRET .NE. 0 ) THEN
         CALL JEVEUT(MATERI//'.CVRCNOM','L',JVCNOM)
@@ -81,25 +92,29 @@ C     -- MISE A JOUR DU COMON CAII13 POUR RCVARC :
         NBCVRC=0
         JVCNOM=ISMAEM()
       END IF
-C
-      CALL JEVEUO ( CH24(1:19)//'.DESC', 'L', JDESC )
+
+
+C     -- TRAITEMENT DU MATERIAU PAR ELEMENTS :
+C     -----------------------------------------------
+      CALL JEVEUO ( CHEMAT//'.DESC', 'L', JDESC )
       CALL JENUNO(JEXNUM('&CATA.GD.NOMCMP',ZI(JDESC)),NOMGD)
       CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NBCMP,K8B,IER)
       CALL ASSERT((NBVAL/NBCMP)*NBCMP.EQ.NBVAL)
-C
-      CALL COPISD ( 'CHAMP_GD', 'V', CH24(1:19), MATE(1:19) )
+
+      CALL COPISD ( 'CHAMP_GD', 'V', CHEMAT, MATE(1:19) )
       CALL JEDETR ( MATE(1:19)//'.VALE' )
       NBGRP=NBVAL/NBCMP
       CALL WKVECT ( MATE(1:19)//'.VALE', 'V V I', NBGRP, JVALE )
       CALL JENONU ( JEXNOM('&CATA.GD.NOMGD','ADRSJEVE'), IGD )
       CALL JEVEUO ( MATE(1:19)//'.DESC', 'E', JDESC )
       ZI(JDESC) = IGD
-C
+
+
 C     --- CODAGE DU MATERIAU ---
-C
+C     -------------------------------------------------
       ICOMPT=0
       DO 9 I=1,NBVAL
-         IF (ZK8(JCART-1+I).NE.' ') ICOMPT=ICOMPT+1
+         IF (ZK8(JCHEV-1+I).NE.' ') ICOMPT=ICOMPT+1
   9   CONTINUE
       CALL ASSERT(ICOMPT.GT.0)
 
@@ -119,8 +134,8 @@ C
       DO 11 I=1,NBGRP
          DO 12 J=1,NBCMP
             K=(I-1)*NBCMP+J
-            IF (ZK8(JCART-1+K).NE.' ') THEN
-               ZK8(IGRP+ICOMPT)=ZK8(JCART-1+K)
+            IF (ZK8(JCHEV-1+K).NE.' ') THEN
+               ZK8(IGRP+ICOMPT)=ZK8(JCHEV-1+K)
                ICOMPT=ICOMPT+1
                INBMAT=INBMAT+1
             ENDIF
@@ -136,7 +151,7 @@ C
       DO 10 KK = 1,NBGRP
          NBMAT=ZI(INGRP-1+KK)
          IF (NBMAT.EQ.0) GO TO 10
-         CALL RCMACO ( CHMAT(1:8), ICOMPT,NBMAT, KK )
+         CALL RCMACO ( CHMAT(1:8), ICOMPT,NBMAT, KK ,'E')
          CALL CODENT ( KK, 'D0', KNUMAT )
 
 C  LE NOM DU CODI EST CELUI DU PREMIER MATERIAU DU GROUPE KK
@@ -146,8 +161,80 @@ C  LE NOM DU CODI EST CELUI DU PREMIER MATERIAU DU GROUPE KK
          CALL JEVEUO ( CODI//'.CODI', 'L', ZI(JVALE+KK-1) )
          ICOMPT=ICOMPT+NBMAT
  10   CONTINUE
-C
+
+
+C     -- TRAITEMENT DU MATERIAU PAR NOEUDS S'IL EXISTE :
+C     ---------------------------------------------------
+      IF (.NOT.LCHN) GOTO 9999
+
+      CALL JEVEUO ( CHNMAT//'.VALE', 'L', JCHNV )
+      CALL JELIRA ( CHNMAT//'.VALE', 'LONMAX', NBVAL, K8B )
+      CALL JEVEUO ( CHNMAT//'.DESC', 'L', JDESC )
+C     -- POUR CHAMP AUX NOEUDS, ON NE PEUT PAS AVOIR PLUSIEURS MATERIAUX
+      NBCMP=1
+      CALL ASSERT((NBVAL/NBCMP)*NBCMP.EQ.NBVAL)
+
+      CALL COPISD ( 'CHAMP_GD', 'V', CHNMAT, MATN)
+      CALL JEDETR ( MATN//'.VALE' )
+      NBGRP=NBVAL/NBCMP
+      CALL WKVECT ( MATN//'.VALE', 'V V I', NBGRP, JVALE )
+      CALL JENONU ( JEXNOM('&CATA.GD.NOMGD','ADRSJEVE'), IGD )
+      CALL JEVEUO ( MATN//'.DESC', 'E', JDESC )
+      ZI(JDESC) = IGD
+
+
+C     --- CODAGE DU MATERIAU ---
+C     -------------------------------------------------
+      ICOMPT=0
+      DO 19 I=1,NBVAL
+         IF (ZK8(JCHNV-1+I).NE.' ') ICOMPT=ICOMPT+1
+ 19   CONTINUE
+      CALL ASSERT(ICOMPT.GT.0)
+
+      CALL JEEXIN (MATERI//'.MATN_CODE.GRP' , IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEDETR (MATERI//'.MATN_CODE.GRP' )
+      ENDIF
+      CALL JEEXIN (MATERI//'.MATN_CODE.NGRP', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEDETR (MATERI//'.MATN_CODE.NGRP')
+      ENDIF
+      CALL WKVECT(MATERI//'.MATN_CODE.GRP' ,'V V K8',ICOMPT,IGRP)
+      CALL WKVECT(MATERI//'.MATN_CODE.NGRP','V V I',NBGRP,INGRP)
+
+      ICOMPT=0
+      INBMAT=0
+      DO 110 I=1,NBGRP
+         DO 120 J=1,NBCMP
+            K=(I-1)*NBCMP+J
+            IF (ZK8(JCHNV-1+K).NE.' ') THEN
+               ZK8(IGRP+ICOMPT)=ZK8(JCHNV-1+K)
+               ICOMPT=ICOMPT+1
+               INBMAT=INBMAT+1
+            ENDIF
+  120    CONTINUE
+         ZI(INGRP-1+I)=INBMAT
+         INBMAT=0
+  110 CONTINUE
+
+      CODI = ' '
+      CALL JEVEUO(MATERI//'.MATN_CODE.GRP' ,'L',IGRP)
+      CALL JEVEUO(MATERI//'.MATN_CODE.NGRP','L',INGRP)
+      ICOMPT=0
+      DO 100 KK = 1,NBGRP
+         NBMAT=ZI(INGRP-1+KK)
+         IF (NBMAT.EQ.0) GO TO 100
+         CALL RCMACO ( CHMAT(1:8), ICOMPT,NBMAT, KK ,'N')
+         CALL CODENT ( KK, 'D0', KNUMAT )
+
+C  LE NOM DU CODI EST CELUI DU PREMIER MATERIAU DU GROUPE KK
+
+         CODI(1:8)  = ZK8(IGRP+ICOMPT)
+         CODI(9:13) = '.'//KNUMAT
+         CALL JEVEUO ( CODI//'.CODI', 'L', ZI(JVALE+KK-1) )
+         ICOMPT=ICOMPT+NBMAT
+ 100  CONTINUE
+
  9999 CONTINUE
-C
       CALL JEDEMA()
       END

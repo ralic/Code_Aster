@@ -1,12 +1,12 @@
-      SUBROUTINE ASSCHC(BASE,MATAS,NBCHC,LCHCI,NOMNU)
+      SUBROUTINE ASSCHC(MATAS,NBCHC,LCHCI,NOMNU,CUMUL)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) MATAS,LCHCI(*),NOMNU
       CHARACTER*1 BASE
-      CHARACTER*4 CUMU
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,16 +24,18 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-C OBJET :
-C        TRAITEMENT DES CHARGE CINEMATIQUE DANS LES MATRICE ASSEMBLEES
+C  BUT : ON NOTE LES DDLS ELIMINES PAR LES CHARGES CINEMATIQUES
+C
+C  REMARQUE : LE RESTE DU TRAITEMENT DES CHARGES CINEMATIQUES EST FAIT
+C             AU DERNIER MOMENT (ASMCHC+CSMBGG)
 C
 C-----------------------------------------------------------------------
-C IN   BASE    K*1     : 'G','V' BASE SUR LAQUELLE EST MATAS
 C VAR  MATAS   K*19    : NOM DE LA MATR_ASSE
 C IN   NBCHC   I       : NOMBRE DE CHARGE CINEMATIQUES
 C IN   LCHCI   K*19    : LISTE DES NOMS DES CHARGES CINEMATIQUES
 C                        L'EFFET DE CES CHARGES EST CUMULE DANS MATAS
 C IN   NOMNU   K*14    : NOM DE LA NUMEROTATION
+C IN   CUMUL   K4      : 'ZERO' / 'CUMU'
 C-----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
@@ -55,6 +57,7 @@ C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       CHARACTER*2 TYPSTO
+      CHARACTER*4 CUMUL
       CHARACTER*8 KBID,GD
       CHARACTER*14 NU
       CHARACTER*19 MAT,NOMCH
@@ -63,21 +66,31 @@ C                DEBUT DES INSTRUCTIONS
       CALL JEMARQ()
 C----------------------------------------------------------------------
       MAT = MATAS
+      CALL JEVEUO(MAT//'.REFA','E',JREFA)
       NU = NOMNU
+      CALL ASSERT(ZK24(JREFA-1+2).EQ.NU)
       IF (NBCHC.EQ.0) GO TO 40
 
-      CALL JEVEUO(NU//'.NUME.NEQU','L',IDEQU)
-      NEQU = ZI(IDEQU)
+      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      NEQ = ZI(JNEQU)
       CALL DISMOI('F','NOM_GD',NU,'NUME_DDL',IBID,GD,IERD)
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GD),NUMGD)
       CALL JEVEUO(JEXNUM('&CATA.GD.DESCRIGD',NUMGD),'L',IDDES)
       NEC = ZI(IDDES+2)
+      CALL JELIRA(MAT//'.REFA','CLAS',IBID,BASE)
 
-      CALL JEDETR(MAT//'.CCID')
-      CALL WKVECT(MAT//'.CCID',BASE//' V I ',NEQU,JCCID)
+      IF (CUMUL.EQ.'ZERO') THEN
+        CALL JEDETR(MAT//'.CCID')
+        CALL WKVECT(MAT//'.CCID',BASE//' V I ',NEQ+1,JCCID)
+      ELSE IF (CUMUL.EQ.'CUMU') THEN
+        CALL JEVEUO(MAT//'.CCID','E',JCCID)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 
 
       CALL JEVEUO(JEXNUM(NU//'.NUME.PRNO',1),'L',IDPRNO)
+      NELIM=0
       DO 20 ICH = 1,NBCHC
         NOMCH = LCHCI(ICH)
         CALL JEVEUO(NOMCH//'.DEFI','L',IDEFI)
@@ -86,26 +99,17 @@ C----------------------------------------------------------------------
           INO = ZI(IDEFI+3* (IMP-1)+1)
           IDDL = ZI(IDEFI+3* (IMP-1)+2)
           IEQ = ZI(IDPRNO-1+ (NEC+2)* (INO-1)+1) + IDDL - 1
-          IEXI = ZI(JCCID-1+IEQ)
-          IF (IEXI.EQ.0) ZI(JCCID-1+IEQ) = -1
+          ZI(JCCID-1+IEQ) = 1
    10   CONTINUE
    20 CONTINUE
 
-
-C --- STOCKAGE DES LIGNES A ELIMINER CCID(IEQ)=-1 A CAUSE DE CUMU
-C     POUR NE PAS RESTOCKER UNE LIGNE DEJA TRAITEE
-      CALL WKVECT('&&ASSCHC.ELIM','V V I ',NEQU,IDELIM)
-      NELIM = 0
-      DO 30 IEQ = 1,NEQU
-        IF (ZI(JCCID-1+IEQ).EQ.-1) THEN
-          NELIM = NELIM + 1
-          ZI(IDELIM-1+IEQ) = NELIM
-          ZI(JCCID-1+IEQ) = 1
-        END IF
-
+      NELIM=0
+      DO 30, IEQ=1,NEQ
+        IF (ZI(JCCID-1+IEQ).EQ.1) NELIM=NELIM+1
    30 CONTINUE
-      CALL ASMCHC(BASE,MAT,ZI(IDELIM),NELIM)
-      CALL JEDETR('&&ASSCHC.ELIM')
+      ZI(JCCID-1+NEQ+1) = NELIM
+      IF (NELIM.GT.0) ZK24(JREFA-1+3)='ELIML'
+
 
    40 CONTINUE
       CALL JEDEMA()

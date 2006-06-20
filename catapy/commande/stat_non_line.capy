@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -195,7 +195,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              SCALING         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=80,),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              ),
            b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
              PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),
@@ -322,7 +322,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                SCALING         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
                RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
                PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=80,),
-               RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,),
+               RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              ),
              b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
                PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),

@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE (RESU1, RESU2 )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,20 +33,24 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32 JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
 
-      CHARACTER*8 NOMA1,NOMA2,MODEL1,MODEL2,NCAS
+      CHARACTER*8 NOMA1,NOMA2,MODEL1,MODEL2,NCAS,LFONC(3),LPARX(3)
+      CHARACTER*8 KBID
       CHARACTER*16 CORRES,CORRE1,CORRE2,CORRE3
       CHARACTER*16 TYMOCL(5),MOTCLE(5)
-      INTEGER N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
-      INTEGER IAGNO2,IAGMA1
+      CHARACTER*24 GEOM2
+      INTEGER N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1,IFONC
+      INTEGER IAGNO2,IAGMA1,NFONC,JGEOM2,INO2,IER
 
       LOGICAL LDMAX
-      REAL*8  DISTMA,R8MAEM
+      REAL*8  DISTMA,R8MAEM,VX(3)
 C----------------------------------------------------------------------
 C       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 C       --------------------------------------------------------
@@ -114,6 +118,11 @@ C     --------------------------------------------------------
       ENDIF
 
 
+C     PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_2 : CALCUL DE GEOM2
+C     ------------------------------------------------------------
+      CALL PJEFTG (GEOM2,NOMA2,' ',1)
+
+
       CALL GETFAC('VIS_A_VIS',NBOCC)
       IF (NBOCC.EQ.0) THEN
 
@@ -124,16 +133,16 @@ C       ------------------------
       CALL PJEFCA (MODEL1,' ',0,NCAS )
 
         IF (NCAS.EQ.'2D') THEN
-          CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+          CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
      +                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.'3D') THEN
-          CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+          CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
      +                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.'2.5D') THEN
-          CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+          CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
      +                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.'1.5D') THEN
-          CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+          CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
      +                 LDMAX,DISTMA)
         ELSE
           CALL UTMESS('F','PJEFTE','STOP 4')
@@ -176,22 +185,27 @@ C        ----------------------------------------------
           CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
 
 
+C         PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_2 : CALCUL DE GEOM2
+C         ----------------------------------------------------------
+          CALL PJEFTG (GEOM2,NOMA2,'VIS_A_VIS',IOCC)
+
+
 C        -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
 C        ----------------------------------------------
           CALL PJEFCA (MODEL1,'&&PJEFTE.LIMANU1',IOCC,NCAS)
           CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
           IF (NCAS.EQ.'2D') THEN
             CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
+     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.'3D') THEN
             CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
+     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.'2.5D') THEN
             CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
+     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.'1.5D') THEN
             CALL PJ6DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
+     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE
             CALL UTMESS('F','PJEFTE','STOP 5')
           END IF
