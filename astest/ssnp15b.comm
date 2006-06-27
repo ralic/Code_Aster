@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,6 +146,7 @@ U=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 5,
+                RHO_MAX=150,
                 RESI_LINE_RELA = 1.E-3)
               )
 
@@ -182,6 +183,7 @@ U2=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 5,
+                RHO_MAX=150.,
                 RESI_LINE_RELA = 1.E-3)
               )
 
@@ -622,7 +624,8 @@ V=STAT_NON_LINE(
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F( 
+                     RECH_LINEAIRE=_F(
+                     RHO_MAX=150., 
                 ITER_LINE_MAXI = 5)
               )
 
@@ -658,6 +661,7 @@ VO=STAT_NON_LINE(
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F( 
+                     RHO_MAX=150.,
                 ITER_LINE_MAXI = 5)
               )
 
@@ -692,7 +696,8 @@ VI=STAT_NON_LINE(
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F( 
+                     RECH_LINEAIRE=_F(
+                     RHO_MAX=150.,
                 ITER_LINE_MAXI = 5)
               )
 

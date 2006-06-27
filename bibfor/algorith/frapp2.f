@@ -1,7 +1,7 @@
       SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE,INST)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -165,8 +165,8 @@ C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
       NBNOT = 0
       DO 20,IPC = 1,NBPC
 
-        NUMA1 = NINT(ZR(JTABF+22* (IPC-1)+1))
-        NUMA2 = NINT(ZR(JTABF+22* (IPC-1)+2))
+        NUMA1 = NINT(ZR(JTABF+28* (IPC-1)+1))
+        NUMA2 = NINT(ZR(JTABF+28* (IPC-1)+2))
         ITYMA1 = ZI(JTYMAI-1+NUMA1)
         ITYMA2 = ZI(JTYMAI-1+NUMA2)
 
@@ -467,8 +467,8 @@ C
         CALL JEVEUO(JEXNUM(LIGREL//'.NEMA',IPC),'E',JAD)
         ZI(JAD-1+NBNO+1) = ZI(JTYNMA-1+2* (IPC-1)+1)
 
-        NUMA1 = NINT(ZR(JTABF+22* (IPC-1)+1))
-        NUMA2 = NINT(ZR(JTABF+22* (IPC-1)+2))
+        NUMA1 = NINT(ZR(JTABF+28* (IPC-1)+1))
+        NUMA2 = NINT(ZR(JTABF+28* (IPC-1)+2))
         NBNO1 = ZI(ILCNX1+NUMA1) - ZI(ILCNX1-1+NUMA1)
         NBNO2 = ZI(ILCNX1+NUMA2) - ZI(ILCNX1-1+NUMA2)
 
@@ -653,47 +653,53 @@ C      -------------------------
       CALL JEVEUO(CARTE//'.NCMP','E',JNCMP)
       CALL JEVEUO(CARTE//'.VALV','E',JVALV)
 
-      NCMP = 33
+      NCMP = 39
       DO 100,K = 1,NCMP
         CALL CODENT(K,'G',CH2)
         ZK8(JNCMP-1+K) = 'X'//CH2
   100 CONTINUE
 
       DO 110,IPC = 1,NBPC
-        ZR(JVALV-1+1) = ZR(JTABF+22* (IPC-1)+3)
-        ZR(JVALV-1+2) = ZR(JTABF+22* (IPC-1)+4)
-        ZR(JVALV-1+3) = ZR(JTABF+22* (IPC-1)+5)
-        ZR(JVALV-1+4) = ZR(JTABF+22* (IPC-1)+6)
-        ZR(JVALV-1+5) = ZR(JTABF+22* (IPC-1)+7)
-        ZR(JVALV-1+6) = ZR(JTABF+22* (IPC-1)+8)
-        ZR(JVALV-1+7) = ZR(JTABF+22* (IPC-1)+9)
-        ZR(JVALV-1+8) = ZR(JTABF+22* (IPC-1)+10)
-        ZR(JVALV-1+9) = ZR(JTABF+22* (IPC-1)+11)
-        ZR(JVALV-1+10) = ZR(JTABF+22* (IPC-1)+12)
-        ZR(JVALV-1+11) = ZR(JTABF+22* (IPC-1)+13)
-        ZR(JVALV-1+12) = ZR(JTABF+22* (IPC-1)+14)
-        IZONE = NINT(ZR(JTABF+22* (IPC-1)+15))
-        ZR(JVALV-1+13) = ZR(JCMCF+10* (IZONE-1)+2)
-        ZR(JVALV-1+14) = ZR(JCMCF+10* (IZONE-1)+3)
-        ZR(JVALV-1+15) = ZR(JCMCF+10* (IZONE-1)+4)
-        ZR(JVALV-1+16) = NINT(ZR(JCMCF+10* (IZONE-1)+5))
-        ZR(JVALV-1+17) = ZR(JTABF+22* (IPC-1)+22)
+        ZR(JVALV-1+1) = ZR(JTABF+28* (IPC-1)+3)
+        ZR(JVALV-1+2) = ZR(JTABF+28* (IPC-1)+4)
+        ZR(JVALV-1+3) = ZR(JTABF+28* (IPC-1)+5)
+        ZR(JVALV-1+4) = ZR(JTABF+28* (IPC-1)+6)
+        ZR(JVALV-1+5) = ZR(JTABF+28* (IPC-1)+7)
+        ZR(JVALV-1+6) = ZR(JTABF+28* (IPC-1)+8)
+        ZR(JVALV-1+7) = ZR(JTABF+28* (IPC-1)+9)
+        ZR(JVALV-1+8) = ZR(JTABF+28* (IPC-1)+10)
+        ZR(JVALV-1+9) = ZR(JTABF+28* (IPC-1)+11)
+        ZR(JVALV-1+10) = ZR(JTABF+28* (IPC-1)+12)
+        ZR(JVALV-1+11) = ZR(JTABF+28* (IPC-1)+13)
+        ZR(JVALV-1+12) = ZR(JTABF+28* (IPC-1)+14)
+        IZONE = NINT(ZR(JTABF+28* (IPC-1)+15))
+        ZR(JVALV-1+13) = ZR(JCMCF+12* (IZONE-1)+2)
+        ZR(JVALV-1+14) = ZR(JCMCF+12* (IZONE-1)+3)
+        ZR(JVALV-1+15) = ZR(JCMCF+12* (IZONE-1)+4)
+        ZR(JVALV-1+16) = NINT(ZR(JCMCF+12* (IZONE-1)+5))
+        ZR(JVALV-1+17) = ZR(JTABF+28* (IPC-1)+22)
         ZR(JVALV-1+18) = ZI(JECPD+6* (IZONE-1)+1)
-        ZR(JVALV-1+19) = ZR(JTABF+22* (IPC-1)+16)
+        ZR(JVALV-1+19) = ZR(JTABF+28* (IPC-1)+16)
         ZR(JVALV-1+20) = INST(2)
         ZR(JVALV-1+21) = ZI(JECPD+6* (IZONE-1)+6)
-        ZR(JVALV-1+22) = ZR(JTABF+22*(IPC-1)+17)
-        ZR(JVALV-1+23) = ZR(JTABF+22*(IPC-1)+18)
-        ZR(JVALV-1+24) = ZR(JTABF+22*(IPC-1)+19)
-        ZR(JVALV-1+25) = ZR(JTABF+22*(IPC-1)+20)
-        ZR(JVALV-1+26) = ZR(JTABF+22* (IPC-1)+21)
-        ZR(JVALV-1+27) = NINT(ZR(JCMCF+10* (IZONE-1)+7))
-        ZR(JVALV-1+28) = ZR(JCMCF+10* (IZONE-1)+8)
-        ZR(JVALV-1+29) = ZR(JCMCF+10* (IZONE-1)+9)
-        ZR(JVALV-1+30) = ZR(JCMCF+10* (IZONE-1)+10)
+        ZR(JVALV-1+22) = ZR(JTABF+28*(IPC-1)+17)
+        ZR(JVALV-1+23) = ZR(JTABF+28*(IPC-1)+18)
+        ZR(JVALV-1+24) = ZR(JTABF+28*(IPC-1)+19)
+        ZR(JVALV-1+25) = ZR(JTABF+28*(IPC-1)+20)
+        ZR(JVALV-1+26) = ZR(JTABF+28* (IPC-1)+21)
+        ZR(JVALV-1+27) = NINT(ZR(JCMCF+12* (IZONE-1)+7))
+        ZR(JVALV-1+28) = ZR(JCMCF+12* (IZONE-1)+8)
+        ZR(JVALV-1+29) = ZR(JCMCF+12* (IZONE-1)+9)
+        ZR(JVALV-1+30) = ZR(JCMCF+12* (IZONE-1)+10)
         ZR(JVALV-1+31) = INST(4)
         ZR(JVALV-1+32) = INST(5)
         ZR(JVALV-1+33) = ZR(JJSUP+IZONE-1)
+        ZR(JVALV-1+34) = ZR(JTABF+28* (IPC-1)+23)
+        ZR(JVALV-1+35) = ZR(JTABF+28* (IPC-1)+24)
+        ZR(JVALV-1+36) = ZR(JTABF+28* (IPC-1)+25)
+        ZR(JVALV-1+37) = ZR(JTABF+28* (IPC-1)+26)
+        ZR(JVALV-1+38) = ZR(JTABF+28* (IPC-1)+27)
+        ZR(JVALV-1+39) = ZR(JTABF+28* (IPC-1)+28)
 
         CALL NOCART(CARTE,-3,KBID,'NUM',1,KBID,-IPC,LIGREL,NCMP)
 

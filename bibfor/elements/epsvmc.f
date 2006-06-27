@@ -1,8 +1,8 @@
-      SUBROUTINE EPSVMC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +                   XYZ,DEPL,TEMPE,TREF,HYDR,SECH,SREF,INSTAN,
-     +                   MATER,REPERE,NHARM,OPTION,EPSM)
+      SUBROUTINE EPSVMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+     +                   IDFDE, XYZ,DEPL,TEMPE,TREF,SECH,SREF,
+     +                   INSTAN,MATER,REPERE,NHARM,OPTION,EPSM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C                  AUX POINTS D'INTEGRATION POUR LES ELEMENTS
 C                  ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
+C    FAMI           IN     K4       TYPE DE FAMILLE DE POINT DE GAUSS
 C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
@@ -46,7 +47,6 @@ C                                   L'ELEMENT
 C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
-C    HYDR(1)        IN     R        HYDRATATION AUX POINTS DE GAUSS
 C    SECH(1)        IN     R        SECHAGE AUX NOEUDS DE L'ELEMENT
 C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
@@ -76,11 +76,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
+           CHARACTER*4  FAMI
            REAL*8       XYZ(1),  DEPL(1),  TEMPE(1), EPSM(1), REPERE(7)
-           REAL*8       HYDR(1), SECH(1),  SREF,  INSTAN,   NHARM
+           REAL*8       SECH(1),  SREF,  INSTAN,   NHARM
 C -----  VARIABLES LOCALES
-           CHARACTER*8  MODEDP
+           CHARACTER*8  MODEDP,PHENOM
+           CHARACTER*2  CODRET
            REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
+           REAL*8       HYDR(27)
+           INTEGER      IER
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -95,6 +99,13 @@ C
          EPS2(I) = ZERO
          EPSTH(I)= ZERO
  10   CONTINUE
+
+C--- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
+C    -----------------------------------------------------
+      DO 20 IGAU = 1,NPG
+        CALL RCVARC(' ','HYDR','+',FAMI,IGAU,1,HYDR(IGAU),IER)
+        IF (IER.EQ.1) HYDR(IGAU)=0.D0
+   20 CONTINUE
 C
 C --- CALCUL DES DEFORMATIONS DU PREMIER ORDRE
 C --- AUX POINTS D'INTEGRATION :
@@ -111,22 +122,29 @@ C       ----------------------------------------------
       ENDIF
 C
 C --- CALCUL DES DEFORMATIONS THERMIQUES AUX POINTS D'INTEGRATION
-C --- (AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION:
-C      UNIQUEMENT POUR EPMH QUI N'EXISTE PAS OFFICIELLEMENT)
+C --- (AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION)
 C      ----------------------------------------------------------
-
-      IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG'.OR.
-     +    OPTION(1:4).EQ.'EPMH') THEN
+      CALL RCCOMA(MATER,'ELAS',PHENOM,CODRET)
+      IF (PHENOM(1:8).NE.'ELAS_MET') THEN
         CALL EPTHMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),TEMPE,TREF,HYDR,
-     +              SECH,SREF,INSTAN,MATER,OPTION,EPSTH)
+     +          SECH,SREF,INSTAN,MATER,OPTION,EPSTH)
+      ELSE IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG') THEN
+        CALL UTMESS('F','EPSTMC','LA NATURE DU MATERIAU '//PHENOM//
+     +              ' N''EST PAS TRAITEE, SEULES SONT CONSIDEREES '//
+     +              'LES NATURES : ELAS, ELAS_ISTR, ELAS_ORTH .')
       ENDIF
-
 C
 C --- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION :
 C      ----------------------------------------------------------
-      DO 20 I = 1, NBSIG*NPG
-         EPSM(I) = EPSM(I) + EPS2(I) - EPSTH(I)
- 20   CONTINUE
+      DO 30 I = 1, NBSIG*NPG
+         EPSM(I) = EPSM(I) + EPS2(I)
+ 30   CONTINUE
+
+      IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG') THEN
+        DO 40 I = 1, NBSIG*NPG
+           EPSM(I) = EPSM(I) - EPSTH(I)
+ 40     CONTINUE
+      ENDIF
 C
 C --- CAS DES CONTRAINTES PLANES, ON CALCULE EPSZZ A PARTIR
 C --- DE SIGZZ = 0 :
@@ -135,7 +153,7 @@ C     ------------
 C
 C ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 C       -----------------------------------
-        DO 30 IGAU = 1, NPG
+        DO 50 IGAU = 1, NPG
 C
 C  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
 C  --      COURANT
@@ -145,23 +163,30 @@ C          -------
           XYZGAU(3) = ZERO
           TEMPG     = ZERO
 C
-          DO 40 I = 1, NNO
+          DO 60 I = 1, NNO
              TEMPG = TEMPG + ZR(IVF-1+I+NNO*(IGAU-1))*TEMPE(I)
-  40      CONTINUE
+  60      CONTINUE
 C
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-          HYDRG = 0.D0
-          SECHG = 0.D0
-          CALL DMATMC(MODEDP, MATER, TEMPG, HYDRG, SECHG, INSTAN,
+          CALL DMATMC(MODEDP, MATER, TEMPG, HYDR, SECH, INSTAN,
      +                REPERE, XYZGAU, NBSIG, D, .FALSE.)
 C
-          EPSM(NBSIG*(IGAU-1)+3) = -UN/D(3,3)*
+          IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG'.OR.
+     +        OPTION(1:4).EQ.'EPMH') THEN
+            EPSM(NBSIG*(IGAU-1)+3) = -UN/D(3,3)*
      +                          (  D(3,1)*EPSM(NBSIG*(IGAU-1)+1)
      +                           + D(3,2)*EPSM(NBSIG*(IGAU-1)+2)
      +                           + D(3,4)*EPSM(NBSIG*(IGAU-1)+4)*DEUX)
- 30     CONTINUE
+          ELSE
+            EPSM(NBSIG*(IGAU-1)+3) = -UN/D(3,3)*
+     +       (D(3,1)*(EPSM(NBSIG*(IGAU-1)+1)-EPSTH(NBSIG*(IGAU-1)+1))
+     +       +D(3,2)*(EPSM(NBSIG*(IGAU-1)+2)-EPSTH(NBSIG*(IGAU-1)+2))
+     +       +D(3,4)*(EPSM(NBSIG*(IGAU-1)+4)
+     +       -EPSTH(NBSIG*(IGAU-1)+4))*DEUX)+EPSTH(NBSIG*(IGAU-1)+3)
+         ENDIF
+ 50     CONTINUE
 C
 C --- CAS DES DEFORMATIONS PLANES,  EPSZZ = 0 :
 C     ---------------------------------------
@@ -169,9 +194,9 @@ C     ---------------------------------------
 C
 C ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 C       -----------------------------------
-        DO 50 IGAU = 1, NPG
+        DO 70 IGAU = 1, NPG
           EPSM(NBSIG*(IGAU-1)+3) = ZERO
- 50     CONTINUE
+ 70     CONTINUE
 C
       ENDIF
 C

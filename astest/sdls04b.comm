@@ -1,4 +1,4 @@
-# MODIF  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ANNULAIRE ENCASTREE SUR UN MOYEU (MAC NEAL)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,15 +86,15 @@ MODES=MODE_ITER_SIMULT(     MATR_A=MATRRIGI,
                              CALC_FREQ=_F( NMAX_FREQ = 20))
 
 #
-LINT=DEFI_INTERF_DYNA(   NUME_DDL=NUMEROTA,INTERFACE=(
-                             _F( NOM = 'DROITE',
+LINT=DEFI_INTERF_DYNA(   NUME_DDL=NUMEROTA,
+                         INTERFACE=(_F( NOM = 'DROITE',
                                         TYPE = 'MNEAL',
                                         GROUP_NO = 'DROITE',
-                                        DDL_ACTIF = ('DZ', 'DRX', 'DRY',)),
-                             _F( NOM = 'GAUCHE',
+                                        MASQUE = ('DX', 'DY', 'DRZ')),
+                                    _F( NOM = 'GAUCHE',
                                         TYPE = 'MNEAL',
                                         GROUP_NO = 'GAUCHE',
-                                        DDL_ACTIF = ('DZ', 'DRX', 'DRY',)))
+                                        MASQUE = ('DX', 'DY', 'DRZ')))
                              )
 
 #

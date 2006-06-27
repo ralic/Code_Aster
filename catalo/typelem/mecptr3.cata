@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+%& MODIF TYPELEM  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -300,18 +300,20 @@ OPTION__
                                      ZVARIPG  PVARIGR
                               OUT__  EDEFONO  PDEFOPL
     EPME_ELGA_DEPL      87    IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
-                                     CMATERC  PMATERC  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
+                                     CMATERC  PMATERC  CTEREFE  PSECREF  NSECHER  PSECHER  NTEMPER  PTEMPER
+                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
     EPME_ELNO_DEPL      87    IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
-                                     CMATERC  PMATERC  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
+                                     CMATERC  PMATERC  CTEREFE  PSECREF  NSECHER  PSECHER  NTEMPER  PTEMPER 
+                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
     EPMG_ELGA_DEPL      87    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                                     NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     CTEREFE  PSECREF  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
     EPMG_ELNO_DEPL      87    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                                     NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     CTEREFE  PSECREF  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
     EPOT_ELEM_DEPL      286   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF
@@ -323,13 +325,13 @@ OPTION__
                                      NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
     EPSI_ELGA_DEPL      87    IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
-                                     CMATERC  PMATERC  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
+                                     CMATERC  PMATERC  CTEREFE  PSECREF  NSECHER  PSECHER  NTEMPER  PTEMPER
+                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
     EPSI_ELNO_DEPL      87    IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
-                                     CMATERC  PMATERC  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
+                                     CMATERC  PMATERC  CTEREFE  PSECREF  NSECHER  PSECHER  NTEMPER  PTEMPER
+                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
     EPSP_ELGA           334   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFAPR  DDL_MECA PDEPLAR

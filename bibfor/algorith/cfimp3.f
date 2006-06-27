@@ -2,7 +2,7 @@
      &                  NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -118,8 +118,7 @@ C
           NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
         ELSE    
-          TYPE2  =' NON'
-          NOMMAI = ' APPARIE'
+          CALL ASSERT(.FALSE.)
         END IF
 C
 C --- VALEURS

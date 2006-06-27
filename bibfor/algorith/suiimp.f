@@ -2,7 +2,7 @@
      &                  TITRE)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NBSUIV
       CHARACTER*16 CHAM
-      INTEGER      JCHAM,JCOMP,JNUCM,JNOEU,JMAIL,JPOIN,JSUINB
+      INTEGER      JCHAM,JCOMP,JNUCM,JNOEU,JMAIL,JPOIN,JSUINB,JEXTR
       INTEGER      SUBTOP
       CHARACTER*8  CMP,TOPO
       CHARACTER*2  SUBTOZ      
@@ -86,6 +86,7 @@ C
       CALL JEVEUO(SUIVCO(1:14)//'NOEUD'    ,'L',JNOEU)
       CALL JEVEUO(SUIVCO(1:14)//'MAILLE'   ,'L',JMAIL)
       CALL JEVEUO(SUIVCO(1:14)//'POINT'    ,'L',JPOIN)
+      CALL JEVEUO(SUIVCO(1:14)//'EXTREMA'  ,'L',JEXTR)
 C
 C --- CHAMP
 C
@@ -97,14 +98,16 @@ C
 C
 C --- TOPOLOGIE
 C        
-      IF ((CHAM(1:9) .EQ. 'SIEF_ELGA' ).OR.
-     &    (CHAM(1:9) .EQ. 'VARI_ELGA' )) THEN
-        TOPO   = ZK8(JMAIL-1+ISUIV)
-        SUBTOP = ZI(JPOIN-1+ISUIV)     
-      ELSE
+      IF (ZI(JEXTR-1+ISUIV).EQ.0) THEN
+        IF ((CHAM(1:9) .EQ. 'SIEF_ELGA' ).OR.
+     &      (CHAM(1:9) .EQ. 'VARI_ELGA' )) THEN
+          TOPO   = ZK8(JMAIL-1+ISUIV)
+          SUBTOP = ZI(JPOIN-1+ISUIV)     
+        ELSE
 
-        TOPO   = ZK8(JNOEU-1+ISUIV)
-        SUBTOP = 0            
+          TOPO   = ZK8(JNOEU-1+ISUIV)
+          SUBTOP = 0            
+        ENDIF
       ENDIF
 C
 C --- TITRE
@@ -114,14 +117,26 @@ C
       TITRE(2)(5:12) = CMP
       TITRE(2)(13:15)  = '   ' 
               
-      IF (SUBTOP.EQ.0) THEN
-        TITRE(3)(1:4)   = '    ' 
-        TITRE(3)(5:12)  = TOPO
+      IF (ZI(JEXTR-1+ISUIV).EQ.0) THEN
+        IF (SUBTOP.EQ.0) THEN
+          TITRE(3)(1:4)   = '    ' 
+          TITRE(3)(5:12)  = TOPO
+        ELSE
+          WRITE (SUBTOZ,'(I2)') SUBTOP
+          TITRE(3)(1:8)   = TOPO 
+          TITRE(3)(9:11)  = ' - '
+          TITRE(3)(12:13) = SUBTOZ              
+        ENDIF
+      ELSE IF (ZI(JEXTR-1+ISUIV).EQ.1) THEN
+          TITRE(3)(1:2)   = '    ' 
+          TITRE(3)(3:12)  = 'VALEUR MIN'
+          TITRE(3)(13:15) = '   ' 
+      ELSE IF (ZI(JEXTR-1+ISUIV).EQ.2) THEN
+          TITRE(3)(1:2)   = '    ' 
+          TITRE(3)(3:12)  = 'VALEUR MAX'
+          TITRE(3)(13:15) = '   ' 
       ELSE
-        WRITE (SUBTOZ,'(I2)') SUBTOP
-        TITRE(3)(1:8)   = TOPO 
-        TITRE(3)(9:11)  = ' - '
-        TITRE(3)(12:13) = SUBTOZ              
+          CALL UTMESS ('F','SUIIMP','ERREUR DVT DANS LE TYPE D EXTREMA')
       ENDIF
 C
  999  CONTINUE

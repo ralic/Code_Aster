@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,6 +173,7 @@ SOLNL=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 4,
+                RHO_MAX=200.,
                 RESI_LINE_RELA = 1.E-3)
               )
 

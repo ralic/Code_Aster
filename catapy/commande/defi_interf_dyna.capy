@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ DEFI_INTERF_DYNA=OPER(nom="DEFI_INTERF_DYNA",op=  98,sd_prod=interf_dyna_clas,
            TYPE            =SIMP(statut='f',typ='TXM',into=("MNEAL","CRAIGB","CB_HARMO","AUCUN") ),
            NOEUD           =SIMP(statut='f',typ=no,max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
-           DDL_ACTIF       =SIMP(statut='f',typ='TXM',max='**'),
+#           DDL_ACTIF       =SIMP(statut='f',typ='TXM',max='**'),
            MASQUE          =SIMP(statut='f',typ='TXM',max='**'),
          ),
          FREQ            =SIMP(statut='f',typ='R',defaut= 1.),

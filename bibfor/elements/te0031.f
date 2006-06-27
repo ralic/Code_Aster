@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,15 +62,15 @@ C
       INTEGER      MULTIC,JTAB(7),CODRET,JDEPM,JDEPR,JVAPR
       INTEGER      ICOMPO,I1,I2,J,JVECT
       INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
-      INTEGER      JMATE,JGEOM,JMATR,JENER,I
-      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
+      INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
+      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP, N1, NI
       LOGICAL      GRILLE, LCOELA
       CHARACTER*2  CODRE2(33)
       CHARACTER*10 PHENOM
 C
       REAL*8        PGL(3,3), XYZL(3,4), BSIGMA(24), EFFGT(32)
       REAL*8        VECLOC(24), ENER(3), MATP(24,24), MATV(300)
-      REAL*8        T2EV(4), T2VE(4), T1VE(9)
+      REAL*8        T2EV(4), T2VE(4), T1VE(9),COEF
 C
 C     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -216,6 +216,24 @@ C     ------------------------------------------
           DO 30 I = 1,NDIM
             ZR(JMATR-1+I) = MATLOC(I)
    30     CONTINUE
+   
+   
+C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6, 
+C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE 
+C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5 
+C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
+
+          COEF = 1.0D0 
+          DO 35 J = 1,NNO
+            N1 = 6*(J-1) + 5
+            NI = 6*J
+            NDIM = (NI + 1)*NI/2 
+            N1   = (N1 + 1)*N1/2 
+            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF 
+   35     CONTINUE        
+C     ===============================   
+
+
         END IF
 C
 C

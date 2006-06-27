@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,7 +136,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            PAS_MINI_CRIT   =SIMP(statut='f',typ='R',defaut=0.0E+0),
            RHO_MIN         =SIMP(statut='f',typ='R',defaut=1.0E-2),
            RHO_MAX         =SIMP(statut='f',typ='R',defaut=1.0E+1),
-           RHO_EXCL        =SIMP(statut='f',typ='R',defaut=0.9E-2),
+           RHO_EXCL        =SIMP(statut='f',typ='R',defaut=0.9E-2,val_min=0.),
          ),
          PILOTAGE        =FACT(statut='f',
            regles=(EXCLUS('NOEUD','GROUP_NO'),PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
@@ -248,16 +248,20 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
          ),
 
          SUIVI_DDL      = FACT(statut='f',max=4,
-                               regles=(UN_PARMI('NOEUD','MAILLE'),
+                               regles=(UN_PARMI('NOEUD','MAILLE','GROUP_NO','GROUP_MA','VALE_MIN','VALE_MAX'),
                                        PRESENT_PRESENT('MAILLE','POINT'),),
              NUME_SUIVI      =SIMP(statut='o',typ='I' ,min=1,max=4),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
                                    into=("DEPL","VITE","ACCE","SIEF_ELGA",
                                          "VARI_ELGA","FORC_NODA","DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU",)),
              NOM_CMP         =SIMP(statut='o',typ='TXM',max=1 ),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max=1),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max=1),
-             POINT           =SIMP(statut='f',typ='I' ,validators=NoRepeat(),max=1),
+             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             POINT           =SIMP(statut='f',typ='I' ,validators=NoRepeat(),max='**'),
+             VALE_MAX        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,into=("OUI",) ),
+             VALE_MIN        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,into=("OUI",) ),
          ),
 
          AFFICHAGE      = FACT(statut='f',max=16,

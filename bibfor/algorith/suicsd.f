@@ -1,7 +1,7 @@
       SUBROUTINE SUICSD(SUIVCO,MAILLA,MOTCLE,NBOCC,NBSUIV)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      N1,N2,N4,N6,N7,I,J,K,L
+      INTEGER      N1,N2,N4,N5,N6,N7,N8,N9,N10,I,J,K,L,JEXTR
       INTEGER      IOCC,IOBS,KNBNC,IBID,NTCMP
       INTEGER      NCHP,NCMP,NBNC,NBNO,NBMA,NBPO
       INTEGER      JNOE,JMAI,JPOI
@@ -86,6 +86,7 @@ C
       CALL WKVECT(SUIVCO(1:14)//'NOEUD'    ,'V V K8' ,NBSUIV,JNOEU)
       CALL WKVECT(SUIVCO(1:14)//'MAILLE'   ,'V V K8' ,NBSUIV,JMAIL)
       CALL WKVECT(SUIVCO(1:14)//'POINT'    ,'V V I'  ,NBSUIV,JPOIN)
+      CALL WKVECT(SUIVCO(1:14)//'EXTREMA'  ,'V V I'  ,NBSUIV,JEXTR)
 C
       IOBS = 0
 C
@@ -131,13 +132,23 @@ C
 C ------ LES NOEUDS ET MAILLES -----------------------------------------
 C
          CALL GETVID ( MOTCLE,'NOEUD'   , IOCC,1,0, K8B ,N4 )
+         CALL GETVID ( MOTCLE,'GROUP_NO', IOCC,1,0, K8B ,N5 )
          CALL GETVID ( MOTCLE,'MAILLE'  , IOCC,1,0, K8B ,N6 )
+         CALL GETVID ( MOTCLE,'GROUP_MA', IOCC,1,0, K8B ,N8 )
          CALL GETVIS ( MOTCLE,'POINT'   , IOCC,1,0, IBID,N7 )
+         CALL GETVTX(MOTCLE,'VALE_MAX' ,IOCC,1,0,K8B ,N9 )
+         CALL GETVTX(MOTCLE,'VALE_MIN' ,IOCC,1,0,K8B ,N10 )
+
          IF ( N4 .NE. 0 ) THEN
             NBNO = -N4
             CALL WKVECT ('&&SUICSD.LIST_NOEU','V V K8',NBNO,JNOE)
             CALL GETVID ( MOTCLE,'NOEUD', IOCC,1,NBNO,
      +                    ZK8(JNOE),N4)
+         ENDIF
+         IF ( N5 .NE. 0 ) THEN
+            CALL RELIEM (' ',MAILLA,'NO_NOEUD','SUIVI_DDL',IOCC,1,
+     &                'GROUP_NO','GROUP_NO','&&SUICSD.LIST_NOEU',NBNO)
+            CALL JEVEUO ('&&SUICSD.LIST_NOEU','L',JNOE)
          ENDIF
          IF ( N6 .NE. 0 ) THEN
             NBMA = -N6
@@ -145,11 +156,21 @@ C
             CALL GETVID ( MOTCLE,'MAILLE', IOCC,1,NBMA,
      +                    ZK8(JMAI),N6)
          ENDIF
+         IF ( N8 .NE. 0 ) THEN
+            CALL RELIEM (' ',MAILLA,'NO_MAILLE','SUIVI_DDL',IOCC,1,
+     &                'GROUP_MA','GROUP_MA','&&SUICSD.LIST_MAIL',NBMA)
+            CALL JEVEUO ('&&SUICSD.LIST_MAIL','L',JMAI)
+         ENDIF
          IF ( N7 .NE. 0 ) THEN
             NBPO = -N7
             CALL WKVECT ('&&SUICSD.LIST_POIN','V V I',NBPO,JPOI)
             CALL GETVIS ( MOTCLE,'POINT', IOCC,1,NBPO,
      +                    ZI(JPOI),N7)
+         ENDIF
+         IF ( (N9.NE.0) .OR. (N10.NE.0) ) THEN
+            NBPO=1
+            NBMA=1
+            NBNO=1
          ENDIF
 C
 C ------ ON STOCKE -----------------------------------------------------
@@ -167,7 +188,19 @@ C
                   DO 120 K = 1 , NBNO
                      ZK16(JCHAM+IOBS) = ZK16(KNCHP+I-1)
                      ZK8 (JCOMP+IOBS) = ZK8(KNCMP+J-1)
-                     ZK8 (JNOEU+IOBS) = ZK8(JNOE+K-1)
+C  ON STOCKE DANS LE VECTEUR EXTREMA LE TYPE DE VALEUR SOUHAITE
+C  =0 AU NOEUD SPECIFIE
+C  =1 LE MINIMUM DU CHAMP
+C  =2 LE MAXIMUM DU CHAMP
+
+                     IF (N9.NE.0) THEN
+                        ZI(JEXTR+IOBS)=2
+                     ELSE IF (N10.NE.0) THEN
+                        ZI(JEXTR+IOBS)=1
+                     ELSE
+                        ZI(JEXTR+IOBS)=0
+                        ZK8 (JNOEU+IOBS) = ZK8(JNOE+K-1)
+                     ENDIF  
                      IOBS = IOBS + 1
  120              CONTINUE
 C
@@ -177,8 +210,19 @@ C
                      DO 132 L = 1 , NBPO
                         ZK16(JCHAM+IOBS) = ZK16(KNCHP+I-1)
                         ZK8 (JCOMP+IOBS) = ZK8(KNCMP+J-1)
-                        ZK8 (JMAIL+IOBS) = ZK8(JMAI+K-1)
-                        ZI  (JPOIN+IOBS) = ZI(JPOI+L-1)
+C  ON STOCKE DANS LE VECTEUR EXTREMA LE TYPE DE VALEUR SOUHAITE
+C  =0 AU POINT SPECIFIE
+C  =1 LE MINIMUM DU CHAMP
+C  =2 LE MAXIMUM DU CHAMP
+                        IF (N9.NE.0) THEN
+                          ZI(JEXTR+IOBS)=2
+                        ELSE IF (N10.NE.0) THEN
+                          ZI(JEXTR+IOBS)=1
+                        ELSE
+                          ZI(JEXTR+IOBS)=0
+                          ZK8 (JMAIL+IOBS) = ZK8(JMAI+K-1)
+                          ZI  (JPOIN+IOBS) = ZI(JPOI+L-1)
+                        ENDIF  
                         IOBS = IOBS + 1
  132                 CONTINUE
  130              CONTINUE
@@ -190,8 +234,19 @@ C
                         ZK16(JCHAM+IOBS) = ZK16(KNCHP+I-1)
                         ZK8 (JCOMP+IOBS) = ZK8(KNCMP+J-1)
                         ZI  (JNUCM+IOBS) = ZI(KNBNC+J-1)
-                        ZK8 (JMAIL+IOBS) = ZK8(JMAI+K-1)
-                        ZI  (JPOIN+IOBS) = ZI(JPOI+L-1)
+C  ON STOCKE DANS LE VECTEUR EXTREMA LE TYPE DE VALEUR SOUHAITE
+C  =0 AU POINT SPECIFIE
+C  =1 LE MINIMUM DU CHAMP
+C  =2 LE MAXIMUM DU CHAMP
+                        IF (N9.NE.0) THEN
+                          ZI(JEXTR+IOBS)=2
+                        ELSE IF (N10.NE.0) THEN
+                          ZI(JEXTR+IOBS)=1
+                        ELSE
+                          ZI(JEXTR+IOBS)=0
+                          ZK8 (JMAIL+IOBS) = ZK8(JMAI+K-1)
+                          ZI  (JPOIN+IOBS) = ZI(JPOI+L-1)
+                        ENDIF  
                         IOBS = IOBS + 1
  144                 CONTINUE
  142              CONTINUE
@@ -207,8 +262,8 @@ C
          CALL JEDETR( '&&SUICSD.NOM_CHAM' )
          CALL JEDETR( '&&SUICSD.NOM_CMP'  )
          CALL JEDETR( '&&SUICSD.NUME_CMP' )
-         IF ( N4 .NE. 0 ) CALL JEDETR( '&&SUICSD.LIST_NOEU' )
-         IF ( N6 .NE. 0 )    CALL JEDETR( '&&SUICSD.LIST_MAIL' )
+         IF ( N4.NE.0 .OR. N5.NE.0 ) CALL JEDETR( '&&SUICSD.LIST_NOEU' )
+         IF ( N6.NE.0 .OR. N8.NE.0 ) CALL JEDETR( '&&SUICSD.LIST_MAIL' )
          IF ( N7 .NE. 0 )    CALL JEDETR( '&&SUICSD.LIST_POIN' )
 C
  10   CONTINUE

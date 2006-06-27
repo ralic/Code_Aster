@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,6 +33,7 @@ C   ------------------
 C     MAIL   : NOM DE L'OJB REPRESENTANT LE MAILLAGE
 C     KDIM   : '3D' RECHERCHE LES MAILLES 3D VOISINES
 C              '2D' RECHERCHE LES MAILLES 2D VOISINES
+C              '1D' RECHERCHE LES MAILLES 1D VOISINES
 C              '  ' RECHERCHE TOUTES LES MAILLES VOISINES
 C     LIMA   : LISTE DES NUMEROS DE MAILLES
 C     NLIMA  : NOMBRE DE MAILLES
@@ -120,8 +121,10 @@ CCC      CALL WKVECT ( '&&UTMAVO.TRAV1', 'V V I', 1000, JTR1 )
                   IF ( KDIM.EQ.'3D' .OR. KDIM.EQ.'1D') GOTO 120
                ELSEIF (TYPE(1:3).EQ.'SEG') THEN
                   IF ( KDIM.EQ.'3D' .OR. KDIM.EQ.'2D') GOTO 120
+               ELSEIF (TYPE(1:3).EQ.'POI') THEN
+                  IF ( KDIM.NE.'  ' ) GOTO 120
                ELSE
-                  IF ( KDIM .NE. '  ' ) GOTO 120
+                  CALL UTMESS('F','UTMAVO','TYPE NON TRAITE '//TYPE)
                ENDIF
                DO 122 K = 1 , NBMAT
 CCC                  IF ( ZI(JTR1-1+K) .EQ. IMA ) GOTO 120
@@ -147,7 +150,6 @@ C
          NUMA = LIMA(I)
          NBNO = ZI(P2+NUMA+1-1) - ZI(P2+NUMA-1)
          IAD  = ZI(P2+NUMA-1)
-
          CALL JECROC ( JEXNUM(NOM,I) )
          IF ( ZI(JTR2-1+I) .EQ. 0 ) THEN
             CALL JEECRA ( JEXNUM(NOM,I), 'LONMAX', 1, ' ' )
@@ -171,18 +173,29 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
                IF (TYPE(1:4).EQ.'HEXA') THEN
                   IF ( KDIM .EQ. '2D' ) GOTO 220
+                  IF ( KDIM .EQ. '1D' ) GOTO 220
                ELSEIF (TYPE(1:4).EQ.'PENT') THEN
                   IF ( KDIM .EQ. '2D' ) GOTO 220
+                  IF ( KDIM .EQ. '1D' ) GOTO 220
                ELSEIF (TYPE(1:4).EQ.'PYRA') THEN
                   IF ( KDIM .EQ. '2D' ) GOTO 220
+                  IF ( KDIM .EQ. '1D' ) GOTO 220
                ELSEIF (TYPE(1:4).EQ.'TETR') THEN
                   IF ( KDIM .EQ. '2D' ) GOTO 220
+                  IF ( KDIM .EQ. '1D' ) GOTO 220
                ELSEIF (TYPE(1:4).EQ.'QUAD') THEN
                   IF ( KDIM .EQ. '3D' ) GOTO 220
+                  IF ( KDIM .EQ. '1D' ) GOTO 220
                ELSEIF (TYPE(1:4).EQ.'TRIA') THEN
                   IF ( KDIM .EQ. '3D' ) GOTO 220
+                  IF ( KDIM .EQ. '1D' ) GOTO 220
+               ELSEIF (TYPE(1:3).EQ.'SEG') THEN
+                  IF ( KDIM .EQ. '3D' ) GOTO 220
+                  IF ( KDIM .EQ. '2D' ) GOTO 220
+               ELSEIF (TYPE(1:3).EQ.'POI') THEN
+                  IF ( KDIM.NE.'  ' ) GOTO 220
                ELSE
-                  IF ( KDIM .NE. '  ' ) GOTO 220
+                  CALL UTMESS('F','UTMAVO','TYPE NON TRAITE'//TYPE)
                ENDIF
                DO 222 K = 1 , NBMAT
                   IF ( ZI(JMAIL-1+K) .EQ. IMA ) GOTO 220

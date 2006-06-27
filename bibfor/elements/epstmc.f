@@ -1,7 +1,7 @@
       SUBROUTINE  EPSTMC(MODELI, TEMPE, TREF, HYDR, SECH, SREF, INSTAN,
      &                    MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,11 +94,7 @@ C
 C
                 EPSTH(1) = - BENDOG*(HYDR)
                 EPSTH(2) = - BENDOG*(HYDR)
-C
-                IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'DP'.OR.
-     +              MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
-                    EPSTH(3) = - BENDOG*(HYDR)
-                ENDIF
+                EPSTH(3) = - BENDOG*(HYDR)
 C
             ELSE
 C
@@ -130,11 +126,7 @@ C
 C
             EPSTH(1) = - KDESSI*(SREF-SECH)
             EPSTH(2) = - KDESSI*(SREF-SECH)
-C
-            IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'DP'.OR.
-     +          MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
-                EPSTH(3) = - KDESSI*(SREF-SECH)
-            ENDIF
+            EPSTH(3) = - KDESSI*(SREF-SECH)
 
 C ---- ------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS THERMIQUES (OPTION CHAR_MECA_TEMP_R)
@@ -165,11 +157,7 @@ C
 C
           EPSTH(1) = ALPHA*(TEMPE-TREF)
           EPSTH(2) = ALPHA*(TEMPE-TREF)
-C
-          IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'DP'.OR.
-     +        MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
-                 EPSTH(3) = ALPHA*(TEMPE-TREF)
-          ENDIF
+          EPSTH(3) = ALPHA*(TEMPE-TREF)
 C
 C      --------------
 C ---- CAS ORTHOTROPE
@@ -196,11 +184,7 @@ C
 C
           EPSTH(1) = ALPHAL*(TEMPE-TREF)
           EPSTH(2) = ALPHAT*(TEMPE-TREF)
-C
-          IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'DP'.OR.
-     +        MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
-                 EPSTH(3) = ALPHAN*(TEMPE-TREF)
-          ENDIF
+          EPSTH(3) = ALPHAN*(TEMPE-TREF)
 C
 C      -----------------------
 C ---- CAS ISOTROPE-TRANSVERSE
@@ -224,11 +208,7 @@ C
 C
           EPSTH(1) = ALPHAL*(TEMPE-TREF)
           EPSTH(2) = ALPHAL*(TEMPE-TREF)
-C
-          IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'DP'.OR.
-     +        MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
-                 EPSTH(3) = ALPHAN*(TEMPE-TREF)
-          ENDIF
+          EPSTH(3) = ALPHAN*(TEMPE-TREF)
       ELSE
           CALL UTMESS('F','EPSTMC','LA NATURE DU MATERIAU '//PHENOM//
      +                ' N''EST PAS TRAITEE, SEULES SONT CONSIDEREES '//

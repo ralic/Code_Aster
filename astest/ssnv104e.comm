@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -111,13 +111,18 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    SUIVI_DDL=(_F(NUME_SUIVI = 1,
                                  NOM_CHAM   = 'DEPL',
                                  NOM_CMP    = 'DX',
-                                 NOEUD      = 'N1',
+                                 GROUP_NO   = 'SUIV',
                                 ),
                               _F(NUME_SUIVI = 2,
                                  NOM_CHAM   = 'SIEF_ELGA',
                                  NOM_CMP    = 'SIXX',
                                  MAILLE     = 'M1',
                                  POINT      = 1,
+                                ),      
+                              _F(NUME_SUIVI = 3,
+                                 NOM_CHAM   = 'SIEF_ELGA',
+                                 NOM_CMP='SIXX',
+                                 VALE_MAX='OUI',
                                 ),      
                              ),      
                    AFFICHAGE=(_F(NOM_COLONNE='STANDARD',

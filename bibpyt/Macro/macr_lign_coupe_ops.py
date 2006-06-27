@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 27/06/2006   AUTEUR THOMASSO D.THOMASSON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,9 +218,11 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
   if MAILLE != None :
     motscles['VIS_A_VIS'].append(_F(MAILLE_1 = MAILLE,TOUT_2='OUI'),)     
     
+  if n_modele in self.get_global_contexte().keys() : MODELE_1=self.get_global_contexte()[n_modele]
+  else                                             : MODELE_1=self.jdc.current_context[n_modele]
   __recou=PROJ_CHAMP(METHODE='ELEM',
                      RESULTAT=RESULTAT,
-                     MODELE_1=self.jdc.current_context[n_modele],
+                     MODELE_1=MODELE_1,
                      MODELE_2=__mocou,
                      TYPE_CHAM='NOEU',
                      NOM_CHAM=NOM_CHAM, **motscles);     

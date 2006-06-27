@@ -1,4 +1,6 @@
-      SUBROUTINE CALFFJ(ALIAS,XI,YI,IGEOM,TN,JAC,IAXIS,NDIM)
+      SUBROUTINE CALFFL(ALIAS,XI,YI,IGEOM,TN,JAC,IAXIS,NDIM,
+     &                  TYPBAR)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C MODIF ELEMENTS  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
@@ -19,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER IAXIS
+      INTEGER IAXIS,TYPBAR
       REAL*8 JAC
 C.......................................................................
 
@@ -107,12 +109,22 @@ C   LES FF EN XI,YI,ZI
         TN(1) = -0.5D0* (1-XI)*XI
         TN(2) = 0.5D0* (1+XI)*XI
         TN(3) = 1.D0* (1+XI)* (1-XI)
+        IF (TYPBAR .EQ. 0) THEN
+          TN(1) = TN(1) - ((0.01D-5)*XI*(1.D0+XI)*(1.D0-XI))
+          TN(2) = TN(2) - ((0.01D-5)*XI*(1.D0+XI)*(1.D0-XI))
+          TN(3) = TN(3) + ((0.02D-5)*XI*(1.D0+XI)*(1.D0-XI))
+        END IF
 
 C   LES DERIVEES PREMIERES
 
         AJ(1,1) = -0.5D0* (1-2*XI)
         AJ(1,2) = 0.5D0* (1+2*XI)
         AJ(1,3) = -2.D0*XI
+        IF (TYPBAR .EQ. 0) THEN
+          AJ(1,1) = AJ(1,1)-((0.01D-5)*(1.D0-3*(XI**2)))
+          AJ(1,2) = AJ(1,2)-((0.01D-5)*(1.D0-3*(XI**2)))
+          AJ(1,3) = AJ(1,3)+((0.02D-5)*(1.D0-3*(XI**2)))
+        END IF
 
 C   CALCUL DE JACOBIEN
 
@@ -267,6 +279,21 @@ C_______________________________________________________________________
         TN(6) = (1.D0-YI)* (1.D0-XI)* (1.D0+XI)*0.5D0
         TN(7) = (1.D0-YI)* (1.D0+XI)* (1.D0+YI)*0.5D0
         TN(8) = (1.D0+YI)* (1.D0-XI)* (1.D0+XI)*0.5D0
+        IF (TYPBAR .EQ. 1 .OR. TYPBAR .EQ. 2) THEN
+          TN(1) = TN(1) - ((0.01D-5)*XI*(1.D0+XI)*(1.D0-XI))
+          TN(4) = TN(4) - ((0.01D-5)*XI*(1.D0+XI)*(1.D0-XI))
+          TN(8) = TN(8) + ((0.02D-5)*XI*(1.D0+XI)*(1.D0-XI))
+          TN(2) = TN(2) - ((0.01D-5)*XI*(1.D0+XI)*(1.D0-XI))   
+          TN(3) = TN(3) - ((0.01D-5)*XI*(1.D0+XI)*(1.D0-XI)) 
+          TN(6) = TN(6) + ((0.02D-5)*XI*(1.D0+XI)*(1.D0-XI))  
+        ELSEIF (TYPBAR .EQ. 3) THEN
+          TN(1) = TN(1) - ((0.01D-5)*YI*(1.D0+YI)*(1.D0-YI))  
+          TN(2) = TN(2) - ((0.01D-5)*YI*(1.D0+YI)*(1.D0-YI))  
+          TN(3) = TN(3) - ((0.01D-5)*YI*(1.D0+YI)*(1.D0-YI))   
+          TN(4) = TN(4) - ((0.01D-5)*YI*(1.D0+YI)*(1.D0-YI))   
+          TN(5) = TN(5) + ((0.02D-5)*YI*(1.D0+YI)*(1.D0-YI)) 
+          TN(7) = TN(7) + ((0.02D-5)*YI*(1.D0+YI)*(1.D0-YI)) 
+        END IF
 C    OK VERIFIEE
 C     LES DD 1ER / XI
         AJ(1,1) = 0.25D0* (1.D0+YI)* (2.D0*XI-YI)
@@ -277,6 +304,14 @@ C     LES DD 1ER / XI
         AJ(1,6) = - (1.D0-YI)*XI
         AJ(1,7) = 0.5D0* (1.D0-YI)* (1.D0+YI)
         AJ(1,8) = - (1.D0+YI)* (XI)
+        IF (TYPBAR .EQ. 1 .OR. TYPBAR .EQ. 2) THEN
+          AJ(1,1) = AJ(1,1) - ((0.01D-5)*(1.D0-3*(XI**2)))    
+          AJ(1,4) = AJ(1,4) - ((0.01D-5)*(1.D0-3*(XI**2))) 
+          AJ(1,8) = AJ(1,8) + ((0.02D-5)*(1.D0-3*(XI**2))) 
+          AJ(1,2) = AJ(1,2) - ((0.01D-5)*(1.D0-3*(XI**2)))     
+          AJ(1,3) = AJ(1,3) - ((0.01D-5)*(1.D0-3*(XI**2)))    
+          AJ(1,6) = AJ(1,6) + ((0.02D-5)*(1.D0-3*(XI**2))) 
+        END IF
 C     LES DD 1ER / YI
         AJ(2,1) = 0.25D0* (1.D0-XI)* (2.D0*YI-XI)
         AJ(2,2) = 0.25D0* (1.D0-XI)* (2.D0*YI+XI)
@@ -286,6 +321,15 @@ C     LES DD 1ER / YI
         AJ(2,6) = -0.5D0* (1.D0-XI)* (1.D0+XI)
         AJ(2,7) = - (1.D0+XI)*YI
         AJ(2,8) = (1.D0+XI)* (1.D0-XI)*0.5D0
+        IF (TYPBAR .EQ. 3) THEN
+          AJ(2,1) = AJ(2,1) - ((0.01D-5)*(1.D0-3*(YI**2)))    
+          AJ(2,2) = AJ(2,2) - ((0.01D-5)*(1.D0-3*(YI**2)))     
+          AJ(2,3) = AJ(2,3) - ((0.01D-5)*(1.D0-3*(YI**2)))    
+          AJ(2,4) = AJ(2,4) - ((0.01D-5)*(1.D0-3*(YI**2)))    
+          AJ(2,5) = AJ(2,5) + ((0.02D-5)*(1.D0-3*(YI**2))) 
+          AJ(2,7) = AJ(2,7) + ((0.02D-5)*(1.D0-3*(YI**2)))
+        END IF
+        
         DXDE=0.D00
         DXDK=0.D00
         DYDE=0.D00

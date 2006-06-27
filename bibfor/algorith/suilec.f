@@ -1,8 +1,8 @@
-      SUBROUTINE SUILEC(SUIVCO,MAILLA,MOTCLE,
+      SUBROUTINE SUILEC(SUIVCO,MODELE,MAILLA,MOTCLE,
      &                  NBOCC,NBSUIV)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C RESPONSABLE MABBAS M.ABBAS
 
       IMPLICIT     NONE
       CHARACTER*24 SUIVCO
-      CHARACTER*8  MAILLA
+      CHARACTER*8  MAILLA,MODELE
       CHARACTER*16 MOTCLE
       INTEGER      NBOCC
       INTEGER      NBSUIV
@@ -60,12 +60,12 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      N1,N2,N3,N4,INO,IMA,IOCC
+      INTEGER      N1,N2,N3,N4,N5,N6,N7,N8,INO,IMA,IOCC
       INTEGER      IBID,IRET,NCHP,NCMP,I,NBNO,NBMA
       INTEGER      JNOE,JMAI,NBPT
       LOGICAL      CHAMNO,CHAMES,CHAMEV
       CHARACTER*8  K8B
-      CHARACTER*16 NOCHP(50)
+      CHARACTER*16 NOCHP(50),MESNO,MESMA
       CHARACTER*24 NOMNOE,NOMMAI      
 C
 C ----------------------------------------------------------------------
@@ -94,68 +94,79 @@ C
 C
 C ------ VERIFICATION DES CHAMPS ---------------------------------------
 C
-         CALL GETVTX(MOTCLE,'NOM_CHAM',IOCC,1,0,K8B,N1)
-         NCHP = -N1
-         CALL GETVTX(MOTCLE,'NOM_CHAM',IOCC,1,NCHP,NOCHP,N1)
-         
-         CHAMNO = .FALSE.
-         CHAMES = .FALSE.
-         CHAMEV = .FALSE.
-         DO 12 I = 1 , NCHP
-            IF ( NOCHP(I)(1:4) .EQ. 'DEPL' ) THEN
-               CHAMNO = .TRUE.
-            ELSEIF ( NOCHP(I)(1:4) .EQ. 'VITE' ) THEN
-               CHAMNO = .TRUE.
-            ELSEIF ( NOCHP(I)(1:4) .EQ. 'ACCE' ) THEN
-               CHAMNO = .TRUE.
-            ELSEIF ( NOCHP(I)(1:9) .EQ. 'VALE_CONT' ) THEN
-               CHAMNO = .TRUE.
-            ELSEIF ( NOCHP(I)(1:9) .EQ. 'FORC_NODA' ) THEN
-               CHAMNO = .TRUE.
-            ELSEIF ( NOCHP(I)(1:9) .EQ. 'SIEF_ELGA' ) THEN
-               CHAMES = .TRUE.
-            ELSEIF ( NOCHP(I)(1:9) .EQ. 'VARI_ELGA' ) THEN
-               CHAMEV = .TRUE.
-            ENDIF
- 12      CONTINUE
-         IF ( CHAMES .AND. CHAMEV ) THEN
-            CALL UTMESS('F','SUILEC',
-     &                  'MELANGE DE CHAMPS DE NATURE '//
-     &      'DIFFERENTE DANS LE MEME MOT-CLEF FACTEUR SUIVI')
-         ENDIF
-         IF ( CHAMNO .AND. ( CHAMES .OR. CHAMEV ) ) THEN
-            CALL UTMESS('F','SUILEC',
-     &                  'MELANGE DE CHAMPS DE NATURE '//
-     &      'DIFFERENTE DANS LE MEME MOT-CLEF FACTEUR SUIVI')
-         ENDIF
+        CALL GETVTX(MOTCLE,'NOM_CHAM',IOCC,1,0,K8B,N1)
+        NCHP = -N1
+        CALL GETVTX(MOTCLE,'NOM_CHAM',IOCC,1,NCHP,NOCHP,N1)
+        
+        CHAMNO = .FALSE.
+        CHAMES = .FALSE.
+        CHAMEV = .FALSE.
+        DO 12 I = 1 , NCHP
+           IF ( NOCHP(I)(1:4) .EQ. 'DEPL' ) THEN
+              CHAMNO = .TRUE.
+           ELSEIF ( NOCHP(I)(1:4) .EQ. 'VITE' ) THEN
+              CHAMNO = .TRUE.
+           ELSEIF ( NOCHP(I)(1:4) .EQ. 'ACCE' ) THEN
+              CHAMNO = .TRUE.
+           ELSEIF ( NOCHP(I)(1:9) .EQ. 'VALE_CONT' ) THEN
+              CHAMNO = .TRUE.
+           ELSEIF ( NOCHP(I)(1:9) .EQ. 'FORC_NODA' ) THEN
+              CHAMNO = .TRUE.
+           ELSEIF ( NOCHP(I)(1:9) .EQ. 'SIEF_ELGA' ) THEN
+              CHAMES = .TRUE.
+           ELSEIF ( NOCHP(I)(1:9) .EQ. 'VARI_ELGA' ) THEN
+              CHAMEV = .TRUE.
+           ENDIF
+ 12     CONTINUE
+        IF ( CHAMES .AND. CHAMEV ) THEN
+           CALL UTMESS('F','SUILEC',
+     &                 'MELANGE DE CHAMPS DE NATURE '//
+     &     'DIFFERENTE DANS LE MEME MOT-CLEF FACTEUR SUIVI')
+        ENDIF
+        IF ( CHAMNO .AND. ( CHAMES .OR. CHAMEV ) ) THEN
+           CALL UTMESS('F','SUILEC',
+     &                 'MELANGE DE CHAMPS DE NATURE '//
+     &     'DIFFERENTE DANS LE MEME MOT-CLEF FACTEUR SUIVI')
+        ENDIF
 C
-C ------ VERIFICATION DES COMPOSANTES ----------------------------------
+C ------VERIFICATION DES COMPOSANTES ----------------------------------
 C
-         CALL GETVTX (MOTCLE,'NOM_CMP' ,IOCC,1,0,K8B ,N2 )
-         NCMP = -N2
+        CALL GETVTX (MOTCLE,'NOM_CMP' ,IOCC,1,0,K8B ,N2 )
+        NCMP = -N2
 C
-C ------ VERIFICATION DES NOEUDS ET MAILLES ----------------------------
+C ------VERIFICATION DES NOEUDS ET MAILLES ----------------------------
 C
-         CALL GETVID(MOTCLE,'NOEUD'   ,IOCC,1,0,K8B ,N1 )
-         CALL GETVID(MOTCLE,'MAILLE'  ,IOCC,1,0,K8B ,N3 )
-         CALL GETVIS(MOTCLE,'POINT'   ,IOCC,1,0,IBID,N4 )
-         IF ( N1 .NE. 0 ) THEN
-            NBNO = -N1
-            CALL WKVECT ('&&SUILEC.LIST_NOEU','V V K8',NBNO,JNOE)
-            CALL GETVID (MOTCLE,'NOEUD',IOCC,1,NBNO,
-     &                   ZK8(JNOE),N1)
-            DO 20 INO = 0 , NBNO-1
-               CALL JEEXIN ( JEXNOM(NOMNOE,ZK8(JNOE+INO)) , IRET )
-               IF ( IRET .EQ. 0 ) THEN
-                  CALL UTDEBM('F','SUILEC','ERREUR DANS LES DONNEES '//
-     &                         'DE SUIVI')
-                  CALL UTIMPK('L','LE NOEUD ',1,ZK8(JNOE+INO))
-                  CALL UTIMPK('S',' N''EXISTE PAS DANS ',1,MAILLA)
-                  CALL UTFINM()
-               ENDIF
- 20         CONTINUE
-         ENDIF
-         IF ( N3 .NE. 0 ) THEN
+        CALL GETVID(MOTCLE,'NOEUD'   ,IOCC,1,0,K8B ,N1 )
+        CALL GETVID(MOTCLE,'GROUP_NO',IOCC,1,0,K8B ,N5 )
+        CALL GETVID(MOTCLE,'MAILLE'  ,IOCC,1,0,K8B ,N3 )
+        CALL GETVID(MOTCLE,'GROUP_MA',IOCC,1,0,K8B ,N6 )
+        CALL GETVIS(MOTCLE,'POINT'   ,IOCC,1,0,IBID,N4 )
+        CALL GETVTX(MOTCLE,'VALE_MAX' ,IOCC,1,1,K8B ,N7 )
+        CALL GETVTX(MOTCLE,'VALE_MIN' ,IOCC,1,1,K8B ,N8 )
+        IF ( N1 .NE. 0 ) THEN
+           NBNO = -N1
+           CALL WKVECT ('&&SUILEC.LIST_NOEU','V V K8',NBNO,JNOE)
+           CALL GETVID (MOTCLE,'NOEUD',IOCC,1,NBNO,
+     &                  ZK8(JNOE),N1)
+           DO 20 INO = 0 , NBNO-1
+              CALL JEEXIN ( JEXNOM(NOMNOE,ZK8(JNOE+INO)) , IRET )
+              IF ( IRET .EQ. 0 ) THEN
+                 CALL UTDEBM('F','SUILEC','ERREUR DANS LES DONNEES '//
+     &                        'DE SUIVI')
+                 CALL UTIMPK('L','LE NOEUD ',1,ZK8(JNOE+INO))
+                 CALL UTIMPK('S',' N''EXISTE PAS DANS ',1,MAILLA)
+                 CALL UTFINM()
+              ENDIF
+ 20        CONTINUE
+        ENDIF
+
+        IF ( N5 .NE. 0 ) THEN
+          MESNO='&&SUILEC.GRNO'
+          CALL RELIEM (MODELE,MAILLA,'NO_NOEUD','SUIVI_DDL',IOCC,1,
+     &                'GROUP_NO','GROUP_NO',MESNO,NBNO)
+        ENDIF
+
+        IF ( N3 .NE. 0 ) THEN
             NBMA = -N3
             CALL WKVECT ('&&SUILEC.LIST_MAIL','V V K8',NBMA,JMAI)
             CALL GETVID (MOTCLE,'MAILLE',IOCC,1,NBMA,
@@ -171,7 +182,13 @@ C
                ENDIF
  24         CONTINUE
          ENDIF
-C
+
+         IF ( N6 .NE. 0 ) THEN
+           MESMA='&&SUILEC.GRMA'
+           CALL RELIEM (MODELE,MAILLA,'NO_MAILLE','SUIVI_DDL',IOCC,1,
+     &                  'GROUP_MA','GROUP_MA',MESMA,NBMA)
+         ENDIF
+
          NBPT = 0
          DO 16 I = 1 , NCHP
             IF ( NOCHP(I)(1:4) .EQ. 'DEPL' .OR.
@@ -179,27 +196,33 @@ C
      &           NOCHP(I)(1:4) .EQ. 'ACCE' .OR.
      &           NOCHP(I)(1:9) .EQ. 'FORC_NODA' .OR.
      &           NOCHP(I)(1:9) .EQ. 'VALE_CONT'   ) THEN
-               IF ( N1 .NE. 0 ) THEN
+               IF ( (N1 .NE. 0) .OR. (N5 .NE. 0) ) THEN
                   NBPT = NBPT + NBNO
+               ELSE IF ( (N7.NE.0) .OR. (N8.NE.0) ) THEN
+                  NBPT=NBPT+1
                ELSE
                   CALL UTDEBM('F','SUILEC','ERREUR DANS LES DONNEES '//
      &                         'DE SUIVI')
                   CALL UTIMPK('L','POUR "NOM_CHAM" ',1,NOCHP(I)(1:4))
-                  CALL UTIMPK('S',' IL FAUT RENSEIGNER ',1,'NOEUD')
+                  CALL UTIMPK('S',' IL FAUT RENSEIGNER ',1,'NOEUD,'// 
+     &            ' GROUP_NO, VALE_MIN OU VALE_MAX')
                   CALL UTFINM()
                ENDIF
 C
             ELSEIF ( NOCHP(I)(1:9) .EQ. 'SIEF_ELGA' .OR.
      &               NOCHP(I)(1:9) .EQ. 'VARI_ELGA' ) THEN
-               IF ( N3*N4 .EQ. 0 ) THEN
+               IF ( (N3*N4 .NE. 0) .OR. (N6*N4 .NE. 0)) THEN
+                  NBPT = NBPT + ABS(NBMA*N4)
+               ELSE IF ( (N7.NE.0) .OR. (N8.NE.0) ) THEN
+                 NBPT=NBPT+1
+               ELSE
                   CALL UTDEBM('F','SUILEC','ERREUR DANS LES DONNEES '//
      &                         'DE SUIVI')
                   CALL UTIMPK('L','POUR "NOM_CHAM" ',1,NOCHP(I))
-                  CALL UTIMPK('S',' IL FAUT RENSEIGNER ',1,'MAILLE')
+                  CALL UTIMPK('S',' IL FAUT RENSEIGNER ',1,'MAILLE'//
+     &                                                ' OU GROUP_MA')
                   CALL UTIMPK('S',' ET ',1,'POINT')
                   CALL UTFINM()
-               ELSE
-                  NBPT = NBPT + ABS( N3*N4 )
                ENDIF
             ENDIF
 C
@@ -208,10 +231,14 @@ C
 C --- NETTOYAGE
 C 
          IF ( N1 .NE. 0 )  CALL JEDETR ( '&&SUILEC.LIST_NOEU' )
+         IF ( N5 .NE. 0 )  CALL JEDETR ( MESNO )
          IF ( N3 .NE. 0 )  CALL JEDETR ( '&&SUILEC.LIST_MAIL' )
+         IF ( N6 .NE. 0 )  CALL JEDETR ( MESMA )
 C
 C --- NOMBRE DE DDL A SUIVRE 
 C
+
+         
          NBSUIV  = NBSUIV + ( NCHP * NCMP * NBPT )
 C
  10   CONTINUE

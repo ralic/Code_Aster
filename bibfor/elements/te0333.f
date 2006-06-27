@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER JGANO,MXCMEL,NBRES,NBSGM,MXCMPG,I,NDIM,NNO,NBSIGM,NBSIG,
      &        IDSIG,NNOS,NPG,JVAL,IPOIDS,IVF,IDFDE,IGAU,
      &        ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,ITEMPS,IMATE,IDEFA,
-     &        IDECPG,IDEFP,IHYDRE,ISECHE,ISREF,ICOMPO,NBVARI,IVARI,K,
+     &        IDECPG,IDEFP,ISECHE,ISREF,ICOMPO,NBVARI,IVARI,K,
      &        NVI,NVIF,IBID,JTAB(7),IRET
       PARAMETER (MXCMEL=162)
       PARAMETER (NBRES=3)
@@ -59,13 +59,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 VALRES(NBRES)
       REAL*8 EPSM(MXCMEL),EPSANE(MXCMEL),EPSPLA(MXCMEL)
       REAL*8 EPSPLN(MXCMEL),EPSFLU(MXCMEL),SIGMA(NBSGM)
-      REAL*8 VALPAR(4),C1,C2,TRSIG,HYDRG,SECHG
-      REAL*8 HYDR(MXCMPG),SECH(MXCMPG),SREF
+      REAL*8 VALPAR(3),C1,C2,TRSIG,SECHG
+      REAL*8 SECH(MXCMPG),SREF
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN,TEMPG
       REAL*8 EPSFL(NBSGM),EPSFLF(NBSGM),TMPDMX,TMPFMX
       CHARACTER*2 CODRET(NBRES)
       CHARACTER*8 NOMRES(NBRES)
-      CHARACTER*8 NOMPAR(4),MODELI,MOD3D
+      CHARACTER*8 NOMPAR(3),MODELI,MOD3D
       CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2,CMP3
       LOGICAL LFLU,LPLAS,LTEMP
 C DEB ------------------------------------------------------------------
@@ -91,9 +91,6 @@ C --- GEOMETRIE ET INTEGRATION
 C     ------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      DO 30 I = 1,1
-   30 CONTINUE
-
 
 C --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 C      -----------------------------------------
@@ -119,13 +116,6 @@ C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
 C     -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
-C --- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
-C     -----------------------------------------------------
-      DO 40 I = 1,NPG
-        CALL RCVARC(' ','HYDR','+','RIGI',I,1,HYDR(I),IRET)
-        IF (IRET.EQ.1) HYDR(I)=ZERO
-   40 CONTINUE
-
 C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 C     -----------------------------------------------------
       CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
@@ -139,7 +129,7 @@ C     -----------------------------------------------------
 C ---RECUPERATION DU SECHAGE DE REFERENCE :
 C     --------------------------------------------------
       CALL TECACH('NNN','PSECREF',1,ISREF,IRET)
-      IF (ISREF.NE.0) THEN
+      IF (IRET.EQ.0) THEN
         SREF = ZR(ISREF)
       ENDIF
  
@@ -188,10 +178,10 @@ C ---    ET EPSRET SONT LES DEFORMATIONS LIEES AU RETRAIT
 C ---       DE DESSICCATION ET  D HYDRATION
 C ---       EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
-        OPTIO2 = 'EPMH_'//OPTION(6:9)//'_DEPL'
-      CALL EPSVMC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+        OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
+      CALL EPSVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM),ZR(IDEPL),
-     +            ZR(ITEMPE),ZR(ITREF),HYDR,SECH,SREF,ZR(ITEMPS),
+     +            ZR(ITEMPE),ZR(ITREF),SECH,SREF,ZR(ITEMPS),
      +            ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
 
 C ---    AFFECTATION DU VECTEUR DES DEFORMATIONS ANELASTIQUES AUX
@@ -265,7 +255,6 @@ C  ---   TEMPERATURE AU POINT D'INTEGRATION COURANT :
 C        ------------------------------------------
         TEMPG = ZERO
         SECHG = ZERO
-        HYDRG = HYDR(IGAU)
 
         DO 80 I = 1,NNO
           TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)
@@ -283,19 +272,17 @@ C        ---------------------------------------------
         NOMRES(3) = 'ALPHA'
 
         NOMPAR(1) = 'TEMP'
-        NOMPAR(2) = 'HYDR'
-        NOMPAR(3) = 'SECH'
-        NOMPAR(4) = 'INST'
+        NOMPAR(2) = 'SECH'
+        NOMPAR(3) = 'INST'
         VALPAR(1) = TEMPG
-        VALPAR(2) = HYDRG
-        VALPAR(3) = SECHG
-        VALPAR(4) = ZR(ITEMPS)
+        VALPAR(2) = SECHG
+        VALPAR(3) = ZR(ITEMPS)
 
-        CALL RCVALA(ZI(IMATE),' ','ELAS',4,NOMPAR,VALPAR,2,NOMRES,
-     &             VALRES, CODRET,'FM')
+        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',3,NOMPAR,
+     &              VALPAR,2,NOMRES,VALRES, CODRET,'FM')
 
-        CALL RCVALA(ZI(IMATE),' ','ELAS',4,NOMPAR,VALPAR,1,NOMRES(3),
-     &              VALRES(3),CODRET(3),'  ')
+        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',3,NOMPAR,
+     &              VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),'  ')
 
         E = VALRES(1)
         NU = VALRES(2)

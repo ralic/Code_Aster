@@ -1,7 +1,8 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
+C MODIF ELEMENTS  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C TOLE CRP_20 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +59,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
       INTEGER NNE,NNM,NDDL,NDIM,INDCO,INADH,INDASP,INDCOM,INDM
       INTEGER IGEOM,IDEPL,IMATT,JPCF,DIRLG,CMP
-      INTEGER MGEOM,MDEPL,IDEPM,IJ,L,MALEK,INDNOR,IFORM
-      INTEGER INI1,INI2,INI3
+      INTEGER MGEOM,MDEPL,IDEPM,IJ,L,MALEK,IFORM
+      INTEGER INI1,INI2,INI3,INDNOR,INDRAC
+      INTEGER INDNOB,IMA,IMABAR,TYPBAR
       REAL*8 XC,YC,PDS,ERR,ESS,JAC,JACM,LAMBDA,R(3,3),E(3,3),G(3,3)
       REAL*8 MMAT(81,81),C(3,3),FFE(9),FFM(9),TAU1(3),TAU2(3),NORM(3)
       REAL*8 C1(3),C2(3),C3(3),H1(3),H2(3),H(3,3),A(3,3),B(3,3)
@@ -261,6 +263,12 @@ C  RECUPERATION DES DONNEES
       BETA     = ZR(JPCF-1+31) 
       GAMMA    = ZR(JPCF-1+32)
       JEUSUP   = ZR(JPCF-1+33)
+      IMA      = NINT(ZR(JPCF-1+34))
+      IMABAR   = NINT(ZR(JPCF-1+35))
+      INDNOB   = NINT(ZR(JPCF-1+36))
+C      INDNOQ   = NINT(ZR(JPCF-1+37))
+      TYPBAR   = NINT(ZR(JPCF-1+38))
+      INDRAC   = NINT(ZR(JPCF-1+39))
       
 C ---- MODIF
       IF (INDM .GE. 1) THEN
@@ -286,9 +294,21 @@ C ---- FIN MODIF
 C  RECUPERARTION DE LA GEOMETRIE ET DE CHAMPS DE DEPLACEMENT
 
       CALL JEVECH('PGEOMER','E',IGEOM)
-      CALL JEVECH('PDEPL_P','L',IDEPL)
+      CALL JEVECH('PDEPL_P','E',IDEPL)
       CALL JEVECH('PDEPL_M','L',IDEPM)
       CALL JEVECH('PMATUUR','E',IMATT)
+      
+C TRAITEMENT EN FOND DE FISSURE      
+      IF (INDNOB .GT. 0) THEN
+        INDCO = 1
+      END IF
+C
+C TRAITEMENT DU RACCORD SURFACIQUE     
+      IF (INDRAC .GT. 0) THEN
+        INDCO = 1
+      END IF
+C
+      
 
 C     REACTUALISATION DE LA GEOMETRIE AVEC DEPMOI (ESCALVE)
 
@@ -318,7 +338,11 @@ C INITIALISATION DE LA MATRICE
 C   RECUPERATION DES COOR DE PC, JAC ET  FFE
 C   ----------------------------------------
 
-      CALL CALFFJ(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS,NDIM)
+      IF (IMA .EQ. IMABAR) THEN
+        CALL CALFFL(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS,NDIM,TYPBAR)
+      ELSE
+        CALL CALFFJ(ESC,ORD,GAUS,IGEOM,FFE,JAC,AXIS,NDIM)
+      END IF
 
 C   FF DE LA MAILLE MAITRE AU VIS AVIS
 
@@ -431,7 +455,30 @@ C  EVALUTION DU JEU
             JDEPP = JDEPP + (DEPLE(K)-DEPLM(K))*NORM(K)
             JDEPM = JDEPM + (DEPLME(K)-DEPLMM(K))*NORM(K)
  52      CONTINUE
-
+ 
+C TRAITEMENT FOND DE FISSURE         
+          IF(IMA .EQ. IMABAR) THEN
+          IF (INDNOB .GT. 0) THEN
+          DO 69 I = INDNOB,INDNOB
+            DO 59 J = INDNOB,INDNOB
+              MMAT((2*NDIM)*(I-1)+NDIM+1,
+     &        (J-1)*(2*NDIM)+NDIM+1) = -FFE(J)*FFE(I)
+ 59         CONTINUE
+ 69       CONTINUE
+          ENDIF 
+          ENDIF
+C
+C TRAITEMENT DE RACCORD SURFACIQUE
+C
+          IF (INDRAC .GT. 0) THEN
+          DO 526 I = INDRAC,INDRAC
+            DO 527 J = INDRAC,INDRAC
+              MMAT((2*NDIM)*(I-1)+NDIM+1,
+     &        (J-1)*(2*NDIM)+NDIM+1) = -FFE(J)*FFE(I)
+ 527        CONTINUE
+ 526       CONTINUE
+          END IF          
+C
 
 C    1. CALCUL DE A ET DE AT
 C    -----------------------
@@ -450,7 +497,39 @@ C    ----------------------------------------------------------
    70         CONTINUE
    80       CONTINUE
    90     CONTINUE
-
+   
+C TRAITEMENT FOND DE FISSURE              
+          IF (IMA .EQ. IMABAR) THEN
+          IF (INDNOB .GT. 0) THEN
+          DO 92 I = INDNOB,INDNOB
+            DO 82 J = 1,NNE
+              DO 72 K = 1,NDIM
+                MMAT((2*NDIM)*(I-1)+NDIM+1,(2*NDIM)*(J-1)+K)=-PDS*
+     &            0.D0*FFE(J)*JAC*NORM(K)
+                MMAT((2*NDIM)* (J-1)+K,(2*NDIM)*(I-1)+NDIM+
+     &            1) = MMAT((2*NDIM)*(I-1)+NDIM+1,(2*NDIM)*(J-1)+K)
+   72         CONTINUE
+   82       CONTINUE
+   92     CONTINUE
+          END IF
+          END IF
+C
+C TRAITEMENT RACCORD SURFACIQUE              
+          IF (INDRAC .GT. 0) THEN
+          DO 93 I = INDRAC,INDRAC
+            DO 83 J = 1,NNE
+              DO 73 K = 1,NDIM
+                MMAT((2*NDIM)*(I-1)+NDIM+1,(2*NDIM)*(J-1)+K)=-PDS*
+     &            0.D0*FFE(J)*JAC*NORM(K)
+                MMAT((2*NDIM)* (J-1)+K,(2*NDIM)*(I-1)+NDIM+
+     &            1) = MMAT((2*NDIM)*(I-1)+NDIM+1,(2*NDIM)*(J-1)+K)
+   73         CONTINUE
+   83       CONTINUE
+   93     CONTINUE
+          END IF
+C
+C
+C
 C    1.2 DEUXIEME PARTIE DE A ET AT : PARTIE ESCLAVE MAITRE
 C    ------------------------------------------------------
 
@@ -466,6 +545,43 @@ C    ------------------------------------------------------
   100         CONTINUE
   110       CONTINUE
   120     CONTINUE
+  
+C TRAITEMENT FOND DE FISSURE    
+          IF (IMA .EQ. IMABAR) THEN
+          IF (INDNOB .GT. 0) THEN
+          DO 129 I = INDNOB,INDNOB
+            DO 119 J = 1,NNM
+              DO 109 K = 1,NDIM
+                MMAT((2*NDIM)*(I-1)+NDIM+1,
+     &            (2*NDIM)*NNE+NDIM*(J-1)+K)=PDS*0.D0*FFM(J)*JAC*
+     &            NORM(K)
+                MMAT((2*NDIM)*NNE+NDIM*(J-1)+K,
+     &            (2*NDIM)*(I-1)+NDIM+1)=MMAT((2*NDIM)*(I-1)+NDIM+1,
+     &             (2*NDIM)*NNE+NDIM*(J-1)+K)
+  109         CONTINUE
+  119       CONTINUE
+  129     CONTINUE
+          END IF
+          END IF
+C
+C TRAITEMENT RACCORD SURFACIQUE
+          IF (INDRAC .GT. 0) THEN
+          DO 159 I = INDRAC,INDRAC
+            DO 149 J = 1,NNM
+              DO 139 K = 1,NDIM
+                MMAT((2*NDIM)*(I-1)+NDIM+1,
+     &            (2*NDIM)*NNE+NDIM*(J-1)+K)=PDS*0.D0*FFM(J)*JAC*
+     &            NORM(K)
+                MMAT((2*NDIM)*NNE+NDIM*(J-1)+K,
+     &            (2*NDIM)*(I-1)+NDIM+1)=MMAT((2*NDIM)*(I-1)+NDIM+1,
+     &             (2*NDIM)*NNE+NDIM*(J-1)+K)
+  139         CONTINUE
+  149       CONTINUE
+  159     CONTINUE
+          END IF
+C
+C
+C
 C
 C    2.CALCUL DE A_U
 C    ---------------

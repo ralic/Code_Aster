@@ -1,6 +1,6 @@
       SUBROUTINE DEFDDA(NBEC,NBCMP,NUMGD,IOC,MOTCLE,IOPT,ICOD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,8 +68,13 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL GETVTX('INTERFACE',MOTCLE,IOC,1,0,KAR80,NBVAL)
-      NBVAL = -NBVAL
+C
+      IF ( MOTCLE(1:9) .EQ. 'DDL_ACTIF' ) THEN
+         NBVAL = 0
+      ELSE
+         CALL GETVTX('INTERFACE',MOTCLE,IOC,1,0,KAR80,NBVAL)
+         NBVAL = -NBVAL
+      ENDIF
 C
 C----------ALLOCATION DU VECTEUR DES ENTIERS DE DECODAGE----------------
 C
@@ -100,7 +105,11 @@ C
       TEMDDL = '&&DEFDDA.DDL.DON'
       CALL WKVECT(TEMDDL,'V V K80',NBVAL,LTDDL)
 C
-      CALL GETVTX('INTERFACE',MOTCLE,IOC,1,NBVAL,ZK80(LTDDL),IBID)
+      IF ( MOTCLE(1:9) .EQ. 'DDL_ACTIF' ) THEN
+         IBID = 0
+      ELSE
+         CALL GETVTX('INTERFACE',MOTCLE,IOC,1,NBVAL,ZK80(LTDDL),IBID)
+      ENDIF
 C
       DO 10 I = 1,NBVAL
          NOMCOU = ZK80(LTDDL+I-1)

@@ -4,7 +4,7 @@
      &                  DEPENT,VITENT,ACCENT,CNSINR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -82,21 +82,26 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ISUI,INOEUD,ICMP,VARINT,ICTC,ISND,NBSUIV,IBID
       INTEGER      JDEPP,JVITP,JACCP,JDEPEN,JVITEN,JACCEN,JCONT,JDEPDE
-      REAL*8       VALR
+      INTEGER      JCNSD,JCNSC,JCNSV,JCNSL,JCESC,JCESD,JCESL,IRET,NBNO
+      INTEGER      INO,NBMA,IAD,JCESV
+      REAL*8       VALR,CONST(4)
       CHARACTER*13 RESULT,CONCEP,NOMCMD
       CHARACTER*16 CHAM
       CHARACTER*24 K24BID
-      INTEGER      JCHAM,JCOMP,JNUCM,JNOEU,JMAIL,JPOIN,JSUINB
-      INTEGER      SUBTOP,TYPCHA
-      CHARACTER*24 DEPPLU,SIGPLU,VARPLU
-      CHARACTER*24 CNFEDO,CNFEPI,CNFSDO,CNFSPI
+      INTEGER      JCHAM,JCOMP,JNUCM,JNOEU,JMAIL,JPOIN,JSUINB,JEXTR
+      INTEGER      SUBTOP,TYPCHA,ICOMP,I,NBCMP,IMA,NBPT,NBSP,IPT,ISP
+      CHARACTER*24 DEPPLU,SIGPLU,VARPLU,NOMCH(4),CHAMFO(4)
+      CHARACTER*24 CNFEDO,CNFEPI,CNFSDO,CNFSPI,CHTRAV,CHTR1
       CHARACTER*19 CNSINZ
       CHARACTER*8  CMP,TOPO
-      CHARACTER*16 K16BID      
+      CHARACTER*16 K16BID
+      LOGICAL      LISCH(4)
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CHTR1='&&SUIDDL.TR1'
+      CHTRAV='&&SUIDDL.TRAV'
 C      
       CALL GETRES(RESULT,CONCEP,NOMCMD)
       CALL JEVEUO(SUIVCO(1:14)//'NBSUIV'   ,'L',JSUINB)
@@ -112,6 +117,7 @@ C
       CALL JEVEUO(SUIVCO(1:14)//'NOEUD'    ,'L',JNOEU)
       CALL JEVEUO(SUIVCO(1:14)//'MAILLE'   ,'L',JMAIL)
       CALL JEVEUO(SUIVCO(1:14)//'POINT'    ,'L',JPOIN)
+      CALL JEVEUO(SUIVCO(1:14)//'EXTREMA'  ,'L',JEXTR)
 C
 C --- SI ON DEMANDE DES DDL ABSOLUS EN STATIQUE -> ARRET
 C
@@ -163,7 +169,7 @@ C
         CALL JEVEUO(CNSINZ(1:19)//'.VALE','L',JCONT)
       ENDIF
 
-      DO 20 ISUI = 1 , NBSUIV
+      DO 30 ISUI = 1 , NBSUIV
 C
 C --- CHAMP
 C
@@ -203,71 +209,216 @@ C
 C --- ENTITE TOPOLOGIQUE PRINCIPALE (NOEUD OU MAILLE)
 C --- SI MAILLE -> SOUS-ENTITE TOPOLOGIQUE  (POINT DE GAUSS)
 C
-         SUBTOP = 0
-         IF ((TYPCHA.EQ.8).OR.(TYPCHA.EQ.9)) THEN
-           TOPO   = ZK8(JMAIL-1+ISUI)
-           SUBTOP = ZI(JPOIN-1+ISUI)
-         ELSE
-           TOPO   = ZK8(JNOEU-1+ISUI)
-         ENDIF
+         IF (ZI(JEXTR-1+ISUI).EQ.0) THEN 
+           SUBTOP = 0
+           IF ((TYPCHA.EQ.8).OR.(TYPCHA.EQ.9)) THEN
+             TOPO   = ZK8(JMAIL-1+ISUI)
+             SUBTOP = ZI(JPOIN-1+ISUI)
+           ELSE
+             TOPO   = ZK8(JNOEU-1+ISUI)
+           ENDIF
 C
 C --- NUMERO DE VARIABLE INTERNE 
 C
-         VARINT = 0
-         IF (TYPCHA.EQ.9) THEN
-           VARINT  = ZI(JNUCM-1+ISUI)
-         ENDIF
+           VARINT = 0
+           IF (TYPCHA.EQ.9) THEN
+             VARINT  = ZI(JNUCM-1+ISUI)
+           ENDIF
 C
 C --- DEPL, VITE ET ACCE ABSOLUS -> Y A T-IL DES MODES STATIQUES ?
 C
-         IF ((TYPCHA.GE.1).AND.(TYPCHA.LE.3)) THEN
-           IF (NBMODS.EQ.0) THEN
-             VALR = 0.D0 
+           IF ((TYPCHA.GE.1).AND.(TYPCHA.LE.3)) THEN
+             IF (NBMODS.EQ.0) THEN
+               VALR = 0.D0 
+               GOTO 15
+             ENDIF
+           ENDIF
+C
+           CALL DYOEXT(MAILLA,TYPCHA,TOPO,SUBTOP,CMP,VARINT,
+     &                 DEPPLU,VITPLU,ACCPLU,SIGPLU,VARPLU,
+     &                 DEPENT,VITENT,ACCENT,
+     &                 ICTC,CNSINZ,
+     &                 ISND,CNFEDO,CNFEPI,CNFSDO,CNFSPI,
+     &                 INOEUD,ICMP,VALR)
+C
+           IF ((ICMP.EQ.0).OR.(INOEUD.EQ.0)) THEN
+             VALR = 0.D0
+             CALL UTMESS('A','SUIDDL','DDL INCONNU SUR LE NOEUD OU '//
+     &                   ' LA MAILLE SPECIFIEE POUR LE SUIVI')
              GOTO 15
            ENDIF
-         ENDIF
-C
-         CALL DYOEXT(MAILLA,TYPCHA,TOPO,SUBTOP,CMP,VARINT,
-     &               DEPPLU,VITPLU,ACCPLU,SIGPLU,VARPLU,
-     &               DEPENT,VITENT,ACCENT,
-     &               ICTC,CNSINZ,
-     &               ISND,CNFEDO,CNFEPI,CNFSDO,CNFSPI,
-     &               INOEUD,ICMP,VALR)
-C
-         IF ((ICMP.EQ.0).OR.(INOEUD.EQ.0)) THEN
-           VALR = 0.D0
-           CALL UTMESS('A','SUIDDL','DDL INCONNU SUR LE NOEUD OU '//
-     &                 ' LA MAILLE SPECIFIEE POUR LE SUIVI')
-           GOTO 15
-         ENDIF
 C
 C ---
 C
-         IF     (TYPCHA.EQ.1) THEN
-           VALR = ZR(JDEPP+ICMP-1) + ZR(JDEPEN+ICMP-1)                  
-         ELSEIF (TYPCHA.EQ.2) THEN
-           VALR = ZR(JVITP+ICMP-1) + ZR(JVITEN+ICMP-1)        
-         ELSEIF (TYPCHA.EQ.3) THEN
-           VALR = ZR(JACCP+ICMP-1) + ZR(JACCEN+ICMP-1)      
-         ELSEIF (TYPCHA.EQ.4) THEN
-           VALR = ZR(JDEPP+ICMP-1)
-         ELSEIF (TYPCHA.EQ.5) THEN
-           VALR = ZR(JCONT+ICMP-1)          
-         ELSEIF (TYPCHA.EQ.6) THEN
-           VALR = ZR(JVITP+ICMP-1)       
-         ELSEIF (TYPCHA.EQ.7) THEN
-           VALR = ZR(JACCP+ICMP-1)          
-         ELSEIF (TYPCHA.EQ.8) THEN
-C          VALR = VALR
-         ELSEIF (TYPCHA.EQ.9) THEN
-C          VALR = VALR
-         ELSEIF (TYPCHA.EQ.10) THEN
-C          VALR = VALR          
+           IF     (TYPCHA.EQ.1) THEN
+             VALR = ZR(JDEPP+ICMP-1) + ZR(JDEPEN+ICMP-1)
+           ELSEIF (TYPCHA.EQ.2) THEN
+             VALR = ZR(JVITP+ICMP-1) + ZR(JVITEN+ICMP-1)
+           ELSEIF (TYPCHA.EQ.3) THEN
+             VALR = ZR(JACCP+ICMP-1) + ZR(JACCEN+ICMP-1)
+           ELSEIF (TYPCHA.EQ.4) THEN
+             VALR = ZR(JDEPP+ICMP-1)
+           ELSEIF (TYPCHA.EQ.5) THEN
+             VALR = ZR(JCONT+ICMP-1)          
+           ELSEIF (TYPCHA.EQ.6) THEN
+             VALR = ZR(JVITP+ICMP-1)       
+           ELSEIF (TYPCHA.EQ.7) THEN
+             VALR = ZR(JACCP+ICMP-1)          
+           ELSEIF (TYPCHA.EQ.8) THEN
+C            VALR = VALR
+           ELSEIF (TYPCHA.EQ.9) THEN
+C            VALR = VALR
+           ELSEIF (TYPCHA.EQ.10) THEN
+C            VALR = VALR          
+           ELSE 
+             CALL UTMESS('F','SUIDDL','OPTION INDISPONIBLE POUR'//
+     &                   'LE SUIVI')
+           ENDIF
          ELSE 
-           CALL UTMESS('F','SUIDDL','OPTION INDISPONIBLE POUR'//
-     &                 'LE SUIVI')
-         ENDIF
+           IF     (TYPCHA.EQ.1) THEN
+             CONST(1)=1.D0
+             CONST(2)=1.D0
+             NOMCH(1)=DEPPLU
+             NOMCH(2)=DEPENT
+             CALL VTCMBL(2,'R',CONST,'R',NOMCH,'R',CHTR1)
+             CALL CNOCNS(CHTR1,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.2) THEN
+             CONST(1)=1.D0
+             CONST(2)=1.D0
+             NOMCH(1)=VITPLU
+             NOMCH(2)=VITENT
+             CALL VTCMBL(2,'R',CONST,'R',NOMCH,'R',CHTR1)
+             CALL CNOCNS(CHTR1,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.3) THEN
+             CONST(1)=1.D0
+             CONST(2)=1.D0
+             NOMCH(1)=ACCPLU
+             NOMCH(2)=ACCENT
+             CALL VTCMBL(2,'R',CONST,'R',NOMCH,'R',CHTR1)
+             CALL CNOCNS(CHTR1,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.4) THEN
+             CALL CNOCNS(DEPPLU,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.5) THEN
+             CHTRAV=CNSINZ
+           ELSEIF (TYPCHA.EQ.6) THEN
+             CALL CNOCNS(VITPLU,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.7) THEN
+             CALL CNOCNS(ACCPLU,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.8) THEN
+             CALL CELCES(SIGPLU,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.9) THEN
+             CALL CELCES(VARPLU,'V',CHTRAV)
+           ELSEIF (TYPCHA.EQ.10) THEN
+             CALL JEEXIN(CNFEDO(1:19)//'.VALE',IRET)
+             IF (IRET.NE.0) THEN
+               LISCH(1)=.TRUE.
+               NOMCH(1)=CNFEDO
+             ELSE 
+               LISCH(1)=.FALSE.
+             ENDIF  
+             CALL JEEXIN(CNFEPI(1:19)//'.VALE',IRET)
+             IF (IRET.NE.0) THEN
+               LISCH(2)=.TRUE.
+               CHAMFO(2)=CNFEPI
+             ELSE 
+               LISCH(2)=.FALSE.
+             ENDIF  
+             CALL JEEXIN(CNFSDO(1:19)//'.VALE',IRET)
+             IF (IRET.NE.0) THEN
+               LISCH(3)=.TRUE.
+               CHAMFO(3)=CNFSDO
+             ELSE 
+               LISCH(3)=.FALSE.
+             ENDIF  
+              CALL JEEXIN(CNFSPI(1:19)//'.VALE',IRET)
+             IF (IRET.NE.0) THEN
+               LISCH(4)=.TRUE.
+               CHAMFO(4)=CNFSPI
+             ELSE 
+               LISCH(4)=.FALSE.
+             ENDIF
+             ICOMP=1
+             DO 20 I=1,4
+               IF (LISCH(I)) THEN
+                 CONST(ICOMP)=1.D0
+                 NOMCH(ICOMP)=CHAMFO(I)
+                 ICOMP=ICOMP+1
+               ENDIF
+  20         CONTINUE
+             CALL VTCMBL(ICOMP,'R',CONST,'R',NOMCH,'R',CHTR1)
+             CALL CNOCNS(CHTR1,'V',CHTRAV)
+           ELSE 
+             CALL UTMESS('F','SUIDDL','OPTION INDISPONIBLE POUR'//
+     &                   'LE SUIVI')
+           ENDIF
+           
+           IF (TYPCHA.EQ.8.OR.TYPCHA.EQ.9) THEN
+             CALL JEVEUO(CHTRAV(1:19)//'.CESC','L',JCESC)
+             CALL JEVEUO(CHTRAV(1:19)//'.CESD','L',JCESD)
+             CALL JEVEUO(CHTRAV(1:19)//'.CESL','L',JCESL)
+             CALL JEVEUO(CHTRAV(1:19)//'.CESV','L',JCESV)
+             NBCMP=ZI(JCESD+4)
+             DO 40 I=1,NBCMP
+               IF (CMP.EQ.ZK8(JCESC-1+I)) ICMP=I
+  40         CONTINUE
+             NBMA=ZI(JCESD)
 
+             IF (ZI(JEXTR-1+ISUI).EQ.1) THEN
+               CALL CESEXI('S',JCESD,JCESL,1,1,1,ICMP,IAD)
+               IF (IAD.GT.0) VALR=ZR(JCESV+IAD-1)
+               DO 50 IMA=1,NBMA
+                 NBPT=ZI(JCESD+5+4*(IMA-1))
+                 NBSP=ZI(JCESD+5+4*(IMA-1)+1)
+                 DO 60 IPT=1,NBPT
+                   DO 70 ISP=1,NBSP
+                     CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
+                     IF (IAD.GT.0) VALR=MIN(VALR,ZR(JCESV+IAD-1))
+  70               CONTINUE  
+  60             CONTINUE
+  50           CONTINUE
+
+             ELSE IF (ZI(JEXTR-1+ISUI).EQ.2) THEN
+               CALL CESEXI('S',JCESD,JCESL,1,1,1,ICMP,IAD)
+               IF (IAD.GT.0) VALR=ZR(JCESV+IAD-1)
+               DO 80 IMA=1,NBMA
+                 NBPT=ZI(JCESD+5+4*(IMA-1))
+                 NBSP=ZI(JCESD+5+4*(IMA-1)+1)
+                 DO 90 IPT=1,NBPT
+                   DO 100 ISP=1,NBSP
+                     CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
+                     IF (IAD.GT.0) VALR=MAX(VALR,ZR(JCESV+IAD-1))
+  100              CONTINUE  
+  90             CONTINUE  
+  80           CONTINUE
+             ENDIF  
+           ELSE
+             CALL JEVEUO(CHTRAV(1:19)//'.CNSD','L',JCNSD)
+             CALL JEVEUO(CHTRAV(1:19)//'.CNSC','L',JCNSC)
+             CALL JEVEUO(CHTRAV(1:19)//'.CNSV','L',JCNSV)
+             CALL JEVEUO(CHTRAV(1:19)//'.CNSL','L',JCNSL)
+             NBCMP=ZI(JCNSD+1)
+             DO 110 I=1,NBCMP
+               IF (CMP.EQ.ZK8(JCNSC-1+I)) ICMP=I
+  110        CONTINUE
+             NBNO=ZI(JCNSD)
+               VALR=ZR(JCNSV+ICMP-1)
+             IF (ZI(JEXTR-1+ISUI).EQ.1) THEN
+               DO 120 INO=1,NBNO
+                 IF(ZL(JCNSL+(INO-1)*NBCMP+ICMP-1)) THEN
+                   VALR=MIN(VALR,ZR(JCNSV+(INO-1)*NBCMP+ICMP-1))
+                 ENDIF
+  120          CONTINUE
+             ELSE IF (ZI(JEXTR-1+ISUI).EQ.2) THEN
+               DO 130 INO=1,NBNO
+                 IF(ZL(JCNSL+(INO-1)*NBCMP+ICMP-1)) THEN
+                   VALR=MAX(VALR,ZR(JCNSV+(INO-1)*NBCMP+ICMP-1))
+                 ENDIF
+  130          CONTINUE
+             ENDIF
+           ENDIF
+         ENDIF
+         CALL JEDETR(CHTR1)
+         CALL JEDETR(CHTRAV)
   15     CONTINUE
 C
 C --- AFFICHAGE DANS LE TABLEAU
@@ -285,10 +436,10 @@ C
            CALL IMPSDR(IMPRCO(1:14),
      &                 'SUIV_4   ',K16BID,VALR,IBID)       
          ELSE 
-           CALL UTMESS('F','SUIDDL','TROP DE SUIVIS (LIMITE A 4)')      
+           CALL UTMESS('F','SUIDDL','TROP DE SUIVIS (LIMITE A 4)')
          ENDIF  
 C
- 20   CONTINUE
+ 30   CONTINUE
 C
  999  CONTINUE
 C

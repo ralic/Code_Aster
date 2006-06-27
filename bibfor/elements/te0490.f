@@ -1,6 +1,6 @@
       SUBROUTINE TE0490(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,9 +121,9 @@ C
       REAL*8             REPERE(7), INSTAN, NHARM,INTEG,INTEG1
       REAL*8             EPSM(MXCMEL),INTEG2
       REAL*8             NU, K, INDIGL
-      REAL*8             HYDR(27), SECH(27)
-      INTEGER            NBSIGM, ISECHE
-      REAL*8             F(3,3),R,EPS(6)
+      REAL*8             SECH(27)
+      INTEGER            NBSIGM, ISECHE,ISREF,IRET
+      REAL*8             F(3,3),R,EPS(6),SREF
       LOGICAL            GRAND, AXI
       REAL*8             MU,TROISK,JAC,TAU(6),TRTAU,EQTAU,DVTAU(6)
       REAL*8             JE2,JE3,Q,D,SOL,TRBE
@@ -217,13 +217,6 @@ C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
 
       CALL JEVECH('PTEREF','L',ITREF)
 
-C ---- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
-
-      DO 6 I = 1, NPG
-       CALL RCVARC(' ','HYDR','+','RIGI',I,1,HYDR(I),IRET)
-       IF (IRET.EQ.1) HYDR(I)=0.D0
-  6   CONTINUE
-
 C ---- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 
       CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
@@ -231,6 +224,15 @@ C ---- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
       DO 7 I = 1, NNO
        SECH(I)   = ZR(ISECHE+I-1)
   7   CONTINUE
+      ENDIF
+
+C ---RECUPERATION DU SECHAGE DE REFERENCE :
+C     --------------------------------------------------
+      CALL TECACH('NNN','PSECREF',1,ISREF,IRET)
+      IF (IRET.EQ.0) THEN
+        SREF = ZR(ISREF)
+      ELSE
+        SREF = 0.D0
       ENDIF
 
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
@@ -309,9 +311,9 @@ C ---- ET EPSTH SONT LES DEFORMATIONS THERMIQUES
 C ----    EPSTH = ALPHA*(T-TREF) :
 C         ----------------------
       OPTIO2 = 'EPME_ELGA_DEPL'
-      CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM), ZR(IDEPL),
-     +            ZR(ITEMPE), ZR(ITREF), HYDR, SECH, RBID, INSTAN,
+      CALL EPSVMC('RIGI',MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,
+     +            IVF,IDFDE,ZR(IGEOM), ZR(IDEPL),
+     +            ZR(ITEMPE), ZR(ITREF), SECH, SREF, INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTIO2, EPSM)
 
 C                      ===========================

@@ -6,7 +6,7 @@
       REAL*8              VECT(*), PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,51 +53,51 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C -----  VARIABLES LOCALES
-      INTEGER       IFM, NIV, IER, IMA, NUMA, NUTYMA, NBNMAI, NORIEG
-      INTEGER       JTYMA, JCOOR,  P1, P2, JNBN, JDNO, JNOM, JDESM
-      INTEGER       ICO, IORIV1, IORIV2, P3, P4, MAOK, INDI, IDEB
-      INTEGER       NBNMA1, NBNMA2, JDESM1, JDESM2, JNOR, INDIIS
-      INTEGER       NBMAT, I, IM2, IORIM1, IORIM2
-      LOGICAL       DIME1, DIME2, REORIE
-      CHARACTER*8   K8B, TPMAIL, NOMAIL
+      INTEGER       NBNOMX
+      PARAMETER    (NBNOMX = 27)
+      INTEGER       IDTYMA, NUTYMA, LORI, JORI, NORI, KORI, ILISTE
+      INTEGER       IMA, NUMAIL, NUMA, JDES, NBNO1, NORIEG, LLISTE
+      INTEGER       IM1, IM2, ICO, IORIM1, IORIM2, NORIEM
+      INTEGER       P1, P2, IFM , NIV, LISNOE(NBNOMX), P3, P4
+      INTEGER       NBNMAI, NBNOE, INO, NBNSM, I, JDESM1, JDESM2
+      INTEGER       NBMAVO, INDIIS, INDI, IM3, NCONEX, JCOOR
+      INTEGER       IORIV1, IORIV2, NBMAOR, II, KDEB
+      LOGICAL       PASORI, DIME1, DIME2, REORIE
+      CHARACTER*1   K1BID
+      CHARACTER*2   KDIM
+      CHARACTER*8   TYPEL, NOMAIL
       CHARACTER*24  MAILMA, NOMAVO
+C
+      PASORI(IMA) = ZI(LORI-1+IMA).EQ.0
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ ( )
 C
-C --- INITIALISATIONS :
-C     ---------------
       CALL INFNIV ( IFM , NIV )
       MAILMA = NOMA//'.NOMMAI'
       REORIE = .TRUE.
 C
 C --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 C     ---------------------------------------
-      CALL JEVEUO ( NOMA//'.TYPMAIL        ', 'L', JTYMA )
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',IDTYMA)
 C
 C --- COORDONNEES DES NOEUDS DU MAILLAGE :
 C     ----------------------------------
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', JCOOR )
 C
-C --- RECUPERATION DE LA CONNECTIVITE DES MAILLES :
-C     -------------------------------------------
+C --- APPEL A LA CONNECTIVITE :
+C     -----------------------
       CALL JEVEUO ( JEXATR(NOMA//'.CONNEX','LONCUM'), 'L', P2 )
       CALL JEVEUO ( NOMA//'.CONNEX', 'E', P1 )
 C
-C --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
-C     ---------------------------------------------
-      NOMAVO = '&&ORVLMA.MAILLE_VOISINE '
-      CALL UTMAVO ( NOMA, '  ', LISTMA, NBMAIL, 'V', NOMAVO )
-      CALL JEVEUO ( JEXATR(NOMAVO,'LONCUM'), 'L', P4 )
-      CALL JEVEUO ( NOMAVO, 'L', P3 )
-C
 C     ALLOCATIONS :
 C     -----------
-      CALL WKVECT ( '&&ORVLMA.ORI1', 'V V I' , NBMAIL, JNBN )
-      CALL WKVECT ( '&&ORVLMA.ORI2', 'V V I' , NBMAIL, JDNO )
-      CALL WKVECT ( '&&ORVLMA.ORI3', 'V V K8', NBMAIL, JNOM )
-      CALL WKVECT ( '&&ORVLMA.ORI4', 'V V L' , NBMAIL, JNOR )
+      CALL WKVECT('&&ORVLMA.ORI1','V V I',NBMAIL,LORI)
+      CALL WKVECT('&&ORVLMA.ORI2','V V I',NBMAIL,JORI)
+      CALL WKVECT('&&ORVLMA.ORI3','V V I',NBMAIL,NORI)
+      CALL WKVECT('&&ORVLMA.ORI4','V V I',NBMAIL,KORI)
+      CALL WKVECT('&&ORVLMA.ORI5','V V I',NBMAIL,KDEB)
 C
 C --- VERIFICATION DU TYPE DES MAILLES
 C --- (ON DOIT AVOIR DES MAILLES DE PEAU) :
@@ -105,62 +105,71 @@ C     -----------------------------------
       DIME1 = .FALSE.
       DIME2 = .FALSE.
       DO 10 IMA = 1, NBMAIL
-         NUMA = LISTMA(IMA)
-         CALL JENUNO ( JEXNUM(MAILMA,NUMA), NOMAIL )
-         ZK8(JNOM-1+IMA) = NOMAIL
-         ZI(JNBN-1+IMA) = ZI(P2+NUMA+1-1) - ZI(P2+NUMA-1)
-         ZI(JDNO-1+IMA) = ZI(P2+NUMA-1)
-         ZL(JNOR-1+IMA) = .FALSE.
+        ZI(LORI-1+IMA) = 0
+        NUMA = LISTMA(IMA)
+        ZI(NORI-1+IMA) = ZI(P2+NUMA)-ZI(P2-1+NUMA)
+        ZI(KORI-1+IMA) = ZI(P2+NUMA-1)
+        JDESM1 = ZI(P2+NUMA-1)
 C
 C ---   TYPE DE LA MAILLE COURANTE :
 C       --------------------------
-        NUTYMA = ZI(JTYMA+NUMA-1)
-        CALL JENUNO ( JEXNUM('&CATA.TM.NOMTM',NUTYMA), TPMAIL )
+        NUTYMA = ZI(IDTYMA+NUMA-1)
+        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
 C
-        IF (TPMAIL(1:4).EQ.'QUAD') THEN
-           DIME2 = .TRUE.
-        ELSEIF (TPMAIL(1:4).EQ.'TRIA') THEN
-           DIME2 = .TRUE.
-        ELSEIF (TPMAIL(1:3).EQ.'SEG') THEN
-           DIME1 = .TRUE.
+        IF (TYPEL(1:4).EQ.'QUAD') THEN
+          DIME2 = .TRUE.
+        ELSEIF (TYPEL(1:4).EQ.'TRIA') THEN
+          DIME2 = .TRUE.
+        ELSEIF (TYPEL(1:3).EQ.'SEG') THEN
+          DIME1 = .TRUE.
         ELSE
-           CALL UTMESS('F','ORVLMA','IMPOSSIBILITE, LA MAILLE '//
+          CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
+          CALL UTMESS('F','ORVLMA','IMPOSSIBILITE, LA MAILLE '//
      +                NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
      +                'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     +              //'EN 2D, ET ELLE EST DE TYPE : '//TPMAIL)
+     +              //'EN 2D, ET ELLE EST DE TYPE : '//TYPEL)
         ENDIF
         IF (DIME1.AND.DIME2) CALL UTMESS('F','ORVLMA',
      +  'IMPOSSIBILITE DE MELANGER DES "SEG" ET DES "TRIA" OU "QUAD" !')
+  10  CONTINUE
 C
- 10   CONTINUE
-C 
+C --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
+C     ---------------------------------------------
+      KDIM ='  '
+      IF ( DIME1 ) KDIM ='1D'
+      IF ( DIME2 ) KDIM ='2D'
+      NOMAVO = '&&ORVLMA.MAILLE_VOISINE '
+      CALL UTMAVO ( NOMA, KDIM, LISTMA, NBMAIL, 'V', NOMAVO )
+      CALL JEVEUO ( JEXATR(NOMAVO,'LONCUM'), 'L', P4 )
+      CALL JEVEUO ( NOMAVO, 'L', P3 )
 C 
 C --- PREMIER PASSAGE: METTRE LES MAILLES AYANT LE NOEUD DANS
 C     LA BONNE ORIENTATION
 C 
       NORIEG = 0
-      MAOK = 0
 C     
-      DO 100 IMA = 1 , NBMAIL
-         NOMAIL = ZK8(JNOM-1+IMA)
-         NBNMAI =  ZI(JNBN-1+IMA)
-         JDESM  =  ZI(JDNO-1+IMA)
+      NBMAOR = 0
+      DO 20 IMA = 1 , NBMAIL
+         NUMA = LISTMA(IMA)
+         NBNMAI =  ZI(NORI-1+IMA)
+         JDESM1  =  ZI(KORI-1+IMA)
 C
 C ------ VERIFICATION QUE LE NOEUD EST DANS LA MAILLE
          IF (DIME1)
-     +      ICO = IORIV1( ZI(P1+JDESM-1), NOEUD, VECT, ZR(JCOOR) )
+     +      ICO = IORIV1( ZI(P1+JDESM1-1), NOEUD, VECT, ZR(JCOOR) )
          IF (DIME2)
-     +      ICO = IORIV2( ZI(P1+JDESM-1),NBNMAI, NOEUD,VECT, ZR(JCOOR))
+     +      ICO = IORIV2( ZI(P1+JDESM1-1),NBNMAI, NOEUD,VECT, ZR(JCOOR))
 C
 C ------ LA MAILLE NE CONTIENT PAS LE NOEUD
          IF ( ICO .EQ. 0 ) THEN
 C
 C ------ LA MAILLE A ETE REORIENTEE
          ELSEIF ( ICO .LT. 0 ) THEN
-            IDEB = IMA
-            MAOK = MAOK + 1
-            ZL(JNOR-1+IMA) = .TRUE.
+            NBMAOR = NBMAOR + 1
+            ZI(KDEB+NBMAOR-1) = IMA
+            ZI(LORI-1+IMA) = 1
             IF ( NIV .EQ. 2 ) THEN
+               CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
                WRITE(IFM,*) 'LA MAILLE '//NOMAIL//
      +                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
             ENDIF
@@ -168,62 +177,84 @@ C ------ LA MAILLE A ETE REORIENTEE
 C
 C ------ LA MAILLE A LA BONNE ORIENTATION
          ELSE
-            IDEB = IMA
-            MAOK = MAOK + 1
-            ZL(JNOR-1+IMA) = .TRUE.
+            NBMAOR = NBMAOR + 1
+            ZI(KDEB+NBMAOR-1) = IMA
+            ZI(LORI-1+IMA) = 1
             IF ( NIV .EQ. 2 ) THEN
+               CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
                WRITE(IFM,*) 'LA MAILLE '//NOMAIL//
      +                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
             ENDIF
          ENDIF
 
- 100  CONTINUE
-C 
-C --- DEUXIEME PASSAGE: TOUTES LES NORMALES DANS LE MEME SENS
-C 
- 220  CONTINUE
-      DO 200 IMA = IDEB , NBMAIL
-         NOMAIL = ZK8(JNOM-1+IMA)
-         IF ( .NOT. ZL(JNOR-1+IMA) ) GOTO 200
-         NBNMA1 =  ZI(JNBN-1+IMA)
-         JDESM1 =  ZI(JDNO-1+IMA)
+ 20   CONTINUE
+      IF ( NBMAOR .EQ. 0 ) 
+     + CALL UTMESS('F','ORVLMA','LE VECTEUR N''ORIENTE AUCUNE MAILLE')
 C
-         NBMAT = ZI(P4+IMA+1-1) - ZI(P4+IMA-1)
-
-         DO 210 I = 1, NBMAT
-            IM2 = ZI(P3+ZI(P4+IMA-1)-1+I-1)
-            INDI = INDIIS ( LISTMA, IM2, 1, NBMAIL )
-            IF ( INDI .EQ. 0 ) GOTO 210
-            IF ( ZL(JNOR-1+INDI) ) GOTO 210
-            NBNMA2 =  ZI(JNBN-1+INDI)
-            JDESM2 =  ZI(JDNO-1+INDI)
+      DO 300 II = 1 , NBMAOR
+      LLISTE = 0
+      ILISTE = 0
+      ZI(JORI+LLISTE) = ZI(KDEB+II-1)
 C
-            IF (DIME1)
-     +         ICO = IORIM1 ( ZI(P1+JDESM1-1), 
-     +                        ZI(P1+JDESM2-1), REORIE )
-            IF (DIME2)
-     +         ICO = IORIM2 ( ZI(P1+JDESM1-1), NBNMA1,
-     +                        ZI(P1+JDESM2-1), NBNMA2, REORIE )
-C
-            IF ( ICO .EQ. 0 )  GOTO 210
-            IF ( ICO .LT. 0 )  NORIEG = NORIEG + 1
-            ZL(JNOR-1+INDI) = .TRUE.
-            MAOK = MAOK + 1
-C
- 210     CONTINUE
+C --- ON ORIENTE TOUTES LES MAILLES DU CONNEXE
 C
  200  CONTINUE
 C
-      IDEB = 1
-      IF ( MAOK .LT. NBMAIL ) GOTO 220
+      IM1 = ZI(JORI+ILISTE)
+      JDESM1 =  ZI(KORI-1+IM1)
+C --- ON ESSAYE D'ORIENTER LES MAILLES VOISINES
+      NBMAVO = ZI(P4+IM1)-ZI(P4-1+IM1)
+      DO 210 IM3 = 1, NBMAVO
+         INDI = ZI(P3+ZI(P4+IM1-1)-1+IM3-1)
+         IM2 = INDIIS ( LISTMA, INDI, 1, NBMAIL )
+         IF ( IM2 .EQ. 0 ) GOTO 210
+         NUMAIL = LISTMA(IM2)
+         IF ( PASORI(IM2) ) THEN
+            JDESM2 = ZI(KORI-1+IM2)
+C           VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
+            IF (DIME1) ICO = IORIM1 ( ZI(P1+JDESM1-1), 
+     +                                  ZI(P1+JDESM2-1), REORIE )
+            IF (DIME2)
+     +         ICO = IORIM2 ( ZI(P1+JDESM1-1),ZI(NORI-1+IM1),
+     +                        ZI(P1+JDESM2-1),ZI(NORI-1+IM2), REORIE )
+C           SI MAILLES CONNEXES
+            IF (ICO.NE.0) THEN
+               ZI(LORI-1+IM2) = 1
+               LLISTE = LLISTE + 1
+               ZI(JORI+LLISTE) = IM2
+               IF ( REORIE .AND. NIV. EQ. 2 ) THEN
+                  CALL JENUNO(JEXNUM(MAILMA,NUMAIL),NOMAIL)
+                  IF (ICO.LT.0) THEN
+                  WRITE (IFM,*) 'LA MAILLE ',NOMAIL,' A ETE REORIENTEE'
+                  ELSE
+                    WRITE (IFM,*) 'LA MAILLE ',NOMAIL,' EST ORIENTEE'
+                  ENDIF
+               ENDIF
+            ENDIF
+C              
+C           SI ORIENTATIONS CONTRAIRES
+            IF (ICO.LT.0)  NORIEG = NORIEG + 1
+C
+         ENDIF
+ 210  CONTINUE
+      ILISTE = ILISTE + 1
+      IF (ILISTE.LE.LLISTE) GOTO 200
+ 300  CONTINUE
+C
+C --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
+C
+      DO 100 IMA = 1 , NBMAIL
+         IF ( PASORI(IMA) ) CALL UTMESS('F','ORVLMA','1 SEUL CONNEXE')
+ 100  CONTINUE
 C
       NORIEN = NORIEN + NORIEG
 C
-      CALL JEDETR ( '&&ORVLMA.ORI1' )
-      CALL JEDETR ( '&&ORVLMA.ORI2' )
-      CALL JEDETR ( '&&ORVLMA.ORI3' )
-      CALL JEDETR ( '&&ORVLMA.ORI4' )
-      CALL JEDETR ( NOMAVO )
+      CALL JEDETR('&&ORVLMA.ORI1')
+      CALL JEDETR('&&ORVLMA.ORI2')
+      CALL JEDETR('&&ORVLMA.ORI3')
+      CALL JEDETR('&&ORVLMA.ORI4')
+      CALL JEDETR('&&ORVLMA.ORI5')
+      CALL JEDETR(NOMAVO)
 C
       CALL JEDEMA()
       END

@@ -7,7 +7,7 @@
      
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
       INTEGER      ITEMAX, ITERHO, NEQ, ACT, OPT, LICOPT
       INTEGER      JRESI,JDDEPL, JDEPDE, JDEPDT, JFEXT, JDEPM
       INTEGER      JDEPPT, JDEPP
-      REAL*8       RHOMIN, RHOMAX, PARMUL, RATCVG, FCVG
+      REAL*8       RHOMIN, RHOMAX, RATCVG, FCVG, REXM, REXP
       REAL*8       RHOM, RHOOPT, RHO, RHOTMP, F0, FM, F, FOPT
       REAL*8       R8MAEM, R8PREM
       CHARACTER*8  K8BID
@@ -120,9 +120,10 @@ C-----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
-      RHOMIN = 1.D-2
-      RHOMAX = 10.D0
-      PARMUL = 3.D0
+      RHOMIN = PARMET(14)
+      RHOMAX = PARMET(15)
+      REXM   = -PARMET(16)
+      REXP   = PARMET(16)
 
       CALL DESAGG(VALMOI, DEPMOI, SIGMOI, K24BID, COMMOI,
      &            K24BID, K24BID, K24BID, K24BID)
@@ -232,14 +233,13 @@ C -- CALCUL DE RHO(N+1) PAR METHODE DE SECANTE AVEC BORNES
         IF (ABS(F-FM).GT.R8PREM()) THEN
           RHO  = (F*RHOM-FM*RHO)/(F-FM)
          IF (RHO.LT.RHOMIN) RHO = RHOMIN
-         IF (RHO.GT.RHOMAX) THEN
-           RHO    = RHOMAX
-           RHOMAX = RHOMAX * PARMUL
-         END IF
+         IF (RHO.GT.RHOMAX) RHO = RHOMAX
+         IF (RHO.LT.0.D0.AND.RHO.GE.REXM) RHO=REXM
+         IF (RHO.GE.0.D0.AND.RHO.LE.REXP) RHO=REXP
         ELSE IF (F*(RHO-RHOM)*(F-FM) .LE. 0.D0) THEN
           RHO = RHOMAX
-         ELSE
-           RHO = RHOMIN
+        ELSE
+          RHO = RHOMIN
         END IF
         RHOM   = RHOTMP
         FM     = F

@@ -1,7 +1,7 @@
       SUBROUTINE EPTHMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,TEMPE,TREF,
      +                   HYDR,SECH,SREF,INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,26 +95,20 @@ C          -------------------------------------
      +                                     EPSTH(I)
   40      CONTINUE
 C
-          IF (OPTION(1:4).EQ.'EPMH') THEN
-C  --        CALCUL DES DEFORMATIONS DE RETRAIT AU POINT
-C  --        D'INTEGRATION COURANT
-C  --    !!!    PAS D'EXISTENCE OFFICIELLE DE CETTE OPTION
-C            ---------------------
-             OPTIO2 = 'EPMH_' // OPTION(6:9) // '_HYDR'
-             CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF,
-     &                   INSTAN,MATER, OPTIO2, EPSHY)
-             OPTIO3 = 'EPMH_' // OPTION(6:9) // '_SECH'
-             CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, 
-     &                   INSTAN,MATER, OPTIO3, EPSSE)
+          OPTIO2 = OPTION(1:9) // '_HYDR'
+          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF,
+     &                INSTAN,MATER, OPTIO2, EPSHY)
+          OPTIO3 = OPTION(1:9) // '_SECH'
+          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, 
+     &                INSTAN,MATER, OPTIO3, EPSSE)
 C
-C  --        DEFORMATIONS DE RETRAIT SUR L'ELEMENT
-C            -------------------------------------
-            DO 50 I = 1, NBSIG
-                  EPSITH(I+NBSIG*(IGAU-1)) = EPSITH(I+NBSIG*(IGAU-1))
-     +                                     + EPSHY(I) + EPSSE(I)
-  50        CONTINUE
-          ENDIF
-C
+C  --     DEFORMATIONS DE RETRAIT SUR L'ELEMENT
+C         -------------------------------------
+          DO 50 I = 1, NBSIG
+            EPSITH(I+NBSIG*(IGAU-1)) = EPSITH(I+NBSIG*(IGAU-1))
+     +                                + EPSHY(I) + EPSSE(I)
+  50      CONTINUE
+
   20  CONTINUE
 C
 C.============================ FIN DE LA ROUTINE ======================

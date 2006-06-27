@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,9 +55,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,NPG,JVAL,IPOIDS,IVF,IDFDE,
      &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,IER,
-     &        ITEMPS,IDEFO,IMATE,IHYDRE,ISECHE,IRET,JTAB(3)
+     &        ITEMPS,IDEFO,IMATE,ISECHE,IRET,JTAB(3),ISREF
       REAL*8 EPSM(162),EPSNO(162),REPERE(7),TEMPE(27)
-      REAL*8 HYDR(27),SECH(27),RBID
+      REAL*8 SECH(27),SREF
       REAL*8 NHARM,INSTAN,ZERO,TREF,S
       CHARACTER*8 MODELI
 C DEB ------------------------------------------------------------------
@@ -115,13 +115,6 @@ C      --------------------------------------------------
    40   CONTINUE
       END IF
 
-C--- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
-C    -----------------------------------------------------
-      DO 50 I = 1,NPG
-        CALL RCVARC(' ','HYDR','+','RIGI',I,1,HYDR(I),IER)
-        IF (IER.EQ.1) HYDR(I)=0.D0
-   50 CONTINUE
-
 C--- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 C    -----------------------------------------------------
       CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
@@ -130,6 +123,16 @@ C    -----------------------------------------------------
           SECH(I) = ZR(ISECHE+I-1)
    60   CONTINUE
       END IF
+
+
+C ---RECUPERATION DU SECHAGE DE REFERENCE :
+C     --------------------------------------------------
+      CALL TECACH('NNN','PSECREF',1,ISREF,IRET)
+      IF (IRET.EQ.0) THEN
+        SREF = ZR(ISREF)
+      ELSE
+        SREF = 0.D0
+      ENDIF
 
 C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
 C      -------------------------------------------
@@ -156,9 +159,9 @@ C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
       CALL TECACH('NNN','PMATERC',1,IMATE,IRET)
-      CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,
+      CALL EPSVMC('RIGI',MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,
      +            IDFDE,ZR(IGEOM), ZR(IDEPL),
-     +            TEMPE, TREF, HYDR, SECH, RBID, INSTAN,
+     +            TEMPE, TREF, SECH, SREF, INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTION, EPSM)
 
       IF (OPTION(6:9).EQ.'ELGA') THEN

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 27/06/2006   AUTEUR THOMASSO D.THOMASSON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,31 +16,57 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE D6BHHAM A.M.DONORE
+# RESPONSABLE thomasso D.THOMASSON
 #
-IMPR_OAR =PROC(nom="IMPR_OAR",op= 40,
+from Macro.impr_oar_ops import impr_oar_ops
+IMPR_OAR =MACRO(nom="IMPR_OAR",op= impr_oar_ops, sd_prod=None,
                fr="Impression au format OAR",
                UIinfo={"groupes":("Impression",)},
-         CARA_ELEM       =SIMP(statut='f',typ=cara_elem                          ),
-         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster                        ),
-         MODELE          =SIMP(statut='o',typ=modele_sdaster                          ),
-         MAILLE          =SIMP(statut='o',typ=ma  ,validators=NoRepeat(),max=2   ),
-         NOEUD           =SIMP(statut='o',typ=no  ,validators=NoRepeat()         ),
-
-         CHARGE           =FACT(statut='o',max='**',
-
-              NUM_CHAR        =SIMP(statut='o',typ='I'),
-              TEMP_NOEUD      =SIMP(statut='f',typ='R',defaut=20.),
-              TYPE            =SIMP(statut='f',typ='TXM',defaut="DILA",
-                                 into=("POIDS","DILA","SEISME","DEPL","EFFO","STRATIF","CONDITIONNEL","COMBINAISON") ),
-              NATURE          =SIMP(statut='f',typ='TXM',defaut="PRIMAIRE",
-                                 into=("PRIMAIRE","SECONDAIRE","TOTAL") ),
-              SIGNE           =SIMP(statut='f',typ='TXM',defaut="S",
-                                 into=("S","NS") ),
-              RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),# CO() sd a creer !!!
-           ),
-
-
-           UNITE           =SIMP(statut='f',typ='I',defaut=38),  
-           INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-) ;
+          regles=(UN_PARMI('COMPOSANT', 'MEF', 'TUYAUTERIE'),),
+   COMPOSANT = FACT(statut='f', max=1,
+      regles = (AU_MOINS_UN('RESU_MECA','RESU_THER')),
+      DIAMETRE = SIMP(statut='o', typ='R'),
+      ORIGINE  = SIMP(statut='o', typ='TXM', defaut='INTERNE', 
+         into=('INTERNE', 'EXTERNE')),
+      COEF_U = SIMP(statut='f', typ='R', defaut=1.0),
+      ANGLE_C=SIMP(statut='o', typ='R', defaut=0.0),
+      REVET=SIMP(statut='f', typ='TXM', defaut='NON', into=('OUI', 'NON')),
+      RESU_MECA = FACT(statut='f', max='**',
+         NUM_CHAR=SIMP(statut='o', typ='I'),
+         TYPE=SIMP(statut='o', typ='TXM', defaut='FX', into=('FX', 'FY', 'FZ', 'MX', 'MY', 'MZ', 'PRE')),
+         TABLE=SIMP(statut='o', typ=table_sdaster),
+         TABLE_S=SIMP(statut='f', typ=table_sdaster)),
+      RESU_THER = FACT(statut='f', max='**',
+         NUM_TRAN=SIMP(statut='o', typ='I'),
+         TABLE_T=SIMP(statut='o', typ=table_sdaster),
+         TABLE_TEMP=SIMP(statut='o', typ=table_sdaster),
+         TABLE_S=SIMP(statut='f', typ=table_sdaster),
+         TABLE_ST=SIMP(statut='f', typ=table_sdaster)),
+         ),
+   MEF = FACT(statut='f', max=1,
+      regles = (AU_MOINS_UN('RESU_MECA','RESU_THER')),
+      DIAMETRE = SIMP(statut='o', typ='R'),
+      ORIGINE  = SIMP(statut='o', typ='TXM', defaut='INTERNE', 
+         into=('INTERNE', 'EXTERNE')),
+      COEF_U = SIMP(statut='f', typ='R', defaut=1.0),
+      RESU_MECA = FACT(statut='f', max='**',
+         AZI=SIMP(statut='o', typ='R'),
+         TABLE_T=SIMP(statut='o', typ=table_sdaster),
+         TABLE_F=SIMP(statut='o', typ=table_sdaster),
+         TABLE_P=SIMP(statut='o', typ=table_sdaster),
+         TABLE_CA=SIMP(statut='o', typ=table_sdaster)),
+      RESU_THER=FACT(statut='f', max='**',
+         AZI=SIMP(statut='o', typ='R'),
+         NUM_CHAR=SIMP(statut='o', typ='I'),
+         TABLE_T=SIMP(statut='o', typ=table_sdaster),
+         TABLE_TI=SIMP(statut='o', typ=table_sdaster)),
+      ),
+   TUYAUTERIE =  FACT(statut='f', max=1,
+         RESU_MECA=FACT(statut='o', max='**',
+            NUM_CHAR=SIMP(statut='o', typ='I'),
+            TABLE=SIMP(statut='o', typ=table_sdaster),
+            MAILLAGE=SIMP(statut='o', typ=maillage_sdaster)),
+         ),
+   UNITE = SIMP(statut='f',typ='I',defaut=38),
+   AJOUT = SIMP(statut='f', typ='TXM', defaut='NON', into=('OUI', 'NON')),
+   );

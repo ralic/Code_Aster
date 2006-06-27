@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCV(CHAR,MOTFAC,IREAD,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,8 +68,8 @@ C
       PARAMETER    (ZCONV=4)
       INTEGER      NOC
       CHARACTER*16 ISTO
-      CHARACTER*24 CHAMCO,METHCO,CONVCO,TOLECO
-      INTEGER      JCHAM,JMETH,JCONV,JTOLE
+      CHARACTER*24 METHCO,CONVCO,TOLECO
+      INTEGER      JMETH,JCONV,JTOLE
       REAL*8       JEU
 C
 C ----------------------------------------------------------------------
@@ -84,12 +84,10 @@ C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
 
-      CHAMCO = CHAR(1:8)//'.CONTACT.CHAMCO'
       METHCO = CHAR(1:8)//'.CONTACT.METHCO'
       TOLECO = CHAR(1:8)//'.CONTACT.TOLECO'
       CONVCO = CHAR(1:8)//'.CONTACT.CONVCO'
 
-      CALL JEVEUO(CHAMCO,'E',JCHAM)
       CALL JEVEUO(METHCO,'E',JMETH)
       CALL JEVEUO(TOLECO,'E',JTOLE)
       CALL JEVEUO(CONVCO,'E',JCONV)
@@ -103,10 +101,6 @@ C ======================================================================
 
       CALL GETVR8(MOTFAC,'TOLE_INTERP',IREAD,1,1,JEU,NOC)
       ZR(JTOLE+ZTOLE*(IWRITE-1)+3)  = JEU
-C
-C --- LA GRANDEUR UTILISEE EST FORCEMENT LE DEPLACEMENT
-C
-      ZI(JCHAM+IWRITE-1) = 1
 C
 C --- IL N'Y A JAMAIS DE REACTUALISATION
 C

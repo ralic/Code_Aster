@@ -2,7 +2,7 @@
      &                  INCOCA,INST,DECOL,NFLIP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C   REACTUALISATION DE LA GEOMETRIE AVEC DEPPLU
 C   FLIP-FLOP: CREATION BASE VOLATILE FLIFLO
 
       NBNO=0
-      NFLIP(3)=15
+      NFLIP(3)=20
       DO 15 IMA=1,NTMA
         NBNOMA= ZI(JMAESC+3*(IMA-1)+3)
         NBNO=NBNO+NBNOMA
@@ -155,35 +155,35 @@ C
         IZONE = ZI(JMAESC+3*(IMA-1)+2)
         NBN   = ZI(JMAESC+3* (IMA-1)+3)
         IFORM = ZI(JECPD +6*(IZONE-1)+6)
-        INDCOM = NINT(ZR(JCMCF+10*(IZONE-1)+7))     
-        ASP = ZR(JCMCF+10*(IZONE-1)+8) 
+        INDCOM = NINT(ZR(JCMCF+12*(IZONE-1)+7))     
+        ASP = ZR(JCMCF+12*(IZONE-1)+8) 
         DO 20 INI = 1,NBN
 
 C         STATUT INITIAL DU PC
-         STAINI = NINT(ZR(JTABF+22*NTPC+22* (INI-1)+13))
+         STAINI = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13))
          
 C     CALCUL DE LA GEOMETRIE ACTUALISEE DU PC : GEOME()
-            XPG=ZR(JTABF+22*NTPC+22* (INI-1)+3)
-            YPG=ZR(JTABF+22*NTPC+22* (INI-1)+12)
+            XPG=ZR(JTABF+28*NTPC+28* (INI-1)+3)
+            YPG=ZR(JTABF+28*NTPC+28* (INI-1)+12)
 
-            XA = NINT(ZR(JTABF+22*NTPC+22* (INI-1)+21))
-            XS = NINT(ZR(JTABF+22*NTPC+22* (INI-1)+13)) 
+            XA = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+21))
+            XS = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13)) 
             JEU = ZR(JJSUP+IZONE-1)
             CALL COPCOS(NOMA,POSMA,XPG,YPG,GEOACT,GEOME,DEFICO)
 
-            XI = ZR(JTABF+22*NTPC+22* (INI-1)+4)
-            YI = ZR(JTABF+22*NTPC+22* (INI-1)+5)
-            POSMM=ZR(JTABF+22*NTPC+22* (INI-1)+2)
+            XI = ZR(JTABF+28*NTPC+28* (INI-1)+4)
+            YI = ZR(JTABF+28*NTPC+28* (INI-1)+5)
+            POSMM=ZR(JTABF+28*NTPC+28* (INI-1)+2)
 
             CALL MCOPCO(NOMA,POSMM,XI,YI,GEOACT,GEOMM,DEFICO)
 
 C     CALCUL DE LA NORMALE
-            TAU1(1) = ZR(JTABF+22*NTPC+22* (INI-1)+6)
-            TAU1(2) = ZR(JTABF+22*NTPC+22* (INI-1)+7)
-            TAU1(3) = ZR(JTABF+22*NTPC+22* (INI-1)+8)
-            TAU2(1) = ZR(JTABF+22*NTPC+22* (INI-1)+9)
-            TAU2(2) = ZR(JTABF+22*NTPC+22* (INI-1)+10)
-            TAU2(3) = ZR(JTABF+22*NTPC+22* (INI-1)+11)
+            TAU1(1) = ZR(JTABF+28*NTPC+28* (INI-1)+6)
+            TAU1(2) = ZR(JTABF+28*NTPC+28* (INI-1)+7)
+            TAU1(3) = ZR(JTABF+28*NTPC+28* (INI-1)+8)
+            TAU2(1) = ZR(JTABF+28*NTPC+28* (INI-1)+9)
+            TAU2(2) = ZR(JTABF+28*NTPC+28* (INI-1)+10)
+            TAU2(3) = ZR(JTABF+28*NTPC+28* (INI-1)+11)
 
             IF (NDIM.EQ.2) THEN
               VNORM(1) = -TAU1(2)
@@ -207,8 +207,8 @@ C    CALCUL DE JEU DU PC
    10       CONTINUE
             ZR(JJEU-1+NTPC+INI)=-JEU
             
-            IF(ZR(JTABF+22*NTPC+22*(INI-1)+22) .NE. 0.D0) THEN
-              ZR(JTABF+22*NTPC+22*(INI-1)+13) = 0.D0
+            IF(ZR(JTABF+28*NTPC+28*(INI-1)+22) .NE. 0.D0) THEN
+              ZR(JTABF+28*NTPC+28*(INI-1)+13) = 0.D0
               GOTO 20
             END IF
             
@@ -218,21 +218,21 @@ C SI LE PC N'EST NI CONTACTANT (XS=0) NI NE TOUCHE LES ASPERITES (XA=0)
 
               IF (JEU .LE. R8PREM()) THEN
 C                TOUCHE LES ASPERITES (XA=1) SANS ETRE CONATCTANT (XS=0)
-                ZR(JTABF+22*NTPC+22* (INI-1)+21) = 1.D00
-                ZR(JTABF+22*NTPC+22* (INI-1)+13) = 0.D00
+                ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
+                ZR(JTABF+28*NTPC+28* (INI-1)+13) = 0.D00
                 
 C                  LA ZONE DE CONTACT EST UNE GLISSIERE:
 C                  ON IMPOSE LE CONTACT (XS=1) ET ON REBOUCLE (INCOCA=0)
                 IF(ZI(JMETH+8* (IZONE-1)+6) .EQ. 8) THEN
-                  ZR(JTABF+22*NTPC+22* (INI-1)+13) = 1.D0
+                  ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D0
                 ENDIF
                 INCOCA=0
             
               ELSE IF (JEU .GT. R8PREM()) THEN
 C                TOUCHE LES ASPERITES (XA=1) ET EST CONATCTANT (XS=1):
 C                ON REBOUCLE SAUF SI ON EST EN GLISSIERE
-                ZR(JTABF+22*NTPC+22* (INI-1)+21) = 1.D00
-                ZR(JTABF+22*NTPC+22* (INI-1)+13) = 1.D00
+                ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
+                ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
                 INCOCA = 0
                 IF (ZI(JMETH+8* (IZONE-1)+6).EQ.8) INCOCA=1
               END IF
@@ -245,7 +245,7 @@ C LE PC N'EST PAS CONTACTANT (XS=0) MAIS TOUCHE LES ASPERITES (XA=1)
 C             LA ZONE DE CONTACT EST UNE GLISSIERE:
 C             ON IMPOSE LE CONTACT (XS=1) ET ON REBOUCLE (INCOCA=0)
             IF(ZI(JMETH+8* (IZONE-1)+6) .EQ. 8) THEN
-              ZR(JTABF+22*NTPC+22* (INI-1)+13) = 1.D0
+              ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D0
               INCOCA=0
             ENDIF
             
@@ -270,21 +270,21 @@ C               CALCUL DU GAP DES VITESSES NORMALES (FORMUL. EN VITESSE)
      &                    (GEOMM(K)-GEOLDM(K)) ) * VNORM(K)/DT
    11             CONTINUE
                 IF (JEUVIT .GT. 0.D00) THEN
-                  ZR(JTABF+22*NTPC+22* (INI-1)+13) = 1.D00
+                  ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
                   INCOCA = 0
                 END IF
               ELSE
 C                  ON REBOUCLE (INCOCA=0) ....
-                ZR(JTABF+22*NTPC+22* (INI-1)+13) = 1.D00
-                ZR(JTABF+22*NTPC+22* (INI-1)+21) = 1.D00
+                ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
+                ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
                 INCOCA = 0
               END IF
 C               .... SAUF SI ON EST EN GLISSIERE
               IF (ZI(JMETH+8* (IZONE-1)+6).EQ.8) INCOCA=1
              
             ELSEIF (JEU.LT.ASP .AND. INDCOM.EQ.1) THEN
-               ZR(JTABF+22*NTPC+22* (INI-1)+13) = 0.D00
-               ZR(JTABF+22*NTPC+22* (INI-1)+21) = 0.D00 
+               ZR(JTABF+28*NTPC+28* (INI-1)+13) = 0.D00
+               ZR(JTABF+28*NTPC+28* (INI-1)+21) = 0.D00 
             ENDIF           
 
 C        PC CONTACTANT
@@ -296,7 +296,7 @@ C           ON CALCULE LA REACTION LAMBDA
           CALL CALLAM(NOMA,POSMA,DEPPLU,XPG,YPG,LAMBDA,GEOACT,DEFICO)
           IF ((LAMBDA.GT.0) .AND. (ZI(JMETH+8* (IZONE-1)+6).NE.8)) THEN
             INCOCA = 0
-            ZR(JTABF+22*NTPC+22* (INI-1)+13) = 0.D00
+            ZR(JTABF+28*NTPC+28* (INI-1)+13) = 0.D00
           END IF
         ELSE
           CALL UTMESS('F','MMMBCA','ETAT DE CONTACT INCONNU')
@@ -305,7 +305,7 @@ C           ON CALCULE LA REACTION LAMBDA
         IF(NFLIP(3) .LT. 0) GOTO 20
         
 C        STATUT FINAL DU PC: Y-A-T-IL EU CHANGEMENT DE STATUT?
-        STAEND = NINT(ZR(JTABF+22*NTPC+22* (INI-1)+13))
+        STAEND = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13))
         IF (STAEND .NE. STAINI) THEN
 C           SI OUI, INCREMENTATION DE L'INDICATEUR DE FLIP-FLOP
           ZI(JFLIP+(IMA-1)*NBN+INI-1) = ZI(JFLIP+(IMA-1)*NBN+INI-1) + 1
@@ -314,7 +314,7 @@ C           SI OUI, INCREMENTATION DE L'INDICATEUR DE FLIP-FLOP
         IF (ZI(JFLIP+(IMA-1)*NBN+INI-1) .GT. NFLIP(1)) THEN
           NFLIP(1) = ZI(JFLIP+(IMA-1)*NBN+INI-1)
           
-          NUMAES = ZR(JTABF+22*(NTPC+INI-1)+1)
+          NUMAES = ZR(JTABF+28*(NTPC+INI-1)+1)
           NFLIP(2)=ZI(JCONEX+ZI(JLONG-1+NUMAES)+INI-2)
         END IF
         

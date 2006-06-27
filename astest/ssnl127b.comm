@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,7 @@ REST=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=3,),
                    RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
                                     RHO_MIN=1e-06,
+                                    RHO_EXCL=1e-8,
                                     RHO_MAX=10.0,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),
@@ -209,6 +210,7 @@ REST2=STAT_NON_LINE(MODELE=MO,
                               REAC_ITER=3,),
                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
                                      RHO_MIN=1e-06,
+                                     RHO_EXCL=1e-8,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
@@ -284,6 +286,7 @@ REST3=STAT_NON_LINE(MODELE=MO,
                               REAC_ITER=3,),
                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
                                      RHO_MIN=1e-06,
+                                     RHO_EXCL=1e-8,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,

@@ -2,7 +2,7 @@
      &           RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,8 +149,8 @@ C
       INTEGER      JAPJFY,JAPJFX,JAPMEM
       CHARACTER*24 NDIMCO,CONTNO,CONTMA,APCOFR,FROTE,PENAL,COMAFO
       INTEGER      JDIM,JNOCO,JMACO,JAPCOF,IFRO,IPENA,ICOMA
-      CHARACTER*24 CONVCO,APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU
-      INTEGER      JCONV,JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JCMU
+      CHARACTER*24 CONVCO,APPARI,APPOIN,APCOEF,APJEU,APDDL
+      INTEGER      JCONV,JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL
 C
 C ======================================================================
 C
@@ -194,7 +194,6 @@ C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
       MU     = RESOCO(1:14)//'.MU'
-      COEFMU = RESOCO(1:14)//'.COEFMU'
       ATMU   = RESOCO(1:14)//'.ATMU'
       AFMU   = RESOCO(1:14)//'.AFMU'
       DELT0  = RESOCO(1:14)//'.DEL0'
@@ -227,7 +226,6 @@ C ======================================================================
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
       CALL JEVEUO(MU,'E',JMU)
-      CALL JEVEUO(COEFMU,'L',JCMU)
       CALL JEVEUO(ATMU,'E',JATMU)
       CALL JEVEUO(AFMU,'E',JAFMU)
       CALL JEVEUO(DELT0,'E',JDELT0)

@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 31/01/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF reca_algo Macro  DATE 26/06/2006   AUTEUR PABHHHH N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -243,7 +243,11 @@ def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
 
 def test_convergence(gradient_init,erreur,A,s):
    gradient = calcul_gradient(A,erreur)+s
-   epsilon = Numeric.dot(gradient,gradient)/Numeric.dot(gradient_init,gradient_init)
+   try:
+      epsilon = Numeric.dot(gradient,gradient)/Numeric.dot(gradient_init,gradient_init)
+   except:
+       UTMESS('F', "MACR_RECAL", "Erreur dans le test de convergence de MACR_RECAL")
+       return 
    epsilon = epsilon**0.5
    return epsilon
 

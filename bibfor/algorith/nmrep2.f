@@ -1,7 +1,7 @@
       SUBROUTINE NMREP2(N,R,G,GU,RMIN,RMAX,REXM,REXP,POSOPT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,9 +41,8 @@ C ----------------------------------------------------------------------
       INTEGER I,C,J,POS
       REAL*8 A,B,DET,V,D,X,PENTE,DG,R8GAEM,X1,Y1,X2,Y2,X3,Y3
       REAL*8 APPUIG,APPUID,VALG,VALD,VAL,VALOPT,XOPT
-      REAL*8 DIFF,EXTENS,IMPLOS
-
-      PARAMETER (DIFF=1.D-8,EXTENS=2.D0,IMPLOS=0.8D0)
+      REAL*8 DIFF
+      PARAMETER (DIFF=1.D-8)
 
 
       VALOPT = R8GAEM()
@@ -133,22 +132,18 @@ C ----------------------------------------------------------------------
 C      PROJECTION SUR L'INTERVALLE DE RECHERCHE
         IF (X.LT.RMIN) THEN
           X = RMIN
-          RMIN = RMIN*EXTENS
 C          write (6,*) '2a. X= ',X,' ; RMIN = ',RMIN 
         END IF
         IF (X.GT.RMAX) THEN
           X = RMAX
-          RMAX = RMAX*EXTENS
 C          write (6,*) '2b. X= ',X,' ; RMAX = ',RMAX 
         END IF
         IF (X.LT.0 .AND. X.GE.REXM) THEN
           X = REXM
-          REXM = REXM*IMPLOS
 C          write (6,*) '3a. X= ',X,' ; REXM = ',REXM
         END IF
         IF (X.GE.0 .AND. X.LE.REXP) THEN
           X = REXP
-          REXP = REXP*IMPLOS
 C          write (6,*) '3b. X= ',X,' ; REXM = ',REXM
         END IF
 C      X EST-IL CONFONDU AVEC UN POINT DEJA CALCULE

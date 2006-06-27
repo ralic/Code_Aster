@@ -3,7 +3,7 @@
      +     ADRESS,LFRONT,NBLIGN,LGSN,DEBFAC,DEBFSN,CHAINE,
      +     PLACE,NBASS,DELG,LGIND,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -207,7 +207,7 @@ C     VERIFICATION DE LA LONGUEUR DE GLOBAL
 C-------------------------------------------------------------
             IF ((ADRESS(SNI)+K).GT.LGIND) THEN
                IER = LGIND*2
-               IF (NIV.GE.1) THEN
+               IF (NIV.GE.2) THEN
                  WRITE(IFM,*)
      &             'LONGUEUR DE GLOBAL PEUT ETRE INSUFFISANTE '
                  WRITE(IFM,*)'LONGUEUR ALLOUEE :',LGIND
@@ -253,7 +253,7 @@ C     MODIFS POUR DGEMV
  310  CONTINUE
       DEBFAC(NBND+1)=DECAL+1
       DEBFSN(NBSN+1) = DEBFAC(NBND+1)
-      IF (NIV.GE.1) THEN
+      IF (NIV.GE.2) THEN
         WRITE(IFM,*)'   --- LONGUEUR DE LA MATRICE FACTORISEE ',DECAL
       ENDIF
 C STOCKAGE INFO SI FETI

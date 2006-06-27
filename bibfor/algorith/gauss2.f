@@ -1,6 +1,6 @@
       SUBROUTINE GAUSS2(ALIAS,TYPI,XPG,YPG,NORD,HPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1765,13 +1765,13 @@ C SYMPSON
             YPG = 0.D0
             HPG = 1.D0 / 3.D0
           ELSEIF (NORD .EQ. 2) THEN
-            XPG = 0.D0
-            YPG = 0.D0
-            HPG = 4.D0 / 3.D0
-          ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
             YPG = 0.D0
             HPG = 1.D0 / 3.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 4.D0 / 3.D0
           ELSE
             CALL JXABOR
           END IF

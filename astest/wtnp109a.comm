@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,13 +115,22 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                                               ),
                       )
 
+#CHARZ=AFFE_CHAR_MECA(MODELE=MODELE,
+#                     CONTACT=_F(APPARIEMENT='NON',
+#                               GROUP_MA_ESCL=('GM14','GM16'),
+#                                SANS_GROUP_NO=('MIL_GM14','MIL_GM16',),
+#                                NOM_CHAM='PRE1',
+#                                COEF_IMPO=3.0,
+#                                COEF_MULT_ESCL=1.0,),);
+###
+
 CHAR1=AFFE_CHAR_MECA(MODELE=MODELE,
-                     CONTACT=_F(APPARIEMENT='NON',
-                               GROUP_MA_ESCL=('GM14','GM16'),
+                     LIAISON_UNILATER=_F(
+                               GROUP_MA=('GM14','GM16'),
                                 SANS_GROUP_NO=('MIL_GM14','MIL_GM16',),
-                                NOM_CHAM='PRE1',
+                                NOM_CMP='PRE1',
                                 COEF_IMPO=3.0,
-                                COEF_MULT_ESCL=1.0,),);
+                                COEF_MULT=1.0,),);
 
 CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
                       PESANTEUR=(9.81,0.0,-1.0,0.0,),);

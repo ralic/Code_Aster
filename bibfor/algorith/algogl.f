@@ -2,7 +2,7 @@
      &                  RESU,DEPTOT,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -128,8 +128,8 @@ C
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       CHARACTER*24 MACONT
-      CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU,NOZOCO
-      INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JCMU,JZOCO
+      CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,NOZOCO
+      INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JZOCO
       CHARACTER*24 CONTNO,CONTMA,CONVCO,TOLECO,APMEMO
       INTEGER      JNOCO,JMACO,JCONV,JTOLE,JAPMEM
       CHARACTER*19 LIAC,MU,DELT0,DELTA,CM1A,COCO,LIOT,ATMU
@@ -176,7 +176,6 @@ C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
       MU     = RESOCO(1:14)//'.MU'
-      COEFMU = RESOCO(1:14)//'.COEFMU'
       DELT0  = RESOCO(1:14)//'.DEL0'
       DELTA  = RESOCO(1:14)//'.DELT'
       CM1A   = RESOCO(1:14)//'.CM1A'
@@ -201,7 +200,6 @@ C ======================================================================
       CALL JEVEUO(LIOT,'E',JLIOT)
       CALL JEVEUO(ATMU,'E',JATMU)
       CALL JEVEUO(MU,'E',JMU)
-      CALL JEVEUO(COEFMU,'L',JCMU)
       CALL JEVEUO(DELT0,'E',JDELT0)
       CALL JEVEUO(DELTA,'E',JDELTA)
       CALL JEVEUO(TOLECO,'L',JTOLE)
@@ -600,9 +598,6 @@ C ======================================================================
         IF (NBLIAC.EQ.0) THEN
           GO TO 160
         ENDIF
-        DO 130 ILIAC = 1,NBLIAC
-          ZR(JMU+ILIAC-1) = ZR(JCMU+ILIAC-1)*ZR(JMU+ILIAC-1)
-  130   CONTINUE
         GO TO 160
       END IF
 C ======================================================================

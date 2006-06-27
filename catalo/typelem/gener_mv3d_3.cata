@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -225,16 +225,20 @@ OPTION__
                                      ZVARIPG  PVARIGR
                               OUT__  EDEFONO  PDEFOPL
     EPME_ELGA_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                                     NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     CTEREFE  PSECREF  NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
     EPME_ELNO_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                                     NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     CTEREFE  PSECREF  NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
     EPMG_ELGA_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                                     NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     CTEREFE  PSECREF  NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF
                               OUT__  EDEFOPG  PDEFORR
     EPMG_ELNO_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                                     NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     CTEREFE  PSECREF  NTEMPER  PSECHER  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     CTEREFE  PTEREF
                               OUT__  EDEFONO  PDEFORR
     EPOT_ELEM_DEPL      218   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF

@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,9 +54,10 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
      +              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL,NUMA,IBID,
      +              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
      +              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA, NTRAIT
-      PARAMETER    ( NBT = 6 )
+      INTEGER       JMAB, NBMAPR, NBMABO, JPRI, JBOR, IMPB
+      PARAMETER    ( NBT = 5 )
       REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
-      LOGICAL       GETEXM, REORIE, MCFL(NBT), PLAQUE
+      LOGICAL       GETEXM, REORIE, MCFL(NBT)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
       CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL
@@ -66,11 +67,11 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24  GRMAMA, MAILMA, PARA
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  , 
-     +            'EFFE_FOND'  , 'CONTACT'  , 'LIAISON_UNIL_NO' /
+     +            'EFFE_FOND'  , 'CONTACT'  /
 C
 C     LA NORMALE DOIT ETRE SORTANTE:
       DATA MCFL / .TRUE.       , .TRUE.     , .FALSE.        , 
-     +            .TRUE.       , .TRUE.     , .TRUE.         /
+     +            .TRUE.       , .TRUE.     /
 C     ------------------------------------------------------------------
 C
       IER = 0
@@ -113,12 +114,6 @@ C
       NDIM = 0
       CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8B,IER1)
       IF ( NDIM .GT. 1000 )  NDIM = 3
-C
-      PLAQUE = .FALSE.
-      CALL DISMOI('F','EXI_PLAQUE',NOMO,'MODELE',IBID,K8B,IER1)
-      IF ( K8B(1:3) .EQ. 'OUI' ) PLAQUE = .TRUE.
-      CALL DISMOI('F','EXI_COQUE',NOMO,'MODELE',IBID,K8B,IER1)
-      IF ( K8B(1:3) .EQ. 'OUI' ) PLAQUE = .TRUE.
 C
       CALL JEEXIN ( NOMMA//'.TYPMAIL        ', IRET )
       IF ( IRET .NE. 0 ) 
@@ -181,7 +176,7 @@ C
             NOC  = 0
             IF (MOTFAC .EQ. 'CONTACT') THEN
                CALL GETVR8 (MOTFAC,'VECT_NORM_ESCL',IOCC,1,3,DIR,NOC)
-               CALL GETVR8 (MOTFAC,'VECT_Y',IOCC,1,3, DIR, NOC11)
+               CALL GETVR8 (MOTFAC,'VECT_Y',       IOCC,1,3, DIR, NOC11)
                CALL GETVR8 (MOTFAC,'VECT_ORIE_POU',IOCC,1,3, DIR, NOC12)
                NOC1=NOC11+NOC12
             ENDIF
@@ -280,15 +275,44 @@ C
                   NORIE2 = 0
                   CALL JELIRA (JEXNOM(GRMAMA,NOGR),'LONMAX',NBMAIL,
      +                                                       K1BID)
-                  CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)     
+                  CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)  
+C
                   IF ( MCFL(IC) ) THEN
-                    IF ( PLAQUE ) THEN
+C 
+                 CALL WKVECT('&&CHVENO.MAILLE_BORD','V V I',NBMAIL,JMAB)
+                    CALL CHBORD ( NOMO, NBMAIL, ZI(JGRO), ZI(JMAB),
+     +                            NBMAPR, NBMABO )
+                    IF ( NBMAPR.EQ.NBMAIL .AND. NBMABO.EQ.0 ) THEN
+                      CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
+     +                                                          NORIE1 )
+                    ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.NBMAIL ) THEN
+                      CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL,
+     +                                    NORIE1, NTRAIT, REORIE, PREC )
+                    ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                       CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
      +                                                          NORIE1 )
                     ELSE
-                      CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL,
+                      CALL WKVECT('&&CHVENO.PRIN','V V I',NBMAPR,JPRI)
+                      CALL WKVECT('&&CHVENO.BORD','V V I',NBMABO,JBOR)
+                      NBMAPR = 0
+                      NBMABO = 0
+                      DO 218 IMPB = 1 , NBMAIL
+                         IF ( ZI(JMAB+IMPB-1) .EQ. 0 ) THEN
+                            NBMAPR = NBMAPR + 1
+                            ZI(JPRI+NBMAPR-1) = ZI(JGRO+IMPB-1)
+                         ELSE
+                            NBMABO = NBMABO + 1
+                            ZI(JBOR+NBMABO-1) = ZI(JGRO+IMPB-1)
+                         ENDIF
+                         CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
+     +                                                          NORIE1 )
+                         CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO, 
      +                                    NORIE1, NTRAIT, REORIE, PREC )
+ 218                  CONTINUE
+                      CALL JEDETR('&&CHVENO.PRIN')
+                      CALL JEDETR('&&CHVENO.BORD')
                     ENDIF
+                    CALL JEDETR('&&CHVENO.MAILLE_BORD')
                   ELSE
                     CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
      +                                                          NORIE2 )
@@ -371,13 +395,40 @@ C
                   NORIE1 = 0
                   NORIE2 = 0
                   IF ( MCFL(IC) ) THEN
-                    IF ( PLAQUE ) THEN
+                  CALL WKVECT('&&CHVENO.MAILLE_BORD','V V I',NBOBJ,JMAB)
+                    CALL CHBORD ( NOMO, NBOBJ, ZI(JNMA), ZI(JMAB),
+     +                            NBMAPR, NBMABO )
+                    IF ( NBMAPR.EQ.NBOBJ .AND. NBMABO.EQ.0 ) THEN
+                      CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
+     +                                                          NORIE1 )
+                    ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.NBOBJ ) THEN
+                      CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ, 
+     +                                    NORIE1, NTRAIT, REORIE, PREC )
+                    ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                       CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
      +                                                          NORIE1 )
                     ELSE
-                      CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ, 
+                      CALL WKVECT('&&CHVENO.PRIN','V V I',NBMAPR,JPRI)
+                      CALL WKVECT('&&CHVENO.BORD','V V I',NBMABO,JBOR)
+                      NBMAPR = 0
+                      NBMABO = 0
+                      DO 220 IMPB = 1 , NBOBJ
+                         IF ( ZI(JMAB+IMPB-1) .EQ. 0 ) THEN
+                            NBMAPR = NBMAPR + 1
+                            ZI(JPRI+NBMAPR-1) = ZI(JNMA+IMPB-1)
+                         ELSE
+                            NBMABO = NBMABO + 1
+                            ZI(JBOR+NBMABO-1) = ZI(JNMA+IMPB-1)
+                         ENDIF
+                         CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
+     +                                                          NORIE1 )
+                         CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO, 
      +                                    NORIE1, NTRAIT, REORIE, PREC )
+ 220                  CONTINUE
+                      CALL JEDETR('&&CHVENO.PRIN')
+                      CALL JEDETR('&&CHVENO.BORD')
                     ENDIF
+                    CALL JEDETR('&&CHVENO.MAILLE_BORD')
                   ELSE
                      CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
      +                                                          NORIE2 )

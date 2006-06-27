@@ -1,0 +1,875 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 26/06/2006 - 17:16:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009602 DU 2006-03-27 11:54:19
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   La programmation du mot cle ORIE_NORM_COQUE de MODI_MAILLAGE est actuellement dangereuse
+FONCTIONNALITE
+   But :
+   -----
+   1- le mot cle facteur ORIE_NORM_COQUE de la commande MODI_MAILLAGE ne doit
+   traiter q'un connexe par GROUP_MA, c'est a dire
+   que les mailles surfaciques doivent avoir un cote en commun
+   que les mailles lineiques doivent avoir un noeud en commun
+   2- lors de la verification que les mailles soient bien orientees lors d'une
+   affectation
+   de charge, le code doit reconnaitre les mailles de "bord" et les
+   mailles "principal".
+   
+   Action :
+   --------
+   1- Routine CHVENO:
+   suppression des DISMOI 'EXI_PLAQUE' et 'EXI_COQUE' au profit d'une
+   nouvelle routine CHBORD
+   Cette nouvelle routine informe a partir d'une liste de mailles, si les
+   mailles sont des
+   mailles de "bord" ou des mailles "principal".
+   Cette information est connu a partir des attributs :
+   CALL TEATTR ( NOMTE, 'C', 'DIM_TOPO_MODELI', DMO, IER )
+   CALL TEATTR ( NOMTE, 'C', 'DIM_TOPO_MAILLE', DMA, IER )
+   Si maille "PRINCIPAL"
+   appel a ORNORM (mailles types plaques ou coques)
+   Si maille "BORD"
+   appel a ORILMA (mailles supports derriere)
+   
+   2- Routine ORNORM (traitement sans VECT_NORM):
+   arret en Fatal si plusieurs connexes
+   
+   3- Routine ORVLMA (traitement avec VECT_NORM):
+   reprise de la programmation pour ne traiter qu'1 connexe
+   arret en Fatal si plusieurs connexes
+   
+   4- Routine UTMAVO (traitement des mailles voisines):
+   correction d'un bug concernant les mailles SEG
+   
+   Validation :
+   ------------
+   passage des 53 tests validant ORIE_NORM_COQUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.23.04
+VALIDATION
+   53 tests ORIE_NORM_COQU
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nicolas      NICOLAS O.             DATE 26/06/2006 - 17:16:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009677 DU 2006-04-11 17:47:21
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : CS
+TITRE
+   DEFI_INTERF_DYNA
+FONCTIONNALITE
+   L'option DDL_ACTIF ne marche pas du tout dans DEFI_INTERF_DYNA. La doc dit que
+   seuls les ddl actifs sont pris en compte dans l'interface alors qu'en fait ils sont tous
+   pris en compte systematiquement quelque soit la methode choisie (CB, Mc Neal).
+   Donc seul l'option MASQUE semble fonctionner correctement.
+   On resorbe donc DDL_ACTIF :
+   - impact dans le catalogue de commande
+   - impact dans la routine defdda.f
+   - impact dans le cas test sdls04b (DDL_ACTIF -> MASQUE avec les noms de composantes
+   adequates)
+   Passage des 34 cas tests validant DEFI_INTERF_DYNA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.61.01
+VALIDATION
+   passage des 34 tests validant DEFI_INTERF_DYNA
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 27/06/2006 - 11:56:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009699 DU 2006-04-21 12:46:52
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : CS
+TITRE
+   Recherche lineaire dans STAT_NON_LINE
+FONCTIONNALITE
+   La definition des mots cles RHO_MAX, RHO_MIN et RHO_EXCL de la
+   recherche lineaire n'avait
+   aucun impact sur le choix reel du RHO optimal. Ces valeurs etaient
+   tout simplement
+   ignorees et les valeur 10e-2 et 10 etaient inscrites en dur.
+   Desormais, on fait en sorte de recuperer les valeurs donnees par
+   l'utilisateur. De plus,
+   on a ajoute des verifications supplementaires sur la compatibilite de
+   RHO_MAX, RHO_MIN et
+   RHO_EXCL.
+   Imaginons un utilisateur tordu qui definirait RHO_MIN=-0.01,
+   RHO_MAX=10 et RHO_EXCL=0.03. Au niveau du fortran ce cas n'etait pas
+   pris en compte pour
+   definir le RHO utilise. Il faut exclure que RHO_MIN soit compris entre
+   -RHO_EXCL et
+   RHO_EXCL car cela revient a definir de maniere factice un RHO_MIN egal
+   en fait RHO_EXCL.
+   De meme RHO_MAX ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL.
+   Une alarme avertissant l utilisateur que la valeur de RHO_MIN
+   (respectivement RHO_MAX)
+   choisi sera en fait la valeur de
+   RHO_EXCL(respectivement -RHO_EXCL) est donc emise dans ce cas la.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+   ssnp15a,ssnp15b,ssnv102c et ssnv118b
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 27/06/2006 - 11:56:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009613 DU 2006-03-29 13:47:29
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TMA : CS
+TITRE
+   routine EPSVMC bugguee
+FONCTIONNALITE
+   La routine epsvmc possede plusieurs bugs. Le bug initial a l origine de cette fiche est
+   que pour la modelisation C_PLAN, le calcul de la deformation EPZZ s'appuie sur une
+   matrice
+   de rigidite en imposant les variables d'hydratation et de sechage a 0. En corrigeant ce
+   bug, un autre bug est apparu. Toujours pour le calcul de cette deformation, le fait d
+   etre
+   en contrainte plane impose une relation entre EPXX,EPYY et EPZZ. Cependant cette relation
+   n est valable que pour les deformations elastiques. Or dans la routine, les
+   deformations
+   totales sont utilisees.
+   Enfin, en accord avec S. Michel-Ponnelle et J.M. Proix, les deformations EPME_XXX_XXX ne
+   calcule que les deformations reellement mecaniques ( deformations totales moins
+   eventuellement les deformations thermiques moins eventuellement les deformations
+   hydrique
+   et de retrait). Actuellement seules les deformations thermiques etaient soustraites.
+   Pour valider, on utilise une nouvelle modelisation en C_PLAN du cas test ssla103 qui
+   manipule des champs de sechages et d'hydratation. Les resultats sont analytiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.06.103
+VALIDATION
+   ssla103g
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 27/06/2006 - 11:56:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009708 DU 2006-04-25 16:29:18
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   SUIVI_DDL
+FONCTIONNALITE
+   Objectif :
+   ==========
+   
+   Suivi DDL permet d'avoir des infos interessantes sur le resultat du calcul au cours des
+   iterations. Pour en faciliter l'usage, il serait utile de proposer aussi les mots-cles
+   GROUP_NO (point physique du maillage), et d'autre part de pouvoir affiche la valeur MAXI
+   ou MINI du champ specifie.
+   
+   
+   
+   On peut desormais fournir une liste de noeuds ou de groupe de noeuds dans le mot cle
+   SUIVI_DDL. Les noms de composantes ou de champ sont par contre toujours limites a 1.
+   Pour
+   les valeurs maximales ou minimales, on recupere comme titre le nom de la composante et
+   du
+   champ ainsi que VALEUR MIN ou VALEUR MAX.
+   ------------------
+   |VARI_ELGA       |
+   |    V1          |
+   |  VALEUR MAX    |
+   ------------------
+   | 2.26909E-02    |
+   | 2.85418E-02    |
+   | 3.59937E-02    |
+   | 3.60267E-02    |
+   | 3.60269E-02    |
+   ------------------
+   
+   Comme vous pouvez le constater ci-dessus, la localisation de la valeur maximale n est pas
+   fourni car elle est susceptible de varier pour chacune des iterations de Newton ( entre
+   autre ). L'ergonomie de l interface serait alors completement modifiee.
+   
+   En ce qui concerne la validation, elle est pour l'instant uniquement visuelle en comparant
+   avec le resultat du SUIVI_DDL avec un IMPR_RESU VALE_MIN ou MAX. Je propose de
+   l'introduire dans un cas test sans toutefois le tester car cela serait fastidieux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+   ssnv104e
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 26/06/2006 - 11:40:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009505 DU 2006-03-01 10:12:03
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 2.0
+TITRE
+   Faut-il changer de version de Mumps pour Code_Aster ?
+FONCTIONNALITE
+   La version 4.6.1 est prete a etre utilisee, je restitue les trois routines amumpc.f,
+   amumpr.f et  amumps.f sans les modifier mais pour tenir compte des nouveaux includes.
+   Le repertoire bibf90 contient maintenant les sous repertoires suivants :
+   include_mumps-4.3.2
+   include_mumps-4.6.1
+   mumps
+   de facon a identifier clairement la version de mumps utilisee.
+   De plus la librairie metis (issue de la version officielle) est ajoutee lors de
+   l'edition
+   des liens pour activer ce type de renumerotation dans le solveur mumps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests mumps de la liste complete
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 26/06/2006 - 11:40:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009528 DU 2006-03-03 19:13:42
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 3.0
+TITRE
+   PROJ_MESU_MODAL
+FONCTIONNALITE
+   idem que fiche 9603, se reporter a celle-ci pour les modifications proposees
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.73.01-C , U4.72.05-E
+VALIDATION
+   idem que pour fiche 9603
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 26/06/2006 - 15:54:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009843 DU 2006-06-15 07:34:32
+TYPE express concernant Code_Aster (VERSION 8.4)
+NB_JOURS_TRAV  : 0.5
+TITRE
+   Contact - Resorption condition unilaterale THM
+FONCTIONNALITE
+   Depuis  la creation de l'option
+   'LIAISON_UNILATER' (fiche 8911, version 8.2.12) et la separation des
+   conditions de contact mecanique des conditions unilaterales type THM,
+   il restait a faire le menage dans le contact pour enlever les
+   references .
+   C'est chose faite:
+   - suppression de l'option 'APPARIEMENT='NON', COEF_IMPO, NOM_CHAM, et
+   COEF_MULT_ESCL dans les catalogues AFFE_CHAR_MECA
+   - suppression des vecteurs CHAMCO, COEFCO, COEFMU
+   - nettoyage des routines d'affichages (surfco, cfimp1/4),n des
+   routines de contact (algo*) et d'appariement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.04.40
+VALIDATION
+   liste cas-test contact
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009839 DU 2006-06-14 09:29:27
+TYPE express concernant Code_Aster (VERSION 8.4)
+NB_JOURS_TRAV  : 0.5
+TITRE
+   STAT_NON_LINE - Affichages disgracieux
+FONCTIONNALITE
+   Depuis l'evolution de la fiche 9325 sur les matrices, la factorisation
+   est decalee dans l'algorithme et ses affichages (longueur factorisee,
+   METIS...) viennent chahuter les affichages du tableau de convergence,
+   particulierement dans le cas de la methode continue.
+   On propose de supprimer tous les affichages lies a la factorisation
+   lorsque l'on est en INFO=1. Ces informations n'apportant rien a
+   l'utilisateur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna111
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR torkhani     TORKHANI M.            DATE 26/06/2006 - 15:54:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009833 DU 2006-06-12 09:07:00
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 10.0
+TITRE
+   CONTACT METHODE CONTINUE AVEC RACCORD SURFACIQUE P2-P1
+FONCTIONNALITE
+   TITRE CONTACT METHODE CONTINUE AVEC RACCORD SURFACIQUE P2-P1
+   
+   FONCTIONNALITE
+   Le raccord cinematique par LIAISON_MAIL de deux surfaces d'ordre
+   d'interpolation polynomial different (ici Qudratique P2 / Linaire P1) peut
+   generer des relations surabondantes en presence d'une charge de contact
+   methode continue sur une zone commune a celle du raccord surfacique.
+   On propose de traiter ces problemes de pivots nuls en travaillant sur
+   l'espace de discretisation des multiplicateurs de contact.
+   En effet, on impose un comportement lineaire de ces multiplicateurs sur la
+   zone de contact commune a la zone ou se fait le raccord surfacique.
+   
+   DOC_U : U4.44.01-I1
+   EXPL_ : Ajout d'un nouveau mot-cle RACCORD_SURF dans AFFE_CHAR_MECA/
+   CONTACT/METHODE='CONTINUE' :
+   
+   CONTACT = _F(METHODE = CONTINUE,
+   RACCORD_SURF   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+   b_RACCORD_SURF = BLOC(condition = "RACCORD_SURF == 'OUI' ",fr="TRAITEMENT DU
+   RACCORD SURFACIQUE",
+   regles=(UN_PARMI('NOEUD_RACC','GROUP_NO_RACC'),),
+   NOEUD_RACC     =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+   GROUP_NO_RACC  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
+   
+   DOC_V : V6.03.121-C
+   EXPL_ : AJOUT de cas_tests SSNP121M:
+   Integration des termes de contact en 2D et 3D
+   DOC_R : R5.03.52-A
+   EXPL_ : Gestion des relations surabondantes en presence d'une charge de
+   contact Methode Continue.
+   
+   DETAILS
+   
+   1) Routines modifiees
+   La routine ELIMCO permet de stocker les noeuds ou groupes de noeuds
+   donnes par les mots cles GROUP_NO_RACC ou NOEUD_RACC dans les tableaux
+   CONTACT.RANOCO et CONTACT.PRANOCO.
+   
+   Dans la routine MAPPAR, on reste si la maille esclave contient un neoud
+   donne par GROUP_NO_RACC ou NOEUD_RACC et on met des flag sur les mailles
+   correspondantes tout en detectant les numeros d'ordre des noeuds detectes
+   dans chaque maille esclave.
+   
+   Dans les routines elementaires TE0364.f et TE0365.f, un traitement
+   specifique sur les noeuds de raccord surfacique a ete fait. Il s'agit
+   d'imposer un comportement lineaire aux multiplicateurs de contact en ces
+   noeuds et de decoupler ces memes multiplicateurs des deplacements
+   relatifs entre les noeuds apparies pour eviter les pivots nuls.
+   
+   Pour les autres routines, il s'agit d'une simple repercussion des extensions
+   des cartes et tableaux servant au stockage des informations pertinentes a
+   passer aux routines elementaires.
+   
+   2) Il s'en suit aussi des modifications dans les catalogues gener_cmcfz1.cata,
+   gener_cmcfz2.cata
+   et inherentes aux extensions sus-citees.
+   
+   3) Le catalogue de commandes affe_char_meca.capy a ete modifie
+   pour prendre en compte les mots-cles simples GROUP_NO_RACC et NOEUD_RACC.
+   
+   4) Cas-test: Ajout d'une nouvelle version du cas-test SSNP121 pour la
+   gestion des relations surabondantes entre le raccord
+   surfaciques et le contact methode continue:
+   SSNP121M
+   
+   
+   Impact: MMACON.f, GAUSS2.f, MMMBCA, MAPPAR, FRAPP2, REACLM,  MMMRES.f,
+   TE0364.f, TE0365.f, ELIMCO.
+   AFFE_CHAR_MECA et les catalogues gener_cmcfz1.cata, gener_cmcfz2.cata.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01-I1, V6.03.121-C, R5.03.52-A
+VALIDATION
+   liste restreinte, liste de cas-test contact
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009834 DU 2006-06-12 09:30:02
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 10.0
+TITRE
+   CONTACT METHODE CONTINUE AVEC FOND DE FISSURE ET ELEMENTS DE BARSOUM
+FONCTIONNALITE
+   TITRE CONTACT METHODE CONTINUE AVEC FOND DE FISSURE ET ELEMENTS DE BARSOUM
+   
+   FONCTIONNALITE
+   Les elements de Barsoum permettent de creer des singularites en fond de
+   fissure au sein des elements finis quadratiques classiques. Les noeuds milieux
+   sont transformes au quart de la maille a partir du fond. On obtient des
+   elements finis quadratiques 'Collapsed'.
+   
+   Quand on met du contact entre les levres d'une fissure traitee par
+   des elements de Barsoum, on se heurte a des pivots nuls generes par cette
+   transformation geometrique singuliere en fond de fissure. Les fonctions de
+   forme doivent donc etre legerement modifiees pour s'adapter a la singularite.
+   Il est a noter qu'une formule dde quadrature precise (Simpson) est requise pou
+   une integration propre des termes de contact dans ce cas (a cause de l'ajout
+   d'un terme d'ordre 3 certes negligeables mais non integrable avec une
+   integration aux noeuds).
+   
+   En outre, les degres de liberte des noeuds en fond de fissure n'ont pas de
+   signification physique car appartenant a la fois aux surfaces maitre et
+   esclave. On propose de travailler sur l'espace de discretisation des
+   multiplicateurs de contact en fond de fissure pour annuler la contribution
+   qui des noeuds de contact en fond de fissure.
+   Ce traitement (passage P2-P1 en fond de fissure) doit verifier les conditions
+   de compatibilite ou Inf-Sup de Babuska-Brezzi.
+   
+   DOC_U : U4.44.01-I1
+   EXPL_ : Ajout d'un nouveau mot-cle FOND_FISSURE dans AFFE_CHAR_MECA/
+   CONTACT/METHODE='CONTINUE' :
+   
+   CONTACT = _F(METHODE = CONTINUE,
+   FOND_FISSURE   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+   b_FOND_FISSURE = BLOC(condition = "FOND_FISSURE == 'OUI' ",fr="TRAITEMENT EN FOND
+   DE FISSURE",
+   regles=(UN_PARMI('NOEUD_FOND','GROUP_NO_FOND',
+   'MAILLE_FOND','GROUP_MA_FOND'),),
+   NOEUD_FOND     =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+   GROUP_NO_FOND  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+   MAILLE_FOND    =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+   GROUP_MA_FOND  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+   DOC_V : V6.03.121-C
+   EXPL_ : AJOUT de cas_tests SSNP121N et SSNP121O:
+   Integration des termes de contact en 2D et 3D
+   DOC_R : R5.03.52-A
+   EXPL_ : Gestion des incompatibiltes du contact methode continue en fond
+   de fissure en presence d'elements de Barsoum.
+   
+   DETAILS
+   
+   1) Routines modifiees
+   La routine ELIMCO permet de stocker les noeuds ou groupes de noeuds,
+   mailles ou groupes de mailles donnes par les mots cles NOEUD_FOND,
+   GROUP_NO_FOND, GROUP_MA_FOND ou MAILLE_FOND dans les tableaux
+   CONTACT.BARSNO, CONTACT.PBARS, CONTACT.BARSMA et CONTACT.PBARM.
+   
+   Dans la routine MAPPAR, on reste si la maille esclave contient un neoud
+   de fond de fissure et on met des flag sur les mailles 'BARSOUMEES'
+   correspondantes tout en detectant les numeros d'ordre des noeuds detectes
+   dans chaque maille esclave.
+   
+   Dans les routines elementaires TE0364.f et TE0365.f, un traitement
+   specifique sur les noeuds en fond de fissure a ete fait. Il s'agit de
+   modifier les fonctions de forme quadratiques classiques en presence de
+   maille de Barsoum (ajout d'un terme d'ordre 3) afin d'aviter la
+   singularite (Pivots nuls LAGS_C, LAGS_F1 et  LAGS_F2).
+   On reduit aussi l'espace de discretisation des multiplicateurs de
+   contact en operant un passage Quadratique-Lineaire en fond de fissure.
+   Ce qui permet d'annuler la contribution des noeuds en questions aux
+   termes de contact-frottement.
+   
+   Pour les autres routines, il s'agit d'une simple repercussion des extensions
+   des cartes et tableaux servant au stockage des informations pertinentes a
+   passer aux routines elementaires.
+   
+   2) Il s'en suit aussi des modifications dans les catalogues gener_cmcfz1.cata,
+   gener_cmcfz2.cata
+   et inherentes aux extensions sus-citees.
+   
+   3) Le catalogue de commandes affe_char_meca.capy a ete modifie
+   pour prendre en compte les mots-cles GROUP_NO_FOND, NOEUD_FOND, GROUP_MA_FOND
+   et MAILLE_FOND.
+   
+   4) Cas-test: Ajout d'une nouvelle version du cas-test SSNP121 pour le
+   traitement du contact entre les levres d'une fissure en
+   presence d'elements de Barsoum:
+   SSNP121N (cas 2D mot-cle simple GROUP_NO_FOND)
+   SSNP121O (cas 3D mot-cle simple GROUP_MA_FOND)
+   
+   
+   Impact: MMACON.f, GAUSS2.f, MMMBCA, MAPPAR, FRAPP2, REACLM,  MMMRES.f,
+   TE0364.f, TE0365.f, ELIMCO, CALFFJ, CALFFL.
+   AFFE_CHAR_MECA et les catalogues gener_cmcfz1.cata, gener_cmcfz2.cata.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01-I1, V6.03.121-C, R5.03.52-A
+VALIDATION
+   liste restreinte, liste de cas-test contact
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 26/06/2006 - 15:54:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009857 DU 2006-06-20 16:15:27
+TYPE express concernant Code_Aster (VERSION 2.x)
+NB_JOURS_TRAV  : 0.1
+TITRE
+   STAT_NON_LINE - Erreur d'affichage
+FONCTIONNALITE
+   On affichait le type de matrice assemblee en se fondant sur le numero
+   d'iteration courante (0: prediction, sinon: correction).
+   Or il se trouve que ce numero d'iteration est mise a jour APRES
+   l'affichage (ce dernier est fait dans nmmatr). Il y avait donc
+   toujours un decalage entre la matrice utilisee rellement et
+   l'affichage fait.
+   On corrige en testant la phase (prediction/correction) au lieu du
+   numero d'iteration.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Neant (affichage)
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007579 DU 2004-02-17 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.2)
+NB_JOURS_TRAV  : 0.1
+TITRE
+   parametre recherche lineaire sans pilotage
+FONCTIONNALITE
+   Resolu par fiche 9699
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Neant
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009850 DU 2006-06-16 12:50:37
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 1.0
+TITRE
+   Macro-elements statiques et contact
+FONCTIONNALITE
+   Le contact devient compatible avec les macro-elements statiques si la
+   surface de contact n'appartient pas a un macro-element statique.
+   
+   
+   Modification de cfcrsd. Quand dimension du maillage superieur a 1000
+   -> macro-elements statiques. On force alors la dimension a 3 ou a 2.
+   
+   Pour info, le cas test est un cube (8000 noeuds, 6700 hexa8 soit
+   environ 20000ddl) pose
+   sur un massif (1 seul element) voici quelques tps de calcul pour 20
+   pas de tps :
+   
+   Sans sous-structuration :
+   * STAT_NON_LINE    :     822.74 :       8.07 :     830.81 *
+   
+   Avec sous-structuration (je coupe en 2 le cube par la moitie
+   superieur) :
+   * MACR_ELEM_STAT   :     186.37 :       0.76 :     187.13 *
+   * STAT_NON_LINE    :     386.41 :       3.51 :     389.92 *
+   
+   La construction du macro-element qui se fait en LDLT coute car
+   l'interface entre la
+   sous-structure et le reste du modele est etendue.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv507a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC D.            DATE 23/06/2006 - 11:06:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009769 DU 2006-05-16 13:52:48
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+NB_JOURS_TRAV  : 2.0
+TITRE
+   Masse elements coque
+FONCTIONNALITE
+   Dans la solution on s'est inspire par le code Europlexus
+   et on a egalise la composante de la masse correspondant
+   au ddl 6 avec celle du ddl 5. On le justifie du fait que
+   de toute facon les inerties des ddl 4,5 et 6 (toute les
+   rotations) ne vont pas joue un role tres important.
+   
+   Il faut savoir que ce probleme a ete rencontre parce que
+   nous sommes sortis du cadre theorique du DKT, qui est
+   limite aux seules structures plane. Pour etre plus
+   rigoureux on devrait utiliser une formulation EF coque a
+   6 ddl, qui n'existe pas dans Code_Aster actuellement.
+   
+   La question n'est essentielle que dans le cas
+   d'integration temporelle explicite, donc la modification
+   a ete faite seulement pour les MASS_MECA_DIAG (te0031.f).
+   
+   Le developpement est valide par le nouveau cas-test
+   sdls116a. Le test valide la combinaison de DKT,
+   DYNA_TRAN_EXPLI, PETIT_REAC, MASS_MECA_DIAG.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.07.03, V2.03.116
+VALIDATION
+   sdls116a (nouveau)
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009771 DU 2006-05-16 14:02:36
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 2.0
+TITRE
+   masse diagonale DKT, DKTG
+FONCTIONNALITE
+   Selon les catalogues actuels l'option du calcul de la
+   matrice de masse diagonale (MASS_MECA_DIAG) n'est pas
+   disponible pour les elements DKT et DKTG. Or, elle
+   est programmee dans les memes routines que la matrice
+   masse coherentes (MASS_MECA) et semble de marcher
+   correctement. Donc, je ne vois pas de raison pourquoi
+   cette option ne serait pas activee dans les
+   catalogues en question.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   non regression
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pabhhhh      TARDIEU N.             DATE 26/06/2006 - 11:41:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009840 DU 2006-06-14 09:43:03
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+NB_JOURS_TRAV  : 0.5
+TITRE
+   Ameliorations pour MACR_RECAL
+FONCTIONNALITE
+   Dans reca_algo.py:
+   -----------------
+   Je blinde la division par zero par la production d'un UTMESS.
+   
+   Dans recal.py:
+   -----------------
+   Je teste en plus que precedemment:
+   - le type des courbes experimentales (Numeric.Array)
+   - la dimension des courbes experimentales (Nx2)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage test zzzz159a modifie
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR thomasso     THOMASSON D.           DATE 27/06/2006 - 16:52:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009199 DU 2005-11-14 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.5)
+NB_JOURS_TRAV  : 20.0
+TITRE
+   IMPR_OAR
+FONCTIONNALITE
+   La nouvelle version de IMPR_OAR vient en lieu et place de la precedente version
+   ecrite en FORTRAN.
+   IMPR_OAR produit des fichiers au format XML conformes a la DTD "base de donnees
+   OAR". Il prend en compte des elements de type composant et tuyauterie. Les
+   elements de type MEF sont prevus leur traitement n'est pas implemente.
+   Le cas test propose, teste la production de fichiers pour les composants et le
+   tuyauteries et compare le "md5" (fonction TEST_FICHIER) des fichiers produits a
+   celui produit par des fichiers de reference.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U7.04.51
+VALIDATION
+   cas test validation fichiers produits
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdls116a                     markovic D.MARKOVIC         159    159      0
+ CASTEST AJOUT ssla103g                      cibhhpd L.SALMONA          238    238      0
+ CASTEST AJOUT ssnp121n                       mabbas M.ABBAS            308    308      0
+ CASTEST AJOUT ssnp121o                       mabbas M.ABBAS            336    336      0
+ CASTEST AJOUT ssnv193a                       mabbas M.ABBAS            178    178      0
+ CASTEST MODIF sdls04b                       cibhhlv L.VIVAN            215      0      0
+ CASTEST MODIF sslp201a                      cibhhpd L.SALMONA         1184      0      0
+ CASTEST MODIF sslp201b                      cibhhpd L.SALMONA         1187      0      0
+ CASTEST MODIF ssnl127b                      cibhhpd L.SALMONA          462      0      0
+ CASTEST MODIF ssnp15a                       cibhhpd L.SALMONA          887      0      0
+ CASTEST MODIF ssnp15b                       cibhhpd L.SALMONA          746      0      0
+ CASTEST MODIF ssnp15c                       cibhhpd L.SALMONA          627      0      0
+ CASTEST MODIF ssnv102c                      cibhhpd L.SALMONA          299      0      0
+ CASTEST MODIF ssnv104e                      cibhhpd L.SALMONA          249      0      0
+ CASTEST MODIF ssnv118b                      cibhhpd L.SALMONA          372      0      0
+ CASTEST MODIF wtnp109a                       mabbas M.ABBAS            229      0      0
+ CASTEST MODIF zzzz186a                     thomasso D.THOMASSON         40      0      0
+CATALOGU MODIF options/epme_elga_depl        cibhhpd L.SALMONA           54      0      0
+CATALOGU MODIF options/epme_elno_depl        cibhhpd L.SALMONA           54      0      0
+CATALOGU MODIF options/epmg_elga_depl        cibhhpd L.SALMONA           54      0      0
+CATALOGU MODIF options/epmg_elno_depl        cibhhpd L.SALMONA           54      0      0
+CATALOGU MODIF options/epsi_elga_depl        cibhhpd L.SALMONA           66      0      0
+CATALOGU MODIF options/epsi_elno_depl        cibhhpd L.SALMONA           58      0      0
+CATALOGU MODIF typelem/gener_cmcfz1           mabbas M.ABBAS             67      0      0
+CATALOGU MODIF typelem/gener_cmcfz2           mabbas M.ABBAS            155      0      0
+CATALOGU MODIF typelem/gener_me3d_3          cibhhpd L.SALMONA          671      0      0
+CATALOGU MODIF typelem/gener_me3dg_1         cibhhpd L.SALMONA          347      0      0
+CATALOGU MODIF typelem/gener_me3dg_3         cibhhpd L.SALMONA          371      0      0
+CATALOGU MODIF typelem/gener_meax_2          cibhhpd L.SALMONA          589      0      0
+CATALOGU MODIF typelem/gener_meaxs2          cibhhpd L.SALMONA          554      0      0
+CATALOGU MODIF typelem/gener_mecpl2          cibhhpd L.SALMONA          611      0      0
+CATALOGU MODIF typelem/gener_medkg1         markovic D.MARKOVIC         214      0      0
+CATALOGU MODIF typelem/gener_medkt2         markovic D.MARKOVIC         312      0      0
+CATALOGU MODIF typelem/gener_medpl2          cibhhpd L.SALMONA          630      0      0
+CATALOGU MODIF typelem/gener_mv3d_3          cibhhpd L.SALMONA          434      0      0
+CATALOGU MODIF typelem/mecpqs4               cibhhpd L.SALMONA          530      0      0
+CATALOGU MODIF typelem/mecptr3               cibhhpd L.SALMONA          563      0      0
+CATALOGU MODIF typelem/medpqs4               cibhhpd L.SALMONA          542      0      0
+CATALOGU MODIF typelem/medpqs8               cibhhpd L.SALMONA          542      0      0
+CATALOPY MODIF commande/affe_char_meca        mabbas M.ABBAS           1026      0      0
+CATALOPY MODIF commande/affe_char_meca_f      mabbas M.ABBAS            683      0      0
+CATALOPY MODIF commande/defi_interf_dyna     cibhhlv L.VIVAN             37      0      0
+CATALOPY MODIF commande/dyna_non_line        cibhhpd L.SALMONA          379      0      0
+CATALOPY MODIF commande/impr_oar            thomasso D.THOMASSON         72      0      0
+CATALOPY MODIF commande/stat_non_line        cibhhpd L.SALMONA          349      0      0
+ FORTRAN AJOUT elements/calffl                mabbas M.ABBAS            407    407      0
+ FORTRAN AJOUT modelisa/chbord               cibhhlv L.VIVAN            104    104      0
+ FORTRAN MODIF algeline/facsmb                mabbas M.ABBAS            286      0      0
+ FORTRAN MODIF algeline/preml1                mabbas M.ABBAS            382      0      0
+ FORTRAN MODIF algeline/premlc                mabbas M.ABBAS            256      0      0
+ FORTRAN MODIF algorith/algocg                mabbas M.ABBAS            586      0      0
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            702      0      0
+ FORTRAN MODIF algorith/algocp                mabbas M.ABBAS            369      0      0
+ FORTRAN MODIF algorith/algocu                mabbas M.ABBAS            502      0      0
+ FORTRAN MODIF algorith/algogl                mabbas M.ABBAS            676      0      0
+ FORTRAN MODIF algorith/cfalgo                mabbas M.ABBAS            191      0      0
+ FORTRAN MODIF algorith/cfcoef                mabbas M.ABBAS            166      0      0
+ FORTRAN MODIF algorith/cfcrsd                mabbas M.ABBAS            465      0      0
+ FORTRAN MODIF algorith/cfimp2                mabbas M.ABBAS            185      0      0
+ FORTRAN MODIF algorith/cfimp3                mabbas M.ABBAS            169      0      0
+ FORTRAN MODIF algorith/cfimp4                mabbas M.ABBAS            477      0      0
+ FORTRAN MODIF algorith/cfjeun                mabbas M.ABBAS            228      0      0
+ FORTRAN MODIF algorith/chmano                mabbas M.ABBAS            539      0      0
+ FORTRAN MODIF algorith/defdda               cibhhlv L.VIVAN            147      0      0
+ FORTRAN MODIF algorith/frapp2                mabbas M.ABBAS            715      0      0
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            760      0      0
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1103      0      0
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            848      0      0
+ FORTRAN MODIF algorith/gauss2                mabbas M.ABBAS           1944      0      0
+ FORTRAN MODIF algorith/mappar                mabbas M.ABBAS            596      0      0
+ FORTRAN MODIF algorith/mmacon                mabbas M.ABBAS            263      0      0
+ FORTRAN MODIF algorith/mmmbca                mabbas M.ABBAS            328      0      0
+ FORTRAN MODIF algorith/mmmres                mabbas M.ABBAS           1048      0      0
+ FORTRAN MODIF algorith/nmdomt               cibhhpd L.SALMONA          131      0      0
+ FORTRAN MODIF algorith/nmimpm                mabbas M.ABBAS            536      0      0
+ FORTRAN MODIF algorith/nmmatr                mabbas M.ABBAS            432      0      0
+ FORTRAN MODIF algorith/nmrech               cibhhpd L.SALMONA          277      0      0
+ FORTRAN MODIF algorith/nmrep2               cibhhpd L.SALMONA          294      0      0
+ FORTRAN MODIF algorith/nmrepl               cibhhpd L.SALMONA          356      0      0
+ FORTRAN MODIF algorith/projco                mabbas M.ABBAS            175      0      0
+ FORTRAN MODIF algorith/projec                mabbas M.ABBAS            228      0      0
+ FORTRAN MODIF algorith/reaclm                mabbas M.ABBAS            112      0      0
+ FORTRAN MODIF algorith/rechco                mabbas M.ABBAS            404      0      0
+ FORTRAN MODIF algorith/rechno                mabbas M.ABBAS            388      0      0
+ FORTRAN MODIF algorith/suicsd               cibhhpd L.SALMONA          278      0      0
+ FORTRAN MODIF algorith/suiddl               cibhhpd L.SALMONA          448      0      0
+ FORTRAN MODIF algorith/suiimp               cibhhpd L.SALMONA          145      0      0
+ FORTRAN MODIF algorith/suiini               cibhhpd L.SALMONA           85      0      0
+ FORTRAN MODIF algorith/suilec               cibhhpd L.SALMONA          251      0      0
+ FORTRAN MODIF elements/calffj                mabbas M.ABBAS            363      0      0
+ FORTRAN MODIF elements/epstmc               cibhhpd L.SALMONA          220      0      0
+ FORTRAN MODIF elements/epsvmc               cibhhpd L.SALMONA          204      0      0
+ FORTRAN MODIF elements/epthmc               cibhhpd L.SALMONA          115      0      0
+ FORTRAN MODIF elements/te0025               cibhhpd L.SALMONA          201      0      0
+ FORTRAN MODIF elements/te0031              markovic D.MARKOVIC         386      0      0
+ FORTRAN MODIF elements/te0087               cibhhpd L.SALMONA          209      0      0
+ FORTRAN MODIF elements/te0333               cibhhpd L.SALMONA          399      0      0
+ FORTRAN MODIF elements/te0334               cibhhpd L.SALMONA          417      0      0
+ FORTRAN MODIF elements/te0364                mabbas M.ABBAS           1226      0      0
+ FORTRAN MODIF elements/te0365                mabbas M.ABBAS            826      0      0
+ FORTRAN MODIF elements/te0490               cibhhpd L.SALMONA          998      0      0
+ FORTRAN MODIF elements/te0491               cibhhpd L.SALMONA          957      0      0
+ FORTRAN MODIF modelisa/caraco                mabbas M.ABBAS            169      0      0
+ FORTRAN MODIF modelisa/cazocc                mabbas M.ABBAS            311      0      0
+ FORTRAN MODIF modelisa/cazoco                mabbas M.ABBAS            518      0      0
+ FORTRAN MODIF modelisa/cazocv                mabbas M.ABBAS            111      0      0
+ FORTRAN MODIF modelisa/chveno               cibhhlv L.VIVAN            454      0      0
+ FORTRAN MODIF modelisa/elimco                mabbas M.ABBAS            486      0      0
+ FORTRAN MODIF modelisa/ornorm               cibhhlv L.VIVAN            217      0      0
+ FORTRAN MODIF modelisa/orvlma               cibhhlv L.VIVAN            260      0      0
+ FORTRAN MODIF modelisa/surfco                mabbas M.ABBAS            408      0      0
+ FORTRAN MODIF prepost/utmavo                cibhhlv L.VIVAN            214      0      0
+ FORTRAN SUPPR algorith/cfjeui                mabbas M.ABBAS              0      0      0
+ FORTRAN SUPPR algorith/cfthm                 mabbas M.ABBAS              0      0      0
+ FORTRAN SUPPR algorith/cfthmp                mabbas M.ABBAS              0      0      0
+ FORTRAN SUPPR algorith/rechpa                mabbas M.ABBAS              0      0      0
+FORTRAN90 MODIF mumps/amumpc                  d6bhhjp J.P.LEFEBVRE       506      0      0
+FORTRAN90 MODIF mumps/amumpr                  d6bhhjp J.P.LEFEBVRE       509      0      0
+FORTRAN90 MODIF mumps/amumps                  d6bhhjp J.P.LEFEBVRE       262      0      0
+  PYTHON AJOUT Macro/impr_oar_ops           thomasso D.THOMASSON        769    769      0
+  PYTHON MODIF Macro/macr_lign_coupe_ops    thomasso D.THOMASSON        378      0      0
+  PYTHON MODIF Macro/reca_algo               pabhhhh N.TARDIEU          271      0      0
+  PYTHON MODIF Macro/recal                   pabhhhh N.TARDIEU          374      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        2499      2499             +2499
+ MODIF :  111       46955         0       0        +0
+ SUPPR :    4           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  123       49454      2499       0     +2499 

@@ -3,11 +3,11 @@
      &                  JAPMEM,JAPPAR,JAPPTR,JCOOR,JDDL,JNORMO,JNRINI,
      &                  JPDDL,JTANGO,
      &                  TYPALF,FROT3D,MOYEN,TANGDF,
-     &                  MULNOR,CMULT,COORE,
+     &                  COORE,
      &                  POSNOE,POS,NUM,IESCL,NESMAX,REACTU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,8 +45,6 @@ C
       INTEGER      JTANGO
       INTEGER      TYPALF
       INTEGER      FROT3D
-      LOGICAL      MULNOR
-      REAL*8       CMULT
       REAL*8       COORE(3)
       INTEGER      MOYEN
       INTEGER      TANGDF
@@ -87,11 +85,6 @@ C   1 FROTTEMENT PENALISE
 C   2 FROTTEMENT LAGRANGIEN
 C   3 FROTTEMENT METHODE CONTINUE
 C IN  FROT3D : VAUT 1 LORSQU'ON CONSIDERE LE FROTTEMENT EN 3D
-C IN  MULNOR : LOGIQUE QUI VAUT 1 LORSQU'ON MULTIPLIE LES COEFFICIENTS
-C              DE LA RELATION UNILATERALE PAR LES COMPOSANTES 
-C              DES NORMALES
-C IN  CMULT  : COEFFICIENT DE LA RELATION UNILATERALE (ISSU DU
-C              MOT-CLE COEF_MULT_2 OU 1)
 C IN  COORE  : COORDONNEES DU NOEUD ESCLAVE
 C IN  MOYEN  : NORMALES D'APPARIEMENT
 C               0 MAIT 
@@ -197,23 +190,13 @@ C --- SI FROTTEMENT 3D
       JDECDL = ZI(JPDDL+POSNOE-1)
 
       DO 30 K = 1,NBDDLE
-        ZR(JAPCOE+JDECAL+K-1) = 1.D0*CMULT
-        IF (MULNOR) THEN
-          ZR(JAPCOE+JDECAL+K-1) = ZR(JAPCOE+JDECAL+K-1)*
-     &                            ZR(JNORMO+3*(IESCL-1)+K-1)
-        END IF
+        ZR(JAPCOE+JDECAL+K-1) = ZR(JNORMO+3*(IESCL-1)+K-1)
 C --- SI FROTTEMENT
         IF (TYPALF.NE.0) THEN
-          ZR(JAPCOF+JDECAL+K-1)           = 1.D0*CMULT
-          ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = 1.D0*CMULT
-          IF (MULNOR) THEN
-            ZR(JAPCOF+JDECAL+K-1) = ZR(JAPCOF+JDECAL+K-1)*
-     &                              ZR(JTANGO+6*(IESCL-1)+K-1)
-            IF (FROT3D.EQ.1) THEN
-              ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = 
-     &              ZR(JAPCOF+JDECAL+30*NESMAX+K-1)*
-     &              ZR(JTANGO+6* (IESCL-1)+K+2)
-            END IF
+          ZR(JAPCOF+JDECAL+K-1) = ZR(JTANGO+6*(IESCL-1)+K-1)
+          IF (FROT3D.EQ.1) THEN
+            ZR(JAPCOF+JDECAL+30*NESMAX+K-1) =
+     &            ZR(JTANGO+6* (IESCL-1)+K+2)
           END IF
         END IF
         ZI(JAPDDL+JDECAL+K-1) = ZI(JDDL+JDECDL+K-1)
@@ -222,23 +205,16 @@ C --- SI FROTTEMENT
       JDECAL = JDECAL + NBDDLE
       JDECDL = ZI(JPDDL+POS-1)
       DO 40 K = 1,NBDDLM
-        ZR(JAPCOE+JDECAL+K-1) = -1.D0*CMULT
-        IF (MULNOR) THEN
-          ZR(JAPCOE+JDECAL+K-1) = ZR(JAPCOE+JDECAL+K-1)*
+        ZR(JAPCOE+JDECAL+K-1) = -1.D0*
      &                            ZR(JNORMO+3* (IESCL-1)+K-1)
-        END IF
 C --- SI FROTTEMENT
         IF (TYPALF.NE.0) THEN
-          ZR(JAPCOF+JDECAL+K-1)           = -1.D0*CMULT
-          ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = -1.D0*CMULT
-          IF (MULNOR) THEN
-            ZR(JAPCOF+JDECAL+K-1) = ZR(JAPCOF+JDECAL+K-1)*
-     &                              ZR(JTANGO+6* (IESCL-1)+K-1)
-            IF (FROT3D.EQ.1) THEN
-              ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = 
-     &                ZR(JAPCOF+JDECAL+30*NESMAX+K-1)*
-     &                ZR(JTANGO+6* (IESCL-1)+K+2)
-            END IF
+          ZR(JAPCOF+JDECAL+K-1) = -1.D0*
+     &                            ZR(JTANGO+6* (IESCL-1)+K-1)
+          IF (FROT3D.EQ.1) THEN
+            ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = 
+     &              -1.D0*
+     &              ZR(JTANGO+6* (IESCL-1)+K+2)
           END IF
         END IF
         ZI(JAPDDL+JDECAL+K-1) = ZI(JDDL+JDECDL+K-1)
