@@ -7,7 +7,7 @@
      &           OPTFLA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,9 +153,10 @@ C         SINON ON CALCULE LES VPDE KT+LAMBDA.ID
       DEFO = 0
       NBV = ZI(IDES-1+3)
       DO 10 I = 1,NBV
-        IF (ZK16(INIT+2+16*(I-1)).EQ.'GREEN'
-     & .OR. ZK16(INIT+2+16*(I-1)).EQ.'GREEN_GR' .OR.
-     &      ZK16(INIT+2+16*(I-1)).EQ.'SIMO_MIEHE') THEN
+        IF (ZK16(INIT+2+20*(I-1)).EQ.'GREEN'
+     & .OR. ZK16(INIT+2+20*(I-1)).EQ.'GREEN_GR' .OR.
+     &      ZK16(INIT+2+20*(I-1)).EQ.'REAC_GEOM' .OR.
+     &      ZK16(INIT+2+20*(I-1)).EQ.'SIMO_MIEHE') THEN
           DEFO = 1
         END IF
    10 CONTINUE

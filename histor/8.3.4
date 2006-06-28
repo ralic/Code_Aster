@@ -1,0 +1,305 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR h9bhhgd      RIOU B.                DATE 27/06/2006 - 14:36:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009364 DU 2006-01-16 15:01:13
+TYPE evolution concernant Code_Aster (VERSION )
+NB_JOURS_TRAV  : 60.0
+TITRE
+   Poutres en grandes rotations et plasticite
+FONCTIONNALITE
+   Travaux Thomas De Soza [stagiaire long ENPC, departement TESE] :
+   
+   Rappel du besoin :
+   ------------------
+   
+   Dans le but de realiser des simulations de pylones treillis jusqu'a la ruine dans le
+   Code_Aster, on souhaite enrichir l'element POU_D_TGM de sorte qu'il permette de traiter
+   a
+   la fois des non-linearites "materiau" (c'est deja le cas grace a l'approche
+   multi-fibres)
+   mais aussi des non-linearites geometriques (c'est l'objet de cette fiche).
+   On propose par la meme occasion de permettre de traiter des problemes en grandes
+   rotations (tridimensionnelles) comme c'est le cas par exemple avec un couplage
+   flexion-torsion.
+   
+   
+   Evolutions necessaires :
+   ------------------------
+   
+   -- Traiter les grands deplacements en plus des non-linearites "materiau"
+   
+   L'approche theorique consiste a reprendre celle qui a ete utilisee pour les poutres
+   : on
+   ecrit un champ de deplacements 3D a partir des 14 degres de liberte (7 a chaque
+   noeud).
+   Puis on introduit ce champ dans le principe des travaux virtuels, que l'on derive
+   ensuite.
+   On fait l'hypothese d'une reactualisation de la geometrie a chaque iteration et de
+   petites
+   deformations, ce qui permet de simplifier la formulation. La nouveaute est que l'on ne
+   neglige plus la rigidite geometrique apparue suite a la derivation. On l'ajoute a
+   la
+   rigidite materielle deja calculee pour former la rigidite tangente.
+   L'autre nouveaute consiste a tirer parti de la reactualisation pour calculer plus
+   astucieusement les increments de deformation. Ils ne sont plus calcules a partir de
+   l'increment de deplacement depuis le debut du pas de temps mais cumules des le
+   debut du
+   pas de temps a partir des increments de deplacement de chaque iteration. En pratique,
+   plutot que de donner des resultats plus precis, cela permet un gain visible en nombre
+   d'iterations et donc en temps CPU.
+   
+   -- Traiter les grandes rotations
+   
+   En 3D, les rotations ne sont en general pas commutatives. Plutot que de passer par une
+   approche "exacte" complexe comme pour les POU_D_T_GD, on decide d'autoriser des rotations
+   moderees (i.e. du second ordre). Il existe des parametres (dit de Rodriguez)
+   permettant de
+   representer ce type de rotation, tout en conservant la commutativite. L'utilisation de
+   ces
+   parametres plutot que les 3 rotations classiques dans la formulation entraine
+   l'apparition
+   d'une matrice Kc dite de correction qui vient s'ajouter a la rigidite tangente.
+   
+   
+   Autres modifications :
+   ----------------------
+   
+   Lors du developpement, on a du faire d'autres modifications pour passer les nouveaux
+   cas-tests introduits :
+   
+   - Calcul de FORC_NODA : la reactualisation n'etait pas prise en compte.
+   
+   - Comportement ELAS : le comportement elastique pour les PMF n'etait pas ecrit sous
+   forme incrementale (Sigma[+]=E*EPS au lieu de Sigma[+]=Sigma[-]+E*DEPS)
+   
+   - Critere de flambement non-lineaire CRIT_FLAMB : suite aux evolutions, il faut
+   utiliser le critere generalise en lieu et place du critere d'Euler (la rigidite
+   geometrique est deja presente dans la matrice tangente)
+   De plus, un bug s'etait glisse dans la routine NMFLAM, a cause d'une longueur maxi
+   d'un tableau entree en dure et modifiee depuis. Resultat : dans l'hypothese ou
+   plusieurs
+   comportements cohabitaient, seul le premier d'entre eux etait utilise pour determiner
+   le
+   critere a utiliser (Euler ou generalise).
+   
+   
+   Utilisation dans le code :
+   --------------------------
+   
+   L'element est toujours POU_D_TGM, la deformation 'PETIT_REAC' sous
+   STAT_NON_LINE/COMP_INCR disparait et laisse sa place a 'REAC_GEOM'
+   
+   
+   Cas-tests de validation :
+   -------------------------
+   
+   1) SSLL105 : Ajout de la modelisation E
+   On verifie le bon fonctionnement de CRIT_FLAMB en presence de DEFORMATION='REAC_GEOM'
+   
+   2) SSNL502 : Ajout de la modelisation D
+   Evolution post-flambement d'une poutre console soumise a un effort de compression.
+   Reference analytique. Resultats en tres bon accord.
+   
+   3) SSNV138 : Ajout de la modelisation D
+   Poutre console soumise a un moment en bout, la poutre s'enroule jusqu'a former un
+   cercle.
+   Reference analytique. Resultats en tres bon accord.
+   
+   4) SSNL133 : Ajout du cas-test
+   Evolution post-flambement d'une lame equerre soumise a une instabilite (deversement).
+   Couplage flexion-torsion. Modelisation A : POU_D_T_GD (non regression). Modelisation B
+   :
+   POU_D_TGM (reference POU_D_T_GD).
+   
+   5) SSNL136 : Ajout du cas-test
+   Grands deplacements d'un arc a angle d'ouverture 45 degres soumis a un effort
+   perpendiculairement a son plan. Couplage flexion-torsion. Reference moyennee a
+   partir de 8
+   codes. Modelisation A : POU_D_TGM. Modelisation B : POU_D_T_GD.
+   
+   6) SSNL134 : Ajout du cas-test
+   Ruine elasto-plastique du portique de Lee. Reference moyennee a partir de 2 codes.
+   Bons
+   resultats.
+   
+   7) SSNL135 : Ajout du cas-test
+   Determination des charges de ruine de la console MEKELEC. Reference experimentale. 3
+   Modelisations avec POU_D_TGM correspondant a 3 cas de charges.
+   
+   Sources modifiees et impacts documentaires :
+   --------------------------------------------
+   
+   -- Sources ajoutees : bsigma.f
+   -- Sources modifiees : nmflam.f, pmfcom.f, pmffor.f, te0516.f, te0517.f,
+   gener_mepmf2.cata, c_comp_incr.capy
+   
+   -- Impacts docs :
+   
+   -DOC U : U3.11.04
+   -DOC R : produire une doc de reference pour POU_D_TGM/REAC_GEOM
+   -DOC V : V3.01.105, V6.02.502, V6.04.138
+   V6.02.133, V6.02.134, V6.02.135, V6.02.136
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U3.11.04 V3.01.105, V6.02.502, V6.04.138 , V6.02.133, V6.02.134, V6.02.135, V6.02.136 ,
+VALIDATION
+   tous tests avec poutres multi-fibres
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 28/06/2006 - 20:08:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009855 DU 2006-06-20 11:36:00
+TYPE express concernant Code_Aster (VERSION 2.x)
+NB_JOURS_TRAV  : 5.0
+TITRE
+   Fonds de fissure multiples avec X-FEM
+FONCTIONNALITE
+   Afin de prendre en compte les fissures a fonds multiples
+   en 3D, la structure de donnees fiss_xfem est enrichie par
+   un vecteur d'entier ".FONDMULT" de dimension (nombre de
+   fond de fissure*2), dont les composante sont les indices
+   des points de depart et d'arrivee de chaque fond dans
+   le ".FONDFISS"
+   
+   Par exemple :
+   FISSURE.FONDMULT = ( 1 ; 8 ; 9 ; 12 )
+   =>
+   Fond de fissure 1 : du point 1 au point 8 du .FONDFISS
+   Fond de fissure 2 : du point 9 au point 12 du .FONDFISS
+   
+   Pour le post traitement avec CALC_G, un nouveau mot cle
+   NUM_FOND est utilise pour preciser sur quel fond de
+   fissure on veut post-traiter.
+   A la place de definir CHFOND=FISSURE.FONDFISS, on cree
+   une variable CHFOND volatile que l'on remplie avec les
+   valeurs de FONDFISS compris entre les points de depart et
+   d'arrivee du NUM_FONDieme fond de fissure.
+   
+   Catalogue Python modifie :
+   ------------------------
+   * calc_g.capy :
+   Ajout du nouveau mot cle NUM_FOND.
+   Exemple d'appel a CALC_G :
+   SIF2[i]=CALC_G(MODELE=MODELE[i],
+   RESULTAT=RESU[i],
+   ...
+   OPTION='CALC_K_G',
+   THETA=_F( FISSURE=FISS,
+   R_INF=RI[i],
+   R_SUP=RS[i],
+   NUM_FOND=2,
+   ),
+   );
+   
+   Routine creee :
+   -------------
+   * xfabor.f :
+   En 3D, teste si les trois noeuds a l'interieur desquels
+   est interpole le point de fond de fissure appartiennent a
+   une face de bord.
+   
+   Routines modifiees :
+   ------------------
+   * op0100.f (operateur calc_g) :
+   La variable CHFOND est remplie comme explicitee plus haut.
+   
+   * xptfon.f :
+   Pendant la recherche de point du fond de fissure, on
+   teste les points de bord, et on stocke un indicateur
+   logique de points de bord.
+   
+   * xoriff.f :
+   On ordonne l'indicateur de point de bord cree dans xptfon
+   comme les point de FONDFISS.
+   
+   * xnrch3.f :
+   A partir de l'indicateur de points de bord genere par les
+   xptfon.f et ordonne par xoriff.f, on genere le vecteur
+   FONDMULT decrit plus haut.
+   
+   * xnrch2.f :
+   Appel a xptfon modifie (nombre d'arguments).
+   
+   Cas test restitue :
+   -----------------
+   * ssnv192a.comm:
+   Eprouvette 3D (2D extrudee) maillee en HEXA avec fissure
+   centrale plane, sollicitee a l'infini en traction pure.
+   Tests sur les valeurs de K1 sur les 2 fonds de fissure
+   separement, avec differentes couronnes pour CALC_G.
+   Ecart avec la solution analytique < 2%.
+   
+   
+   N.B.: A modifier egalement, la doc U de CALC_G dont il me
+   manque la reference.
+   
+   
+   Damien TOURRET
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.192 , D4.10.02
+VALIDATION
+   ssnv192a
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssll105e                       durand C.DURAND           161    161      0
+ CASTEST AJOUT ssnl133a                       durand C.DURAND           272    272      0
+ CASTEST AJOUT ssnl133b                       durand C.DURAND           197    197      0
+ CASTEST AJOUT ssnl134a                       durand C.DURAND           424    424      0
+ CASTEST AJOUT ssnl135a                       durand C.DURAND           703    703      0
+ CASTEST AJOUT ssnl135b                       durand C.DURAND           703    703      0
+ CASTEST AJOUT ssnl135c                       durand C.DURAND           708    708      0
+ CASTEST AJOUT ssnl136a                       durand C.DURAND           235    235      0
+ CASTEST AJOUT ssnl136b                       durand C.DURAND           226    226      0
+ CASTEST AJOUT ssnl502d                       durand C.DURAND           531    531      0
+ CASTEST AJOUT ssnv138d                       durand C.DURAND           292    292      0
+ CASTEST AJOUT ssnv192a                       massin P.MASSIN           418    418      0
+ CASTEST MODIF ssnl132b                       durand C.DURAND           906      3      3
+CATALOGU MODIF typelem/gener_mepmf2           durand C.DURAND           224     14      5
+CATALOPY MODIF commande/calc_g                massin P.MASSIN           140      2      2
+CATALOPY MODIF commun/c_comp_incr             durand C.DURAND           322      2      2
+ FORTRAN AJOUT algorith/xfabor                massin P.MASSIN           128    128      0
+ FORTRAN AJOUT elements/bsigma                durand C.DURAND           149    149      0
+ FORTRAN MODIF algorith/nmflam                durand C.DURAND           199      5      4
+ FORTRAN MODIF algorith/xnrch2                massin P.MASSIN           360      5      2
+ FORTRAN MODIF algorith/xnrch3                massin P.MASSIN           491     94     31
+ FORTRAN MODIF algorith/xoriff                massin P.MASSIN           164     29      3
+ FORTRAN MODIF algorith/xptfon                massin P.MASSIN           190     34      9
+ FORTRAN MODIF calculel/op0100                massin P.MASSIN          1085     29     18
+ FORTRAN MODIF elements/pmfcom                durand C.DURAND           283      2      2
+ FORTRAN MODIF elements/pmffor                durand C.DURAND            67      3     10
+ FORTRAN MODIF elements/te0516                durand C.DURAND           627    201      5
+ FORTRAN MODIF elements/te0517                durand C.DURAND           284    126     18
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   14        5147      5147             +5147
+ MODIF :   14        5342       549     114      +435
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   28       10489      5696     114     +5582 

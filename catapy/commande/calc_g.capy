@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 28/06/2006   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,12 +34,12 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
            THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
            FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
            FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),
-           regles=(EXCLUS('FOND_FISS','FISSURE'),),
          b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",
             regles=(UN_PARMI('R_INF','R_INF_FO'),
                  EXCLUS('MODULE','MODULE_FO'),
                  PRESENT_PRESENT('R_INF','R_SUP'),
-                 PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),         
+                 PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),
+             NUME_FOND        =SIMP(statut='f',typ='I',defaut=1),
              R_INF           =SIMP(statut='f',typ='R'),
              R_SUP           =SIMP(statut='f',typ='R'),
              MODULE          =SIMP(statut='f',typ='R'),

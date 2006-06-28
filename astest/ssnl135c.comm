@@ -1,0 +1,708 @@
+# MODIF  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+# TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNL135C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+
+# Lecture du maillage
+MA = LIRE_MAILLAGE()
+
+# AFFECTATION DES MODELES DE COMPORTEMENT
+MO = AFFE_MODELE(
+   MAILLAGE= MA,
+   VERIF=('MAILLE','NOEUD'),
+   AFFE=(
+      _F(GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),
+         PHENOMENE= 'MECANIQUE',
+         MODELISATION= 'POU_D_TGM'),
+
+      _F(MAILLE=('D008022','D008032','D009022','D009032','D00A032','D00A042','D00A041','D00A052',
+'D00A062','D00A072','D00A082','D00B032','D00B042','D00B052','D00B062','D00B061','D00B072','D00B082',
+),
+         PHENOMENE= 'MECANIQUE',
+         MODELISATION= 'DIS_TR'),
+
+))
+
+
+# DEFINITION DES MATERIAUX
+
+# Materiau bidon
+MAT0000 = DEFI_MATERIAU(
+    ELAS= _F( E= 2.1e+11, NU= 3.0e-01, RHO= 7850.0 ) )
+
+# Comportement du materiau : E240_ECRO_LINE.
+MAT0001 = DEFI_MATERIAU(
+   ELAS =_F( E= 2.100000e+11, NU= 3.000000e-01, RHO= 7.850000e+03,
+             ALPHA= 6.700000e-06),
+#   ECRO_LINE =_F( D_SIGM_EPSI=  1.0000000e+09 , SY=  2.4000000e+08 ) )
+   ECRO_LINE =_F( D_SIGM_EPSI=  1.0000000e+09 , SY=  3.0000000e+08 ) )
+
+# Comportement du materiau : ACIER_ELAS.
+MAT0002 = DEFI_MATERIAU(
+   ELAS =_F( E= 2.100000e+11, NU= 3.000000e-01, RHO= 7.850000e+03,
+             ALPHA= 6.700000e-06) )
+
+# Materiau bidon pour tous les discrets
+MDI0001 = DEFI_MATERIAU(
+  ELAS=_F( E=2.10e+11, NU=0.30, RHO=7850.0 ));
+
+
+# -------------------------------------------------------
+
+# Affectation des materiaux
+CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO, 
+   AFFE=(
+# Pour les poutres ou les barres ou les cables
+# Elements avec le materiau : E240_ECRO_LINE.
+_F( GROUP_MA= ('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',
+),MATER= MAT0001 ),
+
+# Pour les assemblages boulonnes
+_F( MAILLE= ('D008022','D008032','D009022','D009032','D00A032','D00A042','D00A041','D00A052','D00A062',
+'D00A072','D00A082','D00B032','D00B042','D00B052','D00B062','D00B061','D00B072','D00B082',
+),MATER= MDI0001 ),
+))
+
+
+# LIAISONS CINEMATIQUES
+
+LIAISON = AFFE_CHAR_MECA( MODELE= MO,
+
+LIAISON_SOLIDE=( 
+# Ecriture de toutes les relations cinematiques comme cela doit etre fait pour eviter les doublons
+  _F( NOEUD = ('A008022','H00601',),),
+  _F( NOEUD = ('A008021','G00802',),),
+  _F( NOEUD = ('A008032','H00200',),),
+  _F( NOEUD = ('A008031','G00803',),),
+  _F( NOEUD = ('A009022','H00300',),),
+  _F( NOEUD = ('A009021','G00902',),),
+  _F( NOEUD = ('A009032','H00701',),),
+  _F( NOEUD = ('A009031','G00903',),),
+  _F( NOEUD = ('A00A032','H00101',),),
+  _F( NOEUD = ('A00A031','G00A03',),),
+  _F( NOEUD = ('B00A042','B00A041',),),
+  _F( NOEUD = ('A00A042','H00900',),),
+  _F( NOEUD = ('A00A041','G00A04',),),
+  _F( NOEUD = ('A00A052','H00500',),),
+  _F( NOEUD = ('A00A051','G00A05',),),
+  _F( NOEUD = ('A00A062','H00400',),),
+  _F( NOEUD = ('A00A061','G00A06',),),
+  _F( NOEUD = ('A00A072','H00700',),),
+  _F( NOEUD = ('A00A071','G00A07',),),
+  _F( NOEUD = ('A00A082','H00301',),),
+  _F( NOEUD = ('A00A081','G00A08',),),
+  _F( NOEUD = ('A00B032','H00100',),),
+  _F( NOEUD = ('A00B031','G00B03',),),
+  _F( NOEUD = ('A00B042','H00401',),),
+  _F( NOEUD = ('A00B041','G00B04',),),
+  _F( NOEUD = ('A00B052','H00501',),),
+  _F( NOEUD = ('A00B051','G00B05',),),
+  _F( NOEUD = ('B00B062','B00B061',),),
+  _F( NOEUD = ('A00B062','H00800',),),
+  _F( NOEUD = ('A00B061','G00B06',),),
+  _F( NOEUD = ('A00B072','H00600',),),
+  _F( NOEUD = ('A00B071','G00B07',),),
+  _F( NOEUD = ('A00B082','H00201',),),
+  _F( NOEUD = ('A00B081','G00B08',),),
+),
+)
+
+# AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
+
+CAREL = AFFE_CARA_ELEM( MODELE= MO,
+
+# Sections de spref /AE45X3 de modele POU_D_TGM
+POUTRE=(
+   _F(SECTION= 'GENERALE', GROUP_MA=('S00B','S00A',),
+   CARA= ( 'A','IY','IZ','AY',
+           'AZ','EY','EZ','JX',
+           'JG','IYR2','IZR2'),
+   VALE= ( 2.638081e-04,8.013486e-08,2.087844e-08,2.419087e+00,
+           2.207830e+00,1.459718e-02,0.000000e+00,8.404596e-10,
+           1.243656e-13,6.307966e-10,0.000000e+00 ),
+   PREC_AIRE=5.0E-2,
+#   PREC_INERTIE=1.0E-2, 
+   ),
+
+# Sections de spref /AE40X4 de modele POU_D_TGM
+   _F(SECTION= 'GENERALE', GROUP_MA=('S009','S008',),
+   CARA= ( 'A','IY','IZ','AY',
+           'AZ','EY','EZ','JX',
+           'JG','IYR2','IZR2'),
+   VALE= ( 3.077706e-04,7.077171e-08,1.855685e-08,2.394947e+00,
+           2.118989e+00,1.233794e-02,0.000000e+00,1.784041e-09,
+           1.871860e-13,4.829759e-10,0.000000e+00 ),
+   PREC_AIRE=5.0E-2,
+#   PREC_INERTIE=1.0E-2, 
+),
+
+# Sections de spref /AE35X3.5 de modele POU_D_TGM
+   _F(SECTION= 'GENERALE', GROUP_MA=('S007','S006','S005','S004','S003','S002',),
+   CARA= ( 'A','IY','IZ','AY',
+           'AZ','EY','EZ','JX',
+           'JG','IYR2','IZR2'),
+   VALE= ( 2.344277e-04,4.210543e-08,1.095197e-08,2.359465e+00,
+           2.163107e+00,1.108092e-02,0.000000e+00,9.865361e-10,
+           8.685007e-14,2.482771e-10,0.000000e+00 ),
+   PREC_AIRE=5.0E-2,
+#   PREC_INERTIE=1.0E-2, 
+   ),
+
+# Sections de spref /PL150X10 de modele POU_D_TGM
+   _F(SECTION= 'GENERALE', GROUP_MA=('S001',),
+   CARA= ( 'A','IY','IZ','AY',
+           'AZ','EY','EZ','JX',
+           'JG','IYR2','IZR2'),
+   VALE= ( 1.500000e-03,1.250000e-08,2.812500e-06,1.199528e+00,
+           1.140625e+00,0.000000e+00,0.000000e+00,4.485455e-08,
+           2.589481e-11,0.000000e+00,0.000000e+00 ),
+   PREC_AIRE=5.0E-2,
+#   PREC_INERTIE=1.0E-2, 
+),
+),
+
+
+AFFE_FIBRE = (
+#  Sections: /AE45X3, modele: POU_D_TGM, Epa: 2, lar: 10
+  _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+      GROUP_MA = ('S00B','S00A',),
+      VALE = ( 
+# Fibres : 44
+        -1.33459e-02,   3.07591e-03,   6.30000e-06,
+        -1.03761e-02,   6.04576e-03,   6.30000e-06,
+        -7.40624e-03,   9.01561e-03,   6.30000e-06,
+        -4.43639e-03,   1.19855e-02,   6.30000e-06,
+        -1.46654e-03,   1.49553e-02,   6.30000e-06,
+         1.50331e-03,   1.79252e-02,   6.30000e-06,
+         4.47316e-03,   2.08950e-02,   6.30000e-06,
+         7.44301e-03,   2.38649e-02,   6.30000e-06,
+         1.04129e-02,   2.68347e-02,   6.30000e-06,
+         1.33827e-02,   2.98046e-02,   6.30000e-06,
+        -1.22853e-02,   2.01525e-03,   6.30000e-06,
+        -9.31542e-03,   4.98510e-03,   6.30000e-06,
+        -6.34558e-03,   7.95495e-03,   6.30000e-06,
+        -3.37573e-03,   1.09248e-02,   6.30000e-06,
+        -4.05879e-04,   1.38946e-02,   6.30000e-06,
+         2.56397e-03,   1.68645e-02,   6.30000e-06,
+         5.53382e-03,   1.98343e-02,   6.30000e-06,
+         8.50367e-03,   2.28042e-02,   6.30000e-06,
+         1.14735e-02,   2.57740e-02,   6.30000e-06,
+         1.44434e-02,   2.87439e-02,   6.30000e-06,
+        -1.33459e-02,  -3.07591e-03,   6.30000e-06,
+        -1.22853e-02,  -2.01525e-03,   6.30000e-06,
+        -1.03761e-02,  -6.04576e-03,   6.30000e-06,
+        -9.31542e-03,  -4.98510e-03,   6.30000e-06,
+        -7.40624e-03,  -9.01561e-03,   6.30000e-06,
+        -6.34558e-03,  -7.95495e-03,   6.30000e-06,
+        -4.43639e-03,  -1.19855e-02,   6.30000e-06,
+        -3.37573e-03,  -1.09248e-02,   6.30000e-06,
+        -1.46654e-03,  -1.49553e-02,   6.30000e-06,
+        -4.05879e-04,  -1.38946e-02,   6.30000e-06,
+         1.50331e-03,  -1.79252e-02,   6.30000e-06,
+         2.56397e-03,  -1.68645e-02,   6.30000e-06,
+         4.47316e-03,  -2.08950e-02,   6.30000e-06,
+         5.53382e-03,  -1.98343e-02,   6.30000e-06,
+         7.44301e-03,  -2.38649e-02,   6.30000e-06,
+         8.50367e-03,  -2.28042e-02,   6.30000e-06,
+         1.04129e-02,  -2.68347e-02,   6.30000e-06,
+         1.14735e-02,  -2.57740e-02,   6.30000e-06,
+         1.33827e-02,  -2.98046e-02,   6.30000e-06,
+         1.44434e-02,  -2.87439e-02,   6.30000e-06,
+        -1.64218e-02,  -3.68643e-13,   2.25000e-06,
+        -1.53612e-02,   1.06066e-03,   2.25000e-06,
+        -1.53612e-02,  -1.06066e-03,   2.25000e-06,
+        -1.43005e-02,  -3.21023e-13,   2.25000e-06,
+# Points particuliers : 5
+        -1.74825e-02,  -3.92452e-13,   0.00000e+00,
+         1.43373e-02,   3.18198e-02,   0.00000e+00,
+         1.64586e-02,   2.96985e-02,   0.00000e+00,
+         1.43373e-02,  -3.18198e-02,   0.00000e+00,
+         1.64586e-02,  -2.96985e-02,   0.00000e+00,
+           ), ),
+
+#  Sections: /AE40X4, modele: POU_D_TGM, Epa: 2, lar: 10
+  _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+      GROUP_MA = ('S009','S008',),
+      VALE = ( 
+# Fibres : 44
+        -1.14184e-02,   3.39411e-03,   7.20000e-06,
+        -8.87278e-03,   5.93970e-03,   7.20000e-06,
+        -6.32719e-03,   8.48528e-03,   7.20000e-06,
+        -3.78161e-03,   1.10309e-02,   7.20000e-06,
+        -1.23602e-03,   1.35765e-02,   7.20000e-06,
+         1.30956e-03,   1.61220e-02,   7.20000e-06,
+         3.85515e-03,   1.86676e-02,   7.20000e-06,
+         6.40073e-03,   2.12132e-02,   7.20000e-06,
+         8.94631e-03,   2.37588e-02,   7.20000e-06,
+         1.14919e-02,   2.63044e-02,   7.20000e-06,
+        -1.00041e-02,   1.97990e-03,   7.20000e-06,
+        -7.45856e-03,   4.52548e-03,   7.20000e-06,
+        -4.91298e-03,   7.07107e-03,   7.20000e-06,
+        -2.36739e-03,   9.61665e-03,   7.20000e-06,
+         1.78191e-04,   1.21622e-02,   7.20000e-06,
+         2.72378e-03,   1.47078e-02,   7.20000e-06,
+         5.26936e-03,   1.72534e-02,   7.20000e-06,
+         7.81494e-03,   1.97990e-02,   7.20000e-06,
+         1.03605e-02,   2.23446e-02,   7.20000e-06,
+         1.29061e-02,   2.48902e-02,   7.20000e-06,
+        -1.14184e-02,  -3.39411e-03,   7.20000e-06,
+        -1.00041e-02,  -1.97990e-03,   7.20000e-06,
+        -8.87278e-03,  -5.93970e-03,   7.20000e-06,
+        -7.45856e-03,  -4.52548e-03,   7.20000e-06,
+        -6.32719e-03,  -8.48528e-03,   7.20000e-06,
+        -4.91298e-03,  -7.07107e-03,   7.20000e-06,
+        -3.78161e-03,  -1.10309e-02,   7.20000e-06,
+        -2.36739e-03,  -9.61665e-03,   7.20000e-06,
+        -1.23602e-03,  -1.35765e-02,   7.20000e-06,
+         1.78191e-04,  -1.21622e-02,   7.20000e-06,
+         1.30956e-03,  -1.61220e-02,   7.20000e-06,
+         2.72378e-03,  -1.47078e-02,   7.20000e-06,
+         3.85515e-03,  -1.86676e-02,   7.20000e-06,
+         5.26936e-03,  -1.72534e-02,   7.20000e-06,
+         6.40073e-03,  -2.12132e-02,   7.20000e-06,
+         7.81494e-03,  -1.97990e-02,   7.20000e-06,
+         8.94631e-03,  -2.37588e-02,   7.20000e-06,
+         1.03605e-02,  -2.23446e-02,   7.20000e-06,
+         1.14919e-02,  -2.63044e-02,   7.20000e-06,
+         1.29061e-02,  -2.48902e-02,   7.20000e-06,
+        -1.48125e-02,  -3.32515e-13,   4.00000e-06,
+        -1.33983e-02,   1.41421e-03,   4.00000e-06,
+        -1.33983e-02,  -1.41421e-03,   4.00000e-06,
+        -1.19840e-02,  -2.69021e-13,   4.00000e-06,
+# Points particuliers : 5
+        -1.62267e-02,  -3.64262e-13,   0.00000e+00,
+         1.20576e-02,   2.82843e-02,   0.00000e+00,
+         1.48860e-02,   2.54558e-02,   0.00000e+00,
+         1.20576e-02,  -2.82843e-02,   0.00000e+00,
+         1.48860e-02,  -2.54558e-02,   0.00000e+00,
+           ), ),
+
+#  Sections: /AE35X3.5, modele: POU_D_TGM, Epa: 2, lar: 10
+  _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+      GROUP_MA = ('S007','S006','S005','S004','S003','S002',),
+      VALE = ( 
+# Fibres : 44
+        -9.99142e-03,   2.96985e-03,   5.51250e-06,
+        -7.76403e-03,   5.19723e-03,   5.51250e-06,
+        -5.53665e-03,   7.42462e-03,   5.51250e-06,
+        -3.30926e-03,   9.65201e-03,   5.51250e-06,
+        -1.08187e-03,   1.18794e-02,   5.51250e-06,
+         1.14551e-03,   1.41068e-02,   5.51250e-06,
+         3.37290e-03,   1.63342e-02,   5.51250e-06,
+         5.60029e-03,   1.85616e-02,   5.51250e-06,
+         7.82767e-03,   2.07889e-02,   5.51250e-06,
+         1.00551e-02,   2.30163e-02,   5.51250e-06,
+        -8.75398e-03,   1.73241e-03,   5.51250e-06,
+        -6.52660e-03,   3.95980e-03,   5.51250e-06,
+        -4.29921e-03,   6.18718e-03,   5.51250e-06,
+        -2.07182e-03,   8.41457e-03,   5.51250e-06,
+         1.55563e-04,   1.06420e-02,   5.51250e-06,
+         2.38295e-03,   1.28693e-02,   5.51250e-06,
+         4.61034e-03,   1.50967e-02,   5.51250e-06,
+         6.83772e-03,   1.73241e-02,   5.51250e-06,
+         9.06511e-03,   1.95515e-02,   5.51250e-06,
+         1.12925e-02,   2.17789e-02,   5.51250e-06,
+        -9.99142e-03,  -2.96985e-03,   5.51250e-06,
+        -8.75398e-03,  -1.73241e-03,   5.51250e-06,
+        -7.76403e-03,  -5.19723e-03,   5.51250e-06,
+        -6.52660e-03,  -3.95980e-03,   5.51250e-06,
+        -5.53665e-03,  -7.42462e-03,   5.51250e-06,
+        -4.29921e-03,  -6.18718e-03,   5.51250e-06,
+        -3.30926e-03,  -9.65201e-03,   5.51250e-06,
+        -2.07182e-03,  -8.41457e-03,   5.51250e-06,
+        -1.08187e-03,  -1.18794e-02,   5.51250e-06,
+         1.55563e-04,  -1.06420e-02,   5.51250e-06,
+         1.14551e-03,  -1.41068e-02,   5.51250e-06,
+         2.38295e-03,  -1.28693e-02,   5.51250e-06,
+         3.37290e-03,  -1.63342e-02,   5.51250e-06,
+         4.61034e-03,  -1.50967e-02,   5.51250e-06,
+         5.60029e-03,  -1.85616e-02,   5.51250e-06,
+         6.83772e-03,  -1.73241e-02,   5.51250e-06,
+         7.82767e-03,  -2.07889e-02,   5.51250e-06,
+         9.06511e-03,  -1.95515e-02,   5.51250e-06,
+         1.00551e-02,  -2.30163e-02,   5.51250e-06,
+         1.12925e-02,  -2.17789e-02,   5.51250e-06,
+        -1.29613e-02,  -2.90959e-13,   3.06250e-06,
+        -1.17238e-02,   1.23744e-03,   3.06250e-06,
+        -1.17238e-02,  -1.23744e-03,   3.06250e-06,
+        -1.04864e-02,  -2.35401e-13,   3.06250e-06,
+# Points particuliers : 5
+        -1.41987e-02,  -3.18736e-13,   0.00000e+00,
+         1.05500e-02,   2.47487e-02,   0.00000e+00,
+         1.30249e-02,   2.22739e-02,   0.00000e+00,
+         1.05500e-02,  -2.47487e-02,   0.00000e+00,
+         1.30249e-02,  -2.22739e-02,   0.00000e+00,
+           ), ),
+
+#  Sections: /PL150X10, modele: POU_D_TGM, Epa: 2, lar: 10
+  _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+      GROUP_MA = ('S001',),
+      VALE = ( 
+# Fibres : 40
+        -6.75000e-02,  -3.75000e-03,   3.75000e-05,
+        -6.75000e-02,  -1.25000e-03,   3.75000e-05,
+        -6.75000e-02,   1.25000e-03,   3.75000e-05,
+        -6.75000e-02,   3.75000e-03,   3.75000e-05,
+        -5.25000e-02,  -3.75000e-03,   3.75000e-05,
+        -5.25000e-02,  -1.25000e-03,   3.75000e-05,
+        -5.25000e-02,   1.25000e-03,   3.75000e-05,
+        -5.25000e-02,   3.75000e-03,   3.75000e-05,
+        -3.75000e-02,  -3.75000e-03,   3.75000e-05,
+        -3.75000e-02,  -1.25000e-03,   3.75000e-05,
+        -3.75000e-02,   1.25000e-03,   3.75000e-05,
+        -3.75000e-02,   3.75000e-03,   3.75000e-05,
+        -2.25000e-02,  -3.75000e-03,   3.75000e-05,
+        -2.25000e-02,  -1.25000e-03,   3.75000e-05,
+        -2.25000e-02,   1.25000e-03,   3.75000e-05,
+        -2.25000e-02,   3.75000e-03,   3.75000e-05,
+        -7.50000e-03,  -3.75000e-03,   3.75000e-05,
+        -7.50000e-03,  -1.25000e-03,   3.75000e-05,
+        -7.50000e-03,   1.25000e-03,   3.75000e-05,
+        -7.50000e-03,   3.75000e-03,   3.75000e-05,
+         7.50000e-03,  -3.75000e-03,   3.75000e-05,
+         7.50000e-03,  -1.25000e-03,   3.75000e-05,
+         7.50000e-03,   1.25000e-03,   3.75000e-05,
+         7.50000e-03,   3.75000e-03,   3.75000e-05,
+         2.25000e-02,  -3.75000e-03,   3.75000e-05,
+         2.25000e-02,  -1.25000e-03,   3.75000e-05,
+         2.25000e-02,   1.25000e-03,   3.75000e-05,
+         2.25000e-02,   3.75000e-03,   3.75000e-05,
+         3.75000e-02,  -3.75000e-03,   3.75000e-05,
+         3.75000e-02,  -1.25000e-03,   3.75000e-05,
+         3.75000e-02,   1.25000e-03,   3.75000e-05,
+         3.75000e-02,   3.75000e-03,   3.75000e-05,
+         5.25000e-02,  -3.75000e-03,   3.75000e-05,
+         5.25000e-02,  -1.25000e-03,   3.75000e-05,
+         5.25000e-02,   1.25000e-03,   3.75000e-05,
+         5.25000e-02,   3.75000e-03,   3.75000e-05,
+         6.75000e-02,  -3.75000e-03,   3.75000e-05,
+         6.75000e-02,  -1.25000e-03,   3.75000e-05,
+         6.75000e-02,   1.25000e-03,   3.75000e-05,
+         6.75000e-02,   3.75000e-03,   3.75000e-05,
+# Points particuliers : 4
+        -7.50000e-02,  -5.00000e-03,   0.00000e+00,
+        -7.50000e-02,   5.00000e-03,   0.00000e+00,
+         7.50000e-02,   5.00000e-03,   0.00000e+00,
+         7.50000e-02,  -5.00000e-03,   0.00000e+00,
+           ), ),
+),
+
+DISCRET=(
+   _F(MAILLE= 'D008022', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (1.112266e+11,1.112266e+11,1.112266e+11,
+             1.800278e+05,1.997735e+02,7.990942e+07) ),
+   _F(MAILLE= 'D008032', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (8.526878e+10,8.526878e+10,8.526878e+10,
+             1.380132e+05,1.531508e+02,6.126032e+07) ),
+   _F(MAILLE= 'D009022', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (8.526893e+10,8.526893e+10,8.526893e+10,
+             1.380135e+05,1.531511e+02,6.126042e+07) ),
+   _F(MAILLE= 'D009032', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (1.112266e+11,1.112266e+11,1.112266e+11,
+             1.800278e+05,1.997735e+02,7.990942e+07) ),
+   _F(MAILLE= 'D00A032', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (2.605536e+12,2.605536e+12,2.605536e+12,
+             2.996671e+07,2.171280e+06,8.685121e+07) ),
+   _F(MAILLE= 'D00A042', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (4.811553e+10,4.811553e+10,4.811553e+10,
+             1.072728e+05,1.106415e+06,4.425658e+07) ),
+   _F(MAILLE= 'D00A041', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (3.898649e+10,3.898649e+10,3.898649e+10,
+             4.777157e+04,1.184261e+06,4.737045e+07) ),
+   _F(MAILLE= 'D00A052', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (1.473700e+11,1.473700e+11,1.473700e+11,
+             2.385283e+05,2.646905e+02,1.058762e+08) ),
+   _F(MAILLE= 'D00A062', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (6.935571e+10,6.935571e+10,6.935571e+10,
+             1.122569e+05,1.245694e+02,4.982776e+07) ),
+   _F(MAILLE= 'D00A072', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (1.112266e+11,1.112266e+11,1.112266e+11,
+             1.800278e+05,1.997735e+02,7.990942e+07) ),
+   _F(MAILLE= 'D00A082', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (8.526893e+10,8.526893e+10,8.526893e+10,
+             1.380135e+05,1.531511e+02,6.126042e+07) ),
+   _F(MAILLE= 'D00B032', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (2.605536e+12,2.605536e+12,2.605536e+12,
+             2.996671e+07,2.171280e+06,8.685121e+07) ),
+   _F(MAILLE= 'D00B042', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (6.935571e+10,6.935571e+10,6.935571e+10,
+             1.122569e+05,1.245694e+02,4.982776e+07) ),
+   _F(MAILLE= 'D00B052', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (1.473700e+11,1.473700e+11,1.473700e+11,
+             2.385283e+05,2.646905e+02,1.058762e+08) ),
+   _F(MAILLE= 'D00B062', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (4.811553e+10,4.811553e+10,4.811553e+10,
+             1.072728e+05,1.106415e+06,4.425658e+07) ),
+   _F(MAILLE= 'D00B061', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (3.898649e+10,3.898649e+10,3.898649e+10,
+             4.777157e+04,1.184261e+06,4.737045e+07) ),
+   _F(MAILLE= 'D00B072', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (1.112266e+11,1.112266e+11,1.112266e+11,
+             1.800278e+05,1.997735e+02,7.990942e+07) ),
+   _F(MAILLE= 'D00B082', CARA= 'K_TR_D_L',
+      REPERE= 'LOCAL',
+      VALE= (8.526878e+10,8.526878e+10,8.526878e+10,
+             1.380132e+05,1.531508e+02,6.126032e+07) ),
+),
+
+ORIENTATION=(
+# Pour les poutres
+   _F(GROUP_MA= 'S00B', CARA= 'ANGL_VRIL',
+      VALE= 1.350000e+02 ),
+   _F(GROUP_MA= 'S00A', CARA= 'ANGL_VRIL',
+      VALE= 4.500000e+01 ),
+   _F(GROUP_MA= 'S009', CARA= 'ANGL_VRIL',
+      VALE= -1.347200e+02 ),
+   _F(GROUP_MA= 'S008', CARA= 'ANGL_VRIL',
+      VALE= -4.528000e+01 ),
+   _F(GROUP_MA= 'S007', CARA= 'ANGL_VRIL',
+      VALE= -4.488000e+01 ),
+   _F(GROUP_MA= 'S006', CARA= 'ANGL_VRIL',
+      VALE= 2.248810e+02 ),
+   _F(GROUP_MA= 'S005', CARA= 'ANGL_VRIL',
+      VALE= -1.350000e+02 ),
+   _F(GROUP_MA= 'S004', CARA= 'ANGL_VRIL',
+      VALE= -4.500000e+01 ),
+   _F(GROUP_MA= 'S003', CARA= 'ANGL_VRIL',
+      VALE= 4.500000e+01 ),
+   _F(GROUP_MA= 'S002', CARA= 'ANGL_VRIL',
+      VALE= 1.349500e+02 ),
+   _F(GROUP_MA= 'S001', CARA= 'ANGL_VRIL',
+      VALE= -1.800000e+02 ),
+
+# Pour les discrets
+   _F(MAILLE= 'D008022', CARA= 'ANGL_NAUT',
+      VALE=( -1.707375e+02, -5.852900e+01, 1.798810e+02) ),
+   _F(MAILLE= 'D008032', CARA= 'ANGL_NAUT',
+      VALE=( -1.707565e+02, 4.418879e+01, 1.799500e+02) ),
+   _F(MAILLE= 'D009022', CARA= 'ANGL_NAUT',
+      VALE=( 1.707566e+02, 4.418858e+01, 0.000000e+00) ),
+   _F(MAILLE= 'D009032', CARA= 'ANGL_NAUT',
+      VALE=( 1.707375e+02, -5.852893e+01, 1.200000e-01) ),
+   _F(MAILLE= 'D00A032', CARA= 'ANGL_NAUT',
+      VALE=( 9.000000e+01, -0.000000e+00, 9.000000e+01) ),
+   _F(MAILLE= 'D00A042', CARA= 'ANGL_NAUT',
+      VALE=( 1.707555e+02, -2.362049e+01, -1.797200e+02) ),
+   _F(MAILLE= 'D00A041', CARA= 'ANGL_NAUT',
+      VALE=( -9.249916e+00, -0.000000e+00, 1.800000e+02) ),
+   _F(MAILLE= 'D00A052', CARA= 'ANGL_NAUT',
+      VALE=( -9.000000e+01, -0.000000e+00, -9.000000e+01) ),
+   _F(MAILLE= 'D00A062', CARA= 'ANGL_NAUT',
+      VALE=( -1.405470e+02, -0.000000e+00, -9.000000e+01) ),
+   _F(MAILLE= 'D00A072', CARA= 'ANGL_NAUT',
+      VALE=( 1.707375e+02, -5.852893e+01, 1.200000e-01) ),
+   _F(MAILLE= 'D00A082', CARA= 'ANGL_NAUT',
+      VALE=( 1.707566e+02, 4.418858e+01, 0.000000e+00) ),
+   _F(MAILLE= 'D00B032', CARA= 'ANGL_NAUT',
+      VALE=( 9.000000e+01, -0.000000e+00, 9.000000e+01) ),
+   _F(MAILLE= 'D00B042', CARA= 'ANGL_NAUT',
+      VALE=( -1.405470e+02, -0.000000e+00, -9.000000e+01) ),
+   _F(MAILLE= 'D00B052', CARA= 'ANGL_NAUT',
+      VALE=( -9.000000e+01, -0.000000e+00, -9.000000e+01) ),
+   _F(MAILLE= 'D00B062', CARA= 'ANGL_NAUT',
+      VALE=( -1.707555e+02, -2.362049e+01, -2.800000e-01) ),
+   _F(MAILLE= 'D00B061', CARA= 'ANGL_NAUT',
+      VALE=( 9.249916e+00, -0.000000e+00, 3.600000e+02) ),
+   _F(MAILLE= 'D00B072', CARA= 'ANGL_NAUT',
+      VALE=( -1.707375e+02, -5.852900e+01, 1.798810e+02) ),
+   _F(MAILLE= 'D00B082', CARA= 'ANGL_NAUT',
+      VALE=( -1.707565e+02, 4.418879e+01, 1.799500e+02) ),
+  ),
+)
+
+
+# ----------------------------------------------------------------------
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='MEKELEC',
+                               TOUT='OUI',),
+              CREA_GROUP_NO=_F(GROUP_MA='MEKELEC',),);
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(NOEUD='H00101',
+                                NOM='PC3',),
+                             _F(NOEUD='H00100',
+                                 NOM='PC4',),),);
+# ----------------------------------------------------------------------
+# --------------- DEFINITION DES CHARGEMENTS VARIABLES -----------------
+
+TEMPS=DEFI_LIST_REEL(DEBUT=0.000000e+00,
+                     INTERVALLE=(_F(JUSQU_A=0.75,
+                                   NOMBRE=75,),
+                                 _F(JUSQU_A=2.0,
+                                   PAS=0.005,),),);
+
+FORCT_F=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.,0.,1.0,16200.0,),
+                      PROL_DROITE='LINEAIRE',);
+# ----------------------------------------------------------------------
+# ----------------------- DEPLACEMENTS ---------------------------------
+
+DEPLT=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(NOEUD=('G00B02','G00A02','G00901','G00801',),
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,),);
+# ----------------------------------------------------------------------
+# --------------------------- EFFORTS ----------------------------------
+
+FORCT=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=_F(NOEUD='H00101',
+                                     FY=+1.0,),);
+# ----------------------------------------------------------------------
+# **********************************************************************
+#                  C A L C U L   N O N   L I N E A I R E
+# **********************************************************************
+NBGL = 50;
+
+RESGL = 1e-06;
+
+# ----------------------------------------------------------------------
+
+MEKEFOR=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=CAREL,
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                             _F(CHARGE=DEPLT,),
+                             _F(CHARGE=FORCT,
+                                TYPE_CHARGE='FIXE_PILO',),),
+                      COMP_INCR=(_F(RELATION='ELAS',
+                                    DEFORMATION='PETIT_REAC',
+                                    MAILLE=
+                                    ('D008022','D008032','D009022','D009032','D00A032',
+                                             'D00A042','D00A041','D00A052','D00A062','D00A072','D00A082','D00B032','D00B042',
+                                             'D00B052','D00B062','D00B061','D00B072','D00B082',),),
+                                 _F(RELATION='VMIS_ISOT_LINE',
+                                    DEFORMATION='REAC_GEOM',
+                                    GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
+                      INCREMENT=_F(LIST_INST=TEMPS,
+                                   INST_FIN=1.01,
+                                   SUBD_PAS=4,
+                                   SUBD_PAS_MINI=1.0E-6,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      PILOTAGE=_F(TYPE='LONG_ARC',
+                                  COEF_MULT=10.0,
+                                  SELECTION='ANGL_INCR_DEPL',
+                                  GROUP_NO='MEKELEC',
+                                  NOM_CMP=('DX','DY','DZ',),),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
+                                     ITER_GLOB_MAXI=NBGL,),
+                      SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+# ----------------------------------------------------
+# Pour : BARRE, POU_D_TGM, CABLE
+
+#MEKEFOR=CALC_ELEM(reuse =MEKEFOR,
+#                  MODELE=MO,
+#                  CHAM_MATER=CHMAT,
+#                  CARA_ELEM=CAREL,
+#                  RESULTAT=MEKEFOR,
+#                  TOUT_ORDRE='OUI',
+#                  GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),
+#                  OPTION='SIEF_ELNO_ELGA',);
+# ----------------------------------------------------
+
+#MEKEFOR=CALC_NO(reuse =MEKEFOR,
+#                RESULTAT=MEKEFOR,
+#                TOUT_ORDRE='OUI',
+#                OPTION='FORC_NODA',
+#                MODELE=MO,
+#                CHAM_MATER=CHMAT,
+#                CARA_ELEM=CAREL,);
+
+#IMPR_RESU(MODELE=MO,
+#          FORMAT='CASTEM',
+#          RESU=_F(MAILLAGE=MA,
+#                  RESULTAT=MEKEFOR,
+#                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',),),
+#          INFO=2,);
+# ----------------------------------------------------
+
+#IMPR_RESU(FORMAT='RESULTAT',
+#          RESU=(_F(RESULTAT=MEKEFOR,
+#                   NOM_CHAM='FORC_NODA',
+#                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),
+#                   NOEUD=('G00B02','G00A02','G00901','G00801',),),
+#                _F(RESULTAT=MEKEFOR,
+#                   NOM_CHAM='DEPL',
+#                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),
+#                   NOEUD='H00101',),),);
+
+ETA_PILO=RECU_FONCTION(RESULTAT=MEKEFOR,
+                       NOM_PARA_RESU='ETA_PILOTAGE',);
+
+DEP_TETE=RECU_FONCTION(RESULTAT=MEKEFOR,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DY',
+                       NOEUD='H00101',);
+
+# --------------- RESULTATS EXPERIMENTAUX ---------------
+ETA_REF=DEFI_LIST_REEL(VALE=(0.,2100.,2440.,3700.,5100.,6600.,6600.,8140.,9600.,11100.,12700.,14100.,14600.,
+15050.,15550.,15550.,15940.,15940.,16200.,),)
+TET_REF=DEFI_LIST_REEL(VALE=(0.,0.001,0.0015,0.0021,0.0028,0.00374,0.0038,0.0047,0.006,0.0071,0.0089,0.0112,0.0119,
+0.0133,0.0147,0.0166,0.0176,0.0199,0.025,),)
+# ----------------------------------------------------
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              COURBE=(_F(FONC_X=DEP_TETE,
+                        FONC_Y=ETA_PILO,),
+                      _F(LIST_PARA=TET_REF,
+                         LIST_RESU=ETA_REF,),),);
+
+# --------------- TEST SUR LA CHARGE DE RUINE ESTIMEE ---------------
+
+TAB_PILO=RECU_TABLE(CO=MEKEFOR,
+                    NOM_PARA='ETA_PILOTAGE',);
+
+TEST_TABLE(TABLE=TAB_PILO,
+           NOM_PARA='ETA_PILOTAGE',
+           TYPE_TEST='MAX',
+           VALE=16200.0,
+           CRITERE='RELATIF',
+           PRECISION=0.2,
+           REFERENCE='SOURCE_EXTERNE',);
+
+TEST_TABLE(TABLE=TAB_PILO,
+           NOM_PARA='ETA_PILOTAGE',
+           TYPE_TEST='MAX',
+           VALE=1.9136190042416E+04,
+           CRITERE='RELATIF',
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.3.2',);
+FIN();

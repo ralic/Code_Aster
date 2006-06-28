@@ -1,0 +1,161 @@
+# MODIF  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+# TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSLL105E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+
+PRE_GIBI();
+
+mail=LIRE_MAILLAGE();
+
+PRE_GIBI(UNITE_GIBI=18,
+         UNITE_MAILLAGE=21,);
+
+ma_sect=LIRE_MAILLAGE(UNITE=21,);
+
+modele=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_TGM',),);
+
+cara_pou=AFFE_CARA_ELEM(MODELE=modele,
+                        POUTRE=_F(GROUP_MA='POUT',
+                                  SECTION='GENERALE',
+                                  CARA=('A','IY','IZ','AY','AZ','JX','JG',),
+                                  VALE=(18.0,0.54,1350.0,1.2,1.2,2.16,40.5,),),
+                        AFFE_SECT=_F(GROUP_MA='POUT',
+                                     GROUP_MA_SECT='SECT',
+                                     MAILLAGE_SECT=ma_sect,
+                                     COOR_AXE_POUTRE=(0.,0.,),),);
+
+alu=DEFI_MATERIAU(ELAS=_F(E=71240,
+                          NU=0.3,),);
+
+ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=alu,),);
+
+encast=AFFE_CHAR_MECA(MODELE=modele,
+                      DDL_IMPO=_F(GROUP_NO='A',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),);
+
+fonc=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,2.0,2.0,),);
+
+list=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=1.0,
+                                   NOMBRE=10,),
+                _F(JUSQU_A=1.07,
+                   PAS=0.01,),
+                _F(JUSQU_A=1.09,
+                   PAS=0.001,),),);
+
+effort=AFFE_CHAR_MECA(MODELE=modele,
+                      FORCE_NODALE=_F(GROUP_NO='C',
+                                      FX=1,),);
+
+res=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='REAC_GEOM',),
+                  INCREMENT=_F(LIST_INST=list,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  CRIT_FLAMB=_F(),
+                  );
+
+TEMPO=RECU_FONCTION(RESULTAT=res,
+                    NOM_PARA_RESU='CHAR_CRIT',);
+    
+CH_CRIT=CREA_TABLE(FONCTION=_F(FONCTION=TEMPO,),);
+
+TEST_TABLE(TABLE=CH_CRIT,
+           NOM_PARA='INST',
+           FILTRE=_F(NOM_PARA='CHAR_CRI',
+                     CRIT_COMP='ABS_MINI',),
+           VALE=1.088,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',);
+
+effort2=AFFE_CHAR_MECA(MODELE=modele,
+                      FORCE_NODALE=_F(GROUP_NO='C',
+                                      FX=-1,),);
+
+list2=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=0.6,
+                                   NOMBRE=6,),
+                                _F(JUSQU_A=0.67,
+                                   PAS=0.01,),
+                                _F(JUSQU_A=0.69,
+                                   PAS=0.001,),),);
+
+res2=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort2,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='REAC_GEOM',),
+                  INCREMENT=_F(LIST_INST=list2,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  CRIT_FLAMB=_F(),
+                  );
+
+TEMPO2=RECU_FONCTION(RESULTAT=res2,
+                    NOM_PARA_RESU='CHAR_CRIT',);
+    
+CH_CRIT2=CREA_TABLE(FONCTION=_F(FONCTION=TEMPO2,),);
+
+TEST_TABLE(TABLE=CH_CRIT2,
+           NOM_PARA='INST',
+           FILTRE=_F(NOM_PARA='CHAR_CRI',
+                     CRIT_COMP='ABS_MINI',),
+           VALE=0.68,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',);
+
+FIN();

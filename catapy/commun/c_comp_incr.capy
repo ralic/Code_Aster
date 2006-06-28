@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMUN  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -307,7 +307,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            ZIRC            =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
 
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",
-                             into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL")),
+                             into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL","REAC_GEOM")),
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
            ALGO_1D         =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),

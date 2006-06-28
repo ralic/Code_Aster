@@ -1,14 +1,14 @@
-      SUBROUTINE XPTFON(NOMA,NMAFON,CNSLT,CNSLN,JMAFON,NXPTFF,
-     &                                               JFON,NFON,ARMIN)
+      SUBROUTINE XPTFON(NOMA,NMAFON,CNSLT,CNSLN,JMAFON,NXPTFF,JFON,NFON,
+     &                                               JBORD,NPTBOR,ARMIN)
       IMPLICIT NONE 
 
-      INTEGER       NMAFON,JMAFON,JFON,NFON,NXPTFF
+      INTEGER       NMAFON,JMAFON,JFON,NFON,NXPTFF,JBORD,NPTBOR
       REAL*8        ARMIN  
       CHARACTER*8   NOMA
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/06/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,16 +29,18 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C                      
 C       RECHERCHE DES POINTS DU FOND DE FISSURE DANS LE CADRE DE XFEM
 C     
-C  ENTRESS : 
+C  ENTREES : 
 C     NOMA         :    NOM DE L'OBJET MAILLAGE
 C     NMAFON       :    NOMBRE DE MAILLES DE LA ZONE FOND DE FISSURE
 C     JMAFON       :    MAILLES DE LA ZONE FOND DE FISSURE
 C     NXPTFF       :    NOMBRE MAXIMUM DE POINTS DU FOND DE FISSURE
 C     CNSLT,CNSLN  :    LEVEL-SETS
+C     JBORD        :    ADRESSE DE L'ATTRIBUT LOGIQUE 'POINT DE BORD'
 C
 C  SORTIES : 
 C     JFON         :   ADRESSE DES POINTS DU FOND DE FISSURE
 C     NFON         :   NOMBRE DE POINTS DU FOND DE FISSURE
+C     NPTFON       :   NOMBRE DE POINTS 'DE BORD' DU FOND DE FISSURE
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -59,9 +61,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER         IN,IMA,IFT,I,J,IBID,IRET,ITYPMA,IBID2(6,4)
+      INTEGER         IN,IMA,IFT,I,J,IBID,IRET,ITYPMA,IBID2(6,4),NDIM
       INTEGER         NMAABS,FT(12,3),NBFT,NA,NB,NC,NUNOA,NUNOB,NUNOC
-      INTEGER         JCONX1,JCONX2,JCOOR,JLTSV,JLNSV,JMA
+      INTEGER         JCONX1,JCONX2,JCOOR,JLTSV,JLNSV,JMA,IPT,ADDIM
       REAL*8          LSTA,LSNA,LSTB,LSNB,LSTC,LSNC,L(2,2),DETL,LL(2,2)
       REAL*8          R8PREM,EPS1,EPS2,A(3),B(3),C(3),M(3),P(3),PADIST
       REAL*8          R8B
@@ -70,7 +72,7 @@ C
       CHARACTER*19    NOMT19,MAI
       CHARACTER*24    PARA
       CHARACTER*32    JEXATR
-      LOGICAL         DEJA   
+      LOGICAL         DEJA,FABORD,PTBORD
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -82,6 +84,9 @@ C ----------------------------------------------------------------------
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNSV)
       MAI=NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMA)
+      
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)
 
 C     ON RÉCUPÈRE LA VALEUR DE LA PLUS PETITE ARETE DU MAILLAGE : ARMIN
       CALL LTNOTB(NOMA,'CARA_GEOM',NOMT19)
@@ -92,8 +97,14 @@ C     ON RÉCUPÈRE LA VALEUR DE LA PLUS PETITE ARETE DU MAILLAGE : ARMIN
      &             ' RECUPERER AR_MIN DANS LA TABLE "CARA_GEOM"')     
       IF (ARMIN.LE.0) CALL UTMESS('F','XPTFON','ARMIN NEGATIF OU NUL')
 
+      DO 100 I=1,NXPTFF
+         ZL(JBORD-1+I)=.FALSE.
+ 100  CONTINUE
+
 C     COMPTEUR : NOMBRE DE POINTS DE FONFIS TROUVÉS
       IN=0
+C     COMPTEUR : NOMBRE DE POINTS DE FONFIS DE BORD TROUVES
+      NPTBOR=0
 C     BOUCLE SUR LES MAILLES DE MAFOND
       DO 400 IMA=1,NMAFON
         NMAABS=ZI(JMAFON-1+(IMA-1)+1)
@@ -141,17 +152,31 @@ C             VÉRIFICATION SI CE POINT A DÉJÀ ÉTÉ TROUVÉ
                 P(1)=ZR(JFON-1+4*(J-1)+1)
                 P(2)=ZR(JFON-1+4*(J-1)+2)
                 P(3)=ZR(JFON-1+4*(J-1)+3)
-                IF (PADIST(3,P,M).LT.(ARMIN*1.D-2)) DEJA=.TRUE.
+                IF (PADIST(3,P,M).LT.(ARMIN*1.D-2)) THEN
+                  DEJA=.TRUE.
+                  IPT=J
+                ENDIF
  412          CONTINUE
               IF (.NOT.DEJA) THEN
 C               CE POINT N'A PAS DÉJÀ ÉTÉ TROUVÉ, ON LE GARDE
                 IN=IN+1
+                IPT=IN
                 IF (IN.GE.NXPTFF) CALL UTMESS('E','XPTFON',
      &                                               'AUGMENTER NXPTFF')
+                
                 ZR(JFON-1+4*(IN-1)+1)=M(1)
                 ZR(JFON-1+4*(IN-1)+2)=M(2)
                 ZR(JFON-1+4*(IN-1)+3)=M(3)
                 
+              ENDIF
+
+C             ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
+              IF (NDIM.EQ.3) THEN
+                 CALL XFABOR(NOMA,NUNOA,NUNOB,NUNOC,FABORD)
+                 IF (FABORD) THEN
+                    ZL(JBORD-1+IPT)=.TRUE.
+                    NPTBOR=NPTBOR+1
+                 ENDIF
               ENDIF
             ENDIF
 

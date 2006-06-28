@@ -1,8 +1,8 @@
       SUBROUTINE PMFFOR(NF,NCF,VF,SE,FF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/03/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,24 +40,17 @@ C                FF(2) = +INT(SE.Z.DS) = MY
 C                FF(3) = -INT(SE.Y.DS) = MZ
 C -----------------------------------------------------------
       INTEGER NF,NCF,I
-      REAL*8 VF(NCF,NF),SE(NF),FF(3),ZERO
-      REAL*8 AA,IY,IZ,SIGM
+      REAL*8 VF(NCF,NF),SE(NF),FF(3),ZERO,SF
       PARAMETER (ZERO=0.0D+0)
       CHARACTER*2 KNCF
 
       DO 10 I = 1,3
         FF(I) = ZERO
 10    CONTINUE
-      AA = ZERO
-      IY = ZERO
-      IZ = ZERO
 
       IF (NCF.EQ.3) THEN
 C --- 3 CARACTERISTIQUES PAR FIBRE : Y, Z ET S
         DO 20 I = 1 , NF
-          AA = AA + VF(3,I)
-          IY = IY + VF(3,I)*VF(2,I)*VF(2,I)
-          IZ = IZ + VF(3,I)*VF(1,I)*VF(1,I)
           SF = SE(I)*VF(3,I)
           FF(1) = FF(1) + SF
           FF(2) = FF(2) + VF(2,I)*SF

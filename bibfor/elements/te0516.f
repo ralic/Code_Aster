@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
+C TOLE CRP_20
 C-----------------------------------------------------------------------
 C     ELEMENTS DE POUTRE MULTI-FIBRES DE TIMOSHENKO AVEC GAUCHISSEMENT.
 C
@@ -76,12 +77,22 @@ C     NPG : NOMBRE DE POINTS DE GAUSS
       INTEGER ISEREF,ISECHM,ISECHP
       REAL*8  SECHGM,SECHGP,SREF
       
+      REAL*8 XIYR2,XIZR2,EFFGEP(NC),HOTAGE(4,4),D1BSIG(4,2*NC)
+      REAL*8 RIGGE0(2*NC,2*NC),KSI1,D1B3(2,3),SIGFIB,MFLEX(4)
+      REAL*8 DDU(2*NC)
+      INTEGER NE,CARA,IDEPLA,IITER,ITERAT,NINT
 C     ------------------------------------------------------------------
 
       CALL R8INIR(NC,0.D0,HOEL,1)
       CALL R8INIR(2*NC,0.D0,FL,1)
       CALL R8INIR(NC*NC,0.D0,HOTA,1)
       CALL R8INIR(2*NC*2*NC,0.D0,RG0,1)
+      CALL R8INIR(4*4,0.D0,HOTAGE,1)
+      CALL R8INIR(2*NC*2*NC,0.D0,RIGGE0,1)
+      MFLEX(1) = 0.D0
+      MFLEX(2) = 0.D0
+      MFLEX(3) = 0.D0
+      MFLEX(4) = 0.D0
       CODRET=0
       CODREP=0
 
@@ -129,6 +140,10 @@ C
       CALL JEVECH('PDEPLMR','L',IDEPLM)
       CALL JEVECH('PCARCRI','L',ICARCR)
       CALL JEVECH('PDEPLPR','L',IDEPLP)
+      CALL JEVECH('PDDEPLA','L',IDEPLA)
+C -- ON RECUPERE LE NO DE L'ITERATION DE NEWTON POUR INITIALISER DEPS
+      CALL JEVECH('PITERAT','L',IITER)
+      ITERAT = NINT(ZR(IITER))
       CALL JEVECH('PTEREF', 'L',ITREF)
 
       
@@ -149,6 +164,11 @@ C
         CALL JEVECH('PVECTUR','E',IVECTU)
         CALL JEVECH('PCONTPR','E',ICONTP)
         CALL JEVECH('PVARIPR','E',IVARIP)
+C -- POUR LE CAS OU OPTION=RIGI_MECA_TANG ------------------------------
+C -- ON PREND LES VALEURS A 'MOINS' POUR ICONTP ET IVARMP --------------
+      ELSE
+        ICONTP = ICONTM
+        IVARMP = IVARIM
       END IF
 C DEFORMATIONS ANELASTIQUES
       CALL R8INIR (6,0.D0,DEFAM,1)
@@ -156,6 +176,11 @@ C DEFORMATIONS ANELASTIQUES
 C
       IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
          CALL UTMESS('F','TE0516','COMP_ELAS NON VALIDE')
+      ELSE IF ( (ZK16(ICOMPO+2) .NE. 'PETIT')
+     &   .AND.  (ZK16(ICOMPO+2) .NE. 'REAC_GEOM') ) THEN
+         CALL UTMESS('F','TE0516',' DEFORMATION : '//ZK16(ICOMPO+2)//
+     &               'NON IMPLANTEE SUR LES ELEMENTS "POU_D_TGM" : '//
+     &               'UTILISER PETIT OU REAC_GEOM')
       ENDIF
 
 C     GEOMETRIE EVENTUELLEMENT  REACTUALISEE :
@@ -163,7 +188,7 @@ C
       DO 100 I = 1,14
         UTG(I) = ZR(IDEPLM-1+I) + ZR(IDEPLP-1+I)
 100   CONTINUE
-      REACTU =  ZK16(ICOMPO+2)(6:10) .EQ. '_REAC'
+      REACTU =  ZK16(ICOMPO+2)(1:9) .EQ. 'REAC_GEOM'
       IF ( REACTU ) THEN
         DO 110 I = 1,3
           XUG(I) = UTG(I) + ZR(IGEOM-1+I)
@@ -205,6 +230,8 @@ C     -- RECUPERATION DES CARACTERISTIQUES DE LA SECTION
       ALFAZ = ZR(ISECT + 4)
       XJX   = ZR(ISECT + 7)
       XJG   = ZR(ISECT + 11)
+      XIYR2 = ZR(ISECT + 12)
+      XIZR2 = ZR(ISECT + 13)
 C     -- PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
       EY = -ZR(ISECT + 5)
       EZ = -ZR(ISECT + 6)
@@ -213,6 +240,7 @@ C     -- CALCUL DES DEPLACEMENTS ET DE LEURS INCREMENTS
 C        PASSAGE DANS LE REPERE LOCAL:
       CALL UTPVGL ( NNO, NC, PGL, ZR(IDEPLM),  U )
       CALL UTPVGL ( NNO, NC, PGL, ZR(IDEPLP), DU )
+      CALL UTPVGL ( NNO, NC, PGL, ZR(IDEPLA), DDU )
 C       EPSM = (U(8)-U(1))/XL
 
 C     PRISE EN COMPTE DE LA POSITION DU CENTRE DE TORSION
@@ -221,6 +249,8 @@ C     PRISE EN COMPTE DE LA POSITION DU CENTRE DE TORSION
          U(7*(I-1)+3) =  U(7*(I-1)+3) + EY* U(7*(I-1)+4)
         DU(7*(I-1)+2) = DU(7*(I-1)+2) - EZ*DU(7*(I-1)+4)
         DU(7*(I-1)+3) = DU(7*(I-1)+3) + EY*DU(7*(I-1)+4)
+        DDU(7*(I-1)+2) = DDU(7*(I-1)+2) - EZ*DDU(7*(I-1)+4)
+        DDU(7*(I-1)+3) = DDU(7*(I-1)+3) + EY*DDU(7*(I-1)+4)
   200 CONTINUE
 
 C     COEFFICIENT DEPENDANT DE LA TEMPERATURE MOYENNE
@@ -270,12 +300,54 @@ C       CALCUL DE D1B ( EPSI = D1B * U ) :
         CALL R8INIR(NC,0.D0,EPS,1)
         CALL R8INIR(NC,0.D0,DEPS,1)
 
-        DO 310 I = 1,NC
-          DO 311 J = 1,2*NC
-             EPS(I) =  EPS(I) + D1B(I,J)* U(J)
-            DEPS(I) = DEPS(I) + D1B(I,J)*DU(J)
-311       CONTINUE
-310     CONTINUE
+C --- MODIF POUR CALCULER L'INCREMENT DE DEFORMATION SUR UN PAS --------
+C --- AVEC PLUS DE PRECISION :
+C ---   - DANS IVARMP, ON TROUVE L'INCREMENT DE DEFORMATION JUSQU'A
+C ---     L'ITERATION DE NEWTON PRECEDENTE (SI ITERAT=1, C'EST 0)
+C ---   - DANS DDU, ON TROUVE L'INCREMENT DE DEPLACEMENT DEPUIS
+C ---     L'ITERATION DE NEWTON PRECEDENTE (SI ITERAT=1, C'EST 0)
+C ---   - APRES CALCUL DE DEPS, ON LE STOCKE DANS IVARIP, EN TRUANDANT
+C ---     COMME POUR LES FORCES INTEGREES
+
+        KK = NBVALC*(NBFIB+NCOMP)*(KP-1)-1+NBVALC*NBFIB
+
+        IF ( .NOT. REACTU ) THEN
+C --- CALCUL CLASSIQUE DES DEFORMATIONS A PARTIR DE DU
+          DO 310 I = 1,NC
+            DO 311 J = 1,2*NC
+               EPS(I) =  EPS(I) + D1B(I,J)* U(J)
+              DEPS(I) = DEPS(I) + D1B(I,J)*DU(J)
+311         CONTINUE
+310       CONTINUE
+        ELSE
+C --- CALCUL AMELIORE TENANT COMPTE DE LA REACTUALISATION
+C --- ON CUMULE LES INCREMENTS DE DEF DE CHAQUE ITERATION          
+          IF ( .NOT. VECTEU ) THEN
+            DO 315 I = 1,NC
+              DO 316 J = 1,2*NC
+                 EPS(I) =  EPS(I) + D1B(I,J)* U(J)
+316           CONTINUE
+              DEPS(I) = 0.D0
+315         CONTINUE
+          ELSE IF ( ITERAT .GE. 2 ) THEN
+            DO 320 I = 1,NC
+              DEPS(I) = ZR(IVARMP+KK+I)
+              DO 321 J = 1,2*NC
+                 EPS(I) =  EPS(I) + D1B(I,J)* U(J)
+                DEPS(I) = DEPS(I) + D1B(I,J)* DDU(J)
+321           CONTINUE
+              ZR(IVARIP+KK+I) = DEPS(I)
+320         CONTINUE
+          ELSE
+            DO 325 I = 1,NC
+              DO 326 J = 1,2*NC
+                 EPS(I) =  EPS(I) + D1B(I,J)* U(J)
+                DEPS(I) = DEPS(I) + D1B(I,J)* DDU(J)
+326           CONTINUE
+              ZR(IVARIP+KK+I) = DEPS(I)
+325         CONTINUE
+          END IF
+        END IF
 
 C        IF ((ALPHAP.NE.0.D0).AND.(ITEMP.NE.0) ) THEN
 C            F = ALPHAM*(TEMM-ZR(ITREF))
@@ -305,8 +377,8 @@ C
      &            E,ALPHAP,
      &            ZI(IMATE),NBVALC,
      &            DEFAM,DEFAP,
-     &            ZR(IVARIM+NBFIB*NBVALC*(KP-1)),
-     &            ZR(IVARMP+NBFIB*NBVALC*(KP-1)),
+     &            ZR(IVARIM+(NBFIB+NCOMP)*NBVALC*(KP-1)),
+     &            ZR(IVARMP+(NBFIB+NCOMP)*NBVALC*(KP-1)),
      &            ZR(ICONTM+(NBFIB+NCOMP)*(KP-1)),
      &            ZR(JDEFM),ZR(JDEFP),
      &            EPSM,
@@ -364,12 +436,13 @@ C          MATSCT(6) : INT(E.Y.Z.DS)
            CALL DSCAL(NC*NC,XLS2,HOTA,1)
            CALL DSCAL(NC*NC,CO(KP),HOTA,1)
            CALL UTBTAB('CUMU',NC,2*NC,HOTA,D1B,WORK,RG0)
+           CALL R8INIR(NC*NC,0.D0,HOTA,1)
         END IF
 
 C       ON STOCKE A "+" : CONTRAINTES, FL, VARI
         IF ( VECTEU ) THEN
            DO 330 I = 1 , NBFIB*NBVALC
-              ZR(IVARIP-1+NBFIB*NBVALC*(KP-1)+I) = ZR(JVARFB-1+I)
+             ZR(IVARIP-1+(NBFIB+NCOMP)*NBVALC*(KP-1)+I) = ZR(JVARFB-1+I)
 330        CONTINUE
            DO 332 I = 1 , NBFIB
               ZR(ICONTP-1+(NBFIB+NCOMP)*(KP-1)+I) = ZR(JSIGFB-1+I)
@@ -380,7 +453,12 @@ C UNE MAGOUILLE POUR STOCKER LES FORCES INTEGREES !!!
            ZR(ICONTP+KK+1) = FFP(1)
            ZR(ICONTP+KK+2) = ZR(ICONTM+KK+2) + HOEL(2)*DEPS(2)
            ZR(ICONTP+KK+3) = ZR(ICONTM+KK+3) + HOEL(3)*DEPS(3)
+C ------ ON RAJOUTE L'EFFET WAGNER DU AU GAUCHISSEMENT -----------------
            ZR(ICONTP+KK+4) = ZR(ICONTM+KK+4) + HOEL(4)*DEPS(4)
+     &           + (FFP(1)*((XIY+XIZ)/AA+EY**2+EZ**2))*DEPS(4)
+     &                     + (FFP(2)*(XIZR2/XIY-2*EZ))*DEPS(4)
+     &                     - (FFP(3)*(XIYR2/XIZ-2*EY))*DEPS(4)
+C ------ FIN MODIF -----------------------------------------------------
            ZR(ICONTP+KK+5) = FFP(2)
            ZR(ICONTP+KK+6) = FFP(3)
            ZR(ICONTP+KK+7) = ZR(ICONTM+KK+7) + HOEL(7)*DEPS(7)
@@ -394,9 +472,127 @@ C FIN MAGOUILLE !!!
 360        CONTINUE
         END IF
 
+C-----MODIF CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE---------
+        IF ( MATRIC .AND. REACTU ) THEN
+C
+C       RAPPEL : UNE MAGOUILLE A PERMIS DE STOCKER LES
+C                EFFORTS GENERALISES DANS PCONTPR
+C                ON LES RECUPERE
+C
+           KK = (NBFIB+NCOMP)*(KP-1) + NBFIB-1
+           DO 370 I = 1,NCOMP
+              EFFGEP(I) = ZR(ICONTP+KK+I)
+370        CONTINUE
+
+           HOTAGE(1,2) = -EFFGEP(3)
+           HOTAGE(1,3) =  EFFGEP(2)
+           HOTAGE(1,4) =  -(EY*EFFGEP(2)+EZ*EFFGEP(3))
+     &                    +(0.5D0*(XIYR2/XIZ)*EFFGEP(2))
+     &                    +(0.5D0*(XIZR2/XIY)*EFFGEP(3))
+C TERME NON CALCULE EXACTEMENT (ON FAIT L'HYPOTHESE D'UNE
+C TORSION DE SAINT-VENANT)
+C
+           HOTAGE(2,1) =  HOTAGE(1,2)
+           HOTAGE(2,2) =  EFFGEP(1)
+           HOTAGE(2,4) = (EZ*EFFGEP(1)-EFFGEP(5))
+C
+           HOTAGE(3,1) =  HOTAGE(1,3)
+           HOTAGE(3,3) =  EFFGEP(1)
+           HOTAGE(3,4) =-(EY*EFFGEP(1)+EFFGEP(6))
+C
+           HOTAGE(4,1) =  HOTAGE(1,4)
+           HOTAGE(4,2) =  HOTAGE(2,4)
+           HOTAGE(4,3) =  HOTAGE(3,4)
+C MOMENT DE WAGNER : IL PEUT ETRE INTERESSANT A L'AVENIR DE LE CALCULER
+C A PARTIR DE LA DISCRETISATION EN FIBRES
+           HOTAGE(4,4) = (EFFGEP(1)*((XIY+XIZ)/AA+EY**2+EZ**2))
+     &                  +(EFFGEP(5)*(XIZR2/XIY-2*EZ))
+     &                  -(EFFGEP(6)*(XIYR2/XIZ-2*EY))
+C TERME NON CALCULE ACTUELLEMENT CAR XIWR2 N'EST PAS FOURNI
+C PAR L'UTILISATEUR : XIWR2=INT(W*(Y*Y+Z*Z)*DS)
+C     &                 +(EFFGEP(7)*(XIWR2/XJG))
+C
+           CALL DSCAL(4*4,XLS2,HOTAGE,1)
+           CALL DSCAL(4*4,CO(KP),HOTAGE,1)
+   
+C --- RECUPERATION DE LA MATRICE DES FONCTIONS DE FORME D1BSIG
+C --- LE DERNIER ARGUMENT PERMET DE CHOISIR L'INTERPOLATION :
+C --- LINEAIRE (0) OU CUBIQUE FLEXION-TORSION(1)
+
+           CALL BSIGMA(KP,XL,PHIY,PHIZ,D1BSIG,1)
+           CALL UTBTAB('CUMU',4,2*NC,HOTAGE,D1BSIG,WORK,RIGGE0)
+           CALL R8INIR(4*4,0.D0,HOTAGE,1)
+      
+        END IF
+C-----FIN MODIF--------------------------------------------------
 300   CONTINUE
 
       IF ( MATRIC ) THEN
+C-----MODIF CALCUL DE LA MATRICE DE CORRECTION DES GR -----------
+         IF ( REACTU ) THEN
+C
+C        RAPPEL : LE CALCUL DE LA MATRICE DE CORRECTION KC EST
+C                FAIT A PART, ON TIENT COMPTE A POSTERIORI
+C                DES ROTATIONS MODEREES ENTRE DEUX ITERATIONS
+C               (PAS BESOIN D'INTEGRATION NUMERIQUE)
+
+C --- LES MFY ET MFZ INTERVENANT ICI SONT CEUX AUX EXTREMITES
+C     ET ON NE LES CONNAIT QU'AUX POINTS DE GAUSS
+C --- IL FAUT DONC UTILISER DES FONCTIONS DE FORME POUR LES TRANSPORTER
+C     AUX NOEUDS (ON PREND L'INTERPOLATION POLYNOMIALE D'ORDRE 2)
+
+C     ON PROJETTE AVEC DES FCTS DE FORME
+C     SUR LES NOEUDS DEBUT ET FIN DE L'ELEMENT
+C     POUR LE POINT 1
+            KSI1 = -SQRT( 5.D0 / 3.D0 )
+            D1B3(1,1) = KSI1*(KSI1-1.D0)/2.0D0
+            D1B3(1,2) = 1.D0-KSI1*KSI1
+            D1B3(1,3) = KSI1*(KSI1+1.D0)/2.0D0
+C     POUR LE POINT 2
+            KSI1 = SQRT( 5.D0 / 3.D0 )
+            D1B3(2,1) = KSI1*(KSI1-1.D0)/2.0D0
+            D1B3(2,2) = 1.D0-KSI1*KSI1
+            D1B3(2,3) = KSI1*(KSI1+1.D0)/2.0D0
+    
+C       POUR LES NOEUDS 1 ET 2
+C          CALCUL DES CONTRAINTES
+C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
+            DO 400 NE = 1 , 2
+              DO 410 I= 1 , NBFIB
+                SIGFIB = 0.D0
+                DO 420 KP = 1 , 3
+                 KK = ICONTP+(NBFIB+NCOMP)*(KP-1) + I - 1
+                 SIGFIB = SIGFIB + ZR(KK)*D1B3(NE,KP)
+420             CONTINUE
+                KK  = 2*(NE-1)
+                CARA = JACF+(I-1)*NCARFI
+                MFLEX(1+KK) = MFLEX(1+KK) + SIGFIB*ZR(CARA+2)*ZR(CARA+1)
+                MFLEX(2+KK) = MFLEX(2+KK) - SIGFIB*ZR(CARA+2)*ZR(CARA)
+410           CONTINUE
+400         CONTINUE
+
+C ON CALCULE LA MATRICE TANGENTE EN SOMMANT LES TERMES DE
+C      - RIGIDITE MATERIELLE RG0
+C      - RIGIDITE GEOMETRIQUE RIGGE0
+C      - MATRICE DE CORRECTION POUR LA PRISE EN COMPTE
+C        DE ROTATIONS MODEREES (VIENT CORRIGER RIGGE0)
+
+            RIGGE0(4,5) = RIGGE0(4,5) + MFLEX(2)*0.5D0
+            RIGGE0(4,6) = RIGGE0(4,6) - MFLEX(1)*0.5D0
+            RIGGE0(5,4) = RIGGE0(5,4) + MFLEX(2)*0.5D0
+            RIGGE0(6,4) = RIGGE0(6,4) - MFLEX(1)*0.5D0
+
+            RIGGE0(11,12) = RIGGE0(11,12) - MFLEX(4)*0.5D0
+            RIGGE0(11,13) = RIGGE0(11,13) + MFLEX(3)*0.5D0
+            RIGGE0(12,11) = RIGGE0(12,11) - MFLEX(4)*0.5D0
+            RIGGE0(13,11) = RIGGE0(13,11) + MFLEX(3)*0.5D0
+
+C ON REMET TOUT CA DANS RG0 POUR NE PAS PERTURBER LA PROGRAMMATION
+
+            CALL LCSOVN(2*NC*2*NC, RG0, RIGGE0, RG0)
+    
+         END IF 
+C-----FIN MODIF---------------------------------------------------------
          CALL MAVEC  ( RG0, 2*NC, KLV, DIMKLV )
       ENDIF
 

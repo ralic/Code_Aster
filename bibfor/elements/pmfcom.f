@@ -12,7 +12,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ C --- INITIALISE A 0.D0 (ON NE S'EN SERT PAS)
       IF (COMPO.EQ.'ELAS') THEN
         DO 10 I = 1,NF
           MODF(I) = E
-          SIGF(I) = E* (DEFM(I)+DEFP(I))
+          SIGF(I) = CONTM(I) + E * DEFP(I)
    10   CONTINUE
       ELSE IF (COMPO.EQ.'LABORD_1D') THEN
 C ---   ON RECUPERE LES PARAMETRES MATERIAU
