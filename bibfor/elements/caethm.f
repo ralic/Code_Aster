@@ -1,11 +1,12 @@
-      SUBROUTINE CAETHM(NOMTE,AXI,TYPMOD,MODINT,MECANI,PRESS1,PRESS2,
-     +                  TEMPE,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
-     +                  NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     +                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+      SUBROUTINE CAETHM(NOMTE,AXI,PERMAN,
+     >                  TYPMOD,MODINT,MECANI,PRESS1,PRESS2,TEMPE,
+     >                  DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
+     >                  NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
+     >                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,26 +26,66 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
+C ======================================================================
+C --- BUT : PREPARATION DU CALCUL SUR UN ELEMENT THM -------------------
+C ======================================================================
+C
+C IN NOMTE   : NOM DU TYPE D'ELEMENT 
+C IN AXI     : AXI ?
+C OUT PERMAN : MODELISATION HM PERMAMENTE ?
+C OUT TYPMOD : TYPE DE MODELISATION (AXI DPLAN 3D)
+C OUT MODINT : METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
+C OUT MECANI : TABLEAU INFO SUR MECANIQUE
+C OUT PRESS1 : TABLEAU INFO SUR HYDRAULIQUE CONSTITUANT 1
+C OUT PRESS2 : TABLEAU INFO SUR HYDRAULIQUE CONSTITUANT 2
+C OUT TEMPE  : TABLEAU INFO SUR THERMIQUE
+C OUT DIMDEP : DIMENSION DES DEPLACEMENTS GENERALISES
+C OUT DIMDEF : DIMENSION DES DEFORMATIONS GENERALISEES
+C OUT DIMCON : DIMENSION DES CONTRAINTES GENERALISEES
+C OUT NMEC   : NOMBRE DE COMPOSANTES DU VECTEUR DEPLACEMENT
+C OUT NP1    : 1 SI IL Y A UNE EQUATION POUR P1, 0 SINON
+C OUT NP2    : 1 SI IL Y A UNE EQUATION POUR P2, 0 SINON
+C OUT NDIM   : DIMENSION DU PROBLEME (2 OU 3)
+C OUT NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
+C OUT NNOS   : NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT
+C OUT NNOM   : NOMBRE DE NOEUDS MILIEUX DE L'ELEMENT
+C OUT NPI    : NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT
+C OUT NPG    : NOMBRE DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
+C                        SOMMETS             POUR LUMPEE   (=NPI=NNOS)
+C                        POINTS DE GAUSS     POUR REDUITE  (<NPI)
+C OUT NDDLS  : NOMBRE DE DDL SUR LES SOMMETS
+C OUT NDDLM  : NOMBRE DE DDL SUR LES MILIEUX
+C OUT DIMUEL : NOMBRE DE DDL TOTAL DE L'ELEMENT
+C OUT IPOIDS : ADRESSE DU TABLEAU POIDS POUR FONCTION DE FORME P2
+C OUT IVF    : ADRESSE DU TABLEAU DES FONCTIONS DE FORME P2
+C OUT IDFDE  : ADRESSE DU TABLEAU DES DERIVESS DES FONCTIONS DE FORME P2
+C OUT IPOID2 : ADRESSE DU TABLEAU POIDS POUR FONCTION DE FORME P1
+C OUT IVF2   : ADRESSE DU TABLEAU DES FONCTIONS DE FORME P1
+C OUT IDFDE2 : ADRESSE DU TABLEAU DES DERIVESS DES FONCTIONS DE FORME P1
+C OUT JGANO  : ADRESSE DANS ZR DE LA MATRICE DE PASSAGE
+C              GAUSS -> NOEUDS
+
+C CORPS DU PROGRAMME
       IMPLICIT      NONE
-      LOGICAL       AXI
+
+C DECLARATION PARAMETRES D'APPELS
+      LOGICAL       AXI, PERMAN
       INTEGER       MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
-      INTEGER       NDIM,NNO,NNOS,NNOM,DIMDEF,DIMCON,NMEC,NP1,NP2
+      INTEGER       NDIM,NNO,NNOS,NNOM
+      INTEGER       DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2
       INTEGER       NPG,NPI,NDDLS,NDDLM,IPOIDS,IVF,IDFDE
       INTEGER       IPOID2,IVF2,IDFDE2,JGANO
       CHARACTER*3   MODINT
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  NOMTE
-C ======================================================================
-C --- BUT: PREPARATION DU CALCUL SUR UN ELEMENT THM --------------------
-C ======================================================================
+
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
-      AXI       = .FALSE.
       TYPMOD(2) = '        '
 C ======================================================================
-C --- TYPE DE MODELISATION? AXI DPLAN OU 3D ----------------------------
+C --- TYPE DE MODELISATION? AXI/DPLAN/3D ET HM TRANSI/PERM -------------
 C ======================================================================
-      CALL TYPTHM(NOMTE,AXI,TYPMOD,NDIM)
+      CALL TYPTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM)
 C ======================================================================
 C --- SELECTION DU TYPE D'INTEGRATION ----------------------------------
 C ======================================================================
@@ -52,14 +93,14 @@ C ======================================================================
 C ======================================================================
 C --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 C ======================================================================
-      CALL GRDTHM(NOMTE,NDIM,MECANI,PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,
-     +            NMEC,NP1,NP2)
+      CALL GRDTHM(NOMTE,PERMAN,NDIM,MECANI,PRESS1,PRESS2,TEMPE,
+     >            DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2)
 C ======================================================================
 C --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
       CALL ITGTHM(MODINT,MECANI,PRESS1,PRESS2,TEMPE,NDIM,NNO,
-     +                  NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     +                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+     >            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
+     >            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
 C ======================================================================
       END

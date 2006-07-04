@@ -1,16 +1,17 @@
       SUBROUTINE THMRCP( ETAPE, IMATE, THMC, MECA, HYDR, THER,
-     +                   T0, P10, P20, PHI0, PVP0, T, P1, 
-     +                   P1M, P2, PHI,END,
-     +                   PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
-     +                   DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     +                   DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
-     +                   DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
-     +                   DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
-     +                   DLAMBT,VISCG, DVISCG, MAMOLV, CPVG, VISCVG,
-     +                   DVISVG,FICKAD,DFADT,CPAD,KH,PAD,EM,LAMBCT,ISOT)
+     &                   T0, P10, P20, PHI0, PVP0, T, P1, 
+     &                   P1M, P2, PHI,ENDO,
+     &                   PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
+     &                   DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
+     &                   DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
+     &                   DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
+     &                   DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
+     &                   DLAMBT, VISCG, DVISCG, MAMOLV, CPVG, VISCVG,
+     &                   DVISVG, FICKAD, DFADT, CPAD, KH, PAD,
+     &                   EM, LAMBCT, ISOT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +43,7 @@ C =====================================================================
       REAL*8        FICK, DFICKT, DFICKG, LAMBP, DLAMBP, RHOL
       REAL*8        ALPHA, CPL, LAMBS, DLAMBS, VISCL, DVISCL, CPG,PAD
       REAL*8        LAMBT, DLAMBT, VISCG, DVISCG, MAMOLG, CPVG, VISCVG
-      REAL*8        DVISVG, FICKAD,DFADT,END, MAMOLV, P1M,CPAD,KH,EM
+      REAL*8        DVISVG, FICKAD,DFADT,ENDO, MAMOLV, P1M,CPAD,KH,EM
       REAL*8        LAMBCT, UNSURK, ISOT(3)
       CHARACTER*8   ETAPE
       CHARACTER*16  MECA,THMC,THER,HYDR
@@ -58,7 +59,7 @@ C =====================================================================
       INTEGER       DIMPAR
       INTEGER       DIM36, DIM37, DIM38,DIM40,DIM41,DIM42,DIM43,DIM39
       PARAMETER   ( DIMSAT =  2 )
-      PARAMETER   ( NCON =  9 )
+      PARAMETER   ( NCON   =  9 )
       PARAMETER   ( DIM1   =  5 )
       PARAMETER   ( DIM2   =  4 )
       PARAMETER   ( DIM3   =  4 )
@@ -76,9 +77,9 @@ C =====================================================================
       PARAMETER   ( DIM15  =  2 )
       PARAMETER   ( DIM16  =  6 )
       PARAMETER   ( DIM17  =  4 )
-      PARAMETER   ( DIM18  =  13 )
+      PARAMETER   ( DIM18  = 13 )
       PARAMETER   ( DIM19  =  4 )
-      PARAMETER   ( DIM20  =  14 )
+      PARAMETER   ( DIM20  = 14 )
       PARAMETER   ( DIM21  =  3 )
       PARAMETER   ( DIM22  = 23 )
       PARAMETER   ( DIM23  =  4 )
@@ -93,7 +94,7 @@ C =====================================================================
       PARAMETER   ( DIM32  = 19 )
       PARAMETER   ( DIM33  =  4 )
 C      
-      PARAMETER   ( DIM35   =  7 )
+      PARAMETER   ( DIM35  =  7 )
       PARAMETER   ( DIM36  =  4 )
       PARAMETER   ( DIM37  =  2 )
       PARAMETER   ( DIM38  =  2 )
@@ -104,6 +105,10 @@ C
       PARAMETER   ( DIM43  =  1 )
 C      
       PARAMETER   ( DIMPAR  =  4 )
+C
+C   NRESMA EST LE MAX DE DIMPAR, DIMSAT ET DE DIMI, AVEC I DE 1 A 43
+      INTEGER NRESMA
+      PARAMETER ( NRESMA = 34 )
 C      
       REAL*8      VAL1(DIM1), VAL2(DIM2), VAL3(DIM3), VAL4(DIM4)
       REAL*8      VAL5(DIM5), VAL6(DIM6), VAL7(DIM7), VAL8(DIM8)
@@ -119,7 +124,8 @@ C
       REAL*8      VAL35(DIM35+1),VAL36(DIM36),VAL37(DIM37),VAL38(DIM38)
       REAL*8      VAL40(DIM40),VAL41(DIM41),VAL42(DIM42),VAL43(DIM43)
       REAL*8      VAL39(DIM39),VALPAR(DIMPAR), COND(NCON), R8VIDE
-      CHARACTER*2   CODRET(20)
+C
+      CHARACTER*2   CODRET(NRESMA)
       CHARACTER*4   NOMPAR(DIMPAR)
       CHARACTER*8   NCRA1(DIM1), NCRA2(DIM2), NCRA3(DIM3), NCRA4(DIM4)
       CHARACTER*8   NCRA5(DIM5), NCRA6(DIM6), NCRA7(DIM7), NCRA8(DIM8)
@@ -145,7 +151,7 @@ C =====================================================================
      +              'PORO'     ,
      +              'PRES_VAP' /
 C =====================================================================
-C --- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS LIQU_SATU -----
+C --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_SATU -----
 C =====================================================================
        DATA NCRA2  / 'RHO'      ,
      +              'BIOT_COE' ,
@@ -156,7 +162,7 @@ C =====================================================================
      +              'ALPHA'    ,
      +              'CP'       /
 C =====================================================================
-C --- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS GAZ -----------
+C --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS GAZ -----------
 C =====================================================================
        DATA NCRA4  / 'R_GAZ'    ,
      +              'RHO'      ,
@@ -166,7 +172,7 @@ C =====================================================================
        DATA NCRA5  / 'MASS_MOL' ,
      +              'CP'       /
 C =====================================================================
-C --- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS LIQU_VAPE -----
+C --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_VAPE -----
 C =====================================================================
        DATA NCRA6  / 'R_GAZ'    ,
      +              'RHO'      ,
@@ -181,7 +187,7 @@ C =====================================================================
        DATA NCRA8  / 'MASS_MOL' ,
      +              'CP'       /
 C =====================================================================
-C --- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS LIQU_VAPE_GAZ -
+C --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_VAPE_GAZ -
 C =====================================================================
        DATA NCRA9  / 'R_GAZ'    ,
      +              'RHO'      ,
@@ -199,7 +205,7 @@ C =====================================================================
        DATA NCRA12 / 'MASS_MOL' ,
      +              'CP'       /
 C =====================================================================
-C --- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS LIQU_GAZ ------
+C --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_GAZ ------
 C =====================================================================
        DATA NCRA13 / 'R_GAZ'    ,
      +              'RHO'      ,
@@ -215,7 +221,7 @@ C =====================================================================
        DATA NCRA15 / 'MASS_MOL' ,
      +              'CP'       /
 C =====================================================================
-C --- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS LIQU_GAZ_ATM --
+C --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_GAZ_ATM --
 C =====================================================================
        DATA NCRA16 / 'RHO'      ,
      +              'BIOT_COE' ,
@@ -371,7 +377,7 @@ C =====================================================================
      +              'D_VISC_T' ,
      +              'ALPHA'   /
 C =====================================================================
-C -- DEFINITION DES DONNEES INTERMADIAIRES DANS LE CAS LIQU_AD_GAZ_VAPE
+C -- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_AD_GAZ_VAPE
 C =====================================================================
        DATA NCRA35  / 'R_GAZ'    ,
      +              'RHO'      ,
@@ -857,7 +863,7 @@ C
 C
 C       INITIALISATION POUR L'ANISOTROPIE
 C
-            VAL18(4) = 1.0D0
+            VAL18( 4) = 1.0D0
             VAL18(11) = 1.0D0
             VAL18(12) = 1.0D0
             VAL18(13) = 1.0D0
@@ -873,7 +879,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL18 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA18(5), VAL18(4), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -902,12 +908,12 @@ C
             PESA(2) = VAL18(2)
             PESA(3) = VAL18(3)
             PERMFH  = VAL18(4)
-            LAMBT  = VAL18(6)
+            LAMBT   = VAL18(6)
             DLAMBT  = VAL18(7)
-            LAMBP  = VAL18(8)
+            LAMBP   = VAL18(8)
             DLAMBP  = VAL18(9)
             LAMBCT  = VAL18(10)
-            LAMBS  = 1.0D0
+            LAMBS   = 1.0D0
             DLAMBS  = 0.0D0
             SATUR   = 1.0D0
             DSATUR  = 0.0D0
@@ -935,7 +941,7 @@ C
 C
 C       INITIALISATION POUR L'ANISOTROPIE
 C
-            VAL20(5) = 1.0D0
+            VAL20(5)  = 1.0D0
             VAL20(12) = 1.0D0
             VAL20(13) = 1.0D0
             VAL20(14) = 1.0D0
@@ -951,7 +957,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL21 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA20(6), VAL20(5), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -970,24 +976,24 @@ C =====================================================================
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      +                            3, NCRA20(12), VAL20(12), CODRET, ' ')
-            RGAZ    = VAL20(1)
-            PESA(1) = VAL20(2)
-            PESA(2) = VAL20(3)
-            PESA(3) = VAL20(4)
-            PERMFH  = VAL20(5)
-            LAMBT  = VAL20(7)
-            DLAMBT  = VAL20(8)
-            LAMBP  = VAL20(9)
+            RGAZ    = VAL20( 1)
+            PESA(1) = VAL20( 2)
+            PESA(2) = VAL20( 3)
+            PESA(3) = VAL20( 4)
+            PERMFH  = VAL20( 5)
+            LAMBT   = VAL20( 7)
+            DLAMBT  = VAL20( 8)
+            LAMBP   = VAL20( 9)
             DLAMBP  = VAL20(10)
-            LAMBCT   = VAL20(11)
-            LAMBS  = 1.0D0
+            LAMBCT  = VAL20(11)
+            LAMBS   = 1.0D0
             DLAMBS  = 0.0D0
             SATUR   = 1.0D0
             DSATUR  = 0.0D0
-            MAMOLG  = VAL21(1)
-            VISCG   = VAL21(2)
-            DVISCG  = VAL21(3)
-            LAMBS  = 0.0D0
+            MAMOLG  = VAL21( 1)
+            VISCG   = VAL21( 2)
+            DVISCG  = VAL21( 3)
+            LAMBS   = 0.0D0
             DLAMBS  = 0.0D0
             ISOT(1) = VAL20(12)
             ISOT(2) = VAL20(13)
@@ -1028,7 +1034,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA22(6), VAL22(5), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -1071,14 +1077,14 @@ C =====================================================================
             PESA(2) = VAL22( 3)
             PESA(3) = VAL22( 4)
             PERMFH  = VAL22( 5)
-            LAMBT  = VAL22( 7)
+            LAMBT   = VAL22( 7)
             DLAMBT  = VAL22( 8)
-            LAMBP  = VAL22( 9)
-            DLAMBP  = VAL22( 10)
-            LAMBS  = VAL22( 11)
-            DLAMBS  = VAL22( 12)
-            LAMBCT = VAL22( 13)
-            SATUR   = VAL22( 14)
+            LAMBP   = VAL22( 9)
+            DLAMBP  = VAL22(10)
+            LAMBS   = VAL22(11)
+            DLAMBS  = VAL22(12)
+            LAMBCT  = VAL22(13)
+            SATUR   = VAL22(14)
             DSATUR  = VAL22(15)
             PERMLI  = VAL22(16)
             DPERML  = VAL22(17)
@@ -1123,7 +1129,7 @@ C
 C
 C       INITIALISATION POUR L'ANISOTROPIE
 C
-            VAL25(5) = 1.0D0
+            VAL25(5)  = 1.0D0
             VAL25(27) = 1.0D0
             VAL25(28) = 1.0D0
             VAL25(29) = 1.0D0
@@ -1139,7 +1145,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA25(6), VAL25(5), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -1180,7 +1186,7 @@ C =====================================================================
      +                           2, NCRA25(11), VAL25(11), CODRET, ' ')
             ENDIF
 C
-C    Récupération des fonctions FICKs et leur dérivées au dessus pb
+C    RÉCUPÉRATION DES FONCTIONS FICKS ET LEUR DÉRIVÉES AU DESSUS PB
 C
             NOMPAR(1) = 'TEMP'
             VALPAR(1) =  T
@@ -1216,14 +1222,14 @@ C
             PESA(2) = VAL25( 3)
             PESA(3) = VAL25( 4)
             PERMFH  = VAL25( 5)
-            LAMBT  = VAL25( 7)
+            LAMBT   = VAL25( 7)
             DLAMBT  = VAL25( 8)
-            LAMBP  = VAL25( 9)
-            DLAMBP  = VAL25( 10)
-            LAMBS  = VAL25( 11)
-            DLAMBS  = VAL25( 12)
-            LAMBCT  = VAL25( 13)
-            SATUR   = VAL25( 14)
+            LAMBP   = VAL25( 9)
+            DLAMBP  = VAL25(10)
+            LAMBS   = VAL25(11)
+            DLAMBS  = VAL25(12)
+            LAMBCT  = VAL25(13)
+            SATUR   = VAL25(14)
             DSATUR  = VAL25(15)
             PERMLI  = VAL25(16)
             DPERML  = VAL25(17)
@@ -1231,9 +1237,9 @@ C
             DPERMS  = VAL25(19)
             DPERMP  = VAL25(20)
 C            
-            FICK = VAL25(21)*VAL25(22)*VAL25(23)*VAL25(24)
-            DFICKT= VAL25(25) * VAL25(22)*VAL25(23)*VAL25(24)
-            DFICKG = VAL25(26)* VAL25(21)*VAL25(22)*VAL25(24)
+            FICK    = VAL25(21)*VAL25(22)*VAL25(23)*VAL25(24)
+            DFICKT  = VAL25(25)*VAL25(22)*VAL25(23)*VAL25(24)
+            DFICKG  = VAL25(26)*VAL25(21)*VAL25(22)*VAL25(24)
             UNSURK  = VAL26( 1)
             VISCL   = VAL26( 2)
             DVISCL  = VAL26( 3)
@@ -1273,7 +1279,7 @@ C
 C
 C       INITIALISATION POUR L'ANISOTROPIE
 C
-            VAL40(5) = 1.0D0
+            VAL40(5)  = 1.0D0
             VAL40(32) = 1.0D0
             VAL40(33) = 1.0D0
             VAL40(34) = 1.0D0
@@ -1288,7 +1294,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA40(6), VAL40(5), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -1388,14 +1394,14 @@ C
             PESA(2) = VAL40( 3)
             PESA(3) = VAL40( 4)
             PERMFH  = VAL40( 5)
-            LAMBT  = VAL40( 7)
+            LAMBT   = VAL40( 7)
             DLAMBT  = VAL40( 8)
-            LAMBP  = VAL40( 9)
-            DLAMBP  = VAL40( 10)
-            LAMBS  = VAL40( 11)
-            DLAMBS  = VAL40( 12)
-            LAMBCT  = VAL40( 13)
-            SATUR   = VAL40( 14)
+            LAMBP   = VAL40( 9)
+            DLAMBP  = VAL40(10)
+            LAMBS   = VAL40(11)
+            DLAMBS  = VAL40(12)
+            LAMBCT  = VAL40(13)
+            SATUR   = VAL40(14)
             DSATUR  = VAL40(15)
             PERMLI  = VAL40(16)
             DPERML  = VAL40(17)
@@ -1461,7 +1467,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL29 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA29(6), VAL29(5), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -1504,14 +1510,14 @@ C =====================================================================
             PESA(2) = VAL29( 3)
             PESA(3) = VAL29( 4)
             PERMFH  = VAL29( 5)
-            LAMBT  = VAL29( 7)
+            LAMBT   = VAL29( 7)
             DLAMBT  = VAL29( 8)
-            LAMBP  = VAL29( 9)
-            DLAMBP  = VAL29( 10)
-            LAMBS  = VAL29( 11)
-            DLAMBS  = VAL29( 12)
-            LAMBCT = VAL29( 13)
-            SATUR   = VAL29( 14)
+            LAMBP   = VAL29( 9)
+            DLAMBP  = VAL29(10)
+            LAMBS   = VAL29(11)
+            DLAMBS  = VAL29(12)
+            LAMBCT  = VAL29(13)
+            SATUR   = VAL29(14)
             DSATUR  = VAL29(15)
             PERMLI  = VAL29(16)
             DPERML  = VAL29(17)
@@ -1566,7 +1572,7 @@ C
 C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL32 POUR ENDO ----
 C =====================================================================
-                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', END,
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      +                            1, NCRA32(5), VAL32(4), CODRET, 'FM')
                ENDIF
             ENDIF
@@ -1606,15 +1612,15 @@ C =====================================================================
             PESA(2) = VAL32( 2)
             PESA(3) = VAL32( 3)
             PERMFH  = VAL32( 4)
-            LAMBT  = VAL32( 6)
+            LAMBT   = VAL32( 6)
             DLAMBT  = VAL32( 7)
-            LAMBP  = VAL32( 8)
+            LAMBP   = VAL32( 8)
             DLAMBP  = VAL32( 9)
-            LAMBS  = VAL32( 10)
-            DLAMBS  = VAL32( 11)
-            LAMBCT = VAL32( 12)
-            SATUR   = VAL32( 13)
-            DSATUR  = VAL32( 14)
+            LAMBS   = VAL32(10)
+            DLAMBS  = VAL32(11)
+            LAMBCT  = VAL32(12)
+            SATUR   = VAL32(13)
+            DSATUR  = VAL32(14)
             PERMLI  = VAL32(15)
             DPERML  = VAL32(16)
             UNSURK  = VAL33( 1)
@@ -1631,15 +1637,15 @@ C =====================================================================
          ENDIF
          IF (HYDR.EQ.'HYDR') THEN
             CALL PERMEA(IMATE,HYDR,PHI,T,SATUR,NCON,COND)
-            PERMFH = COND( 1)
-            PERMLI = COND( 2)
-            DPERML = COND( 3)
-            PERMGZ = COND( 4)
-            DPERMS = COND( 5)
-            DPERMP = COND( 6)
-            FICK   = COND( 7)
-            DFICKT = COND( 8)
-            DFICKG = COND( 9)
+            PERMFH = COND(1)
+            PERMLI = COND(2)
+            DPERML = COND(3)
+            PERMGZ = COND(4)
+            DPERMS = COND(5)
+            DPERMP = COND(6)
+            FICK   = COND(7)
+            DFICKT = COND(8)
+            DFICKG = COND(9)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL UTMESS('F','THMRCP_16','PROBLEME DANS LA '//
      +                                   'DEFINITION DE LA SATURATION')

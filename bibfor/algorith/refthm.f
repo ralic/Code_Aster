@@ -1,4 +1,4 @@
-      SUBROUTINE REFTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,NPG,
+      SUBROUTINE REFTHM(FNOEVO,DT,PERMAN,NNO,NNOS,NNOM,NPI,NPG,
      &                  IPOIDS,IPOID2,
      &                  IVF,IVF2,IDFDE,IDFDE2,GEOM,
      &                  B,DFDI,DFDI2,R,VECTU,IMATE,MECANI,PRESS1,PRESS2,
@@ -6,7 +6,7 @@
      &                  NMEC,NP1,NP2,NDIM,AXI,CONTM)
 
       IMPLICIT  NONE
-      LOGICAL   FNOEVO,AXI
+      LOGICAL   FNOEVO,PERMAN,AXI
       INTEGER   NNO,NNOS,NPI,IPOIDS,IPOID2,IVF,IVF2,NNOM
       INTEGER   IDFDE,IDFDE2,IMATE,DIMDEF,DIMCON,DIMUEL,NPG
       INTEGER   MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
@@ -17,7 +17,7 @@
       REAL*8    R(1:DIMDEF+1),VECTU(DIMUEL),DT,CONTM(4)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C =====================================================================
-      INTEGER   INDICE,I,J,K,L,PARSIG,PARTMP,PARBSI
+      INTEGER   INDICE,I,J,K,PARSIG,PARTMP,PARBSI
       PARAMETER (PARSIG = 837 ,PARTMP = 162 ,PARBSI = 162 )
       REAL*8    SIGTM(PARSIG),FTEMP(PARTMP),BSIGM(PARBSI)
       REAL*8    R8VIDE,R8MIEM
@@ -48,7 +48,7 @@ C ======================================================================
 C ======================================================================
 C --- TESTS DE COHERENCE -----------------------------------------------
 C ======================================================================
-C --- CES VERIFICATIONS ONT POUR OBJETIFS DE CONTROLER LES DIMENSIONS --
+C --- CES VERIFICATIONS ONT POUR OBJETIF DE CONTROLER LES DIMENSIONS ---
 C --- DE NDDL, NNO ET DIMCON QUI DIMENSIONNENT LES VECTEURS SIGTM, -----
 C --- FTEMP ET BSIGM ---------------------------------------------------
 C ======================================================================
@@ -62,7 +62,7 @@ C ======================================================================
        CALL ASSERT ( NPI   .LE. 27 )
        CALL ASSERT ( DIMCON .LE. 31 )
 C ======================================================================
-C --- CES VERIFICATIONS ONT POUR OBJECTIFS DE CONTROLER LA PRESENCE ----
+C --- CES VERIFICATIONS ONT POUR OBJECTIF DE CONTROLER LA PRESENCE -----
 C --- DES DIFFERENTS PARAMETRES DE REFERENCE ---------------------------
 C ======================================================================
        IF ( MECANI(1).NE.0 ) THEN
@@ -129,7 +129,7 @@ C ======================================================================
               IF ( CONTM(INDICE).EQ.R8VIDE() ) GOTO 210
 
               SIGTM(J+DIMCON*(I-1)) = CONTM(INDICE)
-              CALL FNOTHM(FNOEVO,DT,NNO,NNOS,NNOM,
+              CALL FNOTHM(FNOEVO,DT,PERMAN,NNO,NNOS,NNOM,
      &                  NPI,NPG,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
      &                  GEOM,SIGTM,B,DFDI,DFDI2,R,BSIGM(1),IMATE,MECANI,
      &                  PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,NDDLS,

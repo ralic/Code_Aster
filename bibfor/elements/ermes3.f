@@ -1,11 +1,7 @@
-      SUBROUTINE ERE3D2(NOE,IFA,ITYP,NBNV,NPGF,IREF1,IVOIS,ISIG,NBCMP,
+      SUBROUTINE ERMES3(NOE,IFA,ITYP,NBNV,NPGF,IREF1,IVOIS,ISIG,NBCMP,
      &                  DSG11,DSG22,DSG33,DSG12,DSG13,DSG23)
-      IMPLICIT NONE
-      INTEGER IFA,ITYP,NBNV,NPGF,IREF1,IVOIS,ISIG,NBCMP,NOE(9,6,3)
-      REAL*8 DSG11(27),DSG22(27),DSG33(27),DSG12(27),DSG13(27),DSG23(27)
-C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,6 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C =====================================================================
+C  ERREUR EN MECANIQUE - TERME DE SAUT - DIMENSION 3
+C  **        **                   *                *
+C =====================================================================
 C
 C     BUT:
 C         DEUXIEME TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE : 
@@ -53,27 +53,30 @@ C OUT  NORME  : NORME DE SIGMA AU POINT DE GAUSS
 C
 C ......................................................................
 C
+      IMPLICIT NONE
+      INTEGER IFA,ITYP,NBNV,NPGF,IREF1,IVOIS,ISIG,NBCMP,NOE(9,6,3)
+      REAL*8 DSG11(27),DSG22(27),DSG33(27),DSG12(27),DSG13(27),DSG23(27)
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER IAREPE,JCELD,JCELV,ICONX1,ICONX2,JAD,JADV,IMAV,IGREL,IEL
-      INTEGER IAVAL,INO,NCHER,INOV,INDIIS,IPGF,TOTO
+      INTEGER IAVAL,INO,NCHER,INOV,INDIIS,IPGF
       
       REAL*8 SIG11(27),SIG22(27),SIG33(27),SIG12(27),SIG13(27),SIG23(27)
       REAL*8 SIGV11(27),SIGV22(27),SIGV33(27),SIGV12(27),SIGV13(27)

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
            RIGI_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
          ),
-         EXCIT_GENE      =FACT(statut='f',
+         EXCIT_GENE      =FACT(statut='f',max='**',
            FONC_MULT       =SIMP(statut='f',typ=fonction_sdaster,max='**' ),
            VECT_GENE       =SIMP(statut='f',typ=vect_asse_gene,max='**' ),
          ),

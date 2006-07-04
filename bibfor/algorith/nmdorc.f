@@ -21,7 +21,7 @@ C TOLE CRP_20
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR JMBHH01 J.M.PROIX 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -410,37 +410,35 @@ C  POUR COMPORTEMENT KIT_
                 ZK16(JVALV-1+6) = SDCOMP
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBMONO
 
-            ELSEIF (COMP(1:4).EQ.'ZMAT') THEN
-                CALL GETVIS(MOCLEF(I),'NB_VARI',K,1,1,NBVARI,N1)
-                CALL GETVIS(MOCLEF(I),'UNITE',K,1,1,NUNIT,N1)
-                WRITE (ZK16(JVALV-1+6),'(I16)') NUNIT
-
             ELSE
-              EXIST = GETEXM(MOCLEF(I),COMP)
-              IF (EXIST) THEN
-                CALL GETVIS(MOCLEF(I),COMP,K,1,1,NBVARI,N1)
-
-                 EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
-                 EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
-                 IF (EXICP) THEN
+C   AUTRES COMPORTEMENTS : NOMBRE DE VARIABLES INTERNES
+                EXIST = GETEXM(MOCLEF(I),COMP)
+                IF (EXIST) CALL GETVIS(MOCLEF(I),COMP,K,1,1,NBVARI,N1)
+                IF (COMP(1:4).EQ.'ZMAT') THEN
+                  CALL GETVIS(MOCLEF(I),'NB_VARI',K,1,1,NBVARI,N1)
+                  CALL GETVIS(MOCLEF(I),'UNITE',K,1,1,NUNIT,N1)
+                  WRITE (ZK16(JVALV-1+6),'(I16)') NUNIT
+                ENDIF
+C   CPLAN DEBORST  ET COMP1D DEBORST
+                EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
+                EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
+                IF (EXICP) THEN
                    CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
                    IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
-                 END IF
-                 IF (EXI1D) THEN
-                    CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
-                    IF (TX1D.EQ.'DEBORST') THEN
-                    IF(TXCP.EQ.'DEBORST')THEN
-                        CALL UTMESS('F','NMDORC','1D OU C_PLAN ?')
-                    ELSE
-                       NBVARI = NBVARI + 4
-                       TXCP=TX1D
-                    ENDIF
-                 ENDIF
-               END IF
-
-              END IF
+                END IF
+                IF (EXI1D) THEN
+                   CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
+                   IF (TX1D.EQ.'DEBORST') THEN
+                      IF(TXCP.EQ.'DEBORST')THEN
+                          CALL UTMESS('F','NMDORC','1D OU C_PLAN ?')
+                      ELSE
+                         NBVARI = NBVARI + 4
+                         TXCP=TX1D
+                      ENDIF
+                   ENDIF
+                END IF
             END IF
-
+            
 C RELATION SIMO_MIEHE POUR VMIS_ISOT_XXX ET META_XXX_IL
 C ET META_XXX_INL
 

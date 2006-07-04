@@ -1,13 +1,14 @@
-        SUBROUTINE COMTHM(OPTION,IMATE,TYPMOD,COMPOR,CRIT,INSTAM,INSTAP,
-     +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,NBPHA1,
-     +                    YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
-     +                    ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
+        SUBROUTINE COMTHM(OPTION,PERMAN,IMATE,TYPMOD,COMPOR,
+     &                    CRIT,INSTAM,INSTAP,
+     &                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,NBPHA1,
+     &                    YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
+     &                    ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
      +                    DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
      +                    DSDE,PESA,RETCOM,KPI,NPG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,11 +79,11 @@ C IN DEFGEM : DEFORMATIONS GENERALISEES A L'INSTANT MOINS
 C IN DEFGEP : DEFORMATIONS GENERALISEES A L'INSTANT PLUS
 C IN CONGEM : CONTRAINTES GENERALISEES A L'INSTANT MOINS
 C IN VINTM  : VARIABLES INTERNES A L'INSTANT MOINS
-C IN TYPMOD
+C IN TYPMOD : MODELISATION (D_PLAN, AXI, 3D ?)
 C
-C OUT CONGEP: CONTRAINTES GENERALISEES A L'INSTANT PLUS
-C OUT VINTP : VARIABLES INTERNES A L'INSTANT PLUS
-C OUT DSDE  : MATRICE TANGENTE CONTRAINTES DEFORMATIONS
+C OUT CONGEP : CONTRAINTES GENERALISEES A L'INSTANT PLUS
+C OUT VINTP  : VARIABLES INTERNES A L'INSTANT PLUS
+C OUT DSDE   : MATRICE TANGENTE CONTRAINTES DEFORMATIONS
 C
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 C ======================================================================
@@ -98,6 +99,7 @@ C ======================================================================
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),CRIT(*),INSTAM,INSTAP
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  COMPOR(*),OPTION
+      LOGICAL       PERMAN
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
@@ -105,8 +107,7 @@ C ======================================================================
       INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT,NVIH,NVIC,NVIT
       REAL*8        P1,DP1,GRAP1(3),P2,DP2,GRAP2(3),T,DT,GRAT(3)
       REAL*8        PHI,PVP,PAD,H11,H12,H21,H22,RHO11,EPSV,DEPS(6),DEPSV
-      REAL*8        T0,P10,P20,PHI0,PVP0,SAT,RV0
-      REAL*8        G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3,MAMOVG
+      REAL*8        T0,P10,P20,PHI0,PVP0,SAT,MAMOVG
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR,DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, DPERMP, FICK
       REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL, UNSURK
@@ -140,15 +141,15 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
-      CALL CALCCO(OPTION,MECA,THMC,THER,HYDR,IMATE,
-     +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
-     +                    NBPHA1,YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADVIHY,
+      CALL CALCCO(OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
+     +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,
+     +                    YATE,ADDEME,ADCOME,ADVIHY,
      +                    ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
      +                    ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
      +                    VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
      +                    T,DT,PHI,
      +                    PVP,PAD,H11,H12,H21,H22,KH,RHO11,PHI0,PVP0,
-     +                    P10,P20,T0,SAT,RETCOM,CRIT,BIOT,
+     +                    SAT,RETCOM,CRIT,BIOT,
      +                    VIHRHO,VICPHI,VICPVP,VICSAT)
 
       IF (RETCOM.NE.0) THEN
@@ -184,23 +185,17 @@ C ======================================================================
 C --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 C ======================================================================
       IF (YAP1.EQ.1) THEN
-          CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF, 
-     +                    DIMCON,YAMEC,YATE,ADDEP1,ADDEP2, 
-     +                    ADCP11,ADCP12,ADCP21,ADCP22,ADDEME,ADDETE,
-     +                    CONGEM,CONGEP,DSDE,P1,P2,
-     +                    GRAP1,GRAP2,T,GRAT,PHI,PVP,PAD,RHO11,H11,H12,
-     +                    H21,H22,RGAZ, RHOD, CPD, BIOT, SATUR, DSATUR,
-     +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ, DPERMS,
-     +                    DPERMP, FICK, DFICKT, DFICKG,FICKAD,DFADT,
-     +                    LAMBP, DLAMBP,KH,
-     +                    RHOL, UNSURK, ALPHA,  CPL, LAMBS,
-     +                    DLAMBS,
-     +                    VISCL, DVISCL, MAMOLG,CPG, LAMBT, DLAMBT,
-     +                    VISCG,DVISCG, MAMOVG,
-     +                    CPVG, VISCVG, DVISVG, RETCOM,ISOT)
-         IF ( RETCOM.NE.0) THEN
-            GOTO 9000
-         ENDIF
+          CALL CALCFH(OPTION,PERMAN,THMC,NDIM,DIMDEF,DIMCON,YAMEC,
+     &                YATE,ADDEP1,ADDEP2,ADCP11,ADCP12,ADCP21,
+     &                ADCP22,ADDEME,ADDETE,CONGEP,DSDE,P1,P2,GRAP1,
+     &                GRAP2,T,GRAT,PVP,PAD,RHO11,H11,H12,RGAZ,DSATUR,
+     &                PESA,PERMFH,PERMLI,DPERML,PERMGZ,DPERMS,DPERMP,
+     &                FICK,DFICKT,DFICKG,FICKAD,DFADT,KH,UNSURK,
+     &                ALPHA,VISCL,DVISCL,MAMOLG,VISCG,DVISCG,
+     &                MAMOVG,ISOT)
+          IF ( RETCOM.NE.0) THEN
+             GOTO 9000
+          ENDIF
       ENDIF
 C ======================================================================
 C --- CALCUL DU FLUX THERMIQUE UNIQUEMENT SI YATE = 1 ------------------
@@ -222,7 +217,7 @@ C ======================================================================
          IF ( RETCOM.NE.0) THEN
             GOTO 9000
          ENDIF
-      ENDIF
+      ENDIF 
 C ======================================================================
  9000 CONTINUE
 C ======================================================================

@@ -1,17 +1,18 @@
       SUBROUTINE  ASSTHM(NNO,NNOS,NNOM ,NPG,NPI, IPOIDS,IPOID2,
      &                   IVF,IVF2, IDFDE, IDFDE2,
-     &                   GEOM, NOMTE,CRIT,TREF,DEPLM,DEPLP,
+     &                   GEOM,CRIT,DEPLM,DEPLP,
      &                   CONTM,CONTP,VARIM,VARIP,
      &                   DEFGEM,DEFGEP,
-     &                   DRDS,DSDE,B,DFDI,DFDI2,R,
+     &                   DRDS,DRDSR,DSDE,B,DFDI,DFDI2,R,SIGBAR,C,CK,CS,
      &                   MATUU,VECTU,RINSTM,RINSTP,
      &                   OPTION,IMATE,MECANI,PRESS1,PRESS2,TEMPE,
      &                   DIMDEF,DIMCON,DIMUEL,NBVARI,NDDLS,NDDLM,
-     &                   NMEC,NP1,NP2,NDIM,COMPOR,TYPMOD,AXI,MODINT,
+     &                   NMEC,NP1,NP2,NDIM,COMPOR,
+     &                   TYPMOD,AXI,PERMAN,MODINT,
      >                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,15 +33,19 @@ C ======================================================================
 C TOLE CRP_21
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       IADZI,IAZK24
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='ASSTHM')
+C
       INTEGER       DIMMAT,NPG,IPOID2,IVF2,IDFDE2,DIMUEL,NNOM
       PARAMETER    (DIMMAT=120)
       INTEGER       NNO,NNOS,NPI,IPOIDS,IVF,IDFDE,IMATE,DIMDEF,DIMCON
       INTEGER       NBVARI,NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,CODRET
       INTEGER       MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
       INTEGER       YAMEC,YAP1,YAP2,YATE
-      INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE ,II,JJ 
-      INTEGER       KPI,I,J,N,M,K,KJI,N1,N2,IDL,IDL1M,IIDL,IIDL1,IIDL2
+      INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE ,II,JJ
+      INTEGER       KPI,IPI
+      INTEGER       I,J,N,K,KJI
       REAL*8        DFDI(NNO,3),DFDI2(NNOS,3)
       REAL*8        GEOM(NDIM,NNO),CRIT(*),POIDS,POIDS2
       REAL*8        DEPLP(DIMUEL),DEPLM(DIMUEL)
@@ -48,16 +53,17 @@ C ======================================================================
       REAL*8        VARIM(NBVARI*NPI),VARIP(NBVARI*NPI)
       REAL*8        MATUU(DIMUEL*DIMUEL),MATRI(DIMMAT,DIMMAT)
       REAL*8        RINSTP,RINSTM,A(2),AS(2),AK(2),VECTU(DIMUEL)
-      REAL*8        TREF,DEFGEM(DIMDEF),DEFGEP(DIMDEF)
+      REAL*8        DEFGEM(DIMDEF),DEFGEP(DIMDEF)
       REAL*8        DRDS(DIMDEF+1,DIMCON),DRDSR(DIMDEF,DIMCON)
       REAL*8        DSDE(DIMCON,DIMDEF),B(DIMDEF,DIMUEL)
-      REAL*8        R(DIMDEF+1),FACDG,SIGBAR(DIMDEF),C(DIMDEF)
+      REAL*8        R(DIMDEF+1),SIGBAR(DIMDEF),C(DIMDEF)
       REAL*8        DT,TA,TA1,RTHMC,R8PREM,CK(DIMDEF),CS(DIMDEF)
-      LOGICAL       AXI
-      CHARACTER*2   CODMES
+      LOGICAL       AXI, PERMAN
+      CHARACTER*2   CODMES(1)
       CHARACTER*3   MODINT
-      CHARACTER*8   TYPMOD(2),NOMAIL
-      CHARACTER*16  NOMTE,OPTION,COMPOR(*),THMC,LOI
+      CHARACTER*8   TYPMOD(2)
+      CHARACTER*16  OPTION,COMPOR(*),THMC,LOI
+C
 C =====================================================================
 C.......................................................................
 C
@@ -87,11 +93,10 @@ C =====================================================================
 C IN  DFDE    : DERIVEE DES FTION FORME QUAD ELEMENT DE REFERENCE
 C IN  DFDN    : DERIVEE DES FTION FORME QUAD ELEMENT DE REFERENCE
 C IN  DFDK    : DERIVEE DES FTION FORME QUAD ELEMENT DE REFERENCE
-C IN  DFDE2    : DERIVEE DES FTION FORME LINE ELEMENT DE REFERENCE
-C IN  DFDN2    : DERIVEE DES FTION FORME LINE ELEMENT DE REFERENCE
-C IN  DFDK2    : DERIVEE DES FTION FORME LINE ELEMENT DE REFERENCE
-C IN  GEOM    : COORDONEES DES NOEUDS
-C IN  NOMTE   : NOM DU TYPE DE L'ELEMENT
+C IN  DFDE2   : DERIVEE DES FTION FORME LINE ELEMENT DE REFERENCE
+C IN  DFDN2   : DERIVEE DES FTION FORME LINE ELEMENT DE REFERENCE
+C IN  DFDK2   : DERIVEE DES FTION FORME LINE ELEMENT DE REFERENCE
+C IN  GEOM    : COORDONNEES DES NOEUDS
 C IN  OPTION  : OPTION DE CALCUL
 C IN  IMATE   : MATERIAU CODE
 C IN  COMPOR  : COMPORTEMENT
@@ -112,10 +117,10 @@ C               NDEFME = MECA(4), NOMBRE DE DEFORMATIONS MECANIQUES
 C               NCONME = MECA(5), NOMBRE DE CONTRAINTES MECANIQUES
 C IN  PRESS1    : TABLEAU CONTENANT
 C               YAP1 = PRESS1(1), YAP1 = 1 >> IL Y A UNE EQUATION DE PRE
+C               NBPHA1=PRESS1(2) NOMBRE DE PHASES POUR LE CONSTITUANT 1
 C               ADDEP1 = PRESS1(3), ADRESSE DANS LES TABLEAUX DES DEFORM
 C               GENERALISEES AU POINT DE GAUSS DEFGEP ET DEFGEM DES
 C               DEFORMATIONS CORRESPONDANT A LA PREMIERE PRESSION
-C               NBPHA1=PRESS1(2) NOMBRE DE PHQSES POUR LE CONSTITUANT 1
 C               ADCP11=PRESS1(4), ADRESSE DANS LES TABLEAUX DES CONTRAIN
 C               GENERALISEES AU POINT DE GAUSS CONGEP ET CONGEM DES
 C               CONTRAINTES CORRESPONDANT A LA PREMIERE PHASE DU 
@@ -129,10 +134,10 @@ C               NCONP1 = PRESS1(7), NOMBRE DE CONTRAINTES POUR
 C               CHAQUE PHASE DU CONSTITUANT 1
 C IN  PRESS2    : TABLEAU CONTENANT
 C               YAP2 = PRESS2(1), YAP2 = 1 >> IL Y A UNE EQUATION DE PRE
+C               NBPHA1=PRESS2(2) NOMBRE DE PHASES POUR LE CONSTITUANT 1
 C               ADDEP2 = PRESS2(3), ADRESSE DANS LES TABLEAUX DES DEFORM
 C               GENERALISEES AU POINT DE GAUSS DEFGEP ET DEFGEM DES
 C               DEFORMATIONS CORRESPONDANT A LA PREMIERE PRESSION
-C               NBPHA1=PRESS2(2) NOMBRE DE PHASES POUR LE CONSTITUANT 1
 C               ADCP21=PRESS2(4), ADRESSE DANS LES TABLEAUX DES CONTRAIN
 C               GENERALISEES AU POINT DE GAUSS CONGEP ET CONGEM DES
 C               CONTRAINTES CORRESPONDANT A LA PREMIERE PHASE DU 
@@ -144,6 +149,7 @@ C               SECOND CONSTITUANT
 C               NDEFP2 = PRESS2(6), NOMBRE DE DEFORMATIONS PRESSION 2
 C               NCONP2 = PRESS2(7), NOMBRE DE CONTRAINTES POUR 
 C               CHAQUE PHASE DU CONSTITUANT 2
+C
 C IN  TEMPE    : TABLEAU CONTENANT
 C               YATE = TEMPE(1), YAMEC = 1 >> IL Y A UNE EQUATION THERMI
 C               ADDETE = TEMPE(2), ADRESSE DANS LES TABLEAUX DES DEFORMA
@@ -161,24 +167,13 @@ C OUT VARIP   : VARIABLES INTERNES
 C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER  ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      IF(NDDLS*NNO.GT.DIMMAT) THEN
+         CALL UTMESS('F',NOMPRO,'DIMENSIONEMENT ' )
+      ENDIF
+C
       IF(DIMUEL.GT.DIMMAT) THEN
-         CALL UTMESS('F','ASSTHM','DIMENSIONEMENT ' )
+         CALL UTMESS('F',NOMPRO,'DIMENSIONEMENT ' )
       ENDIF
 C =====================================================================
 C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU -------------
@@ -278,7 +273,7 @@ C --- CALCUL POUR CHAQUE POINT D'INTEGRATION: BOUCLE SUR KPI -----------
 C ======================================================================
       LOI = ' '
       CALL RCVALA(IMATE,' ','THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
-     +                                              RTHMC, CODMES, 'FM')
+     >                                              RTHMC, CODMES, 'FM')
       THMC = COMPOR(8)
       IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_SATU'
@@ -296,14 +291,15 @@ C ======================================================================
          LOI = 'LIQU_AD_GAZ_VAPE'
       ENDIF
       IF (THMC.NE.LOI) THEN
-         CALL UTMESS('F','ASSTHM','IL Y A INCOHRENCE ENTRE LA LOI'//
+         CALL UTMESS('F',NOMPRO,'IL Y A INCOHRENCE ENTRE LA LOI'//
      +         ' DE COUPLAGE DE DEFI_MATERIAU '//LOI//' ET LA LOI'//
      +         ' DE COUPLAGE DANS STAT_NON_LINE '//THMC)
       ENDIF
 C =====================================================================
 C --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------
 C =====================================================================
-      DO 10 KPI=1,NPI
+      DO 10 IPI=1,NPI
+        KPI = IPI
 C =====================================================================
 C --- CALCUL DE LA MATRICE B AU POINT D'INTEGRATION -------------------
 C =====================================================================
@@ -324,12 +320,25 @@ C =====================================================================
  109        CONTINUE
  108     CONTINUE
 C ======================================================================
-C --- APPEL A LA ROUTINE EQUTHM ----------------------------------------
+C --- APPEL A LA ROUTINE EQUTHP OU EQUTHM ------------------------------
 C ======================================================================
 C --- CALCUL DES CONTRAINTES (VIRTUELLES ET GENERALISEES) --------------
 C --- ET DE LEURS DERIVEES ---------------------------------------------
 C ======================================================================
-         CALL EQUTHM(
+         IF (PERMAN) THEN
+           CALL EQUTHP(
+     &          IMATE,OPTION,NDIM,COMPOR,TYPMOD,
+     &          KPI,NPG,
+     &          DIMDEF,DIMCON,NBVARI,
+     &          DEFGEM,CONTM((KPI-1)*DIMCON+1),
+     &          VARIM((KPI-1)*NBVARI+1),
+     &          DEFGEP,CONTP((KPI-1)*DIMCON+1),
+     &          VARIP((KPI-1)*NBVARI+1),
+     &          MECANI,PRESS1,PRESS2,TEMPE,
+     &          CRIT,RINSTM,RINSTP,
+     &          R,DRDS,DSDE,CODRET)
+         ELSE
+           CALL EQUTHM(
      &          IMATE,OPTION,TA,TA1,NDIM,COMPOR,TYPMOD,
      &          KPI,NPG,
      &          DIMDEF,DIMCON,NBVARI,
@@ -340,6 +349,7 @@ C ======================================================================
      &          MECANI,PRESS1,PRESS2,TEMPE,
      &          CRIT,RINSTM,RINSTP,DT,
      &          R,DRDS,DSDE,CODRET)
+         ENDIF
        IF ( CODRET.NE.0) THEN
          GOTO 9000
        ENDIF             
@@ -388,7 +398,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE VECTUU -------------------------------------------------
 C ======================================================================
-C --- ON SELECTIONNE LES COMPOSANTES UTILE DE R POUR CE PI -------------
+C --- ON SELECTIONNE LES COMPOSANTES UTILES DE R POUR CE PI ------------
 C ======================================================================
          IF ((OPTION(1:9).EQ.'FULL_MECA' .OR.
      &        OPTION(1:9).EQ.'RAPH_MECA')) THEN
@@ -423,7 +433,7 @@ C ======================================================================
                      KJI= KJI + 1
  116              CONTINUE
  115           CONTINUE     
-        ENDIF     
+        ENDIF
 C ======================================================================
  9000  CONTINUE
 C ======================================================================

@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEM1, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,8 @@ C --- MODELISATION : '3D' '3D_INCO' 'SHB8' '3D_GRAD_VARI'
          TYPEMO = TYPEM1
 
       ELSEIF ( TYPELE.EQ.'HM_D_PLAN_SE2' .OR.
-     +         TYPELE.EQ.'HM_D_PLAN_SE3' ) THEN
+     +         TYPELE.EQ.'HM_D_PLAN_SE3' .OR.
+     +         TYPELE.EQ.'HM_D_PLAN_SE3_P' ) THEN
          TYPEMO = TYPEM1
 
       ELSEIF ( TYPELE.EQ.'HHM_FACE8' ) THEN

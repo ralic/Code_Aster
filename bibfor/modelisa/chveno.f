@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 03/07/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -304,11 +304,11 @@ C
                             NBMABO = NBMABO + 1
                             ZI(JBOR+NBMABO-1) = ZI(JGRO+IMPB-1)
                          ENDIF
-                         CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
-     +                                                          NORIE1 )
-                         CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO, 
-     +                                    NORIE1, NTRAIT, REORIE, PREC )
  218                  CONTINUE
+                      CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
+     +                                                          NORIE1 )
+                      CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO, 
+     +                                    NORIE1, NTRAIT, REORIE, PREC )
                       CALL JEDETR('&&CHVENO.PRIN')
                       CALL JEDETR('&&CHVENO.BORD')
                     ENDIF
@@ -420,11 +420,11 @@ C
                             NBMABO = NBMABO + 1
                             ZI(JBOR+NBMABO-1) = ZI(JNMA+IMPB-1)
                          ENDIF
-                         CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
-     +                                                          NORIE1 )
-                         CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO, 
-     +                                    NORIE1, NTRAIT, REORIE, PREC )
  220                  CONTINUE
+                      CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
+     +                                                          NORIE1 )
+                      CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO, 
+     +                                    NORIE1, NTRAIT, REORIE, PREC )
                       CALL JEDETR('&&CHVENO.PRIN')
                       CALL JEDETR('&&CHVENO.BORD')
                     ENDIF

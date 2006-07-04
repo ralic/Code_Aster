@@ -1,11 +1,7 @@
-      SUBROUTINE ERE3D1(NNO,IPG,IVF,ISIG,NBCMP,DFDX,DFDY,DFDZ,
-     &                  POIDS,DSX,DSY,DSZ,NORME)
-      IMPLICIT NONE
-      INTEGER NNO,IPG,IVF,ISIG,NBCMP
-      REAL*8 DFDX(9),DFDY(9),DFDZ(9),POIDS,DSX,DSY,DSZ,NORME
-C ----------------------------------------------------------------------
+      SUBROUTINE ERMEV3(NNO,IPG,IVF,ISIG,NBCMP,DFDX,DFDY,DFDZ,
+     &                  DSX,DSY,DSZ,NORME)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,11 +18,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C
+C =====================================================================
+C  ERREUR EN MECANIQUE - TERME VOLUMIQUE - DIMENSION 3
+C  **        **                *                     *
+C =====================================================================
 C     BUT:
 C         PREMIER TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE : 
 C         CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA EN UN POINT
-C         DE GAUSSE EN 3D.
+C         DE GAUSS EN 3D.
 C
 C
 C     ARGUMENTS:
@@ -42,7 +41,6 @@ C IN   NBCMP  : NOMBRE DE COMPOSANTES
 C IN   DFDX   : DERIVEES DES FONCTIONS DE FORME / X
 C IN   DFDY   : DERIVEES DES FONCTIONS DE FORME / Y
 C IN   DFDZ   : DERIVEES DES FONCTIONS DE FORME / Z
-C IN   POIDS  : POIDS
 C
 C      SORTIE :
 C-------------
@@ -53,21 +51,25 @@ C OUT  NORME  : NORME DE SIGMA AU POINT DE GAUSS
 C
 C ......................................................................
 C
+      IMPLICIT NONE
+      INTEGER NNO,IPG,IVF,ISIG,NBCMP
+      REAL*8  DFDX(27),DFDY(27),DFDZ(27),DSX,DSY,DSZ,NORME
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------

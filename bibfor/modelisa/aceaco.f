@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 03/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       ANG(2), CRB, EPA, KAPPA, CORREC, RIGI, EXCENT
+      REAL*8       VECT(3),R8PI
+      INTEGER NVEC
       CHARACTER*8  INERT, KORREC
       CHARACTER*19 CARTCO
       CHARACTER*24 TMPNCO, TMPVCO
 C     ------------------------------------------------------------------
+C
+      PI=R8PI()
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CALL JEMARQ()
@@ -91,11 +95,19 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
      +                                IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVR8('COQUE','EPAIS'        ,IOC,1,1   ,EPA      ,NV  )
          CALL GETVR8('COQUE','ANGL_REP'     ,IOC,1,2   ,ANG(1)   ,NA  )
+         CALL GETVR8('COQUE','VECTEUR'      ,IOC,1,3   ,VECT     ,NVEC)
          CALL GETVR8('COQUE','A_CIS'        ,IOC,1,1   ,KAPPA    ,NK  )
          CALL GETVTX('COQUE','MODI_METRIQUE',IOC,1,1   ,KORREC   ,NCO )
          CALL GETVR8('COQUE','COEF_RIGI_DRZ',IOC,1,1   ,RIGI     ,NCR )
          CALL GETVR8('COQUE','EXCENTREMENT' ,IOC,1,1   ,EXCENT   ,NEX )
          CALL GETVTX('COQUE','INER_ROTA'    ,IOC,1,1   ,INERT    ,NIN )
+
+
+         IF(NVEC.NE.0) THEN
+            CALL ANGVX(VECT,ANG(1),ANG(2))
+            ANG(1)=  ANG(1)*180.D0/PI
+            ANG(2)= -ANG(2)*180.D0/PI
+         ENDIF
          ZR(JDVC)   = EPA
          ZR(JDVC+1) = ANG(1)
          ZR(JDVC+2) = -ANG(2)

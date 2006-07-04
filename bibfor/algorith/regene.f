@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/07/2006   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,7 +211,7 @@ C
             ZR(IADPAR(3)) = GENEM
             ZR(IADPAR(4)) = OMEG2
             ZI(IADPAR(5)) = NUMO
-            ZI(IADPAR(6)) = XSI
+            ZR(IADPAR(6)) = XSI
 C
             CALL JELIBE(CHAMOL)
 10       CONTINUE

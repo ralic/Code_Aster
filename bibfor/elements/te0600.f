@@ -1,10 +1,10 @@
       SUBROUTINE TE0600(OPTION,NOMTE)
       IMPLICIT NONE
-      CHARACTER*16 OPTION,NOMTE,PHENOM
+      CHARACTER*16 OPTION,NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,54 +32,55 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C =====================================================================
       INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,IFORC,JCRET
-      INTEGER IPOID2,IVF2 ,IMATN
+      INTEGER IPOID2,IVF2
       INTEGER IDFDE2,NPI,NPG,NVIM
 C
       INTEGER RETLOI,IRET,IRETP,IRETM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEFO
       INTEGER IINSTP,IDEPLM,IDEPLP,IDEPLA,ICOMPO,ICARCR,IPESA
       INTEGER ICONTM,IVARIP,IVARIM,ITREF,IVECTU,ICONTP
-      CHARACTER*8 ALIAS
 C =====================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C =====================================================================
       INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
-      INTEGER DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II,KPI,N,INO
+      INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II,INO
       INTEGER NMEC,NP1,NP2,I,NCMP,NNOS,ICHG,ICHN
-      INTEGER JTAB(7),IGAU,ISIG,DIMETE,LXLGUT,NNOM
+      INTEGER JTAB(7),IGAU,ISIG,NNOM
+C     REMARQUE : CES DIMENSIONS DOIVENT ETRE LES MEMES QUE DANS TE0492
       REAL*8 DEFGEP(21),DEFGEM(21)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
-      REAL*8 DFDX2(27),DFDY2(27),DFDZ2(27),POIDS2
-      REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(162),EPSNO(162)
-      REAL*8 DRDS(22,31),DSDE(31,21),R(22)
+      REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(405),EPSNO(405)
+      REAL*8 DRDS(22,31),DRDSR(21,31),DSDE(31,21)
+      REAL*8 R(22),SIGBAR(21),C(21),CK(21),CS(21)
       CHARACTER*3 MODINT
       CHARACTER*8 TYPMOD(2)
+      CHARACTER*16 PHENOM
 C =====================================================================
-      INTEGER    ISMAEM,LI,KP,J,L,K
-      REAL*8      R8BID,RHO,COEF,RX,PG(31),SOMM(31),ALPHA,TEMP
-      CHARACTER*2 CODRET
-      LOGICAL     AXI
+      INTEGER     ISMAEM,LI,KP,J,L,K
+      REAL*8      R8BID,RHO,COEF,RX
+      CHARACTER*2 CODRET(1)
+      LOGICAL     AXI, PERMAN
 C =====================================================================
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH
 C  21 = 9 DEF MECA + 4 POUR P1 + 4 POUR P2 + 4 POUR T
 C  31 = 7 MECA + 2*5 POUR P1 + 2*5 POUR P2 + 4 POUR T
 C =====================================================================
-C  POUR LES TABLEAUX DEFGEP ET DEFGEM ON A DANS L ORDRE :
+C  POUR LES TABLEAUX DEFGEP ET DEFGEM ON A DANS L'ORDRE :
 C                                      DX DY DZ
 C                                      EPXX EPYY EPZZ EPXY EPXZ EPYZ
 C                                      PRE1 P1DX P1DY P1DZ
@@ -100,15 +101,15 @@ C                                      M22 FH22X FH22Y FH22Z
 C                                      ENT22
 C                                      QPRIM FHTX FHTY FHTZ
 C        SIXY EST LE VRAI DE LA MECANIQUE DES MILIEUX CONTINUS
-C        DANS EQUTHM ON LE MULITPLIER PAR RAC2
+C        DANS EQUTHM ON LE MULITPLIERA PAR RAC2
 C =====================================================================
-C   POUR L OPTION FORCNODA
+C   POUR L'OPTION FORCNODA
 C  SI LES TEMPS PLUS ET MOINS SONT PRESENTS
-C  C EST QUE L ON APPELLE DEPUIS STAT NON LINE  : FNOEVO = VRAI
+C  C'EST QUE L'ON APPELLE DEPUIS STAT NON LINE  : FNOEVO = VRAI
 C  ET ALORS LES TERMES DEPENDANT DE DT SONT EVALUES
 C  SI LES TEMPS PLUS ET MOINS NE SONT PAS PRESENTS
-C  C EST QUE L ON APPELLE DEPUIS CALCNO  : FNOEVO = FAUX
-C  ET ALORS LES TERMES DEPENDANT DE DT SONT PAS EVALUES
+C  C'EST QUE L'ON APPELLE DEPUIS CALCNO  : FNOEVO = FAUX
+C  ET ALORS LES TERMES DEPENDANT DE DT NE SONT PAS EVALUES
 C =====================================================================
 C AXI       AXISYMETRIQUE?
 C TYPMOD    MODELISATION (D_PLAN, AXI, 3D ?)
@@ -130,21 +131,23 @@ C IVF       FONCTIONS DE FORMES QUADRATIQUES
 C IVF2      FONCTIONS DE FORMES LINEAIRES
 C =====================================================================
       LOGICAL FNOEVO
-      REAL*8 DT,E
+      REAL*8  DT
 C =====================================================================
+C --- 1. INITIALISATIONS ----------------------------------------------
 C --- SUIVANT ELEMENT, DEFINITION DES CARACTERISTIQUES : --------------
 C --- CHOIX DU TYPE D'INTEGRATION -------------------------------------
 C --- RECUPERATION DE LA GEOMETRIE ET POIDS DES POINTS D'INTEGRATION --
 C --- RECUPERATION DES FONCTIONS DE FORME -----------------------------
 C =====================================================================
-      CALL CAETHM(NOMTE,AXI,TYPMOD,MODINT,MECANI,PRESS1,PRESS2,
-     +            TEMPE,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
-     +            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     +            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+      CALL CAETHM(NOMTE,AXI,PERMAN,
+     >            TYPMOD,MODINT,MECANI,PRESS1,PRESS2,TEMPE,
+     >            DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
+     >            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
+     >            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
 C =====================================================================
 C --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 C =====================================================================
-C --- OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA ----------------
+C --- 2. OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA -------------
 C =====================================================================
       IF ((OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
      +    (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
@@ -221,14 +224,16 @@ C =====================================================================
 
             CALL ASSTHM(NNO,NNOS,NNOM,NPG,NPI,IPOIDS,IPOID2,
      +                IVF,IVF2,IDFDE, IDFDE2,
-     +                ZR(IGEOM),NOMTE,ZR(ICARCR),
-     +                ZR(ITREF),ZR(IDEPLM),ZR(IDEPLM),ZR(ICONTM),
+     +                ZR(IGEOM),ZR(ICARCR),
+     +                ZR(IDEPLM),ZR(IDEPLM),ZR(ICONTM),
      +                ZR(ICONTM),ZR(IVARIM),ZR(IVARIM),DEFGEM,DEFGEP,
-     +                DRDS,DSDE,B,DFDI, DFDI2, R,ZR(IMATUU),ZR(IVECTU),
+     +                DRDS,DRDSR,DSDE,B,DFDI, DFDI2,R,SIGBAR,C,CK,CS,
+     +                ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
      +                NBVARI,NDDLS,NDDLM,
-     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,MODINT,
+     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),
+     >                TYPMOD,AXI,PERMAN,MODINT,
      +                RETLOI)
          ELSE
             DO 30 LI = 1,DIMUEL
@@ -237,20 +242,22 @@ C =====================================================================
 
             CALL ASSTHM(NNO,NNOS,NNOM,NPG,NPI,IPOIDS,IPOID2,
      +                IVF,IVF2,IDFDE, IDFDE2,
-     +                ZR(IGEOM),NOMTE,ZR(ICARCR),
-     +                ZR(ITREF),ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),
+     +                ZR(IGEOM),ZR(ICARCR),
+     +                ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),
      +                ZR(ICONTP),ZR(IVARIM),ZR(IVARIP),DEFGEM,DEFGEP,
-     +                DRDS,DSDE,B,DFDI, DFDI2, R,ZR(IMATUU),ZR(IVECTU),
+     +                DRDS,DRDSR,DSDE,B,DFDI, DFDI2,R,SIGBAR,C,CK,CS,
+     +                ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
      +                NBVARI,NDDLS,NDDLM,
-     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,MODINT,
+     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),
+     >                TYPMOD,AXI,PERMAN,MODINT,
      +                RETLOI)
             ZI(JCRET) = RETLOI
          END IF
       END IF
 C =====================================================================
-C --- OPTION : CHAR_MECA_PESA_R ---------------------------------------
+C --- 3. OPTION : CHAR_MECA_PESA_R ------------------------------------
 C =====================================================================
       IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
          CALL JEVECH('PGEOMER','L',IGEOM)
@@ -316,7 +323,7 @@ C =====================================================================
                      ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IPESA+2)*ZR(IVF+K+I+NNOS-1)
- 95               CONTINUE
+ 95               CONTINUE   
                ELSE
 
                   DO 100 I = 1,NNOS
@@ -340,7 +347,7 @@ C =====================================================================
          END IF
       END IF
 C =====================================================================
-C --- OPTION : CHAR_MECA_FR3D3D----------------------------
+C --- 4. OPTION : CHAR_MECA_FR3D3D ------------------------------------
 C =====================================================================
       IF (OPTION.EQ.'CHAR_MECA_FR3D3D') THEN
          CALL JEVECH('PGEOMER','L',IGEOM)
@@ -375,7 +382,7 @@ C ======================================================================
  150     CONTINUE
       END IF
 C ======================================================================
-C --- OPTION : CHAR_MECA_FR2D2D ----------------------------------------
+C --- 5. OPTION : CHAR_MECA_FR2D2D -------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'CHAR_MECA_FR2D2D') THEN
          CALL JEVECH('PGEOMER','L',IGEOM)
@@ -409,11 +416,11 @@ C ======================================================================
                ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I+NNOS-1)
- 171        CONTINUE
+ 171        CONTINUE 
  180     CONTINUE
       END IF
 C ======================================================================
-C --- OPTION : FORC_NODA -----------------------------------------------
+C --- 6. OPTION : FORC_NODA --------------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'FORC_NODA') THEN
 C ======================================================================
@@ -441,7 +448,7 @@ C --- PARAMETRES EN SORTIE ---------------------------------------------
 C ======================================================================
         CALL JEVECH('PVECTUR','E',IVECTU)
 
-        CALL FNOTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,
+        CALL FNOTHM(FNOEVO,DT,PERMAN,NNO,NNOS,NNOM,NPI,
      +              NPG,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
      +              ZR(IGEOM),ZR(ICONTM),B,DFDI,DFDI2,
      +              R,ZR(IVECTU),ZI(IMATE),MECANI,PRESS1,PRESS2,
@@ -449,7 +456,7 @@ C ======================================================================
      +              NMEC,NP1,NP2,NDIM,AXI)
       END IF
 C ======================================================================
-C --- OPTION : REFE_FORC_NODA ------------------------------------------
+C --- 7. OPTION : REFE_FORC_NODA ---------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'REFE_FORC_NODA') THEN
 C ======================================================================
@@ -476,7 +483,7 @@ C ======================================================================
 C ======================================================================
 C --- APPEL A LA ROUTINE SUR LES CRITERES DE CONVERGENCE ---------------
 C ======================================================================
-        CALL REFTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,NPG,
+        CALL REFTHM(FNOEVO,DT,PERMAN,NNO,NNOS,NNOM,NPI,NPG,
      &              IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,ZR(IGEOM),
      &              B,DFDI,DFDI2,R,ZR(IVECTU),ZI(IMATE),MECANI,
      &              PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
@@ -484,44 +491,47 @@ C ======================================================================
      &              ZR(ICONTM))
       END IF
 C ======================================================================
-C --- OPTION : SIEF_ELNO_ELGA ------------------------------------------
+C --- 8. OPTION : SIEF_ELNO_ELGA ---------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
          NCMP = DIMCON
          CALL JEVECH('PCONTRR', 'L',ICHG)
          CALL JEVECH('PSIEFNOR','E',ICHN)
-
+         
          NVIM = MECANI(5)
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
 C ======================================================================
-C --- OPTION : VARI_ELNO_ELGA ------------------------------------------
+C --- 9. OPTION : VARI_ELNO_ELGA ---------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
          CALL JEVECH('PVARIGR','L',ICHG)
          CALL JEVECH('PVARINR','E',ICHN)
-
+         
          CALL JEVECH('PCOMPOR','L',ICOMPO)
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
          READ (ZK16(ICOMPO-1+7+9+4),'(I16)') NVIM
          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-
+         
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
-C --- OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL ------------------------
+C --- 10. OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL --------------------
 C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
-
+     
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PDEPLAR','L',IDEPLA)
          CALL JEVECH('PDEFORR','E',IDEFO)
 
-         CALL EPSTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMDEF,DIMUEL,
-     &               NDIM,NPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
-     &               ZR(IGEOM),ZR(IDEPLA),NMEC,MECANI,PRESS1,PRESS2,
-     &               TEMPE,NP1,NP2,AXI,EPSM)
+         CALL EPSTHM ( NDDLS, NDDLM, NNO, NNOS, NNOM,NMEC,
+     &                 DIMDEF, DIMUEL, NDIM, NPI,
+     &                 IPOIDS, IPOID2, IVF, IVF2,
+     &                 IDFDE, IDFDE2, DFDI, DFDI2, B,
+     &                 ZR(IGEOM), ZR(IDEPLA),
+     &                 MECANI, PRESS1, PRESS2, TEMPE,
+     &                 NP1, NP2, AXI, EPSM )
 
          IF (OPTION(6:9).EQ.'ELGA') THEN
             DO 200 IGAU = 1,NPI

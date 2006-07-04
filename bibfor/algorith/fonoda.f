@@ -1,8 +1,9 @@
-      SUBROUTINE  FONODA(IMATE,MECANI,PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,
-     +                   NDIM,DT,FNOEVO,CONGEM,R)
+      SUBROUTINE FONODA(IMATE,PERMAN,MECANI,PRESS1,PRESS2,TEMPE,
+     &                  DIMDEF,DIMCON,NDIM,DT,FNOEVO,
+     &                  CONGEM,R)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,6 +23,7 @@ C ======================================================================
 C ======================================================================
       IMPLICIT     NONE
       LOGICAL      FNOEVO
+      LOGICAL      PERMAN
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMDEF,DIMCON
       INTEGER      NDIM,IMATE
       REAL*8       DT,CONGEM(DIMCON),R(DIMDEF+1)
@@ -48,17 +50,22 @@ C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
 C ======================================================================
       YAMEC  = MECANI(1)
       ADDEME = MECANI(2)
-      ADCOME = MECANI(3)
       YAP1   = PRESS1(1)
       NBPHA1 = PRESS1(2)
       ADDEP1 = PRESS1(3)
-      ADCP11 = PRESS1(4)
-      ADCP12 = PRESS1(5)
+      IF ( PERMAN ) THEN
+        I = 1
+      ELSE
+        I = 0
+      ENDIF
+      ADCP11 = PRESS1(4) - I
+      ADCP12 = PRESS1(5) - I
+      ADCOME = MECANI(3)
       YAP2   = PRESS2(1)
       NBPHA2 = PRESS2(2)
       ADDEP2 = PRESS2(3)
-      ADCP21 = PRESS2(4)
-      ADCP22 = PRESS2(5)
+      ADCP21 = PRESS2(4) - I
+      ADCP22 = PRESS2(5) - I
       YATE   = TEMPE(1)
       ADDETE = TEMPE(2)
       ADCOTE = TEMPE(3)

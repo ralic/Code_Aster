@@ -1,7 +1,7 @@
-      SUBROUTINE BORTHM(NOMTE,AXI,TYPMOD,NDIM,NDLNO,NDLNM)
+      SUBROUTINE BORTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM,NDLNO,NDLNM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,19 +20,18 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
       IMPLICIT      NONE
-      LOGICAL       AXI
+      LOGICAL       AXI, PERMAN
       INTEGER       NDIM,NDLNO,NDLNM
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  NOMTE
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
-      AXI       = .FALSE.
       TYPMOD(2) = '        '
 C ======================================================================
-C --- TYPE DE MODELISATION? AXI DPLAN OU 3D ----------------------------
+C --- TYPE DE MODELISATION ? AXI/DPLAN/3D ET HM INSTAT/PERM ------------
 C ======================================================================
-      CALL TYPTHM(NOMTE,AXI,TYPMOD,NDIM)
+      CALL TYPTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM)
 C ======================================================================
 C --- MISE A JOUR DES DIMENSIONS POUR ELEMENTS DE BORD -----------------
 C ======================================================================

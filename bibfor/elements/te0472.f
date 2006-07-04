@@ -4,7 +4,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,34 +42,34 @@ C NDLNM    NB DE DDL DES NOEUDS MILIEUX
 C NPG      NB DE POINTS DE GAUSS DE L'ELEMENT DE BORD
 C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ======================================================================
-      LOGICAL     AXI
+      LOGICAL     AXI,PERMAN
       INTEGER     NNO,NNO2,NNOS,KP,NPG,NDIM,JGANO,JGANO2,NAPRE1,NAPRE2
       INTEGER     IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,IGEOM,NATEMP
       INTEGER     IPRES,K,KK,I,L,IRES,IFLUX,ITEMPS,IOPT,IPRESF,NDLNM
-      INTEGER     IS,IM,LS,LM,IDLTHM,IFLUXF,IRET,NDLNO
+      INTEGER     IFLUXF,IRET,NDLNO
       REAL*8      POIDS,R,Z,TX,TY,NX,NY,VALPAR(3),DELTAT,TPLUS
       REAL*8      PRES,PRESF,POIDS2,NX2,NY2,FLU1,FLU2,FLUTH
       CHARACTER*8 NOMPAR(3),TYPMOD(2)
 C ======================================================================
 C --- CARACTERISTIQUES DE LA MODELISATION ------------------------------
 C ======================================================================
-      CALL BORTHM(NOMTE,AXI,TYPMOD,NDIM,NDLNO,NDLNM)
+      CALL BORTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM,NDLNO,NDLNM)
 C ======================================================================
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
@@ -123,6 +123,11 @@ C ======================================================================
         VALPAR(3) = ZR(ITEMPS)
       END IF
 C ======================================================================
+C --- CAS DU PERMANENT POUR LA PARTIE H OU T : LE SYSTEME A ETE --------
+C --- CONSTRUIT EN SIMPLIFIANT PAR LE PAS DE TEMPS. ON DOIT DONC -------
+C --- LE PRENDRE EGAL A 1 DANS LE CALCUL DU SECOND MEMBRE --------------
+C ======================================================================
+C ======================================================================
 C --- BOUCLE SUR LES POINTS DE GAUSS DE l'ELEMENT DE BORD --------------
 C ======================================================================
       DO 190 KP = 1,NPG
@@ -170,9 +175,9 @@ C ======================================================================
               NAPRE2 = 1
               NATEMP = 2
               IF (IOPT.EQ.1) THEN
-                 FLU1 = ZR((IFLUX)+ (KP-1)*3+NAPRE1)
-                 FLU2 = ZR((IFLUX)+ (KP-1)*3+NAPRE2)
-                 FLUTH = ZR((IFLUX)+ (KP-1)*3+NATEMP)
+                 FLU1 = ZR(IFLUX+(KP-1)*3+NAPRE1)
+                 FLU2 = ZR(IFLUX+(KP-1)*3+NAPRE2)
+                 FLUTH = ZR(IFLUX+(KP-1)*3+NATEMP)
               ELSE IF (IOPT.EQ.2) THEN
                  R = 0.D0
                  Z = 0.D0
@@ -223,8 +228,8 @@ C ======================================================================
               NAPRE1 = 0
               NATEMP = 1
               IF (IOPT.EQ.1) THEN
-                 FLU1 = ZR((IFLUX)+ (KP-1)*2+NAPRE1)
-                 FLUTH = ZR((IFLUX)+ (KP-1)*2+NATEMP)
+                 FLU1 = ZR(IFLUX+ (KP-1)*2+NAPRE1)
+                 FLUTH = ZR(IFLUX+ (KP-1)*2+NATEMP)
               ELSE IF (IOPT.EQ.2) THEN
                  R = 0.D0
                  Z = 0.D0
@@ -256,7 +261,7 @@ C ======================================================================
           IF (NOMTE(1:2).EQ.'HM') THEN
              NAPRE1 = 0
              IF (IOPT.EQ.1) THEN
-                FLU1 = ZR((IFLUX)+ (KP-1)+NAPRE1)
+                FLU1 = ZR(IFLUX+ (KP-1)+NAPRE1)
              ELSE IF (IOPT.EQ.2) THEN
                 R = 0.D0
                 Z = 0.D0
@@ -272,8 +277,13 @@ C ======================================================================
              END IF
              DO 80 I = 1,NNO2
                 L = 3* (I-1) - 1
+             IF ( .NOT.PERMAN ) THEN
                 ZR(IRES+L+3) = ZR(IRES+L+3) -
      +                                POIDS2*DELTAT*FLU1*ZR(IVF2+KK+I-1)
+             ELSE
+                ZR(IRES+L+3) = ZR(IRES+L+3) -
+     +                                POIDS2*FLU1*ZR(IVF2+KK+I-1)
+             END IF
  80          CONTINUE
           END IF
 C ======================================================================
@@ -283,8 +293,8 @@ C ======================================================================
              NAPRE1 = 0
              NAPRE2 = 1
              IF (IOPT.EQ.1) THEN
-                FLU1 = ZR((IFLUX)+ (KP-1)*2+NAPRE1)
-                FLU2 = ZR((IFLUX)+ (KP-1)*2+NAPRE2)
+                FLU1 = ZR(IFLUX+ (KP-1)*2+NAPRE1)
+                FLU2 = ZR(IFLUX+ (KP-1)*2+NAPRE2)
              ELSE IF (IOPT.EQ.2) THEN
                 R = 0.D0
                 Z = 0.D0
@@ -315,8 +325,8 @@ C ======================================================================
              NAPRE1 = 0
              NATEMP = 1
              IF (IOPT.EQ.1) THEN
-                FLU1 = ZR((IFLUX)+ (KP-1)*2+NAPRE1)
-                FLUTH = ZR((IFLUX)+ (KP-1)*2+NATEMP)
+                FLU1 = ZR(IFLUX+ (KP-1)*2+NAPRE1)
+                FLUTH = ZR(IFLUX+ (KP-1)*2+NATEMP)
              ELSE IF (IOPT.EQ.2) THEN
                 R = 0.D0
                 Z = 0.D0
@@ -343,7 +353,7 @@ C ======================================================================
 C ======================================================================
 C --- OPTION CHAR_MECA_PRES_R OU CHAR_MECA_PRES_F ----------------------
 C ======================================================================
-C --- ICI, LES INTERPOLATIONS SONT QUADRATIQUES-------------------------
+C --- ICI, LES INTERPOLATIONS SONT QUADRATIQUES ------------------------
 C ======================================================================
        ELSE IF ((IOPT.EQ.3) .OR. (IOPT.EQ.4)) THEN
           IF (IOPT.EQ.3) THEN

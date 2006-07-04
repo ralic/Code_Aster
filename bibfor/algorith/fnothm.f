@@ -1,4 +1,5 @@
-      SUBROUTINE  FNOTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,NPG,IPOIDS,
+      SUBROUTINE  FNOTHM(FNOEVO,DELTAT,PERMAN,
+     >                   NNO,NNOS,NNOM,NPI,NPG,IPOIDS,
      +                   IPOID2,IVF,IVF2,IDFDE,IDFDE2,GEOM,CONGEM,B,
      +                   DFDI,DFDI2,R,VECTU,IMATE,MECANI,PRESS1,PRESS2,
      +                   TEMPE,DIMDEF,DIMCON,NDDLS,NDDLM,DIMUEL,
@@ -6,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,30 +29,31 @@ C TOLE CRP_20
 C TOLE CRP_21
 C ======================================================================
        IMPLICIT     NONE
-       LOGICAL      FNOEVO,AXI
+       LOGICAL      FNOEVO,PERMAN,AXI
        INTEGER      NNO,NNOS,NPG,IMATE,DIMDEF,DIMCON,NDDLS,NDDLM,NNOM
        INTEGER      DIMUEL,NMEC,NP1,NP2,NDIM,IPOIDS,IPOID2,IVF,IVF2
        INTEGER      IDFDE,IDFDE2,NPI,MECANI(5),PRESS1(7),PRESS2(7)
-       INTEGER      TEMPE(5),YAMEC,YAP1,YAP2,YATE,ADCP11
-       INTEGER      ADCP12,ADDEME,ADDEP1,ADDEP2,ADDETE
-       REAL*8       DT,DFDI(NNO,3),DFDI2(NNOS,3),GEOM(NDIM,NNO)
+       INTEGER      TEMPE(5),YAMEC,YAP1,YAP2,YATE
+       INTEGER      ADDEME,ADDEP1
+       INTEGER      ADDEP2,ADDETE
+       REAL*8       DELTAT,DFDI(NNO,3),DFDI2(NNOS,3),GEOM(NDIM,NNO)
        REAL*8       CONGEM(1:NPI*DIMCON),POIDS,POIDS2
-       REAL*8       VECTU(DIMUEL),B(DIMDEF,DIMUEL),R(1:DIMDEF+1)  
+       REAL*8       VECTU(DIMUEL),B(DIMDEF,DIMUEL),R(1:DIMDEF+1) 
 C ======================================================================
 C     BUT:  CALCUL  DE L'OPTION FORC_NODA EN MECANIQUE
 C           DES MILIEUX POREUX AVEC COUPLAGE THM 
 C  
 C  SI FNOEVO = VRAI
-C  C EST QUE L ON APPELLE DEPUIS STAT NON LINE  : 
-C  ET ALORS LES TERMES DEPENDANT DE DT SONT EVALUES
+C  C EST QUE L'ON APPELLE DEPUIS STAT NON LINE  : 
+C  ET ALORS LES TERMES DEPENDANT DE DELTAT SONT EVALUES
 C
 C  SI  FNOEVO = FAUX
-C  C EST QUE L ON APPELLE DEPUIS CALCNO  :
-C  ET ALORS LES TERMES DEPENDANT DE DT SONT PAS EVALUES
+C  C EST QUE L'ON APPELLE DEPUIS CALCNO  :
+C  ET ALORS LES TERMES DEPENDANT DE DELTAT NE SONT PAS EVALUES
 C ======================================================================
 C IN
 C ======================================================================
-C AXI       AXISYMETRIQUE?
+C AXI       AXISYMETRIQUE ?
 C TYPMOD    MODELISATION (D_PLAN, AXI, 3D ?)
 C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
 C NNO       NB DE NOEUDS DE L'ELEMENT
@@ -76,13 +78,8 @@ C OUT DFDI    : DERIVEE DES FCT FORME
 C OUT R       : TABLEAU DES RESIDUS
 C OUT VECTU   : FORCES NODALES
 C ======================================================================
-      INTEGER      KPI,I,J,N,K
-C ======================================================================
-C --- INITIALISATION DE VECTU ------------------------------------------
-C ======================================================================
-      DO 1 I=1,DIMUEL
-         VECTU(I)=0.D0
- 1    CONTINUE
+      INTEGER      KPI,I,N
+      REAL*8       DT
 C ======================================================================
 C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
 C ======================================================================
@@ -90,10 +87,27 @@ C ======================================================================
       ADDEME = MECANI(2)
       YAP1   = PRESS1(1)
       ADDEP1 = PRESS1(3)
+      IF ( PERMAN ) THEN
+        I = 1
+      ELSE
+        I = 0
+      ENDIF
       YAP2   = PRESS2(1)
       ADDEP2 = PRESS2(3)
       YATE   = TEMPE(1)
       ADDETE = TEMPE(2)
+C
+      IF ( PERMAN ) THEN
+        DT = 1.D0
+      ELSE
+        DT = DELTAT
+      ENDIF
+C ======================================================================
+C --- INITIALISATION DE VECTU ------------------------------------------
+C ======================================================================
+      DO 1 I=1,DIMUEL
+         VECTU(I)=0.D0
+ 1    CONTINUE
 C ======================================================================
 C --- CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG ---------------
 C ======================================================================
@@ -113,8 +127,9 @@ C ======================================================================
      +               GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
      +               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)
 C ======================================================================
-         CALL FONODA(IMATE,MECANI,PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,
-     +               NDIM,DT,FNOEVO,CONGEM((KPI-1)*DIMCON+1),R)
+         CALL FONODA(IMATE,PERMAN,MECANI,PRESS1,PRESS2,TEMPE,
+     &               DIMDEF,DIMCON,NDIM,DT,FNOEVO,
+     &               CONGEM((KPI-1)*DIMCON+1),R)
 C ======================================================================
 C --- CONTRIBUTION DU POINT D'INTEGRATION KPI AU RESIDU ----------------
 C ======================================================================

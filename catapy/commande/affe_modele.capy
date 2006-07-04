@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
            PHENOMENE       =SIMP(statut='o',typ='TXM',
                                  into=("MECANIQUE","THERMIQUE","ACOUSTIQUE") ),
                 b_mecanique     =BLOC( condition = "PHENOMENE=='MECANIQUE'",
-                                        fr="modelisations mécaniques",
+                                        fr="modélisations mécaniques",
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
                                                                       "2D_DIS_T",
                                                                       "2D_DIS_TR",
@@ -135,6 +135,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "D_PLAN_THH2MS",
                                                                       "D_PLAN_THHMS",
                                                                       "D_PLAN_THMS", 
+                                                                      "D_PLAN_HM_P",
                                                                       "AXIS_THH",
                                                                       "AXIS_THHM",
                                                                       "AXIS_THM",
@@ -182,11 +183,10 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "3D_HH2MS",
                                                                       "3D_THH2S",
                                                                       "3D_THH2D",
-                                                                      
                                                                      )  )  ),
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
-                                        fr="modelisations thermiques",
+                                        fr="modélisations thermiques",
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
                                                                       "3D",
                                                                       "3D_DIAG",
@@ -201,7 +201,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       ),),),
 
                 b_acoustique    =BLOC( condition = "PHENOMENE=='ACOUSTIQUE'",
-                                        fr="modelisations acoustiques",
+                                        fr="modélisations acoustiques",
                      MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
                                                                        "3D",
                                                                        "PLAN"

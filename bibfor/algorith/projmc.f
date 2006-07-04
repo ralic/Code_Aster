@@ -7,7 +7,7 @@
       CHARACTER*14        NUGENE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,13 @@ C
       CHARACTER*8  K8B
       CHARACTER*16 TYPBAS
       CHARACTER*19 RESU, NOMCHA
+      REAL*8       ZERO
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C     CALL VERISD('MATRICE',MATRAS)
 C
+      ZERO = 0.D0
       RESU = ' '
       RESU(1:8) = NOMRES
       CALL GETTCO(BASEMO,TYPBAS)
@@ -104,7 +106,7 @@ C
       CALL WKVECT ( '&&PROJMC.VECTASS3', 'V V C', NEQ, IDVEC3 )
       CALL WKVECT ( '&&PROJMC.BASEMO','V V R',NBMO*NEQ,IDBASE)
 C ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
-      IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE')) THEN
+      IF (TYPBAS.EQ.'MODE_GENE') THEN
          CALL COPMOD(BASEMO,'DEPL',NEQ,NU,NBMO,ZR(IDBASE))
       ELSE
          CALL COPMO2(BASEMO,NEQ,NU,NBMO,ZR(IDBASE))
@@ -134,7 +136,7 @@ C
          DO 30 I = N1BLOC , N2BLOC
 C
             DO 32 K = 1 , NEQ
-              ZC(IDVEC2+K-1)=DCMPLX(ZR(IDBASE+(I-1)*NEQ+K-1),0.0D0)
+              ZC(IDVEC2+K-1)=DCMPLX(ZR(IDBASE+(I-1)*NEQ+K-1),ZERO)
  32         CONTINUE
 C
 C --------- CALCUL PRODUIT MATRICE*MODE I
@@ -148,10 +150,10 @@ C
 C
 C ----------- PRODUIT SCALAIRE VECTASS * MODE
 C
-              PIJ = DCMPLX(0.D0,0.D0)
+              PIJ = DCMPLX(ZERO,ZERO)
               DO 42 K = 1 , NEQ
                 PIJ = PIJ + ZC(IDVEC3+K-1)*
-     &                DCMPLX(ZR(IDBASE+(J-1)*NEQ+K-1),0.0D0)
+     &                DCMPLX(ZR(IDBASE+(J-1)*NEQ+K-1),ZERO)
  42           CONTINUE
 C
 C ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)

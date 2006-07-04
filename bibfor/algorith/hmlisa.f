@@ -1,12 +1,13 @@
-      SUBROUTINE HMLISA(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,
-     +                  ADVICO,VIHRHO,VICPHI,ADDEP1,ADCP11,ADDETE,
-     +                  ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
-     +                  DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM)
+      SUBROUTINE HMLISA(PERMAN,OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,
+     &                  DIMDEF,DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
+     &                  ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,ADCP11,
+     &                  ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,
+     &                  EPSV,DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,
+     &                  RETCOM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +35,7 @@ C ======================================================================
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 C COMMENTAIRE DE NMCONV :
 C                       = 0 OK
-C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
+C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTAT
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
       IMPLICIT      NONE
@@ -46,15 +47,16 @@ C ======================================================================
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,T,DT
       REAL*8        PHI,RHO11,PHI0
       CHARACTER*16  OPTION,MECA,THER,THMC,HYDR
+      LOGICAL       PERMAN
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       EPSVM,PHIM,RHO11M,RHO110,RHO0,C0EPS,CSIGM,VARIA,ALP11
-      REAL*8       YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,CP11,SAT,N
-      REAL*8       VARBIO,VARLQ,VARVP,UMPRHS,EM,ALP12,DPAD
-      REAL*8       RHO12,RHO21,RHO22,CP12,CP21,CP22,M11,COEPS,DSATP1
-      REAL*8       QPRIME,M11M,M12M,M21M,M22M,SATM,RHO12M,RHO21M,RHO22M
+      REAL*8       EPSVM,PHIM,RHO11M,RHO110,RHO0,CSIGM,ALP11
+      REAL*8       BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,CP11,SAT
+      REAL*8       EM,ALP12,DPAD
+      REAL*8       RHO12,RHO21,RHO22,CP12,CP21,CP22,COEPS,DSATP1
+      REAL*8       M11M,SATM
       REAL*8       EPS
       PARAMETER  ( EPS = 1.D-21 ) 
       LOGICAL      EMMAG
@@ -62,7 +64,7 @@ C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
+      REAL*8       RBID8, RBID10, RBID11, RBID12, RBID13, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
@@ -75,15 +77,16 @@ C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     +            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID40,
-     +            RBID6,
-     +            RBID7, RBID8, RBID10, RBID11, RHO0, CSIGM,
-     +            BIOT, RBID12, SAT, RBID13, RBID14, RBID15, RBID16,
-     +            RBID17,RBID18, RBID19, RBID20, RBID21, RBID22,
-     +            RBID23,RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
-     +            RBID26,RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
-     +            RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,RBID39,
-     +            RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID50,RBID51)
+     &            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, 
+     &            RBID40,RBID6, RBID7, RBID8,
+     &            RBID10, RBID11, RHO0, CSIGM, BIOT, RBID12, SAT,
+     &            RBID13, RBID14, RBID15, RBID16, RBID17,RBID18,
+     &            RBID19, RBID20, RBID21, RBID22, RBID23,RBID24,
+     &            RBID25, RHO110, CLIQ, ALPLIQ, CP11, RBID26,
+     &            RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
+     &            RBID33, RBID34, RBID35, RBID36, RBID37, RBID38,
+     &            RBID39, RBID45, RBID46, RBID47, RBID48, RBID49,
+     &            EM, RBID50, RBID51)
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -142,7 +145,6 @@ C =====================================================================
       IF (RETCOM.NE.0) THEN
          GO TO 30
       ENDIF
-     
 C **********************************************************************
 C *** LES CONTRAINTES GENERALISEES *************************************
 C **********************************************************************
@@ -197,8 +199,10 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 C ======================================================================
+         IF (.NOT.PERMAN) THEN
          CONGEP(ADCP11) = APPMAS(M11M,PHI,PHIM,SAT,SATM,RHO11,
      +                                                RHO11M,EPSV,EPSVM)
+         ENDIF
       ENDIF
 
 C **********************************************************************
@@ -222,10 +226,12 @@ C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 C ======================================================================
+           IF (.NOT.PERMAN) THEN 
             DO 10 I = 1,3
                DSDE(ADCP11,ADDEME+NDIM-1+I) =
      +             DSDE(ADCP11,ADDEME+NDIM-1+I) + DMDEPV(RHO11,SAT,BIOT)
  10         CONTINUE
+           ENDIF
          ENDIF
          IF (YATE. EQ.1) THEN
 C ======================================================================
@@ -239,7 +245,7 @@ C ======================================================================
      +                                                      + DHDT(CP11)
 C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
-C --- UNIQUEMENT POUR LA PARTIR THERMIQUE ------------------------------
+C --- UNIQUEMENT POUR LA PARTIE THERMIQUE ------------------------------
 C ======================================================================
             DSDE(ADCP11,ADDETE) = DSDE(ADCP11,ADDETE)
      +                           + DMWDT(RHO11,PHI,SAT,CLIQ,0.0D0,ALP11)
@@ -263,8 +269,10 @@ C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
-         DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
+         IF (.NOT.PERMAN) THEN
+          DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
      +             DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0)
+         ENDIF
       ENDIF
 C ======================================================================
  30   CONTINUE

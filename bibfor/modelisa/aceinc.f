@@ -9,7 +9,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 03/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -242,14 +242,6 @@ C     --------------------------------------------------
      +                         //' AFFECTEE PAR UNE MATRICE (DISCRET).')
             ENDIF
  82       CONTINUE
-        ENDIF
-        IF ( NBOCC(2) .NE. 0 ) THEN
-          DO 83 I = NBEPO+NBEDI+1 , NBEPO+NBEDI+NBECO
-            IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
-               CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'
-     +                 //' AFFECTEE PAR DES CARACTERISTIQUES DE COQUE.')
-            ENDIF
- 83       CONTINUE
         ENDIF
         IF ( NBOCC(6) .NE. 0 ) THEN
          DO 84 I = NBEPO+NBEDI+NBECO+1 , NBEPO+NBEDI+NBECO+NBECA

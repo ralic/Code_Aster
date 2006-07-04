@@ -1,11 +1,9 @@
       SUBROUTINE MECALM
-     &  (NEWCAL,TYSD,KNUM,KCHA,PHENO,RESUCO,RESUC1,CONCEP,NBORDR,
+     &  (NEWCAL,TYSD,KNUM,KCHA,RESUCO,RESUC1,CONCEP,NBORDR,
      &   MODELE,MATE,CARA,NCHAR,CTYP)
-
-      IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,62 +26,66 @@ C COMMANDE DE CALC_ELEM SPECIFIQUE A LA MECANIQUE
 C ----------------------------------------------------------------------
 C IN  NEWCAL : TRUE POUR UN NOUVEAU CONCEPT RESULTAT, FALSE SINON
 C IN  TYSD   : TYPE DU CONCEPT ATTACHE A RESUCO
-C IN  KNUM   : NOM D'OBJET DES NUMERO D'ORDRE
+C IN  KNUM   : NOM D'OBJET DES NUMEROS D'ORDRE
 C IN  KCHA   : NOM JEVEUX OU SONT STOCKEES LES CHARGES
-C IN  PHENO  : PHENOMENE (MECA,THER,ACOU)
 C IN  RESUCO : NOM DE CONCEPT RESULTAT
 C IN  RESUC1 : NOM DE CONCEPT DE LA COMMANDE CALC_ELEM
 C IN  CONCEP : TYPE DU CONCEPT ATTACHE A RESUC1
-C IN  NBORDR : NOMBRE DE NUMERO D'ORDRE
+C IN  NBORDR : NOMBRE DE NUMEROS D'ORDRE
 C IN  MODELE : NOM DU MODELE
 C IN  MATE   : NOM DU CHAMP MATERIAU
-C IN  CARA   : NOM DU CHAMP DES CEARACTERISTIQUES ELEMENTAIRES
+C IN  CARA   : NOM DU CHAMP DES CARACTERISTIQUES ELEMENTAIRES
 C IN  NCHAR  : NOMBRE DE CHARGES
 C IN  CTYP   : TYPE DE CHARGE
 C ----------------------------------------------------------------------
-C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      CHARACTER*8 ZK8
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM
-C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBORDR,NCHAR
-      CHARACTER*4 CTYP
-      CHARACTER*8  RESUCO,RESUC1,MODELE,CARA
-      CHARACTER*16 TYSD,PHENO,CONCEP
-      CHARACTER*19 KNUM,KCHA
+      IMPLICIT NONE
+C
+C     --- ARGUMENTS ---
+
+      INTEGER      NBORDR, NCHAR
+      CHARACTER*4  CTYP
+      CHARACTER*8  RESUCO, RESUC1, MODELE, CARA
+      CHARACTER*16 TYSD, CONCEP
+      CHARACTER*19 KNUM, KCHA
       CHARACTER*24 MATE
       LOGICAL      NEWCAL
+C
+C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER        ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8         ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16     ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL        ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C     --- VARIABLES LOCALES ---
 
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='MECALM')
 
-      INTEGER BUFIN1,IOROLD,IFM,NIV,LINST,IFREQ,NUORD
-      INTEGER LREFE,LMAT,LVALE,LDEPL,LFREQ,LACCE
+      INTEGER IFM,NIV
+      INTEGER LINST,NUORD
+      INTEGER LREFE,LVALE,LDEPL,LFREQ,LACCE
       INTEGER IORDR,IORDR1,IORDR2,JORDR,IORDRM
       INTEGER IRET,IRET1,IRET2,IRET3,IRET4,IERD
-      INTEGER NH,NC,NOR,NBOPT,NP,ND,NEQ,NBCHRE,IER
+      INTEGER NH,NOR,NBOPT,NP,ND,NEQ,NBCHRE,IER
       INTEGER IADOU,IADIN,IPUIS
-      INTEGER IAUX,II,III,IB,J,JAUX,K,IBID,IE,INUME,IAD
+      INTEGER IAUX,II,III,IB,J,JAUX,K,IBID,IE,INUME
       INTEGER IOCC,IOPT,IAINST
       INTEGER L1,L2,L3,L4,L5,L6
-      INTEGER N0,N1,N2,N3
+      INTEGER N1,N2,N3
       INTEGER JPA,JOPT,JCHA,JNMO,JCHAP,JCHAD
-      INTEGER NBAC,NBPA,NBPARA,NPLAN,NPLA,NIVEAU
+      INTEGER NBAC,NBPA,NBPARA,NPLAN,NPLA
       INTEGER NBPASE,NRPASS,NBPASS,TYPESE
       INTEGER ADRECG,ADCRRS
       INTEGER NBVAL,IAGD,IATYMA,IACMP,ICONX1,ICONX2
@@ -93,21 +95,21 @@ C     --- VARIABLES LOCALES ---
       INTEGER NNOEM,NELEM,NDIM,NNCP,NPASS,VALI
 
       CHARACTER*1 BASE,TYPCOE,KBID
-      CHARACTER*4 TYPE,BUFCH,K4BID
-      CHARACTER*8 K8B,CRIT,NOMA,CHAREP,MA
-      CHARACTER*8 PLAN,CARELE,NOMPA1,Z1Z2(2),KIORD,KIORDM
-      CHARACTER*8 LERES0,NOPASE,NOMCMP,RESUP,RESUD,CTYPE
+      CHARACTER*4 TYPE,K4BID
+      CHARACTER*8 K8B,NOMA,CHAREP
+      CHARACTER*8 PLAN,CARELE,Z1Z2(2),KIORD,KIORDM
+      CHARACTER*8 LERES0,NOPASE
+      CHARACTER*8 NOMCMP,RESUP,RESUD,CTYPE
       CHARACTER*13 INPSCO
       CHARACTER*14 NUME
-      CHARACTER*16 NOMCMD,OPTION,OPTIO2,OPT1,NOMCHA,K16B
+      CHARACTER*16 NOMCMD,OPTION,OPTIO2,NOMCHA,K16B
       CHARACTER*16 OPTIOP,OPTIOD
-      CHARACTER*19 LERES1,K19B,TABP,TABD
-      CHARACTER*19 INFCHA,CARTEF,CARTEH,CARTET,CARTES,NOMGDF,NOMGDH
-      CHARACTER*19 NOMGDT,NOMGDS
-      CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR,DCEL
+      CHARACTER*19 LERES1
+      CHARACTER*19 TABP,TABD
+      CHARACTER*19 INFCHA
+      CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR
       CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,VALK,KCHAP,KCHAD
-      CHARACTER*24 CHFLUP,CHFLUM,CHTEMM,CHSOUR
-      CHARACTER*24 CHPRES,CHAMGD,CHSIG,CHSIGP,CHSIGD,CHSIGN,CHEPSP
+      CHARACTER*24 CHAMGD,CHSIG,CHSIGP,CHSIGD,CHSIGN,CHEPSP
       CHARACTER*24 CHEPS,CHDEPL,CHSGPN,CHSGDN
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHTIME,CHMETA
       CHARACTER*24 CHNUMC,CHHARM,CHFREQ,CHMASS,CHELEM,SOP
@@ -115,10 +117,11 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3
       CHARACTER*24 CHSIG1,CHSIG2,CHVAR1,CHVAR2,NORME,NOMPAR
       CHARACTER*24 MODEL2,MATE2,CARA2,CHARGE,INFOCH,LESOPT
-      CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC,DLAGR
+      CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC
       CHARACTER*24 CHSECH,CHSREF,CHVARI,CHDEPM,CHVOIS
       CHARACTER*24 NORECG,NOCRRS,NOMS(2)
-      CHARACTER*24 STYPSE,LIGRCH,LIGRCP,LIGRCD,LIGRMO
+      CHARACTER*24 STYPSE
+      CHARACTER*24 LIGRCH,LIGRCP,LIGRCD,LIGRMO
       CHARACTER*24 BLAN24,CHBID,CHSEQ,CHEEQ,CHCMP
       CHARACTER*24 CHTEM1,CHTRF1,CHTIM1,CHELE1
       CHARACTER*24 CHTEM2,CHTRF2,CHTIM2,CHELE2
@@ -126,7 +129,6 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*19 CHVARC
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
-      REAL*8 VALTHE,INSOLD
       REAL*8 ALPHA,RPLAN,PREC,PHASE,FREQ,OMEGA
       REAL*8 R8DEPI,R8DGRD
       REAL*8 RBID
@@ -134,13 +136,16 @@ C     --- VARIABLES LOCALES ---
 
       COMPLEX*16 C16B,CALPHA,CCOEF,CBID,VALC
 
-      LOGICAL EXITIM,EXIPOU,EXIPLA,LBID,EVOL,EXICAR
-
+      LOGICAL EXITIM,EXIPOU,EXIPLA,LBID,EXICAR
+      LOGICAL YATHM
       REAL*8 ZERO,UN
       PARAMETER (ZERO=0.D0,UN=1.D0)
 
       COMPLEX*16 CZERO
       PARAMETER (CZERO= (0.D0,0.D0))
+
+
+
 
       CALL JEMARQ()
       CALL GETRES(K8B,K16B,NOMCMD)
@@ -187,7 +192,7 @@ C               12   345678   9012345678901234
       COEF = UN
       RPLAN = ZERO
 
-C     COMPTEUR DE PASSAGE DANS LA COMMANDE (POUR MEDOM2.F)
+C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       NPASS = 0
 
       CALL INFMAJ()
@@ -243,7 +248,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         IOCC = 0
         CALL COCHRE(ZK8(JCHA),NCHAR,NBCHRE,IOCC)
         IF (NBCHRE.GT.1) THEN
-          CALL UTMESS('A','MECALM','VOTRE CHARGEMENT CONTIENT PLUS '//
+          CALL UTMESS('A',NOMPRO,'VOTRE CHARGEMENT CONTIENT PLUS '//
      &                'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS '//
      &                'POSSIBLE POUR LES MODELES DE POUTRE.')
           GO TO 530
@@ -258,7 +263,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
           IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
      &        L5.NE.0 .OR. L6.NE.0) THEN
             IF (NBCHRE.EQ.0) THEN
-              CALL UTMESS('A','MECALM',
+              CALL UTMESS('A',NOMPRO,
      &                    'VOUS AVEZ RENSEIGNE UN DES MOTS-CLES'//
      &                ' FONC_MULT_*, COEF_MULT_*, PHAS_DEG, PUIS_PULS, '
      &                    //
@@ -286,7 +291,7 @@ C=======================================================================
         CALL GETVIS(' ','NUME_COUCHE',1,1,1,IBID,N2)
         CALL GETVTX(' ','NIVE_COUCHE',1,1,1,K8B,N3)
         IF (N1.EQ.0.AND.CARA.EQ.' ') THEN
-          CALL UTMESS('A','MECALM','POUR UN MODELE COMPORTANT DES '//
+          CALL UTMESS('A',NOMPRO,'POUR UN MODELE COMPORTANT DES '//
      &          'ELEMENTS DE PLAQUE OU DE COQUE, IL FAUT LE "CARA_ELEM"'
      &                )
           GO TO 530
@@ -366,7 +371,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
               CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO,
      &                    RESUCO,1)
             ELSE
-              CALL UTMESS('A','MECALM','IMPOSSIBLE DE CALCULER'//
+              CALL UTMESS('A',NOMPRO,'IMPOSSIBLE DE CALCULER'//
      &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
               GO TO 490
             END IF
@@ -378,7 +383,7 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
 
           CALL PSRENC(RESUCO,NOPASE,LERES0,IRET)
           IF (IRET.NE.0) THEN
-            CALL UTMESS('A','MECALM',
+            CALL UTMESS('A',NOMPRO,
      &   'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &                  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
             GO TO 490
@@ -393,7 +398,7 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
           ELSE IF (TYSD.EQ.'EVOL_NOLI') THEN
             CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE
-            CALL UTMESS('A','MECALM',
+            CALL UTMESS('A',NOMPRO,
      &         'IMPOSSIBLE DE CALCULER UN RESULTAT DERIVE POUR LE TYPE '
      &                  //TYSD)
             GO TO 490
@@ -472,7 +477,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
               IF (OPTION.EQ.'DEGE_ELNO_DEPL' .OR.
      &            OPTION.EQ.'SIEF_ELGA_DEPL') THEN
                 IF (RPLAN.NE.DBLE(0)) THEN
-                  CALL UTMESS('A','MECALM',' OPTION '//OPTION//
+                  CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//
      &                 'NON LICITE POUR UN CALCUL HORS PLAN DU MAILLAGE'
      &                        )
                   GO TO 440
@@ -480,7 +485,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
               END IF
             END IF
             IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-              CALL UTMESS('A','MECALM',
+              CALL UTMESS('A',NOMPRO,
      &              'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE !'
      &                    )
               GO TO 440
@@ -516,7 +521,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
      &            OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
      &            OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
      &            OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-                CALL UTMESS('A','MECALM',' OPTION '//OPTION//
+                CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//
      &                      'NON LICITE POUR UN CALCUL NON LINEAIRE.')
                 GO TO 440
               END IF
@@ -581,7 +586,7 @@ C=======================================================================
    30               CONTINUE
                     CALL JELIBE(CHACCE//'.VALE')
                   ELSE
-                  CALL UTMESS('A','MECALM','MANQUE LES ACCELERATIONS')
+                    CALL UTMESS('A',NOMPRO,'MANQUE LES ACCELERATIONS')
                     DO 40 II = 0,NEQ - 1
                       ZR(LVALE+II) = ZERO
    40               CONTINUE
@@ -595,7 +600,7 @@ C=======================================================================
    50               CONTINUE
                     CALL JELIBE(CHACCE//'.VALE')
                   ELSE
-                  CALL UTMESS('A','MECALM','MANQUE LES ACCELERATIONS')
+                    CALL UTMESS('A',NOMPRO,'MANQUE LES ACCELERATIONS')
                     DO 60 II = 0,NEQ - 1
                       ZC(LVALE+II) = CZERO
    60               CONTINUE
@@ -648,7 +653,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                       ELSE IF (L3.NE.0) THEN
                         ALPHA = COEF
                       ELSE
-                        CALL UTMESS('A','MECALM',
+                        CALL UTMESS('A',NOMPRO,
      &                              'POUR UNE SD RESULTAT DE TYPE '//
      &                      ' DYNA_TRANS, SEULS LES MOTS_CLES FONC_MULT'
      &                              //' ET COEF_MULT SONT AUTORISES')
@@ -660,7 +665,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                       IF (L1.NE.0) THEN
                         CALL FOINTE('F ',K8B,1,'INST',INST,ALPHA,IER)
                       ELSE
-                        CALL UTMESS('A','MECALM',
+                        CALL UTMESS('A',NOMPRO,
      &                              'POUR UN SD RESULTAT DE TYPE '//
      &                       ' EVOL_ELAS,SEUL LE MOT-CLE FONC_MULT EST '
      &                              //' AUTORISE')
@@ -668,7 +673,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                         GO TO 440
                       END IF
                     ELSE
-                      CALL UTMESS('A','MECALM',
+                      CALL UTMESS('A',NOMPRO,
      &                            'L''UTILISATION D MOT-CLE FONC_MULT'//
      &                      ' N''EST LICITE QUE POUR LES SD RESULTATS: '
      &                            //' EVOL_ELAS, DYNA_TRANS, DYNA_HARMO'
@@ -709,7 +714,7 @@ C=======================================================================
                 CALL RSEXC2(2,2,RESUCO,'EFGE_ELNO_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET2)
                 IF ((IRET1.GT.0) .AND. (IRET2.GT.0)) THEN
-                  CALL UTMESS('A','MECALM',' POUR CALCULER '//OPTION//
+                  CALL UTMESS('A',NOMPRO,' POUR CALCULER '//OPTION//
      &                       ' IL FAUT SIEF_ELNO_ELGA OU EFGE_ELNO_DEPL'
      &                        )
                   CALL JEDEMA
@@ -722,7 +727,6 @@ C=======================================================================
      >                      TYPESE, STYPSE, NOPASE,
      &                      CHTESE,LBID)
               END IF
-
               CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,CHAREP,TYPCOE,
@@ -746,7 +750,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             IF (NPLAN.NE.0) THEN
               IF (RPLAN.NE.DBLE(0)) THEN
-                CALL UTMESS('A','MECALM',' OPTION '//OPTION//
+                CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//
      &                 'NON LICITE POUR UN CALCUL HORS PLAN DU MAILLAGE'
      &                      )
                 GO TO 440
@@ -808,7 +812,7 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-              CALL UTMESS('A','MECALM','ERREUR: LA CHARGE DOIT '//
+              CALL UTMESS('A',NOMPRO,'ERREUR: LA CHARGE DOIT '//
      &                    'ETRE UNE CHARGE MECANIQUE !')
               GO TO 440
             END IF
@@ -821,7 +825,7 @@ C ---- VERIF SENSIBILITE FIN
             ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
               TYPE = 'VITE'
             ELSE
-              CALL UTMESS('A','MECALM',' OPTION '//OPTION//' NON '//
+              CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//' NON '//
      &                    'TRAITEE POUR UN RESULTAT DE TYPE '//TYSD)
               GO TO 440
             END IF
@@ -900,7 +904,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTMESS('A','MECALM','CALCUL DE '//OPTION//
+                CALL UTMESS('A',NOMPRO,'CALCUL DE '//OPTION//
      &                      ' IMPOSSIBLE.')
                 CALL JEDEMA
                 GO TO 440
@@ -996,7 +1000,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTMESS('A','MECALM','CALCUL DE '//OPTION//
+                CALL UTMESS('A',NOMPRO,'CALCUL DE '//OPTION//
      &                      ' IMPOSSIBLE.')
                 CALL JEDEMA
                 GO TO 440
@@ -1088,7 +1092,7 @@ C ---- VERIF SENSIBILITE FIN
                 CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
-                  CALL UTMESS('A','MECALM','CALCUL DE '//OPTION//
+                  CALL UTMESS('A',NOMPRO,'CALCUL DE '//OPTION//
      &                        ' IMPOSSIBLE.')
                   CALL JEDEMA
                   GO TO 440
@@ -1109,7 +1113,7 @@ C ---- VERIF SENSIBILITE FIN
 C
                 IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0.
      &              AND. IRET4.GT.0) THEN
-                  CALL UTMESS('A','MECALM','ATTENTION : LES CHAMPS '//
+                  CALL UTMESS('A',NOMPRO,'ATTENTION : LES CHAMPS '//
      &               'SIEF_ELGA_DEPL, SIEF_ELGA, SIGM_ELNO_COQU ET' //
      &                 'SIGM_ELNO_DEPL '        //
      &                'SONT ABSENTS : ON NE PEUT PAS CALCULER L''OPTION'
@@ -1120,14 +1124,14 @@ C
                 IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
      &              TYSD.EQ.'MULT_ELAS' .OR. TYSD.EQ.'MODE_MECA'  .OR.
      &              TYSD.EQ.'FOURIER_ELAS') THEN
-C          champ d'entree pour elements isoparametriques
+C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
                   IF (IRET1.LE.0) THEN
                      CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,K)
                   END IF
-C          champ d'entree pour coques
+C          CHAMP D'ENTREE POUR COQUES
                   IF (EXIPLA) THEN
                     IF (IRET4.GT.0) THEN
-                    CALL UTMESS('A','MECALM','ATTENTION : LE CHAMP '//
+                      CALL UTMESS('A',NOMPRO,'ATTENTION : LE CHAMP '//
      &                 ' SIGM_ELNO_DEPL EST ABSENT : '        //
      &                ' ON NE PEUT PAS CALCULER L''OPTION'
      &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
@@ -1143,7 +1147,7 @@ C          champ d'entree pour coques
                   END IF
                   IF (EXIPLA) THEN
                     IF (IRET3.GT.0) THEN
-                    CALL UTMESS('A','MECALM','ATTENTION : LE CHAMP '//
+                      CALL UTMESS('A',NOMPRO,'ATTENTION : LE CHAMP '//
      &                 ' SIGM_ELNO_COQU EST ABSENT : '        //
      &                ' ON NE PEUT PAS CALCULER L''OPTION'
      &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
@@ -1279,6 +1283,8 @@ C    ------------------------------------------------------------------
 C    -- OPTION "ERRE_ELEM_SIGM"
 C    ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'ERRE_ELEM_SIGM') THEN
+C --- EST-CE DE LA THM ?
+            CALL EXITHM ( MODELE, YATHM )
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
                CODSEN = 1
@@ -1289,7 +1295,7 @@ C --------- VERIFICATION DU PERIMETRE D'UTILISATION
             CALL GETVTX(' ','GROUP_MA',1,1,1,K8B,N1)
             CALL GETVTX(' ','MAILLE'  ,1,1,1,K8B,N2)
             IF (N1+N2.NE.0) THEN
-               CALL UTDEBM('A','MECALM',
+               CALL UTDEBM('A',NOMPRO,
      &                  '! TOUT = OUI OBLIGATOIRE AVEC '//OPTION//'!')
                CALL UTIMPK('L','PAS DE CALCUL DE CHAMP D''ERREUR',0,K8B)
                CALL UTFINM
@@ -1299,7 +1305,6 @@ C--- RECHERCHE DES VOISINS
 C--- (CHGEOM RECHERCHE A PARTIR DU MODELE ET PAS DES CHARGES)
             CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,IATYMA,IAGD,IACMP
      &      ,ICONX1,ICONX2)
-
 C--- BOUCLE SUR LES NUMEROS D'ORDRE
             DO 190,IAUX = 1,NBORDR
               CALL JEMARQ()
@@ -1313,7 +1318,7 @@ C--- RECUPERE LES CHARGES POUR LE NUMERO D'ORDRE IORDR
               CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
 
-C--- VERIFIE L'EXSITENCE DU CHAMP
+C--- VERIFIE L'EXISTENCE DU CHAMP
 C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
               CALL RSEXC2(1,3,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
@@ -1322,52 +1327,68 @@ C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
               CALL RSEXC2(3,3,RESUCO,'SIRE_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
 
-C--- SI AUCUN CHAMP EXISTE, ON SORT
+C--- SI AUCUN CHAMP N'EXISTE, ON SORT
               IF (IRET.GT.0) GO TO 192
 
 C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-               CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,
+              CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,
      &                                            LIGRCH,IERD)
               IF (LIGRCH.NE.LIGRMO) THEN
-                 CALL UTDEBM('A','MECALM','LE CHAMP DE CONTRAINTES '//
+                 CALL UTDEBM('A',NOMPRO,'LE CHAMP DE CONTRAINTES '//
      &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
-              CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,OPTION)
+                 CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,
+     &                           OPTION)
                  CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
                  CALL UTFINM
                  GOTO 192
               ENDIF
+C ---       POUR DE LA THM :
+C           --------------------------------------------------------
+C ---       * RECUPERATION DU CHAMP DE DEPLACEMENTS A L'INSTANT COURANT
+C           ---------------------------------------------------------
+              IF ( YATHM ) THEN
+                CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
+                IF (IRET1.GT.0) THEN
+                  CALL CODENT(IORDR,'G',KIORD)
+                  CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
+     &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
+     &                      'AU NUMERO D''ORDRE '//KIORD//' .')
+                  GO TO 192
+                ENDIF
+              ENDIF
 
 C--- RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
 C--- POUR LE NUMERO D'ORDRE IORDR
-               CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
+              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
               TIME = ZR(IAINST)
 
 C--- CREE UNE CARTE D'INSTANTS
-              CALL MECHTI(NOMA,TIME,CHTIME)
+               CALL MECHTI(NOMA,TIME,CHTIME)
 
 C--- RECUPERE LE NOM SYMBOLIQUE DU CHAMP DE L'OPTION CALCULEE
 C--- POUR LE NUMERO D'ORDRE IORDR
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
 
 C--- CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
-              CALL RESLOC(MODELE,LIGRMO,CHTIME,CHSIG,ZK8(JCHA),NCHAR,
-     &             MATE,CHVOIS,IATYMA,IAGD,IACMP,ICONX1,ICONX2,CHELEM)
+              CALL RESLOC(MODELE,LIGRMO,CHTIME,CHSIG,CHDEPL,
+     &             ZK8(JCHA),NCHAR,MATE,
+     &             CHVOIS,IATYMA,IAGD,IACMP,ICONX1,ICONX2,CHELEM)
 
 C--- VERIFIE L'EXISTENCE DU CHAMP CHELEM
               CALL EXISD('CHAMP_GD',CHELEM,IRET)
 
 C--- SI LE CHAMP N'EXISTE PAS, ON SORT
-               IF (IRET.EQ.0) THEN
+              IF (IRET.EQ.0) THEN
                  CALL JEDEMA
                  GOTO 440
               ENDIF
+
 C--- CALCULE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS LOCAUX
-C              CALL ZZGLOB ( CHELEM, OPTION, IORDR, TIME, RESUCO )
-              CALL ZZGLOB(CHELEM,OPTION,IORDR,TIME,RESUCO,LERES1)
+              CALL ZZGLOB ( CHELEM, OPTION, IORDR, TIME, RESUCO, LERES1)
 
 C--- NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-
+C
   192         CONTINUE
               CALL JEDEMA()
   190       CONTINUE
@@ -1412,7 +1433,6 @@ C--- RECUPERE LES NOMS DES SD RESULTAT
 C--- RECHERCHE DES VOISINS
             CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,IATYMA,IAGD,
      &                  IACMP,ICONX1,ICONX2)
-
 C--- RECUPERE LES NOMS SYMBOLIQUES DES TABLES
             TABP=' '
             TABD=' '
@@ -1423,7 +1443,6 @@ C--- BOUCLE SUR LES NUMEROS D'ORDRE
             DO 600,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
-
 C--- CALCULE LE COEFFICIENT S
 C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE 
             CALL TBLIVA (TABP,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
@@ -1431,7 +1450,6 @@ C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE
             CALL TBLIVA (TABD,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
      &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERD,VALC,VALK,IRET)
             S=SQRT(ERD/ERP)
-
 C----- CREE UNE CARTE CONSTANTE
             CHS='&&OP0069.CH_NEUT_R'
             CALL MECACT('V',CHS,'MODELE',LIGRMO,'NEUT_R',1,'X1',IBID,S,
@@ -1445,7 +1463,7 @@ C--- SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
               CALL JEVEUO(KCHAP,'L',JCHAP)
               CALL JEVEUO(KCHAD,'L',JCHAD)
 
-C--- VERIFIE L'EXSITENCE DU CHAMP DANS LE RESUPRIM
+C--- VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUPRIM
 C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
               CALL RSEXC2(1,3,RESUP,'SIGM_ELNO_DEPL',IORDR,CHSIGP,
      &                    OPTION,IRET)
@@ -1454,10 +1472,10 @@ C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
               CALL RSEXC2(3,3,RESUP,'SIRE_ELNO_DEPL',IORDR,CHSIGP,
      &                    OPTION,IRET)
 
-C--- SI AUCUN CHAMP EXISTE, ON SORT
+C--- SI AUCUN CHAMP N'EXISTE, ON SORT
               IF (IRET.GT.0) GO TO 602
 
-C--- VERIFIE L'EXSITENCE DU CHAMP DANS LE RESUDUAL
+C--- VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUDUAL
 C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
               CALL RSEXC2(1,3,RESUD,'SIGM_ELNO_DEPL',IORDR,CHSIGD,
      &                    OPTION,IRET)
@@ -1466,7 +1484,7 @@ C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
               CALL RSEXC2(3,3,RESUD,'SIRE_ELNO_DEPL',IORDR,CHSIGD,
      &                    OPTION,IRET)
 
-C--- SI AUCUN CHAMP EXISTE, ON SORT
+C--- SI AUCUN CHAMP N'EXISTE, ON SORT
               IF (IRET.GT.0) GO TO 602
 
 C--- RECUPERE LE NOM DE L'OPTION CALCULEE POUR CHACUN DES CHAMPS
@@ -1506,7 +1524,6 @@ C--- CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
               CALL QIRES1(MODELE,LIGRMO,CHTIME,CHSIGP,CHSIGD,
      &                    ZK8(JCHAP),ZK8(JCHAD),NCHARP,NCHARD,CHS,
      &             MATE,CHVOIS,IATYMA,IAGD,IACMP,ICONX1,ICONX2,CHELEM)
-
 C--- VERIFIE L'EXISTENCE DU CHAMP CHELEM
               CALL EXISD('CHAMP_GD',CHELEM,IRET)
 
@@ -1618,11 +1635,11 @@ C    ------------------------------------------------------------------
 
             CALL GETVR8(' ','PREC_ERR',1,1,1,PREC,IRET1)
             IF(IRET1.NE.1) THEN
-              CALL UTMESS('F','MECALM','LE MOT CLE PREC_ERR EST'//
+              CALL UTMESS('F',NOMPRO,'LE MOT CLE PREC_ERR EST'//
      &                    ' OBLIGATOIRE AVEC'//
      &                    ' L''OPTION SING_ELEM')
             ELSE
-              IF(PREC.LE.0.D0.OR.PREC.GT.1.D0) CALL UTMESS('F','MECALM',
+              IF(PREC.LE.0.D0.OR.PREC.GT.1.D0) CALL UTMESS('F',NOMPRO,
      &                    'LE MOT CLE PREC_ERR DOIT'//
      &                    ' ETRE STRICTEMENT SUPERIEUR A ZERO'//
      &                    ' ET INFERIEUR OU EGAL A 1')
@@ -1684,7 +1701,7 @@ C       ERZ2_ELEM_SIGM PAR RAPPORT A ERZ1_ELEM_SIGM
               CALL RSEXCH(RESUCO,'ERZ2_ELEM_SIGM',IORDR,CHERR3,IRET3)
 
               IF (IRET1.GT.0.AND.IRET2.GT.0.AND.IRET3.GT.0) THEN
-                CALL UTMESS('A','MECALM','PAS D INDICATEUR D ERREUR-'//
+                CALL UTMESS('A',NOMPRO,'PAS D INDICATEUR D ERREUR-'//
      &                    ' ON NE CALCULE PAS L''OPTION SING_ELEM')
                 IRET=1
               ENDIF
@@ -1705,11 +1722,11 @@ C 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
 
               IF (IRET1.EQ.0) THEN
                 CALL CELCES(CHERR1(1:19),'V',CHERRS)
-                IF (IRET2.EQ.0.OR.IRET3.EQ.0) CALL UTMESS('A','MECALM',
+                IF (IRET2.EQ.0.OR.IRET3.EQ.0) CALL UTMESS('A',NOMPRO,
      &           'PAR DEFAUT ON UTILISE ERRE_ELEM_SIGM')
               ELSE IF (IRET3.EQ.0) THEN
                 CALL CELCES(CHERR3(1:19),'V',CHERRS)
-                IF (IRET2.EQ.0) CALL UTMESS('A','MECALM',
+                IF (IRET2.EQ.0) CALL UTMESS('A',NOMPRO,
      &           'PAR DEFAUT ON UTILISE ERZ2_ELEM_SIGM')
               ELSE
                 CALL CELCES(CHERR2(1:19),'V',CHERRS)
@@ -1732,7 +1749,7 @@ C       CES DEUX COMPOSANTES SONT CONSTANTES PAR ELEMENT
 
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
 
-C 3.4 - DESTRUTION DES CHAM_ELEM_S
+C 3.4 - DESTRUCTION DES CHAM_ELEM_S
 
               CALL DETRSD('CHAM_ELEM_S',CHERRS)
               CALL DETRSD('CHAM_ELEM_S',CHENES)
@@ -1781,7 +1798,7 @@ C 4 - STOCKAGE
 
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
 
-C 5 - DESTRUTION DES CHAM_ELEM_S
+C 5 - DESTRUCTION DES CHAM_ELEM_S
 
               CALL DETRSD('CHAM_ELEM_S',CHSINS)
               CALL DETRSD('CHAM_ELEM_S',CHSINN)
@@ -1841,7 +1858,7 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-              CALL UTMESS('A','MECALM',
+              CALL UTMESS('A',NOMPRO,
      &              'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE !'
      &                    )
               GO TO 440
@@ -1927,7 +1944,7 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NBORDR.EQ.1) THEN
-            CALL UTDEBM('A','MECALM','IL FAUT AU MOINS 2 NUME_ORDRE ')
+              CALL UTDEBM('A',NOMPRO,'IL FAUT AU MOINS 2 NUME_ORDRE ')
               CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
               CALL UTFINM
               GO TO 440
@@ -1983,7 +2000,6 @@ C ---- VERIF SENSIBILITE FIN
      &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
               CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL CODENT(IORDR,'G',KIORD)
 
 C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
 C           -------------------------------------------------
@@ -1993,11 +2009,11 @@ C           -------------------------------------------------
                  CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET2)
                  IF (IRET2.GT.0) THEN
-                    CALL UTMESS('A','MECALM','LE RESULTAT '//RESUCO//
+                    CALL CODENT(IORDR,'G',KIORD)
+                    CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-                    CALL JEDEMA()
-                    GO TO 330
+                    GO TO 321
                  END IF
               ENDIF
 
@@ -2006,15 +2022,14 @@ C ---       RECUPERE LES CONTRAINTES DE L'INSTANT PRECEDENT :
 C           -----------------------------------------------
               IF ((IAUX.GT.1).AND.(CONCEP.NE.'MODE_MECA')) THEN
                 IORDRM = ZI(JORDR+IAUX-2)
-                CALL CODENT(IORDRM,'G',KIORDM)
                 CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDRM,CHSIGM,
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
-                  CALL UTMESS('A','MECALM','LE RESULTAT '//RESUCO//
+                  CALL CODENT(IORDRM,'G',KIORDM)
+                  CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '
      &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
-                  CALL JEDEMA()
-                  GO TO 330
+                  GO TO 321
                 END IF
               END IF
 
@@ -2022,11 +2037,11 @@ C ---       RECUPERATION DU CHAMP DE DEPLACEMENT DE L'INSTANT COURANT :
 C           ---------------------------------------------------------
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
               IF (IRET1.GT.0) THEN
-                CALL UTMESS('A','MECALM','LE RESULTAT '//RESUCO//
+                CALL CODENT(IORDR,'G',KIORD)
+                CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-                CALL JEDEMA()
-                GO TO 330
+                GO TO 321
               END IF
 
 C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
@@ -2036,11 +2051,11 @@ C           ------------------------------------------------
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDRM,CHDEPM,OPTION,
      &                      IRET1)
                 IF (IRET1.GT.0) THEN
-                  CALL UTMESS('A','MECALM','LE RESULTAT '//RESUCO//
+                  CALL CODENT(IORDRM,'G',KIORDM)
+                  CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '
      &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
-                  CALL JEDEMA()
-                  GO TO 330
+                  GO TO 321
                 END IF
               END IF
 
@@ -2056,9 +2071,9 @@ C           ------------------------------------------------
               ENDIF
 
               CALL RSNOCH(RESUCO,OPTION,IORDR,' ')
+  321         CONTINUE
               CALL JEDEMA()
   320       CONTINUE
-  330       CONTINUE
             CALL DETRSD('CHAMP_GD','&&ENETOT.CHAMELEM2')
 C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DU TAUX DE TRIAXIALITE DES CONTRAINTES, ET
@@ -2086,7 +2101,7 @@ C ---- VERIF SENSIBILITE FIN
                 CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
-                   CALL UTMESS('A','MECALM','PAS DE CHAMP'//
+                   CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
      &                  ' DE CONTRAINTES POUR CALCULER '//OPTION)
                    GO TO 342
                 ENDIF
@@ -2116,20 +2131,21 @@ C     --- OPTIONS DE CALCUL DE:
 C     ---   * TAUX DE TRIAXIALITE DES CONTRAINTES,
 C     ---   * CONTRAINTE D'ENDOMMAGEMENT,
 C     ---   * ENDOMMAGEMENT DE LEMAITRE-SERMAGE
-C     --- RESPONSABLE DEVELOPPEMENT: Franck MEISSONNIER (AMA/T65)
+C     --- RESPONSABLE DEVELOPPEMENT: FRANCK MEISSONNIER (AMA/T65)
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'ENDO_ELNO_ELGA'.OR.
      &             OPTION.EQ.'ENDO_ELGA') THEN
 C
             IF (NBORDR.EQ.1) THEN
-             CALL UTDEBM('A','MECALM','IL FAUT AU MOINS 2 NUME_ORDRE ')
+               CALL UTDEBM('A',NOMPRO,
+     &                                'IL FAUT AU MOINS 2 NUME_ORDRE ')
                CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
                CALL UTFINM
                GO TO 440
             END IF
 
-C IORDR1 = ORDRE CORRESPONDANT AU TEMPS t-
-C IORDR2 = ORDRE CORRESPONDANT AU TEMPS t+
+C IORDR1 = ORDRE CORRESPONDANT AU TEMPS T-
+C IORDR2 = ORDRE CORRESPONDANT AU TEMPS T+
             DO 341 IAUX = 2,NBORDR
                IORDR1 = ZI(JORDR-1+IAUX-1)
                IORDR2 = ZI(JORDR-1+IAUX)
@@ -2137,14 +2153,14 @@ C
 C --- A/ TRAITEMENT DE L'OPTION ENDO_ELGA
 C     -----------------------------------
                IF (OPTION.EQ.'ENDO_ELGA') THEN
-C --- A11/ Récupération du champ de contrainte 'SIEF_ELGA'
-C          -> CHSIG[1,2] à t- et t+
+C --- A11/ RECUPERATION DU CHAMP DE CONTRAINTES 'SIEF_ELGA'
+C          -> CHSIG[1,2] A T- ET T+
                   CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,
      &                        OPTION,IRET1)
                   CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR1,CHSIG1,
      &                        OPTION,IRET1)
                   IF (IRET1.GT.0) THEN
-                     CALL UTMESS('A','MECALM','PAS DE CHAMP'//
+                     CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
      &                           ' DE CONTRAINTES POUR CALCULER '
      &                             //OPTION)
                      GO TO 341
@@ -2155,14 +2171,14 @@ C          -> CHSIG[1,2] à t- et t+
                   CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR2,CHSIG2,
      &                        OPTION,IRET2)
                   IF (IRET2.GT.0) THEN
-                     CALL UTMESS('A','MECALM','PAS DE CHAMP'//
+                     CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
      &                           ' DE CONTRAINTES POUR CALCULER '//
      &                             OPTION)
                      GO TO 341
                   ENDIF
 C
-C --- A12/ Récupération du champ de variables internes 'VARI_ELGA'
-C          -> CHVARI[1,2] à t- et t+
+C --- A12/ RECUPERATION DU CHAMP DE VARIABLES INTERNES 'VARI_ELGA'
+C          -> CHVARI[1,2] A T- ET T+
                   NORME = 'DOM_LEM'
                   IF (NORME.EQ.'DOM_LEM') THEN
                      CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR1,CHVAR1,
@@ -2176,12 +2192,12 @@ C          -> CHVARI[1,2] à t- et t+
                   END IF
 C
                   IF (IAUX.EQ.2) THEN
-C --- A21/ Initialisation des variables à l'ordre IORDR1
+C --- A21/ INITIALISATION DES VARIABLES A L'ORDRE IORDR1
                      CALL RSEXC1(LERES1,OPTION,IORDR1,CHELE1)
                      CALL ALCHML(LIGREL,'ENDO_ELGA','PTRIAGM',
      &                          'G',CHELE1,IRET,' ')
                      IF (IRET.GT.0) THEN
-                        CALL UTMESS('A','MECALM','PROBLEME'//
+                        CALL UTMESS('A',NOMPRO,'PROBLEME'//
      &                              ' A L''APPEL DE ALCHML POUR '//
      &                              OPTION)
                         GO TO 341
@@ -2189,18 +2205,18 @@ C --- A21/ Initialisation des variables à l'ordre IORDR1
                      CALL RSNOCH(LERES1,OPTION,IORDR1,' ')
 
                   ELSE
-C --- A22/ Récupération des VAR. ENDOMMAGEMENT @t
+C --- A22/ RECUPERATION DES VAR. ENDOMMAGEMENT @T
                      CALL RSEXC2(1,1,RESUCO,'ENDO_ELGA',IORDR1,CHELE1,
      &                           OPTION,IRET1)
                      IF (IRET1.GT.0) THEN
-                        CALL UTMESS('A','MECALM','PAS DE CHAMP'//
+                        CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
      &                              ' ENDOMMAGEMENT POUR CALCULER '//
      &                              OPTION)
                         GO TO 341
                      ENDIF
                   ENDIF
 
-C --- A23/ Récupération du nom du champ extrait de la sd LERES1 @t+1
+C --- A23/ RECUPERATION DU NOM DU CHAMP EXTRAIT DE LA SD LERES1 @T+1
                   CALL RSEXC1(LERES1,OPTION,IORDR2,CHELE2)
 
 C --- A3/ RECUPERATION DU TEMPS CORRESPONDANT AUX ORDRES #IORDR[1,2]
@@ -2248,7 +2264,7 @@ C     ----------------------------------------
                   CALL RSEXC2(1,1,RESUCO,'ENDO_ELGA',IORDR2,CHEND2,
      &                        OPTION,IRET1)
                   IF (IRET1.GT.0) THEN
-                     CALL UTMESS('F','MECALM','LE CALCUL AVEC'//
+                     CALL UTMESS('F',NOMPRO,'LE CALCUL AVEC'//
      &                       ' L''OPTION ENDO_ELNO_ELGA NECESSITE'//
      &                       ' AU PREALABLE UN CALCUL AVEC'//
      &                       ' L''OPTION ENDO_ELGA')
@@ -2600,7 +2616,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTMESS('A','MECALM','PAS DE CHAMP DE CONTRAINTE'//
+                CALL UTMESS('A',NOMPRO,'PAS DE CHAMP DE CONTRAINTE'//
      &                      'POUR CALCULER '//OPTION)
                 GO TO 432
               END IF
@@ -2772,7 +2788,7 @@ C ---- VERIF SENSIBILITE FIN
 C      -----------------------------------------------------------------
 
          ELSE
-            CALL UTMESS('A','MECALM',' OPTION INEXISTANTE:'//OPTION)
+            CALL UTMESS('A',NOMPRO,' OPTION INEXISTANTE:'//OPTION)
          ENDIF
 
 C     ------------------------------------------------------------------
@@ -2780,14 +2796,14 @@ C     -- ERREUR SENSIBILITE
 C     ------------------------------------------------------------------
   900     CONTINUE
           IF ( CODSEN.NE.0 ) THEN
-            CALL UTMESS ( 'A', 'MECALM', 'OPTION : '//OPTION )
+            CALL UTMESS ( 'A', NOMPRO, 'OPTION : '//OPTION )
             IF ( NOPASE.NE.' ' ) THEN
-             CALL UTMESS ('A', 'MECALM', 'PARAMETRE SENSIBLE '//NOPASE)
+             CALL UTMESS ('A', NOMPRO, 'PARAMETRE SENSIBLE '//NOPASE)
             ENDIF
             IF ( CODSEN.EQ.1 ) THEN
-               CALL UTMESS ('A', 'MECALM', 'CALCUL NON DISPONIBLE' )
+               CALL UTMESS ('A', NOMPRO, 'CALCUL NON DISPONIBLE' )
             ELSEIF ( CODSEN.EQ.2 ) THEN
-               CALL UTMESS ( 'A', 'MECALM',
+               CALL UTMESS ( 'A', NOMPRO,
      >         'LE PARAMETRE DE SENSIBILITE DOIT ETRE UN CHAMP THETA' )
             ENDIF
           ENDIF
@@ -2833,7 +2849,7 @@ C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       GO TO 530
   520 CONTINUE
-      CALL UTMESS('A','MECALM','TYPE : '//TYSD//
+      CALL UTMESS('A',NOMPRO,'TYPE : '//TYSD//
      &            ' INCOMPATIBLE AVEC L''OPTION : '//OPTION)
   530 CONTINUE
       CALL JEDEMA()

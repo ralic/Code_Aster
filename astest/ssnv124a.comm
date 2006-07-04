@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 # TITRE CALCUL DE CHARGE LIMITE EN 2D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ TEST_TABLE(TABLE=ECHL1,
 
 RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
-                OPTION=('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI','SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                OPTION=('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI','SIEF_ELNO_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    INST=1.69897,
@@ -171,32 +171,5 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    CRITERE='RELATIF',
                    PRECISION=0.0001,
                    REFERENCE='ANALYTIQUE',),),);
-#--------------------------------------------------------------------------------
-#
-#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST=1.69897,
-                  NOM_CHAM='ERRE_ELEM_SIGM',
-                  NOM_CMP='NUEST',
-                  MAILLE='M1',
-                  POINT=1,
-                  VALE=8.30420174201,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST=1.69897,
-                  NOM_CHAM='ERRE_ELNO_ELEM',
-                  NOM_CMP='ERREST',
-                  MAILLE='M1',
-                  NOEUD='N3',
-                  VALE=1.79985410059,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
 
 FIN();

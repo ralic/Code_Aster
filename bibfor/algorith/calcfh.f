@@ -1,20 +1,15 @@
-        SUBROUTINE CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                    DIMCON,YAMEC,YATE,ADDEP1,ADDEP2,
-     +                    ADCP11,ADCP12,ADCP21,ADCP22,ADDEME,ADDETE,
-     +                    CONGEM,CONGEP,DSDE,P1,P2,
-     +                    GRAP1,GRAP2,T,GRAT,PHI,PVP,PAD,RHO11,H11,H12,
-     +                    H21,H22,R, RHOD, CPD, BIOT, SAT, DSATP1,
-     +                    PESA, PERMFH, PERMLI, DPERML, KREL2, DKR2S,
-     +                    DKR2P, FICK, DFICKT, DFICKG, FICKAD,DFADT,
-     +                    LAMBDD, DLAMBD,KH,
-     +                    RHOL, CLIQ, ALPLIQ, CPL, LAMBDL, DLAMBL,
-     +                    VISCL, DVISCL, MAMOLG, CPG, LAMBDG, DLAMBG,
-     +                    VISCG, DVISCG, MAMOLV, CPVG, VISCVG, DVISVG,
-     +                    RETCOM,ISOT)
+        SUBROUTINE CALCFH(OPTION,PERMAN,THMC,NDIM,DIMDEF,DIMCON,YAMEC,
+     &                    YATE,ADDEP1,ADDEP2,ADCP11,ADCP12,ADCP21,
+     &                    ADCP22,ADDEME,ADDETE,CONGEP,DSDE,P1,P2,GRAP1,
+     &                    GRAP2,T,GRAT,PVP,PAD,RHO11,H11,H12,R,DSATP1,
+     &                    PESA,PERMFH,PERMLI,DPERML,KREL2,DKR2S,DKR2P,
+     &                    FICK,DFICKT,DFICKG,FICKAD,DFADT,KH,CLIQ,
+     &                    ALPLIQ,VISCL,DVISCL,MAMOLG,VISCG,DVISCG,
+     &                    MAMOLV,ISOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,37 +38,36 @@ C IN CORRESPONDANCE ANCIENNE PROGRAMMATION -----------------------------
 C COND(1) -> PERMFH : PERM_IN OU PERM_END SOUS THM_DIFFU ---------------
 C COND(2) -> PERMLI : PERM_LIQU           SOUS THM_DIFFU ---------------
 C COND(3) -> DPERML : D_PERM_LIQU         SOUS THM_DIFFU ---------------
-C COND(4) -> KREL2 : PERM_GAZ            SOUS THM_DIFFU ---------------
-C COND(5) -> DKR2S : D_PERM_SATU_GAZ     SOUS THM_DIFFU ---------------
-C COND(6) -> DKR2P : D_PERM_PRES_GAZ     SOUS THM_DIFFU ---------------
+C COND(4) -> KREL2  : PERM_GAZ            SOUS THM_DIFFU ---------------
+C COND(5) -> DKR2S  : D_PERM_SATU_GAZ     SOUS THM_DIFFU ---------------
+C COND(6) -> DKR2P  : D_PERM_PRES_GAZ     SOUS THM_DIFFU ---------------
 C COND(7) -> FICK   : FICK                SOUS THM_DIFFU ---------------
 C COND(8) -> DFICKT : D_FICK_TEMP         SOUS THM_DIFFU ---------------
 C COND(9) -> DFICKG : D_FICK_GAZ_PRES     SOUS THM_DIFFU ---------------
 C ======================================================================
-C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
-C ======================================================================
-C
 C
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,IMATE,YAMEC,YATE,ADCP22,RETCOM
+      INTEGER       NDIM,DIMDEF,DIMCON,YAMEC,YATE,ADCP22
       INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE,ADCP11,ADCP12,ADCP21
-      REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
+      INTEGER       BDCP11
+      REAL*8        CONGEP(1:DIMCON)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),P1,GRAP1(3),P2,T
-      REAL*8        GRAP2(3),GRAT(3),PHI,PVP,PAD,H11,H12,H21,H22,RHO11
-      REAL*8        R, RHOD, CPD, BIOT, SAT, DSATP1, PESA(3), PERMFH
+      REAL*8        GRAP2(3),GRAT(3),PVP,PAD,H11,H12,RHO11
+      REAL*8        R, DSATP1, PESA(3), PERMFH
       REAL*8        PERMLI, DPERML, KREL2, DKR2S, DKR2P, FICK
-      REAL*8        DFICKT, DFICKG, LAMBDD, DLAMBD, RHOL, CLIQ, ALPLIQ
+      REAL*8        DFICKT, DFICKG, CLIQ, ALPLIQ
       REAL*8        FICKAD, DFADT
-      REAL*8        CPL, LAMBDL, DLAMBL, VISCL, DVISCL, CPG, LAMBDG
-      REAL*8        DLAMBG, VISCG, DVISCG, CPVG, VISCVG, DVISVG
+      REAL*8        VISCL, DVISCL
+      REAL*8        VISCG, DVISCG
       REAL*8        MAMOLG,MAMOLV,ISOT(3)
-      CHARACTER*16  OPTION,MECA,THMC,THER,HYDR
+      CHARACTER*16  OPTION,THMC
+      LOGICAL       PERMAN
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER         I,J
       REAL*8          LAMBD1(5),LAMBD2(5),FV(5),FA(5),VISCO,DVISCO
-      REAL*8          KREL1,DKREL1,RHO12,RHO21,MASRT,ENDOM
+      REAL*8          KREL1,DKREL1,RHO12,RHO21,MASRT
       REAL*8          RHO22, KH
 C    
 C VARIABLES LOCALES PERMETTANT D'EXPRIMER LES DERIVEES DES
@@ -185,6 +179,14 @@ C
        DR22P2=0.D0
        DR22T=0.D0
        RHO22=0.D0
+C
+C INITIALISATION ADRESSE SELON QUE LA PARTIE THH EST TRANSITOIRE OU NON
+C
+      IF ( PERMAN ) THEN
+         BDCP11 = ADCP11-1
+      ELSE
+         BDCP11 = ADCP11
+      ENDIF
 C **********************************************************************
 C   RECUPERATION DES COEFFICIENTS 
 C ======================================================================
@@ -328,7 +330,7 @@ C
          CVP=0.D0
       ENDIF
 C ***********************************************************
-C  CALCUL DES MASSES VOLUMIQUES, PRESSION D AIR DISSOUS, 
+C  CALCUL DES MASSES VOLUMIQUES, PRESSION D'AIR DISSOUS, 
 C  GRADIENTS D'AIR DISSOUS ET VAPEUR
 C
       IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
@@ -434,8 +436,6 @@ C
             DR12P1=RHO12/PVP*DP12P1
             DR12P2=RHO12/PVP*DP12P2
      
-C            DR21P1=RHO21/(P2-PVP)*(-DP12P1)
-C            DR21P2=RHO21/(P2-PVP)*(1.D0-DP12P2)     
             DR21P1=MASRT*(-DP12P1)
             DR21P2=MASRT*(1.D0-DP12P2)
             
@@ -533,9 +533,9 @@ C
      &                           *DR11P1
                IF (YATE.EQ.1) THEN
                   DGPVP1(I)=DGPVP1(I)+DAUXP1*GRAT(I)
-                  DGPVT(I)=(GRAP1(I))/RHO11*DR12T
+                  DGPVT(I)=GRAP1(I)/RHO11*DR12T
      &                           +DAUXT*GRAT(I)
-                  DGPVT(I)=DGPVT(I)-(GRAP1(I))*RHO12/RHO11/RHO11
+                  DGPVT(I)=DGPVT(I)-GRAP1(I)*RHO12/RHO11/RHO11
      &                           *DR11T
                ENDIF
                DGPGP1(1)=RHO12/RHO11
@@ -631,10 +631,10 @@ C
      &        (THMC.EQ.'LIQU_GAZ_ATM')) THEN
             DO 102 I=1,NDIM
               IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-                 CONGEP(ADCP11+I)=RHO11*LAMBD1(1)
+                 CONGEP(BDCP11+I)=RHO11*LAMBD1(1)
      &                         *(GRAP1(I)+RHO11*PESA(I))*ISOT(I)
               ELSE 
-                 CONGEP(ADCP11+I)=RHO11*LAMBD1(1)
+                 CONGEP(BDCP11+I)=RHO11*LAMBD1(1)
      &                         *(-GRAP1(I)+RHO11*PESA(I))*ISOT(I)
               ENDIF
  102        CONTINUE
@@ -691,34 +691,34 @@ C
      &        (THMC.EQ.'LIQU_GAZ_ATM')) THEN
             DO 108 I=1,NDIM
                IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-                  DSDE(ADCP11+I,ADDEP1)=DSDE(ADCP11+I,ADDEP1)
+                  DSDE(BDCP11+I,ADDEP1)=DSDE(BDCP11+I,ADDEP1)
      &             +DR11P1*LAMBD1(1)*ISOT(I)*(GRAP1(I)+RHO11*PESA(I))
-                  DSDE(ADCP11+I,ADDEP1)=DSDE(ADCP11+I,ADDEP1)
+                  DSDE(BDCP11+I,ADDEP1)=DSDE(BDCP11+I,ADDEP1)
      &             +RHO11*LAMBD1(3)*ISOT(I)*(GRAP1(I)+RHO11*PESA(I))
-                  DSDE(ADCP11+I,ADDEP1)=DSDE(ADCP11+I,ADDEP1)
+                  DSDE(BDCP11+I,ADDEP1)=DSDE(BDCP11+I,ADDEP1)
      &             +RHO11*LAMBD1(1)*ISOT(I)*(DR11P1*PESA(I))
-                  DSDE(ADCP11+I,ADDEP1+I)=DSDE(ADCP11+I,ADDEP1+I)
+                  DSDE(BDCP11+I,ADDEP1+I)=DSDE(BDCP11+I,ADDEP1+I)
      &             +RHO11*LAMBD1(1)*ISOT(I)
                ELSE
-                 DSDE(ADCP11+I,ADDEP1)=DSDE(ADCP11+I,ADDEP1)
+                 DSDE(BDCP11+I,ADDEP1)=DSDE(BDCP11+I,ADDEP1)
      &             +DR11P1*LAMBD1(1)*ISOT(I)*(-GRAP1(I)+RHO11*PESA(I))
-                 DSDE(ADCP11+I,ADDEP1)=DSDE(ADCP11+I,ADDEP1)
+                 DSDE(BDCP11+I,ADDEP1)=DSDE(BDCP11+I,ADDEP1)
      &             +RHO11*LAMBD1(3)*ISOT(I)*(-GRAP1(I)+RHO11*PESA(I))
-                 DSDE(ADCP11+I,ADDEP1)=DSDE(ADCP11+I,ADDEP1)
+                 DSDE(BDCP11+I,ADDEP1)=DSDE(BDCP11+I,ADDEP1)
      &             +RHO11*LAMBD1(1)*ISOT(I)*(DR11P1*PESA(I))
-                 DSDE(ADCP11+I,ADDEP1+I)=DSDE(ADCP11+I,ADDEP1+I)
+                 DSDE(BDCP11+I,ADDEP1+I)=DSDE(BDCP11+I,ADDEP1+I)
      &             -RHO11*LAMBD1(1)*ISOT(I)
                ENDIF
                IF (YAMEC.EQ.1) THEN
                   DO 107 J=1,3
                      IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-                        DSDE(ADCP11+I,ADDEME+NDIM-1+I)=
-     &                     DSDE(ADCP11+I,ADDEME+NDIM-1+I)
+                        DSDE(BDCP11+I,ADDEME+NDIM-1+I)=
+     &                     DSDE(BDCP11+I,ADDEME+NDIM-1+I)
      &                     +RHO11*LAMBD1(2)*ISOT(I)*
      &                      (GRAP1(I)+RHO11*PESA(I))
                      ELSE
-                       DSDE(ADCP11+I,ADDEME+NDIM-1+I)=
-     &                     DSDE(ADCP11+I,ADDEME+NDIM-1+I)
+                       DSDE(BDCP11+I,ADDEME+NDIM-1+I)=
+     &                     DSDE(BDCP11+I,ADDEME+NDIM-1+I)
      &                     +RHO11*LAMBD1(2)*ISOT(I)
      &                     *(-GRAP1(I)+RHO11*PESA(I))
                      ENDIF                        
@@ -788,7 +788,7 @@ C
                 DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
      &           -DR12P1*(1.D0-CVP)*FV(1)*GC(I)
                DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
-     &           +RHO12*(DCVP1)*FV(1)*GC(I)
+     &           +RHO12*DCVP1*FV(1)*GC(I)
                 DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
      &           -RHO12*(1.D0-CVP)*FV(3)*GC(I)
                 DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
@@ -805,7 +805,7 @@ C
                 DSDE(ADCP12+I,ADDEP2)=DSDE(ADCP12+I,ADDEP2)
      &           -DR12P2*(1.D0-CVP)*FV(1)*GC(I)
                 DSDE(ADCP12+I,ADDEP2)=DSDE(ADCP12+I,ADDEP2)
-     &           +RHO12*(DCVP2)*FV(1)*GC(I)
+     &           +RHO12*DCVP2*FV(1)*GC(I)
                 DSDE(ADCP12+I,ADDEP2)=DSDE(ADCP12+I,ADDEP2)
      &           -RHO12*(1.D0-CVP)*FV(4)*GC(I)
                 DSDE(ADCP12+I,ADDEP2)=DSDE(ADCP12+I,ADDEP2)
@@ -831,7 +831,7 @@ C
                DSDE(ADCP21+I,ADDEP1)=DSDE(ADCP21+I,ADDEP1)
      &           +DR21P1*CVP*FV(1)*GC(I)
                DSDE(ADCP21+I,ADDEP1)=DSDE(ADCP21+I,ADDEP1)
-     &           +RHO21*(DCVP1)*FV(1)*GC(I)
+     &           +RHO21*DCVP1*FV(1)*GC(I)
                DSDE(ADCP21+I,ADDEP1)=DSDE(ADCP21+I,ADDEP1)
      &           +RHO21*CVP*FV(3)*GC(I)
                DSDE(ADCP21+I,ADDEP1)=DSDE(ADCP21+I,ADDEP1)
@@ -848,7 +848,7 @@ C
                DSDE(ADCP21+I,ADDEP2)=DSDE(ADCP21+I,ADDEP2)
      &           +DR21P2*CVP*FV(1)*GC(I)
                DSDE(ADCP21+I,ADDEP2)=DSDE(ADCP21+I,ADDEP2)
-     &           +RHO21*(DCVP2)*FV(1)*GC(I)
+     &           +RHO21*DCVP2*FV(1)*GC(I)
                DSDE(ADCP21+I,ADDEP2)=DSDE(ADCP21+I,ADDEP2)
      &           +RHO21*CVP*FV(4)*GC(I)
                DSDE(ADCP21+I,ADDEP2)=DSDE(ADCP21+I,ADDEP2)
@@ -870,10 +870,10 @@ C
      &            (RHO22+RHO11)*PESA(I))
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
      &           +RHO22*LAMBD1(1)*ISOT(I)*((DR22P1+DR11P1)*PESA(I))
-C ici     
+C ICI     
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
      &           -FA(3)*GCA(I)
-C ici     
+C ICI     
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
      &           -FA(1)*DGCAP1(I)
      
@@ -1021,7 +1021,7 @@ C
                 DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
      &           +RHO12*LAMBD2(3)*ISOT(I)*(-GP(I)+RHO12*PESA(I))
                 DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
-     &           +RHO12*LAMBD2(1)*ISOT(I)*((DR12P1)*PESA(I))
+     &           +RHO12*LAMBD2(1)*ISOT(I)*(DR12P1*PESA(I))
                 DSDE(ADCP12+I,ADDEP1)=DSDE(ADCP12+I,ADDEP1)
      &           -RHO12*LAMBD2(1)*ISOT(I)*DGPVP1(I)
                 DSDE(ADCP12+I,ADDEP1+I)=DSDE(ADCP12+I,ADDEP1+I)
@@ -1053,7 +1053,7 @@ C
                   DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
      &              +RHO12*LAMBD2(5)*ISOT(I)*(-GP(I)+RHO12*PESA(I))
                   DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
-     &              +RHO12*LAMBD2(1)*ISOT(I)*((DR12T)*PESA(I))
+     &              +RHO12*LAMBD2(1)*ISOT(I)*(DR12T*PESA(I))
                 DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
      &           -RHO12*LAMBD2(1)*ISOT(I)*DGPVT(I)
                 DSDE(ADCP12+I,ADDETE+I)=DSDE(ADCP12+I,ADDETE+I)

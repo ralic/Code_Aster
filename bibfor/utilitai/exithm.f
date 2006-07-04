@@ -1,0 +1,77 @@
+      SUBROUTINE EXITHM ( MODELE, YATHM )
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C----------------------------------------------------------------------
+C    FONCTION REALISEE : DETECTE SI LE MODELE EST UNE MODELISATION THM
+C    ON RETOURNE UN LOGIQUE VALANT VRAI OU FAUX SELON LE CAS ET LE NOM
+C    DE LA MODELISATION EFFECTIVE
+C    IL Y A ERREUR FATALE SI ON NE REUSSIT PAS A DECODER LE MODELE
+C
+C    ATTENTION, SI LA MODELISATION N'EST PAS LA MEME SUR TOUT LE
+C    MAILLAGE, CELA NE MARCHE PAS. C'EST LA FAUTE A DISMOI.
+C    IL FAUDRA FAIRE AUTREMENT. (SYMPA COMME CONSEIL)
+C
+C     ARGUMENTS:
+C     ----------
+C IN   MODELE : MODELE DU CALCUL
+C OUT  YATHM  : VRAI, SI LA MODELISATION EST UNE MODELISATION THM
+C               FAUX, SINON
+C ......................................................................
+C
+C   -------------------------------------------------------------------
+C     SUBROUTINES APPELLEES :
+C       MESSAGE : UTMESS.
+C       UTILITAIRES : DISMOI
+C   -------------------------------------------------------------------
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      CHARACTER*8  MODELE
+C
+      LOGICAL YATHM
+C
+C 0.2. ==> COMMUNS
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'EXITHM' )
+C
+      INTEGER IBID, IER 
+C
+      CHARACTER*3 REPONS
+C
+C====
+C 1. A-T-ON DE LA THM DANS L'UNE DES MODELISATIONS ASSOCIEES AU MODELE ?
+C    IL Y A ERREUR FATALE SI ON NE REUSSIT PAS A DECODER LE MODELE
+C====
+C
+      CALL DISMOI ( 'F', 'MODELISATION_THM', MODELE, 'MODELE',
+     >              IBID, REPONS, IER )
+C
+      IF ( REPONS.EQ.'OUI' ) THEN
+        YATHM = .TRUE.
+      ELSEIF ( REPONS.EQ.'NON' ) THEN
+        YATHM = .FALSE.
+      ELSE
+         CALL UTMESS('F',NOMPRO,'PROBLEME AVEC LA REPONSE '//REPONS)
+      ENDIF
+C
+      END

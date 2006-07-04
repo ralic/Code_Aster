@@ -1,0 +1,508 @@
+
+# MODIF  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+# TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE MEUNIER S.MEUNIER
+
+DEBUT(CODE=_F(NOM='WTNP116B',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),);
+#
+# Remarque : ce cas est analogue a WTNP116A, mais avec la structure
+#            pivotee de 45 degres selon l'axe Oz. Cela permet de tester
+#            les termes diagonaux.
+#            de plus le maillage n'est pas identique : moins structure.
+#
+# Solution analytique :
+#    p(x,y) = P0 + rho.g.(L-x)
+#    u(x,y) = K1.x.(x-2L) + K2.x
+#    Numeriquement : p(x,y) = 100000 + 10000(5-x)
+#                    u(x,y) = 6.22260e-6.x.(x-10) + 2.07420e-4.x
+#
+#                          GM2
+#           *-------------------------------*
+#           !                               !
+#           !                               !
+#         G !                               !  G
+#         M !           P                   !  M
+#         1 !                               !  4
+#           !                               !
+#           !                               !
+#           *-------------------------------*
+#                          GM3
+#              0 < X < 5
+#              0 < Y < 1
+#              P : noeud du TEST_RESU dans le groupe 'POURTEST'
+#                  X = 1.9743484, Y = 1.9743204
+#                  ==> Deltax = 2.29213
+#
+#   Voici les instructions GMSH pour creer ce maillage : 
+#
+###lc = 0.4;
+
+###Point(1) = {0.7071,0,0,lc};
+###Point(2) = {4.2426,3.5355,0,lc};
+###Point(3) = {3.5355,4.2426,0,lc};
+###Point(4) = {0,0.7071,0,lc};
+
+###Line(5) = {1,2};
+###Line(6) = {2,3};
+###Line(7) = {3,4};
+###Line(8) = {4,1};
+###Physical Line(3) = {5};
+###Physical Line(2) = {7};
+###Physical Line(1) = {8};
+###Physical Line(4) = {6};
+###Line Loop(9) = {2,3,4,1};
+###Plane Surface(10) = {9};
+###Physical Surface(11) = {10};
+#
+# 1. Initialisations
+# 1.1. Definition des instants de calcul 
+
+LISTINST=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=400000.,
+                                      NOMBRE=2,),);
+#
+# 1.2. Definition des constantes
+
+PATM=DEFI_CONSTANTE(VALE=100000.,);
+
+VISCOLIQ=DEFI_CONSTANTE(VALE=0.001,);
+
+PERMINT=DEFI_CONSTANTE(VALE=1e-15,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+PRES_IMP=DEFI_CONSTANTE(VALE=0.0,);
+#
+# 1.3. Definition du materiau
+
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=225000000.0,
+                               NU=0.4,
+                               RHO=2000.0,
+                               ALPHA=0.0,),
+                       COMP_THM='LIQU_SATU',
+                       THM_INIT=_F(
+                       PRE1=100000.0,
+                       PORO=0.4,),
+                       THM_DIFFU=_F(
+                       RHO=1600.0,
+                       BIOT_COEF=1.0,
+                       PESA_X=-7.07107,
+                       PESA_Y=-7.07107,
+                       PESA_Z=0.0,
+                       PERM_IN=PERMINT,),
+                       THM_LIQU=_F(
+                       RHO=1000.0,
+                       UN_SUR_K=3.77e-09,
+                       VISC=VISCOLIQ,
+                       D_VISC_TEMP=ZERO,),);
+#
+# 2. Maillage
+# 2.1. Lecture du maillage en degre 1
+
+PRE_GMSH();
+
+MAIL_AUX=LIRE_MAILLAGE();
+#
+# 2.2. Passage en degre 2
+
+MAIL_00=CREA_MAILLAGE(MAILLAGE=MAIL_AUX,
+                      LINE_QUAD=_F(TOUT='OUI',),);
+#
+# 2.3.Creation de groupes de noeuds
+# 'POURTEST' : noeud au centre pour les TEST_RESU
+
+MAIL_00=DEFI_GROUP(reuse =MAIL_00,
+                   MAILLAGE=MAIL_00,
+                   CREA_GROUP_NO=_F(NOEUD='N29',
+                                    NOM='POURTEST',),);
+# 'GM1', 'GM2','GM3' : pour la liaison oblique
+MAIL_00=DEFI_GROUP(reuse =MAIL_00,
+                   MAILLAGE=MAIL_00,
+                   CREA_GROUP_NO=(_F(GROUP_MA=('GM2','GM3','GM1',),),),);
+
+MAIL_00=DEFI_GROUP(reuse =MAIL_00,
+                   MAILLAGE=MAIL_00,
+                   CREA_GROUP_NO=(_F(DIFFE=('GM2','GM1',),
+                                     NOM='GN21',),
+                                  _F(DIFFE=('GM3','GM1',),
+                                     NOM='GN31',),),);
+#
+# 3. Calcul en hydro-mecanique permanent sur le maillage 0
+# 3.1. Application du modele et orientation des mailles de bord
+
+MODE_00=AFFE_MODELE(MAILLAGE=MAIL_00,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN_HM_P',),);
+
+MAIL_00=MODI_MAILLAGE(reuse =MAIL_00,
+                      MAILLAGE=MAIL_00,
+                      ORIE_PEAU_2D=_F(GROUP_MA=('GM3','GM2','GM1','GM4',),),
+                      MODELE=MODE_00,);
+
+###IMPR_RESU(FORMAT='RESULTAT',
+###          RESU=_F(MAILLAGE=MAIL_00,
+###                  IMPR_COOR='OUI',),);
+#
+# 3.2. Affectation du materiau sur le maillage
+
+CHMAT_00=AFFE_MATERIAU(MAILLAGE=MAIL_00,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATERIAU,),);
+#
+# 3.3. Affectation des chargements sur le maillage
+# 3.3.1. Deplacement : impose en dx et dy sur le bord GM1
+#                      impose en dN sur les bords GM2 et GM3
+
+U_IMP_00=AFFE_CHAR_MECA(MODELE=MODE_00,
+                        LIAISON_OBLIQUE=(_F(GROUP_NO=('GN21','GN31',),
+                                            ANGL_NAUT=(45.0,0.,0.,),
+                                            DY=0.,),),
+                        FACE_IMPO=(_F(GROUP_MA='GM1',
+                                      DX=0.,
+                                      DY=0.,),),);
+#
+# 3.3.2. Force en pression : impose en dx et dy sur le bord GM1
+
+F_IMP_00=AFFE_CHAR_MECA_F(MODELE=MODE_00,
+                          PRES_REP=_F(GROUP_MA='GM4',
+                                      PRES=PRES_IMP,),);
+#
+# 3.3.3. Pression hydraulique : imposee sur le bord GM4
+
+P_IMP_00=AFFE_CHAR_MECA_F(MODELE=MODE_00,
+                          DDL_IMPO=_F(GROUP_MA='GM4',
+                                      PRE1=PATM,),);
+#
+# 3.3.4. Flux hydraulique : impose en dx et dy sur les bords GM1, GM2 et GM3
+
+FLUH_00=AFFE_CHAR_MECA_F(MODELE=MODE_00,
+                         FLUX_THM_REP=_F(GROUP_MA=('GM1','GM2','GM3',),
+                                         FLUN_HYDR1=ZERO,),);
+#
+# 3.3.5. Gravite : selon la droite x=y
+
+PESA_00=AFFE_CHAR_MECA(MODELE=MODE_00,
+                       PESANTEUR=(10.,-.707107,-.707107,0.,),);
+#
+# 3.4. Calcul de la solution
+
+RESU_00=STAT_NON_LINE(MODELE=MODE_00,
+                      CHAM_MATER=CHMAT_00,
+                      EXCIT=(_F(CHARGE=U_IMP_00,),
+                             _F(CHARGE=PESA_00,),
+                             _F(CHARGE=P_IMP_00,),
+                             _F(CHARGE=F_IMP_00,),
+                             _F(CHARGE=FLUH_00,),),
+                      COMP_INCR=_F(RELATION='KIT_HM',
+                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
+                      INCREMENT=_F(LIST_INST=LISTINST,
+                                   SUBD_PAS=4,
+                                   SUBD_PAS_MINI=0.0001,),);
+#
+# 3.5. Calcul des indicateurs d'erreur en residu
+# 3.5.1. Contraintes aux noeuds par elements
+
+RESU_00=CALC_ELEM(reuse =RESU_00,
+                  RESULTAT=RESU_00,
+                  INST=400000.0,
+                  OPTION='SIEF_ELNO_ELGA',);
+
+#
+# 3.5.2. Indicateurs aux elements et aux noeuds par elements
+
+RESU_00=CALC_ELEM(reuse =RESU_00,
+                  RESULTAT=RESU_00,
+                  INST=400000.0,
+                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+#
+# 3.5.3. Transfert sur les noeuds
+
+RESU_00=CALC_NO(reuse =RESU_00,
+                RESULTAT=RESU_00,
+                INST=400000.0,
+                OPTION='ERRE_NOEU_ELEM',);
+
+###IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=RESU_00,),);
+#
+# 4. Tests par rapport aux valeurs de reference
+
+TEST_RESU(RESU=(
+       _F(  RESULTAT = RESU_00,   NUME_ORDRE = 2,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-4,
+            NOM_CMP = 'PRE1',       VALE = 127079,
+            REFERENCE = 'ANALYTIQUE' ),
+       _F(  RESULTAT = RESU_00,   NUME_ORDRE = 2,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 5.E-4,
+            NOM_CMP = 'DX',       VALE = 0.0002584,
+            REFERENCE = 'ANALYTIQUE' ),
+       _F(  RESULTAT = RESU_00,   NUME_ORDRE = 2,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 5.E-4,
+            NOM_CMP = 'DY',       VALE = 0.0002584,
+            REFERENCE = 'ANALYTIQUE' ),
+       _F(  RESULTAT = RESU_00,   NUME_ORDRE = 2,
+            NOM_CHAM = 'ERRE_NOEU_ELEM',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 5.E-5,
+            NOM_CMP = 'ERREST',       VALE = 0.002092096,
+            REFERENCE = 'NON_REGRESSION',VERSION='8.03.01' ),
+               )
+         )
+#
+# 5. Post-traitement : graphique de la pression et des deplacements
+# 5.1. Un chemin egal au bord GM3
+
+AXE_Y_00=INTE_MAIL_2D(MAILLAGE=MAIL_00,
+                      DEFI_CHEMIN=_F(GROUP_MA='GM3',),);
+#
+# 5.2. Recuperation des valeurs de pression et deplacement longitudinal
+
+V_X_00=POST_RELEVE_T(ACTION=_F(INTITULE='Dx, DY et P_liqu selon x',
+                               CHEMIN=AXE_Y_00,
+                               RESULTAT=RESU_00,
+                               NOM_CHAM='DEPL',
+                               INST=400000.0,
+                               NOM_CMP=('PRE1','DX','DY',),
+                               OPERATION='EXTRACTION',),);
+# 5.3. Impressions
+
+#IMPR_TABLE(TABLE=V_X_00,
+#           NOM_PARA=('ABSC_CURV','COOR_X','PRE1','DX','NOEUD',),);
+
+#IMPR_TABLE(TABLE=V_X_00,
+#           FORMAT='XMGRACE',
+#           UNITE=25,
+#           NOM_PARA=('COOR_X','PRE1',),
+#           LEGENDE_X='Hauteur',
+#           LEGENDE_Y='Pression',
+#           TITRE='Pression en fonction de la hauteur',);
+
+#IMPR_TABLE(TABLE=V_X_00,
+#           FORMAT='XMGRACE',
+#           UNITE=26,
+#           NOM_PARA=('COOR_X','DX',),
+#           LEGENDE_X='Hauteur',
+#           LEGENDE_Y='D\xe9placement',
+#           TITRE='D\xe9placement en fonction de la hauteur',);
+
+#IMPR_TABLE(TABLE=V_X_00,
+#           FORMAT='XMGRACE',
+#           UNITE=26,
+#           NOM_PARA=('COOR_X','DY',),
+#           LEGENDE_X='Hauteur',
+#           LEGENDE_Y='D\xe9placement',
+#           TITRE='D\xe9placement en fonction de la hauteur',);
+
+#
+# 6. Raffinement uniforme du maillage
+
+MACR_ADAP_MAIL(MAILLAGE_N=MAIL_00,
+               MAILLAGE_NP1=CO('MAIL_01'),
+               ADAPTATION='RAFFINEMENT_UNIFORME',);
+###               ADAPTATION='RAFFINEMENT_ZONE',
+###               ZONE=(_F(X_CENTRE = 1.9743, 
+###                        Y_CENTRE = 1.9743,
+###                        RAYON   =  0.60,),),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(MAILLAGE=MAIL_01,),);
+#
+# 6.2. Destruction/reconstruction des groupes de noeuds du bord
+MAIL_01=DEFI_GROUP(reuse =MAIL_01,
+                   MAILLAGE=MAIL_01,
+                   DETR_GROUP_NO=_F(NOM=('GM2','GM3','GM1','GN21','GN31',),),);
+
+MAIL_01=DEFI_GROUP(reuse =MAIL_01,
+                   MAILLAGE=MAIL_01,
+                   CREA_GROUP_NO=(_F(GROUP_MA=('GM2','GM3','GM1',),),),);
+
+MAIL_01=DEFI_GROUP(reuse =MAIL_01,
+                   MAILLAGE=MAIL_01,
+                   CREA_GROUP_NO=(_F(DIFFE=('GM2','GM1',),
+                                     NOM='GN21',),
+                                  _F(DIFFE=('GM3','GM1',),
+                                     NOM='GN31',),),);
+# 7. Calcul en hydro-mecanique permanent sur le maillage 1
+# 7.1. Application du modele
+
+MODE_01=AFFE_MODELE(MAILLAGE=MAIL_01,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN_HM_P',),);
+
+###IMPR_RESU(FORMAT='RESULTAT',
+###          RESU=_F(MAILLAGE=MAIL_01,
+###                  IMPR_COOR='OUI',),);
+#
+# 7.2. Affectation du materiau sur le maillage
+
+CHMAT_01=AFFE_MATERIAU(MAILLAGE=MAIL_01,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATERIAU,),);
+#
+# 7.3. Affectation des chargements sur le maillage
+# 7.3.1. Deplacement : impose en dx et dy sur le bord GM1
+#                      impose en dN sur les bords GM2 et GM3
+
+U_IMP_01=AFFE_CHAR_MECA(MODELE=MODE_01,
+                        LIAISON_OBLIQUE=(_F(GROUP_NO=('GN21','GN31',),
+                                            ANGL_NAUT=(45.0,0.,0.,),
+                                            DY=0.,),),
+                        FACE_IMPO=(_F(GROUP_MA='GM1',
+                                      DX=0.,
+                                      DY=0.,),),);
+#
+# 7.3.2. Force en pression : impose en dx et dy sur le bord GM1
+
+F_IMP_01=AFFE_CHAR_MECA_F(MODELE=MODE_01,
+                          PRES_REP=_F(GROUP_MA='GM4',
+                                      PRES=PRES_IMP,),);
+#
+# 7.3.3. Pression hydraulique : imposee sur le bord GM4
+
+P_IMP_01=AFFE_CHAR_MECA_F(MODELE=MODE_01,
+                          DDL_IMPO=_F(GROUP_MA='GM4',
+                                      PRE1=PATM,),);
+#
+# 7.3.4. Flux hydraulique : impose en dx et dy sur les bords GM1, GM2 et GM3
+
+FLUH_01=AFFE_CHAR_MECA_F(MODELE=MODE_01,
+                         FLUX_THM_REP=_F(GROUP_MA=('GM1','GM2','GM3',),
+                                         FLUN_HYDR1=ZERO,),);
+#
+# 7.3.5. Gravite : selon la droite x=y
+
+PESA_01=AFFE_CHAR_MECA(MODELE=MODE_01,
+                       PESANTEUR=(10.,-.707107,-.707107,0.,),);
+#
+# 7.4. Calcul de la solution
+
+RESU_01=STAT_NON_LINE(MODELE=MODE_01,
+                      CHAM_MATER=CHMAT_01,
+                      EXCIT=(_F(CHARGE=U_IMP_01,),
+                             _F(CHARGE=PESA_01,),
+                             _F(CHARGE=P_IMP_01,),
+                             _F(CHARGE=F_IMP_01,),
+                             _F(CHARGE=FLUH_01,),),
+                      COMP_INCR=_F(RELATION='KIT_HM',
+                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
+                      INCREMENT=_F(LIST_INST=LISTINST,
+                                   SUBD_PAS=4,
+                                   SUBD_PAS_MINI=0.0001,),);
+#
+# 7.5. Calcul des indicateurs d'erreur en residu
+# 7.5.1. Contraintes aux noeuds par elements
+
+RESU_01=CALC_ELEM(reuse =RESU_01,
+                  RESULTAT=RESU_01,
+                  INST=400000.0,
+                  OPTION='SIEF_ELNO_ELGA',);
+#
+#
+# 7.5.2. Indicateurs aux elements et aux noeuds par elements
+
+RESU_01=CALC_ELEM(reuse =RESU_01,
+                  RESULTAT=RESU_01,
+                  INST=400000.0,
+                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+#
+# 7.5.3. Transfert sur les noeuds
+
+RESU_01=CALC_NO(reuse =RESU_01,
+                RESULTAT=RESU_01,
+                INST=400000.0,
+                OPTION='ERRE_NOEU_ELEM',);
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU_01,),);
+#
+# 8. Tests par rapport aux valeurs de reference
+
+TEST_RESU(RESU=(
+       _F(  RESULTAT = RESU_01,   NUME_ORDRE = 2,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-4,
+            NOM_CMP = 'PRE1',       VALE = 127079,
+            REFERENCE = 'ANALYTIQUE' ),
+       _F(  RESULTAT = RESU_01,   NUME_ORDRE = 2,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 5.E-4,
+            NOM_CMP = 'DX',       VALE = 0.0002584,
+            REFERENCE = 'ANALYTIQUE' ),
+       _F(  RESULTAT = RESU_01,   NUME_ORDRE = 2,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 5.E-4,
+            NOM_CMP = 'DY',       VALE = 0.0002584,
+            REFERENCE = 'ANALYTIQUE' ),
+       _F(  RESULTAT = RESU_01,   NUME_ORDRE = 2,
+            NOM_CHAM = 'ERRE_NOEU_ELEM',    GROUP_NO = 'POURTEST',
+            CRITERE = 'RELATIF',  PRECISION = 5.E-4,
+            NOM_CMP = 'ERREST',       VALE = 0.0002957440,
+            REFERENCE = 'NON_REGRESSION',VERSION='8.03.01' ),
+               )
+         )
+#
+# 9. Post-traitement : graphique de la pression et des deplacements
+# 9.1. Un chemin egal au bord GM3
+
+AXE_Y_01=INTE_MAIL_2D(MAILLAGE=MAIL_01,
+                      DEFI_CHEMIN=_F(GROUP_MA='GM3',),);
+#
+# 9.2. Recuperation des valeurs de pression et deplacement longitudinal
+#
+V_X_01=POST_RELEVE_T(ACTION=_F(INTITULE='Dx, DY et P_liqu selon x',
+                               CHEMIN=AXE_Y_01,
+                               RESULTAT=RESU_01,
+                               NOM_CHAM='DEPL',
+                               INST=400000.0,
+                               NOM_CMP=('PRE1','DX','DY',),
+                               OPERATION='EXTRACTION',),);
+# 9.3. Impressions
+
+#IMPR_TABLE(TABLE=V_X_01,
+#           NOM_PARA=('ABSC_CURV','COOR_X','PRE1','DX','NOEUD',),);
+
+#IMPR_TABLE(TABLE=V_X_01,
+#           FORMAT='XMGRACE',
+#           UNITE=25,
+#           NOM_PARA=('COOR_X','PRE1',),
+#           LEGENDE_X='Hauteur',
+#           LEGENDE_Y='Pression',
+#           TITRE='Pression en fonction de la hauteur',);
+
+#IMPR_TABLE(TABLE=V_X_01,
+#           FORMAT='XMGRACE',
+#           UNITE=26,
+#           NOM_PARA=('COOR_X','DX',),
+#           LEGENDE_X='Hauteur',
+#           LEGENDE_Y='D\xe9placement',
+#           TITRE='D\xe9placement en fonction de la hauteur',);
+
+#IMPR_TABLE(TABLE=V_X_01,
+#           FORMAT='XMGRACE',
+#           UNITE=26,
+#           NOM_PARA=('COOR_X','DY',),
+#           LEGENDE_X='Hauteur',
+#           LEGENDE_Y='D\xe9placement',
+#           TITRE='D\xe9placement en fonction de la hauteur',);
+
+FIN();

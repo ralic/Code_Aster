@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,14 @@ C
      +         TYPELE.EQ.'HM_DPTR3' .OR.
      +         TYPELE.EQ.'HM_DPTR6' .OR.
      +         TYPELE.EQ.'HM_D_PLAN_SE2' .OR.
-     +         TYPELE.EQ.'HM_D_PLAN_SE3' ) THEN
+     +         TYPELE.EQ.'HM_D_PLAN_SE3' .OR.
+     +         TYPELE.EQ.'HM_DPQ8_P'  .OR. 
+     +         TYPELE.EQ.'HM_DPQ4_P'  .OR.
+     +         TYPELE.EQ.'HM_DPTR3_P' .OR.
+     +         TYPELE.EQ.'HM_DPTR6_P' .OR.
+     +         TYPELE.EQ.'HM_D_PLAN_SE2_P' .OR.
+     +         TYPELE.EQ.'HM_D_PLAN_SE3_P'
+     +          ) THEN
          TYPEMO = 'D_PLAN_HM'
 
       ELSEIF ( TYPELE.EQ.'HM_DPQ8D'  .OR. 

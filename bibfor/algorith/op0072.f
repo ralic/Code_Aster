@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,14 +52,15 @@ C
       CHARACTER*16 TYPRES,NOMCOM,TYPBAS,MATRI2
       CHARACTER*24 NOMCHA,MATRIC,CHAMNO,KBID,DEEQ
       CHARACTER*72 K72B
-      COMPLEX*16   CBID,ZDOTC
-      REAL*8       DDOT
+      COMPLEX*16   CBID,ZDOTC,DCMPLX
+      REAL*8       DDOT, ZERO
 C
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
+      ZERO = 0.D0
 C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
@@ -168,8 +169,7 @@ C   LE STOCKAGE EST-IL DIAGONAL ?
       ENDIF
       CALL WKVECT('&&OP0072.BASEMO','V V R',NBMODE*NEQ,IDBASE)
 C --- CONVERSION DE BASEMO A LA NUMEROTATION NU
-      IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE').OR.
-     +    (TYPBAS.EQ.'MODE_STAT')) THEN
+      IF (TYPBAS.EQ.'MODE_GENE') THEN
         CALL COPMOD(BASEMO,'DEPL',NEQ,NU,NBMODE,ZR(IDBASE))
       ELSE
         CALL COPMO2(BASEMO,NEQ,NU,NBMODE,ZR(IDBASE))
@@ -196,7 +196,7 @@ C
             ZR(IAVALE+I-1) = DDOT(NEQ,ZR(IDVECT),1,ZR(IADVEC),1)
           ELSE
             DO 666 J=1,NEQ
-              ZC(IDVEC3+J-1)=DCMPLX(ZR(IDVECT+J-1),0.D0)
+              ZC(IDVEC3+J-1)=DCMPLX(ZR(IDVECT+J-1),ZERO)
  666        CONTINUE
             ZC(IAVALE+I-1) = ZDOTC(NEQ,ZC(IDVEC3),1,ZC(IADVEC),1)
           ENDIF
@@ -260,7 +260,7 @@ C
             ZR(IDVEC2+I-1) = DDOT(NEQ,ZR(IDVEC1),1,ZR(IADVEC),1)
           ELSE
             DO 667 J=1,NEQ
-              ZC(IDVEC3+J-1)=DCMPLX(ZR(IDVEC1+J-1),0.D0)
+              ZC(IDVEC3+J-1)=DCMPLX(ZR(IDVEC1+J-1),ZERO)
  667        CONTINUE
             ZC(IDVEC4+I-1) = ZDOTC(NEQ,ZC(IDVEC3),1,ZC(IADVEC),1)
           ENDIF

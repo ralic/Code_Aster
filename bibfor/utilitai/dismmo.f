@@ -1,10 +1,10 @@
       SUBROUTINE DISMMO ( CODMES, QUESTI, NOMOBZ, REPI, REPKZ, IERD )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER        REPI, IERD
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,16 +46,21 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNUM, JEXNOM, JEXATR, JEXR8
+      CHARACTER*32      JEXNUM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='DISMMO')
+C
+      INTEGER IBID,IALIEL,IAMACO,IANOMA,IASSSA,ICO,IGREL
+      INTEGER ILMACO,INO,IRET,ITYPEL,N1,NBGREL,NEL,NUMAIL,NUMGLM
 C
       CHARACTER*1   K1BID
       CHARACTER*4   PHEN4, TYTM
       CHARACTER*8   KBID, MA, NOMOB
       CHARACTER*16  NOPHEN, NOMTE, NOMODL, NOMOD2
       CHARACTER*19  NOLIG
-      CHARACTER*24 NEMA
-      CHARACTER*32  REPK
+      CHARACTER*32  REPK, K32BID
 C DEB ------------------------------------------------------------------
 C
 C -----  FONCTIONS FORMULES
@@ -124,7 +129,8 @@ C     ------------------------------------------
 C
 C     -------------------------------------------
       ELSE IF ( (QUESTI.EQ.'PHENOMENE'   ) .OR.
-     +          (QUESTI.EQ.'MODELISATION') ) THEN
+     +          (QUESTI.EQ.'MODELISATION') .OR.
+     +          (QUESTI.EQ.'MODELISATION_THM') ) THEN
 C     -------------------------------------------
         CALL JELIRA(NOLIG//'.NOMA','DOCU',IBID,PHEN4)
         IF (PHEN4.EQ.'MECA') THEN
@@ -134,37 +140,94 @@ C     -------------------------------------------
         ELSE IF (PHEN4.EQ.'ACOU') THEN
           NOPHEN='ACOUSTIQUE'
         ELSE
-          CALL UTMESS(CODMES,'DISMMO','PHENOMENE INCONNU : '//PHEN4)
+          CALL UTMESS(CODMES,NOMPRO,'PHENOMENE INCONNU : '//PHEN4)
         END IF
         REPK= NOPHEN
 C
-        IF  (QUESTI.EQ.'MODELISATION') THEN
+        IF  ( (QUESTI.EQ.'MODELISATION')       .OR.
+     >        (QUESTI.EQ.'MODELISATION_THM') ) THEN
 C            ------------------------
+C
+          IF  ( QUESTI.EQ.'MODELISATION' ) THEN
+            K32BID = ' '
+          ELSE
+            K32BID = 'NON'
+          ENDIF
+C
           CALL JEEXIN(NOLIG//'.LIEL',IRET)
           IF (IRET.EQ.0) GO TO 41
           CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NBGREL,K1BID)
           IF (NBGREL.LE.0) GO TO 41
           ICO  = 0
           NOMODL=' '
+
           DO 4,IGREL=1,NBGREL
             CALL JEVEUO(JEXNUM(NOLIG//'.LIEL',IGREL),'L',IALIEL)
             CALL JELIRA(JEXNUM(NOLIG//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
             ITYPEL= ZI(IALIEL -1 +NEL)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
             CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
+
             NOMOD2=REPK(1:16)
-            IF ((NOMODL.NE.NOMOD2).AND.(NOMOD2.NE.' ')) THEN
-              ICO =ICO+1
-              NOMODL=NOMOD2
-            END IF
+            IF  ( QUESTI.EQ.'MODELISATION' ) THEN
+              IF ((NOMODL.NE.NOMOD2).AND.(NOMOD2.NE.' ')) THEN
+                ICO =ICO+1
+                NOMODL=NOMOD2
+              ENDIF
+            ELSE
+              IF (( NOMOD2(1:6).EQ.'D_PLAN' )  .OR.
+     >            ( NOMOD2(1:6).EQ.'C_PLAN' )) THEN
+                IBID = 8
+              ELSEIF ( NOMOD2(1:4).EQ.'AXIS' ) THEN
+                IBID = 6
+              ELSEIF ( NOMOD2(1:2).EQ.'3D' ) THEN
+                IBID = 4
+              ELSE 
+                GOTO 4
+              ENDIF
+              IF ( NOMOD2(IBID:IBID).EQ.'H' ) THEN
+                IF ( NOMOD2(IBID:IBID+4).EQ.'HH2MD' .OR.
+     >               NOMOD2(IBID:IBID+4).EQ.'HH2MS' .OR.
+     >               NOMOD2(IBID:IBID+2).EQ.'HHM'   .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'HHMD'  .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'HHMS'  .OR.
+     >               NOMOD2(IBID:IBID+1).EQ.'HM'    .OR.
+     >               NOMOD2(IBID:IBID+2).EQ.'HMD'   .OR.
+     >               NOMOD2(IBID:IBID+2).EQ.'HMS' ) THEN
+                  ICO = ICO + 1
+                ENDIF      
+              ELSEIF ( NOMOD2(IBID:IBID).EQ.'T' ) THEN
+                IF ( NOMOD2(IBID:IBID+2).EQ.'THH'    .OR.
+     >               NOMOD2(IBID:IBID+4).EQ.'THH2D'  .OR.
+     >               NOMOD2(IBID:IBID+5).EQ.'THH2MD' .OR.
+     >               NOMOD2(IBID:IBID+5).EQ.'THH2MS' .OR.
+     >               NOMOD2(IBID:IBID+4).EQ.'THH2S'  .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'THHD'   .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'THHM'   .OR.
+     >               NOMOD2(IBID:IBID+4).EQ.'THHMD'  .OR.
+     >               NOMOD2(IBID:IBID+4).EQ.'THHMS'  .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'THHS'   .OR.
+     >               NOMOD2(IBID:IBID+2).EQ.'THM'    .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'THMD'   .OR. 
+     >               NOMOD2(IBID:IBID+3).EQ.'THMS'   .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'THVD'   .OR.
+     >               NOMOD2(IBID:IBID+3).EQ.'THVS' ) THEN
+                  ICO = ICO + 1
+                ENDIF
+              ENDIF
+            ENDIF
  4        CONTINUE
-          IF (ICO.EQ.1) THEN
-            REPK=NOMODL
-            GO TO 42
-          END IF
+          REPK = K32BID
+          IF  ( QUESTI.EQ.'MODELISATION' ) THEN
+            IF (ICO.EQ.1) THEN
+              REPK=NOMODL
+            ENDIF
+          ELSE
+            IF (ICO.GT.0) THEN
+              REPK='OUI'
+            ENDIF
+          ENDIF
  41       CONTINUE
-          REPK=' '
- 42       CONTINUE
         END IF
 C
 C     ------------------------------------
@@ -235,7 +298,7 @@ C     ----
       ELSE
 C     ----
          REPK = QUESTI
-         CALL UTMESS(CODMES,'DISMMO:',
+         CALL UTMESS(CODMES,NOMPRO,
      +                  'LA QUESTION : "'//REPK//'" EST INCONNUE')
          GO TO 9998
       END IF
@@ -247,7 +310,7 @@ C     ------------------
       IERD=1
       REPI=0
       REPK='ERREUR'
-      IF (CODMES.EQ.'F') CALL UTMESS('F','DISMMO','PROBLEME DISMOI.')
+      IF (CODMES.EQ.'F') CALL UTMESS('F',NOMPRO,'PROBLEME DISMOI.')
 C
 C     -- SORTIE NORMALE :
 C     ------------------

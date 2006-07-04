@@ -1,7 +1,7 @@
       SUBROUTINE UTHK(NOMTE,IGEOM,HK,NDIM,NOE,NSOMM,ITYP,INO,NIV,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE BOITEAU O.BOITEAU
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DU DIAMETRE D'UN
-C                          ELEMENT FINI K. POUR AERER TE0003
+C                          ELEMENT FINI K. 
 C
 C IN NOMTE  : NOM DU TYPE D'ELEMENT DE K
 C IN IGEOM  : ADRESSE JEVEUX DE LA GEOMETRIE
@@ -35,11 +35,11 @@ C OUT HK    : DIAMETRE DE L'ELEMENT K
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       MSG: UTMESS.
-C       ENVIMA: R8MIEM,R8PREM.
+C       ENVIMA: R8MIEM.
 C       RESOLUTION SYSTEME PAR GAUSS: MGAUSS.
 C
 C     FONCTIONS INTRINSEQUES:
-C       ABS,SQRT.
+C       ABS,MAX,SQRT.
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       03/07/01 (OB): CREATION POUR SIMPLIFIER TE0003.F.
@@ -70,18 +70,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
-      REAL*8 A,B,C,D,E,F,G,J,XC,YC,X1,Y1,X2,Y2,X3,Y3,PREC,R8PREM,H1,H2,
+
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='UTHK  ')
+C
+      REAL*8 A,B,C,D,E,F,X1,Y1,X2,Y2,X3,Y3,H1,H2,
      &       X4,Y4,Z1,Z2,Z3,Z4,A1(3,3),B1(3),H3,X5,Y5,Z5,X6,Y6,Z6,X7,Y7,
-     &       Z7,X8,Y8,Z8,H4,HKK,H11,H22,H33,U(3),V(3),OVFL,R8MIEM
+     &       Z7,X8,Y8,Z8,H4,HKK,H11,H22,H33,U(3),V(3),W(3)
       INTEGER IN,I,IINO,IRET
       CHARACTER*2 NOMTE2
 
-C INIT
-      PREC = R8PREM()
-      OVFL = R8MIEM()
-
+C
+C====
+C 1. COORDONNEES DES SOMMETS DE L'ELEMENT
+C====
+C
       IF (NDIM.EQ.2) THEN
-C QUADRANGLE/TRIANGLE
+C QUADRANGLE/TRIANGLE EN 2D
         X1 = ZR(IGEOM)
         Y1 = ZR(IGEOM+1)
         X2 = ZR(IGEOM+2)
@@ -89,6 +94,11 @@ C QUADRANGLE/TRIANGLE
         X3 = ZR(IGEOM+4)
         Y3 = ZR(IGEOM+5)
         NOMTE2 = NOMTE(5:6)
+        IF ( NOMTE.EQ.'HM_DPTR6_P' ) THEN
+          NOMTE2 = 'TR'
+        ELSEIF ( NOMTE.EQ.'HM_DPQ8_P' ) THEN
+          NOMTE2 = 'QU'
+        ENDIF
       ELSE IF (NDIM.EQ.3) THEN
 C HEXA/TETRA/PENTA
         X1 = ZR(IGEOM)
@@ -135,60 +145,62 @@ C FACE_4 OU FACE_8
           NOMTE2 = 'FQ'
         ENDIF
       ENDIF
-
+C
+C====
+C 2. TRIANGLE : DIAMETRE DU CERCLE CIRCONSCRIT
+C    LE RAYON DU CERCLE CIRCONSCRIT EST LE QUOTIENT : (A*B*C)/(4*S)
+C    AVEC A, B, C VALANT LES LONGUEURS DES 3 COTES ET S SA SURFACE.
+C    REFERENCE : CRC HANDBOOK OF MATHEMATICAL SCIENCES, BEYER,
+C                UNIVERSITY OF AKRON, 1987. NUMERO GALAXIE E1987B209173
+C    LE DIAMETRE EST DONC (A*B*C)/(2*S), SOIT (A*B*C)/K OU K EST LA
+C    NORME DU PRODUIT VECTORIEL DE DEUX COTES
+C====
+C
       IF ((NOMTE2.EQ.'TR').OR.
      &    (NOMTE2.EQ.'TS').OR.
      &    (NOMTE2.EQ.'TL')) THEN
-C TRIANGLE --> DIAMETRE DU CERCLE CIRCONSCRIT
-
-        A = X1 + X2
-        B = Y3 + Y1
-        C = Y2 - Y1
-        D = X1 - X2
-        E = Y3 - Y1
-        F = X1 - X3
-        G = X3 - X2
-        J = Y2 + Y1
-C CALCUL COORDONNEES (XC,YC) DU CENTRE DU CERCLE
-C PREMIER CAS PARTICULIER (X1=X2)
-        IF (ABS(D) .LT. PREC) THEN
-          YC = 0.5D0 * J
-          XC = 0.5D0 *(A + G -(E/F)*(B - 2.0D0*YC))
-C DEUXIEME CAS PARTICULIER (X1=X3)
-        ELSE IF (ABS(F) .LT. PREC) THEN
-          YC = 0.5D0 * B
-          XC = 0.5D0*(A -(C/D)*(J -2.0D0*YC))
-        ELSE
-C CAS GENERAL
-          YC = 0.5D0*(1.0D0/((C/D)-(E/F)))*(G -(E*B/F)+(C*J/D))
-          XC = 0.5D0*(A -(C/D)*(J -2.0D0*YC))
-        ENDIF
-        HK = 2.D0 * SQRT((X1-XC)**2+(Y1-YC)**2)
+C
+        A = X2 - X1
+        B = X3 - X2
+        C = X1 - X3
+        D = Y2 - Y1
+        E = Y3 - Y2
+        F = Y1 - Y3
+        HK = SQRT( ( A**2 + D**2 ) *
+     &             ( B**2 + E**2 ) *
+     &             ( C**2 + F**2 ) )
+        HK = HK / ABS( A*F - D*C )
         IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'TR: CENTRE CERCLE CIRCONSCRIT ',XC,YC
-          H1=2.D0*SQRT((X2-XC)**2+(Y2-YC)**2)
-          H2=2.D0*SQRT((X3-XC)**2+(Y3-YC)**2)
-          WRITE(IFM,*)'DIAMETRES ',HK,H1,H2
+          WRITE(IFM,*)'TRIANGLE : NOEUD1 (',X1,',',Y1,')'
+          WRITE(IFM,*)'           NOEUD2 (',X2,',',Y2,')'
+          WRITE(IFM,*)'           NOEUD3 (',X3,',',Y3,')'
+          WRITE(IFM,*)'==> DIAMETRE = ', HK
         ENDIF
-
+C
+C====
+C 3. QUADRANGLE : PLUS GRANDE DIAGONALE
+C====
+C
       ELSE IF ((NOMTE2.EQ.'QU').OR.
      &         (NOMTE2.EQ.'QS').OR.
      &         (NOMTE2.EQ.'QL')) THEN
-C QUADRANGLE --> MAX DES DIAGONALES
-
+C
         X4 = ZR(IGEOM+6)
         Y4 = ZR(IGEOM+7)
-        H1 = SQRT((X1-X3)**2 + (Y1-Y3)**2)
-        H2 = SQRT((X2-X4)**2 + (Y2-Y4)**2)
-        IF (H1.GT.H2) THEN
-          HK = H1
-        ELSE
-          HK = H2
+        H1 = (X1-X3)**2 + (Y1-Y3)**2
+        H2 = (X2-X4)**2 + (Y2-Y4)**2
+        HK = MAX(H1,H2)
+        HK = SQRT(HK)
+        IF (NIV.EQ.2) THEN
+          WRITE(IFM,*)'QU: PLUS GRANDE DIAGONALE = ',HK
         ENDIF
-        IF (NIV.EQ.2)
-     &    WRITE(IFM,*)'QU: LONG. DIAGONALES 2D ',H1,H2
+C
+C====
+C 4. TETRAEDRE : DIAMETRE DE LA SPHERE CIRCONSCRITE
+C====
+C
       ELSE IF (NOMTE2.EQ.'TE') THEN
-C TETRAEDRE --> DIAMETRE DU CERCLE CIRCONSCRIT
+C
         A1(1,1) = X2 - X1
         A1(2,1) = X3 - X1
         A1(3,1) = X4 - X1
@@ -212,9 +224,13 @@ C INVERSION PAR GAUSS DU SYSTEME LINEAIRE A*X=B
           H3=2.D0*SQRT((X4-B1(1))**2+(Y4-B1(2))**2+(Z4-B1(3))**2)
           WRITE(IFM,*)'DIAMETRES ',HK,H1,H2,H3
         ENDIF
+C
+C====
+C 5. HEXAEDRE : PLUS GRANDE DIAGONALE
+C====
+C
       ELSE IF (NOMTE2.EQ.'HE') THEN
-C HEXAEDRE --> PLUS GRANDE DIAGONALE
-
+C
         X5 = ZR(IGEOM+12)
         Y5 = ZR(IGEOM+13)
         Z5 = ZR(IGEOM+14)
@@ -240,9 +256,13 @@ C HEXAEDRE --> PLUS GRANDE DIAGONALE
         IF (H4.GT.HK) HK = H4
         IF (NIV.EQ.2)
      &    WRITE(IFM,*)'HE: LONG. DIAGONALES 3D ',H1,H2,H3,H4
+C
+C====
+C 5. PENTAEDRE : PLUS GRANDE DIAGONALE
+C====
+C
       ELSE IF (NOMTE2.EQ.'PE') THEN
-C PENTAEDRE --> PLUS GRANDE DIAGONALE
-
+C
         X5 = ZR(IGEOM+12)
         Y5 = ZR(IGEOM+13)
         Z5 = ZR(IGEOM+14)
@@ -271,58 +291,71 @@ C PENTAEDRE --> PLUS GRANDE DIAGONALE
         IF (NIV.EQ.2)
      &    WRITE(IFM,*)'PE: LONG. DIAGONALES 3D',
      &    H1,H2,H3,H11,H22,H33
+C
+C====
+C 6. FACE QUADRANGULAIRE : PLUS GRANDE DIAGONALE
+C====
+C
       ELSE IF (NOMTE2.EQ.'FQ') THEN
-C FACE QUADRANGULAIRE --> MAX DES DIAGONALES
-
-        H1 = SQRT((X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2)
-        H2 = SQRT((X2-X4)**2 + (Y2-Y4)**2 + (Z2-Z4)**2)
-        IF (H1.GT.H2) THEN
-          HK = H1
-        ELSE
-          HK = H2
+C
+        H1 = (X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2
+        H2 = (X2-X4)**2 + (Y2-Y4)**2 + (Z2-Z4)**2
+        HK = MAX(H1,H2)
+        HK = SQRT(HK)
+        IF (NIV.EQ.2) THEN
+          WRITE(IFM,*)'FQ :PLUS GRANDE DIAGONALE ',HK
         ENDIF
-        IF (NIV.EQ.2)
-     &    WRITE(IFM,*)'FQ: LONG. DIAGONALES ',H1,H2
+C
+C====
+C 7. FACE TRIANGULAIRE : DIAMETRE DU CERCLE CIRCONSCRIT
+C    LE RAYON DU CERCLE CIRCONSCRIT EST LE QUOTIENT : (A*B*C)/(4*S)
+C    AVEC A, B, C VALANT LES LONGUEURS DES 3 COTES ET S SA SURFACE.
+C    REFERENCE : CRC HANDBOOK OF MATHEMATICAL SCIENCES, BEYER,
+C                UNIVERSITY OF AKRON, 1987. NUMERO GALAXIE E1987B209173 
+C    LE DIAMETRE EST DONC (A*B*C)/(2*S), SOIT (A*B*C)/K OU K EST LA
+C    NORME DU PRODUIT VECTORIEL DE DEUX COTES
+C====
+C
       ELSE IF (NOMTE2.EQ.'FT') THEN
-C FACE TETRAEDRIQUE --> DIAMETRE DU CERCLE CIRCONSCRIT
-
-C VECTEURS UNITAIRES U=M1M2 ET V=M1M3
+C VECTEURS DIRECTEURS U=M1M2, V=M2M3, W=M3M1
         U(1) = X2 - X1
         U(2) = Y2 - Y1
         U(3) = Z2 - Z1
-        H11 = U(1)**2+U(2)**2+U(3)**2
-        V(1) = X3 - X1
-        V(2) = Y3 - Y1
-        V(3) = Z3 - Z1
-        H22 = V(1)**2+V(2)**2+V(3)**2
-
-C PROJECTION DES POINTS DANS LE PLAN (U,V)
-        H1 = U(1)*V(1)+U(2)*V(2)+U(3)*V(3)
-        H2 = H11*H22 - H1*H1
-        IF (ABS(H2).LT.OVFL) THEN
-          CALL UTMESS('F','UTHK','! H2: DIV PAR  !')
-        ELSE
-          H2 = H11/(H2*2.D0)
-        ENDIF
-        YC = H2*(H22-H1)
-        XC = 0.5D0 - (YC*H1/H11)
-
-C PASSAGE PLAN(U,V) -> 3D
-        B1(1)=X1+ XC*U(1) + YC*V(1)
-        B1(2)=Y1+ XC*U(2) + YC*V(2)
-        B1(3)=Z1+ XC*U(3) + YC*V(3)
+C
+        V(1) = X3 - X2
+        V(2) = Y3 - Y2
+        V(3) = Z3 - Z2
+C
+        W(1) = X1 - X3
+        W(2) = Y1 - Y3
+        W(3) = Z1 - Z3
+C
+        HK = SQRT( ( U(1)**2 + U(2)**2 + U(3)**2 ) *
+     &             ( V(1)**2 + V(2)**2 + V(3)**2 ) *
+     &             ( W(1)**2 + W(2)**2 + W(3)**2 ) )
+C PRODUIT VECTORIEL (M1M2,M2M3)
+C SA NORME EST LE DOUBLE DE LA SURFACE DU TRIANGLE
+C DONC EN DIVISANT PAR LA NORME ON A BIEN LE DIAMETRE
+        A = U(2)*V(3) - U(3)*V(2)
+        B = U(3)*V(1) - U(1)*V(3)
+        C = U(1)*V(2) - U(2)*V(1)
+        HK = HK / SQRT( A**2 + B**2 + C**2 )
 
 C POST-TRAITEMENT
-        HK = 2.D0 * SQRT((X1-B1(1))**2+(Y1-B1(2))**2+(Z1-B1(3))**2)
         IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'TF: CENTRE CERCLE CIRCONSCRIT ',
-     &                (B1(I),I=1,3)
-          H1=2.D0*SQRT((X2-B1(1))**2+(Y2-B1(2))**2+(Z2-B1(3))**2)
-          H2=2.D0*SQRT((X3-B1(1))**2+(Y3-B1(2))**2+(Z3-B1(3))**2)
-          WRITE(IFM,*)'DIAMETRES ',HK,H1,H2
+          WRITE(IFM,*)'TRIANGLE : NOEUD1 (',X1,',',Y1,',',Z1,')'
+          WRITE(IFM,*)'           NOEUD2 (',X2,',',Y2,',',Z2,')'
+          WRITE(IFM,*)'           NOEUD3 (',X3,',',Y3,',',Z3,')'
+          WRITE(IFM,*)'==> DIAMETRE = ', HK
         ENDIF
+C
+C====
+C 8. INCONNU
+C====
+C
       ELSE
-        CALL UTMESS ('F','UTHK','! CALCUL HK: TYPE ELEMENT INCONNU !')
+        CALL UTMESS ('F',NOMPRO,
+     >               '! TYPE D''ELEMENT '//NOMTE2//'INCONNU !')
       ENDIF
-
+               NIV=1
       END

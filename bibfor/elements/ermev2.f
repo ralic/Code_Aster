@@ -1,13 +1,8 @@
-      SUBROUTINE ERE2D1(NOMTE,NNO,IPG,IGEOM,IVF,ISIG,NBCMP,DFDX,DFDY,
-     &                  POIDS,DSX,DSY,NORME)
-      IMPLICIT NONE
-      INTEGER NNO,IPG,IGEOM,IVF,ISIG,NBCMP
-      REAL*8 DFDX(9),DFDY(9),POIDS,DSX,DSY,NORME
-      CHARACTER*16 NOMTE
-C ----------------------------------------------------------------------
+      SUBROUTINE ERMEV2(NOMTE,NNO,IPG,IGEOM,IVF,ISIG,NBCMP,DFDX,DFDY,
+     &                  POIDS,POIAXI,
+     &                  DSX,DSY,NORME)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,11 +19,15 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C =====================================================================
+C  ERREUR EN MECANIQUE - TERME VOLUMIQUE - DIMENSION 2
+C  **        **                *                     *
+C =====================================================================
 C
 C     BUT:
 C         PREMIER TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE : 
 C         CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA EN UN POINT
-C         DE GAUSSE EN 2D.
+C         DE GAUSS EN 2D.
 C
 C
 C     ARGUMENTS:
@@ -45,7 +44,10 @@ C IN   ISIG   : ADRESSE DANS ZR DU TABLEAU DES CONTRAINTES AUX NOEUDS
 C IN   NBCMP  : NOMBRE DE COMPOSANTES
 C IN   DFDX   : DERIVEES DES FONCTIONS DE FORME / X
 C IN   DFDY   : DERIVEES DES FONCTIONS DE FORME / Y
-C IN   POIDS  : POIDS
+C IN   POIAXI : EN MODELISATION AXI :
+C               =0 : ON NE MULTIPLIE PAS LE POIDS PAR LE RAYON
+C               =1 : ON MULTIPLIE LE POIDS PAR LE RAYON
+C               EN MODELISATION AUTRE : SANS OBJET
 C
 C      SORTIE :
 C-------------
@@ -53,23 +55,33 @@ C OUT  DSX    : PREMIERE COMPOSANTE DE DIVERGENCE SIGMA
 C OUT  DSY    : SECONDE COMPOSANTE DE DIVERGENCE SIGMA
 C OUT  NORME  : NORME DE SIGMA AU POINT DE GAUSS
 C
+C
+C     ENTREE ET SORTIE :
+C----------------------
+C IN/OUT   POIDS  : NE SERT QU'A ETRE MULTIPLIE PAR LE RAYON DANS LE
+C                   CAS DES MODELISATIONS AXI
 C ......................................................................
+      IMPLICIT NONE
+      INTEGER NNO,IPG,IGEOM,IVF,ISIG,NBCMP
+      INTEGER POIAXI
+      REAL*8  DFDX(9),DFDY(9),POIDS,DSX,DSY,NORME
+      CHARACTER*16 NOMTE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
@@ -80,7 +92,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 R,SIG11,SIG22,SIG33,SIG12,R8PREM
 
 C ----------------------------------------------------------------------
-C        
+C
       DSIG11=0.D0
       DSIG12=0.D0
       DSIG22=0.D0
@@ -91,7 +103,12 @@ C
       SPG33=0.D0
       SPG12=0.D0
 C
+C====
+C 1. MODELISATION AXI
+C====
+C
       IF (NOMTE(3:4).EQ.'AX') THEN
+C
         R=0.D0
         DO 10 I=1,NNO
           K=(IPG-1)*NNO
@@ -115,12 +132,18 @@ C
   10    CONTINUE
 C
         IF(ABS(R).LE.R8PREM()) THEN
-           CALL UTMESS('F','ERE2D1','AXI : R=0')
+           CALL UTMESS('F','ERMEV2','AXI : R=0')
         ENDIF
 C
         DSX=DSIG11+DSIG12+(1.D0/R)*(SPG11-SPG33)
         DSY=DSIG21+DSIG22+(1.D0/R)*SPG12
-        POIDS=POIDS*R
+        IF ( POIAXI.EQ.1 ) THEN
+          POIDS = POIDS*R
+        ENDIF
+C
+C====
+C 2. AUTRE MODELISATION
+C====
 C
       ELSE
 C
@@ -147,6 +170,10 @@ C
         DSY=DSIG21+DSIG22
 C
       ENDIF
+C
+C====
+C 3.
+C====
 C
       NORME=SPG11**2+SPG22**2+SPG33**2+SPG12**2
 C

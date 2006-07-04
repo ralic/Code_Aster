@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF OPTIONS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
 ERRE_ELEM_SIGM
-       <<  ERRE_ELEM_SIGM : ESTIMATEUR D'ERREUR EN RESIDU AUX POINTS DE GAUSS >>
+       <<  ERRE_ELEM_SIGM : ESTIMATEUR D ERREUR EN RESIDU PAR ELEMENT >>
 OPTION__
    IN__
         PGEOMER  GEOM_R
@@ -42,6 +42,7 @@ OPTION__
        <<  PREFER :  >>
         PPRESS   NEUT_I
        <<  PPRESS : CHARGEMENT DES BORDS DE TYPE PRESSION >>
+        PDEPLAR  DEPL_R
+       << PDEPLAR : DEPLACEMENTS GENERALISES EN THM >>
    OUT__
 PERREUR ERREUR ELEM__
-

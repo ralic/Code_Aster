@@ -1,12 +1,7 @@
-      SUBROUTINE ERE2D2(INO,TYPEMA,TYPMAV,IREF1,IVOIS,ISIG,NBCMP,
+      SUBROUTINE ERMES2(INO,TYPEMA,TYPMAV,IREF1,IVOIS,ISIG,NBCMP,
      &                  DSG11,DSG22,DSG12)
-      IMPLICIT NONE
-      INTEGER INO,IREF1,IVOIS,ISIG,NBCMP
-      REAL*8 DSG11(3),DSG22(3),DSG12(3)
-      CHARACTER*8 TYPEMA,TYPMAV
-C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,6 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C =====================================================================
+C  ERREUR EN MECANIQUE - TERME DE SAUT - DIMENSION 2
+C  **        **                   *                *
+C =====================================================================
 C
 C     BUT:
 C         DEUXIEME TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE : 
@@ -52,22 +51,26 @@ C OUT  DSY    : SECONDE COMPOSANTE DE DIVERGENCE SIGMA
 C OUT  NORME  : NORME DE SIGMA AU POINT DE GAUSS
 C
 C ......................................................................
+      IMPLICIT NONE
+      INTEGER INO,IREF1,IVOIS,ISIG,NBCMP
+      REAL*8 DSG11(3),DSG22(3),DSG12(3)
+      CHARACTER*8 TYPEMA,TYPMAV
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
@@ -77,7 +80,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NBS,NBNA,NBSV,NBNV,I,JNO,MNO,INOV,JNOV,MNOV
 
       REAL*8 SIG11(3),SIG22(3),SIG12(3),SIGV11(3),SIGV22(3),SIGV12(3)
-      REAL*8 A1,A2,A3
 
       CHARACTER*2 FORM,NOEU,FORMV,NOEUV
 

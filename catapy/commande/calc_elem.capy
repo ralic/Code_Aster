@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
      MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
                            fr="le calcul ne sera effectué que sur ces mailles là"),
 
-#    options pour des resultats lineaire 
+#    options pour des resultats lineaires 
 
      b_lineaire =BLOC( condition = "AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,\
                                                                mode_stat,mode_stat_depl,mode_stat_acce,mode_stat_forc,\
@@ -67,7 +67,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                                                fr="options mecaniques lineaires",
           TYPE_OPTION =SIMP(statut='f',typ='TXM',defaut='TOUTES',fr="type d'options mecaniques lineaires",
                            into=("SIGM_MASSIF","SIGM_STRUCT","EPSI","ENER","CRIT","DERIVEES",
-                                 "INDI_ERRE","AUTRES","TOUTES"),
+                                 "INDI_ERREUR","AUTRES","TOUTES"),
                            ),
           b_toutes=BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="SIEF_ELNO_ELGA",
@@ -284,7 +284,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                     NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour VALE_NCOU_MAXI"),),
                                  ),
 
-          b_indi_erre         =BLOC( condition = "TYPE_OPTION=='INDI_ERRE'",
+          b_indi_erreur        =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELEM_SIGM",
                            into=("SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA","ERZ2_ELEM_SIGM",
                                  "SIRE_ELNO_DEPL","ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
@@ -301,7 +301,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
-                                  fr="precision demandee pour calculer la de taille des elements" ),),     
+                                  fr="precision demandee pour calculer la carte de taille des elements" ),),     
 
                EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
@@ -314,7 +314,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
      b_noli          =BLOC( condition = "AsType(RESULTAT) == evol_noli",fr="options evol noli",
           TYPE_OPTION =SIMP(statut='f',typ='TXM',defaut='TOUTES',
                            into=("SIGM_MASSIF","SIGM_STRUCT","EPSI","ENER","CRIT",
-                                 "VARI","INDI_ERRE","TOUTES","AUTRES"),
+                                 "VARI","INDI_ERREUR","TOUTES","AUTRES"),
                           ),
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
@@ -502,7 +502,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  ),
 
 
-          b_indi_erre         =BLOC( condition = "TYPE_OPTION=='INDI_ERRE'",
+          b_indi_erreur         =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELEM_SIGM",
                            into=("ERRE_ELEM_SIGM","ERRE_ELNO_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",

@@ -5,7 +5,7 @@ C      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,8 +106,8 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
       REWIND IFMIS
       READ(IFMIS,'(A72)') TEXTE
       IF (TEXTE(1:4).EQ.'XXXX') GOTO 4
-      DO 1 I1 = 1,NBMODS
       DO 1 I2 = 1,NBMODS
+      DO 1 I1 = 1,NBMODS
         NSAUT = NFREQ
         IF (I1.EQ.1.AND.I2.EQ.1) NSAUT = IFREQ
         DO 2 I = 1, NSAUT
@@ -125,14 +125,14 @@ C
       CALL JEVEUO ( STOLCI//'.SCDE', 'L', JSCDE )
       NUEQ   = ZI(JSCDE-1+1)
       NTBLOC = ZI(JSCDE-1+2)
-      NBLOC  = ZI(JSCDE-1+3)
+C      NBLOC  = ZI(JSCDE-1+3)
       WRITE(6,*) 'NUEQ = ',NUEQ,' NBMODE = ',NBMODE
 C
       RESU = ' '
       RESU(1:8) = NOMRES
-      CALL JECREC ( RESU//'.UALF', 'G V C', 'NU', 'DISPERSE',
-     &                                            'CONSTANT', NBLOC )
-      CALL JEECRA ( RESU//'.UALF', 'LONMAX', NTBLOC, K8B )
+      CALL JECREC ( RESU//'.VALM', 'G V C', 'NU', 'DISPERSE',
+     &                                            'CONSTANT', 2 )
+      CALL JEECRA ( RESU//'.VALM', 'LONMAX', NTBLOC, K8B )
 C
       CALL WKVECT ( RESU//'.LIME', 'G V K8', 1, IALIME )
       ZK8(IALIME) = '        '
@@ -145,7 +145,7 @@ C
       CALL WKVECT ( RESU//'.REFA', 'G V K24', 10, JREFA )
       ZK24(JREFA-1+1)   = BASEMO
       ZK24(JREFA-1+2) = NUGENE
-      ZK24(JREFA-1+9) = 'MS'
+      ZK24(JREFA-1+9) = 'MR'
       ZK24(JREFA-1+10) = 'GENE'
 C
       CALL WKVECT ( RESU//'.DESC', 'G V I', 3, IADESC )
@@ -162,53 +162,53 @@ C
 C
 C --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 C
-      CALL JEVEUO ( STOLCI//'.SCDI', 'L', ISCDI )
-      CALL JEVEUO ( STOLCI//'.SCBL', 'L', ISCBL )
-      CALL JEVEUO ( STOLCI//'.SCHC', 'L', ISCHC )
 C
-      DO 20 IBLO = 1 , NBLOC
 C
-         CALL JECROC ( JEXNUM(RESU//'.UALF',IBLO) )
-         CALL JEVEUO ( JEXNUM(RESU//'.UALF',IBLO), 'E', LDBLO )
+      CALL JECROC ( JEXNUM(RESU//'.VALM',1) )
+      CALL JEVEUO ( JEXNUM(RESU//'.VALM',1), 'E', LDBLO )
+      CALL JECROC ( JEXNUM(RESU//'.VALM',2) )
+      CALL JEVEUO ( JEXNUM(RESU//'.VALM',2), 'E', LDBLO2 )
 C
 C ------ PROJECTION DE LA MATRICE ASSEMBLEE
 C
 C        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 C
-         N1BLOC = ZI(ISCBL+IBLO-1)+1
-         N2BLOC = ZI(ISCBL+IBLO)
 C
-         DO 30 I = N1BLOC , N2BLOC
+      DO 30 I = 1 , NUEQ
 C
-            II = I - NBMODD
+         II = I - NBMODD
 C
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 C
-            DO 40 J = (I-ZI(ISCHC+I-1)+1) , I
-              JJ = J - NBMODD
+         DO 40 J = 1 , I
+           JJ = J - NBMODD
 C
 C ----------- PRODUIT SCALAIRE VECTASS * MODE
 C
-              IF (I.LE.NBMODD.OR.J.LE.NBMODD) THEN
-                ZC(LDBLO+ZI(ISCDI+I-1)+J-I-1) = DCMPLX(0.D0,0.D0)
-              ELSE
+           IF (I.LE.NBMODD.OR.J.LE.NBMODD) THEN
+             ZC(LDBLO+I*(I-1)/2+J-1) = DCMPLX(0.D0,0.D0)
+             ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(0.D0,0.D0)
+           ELSE
 C
 C ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 C
-                PARTR = 0.5D0*(ZR(JRIG+2*(II-1)*NBMODS+2*JJ-2)
-     &                       + ZR(JRIG+2*(JJ-1)*NBMODS+2*II-2))
-                PARTI = 0.5D0*(ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
-     &                       + ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1))
-                ZC(LDBLO+ZI(ISCDI+I-1)+J-I-1) = DCMPLX(PARTR,PARTI)
-
-              ENDIF
+C                PARTR = 0.5D0*(ZR(JRIG+2*(II-1)*NBMODS+2*JJ-2)
+C     &                       + ZR(JRIG+2*(JJ-1)*NBMODS+2*II-2))
+C                PARTI = 0.5D0*(ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
+C     &                       + ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1))
+             PARTR = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-2)
+             PARTI = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
+             ZC(LDBLO+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
+             PARTR = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-2)
+             PARTI = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1) 
+             ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
+           ENDIF
 C
  40      CONTINUE
- 30      CONTINUE
-         CALL JELIBE ( JEXNUM(RESU//'.UALF', IBLO) )
- 20   CONTINUE
+ 30   CONTINUE
+      CALL JELIBE ( JEXNUM(RESU//'.VALM', 1) )
+      CALL JELIBE ( JEXNUM(RESU//'.VALM', 2) )
       CALL JEDETR(TABRIG)
-      CALL UALFVA(RESU,'G')
 C     CALL VERISD('MATRICE',RESU)
 C
       CALL JEDEMA()

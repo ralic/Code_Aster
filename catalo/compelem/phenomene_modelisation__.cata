@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF COMPELEM  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -25,7 +25,7 @@ PHENOMENE_MODELISATION__
 % --------------------------
 %
 %  ALIAS8 : chaine formée par concaténation de 3 codes  :
-%           ALIAS(1:2) : code du phenomène
+%           ALIAS(1:2) : code du phénomène
 %           ALIAS(3:5) : code de la modélisation
 %           ALIAS(6:8) : code du type_maille
 %
@@ -137,7 +137,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ TETRA10   ELEMENT__ MECA_X_TETRA10
               MAILLE__ QUAD8     ELEMENT__ MECA_X_FACE8
               MAILLE__ TRIA6     ELEMENT__ MECA_X_FACE6
-
 
        MODELISATION__ 'SHB8'             DIM__ 3 3   CODE__ 'SHB'
               MAILLE__ HEXA8     ELEMENT__ MECA_SHB8
@@ -257,7 +256,7 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'D_PLAN_X'          DIM__ 2 2   CODE__ 'DPX'
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_X
-       
+
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
@@ -469,6 +468,11 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6
               MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+
+       MODELISATION__ 'D_PLAN_HM_P'      DIM__ 2 2   CODE__ 'DHB'
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_P
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_P
+              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_P
 
        MODELISATION__ 'D_PLAN_THH'       DIM__ 2 2   CODE__ 'DH3'
               MAILLE__ QUAD8     ELEMENT__ THH_DPQ8

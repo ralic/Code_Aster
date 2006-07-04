@@ -6,7 +6,7 @@
      &                  NBNO,POSNO,NBDDL,DDL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/07/2006   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,6 +154,9 @@ C
      &             COORDP,NORM,TANG,NBDDLE)
 
       POSNO(1) = POSNOE
+      DO 70 K = 1,9
+        COEFNO(K) = 0.D0        
+ 70   CONTINUE        
 C
 C --- APPARIEMENT
 C
