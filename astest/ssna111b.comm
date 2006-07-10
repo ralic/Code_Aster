@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=(_F(GROUP_MA=('GM11')),
                                _F(GROUP_MA=('GM12'))),
-                 MODELE=MO);
+                 );
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.E5,
                            NU=0.3,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -113,19 +113,19 @@ DEBUT(CODE=_F(  NOM = 'DEMO002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_L
 # Lecture du maillage
 MA=LIRE_MAILLAGE( );
 
+# Re-orientation du maillage de peau
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=(_F(GROUP_MA='L3',),
+                               _F(GROUP_MA='L4',),),
+                 );
+
 # Definition du modele: probleme mecanique en contraintes planes
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',
                        ),);
-
-# Re-orientation du maillage de peau
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU_2D=(_F(GROUP_MA='L3',),
-                               _F(GROUP_MA='L4',),),
-                 MODELE=MO,);
 
 # Definition du materiau
 MAT=DEFI_MATERIAU(ELAS=_F(E=8.E3,

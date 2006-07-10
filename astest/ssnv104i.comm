@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 #  CAS_TEST  : SSNV104I
 #  TITRE : CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,12 +91,12 @@ MO=AFFE_MODELE(MAILLAGE=SSNV104I,
 SSNV104I=MODI_MAILLAGE(reuse =SSNV104I,
                        MAILLAGE=SSNV104I,
                        ORIE_PEAU_3D=_F(GROUP_MA='SESC',),
-                       MODELE=MO,);
+                      );
 
 SSNV104I=MODI_MAILLAGE(reuse =SSNV104I,
                        MAILLAGE=SSNV104I,
                        ORIE_PEAU_3D=_F(GROUP_MA='SMAI',),
-                       MODELE=MO,);
+                      );
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX

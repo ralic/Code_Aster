@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ MO=AFFE_MODELE(           MAILLAGE=MAIL,
                                         MODELISATION = 'COQUE_C_PLAN')
                       )
 
-MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,    MODELE=MO,
+MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,
                            ORIE_NORM_COQUE=_F(  VECT_NORM = ( -1., 0., ),
                                              GROUP_NO = 'PA',
                                              GROUP_MA = 'CYLINDRE'),

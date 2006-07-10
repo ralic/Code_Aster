@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,6 @@ MODE=AFFE_MODELE(
            )
 
 MAILL=MODI_MAILLAGE( reuse=MAILL,   MAILLAGE=MAILL,
-                              MODELE=MODE,
             ORIE_PEAU_3D=_F(  GROUP_MA = ('SSOL', 'FACEINF',), )
                         )
 

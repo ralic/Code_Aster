@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/02/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,6 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_3D=(_F(GROUP_MA='CNT_POU1',),
                                  _F(GROUP_MA='CNT_POU2',),),
-                   MODELE=MODELE,
                    INFO=2,);
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,

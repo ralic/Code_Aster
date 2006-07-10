@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE ETUDE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,7 +39,6 @@ MODELE   = AFFE_MODELE( MAILLAGE =     MAILLAGE,
         
 MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
-                          MODELE       = MODELE,
                           ORIE_PEAU_3D = _F( GROUP_MA = ('HAUT',
                                     'DEVANT',
                                     'GAUCHE',

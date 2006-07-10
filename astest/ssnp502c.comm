@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,6 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC'),),
-                 MODELE=MO,
                  INFO=2,);
 
 

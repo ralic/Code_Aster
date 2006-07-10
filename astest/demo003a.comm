@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -33,12 +33,6 @@ MA=DEFI_GROUP(reuse=MA,
                                 GROUP_MA='GM12',),
                              ),);   
 
-
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
-
 # On reoriente les group_ma GM11 et GM12 qui 
 # interviennent dans le contact car leurs normales
 # doivent absolument etre sortantes
@@ -46,7 +40,14 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=(_F(GROUP_MA=('GM11')),
                                _F(GROUP_MA=('GM12'))),
-                 MODELE=MO);
+                 );
+
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E5,

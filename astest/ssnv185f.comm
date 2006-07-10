@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
-                       MODELE=MODELEIN,);                                     
+                       );                                     
 
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');

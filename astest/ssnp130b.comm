@@ -1,5 +1,5 @@
 # RESPONSABLE ADBHHVV V.CANO
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA='GMP34',),
-                 MODELE=MO,);
+                 );
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',MATER=ACIER,),);

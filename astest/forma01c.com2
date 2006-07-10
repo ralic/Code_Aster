@@ -22,7 +22,7 @@ MAIL1=MODI_MAILLAGE(reuse =MAIL1,
                     ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
                                        VECT_NORM=(-1.0,0.0,0.0,),
                                       GROUP_NO='A1',),
-                   MODELE=MO,);
+                   );
                     
 
 MAIL2L = CREA_MAILLAGE(MAILLAGE = MAIL1,
@@ -83,7 +83,7 @@ MODI_MAILLAGE(reuse =MAIL2,
                    MAILLAGE=MAIL2,
                    ORIE_PEAU_3D=(_F(GROUP_MA='TUYAU',),
                    ),
-                   MODELE=MODMECA2,);
+                   );
 
 
 

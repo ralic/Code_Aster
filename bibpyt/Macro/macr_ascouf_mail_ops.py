@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2753,7 +2753,6 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
       motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXTUBE','FACE1','FACE2'),)  
   nomres=MODI_MAILLAGE(reuse   =nomres,
                        MAILLAGE=nomres,
-                       MODELE  =__MODELE,
                        **motscles)
 
 # CREA_MAILLAGE

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE EN C.P. (PENTA15 HEXA20)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,6 @@ MO=AFFE_MODELE(            MAILLAGE=M,
                                        )
 
 M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                            MODELE=MO,
                         ORIE_PEAU_3D=_F(  GROUP_MA = ( 'FACEEF', 'FACEAE', ),  )
                       )
 

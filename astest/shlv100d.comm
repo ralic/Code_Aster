@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TETRA10)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,6 @@ MA=DEFI_MATERIAU(          ELAS=_F(  E = 26.,
                                        ALPHA = 0.,                      ))
 
 M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                            MODELE=MO,
                         ORIE_PEAU_3D=_F(  GROUP_MA = ( 'FACEEF', 'FACEAE', ),  )
                       )
 

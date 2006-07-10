@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,7 +100,6 @@ for k in range(1,10):
    if k==1:
       M[k]=MODI_MAILLAGE( reuse=M[k],
                           MAILLAGE=M[k],
-                          MODELE=MODE[k],
                           ORIE_PEAU_2D=_F(GROUP_MA=('BORD_GAU','BORD_SUP',),)
                          )
 #

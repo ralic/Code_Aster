@@ -1,5 +1,5 @@
 
-# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,7 +44,7 @@ MODI_MAILLAGE(reuse =MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='VIROLE',
                                       VECT_NORM=(-1.0,0.0,0.0),
                                       GROUP_NO='A1',),
-                   MODELE=MODMECA,);
+                   );
 
 E  = 210000000000.0
 Nu = 0.3

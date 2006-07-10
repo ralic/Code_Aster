@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE SECHAGE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,6 @@ MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
                                    PHENOMENE = 'THERMIQUE',    )
                         )
 MAIL=MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,
-                        MODELE=MOTH,
                         ORIE_PEAU_3D=_F( GROUP_MA = ('GM70','GM72','GM73','GM71','GM69')))
 
 CHARTH05=AFFE_CHAR_THER(       MODELE=MOTH,TEMP_IMPO=(

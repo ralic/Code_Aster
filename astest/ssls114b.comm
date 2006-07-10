@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE - COQUE_3D QUAD9
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ MO=AFFE_MODELE(            MAILLAGE=MAIL,
                                          MODELISATION = 'COQUE_3D')
                        )
 
-MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,    MODELE=MO,
+MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,
                            ORIE_NORM_COQUE=_F(  VECT_NORM = (1., 0., 0.,),
                                              GROUP_NO = 'PB',
                                              GROUP_MA = 'CYLINDRE'),

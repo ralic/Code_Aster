@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN ELASTICITE LINEAIRE ISOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,6 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 MA=MODI_MAILLAGE( reuse=MA,
              MAILLAGE=MA,
-             MODELE=MO,
              ORIE_PEAU_2D=_F(  GROUP_MA = ('AB')),
              INFO=1);
 

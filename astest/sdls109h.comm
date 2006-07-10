@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS MODELISATION SHB8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ MAIL1=MODI_MAILLAGE(reuse =MAIL1,
                     ORIE_NORM_COQUE=_F(GROUP_MA='SURF_S',
                                        VECT_NORM=(0.0,0.0,1.0,),
                                        GROUP_NO='P3_0',),
-                    MODELE=MODKT,);
+                    );
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MAIL1,
                    COQU_VOLU=_F(NOM='VOLUH',

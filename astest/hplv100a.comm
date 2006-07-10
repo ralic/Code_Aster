@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PARALLELEPIPEDE. MODULE D'YOUNG FONCTION DE LA TEMPERATURE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,6 @@ MO=AFFE_MODELE(
           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',MODELISATION = '3D',) )
 
 MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                            MODELE=MO,
                         ORIE_PEAU_3D=_F(  GROUP_MA = ( 'YZO', 'YZA', ),  )
                       )
 

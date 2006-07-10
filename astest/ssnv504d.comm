@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2005   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,12 +68,12 @@ MO=AFFE_MODELE(MAILLAGE=MAILL1,
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA=('SMAI1','SESC1'),),
-                     MODELE=MO,);
+                     );
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA=('SMAI2','SESC2'),),
-                     MODELE=MO,);
+                     );
                      
 #____________________________________________________________________
 #

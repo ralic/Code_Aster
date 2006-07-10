@@ -1,4 +1,4 @@
-      SUBROUTINE ORILGM ( MODELZ )
+      SUBROUTINE ORILGM ( NOMA )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT   NONE
-      CHARACTER*(*)       MODELZ
+      CHARACTER*8    NOMA      
 C ======================================================================
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -56,7 +56,7 @@ C -----  VARIABLES LOCALES
       REAL*8        VECT(3), R8B, PREC, ARMIN
       COMPLEX*16    CBID
       LOGICAL       REORIE, ORIVEC
-      CHARACTER*8   K8B, NOMA, MODELE, NNOEUD, GMAT
+      CHARACTER*8   K8B, NNOEUD, GMAT
       CHARACTER*16  MOFA2D, MOFA3D, MOFB3D
       CHARACTER*19  NOMT19
       CHARACTER*24  MAMOD, NOMNOE, GRMAMA, PARA
@@ -68,7 +68,6 @@ C
 C
 C --- INITIALISATIONS :
 C     ---------------
-      MODELE = MODELZ
 C
       NORIT  = 0
       REORIE = .TRUE.
@@ -83,9 +82,6 @@ C
 C
 C --- RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
 C     ------------------------------------------
-      MAMOD = MODELE(1:8)//'.MODELE    .NOMA'
-      CALL JEVEUO(MAMOD,'L',JNOMA)
-      NOMA = ZK8(JNOMA)
       NOMNOE = NOMA//'.NOMNOE'
       GRMAMA = NOMA//'.GROUPEMA'
 C
@@ -114,8 +110,12 @@ C     -------------------------------------------
 C
 C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
 C     -------------------------------------------------
-      CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',NDIM,K8B,IER)
-      IF ( NDIM .GT. 1000 )  NDIM = 3
+      CALL DISMOI('F','Z_CST',NOMA,'MAILLAGE',NDIM,K8B,IER)
+      IF ( K8B(1:3) .EQ. 'OUI' ) THEN
+         NDIM = 2
+      ELSE
+         NDIM = 3
+      ENDIF
 C
 C --- COMPATIBILITE DU PROBLEME AVEC LES MOTS CLES FACTEUR :
 C     ----------------------------------------------------
@@ -188,9 +188,7 @@ C
          CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,1,0, VECT, N1 )
          IF (N1.NE.0)THEN
             ORIVEC = .TRUE.
-            CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,1,NDIM, VECT, N1 )
-            IF(N1.NE.NDIM ) CALL UTMESS('F',MOFB3D,
-     .                 'MAUVAIS NOMBRE DE VALEURS POUR VECT_NORM')
+            CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,1,-N1, VECT, N1 )
             CALL GETVID ( MOFB3D, 'NOEUD', IOCC,1,0, K8B, N2 )
             IF (N2.NE.0)THEN
                CALL GETVID ( MOFB3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )

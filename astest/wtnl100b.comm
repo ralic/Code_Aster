@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,6 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 MAIL= MODI_MAILLAGE( reuse        = MAIL,
                           MAILLAGE     = MAIL,
-                          MODELE       = MODELE,
                           ORIE_PEAU_3D = _F( GROUP_MA ='FACESUP'));
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

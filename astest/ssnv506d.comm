@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,6 @@ MO=AFFE_MODELE(MAILLAGE=SSNV506D,
 SSNV506D=MODI_MAILLAGE(reuse =SSNV506D,
                        MAILLAGE=SSNV506D,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SMAI','SESC'),),
-                       MODELE=MO,
                        INFO=1,);
 
 #----------------------------------------------------------------------

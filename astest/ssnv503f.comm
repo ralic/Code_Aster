@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,7 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_3D=_F(GROUP_MA=('SMAI','SESC','FACESUP','FACELAT'),),
-                   MODELE=MO,);
+                   );
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES ELEMENTAIRES

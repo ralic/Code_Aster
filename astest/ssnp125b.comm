@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,7 +59,6 @@ MATER2 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                      
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,
                         MAILLAGE=MAILLAGE,
-                        MODELE=MODELE,
                         ORIE_PEAU_2D=_F( GROUP_MA = ('BAS',
                                                      'EXTREM',
                                                      'HAUT',

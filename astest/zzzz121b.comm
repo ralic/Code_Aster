@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,7 @@ MODEZERO=AFFE_MODELE(MAILLAGE=MZERO,
 MZERO=MODI_MAILLAGE(reuse =MZERO,
                     MAILLAGE=MZERO,
                     ORIE_PEAU_3D=_F(GROUP_MA='COUL_11',),
-                    MODELE=MODEZERO,);
+                   );
 #
 # 3.2. MISE EN PLACE DES MATERIAUX
 

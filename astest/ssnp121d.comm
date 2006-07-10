@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,22 +42,22 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                MAILLAGE=MA,
            ORIE_PEAU_3D=_F(GROUP_MA='SURESC',),
-                 MODELE=MO,);
+                );
 
 MA=MODI_MAILLAGE(reuse =MA,
                MAILLAGE=MA,
            ORIE_PEAU_3D=_F(GROUP_MA='SURMAI',),
-                 MODELE=MO,);
+                );
 
 MA=MODI_MAILLAGE(reuse =MA,
                MAILLAGE=MA,
            ORIE_PEAU_3D=_F(GROUP_MA='SURCHA',),
-                 MODELE=MO,);
+               );
 
 MA=MODI_MAILLAGE(reuse =MA,
                MAILLAGE=MA,
            ORIE_PEAU_3D=_F(GROUP_MA='ENCAST',),
-                 MODELE=MO,);
+           );
 #--------------------------------------------------
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05,NU = 0.,));

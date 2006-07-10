@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  PLAQUE CARREE TOURNEE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,12 +43,12 @@ MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                MAILLAGE=MAIL,);
                                    
 
-MA=MODI_MAILLAGE( reuse=MA,  
-                  MAILLAGE=MA,    MODELE=MO,
-                  ORIE_NORM_COQUE=_F(  VECT_NORM = (0., 0., 1.,),
-                                       GROUP_NO = 'O',
-                                       GROUP_MA = 'MAIL1'),
-                                       INFO=2
+MAIL=MODI_MAILLAGE( reuse=MAIL,  
+                    MAILLAGE=MAIL,
+                    ORIE_NORM_COQUE=_F(  VECT_NORM = (0., 0., 1.,),
+                                         GROUP_NO = 'O',
+                                         GROUP_MA = 'MAIL1'),
+                                         INFO=2
                                        )
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=_F(ANGL_REP=(20.,-30.),

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,6 @@ MODI_MAILLAGE( reuse =MA,
                     ORIE_NORM_COQUE=_F( GROUP_MA='TOUT_ELT',
                                         VECT_NORM=(0.0,1.0,0.0),
                                         NOEUD='N1',),
-                    MODELE=MO,
                    )
 #
 #---------------------------------------------------------------------

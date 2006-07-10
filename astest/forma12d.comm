@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TP CONTACT/FROTTEMENT DE LA FORMATION ASTERDYN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,11 @@ MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
+MAILL=MODI_MAILLAGE(reuse =MAILL,
+                    MAILLAGE=MAILL,
+                    ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FSUP','FLAT'),),
+                    )
+
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
                  VERIF='MAILLE',
                  AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI'),
@@ -42,10 +47,6 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL,
                           MODELISATION='2D_DIS_T',),
                         ))
 
-MAILL=MODI_MAILLAGE(reuse =MAILL,
-                    MAILLAGE=MAILL,
-                    ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FSUP','FLAT'),),
-                    MODELE=MODE,)
 
 
 #---------------------------------------------------------------------

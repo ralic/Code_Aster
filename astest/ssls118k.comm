@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,6 @@ MA=MODI_MAILLAGE(reuse =MA,
                  ORIE_NORM_COQUE=_F(GROUP_MA='MAIL1',
                                     VECT_NORM=(0.0,0.0,1.0,),
                                     GROUP_NO='O',),
-                 MODELE=MO,
                  INFO=2,);
 
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,

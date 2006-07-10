@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_3D=_F(GROUP_MA=('GR1','GR2','GR3','GR4','GR5','GR6','GR7','GR8',),),
-                   MODELE=MODELE,);
+                   );
 #
 # DEFINITION DU MATERIAU
 

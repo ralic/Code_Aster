@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE sellali N.SELLALI
 # TITRE ENONCE DU TP3D DE LA FORMATION POST TRAITEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,6 +33,12 @@ DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='SURFINT',),
                                _F(GROUP_MA='SURFEXT',),),);
 
+MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
+                                 _F(GROUP_MA='EFOND',),),
+                   );
+
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
@@ -47,11 +53,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
 
-MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
-                                 _F(GROUP_MA='EFOND',),),
-                   MODELE=MODMECA,);
 
 REXT=0.2;
 EPTUB=0.02;

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE REFERENCE POUR LA MACRO DE CALCUL DE BRIDES CABRI
@@ -204,7 +204,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=(_F(GROUP_MA=('M_INT','M_TUB',),),
                                _F(GROUP_MA=('M_L_AA','M_JOI','M_L_SA',),),),
-                 MODELE=MO_ME,);
+                 );
 
 # Affectation des materiaux
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,

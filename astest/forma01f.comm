@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE PABHHHH N.TARDIEU
 #
 #
@@ -52,17 +52,6 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   GROUP_MA='GM29',),
                                _F(NOM='EFOND',
                                   GROUP_MA='GM28',),),);
-#
-# DEFINITION DES ELEMENTS FINIS UTILISES
-#
-#
-#
-
-
-MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA=('TUYAU','EFOND',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
 # ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
 #
 #
@@ -78,7 +67,20 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
                                       VECT_NORM=(1.0,0.0,0.0,),
                                       GROUP_NO='A1',),
-                   MODELE=MODMECA,);
+                   );
+
+#
+# DEFINITION DES ELEMENTS FINIS UTILISES
+#
+#
+#
+
+
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_MA=('TUYAU','EFOND',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),);
+
 # DEFINITION DU MATERIAU UTILISE
 #
 #

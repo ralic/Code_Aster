@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+#@ MODIF macr_cabri_calc_ops Macro  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,7 +107,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                  MAILLAGE=mail,
                  ORIE_PEAU_3D=(_F(GROUP_MA=('M_INT','M_TUB',),),
                                _F(GROUP_MA=('M_L_AA','M_JOI','M_L_SA',),),),
-                 MODELE=modmeca,);
+                              );
 
 
 

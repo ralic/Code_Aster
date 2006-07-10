@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE EN C.P. (TEST DES FORCES NODALES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,6 @@ MO=AFFE_MODELE(            MAILLAGE=M,
                                        )
 
 M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                            MODELE=MO,
                         ORIE_PEAU_3D=_F(  GROUP_MA = 'FACEEF',  )
                       )
 

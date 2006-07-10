@@ -1,4 +1,4 @@
-# MODIF  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE PABHHHH N.TARDIEU
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,6 +70,14 @@ DEFI_GROUP(reuse =MAIL,
                                _F(INTERSEC=('EFOND','PLANY','REXT',),
                                   NOM='PB',),),);
 
+
+# ORIENTATION DES NORMALES AUX COQUES
+# RENTRANTES DANS LE TUYAU
+MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
+                                 _F(GROUP_MA='EFOND',),),
+                   );
 
 # DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL THERMIQUE
 #
@@ -186,13 +194,6 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    VERSION='7.3.10',),),);
 
 
-# ORIENTATION DES NORMALES AUX COQUES
-# RENTRANTES DANS LE TUYAU
-MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
-                                 _F(GROUP_MA='EFOND',),),
-                   MODELE=MODMECA,);
 FYTOT = 100000.0;
 
 EPTUB = 0.02;

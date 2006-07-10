@@ -1,4 +1,4 @@
-# MODIF  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,6 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
       AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
 
 MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
-                              MODELE=MO,
                   ORIE_PEAU_2D=_F(GROUP_MA = ('LEV_SUP', 
                                               'LEV_INF',) )
                      )

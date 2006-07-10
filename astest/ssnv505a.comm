@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,14 +57,14 @@ MAILL2=MODI_MAILLAGE(reuse =MAILL2,
                                         VECT_NORM=(0.0,1.0,0.0),
                                         GROUP_NO='ORI',
                                       ),
-                     MODELE=MODE,);
+                     );
 
 MAILL2=MODI_MAILLAGE(reuse =MAILL2,
                      MAILLAGE=MAILL2,
                      ORIE_NORM_COQUE=_F(GROUP_MA='SESC',
                                         VECT_NORM=(0.0,-1.0,0.0),
                                         GROUP_NO='C',),
-                     MODELE=MODE,);
+                     );
 
 MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,
                               NU=0.3333,),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,6 @@ MO=AFFE_MODELE(MAILLAGE=SSNV506C,
 SSNV506C=MODI_MAILLAGE(reuse =SSNV506C,
                        MAILLAGE=SSNV506C,
                        ORIE_PEAU_3D=_F(GROUP_MA='SESC',),
-                       MODELE=MO,
                        INFO=1,);
 
 SSNV506C=MODI_MAILLAGE(reuse =SSNV506C,
@@ -59,7 +58,6 @@ SSNV506C=MODI_MAILLAGE(reuse =SSNV506C,
                        ORIE_NORM_COQUE=_F(GROUP_MA='SMAI',
                                           VECT_NORM=(0.0,-1.0,0.0),
                                           GROUP_NO='E',),
-                       MODELE=MO,
                        INFO=1,);
 
 #----------------------------------------------------------------------

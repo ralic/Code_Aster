@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,6 @@ MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
 
 MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
-                          MODELE       = MODELE,
                           ORIE_PEAU_3D = _F( GROUP_MA = ('HAUT',
                                     'DEVANT',
                                     'GAUCHE',

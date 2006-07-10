@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 #
@@ -34,6 +34,20 @@ DEBUT(CODE=_F(NOM='FORMA01B',
 PRE_GIBI();
 
 MAIL=LIRE_MAILLAGE();
+
+# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
+#
+#
+#
+
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
+                                      VECT_NORM=(1.0,0.0,0.0,),
+                                      GROUP_NO='A1',),
+                   );
+
 #
 # DEFINITION DES ELEMENTS FINIS UTILISES
 #
@@ -46,18 +60,6 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA=('TUYAU','EFOND',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DKT',),);
-# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
-#
-#
-#
-
-
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
-                                      VECT_NORM=(1.0,0.0,0.0,),
-                                      GROUP_NO='A1',),
-                   MODELE=MODMECA,);
 # DEFINITION DU MATERIAU UTILISE
 #
 #

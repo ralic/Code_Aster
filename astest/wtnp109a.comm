@@ -1,4 +1,4 @@
-# MODIF  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,6 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                  MAILLAGE=MAIL,
                  ORIE_PEAU_2D=_F(GROUP_MA=('GM11','GM12','GM13','GM14','GM15',
                                            'GM16','GM17','GM18'),),
-                 MODELE=MODELE,
                  );
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,

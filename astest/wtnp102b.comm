@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,7 +62,7 @@ MODI_MAILLAGE(reuse =MAIL,
                                _F(GROUP_MA='HAUT',),
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='DROIT',),),
-                   MODELE=MODELE,);
+              );
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
 UNDEMI=DEFI_CONSTANTE(VALE=0.5,);

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,7 +111,7 @@ for num_calc in range(nbre_calcul):
              ORIE_PEAU_2D=_F(GROUP_MA=('GMP1','GMP2','GMP3','GMP4','GMP5',
                                        'GMP6','GMP7','GMP8','GMP9','GMP10',
                                        'GMP11','GMP12','GMP13','GMP14','GMP15','GMP16',),),
-             MODELE=mode[num_calc]);
+             );
 #
 # 5.3. Mise en place des materiaux
 #

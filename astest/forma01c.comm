@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,6 +51,19 @@ DEFI_GROUP(reuse =MAIL,
                                   PRECISION=0.001,),
                                _F(INTERSEC=('EFOND','PLANY','REXT',),
                                   NOM='PB',),),);
+
+# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
+#
+#
+#
+
+
+MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
+                                 _F(GROUP_MA='EFOND',),),
+                   );
+
 # DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL THERMIQUE
 #
 #
@@ -187,17 +200,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    VERSION='7.01.13',),),);
 #
 # CAS DE CHARGE MECANIQUE  1 FORCE   2 PRESSION
-# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
-#
-#
-#
 
-
-MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
-                                 _F(GROUP_MA='EFOND',),),
-                   MODELE=MODMECA,);
 #FYTOT = 100000.0;
 #EPTUB = 0.02;
 #REXT = 0.2;

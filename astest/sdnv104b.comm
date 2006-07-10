@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL,
 MAILL=MODI_MAILLAGE(reuse =MAILL,
                     MAILLAGE=MAILL,
                     ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FSUP','FLAT'),),
-                    MODELE=MODE,)
+                    )
 
 
 #---------------------------------------------------------------------

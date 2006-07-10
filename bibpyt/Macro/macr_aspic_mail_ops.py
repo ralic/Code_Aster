@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -756,7 +756,6 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
      motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXCORP1','EXCORP2','EXTUBU',),)
   __MAPROV=MODI_MAILLAGE(reuse   =__MAPROV,
                          MAILLAGE=__MAPROV,
-                         MODELE  =__MODELE,
                          **motscles
                          )
 #

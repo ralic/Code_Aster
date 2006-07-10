@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/02/2005   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,12 +79,12 @@ MO=AFFE_MODELE(MAILLAGE=MAILL1,
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA=('SMAI1','SESC1'),),
-                     MODELE=MO,);
+                     );
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA=('SMAI2','SESC2'),),
-                     MODELE=MO,);
+                     );
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX

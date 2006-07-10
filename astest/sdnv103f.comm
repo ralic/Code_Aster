@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2005   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,6 @@ MODE=AFFE_MODELE(
 
 MA=MODI_MAILLAGE( reuse=MA,
              MAILLAGE=MA,
-             MODELE=MODE,
              ORIE_PEAU_2D=_F(  GROUP_MA = ('SZZ', 'RIGID')),
              INFO=2);
 

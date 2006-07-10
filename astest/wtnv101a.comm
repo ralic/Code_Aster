@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,6 @@ MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                           )
 
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
-                                MODELE=MODELE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
                      )
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,

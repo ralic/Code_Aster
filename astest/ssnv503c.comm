@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # DATE     : 03/08/2001
 # AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
@@ -50,7 +50,7 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL,
 MAILL=MODI_MAILLAGE(reuse =MAILL,
                     MAILLAGE=MAILL,
                     ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FACESUP','FACELAT'),),
-                    MODELE=MODE,);
+                    );
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES ELEMENTAIRES

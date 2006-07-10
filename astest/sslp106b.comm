@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MASSIF RECTANGULAIRE EN FLEXION PURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA=('LBC','LDA',),),
-                 MODELE=MO,);
+                 );
 
 L = 100.;
 

@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/07/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,8 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER IBID,JNOMA,IER,NDIM,NBMA2,JCOMPT
       INTEGER IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
       INTEGER NCMP,NBTYP,IE,NBMA,NBCMP,INOM,JLINU3
-      INTEGER JLIST2,JLIST3,JLIST1,NBMA3
-      INTEGER DDLIMP(NMOCL)
+      INTEGER JLIST2,JLIST3,JLIST1,NBMA3,NBNO1
+      INTEGER DDLIMP(NMOCL),NBNO2,JLINO2,JLINO1,JLINO,JLINU
       REAL*8 VALIMR(NMOCL),COEF(3),DIRECT(3)
       COMPLEX*16 VALIMC(NMOCL),COEFC(3)
       CHARACTER*1 K1BID
@@ -70,7 +70,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3)
       CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
       CHARACTER*16 MOCLM2(2)
-      CHARACTER*24 MESMAI,MESMA2,MESMA1
+      CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
 
@@ -82,7 +82,6 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       LISREL = '&&CAFACI.RLLISTE'
 
       MESMAI = '&&CAFACI.MES_MAILLES'
-      MESMA1 = '&&CAFACI.MAILLES_1'
       MESMA2 = '&&CAFACI.MAILLES_2'
       MOTFAC = 'FACE_IMPO     '
       MOCLM(1) = 'MAILLE'
@@ -189,9 +188,9 @@ C
      +                                    MOCLM, TYPMCL, MESMAI, NBMA )
         CALL JEVEUO ( MESMAI, 'L', JLISTI )
 
-C ----- RECUPERATION DES MAILLES (A NE PAS CONSIDERER)
+C ----- RECUPERATION DES MAILLES (A EXCLURE)
 C
-        CALL RELIEM ( ' ', NOMA, 'NO_MAILLE', MOTFAC, I, 2,
+        CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, I, 2,
      +                                   MOCLM2, TYPMCL, MESMA2, NBMA2 )
 
 C ---------------------------------------------------
@@ -255,45 +254,64 @@ C ---------------------------------------------------
           END IF
         END IF
         NCMP = NCMP + ICMP
-C    ------------------------------------------------------
-C    FILTRAGE SUR LES COMPOSANTES NORMALES OU TANGENTIELLES
-C    ------------------------------------------------------
+C    -------------------------------------
+C    RECUPERATION DES NOEUDS (A CONSERVER)
+C    -------------------------------------
         IF (INOR.NE.0 .AND. ICMP.EQ.0) THEN
 
-          CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),NBTYP,LITYP,NBNO)
-
           IF(NBMA2.NE.0)THEN
-            CALL RELIEM ( ' ', NOMA, 'NO_MAILLE', MOTFAC, I, 2,
-     +                                    MOCLM, TYPMCL, MESMA1, NBMA )
-            CALL JEVEUO ( MESMA1, 'L', JLIST1 )
+
+C           LISTE DES NOMS DES NOEUDS
+            LNOEU1='&&CAFACI.NOEU_MAIL.TOTAL'
+            CALL JEDETR(LNOEU1)
+            CALL MAINOE(NOMA,NBMA,ZI(JLISTI),'NO',NBNO1,LNOEU1)
+            CALL JEVEUO(LNOEU1,'L',JLINO1)
+
+C           LISTE DES NUM DES MAILLES EXCLUES
             CALL JEVEUO ( MESMA2, 'L', JLIST2 )
-            CALL WKVECT ( '&&CAFACI_MAILLE_3','V V K8',NBMA,JLIST3)
-            NBMA3=NBMA
-            CALL KNDIFF ( 8, ZK8(JLIST1),NBMA, ZK8(JLIST2),NBMA2,
-     +                    ZK8(JLIST3),NBMA3 )
-            NBMA=NBMA3
-            CALL WKVECT ( '&&CAFACI_MAILNU_3','V V I',NBMA,JLINU3)
-            DO 71 J=1,NBMA
-               CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JLIST3+J-1)),
-     +              ZI(JLINU3+J-1))
+C
+C           LISTE DES NOMS DES NOEUDS DES MAILLES EXCLUES
+            LNOEU2='&&CAFACI.NOEU_MAIL.EXCL'
+            CALL JEDETR(LNOEU2)
+            CALL MAINOE(NOMA,NBMA2,ZI(JLIST2),'NO',NBNO2,LNOEU2)
+            CALL JEVEUO(LNOEU2,'L',JLINO2)
+
+C           LISTE DES NOMS DES NOEUDS A CONSERVER
+            CALL JEDETR('&&CAFACI.NOEU_NOM')
+            CALL WKVECT('&&CAFACI.NOEU_NOM','V V K8',NBNO1,JLINO)
+            CALL KNDIFF(8,ZK8(JLINO1),NBNO1,ZK8(JLINO2),NBNO2,
+     +                    ZK8(JLINO),NBNO)
+
+C           LISTE DES NUMEROS DES NOEUDS A CONSERVER
+            CALL JEDETR('&&CAFACI.NOEU_NUM')
+            CALL WKVECT ( '&&CAFACI.NOEU_NUM','V V I',NBNO,JLINU)
+            DO 71 J=1,NBNO
+               CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(JLINO+J-1)),
+     +              ZI(JLINU+J-1))
  71         CONTINUE
-            CALL NBNLMA(NOMA,NBMA,ZI(JLINU3),0,K8B,NBNO)
+
           ELSE
-            CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),NBTYP,LITYP,NBNO)
+
+C           LISTE DES NUMEROS DES NOEUDS
+            LNOEU1='&&CAFACI.NOEU_MAIL.TOTAL'
+            CALL JEDETR(LNOEU1)
+            CALL MAINOE(NOMA,NBMA,ZI(JLISTI),'NU',NBNO,LNOEU1)
+            CALL JEVEUO(LNOEU1,'L',JLINU)
+
           ENDIF
 
-          CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
 C   -------------------------------------------
 C   CALCUL DES NORMALES ET TANGENTES AUX NOEUDS
 C   -------------------------------------------
           IF (DDLIMP(NDDLA+1).NE.0) THEN
+
             CALL CANORT(NOMA,NBMA,ZI(JLISTI),K8B,NDIM,NBNO,
-     &                                       ZI(JNUNOE),1)
+     &                                       ZI(JLINU),1)
             CALL JEVEUO('&&CANORT.NORMALE','L',JNORM)
           END IF
           IF (DDLIMP(NDDLA+2).NE.0) THEN
             CALL CANORT(NOMA,NBMA,ZI(JLISTI),K8B,NDIM,NBNO,
-     &                                       ZI(JNUNOE),2)
+     &                                       ZI(JLINU),2)
             CALL JEVEUO('&&CANORT.TANGENT','L',JTANG)
           END IF
 C   ----------------------
@@ -302,7 +320,7 @@ C   ----------------------
           COEF(1) = 1.0D0
           DDL(1) = 'DEPL'
           DO 120 INO = 1,NBNO
-            IN = ZI(JNUNOE+INO-1)
+            IN = ZI(JLINU+INO-1)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
             IF (DDLIMP(NDDLA+1).NE.0) THEN
               DO 100 IDIM = 1,NDIM
@@ -351,7 +369,8 @@ C ---------------------------------------------------
         NDDLA = 1
         DO 130 J = 1,NMCL
           IF (MOTCLE(J).NE.'MAILLE' .AND. MOTCLE(J).NE.'GROUP_MA' .AND.
-     &        MOTCLE(J).NE.'DNOR' .AND. MOTCLE(J).NE.'DTAN') THEN
+     &     MOTCLE(J).NE.'SANS_MAILLE' .AND. MOTCLE(J).NE.'SANS_GROUP_MA'
+     &     .AND. MOTCLE(J).NE.'DNOR' .AND. MOTCLE(J).NE.'DTAN') THEN
             MOTCLE(NDDLA) = MOTCLE(J)
             NDDLA = NDDLA + 1
           END IF
@@ -450,10 +469,7 @@ C
   200   CONTINUE
 
         CALL JEDETR ( MESMAI )
-        IF(NBMA2.NE.0) THEN
-          CALL JEDETR ( '&&CAFACI_MAILLE_3')
-          CALL JEDETR ( '&&CAFACI_MAILNU_3')
-        ENDIF
+        CALL JEDETR ( MESMA2 )
 
   210 CONTINUE
 C        -------------------------------------

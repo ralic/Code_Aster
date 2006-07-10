@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE   SUIVI PERFORMANCE :
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,7 +75,6 @@ MOMECA=AFFE_MODELE(
               MODELISATION = '3D'))
 
 MAIL=MODI_MAILLAGE( reuse=MAIL,   MAILLAGE=MAIL,
-                              MODELE=MOMECA,
                   ORIE_PEAU_3D=_F(  GROUP_MA =  'HAUT',  )
                      )
 

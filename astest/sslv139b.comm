@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_2D=_F(GROUP_MA='BC',),
-                   MODELE=MODMECA,);
+                   );
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                            NU=0.3,

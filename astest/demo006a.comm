@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 import os
 
 DEBUT( CODE=_F( NOM = 'DEMO006A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
@@ -109,17 +109,17 @@ for k in range(1,10):
    MAIL[k]=DEFI_GROUP(reuse=MAIL[k],MAILLAGE=MAIL[k],
                       CREA_GROUP_NO=_F(GROUP_MA='GM30'),)
  
-   MODE[k]=AFFE_MODELE(MAILLAGE=MAIL[k],
-                       AFFE=_F(GROUP_MA=('GM30','GM28'),
-                               PHENOMENE='MECANIQUE',MODELISATION='DKT',),)
- 
    MAIL[k]=MODI_MAILLAGE(reuse =MAIL[k],
                          MAILLAGE=MAIL[k],
                          ORIE_NORM_COQUE=_F(GROUP_MA='GM30',
                                             VECT_NORM=(1.0,0.0,0.0,),
                                             GROUP_NO='GM31',),
-                         MODELE=MODE[k],);
+                         );
 
+   MODE[k]=AFFE_MODELE(MAILLAGE=MAIL[k],
+                       AFFE=_F(GROUP_MA=('GM30','GM28'),
+                               PHENOMENE='MECANIQUE',MODELISATION='DKT',),)
+ 
    MATE[k]=AFFE_MATERIAU(MAILLAGE=MAIL[k],
                        AFFE=_F(TOUT='OUI',MATER=ACIER,),)
  

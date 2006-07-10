@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                MAILLAGE=MAIL,);
 
 MA=MODI_MAILLAGE( reuse=MA,  
-                  MAILLAGE=MA,    MODELE=MO,
+                  MAILLAGE=MA,
                   ORIE_NORM_COQUE=_F(  VECT_NORM = (0., 0., 1.,),
                                        GROUP_NO = 'O',
                                        GROUP_MA = 'MAIL1'),

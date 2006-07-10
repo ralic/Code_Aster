@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE KOECHLIN P.KOECHLIN
 #  DATE   : 27/10/03
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
@@ -104,7 +104,7 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                       VECT_NORM=(0.,0.,1.),
                                       GROUP_NO='A1',),
-                   MODELE = MOD,);
+                   );
 
 MOMLIM_1=DEFI_FONCTION(NOM_PARA='NORM',
                      VALE=(0.0, 32500.,1.0, 32500.),

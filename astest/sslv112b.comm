@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,6 @@ MO=AFFE_MODELE(            MAILLAGE=M,
                                         MODELISATION = '3D', ))
 
 M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                            MODELE=MO,
                         ORIE_PEAU_3D=_F(  GROUP_MA = 'MAILPRES',  )
                       )
 

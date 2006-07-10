@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ MO=AFFE_MODELE(
                        PHENOMENE = 'MECANIQUE',
                        MODELISATION = '3D')  )
 
-MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,   MODELE=MO,
+MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,
                     ORIE_PEAU_3D=_F(  GROUP_MA = 'FACEPRES'))
 
 MAT=DEFI_MATERIAU(

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/10/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,22 +71,22 @@ MODEL=AFFE_MODELE(MAILLAGE=MAILL1,
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA='LFC2',),
-                     MODELE=MODEL,);
+                     );
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA='LC1D',),
-                     MODELE=MODEL,);
+                     );
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA='LEA2',),
-                     MODELE=MODEL,);
+                     );
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_2D=_F(GROUP_MA='LA1B',),
-                     MODELE=MODEL,);
+                     );
 #           
 #-----------------------------------------------------------------------
 #     DEFINITIONS DES CARACTERISTIQUES MATERIAUX ET AFFECTATION

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,9 +97,6 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            VECT_NORM       =SIMP(statut='f',typ='R',max=3),
            NOEUD           =SIMP(statut='f',typ=no),
            GROUP_NO        =SIMP(statut='f',typ=grno),
-         ),
-         b_modele        =BLOC(condition = "(ORIE_PEAU_2D != None) or (ORIE_PEAU_3D != None) or(ORIE_NORM_COQUE != None)",
-           MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          ),
          PLAQ_TUBE       =FACT(statut='f',
            DEXT            =SIMP(statut='o',typ='R' ),

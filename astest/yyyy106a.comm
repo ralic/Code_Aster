@@ -1,5 +1,5 @@
 
-# MODIF  DATE 29/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAPET 3D, CONTACT, TEMPERATURE MED, METIS, INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,7 +99,6 @@ MODMODI=AFFE_MODELE(MAILLAGE=MA1,
 #                                 _F(GROUP_MA='MC2_JOI',),
 #                                 _F(GROUP_MA='M_XMIN',),
 #                                 _F(GROUP_MA='M_INT',),),
-#                   MODELE=MODMODI,
 #                   INFO=1,);
 # 
 # MA1=MODI_MAILLAGE(reuse =MA1,
@@ -112,7 +111,6 @@ MODMODI=AFFE_MODELE(MAILLAGE=MA1,
 #                                 _F(GROUP_MA='MC12_COR',),
 #                                 _F(GROUP_MA='MC13_PLA',),
 #                                 _F(GROUP_MA='MC13_COR',),),
-#                   MODELE=MODMODI,
 #                   INFO=1,);
 
 MA1=MODI_MAILLAGE(reuse =MA1,
@@ -121,7 +119,6 @@ MA1=MODI_MAILLAGE(reuse =MA1,
                                 _F(GROUP_MA='M_XMIN',),
                                 _F(GROUP_MA='M_INT',),
                                 ),
-                  MODELE=MODMODI,
                   INFO=1,);
 
 MA1=MODI_MAILLAGE(reuse =MA1,
@@ -134,7 +131,6 @@ MA1=MODI_MAILLAGE(reuse =MA1,
                                 _F(GROUP_MA='MC13_PLA',),
                                 _F(GROUP_MA='MC13_COR',),
                                 ),
-                  MODELE=MODMODI,
                   ORIE_NORM_COQUE=(
                                 _F(GROUP_MA='MC4_PLA',),
                       _F(GROUP_MA='MC2_COR',),

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -194,8 +194,8 @@ C
                YPG = YPG + YP(I)*ZR(IVF+K+I-1)
  130        CONTINUE
 C
-            IXRP2 = IXRP2 + YPG*(XPG*XPG + YPG*YPG)*POIDS
-            IYRP2 = IYRP2 + XPG*(XPG*XPG + YPG*YPG)*POIDS
+            IXRP2 = IXRP2 + XPG*(XPG*XPG + YPG*YPG)*POIDS
+            IYRP2 = IYRP2 + YPG*(XPG*XPG + YPG*YPG)*POIDS
 C
  120     CONTINUE
 C

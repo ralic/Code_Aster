@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,22 +44,22 @@ MO=AFFE_MODELE(
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA='AB',),
-                 MODELE=MO,);
+                 );
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA='EF',),
-                 MODELE=MO,);
+                 );
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA='CD',),
-                 MODELE=MO,);
+                 );
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=_F(GROUP_MA='GH',),
-                 MODELE=MO,);
+                 );
 #--------------------------------------------------
 MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05, 
                            NU = 0.,)

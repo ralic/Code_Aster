@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
       INTEGER       N1, N2, NBOCC, NBOC1, NBOC2,NOP,I,
      +              DIM, IADCOO, NBNO, NDDL
       LOGICAL       BIDIM
-      CHARACTER*8   MA, MA2, DEPLA, MODELE, K8BID, COUTUR
+      CHARACTER*8   MA, MA2, DEPLA, K8BID, COUTUR
       CHARACTER*16  KBI1, KBI2, OPTION
       CHARACTER*19  GEOMI, GEOMF,GEOM1
       CHARACTER*24  COORJV
@@ -244,13 +244,10 @@ C     ------------------------------------------
       ENDIF
 C
 C
-C     --- TRAITEMENT DES MOTS CLES  "ORIE_PEAU_2D" ET "ORIE_PEAU_3D":
+C     --- TRAITEMENT DES MOTS CLES  "ORIE_PEAU_2D" , "ORIE_PEAU_3D"
+C                               ET  "ORIE_NORM_COQUE" : 
 C     ---------------------------------------------------------------
-      CALL GETVID ( ' ', 'MODELE', 1,1,0, K8BID, N1 )
-      IF (N1.NE.0) THEN
-        CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N2 )
-        CALL ORILGM(MODELE)
-      ENDIF
+        CALL ORILGM(MA)
 C
 C     --- TRAITEMENT DU MOT CLEF  "ORIE_SHB8" :
 C     ------------------------------------------

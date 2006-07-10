@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,12 +59,12 @@ MO=AFFE_MODELE(MAILLAGE=SSNV127H,
 SSNV127H=MODI_MAILLAGE(reuse =SSNV127H,
                        MAILLAGE=SSNV127H,
                        ORIE_PEAU_2D=_F(GROUP_MA='BCC1',),
-                       MODELE=MO,);
+                      );
 
 SSNV127H=MODI_MAILLAGE(reuse =SSNV127H,
                        MAILLAGE=SSNV127H,
                        ORIE_PEAU_2D=_F(GROUP_MA='BCC2',),
-                       MODELE=MO,);
+                      );
 #_____________________________________________________________________ 
 #                                                       
 #                    DEFINITION DES MATERIAUX           

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,6 @@ M=DEFI_GROUP(reuse=M,
 
 M = MODI_MAILLAGE(reuse = M,
                   MAILLAGE = M,
-                  MODELE = MO,
                   ORIE_PEAU_3D = (_F(
                                      GROUP_MA='SR_INF'),),
                  );

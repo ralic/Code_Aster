@@ -1,4 +1,4 @@
-# MODIF  DATE 19/06/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA=('SLA2_I','SLA2_S','SAV_I','SAV_S',),),
-                 MODELE=MO,);
+                 );
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,
                              NU = 0.3,

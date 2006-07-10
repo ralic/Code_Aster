@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL1,
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                    MAILLAGE=MAILL1,
                    ORIE_PEAU_3D=_F(GROUP_MA=('SMAI','SESC'),),
-                   MODELE=MODE,);
+                   );
 
 # ------------- DEFINITON DU MATERIAU -----------
 MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,

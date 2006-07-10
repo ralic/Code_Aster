@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,6 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                            MODELISATION = '3D', ) )
 
 MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
-                            MODELE=MO,
                         ORIE_PEAU_3D=_F(  GROUP_MA = 'GRPRES',  )
                       )
 

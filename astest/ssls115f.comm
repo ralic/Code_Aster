@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  PLAQUE CARREE COMPOSITE SOUS PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,6 @@ MA=MODI_MAILLAGE(reuse =MA,
                  ORIE_NORM_COQUE=_F(GROUP_MA='MAIL1',
                                     VECT_NORM=(0.0,0.0,1.0,),
                                     GROUP_NO='C',),
-                 MODELE=MO,
                  INFO=2,);
 
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,

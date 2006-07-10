@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_73 FISSURE RADIALE INTERNE A L'INTERFACE D'UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,6 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
       AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'AXIS'))
 
 MA=MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,
-                             MODELE=MO,
                              ORIE_PEAU_2D=_F(  GROUP_MA = 'LPOP8',  )
                 )
 
