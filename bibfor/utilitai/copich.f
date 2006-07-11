@@ -1,7 +1,7 @@
       SUBROUTINE COPICH ( BASE, CH1Z, CH2Z )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 11/07/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
      &             IFETC1,IFETC2,IDD
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      CH1=CH1Z(1:19)
-      CH2=CH2Z(1:19)
+
+      CH1 = CH1Z
+      CH2 = CH2Z
 
       CALL JEEXIN(CH1 // '.DESC',IRET1)
       CALL JEEXIN(CH1 // '.CELD',IRET2)
@@ -73,7 +74,6 @@ C-----------------------------------------------------------------------
       ELSE
         CALL JELIRA(CH1//'.CELD','DOCU',IBID,DOCU)
       END IF
-
 
 C     -- CAS DES CHAM_NO :
 C     ----------------------

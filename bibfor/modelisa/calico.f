@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,LIGRMZ,NDIM,FONREE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 11/07/2006   AUTEUR PABHHHH N.TARDIEU 
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_20
 C ======================================================================
@@ -319,8 +319,8 @@ C --- CE DRAPEAU SERVIRA DANS L'APPEL DE NBNOEL ET PERMETTRA DE
 C --- TRAITER LES NOEUDS MILIEUX DES MAILLES QUADRATIQUES         
 C ======================================================================
 
-      CALL QUADCO (CHAR,MOTFAC,NZOCP,INDQUA)     
-      
+      CALL QUADCO (CHAR,MOTFAC,NZOCP,INDQUA) 
+            
 C ======================================================================
 C --- PREMIERE PASSE 
 C --- DETERMINATION DU NOMBRE TOTAL DE SURFACES, DE MAILLES ET DE NOEUDS
@@ -409,14 +409,14 @@ C --- RELATIONS LINEAIRES POUR MAILLES QUADRATIQUES SURFACIQUES
 C ---  RELATION LINEAIRE ENTRE NOEUD MILIEU ET NOEUDS SOMMETS
 C ---  ELIMINATION DES NOEUDS MILIEUX DU CONTACT DANS EXNOEL
 C --- CECI EST FAIT:
-C ---   POUR LES QUAD8 ET TRIA6 -> SYSTEMATIQUEMENT
-C ---   POUR LES QUAD9 ET TRIA7 -> SEULEMENT POUR LES COQUE_3D
+C ---   POUR LES QUAD8  -> SYSTEMATIQUEMENT
+C ---   POUR LES QUAD9  -> SEULEMENT POUR LES COQUE_3D
 C --- POUR TOUTES LES AUTRES MAILLES QUADRATIQUES EN CONTACT,
 C --- LES NOEUDS MILIEUX SONT DANS
 C ======================================================================
-      IF (FONREE.NE.'COMP') THEN
-         CALL CACOEQ(FONREE,CHAR,NOMA)
-      ENDIF
+
+      CALL CACOEQ(FONREE,CHAR,NOMA)
+
 C ======================================================================
 C --- IMPRESSIONS SUR LES ZONES/SURFACES/MAILLES/NOEUDS DE CONTACT 
 C ======================================================================

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 11/07/2006   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D ,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,8 +263,8 @@ RESU0=STAT_NON_LINE(
                 RELATION = 'KIT_THH',
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
-                                  RHO_MIN = 0.1,
-                                  RHO_MAX = 0.2,
+                                  RHO_MIN = 0.3,
+                                  RHO_MAX = 1.1,
                                   ITER_LINE_MAXI = 3,),
                 INCREMENT=_F(  LIST_INST = LI,
                              INST_FIN = 473040000.,),
@@ -326,8 +326,8 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                               SUBD_PAS_MINI   = 10000.  ,
                               ),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
-                                  RHO_MIN = 0.1,
-                                  RHO_MAX = 0.2,
+                                  RHO_MIN = 0.3,
+                                  RHO_MAX = 1.1,
                                   ITER_LINE_MAXI = 3,),
                 ETAT_INIT = _F (SIGM=SIG1,
                                 VARI=VARI1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,7 @@ MODE_00=AFFE_MODELE(MAILLAGE=MAIL_00,
 MAIL_00=MODI_MAILLAGE(reuse =MAIL_00,
                       MAILLAGE=MAIL_00,
                       ORIE_PEAU_2D=_F(GROUP_MA=('GM3','GM2','GM1','GM4',),),
-                      MODELE=MODE_00,);
+                      );
 
 ###IMPR_RESU(FORMAT='RESULTAT',
 ###          RESU=_F(MAILLAGE=MAIL_00,

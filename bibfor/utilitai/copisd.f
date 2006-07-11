@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 11/07/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,13 +62,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER IRET,IRES
-      CHARACTER*1 BAS2
-      CHARACTER*8 MAIL1,MAIL2
-      CHARACTER*14 COM1,COM2,NU1,NU2
-      CHARACTER*16 TYP2SD,CORR1,CORR2
-      CHARACTER*19 CH1,CH2,SDR1,K191,K192
-      CHARACTER*24 O1,O2
+      INTEGER       IRET, IRES, I, NBTU, JLTN1, JLTN2
+      CHARACTER*1   BAS2
+      CHARACTER*8   K8B, MAIL1, MAIL2
+      CHARACTER*14  COM1, COM2, NU1, NU2
+      CHARACTER*16  TYP2SD, CORR1, CORR2
+      CHARACTER*19  CH1, CH2, SDR1, K191, K192
+      CHARACTER*24  O1, O2, NOMSD
 
 C DEB-------------------------------------------------------------------
 
@@ -276,7 +276,7 @@ C     -----------------------------------
         MAIL2 = SD2
         CALL COPICH(BAS2,MAIL1//'.COORDO',MAIL2//'.COORDO')
         CALL COPICH(BAS2,MAIL1//'.ABS_CURV',MAIL2//'.ABS_CURV')
-
+C
         CALL JEDUP1(MAIL1//'.DIME',BAS2,MAIL2//'.DIME')
         CALL JEDUP1(MAIL1//'.NOMNOE',BAS2,MAIL2//'.NOMNOE')
         CALL JEDUP1(MAIL1//'.GROUPENO',BAS2,MAIL2//'.GROUPENO')
@@ -289,15 +289,36 @@ C     -----------------------------------
         CALL JEDUP1(MAIL1//'.SUPMAIL',BAS2,MAIL2//'.SUPMAIL')
         CALL JEDUP1(MAIL1//'.TYPL',BAS2,MAIL2//'.TYPL')
         CALL JEDUP1(MAIL1//'.TITR',BAS2,MAIL2//'.TITR')
+C
+        CALL JEEXIN ( MAIL1//'           .LTNT', IRET )
+        IF ( IRET .NE. 0 ) THEN
+          CALL JEDUP1(MAIL1//'           .LTNS',BAS2,
+     &                MAIL2//'           .LTNS')
+          CALL JEDUP1(MAIL1//'           .LTNT',BAS2,
+     &                MAIL2//'           .LTNT')
+          CALL JELIRA ( MAIL1//'           .LTNT', 'LONUTI', NBTU, K8B)
+          CALL JEVEUO ( MAIL1//'           .LTNS', 'L', JLTN1 )
+          CALL JEVEUO ( MAIL2//'           .LTNS', 'E', JLTN2 )
+          K192(1:8) = MAIL2
+          DO 10 I = 1 , NBTU
+             K191 = ZK24(JLTN1+I-1)
+             K192(9:19) = K191(9:19)
+             CALL EXISD ( 'TABLE', K191, IRET )
+             IF ( IRET .NE. 0 ) THEN
+                CALL TBCOPI ( BAS2, K191, K192 )
+             ELSE
+                CALL UTMESS('F','COPISD',
+     &         'DUPLCATION "MAILLAGE" DU .LTNT, OBJET INCONNU: '//K191)
+             ENDIF
+             ZK24(JLTN2+I-1) = K192
+ 10       CONTINUE
+        ENDIF
 
 C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
         CALL JEDUP1(MAIL1//'           .FORM',BAS2,
      &              MAIL2//'           .FORM')
         CALL JEDUP1(MAIL1//'.ADAPTATION',BAS2,MAIL2//'.ADAPTATION')
-        CALL JEDUP1(MAIL1//'           .LTNS',BAS2,
-     &              MAIL2//'           .LTNS')
-        CALL JEDUP1(MAIL1//'           .LTNT',BAS2,
-     &              MAIL2//'           .LTNT')
+
         CALL JEDUP1(MAIL1//'           .TITR',BAS2,
      &              MAIL2//'           .TITR')
 
@@ -307,6 +328,5 @@ C ----------------------------------------------------------------------
         CALL UTMESS('F',' COPISD ','TYPE DE SD. INCONNU : '//TYP2SD)
       END IF
 
-   10 CONTINUE
       CALL JEDEMA
       END

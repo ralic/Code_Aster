@@ -2,7 +2,7 @@
      &                  INCOCA,INST,DECOL,NFLIP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/07/2006   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,6 @@ C
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONEX)
 
 C   REACTUALISATION DE LA GEOMETRIE AVEC DEPPLU
-
       INCOCA = 1
       OLDGEO = NOMA//'.COORDO'
       GEOACT = '&&MMMBCA.ACTUGEO'
@@ -130,14 +129,13 @@ C   REACTUALISATION DE LA GEOMETRIE AVEC DEPPLU
       INCOCA = 1
       
 C   FLIP-FLOP: CREATION BASE VOLATILE FLIFLO
-
       NBNO=0
       NFLIP(3)=20
       DO 15 IMA=1,NTMA
         NBNOMA= ZI(JMAESC+3*(IMA-1)+3)
         NBNO=NBNO+NBNOMA
  15     CONTINUE
-            
+             
       FLIFLO='&&MMMBCA.FLIFLO'
       CALL JEEXIN(FLIFLO,IER)
       IF (IER.EQ.0) THEN
@@ -146,9 +144,7 @@ C   FLIP-FLOP: CREATION BASE VOLATILE FLIFLO
         CALL JEVEUO(FLIFLO,'E',JFLIP)
       ENDIF
       
-C
 C   BOUCLE SUR LES POINTS DE CONTACT
-C
       NFLIP(1)=0
       DO 30 IMA = 1,NTMA
         POSMA = ZI(JMAESC+3*(IMA-1)+1)
@@ -229,6 +225,7 @@ C                  ON IMPOSE LE CONTACT (XS=1) ET ON REBOUCLE (INCOCA=0)
                 INCOCA=0
             
               ELSE IF (JEU .GT. R8PREM()) THEN
+              
 C                TOUCHE LES ASPERITES (XA=1) ET EST CONATCTANT (XS=1):
 C                ON REBOUCLE SAUF SI ON EST EN GLISSIERE
                 ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
@@ -274,11 +271,13 @@ C               CALCUL DU GAP DES VITESSES NORMALES (FORMUL. EN VITESSE)
                   INCOCA = 0
                 END IF
               ELSE
+              
 C                  ON REBOUCLE (INCOCA=0) ....
                 ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
                 ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
                 INCOCA = 0
               END IF
+              
 C               .... SAUF SI ON EST EN GLISSIERE
               IF (ZI(JMETH+8* (IZONE-1)+6).EQ.8) INCOCA=1
              
@@ -307,17 +306,18 @@ C           ON CALCULE LA REACTION LAMBDA
 C        STATUT FINAL DU PC: Y-A-T-IL EU CHANGEMENT DE STATUT?
         STAEND = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13))
         IF (STAEND .NE. STAINI) THEN
+        
 C           SI OUI, INCREMENTATION DE L'INDICATEUR DE FLIP-FLOP
-          ZI(JFLIP+(IMA-1)*NBN+INI-1) = ZI(JFLIP+(IMA-1)*NBN+INI-1) + 1
+          ZI(JFLIP+NTPC+INI-1) = ZI(JFLIP+NTPC+INI-1) + 1
         END IF
         
-        IF (ZI(JFLIP+(IMA-1)*NBN+INI-1) .GT. NFLIP(1)) THEN
-          NFLIP(1) = ZI(JFLIP+(IMA-1)*NBN+INI-1)
+        IF (ZI(JFLIP+NTPC+INI-1) .GT. NFLIP(1)) THEN
+          NFLIP(1) = ZI(JFLIP+NTPC+INI-1)
           
           NUMAES = ZR(JTABF+28*(NTPC+INI-1)+1)
           NFLIP(2)=ZI(JCONEX+ZI(JLONG-1+NUMAES)+INI-2)
         END IF
-        
+                
 C FINI
 
    20   CONTINUE

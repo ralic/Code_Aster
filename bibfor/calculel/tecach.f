@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,8 @@ C            'O'  -> ON S'ARRETE EN ERREUR <F>
 C            'N'  -> ON NE S'ARRETE PAS
 C                    => IRET=3,ITAB(1)=ADRESSE DU CHAMP LOCAL INCOMPLET
 C                       POUR S'EN SORTIR IL FAUT UTILISER ITAB(8)
+C                       REMARQUE : SI NVAL < 8, ON REND ITAB(1)=0 POUR
+C                         EVITER D'UTILISER UNE ADRESSE INUTILISABLE
 
 
 
@@ -142,8 +144,7 @@ C     DEB--------------------------------------------------------------
       STPEXI = (STOP8(2:2).EQ.'O')
       STPINC = (STOP8(3:3).EQ.'O')
 
-      IF (NVAL.LT.1) GO TO 20
-      IF (NVAL.GT.8) GO TO 20
+      CALL ASSERT(1.LE.NVAL .AND. NVAL.LE.8)
       IRET = 0
       ITAB(1) = 0
 
@@ -257,6 +258,7 @@ C     ----------------------------------------------------------
               CALL CONTEX(OPTION,0,NOMPAR,' ',0)
             ELSE
               IRET = 3
+              IF (NVAL.LT.8) ITAB(1)=0
             END IF
           END IF
    10   CONTINUE

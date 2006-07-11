@@ -1,6 +1,6 @@
       SUBROUTINE DISMPN(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -59,17 +59,18 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*19 NOLIGR
-      CHARACTER*8 K8BID
+      CHARACTER*8 KBID
 C
 C
 C
       CALL JEMARQ()
       NOMOB = NOMOBZ
       REPK  = REPKZ
+
       IF (QUESTI.EQ.'NB_DDLACT') THEN
-         CALL JEVEUO(NOMOB//'.NEQU','L',IDNEQU)
-         NEQU=ZI(IDNEQU)
-         CALL JELIRA(NOMOB//'.LILI','NUTIOC',NLILI,K8BID)
+C     --------------------------------
+         CALL JELIRA(NOMOB//'.NUEQ','LONMAX',NEQU,KBID)
+         CALL JELIRA(NOMOB//'.LILI','NUTIOC',NLILI,KBID)
          NBDDLB=0
          DO 10 I=2,NLILI
             CALL JENUNO(JEXNUM(NOMOB//'.LILI',I),NOLIGR)
@@ -77,6 +78,7 @@ C
             NBDDLB=NBDDLB+ NBNOS
  10      CONTINUE
          REPI=NEQU-3*(NBDDLB/2)
+
       ELSE
          REPK = QUESTI
          CALL UTMESS(CODMES,'DISMPN:',
