@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -641,77 +641,6 @@ V=CALC_ELEM(
                    OPTION='EPSI_ELNO_DEPL'
               )
 
-VO=STAT_NON_LINE( 
-                            MODELE=MO,
-                        CHAM_MATER=CMO,EXCIT=(
-                             _F( 
-                CHARGE = LIAISON), _F( 
-                CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F( 
-                CHARGE = CISAIL,
-                FONC_MULT = TAU_F)),
-                         COMP_ELAS=_F( 
-                RELATION = 'ELAS'),
-                         INCREMENT=_F( 
-                LIST_INST = L_INST2),
-                            NEWTON=_F( 
-                MATRICE = 'ELASTIQUE',
-                REAC_ITER = 3),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_MAXI = 1.E-3,
-                ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F( 
-                     RHO_MAX=150.,
-                ITER_LINE_MAXI = 5)
-              )
-
-VO=CALC_ELEM( reuse=VO,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=VO,
-              )
-
-VO=CALC_ELEM(
-              reuse=VO,
-                  RESULTAT=VO,
-                   OPTION='EPSI_ELNO_DEPL'
-              )
-
-VI=STAT_NON_LINE( 
-                            MODELE=MO,
-                        CHAM_MATER=CMI,EXCIT=(
-                             _F( 
-                CHARGE = LIAISON), _F( 
-                CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F( 
-                CHARGE = CISAIL,
-                FONC_MULT = TAU_F)),
-                         COMP_ELAS=_F( 
-                RELATION = 'ELAS'),
-                         INCREMENT=_F( 
-                LIST_INST = L_INST2),
-                            NEWTON=_F( 
-                MATRICE = 'ELASTIQUE',
-                REAC_ITER = 3),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_MAXI = 1.E-3,
-                ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F(
-                     RHO_MAX=150.,
-                ITER_LINE_MAXI = 5)
-              )
-
-VI=CALC_ELEM( reuse=VI,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=VI,
-              )
-
-VI=CALC_ELEM(
-              reuse=VI,
-                  RESULTAT=VI,
-                   OPTION='EPSI_ELNO_DEPL'
-              )
 
 TEST_RESU(RESU=(
   _F( RESULTAT = V,NOM_CHAM = 'SIEF_ELNO_ELGA',MAILLE = 'CUBE',NOEUD = 'NO2',
@@ -722,24 +651,6 @@ TEST_RESU(RESU=(
     INST = 1.,NOM_CMP = 'EPXX',VALE = 7.75385E-4),
   _F( RESULTAT = V,NOM_CHAM = 'EPSI_ELNO_DEPL',MAILLE = 'CUBE',NOEUD = 'NO2',
     INST = 1.,NOM_CMP = 'EPXY',VALE = 6.20667E-4))
-           )
-
-TEST_RESU(RESU=(
-  _F( RESULTAT = VI,NOM_CHAM = 'SIEF_ELNO_ELGA',MAILLE = 'CUBE',NOEUD = 'NO2',
-    INST = 1.,NOM_CMP = 'SIXX',VALE = 151.2),
-  _F( RESULTAT = VI,NOM_CHAM = 'SIEF_ELNO_ELGA',MAILLE = 'CUBE',NOEUD = 'NO2',
-    INST = 1.,NOM_CMP = 'SIXY',VALE = 93.1),
-  _F( RESULTAT = VI,NOM_CHAM = 'EPSI_ELNO_DEPL',MAILLE = 'CUBE',NOEUD = 'NO2',
-    INST = 1.,NOM_CMP = 'EPXX',VALE = 7.75385E-4),
-  _F( RESULTAT = VI,NOM_CHAM = 'EPSI_ELNO_DEPL',MAILLE = 'CUBE',NOEUD = 'NO2',
-    INST = 1.,NOM_CMP = 'EPXY',VALE = 6.20667E-4))
-           )
-
-TEST_RESU(RESU=(
-  _F( RESULTAT = VO,NOM_CHAM = 'SIEF_ELNO_ELGA',MAILLE = 'CUBE',NOEUD = 'NO2',
-    INST = 1.,NOM_CMP = 'SIXY',VALE = 93.1),
-  _F( RESULTAT = VO,NOM_CHAM = 'EPSI_ELNO_DEPL',MAILLE = 'CUBE',NOEUD = 'NO2',
-    INST = 1.,NOM_CMP = 'EPXY',VALE = 6.20667E-3))
            )
 
 FIN()

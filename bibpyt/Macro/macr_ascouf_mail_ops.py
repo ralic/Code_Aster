@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 24/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -412,7 +412,7 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
 #
   texte_final=string.join(echo_mess)
   aster.affiche('MESSAGE',texte_final)
-  return ier
+  return ier,AZIMC
 
 # ------------------------------------------------------------------------------
 def ASCTCI(MCL_SOUS_EPAIS,RM):
@@ -1516,13 +1516,15 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
 #     NBEP = NOMBRE D'ELEMENTS DANS LE COUDE
 #     NLX = NOMBRE D'ELEMENTS CIRCONF. DE LA SOUS-EPAISSEUR
 #     NLY = NOMBRE D'ELEMENTS LONGI DE LA SOUS-EPAISSEUR
+#     SUREP = SUR EPAISSEUR
 
 # ------------------------------------------------------------------------------
 def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
                            EPI,TETA1,MCL_SOUS_EPAIS,TETA2,LTRAN,LTCHAR,LTCLIM,GEOM,
-                           SYME,NBEP,NLX,NLY,NIVMAG,loc_datg) :
+                           SYME,NBEP,NLX,NLY,NIVMAG,SUREP,AZIMC,loc_datg) :
 
-  ssep= MCL_SOUS_EPAIS[0]   
+  ssep= MCL_SOUS_EPAIS[0] 
+  print 'AZIMC', AZIMC;  
   POIVIR = ' ;\n'
   texte=' nivmag   = '+str(NIVMAG)       +POIVIR
   texte=texte+' option dime 3 elem '+TYPELE+' nive nivmag echo 0'+POIVIR
@@ -1554,7 +1556,8 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
   texte=texte+' epI      = '+str(EPI)          +POIVIR
   texte=texte+' teta1    = '+str(TETA1)        +POIVIR
   texte=texte+' teta2    = '+str(TETA2)        +POIVIR
-  texte=texte+' ltran    = '+repr(LTRAN)        +POIVIR 
+  texte=texte+' ltran    = '+repr(LTRAN)       +POIVIR 
+  texte=texte+' surep    = '+str(SUREP)        +POIVIR   
   if GEOM == 'COUDE':
     texte=texte+" zcoude = 'oui' "+POIVIR
   else:
@@ -1574,6 +1577,7 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
   texte=texte+'*\n'
   texte=texte+'* Caracteristiques de la sous-epaisseur\n'
   texte=texte+'*\n'
+  texte=texte+' azimc = '+str(AZIMC)                                        +POIVIR
   texte=texte+' tysep = '+str(ssep.ICIRP)                                   +POIVIR
   texte=texte+' tzsep = '+str(ssep.ILONP)                                   +POIVIR
   texte=texte+' prof .                      1  = '+str(ssep['PROFONDEUR'])  +POIVIR
@@ -1741,7 +1745,7 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
   texte=texte+'nbelz   = table '+POIVIR
   texte=texte+'axisym  = table '+POIVIR
   texte=texte+'sousep  = table '+POIVIR
-  texte=texte+'* \n'     
+  texte=texte+'* \n'  
   texte = texte + open(os.path.join(loc_datg, 'ascouf_ssep_mult_v1.datg'), 'r').read()
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
@@ -1781,7 +1785,7 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
 #     NZONEY = NOMBRE DE ZONES LONGITUDINALES  
 #
 # ------------------------------------------------------------------------------
-def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,
+def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,SUREP,
                            NZONEX,NZONEY,BG,BD,BI,BS,INDBG,INDBD,INDBI,INDBS,
                            DNX,DNY,MCL_SOUS_EPAIS,GEOM,SYME):
 
@@ -1879,13 +1883,16 @@ def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,
        texte=texte+'sousep .'+str(issep).rjust(23)+" = 'oui'"+POIVIR
      else:
        texte=texte+'sousep .'+str(issep).rjust(23)+" = 'non'"+POIVIR
+  texte=texte+'*\n'  
+
+  texte=texte+'* Caracteristique de sur-epaisseur\n'
+  texte=texte+'surep    = '+str(SUREP)            +POIVIR
   texte=texte+'* \n'
   texte=texte+'* FIN PARAMETRES UTILISATEUR\n'
   fpgib=open('fort.71','w') 
   fpgib.write(texte)
   fpgib.close()
   
- 
  
 ################################################################################
 ################################################################################
@@ -1902,7 +1909,7 @@ def write_file_pgib_ASCSP2(MCL_SOUS_EPAIS,NLX,NLY):
   texte=texte+'= PLAQSEP bg bd bi bs indbg indbd indbi indbs rm rc\n'
   texte=texte+'alphac pirad epc lt lgv coory coorz axecir axelon prof zsyme posit\n'
   texte=texte+'lcoude nxep sousep deny nbely denz nbelz axelonc coorzc axisym\n'
-  texte=texte+'daxhtu daxhgv nzt nzgv zcoude'+POIVIR
+  texte=texte+'daxhtu daxhgv nzt nzgv zcoude surep'+POIVIR
   texte=texte+'fdromi   = ligmed .   1'+POIVIR
   texte=texte+'exdrmi   = ligmed .   2'+POIVIR
   texte=texte+'extrmi   = ligmed .   3'+POIVIR
@@ -2455,7 +2462,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
      AXEAP,AXECP,SFP = ASCFIS(ALPHA, RM, RC, EP1, SUREP, GEOM, FPROF,
                               DGAXEC, AZIM, POSIT, SF, DSF, BETA, ORIEN)
   elif MCL_SOUS_EPAIS!=None :
-     ier= ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP1,GEOM,SYME)
+     ier,AZIMC= ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP1,GEOM,SYME)
      for ssep in MCL_SOUS_EPAIS:
          ssep.IDENL = ssep.ILONP/ssep['NB_ELEM_LONGI']*180./(pi*RC)
          ssep.IDENC = ssep.ICIRP/ssep['NB_ELEM_CIRC']*180./(pi*RM)
@@ -2475,6 +2482,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   UNITP  = EXEC_MAILLAGE['UNITE_MGIB']
   if   logiel=='GIBI98'  : logiel = loc_gibi+'gibi98'
   elif logiel=='GIBI2000': logiel = loc_gibi+'gibi2000'
+  
   else                   :
        UTMESS('F', "MACR_ASCOUF_MAIL", "seuls gibi98 et gibi2000 sont appelables")
 #
@@ -2496,12 +2504,12 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 #      procedure coude sous-ep.: (MOT-CLE SOUS_EPAIS_COUDE)  
        write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
                               EPI,TETA1,MCL_SOUS_EPAIS,TETA2,LTRAN,LTCHAR,LTCLIM,GEOM,
-                              SYME,NBEP,NLX,NLY,NIVMAG,loc_datg)
+                              SYME,NBEP,NLX,NLY,NIVMAG,SUREP,AZIMC,loc_datg)
        write_file_pgib_ASCSQ2(MCL_SOUS_EPAIS,NLX,NLY)
      else:
 #      procedure coude sous-ep.:(MOT-CLE SOUS_EPAIS_MULTI)
        write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
-       write_file_pgib_ASCSDO(RM,RC,ALPHA,EP1,LTCLIM,LTCHAR,NBEP,
+       write_file_pgib_ASCSDO(RM,RC,ALPHA,EP1,LTCLIM,LTCHAR,NBEP,SUREP,
                               NZONEX,NZONEY,BG,BD,BI,BS,INDBG,INDBD,INDBI,INDBS,
                               DNX,DNY,MCL_SOUS_EPAIS,GEOM,SYME)
        write_file_pgib_ASCSP2(MCL_SOUS_EPAIS,NLX,NLY)

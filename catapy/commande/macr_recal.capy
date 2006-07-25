@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +32,7 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
          POIDS           =SIMP(statut='f',typ=assd,max='**'),
          RESU_CALC       =SIMP(statut='o',typ=assd,max='**'),
          LIST_PARA       =SIMP(statut='o',typ=assd,max='**'),
+         LIST_DERIV      =SIMP(statut='f',typ=assd,max='**'),
          ITER_MAXI       =SIMP(statut='f',typ='I',defaut=10),
          RESI_GLOB_RELA  =SIMP(statut='f',typ='R',defaut=1.E-3),
          UNITE_RESU      =SIMP(statut='f',typ='I',defaut=91),
@@ -40,5 +41,5 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
            UNITE           =SIMP(statut='f',typ='I',defaut=90),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut='XMGRACE',into=("XMGRACE","GNUPLOT")),
            INTERACTIF      =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=( 1, 2 ) ),
-)  ;
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=( 1, 2, 3, 4 ) ),
+);

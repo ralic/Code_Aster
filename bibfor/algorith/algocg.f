@@ -1,7 +1,7 @@
-      SUBROUTINE ALGOCG(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,DEPTOT,
+      SUBROUTINE ALGOCG(DEFICO,RESOCO,LMAT,NOMA,CINE,RESU,DEPTOT,
      &                  LICCVG,LREAC,ITERAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/07/2006   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
       LOGICAL LREAC(4)
       CHARACTER*8 NOMA
       CHARACTER*24 DEFICO,RESOCO,CINE,RESU,DEPTOT
-      INTEGER LMAT,ITERAT,LDSCON,LICCVG(5)
+      INTEGER LMAT,ITERAT,LICCVG(5)
 C ======================================================================
 C ROUTINE APPELEE PAR : CFALGO
 C ======================================================================
@@ -61,7 +61,6 @@ C                'E':  RESOCO(1:14)//'.DEL0'
 C                'E':  RESOCO(1:14)//'.DELT'
 C                'E':  RESOCO(1:14)//'.COCO'
 C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
-C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
 C IN  NOMA    : NOM DU MAILLAGE
 C IN  CINE    : CHAM_NO CINEMATIQUE
 C IN  DEPTOT  : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
@@ -111,7 +110,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       CHARACTER*19 LIAC,MU,DELT0,DELTA,COCO,ATMU,SGRADM,SGRADP,MU0
       CHARACTER*19 DIRECM,DIRECP,MUM,SECMBR,VEZERO,SOLVEU,CONVEC
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,NOZOCO
-      CHARACTER*24 CONTNO,CONTMA,CONVCO,MACONT,TOLECO,METHCO,DELTAM
+      CHARACTER*24 CONTNO,CONTMA,CONVCO,TOLECO,METHCO,DELTAM
 
 C ----------------------------------------------------------------------
 
@@ -159,7 +158,6 @@ C ======================================================================
       DELTA = RESOCO(1:14)//'.DELT'
       ATMU = RESOCO(1:14)//'.ATMU'
       COCO = RESOCO(1:14)//'.COCO'
-      MACONT = ZK24(ZI(LDSCON+1))
       SOLVEU = '&&OP0070.SOLVEUR'
 
 C     SI SOLVEUR GCPC, ON S'ARRETE EN FATALE
@@ -188,7 +186,6 @@ C ======================================================================
       CALL JEVEUO(DELT0,'E',JDELT0)
       CALL JEVEUO(DELTA,'E',JDELTA)
       CALL JEVEUO(RESU(1:19)//'.VALE','E',JRESU)
-      CALL JEECRA(MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
       CALL JEVEUO(CINE(1:19)//'.VALE','L',JRCINE)
 C ======================================================================
 C --- INITIALISATION DE VARIABLES

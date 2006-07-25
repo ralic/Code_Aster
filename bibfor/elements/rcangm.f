@@ -3,7 +3,7 @@
       INTEGER  NDIM
       REAL*8   ANGMAS(3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  ICAMAS, IRET
-      REAL*8   R8NNEM, R8DGRD
+      REAL*8   R8NNEM, R8DGRD, R8VIDE
 C     ------------------------------------------------------------------
 
       CALL TECACH ( 'NNO', 'PCAMASS', 1, ICAMAS, IRET )
@@ -54,6 +54,12 @@ C     ------------------------------------------------------------------
             IF ( NDIM .EQ. 3 ) THEN
                ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
                ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+            ENDIF
+         ELSE
+            ANGMAS(1)=R8VIDE()
+            IF ( NDIM .EQ. 3 ) THEN
+               ANGMAS(2) = R8VIDE()
+               ANGMAS(3) = R8VIDE()
             ENDIF
          ENDIF
 C

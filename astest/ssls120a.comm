@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,6 +187,55 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS2,
 TEST_RESU(RESU=_F(RESULTAT=ELAS1,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELNO_DEPL',
+                  NOM_CMP='SIZZ',
+                  GROUP_NO='PM',MAILLE='M2',
+                  VALE=SIG,PRECISION=0.01,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=1,),);
+
+ELAS3=STAT_NON_LINE(MODELE=MODMECA,
+                    CHAM_MATER=CHMAT2,
+                    CARA_ELEM=CARAELE,
+                    COMP_INCR=_F(RELATION='ELAS'),
+                    INCREMENT=_F(LIST_INST=LIST,),
+                    EXCIT=(_F(CHARGE=BLOCAGE,),
+                           _F(CHARGE=PH,),),);
+
+CALC_ELEM( reuse= ELAS3 ,RESULTAT= ELAS3 ,                     
+                    NUME_COUCHE=1,OPTION='SIEF_ELNO_ELGA',);
+
+
+TEST_RESU(RESU=_F(RESULTAT=ELAS3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A3',
+                  VALE=DZMAX2,PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=ELAS3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A4',
+                  VALE=DZMAX2,PRECISION=0.01,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=ELAS3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='PM',
+                  VALE=DXMAX,PRECISION=0.01,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=ELAS3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIEF_ELNO_ELGA',
                   NOM_CMP='SIZZ',
                   GROUP_NO='PM',MAILLE='M2',
                   VALE=SIG,PRECISION=0.01,

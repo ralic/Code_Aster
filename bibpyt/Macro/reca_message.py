@@ -1,4 +1,4 @@
-#@ MODIF reca_message Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF reca_message Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import os,Numeric
+import os, Numeric
+from Utilitai.Utmess import UTMESS
 
 #===========================================================================================
 
@@ -28,13 +29,18 @@ import os,Numeric
 class Message :
    """classe gérant l'affichage des messages concernant le déroulement de l'optmisation """
    #Constructeur de la classe
+
+# ------------------------------------------------------------------------------
+
    def __init__(self,para,val_init,resu_exp,ul_out):
       self.nom_para = para
       self.res_exp = resu_exp
       res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
-      res.write(' <INFO>  MACR_RECAL V1.1 \n\n\n')
+      res.write(' <INFO>  MACR_RECAL\n\n\n')
       res.close()
       
+
+# ------------------------------------------------------------------------------
    
    def affiche_result_iter(self,iter,J,val,residu,Act,ul_out):
       res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
@@ -58,7 +64,10 @@ class Message :
             res.write('\n sont en butée sur un bord de leur domaine admissible.')
       res.write('\n=======================================================\n\n')
       res.close()
-   
+
+
+# ------------------------------------------------------------------------------
+
    def affiche_etat_final_convergence(self,iter,max_iter,prec,residu,Act,ul_out):
       res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
       if ((iter < max_iter) or (residu < prec)):
@@ -76,6 +85,8 @@ class Message :
         res.write("\n  Le nombre maximal  d'itération ("+str(max_iter)+") a été dépassé")                    
         res.write('\n=======================================================\n')
         res.close()
+
+# ------------------------------------------------------------------------------
 
    def affiche_calcul_etat_final(self,para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible,ul_out):
         res=open(os.getcwd()+'/fort.'+str(ul_out),'a')

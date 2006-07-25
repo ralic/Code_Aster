@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 26/06/2006   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF reca_algo Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,16 +18,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
-
 import Numeric
 from Numeric import take, size
 import copy,os
 import LinearAlgebra 
 from Cata.cata import INFO_EXEC_ASTER
 from Cata.cata import DETRUIRE
+from Utilitai.Utmess import UTMESS
 from Accas import _F
-from Utilitai.Utmess     import UTMESS
 
 
 def calcul_gradient(A,erreur):
@@ -35,11 +33,18 @@ def calcul_gradient(A,erreur):
    return grad
 
 
-#-------------------------------------------
-#classe gérant l'adimensionnement et le dimensionnemnt
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 class Dimension:
-   #le constructeur calcul la matrice D et son inverse
+   """
+      Classe gérant l'adimensionnement et le dimensionnement
+   """
+
    def __init__(self,val_initiales,para):
+      """
+         Le constructeur calcul la matrice D et son inverse
+      """
       self.val_init = val_initiales
       dim =len(self.val_init)
       self.D = Numeric.zeros((dim,dim),Numeric.Float)
@@ -48,6 +53,8 @@ class Dimension:
       self.inv_D=LinearAlgebra.inverse(self.D)
    
 
+# ------------------------------------------------------------------------------
+
    def adim_sensi(self,A):
       for i in range(A.shape[0]):
          for j in range(A.shape[1]):
@@ -55,6 +62,7 @@ class Dimension:
       return A
 
 
+# ------------------------------------------------------------------------------
 
    def redim_sensi(self,A):
       for i in range(A.shape[0]):
@@ -63,16 +71,29 @@ class Dimension:
       return A
 
 
+# ------------------------------------------------------------------------------
+
    def adim(self,tab):
       tab_adim = Numeric.dot(self.inv_D,copy.copy(tab))
       return tab_adim
 
 
+# ------------------------------------------------------------------------------
+
    def redim(self,tab_adim):
       tab = Numeric.dot(self.D,tab_adim)
       return tab
-   
-#------------------------------------------
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
+
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 def cond(matrix):
     e1=LinearAlgebra.eigenvalues(matrix)
     e=map(abs,e1)
@@ -84,7 +105,13 @@ def cond(matrix):
       condi=0.0
     return condi,e[size-1],e[0]
 
-#-----------------------------------------
+
+
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 def norm(matrix):
     e=LinearAlgebra.Heigenvalues(matrix)
     size=len(e)
@@ -92,10 +119,14 @@ def norm(matrix):
     norm=e[size-1]
     return norm
 
-#-----------------------------------------
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 def lambda_init(matrix):
-# Routine qui calcule la valeur initial du parametre
-# de regularisation l.
+     """
+        Routine qui calcule la valeur initial du parametre de regularisation l.
+     """
      condi,emax,emin=cond(matrix)
      id=Numeric.identity(matrix.shape[0])
      if (condi==0.0):
@@ -106,47 +137,20 @@ def lambda_init(matrix):
          l=abs(10000.*emin-emax)/10001.
      return l
 
-#-----------------------------------------
 
-
-def temps_CPU(self,restant_old,temps_iter_old):
-   # Fonction controlant le temps CPU restant
-   CPU=INFO_EXEC_ASTER(LISTE_INFO = ("CPU_RESTANT",))
-   TEMPS=CPU['CPU_RESTANT',1]
-   DETRUIRE(CONCEPT=_F(NOM='CPU'),INFO=1)
-   err=0
-   # Indique une execution interactive
-   if (TEMPS>1.E+9):
-     return 0.,0.,0
-   # Indique une execution en batch
-   else:
-      restant=TEMPS
-      # Initialisation
-      if (restant_old==0.):
-         temps_iter=-1.
-      else:
-         # Première mesure
-         if (temps_iter_old==-1.):
-            temps_iter=(restant_old-restant)
-         # Mesure courante
-         else:
-            temps_iter=(temps_iter_old + (restant_old-restant))/2.
-         if ((temps_iter>0.96*restant)or(restant<0.)):
-            err=1
-            UTMESS('F', "MACR_RECAL", 'Arret de MACR_RECAL par manque de temps CPU')
-   return restant,temps_iter,err
-
-
-
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
-   # on resoud le système par contraintes actives:
-   #    Q.dval + s + d =0
-   #    soumis à :
-   #    borne_inf < dval < borne_sup 
-   #            0 <  s
-   #            s.(borne_inf - dval)=0
-   #            s.(borne_sup - dval)=0
+   """
+      On resoud le système par contraintes actives:
+         Q.dval + s + d =0
+         soumis à :
+         borne_inf < dval < borne_sup 
+                 0 <  s
+                 s.(borne_inf - dval)=0
+                 s.(borne_sup - dval)=0
+   """
    dim = len(val)
    id = Numeric.identity(dim)
    # Matrice du système
@@ -211,11 +215,14 @@ def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out
              res.write('\n\nval_ini= '+Numeric.array2string(val_init,array_output=1,separator=','))
              res.write('\n\nborne_inf= '+Numeric.array2string(borne_inf,array_output=1,separator=','))
              res.write('\n\nborne_sup= '+Numeric.array2string(borne_sup,array_output=1,separator=','))
-             UTMESS('F', "MACR_RECAL", "Erreur dans l'algorithme de bornes de MACR_RECAL")
+             self.cr.fatal("<F> <MACR_RECAL> Erreur dans l'algorithme de bornes de MACR_RECAL")
              return 
    newval=copy.copy(val+dval)
    return newval,s,l,Act
 
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
    dim = len(val)
@@ -241,6 +248,9 @@ def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
    return l
 
 
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 def test_convergence(gradient_init,erreur,A,s):
    gradient = calcul_gradient(A,erreur)+s
    try:
@@ -252,20 +262,22 @@ def test_convergence(gradient_init,erreur,A,s):
    return epsilon
 
 
-# fonction appellée quand la convergence est atteinte
-# on calcule le Hessien et les valeurs propres et vecteurs 
-# propre associés au Hessien
-#  A    = sensibilite
-#  At*A = hessien
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg,ul_out):
+   """
+      Fonction appelée quand la convergence est atteinte
+      on calcule le Hessien et les valeurs propres et vecteurs 
+      propre associés au Hessien
+      A    = sensibilite
+      At*A = hessien
+   """
+
    if ((iter < max_iter) or (residu < prec)):
       Hessien = Numeric.matrixmultiply(Numeric.transpose(A),A)
       valeurs_propres,vecteurs_propres = LinearAlgebra.eigenvectors(Hessien) 
       sensible=Numeric.nonzero(Numeric.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))
       insensible=Numeric.nonzero(Numeric.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))
       Messg.affiche_calcul_etat_final(para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible,ul_out)
-
-
-
-
 

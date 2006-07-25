@@ -4,7 +4,7 @@
      &                  DEPENT,VITENT,ACCENT,CNSINR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,7 +84,7 @@ C
       INTEGER      JDEPP,JVITP,JACCP,JDEPEN,JVITEN,JACCEN,JCONT,JDEPDE
       INTEGER      JCNSD,JCNSC,JCNSV,JCNSL,JCESC,JCESD,JCESL,IRET,NBNO
       INTEGER      INO,NBMA,IAD,JCESV
-      REAL*8       VALR,CONST(4)
+      REAL*8       VALR,CONST(4),R8MAEM
       CHARACTER*13 RESULT,CONCEP,NOMCMD
       CHARACTER*16 CHAM
       CHARACTER*24 K24BID
@@ -364,8 +364,7 @@ C            VALR = VALR
              NBMA=ZI(JCESD)
 
              IF (ZI(JEXTR-1+ISUI).EQ.1) THEN
-               CALL CESEXI('S',JCESD,JCESL,1,1,1,ICMP,IAD)
-               IF (IAD.GT.0) VALR=ZR(JCESV+IAD-1)
+               VALR=R8MAEM()
                DO 50 IMA=1,NBMA
                  NBPT=ZI(JCESD+5+4*(IMA-1))
                  NBSP=ZI(JCESD+5+4*(IMA-1)+1)
@@ -378,8 +377,7 @@ C            VALR = VALR
   50           CONTINUE
 
              ELSE IF (ZI(JEXTR-1+ISUI).EQ.2) THEN
-               CALL CESEXI('S',JCESD,JCESL,1,1,1,ICMP,IAD)
-               IF (IAD.GT.0) VALR=ZR(JCESV+IAD-1)
+               VALR=-R8MAEM()
                DO 80 IMA=1,NBMA
                  NBPT=ZI(JCESD+5+4*(IMA-1))
                  NBSP=ZI(JCESD+5+4*(IMA-1)+1)
@@ -401,14 +399,15 @@ C            VALR = VALR
                IF (CMP.EQ.ZK8(JCNSC-1+I)) ICMP=I
   110        CONTINUE
              NBNO=ZI(JCNSD)
-               VALR=ZR(JCNSV+ICMP-1)
              IF (ZI(JEXTR-1+ISUI).EQ.1) THEN
+               VALR=R8MAEM()
                DO 120 INO=1,NBNO
                  IF(ZL(JCNSL+(INO-1)*NBCMP+ICMP-1)) THEN
                    VALR=MIN(VALR,ZR(JCNSV+(INO-1)*NBCMP+ICMP-1))
                  ENDIF
   120          CONTINUE
              ELSE IF (ZI(JEXTR-1+ISUI).EQ.2) THEN
+               VALR=-R8MAEM()
                DO 130 INO=1,NBNO
                  IF(ZL(JCNSL+(INO-1)*NBCMP+ICMP-1)) THEN
                    VALR=MAX(VALR,ZR(JCNSV+(INO-1)*NBCMP+ICMP-1))

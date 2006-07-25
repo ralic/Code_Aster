@@ -12,7 +12,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C TOLE CRP_21
       INTEGER            KPG,KSP,NDIM,IMATE,NZ,CODRET
       CHARACTER*8        TYPMOD(*)
       CHARACTER*(*) FAMI
-      CHARACTER*16       COMPOR(*), OPTION
+      CHARACTER*16       COMPOR(*), OPTION,PHENOM
       REAL*8             CRIT(*), INSTAM, INSTAP, TM, TP, TREF, SREF
       REAL*8             SECHM, SECHP
       REAL*8             PHASM(NZ),PHASP(NZ)
@@ -123,6 +123,7 @@ C ----------------------------------------------------------------------
 C
       REAL*8 R8BID,R8VIDE
       CHARACTER*16 OPTIO2
+      CHARACTER*2 K2BID
       LOGICAL CP
       INTEGER CPL,NVV
 
@@ -328,10 +329,21 @@ C PETITES DEFORMATIONS
      &             ' COMPORTEMENT INATTENDU : '//COMPOR(1))
           ENDIF
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                    INSTAM,INSTAP,TM,TP,TREF,SECHM,SECHP,
-     &                    SREF,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
-     &                    DSIDEP,R8BID,R8BID,CODRET)
+            CALL RCCOMA(IMATE,'ELAS',PHENOM,K2BID)
+            IF (PHENOM.EQ.'ELAS') THEN
+              CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                      INSTAM,INSTAP,TM,TP,TREF,SECHM,SECHP,
+     &                      SREF,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
+     &                      DSIDEP,R8BID,R8BID,CODRET)
+            ELSE IF (PHENOM(1:8).EQ.'ELAS_ORT'.OR.
+     &              PHENOM(1:8).EQ.'ELAS_IST') THEN
+              CALL NMORTH(FAMI,KPG,KSP,NDIM,PHENOM,TYPMOD,IMATE,SECHM,
+     &                   SECHP,SREF,TM,TP,TREF,EPSM,DEPS,SIGM,OPTION,
+     &                   ANGMAS,SIGP,VIP,DSIDEP)
+            ELSE
+              CALL UTMESS('F','NMCOMP','ERREUR DANS LE TYPE'//
+     &                    ' DE COMPORTMENT')
+            ENDIF
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')

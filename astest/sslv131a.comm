@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ORTHOTROPIE DANS UN REPERE QUELCONQUE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,16 +56,24 @@ CHAR3D=AFFE_CHAR_MECA(  MODELE=MOD3D,DDL_IMPO=(
               _F( NOEUD = 'D',   DX = 5.,      DY = 8.,    DZ = 11.)))
 
 
-MEST1=MECA_STATIQUE(       MODELE=MOD3D,    CHAM_MATER=CHMATIST,
-              CARA_ELEM=CAREL3D,    EXCIT=_F( CHARGE = CHAR3D),
+LISTE=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=5,),);
 
-          )
 
-CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,            
+FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,1.,1.),);
+MEST1=STAT_NON_LINE(MODELE=MOD3D,
+                    CHAM_MATER=CHMATIST,
+                    CARA_ELEM=CAREL3D,
+                    EXCIT=_F( CHARGE = CHAR3D,FONC_MULT=FONC),
+                    NEWTON=_F(PREDICTION='TANGENTE'),
+                    COMP_INCR=_F(RELATION='ELAS'),
+                    INCREMENT=_F(LIST_INST=LISTE),);
+
+MEST1=CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,            
                   
 
-           OPTION=('EPSI_ELGA_DEPL',
-           'SIGM_ELNO_DEPL',)  )
+           OPTION=('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA'),)
 
 CALC_ELEM(reuse=MEST1,      
                        RESULTAT=MEST1,
@@ -84,48 +92,48 @@ CALC_NO(  reuse=MEST1,
 
 TEST_RESU(RESU=(
      # DEPLACEMENTS
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'DEPL', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,
          NOEUD = 'C',       NOM_CMP = 'DY',    VALE = 21.),
      # DEFORMATIONS
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'EPXY',    VALE = 3.),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'EPXZ',    VALE = 4.),
      # CONTRAINTES  (1) :
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'EPYZ',    VALE = 6.),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIXX',    VALE = 50461.97124),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIYY',    VALE = 80136.03723),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIZZ',    VALE = 68682.13737),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIXY',    VALE = 39559.09646),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIXZ',    VALE = 30622.54263),
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIYZ',    VALE = 84027.57994),
      # CONTRAINTES  (2) :
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIGM_ELNO_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          NOEUD = 'C',       NOM_CMP = 'SIXX',    VALE = 50461.97124),
      # DENSITE D'ENERGIE DE DEFORMATION  (1) :
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'ENEL_ELGA', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'ENEL_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-6,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'TOTALE',    VALE = 1.23652248E6),
      # DENSITE D'ENERGIE DE DEFORMATION  (2) :
-       _F(  RESULTAT = MEST1,  NOM_CHAM = 'ENEL_ELNO_ELGA', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST1,  NOM_CHAM = 'ENEL_ELNO_ELGA', NUME_ORDRE = 5,
         CRITERE = 'RELATIF',   PRECISION = 1.E-6,  MAILLE = 'TET1',
          NOEUD = 'A',       NOM_CMP = 'TOTALE',    VALE = 1.23652248E6))
             )
@@ -150,16 +158,17 @@ CHMATORT=AFFE_MATERIAU(  MAILLAGE=MA,
            AFFE=_F(  TOUT = 'OUI',   MATER = MATORTH) )
 
 
-MEST2=MECA_STATIQUE(       MODELE=MOD3D,    CHAM_MATER=CHMATORT,
-            CARA_ELEM=CAREL3D,    EXCIT=_F( CHARGE = CHAR3D),
+MEST2=STAT_NON_LINE(MODELE=MOD3D,
+                    CHAM_MATER=CHMATORT,
+                    CARA_ELEM=CAREL3D,
+                    EXCIT=_F( CHARGE = CHAR3D),
+                    COMP_INCR=_F(RELATION='ELAS'),
+                    INCREMENT=_F(LIST_INST=LISTE),);
 
-           )
-
-CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,            
+MEST2=CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,            
                 
 
-           OPTION=('EPSI_ELGA_DEPL',
-           'SIGM_ELNO_DEPL',)  )
+           OPTION=('EPSI_ELGA_DEPL',)  )
 
 CALC_ELEM(reuse=MEST2,      
                        RESULTAT=MEST2,
@@ -187,28 +196,24 @@ TEST_RESU(RESU=(
        _F(  RESULTAT = MEST2,  NOM_CHAM = 'EPSI_ELGA_DEPL', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'EPYZ',    VALE = 6.),
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIXX',    VALE = 2370.539917),
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIYY',    VALE = 78600.67657),
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIZZ',    VALE = 78692.31825),
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIXY',    VALE = 86435.10036),
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIXZ',    VALE = 16449.62266),
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA_DEPL', NUME_ORDRE = 1,
+       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIEF_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
          POINT = 1,       NOM_CMP = 'SIYZ',    VALE = 125577.2269),
-     # CONTRAINTES  (2) :
-       _F(  RESULTAT = MEST2,  NOM_CHAM = 'SIGM_ELNO_DEPL', NUME_ORDRE = 1,
-        CRITERE = 'RELATIF',   PRECISION = 1.E-7,  MAILLE = 'TET1',
-         NOEUD = 'C',       NOM_CMP = 'SIXX',    VALE = 2370.539917),
      # DENSITE D'ENERGIE DE DEFORMATION  (1) :
        _F(  RESULTAT = MEST2,  NOM_CHAM = 'ENEL_ELGA', NUME_ORDRE = 1,
         CRITERE = 'RELATIF',   PRECISION = 1.E-6,  MAILLE = 'TET1',
