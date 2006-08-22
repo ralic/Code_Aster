@@ -4,7 +4,7 @@
       CHARACTER*19   CNSVT,CNSVN
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,8 +24,8 @@ C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
 C
-C       XPRVIT   : X-FEM PROPAGATION DU CHAMP DE VITESSES
-C       ------     -     --                      ---       
+C       XPRVIT   : X-FEM PROPAGATION : EXTENSION DU CHAMP DE VITESSES
+C       ------     -     --                                  ---       
 C    CALCUL DE LA VITESSE DE PROPAGATION DE FISSURE SUR LE FOND
 C    ET EXTENSION DU CHAMP DE VITESSE A TOUS LES NOEUDS DU MAILLAGE
 C
@@ -59,7 +59,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*1    K1BID
       INTEGER        I,J,IBID,LONG,JCOOR,VALI,IRET,NBNO,JMIN,NBPTFF,
-     &               JFONF,JVTFF,JVNFF,JVTL,JVTV,JVNL,JVNV
+     &               JFONF,JVTFF,JVNFF,JVTL,JVTV,JVNL,JVNV,IFM,NIV,
+     &               JVIT,JBETA,I2
       REAL*8         C,M,R8B,BETA,G,EPS,VALR,XM,YM,ZM,R8MAEM,DMIN,SMIN,
      &               XI1,YI1,ZI1,XJ1,YJ1,ZJ1,XIJ,YIJ,ZIJ,XIM,YIM,ZIM,S,
      &               NORM2,XN,YN,ZN,D
@@ -70,7 +71,9 @@ C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
- 
+      CALL INFMAJ()
+      CALL INFNIV(IFM,NIV)
+      
 C  RECUPERATION DES PARAMETRES D'ENTREE DE L'OPERATEUR PROPA_XFEM
       CALL GETVID(' ','TABLE',1,1,1,TABLE,IBID)
       CALL GETVID('LOI_PROPA','LOI',1,1,1,LOI,IBID)
@@ -78,7 +81,7 @@ C  RECUPERATION DES PARAMETRES D'ENTREE DE L'OPERATEUR PROPA_XFEM
           CALL GETVR8('LOI_PROPA','C',1,1,1,C,IBID)
           CALL GETVR8('LOI_PROPA','M',1,1,1,M,IBID)
       ENDIF
-
+      
 C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
@@ -89,22 +92,11 @@ C  RECUPERATION DU FOND DE FISSURE
       NBPTFF=LONG/4
    
 C  CREATION DES VECTEURS DE VITESSE DE PROPAGATION EN FOND DE FISSURE
+      CALL WKVECT('&&XPRVIT.VITESSE','V V R8',NBPTFF,JVIT)
+      CALL WKVECT('&&XPRVIT.ANGLE','V V R8',NBPTFF,JBETA)
       CALL WKVECT('&&XPRVIT.VT_PROPA_FF','V V R8',NBPTFF,JVTFF)
       CALL WKVECT('&&XPRVIT.VN_PROPA_FF','V V R8',NBPTFF,JVNFF)
 
-C  CALCUL ET STOCKAGE DE VT ET VN EN FOND DE FISSURE
-      LIPACR(1)='NUM_PT'
-      DO 100 I=1,NBPTFF
-        CALL TBLIVA(TABLE,1,LIPACR,I,R8B,CBID,K8B,K8B,R8B,
-     &   'G_LOCAL',CTYPE,VALI,G,VALC,VALK,IRET)
-        CALL TBLIVA(TABLE,1,LIPACR,I,R8B,CBID,K8B,K8B,R8B,
-     &   'BETA_LOCAL',CTYPE,VALI,BETA,VALC,VALK,IRET)
-
-        ZR(JVTFF-1+(I-1)+1)=C*(G**M)*COS(BETA)
-        ZR(JVNFF-1+(I-1)+1)=C*(G**M)*SIN(BETA)
-
- 100  CONTINUE
- 
 C  CREATION DES CHAM_NO_S CONTENANT VT & VN 
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSVT)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSVN)
@@ -112,6 +104,21 @@ C  CREATION DES CHAM_NO_S CONTENANT VT & VN
       CALL JEVEUO(CNSVT//'.CNSL','E',JVTL)
       CALL JEVEUO(CNSVN//'.CNSV','E',JVNV)
       CALL JEVEUO(CNSVN//'.CNSL','E',JVNL)
+
+C  CALCUL ET STOCKAGE DE VT ET VN EN FOND DE FISSURE
+      LIPACR(1)='NUM_PT'
+      DO 100 I=1,NBPTFF
+         CALL TBLIVA(TABLE,1,LIPACR,I,R8B,CBID,K8B,K8B,R8B,
+     &      'G_LOCAL',CTYPE,VALI,G,VALC,VALK,IRET)
+         CALL TBLIVA(TABLE,1,LIPACR,I,R8B,CBID,K8B,K8B,R8B,
+     &      'BETA_LOCAL',CTYPE,VALI,BETA,VALC,VALK,IRET)
+
+         ZR(JVIT-1+I)=C*(G**M)
+         ZR(JBETA-1+I)=BETA
+         ZR(JVTFF-1+I)=ZR(JVIT-1+I)*COS(ZR(JBETA-1+I))
+         ZR(JVNFF-1+I)=ZR(JVIT-1+I)*SIN(ZR(JBETA-1+I))
+         
+ 100  CONTINUE
  
 C     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ(V)=V
       EPS = 1.D-12
@@ -125,7 +132,7 @@ C     INITIALISATION
          DMIN = R8MAEM()
          JMIN = 0
          SMIN = 0.D0
-C     BOUCLE SUR PT DE FONFIS (ALGO VOIR )
+C     BOUCLE SUR PT DE FONFIS
          DO 210 J=1,NBPTFF-1
 C        COORD PT I, ET J
             XI1 = ZR(JFONF-1+4*(J-1)+1)
@@ -169,12 +176,26 @@ C         DISTANCE MN
        ZL(JVNL+I-1) = .TRUE.
       
  200   CONTINUE
+ 
+C  IMPRESSION DES VITESSES DE PROPAGATION EN INFO=2
+C      IF (NIV.GT.1) THEN
+         WRITE(IFM,*) 'VITESSE DE PROPAGATION EN FOND DE FISSURE'
+         WRITE(IFM,*)  ' NUM_PT    VITESSE         BETA          VT    '
+     &               //'        VN'
+         DO 310 I=1,NBPTFF
+            WRITE(IFM,311) I,ZR(JVIT-1+I),ZR(JBETA-1+I),ZR(JVTFF+I-1),
+     &                     ZR(JVNFF+I-1)
+ 310      CONTINUE
+ 311      FORMAT(4X,I2,4X,4(D11.5,3X))
+C      ENDIF
 
       CALL JEDETR('&&XPRVIT.VT_PROPA_FF')
       CALL JEDETR('&&XPRVIT.VN_PROPA_FF')
+      CALL JEDETR('&&XPRVIT.VITESSE')
+      CALL JEDETR('&&XPRVIT.ANGLE')
 
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
       CALL JEDEMA()
-      END   
+      END

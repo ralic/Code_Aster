@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,23 +23,43 @@ DEBUT(CODE=_F(NOM='SSNV185J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
 
 #----------------------------------------------
-#           MAILLAGE  hexa_5_30_50
+#                 MAILLAGE  
 #----------------------------------------------
 
 PRE_GIBI();
 
+PT1 = [ 0. ,  0. , 0. ]
+PT2 = [ 0. , 10. , 0. ]
+PT3 = [ 1. , 10. , 0. ]
+
 MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
+MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
+                     MAILLAGE=MAILLAG1,
+                     CREA_GROUP_NO=( _F(NOM='NOEUD1',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT1,
+                                        PRECISION=1.E-6,
+                                        RAYON=1.E-6),
+                                     _F(NOM='NOEUD2',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT2,
+                                        PRECISION=1.E-6,
+                                        RAYON=1.E-6),
+                                     _F(NOM='NOEUD3',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT3,
+                                        PRECISION=1.E-6,
+                                        RAYON=1.E-6),                                    
+                                    ),
+                      INFO=1, );
+                      
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
                        LINE_QUAD=_F(GROUP_MA='VOL',),);
-
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                    MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),);
 
 #----------------------------------------------
 #                   MODELE
@@ -58,7 +78,7 @@ MODELE[0]=AFFE_MODELE(MAILLAGE=MAILLAG2,
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
-                       MODELE=MODELE[0],);                          
+                       );                          
 
 #----------------------------------------------
 #                   MATERIAU
@@ -102,9 +122,9 @@ FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE[0],
 
 PRES=-1.E6 
 CH1=AFFE_CHAR_MECA(MODELE=MODELE[0],
-                   DDL_IMPO=(_F(NOEUD='N3751',DX=0.0,DY=0.0,DZ=0.0,),
-                             _F(NOEUD='N9276',DZ=0.0,),
-                             _F(NOEUD='N3760',DX=0.0,DZ=0.0,),),);
+                   DDL_IMPO=(_F(GROUP_NO='NOEUD1',DX=0.0,DY=0.0,DZ=0.0,),
+                             _F(GROUP_NO='NOEUD2',DZ=0.0,),
+                             _F(GROUP_NO='NOEUD3',DX=0.0,DZ=0.0,),),);
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELE[0],
                    PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
@@ -117,10 +137,13 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELE[0],
 CHXFEM = [None]*5
 RESU = [None]*5
 SIF = [None]*5
+LSN = [None]*5
+LST = [None]*5
+
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 RI = 1.
-RS = 3.
+RS = 4.          
 
 for i in range(1,4) :
 
@@ -153,7 +176,8 @@ for i in range(1,4) :
                                    R_INF=RI,
                                    R_SUP=RS,),
                          LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                                     LISSAGE_G='LAGRANGE',),
+                                     LISSAGE_G='LAGRANGE',
+                                     DEGRE=0,),
                          INFO=1,);
 
    IMPR_TABLE(TABLE=SIF[i],);
@@ -161,19 +185,20 @@ for i in range(1,4) :
    if ( i != 3 ) :
       FISS[i]=PROPA_XFEM(MODELE=MODELE[i],
                          TABLE=SIF[i],
+                         METHODE='SIMPLEXE',
                          LOI_PROPA=_F(LOI='PARIS',
                                       C=1.,
                                       M=1.),
-                         GROUP_MA_ENRI='VOL',
+                         RAYON=RS,
                          INFO=1,);
-
+             
 #----------------------------------------------
 #         POST TRAITEMENT
 #----------------------------------------------
 #       SOLUTIONS ANALYTIQUES DE K1 :
 # POUR LE CHARGEMENT 1 : VOIR CHABOCHE P.53
 b=10
-afiss=[4.9 , 5.1 , 5.3 ]
+afiss=[4.9 , 5.4 , 5.9 ]
 coef1 = [None]*5
 fab = [None]*5
 K1REF = [None]*5
@@ -188,7 +213,7 @@ for i in range(1,4) :
               TYPE_TEST='MAX',               
               VALE=K1REF[i],
               CRITERE='RELATIF',
-              PRECISION=0.02,
+              PRECISION=0.05,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -198,7 +223,6 @@ for i in range(1,4) :
               CRITERE='RELATIF',
               PRECISION=0.05,
               REFERENCE='ANALYTIQUE',);
-
 
 #----------------------------------------------
 #         EDITION DE FICHIERS GMSH

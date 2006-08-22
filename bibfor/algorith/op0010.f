@@ -3,7 +3,7 @@
       INTEGER           IER
    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,24 +46,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       
-      INTEGER        I,IFM,NIV,IBID,IRET,NDIM,ADDIM,JFISS,JMAIL,JCARAF,
-     &               JCMCF,NMAEN1,NMAEN2,NMAEN3
-      REAL*8         LCMIN,CFLPRO,DELTAT,EPS,RAYON,PFI(3),VOR(3),
+      INTEGER        I,IFM,NIV,IBID,IRET,IRET2,NDIM,ADDIM,JFISS,JMAIL,
+     &               JCARAF,JCMCF,JFON,NMAEN1,NMAEN2,NMAEN3,CLSM,JCONX1,
+     &               JCONX2,NBMA,NBMAE
+      REAL*8         LCMIN,CFLPRO,DELTAT,RAYON,PFI(3),VOR(3),
      &               ORI(3),NORME
       CHARACTER*8    K8B,MODEL,NOMA,FISS,FISPRE,ALGOLA
       CHARACTER*16   K16B
-      CHARACTER*19   CNSVT,CNSVN,CNSLC,
-     &               GRLT,GRLN,CNSLT,CNSLN,CNSEN,CNSBAS,CNSENR
-      CHARACTER*24   OBJMA,CHFOND
+      CHARACTER*19   CNSVT,CNSVN,GRLT,GRLN,CNSLT,CNSLN,CNSEN,CNSBAS,
+     &               CNSENR,NOESOM,ISOZRO,NORESI,CNXINV
+      CHARACTER*24   OBJMA,CHFOND,LISMAE,LISNOE
       COMPLEX*16     CBID
-      
-      INTEGER       CLSM,JMA,IMA,ITYPMA,AR(12,2),NBAR,IA,NA,NB,NUNOA,
-     &              NUNOB,JLNSV,JLTSV,JCONX1,JCONX2,NMAABS,NBMA
-      CHARACTER*19  MAI
-      CHARACTER*8   TYPMA
-      REAL*8        D,LSNA,LSNB,CRILSN,LSTA,LSTB,CRILST
-      PARAMETER     (CRILSN=1.D-2, CRILST=1.D-3)
-      REAL*8        R8PREM
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -72,227 +65,221 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
-      
+
       CALL GETRES(FISS,K16B,K16B)
 
-C  RECUPERATION DU MODELE
+C  RECUPERATION DU MODELE, DU MAILLAGE ET DE SES CARACTERISTIQUES
       CALL GETVID(' ','MODELE',1,1,1,MODEL,IBID)
-
-C  RECUPERATION DU MAILLAGE ET SES CARACTERISTIQUES
       OBJMA = MODEL//'.MODELE    .NOMA'
       CALL JEVEUO(OBJMA,'L',JMAIL)
       NOMA = ZK8(JMAIL)
-      
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
-
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B,IRET)
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
 
-C  RECUPERATION DE LA FISSURE PRECEDENTE ET DE SES CARACTERISTIQUES
+C  CONNECTIVITE INVERSEE
+      CNXINV = '&&XPRREO.CNCINV'
+      CALL CNCINV (NOMA,IBID,0,'V',CNXINV)
+      
+C  RECUPERATION DE LA FISSURE PRECEDENTE
       CALL JEVEUO(MODEL//'.FISS','L',JFISS)
       FISPRE = ZK8(JFISS)
       
+C  RECUPERATION DES LEVEL SETS ET GRADIENTS
       CNSLT = '&&OP0010.CNSLT'
-      CNSLN = 'OP0010.CNSLN'
-      GRLT = 'OP0010.GRLT'
-      GRLN = 'OP0010.GRLN'
+      CNSLN = '&&OP0010.CNSLN'
+      GRLT = '&&OP0010.GRLT'
+      GRLN = '&&OP0010.GRLN'
       CALL CNOCNS(FISPRE//'.LTNO','V',CNSLT)
       CALL CNOCNS(FISPRE//'.LNNO','V',CNSLN)
       CALL CNOCNS(FISPRE//'.GRLTNO','V',GRLT)
       CALL CNOCNS(FISPRE//'.GRLNNO','V',GRLN)
+      
+C  DUPLICATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
+      LISMAE = FISS//'.GROUP_MA_ENRI'
+      LISNOE = FISS//'.GROUP_NO_ENRI'
+      CALL JEDUPO(FISPRE//'.GROUP_MA_ENRI','G',LISMAE,.FALSE.)
+      CALL JEDUPO(FISPRE//'.GROUP_NO_ENRI','G',LISNOE,.FALSE.)
 
+C  RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
       CALL JEDUPO(FISPRE//'.CARAFOND','G',FISS//'.CARAFOND',.FALSE.)
       CALL JEVEUO(FISS//'.CARAFOND','L',JCARAF)
       RAYON = ZR(JCARAF)
       IF (NDIM.EQ.3) THEN
-         DO 100 I=1,3
-            PFI(I) = ZR(JCARAF+I)
-            VOR(I) = ZR(JCARAF+3+I)
-            ORI(I) = ZR(JCARAF+6+I)
- 100     CONTINUE
+         DO 101 I=1,3
+            VOR(I) = ZR(JCARAF+I)
+            ORI(I) = ZR(JCARAF+3+I)
+ 101     CONTINUE
+      CALL JEVEUO(FISPRE//'.FONDFISS','L',JFON)
+      DO 102 I=1,3
+            PFI(I) = ZR(JFON-1+I)
+ 102  CONTINUE
       ENDIF
 
-C  RECUPERATION DES DONNEES DE CONTACT
-      CALL JEDUPO(FISPRE//'.CONTACT.CARACF','G',FISS//'.CONTACT.CARACF',
-     &            .FALSE.)
+C  DUPLICATION DES DONNEES DE CONTACT
       CALL JEDUPO(FISPRE//'.CONTACT.ECPDON','G',FISS//'.CONTACT.ECPDON',
      &            .FALSE.)
       CALL JEDUPO(FISPRE//'.CONTACT.METHCO','G',FISS//'.CONTACT.METHCO',
      &            .FALSE.)
       CALL JEDUPO(FISPRE//'.CONTACT.XFEM','G',FISS//'.CONTACT.XFEM',
      &            .FALSE.)
-      CALL JEVEUO(FISS//'.CONTACT.CARACF','L',JCMCF)
-
-      IF ((ZR(JCMCF-1+9)).EQ.(0.D0)) THEN
+      
+      CALL JEEXIN(FISPRE//'.CONTACT.CARACF',IRET)
+      IF (IRET.EQ.0) THEN
          ALGOLA = 'NON'
-      ELSEIF ((ZR(JCMCF-1+9)).EQ.(1.D0)) THEN
-         ALGOLA = 'VERSION1'
-      ELSEIF ((ZR(JCMCF-1+9)).EQ.(2.D0)) THEN
-         ALGOLA = 'VERSION2'
+      ELSE
+         CALL JEDUPO(FISPRE//'.CONTACT.CARACF','G',
+     &               FISS//'.CONTACT.CARACF',.FALSE.)
+         CALL JEVEUO(FISS//'.CONTACT.CARACF','L',JCMCF)
+         IF ((ZR(JCMCF-1+9)).EQ.(0.D0)) THEN
+            ALGOLA = 'NON'
+         ELSEIF ((ZR(JCMCF-1+9)).EQ.(1.D0)) THEN
+            ALGOLA = 'VERSION1'
+         ELSEIF ((ZR(JCMCF-1+9)).EQ.(2.D0)) THEN
+            ALGOLA = 'VERSION2'
+         ENDIF
       ENDIF
 
 C-----------------------------------------------------------------------
 C     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 C-----------------------------------------------------------------------
-      IF (NIV.GT.1)
-     & WRITE(IFM,*)'OP0010-1) EXTENSION DU CHAMP DE VITESSE AUX NOEUDS'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-1) CALCUL DU CHAMP DE VITESSE AUX NOEUDS'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,901)
 
       CNSVT='&&OP0010.CNSVT'
       CNSVN='&&OP0010.CNSVN'
 
       CALL XPRVIT(NOMA,FISPRE,CNSVT,CNSVN)
-      
+
 C-----------------------------------------------------------------------
 C     CALCUL DES LONGUEURS CARACTERISTIQUES ET DES CONDITIONS CFL
-C       AVEC L'OPTION DE CALCUL 'CFL_XFEM'
 C-----------------------------------------------------------------------
-      IF (NIV.GT.1)  WRITE(IFM,*)'OP0010-2) CALCUL DES CONDITIONS CFL '
-     &            //'ET LONGUEURS CARACTERISTIQUES'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*) 'OP0010-2) '//
+     &      'CALCUL DES CONDITIONS CFL ET LONGUEURS CARACTERISTIQUES'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,902)
 
-      CNSLC='&&OP0010.CNSLC'
-      
-      CALL XPRCFL(MODEL,CNSVT,CFLPRO,LCMIN,CNSLC)
+      CALL XPRCFL(MODEL,CNSVT,CFLPRO,LCMIN)
       
 C-----------------------------------------------------------------------
-C     AJUSTEMENT DE VT POUR EVITER LA MODIFICATION DE LA FISSURE
-C      EXISTANTE
+C     AJUSTEMENT DE VT
 C-----------------------------------------------------------------------
-      IF (NIV.GT.1)
-     & WRITE(IFM,*)'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,903)
 
       DELTAT=CFLPRO
-      EPS=1.0D-2
-      CALL XPRAJU(NOMA,CNSLT,CNSVT,CNSVN,DELTAT,EPS)
-
+      CALL XPRAJU(NOMA,CNSLT,CNSVT,CNSVN,DELTAT)
+      
 C-----------------------------------------------------------------------
 C     PROPAGATION DES LEVEL SETS
 C-----------------------------------------------------------------------
-      IF (NIV.GT.1)  WRITE(IFM,*)'OP0010-4) PROPAGATION DES LEVEL SETS'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-4) PROPAGATION DES LEVEL SETS'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,904)
 
       CALL XPRLS(MODEL,NOMA,CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN,DELTAT)
 
       CALL JEDETR(CNSVT)
       CALL JEDETR(CNSVN)
+           
+C-----------------------------------------------------------------------
+C     INITIALISATION DES PARAMETRES DE XPRREI ET XPRREO
+C-----------------------------------------------------------------------
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-5) REINITIALISATION DE LSN'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,905)
+     
+      NOESOM = '&&OP0010.NOESOM'
+      NORESI = '&&OP0010.NORESI'
+      
+      CALL XPRINI(MODEL,NOMA,FISPRE,FISS,CNSLN,CNSLT,GRLT,NOESOM,NORESI)
+      
+C-----------------------------------------------------------------------
+C     REINITIALISATION DE LSN
+C-----------------------------------------------------------------------
+
+      DELTAT = LCMIN*0.9D0
+      ISOZRO = '&&OP0010.ISOZRO'
+
+      CALL XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,DELTAT,
+     &            LCMIN,'LN',ISOZRO,CNXINV)
+      
+C-----------------------------------------------------------------------
+C     REORTHOGONALISATION DE LST
+C-----------------------------------------------------------------------
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-6) REORTHOGONALISATION DE LST'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,906)
+
+      CALL XPRREO(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,GRLT,
+     &            DELTAT,LCMIN,ISOZRO,CNXINV)
+     
+      CALL JEDETR(ISOZRO)
      
 C-----------------------------------------------------------------------
-C     REINITIALISATION DE LA LEVEL SET NORMALE
+C     REINITIALISATION DE  LST
 C-----------------------------------------------------------------------
-C     POUR L'INSTANT, CETTE PARTIE NE FONCTIONNE QU'AVEC DU K1 PUR,
-C   ON LA DESACTIVE CAR ELLE EST SENSEE CONVERGER DES LA 1ERE ITERATION
-C-----------------------------------------------------------------------
-      IF (NIV.GT.1)  WRITE(IFM,*)'OP0010-5) REINITIALISATION DE LSN'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-7) REINITIALISATION DE LST'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,907)
 
-      DELTAT=LCMIN*5.0D-2
-C      CALL XPRINI(MODEL,NOMA,CNSLN,GRLN,DELTAT,LCMIN,CNSLC)
-
-C-----------------------------------------------------------------------
-C     REORTHOGONALISATION DE LA LEVEL SET TANGENTE
-C-----------------------------------------------------------------------
-C     POUR L'INSTANT, CETTE PARTIE NE FONCTIONNE QU'AVEC DU K1 PUR,
-C   ON LA DESACTIVE CAR ELLE EST SENSEE CONVERGER DES LA 1ERE ITERATION
-C-----------------------------------------------------------------------
-      IF (NIV.GT.1)  WRITE(IFM,*)'OP0010-6) REORTHOGONALISATION DE LST'
-
-C      CALL XPRORT(MODEL,NOMA,CNSLN,CNSLT,GRLN,GRLT,DELTAT,LCMIN,CNSLC)
-
-C-----------------------------------------------------------------------
-C     REINITIALISATION DE LA LEVEL SET TANGENTE
-C-----------------------------------------------------------------------
-C     POUR L'INSTANT, CETTE PARTIE NE FONCTIONNE QU'AVEC DU K1 PUR,
-C   ON LA DESACTIVE CAR ELLE EST SENSEE CONVERGER DES LA 1ERE ITERATION
-C-----------------------------------------------------------------------
-      IF (NIV.GT.1)  WRITE(IFM,*)'OP0010-7) REINITIALISATION DE LST'
-
-C      CALL XPRINI(MODEL,NOMA,CNSLT,GRLT,DELTAT,LCMIN,CNSLC)
-
-      CALL JEDETR(CNSLC)
+      CALL XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLT,CNSLT,GRLT,DELTAT,
+     &            LCMIN,'LT',ISOZRO,CNXINV)
+     
+      CALL JEDETR(ISOZRO)
+      CALL JEDETR(NOESOM)
       
 C-----------------------------------------------------------------------
 C     REAJUSTEMENT DES LEVEL SETS TROP PROCHES DE 0
 C-----------------------------------------------------------------------
-     
-      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B,IRET)
+C      IF (NIV.GT.1) 
+      WRITE(IFM,*)
+      WRITE(IFM,*)'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
+C      IF (NIV.GT.1) 
+      WRITE(IFM,908)
+
+      CALL XAJULS(IFM,NOMA,NBMA,CNSLT,CNSLN,JCONX1,JCONX2,CLSM)
+
+      WRITE(IFM,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',
+     &            CLSM
       
-      CALL JEVEUO(CNSLN//'.CNSV','E',JLNSV)
-      CALL JEVEUO(CNSLT//'.CNSV','E',JLTSV)
-      
-C     COMPTEUR DES LSN ET LST MODIFIÉES
-      CLSM=0
-      MAI=NOMA//'.TYPMAIL'
-      CALL JEVEUO(MAI,'L',JMA)
-
-C     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
-      DO 200 IMA=1,NBMA
-        NMAABS=IMA
-        ITYPMA=ZI(JMA-1+IMA)
-        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-
-C       BOUCLE SUR LES ARETES DE LA MAILLE VOLUMIQUE
-        CALL CONARE(TYPMA,AR,NBAR)
-        IF (NBAR .GT. 0) THEN
-         DO 210 IA=1,NBAR
-          NA=AR(IA,1)
-          NB=AR(IA,2)
-          NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)
-          NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NB-1)
-
-          LSNA=ZR(JLNSV-1+(NUNOA-1)+1)
-          LSNB=ZR(JLNSV-1+(NUNOB-1)+1)   
-
-          IF (ABS(LSNA-LSNB).GT.R8PREM()) THEN
-            D=LSNA/(LSNA-LSNB)
-            IF (ABS(D).LE.CRILSN) THEN
-C              RÉAJUSTEMENT DE LSNA
-               ZR(JLNSV-1+(NUNOA-1)+1)=0.D0
-               CLSM=CLSM+1
-            ENDIF
-            IF (ABS(D-1.D0).LE.(CRILSN)) THEN
-C              RÉAJUSTEMENT DE LSNB
-               ZR(JLNSV-1+(NUNOB-1)+1)=0.D0
-               CLSM=CLSM+1
-            ENDIF
-          ENDIF 
-
-          LSTA=ZR(JLTSV-1+(NUNOA-1)+1)
-          LSTB=ZR(JLTSV-1+(NUNOB-1)+1)    
-
-          IF (ABS(LSTA-LSTB).GT.R8PREM()) THEN          
-            D=LSTA/(LSTA-LSTB)
-            IF (ABS(D).LE.CRILST) THEN
-C              RÉAJUSTEMENT DE LSTA
-               ZR(JLTSV-1+(NUNOA-1)+1)=0.D0
-               CLSM=CLSM+1
-            ENDIF
-            IF (ABS(D-1.D0).LE.(CRILST)) THEN
-C              RÉAJUSTEMENT DE LSTB
-               ZR(JLTSV-1+(NUNOB-1)+1)=0.D0
-               CLSM=CLSM+1
-            ENDIF
-          ENDIF
- 210     CONTINUE
-        ENDIF
- 200  CONTINUE
-
-
 C-----------------------------------------------------------------------
 C     EXTENSION DES LEVEL SETS AUX NOEUDS MILIEUX
 C-----------------------------------------------------------------------
 
       CALL XPRMIL(NOMA,CNSLT,CNSLN)
-      
-C-----------------------------------------------------------------------
-C    FIN DE LA PARTIE PROPAGATION ;
-C    LA SD FISS_XFEM EST ENRICHIE COMME DANS OP0041 : DEFI_FISS_XFEM
-C-----------------------------------------------------------------------
-      IF (NIV.GT.1)
-     & WRITE(IFM,*)'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
-      
+            
       CALL CNSCNO(CNSLT,' ','NON','G',FISS//'.LTNO')
       CALL CNSCNO(CNSLN,' ','NON','G',FISS//'.LNNO')
       CALL CNSCNO(GRLT,' ','NON','G',FISS//'.GRLTNO' )
       CALL CNSCNO(GRLN,' ','NON','G',FISS//'.GRLNNO' )
 
+C----------------------------------------------------------------------+
+C                 FIN DE LA PARTIE PROPAGATION :                       |
+C                 ----------------------------                         |
+C    LA SD FISS_XFEM EST ENRICHIE COMME DANS OP0041 : DEFI_FISS_XFEM   |
+C   ( TOUTE MODIF. AFFECTANT OP0041 DOIT ETRE REPERCUTEE PLUS BAS,     |
+C     EXCEPTE L'APPEL A SDCONX )                                       |
+C----------------------------------------------------------------------+
+      
 C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT ET DES POINTS DU FOND DE FISSURE
 C-----------------------------------------------------------------------
@@ -304,10 +291,10 @@ C-----------------------------------------------------------------------
         IF (NORME.LT.1.D-10) CALL UTMESS('F','OP0041','LA NORME '//
      &                              'DU VECTEUR VECT_ORIE EST NULLE')
         CALL XNRCH3(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,PFI,VOR,ORI,
-     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3)
+     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
       ELSEIF (NDIM .EQ. 2) THEN
         CALL XNRCH2(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
-     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3)
+     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
       ENDIF
       
       CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
@@ -347,7 +334,16 @@ C       MULTIPLICATUERS DE LAGRANGE DE CONTACT
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
-      IF (NIV.GT.1)  WRITE(IFM,*)'OP0010-9) FIN'
-    
+      CALL JEDETR(CNXINV)
+
+ 901  FORMAT (10X,37('-'))
+ 902  FORMAT (10X,55('-'))
+ 903  FORMAT (10X,35('-'))
+ 904  FORMAT (10X,26('-'))
+ 905  FORMAT (10X,23('-'))
+ 906  FORMAT (10X,26('-'))
+ 907  FORMAT (10X,23('-'))
+ 908  FORMAT (10X,33('-'))
+
       CALL JEDEMA()
       END

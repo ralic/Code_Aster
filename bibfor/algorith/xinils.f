@@ -5,7 +5,7 @@
       CHARACTER*19  CNSLT,CNSLN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,12 +61,11 @@ C
       INTEGER       NBNO,INO,JCOOR,NBMAF,I
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
       REAL*8        VALPU(3)
-      REAL*8        NORME,LSNA,LSNB,D,CRILSN,LSTA,LSTB,CRILST
+      REAL*8        NORME,LSNA,LSNB,D,LSTA,LSTB
       CHARACTER*8   K8BID,NOMPU(3),TYPMA,NOMNO
       CHARACTER*16  K16BID
       CHARACTER*19  MAI
       CHARACTER*24  LISMA,LISNO,LISSE
-      PARAMETER     (CRILSN=1.D-2, CRILST=1.D-3)
       REAL*8        R8PREM
 C
       CALL JEMARQ()
@@ -141,78 +140,7 @@ C-----------------------------------------------------------------------
 C     REAJUSTEMENT DE LSN (BOOK III 06/02/04) ET LST
 C-----------------------------------------------------------------------
 
-C BUT : ON MODIFIE LES VALEURS DE LSN AUX NOEUDS SI TROP PROCHES DE 0
-C ---   POUR ÉVITER LES ERREURS D'INTÉGRATION
-     
-C     COMPTEUR DES LSN ET LST MODIFIÉES
-      CLSM=0
-      MAI=NOMA//'.TYPMAIL'
-      CALL JEVEUO(MAI,'L',JMA)
-
-C     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
-      DO 200 IMA=1,NBMA
-        NMAABS=IMA
-        ITYPMA=ZI(JMA-1+IMA)
-        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-
-C       BOUCLE SUR LES ARETES DE LA MAILLE VOLUMIQUE
-        CALL CONARE(TYPMA,AR,NBAR)
-        IF (NBAR .GT. 0) THEN
-         DO 210 IA=1,NBAR
-          NA=AR(IA,1)
-          NB=AR(IA,2)
-          NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)
-          NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NB-1)
-
-          LSNA=ZR(JLNSV-1+(NUNOA-1)+1)
-          LSNB=ZR(JLNSV-1+(NUNOB-1)+1)   
-
-          IF (ABS(LSNA-LSNB).GT.R8PREM()) THEN
-            D=LSNA/(LSNA-LSNB)
-            IF (ABS(D).LE.CRILSN) THEN
-C              RÉAJUSTEMENT DE LSNA
-               ZR(JLNSV-1+(NUNOA-1)+1)=0.D0
-               ZL(JLNSL-1+(NUNOA-1)+1)=.TRUE.
-               CLSM=CLSM+1
-            ENDIF
-            IF (ABS(D-1.D0).LE.(CRILSN)) THEN
-C              RÉAJUSTEMENT DE LSNB
-               ZR(JLNSV-1+(NUNOB-1)+1)=0.D0
-               ZL(JLNSL-1+(NUNOB-1)+1)=.TRUE.
-               CLSM=CLSM+1
-            ENDIF
-          ENDIF 
-
-          LSTA=ZR(JLTSV-1+(NUNOA-1)+1)
-          LSTB=ZR(JLTSV-1+(NUNOB-1)+1)    
-
-          IF (ABS(LSTA-LSTB).GT.R8PREM()) THEN          
-            D=LSTA/(LSTA-LSTB)
-            IF (ABS(D).LE.CRILST) THEN
-C              RÉAJUSTEMENT DE LSTA
-               ZR(JLTSV-1+(NUNOA-1)+1)=0.D0
-               ZL(JLTSL-1+(NUNOA-1)+1)=.TRUE.
-               CLSM=CLSM+1
-            ENDIF
-            IF (ABS(D-1.D0).LE.(CRILST)) THEN
-C              RÉAJUSTEMENT DE LSTB
-               ZR(JLTSV-1+(NUNOB-1)+1)=0.D0
-               ZL(JLTSL-1+(NUNOB-1)+1)=.TRUE.
-               CLSM=CLSM+1
-            ENDIF
-          ENDIF
- 210     CONTINUE
-        ENDIF
- 200  CONTINUE
-
-C     CONTROLE ET MIZE A ZERO 
-C      DO 300 INO=1,NBNO
-C        IF (ZL(JLNSL-1+(INO-1)+1).AND.
-C     &      ABS(ZR(JLNSV-1+(INO-1)+1)).LE.1.D-16) THEN
-C          ZR(JLNSV-1+(INO-1)+1)=0.D0
-C          CLSM=CLSM+1
-C        ENDIF
-C 300  CONTINUE
+      CALL XAJULS(IFM,NOMA,NBMA,CNSLT,CNSLN,JCONX1,JCONX2,CLSM)
 
       WRITE(IFM,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',CLSM
       WRITE(IFM,*)'FIN DU CALCUL DES LEVEL-SETS'

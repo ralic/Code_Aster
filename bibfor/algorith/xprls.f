@@ -6,7 +6,7 @@
       CHARACTER*19   CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN
   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,8 +69,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER          I,IFM,NIV,NBNO,IRET,JLTNO,JLNNO,JGRTNO,JGRNNO,
      &                 JVTNO,JVNNO,JLTI,JLTIL,JLNI,JLNIL,JGRTI,JGRNI
-      CHARACTER*8      K8B,FISSI,FISSR
-      CHARACTER*19     CNSLTI,CNSLNI,CNSGTI,CNSGNI
+      CHARACTER*8      K8B,LPAIN(2),LPAOUT(1)
+      CHARACTER*19     CNSLTI,CNSLNI,CNSGTI,CNSGNI,CHGRTI,CHGRNI,CHAMSI,
+     &                 CHGRLT,CHGRLN,CHAMS,CNOLTI,CNOLNI,CNOLT,CNOLN
+      CHARACTER*24     OBJMA,LCHIN(2),LCHOUT(1),LIGRMO
       REAL*8           NORMGN,NORMGT,NORGNI,NORGTI
 
 C-----------------------------------------------------------------------
@@ -80,9 +82,11 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
-
+      
 C  RECUPERATION DE CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
+      
+      WRITE(IFM,*)'   DELTA_T = ',DELTAT
 
 C   RECUPERATION DE L'ADRESSE DES VALEURS DE LT, LN ET LEURS GRADIENTS
       CALL JEVEUO(CNSLT//'.CNSV','E',JLTNO)
@@ -94,16 +98,26 @@ C   RECUPERATION DES ADRESSES DES CHAMPS DE VITESSE AUX NOEUDS
       CALL JEVEUO(CNSVT//'.CNSV','L',JVTNO)
       CALL JEVEUO(CNSVN//'.CNSV','L',JVNNO)
       
-C     CREATION DES FISSURE INTERMEDIAIRE & RESULTANTE VOLATILES
-      FISSI='&&XPRLFI'
-      FISSR='&&XPRLFR'
-      
+C     CREATION DES OBJETS VOLATILES
+      CNSLTI = '&&XPRLS.CNSLTI'
+      CNSLNI = '&&XPRLS.CNSLNI'
+      CNOLTI = '&&XPRLS.CNOLTI'
+      CNOLNI = '&&XPRLS.CNOLNI'
+      CHGRTI = '&&XPRLS.CHGRTI'
+      CHGRNI = '&&XPRLS.CHGRNI'
+      CNSGTI = '&&XPRLS.CNSGTI'
+      CNSGNI = '&&XPRLS.CNSGNI'
+      CHGRLT = '&&XPRLS.CHGRLT'
+      CHGRLN = '&&XPRLS.CHGRLN'
+      CHAMS  = '&&XPRLS.CHAMS'
+      CNOLT  = '&&XPRLS.CNOLT'
+      CNOLN  = '&&XPRLS.CNOLN'
+
+
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL SETS INTERMEDIAIRES
 C-----------------------------------------------------------------------
       
-      CNSLTI='&&XPRLS.CNSLTI'
-      CNSLNI='&&XPRLS.CNSLNI'
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSLTI)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSLNI)
       
@@ -134,19 +148,41 @@ C-----------------------------------------------------------------------
 C     CALCUL DES GRADIENTS DES LEVEL SETS INTERMEDIAIRES
 C-----------------------------------------------------------------------
       
-      CNSGTI = '&&XPRLS.CNSGTI'
-      CNSGNI = '&&XPRLS.CNSGNI'
+C  GRADIENT DE LTI
+      CALL CNSCNO(CNSLTI,' ','NON','V',CNOLTI)
 
-      CALL CNSCNO(CNSLTI,' ','NON','V',FISSI//'.LTNO')
-      CALL CNSCNO(CNSLNI,' ','NON','V',FISSI//'.LNNO')
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = NOMA//'.COORDO'
+      LPAIN(2) = 'PNEUTER'
+      LCHIN(2) = CNOLTI
+      LPAOUT(1)= 'PGNEUTR'
+      LCHOUT(1)= CHGRTI
+      LIGRMO = MODEL//'.MODELE'
 
-      CALL XGRALS(IFM,MODEL,NOMA,FISSI,CNSGTI,CNSGNI)
+      CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
+     &            LCHOUT,LPAOUT,'V')
+      
+      CALL CELCES ( CHGRTI, 'V', CHAMS ) 
+      CALL CESCNS ( CHAMS, ' ', 'V', CNSGTI )
+      CALL JEVEUO ( CNSGTI//'.CNSV','L',JGRTI)
 
-      CALL JEVEUO(CNSGTI//'.CNSV','L',JGRTI)
-      CALL JEVEUO(CNSGNI//'.CNSV','L',JGRNI)
-      CALL JEDETR(FISSI//'.LTNO')
-      CALL JEDETR(FISSI//'.LNNO')
-      CALL JEDETR(FISSI)
+C  GRADIENT DE LNI
+      CALL CNSCNO(CNSLNI,' ','NON','V',CNOLNI)
+
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = NOMA//'.COORDO'
+      LPAIN(2) = 'PNEUTER'
+      LCHIN(2) = CNOLNI
+      LPAOUT(1)= 'PGNEUTR'
+      LCHOUT(1)= CHGRNI
+      LIGRMO = MODEL//'.MODELE'
+
+      CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
+     &            LCHOUT,LPAOUT,'V')
+      
+      CALL CELCES ( CHGRNI, 'V', CHAMS ) 
+      CALL CESCNS ( CHAMS, ' ', 'V', CNSGNI )
+      CALL JEVEUO ( CNSGNI//'.CNSV','L',JGRNI)
 
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL SETS RESULTANTES
@@ -170,23 +206,58 @@ C-----------------------------------------------------------------------
          ENDIF
  200  CONTINUE
 
-      CALL JEDETR(CNSLTI)
-      CALL JEDETR(CNSLNI)
-      CALL JEDETR(CNSGTI)
-      CALL JEDETR(CNSGNI)
-
 C-----------------------------------------------------------------------
 C     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES
 C-----------------------------------------------------------------------
+       
+C  GRADIENT DE LT
+      CALL CNSCNO(CNSLT,' ','NON','V',CNOLT)
+
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = NOMA//'.COORDO'
+      LPAIN(2) = 'PNEUTER'
+      LCHIN(2) = CNOLT
+      LPAOUT(1)= 'PGNEUTR'
+      LCHOUT(1)= CHGRLT
+      LIGRMO = MODEL//'.MODELE'
+
+      CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
+     &            LCHOUT,LPAOUT,'V')
       
-      CALL CNSCNO ( CNSLT,' ','NON','G',FISSR//'.LTNO' )
-      CALL CNSCNO ( CNSLN,' ','NON','G',FISSR//'.LNNO' )
+      CALL CELCES ( CHGRLT, 'V', CHAMS ) 
+      CALL CESCNS ( CHAMS, ' ', 'V', GRLT )
 
-      CALL XGRALS(IFM,MODEL,NOMA,FISSR,GRLT,GRLN)
+C  GRADIENT DE LN
+      CALL CNSCNO(CNSLN,' ','NON','V',CNOLN)
 
-      CALL JEDETR(FISSR//'.LTNO')
-      CALL JEDETR(FISSR//'.LNNO')
-      CALL JEDETR(FISSR)
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = NOMA//'.COORDO'
+      LPAIN(2) = 'PNEUTER'
+      LCHIN(2) = CNOLN
+      LPAOUT(1)= 'PGNEUTR'
+      LCHOUT(1)= CHGRLN
+      LIGRMO = MODEL//'.MODELE'
+
+      CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
+     &            LCHOUT,LPAOUT,'V')
+      
+      CALL CELCES ( CHGRLN, 'V', CHAMS ) 
+      CALL CESCNS ( CHAMS, ' ', 'V', GRLN )
+
+C  DESTRUCTION DES OBJETS VOLATILES
+      CALL JEDETR(CNSLTI)
+      CALL JEDETR(CNSLNI)
+      CALL JEDETR(CNOLTI)
+      CALL JEDETR(CNOLNI)
+      CALL JEDETR(CHGRTI)
+      CALL JEDETR(CHGRNI)
+      CALL JEDETR(CNSGTI)
+      CALL JEDETR(CNSGNI)
+      CALL JEDETR(CHGRLT)
+      CALL JEDETR(CHGRLN)
+      CALL JEDETR(CHAMS)
+      CALL JEDETR(CNOLT)
+      CALL JEDETR(CNOLN)
 
 C-----------------------------------------------------------------------
 C     FIN

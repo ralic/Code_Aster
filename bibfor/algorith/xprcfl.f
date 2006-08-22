@@ -1,11 +1,11 @@
-      SUBROUTINE XPRCFL(MODEL,CNSVT,CFLPRO,LCMIN,CNSLC)
+      SUBROUTINE XPRCFL(MODEL,CNSVT,CFLPRO,LCMIN)
       IMPLICIT NONE
       REAL*8         CFLPRO,LCMIN
-      CHARACTER*19   CNSVT,CNSLC
+      CHARACTER*19   CNSVT
       CHARACTER*8    MODEL
   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,10 +25,10 @@ C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
 C
-C       XPRCFL   : X-FEM PROPAGATION ; CALCUL DES CONDITIONS CFL
+C       XPRCFL   : X-FEM PROPAGATION : CALCUL DES CONDITIONS CFL
 C       ------     -     --                                  ---       
 C    CALCUL DES CONDITIONS CFL DE PROPAGATION, ET DES LONGUEUR
-C     CARACTERISTIQUES MINIMALE D'ELEMNTS
+C     CARACTERISTIQUES MINIMALE D'ELEMENTS
 C
 C    ENTREE
 C        MODEL   : NOM DU CONCEPT MODELE
@@ -37,9 +37,6 @@ C
 C    SORTIE
 C        CFLPRO  : LIMITE MAXI CFL POUR LE PAS DE TEMPS DE PROPAGATION
 C        LCMIN   : LONGUEUR CARACTERISTIQUE MINIMALE DU MAILLAGE
-C        CNSLC   : CHAM_NO_S DE LONGUEUR CARACTERISTIQUE
-C                  (ISSU DE CESCNS, C'EST LA MOYENNE DES PLUS PETITES
-C                   ARETES DES ELEMENTS CONTENANT LE NOEUD)
 C
 C     ------------------------------------------------------------------
 
@@ -63,10 +60,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER        IBID,IFM,NIV
       CHARACTER*8    LPAIN(2),LPAOUT(2)
-      CHARACTER*19   CNOVT,CELCFL,CELLC,CESLC
+      CHARACTER*19   CNOVT,CELCFL,CELLC
       CHARACTER*24   LIGREL,CHGEOM,LCHIN(2),LCHOUT(2)
       LOGICAL        EXIGEO
-      COMPLEX*16     CBID
       
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -81,7 +77,6 @@ C-----------------------------------------------------------------------
       
       CELCFL='&&XPRCFL.CELCFL'
       CELLC='&&XPRCFL.CELLC'
-      CESLC='&&XPRCFL.CESLC'
 
       CALL MEGEOM(MODEL,' ',EXIGEO,CHGEOM)
       LIGREL=MODEL//'.MODELE'
@@ -98,27 +93,20 @@ C-----------------------------------------------------------------------
      &            'V')
 
       CALL JEDETR(CNOVT)
-
+            
 C   ON VA CHERCHER LE MINIMUM DE CELCFL SUR LES ELEMENTS -->  CFLPRO
       CALL MEMAX('MIN',CELCFL,1,1,CFLPRO,0,IBID)
       CALL JEDETR(CELCFL)
       
 C   ON VA CHERCHER LE MINIMUM DE CELLC SUR LES ELEMENTS -->  LCMIN
       CALL MEMAX('MIN',CELLC,1,1,LCMIN,0,IBID)
-      
-      CALL CELCES(CELLC,'V',CESLC)
-      CALL CESCNS(CESLC,' ','V',CNSLC)
       CALL JEDETR(CELLC)
-      CALL JEDETR(CESLC)
       
-      IF (NIV.GT.1) THEN
-        WRITE(IFM,*)'CONDITION CFL POUR LA PROPAGATION DES LEVEL SETS :'
-        WRITE(IFM,*)'    DELTA_T_CFL = ',CFLPRO
-        WRITE(IFM,*)'CONDITION CFL POUR LA REINITIALISATION DES LEVEL '
-     &             //'SETS :'
-        WRITE(IFM,*)'    DELTA_T_CFL = ',LCMIN
-        WRITE(IFM,*)' '
-      ENDIF
+      WRITE(IFM,*)'   CONDITION CFL POUR LA PHASE DE PROPAGATION :'
+      WRITE(IFM,*)'   DELTA_T_CFL = ',CFLPRO
+      WRITE(IFM,*)'   CONDITION CFL POUR LES PHASES DE REINITIALISATION'
+     &          //' ET REORTHOGONALISATION :'
+      WRITE(IFM,*)'   DELTA_T_CFL = ',LCMIN
       
 C-----------------------------------------------------------------------
 C     FIN

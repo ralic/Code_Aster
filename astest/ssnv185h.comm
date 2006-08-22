@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,14 +20,174 @@
 
 DEBUT(CODE=_F(NOM='SSNV185H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
-#----------------------------------------------
-#                MAILLAGE : hexa_5_31_51.mgib
-#----------------------------------------------
+#---------------------------------------------------------
+#                   PARAMETRES
+#---------------------------------------------------------
+
+#*********************************************************
+#                    GEOMETRIE 
+#                    *********
+#     Parametres a modifier avec le maillage
+#*********************************************************
+#
+# EPAISSEUR DE L EPROUVETTE SELON X
+B = 1. ;
+#
+# DEMI-LONGUEUR DE L EPROUVETTE SELON Y
+W = 5. ;
+#
+# DEMI-LONGUEUR DE L EPROUVETTE SELON Z
+L = 15. ;
+#
+# NOMBRE D ELEMENTS SELON X
+NX = 5. ;
+#
+# NOMBRE D ELEMENTS SELON Z
+NZ = 51. ;
+#
+#*********************************************************
+
+# LONGUEUR DE LA FISSURE
+A = 2.5 ;
+
+# ANGLE D INCLINAISON DE LA FISSURE
+ALPHA = 45.*pi/180. ;
+
+# COURONNES POUR LE CALCUL DES SIF
+# entre 0 et 1, ensuite ramene entre 0 et A*cos(ALPHA)
+RI = [ 0.1 , 0.2  , 0.4  , 0.1 , 0.3 , 0.4 ]
+RS = [ 1.  , 1.   , 1.  ,  0.7 , 0.7 , 0.8 ]
+
+# PROPRIETES DE L ACIER UTILISE
+E   = 1.E6;
+nu  = 0.;
+rho = 7800.0;
+
+# PRESSION APPLIQUEE SUR LES FACES INFERIEURE ET SUPERIEURE
+PRES=-1.E6
+
+#---------------------------------------------------------
+#       MAILLAGE : pave maille regulierement en HEXA
+#                 ( nombre impair delements selon z )
+#---------------------------------------------------------
 
 PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
+LARX = B/NX;
+LARZ = 2*L/NZ;
+PRECIS = 1.E-6;
+VX     = [    1.  ,   0. ,     0.     ]
+VY     = [    0.  ,   1. ,     0.     ]
+VZ     = [    0.  ,   0. ,     1.     ]
+PTFS0  = [    0.  ,   0. ,  L+LARZ/2. ]
+PTFI0  = [    0.  ,   0. ,  L-LARZ/2. ]
+PTFS1  = [   LARX ,   0. ,  L+LARZ/2. ]
+PTFI1  = [   LARX ,   0. ,  L-LARZ/2. ]
+PTFS2  = [ 2*LARX ,   0. ,  L+LARZ/2. ]
+PTFI2  = [ 2*LARX ,   0. ,  L-LARZ/2. ]
+PTFS3  = [ 3*LARX ,   0. ,  L+LARZ/2. ]
+PTFI3  = [ 3*LARX ,   0. ,  L-LARZ/2. ]
+PTFS4  = [ 4*LARX ,   0. ,  L+LARZ/2. ]
+PTFI4  = [ 4*LARX ,   0. ,  L-LARZ/2. ]
+PTFS5  = [ 5*LARX ,   0. ,  L+LARZ/2. ]
+PTFI5  = [ 5*LARX ,   0. ,  L-LARZ/2. ]
+PT0    = [    0.  ,   0.  ,    0.     ]
+PT1    = [    0.  , 2.*W  , L-LARZ/2. ]
+PT1S   = [    0.  , 2.*W  , L+LARZ/2. ]
+PT2    = [    B   , 2.*W  , L-LARZ/2. ]
+PT2S   = [    B   , 2.*W  , L+LARZ/2. ]
+
+MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
+                     MAILLAGE=MAILLAG1,
+                     CREA_GROUP_NO=( _F(NOM='NOEUD1',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT1,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                     _F(NOM='NOEUD1S',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT1S,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                     _F(NOM='NOEUD2',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT2,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                     _F(NOM='NOEUD2S',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT2S,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                     _F(NOM='SURFGAU',
+                                        OPTION='PLAN',
+                                        POINT=PT0,
+                                        VECT_NORMALE=VY,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSSUP0',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFS0,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSINF0',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFI0,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSSUP1',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFS1,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSINF1',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFI1,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSSUP2',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFS2,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSINF2',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFI2,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSSUP3',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFS3,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSINF3',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFI3,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSSUP4',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFS4,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSINF4',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFI4,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSSUP5',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFS5,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                     _F(NOM='FISSINF5',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PTFI5,
+                                        RAYON=PRECIS,
+                                        PRECISION=PRECIS),
+                                    ),
+                      INFO=1, );
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -36,15 +196,9 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
                        LINE_QUAD=_F(GROUP_MA='VOL',),);
 
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                    MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),
-                    );
-
-
-#----------------------------------------------
+#---------------------------------------------------------
 #                   MODELE ET FISSURE
-#----------------------------------------------
+#---------------------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL',),
@@ -58,22 +212,28 @@ MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
                        );
+                       
+LN=FORMULE(NOM_PARA=('X','Y','Z'),
+           VALE='(Z-L)*cos(ALPHA)-Y*sin(ALPHA)');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),
+           VALE='(Z-L-A*sin(ALPHA))*sin(ALPHA)+(Y-A*cos(ALPHA))*cos(ALPHA)');
 
-
-
-
-ALPHA=-45.*pi/180.;
-
-LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='(Z-15.)*cos(ALPHA)-(Y-5.)*sin(ALPHA)');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-(Z-15.)*sin(ALPHA)-(Y-5.)*cos(ALPHA)');
-
+XFONI = 0. ;
+YFONI = A*cos(ALPHA) ;
+ZFONI = L+A*sin(ALPHA) ;
+XORI = 0. ;
+YORI = 0. ;
+ZORI = 0. ;
+XVECT = 0. ;
+YVECT = sin(ALPHA) ;
+ZVECT = -cos(ALPHA) ;
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                 VECT_ORIE=(0. ,0.7071 ,-0.7071 ),
-                                 PT_ORIGIN=(3. ,10. ,10. ),),
+                    ORIE_FOND=_F(PFON_INI= (XFONI, YFONI, ZFONI,),
+                                 VECT_ORIE=(XVECT, YVECT, ZVECT,),
+                                 PT_ORIGIN=(XORI, YORI, ZORI,),),
                     CONTACT=_F(ALGO_LAGR='NON',),
                     INFO=1,
                     );
@@ -81,15 +241,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
-
-
-#----------------------------------------------
+          
+#---------------------------------------------------------
 #                   MATERIAU
-#----------------------------------------------
+#---------------------------------------------------------
 
-E=205000.0E6
-nu=0.
-rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
@@ -99,53 +255,47 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                                 TEMP_REF=0.0,),
                              );
 
-#----------------------------------------------
+#---------------------------------------------------------
 #                   CHARGEMENTS
-#----------------------------------------------
+#---------------------------------------------------------
 
-PRES=-1.E6
-CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   LIAISON_DDL=(_F(NOEUD=('N4031','N3876',),
-                                   DDL=('DX','DX',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N4031','N3876',),
-                                   DDL=('DY','DY',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N4031','N3876',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N3886','N4041',),
-                                   DDL=('DX','DX',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N3886','N4041',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N9768','N9767',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                             ),);
+CHRIG1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_DDL=(_F(GROUP_NO=( 'NOEUD1' , 'NOEUD1S',),DDL=('DX' ,'DX', ),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=( 'NOEUD1' , 'NOEUD1S',),DDL=('DZ' ,'DZ', ),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=( 'NOEUD2' , 'NOEUD2S',),DDL=('DZ' ,'DZ', ),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSSUP0','FISSSUP0',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSINF0','FISSINF0',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSSUP1','FISSSUP1',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSINF1','FISSINF1',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSSUP2','FISSSUP2',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSINF2','FISSINF2',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSSUP3','FISSSUP3',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSINF3','FISSINF3',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSSUP4','FISSSUP4',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSINF4','FISSINF4',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSSUP5','FISSSUP5',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
+                                   _F(GROUP_NO=('FISSINF5','FISSINF5',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),), );
 
+CHRIG2=AFFE_CHAR_MECA(MODELE=MODELEK,
+                         DDL_IMPO=( _F(GROUP_NO='SURFGAU', DY=0.0,),
+                                  ), );
 
-CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+                      
+CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
 
-#----------------------------------------------
+#---------------------------------------------------------
 #                   RESOLUTION
-#----------------------------------------------
+#---------------------------------------------------------
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),
+                          _F(CHARGE=CHRIG1,),
+                          _F(CHARGE=CHRIG2,),
+                          _F(CHARGE=CHPRES,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
@@ -154,19 +304,19 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
-
+                   
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
 
-# TEST AVEC PLUSIEURS COURONNES
-RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
-RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
-
 nbc=len(RI)
+
 SIF = [None]*(nbc+1)
 
 for i in range(0,nbc) :
+
+   RI[i]=RI[i]*A*cos(ALPHA)
+   RS[i]=RS[i]*A*cos(ALPHA)
 
    SIF[i]=CALC_G(MODELE=MODELEK,
                  CHAM_MATER=CHAMPMA1,
@@ -183,33 +333,18 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF[i],);
 
-SIF[nbc]=CALC_G(MODELE=MODELEK,
-                CHAM_MATER=CHAMPMA1,
-                RESULTAT=UTOT1,
-                SYME_CHAR='SANS',
-                COMP_ELAS=_F(RELATION='ELAS',),
-                OPTION='CALC_K_G',
-                THETA=_F(FISSURE=FISS,
-                         R_INF=RI[0],
-                         R_SUP=RS[0],),
-                LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                           LISSAGE_G='LAGRANGE_NO_NO',),
-                INFO=2,);
+# SOLUTION ANALYTIQUE (Fracture Mechanics T.L. ANDERS0N p.63,91)
 
-IMPR_TABLE(TABLE=SIF[nbc],);
+K1_K2 = cos(ALPHA)/sin(ALPHA);
+BETAREF = 2*atan(0.25*(K1_K2-sqrt((K1_K2)**2.+8.))) ;
 
-
-# SOLUTION ANALYTIQUE (Fracture Mechanics T.L. ANDERS0N p.94)
-
-BETAREF=-37.5*pi/180
-
-for i in range(0,nbc+1) :
+for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='BETA_LOCAL',
               TYPE_TEST='MAX',
               VALE=BETAREF,
               CRITERE='RELATIF',
-              PRECISION=0.03,
+              PRECISION=0.06,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -217,7 +352,32 @@ for i in range(0,nbc+1) :
               TYPE_TEST='MIN',
               VALE=BETAREF,
               CRITERE='RELATIF',
-              PRECISION=0.03,
+              PRECISION=0.06,
               REFERENCE='ANALYTIQUE',);
+              
+
+#----------------------------------------------
+#         EDITION DE FICHIERS GMSH
+#----------------------------------------------
+
+DEFI_FICHIER(UNITE=30,);
+IMPR_RESU(FORMAT='GMSH',
+          UNITE=30,
+          RESU=_F(MAILLAGE=MAILLAG2,),);
+
+MAXFEM=POST_MAIL_XFEM(MODELE=MODELEK,);
+
+DEPL=POST_CHAM_XFEM(MAILLAGE=MAXFEM,
+                       MODELE=MODELEK,
+                       RESULTAT=UTOT1,
+                       NOM_CHAM='DEPL',);
+
+DEFI_FICHIER(UNITE=31,);
+IMPR_RESU(FORMAT='GMSH',
+          UNITE=31,
+          RESU=_F(RESULTAT=DEPL,),);
+
+
+
 FIN();
 
