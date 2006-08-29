@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
       REAL*8        DRPDE(NP,NB), EPTHM(NB)
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
-      REAL*8        SECHD,SECHF, PGL(3,3),ANGMAS(3)
+      REAL*8        PGL(3,3),ANGMAS(3)
 C
       CHARACTER*3   MATCST
       CHARACTER*16  LOI, CPMONO(5*NMAT+1)
@@ -150,8 +150,6 @@ C----------------------
       ETATF(2) = 'EXPONEN'
       ETATF(3) = 'DAMMAXN'
       CALL R8INIR (NB,0.D0,DSEDB,1)
-      SECHD = 0.D0
-      SECHF = 0.D0
 C
 C-- 1.1. INCONNUES DU MODELES
 C----------------------------
@@ -167,9 +165,9 @@ C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
       CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,
-     1               SECHD,SECHF, TYPMA,  BZ, HSR,MATM,
-     3               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
-     2               TOLER, NDT, NDI, NRV, NVI, VIND )
+     1               TYPMA,  BZ, HSR,MATM, MATE,MATCST,NBCOMM, CPMONO,
+     2               ANGMAS, PGL,ITMAX, TOLER, NDT, NDI, NRV, NVI,
+     3               VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
 C-- 1.3. OPERATEUR DE HOOK

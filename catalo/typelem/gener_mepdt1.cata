@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF TYPELEM  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,7 +128,8 @@ OPTION__
                                      CFORCER  PFR1D1D  NGEOMER  PGEOMER  CVENTCX  PVENTCX  NVITER   PVITER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     NTEMPER  PTEMPER  NTEMPER  PTEMPER  CTEREFE  PTEREF   ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
     DEGE_ELNO_DEPL      158   IN__   CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF

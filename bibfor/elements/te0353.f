@@ -1,6 +1,6 @@
       SUBROUTINE TE0353(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBRES=21)
-      CHARACTER*8 NOMRES(NBRES),NOMCLE(5)
+      CHARACTER*8 NOMRES(NBRES),NOMCLE(5),ACIER(4),ZIRC(2)
       CHARACTER*2 CODRET(NBRES),REP,TEST
       CHARACTER*16 COMPOR
       REAL*8 VALRES(NBRES),E,NU
@@ -52,12 +52,14 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 DFDX(9),DFDY(9),TPG,POIDS,R,CO,KRON(6)
       REAL*8 R0(5),RPRIM,VI(5),R8BID
       REAL*8 PHAS(5),DSDE,COEF,ZVARIM,ZVARIP,DELTAZ,TRANS
-      REAL*8 PHASP(7),PHASM(7)
-      INTEGER NNO,KP,NPG1,I,ITEMPE,IVECTU,JTAB(7),L
+      REAL*8 PHASP(4),PHASM(4)
+      INTEGER NNO,KP,NPG1,I,ITEMPE,IVECTU,JTAB(7),L,IRET
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JPROL,JVALE,NBVAL,NDIM,NNOS,JGANO
       LOGICAL  LTEATT, LAXI
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      DATA ACIER /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
+      DATA ZIRC /'ALPHPUR','ALPHBETA'/
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       NBCON = 4
@@ -67,8 +69,6 @@ C
       CALL JEVECH('PMATERC','L',IMATE)
       MATER = ZI(IMATE)
       CALL JEVECH('PTEMPER','L',ITEMPE)
-      CALL JEVECH('PPHASMR','L',IPHASM)
-      CALL JEVECH('PPHASPR','L',IPHASP)
       CALL JEVECH('PCONTMR','L',ICONTR)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       COMPOR=ZK16(ICOMPO+7)
@@ -144,26 +144,28 @@ C
         R = 0.D0
         TPG = 0.D0
         
-        DO 100 I=1,7
-          PHASM(I)=0.D0
-          PHASP(I)=0.D0
- 100    CONTINUE
-          
+        IF (COMPOR(1:5) .EQ. 'ACIER') THEN
+          DO 7 L=1,4
+             CALL RCVARC(' ',ACIER(L),'-','RIGI',KP,1,
+     &            PHASM(L),IRET)
+             IF (IRET.EQ.1) PHASM(L)=0.D0
+             CALL RCVARC(' ',ACIER(L),'+','RIGI',KP,1,
+     &            PHASP(L),IRET)
+             IF (IRET.EQ.1) PHASP(L)=0.D0
+    7     CONTINUE
+        ELSEIF (COMPOR(1:4) .EQ. 'ZIRC') THEN
+          DO 9 L=1,2
+             CALL RCVARC(' ',ZIRC(L),'-','RIGI',KP,1,
+     &            PHASM(L),IRET)
+             IF (IRET.EQ.1) PHASM(L)=0.D0
+             CALL RCVARC(' ',ZIRC(L),'+','RIGI',KP,1,
+     &            PHASP(L),IRET)
+             IF (IRET.EQ.1) PHASP(L)=0.D0
+    9    CONTINUE   
+        ENDIF
         DO 10 I = 1,NNO
           R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
-C passage de PHASMR et PHASPR aux points de Gauss            
-          IF (COMPOR(1:5) .EQ. 'ACIER') THEN
-            DO 7 L=1,7
-               PHASM(L)=PHASM(L) + ZR(IPHASM+7*(I-1)+L-1)*ZR(IVF+K+I-1)
-               PHASP(L)=PHASP(L) + ZR(IPHASP+7*(I-1)+L-1)*ZR(IVF+K+I-1)
-    7       CONTINUE
-          ELSEIF (COMPOR(1:4) .EQ. 'ZIRC') THEN
-            DO 9 L=1,3
-               PHASM(L)=PHASM(L) + ZR(IPHASM+3*(I-1)+L-1)*ZR(IVF+K+I-1)
-               PHASP(L)=PHASP(L) + ZR(IPHASP+3*(I-1)+L-1)*ZR(IVF+K+I-1)
-    9      CONTINUE   
-          ENDIF
    10   CONTINUE
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,2,NOMRES,
      +              VALRES,CODRET,'FM')

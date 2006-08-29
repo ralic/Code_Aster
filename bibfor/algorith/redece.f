@@ -1,12 +1,11 @@
         SUBROUTINE REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
-     &                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,ANGMAS,SIGF,VINF,DSDE,
-     &                      RETCOM)
+     &                      EPSDT,DEPST,SIGD,VIND, OPT,ELGEOM,ANGMAS,
+     &                      SIGF,VINF,DSDE,RETCOM)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,9 +87,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               SECHD   SECHAGE A L'INSTANT PRECEDENT
-C               SECHF   SECHAGE A L'INSTANT DU CALCUL
-C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -104,7 +100,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*), ANGMAS(3)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          SECHD , SECHF , SREF, ELGEOM(*)
+        REAL*8          ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -120,8 +116,6 @@ C               TD      INSTANT T
 C               TF      INSTANT T+DT
 C               TEMD    TEMPERATURE A T
 C               TEMF    TEMPERATURE A T+DT
-C               SECD   SECHAGE A T
-C               SECF   SECHAGE A T+DT
 C               EPS     DEFORMATION TOTALE A T
 C               DEPS    INCREMENT DE DEFORMATION TOTALE
 C               SD      CONTRAINTE A T
@@ -140,7 +134,6 @@ C
         REAL*8          DSDELO(6,6)
         REAL*8          DELTAT,TD,TF
         REAL*8          TEMD,         TEMF,      DETEMP
-        REAL*8          SECD,         SECF,      DESECH
 C       ----------------------------------------------------------------
 C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
         INTEGER NFPGMX
@@ -188,15 +181,14 @@ C
 C
         IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
         CALL PLASBE ( FAMI, KPG ,KSP, TYPMOD, IMAT, COMP, CRIT,
-     1                TEMPD, TEMPF, TREF, SECHD, SECHF, SREF,
-     3                EPSDT, DEPST, SIGD,  VIND,  OPT, ELGEOM,
-     4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
+     1                TEMPD, TEMPF, TREF, EPSDT, DEPST, SIGD,
+     2                VIND,  OPT, ELGEOM, SIGF,  VINF,  DSDE,
+     3                ICOMP, NVI,  IRTET)
         ELSE
         CALL PLASTI ( FAMI,KPG,KSP, TYPMOD, IMAT,  COMP,  CRIT,
-     1                TIMED, TIMEF, TEMPD, TEMPF, TREF, SECHD, 
-     2                SECHF, SREF, EPSDT, DEPST, SIGD,  VIND,  
-     3                OPT, ANGMAS, SIGF,  VINF,  DSDE,  ICOMP,
-     4                NVI,  IRTET)
+     1                TIMED, TIMEF, TEMPD, TEMPF, TREF, EPSDT,
+     2                DEPST, SIGD, VIND, OPT, ANGMAS, SIGF,
+     3                VINF, DSDE, ICOMP, NVI, IRTET)
         ENDIF
         IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C
@@ -240,9 +232,6 @@ C --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
                 TEMD = TEMPD
                 DETEMP = (TEMPF - TEMPD) / NPAL
                 TEMF = TEMD + DETEMP
-                DESECH = (SECHF - SECHD)  / NPAL
-                SECD = SECHD
-                SECF = SECD + DESECH
                 IF ( OPT .EQ. 'RIGI_MECA_TANG'
      1                  .OR. OPT .EQ. 'FULL_MECA' )
      1                  CALL LCINMA ( 0.D0 , DSDE )
@@ -259,9 +248,7 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
                 TF1=TF
                 TEMD = TEMF
                 TEMF = TEMF + DETEMP
-                SECD = SECF
-                SECF = SECF + DESECH
-                CALL LCSOVE ( EPS     , DEPS    , EPS  )
+               CALL LCSOVE ( EPS     , DEPS    , EPS  )
                 IF ( OPT .NE. 'RIGI_MECA_TANG' ) THEN
                     CALL LCEQVN ( NDT     , SIGF    , SD   )
                     CALL LCEQVN ( NVI     , VINF    , VIND   )
@@ -271,16 +258,14 @@ C
 C
             IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
               CALL PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     1                    CRIT, TEMD,   TEMF,   TREF,
-     2                    SECD, SECF, SREF, EPS,   DEPS,
-     3                    SD,  VIND,   OPT, ELGEOM, SIGF, VINF,
-     4                    DSDELO,  ICOMP,   NVI,  IRTET)
+     1                      CRIT, TEMD, TEMF, TREF, EPS, DEPS,
+     2                      SD, VIND, OPT, ELGEOM, SIGF, VINF,
+     3                      DSDELO, ICOMP, NVI, IRTET)
             ELSE
-              CALL PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TD,
-     1                    TF,    TEMD,   TEMF,   TREF,
-     2                    SECD, SECF, SREF,  EPS,   DEPS,
-     2                    SD, VIND, OPT, ANGMAS, SIGF, VINF,
-     3                    DSDELO,  ICOMP,   NVI,  IRTET)
+              CALL PLASTI ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
+     1                      CRIT, TD, TF, TEMD, TEMF, TREF, EPS,
+     2                      DEPS, SD, VIND, OPT, ANGMAS, SIGF,
+     3                      VINF, DSDELO, ICOMP, NVI, IRTET)
             ENDIF
 
             IF ( IRTET.GT.0 ) GOTO (1,2), IRTET

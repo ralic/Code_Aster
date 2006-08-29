@@ -9,7 +9,7 @@
      &                     SIGM, VIM, SIGP, VIP,
      &                     FINTU, FINTA, KUU, KUA, KAA, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -234,12 +234,9 @@ C -    APPEL A LA LOI DE COMPORTEMENT
         CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &              INSTAM,INSTAP,
      &              TEMPM,TEMPP,TREF,
-     &              0.D0, 0.D0, 0.D0,
      &              FMLDC,DFLDC,
      &              SIGMC,VIM(1,KPG),
      &              OPTION,
-     &              RBID,RBID,
-     &              0,RBID,RBID,
      &              ANGMAS,
      &              RBID,
      &              SIGPC,VIP(1,KPG),DSIDEP,COD(KPG))

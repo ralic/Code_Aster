@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -862,39 +862,48 @@ def merge(tb1, tb2, labels=[]):
       if i not in tb1.para :
          n_para.append(i)
          n_type.append(tb2.type[tb2.para.index(i)])
-   # restriction des lignes aux labels communs
-   rows1=copy(tb1.rows)
-   dlab1={}
+   # restriction des lignes aux labels communs (peu cher en cpu)
+   rows1 = copy(tb1.rows)
+   dlab1 = {}
    for i1 in range(len(rows1)):
-      tu1=tuple(map(rows1[i1].__getitem__,labels))
-      if dlab1.get(tu1, '')=='':
-         dlab1[tu1]=i1
+      tu1 = tuple(map(rows1[i1].__getitem__, labels))
+      if dlab1.get(tu1, '') == '':
+         dlab1[tu1] = i1
       else:
-         dlab1[tu1]=None
-   work2=[map(r2.__getitem__,labels) for r2 in tb2.rows]
-   # dic1 : clé=indice de t2[L] unique, val=tab1.index(tab2[L])
-   dic1={}
-   i2=-1
-   while len(work2)>0:
-      i2+=1
-      par2=work2.pop(0)
-      if work2.count(par2)==0:
-         tu2=tuple(par2)
-         i1=dlab1.get(tu2)
-         if i1<>None:
-            dic1[i2]=dlab1[tu2]
+         dlab1[tu1] = None
+   # restriction des lignes aux labels communs (peu cher en cpu)
+   rows2 = copy(tb2.rows)
+   dlab2 = {}
+   for i2 in range(len(rows2)):
+      tu2 = tuple(map(rows2[i2].__getitem__, labels))
+      if dlab2.get(tu2, '') == '':
+         dlab2[tu2] = i2
+      else:
+         dlab2[tu2] = None
+   # creation de dic1 : dictionnaire de correspondance entre les 
+   # lignes a merger dans les deux tableaux
+   dic1 = {}
+   for cle in dlab1.keys():
+      if dlab1[cle] == None:
+         bid = dlab1.pop(cle)
+   for cle in dlab2.keys():
+      if dlab2[cle] == None:
+         bid = dlab2.pop(cle)
+   for cle in dlab2.keys():
+      if dlab1.has_key(cle):
+         dic1[dlab2[cle]] = dlab1[cle]
    # insertion des valeurs de tb2 dans tb1 quand les labels sont communs
    # (et uniques dans chaque table) OU ajout de la ligne de tb2 dans tb1
-   i2=-1
+   i2 = -1
    for r2 in tb2.rows:
-      i2+=1
-      if i2 in dic1.keys():
+      i2 += 1
+      try:
          rows1[dic1[i2]].update(r2)
-      else :
+      except KeyError:
          rows1.append(r2)
    # concaténation des titres + info sur le merge
-   tit='\n'.join([tb1.titr, tb2.titr, 'MERGE avec labels=%s' % repr(labels)])
-   return Table(rows1,n_para,n_type,tit)
+   tit = '\n'.join([tb1.titr, tb2.titr, 'MERGE avec labels=%s' % repr(labels)])
+   return Table(rows1, n_para, n_type, tit)
 
 # ------------------------------------------------------------------------------
 def _typaster(obj, prev=None, strict=False):

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1, IER, IM, NUMA, NUME, IBID, LGP, LGM,
      +              ILIST, KLIST, LXLGUT, NBV1, I, NBMC, NBMA, JNOMA
       PARAMETER     ( NBMC = 3 )
-      LOGICAL       LNUME
+      LOGICAL       LNUME,LGRPMA
       CHARACTER*1   K1B
-      CHARACTER*8   NOMA, PRFM, NOMMAI, KNUME
+      CHARACTER*8   NOMA, PRFM, NOMMAI, KNUME, GRPMA, K8B
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
       CHARACTER*24  NOMAMA, NOMJV
 C     ------------------------------------------------------------------
@@ -71,6 +71,13 @@ C
       IF ( N1 .NE. 0 ) THEN
          LNUME = .TRUE.
          CALL GETVIS ( MCFACT, 'PREF_NUME', IOCC,1,1, NUME, N1 )
+      ENDIF
+C
+      LGRPMA = .FALSE.
+      CALL GETVTX ( MCFACT, 'GROUP_MA', IOCC,1,0, K8B, N1)
+      IF ( N1 .NE. 0 ) THEN
+         LGRPMA= .TRUE.
+         CALL GETVTX ( MCFACT, 'GROUP_MA', IOCC,1,1, GRPMA, N1 )
       ENDIF
 C
       MOTCLE(1) = 'TOUT'
@@ -103,9 +110,18 @@ C
                NOMMAI = PRFM(1:LGP)//KNUME
             ELSE
                LGM = LXLGUT(NOMMAI)
-               IF ( LGM+LGP .GT. 8 ) CALL UTMESS('F','PALIM3',
-     +                                 'PREF_MAILLE EST TROP LONG')
-               NOMMAI = PRFM(1:LGP)//NOMMAI
+               IF ( LGM+LGP .GT. 8 ) THEN
+                   CALL UTDEBM('F','PALIM3','L''IDENTIFIANT D''UNE '//
+     +             'MAILLE DEPASSE LES 8 CARACTERES AUTORISES:')
+                   CALL UTIMPK('S',' ',1,PRFM(1:LGP)//NOMMAI)
+                   CALL UTIMPK('L','MAILLE      :',1,NOMMAI)
+                   CALL UTIMPK('L','PREF_MAILLE :',1,PRFM)
+                   IF(LGRPMA) CALL UTIMPK('L','GROUP_MA    :',1,GRPMA)
+                   CALL UTIMPK('L','L''UTILISATION DE ''PREF_NUME'' '//
+     +             'EST RECOMMANDEE.',0,K1B)
+                   CALL UTFINM()
+              ENDIF
+              NOMMAI = PRFM(1:LGP)//NOMMAI
             ENDIF
             DO 32 I = 1 , NBMST
                IF ( ZK8(KLIST+I-1) .EQ. NOMMAI ) GOTO 34

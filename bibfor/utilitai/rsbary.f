@@ -1,6 +1,6 @@
       SUBROUTINE RSBARY(LR8,NR8,TOUS,LEXI,X,I1,I2,IPOSIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILITAI  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,9 @@ C
 C
 C ----------------------------------------------------------------------
       INTEGER IPP,IP,IS,ISS
-      REAL*8 XPP,XP,XS,XSS
+      REAL*8 XPP,XP,XS,XSS,EPSI,INTER
       LOGICAL AFAIRE
+      DATA EPSI /1.0D-10/
 C
 C DEB-------------------------------------------------------------------
 C
@@ -116,9 +117,13 @@ C     RECHERCHE DE XMAX ET XMIN:
             END IF
          END IF
     1 CONTINUE
+
+
+      INTER=EPSI*(XMAX-XMIN)
 C
 C     -- 1ER CAS X EST INCLU DANS L'INTERVALLE DE LA LISTE:
-      IF ((X.GE.XMIN) .AND. (X.LE.XMAX)) THEN
+      IF (((X.GE.XMIN).OR.(ABS(X-XMIN).LT.INTER)).AND.
+     &    ((X.LE.XMAX).OR.(ABS(X-XMAX).LT.INTER))) THEN
          IPOSIT = 0
          IP = IMIN
          IS = IMAX
@@ -149,9 +154,10 @@ C     -- 1ER CAS X EST INCLU DANS L'INTERVALLE DE LA LISTE:
          I2 = IS
          GO TO 9999
       END IF
+
 C
 C     -- 2EME CAS X EST A DROITE DE L'INTERVALLE DE LA LISTE:
-      IF (X.GE.XMAX) THEN
+      IF (X.GT.XMAX) THEN
          IPOSIT = 1
          IP = IMAX
          XP = XMAX
@@ -181,7 +187,7 @@ C     -- 2EME CAS X EST A DROITE DE L'INTERVALLE DE LA LISTE:
       END IF
 C
 C     -- 3EME CAS X EST A GAUCHE DE L'INTERVALLE DE LA LISTE:
-      IF (X.LE.XMIN) THEN
+      IF (X.LT.XMIN) THEN
          IPOSIT = -1
          IS = IMIN
          XS = XMIN

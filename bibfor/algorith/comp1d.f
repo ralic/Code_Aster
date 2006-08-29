@@ -1,7 +1,6 @@
       SUBROUTINE COMP1D(FAMI,KPG,KSP,OPTION,
      &                  SIGX,EPSX,DEPX,
      &                  TEMPM,TEMPP,TREF,
-     &                   SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VIM,VIP,SIGXP,ETAN,CODRET)
       IMPLICIT NONE
@@ -11,7 +10,7 @@
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,14 +88,11 @@ C
 C
 C *************** DECLARATION DES VARIABLES LOCALES ********************
 C
-      INTEGER        NEQ,IMATE,IINSTM
-      INTEGER        IINSTP,ICOMPO,ICARCR,NZ
-      INTEGER        NZMAX
+      INTEGER        IMATE,IINSTM
+      INTEGER        IINSTP,ICOMPO,ICARCR
 C
       REAL*8         DSIDEP(6,6)
       REAL*8         ZERO
-      REAL*8         SECHGM,SECHGP,SREF
-      REAL*8         EPSANM(6),EPSANP(6),PHASM(7),PHASP(7)
       REAL*8         LC(10,27)
       REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6),R8VIDE
 C
@@ -110,7 +106,6 @@ C
 
 
 C ---    INITIALISATIONS :
-         NEQ  = 6
          ZERO = 0.0D0
 
          CALL R8INIR (6,ZERO,EPS,1)
@@ -134,18 +129,8 @@ C
 C
 C ---    INITIALISATION DES TABLEAUX
 C
-C         SECHGM = ZERO
-C         SECHGP = ZERO
-C         SREF   = ZERO
 C
-         CALL R8INIR (NEQ,ZERO,EPSANM,1)
 C
-         CALL R8INIR (NEQ,ZERO,EPSANP,1)
-C
-         NZMAX = 7
-         CALL R8INIR (NZMAX,ZERO,PHASM,1)
-         CALL R8INIR (NZMAX,ZERO,PHASP,1)
-         NZ = NZMAX
          CALL R8INIR (270,ZERO,LC,1)
 
 C -    APPEL A LA LOI DE COMPORTEMENT
@@ -153,12 +138,9 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &               ZK16(ICOMPO),ZR(ICARCR),
      &               ZR(IINSTM),ZR(IINSTP),
      &               TEMPM,TEMPP,TREF,
-     &               SECHGM,SECHGP,SREF,
      &               EPS,DEPS,
      &               SIGM,VIM,
      &               OPTION,
-     &               EPSANM,EPSANP,
-     &               NZ,PHASM,PHASP,
      &               ANGMAS,
      &               LC,
      &               SIGP,VIP,DSIDEP,CODRET)

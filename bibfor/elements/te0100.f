@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,16 +31,15 @@ C ......................................................................
       CHARACTER*8 TYPMOD(2),NOMAIL
       INTEGER NNO,NPG1,I,KP,K,L,IMATUU,LGPG,LGPG1,LGPG2
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
+      INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
-      INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP
+      INTEGER IVECTU,ICONTP,IVARIP,LI
       INTEGER ISECHM,ISECHP,ISREF,IVARIX,IRET
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,NZ,JCRET,CODRET
       INTEGER NDIM,NNOS,JGANO,ICAMAS
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  R8VIDE,ANGMAS(3),R8DGRD
-      REAL*8  PHASM(7*27),PHASP(7*27)
-      LOGICAL DEFANE,MATSYM,LTEATT
+      LOGICAL MATSYM,LTEATT
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -111,34 +110,6 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PTEMPPR','L',ITEMPP)
       CALL JEVECH('PINSTMR','L',IINSTM)
       CALL JEVECH('PINSTPR','L',IINSTP)
-      CALL TECACH('ONN','PDEFAMR',1,IDEFAM,IRET)
-      CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
-      DEFANE = IDEFAM .NE. 0
-      CALL TECACH('NNN','PPHASMR',1,IPHASM,IRET)
-      CALL TECACH('NNN','PPHASPR',1,IPHASP,IRET)
-      IF (IRET.EQ.0) THEN
-        CALL TECACH('OON','PPHASPR',7,JTAB,IRET)
-        NZ = JTAB(6)
-C  PASSAGE DE PPHASMR ET PPHASPR AUX POINTS DE GAUSS
-        DO 9 KP = 1,NPG1
-          K = (KP-1)*NNO
-          DO 7 L = 1,NZ
-            PHASM(NZ*(KP-1)+L)=0.D0
-            PHASP(NZ*(KP-1)+L)=0.D0
-            DO 5 I = 1,NNO
-              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) +
-     +                           ZR(IPHASM+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) +
-     +                           ZR(IPHASP+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-  5         CONTINUE
-  7       CONTINUE
-  9     CONTINUE
-      END IF
-
-      CALL JEVECH('PSECHMR','L',ISECHM)
-      CALL JEVECH('PSECHPR','L',ISECHP)
-      CALL JEVECH('PSECREF','L',ISREF)
-
 C PARAMETRES EN SORTIE
 
       IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
@@ -166,9 +137,9 @@ C - HYPER-ELASTICITE
         IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
 
 C        OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
-          CALL NMEL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+          CALL NMEL2D('RIGI',NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(ITEMPM),ZR(ISECHM),
+     &                LGPG,ZR(ICARCR),ZR(ITEMPM),
      &                ZR(ITREF),ZR(IDEPLM),ANGMAS,VECT1,VECT2,
      &                VECT3,ZR(ICONTM),ZR(IVARIM),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -180,9 +151,9 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
             ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
    10     CONTINUE
 
-          CALL NMEL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+          CALL NMEL2D('RIGI',NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(ITEMPP),ZR(ISECHP),
+     &                LGPG,ZR(ICARCR),ZR(ITEMPP),
      &                ZR(ITREF),ZR(IDEPLP),ANGMAS,VECT1,VECT2,
      &                VECT3,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -221,10 +192,7 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  LGPG,ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                  NZ,PHASM,PHASP,
-     &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                  DEFANE,
+     &                  ZR(IDEPLM),ZR(IDEPLP),
      &                  ANGMAS,
      &                  ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
      &                  VECT3,ZR(ICONTP),ZR(IVARIP),
@@ -240,8 +208,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
@@ -261,10 +227,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
-     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,
+     &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,VECT3,
@@ -284,10 +247,7 @@ C 7.3 - GRANDES DEFORMATIONS FORMULATION CO-ROTATIONNELLE ZMAT
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
-     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,
+     &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,VECT3,

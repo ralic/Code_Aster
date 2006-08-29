@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
-     2                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+     2                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
+     3                      VINF,DSDE,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,9 +72,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               SECHD   SECHAGE A L'INSTANT PRECEDENT
-C               SECHF   SECHAGE A L'INSTANT DU CALCUL
-C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -107,7 +104,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          SECHD, SECHF, SREF, ELGEOM(*)
+        REAL*8          ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -122,14 +119,14 @@ C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3, IRE2
         INTEGER         NVI2, NN, I,RETCOM
         CHARACTER*2     FB2, CERR(5)
-        CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR(2)
+        CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI
         REAL*8          RBID, NU, ANGMAS(3)
         REAL*8          EPSFL(6), EPSFLD(6), EPSFLF(6), DEPSFL(6)
-        REAL*8          DEPS(6), KOOH(6,6), VALPAD(2), VALPAF(2)
+        REAL*8          DEPS(6), KOOH(6,6), VALPAD, VALPAF
         REAL*8          MATERD(5) , MATERF(5), DEPST2(6), DEPSEL(6)
         REAL*8          EPSICV, TOLER, NDSIG, NSIGF
-        REAL*8          DSIGF(6),HYDRD, HYDRF
+        REAL*8          DSIGF(6),HYDRD, HYDRF,SECHD, SECHF, SREF
         REAL*8          EPSELD(6), EPSELF(6)
 C
         INTEGER         K
@@ -256,9 +253,8 @@ C
       IF ( OPTFLU .EQ. 'RAPH_MECA' ) THEN
          CALL NMGRAN (FAMI, KPG, KSP, NDIM, TYPMOD, IMAT, CMP1,
      1                CRIT, TIMED, TIMEF, TEMPD, TEMPF, TREF,
-     2                SECHD,   SECHF,  SREF, TMPDMX,
-     3                TMPFMX, DEPST2,   SIGD,    VIND(1),OPT,
-     4                SIGF2,  VINF(1),  DSDE )
+     2                TMPDMX,TMPFMX, DEPST2,SIGD,VIND(1),OPT,
+     3                SIGF2,  VINF(1),  DSDE )
 C
 C ---    CALCUL DE L'INCREMENT DE LA DEFORMATION DE FLUAGE
 C
@@ -267,22 +263,19 @@ C
          NOMC(3)   = 'ALPHA   '
          NOMC(4)   = 'B_ENDOGE'
          NOMC(5)   = 'K_DESSIC'
-         NOMPAR(1) = 'TEMP'
-         NOMPAR(2) = 'SECH'
-         VALPAD(1) = TMPDMX
-         VALPAD(2) = SECHD
-         VALPAF(1) = TMPFMX
-         VALPAF(2) = SECHF
+         NOMPAR = 'TEMP'
+         VALPAD = TMPDMX
+         VALPAF = TMPFMX
 C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',2,NOMPAR,
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,NOMPAR,
      1               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',2,NOMPAR,
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,NOMPAR,
      1               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
 C
          MATERD(1) = 1.D0
@@ -334,9 +327,8 @@ C
 C
           CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
      1                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
-     2                 SECHD,    SECHF, SREF,
-     3                 DEPS , SIGD,      VIND(NN), OPT,
-     4                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
+     2                 DEPS , SIGD,      VIND(NN), OPT,
+     3                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
@@ -345,9 +337,8 @@ C
 C
               CALL REDECE (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
      1                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
-     2                     SECHD,    SECHF, SREF,
-     3                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
-     4              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
+     2                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
+     3              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
       ELSE
          CALL UTMESS('F','NMCPLA_6','LOI DE COMPORTEMENT NON '
      &      // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
@@ -393,11 +384,17 @@ C
          KDESSD = MATERD(5)
          KDESSF = MATERF(5)
 
-C        RECUPERATION DE L HYDRATATION
+C        RECUPERATION DE L HYDRATATION ET DU SECCHAGE
          CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRD,IRE2)
          IF (IRE2.NE.0) HYDRD=0.D0
          CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRF,IRE2)
          IF (IRE2.NE.0) HYDRF=0.D0
+         CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECHD,IRE2)
+         IF (IRE2.NE.0) SECHD=0.D0
+         CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECHF,IRE2)
+         IF (IRE2.NE.0) SECHF=0.D0
+         CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRE2)
+         IF (IRE2.NE.0) SREF=0.D0
 
          EPSTH = ALPHAF*(TEMPF-TREF)  - ALPHAD*(TEMPD-TREF)
      &         - BENDOF*HYDRF        + BENDOD*HYDRD

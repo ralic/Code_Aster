@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,13 +139,6 @@ TEMP2=CREA_CHAMP(   OPERATION='AFFE',
                                    NOM_CMP = 'TEMP',
                                    VALE = 20.)     )
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = BETON,
-                                  TEMP_REF = 0.,
-                                  SECH_REF = 1.)
-                    )
-
 TEMP=CREA_RESU(  OPERATION='AFFE', 
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
@@ -160,9 +153,19 @@ SECH=CREA_RESU(  OPERATION='AFFE',
                        _F(  INST = 100.,       CHAM_GD = SECH1))
                     )
                     
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MATER = BETON,
+                                  TEMP_REF = 0.),
+                            AFFE_VARC=_F(TOUT='OUI',
+                                         EVOL=SECH,
+                                         NOM_VARC="SECH",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=1)
+                    )
+
 COND_LIM=AFFE_CHAR_MECA( MODELE=MO,
                          TEMP_CALCULEE=TEMP,
-                         SECH_CALCULEE=SECH,
                          DDL_IMPO=(_F(  GROUP_NO = 'SA',   DX = 0.),
                                    _F(  GROUP_NO = ('A1', 'A4',),  DY = 0.),
                                    _F(  GROUP_NO = ('A1', 'A2',),  DZ = 0.),
@@ -402,11 +405,20 @@ SECHV=CREA_RESU(  OPERATION='AFFE',
                  AFFE=(_F(  INST = 0.,         CHAM_GD = SECH1),
                        _F(  INST = 100.,       CHAM_GD = SECH2))
                     )
+CMV=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MATER = BETON,
+                                  TEMP_REF = 0.),
+                            AFFE_VARC=_F(TOUT='OUI',
+                                         EVOL=SECHV,
+                                         NOM_VARC="SECH",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=1)
+                    )
 
 
 COND_LI2=AFFE_CHAR_MECA( MODELE=MO,
                          TEMP_CALCULEE=TEMPV,
-                         SECH_CALCULEE=SECHV,
                          DDL_IMPO=( _F(  GROUP_NO = 'SA',   DX = 0.),
                                     _F(  GROUP_NO = ('A1', 'A4',),  DY = 0.),
                                     _F(  GROUP_NO = ('A1', 'A2',),  DZ = 0.),
@@ -446,7 +458,7 @@ COUPLA2=STAT_NON_LINE(
                                  _F(  CHARGE = TRAC,
                                       FONC_MULT = COEF_TR)),
                   INCREMENT=_F(  LIST_INST = LINST),
-                  CHAM_MATER=CM,
+                  CHAM_MATER=CMV,
                   COMP_INCR=_F(  RELATION = 'KIT_DDI',
                                  RELATION_KIT = ('GRANGER_FP',
                                              'BETON_DOUBLE_DP',),
@@ -559,7 +571,7 @@ COUPLA3=STAT_NON_LINE(
                         _F(  CHARGE = TRAC,
                              FONC_MULT = COEF_TR)),
                 INCREMENT=_F(  LIST_INST = LINST),
-                CHAM_MATER=CM,
+                CHAM_MATER=CMV,
                 COMP_INCR=_F(  RELATION = 'KIT_DDI',
                                RELATION_KIT = ('GRANGER_FP',
                                                'VMIS_ISOT_LINE',),

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,19 +32,18 @@ C ......................................................................
       CHARACTER*8 TYPMOD(2),ELREFP
       INTEGER JGANO,NNO,NPG,I,KP,K,L,IMATUU,LGPG,NDIM,LGPG1,IRET,IJ
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
+      INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
-      INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP,JCRET,CODRET
-      INTEGER ISECHM,ISECHP,ISREF,IVARIX
+      INTEGER IVECTU,ICONTP,IVARIP,LI,JCRET,CODRET
+      INTEGER IVARIX
       INTEGER JPINTT,JCNSET,JHEAVT,JLONCH,JBASLO,JLSN,JLST
-      INTEGER KK,NI,MJ,JTAB(7),NZ,NNOS,ICAMAS
+      INTEGER KK,NI,MJ,JTAB(7),NNOS,ICAMAS
       INTEGER DDLH,DDLC,NDDL,INO,NNOM,NFE,IBID
-      LOGICAL DEFANE, MATSYM,LTEATT
+      LOGICAL MATSYM,LTEATT
       REAL*8  MATNS(3*27*3*27)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
       REAL*8  ANGMAS(3),R8VIDE,R8DGRD
-      REAL*8  PHASM(7*27),PHASP(7*27)
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -128,38 +127,6 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PTEMPPR','L',ITEMPP)
       CALL JEVECH('PINSTMR','L',IINSTM)
       CALL JEVECH('PINSTPR','L',IINSTP)
-      CALL JEVECH('PSECHMR','L',ISECHM)
-      CALL JEVECH('PSECHPR','L',ISECHP)
-      CALL JEVECH('PSECREF','L',ISREF)
-      CALL TECACH('ONN','PDEFAMR',1,IDEFAM,IRET)
-      IF (NDIM .EQ. 3) THEN
-         CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
-         DEFANE = IRET .EQ. 0
-      ELSE
-         CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
-         DEFANE = IDEFAM .NE. 0
-      ENDIF
-      CALL TECACH('NNN','PPHASMR',1,IPHASM,IRET)
-      CALL TECACH('NNN','PPHASPR',1,IPHASP,IRET)
-      IF (IRET.EQ.0) THEN
-        CALL TECACH('OON','PPHASPR',7,JTAB,IRET)
-        NZ = JTAB(6)
-C  PASSAGE DE PPHASMR ET PPHASPR AUX POINTS DE GAUSS
-        DO 9 KP = 1,NPG
-          K = (KP-1)*NNO
-          DO 7 L = 1,NZ
-            PHASM(NZ*(KP-1)+L)=0.D0
-            PHASP(NZ*(KP-1)+L)=0.D0
-            DO 5 I = 1,NNO
-              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) +
-     +                           ZR(IPHASM+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) +
-     +                           ZR(IPHASP+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-  5         CONTINUE
-  7       CONTINUE
-  9     CONTINUE
-      END IF
-
 
 C - PARAMETRES EN SORTIE
 
@@ -195,7 +162,7 @@ C         OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
           CALL XMEL3D(NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,OPTION,
      &                NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(ITEMPM),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
-     &                ZI(JLONCH),ZR(JBASLO),ZR(ISECHM),
+     &                ZI(JLONCH),ZR(JBASLO),
      &                ZR(ITREF),ZR(IDEPLM),ZR(JLSN),ZR(JLST),ZR(ICONTM),
      &                ZR(IVARIM),ZR(IMATUU),ZR(IVECTU),CODRET)
 
@@ -217,7 +184,7 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
           CALL XMEL3D(NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,OPTION,
      &                NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(ITEMPP),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
-     &                ZI(JLONCH),ZR(JBASLO),ZR(ISECHP),
+     &                ZI(JLONCH),ZR(JBASLO),
      &                ZR(ITREF),ZR(IDEPLP),ZR(JLSN),ZR(JLST),ZR(ICONTP),
      &                ZR(IVARIP),ZR(IMATUU),ZR(IVECTU),CODRET)
 
@@ -253,11 +220,8 @@ C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
-     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
      &                ZR(ICONTM),ZR(IVARIM),
      &                MATSYM,DFDI,DEF,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -271,8 +235,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
@@ -305,11 +267,8 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
-     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
      &                ZR(ICONTM),ZR(IVARIM),
      &                DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -354,11 +313,7 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  LGPG,ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                  NZ,PHASM,PHASP,
-     &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                  DEFANE,
-     &                  ANGMAS,
+     &                  ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
      &                  ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
      &                  VECT3,ZR(ICONTP),ZR(IVARIP),
      &                  ZR(IMATUU),ZR(IVECTU),CODRET)
@@ -373,8 +328,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
@@ -394,11 +347,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,PHASM,PHASP,
-     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,
-     &                ANGMAS,
+     &                ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),

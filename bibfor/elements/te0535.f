@@ -1,6 +1,6 @@
       SUBROUTINE TE0535(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 DEFAM(6),DEFAP(6),TEMPMM,TEMPPM
       INTEGER IADZI,IAZK24,NUMMAI
       
-      INTEGER ISEREF,ISECHM,ISECHP
-      REAL*8  SECHGM,SECHGP,SREF
-      
       CHARACTER*8 COCO
       LOGICAL VECTEU
 C     ------------------------------------------------------------------
@@ -99,10 +96,6 @@ C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
       CALL JEVECH ('PTEREF', 'L',ITREF)
       CALL JEVECH ('PTEMPMR', 'L',ITEMPM)
       CALL JEVECH ('PTEMPPR', 'L',ITEMPP)
-      
-      CALL JEVECH ('PSECREF', 'L',ISEREF)
-      CALL JEVECH ('PSECHMR', 'L',ISECHM)
-      CALL JEVECH ('PSECHPR', 'L',ISECHP)
       
       CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
       IF (JTAB(7).NE. (NBFIB+6)) CALL UTMESS('F','TE0535','STOP1')
@@ -206,15 +199,11 @@ C
         TEMPMM=0.5D0*(ZR(ITEMPM)+ZR(ITEMPM+1))
         TEMPPM=0.5D0*(ZR(ITEMPP)+ZR(ITEMPP+1))
         
-        SECHGM=0.5D0*(ZR(ISECHM)+ZR(ISECHM+1))
-        SECHGP=0.5D0*(ZR(ISECHP)+ZR(ISECHP+1))
-        SREF=ZR(ISEREF-1+1)
 C
          CALL PMFCOM(IP,OPTION,ZK16(ICOMPO),ZR(ICARCR),
      &              NBFIB,
      &              ZR(IINSTM),ZR(IINSTP),
      &              TEMPMM,TEMPPM,ZR(ITREF),
-     &              SECHGM,SECHGP,SREF,
      &              E,ALPHA,
      &              ZI(IMATE),NBVALC,
      &              DEFAM,DEFAP,

@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,12 +89,12 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL ZL,EXIGEO,EXICAR,EXITHE,EXITRF
       CHARACTER*1 BASE
       INTEGER NBIN
-      PARAMETER (NBIN=18)
+      PARAMETER (NBIN=17)
       CHARACTER*8 ZK8,LPAIN(NBIN),LPAOUT(1),TEMPE,NOMA,EXIELE,REPK
       CHARACTER*16 ZK16,OPTION
       CHARACTER*24 CHGEOM,CHTEMP,LCHIN(NBIN),LCHOUT(1),KCMP(5)
       CHARACTER*24 LIGRMO,LIGRCH,CHTREF,CHTIME,CHLAPL,CHCARA(15),ZK24
-      CHARACTER*24 CHHARM,CH24,CHSECH,CHSREF
+      CHARACTER*24 CHHARM,CH24
       CHARACTER*19 CHVARC
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
@@ -190,8 +190,8 @@ C        -- EN PRINCIPE, EXITIM EST TOUJOURS .TRUE.
         LPAIN(11) = 'PCASECT'
         LCHIN(11) = CHCARA(8)
 
-        LPAIN(18) = 'PNBSP_I'
-        LCHIN(18) = CHCARA(1) (1:8)//'.CANBSP'
+        LPAIN(17) = 'PNBSP_I'
+        LCHIN(17) = CHCARA(1) (1:8)//'.CANBSP'
 
 
         DO 50 ICHA = 1,NCHAR
@@ -591,11 +591,8 @@ C ====================================================================
               END IF
             END IF
 
-            CHSECH = '&&ME2MME.SECH'
-            CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,
-     &                  CHSECH,CHSREF)
             CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
-            OPTION = 'CHAR_MECA_TEMP_R'
+           OPTION = 'CHAR_MECA_TEMP_R'
             LPAIN(2) = 'PMATERC'
             LCHIN(2) = MATE
             LPAIN(4) = 'PTEREF'
@@ -609,10 +606,8 @@ C ====================================================================
             LCHIN(14) = CHCARA(5)
             LPAIN(15) = 'PCAGNBA'
             LCHIN(15) = CHCARA(11)
-            LPAIN(16) = 'PSECHER'
-            LCHIN(16) = CHSECH
-            LPAIN(17) = 'PVARCPR'
-            LCHIN(17) = CHVARC
+            LPAIN(16) = 'PVARCPR'
+            LCHIN(16) = CHVARC
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
@@ -624,7 +619,6 @@ C ====================================================================
             ELSE
               ILIRES = ILIRES - 1
             END IF
-            CALL DETRSD('CHAMP_GD',CHSECH)
             CALL DETRSD('CHAMP_GD',CHVARC)
           END IF
 C ====================================================================

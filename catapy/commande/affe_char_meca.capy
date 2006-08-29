@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,10 +26,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                              'PRES_REP','FORCE_POUTRE','FORCE_COQUE','LIAISON_OBLIQUE',
                              'FORCE_ELEC','INTE_ELEC','PESANTEUR','ROTATION','IMPE_FACE',
                              'VITE_FACE','TEMP_CALCULEE','RELA_CINE_BP','EPSI_INIT','CONTACT',
-                             'LIAISON_GROUP','LIAISON_UNIF','FLUX_THM_REP',
-                             'LIAISON_SOLIDE','LIAISON_ELEM','ONDE_FLUI',
-                             'EPSA_CALCULEE','LIAISON_CHAMNO','VECT_ASSE','LIAISON_COQUE',
-                             'LIAISON_MAIL','LIAISON_CYCL','FORCE_TUYAU','SECH_CALCULEE',
+                             'LIAISON_GROUP','LIAISON_UNIF','FLUX_THM_REP','LIAISON_SOLIDE',
+                             'LIAISON_ELEM','ONDE_FLUI','LIAISON_CHAMNO','VECT_ASSE','LIAISON_COQUE',
+                             'LIAISON_MAIL','LIAISON_CYCL','FORCE_TUYAU',
                              'EFFE_FOND','EVOL_CHAR','ARLEQUIN','DDL_POUTRE','GRAPPE_FLUIDE',
                              'LIAISON_UNILATER'),
                          ),
@@ -37,10 +36,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          TEMP_CALCULEE   =SIMP(statut='f',fr="Champ de température issu d'un autre calcul",
                                typ=(evol_ther,cham_no_sdaster,carte_sdaster) ),
-         SECH_CALCULEE   =SIMP(statut='f',fr="Champ de séchage issu d'un autre calcul",
-                               typ=(evol_ther,cham_no_sdaster,carte_sdaster ) ),
-         EPSA_CALCULEE   =SIMP(statut='f',fr="Champ de déformation anélastique issu d'un autre calcul",
-                               typ=evol_noli ),
          EVOL_CHAR       =SIMP(statut='f',fr="Champ de pression issu d'un autre calcul",
                                typ=evol_char ),
 

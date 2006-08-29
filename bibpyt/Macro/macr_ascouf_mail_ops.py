@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 24/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2044,7 +2044,6 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   LIRE_MAILLAGE =self.get_cmd('LIRE_MAILLAGE')
   DEFI_GROUP    =self.get_cmd('DEFI_GROUP')
   MODI_MAILLAGE =self.get_cmd('MODI_MAILLAGE')
-  AFFE_MODELE   =self.get_cmd('AFFE_MODELE')
   CREA_MAILLAGE =self.get_cmd('CREA_MAILLAGE')
   DEFI_FICHIER  =self.get_cmd('DEFI_FICHIER')
   IMPR_RESU     =self.get_cmd('IMPR_RESU')
@@ -2520,15 +2519,16 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 
   
 # GIBI  
+  DEFI_FICHIER(ACTION='LIBERER',UNITE=19)
+  DEFI_FICHIER(ACTION='LIBERER',UNITE=20)
   EXEC_LOGICIEL( LOGICIEL = logiel ,
-                 ARGUMENT = ( _F(NOM_PARA=nomFichierDATG),
-                              _F(NOM_PARA=nomFichierGIBI), ), )
+                 ARGUMENT = (nomFichierDATG,
+                             nomFichierGIBI), )
 # PRE_GIBI
   PRE_GIBI()
 
-  if SYME == 'QUART' : self.DeclareOut('nomres',self.sd)
 # LIRE_MAILLAGE
-  nomres=LIRE_MAILLAGE(INFO=INFO)
+  __nomres=LIRE_MAILLAGE(INFO=INFO)
 
 # DEFI_GROUP  1
 
@@ -2689,8 +2689,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
                                                CRITERE       = CRITER,),)
     
 
-  nomres=DEFI_GROUP(reuse   =nomres,
-                      MAILLAGE=nomres,
+  __nomres=DEFI_GROUP(reuse   =__nomres,
+                      MAILLAGE=__nomres,
                       **motscles )
 #
 # DEFI_GROUP  2
@@ -2719,17 +2719,10 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
     motscles['CREA_GROUP_NO'].append(_F(NOM      = 'G_AXE_2',
                                         INTERSEC =  tuple(l_peau+l_intersec),),)
    
-    nomres=DEFI_GROUP(reuse   =nomres,
-                        MAILLAGE=nomres,
+    __nomres=DEFI_GROUP(reuse   =__nomres,
+                        MAILLAGE=__nomres,
                         **motscles )    
  
-# AFFE_MODELE
-  __MODELE=AFFE_MODELE( MAILLAGE=nomres,
-                        AFFE=_F( GROUP_MA     = 'COUDE'      ,
-                                 PHENOMENE    = 'MECANIQUE'  ,
-                                 MODELISATION = '3D'         , )
-                         )
-
 # MODI_MAILLAGE  1
   motscles={}
   if GEOM == 'COUDE':
@@ -2749,8 +2742,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
       D_PLAQ_TUBE['AZIMUT']=MCL_SOUS_EPAIS[0].IPHIC
   else:pass
   motscles['PLAQ_TUBE'].append(_F(**D_PLAQ_TUBE),) 
-  nomres=MODI_MAILLAGE( reuse   =nomres,
-                          MAILLAGE=nomres,
+  __nomres=MODI_MAILLAGE( reuse   =__nomres,
+                          MAILLAGE=__nomres,
                           **motscles )
  
 # MODI_MAILLAGE  2
@@ -2759,24 +2752,21 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   if FISS_COUDE!=None:
     if FISS_COUDE['FISSURE'] == 'DEB_INIT':
       motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXTUBE','FACE1','FACE2'),)  
-  nomres=MODI_MAILLAGE(reuse   =nomres,
-                       MAILLAGE=nomres,
+  __nomres=MODI_MAILLAGE(reuse   =__nomres,
+                       MAILLAGE=__nomres,
                        **motscles)
 
 # CREA_MAILLAGE
-  if SYME != 'QUART':
-    self.DeclareOut('nomre2',self.sd)
-    motscles={}
-    motscles['CREA_POI1']=[]
-    motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P1',
-                                    GROUP_NO='P1'),)
-    if TYPBOL == None :
-      motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P2',
-                                    GROUP_NO='P2'),)    
-    nomre2=CREA_MAILLAGE( MAILLAGE=nomres,
+  self.DeclareOut('nomre2',self.sd)
+  motscles={}
+  motscles['CREA_POI1']=[]
+  motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P1',
+                                  GROUP_NO='P1'),)
+  if TYPBOL == None :
+    motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P2',
+                                  GROUP_NO='P2'),)    
+  nomre2=CREA_MAILLAGE( MAILLAGE=__nomres,
                           **motscles)
-  else:  
-    nomre2=nomres
 
  
 # IMPRESSSION

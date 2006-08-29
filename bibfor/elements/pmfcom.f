@@ -2,7 +2,6 @@
      &                  NF,
      &                  INSTAM,INSTAP,
      &                  TEMPM,TEMPP,TREF,
-     &                  SECHGM,SECHGP,SREF,
      &                  E,ALPHA,
      &                  ICDMAT,NBVALC,
      &                  DEFAM,DEFAP,
@@ -12,7 +11,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +37,6 @@ C ======================================================================
       REAL*8 TEMPM,TEMPP,ALPHA,DSIDEP,TREF,SIGX,SIGXP,EPSX,DEPSX
       REAL*8 CRIT(*),INSTAM,INSTAP
       REAL*8 DEFAP(*), DEFAM(*)
-      REAL*8         SECHGM,SECHGP,SREF
 C     ------------------------------------------------------------------
 C     AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
 
@@ -227,7 +225,6 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
             CALL COMP1D('RIGI',KPG,I,OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
-     &                   SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VARIM(IVARI),VARIP(IVARI),SIGF(I),MODF(I),
      &                  CODREF)
@@ -267,7 +264,6 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
             CALL COMP1D('RIGI',KPG,I,OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
-     &                  SECHGM,SECHGP,SREF,
      &                  ANGMAS,
      &                  VARIM(IVARI),VARIP(IVARI),SIGF(I),MODF(I),
      &                  CODREF)

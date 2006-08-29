@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 26/06/2006   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF recal Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,24 +22,8 @@
 
 
 import string, copy, Numeric, types
-# import Gnuplot
 import Cata
-from Cata.cata import INCLUDE, DETRUIRE, FIN, EXEC_LOGICIEL, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE
-from Utilitai.Utmess import UTMESS
-from Accas import _F
-
-import os, aster, cPickle, sys
-
-# try:
-#   import Gnuplot
-# except: pass
-
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
+from Cata.cata import INCLUDE, DETRUIRE
 
 
 #_____________________________________________

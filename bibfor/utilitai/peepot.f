@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/03/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -217,7 +217,7 @@ C        --- ON RECUPERE LES INSTANTS ---
         CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,K24B,K24B,ALPHA,CALPHA,K24B,K24B,CHELEM,
-     &              LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
+     &              LIGREL,BASE,K24B,K24B,K24B,K24B,
      &                  K24B, K24B, K8B, IBID, IRET)
    30   CONTINUE
 

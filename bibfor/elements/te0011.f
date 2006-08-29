@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,10 +102,6 @@ C ---- RECUPERATION TEMPERATURES AUX NOEUDS DE L'ELEMENT
 C      -------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL TECACH('NNN','PSECHER',1,ISECH,IRETS)
-
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
       CALL ORTREP(ZI(IMATE),NDIM,REPERE)
@@ -124,6 +120,9 @@ C          -------
         XYZGAU(3) = 0.D0
         TEMPG = 0.D0
         CALL RCVARC(' ','HYDR','+','RIGI',IGAU,1,HYDRG,IRET)
+        IF (IRET.EQ.1) HYDRG=0.D0
+        CALL RCVARC(' ','SECH','+','RIGI',IGAU,1,SECHG,IRET)
+        IF (IRET.EQ.1) SECHG=0.D0
         DO 30 I = 1,NNO
 
           IDECNO = 3* (I-1) - 1
@@ -135,12 +134,6 @@ C          -------
           TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)
    30   CONTINUE
 
-        SECHG = 0.D0
-        IF (IRETS.EQ.0) THEN
-          DO 40 I = 1,NNO
-            SECHG = SECHG + ZR(IVF+I+IDECPG)*ZR(ISECH+I-1)
-   40     CONTINUE
-        END IF
 
 C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION

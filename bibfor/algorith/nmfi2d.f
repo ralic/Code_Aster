@@ -2,7 +2,7 @@
      &                   FINT,KTAN,VIM,VIP,CRIT,COMPOR,TYPMOD,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,12 +121,9 @@ C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
         CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,MATE,COMPOR,CRIT,
      &              RBID,RBID,
      &              TEMPM(KPG),TEMPP(KPG),RBID,
-     &              RBID,RBID,RBID,
      &              SUM,DSU,
      &              RBID,VIM(1,KPG),
      &              OPTION,
-     &              RBID,RBID,
-     &              1,RBID,RBID,
      &              ANGMAS,
      &              RBID,
      &              SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)

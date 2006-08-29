@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,19 +29,34 @@ DEBUT(CODE=_F( NOM = 'SSNP05A',NIV_PUB_WEB='INTERNET'))
 
 M=LIRE_MAILLAGE( )
 
+
 MO=AFFE_MODELE( 
             MAILLAGE=M,    VERIF='MAILLE',
            AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D')
            )
 
+
+ANEL=LIRE_RESU(        MODELE=MO,   INFO=2,
+                               UNITE=19,
+                              FORMAT='IDEAS',
+                           TYPE_RESU='EVOL_NOLI',
+                            NOM_CHAM='EPSA_ELNO',
+                          NUME_ORDRE=( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,)
+                      )
 ACIER=DEFI_MATERIAU( 
                 ELAS=_F( E = 178600., NU = 0.3, ALPHA = 0.),
             LEMAITRE=_F( N = 11.,UN_SUR_K = 0.00032840723,UN_SUR_M = 0.178571429)
            )
 
-CM=AFFE_MATERIAU( 
+CM1=AFFE_MATERIAU( 
             MAILLAGE=M,   
-           AFFE=_F( TOUT = 'OUI',MATER = ACIER, TEMP_REF = 20.) )
+            AFFE=_F( TOUT = 'OUI',MATER = ACIER, TEMP_REF = 20.),);
+
+CM2=AFFE_MATERIAU( 
+            MAILLAGE=M,   
+           AFFE=_F( TOUT = 'OUI',MATER = ACIER, TEMP_REF = 20.),
+           AFFE_VARC=_F(TOUT='OUI',EVOL=ANEL,NOM_VARC='EPSA',NOM_CHAM='EPSA_ELNO'),);
+
 
 P30=DEFI_FONCTION( 
            NOM_PARA='INST',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
@@ -66,14 +81,6 @@ M52P30=DEFI_FONCTION(
            VALE=(0.0, 0.0, 30.0,-22.18911087,3630.0,-22.18911087,
            3660.0,60.62177826,7260.0,60.62177826,)
            )
-
-ANEL=LIRE_RESU(        MODELE=MO,   INFO=2,
-                               UNITE=19,
-                              FORMAT='IDEAS',
-                           TYPE_RESU='EVOL_NOLI',
-                            NOM_CHAM='EPSA_ELNO',
-                          NUME_ORDRE=( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,)
-                      )
 
 INIT0=LIRE_RESU(       MODELE=MO,
                                UNITE=19,
@@ -141,9 +148,6 @@ CH2=AFFE_CHAR_MECA_F(   MODELE=MO,FORCE_NODALE=(
                         _F( NOEUD = ('N3', 'N7',), FX = M52M30,  FY = M30),
                         _F( NOEUD = ('N4', 'N8',), FX = M30,     FY = P30))  )
 
-CH3=AFFE_CHAR_MECA(   MODELE=MO,
-                            EPSA_CALCULEE=ANEL   )
-
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
                 _F( JUSQU_A = 30.0,       NOMBRE = 20),
                            _F( JUSQU_A = 3630.0,     NOMBRE = 15),
@@ -152,7 +156,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
 
 U=STAT_NON_LINE( 
                             MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
+                        CHAM_MATER=CM1,EXCIT=(
                              _F( 
                 CHARGE = CH1), _F( 
                 CHARGE = CH2)),
@@ -208,11 +212,10 @@ TEST_RESU(RESU=(
 
 U2=STAT_NON_LINE( 
                             MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
+                        CHAM_MATER=CM2,EXCIT=(
                              _F( 
                 CHARGE = CH1), _F( 
-                CHARGE = CH2), _F( 
-                CHARGE = CH3)),
+                CHARGE = CH2),),
                          ETAT_INIT=_F( 
                 SIGM = CHSIG0,
                 DEPL = CHDEP0,

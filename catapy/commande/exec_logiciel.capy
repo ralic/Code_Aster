@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,11 +16,34 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-EXEC_LOGICIEL=PROC(nom="EXEC_LOGICIEL",op= 183,
-            fr="Exécute un logiciel ou une commande système depuis Aster",
-            UIinfo={"groupes":("Impression",)},
-         LOGICIEL        =SIMP(statut='f',typ='TXM' ),  
-         ARGUMENT        =FACT(statut='f',max='**',
-           NOM_PARA        =SIMP(statut='f',typ='TXM' ),  
-         ),
-)  ;
+
+from Macro.exec_logiciel_ops import exec_logiciel_ops
+def exec_logiciel_prod(self, MAILLAGE, **args):
+   if MAILLAGE != None:
+      mcf = MAILLAGE[0]
+      self.type_sdprod(mcf['MAILLAGE'], maillage_sdaster)
+   return None
+
+EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",op=exec_logiciel_ops, sd_prod=exec_logiciel_prod,
+                      fr="Exécute un logiciel ou une commande système depuis Aster",
+                      UIinfo={"groupes":("Outils métier",)},
+      
+      regles = (AU_MOINS_UN('LOGICIEL', 'MAILLAGE'),),
+      
+      LOGICIEL = SIMP(statut='f', typ='TXM'),
+      ARGUMENT = SIMP(statut='f', max='**', typ='TXM'),
+
+      MAILLAGE = FACT(statut='f',
+         FORMAT     = SIMP(statut='o', typ='TXM', into=("GMSH", "GIBI", "SALOME")),
+         UNITE_GEOM = SIMP(statut='f', typ='I', val_min=10, val_max=90, defaut=16,
+                           fr="Unité logique définissant le fichier (fort.N) contenant les données géométriques (datg)"),
+         UNITE      = SIMP(statut='f', typ='I', val_min=10, val_max=90, defaut=19,
+                           fr="Unité logique définissant le fichier (fort.N) produit par le mailleur"),
+         MAILLAGE   = SIMP(statut='o', typ=CO),
+      ),
+
+      CODE_RETOUR_MAXI = SIMP(statut='f', typ='I', defaut=0, val_min=-1,
+                              fr="Valeur maximale du code retour toléré (-1 pour l'ignorer)"),
+      
+      INFO     = SIMP(statut='f', typ='I', defaut=2, into=(1,2),),
+)

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2006   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE SOUS CONTACT XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,7 +172,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
-                       MODELE=MODELEIN,);
+                       );
 
 #----------------------------------------------
 #                   FISSURE

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -484,15 +484,6 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
      +                                      ALPHAT,CODRES,'FM')
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PSECHER','L',ISECH)
-
-C ---- RECUPERATION DU SECHAGE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PSECREF','L',ISREF)
-C ---- RECUPERATION DE L'INSTANT
-C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.NE.0) THEN
       INSTAN = ZR(ITEMPS)
@@ -504,7 +495,10 @@ C        TEMPERATURE EFFETIVE
          CALL JEVECH('PTEMPER','L',LTEMP)
 C
          TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
-         SECH = 0.5D0*(ZR(ISECH)+ZR(ISECH+1))
+         CALL RCVARC(' ','SECH','+','RIGI',1,1,SECH,IRET)
+         IF (IRET.NE.0) SECH=0.D0
+         CALL RCVARC(' ','SECH','REF','RIGI',1,1,SREF,IRET)
+         IF (IRET.NE.0) SREF=0.D0
                   
       NOMPAR(1) = 'TEMP'
       VALPA2(1) = TEMP
@@ -517,7 +511,7 @@ C        TERME DE LA MATRICE ELEMENTAIRE
          XRIG = E * A / XL
 C
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
-C           DE L HYDRATATION OU DU SECHAGE
+C           DU SECHAGE
 C           ----------------------------------------------------------
             CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
      +          'K_DESSIC',KDESSI, CODRES, ' ' )
@@ -525,7 +519,7 @@ C
             IF (CODRES.NE.'OK') KDESSI=0.D0
 C
 CC        DEPLACEMENT INDUIT PAR LE SECHAGE
-         XDEP = -KDESSI*(ZR(ISREF)-SECH) * XL
+         XDEP = -KDESSI*(SREF-SECH) * XL
 C
 C        --- CALCUL DES FORCES INDUITES ---
          FL(1) = -XRIG * XDEP
@@ -557,10 +551,6 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
      +                                      ALPHAT,CODRES,'FM')
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PHYDRER','L',IHYDR)
-
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -574,7 +564,10 @@ C        TEMPERATURE EFFETIVE
          CALL JEVECH('PTEMPER','L',LTEMP)
 C
          TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
-         HYDR = ZR(IHYDR)
+
+C        HYDRATATION EFFECTIVE 
+         CALL RCVARC(' ','HYDR','+','RIGI',1,1,HYDR,IRET)
+         IF (IRET.NE.0) HYDR=0.D0
          
       NOMPAR(1) = 'TEMP'
       VALPA2(1) = TEMP
@@ -587,7 +580,7 @@ C        TERME DE LA MATRICE ELEMENTAIRE
          XRIG = E * A / XL
 C
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
-C           DE L HYDRATATION OU DU SECHAGE
+C           OU DE L HYDRATATION
 C           ----------------------------------------------------------
             CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
      +          'B_ENDOGE',KENDOG, CODRES, ' ' )

@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
+#@ MODIF macro_miss_3d_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,41 +84,41 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
       dpara[cle] = '0'
     if PARAMETRE != None and PARAMETRE[cle] != None:
       if type(PARAMETRE[cle]) in (TupleType, ListType):
-        dpara[cle] = ' '.join([str(s) for s in PARAMETRE[cle]])
+        dpara[cle] = repr(' '.join([str(s) for s in PARAMETRE[cle]]))
       else:
         dpara[cle] = str(PARAMETRE[cle])
   
   EXEC_LOGICIEL(
                 LOGICIEL=miss3d,
-                ARGUMENT=(_F(NOM_PARA=MODUL2),
-                          _F(NOM_PARA=ETUDE),
-                          _F(NOM_PARA=BASE),
-                          _F(NOM_PARA=paste),
-                          _F(NOM_PARA=popti),
-                          _F(NOM_PARA=pdsol),
-                          _F(NOM_PARA=primp),
-                          _F(NOM_PARA=VERSION),
-                          _F(NOM_PARA=dpara['FREQ_MIN']), 
-                          _F(NOM_PARA=dpara['FREQ_MAX']),
-                          _F(NOM_PARA=dpara['FREQ_PAS']),
-                          _F(NOM_PARA=dpara['Z0']), 
-                          _F(NOM_PARA=dpara['SURF']), 
-                          _F(NOM_PARA=dpara['RFIC']),
-                          _F(NOM_PARA=dpara['FICH_RESU_IMPE']),
-                          _F(NOM_PARA=dpara['FICH_RESU_FORC']),
-                          _F(NOM_PARA=dpara['DREF']), 
-                          _F(NOM_PARA=dpara['ALGO']),
-                          _F(NOM_PARA=dpara['OFFSET_MAX']),
-                          _F(NOM_PARA=dpara['OFFSET_NB']),
-                          _F(NOM_PARA=dpara['SPEC_MAX']),
-                          _F(NOM_PARA=dpara['SPEC_NB']),
-                          _F(NOM_PARA=dpara['ISSF']),
-                          _F(NOM_PARA=dpara['FICH_POST_TRAI']),
-                          _F(NOM_PARA=dpara['CONTR_NB']),
-                          _F(NOM_PARA=dpara['CONTR_LISTE']),
-                          _F(NOM_PARA=dpara['LFREQ_NB']),
-                          _F(NOM_PARA=dpara['LFREQ_LISTE']),
-                          _F(NOM_PARA=prfor),
+                ARGUMENT=(MODUL2,
+                          ETUDE,
+                          BASE,
+                          paste,
+                          popti,
+                          pdsol,
+                          primp,
+                          VERSION,
+                          dpara['FREQ_MIN'], 
+                          dpara['FREQ_MAX'],
+                          dpara['FREQ_PAS'],
+                          dpara['Z0'], 
+                          dpara['SURF'], 
+                          dpara['RFIC'],
+                          dpara['FICH_RESU_IMPE'],
+                          dpara['FICH_RESU_FORC'],
+                          dpara['DREF'], 
+                          dpara['ALGO'],
+                          dpara['OFFSET_MAX'],
+                          dpara['OFFSET_NB'],
+                          dpara['SPEC_MAX'],
+                          dpara['SPEC_NB'],
+                          dpara['ISSF'],
+                          dpara['FICH_POST_TRAI'],
+                          dpara['CONTR_NB'],
+                          dpara['CONTR_LISTE'],
+                          dpara['LFREQ_NB'],
+                          dpara['LFREQ_LISTE'],
+                          prfor,
                          ),
                 )
 

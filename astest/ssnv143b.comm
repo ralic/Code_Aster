@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,12 +129,6 @@ BETON=DEFI_MATERIAU(           ELAS_FO=_F( E = E,
                                            ECRO_TRAC_P_PIC = 'LINEAIRE')
                              )
 
-MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
-                                    AFFE=_F(  MAILLE = 'MA1',
-                                           MATER = BETON,
-                                           SECH_REF = 20.)
-                         )
-
 CHTEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
 MAILLAGE=CUBE,
                               AFFE=_F( NOM_CMP = 'TEMP',
@@ -149,22 +143,31 @@ MAILLAGE=CUBE,
                                     VALE = 0.0)
                                    )
 
-TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',AFFE=(
-                     _F(  INST = 0.,   CHAM_GD = CHTEMP2),
-                             _F(  INST = 2.5,  CHAM_GD = CHTEMP1))
-                  )
-
 SECH=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                     NOM_CHAM='TEMP',AFFE=(
                      _F(  INST = 0.,   CHAM_GD = CHTEMP1),
                              _F(  INST = 2.5,  CHAM_GD = CHTEMP2))
                   )
 
+MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = BETON,),
+                                    AFFE_VARC=_F(TOUT='OUI',
+                                                 EVOL=SECH,
+                                                 NOM_VARC="SECH",
+                                                 NOM_CHAM='TEMP',
+                                                 VALE_REF=20),
+                         )
+
+TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                    NOM_CHAM='TEMP',AFFE=(
+                     _F(  INST = 0.,   CHAM_GD = CHTEMP2),
+                             _F(  INST = 2.5,  CHAM_GD = CHTEMP1))
+                  )
+
 COND_LIM=AFFE_CHAR_MECA(   
                      MODELE=TROISD,
-               TEMP_CALCULEE=TEMP,
-               SECH_CALCULEE=SECH,DDL_IMPO=(
+               TEMP_CALCULEE=TEMP,DDL_IMPO=(
                    _F(  NOEUD = 'N1',         DY = 0.),
                             _F(  NOEUD = 'N2',         DY = 0.),
                    _F(  NOEUD = 'N1',         DX = 0.),

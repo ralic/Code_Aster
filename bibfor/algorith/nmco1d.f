@@ -5,7 +5,7 @@
      &                  TM, TP, TREF,
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8        CSTPM(NCSTPM)
       REAL*8        EM,EP,ALPHAM,ALPHAP,R8VIDE
       CHARACTER*2   CODRES
-      REAL*8        SECHGM,SECHGP,SREF
 
       ISOT = .FALSE.
       CINE = .FALSE.
@@ -126,14 +125,10 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGM,
      &            DEPS,VIM,OPTION,SIGP,VIP,DSIDEP)
       ELSE IF (COM1D) THEN
-         SECHGM = 0.D0
-         SECHGP = 0.D0
-         SREF   = 0.D0
 
         CALL COMP1D(FAMI,KPG,KSP,OPTION,
      &              SIGM,EPSM,DEPS,
      &              TM,TP,TREF,
-     &              SECHGM,SECHGP,SREF,
      &              ANGMAS,
      &              VIM,VIP,SIGP,DSIDEP,CODRET)
       ELSE IF (PINTO) THEN

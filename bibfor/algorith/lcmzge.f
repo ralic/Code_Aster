@@ -1,9 +1,8 @@
       SUBROUTINE LCMZGE (FAMI,KPG,KSP,NDIM, TYPMOD, IMATE,
      &                   EPSTM,DEPST, VIM, TM,TP,TREF,
-     &                   SECHM,SECHP,SREF,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +27,7 @@ C ======================================================================
       INTEGER            NDIM, IMATE,KPG,KSP
       REAL*8             EPSTM(12), DEPST(12), VIM(3)
       REAL*8             SIG(6), VIP(3), DSIDPT(6,6,2), TM, TP, TREF
-      REAL*8             SECHM,SECHP,SREF, PROJ(6,6)
+      REAL*8             PROJ(6,6)
 
 C ----------------------------------------------------------------------
 C  LOI DE COMPORTEMENT ENDOMMAGEABLE : MODELE DE MAZARS (EN DELOCALISE)
@@ -46,9 +45,6 @@ C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  TM      : TEMPERATURE EN T-
 C IN  TP      : TEMPERATURE EN T+
 C IN  TREF    : TEMPERATURE DE REFERENCE
-C IN  SECHM   : SECHAGE A L'INSTANT PRECEDENT
-C IN  SECHP   : SECHAGE A L'INSTANT DU CALCUL
-C IN  SREF    : SECHAGE DE REFERENCE
 C IN  OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
@@ -65,7 +61,7 @@ C ----------------------------------------------------------------------
       LOGICAL      RIGI, RESI, ELAS, RELA, PROG, CPLAN
       CHARACTER*1 POUM
       CHARACTER*2 CODRET(6)
-      CHARACTER*8 NOMRES(6) , NOMPAR(2)
+      CHARACTER*8 NOMRES(6) , NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
       INTEGER     I,J,K,L,IRET
       REAL*8      E, NU, ALPHA, KDESS, BENDO
@@ -74,12 +70,12 @@ C ----------------------------------------------------------------------
       REAL*8      EPSE(6), EPSER(6), EPSPR(3), EPST(3), EPSP(3)
       REAL*8      EPSR(6), EPS(6), TREPS, EPSEQ, EPSTIL
       REAL*8      SIGEL(6), SIGELP(3), TRSIG
-      REAL*8      TEMP, TMAX, TMAXM, HYDR, SECH
+      REAL*8      TEMP, TMAX, TMAXM, HYDR, SECH, SREF
       REAL*8      TOL, TOLDYN, TR(6), TU(6), TRR(6), JACAUX(3)
       REAL*8      VECPE(3,3), VECPER(3,3)
       REAL*8      COPLAN,  LAMBDA, DEUXMU, RTEMPC, RTEMPT, ALPHAT
       REAL*8      RAC2, COEF, TMP1, D
-      REAL*8      VALRES(6), VALPAR(3)
+      REAL*8      VALRES(6), VALPAR
       REAL*8      KRON(6)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -104,12 +100,15 @@ C -- PROJECTEUR DE COUPURE
 C     DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
+        CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
+        IF (IRET.NE.0) SREF=0.D0
       IF (RESI) THEN
         POUM='+'
         TEMP = TP
         CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDR,IRET)
         IF (IRET.NE.0) HYDR=0.D0
-        SECH = SECHP
+        CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECH,IRET)
+        IF (IRET.NE.0) HYDR=0.D0
         TMAX = MAX(TMAXM, TP)
         IF (TMAX.GT.TMAXM) VIP(3) = TMAX
       ELSE
@@ -117,7 +116,8 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
         TEMP = TM
         CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDR,IRET)
         IF (IRET.NE.0) HYDR=0.D0
-        SECH = SECHM
+        CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECH,IRET)
+        IF (IRET.NE.0) HYDR=0.D0
         TMAX = TMAXM
       ENDIF
 
@@ -125,19 +125,17 @@ C  RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
 C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
 C-----------------------------------------------------
 
-      NOMPAR(1) = 'TEMP'
-      NOMPAR(2) = 'SECH'
-      VALPAR(1) = TMAX
-      VALPAR(2) = SECH
+      NOMPAR = 'TEMP'
+      VALPAR = TMAX
 
 C    LECTURE DES CARACTERISTIQUES ELASTIQUES
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
-      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',2,NOMPAR,VALPAR,2,
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRET, 'FM')
-      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',2,NOMPAR,VALPAR,1,
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',1,NOMPAR,VALPAR,1,
      &              NOMRES(3),VALRES(3),CODRET(3), ' ')
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
@@ -167,7 +165,7 @@ C --- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
        NOMRES(5) = 'AT'
        NOMRES(6) = 'BT'
 
-       CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','MAZARS',2,NOMPAR,
+       CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','MAZARS',1,NOMPAR,
      &            VALPAR,6,NOMRES,VALRES,CODRET,'FM')
       EPSD0 = VALRES(1)
       BETA  = VALRES(2)

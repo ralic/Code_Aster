@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE VERIFICATION DE LA BONNE PRISE EN COMPTE DU CISAILLEMENT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,12 +55,13 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                      K_RD=38600.0,
                                      ETA_RD=61900000000.0,
                                      ETA_ID=1.64e+12,),);
-
-CM=AFFE_MATERIAU(MAILLAGE=M,
+SECH0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=20.0,
-                         SECH_REF=100.),);
+                         NOM_CMP='TEMP',
+                         VALE=100.0,),);
+
 
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
@@ -80,11 +81,17 @@ SECH1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
                 AFFE=(
+                _F(CHAM_GD=SECH0,
+                   INST=-1.0,),
                 _F(CHAM_GD=SECHI,
                    INST=0.0,),
                 _F(CHAM_GD=SECHF,
                    INST=64800000.0,),),);
-
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,
+                         TEMP_REF=20.0),
+                 AFFE_VARC=_F(TOUT='OUI',EVOL=SECH1,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=100),);
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
@@ -117,8 +124,7 @@ CH13=AFFE_CHAR_MECA_F(MODELE=MO,
                                       FX = FORCE),);
 
 CH3=AFFE_CHAR_MECA(MODELE=MO,
-                   TEMP_CALCULEE=TEMP,
-                   SECH_CALCULEE=SECH1,);
+                   TEMP_CALCULEE=TEMP);
 
 L_INST=DEFI_LIST_REEL(DEBUT=-1.0,
                       INTERVALLE=(_F(JUSQU_A=1.0,

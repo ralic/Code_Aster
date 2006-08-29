@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C.......................................................................
       REAL*8 SIGMA(162),REPERE(7),INSTAN,NHARM
       REAL*8 SIGM2(162)
       INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER ISECH,ISREF,IGAU,IRET
+      INTEGER IGAU,IRET
       LOGICAL LSENS
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -109,21 +109,14 @@ C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PSECHER','L',ISECH)      
-
-C ---- RECUPERATION DU SECHAGE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PSECREF','L',ISREF)
       
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
 C      ------------------------------------
       CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
      &            IDFDE,ZR(IGEOM),ZR(IDEPL), ZR(ITEMPE),
-     &            ZR(ITREF),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
-     &            ZI(IMATE),NHARM,SIGMA,.FALSE.)
+     &            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,
+     &            .FALSE.)
 
 C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
 C ---- DANS LE CAS DE LA SENSIBILITE (TERME DA/DP*B*U)
@@ -133,8 +126,8 @@ C      ------------------------------------
       IF (LSENS) THEN
         CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
      &              IDFDE,ZR(IGEOM),ZR(IDEPS),ZR(ITEMPE),
-     &              ZR(ITREF),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
-     &              ZI(IMATE),NHARM,SIGM2,.TRUE.)
+     &              ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,
+     &              .TRUE.)
         DO 30 I = 1,NBSIG*NPG1
           SIGMA(I) = SIGMA(I) + SIGM2(I)
    30   CONTINUE

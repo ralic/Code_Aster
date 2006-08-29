@@ -1,8 +1,8 @@
-      SUBROUTINE NZEDGA (NDIM,IMAT,COMPOR,CRIT,
+      SUBROUTINE NZEDGA (FAMI,KPG,KSP,NDIM,IMAT,COMPOR,CRIT,
      &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
-     &                   PHASM,PHASP,OPTION,SIGP,VIP,DSIDEP,IRET)
+     &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,11 +20,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_20
+C TOLE CRP_21
       IMPLICIT NONE
-      INTEGER            NDIM,IMAT,IRET
+      INTEGER            NDIM,IMAT,IRET,KPG,KSP
       CHARACTER*16       COMPOR(*),OPTION
+      CHARACTER*(*)      FAMI
       REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TREF
-      REAL*8             EPSM(6),DEPS(6),PHASM(3),PHASP(3)
+      REAL*8             EPSM(6),DEPS(6)
       REAL*8             SIGM(6),VIM(5),SIGP(6),VIP(5),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
@@ -86,7 +88,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8             DEUXMU,E,NU,TROISK,KRON(6)
       REAL*8             EM,NUM,TROIKM,DEUMUM,FMEL
-      REAL*8             VALRES(14)
+      REAL*8             VALRES(14),PHASM(3),PHASP(3)
       REAL*8             DEPSTH(6),DEPSDV(6),SIGDV(6),SIGEL(6)
       REAL*8             EPSMO,SIGMO
       REAL*8             SEUIL,DP,PLASTI,B,RPRIM,RP,R(3),RM,DS
@@ -104,8 +106,9 @@ C
       INTEGER            NDIMSI,MODE,JPROL,JVALE,NBVALE(3),NBMAX,NZ
       INTEGER            I,J,K,L
       CHARACTER*2        BL2, FB2, CODRET(14), TEST
-      CHARACTER*8        NOMRES(14),NOMCLE(5)
+      CHARACTER*8        NOMRES(14),NOMCLE(5),ZIRC(2)
       DATA               KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      DATA               ZIRC /'ALPHPUR','ALPHBETA'/
 
 C 1 INITIALISATIONS
       EPS = 1.D-9
@@ -135,6 +138,17 @@ C 2 RECUPERATION DES CARACTERISTIQUES (ELAS ET DILATATION)
        NOMRES(6)='EPSF_EPSC_TREF'
        CALL RCVALA(IMAT,' ','ELAS_META',1,'TEMP',TM,6,NOMRES,VALRES,
      &             CODRET, FB2 )
+
+C      RECUPERATION DES PHASES METALLURGIQUES
+       DO 1 I=1,2
+         CALL RCVARC(' ',ZIRC(I),'-',FAMI,KPG,KSP,
+     &        PHASM(I),IRET)
+         IF (IRET.EQ.1) PHASM(I)=0.D0
+         CALL RCVARC(' ',ZIRC(I),'+',FAMI,KPG,KSP,
+     &        PHASP(I),IRET)
+         IF (IRET.EQ.1) PHASP(I)=0.D0
+ 1     CONTINUE
+
        ZALPHM  = PHASM(1) + PHASM(2)
        ZBETAM = 1.D0 - ZALPHM
        PHASM(3)=ZBETAM

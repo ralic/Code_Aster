@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER          NBSIG, NBSIG1, NBSIG2, NDIM, NNO, I,
      +                 NNOS, NPG, IPOIDS, IVF, IDFDE,
-     +                 IGAU, ISIG, IGEOM, IDEPL,IRET,ISREF,
-     +                 ITEMPE, ITREF, ITEMPS, IDEFO, IMATE, ISECHE
-      REAL*8           EPSM(54), REPERE(7),SREF
+     +                 IGAU, ISIG, IGEOM, IDEPL,IRET,
+     +                 ITEMPE, ITREF, ITEMPS, IDEFO, IMATE
+      REAL*8           EPSM(54), REPERE(7)
       REAL*8           NHARM, INSTAN, TEMPE(27)
-      REAL*8           SECH(27)
       CHARACTER*4      FAMI
       CHARACTER*8      MODELI
       CHARACTER*16     COMPOR
@@ -95,7 +94,6 @@ C
 C
       DO 20 I = 1, 27
          TEMPE(I)   = ZERO
-         SECH(I)    = ZERO
  20   CONTINUE
 C
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
@@ -121,25 +119,6 @@ C      --------------------------------------------------
         DO 30 I = 1, NNO
           TEMPE(I) = ZR(ITEMPE+I-1)
  30     CONTINUE
-      ENDIF
-C
-C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
-C     -----------------------------------------------------
-      CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
-      IF(ISECHE.NE.0) THEN
-        DO 36 I = 1, NNO
-          SECH(I)   = ZR(ISECHE+I-1)
-  36    CONTINUE
-
-      ENDIF
-
-C ---RECUPERATION DU SECHAGE DE REFERENCE :
-C     --------------------------------------------------
-      CALL TECACH('NNN','PSECREF',1,ISREF,IRET)
-      IF (IRET.EQ.0) THEN
-        SREF = ZR(ISREF)
-      ELSE
-        SREF = 0.D0
       ENDIF
 C
 C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
@@ -184,7 +163,7 @@ C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
       CALL EPSVMC(FAMI,MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPL),TEMPE,TREF,SECH,SREF,INSTAN,
+     +            ZR(IGEOM),ZR(IDEPL),TEMPE,TREF,INSTAN,
      +            ZI(IMATE),REPERE,NHARM,OPTION,EPSM)
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN

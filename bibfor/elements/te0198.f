@@ -1,6 +1,6 @@
       SUBROUTINE TE0198(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C ......................................................................
 
       CHARACTER*8   MODELI
       REAL*8        BSIGMA(81), SIGTH(162), REPERE(7)
-      REAL*8        NHARM, INSTAN, RBID
+      REAL*8        NHARM, INSTAN
       INTEGER       NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
       INTEGER       DIMMOD
 
@@ -59,7 +59,6 @@ C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
-      RBID = ZERO
       MODELI(1:2) = NOMTE(3:4)
       DIMMOD = 3
 
@@ -95,10 +94,6 @@ C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PSECHER','L',ISECH)
-
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('NNN','PTEMPSR',1,ITEMPS,IRET)
@@ -114,7 +109,7 @@ C ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
       CALL SIGTMC('RIGI',MODELI,NNO,DIMMOD,NBSIG,NPG1,ZR(IVF),
-     &            ZR(IGEOM),ZR(ITEMPE),ZR(ITREF),ZR(ISECH),RBID,
+     &            ZR(IGEOM),ZR(ITEMPE),ZR(ITREF),
      &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE

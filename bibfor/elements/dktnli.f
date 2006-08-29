@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +89,7 @@ C  CMPS D' EFFORTS COQUE :
 C   - MEMBRANE : NXX,NYY,NXY
 C   - FLEXION  : MXX,MYY,MXY
 C --------------------------------------------------------------------
-      INTEGER NBCOU, NC, NPGH, NZ, JNBSPI, ITABP(8), ITABM(8)
+      INTEGER NBCOU, NC, NPGH,  JNBSPI, ITABP(8), ITABM(8)
 C            NBCOU:  NOMBRE DE COUCHES (INTEGRATION DE LA PLASTICITE)
 C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
@@ -149,8 +149,8 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
      &          ITEMP, ITEMPM, ITEMPP, ITREF, IVARIM, IVARIP, IVARIX,
      &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV
       REAL*8     DEUX, RAC2, QSI, ETA, CARA(25), JACOB(5)
-      REAL*8    CTOR,EPSANP(4),EPSANM(4),PHASM(7),PHASP(7)
-      REAL*8    SECHGM,SECHGP,SREF,LC,JACGAU,BMAT(6,18)
+      REAL*8    CTOR
+      REAL*8    LC,JACGAU,BMAT(6,18)
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
       LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
       CHARACTER*24 NOMELE
@@ -208,17 +208,6 @@ C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
         IVARIP = IVARIM
         ICONTP = ICONTM
       END IF
-
-C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
-      DO 10 J = 1,4
-        EPSANM(J) = 0.D0
-        EPSANP(J) = 0.D0
-   10 CONTINUE
-      NZ=0
-      DO 20 J = 1,7
-        PHASM(J) = 0.D0
-        PHASP(J) = 0.D0
-   20 CONTINUE
 
 C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
@@ -356,11 +345,6 @@ C        -------------------------------------------------------
         END IF
       END IF
 
-C ---  VARIABLE D HYDRATATION ET DE SECHAGE
-      SECHGM = 0.D0
-      SECHGP = 0.D0
-      SREF   = 0.D0
-
 C===============================================================
 
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
@@ -469,12 +453,9 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
      &                ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
-     &                  SECHGM,SECHGP,SREF,
      &                  EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),
      &                  OPT,
-     &                  EPSANM,EPSANP,
-     &                  NZ,PHASM,PHASP,
      &                  ANGMAS,
      &                  LC,
      &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)

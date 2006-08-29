@@ -1,10 +1,9 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
-     2                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,EPSDT,DEPST,
+     2                      SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +27,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          SECHD, SECHF, SREF, ELGEOM(*)
+        REAL*8          ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -80,9 +79,6 @@ C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               SECHD   SECHAGE A L'INSTANT PRECEDENT
-C               SECHF   SECHAGE A L'INSTANT DU CALCUL
-C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -136,8 +132,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
-     &                      SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+     2                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
+     3                      SIGF,VINF,DSDE,IRET)
            IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
      &            CMP2(1:6)  .EQ. 'MAZARS') THEN
@@ -171,8 +167,8 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
             ENDIF
             CALL LCUMFP ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT, COMP,
      1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
-     &                      SECHD,SECHF,SREF,EPSDT,DEPST,
-     2                      SIGD, VIND, OPTION,SIGF,VINF,DSDE)
+     2                      EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
+     3                      VINF,DSDE)
           ENDIF
         ELSE
           CALL UTMESS('F','NMCOUP_5','LOI DE COMPORTEMENT NON '

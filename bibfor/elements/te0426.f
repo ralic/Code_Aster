@@ -1,6 +1,6 @@
       SUBROUTINE TE0426(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,18 +100,32 @@ C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.NE.0) INSTAN = ZR(ITEMPS)
 
-C ---- RECUPERATION DES DEFORMATIONS ANELASTIQUES AUX NOEUDS
-C ---- DE L'ELEMENT :
-C      ------------
-      CALL TECACH('ONN','PDEFAPR',1,IDEFA,IRET)
 
 C ---- CONSTRUCTION DU VECTEUR DES DEFORMATIONS ANELASTIQUES DEFINIES
 C ---- AUX POINTS D'INTEGRATION A PARTIR DES DONNEES UTILISATEUR
 C      --------------------------------------------------------------
-      IF (IDEFA.NE.0) THEN
-        CALL EPSAMC(NNO,NPG1,NBSIG,ZR(IVF),ZR(IDEFA),EPSI)
-      END IF
 
+      DO 30 IGAU=1,NPG1
+        CALL RCVARC(' ','EPSAXX','+','RIGI',IGAU,1,
+     &              EPSI(NBSIG*(IGAU-1)+1),IRET)
+        IF (IRET.EQ.1) EPSI(NBSIG*(IGAU-1)+1)=0.D0
+        CALL RCVARC(' ','EPSAYY','+','RIGI',IGAU,1,
+     &              EPSI(NBSIG*(IGAU-1)+2),IRET)
+        IF (IRET.EQ.1) EPSI(NBSIG*(IGAU-1)+2)=0.D0
+        CALL RCVARC(' ','EPSAZZ','+','RIGI',IGAU,1,
+     &              EPSI(NBSIG*(IGAU-1)+3),IRET)
+        IF (IRET.EQ.1) EPSI(NBSIG*(IGAU-1)+3)=0.D0
+        CALL RCVARC(' ','EPSAXY','+','RIGI',IGAU,1,
+     &              EPSI(NBSIG*(IGAU-1)+4),IRET)
+        IF (IRET.EQ.1) EPSI(NBSIG*(IGAU-1)+4)=0.D0
+        CALL RCVARC(' ','EPSAXZ','+','RIGI',IGAU,1,
+     &              EPSI(NBSIG*(IGAU-1)+5),IRET)
+        IF (IRET.EQ.1) EPSI(NBSIG*(IGAU-1)+5)=0.D0
+        CALL RCVARC(' ','EPSAYZ','+','RIGI',IGAU,1,
+     &              EPSI(NBSIG*(IGAU-1)+6),IRET)
+        IF (IRET.EQ.1) EPSI(NBSIG*(IGAU-1)+6)=0.D0
+ 30   CONTINUE
+ 
 C ---- CALCUL DU VECTEUR DES CONTRAINTES ANELASTIQUES AUX POINTS
 C ---- D'INTEGRATION
 C      -------------
@@ -129,9 +143,9 @@ C ---- VECTEUR DES FORCES DUES AUX CONTRAINTES ANELASTIQUES
 C      -------------------------------------------------
       CALL JEVECH('PVECTUR','E',IVECTU)
 
-      DO 30 I = 1,NDIM*NNO
+      DO 40 I = 1,NDIM*NNO
         ZR(IVECTU+I-1) = BSIGMA(I)
-   30 CONTINUE
+   40 CONTINUE
 
 C FIN ------------------------------------------------------------------
       END

@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       CHARACTER*24 CHTIME, CHAMGD, CHFREQ, CHMASS
       CHARACTER*24 CHAMEL, CHSIG,  CHEPS
       CHARACTER*24 CHGEOM, CHCARA(15), CHTEMP, CHTREF, CHHARM
-      CHARACTER*24 CHVARC, CHSECH, CHSREF
+      CHARACTER*24 CHVARC, CHSECH, CHVREF
       CHARACTER*24 INFOCH, MATE
       CHARACTER*24 K24B, NOOBJ
       CHARACTER*24 COMPOR, CARCRI
@@ -109,6 +109,7 @@ C
       CALPHA = (0.D0 , 0.D0)
       NFON   = 0
       CHVARC='&&OP0046.VARC'
+      CHVREF='&&OP0046.VREF'
 C
 C -- LECTURE DES OPERANDES DE LA COMMANDE
 C
@@ -225,10 +226,10 @@ C
          CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
          CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
      >                                              CHTREF,CHTEMP )
-         CALL MEDEHY(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
-     >                                       CHSECH,CHSREF )
          CALL VRCINS(MODELE(1:8),MATE(1:8),CARELE(1:8),TIME,
      >                                       CHVARC(1:19))
+         CALL VRCREF(MODELE(1:8),MATE(1:8),CARELE(1:8),
+     >                                       CHVREF(1:19))
 
          IF ( EXIPOU .AND. NFON.NE.0 ) THEN
            CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IER)
@@ -239,7 +240,7 @@ C
      >               CHTREF,CHTIME,K24B,CHHARM,CHSIG,CHEPS,
      >               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
      >               K24B,K24B,CHAMEL,LIGREL,BASE,
-     >               CHVARC,CHSECH,CHSREF,K24B,K24B,
+     >               CHVARC,CHVREF,K24B,K24B,
      >               K24B, K24B, K8B, IBID, IRET )
 
 

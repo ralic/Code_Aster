@@ -1,10 +1,10 @@
       SUBROUTINE SIGVMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,
      +                    IPOIDS,IVF,IDFDE,XYZ,DEPL,
-     +                    TEMPE,TREF,SECH,SREF,
+     +                    TEMPE,TREF,
      +                    INSTAN, REPERE,MATER,NHARM,SIGMA,
      +                    LSENS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,6 @@ C                                   L'ELEMENT
 C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
-C    SECH           IN     R        SECHAGE AUX NOEUDS
-C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
@@ -69,7 +67,7 @@ C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*(*) FAMI
            REAL*8       XYZ(1), DEPL(1), TEMPE(1), REPERE(7), SIGMA(1)
-           REAL*8       INSTAN, NHARM, SECH(*), SREF
+           REAL*8       INSTAN, NHARM
            LOGICAL      LSENS
            INTEGER      IPOIDS,IVF,IDFDE
 C -----  VARIABLES LOCALES
@@ -114,7 +112,7 @@ C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
       OPTION = 'CALC_CONT_TEMP_R'
       CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,
-     +            TREF,SECH,SREF,INSTAN,MATER,REPERE,OPTION,SIGTH)
+     +            TREF,INSTAN,MATER,REPERE,OPTION,SIGTH)
 C       
 C--- CALCUL DES CONTRAINTES DUES AUX RETRAIT DE DESSICCATION 
 C           ET D'HYDRATATION
@@ -122,12 +120,12 @@ C      ---------------------------------------------------------
 
       OPTION = 'CALC_CONT_HYDR_R'
       CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,
-     +            TREF,SECH,SREF,INSTAN,MATER,REPERE,OPTION,SIGHY)
+     +            TREF,INSTAN,MATER,REPERE,OPTION,SIGHY)
       
       
       OPTION = 'CALC_CONT_SECH_R'     
       CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,
-     +            TREF,SECH,SREF,INSTAN,MATER,REPERE,OPTION,SIGSE)
+     +            TREF,INSTAN,MATER,REPERE,OPTION,SIGSE)
        
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------

@@ -1,12 +1,11 @@
          SUBROUTINE PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     1                       CRIT, TEMPD, TEMPF, TREF,
-     2                       SECHD, SECHF, SREF, EPSDT,
-     3                       DEPST, SIGD,  VIND,  OPT, ELGEOM, SIGF,
-     4                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
+     1                       CRIT, TEMPD, TEMPF, TREF, EPSDT,
+     2                       DEPST, SIGD, VIND, OPT, ELGEOM, SIGF,
+     3                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,9 +114,6 @@ C                       FIXEE EN DUR)
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
-C               SECHD   SECHAGE A L'INSTANT PRECEDENT
-C               SECHF   SECHAGE A L'INSTANT DU CALCUL
-C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -189,7 +185,7 @@ C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
         REAL*8          TEMPD,    TEMPF  , TREF
-        REAL*8          SECHD , SECHF , SREF, ELGEOM(*)
+        REAL*8          ELGEOM(*)
         REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
         REAL*8          SIGD(6),     SIGF(6),   SIGE(6), DSIG(6)
@@ -245,8 +241,7 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL BETMAT ( FAMI, KPG, KSP, MOD, IMAT, NMAT, TMPMX, TEMPF,
-     1                SECHD, SECHF, MATERD, MATERF, MATCST, NDT,
-     2                NDI , NR, NVI)
+     1                MATERD, MATERF, MATCST, NDT, NDI , NR, NVI)
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
@@ -256,7 +251,7 @@ C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
         CALL LCDEHY ( FAMI, KPG, KSP, NMAT,  MATERD, MATERF,
-     &                SECHD, SECHF, SREF, DEPS,   EPSD )
+     &                DEPS, EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
 C

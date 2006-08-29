@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                                AFFE=_F( TOUT = 'OUI',
                                      PHENOMENE = 'MECANIQUE',
                                      MODELISATION = '3D'))
+
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11, NU = 0.3))
 
@@ -169,6 +170,8 @@ GLBIL2=CALC_G(
                   );
 
 
+
+                  
 GLMAX1=CALC_G(   
   TITRE='GMAX_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
         RESULTAT=RESU,
@@ -177,13 +180,13 @@ GLMAX1=CALC_G(
                VALE_MIN = 0.,
                VALE_MAX = 1.),
           _F(  NUME_ORDRE = 2,
-               VALE_MIN = 0.,
+               VALE_MIN = -1.,
                VALE_MAX = 1.),
           _F(  NUME_ORDRE = 3,
                VALE_MIN = 0.,
                VALE_MAX = 1.),
           _F(  NUME_ORDRE = 4,
-               VALE_MIN = 0.,
+               VALE_MIN = -1.,
                VALE_MAX = 1.)),    
           OPTION='G_MAX',
           THETA=_F( FOND_FISS=FOND,
@@ -203,13 +206,13 @@ GLMAX2=CALC_G(
                VALE_MIN = 0.,
                VALE_MAX = 1.),
           _F(  NUME_ORDRE = 2,
-               VALE_MIN = 0.,
+               VALE_MIN = -1.,
                VALE_MAX = 1.),
           _F(  NUME_ORDRE = 3,
                VALE_MIN = 0.,
                VALE_MAX = 1.),
           _F(  NUME_ORDRE = 4,
-               VALE_MIN = 0.,
+               VALE_MIN = -1.,
                VALE_MAX = 1.)),    
           OPTION='G_MAX',
           THETA=_F(  FOND_FISS=FOND,
@@ -219,6 +222,31 @@ GLMAX2=CALC_G(
           COMP_ELAS=_F(  RELATION = 'ELAS',)
    )
 
+FFX=DEFI_FISS_XFEM(MODELE=MO,  
+                   DEFI_FISS=_F(
+                                GROUP_MA_FISS='LEVREINF',
+                                GROUP_MA_FOND='LFF',               
+                                ),
+                   GROUP_MA_ENRI='VTOT',
+                   ORIE_FOND=_F(PFON_INI=(-0.005, 0.0, 0.0),
+                                VECT_ORIE=(0.0, 1.0, 0.0),
+                                PT_ORIGIN=(0.0, 0.0, 0.0),),
+                   INFO=1,
+                   CONTACT=_F(),
+                  );
+
+KLMAX1=CALC_G( 
+           TITRE='K_MAX AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
+           RESULTAT=RESU,
+           OPTION='CALC_K_MAX',
+                    LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
+                                LISSAGE_G = 'LAGRANGE',),
+           THETA=_F( FISSURE=FFX,
+                     R_INF=0.5,
+                     R_SUP=1.5,),
+           SIGNES = _F( CHARGE_S = (1,3),
+                        CHARGE_NS = (2,4),),
+                    );
 
 IMPR_TABLE     ( TABLE = GL1,  )
 
@@ -229,8 +257,9 @@ IMPR_TABLE     ( TABLE = GLBIL1, )
 IMPR_TABLE     ( TABLE = GLBIL2, )
 
 IMPR_TABLE     ( TABLE = GLMAX1, )
-
 IMPR_TABLE     ( TABLE = GLMAX2, )
+IMPR_TABLE     ( TABLE= KLMAX1);
+
 
 
 
@@ -267,11 +296,11 @@ TEST_TABLE(        TABLE=GLMAX1,
                               _F(  NOM_PARA = 'Q_1',
                                        VALE = 1.),
                               _F(  NOM_PARA = 'Q_2',
-                                       VALE = 1.),
+                                       VALE = -1.),
                               _F(  NOM_PARA = 'Q_3',
-                                       VALE = 0.),
+                                       VALE = 1.),
                               _F(  NOM_PARA = 'Q_4',
-                                       VALE = 0.),
+                                       VALE = -1.),
                               _F(  NOM_PARA = 'NOEUD',
                                      VALE_K = 'N2667')
                              ),  
@@ -279,7 +308,6 @@ TEST_TABLE(        TABLE=GLMAX1,
                       VALE=1.4945524639672E+01,
                  PRECISION=5.0E-3,
                  REFERENCE='NON_REGRESSION',
-                 VERSION='7.0.17'
           )
 
 
@@ -310,7 +338,6 @@ TEST_TABLE(        TABLE=GLBIL2,
                       VALE=2.1735761238787E+00,
                  PRECISION=5.0E-3,
                  REFERENCE='NON_REGRESSION',
-                 VERSION='7.0.17' 
             )
 
 TEST_TABLE(        TABLE=GLMAX2,
@@ -318,21 +345,38 @@ TEST_TABLE(        TABLE=GLMAX2,
                               _F(  NOM_PARA = 'Q_1',
                                        VALE = 1.),
                               _F(  NOM_PARA = 'Q_2',
-                                       VALE = 1.),
+                                       VALE = -1.),
                               _F(  NOM_PARA = 'Q_3',
                                        VALE = 1.),
                               _F(  NOM_PARA = 'Q_4',
-                                       VALE = 0.),
+                                       VALE = -1.),
                               _F(  NOM_PARA = 'NOEUD',
                                      VALE_K = 'N2773')
                              ),  
                   NOM_PARA='G',
-                      VALE=6.0329858966450E+01,
+                      VALE=1.50825E+01,
                  PRECISION=5.0E-3,
                  REFERENCE='NON_REGRESSION',
-                 VERSION='7.0.17' 
           )
 
+TEST_TABLE(        TABLE=KLMAX1,
+                      FILTRE=(
+                              _F(  NOM_PARA = 'Q_1',
+                                       VALE_I = 1),
+                              _F(  NOM_PARA = 'Q_2',
+                                       VALE_I = 1),
+                              _F(  NOM_PARA = 'Q_3',
+                                       VALE_I = 1),
+                              _F(  NOM_PARA = 'Q_4',
+                                       VALE_I = 1),
+                              _F(  NOM_PARA = 'NUM_PT',
+                                     VALE_I = 5)
+                             ),  
+                  NOM_PARA='G_LOCAL',
+                      VALE= 7.40091E+01,
+                 PRECISION=5.0E-3,
+                 REFERENCE='NON_REGRESSION',
+          )
 
 
 FIN()

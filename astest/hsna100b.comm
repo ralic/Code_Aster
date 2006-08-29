@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE SECHAGE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -425,9 +425,12 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = MAT,
-                                  TEMP_REF = 15., 
-                                  SECH_REF = C_0   )       )
-
+                                  TEMP_REF = 15. ),
+                            AFFE_VARC=_F(TOUT='OUI',
+                                         EVOL=RESUSECH,
+                                         NOM_VARC="SECH",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=C_0),);
 #
 CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
                          FACE_IMPO=(_F( GROUP_MA = ('GM72'),
@@ -443,7 +446,6 @@ NUM=NUME_DDL(MODELE=MOMECA,METHODE='LDLT',RENUM='RCMK',)
 CHMECA=AFFE_CHAR_MECA(
                             MODELE=MOMECA,
                      TEMP_CALCULEE=RESUTHER,
-                     SECH_CALCULEE=RESUSECH
                             )
 
 #

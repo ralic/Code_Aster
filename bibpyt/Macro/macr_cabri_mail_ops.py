@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_mail_ops Macro  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+#@ MODIF macr_cabri_mail_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,9 +129,7 @@ def macr_cabri_mail_ops(self,EXEC_MAILLAGE,RAFF_MAILLAGE,VERI_MAIL,GEOM_BRID,
   # Lancement de GIBI
   EXEC_LOGICIEL(
                LOGICIEL=gibi2000,
-               ARGUMENT=(_F(NOM_PARA=fichier_datg),
-                         _F(NOM_PARA=fichier_mgib),
-                         )
+               ARGUMENT=(fichier_datg, fichier_mgib),
                )
   # Lecture du maillage GIBI dans ASTER
   PRE_GIBI(

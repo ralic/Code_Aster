@@ -1,6 +1,6 @@
-      SUBROUTINE METAU2(OPTION,NOMTE)
+      SUBROUTINE METAU2(OPTION,NOMTE,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,26 +18,30 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*16 NOMTE,OPTION
+      INTEGER      IRET
 
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 C          ELEMENTS ISOPARAMETRIQUES 3D METALLURGIQUES
 
 C          OPTION : 'CHAR_MECA_TEMP_Z  '
 
-C     ENTREES  ---> OPTION : OPTION DE CALCUL
-C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
+C  IN  OPTION K16 : NOM DE L OPTION (CHAR_MECA_TEMP_Z)
+C  IN  NOMTE  K16 : NOM DU TYPE D ELEMENT
+C  OUT IRET   I   : =1 PRESENCE DE METALLURGIE
+C                   =0 PAS DE METALLURGIE
 
-      IMPLICIT REAL*8 (A-H,O-Z)
       PARAMETER (NBRES=6)
-      CHARACTER*8 NOMRES(NBRES)
+      CHARACTER*8 NOMRES(NBRES),ACIER(4),ZIRC(2)
       CHARACTER*2 CODRET(NBRES)
-      CHARACTER*16 NOMTE,OPTION
       REAL*8   VALRES(NBRES)
       REAL*8   COEF1,COEF2,EPSTH,PHASPG(7)
       REAL*8   DFDX(27),DFDY(27),DFDZ(27),TPG,COEF,POIDS
-      INTEGER  IPOIDS,IVF,IDFDE,IGEOM,IMATE,NZ
+      INTEGER  IPOIDS,IVF,IDFDE,IGEOM,IMATE,NZ,IRE1,IRE2
       INTEGER  JGANO,NNO,KP,NPG1,I,L,K,IVECTU,ITEMPE,JTAB(7)
+      LOGICAL  LACIER
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -55,12 +59,32 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      DATA ACIER /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
+      DATA ZIRC /'ALPHPUR','ALPHBETA'/
 
+
+      IRET=1
+      LACIER=.FALSE.
+
+      CALL RCVARC(' ',ACIER(1),'+','RIGI',1,1,RBID,IRE1)
+      IF (IRE1.EQ.1) THEN
+        CALL RCVARC(' ',ZIRC(1),'+','RIGI',1,1,RBID,IRE2)
+        IF (IRE2.EQ.1)  THEN
+          IRET=0
+          GOTO 9999
+        ELSE
+          NZ=2
+        ENDIF
+      ELSE
+          NZ=4
+          LACIER=.TRUE.
+      ENDIF
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
+
       MATER = ZI(IMATE)
 
       NOMRES(1) = 'E'
@@ -73,40 +97,35 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PTEMPER','L',ITEMPE)
-      CALL JEVECH('PPHASRR','L',IPHASE)
       CALL JEVECH('PVECTUR','E',IVECTU)
-
-C     INFORMATION DU NOMBRE DE PHASE
-      CALL TECACH('OON','PPHASRR',7,JTAB,IRET)
-      NZ = JTAB(6)
-
 
       DO 40 KP = 1,NPG1
         K = (KP-1)*NNO
         CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         TPG = 0.D0
-        DO 2 I = 1,NZ
-          PHASPG(I)=0.D0
-   2    CONTINUE  
+
+        DO 50 L = 1,NZ
+          IF (LACIER) THEN
+            CALL RCVARC(' ',ACIER(L),'+','RIGI',KP,1,
+     &            PHASPG(L),IRE1)
+          ELSE
+            CALL RCVARC(' ',ZIRC(L),'+','RIGI',KP,1,
+     &            PHASPG(L),IRE1)
+          ENDIF
+   50   CONTINUE
         DO 10 I = 1,NNO
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
-C passage des noeuds aux points de gauss
-          DO 50 L = 1,NZ
-          PHASPG(L)=PHASPG(L) + ZR(IPHASE+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-   50     CONTINUE
   10    CONTINUE
   
         TTRG = TPG - ZR(ITREF)
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,6,NOMRES,VALRES,
      &              CODRET,'FM')
         COEF = VALRES(1)/ (1.D0-2.D0*VALRES(2))
-        IF (NZ.EQ.7) THEN
-          ZALPHA = PHASPG(1) + PHASPG(2) +
-     &             PHASPG(3) + PHASPG(4)
-        ELSE IF (NZ.EQ.3) THEN
-          ZALPHA = PHASPG(1) + PHASPG(2)
-        END IF
+        ZALPHA=0.D0
+        DO 25 I=1,NZ
+          ZALPHA=ZALPHA+PHASPG(I)
+25      CONTINUE
 
         COEF1 = (1.D0-ZALPHA)* (VALRES(4)*TTRG- (1-VALRES(5))*VALRES(6))
         COEF2 = ZALPHA* (VALRES(3)*TTRG+VALRES(5)*VALRES(6))
@@ -121,4 +140,5 @@ C passage des noeuds aux points de gauss
    40 CONTINUE
 
 
+9999  CONTINUE
       END

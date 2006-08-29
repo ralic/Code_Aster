@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2006   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
            THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
            FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
            FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),
+           regles=(EXCLUS('FOND_FISS','FISSURE'),),
          b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",
             regles=(UN_PARMI('R_INF','R_INF_FO'),
                  EXCLUS('MODULE','MODULE_FO'),
@@ -119,7 +120,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
 
          OPTION          =SIMP(statut='o',typ='TXM',max=1,defaut='CALC_G',
               into=("CALC_G","CALC_G_GLOB","CALC_K_G","K_G_MODA","G_MAX","G_MAX_GLOB","G_BILI",
-                    "G_BILI_GLOB","G_LAGR","G_LAGR_GLOB"),),
+                    "G_BILI_GLOB","G_LAGR","G_LAGR_GLOB","CALC_K_MAX"),),
 
          b_g_max    =BLOC(condition="(OPTION=='G_MAX') or (OPTION=='G_MAX_GLOB')",
            BORNES          =FACT(statut='o',max='**',
@@ -128,6 +129,13 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                 VALE_MAX       =SIMP(statut='o',typ='R'),
                                 ),
          ),
+         b_k_max    =BLOC(condition="(OPTION=='CALC_K_MAX')",
+           SIGNES          =FACT(statut='o',max=1,
+                CHARGE_S       =SIMP(statut='o',typ='I',validators=NoRepeat(),max='**'),
+                CHARGE_NS      =SIMP(statut='o',typ='I',validators=NoRepeat(),max='**'),
+                                ),
+         ),
+
          PROPAGATION     =SIMP(statut='f',typ='R'),
          THETA_LAGR      =SIMP(statut='f',typ=theta_geom),
          DIRE_THETA_LAGR =SIMP(statut='f',typ=cham_no_sdaster),

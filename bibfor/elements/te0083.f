@@ -1,6 +1,6 @@
       SUBROUTINE TE0083(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
       CHARACTER*8 MODELI
-      REAL*8      BSIGMA(81),SIGTH(162),REPERE(7),INSTAN,NHARM, RBID
+      REAL*8      BSIGMA(81),SIGTH(162),REPERE(7),INSTAN,NHARM
       INTEGER     NBSIGM,META
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -50,12 +50,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-C EN PRESENCE DE METALLURGIE -> METAU1
-      CALL TECACH('NNN','PPHASRR',1,META,IRET)
-      IF (META.NE.0) THEN
-        CALL METAU1(OPTION,NOMTE)
-        GO TO 40
-      END IF
+      CALL METAU1(OPTION,NOMTE,IRET)
+
+C     PRESENCE DE METALLURGIE ?
+      IF(IRET.EQ.1)  GO TO 40
+
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -68,7 +67,6 @@ C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
-      RBID = ZERO
       NDIM = 2
       MODELI(1:2) = NOMTE(3:4)
 
@@ -104,10 +102,6 @@ C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PSECHER','L',ISECH)
-
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -117,7 +111,7 @@ C ---- CALCUL DES CONTRAINTES THERMIQUES
 C ---- AUX POINTS D'INTEGRATION DE L'ELEMENT :
 C      --------------------------------------------------------
       CALL SIGTMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),
-     &            ZR(IGEOM),ZR(ITEMPE),ZR(ITREF),ZR(ISECH),RBID,
+     &            ZR(IGEOM),ZR(ITEMPE),ZR(ITREF),
      &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE

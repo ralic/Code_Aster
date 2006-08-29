@@ -1,8 +1,8 @@
       SUBROUTINE SIGTMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,TEMPE,
-     +                   TREF,SECH,SREF,INSTAN,MATER,REPERE,OPTION,
+     +                   TREF,INSTAN,MATER,REPERE,OPTION,
      +                   SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,6 @@ C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
-C    HYDR(1)        IN     R        HYDRATATION AUX POINT DE GAUSS DE
-C                                   L'ELEMENT
-C    SECH(1)        IN     R        SECHAGE AUX NOEUDS DE
-C                                   L'ELEMENT
-C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
@@ -57,7 +52,7 @@ C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            REAL*8       NI(1), XYZ(1), TEMPE(1), REPERE(7), SIGMA(1)
-           REAL*8       HYDR(1),SECH(1),SREF,INSTAN
+           REAL*8       INSTAN
            CHARACTER*(*) FAMI
 C -----  VARIABLES LOCALES
            REAL*8       D(36), XYZGAU(3), EPSTH(6)
@@ -97,10 +92,15 @@ C        MEMBRE CHAR_MECA_* OU CALCUL DES CONTRAINTES VRAIES (SIGVMC.F)
      &        OPTION(11:14).EQ.'SECH') THEN
               CALL RCVARC(' ','HYDR','+',FAMI,IGAU,1,HYDRG,IRET)
               IF (IRET.NE.0) HYDRG=0.D0
-          ELSE
+              CALL RCVARC(' ','SECH','+',FAMI,IGAU,1,SECHG,IRET)
+              IF (IRET.NE.0) SECHG=0.D0
+              CALL RCVARC(' ','SECH','REF',FAMI,IGAU,1,SREF,IRET)
+              IF (IRET.NE.0) SREF=0.D0
+         ELSE
               HYDRG     = ZERO
-          ENDIF
-          SECHG     = ZERO
+              SECHG     = ZERO
+              SREF      = ZERO
+         ENDIF
 
           DO 30 I = 1, NNO
 
@@ -110,13 +110,6 @@ C        MEMBRE CHAR_MECA_* OU CALCUL DES CONTRAINTES VRAIES (SIGVMC.F)
   40         CONTINUE
 
              TEMPG     = TEMPG     + NI(I+NNO*(IGAU-1))*TEMPE(I)
-          IF (OPTION(11:14).EQ.'TEMP'.OR.
-     &        OPTION(11:14).EQ.'HYDR'.OR.
-     &        OPTION(11:14).EQ.'SECH') THEN
-             SECHG     = SECHG     + NI(I+NNO*(IGAU-1))*SECH(I)
-          ELSE
-             SECHG     = ZERO
-          ENDIF
   30      CONTINUE
 C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES/HYDRIQUE/DE SECHAGE

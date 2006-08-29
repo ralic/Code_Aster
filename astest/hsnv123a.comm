@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE        D6BHHAR A.RAZAKANAIVO
 # TITRE THERMO_METALLO_MECANIQUE EDGAR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -267,7 +267,12 @@ ZIRC=DEFI_MATERIAU(
 
 CM2=AFFE_MATERIAU( MAILLAGE=MAIL,   
                    AFFE=_F( TOUT = 'OUI', MATER = ZIRC,
-                            TEMP_REF = 800.)
+                            TEMP_REF = 800.),
+                   AFFE_VARC=_F(TOUT='OUI',
+                            EVOL=TEMPE,
+                            NOM_VARC='M_ZIRC',
+                            NOM_CHAM='META_ELNO_TEMP'),
+
            )
 
 MO=AFFE_MODELE(  MAILLAGE=MAIL,    VERIF='MAILLE',

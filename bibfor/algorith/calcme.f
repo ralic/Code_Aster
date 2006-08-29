@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -209,10 +209,9 @@ C ======================================================================
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, 
-     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,
-     >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
-     >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
-     >              DSDEME,RETCOM)
+     >              INSTAP,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
+     >              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
+     >              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'HOEK_BROWN_EFF') THEN
         COMPLG(1) = 'HOEK_BROWN_EFF'
@@ -220,10 +219,9 @@ C ======================================================================
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, 
-     >              INSTAP,TINI,T,TREF,0.0D0,0.0D0,0.0D0,
-     >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
-     >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
-     >              DSDEME,RETCOM)
+     >              INSTAP,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
+     >              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
+     >              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'DRUCKER_PRAGER') THEN
          MECTRU = .TRUE.
@@ -372,7 +370,7 @@ C ======================================================================
         TINI = T - DT
         CALL LCMAZA('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPOR,
      >              DEFGEM(ADDEME+NDIM),DEPS, VINTM, TINI, T, TREF, 
-     >              0.D0,0.D0,0.D0,OPTION,CONGEP(ADCOME),VINTP,DSDEME)
+     >              OPTION,CONGEP(ADCOME),VINTP,DSDEME)
      
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
@@ -403,9 +401,8 @@ C ======================================================================
         CALL LCLDSB('RIGI',1,1,NDIM, TYPMOD,  IMATE, COMPOR,
      &                      DEFGEM(ADDEME+NDIM), 
      >                      DEPS, 
-     >                      VINTM,TINI,T,TREF,0.D0,0.D0,0.D0,
-     >                      OPTION, CONGEP(ADCOME), VINTP, 
-     >                      DSDEME)
+     >                      VINTM,TINI,T,TREF,OPTION, 
+     >                      CONGEP(ADCOME), VINTP,DSDEME)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 602 I = 1 , 2*NDIM

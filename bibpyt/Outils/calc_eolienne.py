@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_eolienne Outils  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,9 +234,9 @@ def calc_char_houle_ops(self, INFO, STREAM, IMPRESSION, **args):
     VERSION="aster"
     LOGICIEL = "STREAM"
 
-    EXEC_LOGICIEL ( ARGUMENT = (_F(NOM_PARA=Rep_Calc_LOGICIEL_global_houle), # nom du repertoire du calcul de houle
-                                _F(NOM_PARA=LOGICIEL),                       # nom du logiciel de calcul de houle
-                                _F(NOM_PARA=VERSION),                        # version du logiciel de calcul de houle
+    EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_LOGICIEL_global_houle, # nom du repertoire du calcul de houle
+                                LOGICIEL,                       # nom du logiciel de calcul de houle
+                                VERSION,                        # version du logiciel de calcul de houle
                                ),
                     LOGICIEL = calc_houle
                   )
@@ -888,8 +888,8 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
     EXEC_LOGICIEL(
                   LOGICIEL=logi_mail,
-                  ARGUMENT=(_F(NOM_PARA=fichier_datg),   # fichier de donnees GIBI
-                            _F(NOM_PARA=fichier_mgib),   # fichier resultats format GIBI
+                  ARGUMENT=(fichier_datg,   # fichier de donnees GIBI
+                            fichier_mgib,   # fichier resultats format GIBI
                            )
                  )
 
@@ -998,8 +998,8 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 # 2.5 ==> Lancement de GIBI
     EXEC_LOGICIEL(
                    LOGICIEL = logi_mail,
-                   ARGUMENT = ( _F(NOM_PARA=fichier_datg),    # fichier de donnees GIBI
-                                _F(NOM_PARA=fichier_mgib),    # fichier resultats format GIBI
+                   ARGUMENT = (fichier_datg,    # fichier de donnees GIBI
+                               fichier_mgib,    # fichier resultats format GIBI
                               )
                  )
 
@@ -1066,7 +1066,6 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
       
       MA2[j] = MODI_MAILLAGE( reuse         = MA2[j],
                               MAILLAGE      = MA2[j],
-                              MODELE        = __MO[j],
                               ORIE_NORM_COQUE = _F(
                               GROUP_MA = ('PARTEM','PARTIM','JONCTION'),),);
  
@@ -1100,7 +1099,6 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
    
       MA[j] = MODI_MAILLAGE( reuse        = MA[j],
                              MAILLAGE     = MA[j],
-                             MODELE       = __MO[j],
                              ORIE_PEAU_3D = _F(
                              GROUP_MA     = ('SE1','SI1','CHAUTE'),),
                            );

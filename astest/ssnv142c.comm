@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/04/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,12 +78,6 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                        TAUX_1=4320000.,
                                        TAUX_2=2160000.,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=20.,
-                         SECH_REF=1.,),);
-
 SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
@@ -91,6 +85,23 @@ SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 TOUT='OUI',
                 NOM_CMP='TEMP',
                 VALE=1.,),);
+
+SECH1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(
+                CHAM_GD=SECH,
+                INST=0.,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,
+                         TEMP_REF=20.),
+                 AFFE_VARC=_F(TOUT='OUI',
+                              EVOL=SECH1,
+                              NOM_VARC="SECH",
+                              NOM_CHAM='TEMP',
+                              VALE_REF=1),);
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
@@ -105,13 +116,6 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 NOM_CHAM='TEMP',
                 AFFE=_F(
                 CHAM_GD=TEMP,
-                INST=0.,),);
-
-SECH1=CREA_RESU(OPERATION='AFFE',
-                TYPE_RESU='EVOL_THER',
-                NOM_CHAM='TEMP',
-                AFFE=_F(
-                CHAM_GD=SECH,
                 INST=0.,),);
 
 FORCE=DEFI_FONCTION(NOM_PARA='INST',
@@ -133,9 +137,6 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='B',
                                      FX=FORCE,),);
 
-CH3=AFFE_CHAR_MECA(MODELE=MO,
-                   SECH_CALCULEE=SECH1,);
-
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=10.0,
                                      NOMBRE=1,),
@@ -147,8 +148,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 CARA_ELEM=CARA,
                 EXCIT=(_F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),
-                       _F(CHARGE=CH3,),),
+                       _F(CHARGE=CH2,),),
                 COMP_INCR=_F(RELATION='GRANGER_FP_INDT',
                              ALGO_1D='DEBORST',
                              ITER_INTE_MAXI=1000,),

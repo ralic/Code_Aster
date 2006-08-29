@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -335,17 +335,19 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU(    MAILLAGE=MAGE,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = MAT,
-                                  TEMP_REF = 0.,
-                                  SECH_REF = C_0    )       )
-
+                                  TEMP_REF = 0.),
+                            AFFE_VARC=_F(TOUT='OUI',
+                                         EVOL=RESUSECH,
+                                         NOM_VARC="SECH",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=C_0),);
 #
 
 CHMECA=AFFE_CHAR_MECA(
                             MODELE=MOMECA,
                           DDL_IMPO=_F( GROUP_NO = 'A1',
                                     DY = 0.,         ),
-                     TEMP_CALCULEE=RESUTHER,
-                     SECH_CALCULEE=RESUSECH
+                     TEMP_CALCULEE=RESUTHER
                             )
 
 #

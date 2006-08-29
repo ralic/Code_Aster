@@ -1,6 +1,6 @@
-      SUBROUTINE NMVCD2(INDEX,CHMAT,EXI)
+      SUBROUTINE NMVCD2(INDEZ,CHMAT,EXI,EXIREF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,17 +19,19 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 
-      CHARACTER*4   INDEX
+      CHARACTER*(*) INDEZ
       CHARACTER*(*) CHMAT
-      LOGICAL       EXI
+      LOGICAL       EXI,EXIREF
 
 
 C ------------------------------------------------------------------
 C  TEST SI UNE VARIABLE DE COMMANDE NOUVEAU FORMAT EST SIGNIFICATIVE 
 C ------------------------------------------------------------------
-C IN   INDEX   K4  INDEX DE LA VARIABLE DE COMMANDE
+C IN   INDEX   K8  INDEX DE LA VARIABLE DE COMMANDE
 C IN   CHMAT   K*  SD CHMAT
 C OUT  EXI      L  TRUE SI LA VARIABLE DE COMMANDE N'EST PAS UN DEFAUT
+C OUT  EXIREF   L  TRUE SI LA VARIABLE DE COMMANDE DE REREFENCE EST BIEN
+C                       PRESENTE
 C ----------------------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -54,16 +56,21 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER  NMAX,IVRC,I,IRET
       CHARACTER*1 K1BID
+      CHARACTER*8 INDEX
 
       CALL JEMARQ()
+      INDEX=INDEZ
       EXI=.FALSE.
+      EXIREF=.FALSE.
       CALL JEEXIN(CHMAT(1:8)// '.CVRCVARC',IRET)
       IF ( IRET.NE.0) THEN
         CALL JELIRA(CHMAT(1:8)// '.CVRCVARC','LONMAX',NMAX,K1BID)
         CALL JEVEUO(CHMAT(1:8)// '.CVRCVARC','L',IVRC)
         DO 1 I=1,NMAX
-          IF (ZK8(IVRC-1+I)(1:4).EQ.INDEX) EXI=.TRUE.
+          IF (ZK8(IVRC-1+I).EQ.INDEX) EXI=.TRUE.
 1       CONTINUE
       ENDIF
+      CALL JEEXIN(CHMAT(1:8)//'.'//INDEX//'.2.VALE',IRET)
+      IF (IRET.NE.0) EXIREF=.TRUE.
       CALL JEDEMA
       END

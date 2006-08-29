@@ -1,4 +1,4 @@
-# MODIF  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,16 +20,13 @@
 #        PAR RECOMBINAISON MODALE SUR UNE PLAQUE FISSUREE
 # RESPONSABLE GALENNE E.GALENNE
 
-DEBUT(CODE=_F( NOM = 'SDLS114A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      PAR_LOT = 'NON', )
+DEBUT(CODE=_F( NOM = 'SDLS114A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
 # DEFINITION DES PARAMETRES DU CALCUL
 n_mode = 15
 tau = 0.01
 t_fin = 0.013
 pas = 2.5E-7
-
-#PRE_IDEAS();
 
 M = LIRE_MAILLAGE();
 
@@ -56,11 +53,6 @@ M = MODI_MAILLAGE(reuse = M,
                   MODI_MAILLE = _F(OPTION = 'NOEUD_QUART',
                                    GROUP_NO_FOND = 'PF',),
                  );
-#IMPR_RESU(FORMAT = 'IDEAS',
-#          RESU=_F(MAILLAGE = M,),);
-
-#FIN();
-
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200.0E+9,
                          NU=0.3,
@@ -210,8 +202,6 @@ for i in range(0,n_mode) :
                            TOUT_ORDRE='OUI',);
 
    
-   Kmodu[i] = T1_K[i]['K1_MAX',3] 
-
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
 Kg_ref =[-1.92107E+10,-1.16602E+11, 8.03919E+10,-1.18804E+11, 1.72295E+11]
 Ku_ref =[-1.8976E+10,-1.1515E+11,7.9484E+10,-1.174E+11,1.7046E+11]
@@ -267,43 +257,21 @@ RESUDYNA = REST_BASE_PHYS(RESU_GENE = RES_DYNA,
                           NOM_CHAM='DEPL',);
                 
 
-coef = aster.getvectjev("RES_DYNA           .DEPL        ")
-l_inst = aster.getvectjev("RES_DYNA           .INST        ")
+KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+                   K_MODAL = _F(TABL_K_MODA =GLMO1,
+                              FOND_FISS=FF1, ),);
 
-nbarch = len(l_inst)
+IMPR_TABLE(TABLE=KT1)
 
-alpha = [None]*n_mode
-Kmodg = [None]*n_mode
-K1g = [None]*nbarch
-
-for k in range(0,n_mode) :
-   alpha[k] = [None]*nbarch
-   
-for inst in range(0,nbarch) :
-   for k in range(0,n_mode) :
-      r = k+1
-      Kmodg[k] = GLMO1['K1',r]
-      alpha[k][inst] = coef[n_mode*inst+k]
-
-for inst in range(0,nbarch) :
-   K1g[inst] = 0.0
-   for k in range(0,n_mode) :
-      K1g[inst] = K1g[inst] + alpha[k][inst]*Kmodg[k]
-   #print 'inst = ',l_inst[inst],'K1 = ',K1g[inst]
-
-# CALCUL DE L ERREUR PAR RAPPORT A LA SOLUTION DE REFERENCE
-# aux instants : 0.0005 0.001 0.002 0.003 0.004
-
-Kt_ref = [24337.0, 45159.3, 91679., 135633.9, 183286.7]
-t = [10, 20, 40, 60, 80]
-
-for i in range(0,5) :
-   inst = t[i]
-   err_g = 100*(Kt_ref[i]-K1g[inst])/Kt_ref[i]
-   print 'K1_g(t) = ', K1g[inst], 'Erreur (%) : ', err_g
-
-
-###TEST INFORMATIQUE         
+TEST_TABLE(TABLE=KT1,
+           NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'INST',
+                      VALE = 1.285E-2),  
+           VALE=4.49990E+05,
+           PRECISION=0.001,
+           REFERENCE = 'NON_REGRESSION',
+          );
+###TESTS INFORMATIQUES         
 GLMO2=CALC_G(MODELE=MO,
              CHAM_MATER=CM,
              NUME_MODE = 1,
@@ -343,57 +311,27 @@ TEST_TABLE(TABLE=GLMO3,
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
              );
+             
+LI = DEFI_LIST_REEL(VALE = (9.0E-04,6.90E-03, 1.285E-2),);
+KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+                  LIST_INST = LI,
+                  K_MODAL = _F(MODELE=MO,
+                              CHAM_MATER=CM,
+                              RESU_MODA=MODE,
+                              FOND_FISS=FF1,
+                              MODULE=1.0,
+                              R_SUP = 5.E-5,
+                              R_INF=5.E-6,
+                    DIRECTION = (-1.0, 0.0, 0.0),),);
+
+IMPR_TABLE(TABLE=KT2);                  
+TEST_TABLE(TABLE=KT2,
+           NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'INST',
+                      VALE = 1.285E-2),  
+           VALE=4.49990E+05,
+           PRECISION=0.001,
+           REFERENCE = 'NON_REGRESSION',
+          );
 
 FIN();
-
-#Calcul de K1 (resu transitoire)
-LR = DEFI_LIST_REEL(DEBUT=0.,
-                    INTERVALLE=_F(JUSQU_A=t_fin, PAS=pas),
-                    );
-                                 
-RESUTRAN=DYNA_LINE_TRAN(MODELE = MO,
-                        CHAM_MATER = CM,
-                        MATR_MASS = MA_ASS,
-                        MATR_RIGI = RIG_ASS,
-                        MATR_AMOR = AMO_ASS,
-                        INFO = 1,
-                        NEWMARK=_F(ALPHA = 0.25,
-                                   DELTA = 0.5,),
-                        EXCIT=_F(CHARGE=CHAR,
-                                 FONC_MULT=RAMPE,),
-                        ARCHIVAGE=_F(PAS_ARCH = 200,),
-                        INCREMENT=_F(LIST_INST = LR,),);
-
-n_calc = 25
-T_SUP = [None]*n_calc
-T_INF = [None]*n_calc
-T_K = [None]*n_calc
-Tue = [None]*n_calc
-
-for i in range(0,n_calc) :
-   iord = i*4
-   T_SUP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='Lev sup',
-                                GROUP_NO='LEVSUP',
-                                RESULTAT=RESUTRAN,
-                                NUME_ORDRE= iord,
-                                NOM_CHAM='DEPL',
-                                NOM_CMP=('DX','DY','DZ',),
-                                OPERATION='EXTRACTION',),);
-   T_INF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='lev inf',
-                                GROUP_NO='LEVINF',
-                                RESULTAT=RESUTRAN,
-                                NUME_ORDRE=iord,
-                                NOM_CHAM='DEPL',
-                                NOM_CMP=('DX','DY','DZ',),
-                                OPERATION='EXTRACTION',),);
-   T_K[i] = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                          MATER=MA,
-                          TABL_DEPL_SUP=T_SUP[i],
-                          TABL_DEPL_INF=T_INF[i],
-                          VECT_K1 = (0., 1., 0.),
-                          ABSC_CURV_MAXI=5.E-5,
-                          TOUT_ORDRE='OUI',);
-
-for i in range(0,n_calc) :
-   K_T = T_K[i]['K1_MAX',3] 
-   print 'i=',i,'K = ', K_T

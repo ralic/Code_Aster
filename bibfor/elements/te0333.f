@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,27 +47,28 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER JGANO,MXCMEL,NBRES,NBSGM,MXCMPG,I,NDIM,NNO,NBSIGM,NBSIG,
+      INTEGER JGANO,MXCMEL,NBRES,NBSGM,I,NDIM,NNO,NBSIGM,NBSIG,
      &        IDSIG,NNOS,NPG,JVAL,IPOIDS,IVF,IDFDE,IGAU,
      &        ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,ITEMPS,IMATE,IDEFA,
-     &        IDECPG,IDEFP,ISECHE,ISREF,ICOMPO,NBVARI,IVARI,K,
+     &        IDECPG,IDEFP,ICOMPO,NBVARI,IVARI,K,
      &        NVI,NVIF,IBID,JTAB(7),IRET
       PARAMETER (MXCMEL=162)
       PARAMETER (NBRES=3)
       PARAMETER (NBSGM=6)
-      PARAMETER (MXCMPG=27)
       REAL*8 VALRES(NBRES)
       REAL*8 EPSM(MXCMEL),EPSANE(MXCMEL),EPSPLA(MXCMEL)
       REAL*8 EPSPLN(MXCMEL),EPSFLU(MXCMEL),SIGMA(NBSGM)
-      REAL*8 VALPAR(3),C1,C2,TRSIG,SECHG
-      REAL*8 SECH(MXCMPG),SREF
+      REAL*8 VALPAR(2),C1,C2,TRSIG
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN,TEMPG
       REAL*8 EPSFL(NBSGM),EPSFLF(NBSGM),TMPDMX,TMPFMX
       CHARACTER*2 CODRET(NBRES)
       CHARACTER*8 NOMRES(NBRES)
-      CHARACTER*8 NOMPAR(3),MODELI,MOD3D
+      CHARACTER*6       EPSA(6)
+      CHARACTER*8 NOMPAR(2),MODELI,MOD3D
       CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2,CMP3
       LOGICAL LFLU,LPLAS,LTEMP
+      DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
+     &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
@@ -82,10 +83,6 @@ C     ---------------
         EPSANE(I) = ZERO
         EPSPLN(I) = ZERO
    10 CONTINUE
-      DO 20 I = 1,MXCMPG
-        SECH(I) = ZERO
-   20 CONTINUE
-      SREF = 0.D0
 C --- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C --- GEOMETRIE ET INTEGRATION
 C     ------------------------
@@ -116,23 +113,6 @@ C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
 C     -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
-C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
-C     -----------------------------------------------------
-      CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
-      IF (ISECHE.NE.0) THEN
-        DO 50 I = 1,NNO
-          SECH(I) = ZR(ISECHE+I-1)
-   50   CONTINUE
-      ELSE
-      END IF
-
-C ---RECUPERATION DU SECHAGE DE REFERENCE :
-C     --------------------------------------------------
-      CALL TECACH('NNN','PSECREF',1,ISREF,IRET)
-      IF (IRET.EQ.0) THEN
-        SREF = ZR(ISREF)
-      ENDIF
- 
 C --- RECUPERATION DE L'INSTANT COURANT :
 C     ---------------------------------
       CALL JEVECH('PTEMPSR','L',ITEMPS)
@@ -151,8 +131,14 @@ C        -------------------------------------------------------------
 
 C ---    RECUPERATION DES DEFORMATIONS ANELASTIQUES AUX NOEUDS
 C ---    DE L'ELEMENT :
-C        ------------
-        CALL TECACH('ONN','PDEFAPR',1,IDEFA,IRET)
+
+        DO 20 K=1,NBSIG
+          DO 30 IGAU=1,NPG
+            CALL RCVARC(' ',EPSA(K),'+','RIGI',IGAU,1,
+     &                  EPSANE(NBSIG*(IGAU-1)+K),IRET)
+            IF (IRET.EQ.1) EPSANE(NBSIG*(IGAU-1)+K)=0.D0
+ 30       CONTINUE 
+ 20     CONTINUE 
 
 C ---    ON VERIFIE QUE LE MATERIAU EST ISOTROPE
 C ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
@@ -180,16 +166,9 @@ C ---       EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
         OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
       CALL EPSVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPL),
-     +            ZR(ITEMPE),ZR(ITREF),SECH,SREF,ZR(ITEMPS),
+     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),ZR(ITEMPS),
      +            ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
 
-C ---    AFFECTATION DU VECTEUR DES DEFORMATIONS ANELASTIQUES AUX
-C ---    POINTS D'INTEGRATION DE L'ELEMENT :
-C        --------------------------------
-        IF (IDEFA.NE.0) THEN
-          CALL EPSAMC(NNO,NPG,NBSIG,ZR(IVF),ZR(IDEFA),EPSANE)
-        END IF
       ELSE
         LPLAS = .FALSE.
       END IF
@@ -254,11 +233,9 @@ C     -----------------------------------
 C  ---   TEMPERATURE AU POINT D'INTEGRATION COURANT :
 C        ------------------------------------------
         TEMPG = ZERO
-        SECHG = ZERO
 
         DO 80 I = 1,NNO
           TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)
-          SECHG = SECHG + ZR(IVF+I+IDECPG)*SECH(I)
    80   CONTINUE
         IF (LTEMP) THEN
           IF (TEMPG.LT.ZR(IVARI+ (IGAU-1)*NBVARI+NVI-
@@ -272,16 +249,14 @@ C        ---------------------------------------------
         NOMRES(3) = 'ALPHA'
 
         NOMPAR(1) = 'TEMP'
-        NOMPAR(2) = 'SECH'
-        NOMPAR(3) = 'INST'
+        NOMPAR(2) = 'INST'
         VALPAR(1) = TEMPG
-        VALPAR(2) = SECHG
-        VALPAR(3) = ZR(ITEMPS)
+        VALPAR(2) = ZR(ITEMPS)
 
-        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',3,NOMPAR,
+        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',2,NOMPAR,
      &              VALPAR,2,NOMRES,VALRES, CODRET,'FM')
 
-        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',3,NOMPAR,
+        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',2,NOMPAR,
      &              VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),'  ')
 
         E = VALRES(1)

@@ -1,0 +1,957 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 28/08/2006 - 17:17:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009809 DU 2006-05-30 15:51:45
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   variable de commande SECH
+FONCTIONNALITE
+   Titre :
+   -------
+   Variables de commandes New Look pour le sechage, la metallurgie et les deformations
+   anelastiques.
+   
+   Comme cela a ete fait precedemment pour les variables de commandes de corrosion et
+   d'hydratation, les variables de sechage, de deformations anelastiques et de
+   metallurgie
+   passent sous la nouvelle architecture. Concretement, on renseigne les variables de
+   commandes dans l'affectation du materiau comme l'indique l'exemple ci-dessous et non plus
+   via le mot cle XXX_CALCULE dans AFFE_CHAR_MECA:
+   
+   CM2=AFFE_MATERIAU(
+   MAILLAGE=MAIL,
+   AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
+   TEMP_REF = 900.),
+   AFFE_VARC=_F(TOUT='OUI',
+   EVOL=TEMPE,
+   NOM_VARC='M_ACIER',
+   NOM_CHAM='META_ELNO_TEMP'),
+   
+   )
+   
+   Les noms des variables de commandes sont :
+   NOM_VARC='M_ACIER' pour la metallurgie de l'acier
+   NOM_VARC='M_ZIRC' pour la metallurgie du zircaloy
+   NOM_VARC='SECH' pour le sechage
+   NOM_VARC='EPSA' pour les deformations anelastiques.
+   
+   Pour le sechage, la presence d'une valeur de reference est necessaire et est
+   transmise via
+   le mot cle VALE_REF :
+   
+   CHMAT=AFFE_MATERIAU(......
+   AFFE_VARC=_F(NOM_VARC='SECH',
+   CHAMP_GD=SECH,VALE_REF=1),
+   )
+   
+   Pour renseigner ces variables on peut soit fournir la SD resultat a partir de laquelle
+   on
+   veut extraire le champ, soit fournir directement le champ. Dans le cas ou on fournit une
+   SD resultat, le "nom symbolique" du champ doit etre renseigne (mot cle NOM_CHAM). Par
+   defaut, les valeurs suivantes ont
+   ete prises
+   - pour le sechage champ TEMP
+   - pour les deformations anelastiques champ EPSA_ELNO
+   - pour la metallurgie champ META_ELNO_TEMP
+   
+   
+   Quelques bugs ont ete corriges au cours de la realisation de cette fiche:
+   -------------------------------------------------------------------------
+   
+   B1) Tout d'abord, dans la routine rsinch un probleme d'interpolation apparait lorsque la
+   valeur demandee est  tres legerement inferieure (respectivement superieure) a la
+   borne
+   XMIN (respectivement XMAX) (a 1E-15 pres) : on s'arrete en disant que l'extrapolation est
+   interdite.
+   On modifie rsbary pour avoir une tolerance sur l'egalite (on choisit une tolerance de
+   1D-10*(XMAX-XMIN)).
+   
+   B2) Dans la routine nzcizi, qui integre la loi de Von Mises pour les elements
+   metallurgiques zircaloy, le nombre de variables internes propres a la metallurgie est
+   3.
+   Or pour l'instant t+, on allait chercher les valeurs jusqu'a 5. Il n'y a cependant aucun
+   cas test de metallurgie casse.
+   
+   B3) A titre de pense bete, je liste ci-dessous les differentes routines qui mettaient
+   systematiquement le sechage a 0 avant de le transmettre a une routine. Comme
+   l'interet de
+   cette fiche est de recuperer cette valeur le plus bas possible, on recupere
+   dorenavant la
+   valeur exacte du sechage.
+   
+   CALCME et LCLDSB
+   CALCME et LCMAZA
+   NMVPRK et LCMATE
+   NMVEEI et LCMATE
+   DKTNLI et NMCOMP
+   NIGP2D et NMCOMP
+   NIGP3D et NMCOMP
+   NIPL2D et NMCOMP
+   NIPL3D et NMCOMP
+   NIPL3D et NMCOMP
+   NMFI2D et NMCOMP
+   TE0239 et NMCOMP
+   TUFULL et NMCOMP
+   VDPLNR et NMCOMP
+   VDXLNR et NMCOMP
+   SIMTEP et SIGTMC
+   TE0115 et SIGVMC
+   TE0116 et SIGVMC
+   
+   Validation :
+   -------------
+   Suite a ces developpements, tous les cas tests sont passes et  un cas test termine en
+   NOOK
+   : ssna118a. Il s'agit d'un cas test validant la loi IRRAD3M (a priori aucun rapport avec
+   les modifications en cours). En lancant le cas test de la base en mode nodebug et sans
+   surcharge, le NOOK apparait. Il semble donc que la cause du probleme soit anterieure a
+   ces
+   developpements. La fiche 9936 trace ce probleme.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01 U4.43.03
+VALIDATION
+   passage de tous les cas tests
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009810 DU 2006-05-30 15:53:07
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   variable de commande "phases metallurgiques"
+FONCTIONNALITE
+   Cette fiche est traitee avec la fiche 9809
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01 U4.43.03
+VALIDATION
+   passage de tous les cas tests
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009811 DU 2006-05-30 15:56:06
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   variable de commande "deformations anelastiques"
+FONCTIONNALITE
+   Cette fiche est traitee avec la fiche 9809.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01 U4.43.03
+VALIDATION
+   liste complete
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 28/08/2006 - 14:36:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009057 DU 2005-09-28 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   Maximisation de K sur les chargements ouvrant la fissure
+FONCTIONNALITE
+   Contexte : l'option CALC_G_MAX ne permet pas de distinguer dans la maximisation les cas de
+   chargements ouvrant ou fermant la fissure --> demande UTO de pouvoir maximiser en
+   ouverture
+   
+   Solution : developpement d'une nouvelle option dans CALC_G (option 'CALC_K_MAX'), qui se
+   base sur le calcul de K1 et distingue donc bien ouverture et fermeture.
+   
+   Syntaxe :
+   GK=CALC_G( OPTION='CALC_K_MAX',
+   RESULTAT=DEPL1,
+   THETA = _F( FISSURE=FF2,
+   R_INF=0.0001,
+   R_SUP=0.0005,),
+   SIGNES = _F( CHARGE_S = (1,3),    -->  nouveau mot-cle facteur
+   CHARGE_NS = (2,4),),
+   );
+   
+   Comme pour l'option G_MAX (qui est conservee), chaque numero d'ordre du resultat
+   correspond a un cas de chargement. CHARGE_S et CHARGE_NS designent respectivement les
+   chargements signes et non signes (syntaxe coherente avec operateur IMPR_OAR).
+   
+   
+   Developpements realises :
+   * creation de mmaxkl.f : calcul de K pour chacun des numeros d'ordre ; pour les
+   chargements non signes, on regarde si la fissure est ouverte ou fermee (en se basant sur
+   la moyenne de KI le long du fond de fissure), et on choisi le coefficient a appliquer
+   pour
+   maximiser KI total en ouverture (+/-1).
+   On calcule alors le KI_max, puis le G associe (par combinaison lineaire des champs de
+   deplacement)
+   * modification de op0100 et cgcrtb pour prendre en compte la nouvelle option
+   
+   
+   Tableau resultat : dans le tableau resultat, on trouve les K et le G associes a
+   chacun des
+   chargements, puis le Kmax / Gmax et les coefficients des charges associes (1 pour les
+   chargements signes, +/-1 pour les chargements non signes).
+   
+   Validation : test sslv134f (validation G_MAX et CALC_K_MAX)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03, V3.03.134
+VALIDATION
+   sslv134f
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009320 DU 2006-01-03 14:05:10
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Macro-commande pour calcul de K sur base modale
+FONCTIONNALITE
+   Contexte : suite au developpement du calcul de K modal (cf option K_G_MODA de CALC_G), il
+   est possible de calculer l'evolution des facteurs d'intensite des contraintes en
+   fonction
+   du temps pour un probleme transitoire resolu sur base modale:
+   K(t) = somme ( alpha_i(t) . K_i)
+   ou les alpha_i(t) sont les coefficients de participation modale (= ceux qui permettent de
+   calculer le champ de deplacement).
+   
+   L'extraction des alpha_i et la recombinaison ne peut cependant se faire jusqu'a present
+   qu'a la main ! (commandes python)
+   
+   
+   Solution : developpement d'une nouvelle macro-commande "POST_K_TRANS", encapsulant le
+   calcul des K modaux et le calcul de K(t) en post-traitement d'un calcul mecanique
+   transitoire (DYNA_TRAN_MODA --> RES_DYNA) de la structure fissuree sur base modale :
+   
+   KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+   K_MODAL = _F(
+   FOND_FISS / FISSURE
+   / TABL_K_MODA =
+   / RESU_MODA =
+   MODELE =
+   THETA ou R_INF/R_SUP/LISSAGE
+   )
+   LIST_INST/NUME_ORDR...
+   );
+   
+   Description de la macro-commande :
+   calcul des K modaux (ou extraction a partir de la table resultat fournie)
+   extraction des alpha_i de la solution transitoire RES_DYNA
+   recombinaison et construction du tableau resultat (K1,K2 et eventuellement K3)
+   
+   Validation : sdls114a/b (remplacement des instructions python precedentes)
+   Macro-commande valable aussi bien en 2D qu'en 3D.
+   
+   Impact documentaire : doc U du nouvel operateur + doc V
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.03.114
+VALIDATION
+   sdls114
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009963 DU 2006-08-24 15:07:17
+TYPE anomalie concernant Code_Aster (VERSION 7.7)
+TITRE
+   macr_ascouf_mail dans une boucle
+FONCTIONNALITE
+   Probleme rencontre en mettant macr_ascouf_mail dans une boucle python.
+   
+   Deux problemes dans cette fiche :
+   - le concept sortant est suivant les cas nomres ou nomre2 : dans le cas nomre2, nomres
+   n'etant pas temporaire (prefixe __), il n'est pas detruit, d'ou conflit au deuxieme
+   passage. La solution adoptee consiste a faire le CREA_MAILLAGE(CREA_POI) dans tous les
+   cas
+   (y compris SYME=QUART). Ainsi, on ne manipule que __nomres (temporaire) et seul nomre2 est
+   sortant.
+   - l'EXEC_LOGICIEL GIBI, au deuxieme passage, serait cense reecraser le fort.19. Ce
+   n'est
+   pas le cas. Un DEFI_FICHIER(LIBERER) sur l'unite 19 resoud le probleme.
+   
+   Au passage, on supprime le AFFE_MODELE qui ne sert plus a rien.
+   
+   (Pas de conflit dans MACR_ASPIC_MAIL, on en profite quand meme pour faire le DEFI_FICHIER
+   et supprimer AFFE_MODELE)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 29/08/2006 - 18:38:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009964 DU 2006-08-25 06:39:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Execution des geometries dans les cas-tests (suite)
+FONCTIONNALITE
+   L'objectif de la fiche 9902 est de s'assurer que la geometrie des cas-tests est toujours
+   valide et permet toujours de produire le maillage du cas-test.
+   
+   Dans les cas-tests concernes, on lance le mailleur a partir du jeu de donnees de la
+   geometrie via EXEC_LOGICIEL, puis PRE_GMSH/GIBI, puis LIRE_MAILLAGE, etc.
+   Ce bloc de donnees est repetitif : on decide d'en faire une macro. D'autant plus que
+   pour
+   recuperer aster.repout(), il faut etre en PAR_LOT='NON'...
+   
+   Cette macro est a priori destinee uniquement au cas-test (mises a part des etudes
+   parametriques, je ne vois pas l'interet de l'utiliser dans une etude, il faut quand
+   meme
+   verifier le maillage !).
+   Pour cette raison, on met ceci dans EXEC_LOGICIEL qui devient une macro.
+   Remarque : pour le moment, on conserve aplext (routine C) pour metis (preml1 et fetskp).
+   
+   
+   La syntaxe est pour un EXEC_LOGICIEL standard :
+   .   EXEC_LOGICIEL(LOGICIEL='ls -la',
+   .                 ARGUMENT='/tmp',)
+   
+   Pour realiser le maillage a partir du fichier de geometrie :
+   .   EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
+   .                             MAILLAGE=CO('magmsh'),),)
+   
+   On peut surcharger les valeurs par defaut :
+   .   EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
+   .                             UNITE_GEOM=17,
+   .                             UNITE=18,
+   .                             MAILLAGE=CO('magibi'),),
+   .                 LOGICIEL='/opt/aster/outils/gibi2005',
+   .                 CODE_RETOUR_MAXI = 2,
+   .                 INFO=2,)
+   
+   Pour Salome (en fait, n'importe quel script Python qui produit un fichier MED) : ARGUMENT
+   est obligatoire et contient le nom du fichier MED produit par le script. Exemple :
+   .   EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
+   .                             UNITE_GEOM=15,
+   .                             UNITE=21,
+   .                             MAILLAGE=CO('mamed'),),
+   .                 ARGUMENT='cube.mmed',
+   .                 INFO=1)
+   
+   
+   
+   Valeurs par defaut pour la generation du maillage :
+   UNITE_DATG = 16 : fichier des donnees geometriques
+   UNITE      = 19 : fichier produit par le mailleur (pour verification eventuelle)
+   CODE_RETOUR_MAXI = code retour maxi tolere (il faudra modifier le script de lancement de
+   gibi pour que le code retour soit egal au "niveau d'erreur")
+   LOGICIEL   = pour modifier le programme par defaut : gmsh ou gibi dans "rep_outils". Pas
+   utilise pour Salome.
+   ARGUMENT   = '-3' pour gmsh, rien pour gibi.
+   
+   Pour GMSH, la ligne de commande est construite de cette maniere :
+   .    logiciel options -o fichOUT fichIN
+   
+   pour GIBI :
+   .    logiciel options fichIN fichOUT
+   
+   
+   Dans les cas-tests, laisser INFO=2 pour dupliquer l'output de la commande executee dans
+   les ".o" et ".mess".
+   
+   
+   
+   J'en profite pour simplifier la definition des arguments :
+   
+   .   ARGUMENT=(_F(NOM_PARA='option1'),
+   .             _F(NOM_PARA='option2'),),
+   devient :
+   .   ARGUMENT=('option1', 'option2'),
+   
+   
+   
+   
+   Modules Python :
+   - nouveaux :
+   .  exec_logiciel_ops : corps de la macro
+   .  System            : defini la classe SYSTEM et ExecCommand (interface simplifiee)
+   permettant d'executer une commande externe, de recuperer le code retour et l'output.
+   
+   - modifies (pour la syntaxe d'ARGUMENT):
+   .  macr_aspic_mail_ops
+   .  macro_miss_3d_ops
+   .  macr_adap_mail_ops
+   .  macr_cabri_mail_ops
+   .  recal
+   .  macr_ascouf_mail_ops
+   .  macr_fiabilite_ops
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.00.01
+VALIDATION
+   nouveau test zzzz141a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009873 DU 2006-06-27 12:25:37
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CALC_TABLE + OPERATION='COMB' : performance ?
+FONCTIONNALITE
+   L'operation COMB a ete amelioree : gain d'un facteur entre 5 et 10.
+   
+   Remarque :
+   Sur les grosses tables, repeter le mot-cle ACTION plutot que de faire des appels a
+   CALC_TABLE successifs (on evite un CREA_TABLE a chaque fois) : sur cette table, c'est un
+   forfait de 25 s environ alors que les 2 COMB, EXTR, TRI prennent 31s en tout !
+   
+   
+   OPERATION='EXTR'   DUREE TOTALE:       20.18s   19.35s
+   
+   OPERATION='EXTR'   DUREE TOTALE:       13.33s   12.90s
+   
+   OPERATION='EXTR'   DUREE TOTALE:        6.18s    5.95s
+   
+   OPERATION='COMB',
+   OPERATION='COMB',
+   OPERATION='EXTR',
+   OPERATION='TRI'    DUREE TOTALE:      204.47s   31.32s
+   
+   OPERATION='COMB'   DUREE TOTALE:      124.03s   29.27s
+   OPERATION='COMB'   DUREE TOTALE:      126.00s   29.77s
+   OPERATION='EXTR'   DUREE TOTALE:       28.58s   28.10s
+   OPERATION='TRI'    DUREE TOTALE:       27.93s   27.82s   31.53s (en un appel)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz177
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 29/08/2006 - 18:35:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009859 DU 2006-06-22 05:34:56
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   tests ssnv185i et j ssnv191a et b en version NEW8.3.2
+FONCTIONNALITE
+   Anomalie
+   --------
+   Le plantage des cas tests ssnv185i, ssnv185j, ssnv191a et ssnv191b avec la version 8.3.2
+   resulte de la restitution de la fiche 9616 qui consistait a fusionner certains catologues
+   d'elements.
+   En particulier, le catalogue gener_me_x_2.cata a ete resorbe au profit du
+   gener_me3d_2.cata. Cependant, l'option TOPOSE de gener_me_x_2.cata a ete oubliee d'etre
+   reportee dans gener_me_x_2.cata.
+   
+   Correction
+   ----------
+   Nous avons introduit l'option TOPOSE dans gener_me_x_2.cata ainsi que les modes locaux
+   rattaches a cette option.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185i, ssnv185j, ssnv191a et ssnv191b
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 29/08/2006 - 18:35:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009872 DU 2006-06-26 16:19:20
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   IMPR_RESU
+FONCTIONNALITE
+   L'utilisateur (J. Angles) se plaignait de ne pas pouvoir relire avec Salome un resultat
+   MED ecrit par Code_Aster.
+   
+   J. Angles pensait que certaines modelisations (3D_DIAG et 3D etaient en cause.
+   
+   C. Durand pensait que le coupable etait MODI_MAILLAGE / PLAQ_TUB que j'avais modifie
+   recemment.
+   
+   Apres examen approfondi de cette etude, il ressort que Code_Aster n'a sans doute rien
+   a se
+   reprocher : on peut relire avec Aster le fichier MED produit et le post-traiter ensuite
+   avec Ideas ce qui prouve que l'information stockee est complete.
+   
+   Le probleme va donc etre transmis a l'equipe Salome. (mais peut-etre s'agit-il d'une
+   mauvaise interpretation du format MED ?)
+   
+   Par ailleurs, on a profite de cette fiche pour reecrire la routine asceli.f
+   (MODI_MAILLAGE
+   / PLAQ_TUB) pour supprimer reellement (dans TOUS les objets de ls SD maillage) les noeuds
+   fusionnes lors de la couture. Cette evolution evite de se poser la question : "quelles
+   coordonnees faut-il donner aux noeuds inutiles ?"
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de l'etude incriminee
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009871 DU 2006-06-26 13:18:15
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   CREA_MAILLAGE
+FONCTIONNALITE
+   L'utilisateur cree dans son fichier de commande une multitude de groupes de mailles
+   construits par la commande CREA_MAILLAGE/CREA_GROUP_MA/PREF_MAILLE.
+   Il tombe en erreur fatale avec le message :
+   
+   <CREA_MAILLAGE><PALIM3> PREF_MAILLE EST TROP LONG
+   
+   Le message ci-dessus est emis des que le nom d'une maille concatene au(x) caractere(s)
+   fourni(s) au mot cle PREF_MAILLE est superieur strictement a 8.
+   l'explication de la presence de ce message est la suivante :
+   
+   L'utilisateur effectue un premier CREA_MAILLAGE/CREA_GROUP_MA :
+   PREF_MAILLE='B'
+   GROUP_MA='S2S9B'
+   NOM='T2S9B'
+   Ce groupe de maille contient en particulier la maille M119697.
+   Il a donc cree par le biais de cette commande la maille BM119697 (8 caracteres, OK) qui
+   appartient au groupe 'T2S9B'.
+   
+   Ensuite, il definit un nouveau groupe de mailles qui n'est autre qu'une copie du groupe
+   precedent 'T2S9B' via la commande DEFI_GROUP/CREA_GROUP_MA :
+   UNION='T2S9B'
+   NOM='IND_VD3'
+   Le groupe 'IND_VD3' contient donc la maille BM119697.
+   
+   Enfin, il effectue de nouveau un CREA_MAILLAGE/CREA_GROUP_MA :
+   PREF_MAILLE='E'
+   GROUP_MA='IND_VD3'
+   NOM='IND_VD3E'
+   Il a donc cree par le biais de cette commande la maille EBM119697 (9 caracteres, ERREUR
+   !!!)
+   
+   Le message d'erreur etant relativement concis, nous l'avons enrichi; desormais on precise
+   le nom de la maille en cause ainsi que le groupe auquel elle appartient si celui-ci a ete
+   mentionne :
+   
+   <F> <CREA_MAILLAGE> <PALIM3> L'IDENTIFIANT D'UNE MAILLE DEPASSE LES 8 CARACTERES
+   AUTORISES: >EBM119697<
+   
+   MAILLE      : >BM119697<
+   
+   PREF_MAILLE : >E       <
+   
+   GROUP_MA    : >IND_VD3 <
+   
+   L'UTILISATION DE 'PREF_NUME' EST RECOMMANDEE.
+   
+   
+   On fait reference au mot cle PREF_NUME car en l'utilisant avec PREF_MAILLE, on peut
+   contourner le probleme. En effet, pour reprendre l'exemple ci-dessus, si PREF_NUME=10 et
+   PREF_MAILLE='E', alors la maille BM119697 est dupliquee en E10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie avec la fiche
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009919 DU 2006-07-17 09:36:31
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   NEW8.3.7, des tests s'arretent en ERREUR (MODI_MAILLAGE)
+FONCTIONNALITE
+   Mise a jour des cas-tests oublies suite a l'evolution 9975 "Suppression du
+   mot cle MODELE
+   dans MODI_MAILLAGE/ORIE_PEAU_nD".
+   
+   Cas-tests Modifies
+   - hsna120a
+   - rccm02a, rccm03a
+   - sdnv105a
+   - ssnv185i, ssnv185j, ssnv191a, ssnv191b, ssnv192a
+   - ssnv504i, ssnv504j
+   - zzzz107b, zzzz183a
+   
+   Macro-commande modifiee
+   - calc_eolienne_ops.py
+   
+   
+   Remarques:
+   -si on ne restitue pas la fiche 9859 avant cette fiche, les cas-tests
+   ssnv185i, ssnv185j,
+   ssnv191a, ssnv191b, ssnv192a tomberont en erreur lors de l'execution de
+   POST_MAIL_XFEM.
+   - Le cas-test sdnv105a s'arrete toujours en erreur mais pour une autre
+   cause : test NOOK
+   voir fiche 9420.
+   - le temps alloue pour l'execution des cas-tests ssnv504i et a ete augmente.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests incrimines
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz141a                     mcourtoi M.COURTOIS          65     65      0
+ CASTEST MODIF ascou01a                      rezette C.REZETTE          298      2      2
+ CASTEST MODIF ascou05a                      rezette C.REZETTE          200      2      2
+ CASTEST MODIF ascou06a                      rezette C.REZETTE           75      1      1
+ CASTEST MODIF hsna100a                      cibhhpd L.SALMONA          459      8      6
+ CASTEST MODIF hsna100b                      cibhhpd L.SALMONA          535      7      5
+ CASTEST MODIF hsna100c                      cibhhpd L.SALMONA          425      8      6
+ CASTEST MODIF hsna100d                      cibhhpd L.SALMONA          563     20      5
+ CASTEST MODIF hsna100e                      cibhhpd L.SALMONA          564     16      4
+ CASTEST MODIF hsna120a                      rezette C.REZETTE          762      1      1
+ CASTEST MODIF hsnv101a                      cibhhpd L.SALMONA          428      7      2
+ CASTEST MODIF hsnv101b                      cibhhpd L.SALMONA          398      7      2
+ CASTEST MODIF hsnv101c                      cibhhpd L.SALMONA          414      7      2
+ CASTEST MODIF hsnv101d                      cibhhpd L.SALMONA          631      7      2
+ CASTEST MODIF hsnv102a                      cibhhpd L.SALMONA          446      7      2
+ CASTEST MODIF hsnv102b                      cibhhpd L.SALMONA          439      7      2
+ CASTEST MODIF hsnv102c                      cibhhpd L.SALMONA          466      7      2
+ CASTEST MODIF hsnv103a                      cibhhpd L.SALMONA          342      7      2
+ CASTEST MODIF hsnv103b                      cibhhpd L.SALMONA          328      7      2
+ CASTEST MODIF hsnv104a                      cibhhpd L.SALMONA          280      7      2
+ CASTEST MODIF hsnv105a                      cibhhpd L.SALMONA          462      7      2
+ CASTEST MODIF hsnv122a                      cibhhpd L.SALMONA          392      7      2
+ CASTEST MODIF hsnv123a                      cibhhpd L.SALMONA          341      7      2
+ CASTEST MODIF hsnv126a                      cibhhpd L.SALMONA          384      6      2
+ CASTEST MODIF hsnv126b                      cibhhpd L.SALMONA          384      6      2
+ CASTEST MODIF hsnv127a                      cibhhpd L.SALMONA          437      6      2
+ CASTEST MODIF hsnv128a                      cibhhpd L.SALMONA          380      6      2
+ CASTEST MODIF rccm02a                       rezette C.REZETTE          353      1      1
+ CASTEST MODIF rccm03a                       rezette C.REZETTE         4279      1      1
+ CASTEST MODIF sdls114a                      galenne E.GALENNE          337     35     97
+ CASTEST MODIF sdls114b                      galenne E.GALENNE          322     38     45
+ CASTEST MODIF ssla103a                      cibhhpd L.SALMONA          215      5      7
+ CASTEST MODIF ssla103b                      cibhhpd L.SALMONA          219      5      7
+ CASTEST MODIF ssla103c                      cibhhpd L.SALMONA          219      5      6
+ CASTEST MODIF ssla103d                      cibhhpd L.SALMONA          220      5      6
+ CASTEST MODIF ssla103e                      cibhhpd L.SALMONA          189      5      6
+ CASTEST MODIF ssla103f                      cibhhpd L.SALMONA          205      5      7
+ CASTEST MODIF ssla103g                      cibhhpd L.SALMONA          238      6      6
+ CASTEST MODIF sslv134f                      galenne E.GALENNE          383     59     15
+ CASTEST MODIF ssnp05a                       cibhhpd L.SALMONA          273     21     18
+ CASTEST MODIF ssnp116a                      cibhhpd L.SALMONA          676     24     12
+ CASTEST MODIF ssnp116b                      cibhhpd L.SALMONA          480     12      9
+ CASTEST MODIF ssnp116c                      cibhhpd L.SALMONA          558     25     12
+ CASTEST MODIF ssnp116d                      cibhhpd L.SALMONA          386     23     11
+ CASTEST MODIF ssnv142a                      cibhhpd L.SALMONA          168     19     15
+ CASTEST MODIF ssnv142b                      cibhhpd L.SALMONA          173     19     16
+ CASTEST MODIF ssnv142c                      cibhhpd L.SALMONA          187     19     19
+ CASTEST MODIF ssnv143a                      cibhhpd L.SALMONA          319     18     15
+ CASTEST MODIF ssnv143b                      cibhhpd L.SALMONA          324     18     15
+ CASTEST MODIF ssnv150a                      cibhhpd L.SALMONA          276     16     15
+ CASTEST MODIF ssnv151a                      cibhhpd L.SALMONA          380     17     15
+ CASTEST MODIF ssnv162a                      cibhhpd L.SALMONA          181     13     35
+ CASTEST MODIF ssnv162b                      cibhhpd L.SALMONA          174     10     31
+ CASTEST MODIF ssnv163a                      cibhhpd L.SALMONA          245     12     11
+ CASTEST MODIF ssnv163b                      cibhhpd L.SALMONA          222      9      9
+ CASTEST MODIF ssnv163c                      cibhhpd L.SALMONA          226     12      9
+ CASTEST MODIF ssnv169a                      cibhhpd L.SALMONA          253      6      6
+ CASTEST MODIF ssnv169b                      cibhhpd L.SALMONA          205      6      6
+ CASTEST MODIF ssnv169c                      cibhhpd L.SALMONA          219      6      6
+ CASTEST MODIF ssnv174a                      cibhhpd L.SALMONA          278     14      8
+ CASTEST MODIF ssnv180a                      cibhhpd L.SALMONA          286     10      7
+ CASTEST MODIF ssnv181a                      cibhhpd L.SALMONA          206     15      9
+ CASTEST MODIF ssnv185i                      rezette C.REZETTE          267      2      2
+ CASTEST MODIF ssnv191a                      rezette C.REZETTE          477      2      2
+ CASTEST MODIF ssnv191b                      rezette C.REZETTE          493      2      2
+ CASTEST MODIF ssnv192a                      rezette C.REZETTE          418      2      2
+ CASTEST MODIF ssnv504i                      rezette C.REZETTE          215      3      3
+ CASTEST MODIF yyyy117a                      cibhhpd L.SALMONA          676      4      7
+ CASTEST MODIF zzzz107b                      rezette C.REZETTE          138      2      2
+ CASTEST MODIF zzzz113b                      cibhhpd L.SALMONA         1168      4      3
+ CASTEST MODIF zzzz120a                     mcourtoi M.COURTOIS         658      2      3
+ CASTEST MODIF zzzz120b                     mcourtoi M.COURTOIS         655      2      3
+ CASTEST MODIF zzzz177a                     mcourtoi M.COURTOIS         259     51      1
+ CASTEST MODIF zzzz183a                      rezette C.REZETTE          193      1      1
+CATALOGU MODIF options/char_meca_epsa_r      cibhhpd L.SALMONA           32      3      2
+CATALOGU MODIF options/char_meca_hydr_r      cibhhpd L.SALMONA           42      2      2
+CATALOGU MODIF options/char_meca_meta_z      cibhhpd L.SALMONA           32      3      3
+CATALOGU MODIF options/char_meca_sech_r      cibhhpd L.SALMONA           42      2      3
+CATALOGU MODIF options/char_meca_temp_r      cibhhpd L.SALMONA           46      2      2
+CATALOGU MODIF options/epgr_elga             cibhhpd L.SALMONA           44      3      3
+CATALOGU MODIF options/epgr_elno             cibhhpd L.SALMONA           44      3      3
+CATALOGU MODIF options/epme_elga_depl        cibhhpd L.SALMONA           52      3      5
+CATALOGU MODIF options/epme_elno_depl        cibhhpd L.SALMONA           52      3      5
+CATALOGU MODIF options/epmg_elga_depl        cibhhpd L.SALMONA           52      3      5
+CATALOGU MODIF options/epmg_elno_depl        cibhhpd L.SALMONA           52      3      5
+CATALOGU MODIF options/epsg_elga_depl        cibhhpd L.SALMONA           48      3      3
+CATALOGU MODIF options/epsg_elno_depl        cibhhpd L.SALMONA           48      3      3
+CATALOGU MODIF options/epsi_elga_depl        cibhhpd L.SALMONA           64      3      5
+CATALOGU MODIF options/epsi_elno_depl        cibhhpd L.SALMONA           56      3      5
+CATALOGU MODIF options/epsp_elga             cibhhpd L.SALMONA           47      3      8
+CATALOGU MODIF options/epsp_elno             cibhhpd L.SALMONA           47      3      8
+CATALOGU MODIF options/full_meca             cibhhpd L.SALMONA           84      2      4
+CATALOGU MODIF options/full_meca_elas        cibhhpd L.SALMONA           76      2      4
+CATALOGU MODIF options/raph_meca             cibhhpd L.SALMONA           82      2      4
+CATALOGU MODIF options/rigi_meca             cibhhpd L.SALMONA           46      1      2
+CATALOGU MODIF options/rigi_meca_elas        cibhhpd L.SALMONA           76      2      5
+CATALOGU MODIF options/rigi_meca_sens_c      cibhhpd L.SALMONA           49      1      2
+CATALOGU MODIF options/rigi_meca_sensi       cibhhpd L.SALMONA           49      1      2
+CATALOGU MODIF options/rigi_meca_tang        cibhhpd L.SALMONA           84      2      4
+CATALOGU MODIF options/sief_elga_depl        cibhhpd L.SALMONA           90      3      5
+CATALOGU MODIF options/sief_elga_sens        cibhhpd L.SALMONA           93      3      5
+CATALOGU MODIF options/sigm_elno_depl        cibhhpd L.SALMONA           90      3      5
+CATALOGU MODIF options/sigm_elno_depl_c      cibhhpd L.SALMONA           89      3      5
+CATALOGU MODIF options/sigm_elno_sens        cibhhpd L.SALMONA           93      3      5
+CATALOGU MODIF typelem/gener_me2db1          cibhhpd L.SALMONA          208      9      9
+CATALOGU MODIF typelem/gener_me2dg_1         cibhhpd L.SALMONA          353     42     57
+CATALOGU MODIF typelem/gener_me2dg_2         cibhhpd L.SALMONA          369     42     57
+CATALOGU MODIF typelem/gener_me3d_2          rezette C.REZETTE          205     11      2
+CATALOGU MODIF typelem/gener_me3d_3          cibhhpd L.SALMONA          664     67     80
+CATALOGU MODIF typelem/gener_me3dg_1         cibhhpd L.SALMONA          333     54     68
+CATALOGU MODIF typelem/gener_me3dg_3         cibhhpd L.SALMONA          357     54     68
+CATALOGU MODIF typelem/gener_me_xh           cibhhpd L.SALMONA          282     19     24
+CATALOGU MODIF typelem/gener_me_xht          cibhhpd L.SALMONA          284     19     24
+CATALOGU MODIF typelem/gener_me_xt           cibhhpd L.SALMONA          286     19     24
+CATALOGU MODIF typelem/gener_meafo2          cibhhpd L.SALMONA          168      3      4
+CATALOGU MODIF typelem/gener_meax_2          cibhhpd L.SALMONA          572     63     80
+CATALOGU MODIF typelem/gener_meaxs2          cibhhpd L.SALMONA          537     61     78
+CATALOGU MODIF typelem/gener_mebar1          cibhhpd L.SALMONA          211      9     12
+CATALOGU MODIF typelem/gener_mecpg2          cibhhpd L.SALMONA          350     42     57
+CATALOGU MODIF typelem/gener_mecpl2          cibhhpd L.SALMONA          598     66     79
+CATALOGU MODIF typelem/gener_mecpl2_xh       cibhhpd L.SALMONA          178     17     23
+CATALOGU MODIF typelem/gener_mecpl2_xht      cibhhpd L.SALMONA          180     17     23
+CATALOGU MODIF typelem/gener_mecpl2_xt       cibhhpd L.SALMONA          152     17     23
+CATALOGU MODIF typelem/gener_medkt2          cibhhpd L.SALMONA          312      6      6
+CATALOGU MODIF typelem/gener_medpg2          cibhhpd L.SALMONA          352     41     55
+CATALOGU MODIF typelem/gener_medpl2          cibhhpd L.SALMONA          615     66     81
+CATALOGU MODIF typelem/gener_medpl2_xh       cibhhpd L.SALMONA          180     19     25
+CATALOGU MODIF typelem/gener_medpl2_xht      cibhhpd L.SALMONA          182     19     25
+CATALOGU MODIF typelem/gener_medpl2_xt       cibhhpd L.SALMONA          154     19     25
+CATALOGU MODIF typelem/gener_mepct1          cibhhpd L.SALMONA          224      3      2
+CATALOGU MODIF typelem/gener_mepdt1          cibhhpd L.SALMONA          257      3      2
+CATALOGU MODIF typelem/gener_mepmf1          cibhhpd L.SALMONA          187     11     11
+CATALOGU MODIF typelem/gener_mepmf2          cibhhpd L.SALMONA          221     11     14
+CATALOGU MODIF typelem/gener_mv2d_2          cibhhpd L.SALMONA          329     29     35
+CATALOGU MODIF typelem/gener_mv3d_3          cibhhpd L.SALMONA          419     56     71
+CATALOGU MODIF typelem/mecpqs4               cibhhpd L.SALMONA          517     65     78
+CATALOGU MODIF typelem/mecptr3               cibhhpd L.SALMONA          550     65     78
+CATALOGU MODIF typelem/medpqs4               cibhhpd L.SALMONA          528     61     75
+CATALOGU MODIF typelem/medpqs8               cibhhpd L.SALMONA          528     60     74
+CATALOPY AJOUT commande/post_k_trans         galenne E.GALENNE           66     66      0
+CATALOPY MODIF commande/affe_char_meca       cibhhpd L.SALMONA         1021      4      9
+CATALOPY MODIF commande/affe_materiau        cibhhpd L.SALMONA          178     33     12
+CATALOPY MODIF commande/calc_g               galenne E.GALENNE          148     10      2
+CATALOPY MODIF commande/exec_logiciel       mcourtoi M.COURTOIS          49     30      7
+ FORTRAN AJOUT utilitai/mmaxkl               galenne E.GALENNE          299    299      0
+ FORTRAN MODIF algorith/betmat               cibhhpd L.SALMONA          164     14     20
+ FORTRAN MODIF algorith/calcme               cibhhpd L.SALMONA          428     10     13
+ FORTRAN MODIF algorith/comp1d               cibhhpd L.SALMONA          152      3     21
+ FORTRAN MODIF algorith/insmat               cibhhpd L.SALMONA          153     11     18
+ FORTRAN MODIF algorith/lcgdpm               cibhhpd L.SALMONA          974     22     12
+ FORTRAN MODIF algorith/lcldsb               cibhhpd L.SALMONA          432     10      8
+ FORTRAN MODIF algorith/lcmate               cibhhpd L.SALMONA          134      9     15
+ FORTRAN MODIF algorith/lcmaza               cibhhpd L.SALMONA          469     15     20
+ FORTRAN MODIF algorith/lcmzge               cibhhpd L.SALMONA          468     16     18
+ FORTRAN MODIF algorith/lcumfp               cibhhpd L.SALMONA          555     27     18
+ FORTRAN MODIF algorith/lmamat               cibhhpd L.SALMONA          187     10     17
+ FORTRAN MODIF algorith/meacmv               cibhhpd L.SALMONA          477     25     15
+ FORTRAN MODIF algorith/merimo               cibhhpd L.SALMONA          457     44     56
+ FORTRAN MODIF algorith/nigp2d               cibhhpd L.SALMONA          493      1      4
+ FORTRAN MODIF algorith/nigp3d               cibhhpd L.SALMONA          441      1      4
+ FORTRAN MODIF algorith/nipl2d               cibhhpd L.SALMONA          367      1      4
+ FORTRAN MODIF algorith/nipl3d               cibhhpd L.SALMONA          361      1      4
+ FORTRAN MODIF algorith/nmas2d               cibhhpd L.SALMONA          500      7     41
+ FORTRAN MODIF algorith/nmco1d               cibhhpd L.SALMONA          139      1      6
+ FORTRAN MODIF algorith/nmcomp               cibhhpd L.SALMONA          716     55     97
+ FORTRAN MODIF algorith/nmcoup               cibhhpd L.SALMONA          184      8     12
+ FORTRAN MODIF algorith/nmcpel               cibhhpd L.SALMONA          131      4      5
+ FORTRAN MODIF algorith/nmcpla               cibhhpd L.SALMONA          462     25     28
+ FORTRAN MODIF algorith/nmel2d               cibhhpd L.SALMONA          259      9     11
+ FORTRAN MODIF algorith/nmel3d               cibhhpd L.SALMONA          258      9     11
+ FORTRAN MODIF algorith/nmfi2d               cibhhpd L.SALMONA          164      1      4
+ FORTRAN MODIF algorith/nmgc2d               cibhhpd L.SALMONA          349      7     35
+ FORTRAN MODIF algorith/nmgc3d               cibhhpd L.SALMONA          335      6     40
+ FORTRAN MODIF algorith/nmgdes               cibhhpd L.SALMONA          320     34     32
+ FORTRAN MODIF algorith/nmgp2d               cibhhpd L.SALMONA          288      6     24
+ FORTRAN MODIF algorith/nmgp3d               cibhhpd L.SALMONA          236      5     25
+ FORTRAN MODIF algorith/nmgr2d               cibhhpd L.SALMONA          359      7     37
+ FORTRAN MODIF algorith/nmgr3d               cibhhpd L.SALMONA          368      5     38
+ FORTRAN MODIF algorith/nmgran               cibhhpd L.SALMONA          498     29     29
+ FORTRAN MODIF algorith/nmisot               cibhhpd L.SALMONA          480     26     22
+ FORTRAN MODIF algorith/nmorth               cibhhpd L.SALMONA          235     28     15
+ FORTRAN MODIF algorith/nmpl2d               cibhhpd L.SALMONA          292      9     42
+ FORTRAN MODIF algorith/nmpl2g               cibhhpd L.SALMONA          636      8     36
+ FORTRAN MODIF algorith/nmpl3d               cibhhpd L.SALMONA          305      6     40
+ FORTRAN MODIF algorith/nmpl3g               cibhhpd L.SALMONA          650      7     40
+ FORTRAN MODIF algorith/nmplge               cibhhpd L.SALMONA          315      8     15
+ FORTRAN MODIF algorith/nmvcd2               cibhhpd L.SALMONA           76     13      6
+ FORTRAN MODIF algorith/nmvcfo               cibhhpd L.SALMONA          218     18     26
+ FORTRAN MODIF algorith/nmvcle               cibhhpd L.SALMONA          108      3     17
+ FORTRAN MODIF algorith/nmvcpr               cibhhpd L.SALMONA          328     52     73
+ FORTRAN MODIF algorith/nmvcre               cibhhpd L.SALMONA           94     17     25
+ FORTRAN MODIF algorith/nmvcve               cibhhpd L.SALMONA          108      5     10
+ FORTRAN MODIF algorith/nmveei               cibhhpd L.SALMONA          366      5      7
+ FORTRAN MODIF algorith/nmvpgm               cibhhpd L.SALMONA          388     20      6
+ FORTRAN MODIF algorith/nmvpir               cibhhpd L.SALMONA          584     25     21
+ FORTRAN MODIF algorith/nmvple               cibhhpd L.SALMONA          308     22     17
+ FORTRAN MODIF algorith/nmvprk               cibhhpd L.SALMONA          357      2      5
+ FORTRAN MODIF algorith/ntoptc               cibhhpd L.SALMONA          138      2      2
+ FORTRAN MODIF algorith/nzcifw               cibhhpd L.SALMONA          738     22     10
+ FORTRAN MODIF algorith/nzcizi               cibhhpd L.SALMONA          706     27     16
+ FORTRAN MODIF algorith/nzedga               cibhhpd L.SALMONA          720     21      7
+ FORTRAN MODIF algorith/nzgdzi               cibhhpd L.SALMONA          952     23     12
+ FORTRAN MODIF algorith/nzisfw               cibhhpd L.SALMONA          749     22     10
+ FORTRAN MODIF algorith/op0046               cibhhpd L.SALMONA          281      6      5
+ FORTRAN MODIF algorith/op0070               cibhhpd L.SALMONA          921      2      2
+ FORTRAN MODIF algorith/pipedp               cibhhpd L.SALMONA          327      2      3
+ FORTRAN MODIF algorith/plasbe               cibhhpd L.SALMONA          506      7     12
+ FORTRAN MODIF algorith/plasti               cibhhpd L.SALMONA          472      7     12
+ FORTRAN MODIF algorith/redece               cibhhpd L.SALMONA          287     17     32
+ FORTRAN MODIF algorith/rslmat               cibhhpd L.SALMONA          157      9     16
+ FORTRAN MODIF algorith/rsvmat               cibhhpd L.SALMONA          164     10     16
+ FORTRAN MODIF algorith/te0350               cibhhpd L.SALMONA          175      5     39
+ FORTRAN MODIF algorith/vechde               cibhhpd L.SALMONA          456     27     35
+ FORTRAN MODIF algorith/vecsme               cibhhpd L.SALMONA          183      8     21
+ FORTRAN MODIF algorith/vectme               cibhhpd L.SALMONA          173      7      4
+ FORTRAN MODIF algorith/vecyme               cibhhpd L.SALMONA          188      8      8
+ FORTRAN MODIF algorith/xkel2d               cibhhpd L.SALMONA          351      6      9
+ FORTRAN MODIF algorith/xkel3d               cibhhpd L.SALMONA          375      5      8
+ FORTRAN MODIF algorith/xmel3d               cibhhpd L.SALMONA          184      5      6
+ FORTRAN MODIF calculel/cgcrtb               galenne E.GALENNE          305      2      2
+ FORTRAN MODIF calculel/me2mme               cibhhpd L.SALMONA          708      7     13
+ FORTRAN MODIF calculel/mecalc               cibhhpd L.SALMONA          522     10     12
+ FORTRAN MODIF calculel/mecalm               cibhhpd L.SALMONA         2852     28     32
+ FORTRAN MODIF calculel/merime               cibhhpd L.SALMONA          212      2      9
+ FORTRAN MODIF calculel/mesref               cibhhpd L.SALMONA           47      1      1
+ FORTRAN MODIF calculel/op0038               cibhhpd L.SALMONA          164      3      3
+ FORTRAN MODIF calculel/op0100               galenne E.GALENNE         1095     15      5
+ FORTRAN MODIF calculel/thaclm               cibhhpd L.SALMONA          891      4      4
+ FORTRAN MODIF calculel/vrcref               cibhhpd L.SALMONA          166      8     11
+ FORTRAN MODIF elements/dktnli               cibhhpd L.SALMONA          585      4     23
+ FORTRAN MODIF elements/epsvmc               cibhhpd L.SALMONA          216     19      7
+ FORTRAN MODIF elements/epthmc               cibhhpd L.SALMONA          113      5      7
+ FORTRAN MODIF elements/ethdst               cibhhpd L.SALMONA          137      2      2
+ FORTRAN MODIF elements/metau1               cibhhpd L.SALMONA          154     49     24
+ FORTRAN MODIF elements/metau2               cibhhpd L.SALMONA          144     47     27
+ FORTRAN MODIF elements/pmfcom               cibhhpd L.SALMONA          279      1      5
+ FORTRAN MODIF elements/sigimc               cibhhpd L.SALMONA          108      1      1
+ FORTRAN MODIF elements/sigtmc               cibhhpd L.SALMONA          140      9     16
+ FORTRAN MODIF elements/sigvmc               cibhhpd L.SALMONA          137      6      8
+ FORTRAN MODIF elements/simtep               cibhhpd L.SALMONA          118      3     10
+ FORTRAN MODIF elements/te0011               cibhhpd L.SALMONA          194      4     11
+ FORTRAN MODIF elements/te0013               cibhhpd L.SALMONA          133      8     15
+ FORTRAN MODIF elements/te0022               cibhhpd L.SALMONA          145      6     13
+ FORTRAN MODIF elements/te0023               cibhhpd L.SALMONA          164      4     13
+ FORTRAN MODIF elements/te0025               cibhhpd L.SALMONA          181      3     23
+ FORTRAN MODIF elements/te0081               cibhhpd L.SALMONA          188      3     13
+ FORTRAN MODIF elements/te0083               cibhhpd L.SALMONA          133      8     14
+ FORTRAN MODIF elements/te0086               cibhhpd L.SALMONA          182      3     14
+ FORTRAN MODIF elements/te0087               cibhhpd L.SALMONA          188      5     26
+ FORTRAN MODIF elements/te0100               cibhhpd L.SALMONA          267     11     51
+ FORTRAN MODIF elements/te0113               cibhhpd L.SALMONA          166      5      9
+ FORTRAN MODIF elements/te0115               cibhhpd L.SALMONA          127      2      2
+ FORTRAN MODIF elements/te0116               cibhhpd L.SALMONA          130      2      2
+ FORTRAN MODIF elements/te0121               cibhhpd L.SALMONA          176      5     40
+ FORTRAN MODIF elements/te0139               cibhhpd L.SALMONA          234     10     51
+ FORTRAN MODIF elements/te0150               cibhhpd L.SALMONA          354     30     19
+ FORTRAN MODIF elements/te0155               cibhhpd L.SALMONA          625     12     19
+ FORTRAN MODIF elements/te0190               cibhhpd L.SALMONA          184      3     12
+ FORTRAN MODIF elements/te0198               cibhhpd L.SALMONA          131      3      8
+ FORTRAN MODIF elements/te0239               cibhhpd L.SALMONA          472      4     25
+ FORTRAN MODIF elements/te0248               cibhhpd L.SALMONA          447      1     11
+ FORTRAN MODIF elements/te0333               cibhhpd L.SALMONA          374     21     46
+ FORTRAN MODIF elements/te0334               cibhhpd L.SALMONA          398     21     40
+ FORTRAN MODIF elements/te0353               cibhhpd L.SALMONA          428     23     21
+ FORTRAN MODIF elements/te0358               cibhhpd L.SALMONA          429     23     20
+ FORTRAN MODIF elements/te0421               cibhhpd L.SALMONA          234     11      8
+ FORTRAN MODIF elements/te0426               cibhhpd L.SALMONA          151     24     10
+ FORTRAN MODIF elements/te0490               cibhhpd L.SALMONA          976      6     28
+ FORTRAN MODIF elements/te0491               cibhhpd L.SALMONA          934      3     26
+ FORTRAN MODIF elements/te0492               cibhhpd L.SALMONA          121      3      7
+ FORTRAN MODIF elements/te0493               cibhhpd L.SALMONA          122      2      7
+ FORTRAN MODIF elements/te0494               cibhhpd L.SALMONA          122      3     11
+ FORTRAN MODIF elements/te0495               cibhhpd L.SALMONA          124      4     11
+ FORTRAN MODIF elements/te0516               cibhhpd L.SALMONA          613      1     15
+ FORTRAN MODIF elements/te0535               cibhhpd L.SALMONA          287      1     12
+ FORTRAN MODIF elements/te0539               cibhhpd L.SALMONA          368     10     61
+ FORTRAN MODIF elements/te0545               cibhhpd L.SALMONA          241     12     33
+ FORTRAN MODIF elements/te0546               cibhhpd L.SALMONA          228      9     47
+ FORTRAN MODIF elements/tufull               cibhhpd L.SALMONA          486      5     26
+ FORTRAN MODIF elements/vdpnlr               cibhhpd L.SALMONA         1298      2     25
+ FORTRAN MODIF elements/vdxnlr               cibhhpd L.SALMONA          465      4     25
+ FORTRAN MODIF modelisa/charme               cibhhpd L.SALMONA          382      1      3
+ FORTRAN MODIF modelisa/op0006               cibhhpd L.SALMONA          282      1      2
+ FORTRAN MODIF modelisa/palim3               rezette C.REZETTE          148     21      5
+ FORTRAN MODIF prepost/asceli                rezette C.REZETTE          212     86     21
+ FORTRAN MODIF utilifor/lcdehy               cibhhpd L.SALMONA           85      9      5
+ FORTRAN MODIF utilitai/peecin               cibhhpd L.SALMONA          379      2      2
+ FORTRAN MODIF utilitai/peepot               cibhhpd L.SALMONA          332      2      2
+ FORTRAN MODIF utilitai/rsbary               cibhhpd L.SALMONA          222     11      5
+ FORTRAN MODIF utilitai/rscrsd               cibhhpd L.SALMONA          754      4      3
+ FORTRAN SUPPR algorith/medehy               cibhhpd L.SALMONA          192      0    192
+ FORTRAN SUPPR algorith/nmdean               cibhhpd L.SALMONA          106      0    106
+ FORTRAN SUPPR algorith/nmdehy               cibhhpd L.SALMONA          138      0    138
+ FORTRAN SUPPR elements/epsamc               cibhhpd L.SALMONA           67      0     67
+ FORTRAN SUPPR modelisa/caanel               cibhhpd L.SALMONA           57      0     57
+ FORTRAN SUPPR modelisa/cahydr               cibhhpd L.SALMONA           59      0     59
+ FORTRAN SUPPR modelisa/casech               cibhhpd L.SALMONA           58      0     58
+ FORTRAN SUPPR modelisa/cbhydr               cibhhpd L.SALMONA           29      0     29
+ FORTRAN SUPPR modelisa/cbsech               cibhhpd L.SALMONA           29      0     29
+ FORTRAN SUPPR modelisa/rcsref               cibhhpd L.SALMONA          107      0    107
+  PYTHON AJOUT Macro/exec_logiciel_ops      mcourtoi M.COURTOIS         184    184      0
+  PYTHON AJOUT Macro/post_k_trans_ops        galenne E.GALENNE          250    250      0
+  PYTHON AJOUT Utilitai/System              mcourtoi M.COURTOIS         217    217      0
+  PYTHON MODIF Macro/macr_adap_mail_ops     mcourtoi M.COURTOIS         788      5      5
+  PYTHON MODIF Macro/macr_ascouf_mail_ops   mcourtoi M.COURTOIS        2790     15     25
+  PYTHON MODIF Macro/macr_aspic_mail_ops    mcourtoi M.COURTOIS         904      7     10
+  PYTHON MODIF Macro/macr_cabri_mail_ops    mcourtoi M.COURTOIS         459      2      4
+  PYTHON MODIF Macro/macr_fiabilite_ops     mcourtoi M.COURTOIS         324      4      4
+  PYTHON MODIF Macro/macro_miss_3d_ops      mcourtoi M.COURTOIS         125     31     31
+  PYTHON MODIF Macro/recal                  mcourtoi M.COURTOIS         358      2     18
+  PYTHON MODIF Outils/calc_eolienne         mcourtoi M.COURTOIS        1736      8     10
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         934     35     26
+  PYTHON MODIF Utilitai/UniteAster          mcourtoi M.COURTOIS         205     21     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    6        1081      1081             +1081
+ MODIF :  297      106424      3862    4944     -1082
+ SUPPR :   10         842               842      -842
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  313      108347      4943    5786      -843 

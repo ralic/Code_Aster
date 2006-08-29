@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -695,10 +695,10 @@ def macr_adap_mail_ops ( self,
 ###  Fichier_ASTER_vers_HOMARD_2 = os.path.join("/home/gnicolas" , "fort." + str(Unite_Fichier_ASTER_vers_HOMARD))
 ###  shutil.copyfile(Fichier_ASTER_vers_HOMARD,Fichier_ASTER_vers_HOMARD_2)
 #
-  EXEC_LOGICIEL ( ARGUMENT = (_F(NOM_PARA=Rep_Calc_HOMARD_global), # nom du repertoire
-                              _F(NOM_PARA=VERSION_HOMARD),  # version de homard
-                              _F(NOM_PARA=str(INFO)),       # niveau d information
-                              _F(NOM_PARA=Nom_Fichier_Donnees), # fichier de données HOMARD
+  EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_HOMARD_global, # nom du repertoire
+                              VERSION_HOMARD,         # version de homard
+                              str(INFO),              # niveau d information
+                              Nom_Fichier_Donnees,    # fichier de données HOMARD
                              ),
                   LOGICIEL = homard
                 )

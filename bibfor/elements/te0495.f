@@ -1,6 +1,6 @@
       SUBROUTINE TE0495(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C.......................................................................
 
       REAL*8 BSIGMA(81),SIGTH(162),REPERE(7),INSTAN
       REAL*8 NHARM, RBID
-      INTEGER NBSIGM, ISREF
+      INTEGER NBSIGM
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
@@ -94,13 +94,6 @@ C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PSECHER','L',ISECH)
-
-C ---- RECUPERATION DU SECHAGE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PSECREF','L',ISREF)
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -110,8 +103,8 @@ C ---- CALCUL DES CONTRAINTES DE SECHAGE AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
       CALL SIGTMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),
-     &            ZR(IGEOM),ZR(ITEMPE),RBID,ZR(ISECH),ZR(ISREF),
-     &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
+     &            ZR(IGEOM),ZR(ITEMPE),RBID,INSTAN,ZI(IMATE),
+     &            REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE DE SECHAGE (BT*SIGTH)
 C      ----------------------------------------------------------

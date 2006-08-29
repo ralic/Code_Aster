@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,8 +81,6 @@ C
       REAL * 8 ETILD  ( 5 ) , STILD  ( 5 )
       REAL * 8 ETILDM  ( 5 )
       REAL * 8 EPS2D ( 4 ) , DEPS2D ( 4 )
-      REAL * 8 EPSANM ( 4 ) , EPSANP ( 4 )
-      REAL * 8 PHASM ( 7 ) , PHASP ( 7 )
       REAL * 8 SIGN ( 4 ) , SIGMA ( 4 ) , DSIDEP ( 6 , 6 )
       REAL * 8 DETILD  ( 5 )
       REAL * 8 GXZ, GYZ
@@ -186,7 +184,7 @@ C---- LES REALS
       INTEGER NBVARI, ITAB(8), LGPG, NZ, K2 ,ITABM(8) ,ITABP(8)
       INTEGER NBV , NBPAR,IRET
       REAL * 8 RAC2,ANGMAS(3)
-      REAL * 8 SECHGM, SREF, SECHGP, LC
+      REAL * 8 LC
       REAL * 8 VALRES ( 26 ), VALPAR, VALPU ( 2 )
       REAL * 8 TMPG1 , TMPG2 , TMPG3 , TPPG1 , TPPG2 , TPPG3
       REAL * 8 TMC, TPC, TPG1 , CISAIL
@@ -527,18 +525,6 @@ C
       CALL R8INIR ( 2 * 51 * 4 , 0.D0 , B2SRC , 1 )
       CALL R8INIR ( 2 * 51 * 4 , 0.D0 , B2SRCM , 1 )
 C
-C---- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP
-C
-      DO 40 J = 1,4
-        EPSANM(J) = 0.D0
-        EPSANP(J) = 0.D0
-   40 CONTINUE
-      NZ =0
-      DO 50 J = 1,7
-        PHASM(J) = 0.D0
-        PHASP(J) = 0.D0
-   50 CONTINUE
-C
 C---- COMPTEUR DES POINTS D INTEGRATIONS ( EPAISSEUR * SURFACE )
 C
       KPGS  = 0
@@ -652,12 +638,6 @@ C
 C========== FIN 1 ERE BOUCLE NPGSR
 C
  620        CONTINUE
-C ---  VARIABLE D HYDRATATION ET DE SECHAGE
-
-          SECHGM = 0.D0
-          SECHGP = 0.D0
-          SREF   = 0.D0
-C
 C---------- INITIALISATION DES CONTRAINTES A LISSER
 C
             IF ( OPTION ( 1 : 16 ) . EQ . 'RIGI_MECA_TANG' . OR .
@@ -832,12 +812,9 @@ C -    APPEL A LA LOI DE COMPORTEMENT
               CALL NMCOMP('MASS',INTSN,KSP,2,TYPMOD,ZI(IMATE),
      &               ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                    TMC,TPC,ZR(ITREF),
-     &                    SECHGM,SECHGP,SREF,
      &                    EPS2D,DEPS2D,
      &                    SIGN,ZR(IVARIM+K2),
      &                    OPTION,
-     &                    EPSANM,EPSANP,
-     &                    NZ,PHASM,PHASP,
      &                    ANGMAS,
      &                    LC,
      &                    SIGMA,ZR(IVARIP+K2),DSIDEP,COD)

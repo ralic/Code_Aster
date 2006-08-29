@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,7 +218,12 @@ CM=AFFE_MATERIAU(
                 AFFE=_F( 
                 TOUT = 'OUI',
                 MATER = ACIER2,
-                TEMP_REF = 700.)
+                TEMP_REF = 700.),
+                AFFE_VARC=_F(TOUT='OUI',
+                EVOL=TEMPE,
+                NOM_VARC='M_ACIER',
+                NOM_CHAM='META_ELNO_TEMP'),
+
               )
 
 SIGMA_F=DEFI_FONCTION(

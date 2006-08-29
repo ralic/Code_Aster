@@ -1,7 +1,7 @@
       SUBROUTINE EPTHMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,TEMPE,TREF,
      +                   HYDR,SECH,SREF,INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
 C    HYDR(1)        IN     R        HYDRATATION AUX POINTS DE GAUSS
-C    SECH(1)        IN     R        SECHAGE AUX NOEUDS DE L'ELEMENT
+C    SECH(1)        IN     R        SECHAGE AUX POINTS DE GAUSS
 C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
@@ -74,18 +74,16 @@ C
 C  --      TEMPERATURE AU POINT D'INTEGRATION COURANT
 C          ------------------------------------------
           TEMPG     = ZERO
-          SECHG     = ZERO
           HYDRG     = HYDR(IGAU)
 C
           DO 30 I = 1, NNO
              TEMPG     = TEMPG     + NI(I+NNO*(IGAU-1))*TEMPE(I)
-             SECHG     = SECHG     + NI(I+NNO*(IGAU-1))*SECH(I)
   30      CONTINUE
 C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES  AU POINT D'INTEGRATION
 C  --      COURANT
 C          -------
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, INSTAN,
+          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECH, SREF, INSTAN,
      &                MATER, K16BID, EPSTH)
 C
 C  --      DEFORMATIONS THERMIQUES SUR L'ELEMENT
@@ -96,10 +94,10 @@ C          -------------------------------------
   40      CONTINUE
 C
           OPTIO2 = OPTION(1:9) // '_HYDR'
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF,
+          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECH, SREF,
      &                INSTAN,MATER, OPTIO2, EPSHY)
           OPTIO3 = OPTION(1:9) // '_SECH'
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, 
+          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECH, SREF, 
      &                INSTAN,MATER, OPTIO3, EPSSE)
 C
 C  --     DEFORMATIONS DE RETRAIT SUR L'ELEMENT

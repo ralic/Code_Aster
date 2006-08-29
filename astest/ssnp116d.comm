@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN BARRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,12 +125,6 @@ TEMP2=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  NOM_CMP='TEMP',
                  VALE=20.,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=0.,
-                         SECH_REF=1.,),);
-
 TEMP=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
                NOM_CHAM='TEMP',
@@ -149,9 +143,18 @@ SECH=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=SECH1,
                   INST=100.,),),);
 
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,
+                         TEMP_REF=0.,),
+                 AFFE_VARC=_F(TOUT='OUI',
+                              EVOL=SECH,
+                              NOM_VARC="SECH",
+                              NOM_CHAM='TEMP',
+                              VALE_REF=1), );
+
 COND_LIM=AFFE_CHAR_MECA(MODELE=MO,
                         TEMP_CALCULEE=TEMP,
-                        SECH_CALCULEE=SECH,
                         DDL_IMPO=(_F(GROUP_NO='A',
                                      DX=0.,
                                      DY=0.,
@@ -259,9 +262,18 @@ SECHV=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=SECH2,
                    INST=100.,),),);
 
+CMV=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,
+                         TEMP_REF=0.,),
+                 AFFE_VARC=_F(TOUT='OUI',
+                              EVOL=SECHV,
+                              NOM_VARC="SECH",
+                              NOM_CHAM='TEMP',
+                              VALE_REF=1), );
+
 COND_LI2=AFFE_CHAR_MECA(MODELE=MO,
                         TEMP_CALCULEE=TEMPV,
-                        SECH_CALCULEE=SECHV,
                         DDL_IMPO=(_F(GROUP_NO='A',
                                      DX=0.,
                                      DY=0.,
@@ -271,7 +283,7 @@ COND_LI2=AFFE_CHAR_MECA(MODELE=MO,
                                      DZ=0.,),),);
 
 COUPLA2=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=CM,
+                      CHAM_MATER=CMV,
                       CARA_ELEM=CARA,
                       EXCIT=(_F(CHARGE=COND_LI2,),
                              _F(CHARGE=TRAC,
@@ -315,7 +327,7 @@ TEST_TABLE(TABLE=RELEVE_3,
            VERSION='7.3.9',);
 
 COUPLA3=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=CM,
+                      CHAM_MATER=CMV,
                       CARA_ELEM=CARA,
                       EXCIT=(_F(CHARGE=COND_LI2,),
                              _F(CHARGE=TRAC,

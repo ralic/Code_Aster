@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -664,7 +664,7 @@ C CALCUL DE L'OPTION PROPREMENT DIT
      &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,K24B,
      &                    K24B,CHFREQ,K24B,K24B,'   ',' ',ZERO,
      &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,K24B,K24B,
-     &                    K24B,K24B,COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
+     &                    K24B,COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
      &                    IRET)
               IF (IRET.GT.0) GO TO 282
 
@@ -703,7 +703,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
      &                    K24B,K24B,K24B,K24B,K24B,K24B,K24B,K24B,
      &                    K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
-     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,COMPOR,
+     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 771
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -747,7 +747,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,K24B,CHMETA,'   ',' ',ZERO,
      &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,K24B,K24B,
-     &                    K24B,K24B,COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
+     &                    K24B,COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
      &                    IRET)
               IF (IRET.GT.0) GO TO 352
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')

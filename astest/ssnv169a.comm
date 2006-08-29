@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE PBADEL P.BADEL
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,14 +97,15 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                       ),
                   )
 
-CM=AFFE_MATERIAU(  MAILLAGE=M,
-                   AFFE=_F( TOUT = 'OUI',MATER = BETON, TEMP_REF = 20.,SECH_REF=1.) )
-
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                         AFFE=_F( TOUT = 'OUI',
                               NOM_CMP = 'TEMP',
                               VALE = 1.)
                        )
+
+CM=AFFE_MATERIAU(  MAILLAGE=M,
+                   AFFE=_F( TOUT = 'OUI',MATER = BETON, TEMP_REF = 20.),
+                   AFFE_VARC=_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1.),);
 
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                          AFFE=_F(
@@ -155,8 +156,7 @@ CH22=AFFE_CHAR_MECA_F( MODELE=MO,
                     )
 
 CH3=AFFE_CHAR_MECA( MODELE        = MO,
-                    TEMP_CALCULEE = TEMP,
-                    SECH_CALCULEE = SECH
+                    TEMP_CALCULEE = TEMP
                   )
 heure=3600.
 jour=24.*heure

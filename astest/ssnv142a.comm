@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,18 +56,28 @@ BETON=DEFI_MATERIAU(
                             TAUX_2 = 2160000.,)
                          )
 
-CM=AFFE_MATERIAU( 
-            MAILLAGE=M,   
-            AFFE=_F( TOUT = 'OUI',
-                     MATER = BETON, 
-                     TEMP_REF = 20., 
-                     SECH_REF = 1.) )
-
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                         AFFE=_F( TOUT = 'OUI',
                               NOM_CMP = 'TEMP',
                               VALE = 1.)
                        )
+
+SECH1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                    NOM_CHAM='TEMP',AFFE=(
+                     _F(  INST = 0.,   CHAM_GD = SECH),
+                                         )
+                  )
+
+CM=AFFE_MATERIAU( 
+            MAILLAGE=M,   
+            AFFE=_F( TOUT = 'OUI',
+                     MATER = BETON, 
+                     TEMP_REF = 20.),
+            AFFE_VARC=_F(TOUT='OUI',
+                         EVOL=SECH1,
+                         NOM_VARC="SECH",
+                         NOM_CHAM='TEMP',
+                         VALE_REF=1), )
 
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                          AFFE=_F( 
@@ -81,11 +91,6 @@ TEMP1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                          )
                   )
 
-SECH1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',AFFE=(
-                     _F(  INST = 0.,   CHAM_GD = SECH),
-                                         )
-                  )
 FORCE=DEFI_FONCTION( 
            NOM_PARA='INST',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
            VALE=(0.0, 0.0, 10., -20.,31536010., -20.,)
@@ -106,8 +111,7 @@ CH2=AFFE_CHAR_MECA_F(
 
 CH3=AFFE_CHAR_MECA(
             MODELE=MO,
-            TEMP_CALCULEE=TEMP1,
-            SECH_CALCULEE=SECH1
+            TEMP_CALCULEE=TEMP1
                           )
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(

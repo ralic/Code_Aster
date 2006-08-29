@@ -1,4 +1,4 @@
-# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,17 +152,21 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=TEMPF,
                    INST=64800000.0,  ),),);
 
-CM=AFFE_MATERIAU(  MAILLAGE=M,   
-                   AFFE=_F( TOUT = 'OUI',
-                            MATER = BETON,
-                            TEMP_REF = 20.,
-                            SECH_REF = 100.,),
-                   AFFE_VARC=_F(TOUT='OUI',
-                                EVOL=HYDR1,
-                                NOM_VARC='HYDR',
-                                NOM_CHAM='HYDR_NOEU_ELGA',
-                                PROL_GAUCHE='CONSTANT',
-                                PROL_DROITE='CONSTANT'),);
+CM=AFFE_MATERIAU(MAILLAGE=M,   
+                 AFFE=_F( TOUT = 'OUI',
+                          MATER = BETON,
+                          TEMP_REF = 20.,),
+                 AFFE_VARC=(_F(TOUT='OUI',
+                               EVOL=HYDR1,
+                               NOM_VARC='HYDR',
+                               NOM_CHAM='HYDR_NOEU_ELGA',
+                               PROL_GAUCHE='CONSTANT',
+                               PROL_DROITE='CONSTANT'),
+                            _F(TOUT='OUI',
+                               EVOL=SECH1,
+                               NOM_VARC="SECH",
+                               NOM_CHAM='TEMP',
+                               VALE_REF=100),),);
 
 FORCE=DEFI_FONCTION( NOM_PARA='INST',
                      PROL_DROITE='LINEAIRE',
@@ -194,7 +198,6 @@ CH22=AFFE_CHAR_MECA_F( MODELE=MO,
 
 CH3=AFFE_CHAR_MECA( MODELE        = MO,
                     TEMP_CALCULEE = TEMP1,
-                    SECH_CALCULEE = SECH1,
                   )
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,

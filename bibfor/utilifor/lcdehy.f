@@ -1,9 +1,9 @@
-        SUBROUTINE LCDEHY ( FAMI, KPG, KSP, NMAT, MATERD, MATERF, SD,
-     &                      SF, SREF, DEPSM, EPSDM )
+        SUBROUTINE LCDEHY ( FAMI, KPG, KSP, NMAT, MATERD, MATERF,
+     &                      DEPSM, EPSDM )
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILIFOR  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,6 @@ C       ----------------------------------------------------------------
 C       IN      NMAT    DIMENSION  DE MATER
 C               MATERD  COEFFICIENTS MATERIAU A T
 C               MATERF  COEFFICIENTS MATERIAU A T+DT
-C               SD      SECHAGE DEBUT INCREMENT
-C               SF      SECHAGE FIN INCREMENT
 C       VAR     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
@@ -71,6 +69,12 @@ C
         IF ( IRET.NE.0) HD=0.D0
         CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HF,IRET)
         IF ( IRET.NE.0) HF=0.D0
+        CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SD,IRET)
+        IF ( IRET.NE.0) SD=0.D0
+        CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SF,IRET)
+        IF ( IRET.NE.0) SF=0.D0
+        CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
+        IF ( IRET.NE.0) SREF=0.D0
 C
         DO 110 K = 1,NDI
             DEPSM(K) = DEPSM(K) + ( BENDOF*HF - BENDOD*HD)

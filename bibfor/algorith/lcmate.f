@@ -1,11 +1,11 @@
         SUBROUTINE LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                      SECHD,SECHF,TYPMA, BZ, HSR,MATERD, MATERF, 
-     2                      MATCST, NBCOMM, CPMONO, ANGMAS, PGL, ITMAX, 
-     3                      TOLER, NDT, NDI,   NR,    NVI,    VIND)
+     1                      TYPMA,BZ,HSR,MATERD,MATERF,MATCST,NBCOMM,
+     2                      CPMONO,ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,
+     3                      NVI,VIND)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +34,6 @@ C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION 1 DE MATER
 C           TEMPD  :  TEMPERATURE A T
 C           TEMPF  :  TEMPERATURE A T + DT
-C           SECHD  :  SECHAGE A L'INSTANT PRECEDENT
-C           SECHF  :  SECHAGE A L'INSTANT DU CALCUL
 C           BZ     :  VARIABLE LOGIQUE :
 C                    'VRAI' POUR CALCULER AVEC LE MODELE POLY PILVIN
 C                    'FAUX' POUR CALCULER AVEC LE MODELE POLY B.Z.
@@ -59,7 +57,7 @@ C       ----------------------------------------------------------------
         INTEGER         NBCOMM(NMAT,3),KPG,KSP
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
-        REAL*8          SECHD , SECHF, TOLER
+        REAL*8          TOLER
         REAL*8          HSR(5,12,12)
         CHARACTER*16    LOI, COMP(*), CPMONO(5*NMAT+1)
         CHARACTER*8     MOD,    TYPMA
@@ -83,18 +81,15 @@ C
       LOI = COMP(1)
       IF     ( LOI(1:8) .EQ. 'ROUSS_PR' ) THEN
          CALL RSLMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                 SECHD, SECHF, MATERD, MATERF, MATCST,
-     2                 NDT,   NDI,   NR,    NVI,    VIND)
+     1                 MATERD,MATERF,MATCST,NDT,NDI,NR,NVI,VIND)
 C
       ELSEIF ( LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
          CALL RSVMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                 SECHD, SECHF, MATERD, MATERF, MATCST,
-     2                 NDT,   NDI,   NR,    NVI,    VIND)
+     1                 MATERD,MATERF,MATCST,NDT,NDI,NR,NVI,VIND)
 C
       ELSEIF ( LOI(1:5) .EQ. 'LMARC' ) THEN
          CALL LMAMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                 SECHD, SECHF,  MATERD, MATERF, MATCST,
-     2                 TYPMA, NDT,   NDI,    NR,     NVI )
+     1                 MATERD,MATERF, MATCST,TYPMA,NDT,NDI,NR,NVI )
 C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
          CALL CVMMAT ( MOD,    IMAT,   NMAT,   TEMPD, TEMPF, MATERD,
@@ -106,8 +101,7 @@ C
 C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
          CALL INSMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                 SECHD, SECHF,  MATERD, MATERF, MATCST,
-     2                 NDT,   NDI,   NR,     NVI )
+     1                 MATERD, MATERF, MATCST,NDT,NDI,NR,NVI )
 C
       ELSEIF ( LOI(1:9) .EQ. 'VENDOCHAB' ) THEN
          CALL VECMAT ( MOD,    IMAT,   NMAT,   TEMPD, TEMPF, MATERD,

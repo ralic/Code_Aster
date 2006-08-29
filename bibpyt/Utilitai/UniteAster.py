@@ -1,4 +1,4 @@
-#@ MODIF UniteAster Utilitai  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF UniteAster Utilitai  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,12 +84,13 @@ class UniteAster:
          print __tab.EXTR_TABLE()
          raise aster.FatalError,"<F> <UniteAster._setinfo> %s" % message
       self.infos[unit]['nom'] = nomfich
+      #print 'DEBUG infos[unit] = ', self.infos[unit]
       DETRUIRE(CONCEPT=_F(NOM=__tab),INFO=1)
 
 #-------------------------------------------------------------------------------
-   def Libre(self, nom=None):
-      """Réserve et retourne une unité libre en y associant, s'il est fourni,
-      le fichier 'nom'.
+   def Libre(self, nom=None, action='RESERVER'):
+      """Réserve/associe et retourne une unité libre en y associant, s'il est
+      fourni, le fichier 'nom'.
       """
       __tab=INFO_EXEC_ASTER(LISTE_INFO=('UNITE_LIBRE'))
       unit = __tab['UNITE_LIBRE',1]
@@ -103,7 +104,7 @@ class UniteAster:
             self.infos[unit]['nom']
          raise aster.FatalError,"<F> <UniteAster.Libre> %s" % message
 
-      DEFI_FICHIER(ACTION='RESERVER', UNITE=unit , FICHIER=nom.strip())
+      DEFI_FICHIER(ACTION=action, UNITE=unit , FICHIER=nom.strip())
       self.infos[unit] = {}
       self.infos[unit]['nom']       = nom.strip()
       self.infos[unit]['etat']      = 'R'
@@ -129,8 +130,9 @@ class UniteAster:
       """Retourne l'état de l'unité si 'etat' n'est pas fourni
       et/ou change son état :
          kargs['etat']  : nouvel état,
+         kargs['nom']   : nom du fichier,
          kargs['TYPE']  : type du fichier à ouvrir ASCII/BINARY/LIBRE,
-         kargs['ACCES'] : type d'accès NEW/APPEND/OLD.
+         kargs['ACCES'] : type d'accès NEW/APPEND/OLD (APPEND uniquement en ASCII).
       """
       # ul peut etre un entier Aster
       try:
@@ -156,17 +158,26 @@ class UniteAster:
             DEFI_FICHIER(ACTION='LIBERER',  UNITE=unit)
          DEFI_FICHIER(ACTION  = 'RESERVER', 
                       UNITE   = unit,
-                      FICHIER = self.infos[unit]['nom'])
+                      FICHIER = kargs.get('nom', self.infos[unit]['nom']))
+         self._setinfo(unit)
       elif new == 'F':
          DEFI_FICHIER(ACTION='LIBERER', UNITE=unit)
       elif new == 'O':
          if self.infos[unit]['etat'] == 'R':
             DEFI_FICHIER(ACTION='LIBERER', UNITE=unit)
+         # valeurs par défaut
+         typ   = kargs.get('TYPE', 'ASCII')
+         if typ == 'ASCII':
+            acces = 'APPEND'
+         else:
+            acces = 'OLD'
+         acces = kargs.get('ACCES', acces)
          DEFI_FICHIER(ACTION  ='ASSOCIER',
                       UNITE   = unit,
-                      FICHIER = self.infos[unit]['nom'],
-                      TYPE    = kargs.get('TYPE', 'ASCII'),
-                      ACCES   = kargs.get('ACCES', 'APPEND'),)
+                      FICHIER = kargs.get('nom', self.infos[unit]['nom']),
+                      TYPE    = typ,
+                      ACCES   = acces,)
+         self._setinfo(unit)
       self.infos[unit]['etat'] = new
       return self.infos[unit]['etat']
 

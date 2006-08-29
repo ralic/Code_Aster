@@ -9,7 +9,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,9 +66,8 @@ C     ------------------------------------------------------------------
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(25),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
-      CHARACTER*24 CHSECH,CHSREF
       COMPLEX*16 CBID
-      DATA CHVARC,CHSECH/'&&MERIME.CH_VARC_R','&&CHSECH.CH_SECH_R'/
+      DATA CHVARC/'&&MERIME.CH_VARC_R'/
 
       CALL JEMARQ()
       MODELE = MODELZ
@@ -90,11 +89,7 @@ C     ------------------------------------------------------------------
 
 
       IF (NOMCMD.EQ.'MECA_STATIQUE') THEN
-        CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,
-     &              CHSECH,CHSREF)
         CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
-      ELSE
-        CHSECH = ' '
       END IF
 
 
@@ -170,8 +165,6 @@ C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE: TEMP_R/TEMP_F
         LCHIN(17) = CHCARA(5)
         LPAIN(18) = 'PVARCPR'
         LCHIN(18) = CHVARC
-        LPAIN(19) = 'PSECHER'
-        LCHIN(19) = CHSECH
         LPAIN(20) = 'PTEMPSR'
         LCHIN(20) = CHTIME
         LPAIN(21) = 'PNBSP_I'

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,7 +123,7 @@ C        ------------------------
         CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
-     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,K24B,
+     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
      &              K24B,K8BID,IBID,IRET)
 
       ELSE IF (OPTION.EQ.'SOUR_ELGA_ELEC') THEN
@@ -133,7 +133,7 @@ C        ------------------------
         CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
-     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,K24B,
+     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
      &              K24B,K8BID,IBID,IRET)
 
 C        -- OPTION POINTS DE GAUSS :

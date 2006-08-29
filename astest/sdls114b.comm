@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,17 +20,14 @@
 # PAR RECOMBINAISON MODALE SUR UNE PLAQUE FISSUREE
 # RESPONSABLE GALENNE E.GALENNE
 
-DEBUT(CODE=_F( NOM = 'SDLS114B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      PAR_LOT = 'NON', )
+DEBUT(CODE=_F( NOM = 'SDLS114B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), )
 
 # DEFINITION DES PARAMETRES DU CALCUL
 tau = 0.001
-n_mode = 50
+n_mode = 10
 tfin = 0.005
 pas = 5E-7
 nbpas = 100
-
-#PRE_IDEAS();
 
 M = LIRE_MAILLAGE();
 
@@ -143,7 +140,6 @@ MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
                NORME='MASS_GENE',);
 
-
 FF1=DEFI_FOND_FISS(MAILLAGE=M,
                    FOND_FISS=_F(GROUP_NO='FOND',),
                                 #GROUP_NO_ORIG='PFINI',),
@@ -178,7 +174,6 @@ GLMO1=CALC_G(MODELE=MO,
             );
 
 #IMPR_TABLE(TABLE = GLMO1);
-
 D_SUP = [None]*n_mode
 D_INF = [None]*n_mode
 T1_K = [None]*n_mode
@@ -221,7 +216,6 @@ for i in range(0,n_mode) :
                           );
 
 
-   Kmodu[i] = T1_K[i]['K1_MAX',12] 
 
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
 Ku_ref = [5.6306E+09,8.5989E+09,6.9401E+10,-2.70165E+11,-9.6372E+10]
@@ -280,50 +274,49 @@ RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
                          IMPRESSION = _F(TOUT='OUI',),);
 
 
-
-RESUDYNA = REST_BASE_PHYS(RESU_GENE = RES_DYNA, 
-                          NOM_CHAM='DEPL',);
-            
-
-npt = 6
-nptca = 3
-
-coef = aster.getvectjev("RES_DYNA           .DEPL        ")
-l_inst = aster.getvectjev("RES_DYNA           .INST        ")
-
-nbarch = len(l_inst)
-
-alpha = [None]*n_mode
-Kmod = [None]*n_mode
-K1 = [None]*nbarch
-
-for k in range(0,n_mode) :
-   alpha[k] = [None]*nbarch
-   
-for inst in range(0,nbarch) :
-   for k in range(0,n_mode) :
-      r = npt*k+nptca
-      Kmod[k] = GLMO1['K1_LOCAL',r]
-      alpha[k][inst] = coef[n_mode*inst+k]
-
-for inst in range(0,nbarch) :
-   K1[inst] = 0.0
-   for k in range(0,n_mode) :
-      K1[inst] = K1[inst] + alpha[k][inst]*Kmod[k]
-   #print 'inst = ',l_inst[inst],'K1 = ',K1[inst]
-
-# CALCUL DE L ERREUR PAR RAPPORT A LA SOLUTION DE REFERENCE
-# aux instants : 0.0005 0.001 0.002 0.003 0.004
-
-Kt_ref = [696752.4, 1153703.3, 997675.6, 1305429.9, 870347.2]
-t = [10, 20, 40, 60, 80]
-
-for i in range(0,5) :
-   inst = t[i]
-   erreur = 100*(Kt_ref[i]-K1[inst])/Kt_ref[i]
-   print 'K1(t) =',K1[inst],'--> Erreur (%) : ', erreur
-   
-
                         
-FIN();         
 
+
+
+KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+                  K_MODAL = _F(RESU_MODA = MODE,
+                              FISSURE=FF2,
+                              MODELE=MO,
+                              CHAM_MATER=CM,
+                              R_INF=9.E-5,
+                              R_SUP=3.E-4, 
+                              LISSAGE_THETA='LAGRANGE',
+                              LISSAGE_G='LAGRANGE', ),);
+                              
+IMPR_TABLE(TABLE=KT1,TRI=_F(NOM_PARA=('ABS_CURV','INST'),ORDRE='CROISSANT'),)
+TEST_TABLE(TABLE=KT1,
+           NOM_PARA='K1_LOCAL',
+           FILTRE=(_F(NOM_PARA = 'INST',
+                      VALE = 1.25000E-03),
+                    _F(NOM_PARA = 'NUM_PT',
+                      VALE_I = 3),   ),
+           VALE=2.00897E+06,
+           PRECISION=0.001,
+           REFERENCE = 'NON_REGRESSION',
+          );
+
+
+KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+                  NUME_ORDRE = 2500,
+                  K_MODAL = _F(TABL_K_MODA =GLMO1,
+                              FISSURE=FF2,),);
+                              
+IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABS_CURV','INST'),ORDRE='CROISSANT'),)
+TEST_TABLE(TABLE=KT2,
+           NOM_PARA='K1_LOCAL',
+           FILTRE=(_F(NOM_PARA = 'INST',
+                      VALE = 1.25000E-03),
+                    _F(NOM_PARA = 'NUM_PT',
+                      VALE_I = 3),   ),
+           VALE=2.00897E+06,
+           PRECISION=0.001,
+           REFERENCE = 'NON_REGRESSION',
+          );
+
+
+FIN();         

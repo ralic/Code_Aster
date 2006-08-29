@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,8 +78,6 @@ C   CONSTANTES POUR INTO MENEGOTTO
       REAL*8 ANGMAS(3),R8NNEM
       INTEGER I,J,IK
       
-      INTEGER ISEREF,ISECHM,ISECHP
-      REAL*8  SECHGM,SECHGP,SREF
       
 
       LOGICAL VECTEU
@@ -108,10 +106,6 @@ C --- PARAMETRES EN ENTREE
       CALL JEVECH('PTEMPPR','L',ITEMPP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
-      
-      CALL JEVECH ('PSECREF', 'L',ISEREF)
-      CALL JEVECH ('PSECHMR', 'L',ISECHM)
-      CALL JEVECH ('PSECHPR', 'L',ISECHP)
       
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
@@ -364,14 +358,10 @@ C     ------------
                IVARMP=JTAB(1)
                CALL DCOPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
             ENDIF
-        SECHGM=0.5D0*(ZR(ISECHM)+ZR(ISECHM+1))
-        SECHGP=0.5D0*(ZR(ISECHP)+ZR(ISECHP+1))
-        SREF=ZR(ISEREF)
 
           CALL COMP1D('RIGI',1,1,OPTION,
      &                SIGX,EPSX,DEPX,
      &                TEMPM,TEMPP,TREF,
-     &                SECHGM,SECHGP,SREF,
      &                ANGMAS,
      &                ZR(IVARIM),ZR(IVARIP),SIGXP,ETAN,CODRET)
 

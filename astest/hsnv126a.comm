@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,7 +236,11 @@ CHP_MATL=AFFE_MATERIAU(
             MAILLAGE=MAIL,
                 AFFE=_F( TOUT = 'OUI',
                       MATER = ACIERM,
-                      TEMP_REF = 20.))
+                      TEMP_REF = 20.),
+                AFFE_VARC=_F(TOUT='OUI',
+                EVOL=TEMPE,
+                NOM_VARC='M_ACIER',
+                NOM_CHAM='META_ELNO_TEMP'),)
 
 INST_M=DEFI_LIST_REEL(
                 DEBUT=0.0,INTERVALLE=(

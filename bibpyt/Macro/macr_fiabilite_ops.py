@@ -1,4 +1,4 @@
-#@ MODIF macr_fiabilite_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_fiabilite_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -249,9 +249,9 @@ def macr_fiabilite_ops(self, INFO,
     VERSION=string.replace(VERSION,"_",".")
     VERSION=string.replace(VERSION,"N","n")
 #
-    EXEC_LOGICIEL ( ARGUMENT = (_F(NOM_PARA=Rep_Calc_LOGICIEL_global), # nom du repertoire
-                                _F(NOM_PARA=LOGICIEL),             # nom du logiciel de fiabilité
-                                _F(NOM_PARA=VERSION),         # version du logiciel de fiabilité
+    EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_LOGICIEL_global, # nom du repertoire
+                                LOGICIEL,                 # nom du logiciel de fiabilité
+                                VERSION,                  # version du logiciel de fiabilité
                                ),
                     LOGICIEL = fiabilite
                    )

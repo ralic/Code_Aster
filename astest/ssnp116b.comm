@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,13 +136,6 @@ TEMP2=CREA_CHAMP(   OPERATION='AFFE',
                                    NOM_CMP = 'TEMP',
                                    VALE = 20.)     )
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = BETON,
-                                  TEMP_REF = 0.,
-                                  SECH_REF = 1.)
-                    )
-
 TEMP=CREA_RESU(  OPERATION='AFFE', 
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
@@ -157,9 +150,19 @@ SECH=CREA_RESU(  OPERATION='AFFE',
                        _F(  INST = 100.,       CHAM_GD = SECH2))
                     )
 
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MATER = BETON,
+                                  TEMP_REF = 0.),
+                            AFFE_VARC=_F(TOUT='OUI',
+                                         EVOL=SECH,
+                                         NOM_VARC="SECH",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=1)
+                    )
+
 COND_LIM=AFFE_CHAR_MECA( MODELE=MO,
                          TEMP_CALCULEE=TEMP,
-                         SECH_CALCULEE=SECH,
                          DDL_IMPO=(_F(  GROUP_NO = 'LA',       DX = 0.),
                                    _F(  GROUP_NO = ('A1', 'B1',),  DY = 0.),
                                    _F(  GROUP_NO = ('F1', 'E1',),  DY = 0.)),

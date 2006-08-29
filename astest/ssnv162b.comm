@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CALCUL DE FLUAGE DE DESSICATION INTRINSEQUE (MODELE BAZANT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,41 +33,23 @@ MO=AFFE_MODELE(
 
 SECH0=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                          MAILLAGE=M,
-                         AFFE=(_F( TOUT='OUI',
-                               NOM_CMP = 'TEMP_INF',
-                               VALE = 0.),
-                               _F( TOUT='OUI',
+                         AFFE=_F( TOUT='OUI',
                                NOM_CMP = 'TEMP',
                                VALE = 0.),
-                               _F( TOUT='OUI',
-                               NOM_CMP = 'TEMP_SUP',
-                               VALE = 0.),)
                         )
 
 SECHI=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                          MAILLAGE=M,
-                         AFFE=(_F( TOUT='OUI',
-                               NOM_CMP = 'TEMP_INF',
-                               VALE = 1.),
-                               _F( TOUT='OUI',
+                         AFFE=_F( TOUT='OUI',
                                NOM_CMP = 'TEMP',
                                VALE = 1.),
-                               _F( TOUT='OUI',
-                               NOM_CMP = 'TEMP_SUP',
-                               VALE = 1.),)
-                        )
+                  )
 
 SECHF=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                          MAILLAGE=M,
-                         AFFE=(_F( TOUT='OUI',
-                               NOM_CMP = 'TEMP_INF',
-                               VALE = 0.75),
-                               _F( TOUT='OUI',
+                         AFFE=_F( TOUT='OUI',
                                NOM_CMP = 'TEMP',
                                VALE = 0.75),
-                               _F( TOUT='OUI',
-                               NOM_CMP = 'TEMP_SUP',
-                               VALE = 0.75),)
                         )
 SECH=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                         NOM_CHAM='TEMP',
@@ -98,8 +80,12 @@ CM=AFFE_MATERIAU(
             MAILLAGE=M,   
             AFFE=_F( TOUT = 'OUI',
                      MATER = MAT, 
-                     TEMP_REF = 20.,
-                     SECH_REF = 1.) )
+                     TEMP_REF = 20.),
+            AFFE_VARC=_F(TOUT='OUI',
+                         EVOL=SECH,
+                         NOM_VARC="SECH",
+                         NOM_CHAM='TEMP',
+                         VALE_REF=1), )
 
 
 CH1=AFFE_CHAR_MECA( 
@@ -110,11 +96,6 @@ CH1=AFFE_CHAR_MECA(
                                  DY=0.0,),                                 
                               _F(NOEUD=('NO1','NO3','NO5','NO7'),
                                  DX=0.0,),),);
-
-CH2=AFFE_CHAR_MECA(
-            MODELE=MO,
-             SECH_CALCULEE=SECH
-                          )
 
 CH3=AFFE_CHAR_MECA(
             MODELE=MO,
@@ -146,8 +127,6 @@ U=STAT_NON_LINE(
                         CHAM_MATER=CM,EXCIT=(
                              _F( 
                 CHARGE = CH1),
-                _F( 
-                CHARGE = CH2),
                 _F( 
                 CHARGE = CH3,
                 FONC_MULT=EVOL_CH3)),

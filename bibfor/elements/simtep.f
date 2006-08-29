@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,24 +85,17 @@ C -----  ARGUMENTS
 C -----  VARIABLES LOCALES
            INTEGER      I, MATER, NBSIG, NDIM, NNO, NPG
            CHARACTER*16 K16BID
-           REAL*8       SIGTH(162),SECH(27),TREF,ZERO, RBID
+           REAL*8       SIGTH(162),TREF,ZERO
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO  = 0.0D0
-      RBID  = 0.D0
       K16BID = ' '
 C
       DO 10 I = 1, NBSIG*NPG
          SIGMA(I) = ZERO
  10   CONTINUE
-C
-C --- PAS DE PRISE EN COMPTE DES VARIABLES DE SECHAGE
-C
-      DO 11 I = 1, NPG
-         SECH(I) = ZERO
- 11   CONTINUE
 C
 C --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
@@ -113,7 +106,7 @@ C
 C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
       CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,
-     +            TREF,SECH,RBID,INSTAN,MATER,REPERE,K16BID,SIGTH)
+     +            TREF,INSTAN,MATER,REPERE,K16BID,SIGTH)
 C
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------

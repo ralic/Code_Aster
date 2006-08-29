@@ -1,8 +1,8 @@
       SUBROUTINE EPSVMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
-     +                   IDFDE, XYZ,DEPL,TEMPE,TREF,SECH,SREF,
-     +                   INSTAN,MATER,REPERE,NHARM,OPTION,EPSM)
+     +                   IDFDE, XYZ,DEPL,TEMPE,TREF,INSTAN,MATER,
+     +                   REPERE,NHARM,OPTION,EPSM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,6 @@ C                                   L'ELEMENT
 C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
-C    SECH(1)        IN     R        SECHAGE AUX NOEUDS DE L'ELEMENT
-C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
 C    NHARM          IN     R        NUMERO D'HARMONIQUE
@@ -78,12 +76,12 @@ C -----  ARGUMENTS
            CHARACTER*16 OPTION
            CHARACTER*4  FAMI
            REAL*8       XYZ(1),  DEPL(1),  TEMPE(1), EPSM(1), REPERE(7)
-           REAL*8       SECH(1),  SREF,  INSTAN,   NHARM
+           REAL*8       INSTAN,   NHARM
 C -----  VARIABLES LOCALES
            CHARACTER*8  MODEDP,PHENOM
            CHARACTER*2  CODRET
            REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
-           REAL*8       HYDR(27)
+           REAL*8       HYDR(27),SECH(27),SREF
            INTEGER      IER
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -102,10 +100,24 @@ C
 
 C--- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
 C    -----------------------------------------------------
-      DO 20 IGAU = 1,NPG
-        CALL RCVARC(' ','HYDR','+',FAMI,IGAU,1,HYDR(IGAU),IER)
-        IF (IER.EQ.1) HYDR(IGAU)=0.D0
-   20 CONTINUE
+
+      IF ((MODELI(1:2).EQ.'CP').OR.
+     &   (OPTION(1:4).EQ.'EPME').OR.(OPTION(1:4).EQ.'EPMG')) THEN
+        DO 20 IGAU = 1,NPG
+          CALL RCVARC(' ','HYDR','+',FAMI,IGAU,1,HYDR(IGAU),IER)
+          IF (IER.EQ.1) HYDR(IGAU)=0.D0
+          CALL RCVARC(' ','SECH','+',FAMI,IGAU,1,SECH(IGAU),IER)
+          IF (IER.EQ.1) SECH(IGAU)=0.D0
+   20   CONTINUE
+          CALL RCVARC(' ','SECH','REF',FAMI,1,1,SREF,IER)
+          IF (IER.EQ.1) SREF=0.D0
+      ELSE
+        DO 25 IGAU =1,NPG
+          HYDR(IGAU)=0.D0
+          SECH(IGAU)=0.D0
+ 25     CONTINUE
+          SREF=0.D0
+      ENDIF
 C
 C --- CALCUL DES DEFORMATIONS DU PREMIER ORDRE
 C --- AUX POINTS D'INTEGRATION :
