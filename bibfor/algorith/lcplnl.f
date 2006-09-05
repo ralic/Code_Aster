@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C       ----------------------------------------------------------------
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
         REAL*8          EPSEQ
-        REAL*8          TOUTMS(5,12,6),HSR(5,12,12)
+        REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 
 C       ----------------------------------------------------------------

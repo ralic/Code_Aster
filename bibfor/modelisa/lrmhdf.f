@@ -5,7 +5,7 @@
      >                    NBNOEU, NBMAIL, NBCOOR )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF MODELISA  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,8 +135,9 @@ C 1.2.2. ==> VERIFICATION DE LA VERSION MED
 C
       CALL EFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'F', NOMPRO, 'LE FICHIER N''A PAS ETE CONSTRUIT'//
+        CALL UTDEBM ( 'A', NOMPRO, 'LE FICHIER N''A PAS ETE CONSTRUIT'//
      >             ' AVEC LA MEME VERSION DE MED.' )
+        CALL UTIMPI ( 'L', 'LA LECTURE DU FICHIER PEUT ECHOUER!', 0, 0)
         CALL UTIMPI ( 'L', 'ERREUR EFVECO NUMERO ', 1, CODRET )
         CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN

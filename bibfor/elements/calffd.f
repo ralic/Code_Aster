@@ -1,6 +1,6 @@
-      SUBROUTINE CALFFD(ALIAS,XI,YI,TN,DR,DDR)
+      SUBROUTINE CALFFD(ALIAS,XI,YI,TN,DR,DDR,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,93 +17,83 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
-C.......................................................................
-
-C BUT:   CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
-C        AU POINT DE COORDONNEES XI,YI,ZI
-
-C ENTREES  ---> ALIAS : NOM D'ALIAS DE L'ELEMENT
-C          ---> XI,YI : POINT DE CALCUL DES F FORMES ET LEURS DERIVEE
-
-
-C SORTIES  <---  TN   : FONCTIONS DE FORMES EN XI,YI
-C          <---  DR   : DERIVEES DES  FFS EN XI YI
-
-C.......................................................................
-
-C     IMPLICIT NONE
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*8 ALIAS
-      REAL*8 TN(9),DR(2,9),DDR(3,9)
-
-      AL31(X) = 0.5D0*X* (X-1.D0)
-      AL32(X) = - (X+1.D0)* (X-1.D0)
-      AL33(X) = 0.5D0*X* (X+1.D0)
+      CHARACTER*8 ALIAS 
+      REAL*8      TN(9)
+      REAL*8      DR(2,9)
+      REAL*8      DDR(3,9)                  
+C
+C ----------------------------------------------------------------------
+C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
+C ----------------------------------------------------------------------
+C
+C CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
+C AU POINT DE COORDONNEES XI,YI (COORDONNES PARAMETRIQUES)
+C
+C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
+C IN  XI     : POINT DE CALCUL SUIVANT KSI1 DES
+C               FONCTIONS DE FORME ET LEURS DERIVEES
+C IN  YI     : POINT DE CALCUL SUIVANT KSI2 DES
+C               FONCTIONS DE FORME ET LEURS DERIVEES
+C OUT TN     : FONCTIONS DE FORMES EN XI,YI
+C OUT DR     : DERIVEES PREMIERES DES FONCTIONS DE FORME EN XI YI
+C OUT DDR    : DERIVEES SECONDES DES FONCTIONS DE FORME EN XI YI
+C OUT IRET   : RETOURNE UN CODE ERREUR
+C                0  TOUT VA BIEN
+C                1  ELEMENT INCONNU
+C
+C ----------------------------------------------------------------------
+C
+C
+C ----------------------------------------------------------------------
+C
+      AL31(X)  = 0.5D0*X* (X-1.D0)
+      AL32(X)  = - (X+1.D0)* (X-1.D0)
+      AL33(X)  = 0.5D0*X* (X+1.D0)
       DAL31(U) = 0.5D0* (2.D0*U-1.D0)
       DAL32(U) = -2.D0*U
       DAL33(U) = 0.5D0* (2.D0*U+1.D0)
-
-      UNS4 = 0.25D0
-
-
+      UNS4     = 0.25D0
+C
 C  ----------------------------------------------------------
-
+C
+      IRET   = 0
+      DO 10 I=1,9
+        TN(I)    = 0.D0
+        DR(1,I)  = 0.D0  
+        DR(2,I)  = 0.D0                    
+        DDR(1,I) = 0.D0  
+        DDR(2,I) = 0.D0  
+        DDR(3,I) = 0.D0  
+ 10   CONTINUE
+C      
       IF (ALIAS(1:3).EQ.'SG2') THEN
-
-C   LES FF EN XI,YI,ZI
-
         TN(1) = 0.5D0* (1-XI)
         TN(2) = 0.5D0* (1+XI)
-
-C   LES DERIVEES PREMIERES
-
         DR(1,1) = -0.5D0
         DR(1,2) = 0.5D0
-
-C   LES DERVIEES SECONDES
-
         DDR(1,1) = 0.D0
         DDR(1,2) = 0.D0
-
       ELSE IF (ALIAS(1:3).EQ.'SG3') THEN
-
-C   LES FF EN XI,YI,ZI
-
         TN(1) = -0.5D0* (1-XI)*XI
         TN(2) = 0.5D0* (1+XI)*XI
         TN(3) = 1.D0* (1+XI)* (1-XI)
-
-C   LES DERIVEES PREMIERES
-
         DR(1,1) = -0.5D0* (1-2*XI)
         DR(1,2) = 0.5D0* (1+2*XI)
         DR(1,3) = -2.D0*XI
-
-C   LES DERVIEES SECONDES
-
         DDR(1,1) = 1.D0
         DDR(1,2) = 1.D0
         DDR(1,3) = -2.D0
-
       ELSE IF (ALIAS(1:3).EQ.'TR3') THEN
-
         TN(1) = 0.5D0* (1+YI)
         TN(2) = -0.5D0* (XI+YI)
         TN(3) = 0.5D0* (1+XI)
-
-C  DERIVEES / XI
         DR(1,1) = 0.D0
         DR(1,2) = -0.5D0
         DR(1,3) = 0.5D0
-
-C  DERIVEES / YI
         DR(2,1) = 0.5D0
         DR(2,2) = -0.5D0
         DR(2,3) = 0.D+00
-
-C    LES DERVIEES SECONDES
-
         DDR(1,1) = 0.D0
         DDR(1,2) = 0.D0
         DDR(1,3) = 0.D0
@@ -113,12 +103,7 @@ C    LES DERVIEES SECONDES
         DDR(3,1) = 0.D0
         DDR(3,2) = 0.D0
         DDR(3,3) = 0.D0
-
-C_______________________________________________________________________
-
       ELSE IF (ALIAS(1:3).EQ.'TR6') THEN
-
-C LES FFS
         TN(1) = 0.5D0* (1.D+00+YI)*YI
         TN(2) = 0.5D0* (XI+YI)* (XI+YI+1)
         TN(3) = 0.5D0* (1.D+00+XI)*XI
@@ -164,7 +149,6 @@ C ---------      /XIYI
         DDR(3,6) = 1.D0
 
       ELSE IF (ALIAS(1:3).EQ.'QU4') THEN
-
         UNS4 = 0.25D0
         A = 1.D0 + XI
         B = 1.D0 + YI
@@ -258,9 +242,6 @@ C     LES DD 2ER / XIYI
         DDR(3,6) = XI
         DDR(3,7) = -YI
         DDR(3,8) = -XI
-
-C_______________________________________________________________________
-
       ELSE IF (ALIAS(1:3).EQ.'QU9') THEN
 
         TN(1) = AL31(XI)*AL33(YI)
@@ -321,9 +302,7 @@ C
         DDR(3,7) = DAL33(XI)*DAL32(YI)
         DDR(3,8) = DAL32(XI)*DAL33(YI)
         DDR(3,9) = DAL32(XI)*DAL32(YI)
-        ELSE
-       CALL UTMESS ('F','CALFFD',
-     &               'TYPE DE MAILL INCONNUE')
-
+       ELSE 
+         IRET = 1
        END IF
        END

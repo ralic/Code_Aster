@@ -1,0 +1,188 @@
+      SUBROUTINE GMETH4(MODELE,OPTION,NNOFF,NDIMTE,FOND,GTHI,MILIEU,
+     &                  PAIR,GS,OBJCUR,GI)
+      IMPLICIT REAL*8 (A-H,O-Z)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C ......................................................................
+C      METHODE TEST POUR LE CALCUL DE G(S)
+C
+C ENTREE
+C
+C   MODELE   --> NOM DU MODELE
+C   NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
+C   NDIMTE   --> NOMBRE de CHAMPS THETA CHOISIS
+C   FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
+C   GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
+C
+C
+C SORTIE
+C
+C   GS      --> VALEUR DE G(S)
+C   OBJCUR  --> ABSCISSES CURVILIGNES S
+C   GI      --> VALEUR DE GI
+C ......................................................................
+C
+      INTEGER         NNOFF,NDEG,IADRT3,IADRMA,IADRGI,I,J,NUMP,IMATR,NN
+      INTEGER         NBEL,I1,IADABS,IADRCO,IADRNO,KK,NDIMTE
+C
+      REAL*8          XL,SOM,GTHI(1),GS(1),GI(1),S1,S2,S3 ,DELTA 
+C
+      CHARACTER*8     MODELE,NOMA1
+      CHARACTER*16    OPTION
+      CHARACTER*24    OBJ1,NOMNO,COORN,FOND,OBJCUR,MATR
+      LOGICAL          CONNEX,MILIEU,PAIR
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24CM
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24CM(1),ZK32(1),ZK80(1)
+C
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+C OBJET DECRIVANT LE MAILLAGE
+C
+      CALL JEMARQ()
+
+      CALL JEVEUO (FOND,'L',IADRNO)
+      IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1)) THEN
+        CONNEX = .TRUE.
+      ELSE
+        CONNEX = .FALSE.
+      ENDIF
+
+      OBJ1 = MODELE//'.MODELE    .NOMA'
+      CALL JEVEUO(OBJ1,'L',IADRMA)
+      NOMA1 = ZK8(IADRMA)
+      NOMNO = NOMA1//'.NOMNOE'      
+      COORN = NOMA1//'.COORDO    .VALE'
+      CALL JEVEUO(COORN,'L',IADRCO)
+      CALL GABSCU(NNOFF,COORN,NOMNO,FOND,XL,OBJCUR)
+      CALL JEVEUO (OBJCUR,'L',IADABS)
+C
+C CONSTRUCTION DE LA MATRICE (NDIMTE x NDIMTE)
+      MATR = '&&METHO4.MATRI'
+      CALL WKVECT(MATR,'V V R8',NDIMTE*NDIMTE,IMATR)
+C
+      I1 = 2
+      IF (MILIEU) THEN
+        I1 = 4
+      ENDIF
+      DO 120 I=1,NDIMTE-2 
+        NUMP = 2*I-1
+        IF (MILIEU) NUMP = 4*I-3
+        S1 = ZR(IADABS+NUMP-1)
+        S2 = ZR(IADABS+NUMP-1+I1)
+        DELTA = (S2-S1)/6.D0
+        KK = IMATR+(I-1  )*NDIMTE+I-1
+        ZR(KK )= ZR(KK) +               2.D0*DELTA
+        ZR(IMATR+(I-1+1)*NDIMTE+I-1  )=  1.D0*DELTA
+        ZR(IMATR+(I-1  )*NDIMTE+I-1+1)=  1.D0*DELTA
+        ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)=  2.D0*DELTA
+120   CONTINUE
+C
+      I = NDIMTE -1
+      NUMP = 2*(I-1)
+      IF (PAIR) THEN
+        S1 = ZR(IADABS+NUMP-1)
+        S2 = ZR(IADABS+NUMP-1+I1/2)
+        DELTA = (S2-S1)/6.D0        
+        KK = IMATR+(I-1  )*NDIMTE+I-1
+        ZR(KK )= ZR(KK) +         3.5D0*DELTA
+        ZR(IMATR+(I-1+1)*NDIMTE+I-1  )=  1.D0*DELTA
+        ZR(IMATR+(I-1  )*NDIMTE+I-1+1)=  1.D0*DELTA
+        ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)= 0.5D0*DELTA
+      ELSE
+        S1 = ZR(IADABS+NUMP)
+        S2 = ZR(IADABS+NUMP+I1)
+        DELTA = (S2-S1)/6.D0        
+        KK = IMATR+(I-1  )*NDIMTE+I-1
+        ZR(KK )= ZR(KK) +               2.D0*DELTA
+        ZR(IMATR+(I-1+1)*NDIMTE+I-1  )=  1.D0*DELTA
+        ZR(IMATR+(I-1  )*NDIMTE+I-1+1)=  1.D0*DELTA
+        ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)=  2.D0*DELTA
+      ENDIF
+  
+      IF (CONNEX) THEN
+        ZR(IMATR) = 2.D0*ZR(IMATR)
+        S1 = ZR(IADABS+NUMP-I1)
+       S2 = ZR(IADABS+NUMP)
+        DELTA = (S2-S1)/6.D0
+        ZR(IMATR+(1-1)*NDIMTE+NDIMTE-1-1)= 1.D0*DELTA
+        KK = IMATR+(NDIMTE-1)*NDIMTE+NDIMTE-1
+        ZR(KK) = 2.D0*ZR(KK)
+        S1 = ZR(IADABS)
+        S2 = ZR(IADABS+I1)
+        DELTA = (S2-S1)/6.D0
+        ZR(IMATR+(NDIMTE-1)*NDIMTE+2-1)= 1.D0*DELTA
+      ENDIF  
+C
+C  SYSTEME LINEAIRE:  MATR*GI = GTHI
+C
+      CALL GSYSTE(MATR,NDIMTE,NDIMTE,GTHI,GI)
+C      
+      GS(NNOFF) = GI(NDIMTE)
+      DO 200 I=1,NDIMTE-1
+        IF (MILIEU) THEN
+          NN = 4*I-3
+          GS(NN) = GI(I)
+          S1 = ZR(IADABS+NN-1)
+          S3 = ZR(IADABS+NN-1+4)
+          GS(NN+1)=GI(I)+(ZR(IADABS+NN-1+1)-S1)*(GI(I+1)-GI(I))/(S3-S1)
+          GS(NN+2)=GI(I)+(ZR(IADABS+NN-1+2)-S1)*(GI(I+1)-GI(I))/(S3-S1)
+          GS(NN+3)=GI(I)+(ZR(IADABS+NN-1+3)-S1)*(GI(I+1)-GI(I))/(S3-S1)
+        ELSE
+           NN = 2*I-1
+           GS(NN) = GI(I)
+           S1 = ZR(IADABS+NN-1)
+           S2 = ZR(IADABS+NN-1+1)
+           S3 = ZR(IADABS+NN-1+2)
+           GS(NN+1) = GI(I)+(S2-S1)*(GI(I+1)-GI(I))/(S3-S1)
+        ENDIF
+200   CONTINUE
+      GS(NNOFF) = GI(NDIMTE)
+
+C     SI PAIR, ON CORRIGE LA VALEUR DE G AU DERNIER NOEUD
+      IF(PAIR)THEN
+         NN=2*(NDIMTE-2)
+         S1 = ZR(IADABS+NN-1)
+         S2 = ZR(IADABS+NN-1+1)
+         S3 = ZR(IADABS+NN-1+2)
+         GS(NNOFF) = GS(NNOFF-1)+
+     &              (S3-S2)*(GS(NNOFF-2)-GS(NNOFF-1))/(S1-S2)
+      ENDIF
+C
+      CALL JEDETR(MATR)
+C
+      CALL JEDEMA()
+      END

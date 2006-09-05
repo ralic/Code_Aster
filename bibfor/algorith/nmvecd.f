@@ -5,7 +5,7 @@
      &                    ETATF, IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,6 +134,10 @@ C   ----------------------------
         P(2) = 0.D0
         D = DAMMAX
         ETATF(3)='DAMMAXO'
+      ENDIF
+      IF (D.LT.0.D0) THEN
+        IER = 1
+        GOTO 9999
       ENDIF
       UNMD = 1.D0-D
       R = RM+DT*P(1)

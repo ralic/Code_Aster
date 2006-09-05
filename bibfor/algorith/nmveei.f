@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,8 @@ C TOLE CRP_21
       CHARACTER*8        TYPMOD(*)
       CHARACTER*(*)      FAMI
       REAL*8             CRIT(*),INSTAM,INSTAP,TM,TP,TREF
-      REAL*8             EPSM(6),DEPS(6),HSR(5,12,12)
-      REAL*8             SIGM(6),VIM(9),SIGP(6),VIP(9),DSIDEP(6,6)
+      REAL*8             EPSM(6),DEPS(6),HSR(5,24,24)
+      REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
 C     CHABOCHE AVEC ENDOMAGEMENT
@@ -112,16 +112,16 @@ C
 C
       INTEGER       ITMAX, I, IER, ITER
       INTEGER       NDT, NVI, NRV, NDI, K, L
-      INTEGER         NBCOMM(NMAT,3)
+      INTEGER       NBCOMM(NMAT,3)
 C
-      REAL*8        TOLER, DELTX, SUMX, DT, SE2
+      REAL*8        TOLER, DELTX, SUMX, DT, SE2,GK,GR
       REAL*8        VIND(NI), MATM(NMAT,2), A(6,6), B(6)
       REAL*8        MATE(NMAT,2), HOOK(6,6), HOOKM(6,6)
-      REAL*8        P(NP), BETA(NB), EP(NT), RM, DM
+      REAL*8        P(NP), BETA(NB), EP(NT), RM, DM,D
       REAL*8        DSGDE(NB,NB), DSGDB(NB,NB), DSGDP(NB,NP)
       REAL*8        RB(NB), RP(NP), DRBDB(NB,NB), DRBDP(NB,NP)
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
-      REAL*8        DRPDE(NP,NB), EPTHM(NB)
+      REAL*8        DRPDE(NP,NB), EPTHM(NB),DELTB,SUMB
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
       REAL*8        PGL(3,3),ANGMAS(3)
 C
@@ -139,6 +139,7 @@ C
 C-- 1. INITIALISATIONS :
 C----------------------
       ITMAX =  INT(CRIT(1))
+      IER=0
       IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
       TOLER =  CRIT(3)
       LOI   =  COMPOR(1)
@@ -165,9 +166,9 @@ C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
       CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,
-     1               TYPMA,  BZ, HSR,MATM, MATE,MATCST,NBCOMM, CPMONO,
-     2               ANGMAS, PGL,ITMAX, TOLER, NDT, NDI, NRV, NVI,
-     3               VIND )
+     1               TYPMA,  BZ, HSR,MATM,
+     3               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
+     2               TOLER, NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
 C-- 1.3. OPERATEUR DE HOOK
@@ -220,6 +221,23 @@ C
       DO 00144 I = 1,NB
         EP(12+I) = EPSM(I)+DEPS(I)
 00144 CONTINUE
+
+C CALCUL DIRECT DE LA SOLUTION DANS LE CAS OU LES EQUATIONS SE
+C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
+
+      GK   = MATE(9,2)
+      GR   = MATE(7,2)
+      IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
+      IF (ABS(GR-GK).LE.TOLER*GR) THEN
+       IF (.NOT.CPLAN) THEN
+         CALL NMVEND(MATM,MATE,NMAT,DT,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
+     &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,IER)
+         IF (IER.GT.0) THEN
+         CALL UTMESS('A','NMVEEI','ECHEC LOI DE COMP DANS ZEROFO')
+         ENDIF
+       ENDIF
+      ENDIF
+      ENDIF
 C
 C-- 2. CALCULS:
 C---------------
@@ -231,10 +249,14 @@ C-----------------------------------------------------------------------
       IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
         DO 00200 ITER= 1,ITMAX
 C
+           IF (ITER.GT.1) THEN
+C           CALL UTMESS('F','NMVEEI','ITER>1')
+           ENDIF
           CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
      &                  P, NP, BETA, NB, EP, RM, DM,
      &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
+         
          IF (IER.NE.0) GOTO 803
 C
 C-- 2.1. RESOLUTION DU SYSTEME
@@ -249,17 +271,29 @@ C
              DEPS(3) = ZERO
              DBETA(3) = ZERO
           ENDIF
-C
+          
+C ON PEUT AUSSI DE PAS FAIRE D'ITERATION DE NEWTON 
+C CAR SOLUTION CALCULEE PAR NMVEND
+C           IF (ABS(GR-GK).LE.TOLER*GR) THEN
+C           IF (.NOT.CPLAN) THEN
+C              GOTO 230
+C           ENDIF
+C           ENDIF
+C C
 C-- 2.3. TEST DE CONVERGENCE
 C-------------------------
 C
-          DELTX = ZERO
-          SUMX = ZERO
+          DELTB = ZERO
+          SUMB = ZERO
           DO 00210 I=1,NB
             BETA(I)=BETA(I)+DBETA(I)
-            DELTX=DELTX+ABS(DBETA(I))
-            SUMX=SUMX+ABS(BETA(I))
+            DELTB=DELTB+ABS(DBETA(I))
+            SUMB=SUMB+ABS(BETA(I))
 00210     CONTINUE
+          IF (SUMB.GT.TOLER) DELTB=DELTB/SUMB
+          
+          DELTX = ZERO
+          SUMX = ZERO
           DO 00220 I=1,NP
             P(I)=P(I)+DP(I)
             DELTX=DELTX+ABS(DP(I))
@@ -267,7 +301,11 @@ C
 00220     CONTINUE
 C
           IF (SUMX.GT.TOLER) DELTX=DELTX/SUMX
+          
+          DELTX=MAX(DELTX,DELTB)
+          
           IF (DELTX.LT.TOLER) GOTO 00230
+          
 00200   CONTINUE
 C-- NOMBRE D'ITERATIONS MAXI ATTEINT: ARRET DU PROGRAMME
         GOTO 801
@@ -278,6 +316,8 @@ C
      &     'APPROXIMATION LINEAIRE TANGENTE DE L''EVOLUTION PLASTIQUE'//
      &     '- RISQUE D''IMPRECISION')
         ENDIF
+C-- STOCKAGE DANS L'INDICATERU DU NOMBRE D'ITERATIONS
+        VIP(NB+4) = MAX(VIP(NB+4),DBLE(ITER))
 C
 C-- 2.4 ACTUALISATION DES CONTRAINTES ET DES VARIABLES INTERNES
 C--------------------------------------------------------------
@@ -304,9 +344,10 @@ C
       ENDIF
 C-- 3. MISE A JOUR DE L'OPERATEUR TANGENT
 C----------------------------------------
-      IF (OPTION(1:14).EQ.'RIGI_MECA_TANG'.OR.
-     &    OPTION(1:9).EQ.'FULL_MECA') THEN
-        IF (OPTION(1:9).EQ.'FULL_MECA') THEN
+C       IF (OPTION.EQ.'RIGI_MECA_TANG'.OR.
+C      &    OPTION.EQ.'FULL_MECA') THEN
+      IF (OPTION.EQ.'FULL_MECA') THEN
+C         IF (OPTION(1:9).EQ.'FULL_MECA') THEN
           IF (ETATF(1).EQ.'ELASTIC') THEN
             CALL LCEQMN(NB, HOOK, DSIDEP)
           ELSE
@@ -318,15 +359,28 @@ C----------------------------------------
               GOTO 802
             ENDIF
           ENDIF
-        ENDIF
+C         ENDIF
 C
 C-- RIGIDITE TANGENTE (RIGI_MECA_TANG) -> MATRICE ELASTIQUE
-        IF (OPTION(1:14).EQ.'RIGI_MECA_TANG') THEN
+        ELSEIF (OPTION.EQ.'RIGI_MECA_TANG') THEN
           IF (TYPMA.EQ.'COHERENT') THEN
              CALL LCEQMN(NB, HOOK, DSIDEP)
           ELSE
              GOTO 802
           ENDIF
+C        ENDIF
+        
+C-- RIGIDITE TANGENTE (RIGI_MECA_ELAS,FULL_MECA_ELAS)->MATRICE ELASTIQUE
+        ELSEIF (OPTION(10:14).EQ.'_ELAS') THEN
+C             MATRICE SECANTE=MATRICE ELASTIQUE
+C             CALL LCEQMN(NB, HOOK, DSIDEP)
+             IF( OPTION.EQ.'FULL_MECA_ELAS') THEN
+                D=VIP(NB+3)
+             ELSE
+                D=VIM(NB+3)
+             ENDIF
+C             MATRICE SECANTE=MATRICE ELASTIQUE*(1-D)
+             CALL LCPRSM(D,HOOK,DSIDEP)
         ENDIF
 C
 C-- MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
@@ -342,7 +396,6 @@ C   SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
 00310     CONTINUE
         ENDIF
 C
-      ENDIF
 C
       GOTO 900
 C
@@ -360,7 +413,8 @@ C
      &           ' TYPE DE MATRICE DEMANDE NON DISPONIBLE ')
       GOTO 900
  803  CONTINUE
-            CALL UTMESS('F','NMVEEI_04',' ERREUR DANS NMVECD ')
+      CALL UTMESS('A','NMVEEI_04',' ERREUR DANS NMVECD ')
+      IRET = 1
       GOTO 900
  900  CONTINUE
       END

@@ -1,7 +1,7 @@
         SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,11 +28,11 @@ C           NBSYS    : NOMBRE DE SYS GLIS
 C           MS       : TENSEUR MS POUR LE SYS GLIS NUMERO NUSYS
 C
       CHARACTER*16 NOMFAM
-      REAL*8 MS(6), N(12,3), L(12,3), PGL(3,3),NG(3),NL(3),LG(3),LL(3)
+      REAL*8 MS(6), N(24,3), L(24,3), PGL(3,3),NG(3),NL(3),LG(3),LL(3)
       REAL*8 SQRT2,SQRT3
       INTEGER NBSYS,NUSYS, K, J
 C     ----------------------------------------------------------------
-
+C TOLE CRP_20
       NBSYS=0
       SQRT2=SQRT(2.D0)
       SQRT3=SQRT(3.D0)
@@ -333,8 +333,175 @@ C   N ET L DOIVENT ETRE UNITAIRES
       DO 124 J=1,12
       DO 124 K=1,3
          L(J,K)=L(J,K)/SQRT3
-         N(J,K)=N(J,K)/2.D0
+         N(J,K)=N(J,K)/SQRT(6.D0)
  124  CONTINUE
+ 
+ 
+       ELSE IF (NOMFAM.EQ.'BCC24') THEN
+C BCC LATTICE, {110} SLIP      
+         NBSYS=24
+         IF (NUSYS.EQ.0)  GOTO 9999
+         N(1,1)=0.D0
+         N(1,2)=1.D0
+         N(1,3)=1.D0
+         N(2,1)=1.D0
+         N(2,2)=0.D0
+         N(2,3)=1.D0
+         N(3,1)=1.D0
+         N(3,2)=-1.D0
+         N(3,3)=0.D0
+         N(4,1)=0.D0
+         N(4,2)=1.D0
+         N(4,3)=-1.D0
+         N(5,1)=1.D0
+         N(5,2)=0.D0
+         N(5,3)=1.D0
+         N(6,1)=1.D0
+         N(6,2)=1.D0
+         N(6,3)=0.D0
+         N(7,1)=0.D0
+         N(7,2)=1.D0
+         N(7,3)=1.D0
+         N(8,1)=1.D0
+         N(8,2)=0.D0
+         N(8,3)=-1.D0
+         N(9,1)=1.D0
+         N(9,2)=1.D0
+         N(9,3)=0.D0
+         N(10,1)=0.D0
+         N(10,2)=1.D0
+         N(10,3)=-1.D0
+         N(11,1)=1.D0
+         N(11,2)=0.D0
+         N(11,3)=-1.D0
+         N(12,1)=1.D0
+         N(12,2)=-1.D0
+         N(12,3)=0.D0
+         L(1,1)=1.D0
+         L(1,2)=1.D0
+         L(1,3)=-1.D0
+         L(2,1)=1.D0
+         L(2,2)=1.D0
+         L(2,3)=-1.D0
+         L(3,1)=1.D0
+         L(3,2)=1.D0
+         L(3,3)=-1.D0
+         L(4,1)=1.D0
+         L(4,2)=-1.D0
+         L(4,3)=-1.D0
+         L(5,1)=1.D0
+         L(5,2)=-1.D0
+         L(5,3)=-1.D0
+         L(6,1)=1.D0
+         L(6,2)=-1.D0
+         L(6,3)=-1.D0
+         L(7,1)=1.D0
+         L(7,2)=-1.D0
+         L(7,3)=1.D0
+         L(8,1)=1.D0
+         L(8,2)=-1.D0
+         L(8,3)=1.D0
+         L(9,1)=1.D0
+         L(9,2)=-1.D0
+         L(9,3)=1.D0
+         L(10,1)=1.D0
+         L(10,2)=1.D0
+         L(10,3)=1.D0
+         L(11,1)=1.D0
+         L(11,2)=1.D0
+         L(11,3)=1.D0
+         L(12,1)=1.D0
+         L(12,2)=1.D0
+         L(12,3)=1.D0
+      DO 241 J=1,12
+      DO 241 K=1,3
+         L(J,K)=L(J,K)/SQRT3
+         N(J,K)=N(J,K)/SQRT2
+ 241  CONTINUE
+C BCC LATTICE, {211} SLIP      
+         N(13,1)=2.D0
+         N(13,2)=-1.D0
+         N(13,3)=1.D0
+         N(14,1)=1.D0
+         N(14,2)=-2.D0
+         N(14,3)=-1.D0
+         N(15,1)=1.D0
+         N(15,2)=1.D0
+         N(15,3)=2.D0
+         N(16,1)=2.D0
+         N(16,2)=1.D0
+         N(16,3)=1.D0
+         N(17,1)=1.D0
+         N(17,2)=2.D0
+         N(17,3)=-1.D0
+         N(18,1)=1.D0
+         N(18,2)=-1.D0
+         N(18,3)=2.D0
+         N(19,1)=2.D0
+         N(19,2)=1.D0
+         N(19,3)=-1.D0
+         N(20,1)=1.D0
+         N(20,2)=2.D0
+         N(20,3)=1.D0
+         N(21,1)=1.D0
+         N(21,2)=-1.D0
+         N(21,3)=-2.D0
+         N(22,1)=2.D0
+         N(22,2)=-1.D0
+         N(22,3)=-1.D0
+         N(23,1)=1.D0
+         N(23,2)=-2.D0
+         N(23,3)=1.D0
+         N(24,1)=1.D0
+         N(24,2)=1.D0
+         N(24,3)=-2.D0
+
+         L(13,1)=1.D0
+         L(13,2)=1.D0
+         L(13,3)=-1.D0
+         L(14,1)=1.D0
+         L(14,2)=1.D0
+         L(14,3)=-1.D0
+         L(15,1)=1.D0
+         L(15,2)=1.D0
+         L(15,3)=-1.D0
+         L(16,1)=1.D0
+         L(16,2)=-1.D0
+         L(16,3)=-1.D0
+         L(17,1)=1.D0
+         L(17,2)=-1.D0
+         L(17,3)=-1.D0
+         L(18,1)=1.D0
+         L(18,2)=-1.D0
+         L(18,3)=-1.D0
+         L(19,1)=1.D0
+         L(19,2)=-1.D0
+         L(19,3)=1.D0
+         L(20,1)=1.D0
+         L(20,2)=-1.D0
+         L(20,3)=1.D0
+         L(21,1)=1.D0
+         L(21,2)=-1.D0
+         L(21,3)=1.D0
+         L(22,1)=1.D0
+         L(22,2)=1.D0
+         L(22,3)=1.D0
+         L(23,1)=1.D0
+         L(23,2)=1.D0
+         L(23,3)=1.D0
+         L(24,1)=1.D0
+         L(24,2)=1.D0
+         L(24,3)=1.D0
+
+C   N ET L DOIVENT ETRE UNITAIRES
+      DO 242 J=13,24
+      DO 242 K=1,3
+         L(J,K)=L(J,K)/SQRT3
+         N(J,K)=N(J,K)/SQRT(6.D0)
+ 242  CONTINUE
+
+ 
+ 
       ELSE IF (NOMFAM.EQ.'MACLAGE') THEN
 C FCC LATTICE
          NBSYS=1

@@ -1,0 +1,274 @@
+
+# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# TITRE FLUAGE EN 3D VENDOCHAB CAS OPTIMISE R_D=K_D, UTILISANT SIMU_PONT_MAT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#----------------------------------------------------------------------
+#              ETAT UNIAXIAL DE CONTRAINTE DEFORMATION
+#       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#----------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='COMP001A',NIV_PUB_WEB='INTERNET',),);
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=150000.0,
+                            NU=0.3,),
+                    VENDOCHAB=_F(S_VP=0.0,
+                                 SEDVP1=0.0,
+                                 SEDVP2=0.0,
+                                 N_VP=12.0,
+                                 M_VP=9.0,
+                                 K_VP=2110.0,
+                                 R_D=6.3,
+                                 A_D=3191.0,
+                                 K_D=6.3,),);
+
+INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=0.2,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=2.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=20.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=200.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=2000.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=20000.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=200000.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=1000000.0,
+                                    NOMBRE=30,),
+                                 _F(JUSQU_A=1600000.0,
+                                    NOMBRE=30,),
+                                 _F(JUSQU_A=1700000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=1800000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=1900000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=2000000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=2100000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=2200000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=2300000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=2400000.0,
+                                    NOMBRE=40,),
+                                 _F(JUSQU_A=2500000.0,
+                                    NOMBRE=40,),),);
+
+
+CHARGE=DEFI_FONCTION(NOM_PARA='INST',VALE=
+      (0.0,          0.0,
+       0.1,         -200.0,
+       3000000.0,   -200.0,),);
+
+
+# EXPLICITE
+
+RESUXX=SIMU_POINT_MAT(
+   COMP_INCR=_F(RELATION='VENDOCHAB',                        
+                DEFORMATION='PETIT',                         
+                ITER_INTE_MAXI=60,                           
+                RESO_INTE='RUNGE_KUTTA_2',),                 
+   NEWTON=_F(MATRICE='ELASTIQUE',                       
+             PREDICTION='EXTRAPOL'),                             
+   CONVERGENCE=_F(ITER_GLOB_MAXI=60,),                  
+   MATER           = ACIER,
+   INCREMENT       =_F( LIST_INST       =INSTANTS,),
+   SIGM_IMPOSE     =_F( SIXX = CHARGE,),
+                )
+
+IMPR_TABLE(TABLE = RESUXX)
+
+
+
+TEST_TABLE(TABLE=RESUXX,INFO=2,
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=82),                 
+   NOM_PARA='V9',                                            
+   VALE=1.432078E-02,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=100),                
+   NOM_PARA='V9',                                            
+   VALE=2.8856842E-02,                                       
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=290),                
+   NOM_PARA='V9',                                            
+   VALE=6.4473337E-02,                                       
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=390),                
+   NOM_PARA='V9',                                            
+   VALE=7.487776E-02,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=490),                
+   NOM_PARA='V9',                                            
+   VALE=8.60761755E-02,                                      
+   PRECISION=0.015,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=82),                 
+   NOM_PARA='V8',                                            
+   VALE=2.2907838E-03,                                       
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=100),                
+   NOM_PARA='V8',                                            
+   VALE=3.1521571E-03,                                       
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                          
+TEST_TABLE(TABLE=RESUXX,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=290),                
+   NOM_PARA='V8',                                            
+   VALE=4.664369E-03,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                            
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=390),                
+   NOM_PARA='V8',                                            
+   VALE=5.044895E-03,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=490),                
+   NOM_PARA='V8',                                            
+   VALE=5.440031E-03,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='NON_REGRESSION',)                         
+                
+
+#
+# IMPLICITE
+
+
+RESUXX2=SIMU_POINT_MAT(
+   COMP_INCR=_F(RELATION='VENDOCHAB',                        
+                DEFORMATION='PETIT',                         
+                ITER_INTE_MAXI=60,                           
+                RESO_INTE='IMPLICITE',),                 
+   NEWTON=_F(REAC_ITER=1),                             
+   CONVERGENCE=_F(ITER_GLOB_MAXI=60,),                  
+   MATER           = ACIER,
+   INCREMENT       =_F( LIST_INST       =INSTANTS,),
+   SIGM_IMPOSE     =_F( SIXX = CHARGE,),
+                )
+
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=82),                 
+   NOM_PARA='V9',                                            
+   VALE=1.432078E-02,                                        
+   PRECISION=0.006,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=100),                
+   NOM_PARA='V9',                                            
+   VALE=2.8856842E-02,                                       
+   PRECISION=0.005,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=290),                
+   NOM_PARA='V9',                                            
+   VALE=6.4473337E-02,                                       
+   PRECISION=0.005,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=390),                
+   NOM_PARA='V9',                                            
+   VALE=7.487776E-02,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=490),                
+   NOM_PARA='V9',                                            
+   VALE=8.60761755E-02,                                      
+   PRECISION=0.015,                                          
+   REFERENCE='AUTRE_ASTER',)                               
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=82),                 
+   NOM_PARA='V8',                                            
+   VALE=2.2907838E-03,                                       
+   PRECISION=0.015,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=100),                
+   NOM_PARA='V8',                                            
+   VALE=3.1521571E-03,                                       
+   PRECISION=0.007,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=290),                
+   NOM_PARA='V8',                                            
+   VALE=4.664369E-03,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=390),                
+   NOM_PARA='V8',                                            
+   VALE=5.044895E-03,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='AUTRE_ASTER',)                                
+TEST_TABLE(TABLE=RESUXX2,                                    
+   FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=490),                
+   NOM_PARA='V8',                                            
+   VALE=5.440031E-03,                                        
+   PRECISION=0.005,                                          
+   REFERENCE='AUTRE_ASTER',)                           
+
+
+IMPR_TABLE(TABLE = RESUXX2)
+
+
+FXX=RECU_FONCTION(TABLE=RESUXX,
+                      PARA_X='INST',
+                      PARA_Y='V9',);
+FXX2=RECU_FONCTION(TABLE=RESUXX2,
+                      PARA_X='INST',
+                      PARA_Y='V9',);
+
+IMPR_TABLE(TABLE = RESUXX,                        
+           #FORMAT='XMGRACE',                      
+           #PILOTE='INTERACTIF',                  
+           NOM_PARA=('INST','V9'))                
+                                                  
+IMPR_TABLE(TABLE = RESUXX2,                       
+           #FORMAT='XMGRACE',                      
+           #PILOTE='INTERACTIF',                  
+           NOM_PARA=('INST','V9'))                
+                                                  
+IMPR_FONCTION(
+          #FORMAT='XMGRACE',                   
+          #PILOTE='INTERACTIF',                   
+              COURBE=(                            
+        _F(FONCTION=FXX,LEGENDE='RUNGE-KUTTA'),   
+        _F(FONCTION=FXX2,LEGENDE='IMPLIITE'),     
+       ))                                         
+
+
+FIN();

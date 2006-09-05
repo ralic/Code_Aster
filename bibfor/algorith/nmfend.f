@@ -1,0 +1,74 @@
+      FUNCTION NMFEND(DR)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+C
+C     ARGUMENTS:
+C     ----------
+      REAL*8 NMFEND,DR
+C ----------------------------------------------------------------------
+C    BUT:  EVALUER LA FONCTION DONT ON CHERCHE LE ZERO
+C          POUR LA PLASTICITE DE VON_MISES ISOTROPE C_PLAN
+C
+C     IN:  DP     : DEFORMATION PLASTIQUE CUMULEE
+C    OUT:  NMCRI1 : CRITERE NON LINEAIRE A RESOUDRE EN DP
+C                   (DONT ON CHERCHE LE ZERO)
+C                   ICI ON SUPPOSE LE CRITERE DE VON_MISES EN C_PLAN
+C
+C ----------------------------------------------------------------------
+C     VARIABLES LOCALES:
+C     ------------------
+C----- COMMONS NECESSAIRES A VENDOCHAB
+      COMMON /FVENDO/MU,SYVP,KVP,RM,DM,SEQE,AD,DT,NVP,MVP,RD,IR
+      REAL*8  MU,SYVP,KVP,RM,DM,SEQE,AD,DT,NVP,UNSURN,MVP,UNSURM
+      REAL*8  DD,RD,SEQ1MD,R8MIEM,ARG,RMAX,UNMD,DTN,PUIS
+      INTEGER IR
+C
+      IF (NVP.LE.0.D0) THEN
+         CALL UTMESS('F','VENDOCHAB','N=0')
+      ENDIF
+      IF (MVP.LE.0.D0) THEN
+         CALL UTMESS('F','VENDOCHAB','N=0')
+      ENDIF
+      UNSURN=1.D0/NVP
+      UNSURM=1.D0/MVP
+      RMAX=100.D0
+      IR=0
+C
+      IF (DR.LT.R8MIEM()) THEN
+         SEQ1MD=0.D0
+         DD=0.D0
+      ELSE
+         ARG=LOG(DR/DT)*UNSURN
+         IF (ARG.GT.RMAX) THEN
+            IR=1
+            NMFEND=-100.D0
+            GOTO 9999
+         ENDIF
+         SEQ1MD=KVP*(DR**UNSURN)*((RM+DR)**UNSURM)+SYVP*(DT**UNSURN)
+         PUIS=1.D0-RD*UNSURN
+         DD=(DT**PUIS)*((SEQ1MD/AD)**RD)
+      ENDIF   
+      DTN=DT**UNSURN
+      UNMD=1.D0-DM-DD
+      NMFEND= SEQ1MD*UNMD+3.D0*MU*DR*DTN-SEQE*UNMD*DTN
+C
+ 9999 CONTINUE
+      END

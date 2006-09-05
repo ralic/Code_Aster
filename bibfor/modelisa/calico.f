@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,LIGRMZ,NDIM,FONREE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_20
 C ======================================================================
@@ -260,20 +260,17 @@ C
       INTEGER        INDQUA
       INTEGER        NZOCO,NSUCO,NMACO,NNOCO,NNOQUA,NZOCP,NTRAV
       INTEGER        NMANO,NNOMA,NMAMA,ORDSTC
-
-C ======================================================================
-C --- INITIALISATION 
-C ======================================================================
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      
-C ======================================================================
+C
       CALL GETRES(K8BID,K16BID,NOMCMD)
 
       MOTFAC = 'CONTACT'
       NOMO = LIGRMZ(1:8)
       CHAR = CHARZ
       NOMA = NOMAZ
-
 C ======================================================================
 C --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION          
 C ======================================================================
@@ -291,7 +288,6 @@ C ======================================================================
      &              MOTFAC)
       END IF
 
-C --- PAS DE CONTACT
       IF (NZOCO.EQ.0) THEN 
         GOTO 999
       ENDIF
@@ -319,8 +315,8 @@ C --- CE DRAPEAU SERVIRA DANS L'APPEL DE NBNOEL ET PERMETTRA DE
 C --- TRAITER LES NOEUDS MILIEUX DES MAILLES QUADRATIQUES         
 C ======================================================================
 
-      CALL QUADCO (CHAR,MOTFAC,NZOCP,INDQUA) 
-            
+      CALL QUADCO (CHAR,MOTFAC,NZOCP,INDQUA)     
+      
 C ======================================================================
 C --- PREMIERE PASSE 
 C --- DETERMINATION DU NOMBRE TOTAL DE SURFACES, DE MAILLES ET DE NOEUDS
@@ -392,31 +388,39 @@ C ======================================================================
       CALL DIMECO(CHAR,NOMA,NDIM,NZOCO,NSUCO,NMACO,NNOCO,
      &                  NMANO,NNOMA,NMAMA) 
 
+
+C ======================================================================
+C --- REMPLISSAGE DES TABLEAUX CONTENANT LES INFORMATIONS 
+C --- POUR LA METHODE CONTINUE 
+C ======================================================================
+
+      CALL CONTCO(CHAR,NOMA,NNOCO) 
+
 C ======================================================================
 C --- RECUPERATION DES CARACTERISTIQUES DE POUTRE 
 C ======================================================================
 
-      CALL CAPOCO ( CHAR, MOTFAC, NOMA )
+      CALL CAPOCO(CHAR,MOTFAC,NOMA)
 
 C ======================================================================
 C --- RECUPERATION DES CARACTERISTIQUES DE COQUE 
 C ======================================================================
 
-      CALL CACOCO ( CHAR, MOTFAC, NOMA )
+      CALL CACOCO(CHAR,MOTFAC,NOMA)
 
 C ======================================================================
 C --- RELATIONS LINEAIRES POUR MAILLES QUADRATIQUES SURFACIQUES 
 C ---  RELATION LINEAIRE ENTRE NOEUD MILIEU ET NOEUDS SOMMETS
 C ---  ELIMINATION DES NOEUDS MILIEUX DU CONTACT DANS EXNOEL
 C --- CECI EST FAIT:
-C ---   POUR LES QUAD8  -> SYSTEMATIQUEMENT
-C ---   POUR LES QUAD9  -> SEULEMENT POUR LES COQUE_3D
+C ---	POUR LES QUAD8  -> SYSTEMATIQUEMENT
+C ---	POUR LES QUAD9  -> SEULEMENT POUR LES COQUE_3D
 C --- POUR TOUTES LES AUTRES MAILLES QUADRATIQUES EN CONTACT,
 C --- LES NOEUDS MILIEUX SONT DANS
 C ======================================================================
 
       CALL CACOEQ(FONREE,CHAR,NOMA)
-
+      
 C ======================================================================
 C --- IMPRESSIONS SUR LES ZONES/SURFACES/MAILLES/NOEUDS DE CONTACT 
 C ======================================================================

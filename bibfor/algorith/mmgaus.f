@@ -1,42 +1,52 @@
-      SUBROUTINE GAUSS2(ALIAS,TYPI,XPG,YPG,NORD,HPG)
+      SUBROUTINE MMGAUS(ALIAS,TYPI,NORD,XPG,YPG,HPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
-C TOLE CRP_20
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_20
-C.......................................................................
-C
-C BUT: CALCUL DES POINTS DE GAUSS ET LEUR POIDS
-C
-C ENTREES  ---> ALIAS : NOM D'ALIAS DE L'ELEMENT
-C          ---> TYPI  : GAUSS CLASSIQUE, SOMMETS OU POINT INTERNE
-C          ---> NORD  : L'ORDRE DE PT DE GAUSSE
-C
-C SORTIES  <--- XPG,YPG     : COORDONNEES DES POINTS DE GAUSS
-C          <--- HPG         : POIDS DES POINTS DE GAUSS
-C.......................................................................
-C
       IMPLICIT NONE
-      REAL*8 XPG,YPG,HPG,A,B,W,V
-      INTEGER NORD,TYPI
       CHARACTER*8 ALIAS
-C_______________________________________________________________________
+      INTEGER     TYPI
+      INTEGER     NORD
+      REAL*8      XPG
+      REAL*8      YPG
+      REAL*8      HPG
 C
+C ----------------------------------------------------------------------
+C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
+C ----------------------------------------------------------------------
+C
+C RETOURNE LES COORDONNEES ET LE POIDS DU POINT D'INTEGRATION 
+C
+C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
+C IN  TYPI   : TYPE D'INTEGRATION 
+C                1 NOEUDS
+C                2 GAUSS
+C                3 SIMPSON
+C IN  NORD   : NUMERO DU POINT D'INTEGRATION
+C OUT XPG    : COORDONNEE X DU POINT D'INTEGRATION 
+C OUT YPG    : COORDONNEE Y DU POINT D'INTEGRATION 
+C OUT HPG    : POIDS DU POINT D'INTEGRATION 
+C
+C ----------------------------------------------------------------------
+C
+      REAL*8 A,B,W,V
+C
+C ----------------------------------------------------------------------
 C
       IF (ALIAS(1:3) .EQ. 'QU4') THEN
 C
@@ -55,7 +65,7 @@ C LES POINTS DE GAUSS
             XPG = 1 / SQRT(3.D0)
             YPG = 1 / SQRT(3.D0)
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 1.D0
 C LES NOEUDS
@@ -74,7 +84,7 @@ C
             XPG = 1.D0
             YPG = 1.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 1.D0
 C SIMPSON
@@ -116,7 +126,7 @@ C SIMPSON
             YPG = 0.D0
             HPG = 16.D0 / 9.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 16 POINTS
        ELSE IF (TYPI.EQ.6) THEN
@@ -185,7 +195,7 @@ C NEWTON COTES A 16 POINTS
             YPG = 1.D0
             HPG = 1.D0/16.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF          
 C NEWTON COTES A 25 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -290,7 +300,7 @@ C NEWTON COTES A 25 POINTS
             YPG = -0.5D0              
             HPG = 1024.D0/2025.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
         ELSE IF (TYPI.EQ.8) THEN
@@ -695,10 +705,10 @@ C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
             YPG = 1.D0
             HPG = 1.D0/144.D0 
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
         ELSE
-          CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'QU8') THEN
@@ -741,7 +751,7 @@ C
             YPG = 0.D0
             HPG = 16.D0 / 9.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 16 POINTS
        ELSE IF (TYPI.EQ.6) THEN
@@ -810,7 +820,7 @@ C NEWTON COTES A 16 POINTS
             YPG = 1.D0
             HPG = 1.D0/16.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF          
 C NEWTON COTES A 25 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -915,7 +925,7 @@ C NEWTON COTES A 25 POINTS
             YPG = -0.5D0              
             HPG = 1024.D0/2025.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF        
 C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
         ELSE IF (TYPI.EQ.8) THEN
@@ -1320,10 +1330,10 @@ C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
             YPG = 1.D0
             HPG = 1.D0/144.D0 
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
         ELSE
-          CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
         END IF
 C_______________________________________________________________________
 C
@@ -1341,7 +1351,7 @@ C    POINTS DE GAUSS
             XPG = 1 / 3.D0
             YPG = -2/3.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 2 / 3.D0
 C   NOEUDS
@@ -1356,7 +1366,7 @@ C   NOEUDS
             XPG = 1.D0
             YPG = -1.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 2 / 3.D0
 C SIMPSON
@@ -1386,7 +1396,7 @@ C SIMPSON
             YPG = 0.D0
             HPG = 8.D0 / 15.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C HAMMER A 4 POINTS          
         ELSE IF (TYPI .EQ. 6) THEN
@@ -1415,7 +1425,7 @@ C HAMMER A 4 POINTS
             YPG = 2.D0*(3.D0/5.D0)-1.D0
             HPG = 100.D0/96.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C HAMMER A 6 POINTS          
         ELSE IF (TYPI .EQ. 7) THEN
@@ -1448,10 +1458,10 @@ C HAMMER A 6 POINTS
             YPG =2.D0*(1-2.D0*B)-1.D0            
             HPG =V*4
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
         ELSE
-          CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'TR6') THEN
@@ -1488,7 +1498,7 @@ C    POINTS DE GAUSS
             YPG = 2.D0*(1-2.D0*B) - 1.D0
             HPG = V * 4
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C HAMMER A 4 POINTS          
         ELSE IF (TYPI .EQ. 6) THEN
@@ -1517,10 +1527,10 @@ C HAMMER A 4 POINTS
             YPG = 2.D0*(3.D0/5.D0)-1.D0
             HPG = 100.D0/96.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
         ELSE
-          CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'SG2') THEN
@@ -1535,7 +1545,7 @@ C
             XPG = 1 / SQRT(3.D0)
             YPG = 0.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 1.D0
 C LES NOEUDS
@@ -1547,7 +1557,7 @@ C LES NOEUDS
             XPG = 1.D0
             YPG = 0.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 1.D0
 C SYMPSON
@@ -1565,7 +1575,7 @@ C SYMPSON
             YPG = 0.D0
             HPG = 1.D0 / 3.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C SYMPSON1
         ELSEIF (TYPI .EQ. 4) THEN
@@ -1590,7 +1600,7 @@ C SYMPSON1
             YPG = 0.D0
             HPG = 1.D0 / 6.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C    SYMPSON2
         ELSEIF (TYPI .EQ. 5) THEN
@@ -1631,7 +1641,7 @@ C    SYMPSON2
             YPG = 0.D0
             HPG = 1.D0 / 12.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 4 POINTS
         ELSE IF (TYPI.EQ.6) THEN
@@ -1652,7 +1662,7 @@ C NEWTON COTES A 4 POINTS
             YPG = 0.D0
             HPG = 1.D0/4.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 5 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -1677,7 +1687,7 @@ C NEWTON COTES A 5 POINTS
             YPG = 0.D0
             HPG = 7.D0/45.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
         ELSE IF (TYPI.EQ.8) THEN
@@ -1722,10 +1732,10 @@ C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
             YPG = 0.D0
             HPG = 1.D0/12.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
         ELSE
-          CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'SG3') THEN
@@ -1740,7 +1750,7 @@ C
             XPG = 1 / SQRT(3.D0)
             YPG = 0.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 1.D0
 C LES NOEUDS
@@ -1755,7 +1765,7 @@ C LES NOEUDS
             XPG = 1.D0
             YPG = 0.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
           HPG = 2 / 3.D0
 C SYMPSON
@@ -1773,7 +1783,7 @@ C SYMPSON
             YPG = 0.D0
             HPG = 4.D0 / 3.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C SYMPSON1
         ELSEIF (TYPI .EQ. 4) THEN
@@ -1798,7 +1808,7 @@ C SYMPSON1
             YPG = 0.D0
             HPG = 1.D0 / 6.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C
 C    SYMPSON2
@@ -1840,7 +1850,7 @@ C    SYMPSON2
             YPG = 0.D0
             HPG = 1.D0 / 12.D0
           ELSE
-            CALL JXABOR
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 4 POINTS
         ELSE IF (TYPI.EQ.6) THEN
@@ -1861,7 +1871,7 @@ C NEWTON COTES A 4 POINTS
             YPG = 0.D0
             HPG = 1.D0/4.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 5 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -1886,7 +1896,7 @@ C NEWTON COTES A 5 POINTS
             YPG = 0.D0
             HPG = 7.D0/45.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
 C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
         ELSE IF (TYPI.EQ.8) THEN
@@ -1931,14 +1941,13 @@ C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
             YPG = 0.D0
             HPG = 1.D0/12.D0
           ELSE
-            CALL JXABOR()
+            CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
           END IF
         ELSE
-          CALL JXABOR
+          CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
         END IF
       ELSE
-        CALL JXABOR
+        CALL UTMESS('F','MMGAUS', 'ERREUR POINT INTEGRATION (DVLP)')
       END IF
-C_______________________________________________________________________
 C
       END

@@ -1,11 +1,11 @@
       SUBROUTINE GCOUR3 (RESU,NOMA,NOMO,NOMNO,COORN,LNOFF,TRAV1,
-     &           TRAV2,TRAV3,CHFOND,GRLT,DIREC,CONNEX,THLAGR,
-     &           NBRE,MILIEU)
+     &           TRAV2,TRAV3,CHFOND,GRLT,DIREC,CONNEX,THLAGR,THLAG2,
+     &           NBRE,MILIEU,PAIR,NDIMTE)
        IMPLICIT REAL*8 (A-H,O-Z)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,8 @@ C        DIREC  : DIRECTION CALCULEE SI DIREC=.FALSE.
 C                       APPEL A GDIREC
 C        TRAV1  : RINF
 C        TRAV2  : RSUP
-C        THLAGR  : SI PRESENCE DU MOT CLE THETA_LOCAL
+C        THLAGR  : SI PRESENCE DU MOT CLE THETA_LAGRANGE
+C        THLAG2  : SI PRESENCE DU MOT CLE THETA_LAGRANGE_REGU
 C        NBRE   : DEGRE DES POLYNOMES DE LEGENDRE
 C                     SINON 0
 C        CONNEX: .TRUE.  : FOND DE FISSURE FERME
@@ -96,7 +97,7 @@ C
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,SMIN,XN,YN,ZN
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2,R8MAEM
 C
-      LOGICAL           DIREC,THLAGR,MILIEU,CONNEX, DEBUG
+      LOGICAL           DIREC,THLAGR,MILIEU,CONNEX, DEBUG,THLAG2,PAIR
 C
       CALL JEMARQ()
 
@@ -122,7 +123,14 @@ C
 C ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 C TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 C
-      IF(THLAGR) THEN
+      IF(THLAG2) THEN
+        PAIR = .FALSE.
+        IF (MOD(LNOFF,2) .EQ.1) NDIMTE = (LNOFF+1)/2
+        IF (MOD(LNOFF,2) .EQ.0) THEN
+          NDIMTE = 1+LNOFF/2
+          PAIR = .TRUE.
+        END IF
+      ELSEIF(THLAGR) THEN
         NDIMTE = LNOFF
       ELSE
         NDIMTE = NBRE + 1
@@ -168,8 +176,35 @@ C  .VALE
 C       VOIR RÉFÉRENCE BOOK I (05/01/2004)
         IF(K.NE.(NDIMTE+1)) THEN
 
-          IF(THLAGR)   ZR(IADRT3-1+(K-1)*LNOFF+K) = 1.D0
-
+          IF(THLAG2) THEN
+            KNO = 2*K-1
+            IF ((K. EQ. NDIMTE) .AND.  PAIR) THEN
+              KNO = LNOFF
+            ENDIF
+            IADRTT = IADRT3 + (K-1)*LNOFF + KNO - 1
+            ZR(IADRTT) = 1.D0
+            IF (K. NE. 1) THEN
+              S0 = ZR(IFON-1+4*(KNO-1)+4)
+              S1 = ZR(IFON-1+4*(KNO-1-2)+4)
+              ZR(IADRTT-1) = (ZR(IFON-1+4*(KNO-1-1)+4)-S1)/(S0-S1)
+            ENDIF
+            IF ((K.LT. (NDIMTE-1)) .OR. 
+     &          (K. EQ. (NDIMTE-1) .AND. .NOT. PAIR)) THEN
+              S0 = ZR(IFON-1+4*(KNO-1)+4)
+              S1 = ZR(IFON-1+4*(KNO-1+2)+4)
+              ZR(IADRTT+1) = (ZR(IFON-1+4*(KNO-1+1)+4)-S1)/(S0-S1)
+            ENDIF
+            IF (K. EQ. (NDIMTE-1) .AND. PAIR) THEN
+              ZR(IADRTT+1) = 0.5D0
+            ENDIF
+            IF ((K. EQ. NDIMTE) .AND.  PAIR) THEN
+              ZR(IADRTT) = 0.5D0
+              ZR(IADRTT-1) = 0.D0
+            ENDIF
+C            
+          ELSEIF(THLAGR)THEN
+            ZR(IADRT3-1+(K-1)*LNOFF+K) = 1.D0
+          ENDIF
 C         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE
 C         POUR CALCULER PROJ(M)=N
 C
@@ -254,7 +289,7 @@ C               DISTANCE MN
         ENDIF
 
 999   CONTINUE
-
+C
       CALL JEDEMA()
 
       END

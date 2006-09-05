@@ -5,7 +5,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C
 C
         REAL*8          MATERF(NMAT,2),TEMPF
         REAL*8          TIMED, TIMEF,VIND(*)
-        REAL*8          TOUTMS(5,12,6),HSR(5,12,12)
+        REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
 C
         CHARACTER*(*)   FAMI
         CHARACTER*8     MOD

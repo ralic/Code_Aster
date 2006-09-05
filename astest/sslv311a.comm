@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -400,4 +400,28 @@ TEST_TABLE(TABLE=GLO3,
            PRECISION=1.E-6,
            REFERENCE = 'NON_REGRESSION',
            VERSION='8.2.1', )
+
+GLO4=CALC_G(RESULTAT=CHAMDEP2,
+            SYME_CHAR='SYME',
+            COMP_ELAS=_F(RELATION='ELAS',),
+            OPTION='CALC_K_G',
+            TOUT_ORDRE='OUI',
+            THETA=_F(FISSURE=FISS1,
+                     R_INF_FO=RAY_INF1,
+                     R_SUP_FO=RAY_SUP1,),
+            LISSAGE=_F(
+                       LISSAGE_THETA='LAGRANGE_REGU',
+                       LISSAGE_G='LAGRANGE_REGU',),
+            INFO=2,
+            );
+
+TEST_TABLE(TABLE=GLO4,
+           NOM_PARA='K1_LOCAL',
+           FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                       VALE_I = 17),
+           VALE=9.4704379334266E+07,
+           PRECISION=0.001,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION='8.03.09', );
+
 FIN();

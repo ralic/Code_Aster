@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -413,16 +413,19 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
 #============================================================================
          MASSIF          =FACT(statut='f',max='**',
            regles=(UN_PARMI('MAILLE','GROUP_MA'),
-                   UN_PARMI('ANGL_REP','ANGL_AXE'),
+                   UN_PARMI('ANGL_REP','ANGL_AXE','ANGL_EULER'),
+                   EXCLUS('ANGL_REP','ANGL_EULER'),
                    EXCLUS('ANGL_REP','ANGL_AXE'),
                    EXCLUS('ANGL_REP','ORIG_AXE'),
                    PRESENT_PRESENT('ANGL_AXE','ORIG_AXE'), ),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            ANGL_REP        =SIMP(statut='f',typ='R',max=3),
+           ANGL_EULER      =SIMP(statut='f',typ='R',min=3,max=3),
            ANGL_AXE        =SIMP(statut='f',typ='R',max=2),
            ORIG_AXE        =SIMP(statut='f',typ='R',max=3),
          ),
+
 
 #============================================================================
          POUTRE_FLUI     =FACT(statut='f',max='**',

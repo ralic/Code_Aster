@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,6 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   GAMMA0=1e-10,
                                   DELTAV=1e-06,
                                   DELTAG0=0,),
-                    ECOU_PLAS1=_F(C=40000.0,),
                     ECRO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,

@@ -7,7 +7,7 @@
       CHARACTER*24  MAFIS,LISMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 04/09/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,12 +55,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       JDLIMA,JCONX1,JCONX2,JLNSV,JMAFIS,NBMAE
-      INTEGER       I,IMAE,IN
-      INTEGER       NMAABS,NBNOMA,NUNO
+      INTEGER       JDLIMA,JCONX1,JCONX2,JLNSV,JMAFIS
+      INTEGER       I,IMAE,IN,JMA,ITYPMA
+      INTEGER       NMAABS,NBNOMA,NUNO,NBMAE,NNOS
       REAL*8        LSNP,LSN
       CHARACTER*8   K8B
-      CHARACTER*32  JEXATR
+      CHARACTER*32  JEXATR,JEXNUM
+      CHARACTER*19  MAI
+      CHARACTER*8   TYPMA
 
 C ----------------------------------------------------------------------
 
@@ -71,6 +73,9 @@ C ----------------------------------------------------------------------
 
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
+
+      MAI=NOMA//'.TYPMAIL'
+      CALL JEVEUO(MAI,'L',JMA)
 
 C     RÉCUPÉRATION DES LEVEL-SETS
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNSV)
@@ -85,7 +90,21 @@ C     BOUCLE SUR LES MAILLES DE GROUP_ENRI
         IN=1
         NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+IN-1)
         LSNP=ZR(JLNSV-1+(NUNO-1)+1)
-        DO 101 IN=2,NBNOMA
+        
+        ITYPMA=ZI(JMA-1+NMAABS)
+        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+        IF (TYPMA(1:6).EQ.'HEXA20'.OR.TYPMA(1:7).EQ.'PENTA15'.
+     &      OR.TYPMA(1:7).EQ.'TETRA10') THEN
+C         MAILLE QUADRAT : NB NOEUDS SOMMETS = 2/5 x NB NOEUDS TOTAL
+          NNOS=2*NBNOMA/5
+        ELSEIF (TYPMA(1:5).EQ.'QUAD8'.OR.TYPMA(1:5).EQ.'TRIA6') THEN
+C         MAILLE QUADRAT 2D:NB NOEUDS SOMMETS =1/2 x NB NOEUDS TOTAL
+          NNOS=NBNOMA/2
+        ELSE
+          NNOS=NBNOMA
+        ENDIF
+
+        DO 101 IN=2,NNOS
           NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+IN-1)
           LSN=ZR(JLNSV-1+(NUNO-1)+1)
           IF ((LSNP*LSN).LE.0) THEN

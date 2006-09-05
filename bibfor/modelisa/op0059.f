@@ -3,7 +3,7 @@
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF MODELISA  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,8 @@ C     COMMANDE:  DEFI_COMPOR
       CHARACTER*8 COMPOR, MATERI, TYPPAR(5),MONO
       CHARACTER*16 OPER, TYPE, NOMPAR(5), ECOULE, ECROIS, ECROCI, ELASTI
       CHARACTER*16 FASYGL, KBID, NOMS(6),COMDES,LOCA
-      REAL*8 NOMB(6), RBID,MS(6),PGL(3,3),FVOL,ORIE(3),DL,DA
+      REAL*8 NOMB(6), RBID,MS(6),PGL(3,3),FVOL,ORIE(3),DL,DA,EULER(3)
+      REAL*8 R8DGRD
       COMPLEX*16 CBID
       INTEGER IOCC, NBOCC, NBMAT, NBECOU, NBECRO, NBCINE, NBELAS, NBFASY
       INTEGER TABDES(7),NLOC,NORIE,NCOL,NBETA,NBOCCP,NBOCCM,NDL,NDA
@@ -242,6 +243,18 @@ C           ainsi que la déf. plas. cumulee de chaque monocristal
      &                   IFVOL)
             CALL GETVR8('POLYCRISTAL','ANGL_REP',IOCC,1,3,ORIE,
      &                   IORIE)
+            IF (IORIE.EQ.0) THEN
+                CALL GETVR8('POLYCRISTAL','ANGL_EULER',IOCC,1,3,EULER,
+     &                   IORIE)
+C                 DO 17 I=1,3
+C                    EULER(I)=EULER(I)*R8DGRD()
+C  17             CONTINUE
+                CALL EULNAU(EULER,ORIE)
+C                 DO 18 I=1,3
+C                    ORIE(I)=ORIE(I)/R8DGRD()
+C  18             CONTINUE
+                
+            ENDIF
             ZR(IPR-1+JCPRR+1)=FVOL
             ZR(IPR-1+JCPRR+2)=ORIE(1)
             ZR(IPR-1+JCPRR+3)=ORIE(2)

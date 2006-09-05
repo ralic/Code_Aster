@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,5 +106,7 @@ C --- CALCUL DES FORCES D'INERTIES
 C
       NOMMAT = NOMRES//'.MAEL_INER'
       CALL INER81 ( NOMMAT, 'G', BASMOD, MASS )
-C
+
+      CALL VERISD ('MACR_ELEM_DYNA',NOMRES ) 
+
       END

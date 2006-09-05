@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       CHARACTER*8   KB,M1,M2,NONO2
       CHARACTER*16 CORTR3
       CHARACTER*14 BOITE
-      PARAMETER  (NBTM=5)
+      PARAMETER  (NBTM=6)
       INTEGER     NUTM(NBTM), IFM, NIV
       CHARACTER*8 NOTM(NBTM), ELRF(NBTM)
       LOGICAL DBG
@@ -109,15 +109,17 @@ C     1.1 : MAILLES UTILES DE MO1:
 C     ----------------------------
       NOTM(1)='TRIA3'
       NOTM(2)='TRIA6'
-      NOTM(3)='QUAD4'
-      NOTM(4)='QUAD8'
-      NOTM(5)='QUAD9'
+      NOTM(3)='TRIA7'
+      NOTM(4)='QUAD4'
+      NOTM(5)='QUAD8'
+      NOTM(6)='QUAD9'
 
       ELRF(1)='TR3'
       ELRF(2)='TR6'
-      ELRF(3)='QU4'
-      ELRF(4)='QU8'
-      ELRF(5)='QU9'
+      ELRF(3)='TR7'
+      ELRF(4)='QU4'
+      ELRF(5)='QU8'
+      ELRF(6)='QU9'
 
       DO 9,K=1,NBTM
         CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOTM(K)),NUTM(K))
@@ -214,10 +216,12 @@ C           V(1+4(I-1)+4) : NUMERO DE LA MAILLE MERE DU IEME TRIA3
         ELSE IF (ITYPM.EQ.NUTM(2)) THEN
           ICO=ICO+1
         ELSE IF (ITYPM.EQ.NUTM(3)) THEN
-          ICO=ICO+2
+          ICO=ICO+1
         ELSE IF (ITYPM.EQ.NUTM(4)) THEN
           ICO=ICO+2
         ELSE IF (ITYPM.EQ.NUTM(5)) THEN
+          ICO=ICO+2
+        ELSE IF (ITYPM.EQ.NUTM(6)) THEN
           ICO=ICO+2
         ELSE
           CALL UTMESS('F','PJ4DCO','STOP 3')
@@ -235,15 +239,16 @@ C           V(1+4(I-1)+4) : NUMERO DE LA MAILLE MERE DU IEME TRIA3
         IF (ZI(IALIM1-1+IMA).EQ.0) GO TO 52
         ITYPM=ZI(IATYM1-1+IMA)
 C       -- CAS DES TRIANGLES :
-        IF ((ITYPM.EQ.NUTM(1)).OR.(ITYPM.EQ.NUTM(2))) THEN
+        IF ((ITYPM.EQ.NUTM(1)).OR.(ITYPM.EQ.NUTM(2))
+     &                        .OR.(ITYPM.EQ.NUTM(3))) THEN
           ICO=ICO+1
           ZI(IATR3+(ICO-1)*4+4)=IMA
           ZI(IATR3+(ICO-1)*4+1)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+1)
           ZI(IATR3+(ICO-1)*4+2)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+2)
           ZI(IATR3+(ICO-1)*4+3)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+3)
 C       -- CAS DES QUADRANGLES :
-        ELSE IF ((ITYPM.EQ.NUTM(3)).OR.(ITYPM.EQ.NUTM(4))
-     &       .OR.(ITYPM.EQ.NUTM(5))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(4)).OR.(ITYPM.EQ.NUTM(5))
+     &                             .OR.(ITYPM.EQ.NUTM(6))) THEN
           ICO=ICO+1
           ZI(IATR3+(ICO-1)*4+4)=IMA
           ZI(IATR3+(ICO-1)*4+1)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+1)

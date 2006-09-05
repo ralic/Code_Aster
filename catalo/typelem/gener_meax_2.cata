@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,6 +129,8 @@ MODE_LOCAL__
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
+    ETRIANO  = DOMMAG   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
+    ETRIAPG  = DOMMAG   ELGA__ RIGI    (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
@@ -292,6 +294,12 @@ OPTION__
     ECIN_ELEM_DEPL      82    IN__   DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER
                               OUT__  EENECNO  PENERCR
+    ENDO_ELGA           512   IN__   ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC  NTEMPER  PTEMPER  
+                                     NTEMPER  PTEMPMR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR  
+                                     CCOMPOR  PCOMPOR
+                              OUT__  ETRIAPG  PTRIAGP  
+    ENDO_ELNO_ELGA      512   IN__   ETRIAPG  PTRIAGP  
+                              OUT__  ETRIANO  PTRIANO  
     ENDO_ELNO_SIGM      511   IN__   ECONTNO  PCONTNO  ECONTPG  PCONTPG  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  ETRIAXS  PTRIAXS
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC

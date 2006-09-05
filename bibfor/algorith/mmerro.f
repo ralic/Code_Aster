@@ -1,0 +1,160 @@
+      SUBROUTINE MMERRO(DEFICO,RESOCO,NOMA,
+     &                  CONTEX,TYPERR,ERROR,
+     &                  NMA,NND,NPT,
+     &                  IINF,RINF,KINF)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      CHARACTER*24  DEFICO
+      CHARACTER*24  RESOCO
+      CHARACTER*8   NOMA
+      CHARACTER*6   CONTEX
+      CHARACTER*1   TYPERR
+      CHARACTER*(*) ERROR
+      INTEGER       NMA
+      INTEGER       NND
+      INTEGER       NPT
+      INTEGER       IINF(*)
+      REAL*8        RINF(*)
+      CHARACTER*24  KINF(*)
+C
+C ----------------------------------------------------------------------
+C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
+C ----------------------------------------------------------------------
+C
+C GESTION DES MESSAGES D'ERREURS
+C
+C IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
+C IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
+C IN  NOMA   : NOM DE LA SD MAILLAGE
+C IN  CONTEX : CONTEXTE DE DECLENCHEMENT DE L'ERREUR
+C IN  TYPERR : TYPE DE L'ERREUR (ALARME, FATAL,...)
+C IN  ERROR  : NOM DE L'ERREUR
+C IN  NMA    : NUMERO DE LA MAILLE FAUTIVE
+C IN  NND    : NUMERO DU NOEUD FAUTIF
+C IN  NPT    : NUMERO DU PG FAUTIF
+C IN  IINF   : INFOS SUPPLEMENTAIRES DE TYPE ENTIER
+C IN  RINF   : INFOS SUPPLEMENTAIRES DE TYPE REEL
+C IN  KINF   : INFOS SUPPLEMENTAIRES DE TYPE CHARACTER
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM      
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER     IRET
+      CHARACTER*8 NOMMAI,NOMNOE
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C      
+      CALL JEEXIN(DEFICO(1:16) // '.CARACF',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL UTMESS('F','MMERRO',
+     &              'SD INTROUVABLE (DVLP)')       
+      ENDIF  
+      
+      IF (ERROR(1:8).EQ.'MAT_SING') THEN
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)
+        IF (NND.NE.-1) THEN
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NND),NOMNOE)        
+          CALL UTMESS(TYPERR,CONTEX,'MATRICE SINGULIERE LORS DU '//
+     &              ' CALCUL DU REPERE LOCAL TANGENT AU '//
+     &              ' NOEUD MAITRE '//NOMNOE//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI//
+     &              ' VECTEURS TANGENTS COLINEAIRES ?') 
+        ELSE    
+          CALL UTMESS(TYPERR,CONTEX,'MATRICE SINGULIERE LORS '//
+     &              ' DE LA PROJECTION DU POINT DE CONTACT '//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI//
+     &              ' VECTEURS TANGENTS COLINEAIRES ?')       
+        ENDIF
+      ELSEIF (ERROR(1:8).EQ.'NON_CONV') THEN
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)
+        IF (NND.NE.-1) THEN        
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NND),NOMNOE)        
+          CALL UTMESS(TYPERR,CONTEX,'NEWTON ECHOUE LORS DU'//
+     &              ' CALCUL DU REPERE LOCAL TANGENT AU '//
+     &              ' NOEUD MAITRE '//NOMNOE//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI) 
+        ELSE
+          CALL UTMESS(TYPERR,CONTEX,'NEWTON ECHOUE LORS '//
+     &              ' DE LA PROJECTION DU POINT DE CONTACT '//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI)         
+        ENDIF
+      ELSEIF (ERROR(1:13).EQ.'VECT_TANG_NUL') THEN
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)
+        IF (NND.NE.-1) THEN        
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NND),NOMNOE)        
+          CALL UTMESS(TYPERR,CONTEX,'VECTEURS TANGENTS NULS AU'//
+     &              ' NOEUD MAITRE '//NOMNOE//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI) 
+        ELSE
+          CALL UTMESS(TYPERR,CONTEX,'VECTEURS TANGENTS NULS LORS '//
+     &              ' DE LA PROJECTION DU POINT DE CONTACT '//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI)         
+        ENDIF 
+      ELSEIF (ERROR(1:8).EQ.'ELEM_INC') THEN
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)               
+        CALL UTMESS(TYPERR,CONTEX,'ELEMENT INCONNU '//
+     &              ' SUR LA MAILLE MAITRE '//NOMMAI)                
+      ELSEIF (ERROR(1:8).EQ.'NORM_NUL') THEN
+        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NND),NOMNOE)        
+        CALL UTMESS(TYPERR,CONTEX,'VECTEUR NORMAL NUL '//
+     &              ' SUR LE NOEUD MAITRE '//NOMNOE) 
+      ELSEIF (ERROR(1:8).EQ.'TROP_NDS') THEN 
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)        
+        CALL UTMESS(TYPERR,CONTEX,'PLUS DE 3 NOEUDS EXCLUS '//
+     &              ' SUR LA MAILLE ESCLAVE '//NOMMAI//
+     &              ' PAR L''OPTION SANS_GROUP_NO OU SANS_NOEUD')
+      ELSEIF (ERROR(1:11).EQ.'BARSOUM_NEX') THEN 
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)        
+        CALL UTMESS(TYPERR,CONTEX,'L''ELEMENT PORTE PAR LA  '//
+     &              ' LA MAILLE ESCLAVE '//NOMMAI//
+     &              ' N''EST PAS DU BON TYPE POUR UN FOND DE FISSURE'//
+     &              ' , ELLE EST DE TYPE '//KINF(1))
+      ELSEIF (ERROR(1:10).EQ.'ERR_INTEGR') THEN 
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)        
+        CALL UTMESS(TYPERR,CONTEX,'SCHEMA D''INTEGRATION INCONNU '//
+     &              ' SUR LA MAILLE '//NOMMAI)                   
+      ELSE
+        CALL UTMESS('F','MMERRO',
+     &              'CODE ERREUR INTROUVABLE (DVLP)')       
+      ENDIF
+      
+          
+C
+      CALL JEDEMA()      
+      END

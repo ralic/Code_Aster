@@ -1,0 +1,79 @@
+#& MODIF COMMANDE  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# -*- coding: iso-8859-1 -*-
+
+from Macro.simu_point_mat_ops import simu_point_mat_ops
+
+SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_sdaster,
+                   UIinfo={"groupes":("Résolution",)},
+                   fr="Calcul de l'évolution mécanique, en quasi-statique,"
+                      +" d'un point matériel en non linéaire",
+   COMP_INCR       =C_COMP_INCR(),
+   MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
+   INCREMENT       =FACT(statut='o',
+           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
+           SUBD_PAS        =SIMP(statut='f',typ='I',defaut=4),
+           SUBD_PAS_MINI   =SIMP(statut='f',typ='R',defaut=0.00000001),
+           COEF_SUBD_PAS_1 =SIMP(statut='f',typ='R',defaut= 1.0E+0),
+         ),
+   NEWTON          =FACT(statut='d',
+           PREDICTION      =SIMP(statut='f',typ='TXM',into=("TANGENTE","ELASTIQUE","EXTRAPOL") ),
+           MATRICE         =SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE") ),
+           PAS_MINI_ELAS   =SIMP(statut='f',typ='R',defaut=0.0E+0),
+           REAC_ITER       =SIMP(statut='f',typ='I',defaut=1),
+           REAC_ITER_ELAS  =SIMP(statut='f',typ='I',defaut=0),
+         ),
+   CONVERGENCE     =FACT(statut='d',
+     regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
+     SIGM_REFE       =SIMP(statut='f',typ='R'),
+     EPSI_REFE       =SIMP(statut='f',typ='R'),
+     RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
+     RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
+     RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
+     ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=50),
+     ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
+     ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+   ),
+   PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
+   SUIVI_DDL      = FACT(statut='f',max=4,                                                                   
+       NUME_SUIVI      =SIMP(statut='o',typ='I' ,min=1,max=4),                                               
+       NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,                               
+                             into=("DEPL","SIEF_ELGA","VARI_ELGA",)),                                        
+       NOM_CMP         =SIMP(statut='o',typ='TXM',max=1 ),                                                   
+   ),                                                                                                        
+   SIGM_IMPOSE=FACT(statut='f',
+          SIXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          SIYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          SIZZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          SIXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          SIXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          SIYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                     ),
+   EPSI_IMPOSE=FACT(statut='f',
+          EPXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          EPYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          EPZZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          EPXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          EPXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+          EPYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                     ),
+         
+         
+   INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+)

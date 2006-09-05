@@ -1,9 +1,9 @@
       SUBROUTINE RCANGM ( NDIM, ANGMAS )
       IMPLICIT NONE
       INTEGER  NDIM
-      REAL*8   ANGMAS(3)
+      REAL*8   ANGMAS(7)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,14 +46,22 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
 
       CALL TECACH ( 'NNO', 'PCAMASS', 1, ICAMAS, IRET )
+      CALL R8INIR ( 7, 0.D0, ANGMAS ,1 )
 
       IF (IRET.EQ.0) THEN
-         CALL R8INIR ( 3, 0.D0, ANGMAS ,1 )
+         CALL R8INIR ( 7, 0.D0, ANGMAS ,1 )
          IF (ZR(ICAMAS).GT.0.D0) THEN
             ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
             IF ( NDIM .EQ. 3 ) THEN
                ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
                ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+            ENDIF
+C           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
+            IF (ABS(ZR(ICAMAS)-2.D0).LT.1.D-3) THEN
+               ANGMAS(5) = ZR(ICAMAS+4)*R8DGRD()
+               ANGMAS(6) = ZR(ICAMAS+5)*R8DGRD()
+               ANGMAS(7) = ZR(ICAMAS+6)*R8DGRD()
+               ANGMAS(4) = 2.D0
             ENDIF
          ELSE
             ANGMAS(1)=R8VIDE()
@@ -64,10 +72,10 @@ C     ------------------------------------------------------------------
          ENDIF
 C
       ELSEIF (IRET.EQ.1) THEN
-         CALL R8INIR ( 3, R8NNEM(), ANGMAS ,1 )
+         CALL R8INIR ( 7, R8NNEM(), ANGMAS ,1 )
 C
       ELSEIF (IRET.EQ.2) THEN
-         CALL R8INIR ( 3, 0.D0, ANGMAS ,1 )
+         CALL R8INIR ( 7, 0.D0, ANGMAS ,1 )
 C
       ENDIF
 C

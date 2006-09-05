@@ -1,0 +1,181 @@
+      SUBROUTINE MMTGEX(DEFICO,NOMA,NDIM,
+     &                  IZONE,POSMA,INI,NPEX,INI1,INI2,
+     &                  SUPPOK,T1MIN,T2MIN,VALRET)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      CHARACTER*24 DEFICO
+      CHARACTER*8  NOMA
+      INTEGER      NDIM
+      INTEGER      IZONE
+      INTEGER      POSMA
+      INTEGER      SUPPOK
+      INTEGER      INI
+      INTEGER      NPEX
+      INTEGER      INI1
+      INTEGER      INI2      
+      REAL*8       T1MIN(3)
+      REAL*8       T2MIN(3)
+      INTEGER      VALRET
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : MAPPAR
+C ----------------------------------------------------------------------
+C
+C DEFINI LA BASE TANGENTE LOCALE LORS D'UN NOEUD A EXCLURE
+C
+C IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
+C IN  POSMA  : NUMERO DE LA MAILLE MAITRE
+C IN  INI    : NUMERO DU NOEUD DE LA MAILLE MAITRE
+C IN  NPEX   : NOMBRE DE NOEUDS EXCLUS SUR LA MAILLE
+C IN  INI1   : NUMERO DU PREMIER NOEUD A EXCLURE
+C IN  INI2   : NUMERO DU DEUXIEME NOEUD A EXCLURE
+C OUT SUPPOK : VAUT 1 SI NOEUD A SUPPRIMER
+C OUT T1MIN  : PREMIER VECTEUR TANGENT
+C OUT T2MIN  : SECOND VECTEUR TANGENT
+C OUT VALRET : CODE RETOUR ERREUR
+C               0 PAS DE PROBLEME
+C               1 VECTEUR NORMAL NUL AU POINT A EXCLURE
+C               2 VECTEUR TANGENT 1 NUL AU POINT A EXCLURE
+C               3 VECTEUR TANGENT 2 NUL AU POINT A EXCLURE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      POSNOE,NUMNOE,NSANS,NUMSAN
+      CHARACTER*24 NOMACO,CONTNO,PNOMA,SANSNO,PSANS
+      INTEGER      JNOMA,JNOCO,JPONO,JSANS,JPSANS
+      REAL*8       NORM(3),COON1(3),COON2(3)
+      REAL*8       NORN,NORT1,NORT2,NORME1,R8PREM
+      INTEGER      J,K,N1,N2,POSNO1,POSNO2
+      INTEGER      JCOOR,IBID
+      LOGICAL      LBID
+      CHARACTER*24 K24BID,K24BLA
+      DATA         K24BLA /' '/       
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      NOMACO = DEFICO(1:16) // '.NOMACO'
+      CONTNO = DEFICO(1:16) // '.NOEUCO'
+      PNOMA  = DEFICO(1:16) // '.PNOMACO'      
+      SANSNO = DEFICO(1:16) // '.SSNOCO'
+      PSANS  = DEFICO(1:16) // '.PSSNOCO'      
+      CALL JEVEUO(NOMACO,'L',JNOMA)
+      CALL JEVEUO(CONTNO,'L',JNOCO)     
+      CALL JEVEUO(PNOMA ,'L',JPONO)  
+      CALL JEVEUO(SANSNO,'L',JSANS)
+      CALL JEVEUO(PSANS ,'L',JPSANS)       
+      CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)         
+C     
+C --- REPERAGE SI LE NOEUD INI EST UN NOEUD A EXCLURE (SUPPOK = 1)
+C
+      VALRET = 0
+      SUPPOK = 0
+      POSNOE = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI-1)
+      NUMNOE = ZI(JNOCO+POSNOE-1)
+      NSANS  = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
+      DO 31 K = 1,NSANS
+        NUMSAN = ZI(JSANS+ZI(JPSANS+IZONE-1)+K-1)
+        IF (NUMNOE .EQ. NUMSAN) THEN
+          SUPPOK = 1
+          GOTO 41
+        ENDIF
+ 31   CONTINUE 
+ 41   CONTINUE 
+
+      IF (SUPPOK .EQ. 1) THEN
+        IF (NPEX .EQ. 1) THEN
+          IF (NDIM .EQ. 2) THEN        
+            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
+     &                  IBID,T1MIN,K24BID,LBID)
+          ELSE
+            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Z',
+     &                  IBID,T1MIN,K24BID,LBID)
+            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
+     &                  IBID,T2MIN,K24BID,LBID)     
+          ENDIF  
+        ELSE
+
+          CALL PROVEC(T2MIN,T1MIN,NORM)
+
+          IF (INI .EQ. INI1) THEN
+            N1     = NUMNOE
+            POSNO2 = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI2-1)
+            N2     = ZI(JNOCO+POSNO2-1)
+          ELSE
+            N2     = NUMNOE
+            POSNO1 = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI1-1)
+            N1     = ZI(JNOCO+POSNO1-1)
+          END IF
+
+          DO 59 J = 1,3
+            COON1(J) = ZR(JCOOR+3*(N1-1)+J-1)
+            COON2(J) = ZR(JCOOR+3*(N2-1)+J-1)
+ 59       CONTINUE
+          CALL VDIFF(3,COON1,COON2,T2MIN)
+          CALL NORMEV(T2MIN,NORME1)         
+          CALL PROVEC(T2MIN,NORM,T1MIN)
+          NORN  = SQRT(NORM(1)*NORM(1)+NORM(2)*NORM(2)+
+     &            NORM(3)*NORM(3))    
+ 
+          IF (NORN.LT.R8PREM()) THEN   
+            VALRET = 1                          
+          ENDIF  
+                    
+        ENDIF          
+
+  
+        NORT1 = SQRT(T1MIN(1)*T1MIN(1)+T1MIN(2)*T1MIN(2)+
+     &          T1MIN(3)*T1MIN(3))
+        NORT2 = SQRT(T2MIN(1)*T2MIN(1)+T2MIN(2)*T2MIN(2)+
+     &          T2MIN(3)*T2MIN(3))
+ 
+
+        IF (NORT1.LT.R8PREM()) THEN   
+          VALRET = 2
+        ELSEIF (NORT2.LT.R8PREM().AND.(NDIM.EQ.3)) THEN   
+          VALRET = 3                          
+        ENDIF
+
+      ENDIF
+      
+C
+      CALL JEDEMA()      
+      END

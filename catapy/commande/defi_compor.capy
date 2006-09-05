@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,14 +35,16 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le comportement élastique (un et un seul)"),
              FAMI_SYST_GLIS  =SIMP(statut='o',typ='TXM', max=1, 
                                 into=('BASAL', 'PRISMATIQUE', 'OCTAEDRIQUE', 'PYRAMIDAL1',
-                                'PYRAMIDAL2', 'CUBIQUE1', 'CUBIQUE2', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL'),),
+                                'PYRAMIDAL2', 'CUBIQUE1', 'CUBIQUE2', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL','BCC24'),),
                                 ),
                                 
                                 
           POLYCRISTAL    =FACT(statut='f', max='**',
+           regles=(UN_PARMI('ANGL_REP','ANGL_EULER'),),
              MONOCRISTAL     =SIMP(statut='o', typ=compor_sdaster, max=1),
              FRAC_VOL  =SIMP(statut='o', typ='R', max=1,fr="fraction volumique de la phase correspondant au monocristal"),
-             ANGL_REP  =SIMP(statut='o',typ='R',max=3,fr="orientation du monocristal : 3 angles d'Euler en degrés"),
+             ANGL_REP  =SIMP(statut='f',typ='R',max=3,fr="orientation du monocristal : 3 angles nautiques en degrés"),
+             ANGL_EULER=SIMP(statut='f',typ='R',max=3,fr="orientation du monocristal : 3 angles d'Euler   en degrés"),
                                 ),
                                 
                                 

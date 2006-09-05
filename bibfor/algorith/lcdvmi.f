@@ -1,7 +1,7 @@
       SUBROUTINE LCDVMI (SIGMA,Y,F,DFDS,D2FDS,SEQ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/98   AUTEUR SABMTEC P.LACLERGUE 
+C MODIF ALGORITH  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C    D2FDS : DERIVEE SECONDE DE F PAR RAPPORT AUX CONTRAINTES
 C    SEQ   : CONTRAINTE EQUIVALENTE (= Y A LA CONVERGENCE)
 C-----------------------------------------------------------------------
       INTEGER  I, J
-      REAL*8   S23, S31, S12, T12, T23, T31
+      REAL*8   S23, S31, S12, T12, T23, T31, DEVSIG(6),LCNRTS
 C-----------------------------------------------------------------------
 C  CALCUL DE F
 C  -----------
@@ -50,7 +50,7 @@ C
       T23 = SIGMA(5)*SIGMA(5)
       T31 = SIGMA(6)*SIGMA(6)
 C
-      SEQ = SQRT((S23+S31+S12)/2.D0+3.D0*(T12+T23+T31))
+      SEQ = SQRT((S23+S31+S12)/2.D0+1.5D0*(T12+T23+T31))
 C
       F = SEQ - Y
 C
@@ -62,9 +62,9 @@ C
       DFDS(1) = (2.D0*SIGMA(1)-SIGMA(2)-SIGMA(3))/(2.D0*SEQ)
       DFDS(2) = (2.D0*SIGMA(2)-SIGMA(3)-SIGMA(1))/(2.D0*SEQ)
       DFDS(3) = (2.D0*SIGMA(3)-SIGMA(1)-SIGMA(2))/(2.D0*SEQ)
-      DFDS(4) = 3.D0*SIGMA(4)/SEQ
-      DFDS(5) = 3.D0*SIGMA(5)/SEQ
-      DFDS(6) = 3.D0*SIGMA(6)/SEQ
+      DFDS(4) = 3.D0*SIGMA(4)/SEQ/2.D0
+      DFDS(5) = 3.D0*SIGMA(5)/SEQ/2.D0
+      DFDS(6) = 3.D0*SIGMA(6)/SEQ/2.D0
 C
       D2FDS(1,1) = ( 1.0D0-DFDS(1)*DFDS(1) )/SEQ
       D2FDS(1,2) = (-0.5D0-DFDS(1)*DFDS(2) )/SEQ

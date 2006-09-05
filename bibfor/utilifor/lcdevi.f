@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,13 +28,12 @@ C       ----------------------------------------------------------------
         REAL*8          A(6) , D(6) , TA , D13
         COMMON /TDIM/   N , ND
 C
-        DATA   D13      /.33333333333333D0 /
 C
         TA = 0.D0
         DO 1 I = 1,ND
         TA   = TA + A(I)
  1      CONTINUE
-        TA   = TA * D13
+        TA   = TA / 3.D0
         DO 2 I = 1,ND
         D(I) = A(I) - TA
  2      CONTINUE

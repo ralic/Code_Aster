@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPESD,NOMSD
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 05/09/2006   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,6 +37,7 @@ C         /'NUME_DDL'   /'NUME_DDL_GENE'
 C         /'MATRICE'    /'MATR_ASSE'  /'MATR_ASSE_GENE'
 C         /'VECT_ASSE_GENE'
 C         /'SOLVEUR'
+C         /'MACR_ELEM_DYNA'
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A TESTER
 
 C ----------------------------------------------------------------------
@@ -104,16 +105,13 @@ C     ------------------------------
 
       ELSE IF (TYP2SD.EQ.'MODELE_GENE') THEN
 C     -----------------------------------
-        CH14 = NOMSD
-        CALL VERIOB(CH14//'.MODG.DESC','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.LIDF','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.LIPR','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.LIMA','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.SSME','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.SSNO','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.SSOR','EXIS',0)
-        CALL VERIOB(CH14//'.MODG.SSTR','EXIS',0)
 
+        CALL VERIMG(NOMSD)
+
+      ELSE IF (TYP2SD.EQ.'MACR_ELEM_DYNA') THEN
+C     -----------------------------------
+
+        CALL VERIMC(NOMSD)
 
       ELSE IF (TYP2SD.EQ.'CARTE') THEN
 C     ------------------------------

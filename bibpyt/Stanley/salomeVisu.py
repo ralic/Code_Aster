@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 06/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,8 +122,7 @@ class VISU:
             return {}
             
         return result
-        
-        
+            
     def __studyList( self, salomeParam ):
         """
         Retourne la liste des études         
@@ -131,6 +130,11 @@ class VISU:
         result = []
         stdyMnger = Study.StudyManager( **salomeParam)
         result = stdyMnger.getOpenStudies()
+                
+        if not result:
+            study = stdyMnger.getOrCreateStudy('Stanley')            
+            if study:
+                result = ['Stanley']
         return result
         
     def Terminal_ouvert(self) :

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -394,11 +394,11 @@ TABD=POST_RELEVE_T(ACTION=_F(INTITULE='D',
                              NOM_CMP='V9',
                              OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=TABR,
+IMPR_TABLE(TABLE=TABR,UNITE=29,
            FORMAT='TABLEAU',
            NOM_PARA=('INST','V8',),);
 
-IMPR_TABLE(TABLE=TABD,
+IMPR_TABLE(TABLE=TABD,UNITE=29,
            FORMAT='TABLEAU',
            NOM_PARA=('INST','V9',),);
 

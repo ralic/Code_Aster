@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,39 +46,39 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURESC',),
-                 MODELE=MO,);
+                 );
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURESC1',),
-                 MODELE=MO,);
+                 );
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURESC2',),
-                 MODELE=MO,);
+                 );
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURMAI',),
-                 MODELE=MO,);
+                 );
                  
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURMAI1',),
-                 MODELE=MO,);
+                 );
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURMAI2',),
-                 MODELE=MO,); 
+                 ); 
                                  
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURCHA',),
-                 MODELE=MO,);
+                 );
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='ENCAST',),
-                 MODELE=MO,);
+                 );
 #--------------------------------------------------
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05,NU = 0.,));

@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCC(CHAR,MOTFAC,NOMA,NOMO,NDIM,IREAD,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,13 +20,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*8 CHAR
+      CHARACTER*8  CHAR
       CHARACTER*16 MOTFAC
-      CHARACTER*8 NOMA
-      CHARACTER*8 NOMO
-      INTEGER NDIM
-      INTEGER IREAD
-      INTEGER IWRITE
+      CHARACTER*8  NOMA
+      CHARACTER*8  NOMO
+      INTEGER      NDIM
+      INTEGER      IREAD
+      INTEGER      IWRITE
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : CAZOCO
@@ -64,10 +64,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER REACCA,REACBS,REACBG
-      INTEGER ZMETH
-      PARAMETER (ZMETH = 8)
-      INTEGER ZTOLE
-      PARAMETER (ZTOLE = 6)
+      INTEGER ZMETH,ZTOLE,ZECPD,ZCMCF,ZTGDE,ZDIRE,ZPOUD,CFMMVD
       CHARACTER*8 TYMOCL(2),STACO0,COMPLI,FONFIS,RACSUR
       CHARACTER*16 MOTCLE(2)
       CHARACTER*24 LISMA
@@ -91,6 +88,8 @@ C
       COCAU = 0.D0
       COFAU = 0.D0
       COEFRO = 0.D0
+      REACSI = -1.0D+6
+      
 C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
@@ -102,7 +101,7 @@ C ======================================================================
       JEUSUP = CHAR(1:8) // '.CONTACT.JSUPCO'
       TANPOU = CHAR(1:8) // '.CONTACT.TANPOU'
       TOLECO = CHAR(1:8) // '.CONTACT.TOLECO'
-C ======================================================================
+C
       CALL JEVEUO(CARACF,'E',JCMCF)
       CALL JEVEUO(DIRCO,'E',JDIR)
       CALL JEVEUO(ECPDON,'E',JECPD)
@@ -111,6 +110,14 @@ C ======================================================================
       CALL JEVEUO(JEUSUP,'E',JJSUP)
       CALL JEVEUO(TANPOU,'E',JPOUDI)
       CALL JEVEUO(TOLECO,'E',JTOLE)
+C
+      ZMETH = CFMMVD('ZMETH')
+      ZTOLE = CFMMVD('ZTOLE')   
+      ZECPD = CFMMVD('ZECPD')
+      ZCMCF = CFMMVD('ZCMCF')
+      ZTGDE = CFMMVD('ZTGDE')
+      ZDIRE = CFMMVD('ZDIRE')  
+      ZPOUD = CFMMVD('ZPOUD')    
 C 
 C --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION          
 C 
@@ -121,9 +128,9 @@ C
 
       CALL GETVTX(MOTFAC,'FORMULATION',IREAD,1,1,FORMUL,NOC)
       IF (FORMUL(1:4) .EQ. 'DEPL') THEN
-        ZI(JECPD+6*(IWRITE-1)+6) = 1
+        ZI(JECPD+ZECPD*(IWRITE-1)+6) = 1
       ELSEIF (FORMUL(1:4) .EQ. 'VITE') THEN
-        ZI(JECPD+6*(IWRITE-1)+6) = 2
+        ZI(JECPD+ZECPD*(IWRITE-1)+6) = 2
       ELSE
         CALL UTMESS('F','CAZOCC',
      &             'NE CORRESPOND A AUCUNE METHODE             
@@ -132,24 +139,24 @@ C
 
       CALL GETVTX(MOTFAC,'INTEGRATION',IREAD,1,1,INTER,NOC)
       IF (INTER(1:5) .EQ. 'NOEUD') THEN
-        ZR(JCMCF+12*(IWRITE-1)+1) = 1.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 1.D0
       ELSEIF (INTER(1:5) .EQ. 'GAUSS') THEN
-        ZR(JCMCF+12*(IWRITE-1)+1) = 2.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 2.D0
       ELSEIF (INTER(1:7) .EQ. 'SIMPSON') THEN
-        ZR(JCMCF+12*(IWRITE-1)+1) = 3.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 3.D0
         IF (INTER(1:8) .EQ. 'SIMPSON1') THEN
-          ZR(JCMCF+12*(IWRITE-1)+1) = 4.D0
+          ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 4.D0
         END IF
         IF (INTER(1:8) .EQ. 'SIMPSON2') THEN
-          ZR(JCMCF+12*(IWRITE-1)+1) = 5.D0
+          ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 5.D0
         END IF
       ELSEIF (INTER(1:6) .EQ. 'NCOTES') THEN
-        ZR(JCMCF+12*(IWRITE-1)+1) = 6.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 6.D0
         IF (INTER(1:7) .EQ. 'NCOTES1') THEN
-          ZR(JCMCF+12*(IWRITE-1)+1) = 7.D0
+          ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 7.D0
         END IF
         IF (INTER(1:7) .EQ. 'NCOTES2') THEN
-          ZR(JCMCF+12*(IWRITE-1)+1) = 8.D0
+          ZR(JCMCF+ZCMCF*(IWRITE-1)+1) = 8.D0
         END IF
       ELSE
         CALL UTMESS('F','CAZOCC',
@@ -158,44 +165,48 @@ C
       END IF
 
       CALL GETVR8(MOTFAC,'COEF_REGU_CONT',IREAD,1,1,COCAU,NOC)
-      ZR(JCMCF+12*(IWRITE-1)+2) = COCAU
+      ZR(JCMCF+ZCMCF*(IWRITE-1)+2) = COCAU
 
       CALL GETVTX(MOTFAC,'FROTTEMENT',IREAD,1,1,TYPF,NOCC)
       IF (TYPF(1:7) .EQ. 'COULOMB') THEN
-        ZR(JCMCF+12*(IWRITE-1)+5) = 3.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+5) = 3.D0
         CALL GETVR8(MOTFAC,'COULOMB',IREAD,1,1,COEFRO,NOC)
-        ZR(JCMCF+12*(IWRITE-1)+4) = COEFRO
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+4) = COEFRO
         CALL GETVR8(MOTFAC,'COEF_REGU_FROT',IREAD,1,1,COFAU,NOC)
-        ZR(JCMCF+12*(IWRITE-1)+3) = COFAU
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+3) = COFAU
         CALL GETVIS(MOTFAC,'ITER_FROT_MAXI',IREAD,1,1,REACBS,NOC)
-        ZI(JECPD+6*(IWRITE-1)+3) = REACBS
+        ZI(JECPD+ZECPD*(IWRITE-1)+3)  = REACBS
         CALL GETVR8(MOTFAC,'SEUIL_INIT',IREAD,1,1,REACSI,NOC)
-        ZR(JCMCF+12*(IWRITE-1)+6) = REACSI
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+6) = REACSI
         IF (NOCC .NE. 0) THEN
           CALL GETVR8(MOTFAC,'VECT_Y',IREAD,1,3,DIR,NOC)
+          IF (NOC.NE.0) THEN
+            ZI(JMETH+ZMETH*(IWRITE-1)+2) = 1
+          ENDIF  
+          
           IF (NOC.NE.0 .AND. NDIM.GE.2) THEN
-            ZR(JTGDEF+6*(IWRITE-1)) = DIR(1)
-            ZR(JTGDEF+6*(IWRITE-1)+1) = DIR(2)
-            ZR(JTGDEF+6*(IWRITE-1)+2) = DIR(3)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)) = DIR(1)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+1) = DIR(2)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+2) = DIR(3)
           ELSE
-            ZR(JTGDEF+6*(IWRITE-1)) = 0.D0
-            ZR(JTGDEF+6*(IWRITE-1)+1) = 0.D0
-            ZR(JTGDEF+6*(IWRITE-1)+2) = 0.D0
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)) = 0.D0
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+1) = 0.D0
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+2) = 0.D0
           END IF
 
           CALL GETVR8(MOTFAC,'VECT_Z',IREAD,1,3,DIR,NOC)
           IF (NOC .NE. 0) THEN
-            ZR(JTGDEF+6*(IWRITE-1)+3) = DIR(1)
-            ZR(JTGDEF+6*(IWRITE-1)+4) = DIR(2)
-            ZR(JTGDEF+6*(IWRITE-1)+5) = DIR(3)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+3) = DIR(1)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+4) = DIR(2)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+5) = DIR(3)
           ELSE
-            ZR(JTGDEF+6*(IWRITE-1)+3) = 0.D0
-            ZR(JTGDEF+6*(IWRITE-1)+4) = 0.D0
-            ZR(JTGDEF+6*(IWRITE-1)+5) = 0.D0
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+3) = 0.D0
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+4) = 0.D0
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+5) = 0.D0
           END IF
         END IF
       ELSEIF (TYPF(1:4) .EQ. 'SANS') THEN
-        ZR(JCMCF+12*(IWRITE-1)+5) = 1.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+5) = 1.D0
       ELSE
         CALL UTMESS('F','CAZOCC',
      &             'NE CORRESPOND A AUCUNE METHODE DU MOT CLE           
@@ -206,59 +217,59 @@ C --- LECTURE DES PARAMETRES DE LA COMPLIANCE POUR METHODE CONTINUE
 
       CALL GETVTX(MOTFAC,'COMPLIANCE',IREAD,1,1,COMPLI,NOC)
       IF (COMPLI .EQ. 'OUI') THEN
-        ZR(JCMCF+12*(IWRITE-1)+7) = 1
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+7) = 1
         CALL GETVR8(MOTFAC,'ASPERITE',IREAD,1,1,ASPER,NOC)
-        ZR(JCMCF+12*(IWRITE-1)+8) = ASPER
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+8) = ASPER
         CALL GETVR8(MOTFAC,'E_N',IREAD,1,1,KAPPAN,NOC)
-        ZR(JCMCF+12*(IWRITE-1)+9) = KAPPAN
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+9) = KAPPAN
         CALL GETVR8(MOTFAC,'E_V',IREAD,1,1,KAPPAV,NOC)
-        ZR(JCMCF+12*(IWRITE-1)+10) = KAPPAV
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+10) = KAPPAV
       ELSE
-        ZR(JCMCF+12*(IWRITE-1)+7) = 0
-        ZR(JCMCF+12*(IWRITE-1)+8) = 0.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+7) = 0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+8) = 0.D0
       END IF
       
 C --- FIN LECTURE DES PARAMETRES DE LA COMPLIANCE METHODE CONTINUE
 
       CALL GETVTX(MOTFAC,'FOND_FISSURE',IREAD,1,1,FONFIS,NOC)
       IF (FONFIS .EQ. 'OUI') THEN
-        ZR(JCMCF+12*(IWRITE-1)+11) = 1.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+11) = 1.D0
       ELSE
-        ZR(JCMCF+12*(IWRITE-1)+11) = 0.D0       
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+11) = 0.D0       
       END IF
       CALL GETVTX(MOTFAC,'RACCORD_LINE_QUAD',IREAD,1,1,RACSUR,NOC)
       IF (RACSUR .EQ. 'OUI') THEN
-        ZR(JCMCF+12*(IWRITE-1)+12) = 1.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+12) = 1.D0
       ELSE
-        ZR(JCMCF+12*(IWRITE-1)+12) = 0.D0
+        ZR(JCMCF+ZCMCF*(IWRITE-1)+12) = 0.D0
       END IF
       
       CALL GETVTX(MOTFAC,'MODL_AXIS',IREAD,1,1,MODAX,NOC)
       IF (MODAX(1:3) .EQ. 'OUI') THEN
-        ZI(JECPD+6*(IWRITE-1)+1) = 1
+        ZI(JECPD+ZECPD*(IWRITE-1)+1) = 1
       ELSEIF (MODAX(1:3) .EQ. 'NON') THEN
-        ZI(JECPD+6*(IWRITE-1)+1) = 0
+        ZI(JECPD+ZECPD*(IWRITE-1)+1) = 0
       END IF
 
       CALL GETVIS(MOTFAC,'ITER_CONT_MAXI',IREAD,1,1,REACCA,NOC)
-      ZI(JECPD+6*(IWRITE-1)+2) = REACCA
+      ZI(JECPD+ZECPD*(IWRITE-1)+2) = REACCA
 
       CALL GETVIS(MOTFAC,'ITER_GEOM_MAXI',IREAD,1,1,REACBG,NOC)
-      ZI(JECPD+6*(IWRITE-1)+4) = REACBG
+      ZI(JECPD+ZECPD*(IWRITE-1)+4) = REACBG
 
       CALL GETVTX(MOTFAC,'CONTACT_INIT',IREAD,1,1,STACO0,NOC)
       IF (STACO0 .EQ. 'OUI') THEN
-        ZI(JECPD+6*(IWRITE-1)+5) = 1
+        ZI(JECPD+ZECPD*(IWRITE-1)+5) = 1
       ELSE
-        ZI(JECPD+6*(IWRITE-1)+5) = 0
+        ZI(JECPD+ZECPD*(IWRITE-1)+5) = 0
       END IF
       CALL GETVR8(MOTFAC,'DIRE_APPA',IREAD,1,3,DIR1,NOC)
-      ZR(JDIR+3*(IWRITE-1)) = DIR1(1)
-      ZR(JDIR+3*(IWRITE-1)+1) = DIR1(2)
+      ZR(JDIR+ZDIRE*(IWRITE-1)) = DIR1(1)
+      ZR(JDIR+ZDIRE*(IWRITE-1)+1) = DIR1(2)
       IF (NDIM .EQ. 3) THEN
-        ZR(JDIR+3*(IWRITE-1)+2) = DIR1(3)
+        ZR(JDIR+ZDIRE*(IWRITE-1)+2) = DIR1(3)
       ELSE
-        ZR(JDIR+3*(IWRITE-1)+2) = 0.D0
+        ZR(JDIR+ZDIRE*(IWRITE-1)+2) = 0.D0
       END IF
       MOTCLE(1) = 'GROUP_MA_ESCL'
       MOTCLE(2) = 'MAILLE_ESCL'
@@ -279,14 +290,15 @@ C
       CALL GETVR8(MOTFAC,'DIST_MAIT',IREAD,1,1,DIST1,NOC)
       CALL GETVR8(MOTFAC,'DIST_ESCL',IREAD,1,1,DIST2,NOC)
         ZR(JJSUP+IWRITE-1) = DIST1 + DIST2
-        
+C
+C --- ORIENTATION DU REPERE LOCAL
+C        
       CALL GETVR8(MOTFAC,'VECT_ORIE_POU',IREAD,1,3,DIR,NOC)
-      ZI(JMETH+ZMETH*(IWRITE-1)+2) = 0
       IF (NOC.NE.0) THEN
         ZI(JMETH+ZMETH*(IWRITE-1)+2) = 2
-        ZR(JPOUDI+3*(IWRITE-1)) = DIR(1)
-        ZR(JPOUDI+3*(IWRITE-1)+1) = DIR(2)
-        ZR(JPOUDI+3*(IWRITE-1)+2) = DIR(3)
+        ZR(JPOUDI+ZPOUD*(IWRITE-1))   = DIR(1)
+        ZR(JPOUDI+ZPOUD*(IWRITE-1)+1) = DIR(2)
+        ZR(JPOUDI+ZPOUD*(IWRITE-1)+2) = DIR(3)
       ENDIF
 C
 C --- TOUTES LES AUTRES METHODES (DISCRETES)
@@ -303,7 +315,9 @@ C
       ELSE
         ZR(JTOLE+ZTOLE*(IWRITE-1)) = LAMB
       END IF
-        
+C
+C --- AJOUT DES ELEMENTS TARDIFS AU LIGREL
+C        
       CALL AJELLT('&&CALICO.LIGRET',NOMA,NBMA1,LISMA,' ',PHENOM,MODELI,
      &           0,' ')
 

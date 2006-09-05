@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,6 +160,7 @@ RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
 
 nbc=len(RI)
 SIF = [None]*(nbc+1)
+SIF2= [None]*(nbc+1)
 
 for i in range(0,nbc) :
 
@@ -178,6 +179,21 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF[i],);
 
+   SIF2[i]=CALC_G(MODELE=MODELEK,
+                 CHAM_MATER=CHAMPMA1,
+                 RESULTAT=UTOT1,
+                 SYME_CHAR='SANS',
+                 COMP_ELAS=_F(RELATION='ELAS',),
+                 OPTION='CALC_K_G',
+                 THETA=_F(FISSURE=FISS,
+                          R_INF=RI[i],
+                          R_SUP=RS[i],),
+                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
+                            LISSAGE_G='LAGRANGE_REGU',),
+                 INFO=2,);
+
+   IMPR_TABLE(TABLE=SIF2[i],);
+
 SIF[nbc]=CALC_G(MODELE=MODELEK,
                      CHAM_MATER=CHAMPMA1,
                      RESULTAT=UTOT1,
@@ -192,6 +208,21 @@ SIF[nbc]=CALC_G(MODELE=MODELEK,
                      INFO=2,);
 
 IMPR_TABLE(TABLE=SIF[nbc],);
+
+SIF2[nbc]=CALC_G(MODELE=MODELEK,
+                     CHAM_MATER=CHAMPMA1,
+                     RESULTAT=UTOT1,
+                     SYME_CHAR='SANS',
+                     COMP_ELAS=_F(RELATION='ELAS',),
+                     OPTION='CALC_K_G',
+                     THETA=_F(FISSURE=FISS,
+                              R_INF=RI[0],
+                              R_SUP=RS[0],),
+                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
+                                LISSAGE_G='LAGRANGE_REGU',),
+                     INFO=2,);
+
+IMPR_TABLE(TABLE=SIF2[nbc],);
 
 # SOLUTION ANALYTIQUE (chaboche p.53)
 a=5
@@ -216,6 +247,24 @@ for i in range(0,nbc+1) :
               CRITERE='RELATIF',
               PRECISION=0.04,
               REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MAX',               
+              VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.04,
+              REFERENCE='NON_REGRESSION',
+              VERSION='8.03.09');
+
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MIN',               
+              VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.04,
+              REFERENCE='NON_REGRESSION',
+              VERSION='8.03.09');
 
 
 #------------------------------------------------------------------------

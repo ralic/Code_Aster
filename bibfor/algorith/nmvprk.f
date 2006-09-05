@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,7 +126,7 @@ C
 C
         REAL*8          SIGD(6),     SIGF(6)
 C
-        REAL*8          DSDE(6,6), WORK(6,6), ANGMAS(3),REPERE(7)
+        REAL*8          DSDE(6,6), WORK(6,6), ANGMAS(*),REPERE(7)
 C
         PARAMETER     ( MAXDOM = 0.99D0 )
 C
@@ -150,7 +150,7 @@ C
         REAL*8          SIGI(6),EPSD(6),DETOT(6)
         REAL*8          NU,TPERD,DTPER,TPEREF,DTIME,E,ALPHA,X
         REAL*8          EPSEQ
-        REAL*8          HSR(5,12,12)
+        REAL*8          HSR(5,24,24)
 C
         COMMON /TDIM/   NDT,    NDI
         COMMON /OPTI/   IOPTIO, IDNR

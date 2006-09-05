@@ -3,7 +3,7 @@
      1                    TIMED, TIMEF,YD ,  YF,   DEPS,   DY, R )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C
       REAL*8          MATERD(NMAT*2) ,MATERF(NMAT*2),TEMPF
       REAL*8          VIS(3),MS(6),TAUS,DGAMMA,DALPHA,DP,RP,SQ,PR
       REAL*8          R(NR),DY(NR),YD(NR),YF(NR)
-      REAL*8          TOUTMS(5,12,6), HSR(5,12,12)
+      REAL*8          TOUTMS(5,24,6), HSR(5,24,24)
 C
       CHARACTER*8     MOD
       
@@ -97,7 +97,6 @@ C         NMATER=CPMONO(5*(IFA-1)+2)
          C=MATERF(NMAT+IFL-1+3)
          
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
-         IF (NBSYS.EQ.0) CALL UTMESS('F','LCMMRE','NBSYS=0')
          
          DO 7 IS=1,NBSYS
             NUMS=NUMS+1
@@ -133,8 +132,7 @@ C              CALCUL DE R(P)
                   SQ = SQ + HSR(IFA,IS,IR)*(1.D0-EXP(-B*PR))
   11            CONTINUE                
                   RP=R0+Q*SQ
-
-               CRIT=ABS(TAUS-C*ALPHAP)-RP
+                  CRIT=ABS(TAUS-C*ALPHAP)-RP
                
                IF (CRIT.LE.0.D0) THEN
                   DP=0.D0

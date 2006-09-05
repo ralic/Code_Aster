@@ -1,9 +1,9 @@
       SUBROUTINE GIMPGS ( RESULT, NNOFF, ABSC, GS, NUMERO, GI,
-     &                    NDEG, GTHI, EXTIM, TIME, IORDR, UNIT )
+     &                    NDEG, NDIMTE, GTHI, EXTIM, TIME, IORDR, UNIT )
       IMPLICIT  NONE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C    TIME         --> INSTANT DE CALCUL A IMPRIMER
 C    IORDR        --> NUMERO D'ORDRE A IMPRIMER
 C ......................................................................
 C
-      INTEGER         NNOFF, UNIT, NUMERO, NDEG, IORDR, I, I1
+      INTEGER         NNOFF, UNIT, NUMERO, NDEG, IORDR, I, I1,NDIMTE
       REAL*8          GS(1), GTHI(1), GI(1), TIME, ABSC(*)
       LOGICAL         EXTIM
       CHARACTER*8     RESULT
@@ -57,7 +57,10 @@ C
          WRITE(UNIT,557)
       ELSE IF (NUMERO.EQ.4) THEN
          WRITE(UNIT,558)
+      ELSE IF (NUMERO.EQ.5) THEN
+         WRITE(UNIT,559)
       ENDIF
+
       WRITE(UNIT,666)
       WRITE(UNIT,*)
 C
@@ -66,9 +69,15 @@ C
         WRITE(UNIT,*)
         WRITE(UNIT,*) ' NOEUD    GELEM(THETAI)'
         WRITE(UNIT,*)
-        DO 20 I=1,NNOFF
-          WRITE(UNIT,110) I,GTHI(I)
-20      CONTINUE
+        IF ( NUMERO .EQ. 5 ) THEN
+          DO 20 I=1,NDIMTE
+            WRITE(UNIT,110) I,GTHI(I)
+20        CONTINUE
+        ELSE
+          DO 21 I=1,NNOFF
+            WRITE(UNIT,110) I,GTHI(I)
+21       CONTINUE
+        ENDIF
         WRITE(UNIT,*)
       ENDIF
 C
@@ -105,6 +114,7 @@ C
 556   FORMAT('THETA_LAGRANGE  G_LEGENDRE (DEGRE ',I2,')')
 557   FORMAT('THETA_LAGRANGE  G_LAGRANGE')
 558   FORMAT('THETA_LAGRANGE  G_LAGRANGE_NO_NO')
+559   FORMAT('THETA_LAGRANGE_REGU  G_LAGRANGE_REGU')
 666   FORMAT(37('*'))
 770   FORMAT('VALEURS DE G ELEMENTAIRES AVANT LISSAGE :')
 777   FORMAT('COEF DE G(S) DANS LA BASE DE POLYNOMES DE LEGENDRE :')

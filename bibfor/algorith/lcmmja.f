@@ -3,7 +3,7 @@
      1                     NR,NVI,VIND,YF,   DY,   DRDY)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,7 @@ C       ----------------------------------------------------------------
       INTEGER         NUML, NUMCO, NS,IEI,IFL,IEC,IR,NSFA,NUVR
       INTEGER         NUVRF
       REAL*8          UN  , ZERO , VIND(*),DGADT
-      REAL*8          TOUTMS(5,12,6),HSR(5,12,12),SQ,PR
+      REAL*8          TOUTMS(5,24,6),HSR(5,24,24),SQ,PR
       PARAMETER       ( UN   = 1.D0   )
       PARAMETER       ( ZERO = 0.D0   )
 C     ALLOCATION DYNAMIQUE        

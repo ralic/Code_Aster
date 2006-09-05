@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C       ----------------------------------------------------------------
         INTEGER         NMAT , NR, NVI
         REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TEMPF
         REAL*8          MATER(NMAT,2)
-        REAL*8 TOUTMS(5,12,6),HSR(5,12,12)
+        REAL*8 TOUTMS(5,24,6),HSR(5,24,24)
         CHARACTER*8     MOD
         CHARACTER*16    LOI
       

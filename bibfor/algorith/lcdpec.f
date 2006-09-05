@@ -2,7 +2,7 @@
      &                   PGL, TOUTMS,DY, YF, VINF,EPSEQ )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C     ----------------------------------------------------------------
       REAL*8   VIND(*),VINF(*),DVIN(6),DY(*),YF(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),D,MS(6),DGAMMA,DP,DALPHA
       REAL*8   ALPHAM,DEVI(6)
-        REAL*8 TOUTMS(5,12,6)
+        REAL*8 TOUTMS(5,24,6)
       CHARACTER*16    CPMONO(5*NMAT+1),NOMFAM
 C
 

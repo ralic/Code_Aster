@@ -1,6 +1,8 @@
-      SUBROUTINE COPCOG(NOMA,POSMA,XPG,YPG,NEWGEO,GEOM,DEFICO)
+      SUBROUTINE COPCOG(NOMA,DEFICO,NEWGEO,
+     &                  POSMA,XPG,YPG,
+     &                  GEOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,26 +20,30 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
-      INTEGER GAUSS,NORD,POSMA
-      REAL*8 GEOM(3)
-      CHARACTER*8 NOMA
-      CHARACTER*24 NEWGEO,DEFICO
-C.......................................................................
-
-C BUT: CALCUL DES COORDONNEES D'UN POINT DE CONTACT
-
-C ENTREES  ---> NOMA   : NOM DU MAILLAGE
-C          ---> POSMA  : INDICE DE LA MAILLE DANS CONTAMA
-C          ---> XPG    : GAUSS CLASSIQUE, SOMMETS OU POINT INTERNE
-C          ---> YPG    : L'ORDRE DE PT DE GAUSSE
-C          ---> NEWGEO : LA NOUVELLE GEOMETRIE
-C  SUR LAQUELLE ON FAIT L'APPARIEME
-
-C SORTIES  <--- GEOM(3)   : COORDONNEES DU POINT DU CONTACT (EN 2D Z=0)
-C ...............................................................
-C   DECLARATION JEVEUX
-C.......................................................................
-
+      CHARACTER*8  NOMA
+      CHARACTER*24 DEFICO
+      CHARACTER*24 NEWGEO   
+      INTEGER      POSMA        
+      REAL*8       XPG
+      REAL*8       YPG
+      REAL*8       GEOM(3) 
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : MAPPAR
+C ----------------------------------------------------------------------
+C
+C CALCUL DES COORDONNEES D'UN POINT DE CONTACT
+C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT GEOMETRIQUE)
+C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
+C IN  POSMA  : INDICE DE LA MAILLE ESCLAVE DANS CONTAMA
+C IN  XPG    : COORDONNEE X DU POINT DE GAUSS
+C IN  YPG    : COORDONNEE Y DU POINT DE GAUSS
+C OUT GEOM   : COORDONNEES DU POINT DU CONTACT (EN 2D Z=0)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C           
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -52,94 +58,63 @@ C.......................................................................
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
-C.......................................................................
-C FIN DECLARATION JEVEUX
-C.......................................................................
-      INTEGER JZONE,JNOCO,JMACO,JNOMA,JPONO,NUMA,IATYMA,JCOOR
-      INTEGER NUTYP,ITYP,NNO,JDEC,INO,NO(9),POSNNO(9),I,J
-      REAL*8 FF(9),XPG,YPG,HPG
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*24 CONTMA,CONTNO,NOMACO,PNOMA
+      INTEGER JNOCO,JMACO,JNOMA,JPONO,JCOOR
+      INTEGER NNO,JDEC,INO,NO(9),POSNNO(9),I,J,IBID,NUMA
+      REAL*8 FF(9)
       REAL*8 COOR(27)
       CHARACTER*8 ALIAS
-      CHARACTER*24 PZONE,CONTMA,CONTNO,NOMACO,PNOMA
+C            
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      PZONE  = DEFICO(1:16)//'.PZONECO'
+C      
       CONTMA = DEFICO(1:16)//'.MAILCO'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       NOMACO = DEFICO(1:16)//'.NOMACO'
       PNOMA  = DEFICO(1:16)//'.PNOMACO'
-
-      CALL JEVEUO(PZONE,'L',JZONE)
       CALL JEVEUO(CONTNO,'L',JNOCO)
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(PNOMA,'L',JPONO)
+      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)  
+C
+C --- INITIALISATIONS
+C
+      DO 40 I=1,3
+        GEOM(I)=0.D0
+   40 CONTINUE          
+C
+C --- INFOS SUR LA MAILLE ESCLAVE 
+C 
       NUMA = ZI(JMACO+POSMA-1)
-
-C --- TYPE DE LA MAILLE MAITRE DE NUMERO ABSOLU NUMA
-C     SEG2=2  SEG3=4  TRIA3=7  TRIA6=9  QUAD4=12 QUAD8=14  QUAD9=16
-
-      CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
-      ITYP = IATYMA - 1 + NUMA
-      NUTYP = ZI(ITYP)
-      IF (NUTYP.EQ.2) THEN
-        ALIAS(1:3) = 'SG2'
-        NNO = 2
-      ELSE IF (NUTYP.EQ.4) THEN
-        ALIAS(1:3) = 'SG3'
-        NNO = 3
-      ELSE IF (NUTYP.EQ.7) THEN
-        ALIAS(1:3) = 'TR3'
-        NNO = 3
-      ELSE IF (NUTYP.EQ.9) THEN
-        ALIAS(1:3) = 'TR6'
-        NNO = 6
-      ELSE IF (NUTYP.EQ.12) THEN
-        ALIAS(1:3) = 'QU4'
-        NNO = 4
-      ELSE IF (NUTYP.EQ.14) THEN
-        ALIAS(1:3) = 'QU8'
-        NNO = 8
-      ELSE IF (NUTYP.EQ.16) THEN
-        ALIAS(1:3) = 'QU9'
-        NNO = 9
-      ELSE
-       CALL UTMESS('F','COPCO','STOP_1')
-      END IF
-
-
-
-C   RECUPERATION DE LA GEOMETRIE DES NOEUDS
-
-
-      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
-      JDEC = ZI(JPONO+POSMA-1)
+      JDEC = ZI(JPONO+POSMA-1)      
+      CALL MMELTY(NOMA,NUMA,ALIAS,NNO,IBID) 
+C
+C --- COORDONNEES DES NOEUDS DE LA MAILLE ESCLAVE
+C
       DO 10 INO = 1,NNO
         POSNNO(INO+1) = ZI(JNOMA+JDEC+INO-1)
-        NO(INO) = ZI(JNOCO+POSNNO(INO+1)-1)
+        NO(INO)       = ZI(JNOCO+POSNNO(INO+1)-1)
    10 CONTINUE
-
-C --- COORDONNEES DES NOEUDS DE LA MAILLE ESCLAVE
 
       DO 30 INO = 1,NNO
         COOR(3* (INO-1)+1) = ZR(JCOOR+3* (NO(INO)-1))
         COOR(3* (INO-1)+2) = ZR(JCOOR+3* (NO(INO)-1)+1)
         COOR(3* (INO-1)+3) = ZR(JCOOR+3* (NO(INO)-1)+2)
    30 CONTINUE
-
-C---- GEOMETRIE DU PT DE CONTACT  ---------------
-
-      DO 40 I=1,3
-          GEOM(I)=0.D0
-   40 CONTINUE
+C
+C --- COORDONNEES DU POINT DE CONTACT
+C
       CALL CALFFX(ALIAS,XPG,YPG,FF)
       DO 60 I = 1,3
         DO 50 J = 1,NNO
           GEOM(I) = FF(J)*COOR((J-1)*3+I) + GEOM(I)
    50   CONTINUE
    60 CONTINUE
-
+C
       CALL JEDEMA()
       END

@@ -3,7 +3,7 @@
      &                   DEPS,   SIGM,   VIM,    OPTION, ANGMAS,
      &                   SIGP,   VIP,    DSIDEP, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -73,7 +73,7 @@ C
       REAL*8             CRIT(*), INSTAM, INSTAP, TM, TP, TREF
       REAL*8             EPSM(*), DEPS(*), DSIDEP(*)
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
-      REAL*8             ANGMAS(3),ANGEUL(3)
+      REAL*8             ANGMAS(7),ANGEUL(3)
       REAL*8             VARPLU(NVARCM),VARMOI(NVARCM)
       REAL*8             VARREF(NVARCM)
 C
@@ -158,7 +158,13 @@ C     CORROSION
       
       CALL TECAEL(IZI,IZK)
       
-      CALL NAUEUL(ANGMAS,ANGEUL)
+      IF (ANGMAS(4).LT.1.D0) THEN
+          CALL NAUEUL(ANGMAS,ANGEUL)
+      ELSE
+         DO 1 I=1,3
+            ANGEUL(I)=ANGMAS(4+I)
+   1     CONTINUE
+      ENDIF
       
       CALL ZASTER(ZI(IZI),MODELE,NVAR,NDEF,NUNIT,INSTAM,INSTAP,
      &       NVARCM,NOMVAR,VARPLU,VARMOI,VARREF,

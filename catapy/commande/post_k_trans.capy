@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,8 +40,8 @@ POST_K_TRANS=MACRO(nom="POST_K_TRANS",op=post_k_trans_ops,sd_prod=table_sdaster,
            R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),             
            MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            DEGRE           =SIMP(statut='f',typ='I',into=(0,1,2,3,4,5,6,7) ),
-           LISSAGE_THETA   =SIMP(statut='f',typ='TXM',into=("LEGENDRE","LAGRANGE"),),
-           LISSAGE_G       =SIMP(statut='f',typ='TXM',into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO"),),
+           LISSAGE_THETA   =SIMP(statut='f',typ='TXM',into=("LEGENDRE","LAGRANGE","LAGRANGE_REGU"),),
+           LISSAGE_G       =SIMP(statut='f',typ='TXM',into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO","LAGRANGE_REGU"),),
 
 
            regles=(UN_PARMI('TABL_K_MODA','RESU_MODA'),

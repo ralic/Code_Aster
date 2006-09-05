@@ -4,7 +4,7 @@
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      REAL*8       ANG(3), ORIG(3)
+      REAL*8       ANG(3), ORIG(3), ANGEUL(3)
       CHARACTER*16 TOU
       CHARACTER*19 CARTMA
       CHARACTER*24 TMPNMA, TMPVMA
@@ -98,6 +98,7 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
          CALL GETVEM(NOMA,'MAILLE'  ,'MASSIF','MAILLE',
      +                                IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVR8('MASSIF','ANGL_REP'    ,IOC,1,3   ,ANG(1)   ,NREP)
+         CALL GETVR8('MASSIF','ANGL_EULER'  ,IOC,1,3   ,ANGEUL(1),NEUL)
          CALL GETVR8('MASSIF','ANGL_AXE'    ,IOC,1,2   ,ANG(1)   ,NAXE)
          CALL GETVR8('MASSIF','ORIG_AXE'    ,IOC,1,3   ,ORIG(1)  ,NORIG)
 C
@@ -109,6 +110,15 @@ C
              ZR(JDVC+4) = 0.D0
              ZR(JDVC+5) = 0.D0
              ZR(JDVC+6) = 0.D0
+         ELSEIF (NEUL.NE.0) THEN
+             CALL EULNAU(ANGEUL,ANG)
+             ZR(JDVC  ) = 2.D0
+             ZR(JDVC+1) = ANG(1)
+             ZR(JDVC+2) = ANG(2)
+             ZR(JDVC+3) = ANG(3)
+             ZR(JDVC+4) = ANGEUL(1)
+             ZR(JDVC+5) = ANGEUL(2)
+             ZR(JDVC+6) = ANGEUL(3)
            ELSE
              ZR(JDVC  ) = -1.D0
              ZR(JDVC+1) = ANG(1)

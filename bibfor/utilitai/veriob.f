@@ -3,7 +3,7 @@
       CHARACTER*(*) OBZ,VERIF
       INTEGER IARG1
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 05/09/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,28 +36,100 @@ C                  /'LONMAX_EGAL'  : ON VERIFIE QUE OBZ A UN LONMAX
 C                                    EGAL A IARG1
 C  IN   IARG1  :   ARGUMENT ENTIER NUMERO 1 (SI VERIF LE NECESSITE)
 C ----------------------------------------------------------------------
-      CHARACTER*24 OB
-      CHARACTER*1 CMES,KBID
-      INTEGER I1,I2,IBID
+      CHARACTER*32 OB
+      CHARACTER*1 CMES,KBID,TMES
+      INTEGER I1,I2,IBID,I3, I4
+ 
 C -DEB------------------------------------------------------------------
 
       OB=OBZ
       CMES='F'
       CALL JEEXIN(OB,I1)
 
+C ---VERIFICATION DE L'EXISTENCE
+
       IF (VERIF.EQ.'EXIS') THEN
         CALL ASSERT(IARG1.EQ.0 .OR. IARG1.EQ.1)
         IF (IARG1.EQ.1) CMES='A'
         IF (I1.EQ.0) CALL UTMESS(CMES,'VERIOB','OBJET INEXISTANT: '//OB)
+
+C ---VERIFICATION DE LA NON EXISTENCE
+
       ELSE IF (VERIF.EQ.'NOEXIS') THEN
         CALL ASSERT(IARG1.EQ.0 .OR. IARG1.EQ.1)
         IF (IARG1.EQ.1) CMES='A'
         IF (I1.GT.0) CALL UTMESS(CMES,'VERIOB','OBJET EXISTANT: '//OB)
+
+C ---VERIFICATION DE LA DIMENSION LONMAX D'UN VECTEUR
+
       ELSE IF (VERIF.EQ.'LONMAX_EGAL') THEN
         CALL JELIRA(OB,'LONMAX',I2,KBID)
         IF (I2.NE.IARG1)
      &     CALL UTMESS(CMES,'VERIOB','OBJET: '//OB//
      &                 ' DE LONMAX INCORRECT.')
+     
+C ---VERIFICATION DE LA DIMENSION NUTIOC D'UNE COLLECTION
+
+      ELSE IF (VERIF.EQ.'LON_COLL') THEN
+        CALL JELIRA(OB,'NUTIOC',I3,KBID)
+        IF (I3.NE.IARG1)
+     &    CALL UTMESS(CMES,'VERIOB','COLLECTION: '//OB//
+     &                 ' DE LON_COLL INCORRECT.')
+
+C ---VERIFICATION DE LA LONGUEUR DU NOM NOMMAX
+     
+      ELSE IF (VERIF.EQ.'LON_NOM') THEN
+       CALL JELIRA(OB,'NOMMAX',I4,KBID)
+       IF (I4.NE.IARG1)
+     &   CALL UTMESS(CMES,'VERIOB','COLLECTION: '//OB//
+     &                ' DE LON_NOM INCORRECT.')
+         
+C ---VERIFICATION DU TYPE : ENTIER
+
+      ELSE IF (VERIF.EQ.'I') THEN
+       CALL JELIRA(OB,'TYPE',IBID,TMES)
+       IF (TMES(1:1).NE.'I') 
+     &   CALL UTMESS(CMES,'VERIOB','OBJET: '//OB//
+     &                ' DE TYPE ENTIER INCORRECT.')
+      
+      
+C ---VERIFICATION DU TYPE : REEL
+
+      ELSE IF (VERIF.EQ.'R') THEN
+       CALL JELIRA(OB,'TYPE',IBID,TMES)
+        IF(TMES.NE.'R') 
+     &   CALL UTMESS(CMES,'VERIOB','OBJET: '//OB//
+     &                ' DE TYPE REEL INCORRECT.')
+      
+      
+C ---VERIFICATION DU TYPE : COMPLEXE  
+
+      ELSE IF (VERIF.EQ.'C') THEN
+       CALL JELIRA(OB,'TYPE',IBID,TMES)
+        IF(TMES.NE.'C') 
+     &    CALL UTMESS(CMES,'VERIOB','OBJET: '//OB//
+     &                ' DE TYPE COMPLEXE INCORRECT.')
+     
+             
+C ---VERIFICATION DU TYPE : LOGIQUE
+
+      ELSE IF (VERIF.EQ.'L') THEN
+       CALL JELIRA(OB,'TYPE',IBID,TMES)
+        IF(TMES.NE.'L') 
+     &    CALL UTMESS(CMES,'VERIOB','OBJET: '//OB//
+     &                ' DE TYPE LOGIQUE INCORRECT.')
+
+C ---VERIFICATION DU TYPE : CHAINE
+
+      ELSE IF (VERIF.EQ.'K') THEN
+       CALL JELIRA(OB,'TYPE',IBID,TMES)
+        IF(TMES.NE.'K') 
+     &   CALL UTMESS(CMES,'VERIOB','OBJET: '//OB//
+     &                ' DE TYPE CHAINE INCORRECT.')
+     
+ 
+C ---RETOUR CODE ERREUR
+     
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

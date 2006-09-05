@@ -1,10 +1,10 @@
       SUBROUTINE GCOUR2 ( RESU, NOMA, NOMO, NOMNO, COORN, NBNOEU, TRAV1,
-     &           TRAV2,TRAV3,CHFOND,FOND,CONNEX,STOK4,THLAGR,NBRE,
-     &           MILIEU)
+     &          TRAV2,TRAV3,CHFOND,FOND,CONNEX,STOK4,THLAGR,THLAG2,NBRE,
+     &          MILIEU,NDIMTE,PAIR)
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C
 C FONCTION REALISEE:
 C
@@ -81,22 +82,23 @@ C
       CHARACTER*24      TRAV1,TRAV2,TRAV3,OBJOR,OBJEX,CHFOND,REPK
       CHARACTER*24      OBJ3,NORM,STOK1,STOK2,STOK3,NUMGAM,CHAMNO
       CHARACTER*24      STOK4,DIRE4,COORN,NOMNO,DIRE5,INDICG,DIRTH
+      CHARACTER*24      ABSGAM
       CHARACTER*8       CHBID, FOND, RESU, NOMA, NOMO
       CHARACTER*6       KIORD
 C
       INTEGER           NBNOEU,IADRT1,IADRT2,IADRT3,IDIREC,ITHETA
       INTEGER           IADR8,IM2,IN2,IADRCO,JMIN,IELINF,IADNUM
       INTEGER           IADRNO,NNOEU,NUM,INDIC,IERD,IADRTT,NBRE
-      INTEGER           IRET,NUMA,NDIMTE,IDIRTH,IDEEQ,NBDIR
-      INTEGER           ITANEX,ITANOR
+      INTEGER           IRET,NUMA,NDIMTE,IDIRTH,IDEEQ,NBDIR,IAORIG
+      INTEGER           ITANEX,ITANOR,NBNOS,IADABS,KNO,IAEXTR
 C
       REAL*8            DIRX,DIRY,DIRZ,XI1,YI1,ZI1,XJ1,YJ1,ZJ1
       REAL*8            XIJ,YIJ,ZIJ,EPS,D,TEI,TEJ
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,SMIN,XN,YN,ZN
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2
-      REAL*8            NORME,VECX,VECY,VECZ,R8MAEM
+      REAL*8            NORME,VECX,VECY,VECZ,R8MAEM,XL
 C
-      LOGICAL           THLAGR,SUIV,MILIEU,CONNEX
+      LOGICAL           THLAGR,SUIV,MILIEU,CONNEX,THLAG2,PAIR
 C
       CALL JEMARQ()
 
@@ -272,7 +274,21 @@ C
 C ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 C TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 C
-      IF(THLAGR) THEN
+      IF(THLAG2) THEN
+        PAIR = .FALSE.
+        NBNOS = NBNOEU
+        IF (MILIEU) NBNOS = (NBNOEU+1)/2
+        IF (MOD(NBNOS,2) .EQ.1) NDIMTE = (NBNOS+1)/2
+        IF (MOD(NBNOS,2) .EQ.0) THEN
+          NDIMTE = 1+NBNOS/2
+          PAIR = .TRUE.
+          IF (CONNEX) THEN
+          CALL UTMESS('F','GCOUR2','L''OPTION DE LISSAGE ''LAGRANG2'''//
+     &    ' N''A PAS ETE DEVELOPPEE LORSQUE LE NOMBRE DE NOEUDS D''UN'//
+     &    ' FOND DE FISSURE FERME EST PAIR.')
+          ENDIF
+        END IF
+      ELSEIF(THLAGR) THEN
         NDIMTE = NBNOEU
       ELSE
         NDIMTE = NBRE + 1
@@ -314,7 +330,9 @@ C  .VALE
         CALL WKVECT(CHAMNO,'V V R',3*NBEL,ITHETA)
 C
         IF(K.NE.(NDIMTE+1)) THEN
-          IF(THLAGR) THEN
+
+          IF(THLAG2) THEN
+
             DO 3 I=1,NBNOEU
               NUM    = ZI(IADNUM+I-1)
               ZR(ITHETA+(NUM-1)*3+1-1) = 0.D0
@@ -322,6 +340,145 @@ C
               ZR(ITHETA+(NUM-1)*3+3-1) = 0.D0
               ZI(INDIC+NUM-1) = 1
 3           CONTINUE
+            CALL GABSCU(NBNOEU,COORN,NOMNO,CHFOND,XL,ABSGAM)
+            CALL JEVEUO(ABSGAM,'L',IADABS)
+            IF (MILIEU) THEN
+              KNO = 4*K-3
+            ELSE
+              KNO = 2*K-1
+            ENDIF
+            IF ((K. EQ. NDIMTE) .AND.  PAIR) THEN
+              KNO = NBNOEU
+            ENDIF
+            IADRTT = IADRT3 + (K-1)*NBNOEU + KNO - 1
+            ZR(IADRTT) = 1.D0
+            IF (K. NE. 1) THEN
+              IF (MILIEU) THEN
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1-4)
+                ZR(IADRTT-1) = (ZR(IADABS+KNO-1-1)-S1)/(S0-S1)
+                ZR(IADRTT-2) = (ZR(IADABS+KNO-1-2)-S1)/(S0-S1)
+                ZR(IADRTT-3) = (ZR(IADABS+KNO-1-3)-S1)/(S0-S1)
+                ZR(IADRTT-4) = (ZR(IADABS+KNO-1-4)-S1)/(S0-S1)
+              ELSE
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1-2)
+                ZR(IADRTT-1) = (ZR(IADABS+KNO-1-1)-S1)/(S0-S1)
+              ENDIF
+            ENDIF
+            IF ((K.LT. NDIMTE) .OR. 
+     &          (K. EQ. (NDIMTE-1) .AND.  .NOT. PAIR)) THEN
+              IF (MILIEU) THEN
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1+4)
+                ZR(IADRTT+1) = (ZR(IADABS+KNO-1+1)-S1)/(S0-S1)
+                ZR(IADRTT+2) = (ZR(IADABS+KNO-1+2)-S1)/(S0-S1)
+                ZR(IADRTT+3) = (ZR(IADABS+KNO-1+3)-S1)/(S0-S1)
+                ZR(IADRTT+4) = (ZR(IADABS+KNO-1+4)-S1)/(S0-S1)
+              ELSE
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1+2)
+                ZR(IADRTT+1) = (ZR(IADABS+KNO-1+1)-S1)/(S0-S1)
+              ENDIF
+            ENDIF
+            IF (K. EQ. (NDIMTE-1) .AND. PAIR) THEN
+              IF (MILIEU) THEN
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1+2)
+                ZR(IADRTT+2) = 0.5D0
+                ZR(IADRTT+1) =0.5D0*(1+(ZR(IADABS+KNO-1+1)-S1)/(S0-S1))
+              ELSE
+                ZR(IADRTT+1) = 0.5D0
+              ENDIF
+            ENDIF
+            IF ((K. EQ. NDIMTE) .AND.  PAIR) THEN
+              IF (MILIEU) THEN
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1-2)
+                ZR(IADRTT) = 0.5D0
+                ZR(IADRTT-1) =0.5D0*(ZR(IADABS+KNO-1-1)-S1)/(S0-S1)
+                ZR(IADRTT-2) = 0.D0
+                ZR(IADRTT-3) = 0.D0
+              ELSE
+                ZR(IADRTT) = 0.5D0
+                ZR(IADRTT-1) = 0.D0
+              ENDIF
+            ENDIF
+            IF ((K .EQ. 1) .AND. (CONNEX))  THEN
+              IADRTT = IADRT3 + (K-1)*NBNOEU + NBNOEU - 1
+              IF (MILIEU) THEN
+                S0 = ZR(IADABS+NBNOEU-1)
+                S1 = ZR(IADABS+NBNOEU-1-4)
+                ZR(IADRTT) = (ZR(IADABS+NBNOEU-1)-S1)/(S0-S1)
+                ZR(IADRTT-1) = (ZR(IADABS+NBNOEU-1-1)-S1)/(S0-S1)
+                ZR(IADRTT-2) = (ZR(IADABS+NBNOEU-1-2)-S1)/(S0-S1)
+                ZR(IADRTT-3) = (ZR(IADABS+NBNOEU-1-3)-S1)/(S0-S1)
+              ELSE
+                S0 = ZR(IADABS+NBNOEU-1)
+                S1 = ZR(IADABS+NBNOEU-1-2)
+                ZR(IADRTT-1) = (ZR(IADABS+NBNOEU-1-1)-S1)/(S0-S1)
+              ENDIF
+            ENDIF
+            IF ((K .EQ. NDIMTE) .AND. (CONNEX))  THEN
+              IADRTT = IADRT3 + (K-1)*NBNOEU + 1 - 1
+              IF (MILIEU) THEN
+                S0 = ZR(IADABS+1-1)
+                S1 = ZR(IADABS+1-1+4)
+                ZR(IADRTT) = (ZR(IADABS+1-1)-S1)/(S0-S1)
+                ZR(IADRTT+1) = (ZR(IADABS+1-1+1)-S1)/(S0-S1)
+                ZR(IADRTT+2) = (ZR(IADABS+1-1+2)-S1)/(S0-S1)
+                ZR(IADRTT+3) = (ZR(IADABS+1-1+3)-S1)/(S0-S1)
+              ELSE
+                S0 = ZR(IADABS+KNO-1)
+                S1 = ZR(IADABS+KNO-1+2)
+                ZR(IADRTT+1) = (ZR(IADABS+KNO-1+1)-S1)/(S0-S1)
+              ENDIF
+            ENDIF
+            I1 = 1
+            IF (MILIEU) I1 = 3
+            DO 4 I= (-1*I1), I1
+              IF (.NOT. (((K. EQ. 1) .AND. (I. LT. 0)) 
+     &        .OR.  ((K. EQ. NDIMTE) .AND. (I. GT. 0))
+     &        .OR.  ((K. EQ. (NDIMTE-1)) .AND. (I. GT. 2) .AND. PAIR)))
+     &       THEN
+                NUM    = ZI(IADNUM+KNO-1+I)
+                IADRTT = IADRT3 + (K-1)*NBNOEU + KNO-1 +I
+                ZR(ITHETA+(NUM-1)*3+1-1) = ZR(IADRTT)
+     &                          *ZR(IN2+(KNO-1+I)*3+1-1)
+                ZR(ITHETA+(NUM-1)*3+2-1) = ZR(IADRTT)
+     &                          *ZR(IN2+(KNO-1+I)*3+2-1)
+                ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IADRTT)
+     &                          *ZR(IN2+(KNO-1+I)*3+3-1)
+              ENDIF
+4           CONTINUE
+            IF (CONNEX .AND. ((K. EQ. 1) .OR. (K. EQ. NDIMTE)))  THEN
+              IF (K. EQ. 1) KNO = NBNOEU
+              IF (K. EQ. NDIMTE) KNO = 1
+              DO 401 I= (-1*I1), I1
+              IF (.NOT. (((K. EQ. 1) .AND. (I. GT. 0)) 
+     &        .OR.  ((K. EQ. NDIMTE) .AND. (I. LT. 0))))
+     &       THEN
+                NUM    = ZI(IADNUM+KNO-1+I)
+                IADRTT = IADRT3 + (K-1)*NBNOEU + KNO-1 +I
+                ZR(ITHETA+(NUM-1)*3+1-1) = ZR(IADRTT)
+     &                          *ZR(IN2+(KNO-1+I)*3+1-1)
+                ZR(ITHETA+(NUM-1)*3+2-1) = ZR(IADRTT)
+     &                          *ZR(IN2+(KNO-1+I)*3+2-1)
+                ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IADRTT)
+     &                          *ZR(IN2+(KNO-1+I)*3+3-1)
+              ENDIF
+401           CONTINUE
+            ENDIF
+C
+          ELSEIF(THLAGR) THEN
+C
+            DO 31 I=1,NBNOEU
+              NUM    = ZI(IADNUM+I-1)
+              ZR(ITHETA+(NUM-1)*3+1-1) = 0.D0
+              ZR(ITHETA+(NUM-1)*3+2-1) = 0.D0
+              ZR(ITHETA+(NUM-1)*3+3-1) = 0.D0
+              ZI(INDIC+NUM-1) = 1
+31           CONTINUE
             NUM    = ZI(IADNUM+K-1)
             IADRTT = IADRT3 + (K-1)*NBNOEU + K - 1
             ZR(IADRTT) = 1.D0
@@ -345,14 +502,14 @@ C
               ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IADRTT)*ZR(IN2+(1-1)*3+3-1)
             ENDIF
           ELSE
-            DO 4 I=1,NBNOEU
+            DO 41 I=1,NBNOEU
               NUM    = ZI(IADNUM+I-1)
               IADRTT = IADRT3 + (K-1)*NBNOEU + I - 1
               ZR(ITHETA+(NUM-1)*3+1-1) = ZR(IADRTT)*ZR(IN2+(I-1)*3+1-1)
               ZR(ITHETA+(NUM-1)*3+2-1) = ZR(IADRTT)*ZR(IN2+(I-1)*3+2-1)
               ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IADRTT)*ZR(IN2+(I-1)*3+3-1)
               ZI(INDIC+NUM-1) = 1
-4           CONTINUE
+41           CONTINUE
           ENDIF
         ELSE
 C     STOCKAGE DE LA DIRECTION DU CHAMPS THETA SUR LE FOND DE FISSURE
@@ -449,7 +606,6 @@ C
 700       CONTINUE          
         ENDIF
 500   CONTINUE
-
 C
 C
 C DESTRUCTION D'OBJETS DE TRAVAIL

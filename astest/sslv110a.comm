@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,6 +231,20 @@ GLOC0M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
                                    DEFORMATION = 'PETIT'),
                        )
 
+
+GLOC0M1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
+                      THETA=_F(FOND_FISS=FISS1,
+                               R_SUP_FO=RSUP0,  
+                               R_INF_FO=RINF0,),
+                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
+                                 LISSAGE_G='LAGRANGE_REGU',),
+                        TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+                        EXCIT=_F(CHARGE=CH,),
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       )
+
+
 #----------------------------------------------------------------------
 #                           COURONNE 2
 #----------------------------------------------------------------------
@@ -278,6 +292,20 @@ GLOC1M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
                                     DEFORMATION = 'PETIT'),
                      )
 
+
+GLOC1M1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
+                        THETA=_F(FOND_FISS=FISS1,
+                                 R_SUP_FO=RSUP1,
+                                 R_INF_FO=RINF1,), 
+                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
+                                 LISSAGE_G='LAGRANGE_REGU',), 
+                       NUME_ORDRE=1,SYME_CHAR='SYME',
+                        EXCIT=_F(CHARGE=CH,),
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                     )
+
+
 #----------------------------------------------------------------------
 #                           COURONNE 3
 #----------------------------------------------------------------------
@@ -322,6 +350,18 @@ GLOC2M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,SYME_CHAR='SYME'
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                        )
+
+
+GLOC2M1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,SYME_CHAR='SYME',
+                        LIST_ORDRE=LISTI,  EXCIT=_F(CHARGE=CH,),
+                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
+                                 LISSAGE_G='LAGRANGE_REGU',),  
+                       THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                       )
+
+
 
 #----------------------------------------------------------------------
 #              TEST DE G SUR LES 3 COURONNES
@@ -433,6 +473,30 @@ TEST_TABLE(      TABLE=GLOC2M,
                  PRECISION=5.E-2   ,
                       REFERENCE='ANALYTIQUE'     )
 
+TEST_TABLE(      TABLE=GLOC0M1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1099'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=7.171E-5,
+                 PRECISION=8.E-2,
+                      REFERENCE='ANALYTIQUE'     )
+
+TEST_TABLE(      TABLE=GLOC1M1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1099'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=7.171E-5,
+                 PRECISION=4.E-2,
+                      REFERENCE='ANALYTIQUE'     )
+
+TEST_TABLE(      TABLE=GLOC2M1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1099'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=7.171E-5,
+                 PRECISION=5.E-2,
+                      REFERENCE='ANALYTIQUE'     )
+
 #----------------------------------------------------------------------
 #              TEST DE G(B) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
@@ -491,6 +555,7 @@ TEST_TABLE(      TABLE=GLOC2M,
                  PRECISION=1.4E-1  ,
                       REFERENCE='ANALYTIQUE'      )
 
+
 #----------------------------------------------------------------------
 #              TEST DE G(C) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
@@ -548,6 +613,30 @@ TEST_TABLE(      TABLE=GLOC2M,
                       VALE=5.215E-5,
                  PRECISION=5.E-2   ,
                       REFERENCE='ANALYTIQUE'     )
+
+TEST_TABLE(      TABLE=GLOC0M1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1179'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=5.215E-5,
+                 PRECISION=4.E-2   ,
+                      REFERENCE='ANALYTIQUE'      )
+
+TEST_TABLE(      TABLE=GLOC1M1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1179'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=5.215E-5,
+                 PRECISION=1.E-2   ,
+                      REFERENCE='ANALYTIQUE'      )
+
+TEST_TABLE(      TABLE=GLOC2M1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1179'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=5.215E-5,
+                 PRECISION=3.E-2   ,
+                      REFERENCE='ANALYTIQUE'      )
 
 FIN()
 #

@@ -1,9 +1,9 @@
       SUBROUTINE GKSIMP ( RESULT, NNOFF, ABSC, IADRGK, NUMERO, IADGKS,
-     &                    NDEG, IADGKI, EXTIM, TIME, IORDR, UNIT )
+     &                  NDEG, NDIMTE, IADGKI, EXTIM, TIME, IORDR, UNIT )
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C    UNIT         --> UNITE DU FICHIER D'AFFICHAGE
 C ......................................................................
 C
       INTEGER         NNOFF, UNIT, NUMERO, NDEG, IORDR, I, I1,IMOD
-      INTEGER         IADRGK, IADGKS, IADGKI
+      INTEGER         IADRGK, IADGKS, IADGKI, NDIMTE
       REAL*8          GS(1), GTHI(1), GI(1), TIME, ABSC(*)
       LOGICAL         EXTIM
       CHARACTER*8    RESULT
@@ -83,6 +83,8 @@ C
          WRITE(UNIT,557)
       ELSE IF (NUMERO.EQ.4) THEN
          WRITE(UNIT,558)
+      ELSE IF (NUMERO.EQ.5) THEN
+         WRITE(UNIT,559)
       ENDIF
       WRITE(UNIT,666)
       WRITE(UNIT,*)
@@ -108,9 +110,15 @@ C- IMPRESSION DU TAUX DE RESTITUTION D ENERGIE G
         WRITE(UNIT,*)
         WRITE(UNIT,*) ' NOEUD    GELEM(THETAI)'
         WRITE(UNIT,*)
-        DO 20 I=1,NNOFF
-          WRITE(UNIT,110) I,ZR(IADGKI-1+(I-1)*5+1)
-20      CONTINUE
+        IF ( NUMERO .EQ. 5 ) THEN
+          DO 20 I=1,NDIMTE
+            WRITE(UNIT,110) I,ZR(IADGKI-1+(I-1)*5+1)
+20        CONTINUE
+        ELSE
+          DO 21 I=1,NNOFF
+            WRITE(UNIT,110) I,ZR(IADGKI-1+(I-1)*5+1)
+21        CONTINUE
+        ENDIF
         WRITE(UNIT,*)
       ENDIF
 C
@@ -143,12 +151,16 @@ C- IMPRESSION DES FACTEURS D INTENSITE DE CONTRAINTE K
           WRITE(UNIT,*)
           WRITE(UNIT,773) IMOD
           WRITE(UNIT,*)
-          DO 401 I=1,NNOFF
-            WRITE(UNIT,110) I,ZR(IADGKI-1+(I-1)*5+IMOD+1)
-401        CONTINUE
+          IF ( NUMERO .EQ. 5 ) THEN
+            DO 401 I=1,NDIMTE
+              WRITE(UNIT,110) I,ZR(IADGKI-1+(I-1)*5+IMOD+1)
+401         CONTINUE
+          ELSE
+            DO 402 I=1,NNOFF
+              WRITE(UNIT,110) I,ZR(IADGKI-1+(I-1)*5+IMOD+1)
+402         CONTINUE
+          ENDIF
           WRITE(UNIT,*)
-
-
         ENDIF
         IF ( (NUMERO.EQ.1) .OR. (NUMERO.EQ.2) ) THEN
           WRITE(UNIT,751) IMOD
@@ -189,6 +201,7 @@ C
 556   FORMAT('THETA_LAGRANGE  G_LEGENDRE (DEGRE ',I2,')')
 557   FORMAT('THETA_LAGRANGE  G_LAGRANGE')
 558   FORMAT('THETA_LAGRANGE  G_LAGRANGE_NO_NO')
+559   FORMAT('THETA_LAGRANGE_REGU  G_LAGRANGE_REGU')
 666   FORMAT(37('*'))
 667   FORMAT(37('+'))
 

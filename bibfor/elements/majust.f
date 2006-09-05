@@ -1,6 +1,6 @@
-      SUBROUTINE MAJUST(ALIAS,XI,YI,LDIST,TOL)
+      SUBROUTINE MAJUST(ALIAS,XI,YI,TOLEOU,LDIST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/03/2006   AUTEUR KHAM M.KHAM 
+C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,16 +20,39 @@ C ======================================================================
 
       IMPLICIT NONE
       CHARACTER*8 ALIAS
-      REAL*8 XI,YI,XII,YII,DIST,TOL
-      LOGICAL LDIST
-      
-      DIST=1.D0+TOL
+      REAL*8      XI,YI,TOLEOU
+      LOGICAL     LDIST
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : MPROJD/MPROJP
+C ----------------------------------------------------------------------
+C
+C AJUSTE LES COORDONNES PARAMETRIQUES POUR RESTER DANS LA MAILLE
+C
+C IN  ALIAS  : TYPE DE L'ELEMENT
+C               'SG2','SG3'  
+C               'TR3','TR6'  
+C               'QU4','QU8','QU9' 
+C I/O XI     : POINT DE CALCUL SUIVANT KSI1 DES
+C               FONCTIONS DE FORME ET LEURS DERIVEES
+C I/O YI     : POINT DE CALCUL SUIVANT KSI2 DES
+C               FONCTIONS DE FORME ET LEURS DERIVEES
+C IN  TOLEOU : TOLERANCE POUR PROJECTION HORS SEGMENT 
+C OUT LDIST  : VAUT .FALSE. SI POINT RAMENE DANS ELEMENT DE REFERENCE
+C
+C ----------------------------------------------------------------------
+C      
+      REAL*8 XII,YII,DIST
+C
+C ----------------------------------------------------------------------
+C
+
+      DIST = 1.D0+TOLEOU
       IF ((ALIAS(1:3).EQ.'SG2') .OR. (ALIAS(1:3).EQ.'SG3')) THEN
         IF (ABS(XI).GT.DIST)  LDIST = .FALSE.
         IF (XI.LT.-1.D0) XI = -1.D0
-        IF (XI.GT.1.D0) XI = 1.D0
-      END IF
-      IF ((ALIAS(1:3).EQ.'TR3') .OR. (ALIAS(1:3).EQ.'TR6')) THEN
+        IF (XI.GT.1.D0)  XI = 1.D0
+      ELSE IF ((ALIAS(1:3).EQ.'TR3') .OR. (ALIAS(1:3).EQ.'TR6')) THEN
         IF (XI.LT.-1.D0) XI = -1.D0
         IF (YI.LT.-1.D0) YI = -1.D0
         IF (((XI-YI+2.D0).LT.-0.D0) .AND. ((XI+YI).GT.-0.D0)) THEN
@@ -47,9 +70,7 @@ C ======================================================================
           XI = XII
           YI = YII
         END IF
-      END IF
-
-      IF ((ALIAS(1:3).EQ.'QU4') .OR. (ALIAS(1:3).EQ.'QU8') .OR.
+      ELSE IF ((ALIAS(1:3).EQ.'QU4') .OR. (ALIAS(1:3).EQ.'QU8') .OR.
      &    (ALIAS(1:3).EQ.'QU9')) THEN
         IF (XI.LT.-1.D0) XI = -1.D0
         IF (XI.GT.1.D0) XI = 1.D0

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ MO=AFFE_MODELE(
 MA=MODI_MAILLAGE(reuse =MA,
                        MAILLAGE=MA,
                        ORIE_PEAU_2D=_F(GROUP_MA=('AB','CD','EF','GH'),),
-                       MODELE=MO,); 
+                       ); 
 MA=MODI_MAILLAGE(reuse =MA,
                        MAILLAGE=MA,
                        INFO=2,
