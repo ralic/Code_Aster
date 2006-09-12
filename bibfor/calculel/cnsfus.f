@@ -1,8 +1,9 @@
-      SUBROUTINE CNSFUS(NBCHS,LICHS,LCUMUL,LCOEFR,BASE,CNS3Z)
+      SUBROUTINE CNSFUS(NBCHS,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,
+     &                  BASE,CNS3Z)
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/01/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +23,9 @@ C ======================================================================
       IMPLICIT NONE
       INTEGER NBCHS
       CHARACTER*(*) LICHS(NBCHS),CNS3Z,BASE
-      LOGICAL LCUMUL(NBCHS)
+      LOGICAL LCUMUL(NBCHS),LCOC
       REAL*8 LCOEFR(NBCHS)
+      COMPLEX*16 LCOEFC(NBCHS)
 C ---------------------------------------------------------------------
 C BUT: FUSIONNER UNE LISTE DE CHAM_NO_S POUR EN FORMER 1 AUTRE
 C ---------------------------------------------------------------------
@@ -33,6 +35,8 @@ C LICHS   IN/JXIN  V(K19) : LISTE DES SD CHAM_NO_S A FUSIONNER
 C LCUMUL  IN       V(L)   : V(I) =.TRUE. => ON ADDITIONNE LE CHAMP I
 C                         : V(I) =.FALSE. => ON SURCHARGE LE CHAMP I
 C LCOEFR  IN       V(R)   : LISTE DES COEF. MULT. DES VALEURS DES CHAMPS
+C LCOEFC  IN       V(C)   : LISTE DES COEF. MULT. DES VALEURS DES CHAMPS
+C LCOC    IN       L      : =TRUE SI COEF COMPLEXE
 C CNS3Z   IN/JXOUT K19 : SD CHAM_NO_S RESULTAT
 C BASE    IN       K1  : BASE DE CREATION POUR CNS3Z : G/V/L
 
@@ -75,6 +79,7 @@ C     ------------------------------------------------------------------
       CHARACTER*3 TSCA
       CHARACTER*19 CNS1,CNS3
       REAL*8 COEFR
+      COMPLEX*16 COEFC
       LOGICAL CUMUL
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -147,16 +152,18 @@ C     ---------------------------------------
       CALL JEVEUO(CNS3//'.CNSL','E',JCN3L)
 
 
-
-
 C     2- RECOPIE DE CNS1 DANS CNS3 :
 C     ------------------------------------------
       DO 60,ICHS = 1,NBCHS
         CNS1 = LICHS(ICHS)
 
         CUMUL = LCUMUL(ICHS)
-        COEFR = LCOEFR(ICHS)
-        COEFI = NINT(COEFR)
+        IF(LCOC)THEN
+          COEFC = LCOEFC(ICHS)
+        ELSE
+          COEFR = LCOEFR(ICHS)
+          COEFI = NINT(COEFR)
+        ENDIF
 
         CALL JEVEUO(CNS1//'.CNSD','L',JCN1D)
         CALL JEVEUO(CNS1//'.CNSC','L',JCN1C)
@@ -187,7 +194,11 @@ C             -- SI AFFECTATION :
                 ELSE IF (TSCA.EQ.'L') THEN
                   ZL(JCN3V-1+K3) = ZL(JCN1V-1+K1)
                 ELSE IF (TSCA.EQ.'C') THEN
-                  ZC(JCN3V-1+K3) = COEFR*ZC(JCN1V-1+K1)
+                  IF(LCOC)THEN
+                    ZC(JCN3V-1+K3) = COEFC*ZC(JCN1V-1+K1)
+                  ELSE
+                    ZC(JCN3V-1+K3) = COEFR*ZC(JCN1V-1+K1)
+                  ENDIF
                 ELSE IF (TSCA.EQ.'K8') THEN
                   ZK8(JCN3V-1+K3) = ZK8(JCN1V-1+K1)
                 ELSE
@@ -199,7 +210,11 @@ C             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                 IF (TSCA.EQ.'R') THEN
                   ZR(JCN3V-1+K3) = ZR(JCN3V-1+K3) + COEFR*ZR(JCN1V-1+K1)
                 ELSE IF (TSCA.EQ.'C') THEN
+                 IF(LCOC)THEN
+                  ZC(JCN3V-1+K3) = ZC(JCN3V-1+K3) + COEFC*ZC(JCN1V-1+K1)
+                 ELSE
                   ZC(JCN3V-1+K3) = ZC(JCN3V-1+K3) + COEFR*ZC(JCN1V-1+K1)
+                 ENDIF
                 ELSE IF (TSCA.EQ.'I') THEN
                   ZI(JCN3V-1+K3) = ZI(JCN3V-1+K3) + COEFI*ZI(JCN1V-1+K1)
                 ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN

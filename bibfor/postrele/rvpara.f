@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -191,7 +191,7 @@ C
                JNOCP = JNOCP + 1
             ELSEIF ( TYSD .EQ. 'MULT_ELAS' )  THEN
                JNCAS = JNCAS + 1
-            ELSEIF ( TYSD .EQ. 'FOURIER_ELAS' )  THEN
+            ELSEIF ( TYSD(1:8) .EQ. 'FOURIER_' )  THEN
                JMODE = JMODE + 1
             ELSEIF ( TYSD .EQ. 'COMB_FOURIER' )  THEN
                JANGL = JANGL + 1

@@ -3,7 +3,7 @@
      &   PRECDC, METHOD, OMECOR, STURM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 11/09/2006   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C         FREQUENCE PRECEDENTE, PUIS ON RECALCULE FREQMIN-----
 C
       IF (LOGINF) THEN
          IF (VPINF2.LT.VPINF) THEN
-             IF(VPINF .GT. R8PREM()) THEN
+             IF(VPMAX .GT. R8PREM()) THEN
                 TOLE=(ABS(VPINF2-VPINF)/VPINF)
                 IF (TOLE .LT. PRECDC) THEN
                     CALL UTMESS ('A','VPBOST.01','IL Y A DES '//

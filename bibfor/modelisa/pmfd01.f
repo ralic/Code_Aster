@@ -1,6 +1,6 @@
       SUBROUTINE PMFD01(NOMA,CARELE,VNBFIB,VPOINT,VCARFI,CESDEC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL LCUMUL(2),EXIPMF
       REAL*8 LCOEFR(2)
       CHARACTER*8  LICMP(3)
+      COMPLEX*16 CBID
 
 C     ------------------------------------------------------------------
 
@@ -112,7 +113,7 @@ C     --------------------------------------
       LCOEFR(1) = 1.D0
       LCOEFR(2) = 1.D0
       CES3 = '&&PMFD01.CES3'
-      CALL CESFUS(2,LICHS,LCUMUL,LCOEFR,'V',CES3)
+      CALL CESFUS(2,LICHS,LCUMUL,LCOEFR,CBID,.FALSE.,'V',CES3)
       CALL DETRSD('CHAM_ELEM_S',CES1)
 
       CEL = CARELE//'.CANBSP'

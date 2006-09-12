@@ -2,7 +2,7 @@
      &                  TM,EPSM,DEPS,SIGM,
      &                  SIGP,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/02/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,12 +141,12 @@ C --- CALCUL DE LA MATRICE TANGENTE
         CALL HYPCPD(C11,C22,C33,C12,
      &              K,C10,C01,C20,
      &              DSIDEP)
-        DO 130 K=1,2*NDIM
-          IF (K.EQ.3) GOTO 130
+        DO 130 M=1,2*NDIM
+          IF (M.EQ.3) GOTO 130
           DO 140 L=1,2*NDIM
             IF (L.EQ.3) GO TO 140
-              DSIDEP(K,L )= DSIDEP(K,L) -
-     &                    1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+              DSIDEP(M,L )= DSIDEP(M,L) -
+     &                    1.D0/DSIDEP(3,3)*DSIDEP(M,3)*DSIDEP(3,L)
  140      CONTINUE
  130    CONTINUE
       ELSE IF (TYPMOD(1)(1:6).EQ.'D_PLAN') THEN

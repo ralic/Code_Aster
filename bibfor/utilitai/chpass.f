@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,16 +45,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 
-      INTEGER N1,IB,NBOCC,IOCC,NBTROU,JNUTRO,NBMOCL
+      INTEGER N1,IB,NBOCC,IOCC,NBTROU,JNUTRO,NBMOCL,JDESC,LNOM
       LOGICAL CHGCMP,CUMUL,LCUMUL(2)
-      INTEGER NCMP,JLICMP,GD,JCMPGD,JLICM2,IRET,NNCP
+      INTEGER NCMP,JLICMP,GD,JCMPGD,JLICM2,IRET,NNCP,JREFE,NEQ,NCHG
       REAL*8 COEFR,LCOEFR(2)
+      COMPLEX*16 COEFC,LCOEFC(2)
+      CHARACTER*1 TYPVEC
+      CHARACTER*6 K6B
       CHARACTER*8 KBID,MODELE
-      CHARACTER*8 CHAMP,NOMGD,NOMGD2
-      CHARACTER*3 PROL0
+      CHARACTER*8 CHAMP,NOMGD,NOMGD2,K8B
+      CHARACTER*3 PROL0,TSCA
       CHARACTER*16 LIMOCL(5),TYMOCL(5),TYPEM
       CHARACTER*19 CHS1,CHS2,NUTROU,LICHS(2),CESMOD,OPTION,CESRAZ
-      CHARACTER*19 CHS3,LIGREL
+      CHARACTER*19 CHS3,LIGREL,PROF,CHAMN2
+      CHARACTER*24 CNOM
+
+      LOGICAL LCOC
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
@@ -105,11 +111,15 @@ C     ------------------------------------------------------------------
 C     2- BOUCLE DE VERIF SUR LES OCCURENCES DU MOT CLE "ASSE" :
 C     ---------------------------------------------------------
       CALL GETFAC('ASSE',NBOCC)
+      CNOM = '&&CHPASS.CHAM_GD_LISTE'
+      CALL WKVECT(CNOM,'V V K24',NBOCC,LNOM)
+
       DO 10,IOCC = 1,NBOCC
 
 C       2.1 VERIFICATION DES CARACTERISTIQUES DU CHAMP :
 C       ------------------------------------------------
         CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
+        ZK24(LNOM+IOCC-1)=CHAMP
         CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IB,TYCH2,IB)
 
 
@@ -166,6 +176,7 @@ C     ---------------------------------
 C     4- BOUCLE SUR LES OCCURENCES DU MOT CLE "ASSE" :
 C     -----------------------------------------------------
       CALL GETFAC('ASSE',NBOCC)
+      NCHG=0
       DO 20,IOCC = 1,NBOCC
         CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
         CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IB,TYCH2,IB)
@@ -173,10 +184,8 @@ C     -----------------------------------------------------
         CUMUL = .FALSE.
         CALL GETVTX('ASSE','CUMUL',IOCC,1,1,KBID,IB)
         IF (KBID.EQ.'OUI') CUMUL = .TRUE.
-        CALL GETVR8('ASSE','COEF_R',IOCC,1,1,COEFR,IB)
 
-
-C       4.1 CALCUL DE LA LISTE DES CMPS ET DU BOOLEEN CHGCMP
+C       4.0 CALCUL DE LA LISTE DES CMPS ET DU BOOLEEN CHGCMP
 C        QUI INDIQUE QUE L'ON DOIT MODIFIER LES CMPS ET/OU LA GRANDEUR.
 C       ---------------------------------------------------------------
         CALL GETVTX('ASSE','NOM_CMP',IOCC,1,0,KBID,N1)
@@ -188,6 +197,7 @@ C       ---------------------------------------------------------------
           CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,1,0,KBID,N1)
           IF (N1.LT.0) THEN
             CHGCMP = .TRUE.
+            NCHG=NCHG+1
             IF (N1.NE.-NCMP) CALL UTMESS('F','CHPASS',
      &                    'NOM_CMP2 ET NOM_CMP DE LONGUEUR DIFFERENTES.'
      &                                   )
@@ -200,13 +210,24 @@ C       ---------------------------------------------------------------
           JLICMP = 0
         END IF
 
-
-C       4.2 VERIFICATION DE LA GRANDEUR ASSOCIEE AU CHAMP
+C       4.1 VERIFICATION DE LA GRANDEUR ASSOCIEE AU CHAMP
 C       ------------------------------------------------------
         CALL DISMOI('F','NOM_GD',CHAMP,'CHAMP',IB,NOMGD2,IB)
         IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) CALL UTMESS('F',
      &      'CHPASS','GRANDEUR INCORRECTE POUR:'//CHAMP)
 
+        CALL DISMOI('F','TYPE_SCA',NOMGD2,'GRANDEUR',IB,TSCA,IB)
+        CALL GETVC8('ASSE','COEF_C',IOCC,1,1,COEFC,IRET)
+        IF(IRET.NE.0)THEN
+           IF(TSCA.NE.'C')THEN
+             CALL UTMESS('F','CHPASS','LE MOT-CLE ''COEF_C'' N''EST '//
+     &       'APPLICABLE QUE POUR UN CHAMP DE TYPE COMPLEXE')
+           ENDIF
+           LCOC=.TRUE.
+        ELSE
+          LCOC=.FALSE.
+          CALL GETVR8('ASSE','COEF_R',IOCC,1,1,COEFR,IB)
+        ENDIF
 
 C       4.2 RECUPERATION DE LA LISTE DES NOEUDS OU MAILLES :
 C       ----------------------------------------------------
@@ -253,10 +274,12 @@ C              CHAMP "MODELE" :
             LCUMUL(2) = .FALSE.
             LCOEFR(1) = 1.D0
             LCOEFR(2) = COEFR
-            CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,'V',CHS3)
+            LCOEFC(1) = 1.D0
+            LCOEFC(2) = COEFC
+            CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,'V',CHS3)
             CALL DETRSD('CHAM_ELEM_S',CESRAZ)
           ELSE
-            CALL CHSFUS(1,CHS2,.FALSE.,COEFR,'V',CHS3)
+            CALL CHSFUS(1,CHS2,.FALSE.,COEFR,COEFC,LCOC,'V',CHS3)
           END IF
         ELSE
           LICHS(1) = CHS3
@@ -265,18 +288,31 @@ C              CHAMP "MODELE" :
           LCUMUL(2) = CUMUL
           LCOEFR(1) = 1.D0
           LCOEFR(2) = COEFR
-          CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,'V',CHS3)
+          LCOEFC(1) = 1.D0
+          LCOEFC(2) = COEFC
+          CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,'V',CHS3)
         END IF
 
         CALL JEDETR('&&CHPASS.LICMP')
         CALL JEDETR('&&CHPASS.LICMP2')
    20 CONTINUE
 
-
+C     --- CONTROLE DES REFERENCES ---
+      IF (TYCH2.EQ.'NOEU') THEN
+         PROF=' '
+         IF(NCHG.GT.0)GOTO 50
+         DO 40 IOCC = 1 , NBOCC-1
+            CALL VRREFE(ZK24(LNOM),ZK24(LNOM+IOCC),IRET)
+            IF ( IRET .NE. 0 )GOTO 50
+ 40      CONTINUE
+         CALL JEVEUO(ZK24(LNOM)(1:19)//'.REFE','L',JREFE)
+         PROF=ZK24(JREFE+1)
+      ENDIF
 C     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 C     ----------------------------------------------------
+ 50   CONTINUE
       IF (TYCH2.EQ.'NOEU') THEN
-        CALL CNSCNO(CHS3,' ','NON','G',CHOU)
+        CALL CNSCNO(CHS3,PROF,'NON','G',CHOU)
       ELSE
         CALL CESCEL(CHS3,LIGREL,OPTION,' ',PROL0,NNCP,'G',CHOU)
       END IF

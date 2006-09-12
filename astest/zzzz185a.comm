@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  COMMANDE MODI_MAILLAGE ET SYMETRIE / PROJ_CHAMP ET DISTANCE_MAX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -258,11 +258,11 @@ chpnul=CREA_CHAMP(
   AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.0,),
 )
 # B.4.e
-chpnotot=COMB_CHAM_NO(
-  COMB_R=(_F(CHAM_NO=chpnul,  COEF_R=  1.0 ),
-          _F(CHAM_NO=chpno01, COEF_R=  1.0 ),
-          _F(CHAM_NO=chpnosy, COEF_R= -1.0 ),
-          _F(CHAM_NO=chpno02, COEF_R=  1.0 ),)
+chpnotot=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=mode04,
+            ASSE=(_F(CHAM_GD=chpnul, TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),
+                  _F(CHAM_GD=chpno01,TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),
+                  _F(CHAM_GD=chpnosy,TOUT='OUI',CUMUL='OUI',COEF_R=-1.0),
+                  _F(CHAM_GD=chpno02,TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),),
 )
 # B.4.f
 rprojec=CREA_RESU(
@@ -328,9 +328,9 @@ chpnocal= CREA_CHAMP(
    INST      = 0.0,
 )
 # D.3
-chpnodif=COMB_CHAM_NO(
-  COMB_R=(_F(CHAM_NO=chpnoprj, COEF_R=  1.0),
-          _F(CHAM_NO=chpnocal, COEF_R= -1.0),),
+chpnodif=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=mode04,
+            ASSE=(_F(CHAM_GD=chpnoprj, TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),
+                  _F(CHAM_GD=chpnocal, TOUT='OUI',CUMUL='OUI',COEF_R= -1.0),),
 )
 # D.4
 rdiffer=CREA_RESU(

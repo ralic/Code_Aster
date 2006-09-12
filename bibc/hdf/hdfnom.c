@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnom hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfnom hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -39,6 +39,8 @@
   char *nomg, *pnomdts, *pnom;   
   int k,l,ind,indx,ll;
   long nbobj=0;
+  void *malloc(size_t size);
+  
   herr_t indiceName(hid_t loc_id, const char *name, void *opdata);
   herr_t indiceNbName(hid_t loc_id, const char *name, void *opdata);
 

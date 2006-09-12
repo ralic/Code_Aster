@@ -1,6 +1,7 @@
-      SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,BASE,CES3Z)
+      SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,BASE,
+     & CES3Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +23,9 @@ C A_UTIL
       IMPLICIT NONE
       INTEGER NBCHS
       CHARACTER*(*) LICHS(NBCHS),CES3Z,BASE
-      LOGICAL LCUMUL(NBCHS)
+      LOGICAL LCUMUL(NBCHS),LCOC
       REAL*8 LCOEFR(NBCHS)
+      COMPLEX*16 LCOEFC(NBCHS)
 C ---------------------------------------------------------------------
 C BUT: FUSIONNER UNE LISTE DE CHAM_ELEM_S POUR EN FORMER 1 AUTRE
 C ---------------------------------------------------------------------
@@ -33,6 +35,8 @@ C LICHS   IN/JXIN  V(K19) : LISTE DES SD CHAM_ELEM_S A FUSIONNER
 C LCUMUL  IN       V(L)   : V(I) =.TRUE. => ON ADDITIONNE LE CHAMP I
 C                         : V(I) =.FALSE. => ON SURCHARGE LE CHAMP I
 C LCOEFR  IN       V(R)   : LISTE DES COEF. MULT. DES VALEURS DES CHAMPS
+C LCOEFC  IN       V(C)   : LISTE DES COEF. MULT. DES VALEURS DES CHAMPS
+C LCOC    IN       L      : =TRUE SI COEF COMPLEXE
 C CES3Z   IN/JXOUT K19 : SD CHAM_ELEM_S RESULTAT
 C BASE    IN       K1  : BASE DE CREATION POUR CES3Z : G/V/L
 
@@ -48,9 +52,7 @@ C  LES CHAM_ELEM_S SE SURCHARGENT LES UNS LES AUTRES
 
 C- ON PEUT APPELER CETTE ROUTINE MEME SI CES3Z APPARTIENT
 C  A LA LISTE LICHS (CHAM_ELEM_S IN/OUT)
-
 C-----------------------------------------------------------------------
-
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -77,6 +79,7 @@ C     ------------------------------------------------------------------
       CHARACTER*3 TSCA
       CHARACTER*19 CES1,CES3
       REAL*8 COEFR
+      COMPLEX*16 COEFC
       LOGICAL CUMUL
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -274,8 +277,12 @@ C     ------------------------------------------
         NCMP1 = ZI(JCE1D-1+2)
 
         CUMUL = LCUMUL(ICHS)
-        COEFR = LCOEFR(ICHS)
-        COEFI = NINT(COEFR)
+        IF(LCOC)THEN
+          COEFC = LCOEFC(ICHS)
+        ELSE
+          COEFR = LCOEFR(ICHS)
+          COEFI = NINT(COEFR)
+        ENDIF
 
         DO 160,ICMP1 = 1,NCMP1
           NOCMP = ZK8(JCE1C-1+ICMP1)
@@ -302,7 +309,11 @@ C               -- SI AFFECTATION :
                   ELSE IF (TSCA.EQ.'I') THEN
                     ZI(JCE3V-1+IAD3) = COEFI*ZI(JCE1V-1+IAD1)
                   ELSE IF (TSCA.EQ.'C') THEN
-                    ZC(JCE3V-1+IAD3) = COEFR*ZC(JCE1V-1+IAD1)
+                    IF(LCOC)THEN
+                      ZC(JCE3V-1+IAD3) = COEFC*ZC(JCE1V-1+IAD1)
+                    ELSE
+                      ZC(JCE3V-1+IAD3) = COEFR*ZC(JCE1V-1+IAD1)
+                    ENDIF
                   ELSE IF (TSCA.EQ.'L') THEN
                     ZL(JCE3V-1+IAD3) = ZL(JCE1V-1+IAD1)
                   ELSE IF (TSCA.EQ.'K8') THEN
@@ -321,8 +332,13 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                     ZI(JCE3V-1+IAD3) = ZI(JCE3V-1+IAD3) +
      &                                 COEFI*ZI(JCE1V-1+IAD1)
                   ELSE IF (TSCA.EQ.'C') THEN
-                    ZC(JCE3V-1+IAD3) = ZC(JCE3V-1+IAD3) +
+                    IF(LCOC)THEN
+                      ZC(JCE3V-1+IAD3) = ZC(JCE3V-1+IAD3) +
+     &                                 COEFC*ZC(JCE1V-1+IAD1)
+                    ELSE
+                      ZC(JCE3V-1+IAD3) = ZC(JCE3V-1+IAD3) +
      &                                 COEFR*ZC(JCE1V-1+IAD1)
+                    ENDIF
                   ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN
                     CALL UTMESS('F','CESFUS',
      &                        'CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE'

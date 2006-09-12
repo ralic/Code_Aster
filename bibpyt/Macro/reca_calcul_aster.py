@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,14 +21,12 @@
 # mode_include    = False
 # __follow_output     = False
 # table_sensibilite = False
-
-#__debug = True
-
+# __debug = True
 __commandes_aster__ = True
 
 
-import string, copy, Numeric, types, os, sys, pprint
-import popen2
+import copy, Numeric, types, os, sys, pprint
+from glob import glob
 try:
   import aster
 except: pass
@@ -41,6 +39,7 @@ except ImportError:
       print fmt % (code,sprg,texte)
       if code=='F': sys.exit()
 
+from Utilitai.System import ExecCommand
 
 # Nom de la routine
 nompro = 'MACR_RECAL'
@@ -60,11 +59,6 @@ class PARAMETRES:
       import Cata, aster
       from Cata.cata import INCLUDE, DETRUIRE, FIN, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE, CREA_TABLE
       from Accas import _F
-
-      # Gestion des Exceptions
-      prev_onFatalError = aster.onFatalError()
-      aster.onFatalError('EXCEPTION')
-      texte_onFatalError = "Une erreur est intervenue. L'operation a ete annulee."
     except:
       mode_include = False
 
@@ -125,34 +119,7 @@ class CALCUL_ASTER:
           table_sensibilite = self.table_sensibilite
 
           # Lancement d'Aster avec le deuxieme export
-          p=popen2.Popen4( cmd )
-          p.tochild.close()
-
-          output = []
-
-          # Le calcul esclave ne peut pas se faire en background
-          bg = None
-
-          if not bg:
-            if not follow_output:
-              output=p.fromchild.readlines()
-            else:
-              while p.poll()==-1:
-                 stmp=p.fromchild.readline()
-                 if stmp<>'':
-                    # \n already here...
-                    print stmp,
-                    output.append(stmp)
-                 sys.stdout.flush()
-              # to be sure to empty the buffer
-              end=p.fromchild.readlines()
-              print ''.join(end)
-              output.extend(end)
-            iret=p.wait()
-          else:
-            iret=0
-          p.fromchild.close()
-          txt_output=''.join(output)
+          iret, txt_output = ExecCommand(cmd, follow_output=self.follow_output)
 
           # Recuperation du .mess 'fils'
           f=open(fich_output, 'w')
@@ -161,7 +128,7 @@ class CALCUL_ASTER:
 
           UTMESS('I','MACR_RECAL',"Fin du lancement de la commande : " + cmd)
 
-          diag = self.Recuperation_Diagnostic(output)
+          diag = self.Recuperation_Diagnostic(txt_output)
 
           return
 
@@ -171,16 +138,17 @@ class CALCUL_ASTER:
 
     txt = '--- DIAGNOSTIC JOB :'
     diag = None
-    for ligne in output:
-      if ligne.find(txt)!=-1:
+    for ligne in output.splitlines():
+      if ligne.find(txt) > -1:
         diag = ligne.split(txt)[-1].strip()
+        break
 
     UTMESS('I','MACR_RECAL',"Diagnostic du calcul esclave : " + diag)
 
     return True
-    if diag in ['OK', 'NOOK_TEST_RESU', '<A>_ALARM']: return True
-    else:
-      UTMESS('F','MACR_RECAL',"Le fichier esclave ne s'est pas terminé correctement.")
+    #if diag in ['OK', 'NOOK_TEST_RESU', '<A>_ALARM']: return True
+    #else:
+      #UTMESS('F','MACR_RECAL',"Le fichier esclave ne s'est pas terminé correctement.")
 
 
   # ------------------------------------------------------------------------------
@@ -198,6 +166,16 @@ class CALCUL_ASTER:
         mode_include      = self.mode_include
         follow_output     = self.follow_output
         table_sensibilite = self.table_sensibilite
+
+        # chemin vers as_run
+        if os.environ.has_key('ASTER_ROOT'):
+           as_run = os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'bin', 'as_run')
+        elif os.path.isfile(aster.repout() + os.sep + 'as_run'):
+           as_run = aster.repout() + os.sep + 'as_run'
+        else:
+           as_run = 'as_run'
+           UTMESS('A', nompro, "Variable d'environnement ASTER_ROOT absente, " \
+                               "on essaiera avec 'as_run' dans le $PATH.")
 
         if __commandes_aster__:
           try:
@@ -220,25 +198,25 @@ class CALCUL_ASTER:
         for i in para:
           txt.append( "\t\t\t%s : %s" % (i, val[para.index(i)]) )
         UTMESS('I','MACR_RECAL',"Calcul de F avec les parametres:\n%s" % '\n'.join(txt))
-  
+
         fic = open('fort.'+str(UL),'r')
         #On stocke le contenu de fort.UL dans la variable fichier qui est une string 
         fichier=fic.read()
         #On stocke le contenu initial de fort.UL dans la variable fichiersauv 
         fichiersauv=copy.copy(fichier)
         fic.close()
-  
+
         #Fichier_Resu est une liste ou l'on va stocker le fichier modifié
         #idée générale :on délimite des 'blocs' dans fichier
         #on modifie ou non ces blocs suivant les besoins 
         #on ajoute ces blocs dans la liste Fichier_Resu
         Fichier_Resu=[]                      
-  
+
         # Dans le cas du mode INCLUDE on enleve le mot-clé DEBUT
         if mode_include:
           try: 
              #cherche l'indice de DEBUT()
-             index_deb=string.index(fichier,'DEBUT(')
+             index_deb=fichier.index('DEBUT(')
              while( fichier[index_deb]!='\n'):
                 index_deb=index_deb+1
              #on restreint fichier en enlevant 'DEBUT();'
@@ -250,7 +228,7 @@ class CALCUL_ASTER:
         # On enleve le mot-clé FIN()
         try:
            #cherche l'indice de FIN()
-           index_fin = string.index(fichier,'FIN(')
+           index_fin = fichier.index('FIN(')
            #on restreint fichier en enlevant 'FIN();'
            fichier = fichier[:index_fin]
         except : pass
@@ -261,15 +239,15 @@ class CALCUL_ASTER:
         #avec le meme ordre que son fichier de commande
         index_para = Numeric.zeros(len(para))
         for i in range(len(para)):
-           index_para[i] = string.index(fichier,para[i])
-  
+           index_para[i] = fichier.index(para[i])
+
         #On range les indices par ordre croissant afin de déterminer
         #les indice_max et indice_min
         index_para = Numeric.sort(index_para)
         index_first_para = index_para[0]
         index_last_para = index_para[len(index_para)-1]
-  
-  
+
+
         #on va délimiter les blocs intermédiaires entre chaque para "utiles" à l'optimsation
         bloc_inter ='\n'
         for i in range(len(para)-1):
@@ -393,7 +371,8 @@ class CALCUL_ASTER:
           x.close()
 
           # Lancement du calcul Aster esclave
-          cmd = aster.repout() + os.sep + 'as_run ' + self.new_export
+          #cmd = aster.repout() + os.sep + 'as_run ' + self.new_export
+          cmd = '%s %s' % (as_run, self.new_export)
           self.Lancement_Commande(cmd)
 
           # Recuperation du .mess et du .resu 'fils'
@@ -606,92 +585,65 @@ class CALCUL_ASTER:
      """
         Creation du fichier .export pour le calcul esclave
      """
-    
+     from as_profil import ASTER_PROFIL
+     
      # Recuperation du fichier .export
-     list_export = []
-     for fic in os.listdir('.'):
-       if fic.split('.')[-1] == 'export': list_export.append(fic)
+     list_export = glob('*.export')
      if len(list_export) == 0: UTMESS('F','MACR_RECAL',"Probleme : il n'y a pas de fichier .export dans le repertoire de travail!")
      elif len(list_export) >1: UTMESS('F','MACR_RECAL',"Probleme : il y a plus d'un fichier .export dans le repertoire de travail!")
+     
+     # On modifie le profil
+     prof = ASTER_PROFIL(list_export[0])
+     
+     # xterm
+     if prof.param.has_key('xterm'):
+        del prof.param['xterm']
+     # memjeveux
+     prof.args['memjeveux'] = self.memjeveux_esclave
+     
+     # fichier/répertoire
+     for lab in ('data', 'resu'):
+       l_fr = getattr(prof, lab)
+       l_tmp = l_fr[:]
+       for dico in l_tmp:
+         # répertoires
+         if dico['isrep']:
 
-
-     # Lecture du fichier .export du maitre  et ecriture du nouveau .export pour l'esclave
-#     self.nom_fichier_mess_fils = self.nom_fichier_resu_fils = ''
-     txt = ''
-     f = open(list_export[0], 'r')
-     for ligne in f:
-
-       # Parametres 'P'
-       if ligne.split()[0] == 'P':
-         # Pas de fenetre Xterm
-         if ligne.split()[1] == 'xterm':
-           txt += 'P xterm\n'
-
+           # base non prise en compte
+           if dico['type'] in ('base', 'bhdf'):
+             l_fr.remove(dico)
+         
+         # fichiers
          else:
-           txt += ligne
+           
+           # Nom du fichier .mess (pour recuperation dans REPE_OUT)
+           if dico['ul'] == '6':
+             self.nom_fichier_mess_fils = os.path.basename(dico['path'])
+           
+           # Nom du fichier .resu (pour recuperation dans REPE_OUT)
+           elif dico['ul'] == '8':
+             self.nom_fichier_resu_fils = os.path.basename(dico['path'])
+           
+           # Ancien .comm non pris en compte
+           # Fichier defini avec l'UNITE_RESU non pris en compte
+           elif dico['type'] == 'comm' or (dico['ul'] == self.UNITE_RESU and lab == 'resu'):
+             l_fr.remove(dico)
+             
+           # Fichier d'unite logique UL devient le nouveau .comm
+           elif dico['ul'] == str(self.UL):
+             dico['type'] = 'comm'
+             dico['ul']   = '1'
+             dico['path'] = os.path.join(os.getcwd(), 'fort.%d' % self.UL)
 
-       # Parametres 'A'
-       elif ligne.split()[0] == 'A':
-         # Memjeveux
-         if ligne.split()[1] == 'memjeveux':
-           lign = ligne.split()
-           lign[2] = str(self.memjeveux_esclave)
-           txt += ' '.join(lign) + '\n'
-         else:
-           txt += ligne
+           # Tous les autres fichiers en Resultat
+           elif lab == 'resu':
+              dico['path'] = os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+           
+           # sinon on garde la ligne
+       setattr(prof, lab, l_fr)
 
-       # Parametres 'R'
-       elif ligne.split()[0] == 'R':
-         # Base non prise en compte
-         if ligne.split()[1]   == 'base': pass
-         elif ligne.split()[1] == 'bhdf': pass
-         else:
-           txt += ligne
-
-       # Parametres 'F'
-       elif ligne.split()[0] == 'F':
-  
-         # Nom du fichier .mess (pour recuperation dans REPE_OUT)
-         if ( ligne.split()[4]== '6' and ligne.split()[3] == 'R' ):
-           self.nom_fichier_mess_fils = ligne.split()[2].split('/')[-1]
-  
-         # Nom du fichier .resu (pour recuperation dans REPE_OUT)
-         if ( ligne.split()[4]== '8' and ligne.split()[3] == 'R' ):
-           self.nom_fichier_resu_fils = ligne.split()[2].split('/')[-1]
-  
-         # Ancien .comm non pris en compte
-         if ligne.split()[1] == 'comm': pass
-  
-         # Fichier defini avec l'UNITE_RESU non pris en compte
-         elif ( ligne.split()[4]== str(self.UNITE_RESU) and ligne.split()[3] == 'R' ): pass
-  
-         # Fichier d'UL 3 devient le nouveau .comm
-         elif ( (len(ligne.split()) >= 5) and (ligne.split()[4] == '3') ):
-           txt += 'F comm ' + os.getcwd() + os.sep + 'fort.'+str(self.UL) + ' D 1' + '\n'
-    
-         # Tous les fichiers en Resultat
-         elif ( (len(ligne.split()) >= 5) and (ligne.split()[3] == 'R') ):
-           lign = ligne.split()
-           lign[2] = tmp_macr_recal + os.sep + lign[2].split(os.sep)[-1]
-           txt += ' '.join(lign) + '\n'
-
-         else:
-           txt += ligne
-   
-       # Autre?
-       else: UTMESS('F','MACR_RECAL',"Probleme : le fichier .export n'a pas l'air correct !?")
-    
-  #    # Ajout d'une base en Resultat afin de recuperer le pickle
-  #    txt += 'R base ' + tmp_macr_recal + os.sep + 'base' + ' R 0' + '\n'
-    
-     f.close()
-  
      # Ecriture du nouveau fichier export
-     fw = open(self.new_export, 'w')
-     fw.write(txt)
-     fw.close()
-
-     return
+     prof.WriteExportTo(self.new_export)
 
   # --FIN CLASSE  ----------------------------------------------------------------------------
 

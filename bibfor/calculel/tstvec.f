@@ -1,6 +1,6 @@
       SUBROUTINE TSTVEC(PERM,IAD,NLONG,TYPE,SOMMI,SOMMR,NBIGN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,8 +62,8 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       LOGICAL L
       CHARACTER*(*) PERM
       CHARACTER*8 K8
-      REAL*8 X ,R8VIDE,RVIDE
-      INTEGER IAD,I,IX,C1,NLONG,ICO,K,TSTK2I
+      REAL*8 X
+      INTEGER IAD,I,IX,C1,NLONG,ICO,K,TSTK2I,IISNAN
       INTEGER*8 SOMMI2 ,I8
 
       EQUIVALENCE (X,IX)
@@ -71,7 +71,6 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       EQUIVALENCE (K8,IX)
 
 
-      RVIDE = R8VIDE()
       IF (PERM.EQ.'NON') THEN
          C1=0
       ELSE
@@ -87,7 +86,7 @@ C     --------------------
       IF (TYPE.EQ.'R') THEN
         DO 10,K = 1,NLONG
           X = ZR(IAD-1+K)
-          IF (X.NE.RVIDE) THEN
+          IF (IISNAN(X).EQ.0) THEN
             IF (ABS(X).LT.1.D300) THEN
                ICO=ICO+1
                SOMMR = SOMMR + (C1*MOD(K,3)+1)*X
@@ -99,14 +98,14 @@ C     --------------------
       IF (TYPE.EQ.'C') THEN
         DO 20,K = 1,NLONG
           X = DBLE(ZC(IAD-1+K))
-          IF (X.NE.RVIDE) THEN
+          IF (IISNAN(X).EQ.0) THEN
             IF (ABS(X).LT.1.D300) THEN
                ICO=ICO+1
                SOMMR = SOMMR + (C1*MOD(K,3)+1)*X
             END IF
           END IF
           X = DIMAG(ZC(IAD-1+K))
-          IF (X.NE.RVIDE) THEN
+          IF (IISNAN(X).EQ.0) THEN
             IF (ABS(X).LT.1.D300)  THEN
                ICO=ICO+1
                SOMMR = SOMMR + (C1*MOD(K,3)+1)*X

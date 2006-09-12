@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        ------------------------------------------------------------------
          OPTION         =SIMP(statut='f',typ='TXM'),
 
-         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE") ),
+         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE","R2C","C2R") ),
 
 #        ------------------------------------------------------------------
          b_norm          =BLOC(condition = "OPERATION == 'NORMALE'",
@@ -96,12 +96,22 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 NOM_CMP_RESU    =SIMP(statut='f',typ='TXM',max='**' ),
                 CUMUL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                 COEF_R          =SIMP(statut='f',typ='R',defaut= 1. ),
+                COEF_C          =SIMP(statut='f',typ='C',max=1),
                                     ),
                              ),
 #        ------------------------------------------------------------------
          b_eval          =BLOC(condition = "OPERATION == 'EVAL'",
              CHAM_F          =SIMP(statut='o',typ=cham_gd_sdaster),
              CHAM_PARA       =SIMP(statut='o',typ=cham_gd_sdaster,max='**'),
+                             ),
+#        ------------------------------------------------------------------
+         b_r2c           =BLOC(condition = "OPERATION == 'R2C'",
+             CHAM_GD          =SIMP(statut='o',typ=cham_gd_sdaster),
+                             ),
+#        ------------------------------------------------------------------
+         b_c2r           =BLOC(condition = "OPERATION == 'C2R'",
+             CHAM_GD          =SIMP(statut='o',typ=cham_gd_sdaster),
+             PARTIE           =SIMP(statut='o',typ='TXM',into=('REEL','IMAG'),),
                              ),
 #        ------------------------------------------------------------------
          b_disc          =BLOC(condition = "OPERATION == 'DISC'",
@@ -175,7 +185,8 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 
          ),  # fin bloc b_extr
 
-                ),
+
+               ),
 # FIN DU CATALOGUE : INFO,TITRE ET TYPAGE DU RESULTAT :
 #-----------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),

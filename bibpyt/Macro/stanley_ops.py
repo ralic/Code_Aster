@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 15/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_ops Macro  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,9 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
   from Noyau.N_utils import AsType
   from Utilitai.Utmess import UTMESS
   from Utilitai.UniteAster import UniteAster
+
+  prev_onFatalError = aster.onFatalError()
+  aster.onFatalError('EXCEPTION')
 
   ier=0
 
@@ -80,5 +83,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
                de la commande STANLEY :
 
                STANLEY(DISPLAY='adresse_ip:0.0');""")
+
+  aster.onFatalError(prev_onFatalError)
 
   return ier

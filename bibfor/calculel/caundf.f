@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C ----------------------------------------------------------------------
       COMMON /CAII04/IACHII,IACHIK,IACHIX
       COMMON /CAII07/IACHOI,IACHOK
       COMMON /CAII08/IEL
-      INTEGER NBPARA,ISNNEM,INDIK8
+      INTEGER NBPARA,ISNNEM,INDIK8,INNEM
       CHARACTER*8 NOPARA
       INTEGER NP,IPAR,LGCATA
       INTEGER IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,IAOPPA
@@ -63,17 +63,15 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      INTEGER IUNDF,IVIDE
-      REAL*8 RVIDE,R8NNEM,R8VIDE
-      COMPLEX*16 CVIDE
-      CHARACTER*8 KVIDE
+      INTEGER IUNDF,IISNAN
+      REAL*8 RNNEM,R8NNEM
+      CHARACTER*8 KNNEM
 
 C DEB-------------------------------------------------------------------
 
-      IVIDE = ISNNEM()
-      RVIDE = R8VIDE()
-      CVIDE = DCMPLX(RVIDE,RVIDE)
-      KVIDE='????????'
+      INNEM = ISNNEM()
+      RNNEM = R8NNEM()
+      KNNEM='????????'
 
 
 
@@ -103,11 +101,11 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
-            ZR(IACHLO-1+LGGREL+1) = RVIDE
+            ZR(IACHLO-1+LGGREL+1) = RNNEM
           ELSE IF (TYPSCA.EQ.'C') THEN
-            ZC(IACHLO-1+LGGREL+1) = CVIDE
+            ZC(IACHLO-1+LGGREL+1) = DCMPLX(RNNEM,RNNEM)
           ELSE IF (TYPSCA.EQ.'I') THEN
-            ZI(IACHLO-1+LGGREL+1) = IVIDE
+            ZI(IACHLO-1+LGGREL+1) = INNEM
           ELSE
             CALL UTMESS('F','CAUNDF',
      +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
@@ -137,17 +135,17 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
-            ZR(IACHLO-1+LGGREL+1) = RVIDE
+            ZR(IACHLO-1+LGGREL+1) = RNNEM
           ELSE IF (TYPSCA.EQ.'C') THEN
-            ZC(IACHLO-1+LGGREL+1) = CVIDE
+            ZC(IACHLO-1+LGGREL+1) = DCMPLX(RNNEM,RNNEM)
           ELSE IF (TYPSCA.EQ.'I') THEN
-            ZI(IACHLO-1+LGGREL+1) = IVIDE
+            ZI(IACHLO-1+LGGREL+1) = INNEM
           ELSE IF (TYPSCA.EQ.'K8') THEN
-            ZK8(IACHLO-1+LGGREL+1) = KVIDE
+            ZK8(IACHLO-1+LGGREL+1) = KNNEM
           ELSE IF (TYPSCA.EQ.'K16') THEN
-            ZK16(IACHLO-1+LGGREL+1) = KVIDE
+            ZK16(IACHLO-1+LGGREL+1) = KNNEM
           ELSE IF (TYPSCA.EQ.'K24') THEN
-            ZK24(IACHLO-1+LGGREL+1) = KVIDE
+            ZK24(IACHLO-1+LGGREL+1) = KNNEM
           ELSE
             CALL UTMESS('F','CAUNDF',
      +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
@@ -163,7 +161,7 @@ C        -- CHAMPS "OUT" :
         ARRET = .FALSE.
         NP = NBPARA(OPT,TE,'OUT')
         DO 30 IPAR = 1,NP
-          ECRAS = .FALSE.
+          ECRAS=.FALSE.
           NOMPAR = NOPARA(OPT,TE,'OUT',IPAR)
 
           IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
@@ -184,11 +182,12 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
-            IF (ZR(IACHLO-1+LGGREL+1).NE.RVIDE) ECRAS = .TRUE.
+            IF (IISNAN(ZR(IACHLO-1+LGGREL+1)).EQ.0) ECRAS=.TRUE.
           ELSE IF (TYPSCA.EQ.'C') THEN
-            IF (ZC(IACHLO-1+LGGREL+1).NE.CVIDE) ECRAS = .TRUE.
+            IF (IISNAN(DBLE(ZC(IACHLO-1+LGGREL+1))).EQ.0) ECRAS=.TRUE.
+            IF (IISNAN(DIMAG(ZC(IACHLO-1+LGGREL+1))).EQ.0) ECRAS=.TRUE.
           ELSE IF (TYPSCA.EQ.'I') THEN
-            IF (ZI(IACHLO-1+LGGREL+1).NE.IVIDE) ECRAS = .TRUE.
+            IF (ZI(IACHLO-1+LGGREL+1).NE.INNEM) ECRAS=.TRUE.
           ELSE
             CALL UTMESS('F','CAUNDF',
      +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnbo hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfnbo hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -39,6 +39,8 @@
   char *nomg;
   int k,idx ;
   long nbobj=0;
+  void *malloc(size_t size);
+  
   herr_t indiceNbName(hid_t loc_id, const char *name, void *opdata);
 
   idfic=(hid_t) *idf;

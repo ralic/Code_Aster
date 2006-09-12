@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,6 +163,16 @@ C     -----------------------------------------
       ELSE IF (OPERA.EQ.'EVAL') THEN
 C     -----------------------------------------
         CALL CHPEVA(CHOU)
+
+
+      ELSE IF (OPERA(1:3).EQ.'R2C') THEN
+C     -----------------------------------------
+        CALL CHCORE(CHOU)
+
+
+      ELSE IF (OPERA(1:3).EQ.'C2R') THEN
+C     -----------------------------------------
+        CALL CHRECO(CHOU)
 
 
       ELSE IF (OPERA.EQ.'DISC') THEN

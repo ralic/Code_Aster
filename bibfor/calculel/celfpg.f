@@ -3,7 +3,7 @@
       CHARACTER*(*)  CELZ , NOMOBJ
       INTEGER ICH,IRET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/11/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,7 +70,8 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
       CEL = CELZ
-
+      IRET = 0
+      
 C     1 CALCUL DE LIGREL,NBMA,NEC :
 C     --------------------------------------------------------
       CALL DISMOI('F','NOM_MAILLA',CEL,'CHAM_ELEM',IBID,MA,IBID)

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE G8BHHXD X.DESROCHES
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,15 +76,17 @@ DEF=MACRO_ELAS_MULT(        MODELE=MODELE,
                                              
                                            TYPE_MODE = 'SYME',
                                            CHAR_MECA = CHARGE),
-                              _F( 
+                             _F( 
                                            MODE_FOURIER = 2,
-                                             
-                                           TYPE_MODE = 'ANTI',
-                                           CHAR_MECA = CHARGE))
+                                               
+                                            TYPE_MODE = 'ANTI',
+                                            CHAR_MECA = CHARGE)
+                              )
                            )
 
-#
+
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
+
 U0_C=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                       RESULTAT=DEF,
                       NUME_ORDRE=1,
@@ -95,9 +97,8 @@ U0_S=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                       NUME_ORDRE=2,
                       NOM_CHAM='DEPL' )
 
-#
-# CALCUL DES CONTRAINTES
 
+# CALCUL DES CONTRAINTES
     
 DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
                            MODELE=MODELE,
@@ -105,7 +106,7 @@ DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
                            TOUT_ORDRE='OUI',
                            OPTION=('SIGM_ELNO_DEPL',)
                 )
-                
+
 SIG0_C=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 RESULTAT=DEF, NUME_ORDRE=1,
                          NOM_CHAM='SIGM_ELNO_DEPL' )
@@ -113,44 +114,47 @@ RESULTAT=DEF, NUME_ORDRE=1,
 SIG0_S=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 RESULTAT=DEF, NUME_ORDRE=2,
                          NOM_CHAM='SIGM_ELNO_DEPL' )
-                         
+
 # RECOMBINAISONS DE FOURIER EN DEPLACEMENTS ET CONTRAINTES
 # POUR TETA = 45 DEG.
-U1=COMB_CHAM_NO( 
-                      COMB_FOURIER=_F(  CHAM_NO = U0_C,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      ANGL=45. )
 
-U2=COMB_CHAM_NO( 
-                      COMB_FOURIER=_F(  CHAM_NO = U0_S,
-                                     NUME_MODE = 2,
-                                     TYPE_MODE = 'ANTI',
-                                     COEF_R = 1.),
-                      ANGL=45. )
 
-U=COMB_CHAM_NO( COMB_FOURIER=(
-                      _F(  CHAM_NO = U0_C,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      _F(  CHAM_NO = U0_S,
-                                     NUME_MODE = 2,
-                                     TYPE_MODE = 'ANTI',
-                                     COEF_R = 1.)),
-                      ANGL=45. )
+RESU0_C=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='DEPL',
+           AFFE=_F( CHAM_GD=U0_C,NUME_MODE=1,TYPE_MODE='SYME'),)
 
-SIG=COMB_CHAM_ELEM( COMB_FOURIER=(
-                      _F(  CHAM_ELEM = SIG0_C,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      _F(  CHAM_ELEM = SIG0_S,
-                                     NUME_MODE = 2,
-                                     TYPE_MODE = 'ANTI',
-                                     COEF_R = 1.)),
-                      ANGL=45. )
+RESU0_S=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='DEPL',
+           AFFE=_F( CHAM_GD=U0_S,NUME_MODE=2,TYPE_MODE='ANTI'),)
+
+
+CO_FOUR1=COMB_FOURIER(   RESULTAT=RESU0_C,
+                         NOM_CHAM=( 'DEPL',),
+                         ANGL=( 45., ),
+                        )
+
+CO_FOUR2=COMB_FOURIER(   RESULTAT=RESU0_S,
+                         NOM_CHAM=( 'DEPL',),
+                         ANGL=( 45., ),
+                        )
+
+CO_FOUR3=COMB_FOURIER(   RESULTAT=DEF,
+                         NOM_CHAM=( 'DEPL', 'SIGM_ELNO_DEPL',),
+                         ANGL=( 45., ),
+                        )
+
+U1=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+             RESULTAT=CO_FOUR1,ANGL=45.,NOM_CHAM='DEPL')
+
+
+U2=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+             RESULTAT=CO_FOUR2,ANGL=45.,NOM_CHAM='DEPL')
+                       
+
+U=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+             RESULTAT=CO_FOUR3,ANGL=45.,NOM_CHAM='DEPL')
+
+
+SIG=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
+             RESULTAT=CO_FOUR3,ANGL=45.,NOM_CHAM='SIGM_ELNO_DEPL',)
 
 #
 # TEST_RESU DES DEPLACEMENTS

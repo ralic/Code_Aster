@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IODR utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF IODR utilitai  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -64,7 +64,7 @@ long  open_fac ( char *nom )
 {
 long ifac;
 static long res;
-
+void *malloc(size_t size);
 res=-1;
 ifac=ind_fac(nom);
 if (ifac < 0) {

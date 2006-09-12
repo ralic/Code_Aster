@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,12 +74,12 @@ C
       INTEGER KMA1,NBNO1,IMA1,NBMA1,INO1
       INTEGER NUNO1A,NUNO1B
       INTEGER IER,LMATAS
-      
+
 C     FONCTIONS FORMULES :
 
 C DEB -----------------------------------------------------------------
       CALL JEMARQ()
-C 
+C
       K8B='        '
 C
       LIGREL=MODEL2//'.MODELE'
@@ -162,11 +162,11 @@ C       -- PROJECTION DU CHAMP SI POSSIBLE :
 C       -- Attribution des attributs du concept resultat
 C         Extraction des parametres modaux à sauver dans le resultat
           IF ((TYPRES(1:9).EQ.'MODE_MECA') .OR.
-     &     (TYPRES(1:4).EQ.'BASE')) THEN     
+     &     (TYPRES(1:4).EQ.'BASE')) THEN
               CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
               CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
-              ZR(IAINS2)=ZR(IAINS1)              
+              ZR(IAINS2)=ZR(IAINS1)
 C             Recuperation de nume_mode
               CALL JEEXIN (RESU1//'           .NUMO', IRET )
               IF ( IRET.NE.0 ) THEN
@@ -179,18 +179,22 @@ C             Recuperation de nume_mode
               CALL RSADPA ( RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'NOEUD_CMP',IORDR,0,IAINS2,KB)
               ZK16(IAINS2)=ZK16(IAINS1)
+          ELSEIF (TYPRES .EQ. 'DYNA_HARMO') THEN
+            CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
+            CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
+            ZR(IAINS2)=ZR(IAINS1)
           ELSEIF ((TYPRES(1:4) .EQ. 'EVOL') .OR.
      &        (TYPRES(1:4) .EQ. 'DYNA')) THEN
             CALL RSADPA ( RESU1,'L',1,'INST',IORDR,0,IAINS1,KB)
             CALL RSADPA ( RESU2,'E',1,'INST',IORDR,0,IAINS2,KB)
             ZR(IAINS2)=ZR(IAINS1)
-          ELSE 
+          ELSE
 C            on fait rien
           ENDIF
 
 C         REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
           CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
- 
+
           DO 15 IND=1,IPAR
              CALL RSADPA ( RESU1,'L',1,KPAR(IND),
      &                     IORDR,1,IPAR1,TYP1)
@@ -206,7 +210,7 @@ C         REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
                 ZK16(IPAR2) = ZK16(IPAR1)
              ELSEIF (TYP1(1:3) .EQ. 'K32') THEN
                 ZK32(IPAR2) = ZK32(IPAR1)
-             ELSE 
+             ELSE
 C               ON NE FAIT RIEN
              ENDIF
  15       CONTINUE

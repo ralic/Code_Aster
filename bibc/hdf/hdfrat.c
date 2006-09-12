@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfrat hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -43,7 +43,8 @@
   long iret=-1,lt;
   hsize_t sdim[1]; 
   char *nom;
-
+  void *malloc(size_t size); 
+   
   ida=(hid_t) *iddat;
   nom = (char *) malloc((ln+1) * sizeof(char));
   for (k=0;k<ln;k++) {

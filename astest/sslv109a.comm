@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -298,98 +298,31 @@ TEST_RESU(RESU=(
          )
 
 # ----------------------------------------------------------------------
-#                     RECOMBINAISON DE FOURIER
+#                     COMBINAISON DE CHAMPS
 # ----------------------------------------------------------------------
 DEP45=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                    NOM_CHAM='DEPL', RESULTAT=CO_FOUR1,
                    ANGL=ANGL1    )
 
 
-TEST_RESU(CHAM_NO=( 
-            _F(  CHAM_GD = DEP45, 
-              NOEUD = 'N7',    NOM_CMP = 'DX',    VALE = 0.1767766,    ),
-            _F(  CHAM_GD = DEP45,    CRITERE = 'ABSOLU', 
-              NOEUD = 'N7',    NOM_CMP = 'DY',    VALE = 0.,           ),
-            _F(  CHAM_GD = DEP45, 
-              NOEUD = 'N7',    NOM_CMP = 'DZ',    VALE = -0.1767766,    ),
-            _F(  CHAM_GD = DEP45, 
-              NOEUD = 'N13',   NOM_CMP = 'DX',    VALE = 0.7071067,    ),
-            _F(  CHAM_GD = DEP45,    CRITERE = 'ABSOLU', 
-              NOEUD = 'N13',   NOM_CMP = 'DY',    VALE = 0.,           ),
-            _F(  CHAM_GD = DEP45, 
-              NOEUD = 'N13',   NOM_CMP = 'DZ',    VALE = -0.7071067,    )) )
+SIG45=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
+                  RESULTAT=CO_FOUR1,ANGL=ANGL1,
+                  NOM_CHAM='SIGM_ELNO_DEPL'),
 
-SIG45=COMB_CHAM_ELEM( COMB_FOURIER=_F(  CHAM_ELEM = SIGMA, 
-                                        NUME_MODE = NUM_HARM, 
-                                        TYPE_MODE = 'SYME',   ),
-                          ANGL=ANGL1                           )
 
-TEST_RESU(CHAM_ELEM=( 
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
-       _F(  CHAM_GD = SIG45,     CRITERE = 'ABSOLU',
-         MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG45,     CRITERE = 'ABSOLU',
-         MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG45,     CRITERE = 'ABSOLU',
-         MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.3535534,  ),
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.3535534,  ),
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
-       _F(  CHAM_GD = SIG45,     CRITERE = 'ABSOLU',
-         MAILLE = 'M4',   NOEUD = 'N13',   NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG45,  
-         MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
-       _F(  CHAM_GD = SIG45,     PRECISION = 2.E-3, 
-         MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -0.7071068,  ))
-        )
+DEP135=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT=CO_FOUR1,ANGL=ANGL2,
+                  NOM_CHAM='DEPL'),
 
-DEP135=COMB_CHAM_NO( COMB_FOURIER=_F(  CHAM_NO   = DEPLA,   
-                                       NUME_MODE = NUM_HARM, 
-                                       TYPE_MODE = 'SYME',   ),
-                         ANGL=ANGL2                          )
+SIG135=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
+                  RESULTAT=CO_FOUR1,ANGL=ANGL2,
+                  NOM_CHAM='SIGM_ELNO_DEPL'),
 
-SIG135=COMB_CHAM_ELEM( COMB_FOURIER=_F(  CHAM_ELEM = SIGMA, 
-                                         NUME_MODE = NUM_HARM, 
-                                         TYPE_MODE = 'SYME',   ),
-                           ANGL=ANGL2                          )
 
-TEST_RESU(CHAM_ELEM=( 
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
-       _F(  CHAM_GD = SIG135,    CRITERE = 'ABSOLU',
-         MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG135,    CRITERE = 'ABSOLU',
-         MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG135,    CRITERE = 'ABSOLU',
-         MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = 0.3535534,   ),
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = 0.3535534,   ),
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
-       _F(  CHAM_GD = SIG135,    CRITERE = 'ABSOLU',
-         MAILLE = 'M4',   NOEUD = 'N13',   NOM_CMP = 'SIYY',   VALE = 0.,          ),
-       _F(  CHAM_GD = SIG135,  
-         MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
-       _F(  CHAM_GD = SIG135,    PRECISION = 2.E-3, 
-         MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = 0.7071068,   ))
-        )
-
-DEPRZ=COMB_CHAM_NO(COMB_R=( _F(  CHAM_NO = DEP45,    COEF_R = 1.,   ),
-                            _F(  CHAM_NO = DEP135,   COEF_R = 1.,   )) )
+DEPRZ = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                   OPTION='DEPL',
+                   ASSE=(_F( CHAM_GD=DEP45,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=DEP135,TOUT='OUI',CUMUL='OUI',COEF_R=1.),),)
 
 TEST_RESU(CHAM_NO=( 
            _F(  CHAM_GD = DEPRZ,    CRITERE = 'ABSOLU',
@@ -401,8 +334,10 @@ TEST_RESU(CHAM_NO=(
            _F(  CHAM_GD = DEPRZ,    CRITERE = 'ABSOLU',
              NOEUD = 'N13',   NOM_CMP = 'DY',    VALE = 0.,    ))  )
 
-DEPTH=COMB_CHAM_NO(COMB_R=( _F(  CHAM_NO = DEP45,    COEF_R = 1.,    ),
-                            _F(  CHAM_NO = DEP135,   COEF_R = -1.,   )) )
+DEPTH = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                   OPTION='DEPL',
+                   ASSE=(_F( CHAM_GD=DEP45,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=DEP135,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
 
 TEST_RESU(CHAM_NO=( 
            _F(  CHAM_GD = DEPTH,    CRITERE = 'ABSOLU',
@@ -410,8 +345,10 @@ TEST_RESU(CHAM_NO=(
            _F(  CHAM_GD = DEPTH,    CRITERE = 'ABSOLU',
              NOEUD = 'N13',   NOM_CMP = 'DZ',    VALE = 0.,    ))  )
 
-SIGRZ=COMB_CHAM_ELEM(COMB_R=( _F(  CHAM_ELEM = SIG45,    COEF_R = 1.,  ),
-                                 _F(  CHAM_ELEM = SIG135,   COEF_R = 1.,  )) )
+SIGRZ = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='ELNO_SIEF_R',
+                   OPTION='SIGM_ELNO_DEPL',
+                   ASSE=(_F( CHAM_GD=SIG45,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=SIG135,TOUT='OUI',CUMUL='OUI',COEF_R=1.),),)
 
 TEST_RESU(CHAM_ELEM=( 
           _F(  CHAM_GD = SIGRZ,    CRITERE = 'ABSOLU',
@@ -514,8 +451,10 @@ TEST_RESU(CHAM_ELEM=(
           _F(  CHAM_GD = SIGRZ,    CRITERE = 'ABSOLU',
             MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIXY',   VALE = 0.,    )) )
 
-SIGTH=COMB_CHAM_ELEM(COMB_R=( _F(  CHAM_ELEM = SIG45,    COEF_R = 1.,   ),
-                                 _F(  CHAM_ELEM = SIG135,   COEF_R = -1.,  )) )
+SIGTH = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='ELNO_SIEF_R',
+                   OPTION='SIGM_ELNO_DEPL',
+                   ASSE=(_F( CHAM_GD=SIG45,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=SIG135,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
 
 TEST_RESU(CHAM_ELEM=( 
        _F(  CHAM_GD = SIGTH,  

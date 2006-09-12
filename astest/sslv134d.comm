@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -880,9 +880,10 @@ TEST_TABLE(       TABLE=TABK3A3,
                            VALE=GLOC3REF,
                       PRECISION=0.22           )
 
-DEP13=COMB_CHAM_NO( COMB_R=( _F( CHAM_NO = DEP1, COEF_R = 1.),
-                               _F( CHAM_NO = DEP3, COEF_R = 1.))
-                      )
+DEP13 = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                   OPTION='DEPL',
+                   ASSE=(_F( CHAM_GD=DEP1,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=DEP3,TOUT='OUI',CUMUL='OUI',COEF_R=1.),),)
 
 # VALEUR DE REFERENCE MILIEU INFINI MODES 1 ET 3 :
 

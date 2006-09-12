@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C                                          "EVOL_VARC"
 C                                          "EVOL_ELAS"
 C                                          "MULT_ELAS"
 C                                          "FOURIER_ELAS"
+C                                          "FOURIER_THER"
 C                                          "EVOL_CHAR"
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -88,7 +89,8 @@ C
       ENDIF
 C
       LNCAS=.FALSE.
-      IF ( TYPRES .EQ. 'MULT_ELAS'.OR. TYPRES .EQ. 'FOURIER_ELAS') THEN
+      IF ( TYPRES .EQ. 'MULT_ELAS'.OR. TYPRES .EQ. 'FOURIER_ELAS'
+     &                            .OR. TYPRES .EQ. 'FOURIER_THER' ) THEN
          LNCAS=.TRUE.
       END IF
 C
@@ -189,7 +191,7 @@ C
               CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
             ENDIF
           ENDIF
-          IF ( TYPRES .EQ. 'FOURIER_ELAS' ) THEN
+          IF(TYPRES.EQ.'FOURIER_ELAS'.OR.TYPRES.EQ.'FOURIER_THER')THEN
             CALL GETVTX ( 'AFFE', 'TYPE_MODE', IOCC,1,1, TYPMOD, N0 )
             CALL RSADPA (RESU,'E',1,'TYPE_MODE',NUMINI,0,IAD,K8B)
             ZK8(IAD) = TYPMOD

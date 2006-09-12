@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
      RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
                                 mode_stat,mode_stat_depl,mode_stat_acce,mode_stat_forc,
-                                evol_noli,mult_elas,fourier_elas,
+                                evol_noli,mult_elas,fourier_elas,fourier_ther,
                                 evol_ther,base_modale,
                                 acou_harmo,mode_acou,mode_flamb) ,
                 fr="Résultat d'une commande globale"),
@@ -532,8 +532,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  ),
 #          fin bloc evol_noli
 
-#           thermique : evol_ther                                
-     b_ther          =BLOC( condition = "AsType(RESULTAT) == evol_ther",fr="options thermiques",
+#           thermique : evol_ther, fourier_ther                                
+     b_ther          =BLOC( condition = "AsType(RESULTAT) in (evol_ther,fourier_ther,)" ,fr="options thermiques",
           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("DEUL_ELGA_TEMP","DETE_ELNO_DLTE","FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
                                   "HYDR_ELNO_ELGA","DURT_ELGA_META","DURT_ELNO_META",

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,56 +119,65 @@ SIG0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 # RECOMBINAISONS DE FOURIER EN DEPLACEMENTS ET CONTRAINTES
 # POUR TETA = 0. (GRAVITE) ET TETA = 0. (PRESSION)
 # POUR CHAQUE CAS DE CHARGE SEPAREMENT
-U_GR=COMB_CHAM_NO( 
-                      COMB_FOURIER=_F(  CHAM_NO = U0_GR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      ANGL=0. )
 
-SIG_GR=COMB_CHAM_ELEM( 
-                      COMB_FOURIER=_F(  CHAM_ELEM = SIG0_GR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      ANGL=0. )
+RU0_GR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='DEPL',
+           AFFE=_F( CHAM_GD=U0_GR,NUME_MODE=1,TYPE_MODE='SYME'),)
 
-U_PR=COMB_CHAM_NO( 
-                      COMB_FOURIER=_F(  CHAM_NO = U0_PR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      ANGL=0. )
+RU0_PR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='DEPL',
+           AFFE=_F( CHAM_GD=U0_PR,NUME_MODE=1,TYPE_MODE='SYME'),)
 
-SIG_PR=COMB_CHAM_ELEM( 
-                      COMB_FOURIER=_F(  CHAM_ELEM = SIG0_PR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      ANGL=0. )
+RSIG0_GR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='SIGM_ELNO_DEPL',
+           AFFE=_F( CHAM_GD=SIG0_GR,NUME_MODE=1,TYPE_MODE='SYME'),)
+
+RSIG0_PR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='SIGM_ELNO_DEPL',
+           AFFE=_F( CHAM_GD=SIG0_PR,NUME_MODE=1,TYPE_MODE='SYME'),)
+
+CO_FOUR1=COMB_FOURIER(   RESULTAT=RU0_GR,
+                         NOM_CHAM=( 'DEPL',),
+                         ANGL=( 0., ),
+                        )
+
+CO_FOUR2=COMB_FOURIER(   RESULTAT=RU0_PR,
+                         NOM_CHAM=( 'DEPL',),
+                         ANGL=( 0., ),
+                        )
+
+CO_FOUR3=COMB_FOURIER(   RESULTAT=RSIG0_GR,
+                         NOM_CHAM=( 'SIGM_ELNO_DEPL',),
+                         ANGL=( 0., ),
+                        )
+
+CO_FOUR4=COMB_FOURIER(   RESULTAT=RSIG0_PR,
+                         NOM_CHAM=( 'SIGM_ELNO_DEPL',),
+                         ANGL=( 0., ),
+                        )
+
+U_GR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+             RESULTAT=CO_FOUR1,ANGL=0.,NOM_CHAM='DEPL')
+
+U_PR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+             RESULTAT=CO_FOUR2,ANGL=0.,NOM_CHAM='DEPL')
+
+SIG_GR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
+             RESULTAT=CO_FOUR3,ANGL=0.,NOM_CHAM='SIGM_ELNO_DEPL')
+
+SIG_PR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
+             RESULTAT=CO_FOUR4,ANGL=0.,NOM_CHAM='SIGM_ELNO_DEPL')
+
 
 # COMBINAISON DES 2 CAS DE CHARGE
-U=COMB_CHAM_NO( COMB_FOURIER=(
-                      _F(  CHAM_NO = U0_GR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      _F(  CHAM_NO = U0_PR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.)),
-                      ANGL=0. )
 
-SIG=COMB_CHAM_ELEM( COMB_FOURIER=(
-                      _F(  CHAM_ELEM = SIG0_GR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.),
-                      _F(  CHAM_ELEM = SIG0_PR,
-                                     NUME_MODE = 1,
-                                     TYPE_MODE = 'SYME',
-                                     COEF_R = 1.)),
-                      ANGL=0. )
+CO_FOUR5=COMB_FOURIER(   RESULTAT=DEF0,
+                         NOM_CHAM=( 'DEPL', 'SIGM_ELNO_DEPL',),
+                         ANGL=( 0., ),
+                        )
+
+U=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
+             RESULTAT=CO_FOUR5,ANGL=0.,NOM_CHAM='DEPL')
+
+
+SIG=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
+             RESULTAT=CO_FOUR5,ANGL=0.,NOM_CHAM='SIGM_ELNO_DEPL',)
 
 #
 TEST_RESU(CHAM_NO=(

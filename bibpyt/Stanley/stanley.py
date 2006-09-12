@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,8 +91,6 @@ ignore_prefixe  = 'S9999'
 cata = cata_champs.CATA_CHAMPS()
 
 # Gestion des Exceptions
-prev_onFatalError = aster.onFatalError()
-aster.onFatalError('EXCEPTION')
 texte_onFatalError = "Une erreur est intervenue. L'operation a ete annulee."
 
 # Texte sensibilite

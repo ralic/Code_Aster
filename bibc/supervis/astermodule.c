@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -685,7 +685,7 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
 
         char *chaine = (char*)0 ;
         int longueur = 0 ;
-
+        void *malloc(size_t size);
                                                         ASSERT(numeroLigne>0);
                                                         ASSERT(((int)log10((float)numeroLigne))<=5);
                                                         ASSERT(nomFichier!=(char*)0) ;
@@ -2505,7 +2505,8 @@ PyObject *args;
         int k;
         int long_nomcham=8;
         INTEGER itopo;
-
+        void *malloc(size_t size);
+	
         _DEBUT(aster_prepcompcham) ;
 
         if (!PyArg_ParseTuple(args, "sssslO:prepcompcham",&nomce,&nomcs,&nomcmp,&ktype,&itopo,&list)) return NULL;
@@ -2722,7 +2723,8 @@ PyObject *args;
         INTEGER *val, nbval;
         int i;
         char *iaddr;
-
+        void *malloc(size_t size);
+	
         _DEBUT(aster_getcolljev) ;
 
         if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
@@ -2887,7 +2889,8 @@ PyObject *args;
         int ok        = 0 ;
         INTEGER iret=0;
         INTEGER lnom=0;
-
+        void *malloc(size_t size);
+	
         _DEBUT(aster_putvectjev) ;
         
         ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
@@ -2964,7 +2967,8 @@ PyObject *args;
         int ok        = 0 ;
         INTEGER iret=0;
         INTEGER lnom=0;
-
+        void *malloc(size_t size);
+	
         _DEBUT(aster_putcolljev) ;
         
 
@@ -3068,7 +3072,8 @@ PyObject *args;
    char nomch[16], ctype, nomva[16];
    int i, lo, nb;
    PyObject *dico, *liste, *key;
-
+   void *malloc(size_t size);
+   
    if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
 
 /* Identifiant de la SD resultat */ 
@@ -3528,7 +3533,8 @@ PyObject *args;
    int long_nompar = 8;       /* doivent impérativement correspondre aux  */
    int long_nomres = 8;       /* longueurs des chaines de caractères      */
    int long_codret = 2;       /* déclarées dans la routine fortran RCVALE */
-   
+   void *malloc(size_t size); 
+     
    _DEBUT(aster_rcvale)
    
    if (!PyArg_ParseTuple(args, "ssOOOs", &nommat, &phenom, \
@@ -3708,6 +3714,7 @@ int RecupNomCas(void)
                 INTEGER nbval       = 1 ;
                 int ltx       = 8 ;
                 INTEGER longueur[1] ;
+                void *malloc(size_t size);
                                                                 ASSERT(commande!=(PyObject*)0);
                 CALL_GETLTX ( "CODE","NOM",iocc,iarg,mxval, longueur ,&nbval) ;
                 if(nbval == 0){
@@ -3936,7 +3943,8 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
         char     **argv    = NULL ;
 
         void asterm( long , char** ) ;
-
+        void *malloc(size_t size);
+	
         _DEBUT("aster_argv") ;
 
 
@@ -4149,7 +4157,8 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
         int ajout      = 0 ;
         int taille     = 0 ;
         int total      = 0 ;
-
+        void *malloc(size_t size);
+	
         taille = ( *base ) ? strlen( *base ) : 0 ;
 
         ajout = ( supplement ) ? strlen( supplement ) : 0 ;

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,8 @@
 COMB_FOURIER=OPER(nom="COMB_FOURIER",op= 161,sd_prod=comb_fourier,
                   reentrant='n',fr="Recombiner les modes de Fourier d'une SD Résultat dans des directions particulières",
             UIinfo={"groupes":("Post traitements",)},
-         RESULTAT        =SIMP(statut='o',typ=fourier_elas ),
+         RESULTAT        =SIMP(statut='o',typ=(fourier_elas,fourier_ther),),
          ANGL            =SIMP(statut='o',typ='R',max='**'),
-         NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=5,
-                               into=("DEPL","REAC_NODA","SIEF_ELGA_DEPL","EPSI_ELNO_DEPL","SIGM_ELNO_DEPL") ),
-)  ;
+         NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=6,
+             into=("DEPL","REAC_NODA","SIEF_ELGA_DEPL","EPSI_ELNO_DEPL","SIGM_ELNO_DEPL","TEMP","FLUX_ELNO_TEMP"),),
+) ;

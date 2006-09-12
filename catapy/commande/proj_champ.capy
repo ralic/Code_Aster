@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(RESULTAT)     == evol_noli      : return evol_noli
     if AsType(RESULTAT)     == evol_char      : return evol_char
     if AsType(RESULTAT)     == dyna_trans     : return dyna_trans
+    if AsType(RESULTAT)     == dyna_harmo     : return dyna_harmo
     if AsType(RESULTAT)     == mode_meca      : return mode_meca
     if AsType(RESULTAT)     == mode_stat_depl : return mode_stat_depl
     if AsType(RESULTAT)     == base_modale    : return base_modale
@@ -47,7 +48,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                    CONCEPT_SENSIBLE('SEPARE'),
                    REUSE_SENSIBLE(),
                    DERIVABLE('RESULTAT'),),
-           RESULTAT        =SIMP(statut='o',typ=(evol_ther,evol_elas,evol_noli,dyna_trans,evol_char,
+           RESULTAT        =SIMP(statut='o',typ=(evol_ther,evol_elas,evol_noli,dyna_trans,evol_char,dyna_harmo,
                                                  mode_meca,mode_stat_depl,base_modale) ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",

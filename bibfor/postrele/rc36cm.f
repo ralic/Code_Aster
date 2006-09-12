@@ -6,7 +6,7 @@
       CHARACTER*24        CHMOME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,6 +59,7 @@ C
       LOGICAL      SEISME, AUTRE
       CHARACTER*8  K8B, NOCMP(3), TYPE
       CHARACTER*24 CHAMS0
+      COMPLEX*16 CBID
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -115,7 +116,8 @@ C
 C
         CHAMS0='&&RC36CM.CHAMS0'
         IF ( AUTRE ) THEN
-         CALL CESFUS (NBCHAR,ZK24(JLICH),ZL(JLICM),ZR(JLICR),'V',CHAMS0)
+         CALL CESFUS (NBCHAR,ZK24(JLICH),ZL(JLICM),ZR(JLICR),CBID,
+     &                .FALSE.,'V',CHAMS0)
         ELSE
          CALL CESQUA (NBCHAR,ZK24(JLICH),ZL(JLICM),'V',CHAMS0)
         ENDIF

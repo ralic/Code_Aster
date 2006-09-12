@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,13 +140,14 @@ IMPR_MATRICE(   MATR_ASSE=_F(  MATRICE = MATRES,
                                GRAIN = 'VALEUR',
                                OPTION = 'LIGNE'))
 
-VECRES=COMB_CHAM_NO(    COMB_C=_F( CHAM_NO = VECTASS,
-                                      COEF_C = ('RI',0.,-3141.5926,))
-                            )
+
+VECRES=CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='NOEU_PRES_C',MODELE=GUIDE,
+              ASSE=_F(CHAM_GD=VECTASS,CUMUL='NON',TOUT='OUI',COEF_C=('RI',0.,-3141.5926,)))
+
 
 MATRES=FACT_LDLT( reuse=MATRES,  MATR_ASSE=MATRES )
 
-VECRES=RESO_LDLT( reuse=VECRES,  MATR_FACT=MATRES,
+VECRES=RESO_LDLT( INFO=2,reuse=VECRES,  MATR_FACT=MATRES,
                              CHAM_NO=VECRES
                         )
 

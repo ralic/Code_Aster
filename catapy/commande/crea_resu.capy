@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,7 @@ def crea_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_THER"    : return evol_ther
   if TYPE_RESU == "MULT_ELAS"    : return mult_elas
   if TYPE_RESU == "FOURIER_ELAS" : return fourier_elas
+  if TYPE_RESU == "FOURIER_THER" : return fourier_ther
   if TYPE_RESU == "EVOL_VARC"    : return evol_varc
   if TYPE_RESU == "EVOL_CHAR"    : return evol_char
   raise AsException("type de concept resultat non prevu")
@@ -36,7 +37,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
 
            TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("MULT_ELAS","EVOL_ELAS","EVOL_NOLI","FOURIER_ELAS",
-                                                                           "EVOL_THER","EVOL_VARC","EVOL_CHAR",) ),
+                                                                           "EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER") ),
            NOM_CHAM     =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
 
            AFFE         =FACT(statut='o',max='**',
@@ -58,7 +59,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
                 CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
              ),
-             b_fourier       =BLOC(condition = "TYPE_RESU == 'FOURIER_ELAS' ",
+             b_fourier       =BLOC(condition = "((TYPE_RESU == 'FOURIER_ELAS') or (TYPE_RESU == 'FOURIER_THER')) ",
                 NUME_MODE       =SIMP(statut='f',typ='I'),
                 TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
              ),

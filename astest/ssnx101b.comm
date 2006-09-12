@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2003   AUTEUR PBADEL P.BADEL 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PILOTAGE DU CHARGEMENT EN NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,16 +214,10 @@ NOM_CHAM='DEPL',
               NUME_ORDRE=1
               )
 
-DEPDIF_1=COMB_CHAM_NO(
-              COMB_R=(
-              
-                _F( 
-                CHAM_NO = DEPPHA_1,
-                COEF_R = 1.),
-                _F( 
-                CHAM_NO = DEPVER_1,
-                COEF_R = -1.))
-              )
+DEPDIF_1 = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                      OPTION='DEPL',
+                   ASSE=(_F( CHAM_GD=DEPPHA_1,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=DEPVER_1,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
 
 NORDIF_1=POST_ELEM(
               
@@ -292,16 +286,10 @@ NOM_CHAM='DEPL',
               NUME_ORDRE=1
               )
 
-DEPDIF_2=COMB_CHAM_NO(
-              COMB_R=(
-              
-                _F( 
-                CHAM_NO = DEPPHA_2,
-                COEF_R = 1.),
-                _F( 
-                CHAM_NO = DEPVER_2,
-                COEF_R = -1.))
-              )
+DEPDIF_2 = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                      OPTION='DEPL',
+                   ASSE=(_F( CHAM_GD=DEPPHA_2,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=DEPVER_2,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
 
 NORDIF_2=POST_ELEM(
               
@@ -340,16 +328,10 @@ NOM_CHAM='DEPL',
               NUME_ORDRE=3
               )
 
-DEP_DELT=COMB_CHAM_NO(
-              COMB_R=(
-              
-                _F( 
-                CHAM_NO = DEP_PLUS,
-                COEF_R = 1.),
-                _F( 
-                CHAM_NO = DEP_MOIN,
-                COEF_R = -1.))
-              )
+DEP_DELT = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                      OPTION='DEPL',
+                   ASSE=(_F( CHAM_GD=DEP_PLUS,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F( CHAM_GD=DEP_MOIN,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
 
 TEST_RESU(
               

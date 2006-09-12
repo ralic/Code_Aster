@@ -1,0 +1,789 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 12/09/2006 - 10:32:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009994 DU 2006-09-05 12:49:39
+TYPE anomalie concernant Code_Aster (VERSION 7.7)
+TITRE
+   cas test hsnv102c, portage sur machine BULL
+FONCTIONNALITE
+   Le cas test hsnv102c plante sur la machine BULL a cause d'un RCVALA mal ecrit dans
+   te0353.f :
+   
+   CALL RCVALA(MATER,' ','META_VISC',5,'TEMP',TPG,1,
+   +              NOMRES(17),VALRES(17),CODRET(17),' ')
+   
+   On n'envoie qu'un seul parametre, il faut NBPAR=1 et non 5.
+   
+   Correction a faire en versions 7 ET 8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hsnv102c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009986 DU 2006-09-04 09:35:00
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Erreur d'utilisation de onFatalError dans MACR_RECAL et STANLEY
+FONCTIONNALITE
+   Dans 'macr_recal_ops.py', 'reca_calcul_aster.py' et 'stanley.py' : on fait
+   aster.onFatalError('EXCEPTION') pour activer le mecanisme d'exception mais on
+   ne revient pas dans l'etat initial a la fin des deux macro-commandes. On le deplace dans
+   le def et remet l'etat final en sortie de la macro.
+   
+   AA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010005 DU 2006-09-08 11:55:33
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.11, le test ssls129a manque de memoire (clayastr)
+FONCTIONNALITE
+   Manque de memoire. On passe de 64 a 100 Mo.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test lui-meme
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 11/09/2006 - 15:45:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009804 DU 2006-05-29 14:35:55
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Mauvais copier-coller dans VPBOST
+FONCTIONNALITE
+   J'ai effectue la correction demandee par Olivier Boiteau.
+   
+   dans VPBOST :
+   
+   Au lieu de
+   IF(VPINF .GT. R8PREM()) THEN
+   TOLE=(ABS(VPMAX2-VPMAX)/VPMAX)
+   IF (TOLE .LT. PRECDC) THEN
+   CALL UTMESS ('A','VPBOST.02','IL Y A DES VP '//
+   +                                         'TRES PROCHES')
+   ....
+   
+   Il fallait lire
+   IF(VPMAX .GT. R8PREM()) THEN
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 11/09/2006 - 13:40:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009996 DU 2006-09-06 05:24:31
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Portage sur plate-forme Bull - compilateur Intel et declaration des fonctions C
+FONCTIONNALITE
+   L'instruction "void *malloc(size_t size);" est ajoutee dans les fichiers suivants :
+   astermodule.c
+   hdfcrf.c
+   hdfcrg.c
+   hdfnbo.c
+   hdfnom.c
+   hdfopd.c
+   hdfopf.c
+   hdfopg.c
+   hdfrat.c
+   hdftyp.c
+   hdfwat.c
+   hdfwsv.c
+   histor
+   iodr.c
+   memdis.c
+   
+   La modification est a reporter en version 7.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   compilation sur Bull et passage de la liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009993 DU 2006-09-05 12:21:46
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Pas d'entete copyright dans la routine ernozz.f
+FONCTIONNALITE
+   On retablit le Copyright dans la routine ERNOZZ. Ce dernier a ete supprime en version
+   8.2.12 le 05/04/06, la procedure de restitution aurait du emettre une erreur fatale
+   comme
+   je l'ai verifie sur un test. Je suppose que la restitution a ete acceptee avec un
+   code
+   retour 4 qui a masque cette anomalie.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asverif sur routine sans copyright
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 11/09/2006 - 13:40:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009932 DU 2006-07-24 07:16:52
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   test zmat003a en version 8.3.7 sous Rocks et Calibre 3
+FONCTIONNALITE
+   On augmente legerement le nombre d'iterations pour arriver a convergence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat003a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 11/09/2006 - 11:59:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007997 DU 2004-08-12 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.3)
+TMA : DeltaCad
+TITRE
+   Cas-test pour Stanley
+FONCTIONNALITE
+   L'objectif de cette fiche est de  creer un cas-test afin de s'assurer que
+   les commandes Aster generees par Stanley sont toujours syntaxiquement
+   correctes, a chaque restitution NEW.
+   Il n'a pas pour vocation de tester de facon exhaustives tout ce qu'il est
+   possible de faire dans Stanley (ceci est le role de la recette biannuelle).
+   Ce cas-test particulier contient de gros commentaires indiquant a un
+   eventuel developpeur que s'il est amene a changer les syntaxes dans ce cas-
+   test alors il ne faut pas qu'il oublie de les changer (ou faire changer)
+   dans Stanley.
+   Le responsable de ce cas-test devra toujours etre le responsable de Stanley.
+   
+   Les differentes fonctionnalites suivantes sont testees:
+   -  test du calcul des champs aux noe≈ìuds par elements (ELNO), aux PG (ELGA)
+   avec explosion ECLA_PG, et aux noe≈ìuds.
+   
+   - test d'affichage des resultats sous gmsh :
+   - utilisation des commandes DEFI_FICHIER, IMPR_RESU(FORMAT=GMSH)
+   - test des fichiers .pos genere a l'aide d'un TEST_FICHIER
+   
+   - test de post traitement avec XMGrace (sur un chemin deja defini):
+   - utilisation des commandes AFFE_MODELE, PROJ_CHAMP, DEFI_GROUP,
+   POST_RELEVE_T
+   - TEST_TABLE sur la table extraite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz216a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 11/09/2006 - 11:42:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009992 DU 2006-09-04 14:52:04
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   DEFI_FOND_FISS: <"FLOATING POINT EXCEPTION">
+FONCTIONNALITE
+   Plantage dans CALC_G (gdire3) dans une etude : mauvaise definition dans le fichier de
+   commande du groupe de maille LEVRE_SUP de DEFI_FOND_FISS : le groupe contient a la fois
+   les mailles de la levre superieure et de la levre inferieure !
+   
+   Solution :
+   - proposition d'une correction du fichier de commande pour faire passer l'etude
+   - ajout d'un test dans gverif (operateur DEFI_FOND_FISS) pour comparer les listes de
+   mailles des deux levres
+   
+   Validation : etude fournie
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009990 DU 2006-09-04 12:00:21
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Test sslv134f sous Calibre 4 en version NEW8.3.10
+FONCTIONNALITE
+   Correction de la routine mmaxkl (option CALC_K_MAX)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134f
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 11/09/2006 - 11:48:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009957 DU 2006-08-23 09:33:12
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   AFFE_MODELE
+FONCTIONNALITE
+   Histor
+   ------
+   La SD produite (modele) contient les noms des type_elements, mais ne sait plus "remonter"
+   aux noms des modelisations. L'impression du tableau final,
+   
+   MODELISATION  |  ELEMENT FINI   |  TYPE DE MAILLE   |  NOMBRE
+   
+   (qui tient compte des surcharges,...) ne peut se faire qu'a la fin de l'operateur
+   AFFE_MODELE.
+   
+   Aujourd'hui il y a des modelisations qui partagent des elements finis (en
+   general des elements de bords). A partir du nom d'un type_element on ne peut pas toujours
+   remonter au nom des modelisations donnees par l'utilisateur.
+   
+   La correction consiste donc a utiliser la routine DISMOI afin de detecter si la
+   modelisation contient plusieurs types d'elements, et si c'est le cas on affiche aucune
+   information dans la colonne MODELISATION.
+   
+   Routine op0018
+   CALL DISMOI('F','PHEN_MODE',TYPELE,'TYPE_ELEM',IBID,
+   &                PHEMOD,IBID)
+   CALL MODE18 ( TYPELE, TYPEMO )
+   IF ( TYPEM1 .NE. ' ' ) THEN
+   CALL CORR18 ( TYPELE, TYPEM1, TYPEMO )
+   END IF
+   TYPEM1 = TYPEMO
+   IF(PHEMOD(1:10).EQ.'#PLUSIEURS') TYPEMO =' '
+   
+   Affichage Obtenu
+   
+   MODELISATION      ELEMENT FINI      TYPE MAILLE          NOMBRE
+   POU_D_T           MECA_POU_D_T      SEG2                     34
+   MECA_FACE6        TRIA6                   134
+   3D                MECA_TETRA10      TETRA10                5568
+   
+   Pour supprimer ces ambiguites: il faudrait imposer que tous les type_element des
+   differentes modelisations soient distincts. Cela n'entraine pas forcement un foisement des
+   sources car des elements de noms differents peuvent partager tous leurs fortran et tous
+   leurs catalogues.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de l'etude fournie
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 11/09/2006 - 11:39:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009984 DU 2006-09-01 14:42:53
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.10, le cas test zzzz215c manque de memoire
+FONCTIONNALITE
+   passer de 32Mo a 64Mo
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lui-meme
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009898 DU 2006-07-04 14:22:26
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   Comportement hyperelastique
+FONCTIONNALITE
+   Correction de HYPELA et HYPINC
+   Pas d'effet apparement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009915 DU 2006-07-11 13:19:21
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   affichage pilotage
+FONCTIONNALITE
+   il y a une erreur dans l'affichage de la colonne pilotage dans STAT_NON_LINE : si le
+   pilotage a depasse une fois les bornes de pilotage (affichage d'un 'B' dans la colonne
+   pilotage), il affiche toujours un 'B' dans cette colonne, meme si le pilotage est bien
+   dans les bornes. Il ne s'agit que d'un probleme d'affichage, qui doit se situer dans
+   nmconv.f autour des lignes 400... je proposerai bien la correction suivante. Remplacement
+   de :
+   IF (LICCVG(1) .EQ. -1) THEN
+   CALL IMPSDM(IMPRCO(1:14),'PILO_PARA','B')
+   FINPAS  = .TRUE.
+   END IF
+   par :
+   IF (LICCVG(1) .EQ. -1) THEN
+   CALL IMPSDM(IMPRCO(1:14),'PILO_PARA','B')
+   FINPAS  = .TRUE.
+   ELSE
+   CALL IMPSDM(IMPRCO(1:14),'PILO_PARA',' ')
+   END IF
+   
+   
+   Ligne corrigee
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 12/09/2006 - 17:22:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009841 DU 2006-06-14 11:55:47
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   resorption comb_cham_no comb_cham_elem
+FONCTIONNALITE
+   alias  disp="export DISPLAY=130.98.31.74:0"  # cli7as
+   
+   
+   Resorber les operateurs COMB_CHAM_NO et COMB_CHAM_ELEM au profit de CREA_CHAMP.
+   -------------------------------------------------------------------------------
+   
+   2) Developpement
+   -----------------
+   Les commandes COMB_CHAM_NO et COMB_CHAM_ELEM traitent de la combinaison des champs
+   classiques (reels ou complexes) et de la recombinaison de Fourier.
+   Pour la combinaison des champs reels, l'operation 'ASSE' de l'operateur CREA_CHAMP permet
+   de realiser cette combinaison, par contre pour la combinaison des champs complexes et la
+   recombinaison de Fourier, les operateurs CREA_CHAMP et CREA_RESU ont necessite un
+   enrichissement.
+   
+   a)	Combinaison de champs complexes
+   ------------------------------------------
+   Cet enrichissement a consiste a fournir a CREA_CHAMP / ASSE :
+   -	la fonctionnalite de generer un champ de type reel a partir d'un champ de type complexe,
+   et inversement. Cette fonctionnalites se traduit par deux nouvelles OPERATION de
+   CREA_CHAMP , 'C2R' et 'R2C'.
+   -	La fonctionnalite d'appliquer un coefficient complexe aux valeurs d'un champ complexe.
+   Cette fonctionnalite se traduit par la venue d'un nouveau mot-cle, COEF_C
+   
+   
+   
+   ∑	'C2R'
+   Cette operation permet de creer un champ reel a partir de la partie reelle ou imaginaire
+   d'un champ complexe. On dispose du mot cle PARTIE pour connaitre la partie a extraire
+   ('REEL' ou 'IMAG')du champ complexe.
+   
+   Syntaxe :
+   /  OPERATION = 'C2R'
+   ?  CHAM_GD   = ch1,
+   ?  PARTIE   =  / 'REEL'
+   / 'IMAG'
+   
+   ∑	'R2C'
+   Cette operation permet de creer un champ complexe a partir d'un champ reel.
+   Remarque : La partie imaginaire des valeurs complexes du champ produit est nulle.
+   C'est donc a l'utilisateur de reutiliser CREA_CHAMP avec l'option ASSE pour recombiner ce
+   champ avec un coefficient complexe(COEF_C) pour obtenir le champ complexe qu'il desire.
+   
+   Syntaxe :
+   /  OPERATION = 'R2C'
+   ?  CHAM_GD   = ch1,
+   
+   
+   b)	Recombinaison de Fourier
+   ------------------------------------
+   Il faut utiliser l'operateur dedie COMB_FOURIER.
+   
+   Dans certains cas-tests (tplv100a, tplv305a), on combine des champs thermiques, ce qui
+   pose probleme a l'operateur COMB_FOURIER car il n'accepte que des resultats ´ mecanique
+   ª
+   de type fourier_elas.
+   On a donc cree un nouveau type de resultat, FOURIER_THER, le pendant thermique du
+   FOURIER_ELAS en mecanique, que l'on a fait reconnaitre dans le catalogue de l'operateur
+   COMB_FOURIER.
+   
+   Le concept de type FOURIER_THER est obtenu par la commande CREA_RESU que nous avons
+   enrichi.
+   
+   Remarque :
+   La nouvelle SD FOURIER_THER est acceptee dans les commandes de post-traitement generales :
+   CALC_ELEM, CALC_NO, POST_RELEVE_T et EXTR_RESU.
+   
+   
+   Impact :
+   -	Cas-tests : ahlv100a,hslv304a,hslv304b,sdld313d,sdnv105a,ssll14a,sslv109a,sslv134d,
+   sslv303a,sslv303b,sslv303d,ssnx101a,ssnx101b,tplv100a,tplv305a,zzzz185a,zzzz208a,zzzz208b
+   -	catalogue : accas.capy,calc_elem.capy,calc_no.capy,comb_fourier.capy,
+   crea_champ.capy,crea_resu.capy,extr_resu.capy,post_elem.capy,post_releve_t.capy
+   -	fortran :
+   cesfus.f,chcore.f,chpass.f,chreco.f,chsfus.f,cnsfus.f,crtype.f,misazl.f,op0106.f,
+   op0195.f,pmfd01.f,rc36cm.f,rscrsd.f,rsdocu.f,rvpara.f,thaclm.f,ve0124.f
+   -	UNIGEST: suppression des fortrans op0030.f, op0139.f, cochgd.f, recfou.f, suppression
+   des catalogues comb_cham_no.capy, comb_cham_elem.capy.
+   
+   
+   Documentation :
+   -	DOC_U : enrichissement des documentations U4 suivantes :
+   U4.81.02 (calc_no), U4.81.01 (calc_elem), U4.81.21 (post_releve_t), U4.71.04 (extr_resu),
+   U4.83.31 (comb_fourier), U4.44.12 (crea_resu), U4.72.04 (crea_champ)
+   -	DOC_V : suppression des commandes COMB_CHAM_X dans les doc V suivantes: V7.14.304
+   (hslv304),V3.04.109(sslv109), V3.04.303(sslv303), V4.04.100(tplv100), V4.04.305(tplv305),
+   V1.01.185(zzzz185).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.83.31 U4.81.02 U4.81.01 U4.81.21 U4.71.04 U4.44.12 U4.72.04
+VALIDATION
+   liste restreinte
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 12/09/2006 - 11:08:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009875 DU 2006-06-27 15:36:47
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   D_PLAN et variable de commande
+FONCTIONNALITE
+   Le probleme souleve par Lionel Salmona dans cette fiche est le suivant :
+   -------------------------------------------------------------------------
+   
+   Si dans un catalogue d'element fini on declare utiliser un champ local represente
+   sur
+   (n1) points (par exemple des points de Gauss) et si dans le fortran, on utilise en
+   realite
+   un autre nombre de points (n2) (par exemple en utisant ELREF4 sur une mauvaise famille de
+   points de Gauss), alors on peut obtenir n'importe quel resultat faux. Il s'agit d'une
+   incoherence catalogue/fortran.
+   
+   Ce probleme est reel : Lionel a identifie (par exemple) la routine te0023 qui utilise
+   (en
+   NEW7) une mauvaise famille de points de Gauss pour l'hydratation.
+   
+   Pour se proteger de telles erreurs de programmation, j'ai pris la precaution (il y a
+   longtemps) d'encadrer entre des valeurs "undef" les champs locaux manipules par les
+   routines te00ij.f
+   
+   3 cas de figures peuvent alors se presenter :
+   
+   si n2 > n1 :
+   si le champ est en "lecture" :
+   le fortran va utiliser une valeur "undef" et les resultats seront aberrants
+   si le champ est en "ecriture" :
+   le fortran (te00ij.f) va ecrire au dela de la zone permise et donc ecraser la
+   valeur
+   "undef". La routine calcul.f qui verifie que cette valeur n'est pas ecrasee s'arretera
+   alors en erreur fatale ("INCOHERENCE CATALOGUE / FORTRAN")
+   
+   si n2 < n1 :
+   Le code ne detectera rien de particulier et l'utilisateur ne s'apercevra pas
+   (facilement) de cette erreur de programmation.
+   Mais dans ce cas, les resultats ne sont pas tres faux puisque les points utilises
+   sont
+   tous des points de l'element. L'erreur est donc "locale" et est d'autant plus faible que
+   le  maillage est "fin" (champ presque constant par elements).
+   On peut penser que l'erreur relevee par Lionel dans te0023.f rentre dans cette
+   categorie (n2 < n1) et on ne la corrigera pas en NEW7.
+   
+   
+   Evolution :
+   -----------
+   La valeur "undef" dont j'ai parlee plus haut etait jusqu'a present la valeur
+   R8VIDE() qui
+   contient en realite la valeur du plus grand reel possible (R8MAEM()).
+   Si (par erreur) le fortran utilise cette valeur, plusieurs cas de figure sont possibles :
+   1) la (tres) grande valeur peut provoquer un "overflow" => erreur <F>
+   2) la (tres) grande valeur peut conduire a un resultat "hors norme" (resultat
+   aberrant)
+   3) pas de chance (!!!) : le programme utilise l'inverse de la valeur tres grande (1/x
+   -> 0.) et il est difficile de s'apercevoir qu'un terme a disparu !
+   
+   Pour plus de securite, on remplace la valeur R8VIDE par R8NNEM ("Not A Number" : NaN)
+   dans les routines :
+   caundf.f
+   jeundf.f
+   mechti.f
+   mgauss.f
+   rcvarc.f
+   tstvec.f
+   
+   Ainsi le programme s'arretera en erreur <F> des qu'il voudra faire un calcul numerique
+   avec cette valeur.
+   
+   
+   Validation :
+   ------------
+   - liste restreinte sur clayastr
+   - petite liste sur LINUX 32bits perso
+   
+   Remarque :
+   ----------
+   Je crois me souvenir que j'avais voulu utiliser la valeur undef=R8NNEM() mais j'etais
+   tombe sur une difficulte (liee au fortran):
+   Si une valeur reelle x est "NaN", on ne peut pas la tester avec les operateurs .EQ. et
+   .NE. : le programme s'arrete immediatement.
+   On peut alors vouloir utiliser la fonction "C" isnan(x) qui rend un entier /= 0 si x est
+   "NaN" mais malheureusement, la norme fortran95 (implantee dans les compilateurs f90) a
+   egalement ajoute cette fonction isnan mais de type "logique". Si on veut (comme nous)
+   utiliser le meme source avec des compilateurs g77 et f95, on ne peut donc pas se servir
+   de
+   isnan.
+   J'ai donc du ajouter un "chapeau" (iisnan) a la fonction C isnan pour ne pas perturber
+   les compilateurs. C'est cette fonction iisnan qu'il faut utiliser dans le fortran d'Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009998 DU 2006-09-06 07:56:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utilisation de PROJ_CHAMP pour les dyna_harmo
+FONCTIONNALITE
+   Projection des DYNA_HARMO dans PROJ_CHAMP
+   -----------------------------------------
+   La commande PROJ_CHAMP accepte maintenant les SD DYNA_HARMO.
+   
+   On a legerement modifie les 2 fichiers :
+   proj_champ.capy
+   pjefpr.f
+   
+   Validation :
+   ------------
+   Je modifie le test sdll21a :
+   
+   DYNAHAR2= DYNA_LINE_HARM(... )
+   
+   >>> ajout :
+   DYNAHAR3= PROJ_CHAMP(RESULTAT=DYNAHAR2, ...)  # on projette sur le meme maillage
+   
+   >>> Dans la suite du fichier : on remplace DYNAHAR2 par DYNAHAR3
+   >>> Les resultats OK restent OK avec DYNAHAR3 ce qui prouve que la projection s'est bien
+   passee.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.72.05
+VALIDATION
+   modification du test sdll21a
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF hdf/hdfcrf                    d6bhhjp J.P.LEFEBVRE        56      2      1
+       C MODIF hdf/hdfcrg                    d6bhhjp J.P.LEFEBVRE        64      2      1
+       C MODIF hdf/hdfnbo                    d6bhhjp J.P.LEFEBVRE        70      3      1
+       C MODIF hdf/hdfnom                    d6bhhjp J.P.LEFEBVRE        81      3      1
+       C MODIF hdf/hdfopd                    d6bhhjp J.P.LEFEBVRE        65      2      1
+       C MODIF hdf/hdfopf                    d6bhhjp J.P.LEFEBVRE        53      2      1
+       C MODIF hdf/hdfopg                    d6bhhjp J.P.LEFEBVRE        60      2      1
+       C MODIF hdf/hdfrat                    d6bhhjp J.P.LEFEBVRE        68      2      1
+       C MODIF hdf/hdftyp                    d6bhhjp J.P.LEFEBVRE        99      3      1
+       C MODIF hdf/hdfwat                    d6bhhjp J.P.LEFEBVRE        70      2      1
+       C MODIF hdf/hdfwsv                    d6bhhjp J.P.LEFEBVRE       126      2      1
+       C MODIF supervis/astermodule          d6bhhjp J.P.LEFEBVRE      4231     11      2
+       C MODIF utilitai/envima               vabhhts J.PELLET           708     17      1
+       C MODIF utilitai/iodr                 d6bhhjp J.P.LEFEBVRE       249      2      2
+       C MODIF utilitai/memdis               d6bhhjp J.P.LEFEBVRE        65      2      1
+ CASTEST AJOUT zzzz216a                     deltacad M.ASSISTANCE       280    280      0
+ CASTEST MODIF ahlv100a                      rezette C.REZETTE          366      6      5
+ CASTEST MODIF hslv304a                      rezette C.REZETTE          255     41     37
+ CASTEST MODIF hslv304b                      rezette C.REZETTE          250     35     33
+ CASTEST MODIF rccm02b                       rezette C.REZETTE          354      1      1
+ CASTEST MODIF sdld21a                       vabhhts J.PELLET           825     40     33
+ CASTEST MODIF sdld313d                      rezette C.REZETTE          321     34      3
+ CASTEST MODIF sdnv105a                      rezette C.REZETTE         1312      4      5
+ CASTEST MODIF ssll14a                       rezette C.REZETTE          588      9     10
+ CASTEST MODIF ssls129a                       assire A.ASSIRE           873      1      1
+ CASTEST MODIF sslv109a                      rezette C.REZETTE          522     27     88
+ CASTEST MODIF sslv134d                      rezette C.REZETTE         1315      5      4
+ CASTEST MODIF sslv303a                      rezette C.REZETTE          320     54     45
+ CASTEST MODIF sslv303b                      rezette C.REZETTE          318     54     45
+ CASTEST MODIF sslv303d                      rezette C.REZETTE          263     41     25
+ CASTEST MODIF ssnx101a                      rezette C.REZETTE          344     13     31
+ CASTEST MODIF ssnx101b                      rezette C.REZETTE          348     13     31
+ CASTEST MODIF tplv100a                      rezette C.REZETTE          469     65     26
+ CASTEST MODIF tplv305a                      rezette C.REZETTE          402     45     33
+ CASTEST MODIF zmat003a                      d6bhhjp J.P.LEFEBVRE       150      2      2
+ CASTEST MODIF zzzz185a                      rezette C.REZETTE          384      9      9
+ CASTEST MODIF zzzz208a                      rezette C.REZETTE          427      7      2
+ CASTEST MODIF zzzz208b                      rezette C.REZETTE          455      6      2
+ CASTEST MODIF zzzz215c                       mabbas M.ABBAS            152      1      1
+CATALOGU MODIF typelem/gener_mebar1          vabhhts J.PELLET           214      4      1
+CATALOGU MODIF typelem/gener_mecab1          vabhhts J.PELLET           157      4      1
+CATALOGU MODIF typelem/gener_medtr1          vabhhts J.PELLET           211      4      1
+CATALOGU MODIF typelem/gener_mf2fi2          vabhhts J.PELLET           110      4      1
+CATALOGU SUPPR commande/comb_cham_elem       rezette C.REZETTE           45      0     45
+CATALOGU SUPPR commande/comb_cham_no         rezette C.REZETTE           52      0     52
+CATALOPY MODIF commande/calc_elem            rezette C.REZETTE          580      4      4
+CATALOPY MODIF commande/calc_no              rezette C.REZETTE          104      2      2
+CATALOPY MODIF commande/comb_fourier         rezette C.REZETTE           27      4      4
+CATALOPY MODIF commande/crea_champ           rezette C.REZETTE          194     13      2
+CATALOPY MODIF commande/crea_resu            rezette C.REZETTE          134      4      3
+CATALOPY MODIF commande/extr_resu            rezette C.REZETTE           72      6      6
+CATALOPY MODIF commande/post_elem            rezette C.REZETTE          408      1      1
+CATALOPY MODIF commande/post_releve_t        rezette C.REZETTE          127      2      2
+CATALOPY MODIF commande/proj_champ           vabhhts J.PELLET           118      3      2
+CATALOPY MODIF entete/accas                  rezette C.REZETTE         1148      2      1
+ FORTRAN AJOUT elements/gedisc               vabhhts J.PELLET            42     42      0
+ FORTRAN AJOUT elements/te0478               vabhhts J.PELLET            59     59      0
+ FORTRAN AJOUT utilitai/chcore               rezette C.REZETTE          122    122      0
+ FORTRAN AJOUT utilitai/chreco               rezette C.REZETTE          126    126      0
+ FORTRAN MODIF algeline/cmfiss               vabhhts J.PELLET           167     19      6
+ FORTRAN MODIF algeline/vpbost                boyere E.BOYERE           261      2      2
+ FORTRAN MODIF algorith/crtype               rezette C.REZETTE          390      5      3
+ FORTRAN MODIF algorith/hypela                mabbas M.ABBAS            164      5      5
+ FORTRAN MODIF algorith/hypinc                mabbas M.ABBAS            170      5      5
+ FORTRAN MODIF algorith/lcmzge               vabhhts J.PELLET           468      3      3
+ FORTRAN MODIF algorith/misazl               rezette C.REZETTE          152      3      2
+ FORTRAN MODIF algorith/nmconv                mabbas M.ABBAS            706      3      1
+ FORTRAN MODIF algorith/sofosu               vabhhts J.PELLET            83      2      2
+ FORTRAN MODIF algorith/ve0124               rezette C.REZETTE          130     21      2
+ FORTRAN MODIF calculel/caundf               vabhhts J.PELLET           220     22     23
+ FORTRAN MODIF calculel/celfpg               vabhhts J.PELLET           130      2      1
+ FORTRAN MODIF calculel/cesfus               rezette C.REZETTE          382     21      5
+ FORTRAN MODIF calculel/chsfus               rezette C.REZETTE           78     10      5
+ FORTRAN MODIF calculel/cnsfus               rezette C.REZETTE          254     20      5
+ FORTRAN MODIF calculel/jeundf               vabhhts J.PELLET           148      5      5
+ FORTRAN MODIF calculel/me2mme               vabhhts J.PELLET           740     56     24
+ FORTRAN MODIF calculel/mechti               vabhhts J.PELLET            51      2      2
+ FORTRAN MODIF calculel/mgauss               vabhhts J.PELLET           260      3      3
+ FORTRAN MODIF calculel/pjefpr               vabhhts J.PELLET           226      5      1
+ FORTRAN MODIF calculel/rcvarc               vabhhts J.PELLET           205      4      4
+ FORTRAN MODIF calculel/thaclm               rezette C.REZETTE          891      3      3
+ FORTRAN MODIF calculel/tstvec               vabhhts J.PELLET           166      6      7
+ FORTRAN MODIF elements/ernozz               d6bhhjp J.P.LEFEBVRE        75     17      1
+ FORTRAN MODIF elements/gnormf               galenne E.GALENNE          468      2      2
+ FORTRAN MODIF elements/gverif               galenne E.GALENNE          840     16      2
+ FORTRAN MODIF elements/te0353                assire A.ASSIRE           428      2      2
+ FORTRAN MODIF modelisa/op0018              lebouvie F.LEBOUVIER        655      4      1
+ FORTRAN MODIF modelisa/pmfd01               rezette C.REZETTE          159      3      2
+ FORTRAN MODIF postrele/rc36cm               rezette C.REZETTE          133      4      2
+ FORTRAN MODIF postrele/rvpara               rezette C.REZETTE          624      2      2
+ FORTRAN MODIF prepost/op0106                rezette C.REZETTE          814      2      2
+ FORTRAN MODIF utilitai/chpass               rezette C.REZETTE          337     52     16
+ FORTRAN MODIF utilitai/mmaxkl               galenne E.GALENNE          299      3      3
+ FORTRAN MODIF utilitai/op0195               rezette C.REZETTE          235     11      1
+ FORTRAN MODIF utilitai/rscrsd               rezette C.REZETTE          790     40      4
+ FORTRAN MODIF utilitai/rsdocu               rezette C.REZETTE           92      4      1
+ FORTRAN SUPPR algeline/cochgd               rezette C.REZETTE          234      0    234
+ FORTRAN SUPPR algeline/op0030               rezette C.REZETTE           27      0     27
+ FORTRAN SUPPR algeline/op0139               rezette C.REZETTE           27      0     27
+ FORTRAN SUPPR algeline/recfou               rezette C.REZETTE          170      0    170
+  PYTHON MODIF Macro/macr_recal_ops           assire A.ASSIRE           267     44     45
+  PYTHON MODIF Macro/reca_calcul_aster        assire A.ASSIRE           651     65    113
+  PYTHON MODIF Macro/stanley_ops              assire A.ASSIRE            89      6      1
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3170      1      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    5         629       629              +629
+ MODIF :   93       37250      1132     842      +290
+ SUPPR :    6         555               555      -555
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  104       38434      1761    1397      +364 

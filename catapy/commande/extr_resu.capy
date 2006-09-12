@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,12 +25,12 @@ def extr_resu_prod(RESULTAT,**args):
   if AsType(RESULTAT) == acou_harmo   : return acou_harmo
   if AsType(RESULTAT) == mode_meca    : return mode_meca
   if AsType(RESULTAT) == mode_acou    : return mode_acou
-  if AsType(RESULTAT) == mode_stat :    return mode_stat
-  if AsType(mode_stat) == mode_stat_depl :    return mode_stat_depl
-  if AsType(mode_stat) == mode_stat_acce :    return mode_stat_acce
-  if AsType(mode_stat) == mode_stat_forc :    return mode_stat_forc
+  if AsType(RESULTAT) == mode_stat_depl :    return mode_stat_depl
+  if AsType(RESULTAT) == mode_stat_acce :    return mode_stat_acce
+  if AsType(RESULTAT) == mode_stat_forc :    return mode_stat_forc
   if AsType(RESULTAT) == mult_elas    : return mult_elas
   if AsType(RESULTAT) == fourier_elas : return fourier_elas
+  if AsType(RESULTAT) == fourier_ther : return fourier_ther
   raise AsException("type de concept resultat non prevu")
 
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
@@ -40,7 +40,7 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
                  DERIVABLE('RESULTAT'),),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,mode_stat_depl,mode_stat_acce,mode_stat_forc,evol_ther,evol_noli,
-                                               mult_elas,fourier_elas ) ),
+                                               mult_elas,fourier_elas,fourier_ther ) ),
 
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                    fr="Liste des paramètres de sensibilité.",

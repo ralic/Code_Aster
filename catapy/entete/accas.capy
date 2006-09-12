@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -453,6 +453,7 @@ class comb_fourier  (resultat_sdaster):pass
 class dyna_harmo    (resultat_sdaster):pass
 class dyna_trans    (resultat_sdaster):pass
 class fourier_elas  (resultat_sdaster):pass
+class fourier_ther  (resultat_sdaster):pass
 class harm_gene     (resultat_sdaster):pass
 class mode_acou     (resultat_sdaster):pass
 class mode_cycl     (resultat_sdaster):pass

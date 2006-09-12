@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,27 +48,28 @@ C        EXITIM : VRAI SI L'INSTANT EST DONNE
 C        TIME   : INSTANT DE CALCUL
 
 C     SORTIES:
-C     SONT TRAITES LES CHAMPS:
-C        LCHAR(ICHA)//'.CHME.CIMPO.DESC'
-C        LCHAR(ICHA)//'.CHME.FORNO.DESC'
-C        LCHAR(ICHA)//'.CHME.F3D3D.DESC'
-C        LCHAR(ICHA)//'.CHME.FCO2D.DESC'
-C        LCHAR(ICHA)//'.CHME.FCO3D.DESC'
-C        LCHAR(ICHA)//'.CHME.F2D3D.DESC'
-C        LCHAR(ICHA)//'.CHME.F1D3D.DESC'
-C        LCHAR(ICHA)//'.CHME.F2D2D.DESC'
-C        LCHAR(ICHA)//'.CHME.F1D2D.DESC'
-C        LCHAR(ICHA)//'.CHME.F1D1D.DESC'
-C        LCHAR(ICHA)//'.CHME.PESAN.DESC'
-C        LCHAR(ICHA)//'.CHME.ROTAT.DESC'
-C        LCHAR(ICHA)//'.CHME.FELEC.DESC'
-C        LCHAR(ICHA)//'.CHME.FL1??.DESC'
-C        LCHAR(ICHA)//'.CHME.PRESS.DESC'
-C        LCHAR(ICHA)//'.CHME.EPSIN.DESC'
-C        LCHAR(ICHA)//'.CHME.TEMPE.TEMP'
-C        LCHAR(ICHA)//'.CHME.VNOR .DESC'
-C!
-C        LCHAR(ICHA)//'.CHME.ONDE .DESC'
+C     SONT TRAITES LES CHARGEMENTS :
+C        LCHAR(ICHA)//'.CHME.CIMPO'
+C        LCHAR(ICHA)//'.CHME.FORNO'
+C        LCHAR(ICHA)//'.CHME.F3D3D'
+C        LCHAR(ICHA)//'.CHME.FCO2D'
+C        LCHAR(ICHA)//'.CHME.FCO3D'
+C        LCHAR(ICHA)//'.CHME.F2D3D'
+C        LCHAR(ICHA)//'.CHME.F1D3D'
+C        LCHAR(ICHA)//'.CHME.F2D2D'
+C        LCHAR(ICHA)//'.CHME.F1D2D'
+C        LCHAR(ICHA)//'.CHME.F1D1D'
+C        LCHAR(ICHA)//'.CHME.PESAN'
+C        LCHAR(ICHA)//'.CHME.ROTAT'
+C        LCHAR(ICHA)//'.CHME.FELEC'
+C        LCHAR(ICHA)//'.CHME.FL1??'
+C        LCHAR(ICHA)//'.CHME.PRESS'
+C        LCHAR(ICHA)//'.CHME.EPSIN'
+C        LCHAR(ICHA)//'.CHME.TEMPE'
+C        LCHAR(ICHA)//'.CHME.VNOR'
+C        LCHAR(ICHA)//'.CHME.ONDE'
+C        LCHAR(ICHA)//'.CHME.EVOL.CHAR'
+
 C ----------------------------------------------------------------------
 
 C     FONCTIONS EXTERNES:
@@ -98,6 +99,10 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 CHVARC
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
+
+      CHARACTER*19  RESUFV(3)
+      CHARACTER*24 CHARGE
+      INTEGER JAD,I
 
 
       CALL JEMARQ()
@@ -540,7 +545,7 @@ C ====================================================================
             END IF
           END IF
 C ====================================================================
-C           -- LA BOUCLE 3 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
+C         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
 
           DO 30 J = 1,99
             LCHIN(13) (1:17) = LIGRCH(1:13)//'.FL1'
@@ -696,8 +701,35 @@ C!
               ILIRES = ILIRES - 1
             END IF
           END IF
-   50   CONTINUE
 C ====================================================================
+
+C CHARGE DE TYPE EVOL_CHAR
+
+        CHARGE = '&&ME2MME.INTERF.NMDEPR'
+        CALL WKVECT(CHARGE,'V V K24',1,JAD)
+        ZK24(JAD) = LCHAR(ICHA)
+
+        RESUFV(1) = '&&ME2MME.VE001'
+        RESUFV(2) = '&&ME2MME.VE002'
+        RESUFV(3) = '&&ME2MME.VE003'
+
+        CALL NMDEPR(MODELE,LIGRMO,CARA,CHARGE,1,TIME,RESUFV)
+
+        DO 200 I = 1,3
+          CALL EXISD('CHAMP_GD',RESUFV(I),IRET)
+          IF (IRET.NE.0) THEN
+            ILIRES = ILIRES + 1
+            CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
+            ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
+            CALL COPISD('CHAMP_GD',BASE,RESUFV(I),LCHOUT(1))
+            CALL DETRSD('CHAMP_GD',RESUFV(I))
+      END IF
+ 200    CONTINUE
+        CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
+        CALL JEDETR(CHARGE)
+
+C ====================================================================
+   50   CONTINUE
       END IF
 
    60 CONTINUE

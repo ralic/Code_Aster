@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2006   AUTEUR ADBHHVF F.VOLDOIRE 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,8 +169,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_2D=_F(GROUP_MA=('CONBAS','CONHAUT',),),
-                 MODELE=MO,);
+                 ORIE_PEAU_2D=_F(GROUP_MA=('CONBAS','CONHAUT',),),);
 
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
@@ -479,9 +478,9 @@ Ini_depl = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR',
 Ini_vite = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR',
                       RESULTAT=u_ini_la, NOM_CHAM='VITE',
                       INST=0.0,);
-Ini_vit0 = COMB_CHAM_NO(COMB_R=_F(CHAM_NO=Ini_vite, COEF_R=0.0,),);
+Ini_vit0 = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
+                   ASSE=_F( CHAM_GD=Ini_vite,TOUT='OUI',CUMUL='NON',COEF_R=0.0),)
 #
-
 u_lacher=DYNA_NON_LINE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=CHA_pes,),

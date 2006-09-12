@@ -1,4 +1,4 @@
-# MODIF  DATE 27/10/2000   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE TEMPERATURES IMPOSEES SUIVANT UNE FONCTION HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,62 +135,74 @@ TMOD1=RESO_LDLT(   MATR_FACT=MTRA1,
 # ANALYSE DES RESULTATS ------------------------------------------------
 #
 
+RTEMP=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_THER',NOM_CHAM='TEMP',
+           AFFE=_F( CHAM_GD=TMOD1,NUME_MODE=1,TYPE_MODE='SYME'),)
 
-TPR00=COMB_CHAM_NO(   COMB_FOURIER=_F(  CHAM_NO = TMOD1,
-                                          NUME_MODE = 1,
-                                          TYPE_MODE = 'SYME'),
-                            ANGL=0.
-                        )
 
-TPR45=COMB_CHAM_NO(   COMB_FOURIER=_F(  CHAM_NO = TMOD1,
-                                          NUME_MODE = 1,
-                                          TYPE_MODE = 'SYME'),
-                           ANGL=45.
-                        )
+FOUR0=COMB_FOURIER(   RESULTAT=RTEMP,
+                       NOM_CHAM=( 'TEMP',),
+                       ANGL=( 0., ),)
 
-TPR90=COMB_CHAM_NO(   COMB_FOURIER=_F(  CHAM_NO = TMOD1,
-                                          NUME_MODE = 1,
-                                          TYPE_MODE = 'SYME'),
-                           ANGL=90.
-                        )
+FOUR45=COMB_FOURIER(   RESULTAT=RTEMP,
+                         NOM_CHAM=( 'TEMP',),
+                         ANGL=( 45., ),)
 
-TPR180=COMB_CHAM_NO(   COMB_FOURIER=_F(  CHAM_NO = TMOD1,
-                                          NUME_MODE = 1,
-                                          TYPE_MODE = 'SYME'),
-                           ANGL=180.
-                        )
+FOUR90=COMB_FOURIER(   RESULTAT=RTEMP,
+                         NOM_CHAM=( 'TEMP',),
+                         ANGL=( 90., ),)
+
+FOUR180=COMB_FOURIER(   RESULTAT=RTEMP,
+                         NOM_CHAM=( 'TEMP',),
+                         ANGL=( 180., ),)
+
+
+TPR00=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',
+             RESULTAT=FOUR0,ANGL=0.,NOM_CHAM='TEMP')
+
+
+TPR45=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',
+             RESULTAT=FOUR45,ANGL=45.,NOM_CHAM='TEMP')
+
+
+TPR90=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',
+             RESULTAT=FOUR90,ANGL=90.,NOM_CHAM='TEMP')
+
+
+TPR180=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',
+             RESULTAT=FOUR180,ANGL=180.,NOM_CHAM='TEMP')
 
 #
 #--- TETA = 0
 #
 
-RES_00=COMB_CHAM_NO( COMB_R=( _F( CHAM_NO = TMOD0,  COEF_R = 1.),
-                                    _F( CHAM_NO = TPR00,  COEF_R = 1.))
-                          )
+RES_00=CREA_CHAMP(OPERATION='ASSE',MODELE=MOTH,TYPE_CHAM='NOEU_TEMP_R',
+                   ASSE=(_F(CHAM_GD=TMOD0,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),
+                         _F(CHAM_GD=TPR00,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),),)
 
 #
 #--- TETA = 45
 #
 
-RES_45=COMB_CHAM_NO( COMB_R=( _F( CHAM_NO = TMOD0,  COEF_R = 1.),
-                                    _F( CHAM_NO = TPR45,  COEF_R = 1.))
-                          )
+
+RES_45=CREA_CHAMP(OPERATION='ASSE',MODELE=MOTH,TYPE_CHAM='NOEU_TEMP_R',
+                   ASSE=(_F(CHAM_GD=TMOD0,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),
+                         _F(CHAM_GD=TPR45,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),),)
 
 #
 #--- TETA = 90
 #
 
-RES_90=COMB_CHAM_NO( COMB_R=( _F( CHAM_NO = TMOD0,  COEF_R = 1.),
-                                    _F( CHAM_NO = TPR90,  COEF_R = 1.))
-                          )
+RES_90=CREA_CHAMP(OPERATION='ASSE',MODELE=MOTH,TYPE_CHAM='NOEU_TEMP_R',
+                   ASSE=(_F(CHAM_GD=TMOD0,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),
+                         _F(CHAM_GD=TPR90,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),),)
 
 #
 #--- TETA = 180
 #
 
-RES_180=COMB_CHAM_NO( COMB_R=( _F( CHAM_NO = TMOD0,  COEF_R = 1.),
-                                    _F( CHAM_NO = TPR180, COEF_R = 1.))
-                          )
+RES_180=CREA_CHAMP(OPERATION='ASSE',MODELE=MOTH,TYPE_CHAM='NOEU_TEMP_R',
+                   ASSE=(_F(CHAM_GD=TMOD0,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),
+                         _F(CHAM_GD=TPR180,TOUT='OUI',CUMUL='OUI',COEF_R=1.0),),)
 
 TEST_RESU(CHAM_NO=(
 

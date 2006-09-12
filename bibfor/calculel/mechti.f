@@ -5,7 +5,7 @@
       CHARACTER*24 CHTIME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C DEB-------------------------------------------------------------------
       CHTIME = '&&MECHTI.CH_INST_R'
       TPS(1) = TIME
 
-      RUNDF = R8VIDE()
+      RUNDF = R8NNEM()
       TPS(2) = RUNDF
       TPS(3) = RUNDF
       TPS(4) = RUNDF

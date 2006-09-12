@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -236,10 +236,10 @@ C     ------------------------------------------------------------------
       DATA CHTHER/'TEMP','FLUX_ELGA_TEMP','FLUX_ELNO_TEMP',
      &     'FLUX_NOEU_TEMP','META_ELGA_TEMP','META_ELNO_TEMP',
      &     'META_NOEU_TEMP','DURT_ELGA_META','DURT_ELNO_META',
-     &     'DURT_NOEU_META','HYDR_ELNO_ELGA',
+     &     'DURT_NOEU_META','HYDR_ELNO_ELGA','SOUR_ELGA_ELEC',
      &     'HYDR_NOEU_ELGA','DETE_ELNO_DLTE','DETE_NOEU_DLTE',
      &     'COMPORTHER','ERRE_ELEM_TEMP','ERRE_ELNO_ELEM',
-     &     'ERRE_NOEU_ELEM','SOUR_ELGA_ELEC'/
+     &     'ERRE_NOEU_ELEM'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
@@ -352,6 +352,38 @@ C     ------------------------------------------------------------------
         DO 70 I = 1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
    70   CONTINUE
+
+        NBNOVA = 6
+        CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','NUME_MODE'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','TYPE_MODE'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','MODELE'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','CHAMPMAT'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','CARAELEM'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','EXCIT'))
+
+        CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
+     &              NBNOVA)
+        CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
+
+        CALL UTACCE('A',NOMSD,'NUME_MODE','NUMO','I',NBORDR)
+        CALL UTACCE('P',NOMSD,'TYPE_MODE','TYMO','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
+
+        GO TO 310
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYPES2.EQ.'FOURIER_THER') THEN
+
+        NBCHAM = NCTHER
+        CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')
+        CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'FOTH')
+        DO 71 I = 1,NBCHAM
+          CALL JECROC(JEXNOM(NOMS2//'.DESC',CHTHER(I)))
+   71   CONTINUE
 
         NBNOVA = 6
         CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
@@ -673,11 +705,15 @@ C     ------------------------------------------------------------------
       ELSE IF (TYPES2.EQ.'COMB_FOURIER') THEN
 
         NBCHAM = NCMECA
+        NBCHAM = NBCHAM + NCTHER-3
         CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')
         CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'COFO')
-        DO 270 I = 1,NBCHAM
+        DO 270 I = 1,NCMECA 
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   270   CONTINUE
+        DO 271 I = 1,NCTHER-3
+          CALL JECROC(JEXNOM(NOMS2//'.DESC',CHTHER(I)))
+  271   CONTINUE
 
         NBNOVA = 1
         CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')

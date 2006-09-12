@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,12 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# Gestion des Exceptions
-import aster
-prev_onFatalError = aster.onFatalError()
-aster.onFatalError('EXCEPTION')
-texte_onFatalError = "Une erreur est intervenue. L'operation a ete annulee."
-
+import string, sys, copy, types, Numeric, os
+from glob import glob
 
 def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC, 
                         ITER_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
@@ -32,7 +28,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    # Initialisation du compteur d'erreurs
    ier=0
 
-   import string, sys, copy, types, Numeric, os
+   import aster
    import Macro
    from Cata import cata
    from Cata.cata import DEFI_LIST_REEL
@@ -45,7 +41,11 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
 #   from Macro import reca_controles
    from Macro.reca_controles import gestion
 #   from Macro.recal import calcul_F
+   from Utilitai.Utmess import UTMESS
 
+   # Gestion des Exceptions
+   prev_onFatalError = aster.onFatalError()
+   aster.onFatalError('EXCEPTION')
 
    if GRAPHIQUE:
      dGRAPHIQUE=GRAPHIQUE[0].cree_dict_valeurs(GRAPHIQUE[0].mc_liste)
@@ -57,12 +57,11 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
          GRAPHIQUE == None
          UTMESS('A','MACR_RECAL',"Le logiciel Gnuplot ou le module python Gnuplot.py n'est pas disponible. On desactive l'affichage des courbes.")
 
-   try:
-      from Utilitai.Utmess import UTMESS
-   except ImportError:
-      def UTMESS(code,sprg,texte):
-         fmt='\n <%s> <%s> %s\n\n'
-         print fmt % (code,sprg,texte)
+   import pprint; pprint.pprint(os.environ)
+
+   sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
+   print sys.path
+   from as_profil import ASTER_PROFIL
 
    # La macro compte pour 1 dans l'execution des commandes
    self.set_icmd(1)
@@ -75,44 +74,34 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    # VERIFICATION PREALABLE SUR MEM_ASTER
    #_____________________________________________
 
-
    # Lecture du fichier .export
-   list_export = []
-   for fic in os.listdir('.'):
-     if fic.split('.')[-1] == 'export': list_export.append(fic)
-   if len(list_export) == 0: UTMESS('F','MACR_RECAL',"Probleme : il n'y a pas de fichier .export dans le repertoire de travail!")
-   elif len(list_export) >1: UTMESS('F','MACR_RECAL',"Probleme : il y a plus d'un fichier .export dans le repertoire de travail!")
+   list_export = glob('*.export')
+   if len(list_export) == 0:
+      UTMESS('F','MACR_RECAL',"Probleme : il n'y a pas de fichier .export dans le repertoire de travail!")
+   elif len(list_export) >1:
+      UTMESS('F','MACR_RECAL',"Probleme : il y a plus d'un fichier .export dans le repertoire de travail!")
 
-   # Parametre a rechercher dans le .export
-   txt1 = 'mem_aster'
-   txt2 = 'memjeveux'
-
-   mem_aster = None
-   memjeveux = None
-   f = open(list_export[0], 'r')
-   for ligne in f:
-      ll = ligne.split()
-      if ll[1] == txt1:
-         if len(ll)>2: mem_aster = ll[2]
-      elif ll[1] == txt2:
-         memjeveux = ll[2]
-
-   if not mem_aster:
-      UTMESS('A','MACR_RECAL',"Attention : il faut spécifier une valeur pour " + txt1 + " (menu Option de ASTK). On fixe ce parametre à 100%.")
-      mem_aster = '100'
-   if not memjeveux: UTMESS('F','MACR_RECAL',"Probleme : aucune valeur pour le parametres " + txt2 + ". Verifier le .export")
+   prof = ASTER_PROFIL(list_export[0])
+   mem_aster = prof['mem_aster'][0]
+   memjeveux = prof.args.get('memjeveux')
+   
+   if mem_aster in ('', '100'):
+      UTMESS('A','MACR_RECAL',"Attention : il faut spécifier une valeur pour 'mem_aster' (menu Option de ASTK)" \
+                              "pour limiter la mémoire allouée au calcul maitre.")
+      mem_aster = '0'
+   if not memjeveux:
+      UTMESS('F','MACR_RECAL',"Probleme : aucune valeur pour le parametre 'memjeveux'. Verifier le .export")
 
    try:
-      memjeveux_esclave = ( float(memjeveux) * float(mem_aster) ) / 100.
+      if mem_aster == '0':
+         memjeveux_esclave = float(memjeveux)
+      else:
+         memjeveux_esclave = float(memjeveux) / float(mem_aster) * 100. - float(memjeveux)
    except:
-      UTMESS('F','MACR_RECAL',"Probleme : verifier les valeurs des parametres " + txt1 + " et " + txt2)
+      UTMESS('F','MACR_RECAL',"Probleme : verifier les valeurs des parametres 'mem_aster' et 'memjeveux'")
 
-   UTMESS('I','MACR_RECAL',"Information : les calculs esclaves utiliseront : " + str(memjeveux_esclave) + " Mega Mots." )
-
-   f.close()
-
-#   sys.exit()
-
+   UTMESS('I','MACR_RECAL',"Information : les calculs esclaves utiliseront : %.1f Mega Mots." % memjeveux_esclave)
+   
    #_____________________________________________
    #
    # INITIALISATIONS
@@ -171,7 +160,12 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    val_init = copy.copy(val)
 
    # OBJET "PARAMETRES GLOBAUX"
-   PARAMETRES = reca_calcul_aster.PARAMETRES(UNITE_RESU=UNITE_RESU, INFO=INFO, fich_output='./REPE_OUT/output.txt', mode_include=False, follow_output=False, table_sensibilite=table_sensibilite, memjeveux_esclave=memjeveux_esclave)
+   PARAMETRES = reca_calcul_aster.PARAMETRES(UNITE_RESU=UNITE_RESU, INFO=INFO,
+                                             fich_output='./REPE_OUT/output.txt',
+                                             mode_include=False,
+                                             follow_output=True,
+                                             table_sensibilite=table_sensibilite,
+                                             memjeveux_esclave=memjeveux_esclave)
 
    # OBJET "CALCUL"
    CALCUL_ASTER = reca_calcul_aster.CALCUL_ASTER(PARAMETRES, UL=UNITE_ESCL, para=para, reponses=RESU_CALC, LIST_SENSI=LIST_SENSI, LIST_DERIV=LIST_DERIV)
@@ -239,6 +233,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
       if (err==1):
          ier=ier+1
          return ier
+   
    #_____________________________________________
    #
    # FIN DES ITERATIONS
@@ -265,4 +260,8 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    for i in LIST_NOM_PARA:
       lival.append( val[ LIST_NOM_PARA_ALPHA.index(i) ] )
    nomres=DEFI_LIST_REEL(VALE=lival)
+
+   # Gestion des Exceptions
+   aster.onFatalError(prev_onFatalError)
+
    return 

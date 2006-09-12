@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C ----------------------------------------------------------------------
       INTEGER N,NRHS,LDB,LDX,IFM,NIV,I,J,LDA,LDAF
       INTEGER*4 IPIV4(DIM),INF4,IWORK4(DIM)
       REAL*8 AF(DIM,DIM),R(DIM),C(DIM),X(DIM,NB),RCOND
-      REAL*8 WORK(4*DIM),FERR(NB),BERR(NB),R8VIDE
+      REAL*8 WORK(4*DIM),FERR(NB),BERR(NB),R8NNEM
       CHARACTER*1 FACT,EQUED,TRANS2
       CHARACTER*4 CARA2
       LOGICAL LTRANS,LSTOP,LDET,LRET
@@ -90,7 +90,7 @@ C----------------------------------------------------------------------
       LSTOP = (CARA2(3:3).EQ.'F')
       LDET = (CARA2(4:4).EQ.'D')
 
-      DET = R8VIDE()
+      DET = R8NNEM()
 
 
 C     -- 1. ON VEUT ALLER SUREMENT (QUITE A PERDRE DU TEMPS):

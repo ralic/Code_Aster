@@ -5,7 +5,7 @@
       CHARACTER*(*)        REPK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,9 @@ C
 C
       ELSEIF ( DOCU .EQ. 'FOEL' ) THEN
          REPK = 'FOURIER_ELAS'
+C
+      ELSEIF ( DOCU .EQ. 'FOTH' ) THEN
+         REPK = 'FOURIER_THER'
 C
       ELSEIF ( DOCU .EQ. 'COFO' ) THEN
          REPK = 'COMB_FOURIER'

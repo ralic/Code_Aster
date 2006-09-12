@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR BOYERE E.BOYERE 
+C MODIF PREPOST  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -489,7 +489,7 @@ C       ================================================================
               VARENO = '&&'//NOMPRO//'.LISTE_RESU     '
 
               NH = 0
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+              IF (TYSD(1:8).EQ.'FOURIER_') THEN
                 CALL RSADPA(LERES0,'L',1,'NUME_MODE',IORDR,0,JNMO,K8BID)
                 NH = ZI(JNMO)
               END IF
