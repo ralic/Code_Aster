@@ -10,7 +10,7 @@ C
       INTEGER                          VERS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 18/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -733,7 +733,7 @@ C --- ECLATEMENT HEXA27 EN 16 PENTA6 = 48 TETRA4
       TDEC(IND,37,2) = 23
       TDEC(IND,37,3) = 18
       TDEC(IND,37,4) = 15
-      TDEC(IND,38,1) = 17
+      TDEC(IND,38,1) = 27
       TDEC(IND,38,2) = 18
       TDEC(IND,38,3) = 7
       TDEC(IND,38,4) = 15

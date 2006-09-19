@@ -1,4 +1,4 @@
-# MODIF  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 18/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,11 +34,13 @@ DFC1=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='FREQ',
 DFC2=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='FREQ',
       VALE_C=(0., 1., 1., 2., 3., 2., 5., 5., 6., ) )
 
-DFC3=CALC_FONCTION( COMB_C=(   _F(   FONCTION = DFC1,
-      COEF_C = 1.+0.j),
-  _F(   FONCTION = DFC2,
-      COEF_C = 0.+2.j))
-                      )
+l_interp=DEFI_LIST_REEL(VALE=(0., 1., 5.,),)
+
+DFC3=CALC_FONCTION(COMB_C=(_F(FONCTION=DFC1,
+                              COEF_C = 1.+0.j),
+                           _F(FONCTION = DFC2,
+                              COEF_C = 0.+2.j),),
+                   LIST_PARA=l_interp)
 
 IMPR_FONCTION(
             COURBE=_F(FONCTION=DFC3,
@@ -197,6 +199,12 @@ DN1=DEFI_NAPPE(  NOM_PARA='AMOR',  NOM_RESU='ACCE',
                       VERIF='CROISSANT',  INTERPOL='LOG',
                       PROL_DROITE='CONSTANT',   PROL_GAUCHE='CONSTANT',
                       PARA=( 0.01,  0.02, ),   FONCTION=( DF1,  DF2, ) )
+
+l_int=DEFI_LIST_REEL(VALE=(1., 2.,),)
+
+DNC1=CALC_FONCTION(COMB=_F(FONCTION=DN1,
+                           COEF=1.),
+                   LIST_PARA=l_int,)
 
 TEST_FONCTION(ATTRIBUT=( 
                 _F(  FONCTION = DN1,  ATTR = 'INTERPOL',

@@ -1,8 +1,8 @@
-      SUBROUTINE MMMBCA(NOMA,DEFICO,OLDGEO,DEPPLU,DEPMOI,
-     &                  INCOCA,INST,DECOL,NFLIP)
+      SUBROUTINE MMMBCA(NOMA,DEFICO,OLDGEO,DEPPLU,
+     &                  INST,MMCVCA,DECOL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2006   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,309 +20,287 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT NONE
-
-      INTEGER INCOCA,NDIM,I,J
-      CHARACTER*8 NOMA
-      CHARACTER*24  DEFICO,OLDGEO
-      CHARACTER*24  DEPPLU,DEPMOI
-      REAL*8 INST(3)
-      INTEGER NFLIP(3)
+      CHARACTER*8   NOMA
+      CHARACTER*24  DEFICO
+      CHARACTER*24  OLDGEO
+      CHARACTER*24  DEPPLU
+      REAL*8        INST(5)
+      LOGICAL       DECOL
+      LOGICAL       MMCVCA
+C      
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : OP0070
+C ROUTINE APPELEE PAR : NMTBLE
 C ----------------------------------------------------------------------
 C
-C BOUCLE DU CA :
+C ALGO. DES CONTRAINTES ACTIVES POUR LE CONTACT METHODE CONTINUE
 C
 C  POUR LES POINTS POSTULES CONTACTANTS ON REGARDE LE SIGNE DE LAMBDA
 C  POUR LES POINTS POSTULES NON CONTACTANTS ON REGARDE L'INTEPENETRATION
-C  OUT   INCOCA   : INDICE DE CONVERGENCE DU CA : 1 CONVERGENCE, 0 NON
 C
-C  IN/OUT  DEFICO : TABFIN : ON REAJUSTE LES STATUTS
-C  IN/OUT  DEFICO : JEUCON : ON CALCULE LE JEU EN CHAQUE POINT ESCLAVE
-C  IN      OLDGEO : GEOMETRIE :POUR LE CALCUL DE JEU
-C  IN      DEPPLU : DEPLACEMENT APRES CONVERGENCE DE NEWTON
-C   IL FAUT METTRE LE NDIM
-C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
-
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-
-      INTEGER JMACO,JMAESC,JTABF,JCMCF,JCOOR1,JCOOR2,JDEPP
-      INTEGER JMETH,JJSUP,NBNO,NBNOMA,IER,JLONG,JCONEX,NUMAES
-      INTEGER JFLIP,STAINI,STAEND
-      INTEGER NTMA,K,JDIM,JDEPM,JECPD,JJEU,XA,XS,INDCOM
-      INTEGER NTPC,IMA,POSMA,NBN,INI,POSMM,IZONE,IFORM
-      REAL*8 XI,YI,TAU1(3),TAU2(3),GEOMM(3),GEOME(3),LAMBDA,LAMBD1
-      REAL*8 ALPHA,JEU,VNORM(3),M(3,3),MM1(3,3),LAMBD2,XPG,YPG
-      REAL*8 GEOLDM(3),GEOLDE(3),JEUVIT,DT,R8PREM,ASP,TOL    
-      CHARACTER*24 COTAMA,MAESCL,CARACF,ECPDON
-      CHARACTER*24 TABFIN,GEOACT,NDIMCO,JEUCON
-      CHARACTER*24 METHCO,JEUSUP,FLIFLO,FLIPCO
-      CHARACTER*32 JEXATR
-      LOGICAL      DECOL
-      REAL*8 NOOR
-
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  PREMIE : VAUT .TRUE. SI PREMIER INSTANT DE STAT/DYNA_NON_LINE
+C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
+C IN  OLDGEO : GEOMETRIE INITIALE
+C IN  DEPPLU : DEPLACEMENTS APRES CONVERGENCE DE NEWTON  
+C IN  INST   : PARAMETRES TEMPORELS POUR LA DYNAMIQUE
+C OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES 
+C              CONTRAINTES ACTIVES
+C               .TRUE. SI LA BOUCLE DES CONTRAINTES ACTIVES A CONVERGE
+C OUT DECOL  : VAUT .TRUE. SI LE NOEUD SE DECOLLE DANS LE MODELE
+C              DE COMPLIANCE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      CFMMVD,ZMAES,ZTABF
+      INTEGER      IFM,NIV       
+      INTEGER      NBNO,IER,NDIM
+      INTEGER      XAINI,XSINI,XSEND
+      INTEGER      NTMA,K,XA,XS,NUMA,IBID
+      INTEGER      NTPC,IMA,POSMA,NBN,IPC,POSMM,IZONE
+      REAL*8       XI,YI,TAU1(3),TAU2(3),GEOMM(3),GEOME(3),LAMBDC
+      REAL*8       JEU,NORM(3),XPG,YPG
+      REAL*8       GEOLDM(3),GEOLDE(3),JEUVIT,DT,ASPERI,R8BID    
+      CHARACTER*24 COTAMA,MAESCL,TABFIN,NDIMCO,JEUCON
+      INTEGER      JMACO,JMAESC,JTABF,JDIM,JJEU   
+      CHARACTER*24 JEUSUP,FLIFLO 
+      INTEGER      JJSUP,JFLIP           
+      CHARACTER*24 NEWGEO,K24BID,K24BLA
+      LOGICAL      LCOMPL,LGLISS,LVITES,LBID
+      INTEGER      FLINBR,FLIPOI,FLIMAI,FLIMAX
+      DATA         K24BLA /' '/
+C
 C ----------------------------------------------------------------------
-
-C     LE TABLEAU  MAESCL = DEFICO(1:16)//.'MAESCL' CONTIENT LES NUMEROS
-C     ABSOLUS DES MAILLES ESCLAVES ( CE NUMERO EST RECUPERE DE CONTAMA)
-C     ET POUR CHAQUE MAILLE ESCLAVE LE NUMERO DE LA SA ZONE ET L'INDICE
-C     DE SURFACE
 C
       CALL JEMARQ()
-      
-      DT= INST(2)
-
-C   RECUPERATION DE QUELQUES DONNEES
-      CALL JEVEUO (DEPPLU(1:19)//'.VALE','E',JDEPP )
-      CALL JEVEUO (DEPMOI(1:19)//'.VALE','E',JDEPM )
+      CALL INFNIV(IFM,NIV)   
+C
+C --- AFFICHAGE
+C      
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> ALGORITHME DES CONTRAINTES ACTIVES' 
+      ENDIF           
+C
+C --- ACCES OBJETS
+C
       COTAMA = DEFICO(1:16)//'.MAILCO'
       NDIMCO = DEFICO(1:16)//'.NDIMCO'
       MAESCL = DEFICO(1:16)//'.MAESCL'
-      TABFIN = DEFICO(1:16)//'.TABFIN'
-      CARACF = DEFICO(1:16)//'.CARACF'
-      ECPDON = DEFICO(1:16)//'.ECPDON'      
+      TABFIN = DEFICO(1:16)//'.TABFIN'      
       JEUCON = DEFICO(1:16)//'.JEUCON'
-      METHCO = DEFICO(1:16)//'.METHCO'
       JEUSUP = DEFICO(1:16)//'.JSUPCO'
-C
       CALL JEVEUO(COTAMA,'L',JMACO)
       CALL JEVEUO(MAESCL,'L',JMAESC)
       CALL JEVEUO(TABFIN,'E',JTABF)
-      CALL JEVEUO(CARACF,'L',JCMCF)
       CALL JEVEUO(NDIMCO,'L',JDIM)
-      CALL JEVEUO(ECPDON,'L',JECPD)
       CALL JEVEUO(JEUCON,'E',JJEU)
-      CALL JEVEUO(METHCO,'L',JMETH)
-      CALL JEVEUO(JEUSUP,'L',JJSUP)
-      
-      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JLONG)
-      CALL JEVEUO(NOMA//'.CONNEX','L',JCONEX)
-
-C   REACTUALISATION DE LA GEOMETRIE AVEC DEPPLU
-      INCOCA = 1
+      CALL JEVEUO(JEUSUP,'L',JJSUP)      
+C
+      ZMAES = CFMMVD('ZMAES')
+      ZTABF = CFMMVD('ZTABF')            
+C
+C --- REACTUALISATION DE LA GEOMETRIE
+C       
       OLDGEO = NOMA//'.COORDO'
-      GEOACT = '&&MMMBCA.ACTUGEO'
-      ALPHA = 1.0D0
-
-      NDIM = ZI(JDIM)
-      CALL VTGPLD(OLDGEO,ALPHA,DEPPLU,'V',GEOACT)
-
-      CALL JEVEUO(OLDGEO(1:19)//'.VALE','L',JCOOR1)
-      CALL JEVEUO(GEOACT(1:19)//'.VALE','L',JCOOR2)
-      NTMA = ZI(JMAESC)
-      NTPC = 0
-      INCOCA = 1
-      
-C   FLIP-FLOP: CREATION BASE VOLATILE FLIFLO
-      NBNO=0
-      NFLIP(3)=20
-      DO 15 IMA=1,NTMA
-        NBNOMA= ZI(JMAESC+3*(IMA-1)+3)
-        NBNO=NBNO+NBNOMA
- 15     CONTINUE
-             
-      FLIFLO='&&MMMBCA.FLIFLO'
+      NEWGEO = '&&MMMBCA.ACTUGEO'
+      CALL VTGPLD(OLDGEO,1.0D0,DEPPLU,'V',NEWGEO)
+C
+C --- INITIALISATIONS
+C      
+      DT     = INST(2)
+      NDIM   = ZI(JDIM)
+      NTMA   = ZI(JMAESC)
+      NBNO   = ZR(JTABF)      
+      NTPC   = 0 
+      MMCVCA = .TRUE.  
+C     
+C --- CREATION DE LA SD POUR LE FLIP-FLOP
+C
+      FLINBR = 0
+      FLIPOI = 0 
+      FLIMAI = 0            
+      CALL MMINFP(0,DEFICO,K24BLA,'FLIP_FLOP_IMAX',
+     &            FLIMAX,R8BID,K24BID,LBID)        
+      FLIFLO   = '&&MMMBCA.FLIFLO'
       CALL JEEXIN(FLIFLO,IER)
       IF (IER.EQ.0) THEN
         CALL WKVECT(FLIFLO,'V V I',NBNO,JFLIP)
       ELSE
         CALL JEVEUO(FLIFLO,'E',JFLIP)
       ENDIF
-      
-C   BOUCLE SUR LES POINTS DE CONTACT
-      NFLIP(1)=0
+C      
+C --- BOUCLE SUR LES MAILLES ESCLAVES
+C 
       DO 30 IMA = 1,NTMA
-        POSMA = ZI(JMAESC+3*(IMA-1)+1)
-        IZONE = ZI(JMAESC+3*(IMA-1)+2)
-        NBN   = ZI(JMAESC+3* (IMA-1)+3)
-        IFORM = ZI(JECPD +6*(IZONE-1)+6)
-        INDCOM = NINT(ZR(JCMCF+12*(IZONE-1)+7))     
-        ASP = ZR(JCMCF+12*(IZONE-1)+8) 
-        DO 20 INI = 1,NBN
-
-C         STATUT INITIAL DU PC
-         STAINI = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13))
-         
-C     CALCUL DE LA GEOMETRIE ACTUALISEE DU PC : GEOME()
-            XPG=ZR(JTABF+28*NTPC+28* (INI-1)+3)
-            YPG=ZR(JTABF+28*NTPC+28* (INI-1)+12)
-
-            XA = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+21))
-            XS = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13)) 
-            JEU = ZR(JJSUP+IZONE-1)
-            CALL COPCOS(NOMA,POSMA,XPG,YPG,GEOACT,GEOME,DEFICO)
-
-            XI = ZR(JTABF+28*NTPC+28* (INI-1)+4)
-            YI = ZR(JTABF+28*NTPC+28* (INI-1)+5)
-            POSMM=ZR(JTABF+28*NTPC+28* (INI-1)+2)
-
-            CALL MCOPCO(NOMA,POSMM,XI,YI,GEOACT,GEOMM,DEFICO)
-
-C     CALCUL DE LA NORMALE
-            TAU1(1) = ZR(JTABF+28*NTPC+28* (INI-1)+6)
-            TAU1(2) = ZR(JTABF+28*NTPC+28* (INI-1)+7)
-            TAU1(3) = ZR(JTABF+28*NTPC+28* (INI-1)+8)
-            TAU2(1) = ZR(JTABF+28*NTPC+28* (INI-1)+9)
-            TAU2(2) = ZR(JTABF+28*NTPC+28* (INI-1)+10)
-            TAU2(3) = ZR(JTABF+28*NTPC+28* (INI-1)+11)
-
-            IF (NDIM.EQ.2) THEN
-              VNORM(1) = -TAU1(2)
-              VNORM(2) = TAU1(1)
-              VNORM(3) = 0.D0
-            ELSE IF (NDIM.EQ.3) THEN
-              CALL PROVEC(TAU2,TAU1,VNORM)
-            END IF
-            
-            NOOR = 0.D0
-            DO 1 I=1,NDIM
-              NOOR = VNORM(I)*VNORM(I)+NOOR
-1             CONTINUE
-            DO 2 I=1,3
-              VNORM(I) = VNORM(I)/SQRT(NOOR)
-2             CONTINUE
-
-C    CALCUL DE JEU DU PC
-            DO 10 K = 1,3
-              JEU = JEU + (GEOME(K)-GEOMM(K))*VNORM(K)
-   10       CONTINUE
-            ZR(JJEU-1+NTPC+INI)=-JEU
-            
-            IF(ZR(JTABF+28*NTPC+28*(INI-1)+22) .NE. 0.D0) THEN
-              ZR(JTABF+28*NTPC+28*(INI-1)+13) = 0.D0
-              GOTO 20
-            END IF
-            
-C SI LE PC N'EST NI CONTACTANT (XS=0) NI NE TOUCHE LES ASPERITES (XA=0)
-         IF ((XA.EQ.0) .AND. (XS.EQ.0)) THEN           
-            IF (JEU.GT.ASP) THEN
-
-              IF (JEU .LE. R8PREM()) THEN
-C                TOUCHE LES ASPERITES (XA=1) SANS ETRE CONATCTANT (XS=0)
-                ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
-                ZR(JTABF+28*NTPC+28* (INI-1)+13) = 0.D00
-                
-C                  LA ZONE DE CONTACT EST UNE GLISSIERE:
-C                  ON IMPOSE LE CONTACT (XS=1) ET ON REBOUCLE (INCOCA=0)
-                IF(ZI(JMETH+8* (IZONE-1)+6) .EQ. 8) THEN
-                  ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D0
-                ENDIF
-                INCOCA=0
-            
-              ELSE IF (JEU .GT. R8PREM()) THEN
+        POSMA = ZI(JMAESC+ZMAES*(IMA-1)+1)
+        IZONE = ZI(JMAESC+ZMAES*(IMA-1)+2)
+        NBN   = ZI(JMAESC+ZMAES*(IMA-1)+3)
+        NUMA  = ZI(JMACO+POSMA-1)
               
-C                TOUCHE LES ASPERITES (XA=1) ET EST CONATCTANT (XS=1):
-C                ON REBOUCLE SAUF SI ON EST EN GLISSIERE
-                ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
-                ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
-                INCOCA = 0
-                IF (ZI(JMETH+8* (IZONE-1)+6).EQ.8) INCOCA=1
-              END IF
-
-            END IF
-            
-C LE PC N'EST PAS CONTACTANT (XS=0) MAIS TOUCHE LES ASPERITES (XA=1)
-         ELSE IF ((XA.EQ.1) .AND. (XS.EQ.0)) THEN
-
-C             LA ZONE DE CONTACT EST UNE GLISSIERE:
-C             ON IMPOSE LE CONTACT (XS=1) ET ON REBOUCLE (INCOCA=0)
-            IF(ZI(JMETH+8* (IZONE-1)+6) .EQ. 8) THEN
-              ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D0
-              INCOCA=0
-            ENDIF
-            
-C             CALCUL DE LA GEOMETRIE ACTUALISEE DU VIS A VIS GEOMM()
-            IF (IFORM .EQ. 2) THEN
-              CALL COPCOS(NOMA,POSMA,XPG,YPG,OLDGEO,GEOLDE,DEFICO)
-            ENDIF
-            
-C IFORM=2 ==> FORMULATION EN VITESSE  
-            IF (IFORM .EQ. 2) THEN
-              CALL MCOPCO(NOMA,POSMM,XI,YI,OLDGEO,GEOLDM,DEFICO)
-            ENDIF
-                     
-C             POINT CONTACTANT
-            IF (JEU .GT. R8PREM()) THEN
-
-C               CALCUL DU GAP DES VITESSES NORMALES (FORMUL. EN VITESSE)
-              IF (IFORM .EQ. 2) THEN
-                JEUVIT=0.D0
-                DO 11 K=1,3
-                  JEUVIT= JEUVIT + ( (GEOME(K)-GEOLDE(K))-
-     &                    (GEOMM(K)-GEOLDM(K)) ) * VNORM(K)/DT
-   11             CONTINUE
-                IF (JEUVIT .GT. 0.D00) THEN
-                  ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
-                  INCOCA = 0
-                END IF
-              ELSE
-              
-C                  ON REBOUCLE (INCOCA=0) ....
-                ZR(JTABF+28*NTPC+28* (INI-1)+13) = 1.D00
-                ZR(JTABF+28*NTPC+28* (INI-1)+21) = 1.D00
-                INCOCA = 0
-              END IF
-              
-C               .... SAUF SI ON EST EN GLISSIERE
-              IF (ZI(JMETH+8* (IZONE-1)+6).EQ.8) INCOCA=1
-             
-            ELSEIF (JEU.LT.ASP .AND. INDCOM.EQ.1) THEN
-               ZR(JTABF+28*NTPC+28* (INI-1)+13) = 0.D00
-               ZR(JTABF+28*NTPC+28* (INI-1)+21) = 0.D00 
-            ENDIF           
-
-C        PC CONTACTANT
-        ELSE IF ((XA.EQ.1) .AND. (XS.EQ.1)) THEN
-
-          DECOL =.TRUE.
-
-C           ON CALCULE LA REACTION LAMBDA
-          CALL CALLAM(NOMA,POSMA,DEPPLU,XPG,YPG,LAMBDA,GEOACT,DEFICO)
-          IF ((LAMBDA.GT.0) .AND. (ZI(JMETH+8* (IZONE-1)+6).NE.8)) THEN
-            INCOCA = 0
-            ZR(JTABF+28*NTPC+28* (INI-1)+13) = 0.D00
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'COMPLIANCE',
+     &              IBID,R8BID,K24BID,LCOMPL)        
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'FORMUL_VITE',
+     &              IBID,R8BID,K24BID,LVITES) 
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'ASPERITE',
+     &              IBID,ASPERI,K24BID,LBID)                 
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'GLISSIERE',
+     &              IBID,R8BID,K24BID,LGLISS)  
+C      
+C --- BOUCLE SUR LES POINTS DE CONTACT
+C              
+        DO 20 IPC = 1,NBN
+C
+C --- COORDONNEES ACTUALISEES DU POINT DE CONTACT (SUR MAILLE ESCLAVE)
+C
+          XPG    = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+3)
+          YPG    = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+12)
+          CALL MCOPCO(NOMA,DEFICO,NEWGEO,
+     &                'ESCL',POSMA,XPG,YPG,
+     &                GEOME)
+C
+C --- COORDONNEES ACTUALISEES DE LA PROJECTION DU POINT DE CONTACT
+C --- (SUR MAILLE MAITRE)
+C
+          XI     = ZR(JTABF+ZTABF*NTPC+ZTABF* (IPC-1)+4)
+          YI     = ZR(JTABF+ZTABF*NTPC+ZTABF* (IPC-1)+5)
+          POSMM  = ZR(JTABF+ZTABF*NTPC+ZTABF* (IPC-1)+2)
+          CALL MCOPCO(NOMA,DEFICO,NEWGEO,
+     &                'MAIT',POSMM,XI,YI,
+     &                GEOMM)
+C            
+C --- TANGENTES AU POINT DE CONTACT PROJETE SUR MAILLE MAITRE
+C
+          TAU1(1) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+6)
+          TAU1(2) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+7)
+          TAU1(3) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+8)
+          TAU2(1) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+9)
+          TAU2(2) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+10)
+          TAU2(3) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+11)
+C            
+C --- CALCUL DE LA NORMALE
+C
+          CALL MMNORM(NDIM,TAU1,TAU2,NORM)
+C                               
+C --- COMPLIANCE   (XA=0: ON NE TOUCHE PAS LES ASPERITES) 
+C --- SI PAS DE COMPLIANCE ACTIVEE: XA VAUT TOUJOURS 1        
+C
+          XA     = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21))
+          XAINI  = XA
+C
+C --- INDICATEUR DE CONTACT (XS=0: PAS DE CONTACT)
+C --- ON SAUVE L'ETAT INITIAL DE CE POINT DANS XSINI
+C
+          XS     = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13))
+          XSINI  = XS 
+C
+C --- CALCUL DU JEU ACTUALISE (PRISE EN COMPTE DE DIST_ESCL)
+C --- AU POINT DE CONTACT 
+C            
+          JEU    = ZR(JJSUP+IZONE-1)
+          DO 10 K = 1,3
+            JEU = JEU + (GEOME(K)-GEOMM(K))*NORM(K)
+   10     CONTINUE
+          ZR(JJEU-1+NTPC+IPC) = -JEU
+C  
+C --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE: ON SORT DIRECT 
+C         
+          IF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22) .EQ. 1.D0) THEN
+            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
+            GOTO 20
           END IF
-        ELSE
-          CALL UTMESS('F','MMMBCA','ETAT DE CONTACT INCONNU')
-        END IF
+C          
+C --- CALCUL DU MULTIPLICATEUR DE LAGRANGE LAMBDA DE CONTACT DU POINT
+C 
+          CALL CALLAM(NOMA,DEFICO,NEWGEO,DEPPLU,
+     &                POSMA,XPG,YPG,
+     &                LAMBDC)          
+C 
+C --- FORMULATION EN VITESSE
+C
+          IF (LVITES) THEN
+C --- COORDONNEES ACTUALISEES DU POINT DE CONTACT (SUR MAILLE ESCLAVE)
+        
+            CALL MCOPCO(NOMA,DEFICO,OLDGEO,
+     &                  'ESCL',POSMA,XPG,YPG,
+     &                  GEOLDE)
+C --- COORDONNEES ACTUALISEES DE LA PROJECTION DU POINT DE CONTACT
 
-        IF(NFLIP(3) .LT. 0) GOTO 20
-        
-C        STATUT FINAL DU PC: Y-A-T-IL EU CHANGEMENT DE STATUT?
-        STAEND = NINT(ZR(JTABF+28*NTPC+28* (INI-1)+13))
-        IF (STAEND .NE. STAINI) THEN
-        
-C           SI OUI, INCREMENTATION DE L'INDICATEUR DE FLIP-FLOP
-          ZI(JFLIP+NTPC+INI-1) = ZI(JFLIP+NTPC+INI-1) + 1
-        END IF
-        
-        IF (ZI(JFLIP+NTPC+INI-1) .GT. NFLIP(1)) THEN
-          NFLIP(1) = ZI(JFLIP+NTPC+INI-1)
-          
-          NUMAES = ZR(JTABF+28*(NTPC+INI-1)+1)
-          NFLIP(2)=ZI(JCONEX+ZI(JLONG-1+NUMAES)+INI-2)
-        END IF
-                
-C FINI
-
-   20   CONTINUE
-      NTPC = NTPC + NBN
-   30 CONTINUE
+            CALL MCOPCO(NOMA,DEFICO,OLDGEO,
+     &                  'MAIT',POSMM,XI,YI,
+     &                  GEOLDM)  
+C --- CALCUL DU GAP DES VITESSES NORMALES 
+            JEUVIT=0.D0
+            DO 11 K=1,3
+              JEUVIT = JEUVIT + ( (GEOME(K)-GEOLDE(K))-
+     &                 (GEOMM(K)-GEOLDM(K)) ) * NORM(K)/DT
+   11       CONTINUE
+          ENDIF          
+C
+C --- ALGORITHME DES CONTRAINTES ACTIVES (PC: POINT DE CONTACT)
+C
+          CALL MMALGO(JTABF,IPC,NTPC,XA,XS,
+     &                LVITES,LGLISS,LCOMPL,
+     &                JEU,JEUVIT,ASPERI,LAMBDC,
+     &                MMCVCA,DECOL)
+C
+C --- TRAITEMENT DU FLIP_FLOP
+C               
+          IF (FLIMAX .GE. 0) THEN
+            XSEND = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13))
+            IF (XSEND .NE. XSINI) THEN       
+              ZI(JFLIP+NTPC+IPC-1) = ZI(JFLIP+NTPC+IPC-1) + 1
+            END IF      
+            IF (ZI(JFLIP+NTPC+IPC-1) .GT. FLINBR) THEN
+              FLINBR = ZI(JFLIP+NTPC+IPC-1)
+              FLIPOI = IPC
+              FLIMAI = NUMA
+            ENDIF    
+          ENDIF                    
+C
+C --- ETAT DU CONTACT
+C
+        IF (NIV.GE.2) THEN
+          CALL MMIMP4(IFM,NOMA,NUMA,IPC,NTPC,JTABF,
+     &                XAINI,XSINI,
+     &                LVITES,LGLISS,LCOMPL,JEU,JEUVIT,LAMBDC)
       
+        ENDIF
+   20   CONTINUE
+        NTPC = NTPC + NBN
+   30 CONTINUE
+C
+C --- SI FLIP-FLOP: ON FORCE LE PASSAGE A L'ITERATION SUIVANTE
+C
+      IF (FLIMAX .GT. 0) THEN
+        IF (FLINBR .GE. FLIMAX) THEN
+          CALL MMERRO(DEFICO,K24BLA,NOMA,
+     &                'MMMBCA','I','FLIP_FLOP_MAXI',
+     &                FLIMAI,FLIPOI,IBID,
+     &                FLINBR,R8BID,K24BID)
+          MMCVCA = .TRUE.  
+        ENDIF
+      ENDIF    
+C
+      IF (MMCVCA) THEN
+        CALL JEDETR('&&MMMBCA.FLIFLO')
+      ENDIF
+      CALL JEDETR(NEWGEO)
+C      
       CALL JEDEMA()
       END

@@ -1,6 +1,6 @@
-      SUBROUTINE NUMER3 (MO,INFCHA,SOLVEU,BASE,NU)
+      SUBROUTINE NUMER3(MODELE,LISCHA,SOLVEU,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ASSEMBLA  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,35 +18,46 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*(*)      MO, SOLVEU, INFCHA
-      CHARACTER*(*)       NU
-      CHARACTER*2        BASE
+      CHARACTER*(*) MODELE,SOLVEU,LISCHA
+      CHARACTER*(*) NU
+      
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELLEE PAR : CONLIG
 C ----------------------------------------------------------------------
 C
 C MODIFIE LE NUME_DDL NU POUR TENIR COMPTE DES ELEMENTS FINIS DE
 C CONTACT (LIGRCF)
 C
-C IN  K8   MO      : NOM DU MODELE
-C IN  K19  INFCHA  : NOM DE L'OBJET DE TYPE INFCHA
-C IN  K19  SOLVEU  : NOM DE L'OBJET DE TYPE SOLVEUR
-C IN  K2   BASE    : BASE(1:1) : BASE POUR CREER LE NUME_DDL
-C                    (SAUF LE PROF_CHNO)
-C                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
-C IN/JXVAR K14  NU      : NOM DU NUME_DDL
+C IN  MODELE : NOM DU MODELE
+C IN  SOLVEU : OBJET SOLVEUR 
+C IN  LISCHA : L_CHARGES CONTENANT LES CHARGES APPLIQUEES
+C IN  NUMEDD : NOM DU NUME_DDL
 C
-C -----------------------------------------------------------
-      INTEGER       IUL, IUNIFI
-      CHARACTER*14  NU2, NUAV
-      CHARACTER*24  OB1, OB2
+C     
+C ----------------------------------------------------------------------
+C
+      INTEGER       IUL,IUNIFI
+      CHARACTER*14  NU2,NUAV
+      CHARACTER*24  OB1,OB2
       LOGICAL       IDENOB
+      CHARACTER*2   BASE
+C      
+C ----------------------------------------------------------------------
+C      
+C --- BASE(1:1) : BASE POUR CREER LE NUME_DDL (SAUF LE PROF_CHNO)
+C --- BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 C
+      BASE = 'VG'
+C
+      CALL INFMUE()
       NU2=NU
       NUAV='&&NUMER3.NUAV'
 
       CALL COPISD('NUME_DDL','V',NU,NUAV)
       CALL DETRSD('NUME_DDL',NU)
 
-      CALL NUMERO (' ',MO,INFCHA,SOLVEU,BASE,NU)
+      CALL NUMERO (' ',MODELE,LISCHA,SOLVEU,BASE,NU)
 
       OB1=NU2//'.NUME.DEEQ'
       OB2=NUAV//'.NUME.DEEQ'
@@ -58,6 +69,6 @@ C
       END IF
 
       CALL DETRSD('NUME_DDL',NUAV)
+      CALL INFBAV()
 C
-
       END

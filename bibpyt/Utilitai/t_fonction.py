@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 31/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF t_fonction Utilitai  DATE 18/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,8 +20,11 @@
 from Numeric import *
 import copy
 import types
+from sets import Set
 
 def interp(typ_i,val,x1,x2,y1,y2) :
+  """Interpolation linéaire/logarithmique entre un couple de valeurs
+  """
   if typ_i==['LIN','LIN']: return y1+(y2-y1)*(val-x1)/(x2-x1)
   if typ_i==['LIN','LOG']: return exp(log(y1)+(val-x1)*(log(y2)-log(y1))/(x2-x1))
   if typ_i==['LOG','LOG']: return exp(log(y1)+(log(val)-log(x1))*(log(y2)-log(y1))/(log(x2)-log(x1)))
@@ -31,16 +34,18 @@ def interp(typ_i,val,x1,x2,y1,y2) :
                            elif val==x2 : return y2
                            else         : raise StandardError, 'fonction : interpolation NON'
 def is_ordo(liste) :
-  listb=dict([(i,0) for i in liste]).keys()
+  listb=list(Set(liste))
   listb.sort()
   return liste==listb
 
 class t_fonction :
-  ### Classe pour fonctions réelles, équivalent au type aster = fonction_sdaster
+  """Classe pour fonctions réelles, équivalent au type aster = fonction_sdaster
+  """
   def __init__(self,vale_x,vale_y,para) :
-    # création d'un objet fonction
-    # vale_x et vale_y sont des listes de réels de meme longueur
-    # para est un dictionnaire contenant les entrées PROL_DROITE, PROL_GAUCHE et INTERPOL (cf sd ASTER)
+    """Création d'un objet fonction
+    - vale_x et vale_y sont des listes de réels de meme longueur
+    - para est un dictionnaire contenant les entrées PROL_DROITE, PROL_GAUCHE et INTERPOL (cf sd ASTER)
+    """
     pk=para.keys()
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
@@ -60,7 +65,8 @@ class t_fonction :
          raise StandardError, 'fonction : abscisses non strictement croissantes'
 
   def __add__(self,other) :
-    # addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
+    """addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
+    """
     if   isinstance(other,t_fonction):
       para=copy.copy(self.para)
       vale_x,para['PROL_GAUCHE'],para['PROL_DROITE']=self.homo_support(other)
@@ -74,7 +80,8 @@ class t_fonction :
     else:  raise StandardError, 'fonctions : erreur de type dans __add__'
 
   def __mul__(self,other) :
-    # multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
+    """multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
+    """
     if   isinstance(other,t_fonction):
       para=copy.copy(self.para)
       vale_x,para['PROL_GAUCHE'],para['PROL_DROITE']=self.homo_support(other)
@@ -89,14 +96,16 @@ class t_fonction :
     else:  raise StandardError, 'fonctions : erreur de type dans __mul__'
 
   def __repr__(self) :
-    # affichage de la fonction en double colonne
+    """affichage de la fonction en double colonne
+    """
     texte=[]
     for i in range(len(self.vale_x)) :
       texte.append('%f %f' % (self.vale_x[i],self.vale_y[i]))
     return '\n'.join(texte)
 
   def __getitem__(self,other) :
-    # composition de deux fonction F[G]=FoG=F(G(x))
+    """composition de deux fonction F[G]=FoG=F(G(x))
+    """
     para=copy.copy(self.para)
     if other.para['NOM_RESU']!=self.para['NOM_PARA'] :
        raise StandardError,'''composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents '''
@@ -104,9 +113,10 @@ class t_fonction :
     return t_fonction(other.vale_x,map(self,other.vale_y),para)
 
   def __call__(self,val,tol=1.e-6):
-    # méthode pour évaluer f(x)
-    # tolérance, par défaut 1.e-6 en relatif sur la longueur de l'intervalle
-    # adjacent, pour capter les erreurs d'arrondi en cas de prolongement exclu
+    """méthode pour évaluer f(x)
+    - tolérance, par défaut 1.e-6 en relatif sur la longueur de l'intervalle
+    - adjacent, pour capter les erreurs d'arrondi en cas de prolongement exclu
+    """
     i=searchsorted(self.vale_x,val)
     n=len(self.vale_x)
     if i==0 :
@@ -138,11 +148,12 @@ class t_fonction :
                                               self.vale_y[i])
 
   def homo_support(self,other) :
-    # renvoie le support d'abscisses homogénéisé entre self et other
-    # i.e. si prolongement exclu, on retient plus grand min ou plus petit max, selon
-    # si prolongement autorisé, on conserve les abscisses d'une fonction, extrapolantes
-    # sur l'autre.
-    # Pour les points intermédiaires : union et tri des valeurs des vale_x réunis.
+    """Renvoie le support d'abscisses homogénéisé entre self et other
+    i.e. si prolongement exclu, on retient plus grand min ou plus petit max, selon
+    si prolongement autorisé, on conserve les abscisses d'une fonction, extrapolantes
+    sur l'autre.
+    Pour les points intermédiaires : union et tri des valeurs des vale_x réunis.
+    """
     if other.vale_x[0]>self.vale_x[0]:
        if other.para['PROL_GAUCHE']!='EXCLU' : f_g=self
        else                                  : f_g=other
@@ -165,9 +176,10 @@ class t_fonction :
     return vale_x,prol_gauche,prol_droite
 
   def cut(self,rinf,rsup,prec,crit='RELATIF') :
-    # renvoie la fonction self dont on a 'coupé' les extrémités en x=rinf et x=rsup
-    # pour la recherche de rinf et rsup dans la liste d'abscisses :
-    #      prec=precision crit='absolu' ou 'relatif'
+    """Renvoie la fonction self dont on a 'coupé' les extrémités en x=rinf et x=rsup
+    pour la recherche de rinf et rsup dans la liste d'abscisses :
+       prec=precision crit='absolu' ou 'relatif'
+    """
     para=copy.copy(self.para)
     para['PROL_GAUCHE']='EXCLU'
     para['PROL_DROITE']='EXCLU'
@@ -186,7 +198,8 @@ class t_fonction :
     return t_fonction(vale_x,vale_y,para)
 
   def cat(self,other,surcharge) :
-    # renvoie une fonction concaténée avec une autre, avec règles de surcharge
+    """renvoie une fonction concaténée avec une autre, avec règles de surcharge
+    """
     para=copy.copy(self.para)
     if self.para['INTERPOL']!=other.para['INTERPOL'] : raise StandardError, 'concaténation de fonctions à interpolations différentes'
     if min(self.vale_x)<min(other.vale_x) :
@@ -211,12 +224,14 @@ class t_fonction :
     return t_fonction(vale_x,vale_y,para)
 
   def tabul(self) :
-    # mise en forme de la fonction selon un vecteur unique (x1,y1,x2,y2,...)
+    """mise en forme de la fonction selon un vecteur unique (x1,y1,x2,y2,...)
+    """
     __tab=array([self.vale_x,self.vale_y])
     return ravel(transpose(__tab)).tolist()
 
   def extreme(self) :
-    # renvoie un dictionnaire des valeurs d'ordonnées min et max
+    """renvoie un dictionnaire des valeurs d'ordonnées min et max
+    """
     val_min=min(self.vale_y)
     val_max=max(self.vale_y)
     vm={}
@@ -231,7 +246,8 @@ class t_fonction :
     return vm
 
   def trapeze(self,coef) :
-    # renvoie la primitive de la fonction, calculée avec la constante d'intégration 'coef'
+    """renvoie la primitive de la fonction, calculée avec la constante d'intégration 'coef'
+    """
     trapz     = zeros(len(self.vale_y),Float)
     trapz[0]  = coef
     trapz[1:] = (self.vale_y[1:]+self.vale_y[:-1])/2*(self.vale_x[1:]-self.vale_x[:-1])
@@ -244,7 +260,8 @@ class t_fonction :
     return t_fonction(self.vale_x,prim_y,para)
 
   def simpson(self,coef) :
-    # renvoie la primitive de la fonction, calculée avec la constante d'intégration 'coef'
+    """renvoie la primitive de la fonction, calculée avec la constante d'intégration 'coef'
+    """
     para=copy.copy(self.para)
     para['PROL_GAUCHE']='EXCLU'
     para['PROL_DROITE']='EXCLU'
@@ -277,7 +294,8 @@ class t_fonction :
     return t_fonction(self.vale_x,prim_y,para)
 
   def derive(self) :
-    # renvoie la dérivée de la fonction
+    """renvoie la dérivée de la fonction
+    """
     pas=self.vale_x[1:]-self.vale_x[:-1]
     pentes=(self.vale_y[1:]-self.vale_y[:-1])/(self.vale_x[1:]-self.vale_x[:-1])
     derive=(pentes[1:]*pas[1:]+pentes[:-1]*pas[:-1])/(pas[1:]+pas[:-1])
@@ -290,8 +308,9 @@ class t_fonction :
     return t_fonction(self.vale_x,derv_y,para)
 
   def inverse(self) :
-    # renvoie l'inverse de la fonction
-    # on intervertit vale_x et vale_y, on swape interpolation
+    """renvoie l'inverse de la fonction
+    on intervertit vale_x et vale_y, on swape interpolation
+    """
     para=copy.copy(self.para)
     para['NOM_RESU']='TOUTRESU'
     para['NOM_PARA']=self.para['NOM_PARA']
@@ -306,23 +325,26 @@ class t_fonction :
     return t_fonction(vale_x,vale_y,para)
 
   def abs(self) :
-    # renvoie la mm fonction avec valeur absolue des ordonnées
+    """renvoie la mm fonction avec valeur absolue des ordonnées
+    """
     para=copy.copy(self.para)
     if para['PROL_GAUCHE']=='LINEAIRE' : para['PROL_GAUCHE']='EXCLU'
     if para['PROL_DROITE']=='LINEAIRE' : para['PROL_DROITE']='EXCLU'
     return t_fonction(self.vale_x,absolute(self.vale_y),para)
 
   def evalfonc(self,liste_val) :
-    # renvoie la mm fonction interpolée aux points définis par la liste 'liste_val'
-    return t_fonction(liste_val,map(self,liste_val),self.para)
+    """renvoie la mm fonction interpolée aux points définis par la liste 'liste_val'
+    """
+    return self.__class__(liste_val,map(self,liste_val),self.para)
 
   def sup(self,other) :
-   # renvoie l'enveloppe supérieure de self et other
+    """renvoie l'enveloppe supérieure de self et other
+    """
     para=copy.copy(self.para)
-#   commentaire : pour les prolongements et l'interpolation, c'est self
-#   qui prime sur other
+    # commentaire : pour les prolongements et l'interpolation, c'est self
+    # qui prime sur other
     vale_x=self.vale_x.tolist()+other.vale_x.tolist()
-#   on ote les abscisses doublons
+    # on ote les abscisses doublons
     vale_x=dict([(i,0) for i in vale_x]).keys()
     vale_x.sort()
     vale_x=array(vale_x)
@@ -332,12 +354,13 @@ class t_fonction :
     return t_fonction(vale_x,vale_y,para)
 
   def inf(self,other) :
-   # renvoie l'enveloppe inférieure de self et other
+    """renvoie l'enveloppe inférieure de self et other
+    """
     para=copy.copy(self.para)
-#   commentaire : pour les prolongements et l'interpolation, c'est self
-#   qui prime sur other
+    # commentaire : pour les prolongements et l'interpolation, c'est self
+    # qui prime sur other
     vale_x=self.vale_x.tolist()+other.vale_x.tolist()
-#   on ote les abscisses doublons
+    # on ote les abscisses doublons
     vale_x=dict([(i,0) for i in vale_x]).keys()
     vale_x.sort()
     vale_x=array(vale_x)
@@ -347,8 +370,9 @@ class t_fonction :
     return t_fonction(vale_x,vale_y,para)
 
   def suppr_tend(self) :
-   # pour les corrections d'accélérogrammes
-   # suppression de la tendance moyenne d'une fonction
+    """pour les corrections d'accélérogrammes
+    suppression de la tendance moyenne d'une fonction
+    """
     para=copy.copy(self.para)
     xy=sum(self.vale_x*self.vale_y)
     x0=sum(self.vale_x)
@@ -360,13 +384,15 @@ class t_fonction :
     return t_fonction(self.vale_x,self.vale_y-a1*self.vale_x-a0,self.para)
 
   def normel2(self) :
-   # norme de la fonction
+    """norme de la fonction
+    """
     __ex=self*self
     __ex=__ex.trapeze(0.)
     return sqrt(__ex.vale_y[-1])
 
   def fft(self,methode) :
-   # renvoie la transformée de Fourier rapide FFT
+    """renvoie la transformée de Fourier rapide FFT
+    """
     import FFT
     para=copy.copy(self.para)
     para['NOM_PARA']='FREQ'
@@ -391,21 +417,25 @@ class t_fonction :
     return t_fonction_c(vale_x,vale_y,para)
 
 class t_fonction_c(t_fonction) :
-  ### Classe pour fonctions complexes, équivalent au type aster = fonction_c
+  """Classe pour fonctions complexes, équivalent au type aster = fonction_c
+  """
   def tabul(self) :
-    # mise en forme de la fonction selon un vecteur unique (x1,yr1,yi1,x2,yr2,yr2,...)
+    """mise en forme de la fonction selon un vecteur unique (x1,yr1,yi1,x2,yr2,yr2,...)
+    """
     __tab=array([self.vale_x,self.vale_y.real,self.vale_y.imag])
     return ravel(transpose(__tab)).tolist()
 
   def __repr__(self) :
-    # affichage de la fonction en double colonne
+    """affichage de la fonction en double colonne
+    """
     texte=[]
     for i in range(len(self.vale_x)) :
       texte.append('%f %f + %f .j' % (self.vale_x[i],self.vale_y[i].real,self.vale_y[i].imag))
     return '\n'.join(texte)
 
   def fft(self,methode,syme) :
-   # renvoie la transformée de Fourier rapide FFT (sens inverse)
+    """renvoie la transformée de Fourier rapide FFT (sens inverse)
+    """
     import FFT
     para=copy.copy(self.para)
     para['NOM_PARA']='INST'
@@ -456,12 +486,14 @@ class t_fonction_c(t_fonction) :
 
 
 class t_nappe :
-  ### Classe pour nappes, équivalent au type aster = nappe_sdaster
+  """Classe pour nappes, équivalent au type aster = nappe_sdaster
+  """
   def __init__(self,vale_para,l_fonc,para) :
-    # création d'un objet nappe
-    # vale_para est la liste de valeur des parametres (mot clé PARA dans DEFI_NAPPE)
-    # para est un dictionnaire contenant les entrées PROL_DROITE, PROL_GAUCHE et INTERPOL (cf sd ASTER)
-    # l_fonc est la liste des fonctions, de cardinal égal à celui de vale_para
+    """Création d'un objet nappe
+    - vale_para est la liste de valeur des parametres (mot clé PARA dans DEFI_NAPPE)
+    - para est un dictionnaire contenant les entrées PROL_DROITE, PROL_GAUCHE et INTERPOL (cf sd ASTER)
+    - l_fonc est la liste des fonctions, de cardinal égal à celui de vale_para
+    """
     pk=para.keys()
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_PARA_FONC','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
@@ -485,7 +517,8 @@ class t_nappe :
     self.para         = para
 
   def __call__(self,val1,val2):
-    # méthode pour évaluer nappe(val1,val2)
+    """méthode pour évaluer nappe(val1,val2)
+    """
     i=searchsorted(self.vale_para,val1)
     n=len(self.vale_para)
     if i==0 :
@@ -514,8 +547,19 @@ class t_nappe :
                                                self.l_fonc[i-1](val2),
                                                self.l_fonc[i](val2))
 
+  def evalfonc(self, liste_val) :
+    """Renvoie la mm nappe dont les fonctions sont interpolées aux points définis
+    par la liste 'liste_val'.
+    """
+    l_fonc = []
+    for f in self.l_fonc:
+      f2 = f.evalfonc(liste_val)
+      l_fonc.append(f2)
+    return t_nappe(self.vale_para, l_fonc, self.para)
+
   def __add__(self,other) :
-    # addition avec une autre nappe ou un nombre, par surcharge de l'opérateur +
+    """addition avec une autre nappe ou un nombre, par surcharge de l'opérateur +
+    """
     l_fonc=[]
     if   isinstance(other,t_nappe):
       if self.vale_para!=other.vale_para : raise StandardError, 'nappes à valeurs de paramètres différentes'
@@ -526,7 +570,8 @@ class t_nappe :
     return t_nappe(self.vale_para,l_fonc,self.para)
 
   def __mul__(self,other) :
-    # multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
+    """multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
+    """
     l_fonc=[]
     if   isinstance(other,t_nappe):
       if self.vale_para!=other.vale_para : raise StandardError, 'nappes à valeurs de paramètres différentes'
@@ -537,7 +582,8 @@ class t_nappe :
     return t_nappe(self.vale_para,l_fonc,self.para)
 
   def __repr__(self) :
-    # affichage de la nappe en double colonne
+    """affichage de la nappe en double colonne
+    """
     texte=[]
     for i in range(len(self.vale_para)) :
       texte.append('paramètre : %f' % self.vale_para[i])
@@ -545,8 +591,9 @@ class t_nappe :
     return '\n'.join(texte)
 
   def homo_support(self,other) :
-    # renvoie la nappe self avec un support union de celui de self et de other
-    # le support est la discrétisation vale_para et les discrétisations des fonctions
+    """Renvoie la nappe self avec un support union de celui de self et de other
+    le support est la discrétisation vale_para et les discrétisations des fonctions
+    """
     if self==other : return self
     if self.para!=other.para : raise StandardError, 'combinaison de nappes à caractéristiques interpolation et prolongement différentes'
     vale_para=self.vale_para.tolist()+other.vale_para.tolist()
@@ -569,7 +616,8 @@ class t_nappe :
     return t_nappe(vale_para,l_fonc,self.para)
 
   def extreme(self) :
-    # renvoie un dictionnaire des valeurs d'ordonnées min et max
+    """renvoie un dictionnaire des valeurs d'ordonnées min et max
+    """
     val_min=min([min(fonc.vale_y) for fonc in self.l_fonc])
     val_max=max([max(fonc.vale_y) for fonc in self.l_fonc])
     vm={'min':[],'max':[]}

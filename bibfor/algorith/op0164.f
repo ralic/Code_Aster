@@ -5,7 +5,7 @@ C      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 19/09/2006   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,10 +51,10 @@ C
       COMPLEX*16   CBID
       CHARACTER*1  TYPMAT
       CHARACTER*8  K8B, NOMRES, BASEMO, MATRAS, NUMGEN, INTERF
-      CHARACTER*16 TYPRES, NOMCOM, TYPBAS, MATRI2, K16NOM
+      CHARACTER*16 TYPRES, NOMCOM, TYPBAS, MATRI2, K16NOM, TYPBIN
       CHARACTER*19 RESU , STOLCI
       CHARACTER*14 NUGENE
-      CHARACTER*24 MATRIC, TABRIG
+      CHARACTER*24 MATRIC, TABRIG, TABFRQ
       CHARACTER*72 TEXTE
       REAL*8 A(3)
 C-----------------------------------------------------------------------
@@ -68,13 +68,9 @@ C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
       CALL GETVIS(' ','UNITE_RESU_IMPE',1,1,1,IFMIS,N1)
       CALL GETVR8(' ','FREQ_EXTR',1,1,1,FREQ,NFR)
-      K16NOM = ' '
-      IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
-        CALL ULOPEN ( IFMIS,' ',' ','NEW','O')
-      ENDIF
-      CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
       CALL GETVID ( ' ', 'BASE'          , 1,1,1, BASEMO, N4 )
       CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,1,1, NUMGEN, N2 )
+      CALL GETVTX ( ' ', 'TYPE' , 1,1,1, TYPBIN, N2 )
 C
       CALL GETTCO ( BASEMO, TYPBAS )
       TYPMAT= TYPRES(16:16)
@@ -100,24 +96,59 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
          NBMODD = ZI(JVAL+2)
          NBMODS = ZI(JVAL+3)
       ENDIF
+      
       NBMODE = NBMODD + NBMODS
-      TABRIG = '&&OP0196.RIGM'
+      TABRIG = '&&OP0164.RIGM'
+      TABFRQ = '&&OP0164.FREQ'
       CALL WKVECT(TABRIG,'V V R',2*NBMODS*NBMODS,JRIG)
-      REWIND IFMIS
-      READ(IFMIS,'(A72)') TEXTE
-      IF (TEXTE(1:4).EQ.'XXXX') GOTO 4
-      DO 1 I2 = 1,NBMODS
-      DO 1 I1 = 1,NBMODS
-        NSAUT = NFREQ
-        IF (I1.EQ.1.AND.I2.EQ.1) NSAUT = IFREQ
-        DO 2 I = 1, NSAUT
-          READ(IFMIS,'(A72)') TEXTE
-    2   CONTINUE
-        READ(IFMIS,*) (A(J),J=1,3)
-        ZR(JRIG+2*(I2-1)*NBMODS+2*I1-2) = A(2)
-        ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1) = -A(3)
-    1 CONTINUE
-    4 CONTINUE
+      IF (TYPBIN.NE.'BINAIRE') THEN
+        K16NOM = ' '
+        IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
+          CALL ULOPEN ( IFMIS,' ',' ','NEW','O')
+        ENDIF
+        CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
+        CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
+        REWIND IFMIS
+        READ(IFMIS,'(A72)') TEXTE
+        IF (TEXTE(1:4).EQ.'XXXX') GOTO 4
+        DO 1 I2 = 1,NBMODS
+        DO 1 I1 = 1,NBMODS
+          NSAUT = NFREQ
+          IF (I1.EQ.1.AND.I2.EQ.1) NSAUT = IFREQ
+          DO 2 I = 1, NSAUT
+            READ(IFMIS,'(A72)') TEXTE
+    2     CONTINUE
+          READ(IFMIS,*) (A(J),J=1,3)
+          ZR(JRIG+2*(I2-1)*NBMODS+2*I1-2) = A(2)
+          ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1) = -A(3)
+    1   CONTINUE
+    4   CONTINUE
+      ELSE
+        REWIND IFMIS
+        READ(IFMIS) NFREQ,NBMODS,N1
+        CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
+        READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
+        DO 3 I = 1, NFREQ
+          A(1) = ZR(JFRQ+I-1)+1.D-6
+          IF (FREQ.LE.A(1)) THEN
+            IFREQ = I
+            GOTO 7
+        ENDIF
+    3   CONTINUE
+        IFREQ = NFREQ
+    7   CONTINUE    
+        DO 5 I = 1, IFREQ-1
+          READ(IFMIS) A(1)      
+    5   CONTINUE
+        READ(IFMIS) ((ZR(JRIG+2*(I2-1)*NBMODS+2*I1-2),
+     &                ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1),
+     &                I1=1,NBMODS),I2=1,NBMODS)
+        DO 6 I1 = 1, NBMODS 
+        DO 6 I2 = 1, NBMODS
+          ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1)=
+     &   -ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1)
+    6   CONTINUE
+      ENDIF 
 C
 C ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 C
@@ -192,10 +223,6 @@ C
 C
 C ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 C
-C                PARTR = 0.5D0*(ZR(JRIG+2*(II-1)*NBMODS+2*JJ-2)
-C     &                       + ZR(JRIG+2*(JJ-1)*NBMODS+2*II-2))
-C                PARTI = 0.5D0*(ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
-C     &                       + ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1))
              PARTR = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-2)
              PARTI = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
              ZC(LDBLO+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
@@ -209,6 +236,7 @@ C
       CALL JELIBE ( JEXNUM(RESU//'.VALM', 1) )
       CALL JELIBE ( JEXNUM(RESU//'.VALM', 2) )
       CALL JEDETR(TABRIG)
+      CALL JEDETR(TABFRQ)
 C     CALL VERISD('MATRICE',RESU)
 C
       CALL JEDEMA()

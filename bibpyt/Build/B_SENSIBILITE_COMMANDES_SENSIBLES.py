@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,6 +89,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
          self.a_deriver           : ['AFFE_MATERIAU',
                                      'AFFE_CHAR_MECA_F',
                                      'AFFE_CHAR_THER_F',
+                                     'AFFE_CARA_ELEM',
                                      #'CALC_MATR_ELEM',
                                      ],
          self.poursuite           : ['POURSUITE',],

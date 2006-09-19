@@ -1,0 +1,107 @@
+      SUBROUTINE CFSUEX(NOESUP,NBEXCL,NNOCO,NZOCO,PSANS,SANSNO)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE MABBAS M.ABBAS
+      IMPLICIT NONE
+      CHARACTER*24 NOESUP
+      INTEGER      NBEXCL
+      INTEGER      NNOCO
+      INTEGER      NZOCO
+      CHARACTER*24 PSANS,SANSNO     
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELLEE PAR : CACOEQ
+C ----------------------------------------------------------------------
+C
+CCAJOUT DE NOEUD A SUPPRIMER DANS LES VECTEURS IDOINES POUR LE CONTACT
+C
+C IN  NOESUP : LISTE DES NOEUDS A ELIMINER
+C IN  NBEXCL : LONGUEUR DU VECTEUR NOESUP (NB NOEUDS A ELIMINER)
+C IN  NNOCO  : NOMBRE DE NOEUDS DE CONTACT
+C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+C IN  PSANS  : DEFICO//'.PSSNOCO'
+C IN  SANSNO : DEFICO//'.SSNOCO'
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER KSANS,KPSANS,JPSANS,JSANS,JNOES
+      INTEGER I,IZONE,IND,JDEC,NBOLD,NBNEW
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- SAUVEGARDE ANCIENS VECTEURS
+C
+      CALL JEVEUO(PSANS,'E',JPSANS)
+      CALL JEVEUO(SANSNO,'L',JSANS)
+      CALL JEVEUO(NOESUP,'L',JNOES)
+      CALL WKVECT('&&CFSUEX.SSNOCO','V V I',NNOCO,KSANS)
+      CALL WKVECT('&&CFSUEX.PSSNOCO','V V I',NNOCO,KPSANS)      
+      DO 10 I = 1,NNOCO
+        ZI(KSANS-1+I) = ZI(JSANS-1+I)
+   10 CONTINUE   
+      DO 11 I = 1,NZOCO+1
+        ZI(KPSANS-1+I) = ZI(JPSANS-1+I)
+   11 CONTINUE     
+C
+C --- CREATION NOUVEAUX VECTEURS
+C
+      CALL JEDETR(SANSNO) 
+      CALL JEDETR(PSANS)
+      CALL WKVECT(SANSNO,'G V I',NNOCO+NBEXCL*NZOCO,JSANS)
+      CALL WKVECT(PSANS,'G V I',NZOCO+1,JPSANS)
+      
+      JDEC = 1
+      ZI(JPSANS) = 0
+      DO 20 IZONE = 1,NZOCO  
+        NBOLD = ZI(KPSANS-1+IZONE+1) - ZI(KPSANS-1+IZONE)
+        DO 30 IND = 1,NBOLD
+          ZI(JSANS-1+JDEC) = ZI(KSANS-1+JDEC)
+          JDEC = JDEC + 1
+   30   CONTINUE
+        DO 31 IND = 1,NBEXCL
+          ZI(JSANS-1+JDEC) = ZI(JNOES-1+IND)
+          JDEC = JDEC + 1
+   31   CONTINUE
+        NBNEW = NBOLD + NBEXCL
+        ZI(JPSANS-1+IZONE+1) = ZI(JPSANS-1+IZONE) + NBNEW
+   20 CONTINUE
+C
+      CALL JEDETR('&&CFSUEX.SSNOCO')
+      CALL JEDETR('&&CFSUEX.PSSNOCO')      
+      CALL JEDEMA()      
+      END

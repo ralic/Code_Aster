@@ -1,4 +1,5 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+
+# MODIF  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,207 +18,190 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'SDNV103A',NIV_PUB_WEB='INTERNET'))
 
-PRE_GIBI()
+DEBUT(CODE=_F(NOM='SDNV103A',
+              NIV_PUB_WEB='INTERNET',),);
 
-MA=LIRE_MAILLAGE( )
+PRE_GIBI();
 
-MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
-                   CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
-                                  _F(NOM='MILIEU',
-                                     GROUP_MA='SZZ',
-                                     CRIT_NOEUD='MILIEU'),
-                                  _F(NOM='SXX1',
-                                     DIFFE=('SXX','MILIEU'),),
-                                  _F(NOM='SYY1',
-                                     DIFFE=('SYY','MILIEU'),),
-                                     ),);
+MA=LIRE_MAILLAGE();
 
-MODE=AFFE_MODELE(
-            MAILLAGE=MA,
-            VERIF='MAILLE',
-            AFFE=(
-           _F( TOUT='OUI',
-               PHENOMENE = 'MECANIQUE',
-               MODELISATION = ('3D','3D_SI')),),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
+                             _F(GROUP_MA='SZZ',
+                                NOM='MILIEU',
+                                CRIT_NOEUD='MILIEU',),
+                             _F(DIFFE=('SXX','MILIEU',),
+                                NOM='SXX1',),
+                             _F(DIFFE=('SYY','MILIEU',),
+                                NOM='SYY1',),),);
 
-MA=MODI_MAILLAGE( reuse=MA,
-             MAILLAGE=MA,
-             ORIE_PEAU_3D=_F(  GROUP_MA = ('SZZ', 'RIGID')),
-             INFO=2);
+MODE=AFFE_MODELE(MAILLAGE=MA,
+                 VERIF='MAILLE',
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION=('3D','3D_SI',),),);
 
-ACIER=DEFI_MATERIAU(
-                ELAS=_F( E = 117.E3, NU = 0.35,  RHO = 8.930E-9),
-                ECRO_LINE=_F(D_SIGM_EPSI = 100., SY = 400.));
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D=_F(GROUP_MA=('SZZ','RIGID',),),
+                 INFO=2,);
 
-CHMAT = AFFE_MATERIAU(
-            MAILLAGE=MA,
-            AFFE=(
-              _F( GROUP_MA = ('VOL','VOL_RIG'), MATER = ACIER),),
-                        );
+ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
+                            NU=0.35,
+                            RHO=8.930E-9,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=100.,
+                                 SY=400.,),);
 
-CH=AFFE_CHAR_MECA(
-            MODELE=MODE,
-            DDL_IMPO=(
-             _F( GROUP_MA = 'RIGID',      DX = 0., DY = 0., DZ = 0. ),
-             _F( GROUP_MA = 'VOL_RIG',    DX = 0., DY = 0., DZ = 0. ),
-             _F( GROUP_NO = 'SYY1'   ,    DY = 0.),
-             _F( GROUP_NO = 'SXX1'   ,    DX = 0.),
-             ),
-            CONTACT=
-            _F(APPARIEMENT  = 'MAIT_ESCL',
-               REAC_GEOM    = 'CONTROLE',
-               RECHERCHE    = 'NOEUD_BOUCLE',
-               NB_REAC_GEOM = 1,
-               GROUP_MA_MAIT='RIGID',
-               GROUP_MA_ESCL='SZZ',
-               FROTTEMENT = 'COULOMB',
-               COEF_MATR_FROT = 0.4,
-               COULOMB = 0.25,
-               METHODE='PENALISATION',
-               E_T=1.E5
-               ),
-               );
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA=('VOL','VOL_RIG',),
+                            MATER=ACIER,),);
 
-VIT_0=CREA_CHAMP( OPERATION='AFFE',
-                  TYPE_CHAM='NOEU_DEPL_R',
-                #  MAILLAGE=MA,
-                  PROL_ZERO='NON',
-                  MODELE=MODE,
-                  AFFE=(
-                     _F(TOUT='OUI',
-                        NOM_CMP = ('DX', 'DY', 'DZ',),
-                        VALE = (  0.0,  0.0,  -227000.,)),
-                     _F(GROUP_NO = 'VOL_RIG',
-                        NOM_CMP = ('DX', 'DY', 'DZ',),
-                        VALE = (  0.0,  0.0,  0., )),
-                     _F(GROUP_NO = 'RIGID',
-                        NOM_CMP = ('DX', 'DY', 'DZ',),
-                        VALE = (  0.0,  0.0,  0., )),
-                    ));
+CH=AFFE_CHAR_MECA(MODELE=MODE,
+                  DDL_IMPO=(_F(GROUP_MA='RIGID',
+                               DX=0.,
+                               DY=0.,
+                               DZ=0.,),
+                            _F(GROUP_MA='VOL_RIG',
+                               DX=0.,
+                               DY=0.,
+                               DZ=0.,),
+                            _F(GROUP_NO='SYY1',
+                               DY=0.,),
+                            _F(GROUP_NO='SXX1',
+                               DX=0.,),),
+                  CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+                             RECHERCHE='NOEUD_BOUCLE',
+                             METHODE='PENALISATION',
+                             GROUP_MA_MAIT='RIGID',
+                             GROUP_MA_ESCL='SZZ',
+                             FROTTEMENT='COULOMB',
+                             REAC_GEOM='CONTROLE',
+                             NB_REAC_GEOM=1,
+                             COULOMB=0.25,
+                             E_T=1.E5,
+                             COEF_MATR_FROT=0.4,),
+                  INFO=2,);
 
-DEPL_0=CREA_CHAMP( OPERATION='AFFE',
-                  TYPE_CHAM='NOEU_DEPL_R',
-                #  MAILLAGE=MA,
-                  PROL_ZERO='NON',
-                  MODELE=MODE,
-                  AFFE=(
-                     _F(TOUT='OUI',
-                        NOM_CMP = ('DX', 'DY', 'DZ',),
-                        VALE = (  0.0,  0.0,  0.0,)),
-                    ));
+VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                 OPERATION='AFFE',
+                 MODELE=MODE,
+                 PROL_ZERO='NON',
+                 AFFE=(
+                 _F(TOUT='OUI',
+                    NOM_CMP=('DX','DY','DZ',),
+                    VALE=(0.,0.,-227000.,),),
+                 _F(GROUP_NO='VOL_RIG',
+                    NOM_CMP=('DX','DY','DZ',),
+                    VALE=(0.,0.,0.,),),
+                 _F(GROUP_NO='RIGID',
+                    NOM_CMP=('DX','DY','DZ',),
+                    VALE=(0.,0.,0.,),),),);
 
-L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,INTERVALLE=(
-                         _F( JUSQU_A = -2.5E-7, NOMBRE = 1),
-                         _F( JUSQU_A =  2.5E-7, NOMBRE = 3),
-                         _F( JUSQU_A =  80.E-6, NOMBRE = 316))
-                         )
+L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,
+                      INTERVALLE=(_F(JUSQU_A=-2.5E-7,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=2.5E-7,
+                                     NOMBRE=10,),
+                                  _F(JUSQU_A=80.E-6,
+                                     NOMBRE=316,),),);
 
-L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,INTERVALLE=(
-                         _F( JUSQU_A = 2.5E-7, NOMBRE = 2),
-                         _F( JUSQU_A = 80.E-6, NOMBRE = 316))
-                         )
-
+L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
+                      INTERVALLE=(_F(JUSQU_A=2.5E-7,
+                                     NOMBRE=2,),
+                                  _F(JUSQU_A=80.E-6,
+                                     NOMBRE=316,),),);
 
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CH,
-                            ),
-                   ETAT_INIT=_F(VITE = VIT_0,
-                                ),
+                   EXCIT=_F(CHARGE=CH,),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE',
                                 TOUT='OUI',),
+                   ETAT_INIT=_F(
+                   VITE=VIT_0,),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                SUBD_PAS=4,
                                 INST_FIN=2.5E-7,
+                                SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.E-17,
-                                COEF_SUBD_PAS_1=1.0,
-                                ),
-                   NEWMARK=_F(  ALPHA = 0.49,   # Beta
-                                DELTA = 0.9  ), # Gamma
-                 #  SOLVEUR=_F(METHODE='LDLT',),
+                                COEF_SUBD_PAS_1=1.0,),
+                   NEWMARK=_F(ALPHA=0.49,
+                              DELTA=0.9,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
                    SOLVEUR=_F(SYME='OUI',),
-                   NEWTON=_F(   REAC_INCR=1,
-                                MATRICE='TANGENTE',
-                                REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
-                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
-                                #LIST_INST=L_SAUV
-                                ),
-                   );
-
-
-
+                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
-                                GROUP_NO= 'A2',
+                                GROUP_NO='A2',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
 DEPL_A1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
-                                GROUP_NO= 'A1',
+                                GROUP_NO='A1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
 DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
-                                GROUP_NO= 'B1',
+                                GROUP_NO='B1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
-
-
 #####################################################
+#####################################################
+
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
-#####################################################
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU,   INST = 2.5E-07,
-          NOM_CHAM = 'DEPL',   GROUP_NO = 'A2',
-          CRITERE = 'RELATIF', PRECISION = (7.E-6, 1.E-10),
-          NOM_CMP = 'DZ',    VALE = -2.3267499999972E+00, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
-     _F(  RESULTAT = RESU,   INST = 2.5E-07,
-          NOM_CHAM = 'VITE',   GROUP_NO = 'A2',
-          CRITERE = 'RELATIF', PRECISION = (3.65E-6, 1.E-10),
-          NOM_CMP = 'DZ',    VALE = -2.2700000017183E+05, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
-        ),);
-
-#####################################################
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='A2',
+                   VALE=-2.32675,
+                   CRITERE='RELATIF',
+                   PRECISION=(7e-06,1e-10,),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='6.3.20',),
+                _F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DZ',
+                   GROUP_NO='A2',
+                   VALE=-227000.000172,
+                   CRITERE='RELATIF',
+                   PRECISION=(3.65e-06,1e-10,),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='6.3.20',),),);
 # TESTS SUR LA VALEUR DU JEU ET DU FROTTEMENT
-#####################################################
 
-TABJEU = POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
-                                 INTITULE = 'MESSAGE',
-                                 RESULTAT = RESU,
-                                 TOUT_CMP='OUI',
-                                 NOM_CHAM   = 'VALE_CONT',
-                                 OPERATION = 'EXTRACTION'))
-
-
+TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
+                               GROUP_NO='B1',
+                               RESULTAT=RESU,
+                               NOM_CHAM='VALE_CONT',
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
 # JEU
-########
 
 TEST_TABLE(TABLE=TABJEU,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE     = 2.50000E-07),
-           NOM_PARA ='JEU',
-           CRITERE  = 'ABSOLU',
-           PRECISION= 1.0E-6,
-           VALE     = 0.00,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '6.3.20' )
-IMPR_TABLE(TABLE = TABJEU)
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5e-07,),
+           NOM_PARA='JEU',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1e-06,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.3.20',);
 
+IMPR_TABLE(TABLE=TABJEU,);
 
-FIN()
-
+FIN();

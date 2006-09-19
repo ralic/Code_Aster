@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF inisig utilitai  DATE 18/09/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -51,7 +51,7 @@ void hancpu (int sig);
   void stptrap(int sig);
 #endif
 
-#ifdef P_LINUX || LINUX64
+#if defined P_LINUX || LINUX64
 #define _GNU_SOURCE 1
 #include <fenv.h>
 #endif
@@ -106,14 +106,14 @@ int ier;
 #elif defined IRIX
    ier=inifpe();
 
-#elif defined P_LINUX
+#elif defined P_LINUX || LINUX64
 
    /* Enable some exceptions. At startup all exceptions are masked. */
-   feenableexcept(FE_DIVBYZERO|FE_OVERFLOW);
+   feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
 
    signal(SIGFPE,  hanfpe);
 
-#elif defined HPUX || TRU64 || LINUX64  || SOLARIS64
+#elif defined HPUX || TRU64  || SOLARIS64
    signal(SIGFPE,  hanfpe);
 #elif defined PPRO_NT
 #define _EXC_MASK  _EM_INEXACT + _EM_UNDERFLOW

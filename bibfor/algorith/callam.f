@@ -1,6 +1,8 @@
-      SUBROUTINE CALLAM(NOMA,POSMA,DEPPLU,XI,YI,LAMBDA,NEWGEO,DEFICO)
+      SUBROUTINE CALLAM(NOMA,DEFICO,NEWGEO,DEPPLU,
+     &                  POSMA,XPG,YPG,
+     &                  LAMBDA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,25 +20,32 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT NONE
-      INTEGER POSMA
-      REAL*8 LAMBDA,XI,YI
-      CHARACTER*8 NOMA
-      CHARACTER*24  DEPPLU,NEWGEO,DEFICO
-C.......................................................................
-
-C BUT: CALCUL DE MULTIPLUCATEUR DE CONTACT D'UN PC
-
-C ENTREES  ---> NOMA   : MAILLAGE
-C          ---> POSMA  : INDICE DE LA MAILLE DANS CONTAMA
-C          ---> XI,YI  : COORDONNES BARYCENTRIQUE DU PC
-C          ---> DEPPLU : NOUVEAU DEPLACEMENT
-
-C SORTIES  <--- LAMBDA : MULTIPLICATEUR DE CONTACT
-
-C ...............................................................
-C   DECLARATION JEVEUX
-C.......................................................................
-
+      CHARACTER*8   NOMA
+      INTEGER       POSMA
+      REAL*8        XPG
+      REAL*8        YPG
+      CHARACTER*24  DEPPLU
+      CHARACTER*24  NEWGEO
+      CHARACTER*24  DEFICO
+      REAL*8        LAMBDA 
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : MMMBCA/REACLM
+C ----------------------------------------------------------------------
+C
+C CALCUL DE MULTIPLICATEUR DE CONTACT D'UN POINT DE CONTACT
+C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT)
+C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
+C IN  DEPPLU : DEPLACEMENT APRES CONVERGENCE DE NEWTON
+C IN  POSMA  : INDICE DE LA MAILLE ESCLAVE DANS CONTAMA
+C IN  XPG    : COORDONNEE X DU POINT 
+C IN  YPG    : COORDONNEE Y DU POINT 
+C OUT LAMBDA : MULTIPLICATEUR DE LAGRANGE DU CONTACT POUR LE POINT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C           
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -51,92 +60,69 @@ C.......................................................................
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
-C.......................................................................
-C FIN DECLARATION JEVEUX
-C.......................................................................
-
-      INTEGER JNOCO,JMACO,JNOMA,JPONO,NUMA,IATYMA,JCOOR
-      INTEGER NUTYP,ITYP,NNO,JDEC,INO,NO(9),POSNNO(9),J
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER JNOCO,JMACO,JNOMA,JPONO,NUMA,JCOOR
+      INTEGER NNO,JDEC,INO,NO(9),POSNNO(9),J,IBID
       INTEGER JCNSV2
       REAL*8 FF(9)
       REAL*8 MCON(9)
       CHARACTER*8 ALIAS
       CHARACTER*19 CNS1,CNS2
       CHARACTER*24 CONTMA,CONTNO,NOMACO,PNOMA
-C----------------------------------------------------------------------
-
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-C --- TYPE DE LA MAILLE MAITRE DE NUMERO ABSOLU NUMA
-C     SEG2=2  SEG3=4  TRIA3=7 TRIA6=9  QUAD4=12  QUAD8=14  QUAD9=16
-
+C      
+      CONTMA = DEFICO(1:16)//'.MAILCO'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       NOMACO = DEFICO(1:16)//'.NOMACO'
       PNOMA  = DEFICO(1:16)//'.PNOMACO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
-C
       CALL JEVEUO(CONTNO,'L',JNOCO)
+      CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(PNOMA,'L',JPONO)
-      CALL JEVEUO(CONTMA,'L',JMACO)
+      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)  
+C
+C --- INITIALISATIONS
+C
+      CNS1   = '&&CALLAM.CNS1'
+      CNS2   = '&&CALLAM.CNS2'
+      LAMBDA = 0.D0      
+C
+C --- INFOS SUR LA MAILLE ESCLAVE 
+C 
       NUMA = ZI(JMACO+POSMA-1)
-      CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
-      ITYP = IATYMA - 1 + NUMA
-      NUTYP = ZI(ITYP)
-      IF (NUTYP.EQ.2) THEN
-        ALIAS(1:3) = 'SG2'
-        NNO = 2
-      ELSE IF (NUTYP.EQ.4) THEN
-        ALIAS(1:3) = 'SG3'
-        NNO = 3
-      ELSE IF (NUTYP.EQ.7) THEN
-        ALIAS(1:3) = 'TR3'
-        NNO = 3
-      ELSE IF (NUTYP.EQ.9) THEN
-        ALIAS(1:3) = 'TR6'
-        NNO = 6
-      ELSE IF (NUTYP.EQ.12) THEN
-        ALIAS(1:3) = 'QU4'
-        NNO = 4
-      ELSE IF (NUTYP.EQ.14) THEN
-        ALIAS(1:3) = 'QU8'
-        NNO = 8
-      ELSE IF (NUTYP.EQ.16) THEN
-        ALIAS(1:3) = 'QU9'
-        NNO = 9
-      END IF
-
-C   RECUPERATION DE LA GEOMETRIE DES NOEUDS
-
-      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
-      JDEC = ZI(JPONO+POSMA-1)
+      JDEC = ZI(JPONO+POSMA-1)      
+      CALL MMELTY(NOMA,NUMA,ALIAS,NNO,IBID)       
+C
+C --- COORDONNEES DES NOEUDS DE LA MAILLE ESCLAVE
+C
       DO 10 INO = 1,NNO
         POSNNO(INO+1) = ZI(JNOMA+JDEC+INO-1)
-        NO(INO) = ZI(JNOCO+POSNNO(INO+1)-1)
-   10 CONTINUE
+        NO(INO)       = ZI(JNOCO+POSNNO(INO+1)-1)
+   10 CONTINUE   
 C
-      CNS1='&&CALLAM.CNS1'
-      CNS2='&&CALLAM.CNS2'
+C --- EXTRACTION DES LAGRANGIENS DE CONTACT DU VECTEUR DEPLACEMENT
+C     
       CALL CNOCNS(DEPPLU,'V',CNS1)
-C
       CALL CNSRED(CNS1,NNO,NO,1,'LAGS_C','V',CNS2)
       CALL JEVEUO(CNS2//'.CNSV','L',JCNSV2)
+C
+C --- CALCUL DU MULTIPLICATEUR DE CONTACT
 C
       DO 20,INO = 1,NNO
         MCON(INO) = ZR(JCNSV2-1+NO(INO))
    20 CONTINUE
-
-
-C---- GEOMETRIE DU PT DE CONTACT  ---------------
-
-      CALL CALFFX(ALIAS,XI,YI,FF)
-      LAMBDA = 0.D00
+      CALL CALFFX(ALIAS,XPG,YPG,FF)
       DO 30 J = 1,NNO
         LAMBDA = FF(J)*MCON(J) + LAMBDA
    30 CONTINUE
-   40 CONTINUE
+C
       CALL DETRSD('CHAM_NO_S',CNS1)
-      CALL DETRSD('CHAM_NO_S',CNS2)
+      CALL DETRSD('CHAM_NO_S',CNS2)    
+C  
       CALL JEDEMA()
       END

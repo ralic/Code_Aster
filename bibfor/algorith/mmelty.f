@@ -1,6 +1,6 @@
       SUBROUTINE MMELTY(NOMA,NUMA,ALIAS,NNO,NDIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,7 +70,7 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      ALIAS(1:8)='        '
+      ALIAS(1:8) = '        '
       CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)      
       ITYP  = IATYMA - 1 + NUMA
       NUTYP = ZI(ITYP)
@@ -109,11 +109,11 @@ C
         NDIM = 3        
       ELSE
         CALL UTMESS('F','MMELTY',
-     &   'ELEMENT DE CONTACT NON CONFORME')
+     &   'ELEMENT DE CONTACT NON CONFORME (DVLP)')
       END IF
       IF ((NDIM.NE.2).AND.(NDIM.NE.3)) THEN
         CALL UTMESS('F','MMELTY',
-     &   'DIMENSION DE L''ESPACE INCORRECTE')      
+     &   'DIMENSION DE L''ESPACE INCORRECTE (DVLP)')      
       ENDIF
 C
       CALL JEDEMA()      

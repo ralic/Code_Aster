@@ -1,9 +1,10 @@
       SUBROUTINE CACOEQ(FONREZ,CHARGZ,NOMAZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+C RESPONSABLE MABBAS M.ABBAS
       CHARACTER*(*) FONREZ,CHARGZ,NOMAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,21 +40,23 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
+      CHARACTER*32 JEXNUM,JEXATR
 
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
-      INTEGER NO(3),II,IRET,JLIST,TYPALC
+      INTEGER NO(3),II,JJ,IRET,JLIST,TYPALC,KK
       COMPLEX*16 BETAC,COEMUC(3)
       CHARACTER*1 K1BID
       CHARACTER*2 TYPLAG
       CHARACTER*4 FONREE
       CHARACTER*4 TYPCOE
-      CHARACTER*8 BETAF,DDL(3),NONO(3),CHAR,NOMA
+      CHARACTER*8 BETAF,DDL(3),NONO(3),CHAR,NOMA,TYPE1,TYPE2
       CHARACTER*19 LISREL
-      CHARACTER*24 LISNOE
+      CHARACTER*24 LISNOE,NOESUP,CONINV
+      INTEGER      IEXCL,NBEXCL,NNOCO
       REAL*8 COEMUR(3),DIRECT(6),BETA
-      INTEGER IDIM(3),NBELQU
+      INTEGER IDIM(3),NBELQU,IBID,NMAP,JJINV,JJINP,JNOES
+      INTEGER NUMAIL,ITYP,IATYMA,NUTYP
       INTEGER NSANS,NZOCO,JDIM,IZONE,JDEC,K,JPSANS,JSANS,JSANSN
       CHARACTER*24 NDIMCO,PSANS,SANSNO,SANSNQ
       DATA DIRECT/0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0/
@@ -61,54 +64,69 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-      FONREE = FONREZ
-      CHAR = CHARGZ
-      NOMA = NOMAZ
-
-      TYPLAG = '12'
-      TYPCOE = 'REEL'
-
-      LISREL = '&&CACOEQ.RLLISTE'
-      LISNOE = CHAR//'.CONTACT.NOEUQU'
-      CALL JEEXIN(LISNOE,IRET)
-      IF (IRET.EQ.0) GO TO 40
-
-      CALL JEVEUO(LISNOE,'L',JLIST)
-      CALL JELIRA(LISNOE,'LONUTI ',NBELQU,K1BID)
-      BETAF = '&FOZERO'
-      BETAC = (0.0D0,0.0D0)
-      BETA = 0.0D0
+C
+C INITIALISATIONS      
+C     
+      FONREE    = FONREZ
+      CHAR      = CHARGZ
+      NOMA      = NOMAZ
+      BETAF     = '&FOZERO'
+      BETAC     = (0.0D0,0.0D0)
+      BETA      = 0.0D0
       COEMUC(1) = (1.0D0,0.0D0)
       COEMUC(2) = (-0.5D0,0.0D0)
       COEMUC(2) = (-0.5D0,0.0D0)
       COEMUR(1) = 1.0D0
       COEMUR(2) = -0.5D0
       COEMUR(3) = -0.5D0
-      IDIM(1) = 0
-      IDIM(2) = 0
-      IDIM(3) = 0
-
+      IDIM(1)   = 0
+      IDIM(2)   = 0
+      IDIM(3)   = 0
+      TYPLAG    = '12'
+      TYPCOE    = 'REEL'
+      LISREL    = '&&CACOEQ.RLLISTE'
+C
+C --- ACCES OBJETS
+C      
+      LISNOE = CHAR//'.CONTACT.NOEUQU'
       SANSNQ = CHAR(1:8)//'.CONTACT.SANSNQ'
       NDIMCO = CHAR(1:8)//'.CONTACT.NDIMCO'
-      PSANS = CHAR(1:8)//'.CONTACT.PSSNOCO'
+      PSANS  = CHAR(1:8)//'.CONTACT.PSSNOCO'
       SANSNO = CHAR(1:8)//'.CONTACT.SSNOCO'
-
-      CALL JEVEUO(NDIMCO,'L',JDIM)
-      CALL JEVEUO(PSANS,'L',JPSANS)
-      CALL JEVEUO(SANSNO,'L',JSANS)
-      CALL JEVEUO(SANSNQ,'L',JSANSN)
-
+            
+      CALL JEEXIN(LISNOE,IRET)
       CALL CFDISC(CHAR(1:8)//'.CONTACT        ',
      &            '              ',
      &            TYPALC,IBID,IBID,IBID)
 
-      IF (TYPALC.EQ.5) THEN
+C
+C --- PAS DE LIAISON SI CONTACT VERIF OU PAS DE MAILLES QUADRA
+C
+      IF ((TYPALC.EQ.5).OR.(IRET.EQ.0)) THEN
         GOTO 40
-      ENDIF
-
-      NZOCO = ZI(JDIM+1)
-
+      ENDIF 
+           
+      CALL JEVEUO(LISNOE,'L',JLIST)
+      CALL JELIRA(LISNOE,'LONUTI ',NBELQU,K1BID)
+      CALL JEVEUO(NDIMCO,'L',JDIM)
+      CALL JEVEUO(PSANS,'L',JPSANS)
+      CALL JEVEUO(SANSNO,'L',JSANS)
+      CALL JEVEUO(SANSNQ,'L',JSANSN)
+C
+C --- CONSTRUCTION DE LA CONNECTIVITE INVERSE
+C  
+      CONINV = '&&CACOEQ.CONINV'
+      NOESUP = '&&CACOEQ.NOESUP'
+      CALL CNCINV(NOMA,0,0,'V',CONINV)
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
+C
+C --- BOUCLE SUR LES NOEUDS A LIAISONNER
+C
+      NZOCO  = ZI(JDIM+1)
+      NNOCO  = ZI(JDIM+4)
       NBELQU = NBELQU/3
+      CALL WKVECT(NOESUP,'V V I',NNOCO,JNOES)
+      IEXCL  = 1
       DO 30 II = 1,NBELQU
         NO(1) = ZI(JLIST+3* (II-1)-1+1)
         NO(2) = ZI(JLIST+3* (II-1)-1+2)
@@ -116,18 +134,18 @@ C ----------------------------------------------------------------------
         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NO(1)),NONO(1))
         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NO(2)),NONO(2))
         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NO(3)),NONO(3))
-
-C VERIFICATION QUE LE NOEUD LIE AU NOEUD MILIEU N'EST PAS
-C EXCLU DU CONTACT (SANS_GROUP_NO)
-C ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
-
+C        
+C --- VERIFICATION QUE LE NOEUD LIE AU NOEUD MILIEU N'EST PAS
+C --- EXCLU DU CONTACT (SANS_GROUP_NO)
+C --- ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
+C
         DO 20 IZONE = 1,NZOCO
           IF (ZI(JSANSN+IZONE-1).EQ.1) THEN
             NSANS = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
-            JDEC = ZI(JPSANS+IZONE-1)
+            JDEC  = ZI(JPSANS+IZONE-1)
             DO 10 K = 1,NSANS
               IF (NO(1).EQ.ZI(JSANS+JDEC+K-1)) THEN
-                GO TO 30
+                GO TO 30              
               END IF
               IF (NO(2).EQ.ZI(JSANS+JDEC+K-1)) THEN
                 GO TO 30
@@ -138,7 +156,47 @@ C ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
    10       CONTINUE
           END IF
    20   CONTINUE
+C
+C --- CAS DES MAILLAGES MIXTES TRIA6/QUAD8
+C --- SI NOEUD PARTAGE ENTRE TRIA6/QUAD8: ONS TOCKE POUR ELIMINER NOEUD
+C --- DU CONTACT (CFSUEX)
+C   
+        CALL JEVEUO(JEXATR(CONINV,'LONCUM'),'L',JJINP)
+        NMAP = ZI(JJINP + NO(1)+1-1) -ZI(JJINP + NO(1)-1)
 
+        CALL JEVEUO(JEXNUM(CONINV,NO(1)),'L',JJINV)
+        DO 25 JJ=1,NMAP  
+          NUMAIL = ZI(JJINV-1+JJ)          
+          ITYP = IATYMA - 1 + NUMAIL
+          NUTYP = ZI(ITYP)
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),TYPE1)
+ 
+          IF (TYPE1(1:5).EQ.'QUAD8') THEN
+            DO 26 KK=1,NMAP
+              IF (JJ.NE.KK) THEN
+                NUMAIL = ZI(JJINV-1+KK)          
+                ITYP = IATYMA - 1 + NUMAIL
+                NUTYP = ZI(ITYP)
+                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),TYPE2)
+
+                IF ((TYPE2(1:5).EQ.'TRIA6').OR.
+     &              (TYPE2(1:5).EQ.'TRIA7').OR.
+     &              (TYPE2(1:5).EQ.'QUAD9')) THEN
+                  CALL UTMESS('A','CACOEQ','MELANGE MAILLES '//
+     &                        'QUADRATIQUES AVEC QUAD8: LIAISON '//
+     &                        'SUPPRIMEE SUR NOEUD MILIEU QUAD8')
+                  ZI(JNOES-1+IEXCL) = NO(1)
+                  IEXCL = IEXCL + 1
+                  GOTO 25
+                ENDIF
+              ENDIF             
+                       
+ 26         CONTINUE
+          ENDIF
+ 25     CONTINUE
+C
+C --- RELATION LINEAIRE
+C
         DDL(1) = 'DX'
         DDL(2) = 'DX'
         DDL(3) = 'DX'
@@ -154,11 +212,17 @@ C ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
         DDL(3) = 'DZ'
         CALL AFRELA(COEMUR,COEMUC,DDL,NONO,IDIM,DIRECT,3,BETA,BETAC,
      &              BETAF,TYPCOE,FONREE,TYPLAG,0.D0,LISREL)
+     
    30 CONTINUE
-C         CALL JEDETR (LISNOE)
-C     ---------------------------------------------
+C
       CALL AFLRCH(LISREL,CHAR)
-
+C
+      NBEXCL = IEXCL - 1
+      CALL CFSUEX(NOESUP,NBEXCL,NNOCO,NZOCO,PSANS,SANSNO)
+C      
    40 CONTINUE
+C   
+      CALL JEDETR(CONINV)
+      CALL JEDETR(NOESUP) 
       CALL JEDEMA()
       END

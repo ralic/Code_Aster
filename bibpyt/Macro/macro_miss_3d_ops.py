@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_miss_3d_ops Macro  DATE 19/09/2006   AUTEUR ACBHHCD G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,23 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
 
   import aster 
   loc_fic=aster.repout()
-  miss3d=loc_fic+'miss3d'
-  #miss3d='/home/acbhhcd/MISS3D/V6.4/miss3d.csh'
+  tv = aster.__version__.split('.')
+  if len(tv) < 3:
+      tv.extend(['x']*(3-len(tv)))
+  elif len(tv) > 3:
+      tv = tv[:3]
+  vers = '%2s.%2s.%2s' % tuple(tv)
 
+  if vers > ' 8. 3.11':
+     miss3d='/aster/logiciels/MISS3D/NEW/miss3d.csh'
+  else:
+     miss3d=loc_fic+'miss3d'
+  #  miss3d='/home/acbhhcd/MISS3D/V6.4/miss3d_d.csh'
+  
+  if VERSION=='V1_2':
+     if PARAMETRE != None and PARAMETRE['TYPE']=='BINAIRE':
+        raise AsException("MACRO_MISS_3D/PARAMETRE : type incompatible avec version")
+        
   if OPTION['TOUT']!=None:
       MODUL2='COMPLET'
   elif OPTION['MODULE']=='MISS_IMPE':
@@ -65,7 +79,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   prfor = 'fort.'+str(UNITE_RESU_FORC)
   
   l_para = ['FREQ_MIN','FREQ_MAX','FREQ_PAS','Z0','RFIC','SURF',
-            'FICH_RESU_IMPE','FICH_RESU_FORC','DREF','ALGO',
+            'FICH_RESU_IMPE','FICH_RESU_FORC','TYPE','DREF','ALGO',
             'OFFSET_MAX','OFFSET_NB','SPEC_MAX','SPEC_NB','ISSF',
             'FICH_POST_TRAI','CONTR_NB','CONTR_LISTE','LFREQ_NB',
             'LFREQ_LISTE']
@@ -78,7 +92,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   
   dpara = {}
   for cle in l_para:
-    if cle in ('SURF', 'ISSF'):
+    if cle in ('SURF', 'ISSF', ):
       dpara[cle] = 'NON'
     else:
       dpara[cle] = '0'
@@ -118,6 +132,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                           dpara['CONTR_LISTE'],
                           dpara['LFREQ_NB'],
                           dpara['LFREQ_LISTE'],
+                          dpara['TYPE'], 
                           prfor,
                          ),
                 )

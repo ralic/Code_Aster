@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 18/09/2006   AUTEUR ROMEO R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "3D_FLUI_ABSO",
                                                                       "3D_FLUIDE",
                                                                       "3D_INCO",
-                                                                      "3D_JOINT_CT",
                                                                       "3D_SI",
                                                                       "3D_GRAD_EPSI",
                                                                       "3D_GRAD_VARI",

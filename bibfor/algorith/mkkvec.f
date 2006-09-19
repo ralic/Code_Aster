@@ -1,7 +1,7 @@
-      SUBROUTINE MKKVEC(RESE,NDIM,VEC,RESU)
-      IMPLICIT NONE
+      SUBROUTINE MKKVEC(RESE,NRESE,NDIM,VEC,RESU)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,84 +18,90 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
-      REAL*8  RESE(3),RESU(3),VEC(3),MAT(3,3)
-      REAL*8  NORME,THETA
-      INTEGER NDIM,I,J,K
-
-C   SUBROUTINE QUI CALCULE RESU=K(LAMBDA +RHO[[U]]_TAU)*VEC
-
-C    IN    ----------> RESE   :  LAMBDA +RHO[[U]]_TAU
-C          ----------> NDIM   :  LA DIMENSION DE L'ESPACE
-C          ----------> VEC    :  LE VECTEUR A MULTIPLIER
-C          <---------  RESU   :  LE RESULTAT  [K]*VEC
+      IMPLICIT NONE
+      REAL*8  RESE(3),NRESE,RESU(3),VEC(3)
+      INTEGER NDIM
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : MMMAB2
+C ----------------------------------------------------------------------
+C
+C SUBROUTINE QUI CALCULE RESU = K(LAMBDA +RHO[[U]]_TAU)*VEC
+C
+C IN  RESE   : LAMBDA +RHO[[U]]_TAU
+C IN  NRESE  : RACINE DE LA NORME DE RESE
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  VEC    : LE VECTEUR A MULTIPLIER 
+C OUT RESU   : LE RESULTAT  [K]*VEC
 C                      K(x) = (Id-x*xt/!!x!!**)1/!!x!!
-C  ---------------------------------------------------------------------
-
-C  1. CALCUL DE LA NORME
-C  ----------------------------
-
-       NORME = 0.D0
-       THETA =1.0D0
-      DO 10 I = 1,3
-        NORME = NORME + RESE(I)*RESE(I)
-        RESU(I)=0.D0
-   10 CONTINUE
-
-C        NORME =SQRT(NORME)
-
-        DO  11 I = 1,3
-         DO  12 J = 1,3
-          MAT(I,J)=0.D0
-12       CONTINUE
-11      CONTINUE
-
-C  2. CALCUL DU PRODUIT IK()VEC
-C  ----------------------------
-
+C
+C ----------------------------------------------------------------------
+C
+      REAL*8  MAT(3,3)
+      REAL*8  NORME,THETA
+      INTEGER I,J
+C
+C ----------------------------------------------------------------------
+C
+C --- INITIALISATIONS 
+C
+      DO 11 I = 1,3
+        DO 12 J = 1,3
+          MAT(I,J) = 0.D0
+12      CONTINUE
+        RESU(J) = 0.D0
+11    CONTINUE
+      THETA = 1.D0
+C
+C --- CALCUL DE LA NORME DE LAMBDA +RHO[[U]]_TAU
+C   
+      NORME = NRESE*NRESE
+      IF ((NORME.EQ.0.D0).OR.(NRESE.EQ.0.D0)) THEN
+         CALL  UTMESS('F','MKKVEC',
+     &                'PROJECTION NULLE SUR LA BOULE UNITE (DVLP)')
+      ENDIF
+C
+C --- CALCUL DU PRODUIT IK()VEC
+C  
       IF (NDIM.EQ.2) THEN
         DO 13 I = 1,2
-         DO 14 J = 1,2
-           MAT(I,J)=-THETA*RESE(I)*RESE(J)/(NORME)
-14       CONTINUE
+          DO 14 J = 1,2
+            MAT(I,J) = -THETA*RESE(I)*RESE(J)/NORME
+14        CONTINUE
 13      CONTINUE
-         DO 15 J = 1,2
-          MAT(J,J)= 1.D00+MAT(J,J)
+        DO 15 J = 1,2
+          MAT(J,J) = 1.D0+MAT(J,J)
 15      CONTINUE
-      DO  16 I = 1,2
-         DO 17 J = 1,2
-          MAT(I,J)= MAT(I,J)/SQRT(NORME)
-17       CONTINUE
+        DO 16 I = 1,2
+          DO 17 J = 1,2
+            MAT(I,J) = MAT(I,J)/NRESE
+17        CONTINUE
 16      CONTINUE
-      DO 18 I=1,2
-        DO 19 J=1,2
-          RESU(I)=MAT(I,J)*VEC(J)+RESU(I)
-          RESU(3)=0.D00
-19       CONTINUE
+        DO 18 I=1,2
+          DO 19 J=1,2
+            RESU(I) = MAT(I,J)*VEC(J)+RESU(I)
+            RESU(3) = 0.D0
+19        CONTINUE
 18      CONTINUE
-
-C
       ELSE IF (NDIM.EQ.3) THEN
         DO 20 I = 1,3
-         DO 21 J = 1,3
-           MAT(I,J)=-THETA*RESE(I)*RESE(J)/(NORME)
-21       CONTINUE
+          DO 21 J = 1,3
+            MAT(I,J) = -THETA*RESE(I)*RESE(J)/NORME
+21        CONTINUE
 20      CONTINUE
-         DO 22 J = 1,3
-          MAT(J,J)= 1.D00+MAT(J,J)
+        DO 22 J = 1,3
+          MAT(J,J) = 1.D0+MAT(J,J)
 22      CONTINUE
-      DO 23 I = 1,3
-         DO 24 J = 1,3
-          MAT(I,J)= MAT(I,J)/SQRT(NORME)
-24       CONTINUE
+        DO 23 I = 1,3
+          DO 24 J = 1,3
+            MAT(I,J) = MAT(I,J)/NRESE
+24        CONTINUE
 23      CONTINUE
-      DO 25 I=1,3
-        DO 26  J=1,3
-          RESU(I)=MAT(I,J)*VEC(J)+RESU(I)
-26       CONTINUE
+        DO 25 I=1,3
+          DO 26  J=1,3
+            RESU(I) = MAT(I,J)*VEC(J)+RESU(I)
+26        CONTINUE
 25      CONTINUE
-      ELSE
-        CALL JXABOR()
       END IF
 
       END

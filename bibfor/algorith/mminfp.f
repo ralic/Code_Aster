@@ -1,7 +1,7 @@
       SUBROUTINE MMINFP(IZ,DEFICO,RESOCO,QUESTI,
      &                  IREP,RREP,KREP,LREP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -123,10 +123,16 @@ C
       ELSEIF (QUESTI(1:14).EQ.'PROJ_NEWT_ITER') THEN
         IREP(1) = 20
       ELSEIF (QUESTI(1:14).EQ.'PROJ_NEWT_EPSI') THEN
-        RREP(1) = 1D-4                 
+        RREP(1) = 1D-4 
+      ELSEIF (QUESTI(1:9).EQ.'RESI_FROT') THEN
+        RREP(1) = 1D-4
+      ELSEIF (QUESTI(1:9).EQ.'RESI_GEOM') THEN
+        RREP(1) = 1D-4                                
       ELSEIF (QUESTI(1:13).EQ.'TOLE_PROJ_EXT') THEN
         CALL JEVEUO(TOLECO,'L',JTOLE)      
-        RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1))                       
+        RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1))
+      ELSEIF (QUESTI(1:14).EQ.'FLIP_FLOP_IMAX') THEN
+        IREP(1) = 20                                
       ELSEIF (QUESTI(1:12).EQ.'CONTACT_INIT') THEN
         CALL JEVEUO(ECPDON,'L',JECPD)       
         IF (ZI(JECPD+ZECPD*(IZONE-1)+5) .EQ. 1) THEN
@@ -191,7 +197,17 @@ C
         CALL JEVEUO(TANDEF,'L',JTGDEF)        
         RREP(1) = ZR(JTGDEF+ZTGDE*(IZONE-1)+3)
         RREP(2) = ZR(JTGDEF+ZTGDE*(IZONE-1)+4)
-        RREP(3) = ZR(JTGDEF+ZTGDE*(IZONE-1)+5)              
+        RREP(3) = ZR(JTGDEF+ZTGDE*(IZONE-1)+5)
+      ELSEIF (QUESTI(1:8).EQ.'ASPERITE') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        RREP(1) = ZR(JCMCF+ZCMCF*(IZONE-1)+8)
+      ELSEIF (QUESTI(1:9).EQ.'GLISSIERE') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+6) .EQ. 8) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.           
+        ENDIF                        
       ELSEIF (QUESTI(1:14).EQ.'ITER_CONT_MAXI') THEN
         CALL JEVEUO(ECPDON,'L',JECPD)      
         IREP(1) = ZI(JECPD+2)                           
@@ -200,10 +216,22 @@ C
         IREP(1) = ZI(JECPD+3)                           
       ELSEIF (QUESTI(1:14).EQ.'ITER_GEOM_MAXI') THEN
         CALL JEVEUO(ECPDON,'L',JECPD)      
-        IREP(1) = ZI(JECPD+4)                           
+        IREP(1) = ZI(JECPD+4)      
+      ELSEIF (QUESTI(1:11).EQ.'FORMUL_VITE') THEN
+        CALL JEVEUO(ECPDON,'L',JECPD)
+        IF (ZI(JECPD+ZECPD*(IZONE-1)+6).EQ.2) THEN
+          LREP(1) = .TRUE.        
+        ELSE
+          LREP(1) = .FALSE.        
+        ENDIF                             
       ELSEIF (QUESTI(1:10).EQ.'FROTTEMENT') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)       
-        IREP(1) = NINT(ZR(JCMCF+5))                      
+        IREP(1) = NINT(ZR(JCMCF+5)) 
+        IF (IREP(1).EQ.1) THEN
+          LREP(1) = .FALSE.
+        ELSE
+          LREP(1) = .TRUE.
+        ENDIF                       
       ELSE
         CALL UTMESS('F','MMINFP',
      &              'QUESTION INCONNUE (DVLP)')  

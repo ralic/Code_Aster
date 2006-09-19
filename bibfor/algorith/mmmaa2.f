@@ -1,0 +1,147 @@
+      SUBROUTINE MMMAA2(NDIM,NNE,NNM,
+     &                  HPG,FFPC,FFPR,JACOBI,
+     &                  COMPLI,COEASP,ASPERI,JEU,NORM,
+     &                  CN,ALPHA,GAMMA,DELTAT,
+     &                  MMAT)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER  NDIM,NNE,NNM
+      REAL*8   FFPC(9),FFPR(9),JACOBI,HPG 
+      REAL*8   COEASP,JEU,ASPERI,NORM(3)
+      INTEGER  COMPLI 
+      REAL*8   CN,ALPHA,GAMMA,DELTAT
+      REAL*8   MMAT(81,81)      
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELLEE PAR : TE0364
+C ----------------------------------------------------------------------
+C
+C CONTRIBUTION DE LA COMPLIANCE AUX MATRICES ELEMENTAIRES A ET AT
+C POUR LE CONTACT METHODE CONTINUE 
+C
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
+C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
+C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  FFPC   : FONCTIONS DE FORME DU POINT DE CONTACT
+C IN  FFPR   : FONCTIONS DE FORME DE LA PROJECTION DU POINT DE CONTACT
+C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
+C IN  COMPLI : INDICATEUR DE COMPLIANCE 
+C IN  COEASP : PARAMETRE E_N POUR LA COMPLIANCE
+C IN  ASPERI : VALEUR DE L'ASPERITE 
+C IN  JEU    : VALEUR DU JEU
+C IN  NORM   : VALEUR DE LA NORMALE AU POINT DE CONTACT
+C IN  CN     : PARAMETRE E_V POUR LA COMPLIANCE
+C IN  ALPHA  : PARAMETRE ALPHA DE NEWMARK
+C IN  GAMMA  : PARAMETRE "DELTA" DE NEWMARK
+C IN  DELTAT : INCREMENT DE TEMPS
+C I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER I,J,K,L,II,JJ
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C      
+C --- PREMIER BLOC DE LA MATRICE [AU]: PARTIE ESCLAVE ESCLAVE
+C
+      DO 1610 I = 1,NNE
+        DO 1510 J = 1,NNE
+          DO 1410 K = 1,NDIM
+            DO 1310 L = 1,NDIM
+              II = (2*NDIM)*(I-1)+L
+              JJ = (2*NDIM)*(J-1)+K
+              MMAT(II,JJ) = (COEASP*2*(JEU-ASPERI)+
+     &                       CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
+     &                       HPG*FFPC(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
+1310        CONTINUE
+1410      CONTINUE
+1510    CONTINUE
+1610  CONTINUE
+C
+C --- DEUXIEME BLOC DE LA MATRICE [AU]: PARTIE ESCLAVE MAITRE
+C
+      DO 2010 I = 1,NNE
+        DO 1910 J = 1,NNM
+          DO 1810 K = 1,NDIM
+            DO 1710 L = 1,NDIM
+              II = (2*NDIM)*(I-1)+L
+              JJ = (2*NDIM)*NNE+NDIM*(J-1)+K
+              MMAT(II,JJ) = -(COEASP*2*(JEU-ASPERI)+
+     &                        CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
+     &                        HPG*FFPC(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
+1710        CONTINUE
+1810      CONTINUE
+1910    CONTINUE
+2010  CONTINUE
+C
+C --- TROISIEME BLOC DE LA MATRICE [AU]: PARTIE MAITRE ESCLAVE
+C
+      DO 2410 I = 1,NNM
+        DO 2310 J = 1,NNE
+          DO 2210 K = 1,NDIM
+            DO 2110 L = 1,NDIM
+              II = (2*NDIM)*NNE+NDIM*(I-1)+L
+              JJ = (2*NDIM)*(J-1)+K
+              MMAT(II,JJ) = -(COEASP*2*(JEU-ASPERI)+
+     &                        CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
+     &                        HPG*FFPR(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
+2110        CONTINUE
+2210      CONTINUE
+2310    CONTINUE
+2410  CONTINUE
+C
+C --- QUATRIEME BLOC DE LA MATRICE [AU]: PARTIE MAITRE MAITRE
+C
+      DO 2810 I = 1,NNM
+        DO 2710 J = 1,NNM
+          DO 2610 K = 1,NDIM
+            DO 2510 L = 1,NDIM
+              II = (2*NDIM)*NNE+NDIM*(I-1)+L
+              JJ = (2*NDIM)*NNE+NDIM*(J-1)+K
+              MMAT(II,JJ) = (COEASP*2*(JEU-ASPERI)+
+     &                       CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
+     &                       HPG*FFPR(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
+2510        CONTINUE
+2610      CONTINUE
+2710    CONTINUE
+2810  CONTINUE
+C
+      CALL JEDEMA()      
+      END

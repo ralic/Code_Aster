@@ -1,6 +1,6 @@
-      SUBROUTINE MMMCRI(DEPPLU,DEPGEO,RGENCE)
+      SUBROUTINE MMMCRI(DEPGEO,DEPPLU,EPSMAX,MMCVXX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +18,26 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT NONE
-      LOGICAL RGENCE
-      CHARACTER*24 DEPGEO,DEPPLU
+      CHARACTER*24 DEPGEO
+      CHARACTER*24 DEPPLU
+      REAL*8       EPSMAX
+      LOGICAL      MMCVXX      
+C      
 C ----------------------------------------------------------------------
-C     CRITERE DE CONVERGENCE
-C     ENTRE DEPPLU et DEPGEO
-C     <--- RGENCE =TRUE SI PROCHES, FALSE SINON
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-
-
+C ROUTINE APPELEE PAR : MMCONV
+C ----------------------------------------------------------------------
+C
+C CALCUL D'UN CRITERE DE CONVERGENCE GEOMETRIQUE POUR LA METHODE 
+C DE CONTACT CONTINU.
+C ON SE BASE SUR LA DIFFERENCE RELATIVE ENTRE DEPPLU ET DEPGEO
+C
+C IN  DEPGEO : CHAMP GEOMETRIQUE INITIAL
+C IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION COURANTE
+C IN  EPSMAX : VALEUR DU CRITERE DE CONVERGENCE
+C OUT MMCVXX : VAUT .TRUE. SI LE CRITERE EST OK
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -41,45 +52,49 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
-
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      REAL*8 VMAX1,VMAX2,INME,EPS
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      REAL*8 VMAX1,VMAX2,INME
       CHARACTER*8 K8BID
       INTEGER JDEPPL,JDEPGE,LONRES,K
-
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-C    1. CALCUL DU CRITERE (DEPLACEMENT RELATIF)
-C    ------------------------------------------
+C
+C --- CALCUL DU CRITERE (DEPLACEMENT RELATIF)
+C
       CALL JELIRA(DEPPLU(1:19)//'.VALE','LONMAX',LONRES,K8BID)
       CALL JEVEUO(DEPGEO(1:19)//'.VALE','L',JDEPGE)
       CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPPL)
-      VMAX1 = 0.D0
-      VMAX2 = 0.D0
-      INME = 0.D0
-      EPS =0.001D0
+C
+C --- INITIALISATIONS
+C      
+      VMAX1  = 0.D0
+      VMAX2  = 0.D0
+      INME   = 0.D0
+      MMCVXX = .FALSE.
+C
+C --- NORME INFINIE DE DEPPLU-DEPGEO
+C      
       DO 10 K = 1,LONRES
         VMAX1 = MAX(ABS(ZR(JDEPPL+K-1)-ZR(JDEPGE+K-1)),VMAX1)
-C       WRITE(6,*)'MMMCRI VMAX1 =',VMAX1
         VMAX2 = MAX(ABS(ZR(JDEPPL+K-1)),VMAX2)
    10 CONTINUE
       IF (VMAX2.GT.0.D0) THEN
-            INME = VMAX1/VMAX2
+        INME = VMAX1/VMAX2
       ELSE
-            INME =0.D0
+        INME = 0.D0
       END IF
-C    2. TEST DE RGENCE
-C    ----------------------
-
-      IF (INME.LT.EPS) THEN
-        RGENCE = .TRUE.
+C      
+C --- TEST DE CONVERGENCE
+C
+      IF (INME.LT.ABS(EPSMAX)) THEN
+        MMCVXX = .TRUE.
       ELSE
-        RGENCE = .FALSE.
+        MMCVXX = .FALSE.
       END IF
-
-C FIN ------------------------------------------------------------------
-
+C
       CALL JEDEMA()
       END

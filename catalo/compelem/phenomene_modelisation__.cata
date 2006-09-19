@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF COMPELEM  DATE 18/09/2006   AUTEUR ROMEO R.FERNANDES 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -154,11 +154,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ MECA_FACE3
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
-
-       MODELISATION__ '3D_JOINT_CT'      DIM__ 3 3   CODE__ '3DJ'
-              MAILLE__ TRIA6     ELEMENT__ THM_LISU_FACE6
-              MAILLE__ QUAD8     ELEMENT__ THM_LISU_FACE8
-              MAILLE__ SEG3      ELEMENT__ SOSU_ARETE3
 
        MODELISATION__ '3D_INCO'          DIM__ 3 3   CODE__ '3DI'
               MAILLE__ HEXA20    ELEMENT__ MINC_HEXA20

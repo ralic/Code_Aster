@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 30/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 18/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C   (SAUF SI ON DEMANDE A LES SUPPRIMER DANS UNE MACRO PAR EXEMPLE)
             CALL GETVIS('OBJET','POSITION',IOCC,1,NIPO,ZI(JPO),LBID)
             DO 105 II =1,NOBJ
                KCH = ZK24(JOBJ+II-1)
-               L=INDEX(KCH,' ')
+               L=LXLGUT(KCH)
                IF (L.GT.0) CALL JEDETC(KLAS,KCH(1:L-1),ZI(JPO+II-1))
  105        CONTINUE
             CALL JEDETR('&&OPS007.NOMOBJ')

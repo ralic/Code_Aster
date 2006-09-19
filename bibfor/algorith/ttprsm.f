@@ -1,7 +1,8 @@
-      SUBROUTINE TTPRSM(NDIM,C,DEPLE,DEPLM,COEFFA,INADH,
-     &                    RESE,TAU1,TAU2,INDM)
+      SUBROUTINE TTPRSM(NDIM,DEPLE,DEPLM,
+     &                  COEFFA,NORM,TAU1,TAU2,
+     &                  INADH,MPROJ,RESE,NRESE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,79 +21,104 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER INADH,I,J,K,NDIM,INDM
-      REAL*8  COEFFA,NRESE
-      REAL*8  C(3,3),GEOMI(3),RESE(3),DEPLE(6)
-      REAL*8  DEPLM(6),TAU1(3),TAU2(3),BIDON(3)
-
-
-C   SUBROUTINE APPELEE PAR TE0546
-C......................................................................
-
-
-C   CALCUL DE P_B(0,1)(LAMDBA+ RHO C [[DELTA X]])
-
-
-C        ENTREE    NDIM   : DIMENSION DE L'ESPACE
-C                  C      : MATRICE POUR RETOUVER LA PARTIE TANGENTIELLE
-C                  DEPLM : LE CHAMP DE DEPLACEMENT DU PT MAITRE
-C                  DEPLE : LE CHAMP DE DEPLACEMENT DU PT ESCLAVE
-C                  COEFFA : COEFFICIENT DE REGULARISATION DE FROTTEMENT
-
-C        OUT       INDDAH : INCICE D'ADHERENCE 1 ADHERENT 0 GLISSANT
-C                  RESE   : X SI ADHERENT X/||X|| SINON
-
-C......................................................................
+      INTEGER NDIM
+      REAL*8  DEPLE(6)
+      REAL*8  DEPLM(6)
+      REAL*8  COEFFA
+      REAL*8  TAU1(3),TAU2(3),NORM(3)
+      INTEGER INADH
+      REAL*8  MPROJ(3,3)
+      REAL*8  RESE(3)
+      REAL*8  NRESE
 C
-
-C CALCUL DE LA "VITESSE"[[DELTA X]]
-
-      DO 10 I = 1,NDIM
-        GEOMI(I) = DEPLE(I) - DEPLM(I)
-        RESE(I) = 0.D00
-        BIDON(I)= 0.D00
+C ----------------------------------------------------------------------
+C ROUTINE APPELLEE PAR : TE0364/TE0365
+C ----------------------------------------------------------------------
+C
+C  ON TESTE L'ETAT D'ADHERENCE DU POINT DE CONTACT PC
+C  CALCUL DE P_B(0,1)(LAMDBA+ RHO C [[DELTA X]])
+C
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  DEPLM  : LE CHAMP DE DEPLACEMENT DU PT MAITRE
+C IN  DEPLE  : LE CHAMP DE DEPLACEMENT DU PT ESCLAVE
+C IN  COEFFA : COEFFICIENT DE REGULARISATION DE FROTTEMENT
+C IN  NORM   : NORMALE AU POINT DE CONTACT
+C IN  TAU1   : PREMIER VECTEUR TANGENT
+C IN  TAU2   : SECOND VECTEUR TANGENT
+C OUT MPROJ  : MATRICE DE L'OPERATEUR DE PROJECTION
+C OUT INADH  : INDICE D'ADHERENCE 
+C               1: ADHERENT 
+C               0: GLISSANT
+C OUT RESE   : X SI ADHERENT X/||X|| SINON
+C OUT NRESE  : RACINE DE LA NORME DE RESE
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER I,J,K
+      REAL*8  GEOMI(3),BIDON(3)
+C
+C ----------------------------------------------------------------------
+C
+C --- INITIALISATIONS
+C
+      NRESE = 0.D0
+      DO 10 I = 1,3
+        RESE(I)  = 0.D0
+        BIDON(I) = 0.D0
+        DO 11 J = 1,3
+          MPROJ(I,J) = 0.D0
+   11   CONTINUE       
    10 CONTINUE
-      DO 20  I = 1,3
-        RESE(I) = 0.D00
- 20   CONTINUE
+C
+C --- CALCUL DE LA MATRICE DE L'OPERATEUR DE PROJECTION
+C
+      DO 320 I = 1,NDIM
+        DO 310 J = 1,NDIM
+          MPROJ(I,J) = -1.D0*NORM(I)*NORM(J)
+  310   CONTINUE
+  320 CONTINUE
+      DO 330 I = 1,NDIM
+        MPROJ(I,I) = 1 + MPROJ(I,I)
+  330 CONTINUE
+C
+C --- CALCUL DE LA "VITESSE"[[DELTA X]]
+C
+      DO 12 I = 1,NDIM
+        GEOMI(I) = DEPLE(I) - DEPLM(I)
+   12 CONTINUE
+      DO 21 I=1,NDIM
+        DO 22  K=1,NDIM
+          BIDON(I) = MPROJ(I,K)*GEOMI(K)+BIDON(I)
+22      CONTINUE
+21    CONTINUE
 
-        DO 21 I=1,NDIM
-            DO 22  K=1,NDIM
-               BIDON(I)=C(I,K)*GEOMI(K)+BIDON(I)
-22       CONTINUE
-21      CONTINUE
-
-        IF (NDIM.EQ.2) THEN
-         DO 30 I = 1,NDIM
+      IF (NDIM.EQ.2) THEN
+        DO 30 I = 1,2
           RESE(I) = DEPLE(NDIM+1+1)*TAU1(I)+COEFFA* BIDON(I)
-   30    CONTINUE
-
-        ELSE IF (NDIM.EQ.3) THEN
-       DO 31 I = 1,NDIM
+   30   CONTINUE
+      ELSE IF (NDIM.EQ.3) THEN
+        DO 31 I = 1,3
           RESE(I) = DEPLE(NDIM+1+1)*TAU1(I)+DEPLE(NDIM+3)*TAU2(I)
      &              +COEFFA*BIDON(I)
-   31  CONTINUE
-
+   31   CONTINUE
       ELSE
-         CALL  UTMESS('F','TTPROJ','STOP1')
+         CALL  UTMESS('F','TTPRSM','ERREUR DE DIMENSION (DVLP)')
       END IF
-       NRESE=0.D0
-
+C
+C -- CALCUL DU COEF D'ADHERENCE
+C      
       DO 40 I = 1,3
         NRESE = RESE(I)*RESE(I) + NRESE
  40   CONTINUE
-      NRESE =SQRT(NRESE)
-
-C  ON TESTE SI    NRESE < 1 OU NON
-C           SIOUI ADHERENCE
-
-      IF (NRESE.LE.1.D00) THEN
+      NRESE = SQRT(NRESE)
+C
+C --- ON TESTE SI    NRESE < 1 OU NON
+C --- SI OUI ADHERENCE
+C
+      IF (NRESE.LE.1.D0) THEN
         INADH = 1
-        GO TO 50
-      ELSE IF (NRESE.GT.1.D00) THEN
+      ELSE 
         INADH = 0
-      ELSE
-        CALL JXABOR()
       END IF
 
    50 CONTINUE

@@ -1,0 +1,1166 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR a3bhhae      ANDRIAMBOLOLONA H.     DATE 19/09/2006 - 14:26:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009614 DU 2006-03-29 13:54:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Derivation par rapport aux parametres des elements discrets
+FONCTIONNALITE
+   On peut maintenant effectuer un calcul de sensibilite par
+   rapport a un terme de la matrice elementaire des elements
+   DISCRET et DISCRET_2D. Cette fonctionnalite est disponible
+   pour les matrices de raideur et de masse. La methode
+   utilisee est identique aux autres calculs de sensibilite.
+   
+   Un mot-cle VALE_F a ete introduit dans la commande
+   AFFE_CARA_ELEM pour la saisie des parametres sensibles. Ce
+   mot cle ne prend en argument que des para_sensi.
+   
+   Deux nouvelles options ont ete crees pour le calcul de la
+   derivee des matrices elementaires de masse :
+   mass_meca_sensi.cata et mass_meca_sens_c.cata.
+   
+   Les cas test sensd11 (a, b, c et d) permettent de valider
+   ce developpement. Ces cas test correspondent a un
+   oscillateur a un degre de liberte. On verifie le calcul de
+   la derivee de la frequence propre, la derivee de la
+   reponse transitoire et la derivee de la reponse
+   harmonique. Les valeurs de reference sont obtenues
+   analytiquement.
+   sensd11a : modelisation par des elements "discret" K_T_D_N
+   et M_T_D_N
+   sensd11b : modelisation par des elements "discret"
+   K_TR_D_L et M_TR_D_N
+   sensd11c : modelisation par des elements "discret_2d"
+   K_T_D_N et M_T_D_N
+   sensd11d : modelisation par des elements "discret_2d"
+   K_TR_D_L et M_TR_N.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.01, V1.01.217
+VALIDATION
+   sensd11a, sensd11b, sensd11c, sensd11d
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR acbhhcd      DEVESA G.              DATE 19/09/2006 - 13:11:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009965 DU 2006-08-25 20:15:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   calcul et lecture d'impedances produites par MISS3D au format binaire
+FONCTIONNALITE
+   On peut maintenant calculer avec un format binaire avec des ordres d'ecriture
+   non formates des impedances de sol par MACRO_MISS_3D (option MISS_IMPE ou
+   TOUT='OUI') et les relire par LIRE_IMPE_MISS en introduisant un mot cle
+   BINAIRE='OUI'(ou 'NON' par defaut toujours possible) dans ces 2 operateurs.
+   Outre la modification de ces 2 operateurs, on modifie en consequence GTASTER
+   pre-traitement de l'interface Aster-MISS et le script de lancement de MISS
+   par EXEC_LOGICIEL. Il y a aussi une modification de MISS3D pour lancement en
+   V1_3.
+   Pour la validation, on introduit un nouveau cas test MISS07A ou on a une
+   heterogeneite de modelisation dans un demi-espace infini de sol dont une
+   partie, constituee d'un cylindre plein de rayon et hauteur 4 m, est modelisee
+   par Aster. Le reste du sol etant modelisee par MISS3D. La resolution
+   harmonique est faite dans Aster apres extraction d'impedances de sol de
+   MISS3D. On compare la reponse en 3 niveaux calculee par Aster au champ
+   incident calcule par MISS3D a ces memes niveaux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.126 U7.03.11
+VALIDATION
+   cas test MISS07A
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 18/09/2006 - 14:40:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009980 DU 2006-08-31 07:52:20
+TYPE anomalie concernant Code_Aster (VERSION 7.7)
+TMA : DeltaCad
+TITRE
+   STAT_NON_LINE : remontee d'erreur
+FONCTIONNALITE
+   Pour traiter correctement l'echec de la convergence du pilotage on
+   ajoute dans la routine
+   OP0070 apres la ligne 885 les lignes suivantes:
+   
+   ELSE IF (ECHPIL) THEN
+   CALL UTEXCP(22,NOMPRO,'ARRET PAR ECHEC DANS  '
+   &  // 'LE PILOTAGE')
+   
+   ELSE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude elle-meme
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009979 DU 2006-08-31 07:40:27
+TYPE anomalie concernant Code_Aster (VERSION 7.7)
+TMA : DeltaCad
+TITRE
+   PILOTAGE/RECH_LINEAIRE
+FONCTIONNALITE
+   Pour sortir proprement apres echec de la convergence pour le pilotage
+   on ajoute dans la
+   routine NMREPL apres l'appel a la routine NMPILO la ligne :
+   
+   IF(LICCVG(1).EQ.1) GOTO 9999
+   
+   Afin de sortie immediatement de la routine NMREPL.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude elle-meme
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mjbhhpe      FLEJOU J.L.            DATE 18/09/2006 - 14:41:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009899 DU 2006-07-04 14:26:27
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Contact - Poutre grandes rotations
+FONCTIONNALITE
+   L'objectif de cette fiche est de creer une nouvelle modelisation basee sur le cas-test
+   ssnv505 "Contact de 2 poutres en grands deplacements avec des elements de type POU_D_TGM
+   (poutre multi-fibres en grandes rotations (DEFORMATION=REAC_GEOM sous le mot cle
+   COMP_INCR)). Pour simuler le contact on utilise les trois methodes suivantes CONTINUE,
+   LAGRANGIENNE et CONTRAINTE.
+   
+   Le maillage de la section de la poutre est compose de 32 mailles dans le sens de la
+   hauteur et 5 mailles dans le sens de la largeur. Le maillage de chacune des poutres est
+   compose de 40 elements.
+   
+   L'ecart entre les COQUE_3D (ssnv505a) et les POU_D_TGM (ssnv505h) est important. En
+   raffinant le maillage des COQUE_3D, l'ecart diminue. Pour differentes valeurs de N (nombre
+   d'elements dans le sens de la longueur) ont obtient les resultats suivants:
+   
+   |  cas initial N= 26, TCPU= 954sec, 40% d'ecart avec les POU_D_TGM
+   |              N= 50, TCPU=1348sec, 13% d'ecart avec les POU_D_TGM
+   |              N=100, TCPU=3218sec,  4% d'ecart avec les POU_D_TGM
+   
+   Seul le cas N=26 est conserve pour des raisons de temps CPU.
+   Les autes cas sont presentes dans la doc du cas test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.505
+VALIDATION
+   Nouveau cas test ssnv505h
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 18/09/2006 - 13:19:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009211 DU 2005-11-17 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   STAT_NON_LINE / PILOTAGE/ LONG_ARC
+FONCTIONNALITE
+   Le mot-clef n'etait pas utilise.
+   On modifie nmpilo pour le prendre en compte.
+   Au retour des routines faisant le pilotage, on recupere, les valeurs de pilotage et
+   leur
+   nombre (0, 1 OU 2).
+   C
+   C --- BORNES ETA_PILO_R_MIN ET ETA_PILO_R_MAX
+   C
+   CALL JEVEUO(PILOTE // '.PLIR','L',JINFO)
+   ETRMIN = ZR(JINFO+4)
+   ETRMAX = ZR(JINFO+3)
+   
+   IF (LICCVG.NE.1) THEN
+   IF (NBEFFE.EQ.2) THEN
+   IF ((ETA(1).LT.ETRMIN).OR.(ETA(1).GT.ETRMAX)) THEN
+   NBEFFE = NBEFFE-1
+   ETA(1) = ETA(2)
+   ENDIF
+   IF ((ETA(2).LT.ETRMIN).OR.(ETA(2).GT.ETRMAX)) THEN
+   NBEFFE = NBEFFE-1
+   ENDIF
+   ENDIF
+   IF (NBEFFE.EQ.1) THEN
+   IF ((ETA(1).LT.ETRMIN).OR.(ETA(1).GT.ETRMAX)) THEN
+   NBEFFE = NBEFFE-1
+   ENDIF
+   ENDIF
+   IF (NBEFFE.EQ.0) THEN
+   LICCVG = 1
+   ENDIF
+   ENDIF
+   
+   Si une ou deux de svaleurs de pilotage sont en dehors de l'intervalle specifie, on
+   retire.
+   On modifie  ssnl502a pour valider (on en profite pour modifier le para)
+   tps_job 1800 mem_job 500Mo ncpus 1 liste_test V
+   EN
+   tps_job 400 mem_job 128Mo ncpus 1 liste_test V
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnl502a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009920 DU 2006-07-17 09:37:54
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.7, les tests sdnv103a et c s'arretent en ERREUR
+FONCTIONNALITE
+   Dans la fiche 9893, il a ete decide de mettre en conformite le code
+   avec la doc.
+   La doc precise que pour les elements QUAD8 en contact, il est
+   necessaire de lineariser les mailles en etablissant une relation
+   lineaire entre les noeuds milieux et les noeuds sommets, les noeuds
+   milieux etant alors exclus du contact. Cette operation est necessaire
+   a cause des fonctions de forme non positives du QUAD8. Par contre,
+   pour les TRIA6/7, c'est inutile.
+   Or on faisait la liaison lineaire AUSSI pour les TRIA6/7 dans le code.
+   On a donc supprime cette liaison.
+   Le probleme apparait quand des TRIA6 et des QUAD8 sont melanges sur la
+   meme surface de contact.
+   Les QUAD8 ont toujours leurs relations lineaires. Mais les TRIA6
+   ont TOUS leurs noeuds en contact, y compris leurs noeuds milieux. SI
+   un noeud milieu est sur une arete entre TRIA6 et QUAD8, on le
+   surcontraint:
+   - du cote QUAD8, il fait partie de la relation lineaire avec les deux
+   noeuds sommets
+   - du cote TRIA6, il est en contact
+   La matrice de contact devient alors singuliere.
+   Solution adoptee: detecter ces noeuds entre TRIA6/7 et QUAD8 et les
+   exclure du contact par le biais du vecteur creee pour l'option
+   SANS_GROUP_NO. On conserve la liaison lineaire cote QUAD8.
+   Impact:
+   - modif de CACOEQ (routine pour les liaisons lineaires)
+   - ajout de CFSUEX (routine pour modifier et agrandir les vecteurs lies
+   a SANS_GROUP_NO): on ajoute les noeuds communs pour les exclure du
+   contact.
+   Sur les cas-tests:
+   - on decoupe un peu plus la liste d'instants pour sdnv103a. Le
+   cas-test passe de  180s a 500S (plus de noeuds en contact: les noeuds
+   milieux des TRIA6)
+   - on change les valeurs de tests (non-regression) pour le sdnv103c, le
+   maillage etant different (plus de noeuds en contact)
+   On change les deux PARA au passage (5000s !!)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests eux memes
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008693 DU 2005-05-20 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.0)
+TITRE
+   contact et symetrie cyclique
+FONCTIONNALITE
+   Le developpement est trop lourd.
+   Il faudra projeter les champs de deplacements de maniere cyclique et
+   intervenir aussi sur les vecteurs seconds membres.
+   En accord avec O.Nicolas, on classe sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009237 DU 2005-11-24 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   Calcul Sagrappe V8 bugge
+FONCTIONNALITE
+   On mettait le jeu a R8VIDE quand on supprime un noeud. Mais aussi
+   quand on le remet. On divisait donc par R8VIDE d'ou erreur dans le
+   solveur.
+   
+   On corrige CHMANO en 8
+   
+   10 jours PM
+   10 jours MA
+   0.5 jours JPL
+   2 jours AA
+   3 jours CD
+   4.5 jours TMA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test sagrappe
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009997 DU 2006-09-06 06:38:38
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Contact continu - Mise au carre (phase 2)
+FONCTIONNALITE
+   Deuxieme et derniere grande phase de mise au carre de la programmation
+   
+   de la methode continue.?
+   On s'attaque ici a l'algo principal et aux TE.
+   
+   
+   - Reecriture des routines contours des boucles pour la methode
+   
+   continue: nmible et nmtble.
+   * simplifications des appels et de la structure
+   * reactualisation geometriques deplacee dans NMIBLE
+   * tests de convergence sous-traite dans la nouvelle routine MMCONV+
+   MMMCRI
+   * affichages ameliores dans MMCONV, correction d'un bug d'affichage
+   
+   et suppression de la colonne idoine quand pas de frottement (modif de
+   
+   CFDISC quand appele par IMPINI).
+   * deplacement de la gestion "FLIP-FLOP" dans mmmbca (modif obligatoire
+   
+   de xmmbca au passage)
+   
+   - Creation des elements de contact (CONLIG)
+   * routine principale CONLIG reecrite.
+   * suppression de FRAPP2
+   * appel de trois sous-routines
+   1/ MMLIGR: cree le ligrel des elements de contact tardifs.
+   
+   Simplification, nouveaux messages d'erreurs. Option d'impression pour
+   
+   debugage (INFO=2 via MMIMP2)
+   2/ MMCART: cree la carte des elements de contacts tardifs.
+   
+   Simplification, nouveaux messages d'erreurs. Option d'impression pour
+   
+   debugage (INFO=2 via MMIMP3)
+   3/ MMCMEM: appel de calcul pour la creation des matrices et vecteurs
+   
+   second membres elementaires sur le LIGREL des elements de contact
+   
+   tardifs.
+   
+   - Algorithme des "contraintes actives" (MMMBCA)
+   * routine principale MMMBCA reecrite
+   * options d'impression pour debugage (INFO=2 via MMIMP4)
+   
+   * le choix du statut (contact/pas contact/complinace/pas compliance)
+   
+   est deporte dans MMALGO.
+   * gestion du FLIP-FLOP
+   
+   - Calculs elementaires (te0364/te0365)
+   * recriture totale, factorisation du code
+   * nouvelles routines pour les deux:
+   - MMELEM
+   RETOURNE QUELQUES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
+   
+   DEUX ELEMENTS DE SURFACE
+   - MMREAC
+   CALCULE LES NOUVEAUX CHAMPS DE DEPLACEMENT POUR LES MAILLES
+   MAITRES ET ESCLAVES
+   DEPL = DEPL_M + DEPL
+   - MMMFFD
+   CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
+   AU POINT DE COORDONNEES XI,YI (COORDONNES PARAMETRIQUES)
+   - MMMJAC
+   CALCUL DU JACOBIEN  AU POINT DE COORDONNEES XI,YI
+   - MMNORM (appelee aussi par mmmbca)
+   CALCULE LA NORMALE A PARTIR DES TANGENTES
+   - MMGEOM
+   MISE A JOUR:
+   DE LA GEOMETRIE POINT DE CONTACT/SON PROJETE
+   DES DEPLACEMENTS POINT DE CONTACT/SON PROJETE
+   DES VITESSES/ACC. POINT DE CONTACT/SON PROJETE SI COMPLIANCE
+   - MMMJEU
+   CALCUL DES JEUX ACTUALISES (Y COMPRIS SAUT DE VITESSE POUR
+   FORMULATION EN VITESSE)
+   * nouvelles routines pour les TE0364 (matrices)
+   - MMMAA0, MMMAA1, MMMAA2: calcul de la partie "A/AT" de la matrice
+   elementaire
+   - MMMAB0, MMMAB1, MMMAB2: calcul de la partie "B" de la matrice
+   elementaire
+   * nouvelles routines pour les TE0365 (vecteurs)
+   - MMGEO2: MMGEOM specialise pour prise en compte des raccords
+   - MMVEC0, MMVEC1: calcul de la partie contact du vecteur second
+   membre
+   - MMVEF0, MMVEF1: calcul de la partie frottementt du vecteur second
+   membre
+   
+   TE0364: 1200lignes -> 400 lignes
+   
+   - Routines supprimees:
+   FORSUPPR FRAPP2 algorith -> MMLIGR/MMCART/MMCMEM
+   FORSUPPR COPCOS algorith -> MCOPCO
+   FORSUPPR COPCOG algorith -> MCOPCO
+   FORSUPPR CALBET algorith -> doublon CALLAM
+   FORSUPPR CALFFJ elements -> routine doublon avec PHASE 1
+   FORSUPPR CALFFL elements -> routine doublon avec PHASE 1
+   
+   NB: Peut etre un souci avec ssnv504h !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test methode continue Alpha+Linux
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 18/09/2006 - 13:57:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009816 DU 2006-06-01 14:52:01
+TYPE anomalie concernant Code_Aster (VERSION 7.6)
+TITRE
+   DETRUIRE OBJET ET CHAINE > 8 caracteres
+FONCTIONNALITE
+   La commande DETRUIRE permet de detruire un concept (CO=_F(NOM=...)) ou un objet
+   (OBJET=_F(CHAINE=...)).
+   
+   En general, le nom d'objet contient des blancs.
+   Or pour recuperer la longueur de la chaine, on utilise INDEX(K,' ') au lieu de
+   LXLGUT(K).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010021 DU 2006-09-12 08:32:21
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   Probleme lors de l'interpolation des fonctions a valeurs complexes avec CALC_FONCTION
+FONCTIONNALITE
+   La methode "evalfonc" qui interpole une fonction sur une liste de parametre retournait
+   une
+   fonction au lieu d'une fonction_c.
+   
+   On ajoute une interpolation dans zzzz100a lors d'un CALC_FONCTION / COMB_C.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz100a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010023 DU 2006-09-12 15:17:39
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Erreur dans les cas-tests zmat001a,b,c
+FONCTIONNALITE
+   Le probleme ne se manifeste uniquement quand ZMAT n'est pas disponible... mais autant
+   planter proprement !
+   
+   Les tests zmat001 montrent comment en python, on peut utiliser Zpreload pour recuperer
+   le
+   nombre de variables internes.
+   En cas d'echec, on faisait UTMESS() mais il manquait :
+   .     from Utilitai.Utmess import UTMESS
+   
+   On en profite pour utiliser System.ExecCommand (qui est appele par EXEC_LOGICIEL).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat001
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010025 DU 2006-09-12 15:52:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   "trapper" les erreurs numeriques sous Linux : arreter le code au plus vite.
+FONCTIONNALITE
+   Pour recuperer les erreurs numeriques, on utilise (dans inisig.c) feenableexcept()
+   avec :
+   .   FE_DIVBYZERO
+   .   FE_OVERFLOW
+   
+   On ajoute FE_INVALID pour trapper les NaN.
+   
+   De plus, on fait la meme chose pour LINUX64 que pour P_LINUX.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test jacot
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009999 DU 2006-09-06 12:13:27
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   test ssnv166c en version NEW8.3.11 sur Bull
+FONCTIONNALITE
+   En 8.3.12, le test tourne en 400s sur la Bull, en 450s sur l'Alpha, en 580s sur clpaster.
+   
+   On augmente le .para a 720s.
+   
+   On constate que le test passaient en 240s sur la Bull, et que les 160s "perdus" ont ete
+   depenses par DEFI_FISS_XFEM (sans doute suite a la fiche 9909 d'apres l'histor).
+   On emet une fiche pour eclaircir cela.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv166c
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mjbhhpe      FLEJOU J.L.            DATE 18/09/2006 - 13:19:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010010 DU 2006-09-08 12:12:08
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.11, le test ssnv190a termine NOOK (clayastr)
+FONCTIONNALITE
+   C'est un test de non regression, l'erreur etait de 1.0E-07.
+   Je la fixe a 2.0E-06
+   Ca passe en debug et nodebug
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas test
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009936 DU 2006-07-24 14:57:46
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   cas test IRRAD3M et debug
+FONCTIONNALITE
+   Le cas test ssnv190a est regle par la fiche 10010
+   
+   C'est un cas test de non-regression, en nodebug il est ok.
+   En debug on a
+   
+   NOOK V2           RELA -5.44E-04 % VALE: 5.1923157470787D+02
+   N1011    TOLE  5.00E-04 % REFE: 5.1923439872890D+02
+   V2 est une contrainte en MPa
+   
+   Je passe la tolerence a 6.00E-04 %
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 18/09/2006 - 14:17:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009901 DU 2006-07-05 09:57:53
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   impr_resu gmsh et hexa27
+FONCTIONNALITE
+   Lorsque l'utilisateur effectue un IMPR_RESU/GMSH et que son maillage contient des HEXA27,
+   on construit un nouveau maillage car GMSH ne connait pas ce type de maille.
+   On decoupe ainsi chaque HEXA27 en 48 TETRA4. Lors de ce decoupage, une erreur avait
+   ete
+   commise dans le fichier irgmtb.f.
+   Apres correction, on constate que le maillage et les resultats sont correctement rendus
+   dans GMSH.
+   
+   De plus, le maillage initial du cas-test ssnv167c comportait une anomalie dans les
+   connectivites des mailles HEXA27. En effet, l'ordre des noeuds de l'HEXA27 ne
+   correspondait pas a l'ordre defini dans la doc U3.01.00.
+   La description des noeuds centres des faces doit commencee par la face "avant" (alors
+   qu'on commencait par la face de droite).
+   
+   Les valeurs testees sont plus eloignees qu'avant de la solution analytique. On ajoute
+   donc
+   des TEST_RESU tres larges par rapport aux valeurs analytiques (celles du ssnv167a,
+   modelisation hexa8) et on modifie les valeurs des tests de non regression actuels.
+   
+   Correction de irgmtb a faire en v7 egalement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv167c
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 18/09/2006 - 14:17:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010033 DU 2006-09-14 08:57:28
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   NEW8.3.12, le test rccm02a s'arrete en ERREUR
+FONCTIONNALITE
+   Cas-test rccm02a modifie suite a la resorption des commandes COMB_CHAM_NO et
+   COMB_CHAM_ELEM au profit de CREA_CHAMP/ASSE (fiche 9841)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rccm02a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR romeo        FERNANDES R.           DATE 18/09/2006 - 15:52:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010006 DU 2006-09-08 11:58:15
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.11, le test ssnp125b termine NOOK (clayastr)
+FONCTIONNALITE
+   L'option INDI_LOCA_ELGA est un indicateur de localisation base
+   sur le
+   critere de Rice. Ce critere permet de determiner l'etat a partir
+   duquel
+   les calculs par elements finis ont atteint leur limite de
+   validite.
+   L'option INDI_LOCA_ELGA permet egalement de determiner les
+   angles
+   d'orientation des zones de localisation - ceux-ci sont aux
+   nombres de 4
+   et sont obtenus en resolvant un polynome d'ordre 4.
+   
+   Dans Code_Aster, cet indicateur est defini aux points de gauss
+   et contient
+   une composante qui caracterise l'etat (1 si localisation - 0 si
+   non) puis 4
+   composantes qui caracterisent les 4 angles d'orientation.
+   
+   Dans le cadre du test ssnp125b le stockage de 2 angles dans le
+   champ
+   INDI_LOCA_ELGA ont ete permute (uniquement en 1 point de gauss
+   et sur un
+   seul element!). Apres comparaison entre la version STA8.3 et
+   NEW8.3.11
+   je constate que le polynome a resoudre est bien le meme. C'est
+   lors
+   de la resolution par la recherche des valeurs propres de
+   la "companion
+   matrix" que l'ordre de stockage des racines est inverse! - mais
+   les
+   resultats sont bien identiques.
+   
+   Cette anomalie ne provenant donc pas de l'option INDI_LOCA_ELGA
+   et les
+   resultats obtenus etant toujours identiques aux precedents je
+   propose
+   de supprimer du fichier de commande tous les TEST_RESU portant
+   sur les
+   angles d'orientation et de les remplacer par un nouveau
+   TEST_RESU qui verifie
+   la somme de toutes les composantes du champ fourni par
+   INDI_LOCA_ELGA sur
+   tout le maillage. Apres verification, ce champ est bien
+   identique en STA8.3
+   et en NEW8.3.11.
+   
+   RF
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp125b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010029 DU 2006-09-13 16:12:21
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   resorption modelisation 3D_JOINT_CT
+FONCTIONNALITE
+   Je resorbe les sources suivants :
+   
+   gener_me3dj1
+   gener_me3dj2
+   
+   te0477
+   te0476
+   te0465
+   sosulc
+   sosu3d
+   sofosu
+   
+   et le cas-test : wtnv107a
+   
+   Je modifie les fichiers :
+   
+   phenomene_modelisation
+   affe_modele
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.31.107
+VALIDATION
+   cas-tests THM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 18/09/2006 - 13:27:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010045 DU 2006-09-15 08:56:24
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   anomalie dans CREA_CHAMP/EXTR/TYPE_MAXI=xxx
+FONCTIONNALITE
+   Il y avait un bug dans la routine chprec.f (CREA_CHAMP/EXTR) :
+   Une variable INTERP n'etait pas systematiquement initialisee (resultat de GETVTX),
+   mais
+   elle etait systematiquement utilisee (IF (INTERP.EQ.'LIN'))
+   
+   Le plus souvent, INTERP ne valait pas 'LIN' quand elle n'etait pas initialisee,
+   mais depuis quelques temps sur clpaster et bull, ... pas de chance !
+   
+   Resultats faux depuis toujours :
+   ---------------------------------
+   Oui pour CREA_CHAMP/EXTR/TYPE_MAXI='MAXI'/'MINI'/....   :
+   Au lieu de rendre le champ "extremal" demande, le programme pouvait (si pas de chance)
+   rendre un champ interpole a un instant indetermine.
+   
+   
+   Pour temperer les risques de resultats faux :
+   ---------------------------------------------
+   6 tests (xxxx20xx) se sont mis a etre tous NOOK brutalement en NEW8 il y a quelques
+   semaines.
+   Ce sont les seuls tests (je l'ai verifie) qui font :
+   x1= CREA_CHAMP(OPERATION='EXTR', INTERPOL='LIN'
+   puis
+   x2= CREA_CHAMP(OPERATION='EXTR', TYPE_MAXI='xxx'   => resultats faux
+   
+   Interpretation : la valeur de INTERP est devenue remanente (d'un appel de CREA_CHAMP au
+   suivant).
+   
+   On constate que :
+   Si la situation de remanence est presente dans un test, il est NOOK systematiquement
+   Sinon, le test est OK
+   
+   J'en conclus que les resultats faux ne peuvent probablement arriver que si :
+   - on a une sitution de remanence : 2 CREA_CHAMP qui se suivent avec INTERPOL='LIN' sur
+   le 1er
+   - on utilise la plateforme clpaster (ou bull) en NEW8 dans l'intervalle de versions
+   [8.3.9 et 8.3.12]
+   
+   Details :
+   ----------
+   routine chprec.f :
+   - initialisation des variables INTERP, TYCHLU,TYPMAX et NOMCH
+   - verification que l'instant est donne si INTERP='LIN'
+   - modification de PROLDR et PROLGA : 'CONSTANT' -> 'EXCLUS' si INTERPOL='LIN'
+   
+   Impact doc :
+   ------------
+   U4.72.04 :
+   * dire que INTERPOL='LIN' ne concerne que les evol_xxxx et qu'il faut donner un instant.
+   
+   
+   a corriger en version 7 quand meme car ca ne peut pas faire de mal
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests incrimines sur clpaster
+NB_JOURS_TRAV  : 0.6
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010020 DU 2006-09-12 07:03:42
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   bug dans la routine lcmzge.f
+FONCTIONNALITE
+   Pour reussir mon asrest concernant la fiche 9875 : (encadrement des champs locaux de
+   calcul.f par de vrais "NaN"), j'ai du corriger un petit bug dans la routine lcmzge.f :
+   
+   Lors de son evolution le 28/8/2006 (passage du sechage en variable de commande), Lionel a
+   fait une petite faute de frappe (HYDR au lieu de SECH).
+   Je corrige cette erreur.
+   
+   La consequence de ce bug etait que le sechage avait une valeur indeterminee ... mais
+   comme
+   la bevue n'a dure que quelques semaines en NEW8, ce n'est pas bien grave.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test ssnv157f
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009970 DU 2006-08-28 14:55:39
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   option COOR_ELGA pour les modelisations cable, barre, joint et discret
+FONCTIONNALITE
+   ------------------------------------------------------------------------------------------
+   --
+   CALCUL DES COORDONNEES DES POINTS DE GAUSS (SANS LES POIDS) POUR DE NOUVELLES
+   MODELISATIONS
+   ------------------------------------------------------------------------------------------
+   --
+   
+   On etend l'option COOR_ELGA en construisant un TE generique pour les elements des
+   modelisations :
+   "joint" "cable" "barre" et "discret".
+   
+   Remarque :
+   ----------
+   Pour ces elements, il est facile de calculer les coordonnees des points de Gauss.
+   
+   En revanche, le poids des points de Gauss n'est pas calcule.
+   
+   Mais au fait, qu'est-ce que le poids d'1 point de Gauss d'1 element fini ?
+   
+   - Pour 1 element "3D" : c'est le volume (en m**3) "controle" par le point de Gauss.
+   Si un modele est 3D, la somme des poids des points doit donner le volume total du
+   modele.
+   - Pour 1 element "2D" (non axis) : c'est la surface (en m**2) "controle" par le
+   point de
+   Gauss.
+   Si un modele 2D (non axis), la somme des poids des points doit donner la surface
+   total
+   du modele.
+   - Pour 1 element "2D" axis : c'est le volume (en m**3) "controle" par le point de
+   Gauss.
+   Si un modele 2D axis, la somme des poids des points doit donner le volume total du
+   modele (sur 1 radian d'angle).
+   
+   - Pour les elements lineiques (cable et barre), on pourrait calculer (mais on le fait
+   pas) la longueur des "volumes de controle" des points de Gauss.
+   - Mais pour les elements discrets on ne voit pas bien comment definir le poids de
+   leurs
+   points de Gauss
+   - Quant aux elements de "joint" ... (ce sont des elements quadrangulaires de surface
+   nulle !)
+   
+   
+   (A) gedisc.f            calcul des coordonnees des points de Gauss
+   (A) te0478.f            calcul des coordonnees des points de Gauss
+   (M) gener_mf2fi2.cata   application aux elements de joint
+   (M) gener_mecab1.cata   application aux elements de cable
+   (M) gener_mebar1.cata   application aux elements de barre
+   (M) gener_medtr1.cata   application aux elements discrets
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009969 DU 2006-08-28 14:37:22
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   CALC_VECT_ELEM AVEC UNE CHARGE DE TYPE EVOL_CHAR (BUG)
+FONCTIONNALITE
+   CALC_VECT_ELEM : les charges  de type EVOL_CHAR sont ignorees
+   ---------------------------------------------------------------
+   
+   Ce type de charge n'etait pas pris en compte (sans message d'erreur). C'est
+   maintenant corrige, en s'appuyant sur la routine NMDEPR, appelee par STAT_NON_LINE.
+   
+   (M) me2mme.f            Prise en compte de ce nouveau type de charge
+   
+   
+   Resultats faux :
+   ----------------
+   Les chargements definis via le mot cle AFFE_CHAR_MECA/EVOL_CHAR etaient purement et
+   simplement ignores par les commandes CALC_VECT_ELEM et MACRO_ELAS_MULT.
+   
+   Ce sont des chargements mecaniques ("volumique" ou "de peau", en 3D ou 2D) donnes sous
+   forme d'un transitoire discretise (SD EVOL_CHAR).
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 6.1.10
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009968 DU 2006-08-28 14:35:26
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   bug dans CREA_RESU/ECLA_PG
+FONCTIONNALITE
+   ----------------------------------------------------------------------
+   VISUALISATION AUX POINTS DE GAUSS (BUG)
+   -----------------------------------------------------------------------
+   
+   Le code retour de la routine CELFPG n'etait pas initialise, ce qui peut
+   conduire potentiellement au refus d'eclater le champ (CREA_RESU).
+   
+   (M) celfpg.f            Initialisation du code retour a 0
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009967 DU 2006-08-28 14:32:42
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   CREA_MAILLAGE / elements de joint : QUAD4 degeneres
+FONCTIONNALITE
+   MAILLAGE ELEMENTS DISCONTINUS / ELEMENTS DE JOINT
+   ----------------------------------------------------------------------------
+   
+   Probleme :
+   ------------
+   Calcul ne sait pas gerer des elements dont les noeuds sont topologiquement
+   confondus (pb. lors de l'assemblage des matrices).
+   
+   Solution :
+   -----------
+   Pour les elements de joint, on interdit la creation de quad4 degeneres
+   par CREA_MAILLAGE.
+   
+   (M) cmfiss.f            Arret si creation de quad4 degeneres
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF utilitai/inisig              mcourtoi M.COURTOIS         157      5      5
+ CASTEST AJOUT miss07a                       acbhhcd G.DEVESA           358    358      0
+ CASTEST AJOUT sensd11a                      a3bhhae H.ANDRIAMBOLOLONA    214    214      0
+ CASTEST AJOUT sensd11b                      a3bhhae H.ANDRIAMBOLOLONA    214    214      0
+ CASTEST AJOUT sensd11c                      a3bhhae H.ANDRIAMBOLOLONA    214    214      0
+ CASTEST AJOUT sensd11d                      a3bhhae H.ANDRIAMBOLOLONA    216    216      0
+ CASTEST AJOUT ssnv505h                     lebouvie F.LEBOUVIER        442    442      0
+ CASTEST MODIF rccm02a                       rezette C.REZETTE          353      1      1
+ CASTEST MODIF sdnv103a                       mabbas M.ABBAS            207    125    141
+ CASTEST MODIF sdnv103c                       mabbas M.ABBAS            236    142    150
+ CASTEST MODIF ssna118a                      mjbhhpe J.L.FLEJOU         428      2      2
+ CASTEST MODIF ssnl502a                       mabbas M.ABBAS            389    299    265
+ CASTEST MODIF ssnp125b                        romeo R.FERNANDES        419     16     89
+ CASTEST MODIF ssnv166c                     mcourtoi M.COURTOIS         322      1      1
+ CASTEST MODIF ssnv167c                      rezette C.REZETTE          469    223     41
+ CASTEST MODIF ssnv190a                      mjbhhpe J.L.FLEJOU         341      2      2
+ CASTEST MODIF zmat001a                     mcourtoi M.COURTOIS         210      4      9
+ CASTEST MODIF zmat001b                     mcourtoi M.COURTOIS         172      8     12
+ CASTEST MODIF zmat001c                     mcourtoi M.COURTOIS         172      8     12
+ CASTEST MODIF zzzz100a                     mcourtoi M.COURTOIS        1869     13      5
+ CASTEST SUPPR wtnv107a.comm                   romeo R.FERNANDES        131      0    131
+CATALOGU AJOUT options/mass_meca_sens_c      a3bhhae H.ANDRIAMBOLOLONA     45     45      0
+CATALOGU AJOUT options/mass_meca_sensi       a3bhhae H.ANDRIAMBOLOLONA     45     45      0
+CATALOGU MODIF compelem/phenomene_modelisation__      romeo R.FERNANDES        983      1      6
+CATALOGU MODIF options/rigi_meca_sens_c      a3bhhae H.ANDRIAMBOLOLONA     50      2      1
+CATALOGU MODIF options/rigi_meca_sensi       a3bhhae H.ANDRIAMBOLOLONA     50      2      1
+CATALOGU MODIF typelem/gener_me2dt0          a3bhhae H.ANDRIAMBOLOLONA    162     10      1
+CATALOGU MODIF typelem/gener_me2dt1          a3bhhae H.ANDRIAMBOLOLONA    165     10      1
+CATALOGU MODIF typelem/gener_me2tr0          a3bhhae H.ANDRIAMBOLOLONA    165     10      1
+CATALOGU MODIF typelem/gener_me2tr1          a3bhhae H.ANDRIAMBOLOLONA    168     10      1
+CATALOGU MODIF typelem/gener_medit0          a3bhhae H.ANDRIAMBOLOLONA    174     10      1
+CATALOGU MODIF typelem/gener_medit1          a3bhhae H.ANDRIAMBOLOLONA    171     10      1
+CATALOGU MODIF typelem/gener_medtr0          a3bhhae H.ANDRIAMBOLOLONA    182     10      1
+CATALOGU MODIF typelem/gener_medtr1          a3bhhae H.ANDRIAMBOLOLONA    220     10      1
+CATALOGU SUPPR typelem/gener_me3dj1            romeo R.FERNANDES         39      0     39
+CATALOGU SUPPR typelem/gener_me3dj2            romeo R.FERNANDES         91      0     91
+CATALOPY MODIF commande/affe_cara_elem       a3bhhae H.ANDRIAMBOLOLONA    581    113     57
+CATALOPY MODIF commande/affe_modele            romeo R.FERNANDES        210      1      2
+CATALOPY MODIF commande/lire_impe_miss       acbhhcd G.DEVESA            29      2      1
+CATALOPY MODIF commande/macro_miss_3d        acbhhcd G.DEVESA            66      2      1
+ FORTRAN AJOUT algorith/mmalgo                mabbas M.ABBAS            189    189      0
+ FORTRAN AJOUT algorith/mmcart                mabbas M.ABBAS            203    203      0
+ FORTRAN AJOUT algorith/mmconv                mabbas M.ABBAS            180    180      0
+ FORTRAN AJOUT algorith/mmelel                mabbas M.ABBAS             97     97      0
+ FORTRAN AJOUT algorith/mmelem                mabbas M.ABBAS            190    190      0
+ FORTRAN AJOUT algorith/mmgeo2                mabbas M.ABBAS            124    124      0
+ FORTRAN AJOUT algorith/mmgeom                mabbas M.ABBAS            159    159      0
+ FORTRAN AJOUT algorith/mmimp2                mabbas M.ABBAS            132    132      0
+ FORTRAN AJOUT algorith/mmimp3                mabbas M.ABBAS            160    160      0
+ FORTRAN AJOUT algorith/mmimp4                mabbas M.ABBAS            181    181      0
+ FORTRAN AJOUT algorith/mmligr                mabbas M.ABBAS            258    258      0
+ FORTRAN AJOUT algorith/mmmaa0                mabbas M.ABBAS             79     79      0
+ FORTRAN AJOUT algorith/mmmaa1                mabbas M.ABBAS            262    262      0
+ FORTRAN AJOUT algorith/mmmaa2                mabbas M.ABBAS            147    147      0
+ FORTRAN AJOUT algorith/mmmab0                mabbas M.ABBAS            104    104      0
+ FORTRAN AJOUT algorith/mmmab1                mabbas M.ABBAS            296    296      0
+ FORTRAN AJOUT algorith/mmmab2                mabbas M.ABBAS            260    260      0
+ FORTRAN AJOUT algorith/mmmjeu                mabbas M.ABBAS            101    101      0
+ FORTRAN AJOUT algorith/mmreac                mabbas M.ABBAS             86     86      0
+ FORTRAN AJOUT algorith/mmvec0                mabbas M.ABBAS             78     78      0
+ FORTRAN AJOUT algorith/mmvec1                mabbas M.ABBAS            179    179      0
+ FORTRAN AJOUT algorith/mmvef0                mabbas M.ABBAS            105    105      0
+ FORTRAN AJOUT algorith/mmvef1                mabbas M.ABBAS            186    186      0
+ FORTRAN AJOUT elements/mmmffd                mabbas M.ABBAS            360    360      0
+ FORTRAN AJOUT elements/mmmjac                mabbas M.ABBAS            184    184      0
+ FORTRAN AJOUT elements/mmnorm                mabbas M.ABBAS             56     56      0
+ FORTRAN AJOUT modelisa/cfsuex                mabbas M.ABBAS            107    107      0
+ FORTRAN MODIF algorith/callam                mabbas M.ABBAS            128     61     75
+ FORTRAN MODIF algorith/casemo               a3bhhae H.ANDRIAMBOLOLONA    228     11     11
+ FORTRAN MODIF algorith/cfdisc                mabbas M.ABBAS            217     32     13
+ FORTRAN MODIF algorith/chmano                mabbas M.ABBAS            538      2      3
+ FORTRAN MODIF algorith/conlig                mabbas M.ABBAS            113     72     21
+ FORTRAN MODIF algorith/dldiff               a3bhhae H.ANDRIAMBOLOLONA    481     13      4
+ FORTRAN MODIF algorith/dlfext               a3bhhae H.ANDRIAMBOLOLONA    387     71      7
+ FORTRAN MODIF algorith/dlnewi               a3bhhae H.ANDRIAMBOLOLONA    792     12      3
+ FORTRAN MODIF algorith/dy2mbr               a3bhhae H.ANDRIAMBOLOLONA    352     72      4
+ FORTRAN MODIF algorith/mappar                mabbas M.ABBAS            349     17     20
+ FORTRAN MODIF algorith/mcopco                mabbas M.ABBAS            141     92     90
+ FORTRAN MODIF algorith/mkkvec                mabbas M.ABBAS            107     52     46
+ FORTRAN MODIF algorith/mmcmem                mabbas M.ABBAS            173    105     83
+ FORTRAN MODIF algorith/mmelty                mabbas M.ABBAS            120      4      4
+ FORTRAN MODIF algorith/mmerro                mabbas M.ABBAS            168      9      1
+ FORTRAN MODIF algorith/mmimp1                mabbas M.ABBAS            154     15     10
+ FORTRAN MODIF algorith/mminfp                mabbas M.ABBAS            241     29      1
+ FORTRAN MODIF algorith/mminit                mabbas M.ABBAS            117      2      2
+ FORTRAN MODIF algorith/mmmbca                mabbas M.ABBAS            306    225    247
+ FORTRAN MODIF algorith/mmmcri                mabbas M.ABBAS            100     46     31
+ FORTRAN MODIF algorith/nmdepl                mabbas M.ABBAS            312      3      2
+ FORTRAN MODIF algorith/nmible                mabbas M.ABBAS            182     27     26
+ FORTRAN MODIF algorith/nminit                mabbas M.ABBAS            426      1      1
+ FORTRAN MODIF algorith/nmpilo                mabbas M.ABBAS            239     37     11
+ FORTRAN MODIF algorith/nmrepl              lebouvie F.LEBOUVIER        357      2      1
+ FORTRAN MODIF algorith/nmtble                mabbas M.ABBAS            205     37     80
+ FORTRAN MODIF algorith/op0048               a3bhhae H.ANDRIAMBOLOLONA    383     14      3
+ FORTRAN MODIF algorith/op0060               a3bhhae H.ANDRIAMBOLOLONA    636     12      3
+ FORTRAN MODIF algorith/op0070              lebouvie F.LEBOUVIER        925      5      1
+ FORTRAN MODIF algorith/op0164               acbhhcd G.DEVESA           243     41     13
+ FORTRAN MODIF algorith/reaclm                mabbas M.ABBAS             94     37     55
+ FORTRAN MODIF algorith/semoco               a3bhhae H.ANDRIAMBOLOLONA    410     51     12
+ FORTRAN MODIF algorith/semore               a3bhhae H.ANDRIAMBOLOLONA    464     51     16
+ FORTRAN MODIF algorith/ttprsm                mabbas M.ABBAS            126     80     54
+ FORTRAN MODIF algorith/vechde               a3bhhae H.ANDRIAMBOLOLONA    591    144      9
+ FORTRAN MODIF algorith/xmmbca                mabbas M.ABBAS            165     11     17
+ FORTRAN MODIF assembla/numer3                mabbas M.ABBAS             74     28     17
+ FORTRAN MODIF elements/te0041               a3bhhae H.ANDRIAMBOLOLONA    357    126      4
+ FORTRAN MODIF elements/te0364                mabbas M.ABBAS            339    198   1085
+ FORTRAN MODIF elements/te0365                mabbas M.ABBAS            364    219    681
+ FORTRAN MODIF modelisa/aceadi               a3bhhae H.ANDRIAMBOLOLONA    290     19      4
+ FORTRAN MODIF modelisa/cacoeq                mabbas M.ABBAS            228     98     34
+ FORTRAN MODIF modelisa/chprec               vabhhts J.PELLET           283      9      4
+ FORTRAN MODIF prepost/irgmtb                rezette C.REZETTE          800      2      2
+ FORTRAN MODIF supervis/ops007              mcourtoi M.COURTOIS         138      2      2
+ FORTRAN SUPPR algorith/calbet                mabbas M.ABBAS            141      0    141
+ FORTRAN SUPPR algorith/copcog                mabbas M.ABBAS            120      0    120
+ FORTRAN SUPPR algorith/copcos                mabbas M.ABBAS            142      0    142
+ FORTRAN SUPPR algorith/frapp2                mabbas M.ABBAS            715      0    715
+ FORTRAN SUPPR algorith/sofosu                 romeo R.FERNANDES         83      0     83
+ FORTRAN SUPPR algorith/sosu3d                 romeo R.FERNANDES        272      0    272
+ FORTRAN SUPPR algorith/sosulc                 romeo R.FERNANDES         80      0     80
+ FORTRAN SUPPR elements/calffj                mabbas M.ABBAS            363      0    363
+ FORTRAN SUPPR elements/calffl                mabbas M.ABBAS            407      0    407
+ FORTRAN SUPPR elements/te0465                 romeo R.FERNANDES         83      0     83
+ FORTRAN SUPPR elements/te0476                 romeo R.FERNANDES        134      0    134
+ FORTRAN SUPPR elements/te0477                 romeo R.FERNANDES        100      0    100
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES    a3bhhae H.ANDRIAMBOLOLONA    255      2      1
+  PYTHON MODIF Macro/macro_miss_3d_ops       acbhhcd G.DEVESA           140     19      4
+  PYTHON MODIF Utilitai/t_fonction          mcourtoi M.COURTOIS         633    108     60
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   35        6211      6211             +6211
+ MODIF :   77       23991      3377    3690      -313
+ SUPPR :   15        2901              2901     -2901
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  127       33103      9588    6591     +2997 

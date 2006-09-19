@@ -1,4 +1,5 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+
+# MODIF  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -28,328 +29,361 @@
 #  D'INSTABILITE (FLAMBEMENT D'EULER)
 #- MODELISATION AVEC DES ELEMENTS 'COQUE_3D' (TRIA7)
 #---------------------------------------------------------------------
-#
-DEBUT( CODE=_F( NOM = 'SSNL502A',NIV_PUB_WEB='INTERNET'))
 
+DEBUT(CODE=_F(NOM='SSNL502A',
+              NIV_PUB_WEB='INTERNET',),);
 #
-PRE_IDEAS ()
+
+PRE_IDEAS();
 #
-MA=LIRE_MAILLAGE( )
-MA=DEFI_GROUP( reuse=MA,
-                       MAILLAGE=MA,CREA_GROUP_NO=(
-                       _F(  GROUP_MA = 'TOUT_ELT',  ),)
-                    )
 
+MA=LIRE_MAILLAGE();
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='TOUT_ELT',),);
 #
-MAIL=CREA_MAILLAGE(     MAILLAGE=MA,
-                       MODI_MAILLE=_F( TOUT = 'OUI',
-                                    OPTION = 'TRIA6_7')
-                     )
 
-MAIL=DEFI_GROUP(reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
-                   _F( NOM = 'C', NOEUD = 'N101'),        
-                 ))
+MAIL=CREA_MAILLAGE(MAILLAGE=MA,
+                   MODI_MAILLE=_F(TOUT='OUI',
+                                  OPTION='TRIA6_7',),);
 
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(NOEUD='N101',
+                                 NOM='C',),);
 #
-MO=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=(_F(GROUP_MA='TOUT_ELT',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'COQUE_3D'),
-                              _F(GROUP_MA='COTEBC',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = '3D'))
-                  )
 
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+               AFFE=(_F(GROUP_MA='TOUT_ELT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='COQUE_3D',),
+                     _F(GROUP_MA='COTEBC',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),),);
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
-#
-CAREL=AFFE_CARA_ELEM(   MODELE=MO,
-                           COQUE=_F( GROUP_MA = 'TOUT_ELT',
-                                  EPAIS = 0.0045,
-# ACIS=1.E6*H/L
-#                                 A_CIS    : 9000.
-                             COEF_RIGI_DRZ = 0.001,
-                                  ANGL_REP = (90., 0.,))
-                        )
 
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     COQUE=_F(GROUP_MA='TOUT_ELT',
+                              EPAIS=0.0045,
+                              ANGL_REP=(90.,0.,),
+                              COEF_RIGI_DRZ=0.001,),);
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
-#
-MAT=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
-                             NU = 0.3)
-                     )
 
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.E+11,
+                          NU=0.3,),);
 #
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                             AFFE=_F( TOUT = 'OUI', MATER = MAT)
-                       )
 
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 #
 #---------------------------------------------------------------------
 #                     CHARGEMENTS
 #---------------------------------------------------------------------
+
+CON_LIM=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO='COTEAD',
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,
+                                   DRX=0.,
+                                   DRY=0.,
+                                   DRZ=0.,),);
 #
-CON_LIM=AFFE_CHAR_MECA(     MODELE=MO,
-                            DDL_IMPO=_F( GROUP_NO = 'COTEAD',
-                                      DX = 0., DY = 0., DZ = 0.,
-                                      DRX = 0., DRY = 0., DRZ = 0.)
-                          )
 
-#
-CHARGE=AFFE_CHAR_MECA(         MODELE=MO,
-                            FORCE_ARETE=_F( GROUP_MA = 'COTEBC',
-                                         FZ = -14989.4667)
-                          )
+CHARGE=AFFE_CHAR_MECA(MODELE=MO,
+                      FORCE_ARETE=_F(GROUP_MA='COTEBC',
+                                     FZ=-14989.4667,),);
 
-PERTUR=AFFE_CHAR_MECA(         MODELE=MO,
-                            FORCE_ARETE=_F( GROUP_MA = 'COTEBC',
-                                         FX = 14.9894667)
-                          )
+PERTUR=AFFE_CHAR_MECA(MODELE=MO,
+                      FORCE_ARETE=_F(GROUP_MA='COTEBC',
+                                     FX=14.9894667,),);
 
-F_PERT=DEFI_FONCTION(      NOM_PARA='INST',
-                           PROL_DROITE='CONSTANT',
-                          PROL_GAUCHE='EXCLU',
-                                 VALE=( 0.,     0.,
-                                        0.94,   0.,
-                                        0.95,   1.,
-                                        1.015,  1.,
-                                        1.016,  0.,
-                                        2.,     0.,
-                                       )
-                        )
+F_PERT=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.,0.,0.94,0.,0.95,1.,1.015,1.,1.016,0.,2.,0.,),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='EXCLU',);
 
-F_CHARGE=DEFI_FONCTION(      NOM_PARA='INST',
-                           PROL_DROITE='CONSTANT',
-                          PROL_GAUCHE='EXCLU',
-                                 VALE=( 0.,   0.,
-                                        2.,   2.,
-                                       )
-                        )
-
+F_CHARGE=DEFI_FONCTION(NOM_PARA='INST',
+                       VALE=(0.,0.,2.,2.,),
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='EXCLU',);
 #
 #---------------------------------------------------------------------
 #                        RESOLUTION
 #---------------------------------------------------------------------
+
+LIS_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=0.98,
+                                       NOMBRE=1,),
+                                    _F(JUSQU_A=1.01,
+                                       NOMBRE=10,),
+                                    _F(JUSQU_A=1.023067,
+                                       NOMBRE=10,),
+                                    _F(JUSQU_A=1.067567,
+                                       NOMBRE=10,),
+                                    _F(JUSQU_A=1.1347102,
+                                       NOMBRE=20,),
+                                    _F(JUSQU_A=1.2252102,
+                                       NOMBRE=20,),
+                                    _F(JUSQU_A=1.3252102,
+                                       NOMBRE=20,),
+                                    _F(JUSQU_A=1.4252102,
+                                       NOMBRE=20,),
+                                    _F(JUSQU_A=1.5052102,
+                                       NOMBRE=20,),),);
 #
-LIS_INST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
-                           _F( JUSQU_A = 0.98, NOMBRE = 1), 
-                           _F( JUSQU_A = 1.01, NOMBRE = 10),
+
+RESULT=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,
+                     EXCIT=(_F(CHARGE=CON_LIM,),
+                            _F(CHARGE=CHARGE,
+                               FONC_MULT=F_CHARGE,),
+                            _F(CHARGE=PERTUR,
+                               FONC_MULT=F_PERT,),),
+                     COMP_ELAS=_F(RELATION='ELAS',
+                                  DEFORMATION='GREEN_GR',),
+                     INCREMENT=_F(LIST_INST=LIS_INST,
+                                  NUME_INST_FIN=11,
+                                  SUBD_PAS=4,
+                                  SUBD_PAS_MINI=1.E-6,),
+                     NEWTON=_F(PREDICTION='ELASTIQUE',
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                    ITER_GLOB_MAXI=30,),
+                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
+                                SYME='OUI',),);
 #
-# DEPLACEMENT IMPOSE U=0.015 : ON COMPLETE LE DEPLACEMENT OBTENU
-# PRECEDEMMENT QUI EST DE W=-1.933E-3
-# STAT_NON_LINE : COEF_MULT = DELTA_T/DELTA_U
+
+RESULT=STAT_NON_LINE(reuse =RESULT,
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,
+                     EXCIT=(_F(CHARGE=CON_LIM,),
+                            _F(CHARGE=PERTUR,
+                               FONC_MULT=F_PERT,),
+                            _F(CHARGE=CHARGE,
+                               TYPE_CHARGE='FIXE_PILO',),),
+                     COMP_ELAS=_F(RELATION='ELAS',
+                                  DEFORMATION='GREEN_GR',),
+                     ETAT_INIT=_F(
+                     EVOL_NOLI=RESULT,),
+                     INCREMENT=_F(LIST_INST=LIS_INST,
+                                  NUME_INST_INIT=11,
+                                  NUME_INST_FIN=131,
+                                  SUBD_PAS=4,
+                                  SUBD_PAS_MINI=1.E-6,),
+                     NEWTON=_F(PREDICTION='ELASTIQUE',
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     PILOTAGE=_F(TYPE='LONG_ARC',
+                                 COEF_MULT=-1.,
+                                 ETA_PILO_MAX=100.,
+                                 ETA_PILO_R_MIN=-100,
+                                 SELECTION='ANGL_INCR_DEPL',
+                                 GROUP_NO='TOUT_ELT',
+                                 NOM_CMP=('DX','DZ',),),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                    ITER_GLOB_MAXI=20,),
+                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
+                                SYME='OUI',),);
 #
-                           _F( JUSQU_A = 1.0230670, NOMBRE = 10),
-# DEPLACEMENT IMPOSE U=0.0595
-                           _F( JUSQU_A = 1.0675670, NOMBRE = 10),
-# DEPLACEMENT IMPOSE U=0.1295
-                           _F( JUSQU_A = 1.1347102, NOMBRE = 20),
-# DEPLACEMENT IMPOSE U=0.2200
-                           _F( JUSQU_A = 1.2252102, NOMBRE = 20),
-# DEPLACEMENT IMPOSE U=0.2200
-                           _F( JUSQU_A = 1.3252102, NOMBRE = 20),
-# DEPLACEMENT IMPOSE U=0.2200
-                           _F( JUSQU_A = 1.4252102, NOMBRE = 20),
-# DEPLACEMENT IMPOSE U=0.2200
-                           _F( JUSQU_A = 1.5052102, NOMBRE = 20),)
-                           )
 
+TABLE_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DZ',
+                                 GROUP_NO='C',
+                                 RESULTAT=RESULT,
+                                 NOM_CHAM='DEPL',
+                                 TOUT_ORDRE='OUI',
+                                 NOM_CMP='DZ',
+                                 OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLE_DZ,);
+
+TABLE_DX=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DX',
+                                 GROUP_NO='C',
+                                 RESULTAT=RESULT,
+                                 NOM_CHAM='DEPL',
+                                 TOUT_ORDRE='OUI',
+                                 NOM_CMP='DX',
+                                 OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLE_DX,);
 #
-RESULT=STAT_NON_LINE(       MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CAREL,EXCIT=(
-                               _F( CHARGE = CON_LIM),
-                                     _F( CHARGE = CHARGE,
-                                      FONC_MULT = F_CHARGE),
-                                     _F( CHARGE = PERTUR,
-                                      FONC_MULT = F_PERT)),
-                           COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'GREEN_GR',),
-                           INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_PAS=4,
-                                     SUBD_PAS_MINI=0.000001,
-                                      NUME_INST_FIN = 11),
-                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE',
-                                         SYME='OUI',),
-                              NEWTON=_F( REAC_ITER = 1,
-                                      MATRICE = 'TANGENTE',
-                                      PREDICTION='ELASTIQUE',),
-                         CONVERGENCE=_F( 
-                                      ITER_GLOB_MAXI = 30,
-                                      RESI_GLOB_RELA = 1.E-6)
-                        )
 
-#
-RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CAREL,EXCIT=(
-                               _F( CHARGE = CON_LIM),
-                                     _F( CHARGE = PERTUR,
-                                      FONC_MULT = F_PERT),
-                                     _F( CHARGE = CHARGE,
-                                      TYPE_CHARGE = 'FIXE_PILO')),
-                           COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'GREEN_GR',),
-                           INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_PAS=4,
-                                     SUBD_PAS_MINI=0.000001,
-                                      NUME_INST_INIT = 11, 
-                                     NUME_INST_FIN = 131),
-                         CONVERGENCE=_F( 
-                                      ITER_GLOB_MAXI = 20,
-                                      RESI_GLOB_RELA = 1.E-6),
-                            SOLVEUR=_F( STOP_SINGULIER='DECOUPE',
-                                         SYME='OUI',),
-                              NEWTON=_F( REAC_ITER = 1,
-                                      MATRICE = 'TANGENTE',
-                                      PREDICTION='ELASTIQUE',),
-                           ETAT_INIT=_F( EVOL_NOLI = RESULT), 
-                            PILOTAGE=_F( TYPE = 'LONG_ARC',
-                                      SELECTION='ANGL_INCR_DEPL',
-                                      GROUP_NO = 'TOUT_ELT',
-                                      NOM_CMP = ('DX','DZ',),
-                                      COEF_MULT = -1.,
-                                      ETA_PILO_MAX=100.,ETA_PILO_MIN=-100.,)
-                        )
+DEPZ=RECU_FONCTION(RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',);
 
-#
-TABLE_DZ=POST_RELEVE_T( 
-                                ACTION=_F( GROUP_NO = 'C',
-                          INTITULE = 'TAB_DZ',
-                          RESULTAT = RESULT,
-                          NOM_CHAM = 'DEPL',
-                          NOM_CMP = 'DZ',
-                          TOUT_ORDRE = 'OUI',
-                          OPERATION = 'EXTRACTION')
-                          )
+DEPX=RECU_FONCTION(RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',);
 
-IMPR_TABLE(  TABLE=TABLE_DZ)
+ETA=RECU_FONCTION(RESULTAT=RESULT,
+                  NOM_PARA_RESU='ETA_PILOTAGE',
+                  TOUT_ORDRE='OUI',);
 
-TABLE_DX=POST_RELEVE_T( 
-                                ACTION=_F( GROUP_NO = 'C',
-                          INTITULE = 'TAB_DX',
-                          RESULTAT = RESULT,
-                          NOM_CHAM = 'DEPL',
-                          NOM_CMP = 'DX',
-                          TOUT_ORDRE = 'OUI',
-                          OPERATION = 'EXTRACTION')
-                          )
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=DEPZ,),
+              UNITE=8,
+              TITRE='Depz en fonction du temps',);
 
-IMPR_TABLE(  TABLE=TABLE_DX)
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=ETA,),
+              UNITE=8,
+              TITRE='Eta en fonction du temps',);
 
-#
-DEPZ=RECU_FONCTION (   RESULTAT = RESULT,
-                          NOM_CMP = 'DZ',
-                          NOM_CHAM = 'DEPL',
-                          GROUP_NO = 'C',
-                          TOUT_ORDRE = 'OUI')
-                            
-DEPX=RECU_FONCTION (   RESULTAT = RESULT,
-                          NOM_CMP = 'DX',
-                          NOM_CHAM = 'DEPL',
-                          GROUP_NO = 'C',
-                          TOUT_ORDRE = 'OUI')
-
-ETA=RECU_FONCTION (   RESULTAT = RESULT,
-                          NOM_PARA_RESU = 'ETA_PILOTAGE',
-                          TOUT_ORDRE = 'OUI') 
-
-IMPR_FONCTION ( FORMAT='TABLEAU',
-              COURBE=_F( FONCTION = DEPZ),
-              TITRE='Depz en fonction du temps'
-              )
-              
-IMPR_FONCTION (FORMAT='TABLEAU',
-             COURBE=_F( FONCTION = ETA),
-             TITRE='Eta en fonction du temps'
-              )
-              
-IMPR_FONCTION (FORMAT='TABLEAU',
-               COURBE=_F( FONCTION = DEPX),
-    TITRE='Depx en fonction du temps'
-              )
- 
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=DEPX,),
+              UNITE=8,
+              TITRE='Depx en fonction du temps',);
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
-TEST_RESU(RESU=(
-# DEPLACEMENT W=-0.015
-     _F( RESULTAT = RESULT,            INST=1.04532E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DZ',              VALE = -0.015,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.03,1.E-5)),
-     _F( RESULTAT = RESULT,            INST=1.04532E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DX',              VALE = 0.1100,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.01,1.E-5)),
-     _F( RESULTAT = RESULT,           INST=1.04532E+00,
-           PARA = 'ETA_PILOTAGE',
-           VALE = 1.015,             REFERENCE='ANALYTIQUE',PRECISION=(0.025,1.E-5)),
-# DEPLACEMENT W=-0.0595
-     _F( RESULTAT = RESULT,            INST=1.097781440E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DZ',              VALE = -0.0595,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.04,1.E-5)),
-     _F( RESULTAT = RESULT,            INST=1.097781440E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DX',              VALE = 0.211,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.06,1.E-5)),
-     _F( RESULTAT = RESULT,           INST=1.097781440E+00,
-           PARA = 'ETA_PILOTAGE',
-           VALE = 1.063,             REFERENCE='ANALYTIQUE',PRECISION=(0.04,1.E-5)),
-# DEPLACEMENT W=-0.22
-     _F( RESULTAT = RESULT,            INST=1.20711,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DZ',              VALE = -0.22,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.1,1.E-5)),
-     _F( RESULTAT = RESULT,            INST=1.20711,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DX',              VALE = 0.3595,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.1,1.E-5)),
-     _F( RESULTAT = RESULT,           INST=1.20711,
-           PARA = 'ETA_PILOTAGE',
-           VALE = 1.293,             REFERENCE='ANALYTIQUE',PRECISION=(0.1,1.E-5)),
-# DEPLACEMENT W=-0.3255
-     _F( RESULTAT = RESULT,            INST=1.2652,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DZ',              VALE = -0.3255,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.2,1.E-5)),
-     _F( RESULTAT = RESULT,            INST=1.2652,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DX',              VALE = 0.3960,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.1,1.E-5)),
-     _F( RESULTAT = RESULT,           INST=1.2652,
-           PARA = 'ETA_PILOTAGE',
-           VALE = 1.518,             REFERENCE='ANALYTIQUE',PRECISION=(0.2,1.E-5)),
-# DEPLACEMENT W=-0.5535
-     _F( RESULTAT = RESULT,            INST=1.385210200E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DZ',              VALE = -0.5535,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.02,1.E-5)),
-     _F( RESULTAT = RESULT,            INST=1.385210200E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DX',              VALE = 0.3750,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.03,1.E-5)),
-     _F( RESULTAT = RESULT,           INST=1.385210200E+00,
-           PARA = 'ETA_PILOTAGE',
-           VALE = 2.541,             REFERENCE='ANALYTIQUE',PRECISION=(0.30,1.E-5)),
-# DEPLACEMENT W=-0.67
-     _F( RESULTAT = RESULT,            INST=1.461210200E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DZ',              VALE = -0.67,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.02,1.E-5)),
-     _F( RESULTAT = RESULT,            INST=1.461210200E+00,          
-           NOM_CHAM = 'DEPL',            GROUP_NO = 'C',
-           NOM_CMP = 'DX',              VALE = 0.3125,
-           REFERENCE='ANALYTIQUE',PRECISION=(0.05,1.E-5)),
-     _F( RESULTAT = RESULT,           INST=1.461210200E+00,
-           PARA = 'ETA_PILOTAGE',
-           VALE = 4.029,             REFERENCE='ANALYTIQUE',PRECISION=(0.32,1.E-5)),
-)
-           )
 
-FIN()
+TEST_RESU(RESU=(_F(RESULTAT=RESULT,
+                   INST=1.04532,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.015,
+                   PRECISION=(0.03,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.04532,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=0.11,
+                   PRECISION=(0.01,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.04532,
+                   PARA='ETA_PILOTAGE',
+                   VALE=1.015,
+                   PRECISION=(0.025,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.09778144,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.0595,
+                   PRECISION=(0.04,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.09778144,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=0.211,
+                   PRECISION=(0.06,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.09778144,
+                   PARA='ETA_PILOTAGE',
+                   VALE=1.063,
+                   PRECISION=(0.04,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.20711,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.22,
+                   PRECISION=(0.1,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.20711,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=0.3595,
+                   PRECISION=(0.1,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.20711,
+                   PARA='ETA_PILOTAGE',
+                   VALE=1.293,
+                   PRECISION=(0.1,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.2652,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.3255,
+                   PRECISION=(0.2,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.2652,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=0.396,
+                   PRECISION=(0.1,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.2652,
+                   PARA='ETA_PILOTAGE',
+                   VALE=1.518,
+                   PRECISION=(0.2,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.3852102,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.5535,
+                   PRECISION=(0.02,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.3852102,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=0.375,
+                   PRECISION=(0.03,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.3852102,
+                   PARA='ETA_PILOTAGE',
+                   VALE=2.541,
+                   PRECISION=(0.3,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.4612102,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.67,
+                   PRECISION=(0.02,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.4612102,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=0.3125,
+                   PRECISION=(0.05,1e-05,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESULT,
+                   INST=1.4612102,
+                   PARA='ETA_PILOTAGE',
+                   VALE=4.029,
+                   PRECISION=(0.32,1e-05,),
+                   REFERENCE='ANALYTIQUE',),),);
+
+FIN();
 # 

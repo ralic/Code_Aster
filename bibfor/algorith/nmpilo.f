@@ -3,7 +3,7 @@
      &                  VALMOI, NBATTE, NBEFFE, ETA   , LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,6 @@ C                       1 : PAS DE SOLUTION
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -81,19 +80,19 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
-
-      LOGICAL      BORMIN, BORMAX
-      INTEGER      JPLTK, JPLIR, IBID, IER, NBOLD
-      INTEGER      NEQ, N, JU0, JU1, I, JDEPM, J
-      INTEGER      JDEPDE, JLINE, JDEP0, JDEP1, JDDEPL, JCOEF
+C
+      INTEGER      JPLTK, JPLIR,JINFO
+      INTEGER      NEQ, N, JU0, JU1,JDEPM
+      INTEGER      JDEPDE, JLINE, JDEP0, JDEP1,JCOEF
       REAL*8       DTAU, UM, DU, RN, RD
-      REAL*8       DDOT, R8VIDE, CONMIN, CONMAX
+      REAL*8       DDOT,ETRMIN,ETRMAX
       CHARACTER*8  K8BID
       CHARACTER*16 TYPILO
-      CHARACTER*19 CNDEP0, CNDEP1, PROFCH, LIGRPI, CARTYP, CARETA
-      CHARACTER*24 DEPMOI, K24BID, PROJBO
+      CHARACTER*19 CNDEP0, CNDEP1,LIGRPI, CARTYP, CARETA
+      CHARACTER*24 DEPMOI, K24BID
+C
 C ----------------------------------------------------------------------
-
+C
       CALL JEMARQ()
 
 C    TYPE DE PILOTAGE
@@ -111,7 +110,7 @@ CCC-DUR      ELSE
 CCC-DUR        ETAMAX = R8VIDE()
 CCC-DUR      END IF
         
-C    BORNE MIN	
+C    BORNE MIN  
 CCC-DUR      IF (ZR(JPLIR+2) .NE. R8VIDE()) THEN
 CCC-DUR        ETAMIN = ZR(JPLIR+2) - OFFSET
 CCC-DUR      ELSE
@@ -209,5 +208,32 @@ CCC-DUR   CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO',IBID, PROFCH,IER)
       END IF
  
  9999 CONTINUE
+C
+C --- BORNES ETA_PILO_R_MIN ET ETA_PILO_R_MAX
+C
+      CALL JEVEUO(PILOTE // '.PLIR','L',JINFO)
+      ETRMIN = ZR(JINFO+4)
+      ETRMAX = ZR(JINFO+3)
+      
+      IF (LICCVG.NE.1) THEN
+        IF (NBEFFE.EQ.2) THEN
+          IF ((ETA(1).LT.ETRMIN).OR.(ETA(1).GT.ETRMAX)) THEN
+            NBEFFE = NBEFFE-1
+            ETA(1) = ETA(2)
+          ENDIF
+          IF ((ETA(2).LT.ETRMIN).OR.(ETA(2).GT.ETRMAX)) THEN
+            NBEFFE = NBEFFE-1
+          ENDIF          
+        ENDIF
+        IF (NBEFFE.EQ.1) THEN
+          IF ((ETA(1).LT.ETRMIN).OR.(ETA(1).GT.ETRMAX)) THEN
+            NBEFFE = NBEFFE-1
+          ENDIF        
+        ENDIF
+        IF (NBEFFE.EQ.0) THEN
+          LICCVG = 1       
+        ENDIF       
+      ENDIF 
+C 
       CALL JEDEMA()
       END
