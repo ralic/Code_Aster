@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,9 +66,9 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0,
-                                SUBD_PAS=10,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                                 SUBD_PAS_MINI=1.0000000000000001E-05,
-                                COEF_SUBD_PAS_1=1.0,),
+                                SUBD_COEF_PAS_1=1.0,),
                    ARCHIVAGE=_F(LIST_INST=L_INST,
                                 ARCH_ETAT_INIT='OUI',),);
 

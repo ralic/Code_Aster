@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -222,7 +222,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                               ITER_INTE_MAXI=1000,),
                  INCREMENT=_F(LIST_INST=L_INST2,
                               INST_FIN=30.0,
-                              SUBD_PAS=4,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                               SUBD_PAS_MINI=0.0001,),
                  NEWTON=_F(PREDICTION='EXTRAPOL',
                            MATRICE='TANGENTE',

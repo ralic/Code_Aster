@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMUN  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -121,7 +121,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VMIS_ASYM_LINE",
                                         "ELAS_THER",
                                         "KIT_DDI",
-                                        "GLRC",
+                                        "GLRC_DAMAGE",
                                         "SANS",
                                         "CORR_ACIER",
                                         "MONOCRISTAL",
@@ -231,7 +231,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           KIT_THHM        =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
           VMIS_ASYM_LINE  =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           BETON_UMLV_FP   =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
-          GLRC            =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
+          GLRC_DAMAGE     =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
           GATT_MONERIE    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
 
            b_monox     = BLOC(condition = "RELATION == 'MONOCRISTAL' ",

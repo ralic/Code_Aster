@@ -3,7 +3,7 @@
      1                     NR,NVI,VIND,YF,   DY,   DRDY)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 25/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -86,6 +86,8 @@ C     NSFA : debut des variables internes de la famille IFA
 C     NUVR : numero des variables internes de la famille IFA  systeme R
       NUVRF=6
       
+      CALL CALCMM(NBCOMM,CPMONO,NMAT,PGL,TOUTMS)
+
       DO 6 IFA=1,NBFSYS
       
          IEC=NBCOMM(IFA,2)

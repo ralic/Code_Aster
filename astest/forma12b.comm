@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,8 +225,8 @@ DYNANL=DYNA_NON_LINE(
                                      ARRET='OUI',),
                      # INCREMENT=_F(LIST_INST=LINST,),
     INCREMENT=_F(LIST_INST=LINST,
-                 COEF_SUBD_PAS_1=1.0,
-                 SUBD_PAS=5,
+                 SUBD_COEF_PAS_1=1.0,
+                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
                  SUBD_PAS_MINI=1.E-5,
                  EVOLUTION='CHRONOLOGIQUE',
                  ),

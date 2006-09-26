@@ -1,4 +1,4 @@
-#@ MODIF N_MCLIST Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MCLIST Noyau  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,3 +205,17 @@ class MCList(UserList.UserList):
          return self.data[0].get_mocle(key)
       else:
          return self.data[key]
+   
+   def List_F(self):
+      """
+         Retourne une liste de dictionnaires (eventuellement singleton) qui peut etre
+         passe directement derriere un mot-cle facteur (pour les macros).
+      """
+      dresu = []
+      for mcf in self:
+         dico = mcf.cree_dict_valeurs(mcf.mc_liste)
+         for i in dico.keys():
+            if dico[i] == None:
+               del dico[i]
+         dresu.append(dico)
+      return dresu

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -108,9 +108,9 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,)),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.E-4,
-                                COEF_SUBD_PAS_1=1.0,),
+                                SUBD_COEF_PAS_1=1.0,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

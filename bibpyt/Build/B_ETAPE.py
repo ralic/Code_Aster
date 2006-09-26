@@ -1,23 +1,23 @@
-#@ MODIF B_ETAPE Build  DATE 08/11/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 """
@@ -68,7 +68,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       self.affiche_cmd()
 
    def Build(self):
-      """ 
+      """
           Fonction : Construction d'une étape de type OPER ou PROC
            En général, il n'y a pas de construction à faire
       """
@@ -77,7 +77,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
 
    def _Build(self):
       """
-         Cette méthode réalise le traitement de construction pour 
+         Cette méthode réalise le traitement de construction pour
          l'objet lui meme
       """
       if CONTEXT.debug : print "ETAPE._Build ",self.nom
@@ -218,8 +218,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       return valeur
 
    def get_valeur_mc(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
-      """ 
-          Méthode générique pour retourner la valeur de nom_motfac/nom_motcle 
+      """
+          Méthode générique pour retourner la valeur de nom_motfac/nom_motcle
       """
       nom_motfac=string.strip(nom_motfac)
       nom_motcle=string.strip(nom_motcle)
@@ -246,7 +246,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
         try:
            motfac=self.get_mocle(nom_motfac)[iocc]
         except:
-           if CONTEXT.debug : 
+           if CONTEXT.debug :
               print "\terreur à la recherche de :",nom_motfac
               traceback.print_exc()
            return None
@@ -254,7 +254,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
         try:
            return motfac.get_mocle(nom_motcle)
         except:
-           if CONTEXT.debug : 
+           if CONTEXT.debug :
               print "\terreur à la recherche de :",nom_motcle
               traceback.print_exc()
            return None
@@ -263,13 +263,13 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
         try:
            return self.get_mocle(nom_motcle)
         except:
-           if CONTEXT.debug : 
+           if CONTEXT.debug :
               print "\terreur à la recherche de :",nom_motcle
               traceback.print_exc()
            return None
 
    def get_valeur_motcle_pour_getvid(self,nom_motfac,iocc,nom_motcle) :
-      """ 
+      """
           Cette méthode a pour but de retourner la valeur du MCS nom_motcle
           de la ième occurrence du MCF nom_motfac.
       """
@@ -280,7 +280,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           return None
 
    def transforme_valeur_nom(self,valeur):
-      """ 
+      """
           Cette méthode a pour but de retourner soit une chaine de caractères représentant valeur
           (dans le cas ou valeur n'est pas une instance retourne la string valeur, sinon retourne valeur.nom)
           Traite le cas ou valeur est un tuple d'instances et retourne alors le tuple des strings
@@ -326,11 +326,11 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
               # on est en presence d'un (R8,C8,IS,TX,LS) isolé
               list_apres.append( k )
       if valeur[0] < 0:
-         # la longueur initiale etait superieure a mxval. 
+         # la longueur initiale etait superieure a mxval.
          # Elle ne peut qu'augmenter
-         valeur_apres=( -len(list_apres) , tuple(list_apres) ) 
+         valeur_apres=( -len(list_apres) , tuple(list_apres) )
       else:
-         valeur_apres=( len(list_apres) , tuple(list_apres) ) 
+         valeur_apres=( len(list_apres) , tuple(list_apres) )
 
       return valeur_apres
 
@@ -413,6 +413,13 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       self.jdc.alea.jumpahead(jump)
       return None
 
+   def utprin(self,typmess,unite,idmess,valk,vali,valr):
+      """
+         Cette methode permet d'imprimer un message venu d'U2MESG
+      """
+      from Messages import utprin
+      utprin.utprin(typmess,unite,idmess,valk,vali,valr)
+
    def fiintf(self,nom_fonction,nom_param,val):
       """
          Cette methode permet d'appeler une formule python depuis le fortran
@@ -471,7 +478,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
       valeur=self.Traite_value(valeur,"C8")
-      if CONTEXT.debug : 
+      if CONTEXT.debug :
          B_utils.TraceGet( 'GETVC8',nom_motfac,iocc,nom_motcle,valeur)
       return valeur
 
@@ -514,7 +521,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       return valeur
 
    def gettco( self , nom_concept ) :
-      """ 
+      """
           Methode : B_ETAPE.ETAPE.gettco
           Auteur : Antoine Yessayan
           Intention : retourne le type d'un concept a partir de son nom  passe
@@ -527,12 +534,12 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          # On essaie de recuperer le concept no parmi les concepts existant dans le contexte
          # avant l'étape self
          objet_sd = self.parent.get_sd_avant_etape(no,self)
-         if objet_sd == None: 
+         if objet_sd == None:
             # Si on n'a rien trouve
             if self.sd != None and self.sd.nom == no:
                # Et si l objet demande est le concept produit, on l'utilise
                objet_sd=self.sd
-               #XXX Ne suffit peut etre pas a traiter completement le cas des concepts produits 
+               #XXX Ne suffit peut etre pas a traiter completement le cas des concepts produits
                # pour les macros. Il y a aussi ceux de self.sdprods
          assert(objet_sd != None)
          valeur=B_utils.Typast(AsType(objet_sd))
@@ -560,7 +567,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       try:
         val=eval(nom,self.jdc.const_context,self.parent.g_context)
-        if val is None : 
+        if val is None :
            return 0,0
         if isinstance(val,ASSD):
            return self.getsdval(val)

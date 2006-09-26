@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,7 +110,7 @@ U=STAT_NON_LINE(MODELE=MODE,
                              GROUP_MA='STRUCT',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,
-                             SUBD_PAS=4,
+                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                              SUBD_PAS_MINI=1E-8,
                              ),
                 NEWTON=_F(REAC_ITER=1,

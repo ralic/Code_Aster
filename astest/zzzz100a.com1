@@ -1,0 +1,19 @@
+POURSUITE( CODE=_F(NOM='ZZZZ100A'), PAR_LOT='NON')
+
+# But : Tester l'evaluation des fonctions et formules en poursuite.
+#       Le PAR_LOT='NON' est nécessaire pour évaluer des fonctions produites
+#       dans un autre jdc.
+
+tab = CREA_TABLE(LISTE=_F(PARA='TEST',
+                          LISTE_R=[SI(pi/2.), DFR1(1.), SIa(pi/2.)],))
+
+IMPR_TABLE(TABLE=tab)
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='TEST',
+           TYPE_TEST='SOMM',
+           VALE=1. + 3. + 1.,
+           REFERENCE='ANALYTIQUE')
+
+FIN()
+

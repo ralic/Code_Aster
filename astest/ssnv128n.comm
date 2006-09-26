@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,10 +124,7 @@ U4M=STAT_NON_LINE(MODELE      = MO,
                                _F(CHARGE = CHA4,)),
                  COMP_ELAS   = _F(RELATION = 'ELAS',),
                  NEWTON      = _F(REAC_ITER = 1,),
-                INCREMENT  = _F(LIST_INST = L_INST,
-                                SUBD_PAS = 1,
-                                COEF_SUBD_PAS_1 = 1.,
-                                SUBD_PAS_MINI = 0.000000001,),
+                INCREMENT  = _F(LIST_INST = L_INST,),
                  CONVERGENCE = _F(ARRET = 'OUI',
                                   ITER_GLOB_MAXI = 20,
                                   RESI_GLOB_RELA = 1.0E-5,),
@@ -197,10 +194,7 @@ U4L=STAT_NON_LINE(MODELE      = MO,
                  SOLVEUR     = _F(METHODE = 'LDLT',
                                   RENUM = 'SANS',),
                  NEWTON      = _F(REAC_ITER = 1,),
-                INCREMENT  = _F(LIST_INST = L_INST,
-                                SUBD_PAS = 1,
-                                COEF_SUBD_PAS_1 = 1.,
-                                SUBD_PAS_MINI = 0.000000001,),
+                INCREMENT  = _F(LIST_INST = L_INST,),
                  CONVERGENCE = _F(ARRET = 'OUI',
                                   ITER_GLOB_MAXI = 20,
                                   RESI_GLOB_RELA = 1.0E-5,),

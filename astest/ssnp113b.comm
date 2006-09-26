@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE ROTATION DES CONTRAINTES PRINCIPALES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,7 +142,7 @@ RES1=STAT_NON_LINE(reuse     = RES1,
                    INCREMENT  =_F(
                                   INST_FIN=5.0,
                                   LIST_INST=L_INS1,
-                                  SUBD_PAS   = 3,
+                                  SUBD_METHODE='UNIFORME', SUBD_PAS   = 3,
                                   SUBD_PAS_MINI   = 0.00001),
                    NEWTON     =_F(
                                   MATRICE='TANGENTE',

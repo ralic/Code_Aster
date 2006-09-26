@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE COMPARAISON POLY_CFC ET MONOCRISTAL. MOD A : POLY_CFC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,7 +107,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                                  RESO_INTE='RUNGE_KUTTA_2',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=LINST,NUME_INST_FIN=NUMFIN,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1e-06,),
                     NEWTON=_F(PREDICTION='EXTRAPOL',
                               MATRICE='ELASTIQUE',

@@ -1,6 +1,6 @@
       SUBROUTINE TE0358(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -220,8 +220,8 @@ C PARAMETRES EN ENTREE
             END IF
    50     CONTINUE
 
-          CALL RCVALA(MATER,' ','META_VISC',5,'TEMP',TPG,1,NOMRES(17),
-     &                VALRES(17),CODRET(17),' ')
+          CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,
+     &                5,NOMRES(17),VALRES(17),CODRET(17),' ')
           TEST = 'NO'
           DO 60 I = 17,21
             IF (CODRET(I).EQ.'OK') TEST = 'OK'
@@ -336,8 +336,8 @@ C PARAMETRES EN ENTREE
           END IF
 
 
-          CALL RCVALA(MATER,' ','META_VISC',3,'TEMP',TPG,1,NOMRES(14),
-     &                VALRES(14),CODRET(14),' ')
+          CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,
+     &                3,NOMRES(14),VALRES(14),CODRET(14),' ')
           TEST = 'NO'
           DO 90 I = 14,16
             IF (CODRET(14).EQ.'OK') TEST = 'OK'

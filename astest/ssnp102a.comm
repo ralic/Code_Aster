@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,9 +121,9 @@ UP=STAT_NON_LINE(
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                SUBD_PAS = 2,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 2,
                 SUBD_PAS_MINI = 0.001,
-                COEF_SUBD_PAS_1 = 0.001),
+                SUBD_COEF_PAS_1 = 0.001),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
@@ -159,9 +159,9 @@ UP2=STAT_NON_LINE(
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                SUBD_PAS = 2,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 2,
                 SUBD_PAS_MINI = 0.001,
-                COEF_SUBD_PAS_1 = 0.001),
+                SUBD_COEF_PAS_1 = 0.001),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 

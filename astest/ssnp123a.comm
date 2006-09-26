@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,7 +71,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=SYMETRIE,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=INSTANTS,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=0.001,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);

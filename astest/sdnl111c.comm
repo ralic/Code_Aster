@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,7 +109,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT_REAC',),                
                 INCREMENT=_F(LIST_INST=L_INST,
-                             SUBD_PAS=3,
+                             SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                              SUBD_PAS_MINI=1.E-8,),
                 HHT=_F(ALPHA=-0.1,),
                 NEWTON=_F(MATRICE='TANGENTE',),
@@ -184,7 +184,7 @@ RESU2=DYNA_NON_LINE(MODELE=MODELE,
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT_REAC',),                
                 INCREMENT=_F(LIST_INST=L_INST,
-                             SUBD_PAS=3,
+                             SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                              SUBD_PAS_MINI=1.E-8,),
                 HHT=_F(ALPHA=-0.3,MODI_EQUI='OUI',),
                 NEWTON=_F(MATRICE='TANGENTE',),

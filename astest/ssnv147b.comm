@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2003   AUTEUR PBADEL P.BADEL 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE TRACTION D'UN BARREAU FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,7 +124,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                  
                 INCREMENT=_F( 
                 LIST_INST = L_INST,
-                SUBD_PAS = 4,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                 SUBD_PAS_MINI = 1.E-6),
                PILOTAGE=_F( 
                 TYPE = 'PRED_ELAS',

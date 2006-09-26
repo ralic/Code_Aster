@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -607,7 +607,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                     GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
                       INCREMENT=_F(LIST_INST=TEMPS,
                                    INST_FIN=0.59,
-                                   SUBD_PAS=4,
+                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                    SUBD_PAS_MINI=1.0E-6,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),

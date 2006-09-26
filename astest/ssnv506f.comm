@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,7 +142,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
                                     GROUP_MA='SPHSUP',),
                        INCREMENT=_F(LIST_INST=LINST,
                                     INST_FIN=0.1,
-                                    SUBD_PAS=4,
+                                    SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     SUBD_PAS_MINI=9.9999999999999995E-07,),
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1,

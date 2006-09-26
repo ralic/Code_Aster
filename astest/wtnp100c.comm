@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -248,7 +248,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,
                               NUME_INST_FIN=1,
-                              SUBD_PAS=10,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                               SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',

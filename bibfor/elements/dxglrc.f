@@ -1,13 +1,15 @@
       SUBROUTINE DXGLRC ( NOMTE, OPT, COMPOR, XYZL, UL, DUL, BTSIG,
      +                    KTAN, EFFINT, PGL, CODRET )
-      IMPLICIT REAL*8 (A-H,O-Z)
+
+      IMPLICIT NONE
+      
       INTEGER      CODRET
       REAL*8       XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
       REAL*8       UL(6,4), DUL(6,4), PGL(3,3)
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
-C-----------------------------------------------------------------------
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +28,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C 
-C
+
       REAL*8   MG(3), ROT(9), DH(9), R, R8B
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  MULTIC
@@ -34,7 +36,7 @@ C
       INTEGER  ICOMPO, ICACOQ, ICONTP, IVARIP, INO,   NBCON
       INTEGER  NBVAR,  NDIMV,  IVARIX, L,      IPG,    JVARI, IVARI
       INTEGER  K
-C GLRC
+
       REAL*8 DELAS(6,6)
       REAL*8 ZERO
       REAL*8 DFE(9),   DME(9),    DMFE(9)
@@ -98,7 +100,7 @@ C            UM:     DEPLACEMENT (MEMBRANE) "-"
 C            UF:     DEPLACEMENT (FLEXION)  "-"
 C           DUM:     INCREMENT DEPLACEMENT (MEMBRANE)
 C           DUF:     INCREMENT DEPLACEMENT (FLEXION)
-      REAL*8 EPS(3),KHI(3),DEPS(3),DKHI(3),N(3),M(3)
+      REAL*8 EPS(3),KHI(3),DEPS(6),DKHI(3),N(3),M(3)
 C            EPS:    DEFORMATION DE MEMBRANE "-"
 C            DEPS:   INCREMENT DE DEFORMATION DE MEMBRANE
 C            KHI:    DEFORMATION DE FLEXION  "-" (COURBURE)
@@ -126,20 +128,24 @@ C     ------------------
       INTEGER  JTAB(7), COD, ITABP(8),ITABM(8)
       REAL*8   DEUX, CTOR, LC
       REAL*8   T2EV(4),T2VE(4),T1VE(9),CARAT3(21),JACOB(5),CARAQ4(25)
+
+      REAL*8     MATR(50)
+      INTEGER    MATI(50)
+      INTEGER    TSHEAR, ICARA
+      REAL*8     EPST(6), EP, SURFGP, SIG(6), DSIG(8), ECR(21)
+      REAL*8     MVAL(50),QSI,ETA
+      INTEGER    MENT(50),ICPG,ICPV
 C     ------------------------------------------------------------------
-C
+      
+      
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      +                                         IVF,IDFDX,IDFD2,JGANO)
-C
+
       CODRET=0
-C
-C     2 BOOLEENS COMMODES :
-C     ---------------------
+
       VECTEU = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RAPH_MECA'))
       MATRIC = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RIGI_MECA_TANG'))
-C
-C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
-C     --------------------------------------------------------
+
       IF ( NOMTE(1:8).NE.'MEDKTG3 ' .AND.
      +     NOMTE(1:8).NE.'MEDKQG4 ' ) THEN
         CALL UTMESS('F','DXGLRC','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
@@ -208,40 +214,25 @@ C     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY
 C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-C
-C- REMPLISSAGE DE LA MATRICE ELASTIQUE
-C
-      CALL DXMATE(DFE,DME,DMFE,RBIB1,RBIB2,RBIB3,RBIB4,NNO,PGL,
-     +                               MULTIC,LBID,ELASCQ,T2EV,T2VE,T1VE)
-C  
-      L=0
-      DO 20 I = 1,3
-        DO 30 J = 1,3
-          L = L + 1
-          DELAS(J,I)     = DME(L)
-          DELAS(J+3,I+3) = DFE(L)
-          DELAS(J,I+3)   = DMFE(L)
-          DELAS(I+3,J)   = DMFE(L)
- 30     CONTINUE
- 20   CONTINUE
-C
+      
 C===============================================================
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
       DO 130,IPG = 1,NPG
-C
-        QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
-        ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
-C
-        ICPG = (IPG-1)*NBCON
-        ICPV = (IPG-1)*NBVAR
 C
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
         CALL R8INIR(9,0.D0,DF,1)
         CALL R8INIR(9,0.D0,DM,1)
         CALL R8INIR(9,0.D0,DMF,1)
+        
+        
+        QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
 C
+        ICPG = (IPG-1)*NBCON
+        ICPV = (IPG-1)*NBVAR
+
         IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
           CALL DXTBM(CARAT3(9),BM)
           CALL DKTBF(QSI,ETA,CARAT3,BF)
@@ -252,21 +243,61 @@ C
           CALL DKQBF(QSI,ETA,JACOB(2),CARAQ4,BF)
           POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
         ENDIF
-C
-C       -- CALCUL DE EPS, DEPS, KHI, DKHI : 
-C          DANS LE REPERE DE L'ELEMENT
-C       -----------------------------------
+
         CALL PMRVEC('ZERO',3,2*NNO,BM,UM,EPS)
         CALL PMRVEC('ZERO',3,2*NNO,BM,DUM,DEPS)
         CALL PMRVEC('ZERO',3,3*NNO,BF,UF,KHI)
         CALL PMRVEC('ZERO',3,3*NNO,BF,DUF,DKHI)
-C
-        IF ( COMPOR(1)(1:4).EQ.'GLRC') THEN
-            CALL GLRCST(OPT,DELAS,EPS,DEPS,KHI,DKHI,T1VE,T2VE,T2EV,
-     &                  ZR(ICONTM+ICPG),ZR(IVARIM+ICPV),
-     &                  ZR(ICONTP+ICPG),ZR(IVARIP+ICPV),
-     &                  DSIDEP)
-C
+
+        CALL JEVECH('PCACOQU','L',ICARA)
+C ---   EPAISSEUR TOTALE :
+        EP = ZR(ICARA)
+
+        DO 60, I = 1,50
+          MATR(I) = 0.0D0   
+          MATI(I) = 0   
+ 60     CONTINUE
+        
+        TSHEAR = 0 
+        
+        DO 70, I = 1,3
+          EPST(I)     = EPS(I) + DEPS(I)        
+          EPST(3 + I) = KHI(I) + DKHI(I)        
+          DEPS(3 + I) = DKHI(I)        
+ 70     CONTINUE
+        SURFGP = 0.0D0 
+
+        DO 75, I = 1,21
+          ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
+ 75     CONTINUE
+ 
+        DO 77, I = 1,6
+          SIG(I) = ZR(ICONTM-1 + ICPG + I)           
+ 77     CONTINUE
+
+        CALL MAGLRC (NNO,COMPOR,PGL,MATR,MATI,DELAS,ECR)
+
+        IF ( (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') .OR. 
+     +       (COMPOR(1)(1:4).EQ. 'GLRC')) THEN
+
+C   AIRE DE SURFACE APPARTENANT AU POINT DE G.  
+          SURFGP = POIDS 
+          CALL GLRCMM(MATR,MATI,EP,SURFGP,PGL,SIG
+     &               ,EPST,DEPS,DSIG,ECR,TSHEAR,DELAS,DSIDEP)
+
+          DO 78, I = 1,3
+            DSIG(I)     = DSIG(I) * EP  
+            DSIG(3 + I) = DSIG(3 + I) * EP*EP / 6.D0  
+ 78       CONTINUE
+
+          DO 80, I = 1,21
+           ZR(IVARIP-1 + ICPV + I) = ECR(I)        
+ 80       CONTINUE
+ 
+          DO 85, I = 1,6
+           ZR(ICONTP-1 + ICPG + I) = SIG(I) + DSIG(I)        
+ 85       CONTINUE
+
         ELSE
            CALL UTDEBM ('F','DXGLRC','LA LOI DE COMPORTEMENT SUIVANTE')
            CALL UTIMPK ('S',' N''EXISTE PAS POUR LA '//
@@ -336,7 +367,9 @@ C         ------------
 C
 C       -- FIN BOUCLE SUR LES POINTS DE GAUSS
 C
+
   130 CONTINUE
+
 C
 C     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
 C     -----------------------------------------------
@@ -348,5 +381,5 @@ C     -----------------------------------------------
         ENDIF
       END IF
   140 CONTINUE
-C
-      END
+
+      END 

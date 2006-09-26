@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -313,7 +313,7 @@ REPONSE=STAT_NON_LINE(
                      INCREMENT=_F(   
                                   LIST_INST = L_INST,
                                   INST_FIN=1.,
-                                  SUBD_PAS=4,
+                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1.E-6,
                                   ),  
                      NEWTON=_F(   

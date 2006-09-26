@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -173,7 +173,7 @@ RESULT=STAT_NON_LINE(       MODELE=MO,
                            COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'GREEN_GR',),
                            INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.00000001,
                                       NUME_INST_FIN = 11),
                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE',
@@ -199,7 +199,7 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                       DEFORMATION = 'GREEN_GR',),
                            INCREMENT=_F( LIST_INST = LIS_INST,
                                       NUME_INST_INIT = 11, 
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.00000001,
                                      NUME_INST_FIN = 151),
                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE',

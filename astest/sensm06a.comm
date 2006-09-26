@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN ELASTICITE LINEAIRE ISOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,9 +80,9 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.E-4,
-                                COEF_SUBD_PAS_1=1.0,),
+                                SUBD_COEF_PAS_1=1.0,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

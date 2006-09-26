@@ -1,10 +1,11 @@
-      FUNCTION FPLAS (MOM, PLASMO)
+      SUBROUTINE  HPLASS(NMNBN,NMPLAS,NMDPLA,NMDDPL,BEND,HPLAS)
+      
       IMPLICIT NONE
-      REAL*8 FPLAS
-      REAL*8 MOM(3), PLASMO(3)
+
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +22,31 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C-----------------------------------------------------------------------
-C     BUT    :     CALCUL DE LA FONCTION SEUIL F 
-C
-C IN  R  MOM     : MOMENT - MOMENT DE RAPPEL (M-BACKM)
-C     R  PLASMO  : MOMENTS LIMITES ELASTIQUES DANS LE REPERE ORTHOTROPE
-C
-C OUT R  FPLAS   : VALEUR DE LA FONCTION SEUIL
-C-----------------------------------------------------------------------
-C
-      FPLAS = -(MOM(1)-PLASMO(1))*(MOM(2)-PLASMO(2)) + (MOM(3))**2
-C
+      REAL*8 HPLAS(6,*)
+C---------------------------------------------
+        REAL*8  NMNBN(6)         
+        REAL*8  NMPLAS(2,3)   
+        REAL*8  NMDPLA(2,2)  
+        REAL*8  NMDDPL(2,2)
+        REAL*8  NMZEF        
+        REAL*8  NMZEG         
+        INTEGER NMIERF  
+        INTEGER NMPROX(2)  
+C---------------------------------------------
+      INTEGER BEND
+
+      CALL R8INIR(6*6,0.D0,HPLAS,1)
+      
+      HPLAS(1,1)=NMDDPL(BEND,1)*(NMNBN(5)-NMPLAS(BEND,2))
+      HPLAS(2,2)=NMDDPL(BEND,2)*(NMNBN(4)-NMPLAS(BEND,1))
+      HPLAS(2,1)=-NMDPLA(BEND,1)*NMDPLA(BEND,2)
+      HPLAS(1,2)=HPLAS(2,1)
+      HPLAS(5,1)=NMDPLA(BEND,1)
+      HPLAS(1,5)=NMDPLA(BEND,1)
+      HPLAS(4,2)=NMDPLA(BEND,2)
+      HPLAS(2,4)=NMDPLA(BEND,2)
+      HPLAS(4,5)=-1.D0
+      HPLAS(5,4)=-1.D0
+      HPLAS(6,6)=2.D0
+
       END 

@@ -1,10 +1,11 @@
-      FUNCTION GPLAS (MOM, PLASMO)
+      FUNCTION GPLASS (NMNBN,NMPLAS,BEND)
+      
       IMPLICIT NONE
-      REAL*8 GPLAS
-      REAL*8 MOM(3), PLASMO(3), X, Y, COEF
+
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,22 +22,29 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C-----------------------------------------------------------------------
-C     BUT    : CALCUL DE LA FONCTION G ASSOCIE A LA FONCTION SEUIL F   
-C
-C IN  R  MOM     : MOMENT - MOMENT DE RAPPEL (M-BACKM)
-C     R  PLASMO  : MOMENTS LIMITES ELASTIQUES DANS LE REPERE ORTHOTROPE
-C
-C OUT R  GPLAS   : VALEUR DE LA FONCTION G ASSOCIE AU CRITERE DE 
-C                  PLASTICITE F
-C-----------------------------------------------------------------------
-C
-      X = MOM(1)-PLASMO(1)
-      Y = MOM(2)-PLASMO(2)
+      REAL*8 GPLASS
+C---------------------------------------------
+        REAL*8  NMNBN(6)         
+        REAL*8  NMPLAS(2,3)   
+        REAL*8  NMDPLA(2,2)  
+        REAL*8  NMDDPL(2,2)
+        REAL*8  NMZEF        
+        REAL*8  NMZEG         
+        INTEGER NMIERF  
+        INTEGER NMPROX(2)  
+C---------------------------------------------
+      REAL*8 X, Y, COEF
+      INTEGER BEND
+
+      X = NMNBN(4)-NMPLAS(BEND,1)
+      Y = NMNBN(5)-NMPLAS(BEND,2)
+
       COEF = 1.001D0
-      IF (PLASMO(1) .GT. 0.D0) THEN
-            GPLAS =  MAX(COEF*X + Y, X/COEF + Y)
+
+      IF (BEND  .EQ.  1) THEN
+            GPLASS =  MAX(COEF*X + Y, X/COEF + Y)
       ELSE
-            GPLAS =  MAX(-COEF*X - Y,-X/COEF - Y)               
+            GPLASS =  MAX(-COEF*X - Y,-X/COEF - Y)
       ENDIF
-      END 
+
+      END

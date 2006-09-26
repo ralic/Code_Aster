@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -198,7 +198,7 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_PAS=3,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                                 SUBD_PAS_MINI=1.E-3,),
                    HHT=_F(ALPHA=0.0,),
                    NEWTON=_F(REAC_INCR=0,
@@ -229,7 +229,7 @@ RESU2=DYNA_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_PAS=3,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                                 SUBD_PAS_MINI=1.E-3,),
                    HHT=_F(ALPHA=0.0,),
                    NEWTON=_F(REAC_INCR=0,

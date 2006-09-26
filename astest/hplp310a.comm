@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,7 +206,7 @@ CHAMDEP0=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                        SUBD_PAS = 10,
+                        SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
                    SUBD_PAS_MINI = 0.000001),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 4),
@@ -236,7 +236,7 @@ CHAMDEP1=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                        SUBD_PAS = 4,
+                        SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                    SUBD_PAS_MINI = 0.000001),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 4)
@@ -265,7 +265,7 @@ CHAMDEP2=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                        SUBD_PAS = 4,
+                        SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                    SUBD_PAS_MINI = 0.000001),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 4)
@@ -456,7 +456,7 @@ CHAMDEP9=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                        SUBD_PAS = 10,
+                        SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
                    SUBD_PAS_MINI = 0.000001),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 4)

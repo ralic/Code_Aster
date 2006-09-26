@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C COMPIL PARAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/03/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,10 +80,11 @@ C ----------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*1      KCLAS
-      CHARACTER*8      KCOND
+      CHARACTER*8      KCOND,VALK(1)
       CHARACTER*32     NOMCAR
       CHARACTER*75     CMESS
-      INTEGER          IADCAR,IADDAC(2),LGBL
+      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7)
+      REAL*8           VALR(1)
 C DEB ------------------------------------------------------------------
       KCOND = COND
       KCLAS = CLAS
@@ -214,25 +215,17 @@ C
         ENDIF
       ENDIF
 C
-      CALL JVDEBM ( 'I' , ' ' , ' ' )
-      CALL JVIMPK ( 'L' , 'NOM DE LA BASE                    : ',
-     &               1 , NOMBAS(IC))
-      CALL JVIMPI ( 'L' , 'NOMBRE D''ENREGISTREMENTS UTILISES : ',
-     &               1 , NBLUTI(IC) )
-      CALL JVIMPI ( 'L' , 'NOMBRE D''ENREGISTREMENTS MAXIMUM  : ',
-     &               1 , NBLMAX(IC) )
-      LGBL = 1024*LONGBL(IC)*LOIS
-      CALL JVIMPI ( 'L' , 'LONGUEUR D''ENREGISTREMENT (OCTETS): ',
-     &               1 , LGBL )
-      CALL JVIMPI ( 'L' , 'NOMBRE TOTAL D''ENTREES/SORTIES    : ',
-     &               1 , NBIO)
-      CALL JVIMPI ( 'L' , 'NOMBRE D''IDENTIFICATEURS UTILISES : ',
-     &               1 , NREUTI(IC) )
-      CALL JVIMPI ( 'L' , 'TAILLE MAXIMUM DU REPERTOIRE      : ',
-     &               1 , NREMAX(IC) )
-      CALL JVIMPI ( 'L' , 'TAUX D''UTILISATION DU REPERTOIRE %: ',
-     &               1 , (NREUTI(IC)*100)/NREMAX(IC))
-      CALL JVFINM
+      VALK(1)= NOMBAS(IC)
+      VALI(1)= NBLUTI(IC)
+      VALI(2)= NBLMAX(IC)
+      VALI(3)= 1024*LONGBL(IC)*LOIS
+      VALI(4)= NBIO
+      VALI(5)= NREUTI(IC)
+      VALI(6)= NREMAX(IC)
+      VALI(7)= (NREUTI(IC)*100)/NREMAX(IC)
+C      
+      CALL U2MESG ('I','JEVEUX_2',1,VALK,7,VALI,0,VALR)
+C      
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1

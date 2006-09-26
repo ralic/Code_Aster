@@ -1,5 +1,6 @@
-# MODIF  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 25/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
+# RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,8 +62,11 @@ TFIN = 0.005;
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.001,
                                     NOMBRE=1,),
+                                 _F(JUSQU_A=0.0018,
+                                    NOMBRE=4,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=5,),),);
+                                    NOMBRE=5,),
+                                    ),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
@@ -73,9 +77,10 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   Q=9.77,
                                   B=19.34,
                                   H1=1.0,
-                                  H2=2.0,
-                                  H3=3.0,
-                                  H4=4.0,),
+                                  H2=1.0,
+                                  H3=1.0,
+                                  H4=1.0,
+                                  ),
                     ECRO_CINE1=_F(D=36.68,),);
 
 COEF=DEFI_FONCTION(NOM_PARA='INST',
@@ -134,16 +139,12 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                    COMPOR=MONO1,
                                    DEFORMATION='PETIT',
-                                   RESI_INTE_RELA=1e-12,
                                    ITER_INTE_MAXI=150,
                                    TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST,
-                                   SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1e-06,),),
+                     INCREMENT=(_F(LIST_INST=LINST),),
                      NEWTON=(_F(PREDICTION='EXTRAPOL',
                                 REAC_ITER=1,),),
-                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=100,
+                     CONVERGENCE=(_F(ITER_GLOB_MAXI=100,
                                      ),),);
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
@@ -159,16 +160,17 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='SIXX',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-24.08,
-                   REFERENCE='ANALYTIQUE',),
+                   PRECISION=(0.0001,1e-06,),
+                   VALE=-25.172,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
                    NOM_CHAM='EPSI_ELGA_DEPL',
                    NOM_CMP='EPXX',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-1.499175E-03,
-                   PRECISION=(0.01,1e-06,),
+                   VALE=-1.49584E-03,
+                   PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
@@ -176,8 +178,8 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='EPYY',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-2.71762586E-03,
-                   PRECISION=(0.01,1e-06,),
+                   VALE=-2.70269E-03,
+                   PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
@@ -185,12 +187,12 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='EPYY',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-2.60714075E-03,
-                   PRECISION=(0.01,1e-06,),
+                   VALE=-2.587725E-03,
+                   PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),),);
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=CUBE))
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=CUBE,RESULTAT=SOLNL))
 
+
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL,INST=TFIN,VALE_MAX='OUI'))
 FIN()
 

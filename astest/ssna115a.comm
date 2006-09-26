@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE ARRACHEMENT D'UNE ARMATURE RIGIDE AVEC DES ELEMENTS A DISCONTINUITE (EN AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,7 +178,7 @@ EVOL = STAT_NON_LINE(
          INCREMENT = _F(
                          LIST_INST = INSTANTS, 
                          INST_FIN  = 0.,
-                         SUBD_PAS  = 10,
+                         SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
                          SUBD_PAS_MINI = 1.E-5
        ),
          RECH_LINEAIRE = _F (
@@ -211,7 +211,7 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
   INCREMENT = _F(
     LIST_INST = INSTANTS,
     INST_FIN  = tfin,
-    SUBD_PAS  = 10,
+    SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
     SUBD_PAS_MINI = 1.E-5
     ),
   PILOTAGE  = _F (

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,7 +125,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 INCREMENT=_F( 
                 LIST_INST = L_INST,
                 INST_FIN = 1.594,
-                SUBD_PAS = 4,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                 SUBD_PAS_MINI = 1.E-6),
                PILOTAGE=_F( 
                 TYPE = 'PRED_ELAS',
@@ -153,7 +153,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                  
                 INCREMENT=_F( 
                 LIST_INST = L_INST,
-                SUBD_PAS = 4,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                 SUBD_PAS_MINI = 1.E-6),
                PILOTAGE=_F( 
                 TYPE = 'PRED_ELAS',

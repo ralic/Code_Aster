@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ REST=STAT_NON_LINE(MODELE=MODELE,
                                 ITER_INTE_MAXI=150,
                                 ),
                    INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1e-06,),
                    NEWTON=_F(REAC_INCR=1,
                              PREDICTION='ELASTIQUE',
@@ -209,7 +209,7 @@ REST2=STAT_NON_LINE(MODELE=MODELE,
                                  ITER_INTE_MAXI=15,
                                  ),
                     INCREMENT=_F(LIST_INST=LINST2,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1e-06,),
                     NEWTON=_F(REAC_INCR=1,
                               PREDICTION='ELASTIQUE',
@@ -284,7 +284,7 @@ REST3=STAT_NON_LINE(MODELE=MODELE,
                                  ITER_INTE_MAXI=15,
                                  ),
                     INCREMENT=_F(LIST_INST=LINST3,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1e-06,),
                     NEWTON=_F(REAC_INCR=1,
                               PREDICTION='ELASTIQUE',
@@ -485,7 +485,7 @@ REST5=STAT_NON_LINE( MODELE=MODELE,
                 ),
                INCREMENT=_F(
                 LIST_INST = LINST3,
-                SUBD_PAS=4,
+                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                 SUBD_PAS_MINI=1.E-06,
                 ),
                 NEWTON=_F(

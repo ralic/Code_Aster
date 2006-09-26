@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 #
 # TITRE TEST DE LA LEVEE DE L'EXCEPTION ARRETCPUERROR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,9 +113,9 @@ try:
                      CONVERGENCE=(_F(ITER_GLOB_MAXI=20,)),
                      INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=1.,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1.E-4,
-                                 COEF_SUBD_PAS_1=1.0,),
+                                 SUBD_COEF_PAS_1=1.0,),
                      NEWTON=_F(MATRICE='TANGENTE',
                               PREDICTION='ELASTIQUE',
                               REAC_ITER=1,),

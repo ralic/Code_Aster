@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,14 +58,14 @@ C
       INTEGER ICONTM, JCRET
       INTEGER JMATE,  LZI,     NNO,    JGEOM, JMATR 
       INTEGER JENER,  I,      JFREQ,   IACCE
-      INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET
+      INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET, N1, NI
       LOGICAL LCOELA
       CHARACTER*2  CODRE2(33)
       CHARACTER*10 PHENOM
 C
       REAL*8 PGL(3,3)  ,XYZL(3,4),BSIGMA(24), EFFGT(32)
       REAL*8 VECLOC(24),ENER(3),  MATP(24,24),MATV(300)
-      REAL*8 T2EV(4), T2VE(4), T1VE(9)
+      REAL*8 T2EV(4), T2VE(4), T1VE(9), COEF
 C
 C     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -167,8 +167,24 @@ C     --------------------------------------
           DO 30 I = 1,NDIM
             ZR(JMATR-1+I) = MATLOC(I)
    30     CONTINUE
+   
+   
+C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6, 
+C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE 
+C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5 
+C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
+
+          COEF = 1.0D0 
+          DO 35 J = 1,NNO
+            N1 = 6*(J-1) + 5
+            NI = 6*J
+            NDIM = (NI + 1)*NI/2 
+            N1   = (N1 + 1)*N1/2 
+            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF 
+   35     CONTINUE        
+
+
         END IF
-C
       ELSE IF (OPTION.EQ.'MASS_INER') THEN
 C     --------------------------------------
         CALL JEVECH('PMASSINE','E',JMATR)

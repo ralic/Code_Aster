@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 26/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,6 +106,14 @@ C         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
 C         ---------------------------------------------------
           IF (OPTION.EQ.' ') THEN
             OPTIO2 = 'TOU_INI_'//TYCHR
+            IF(OPERA.EQ.'ASSE')THEN
+              CALL GETVID('ASSE','CHAM_GD',1,1,1,CHIN,IB)
+              CALL JEEXIN(CHIN//'           .CELK',IRET)
+              IF(IRET.NE.0)THEN
+                CALL DISMOI('F','NOM_OPTION',CHIN,'CHAM_ELEM',
+     &                       IB,OPTIO2,IB)
+              ENDIF
+            ENDIF
           ELSE
             OPTIO2 = OPTION
           END IF

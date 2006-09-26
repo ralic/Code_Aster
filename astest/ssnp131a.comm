@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,87 +332,6 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                                ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',),);
-
-#----------------------------------------------------------------------
-# --------------- CALCUL DE G-THETA 
-#----------------------------------------------------------------------
-
-# nombre de couronnes ( rayons inferieur et superieur )
-nbcour = 4
-Rinf = [0.,0.25,0.5,1.,2.,5. ]
-Rsup=  [0.,0.5 ,1. ,2.,5.,10.]
-
-theta  = [None]*(nbcour+1)
-gtheta = [None]*(nbcour+1)
-
-for i in range(1,nbcour+1) :
-
-  theta[i]=CALC_THETA(MODELE=MOD,
-                      DIRECTION=(1.0,0.0,0.0),
-                      THETA_2D=_F(GROUP_NO='PFON_0',
-                                  MODULE=1.0,
-                                  R_INF=Rinf[i],
-                                  R_SUP=Rsup[i],),);
-
-  gtheta[i]=CALC_G(MODELE=MOD,
-                    CHAM_MATER=CHMAT,
-                    THETA=_F(THETA=theta[i]),
-                    EXCIT=(_F(CHARGE=COND_LIM,),
-                           _F(CHARGE=CHAD,),
-                           _F(CHARGE=CHTEMP,)),
-                    RESULTAT=RESU,
-                    TOUT_ORDRE='OUI',
-                    SYME_CHAR='SYME',
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
-                                 DEFORMATION='PETIT',),);
-
-
-  IMPR_TABLE(TABLE=gtheta[i]);
-
-#
-#----------------------------------------------------------------------
-# --------------- OUVERTURE
-#----------------------------------------------------------------------
-#
-
-OUVERTUR=POST_RELEVE_T(ACTION=_F(INTITULE='OUV',
-                                 GROUP_NO='PCMOD',
-                                 RESULTAT=RESU,
-                                 NOM_CHAM='DEPL',
-                                 TOUT_ORDRE='OUI',
-                                 TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=OUVERTUR,
-           NOM_PARA=('NUME_ORDRE','INST','DY'));
-
-#
-#----------------------------------------------------------------------
-# --------------- FORCE RESULTANT DU DEPLACEMENT IMPOSEE
-#----------------------------------------------------------------------
-#
-
-RESU=CALC_NO(reuse =RESU,
-             MODELE=MOD,
-             RESULTAT=RESU,
-             EXCIT=(_F(CHARGE=COND_LIM,),          
-                  _F(CHARGE=CHAD,),                   
-                  _F(CHARGE=CHTEMP,),
-                  ),                    
-             TOUT_ORDRE='OUI',
-             OPTION=('FORC_NODA'),
-             CHAM_MATER=CHMAT,);
-
-FNODA=POST_RELEVE_T(ACTION=_F(INTITULE='F_NODA',
-                              GROUP_NO='PGOUP',
-                              RESULTAT=RESU,
-                              NOM_CHAM='FORC_NODA',
-                              TOUT_ORDRE='OUI',
-                              RESULTANTE=('DY'),
-                              OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=FNODA,
-           NOM_PARA=('NUME_ORDRE','INST','DY',));
 
 FIN();
 #

@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/03/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,10 +104,12 @@ C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*4      Z
       PARAMETER      ( Z = 'INIT' )
-      CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
+      CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU,VALK(2)
       CHARACTER*16     K16BID
       CHARACTER*75     CMESS
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
+      INTEGER          VALI(7)
+      REAL*8           VALR(1)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
       LOGICAL          LENRG
@@ -438,26 +440,18 @@ C
           CALL JVIMPI ( 'S' , 'A ', 1 , NBLMA2 )
           CALL JVFINM
           LENRG = .TRUE.
-        ENDIF  
-
-        CALL JVDEBM ( 'I' , ' ' , ' ' )
-        CALL JVIMPK ( 'L' , 'REOUVERTURE DE LA BASE            : ',
-     &                 1 , NOMBAS(IC))
-        CALL JVIMPK ( 'L' , 'CREEE AVEC LA VERSION             : ',
-     &                1 , CVERSB)
-        CALL JVIMPI ( 'L' , 'NOMBRE D''ENREGISTREMENTS UTILISES : ',
-     &                 1 , NBLUTI(IC) )
-        CALL JVIMPI ( 'L' , 'NOMBRE D''ENREGISTREMENTS MAXIMUM  : ',
-     &                 1 , NBLMAX(IC) )
-        CALL JVIMPI ( 'L' , 'LONGUEUR D''ENREGISTREMENT (OCTETS): ',
-     &                 1 , 1024*LONGBL(IC)*LOIS )
-        CALL JVIMPI ( 'L' , 'NOMBRE D''IDENTIFICATEURS UTILISES : ',
-     &                 1 , NREUTI(IC) )
-        CALL JVIMPI ( 'L' , 'TAILLE MAXIMUM DU REPERTOIRE      : ',
-     &                 1 , NREMAX(IC) )
-        CALL JVIMPI ( 'L' , 'TAUX D''UTILISATION DU REPERTOIRE %: ',
-     &                 1 , (NREUTI(IC)*100)/NREMAX(IC) )
-        CALL JVFINM
+        ENDIF 
+         
+        VALK(1)= NOMBAS(IC)
+        VALK(2)= CVERSB
+        VALI(1)= NBLUTI(IC)
+        VALI(2)= NBLMAX(IC)
+        VALI(3)= 1024*LONGBL(IC)*LOIS
+        VALI(4)= NREUTI(IC)
+        VALI(5)= NREMAX(IC)
+        VALI(6)= (NREUTI(IC)*100)/NREMAX(IC)
+        
+        CALL U2MESG ('I','JEVEUX_1',2,VALK,6,VALI,1,VALR)
 C
         NBLMAX(IC)= NBLMA2
 C

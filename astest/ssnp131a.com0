@@ -1,329 +1,86 @@
-# AJOUT
-# TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
-# RESPONSABLE
-POURSUITE(CODE=_F( NOM = 'SSNP131A'),PAR_LOT='NON',)
+POURSUITE(CODE=_F(NOM='SSNP131A'))
 
-#  ----------------------------------------------------                                                                                            
-#  --- DONNEES POUR IDENTIFICATION DES GP CRITIQUES ---                                                             
-#  ----------------------------------------------------
 
-# --- MODULE YOUNG ET COEFF POISSON ASSOCIES A LA TEMPERATURE DE CALCUL
-nu    = 0.3
-young = 219250.
-# ---TENACITES DU MATERIAU CORRESPONDANT A DES PROBABILITES DE RUPTURE DE 5,50 ET 95%
-# ---CONVERSION DE MPA.M1/2 EN MPA.MM1/2
-convmm = (1000.**0.5)
-kjmin = 27.2*convmm
-kjmoy = 34. *convmm
-kjmax = 40. *convmm
-# ---NOMBRE DE COPEAUX POUR LE CALCUL DU GP
 nbcop = 40
-# ---PAS DE CALCUL DU GP (ICI EPAISSEUR D'UN COPEAU)                        
-deltal = 0.02 
-# ---DISTANCE A L'AXE DE SYMETRIE (VAUT 1 SI MODELISATION NON AXISYMETRIQUE)
-raxe = 1.0
-# ---EXPOSANT DE LA LOI EXPONENTIELLE STATISTIQUE : P(KGP)=1 - EXP(- (KGP/KGP0)**PM)
-pm = 22.673
-#
-def EXTRACT(table,para,champ):
-#
-#  ----------------------------------------------------                                                                                            
-#  FONCTION D'EXTRACTION DE COLONNES D'UN OBJET TABLE 
-#  ----------------------------------------------------                                                                                            
-#  
-    import Numeric
+l_copeaux = ['COPS_%d' % k for k in range(1, nbcop+1)]
 
-    result = [ [None]*2]
-    nb_temp = 0
-    while 1:
-       try:
-         result[nb_temp][0] = table[para,nb_temp+1]
-         result[nb_temp][1] = table[champ,nb_temp+1]
-         nb_temp = nb_temp + 1
-         result.append([None]*2)
-       except KeyError:
-          break
-    rep = result[0:nb_temp]
-    F = Numeric.zeros((len(rep),2),Numeric.Float)
-    for i in range(len(rep)):
-      for j in range(2):
-        F[i][j] = rep[i][j]
-    del(rep)
-    del(result)
-    return F
+# conversion MPa.m^1/2 vers MPa.mm^1/2
+conv = 1000 ** 0.5
+kjc1 = 27.2 * conv
+kjc2 = 34.  * conv
+kjc3 = 40.  * conv
+
+# température de calcul
+tcal = 35.
+
+tab = POST_GP(RESULTAT=RESU,
+              MODELE=MOD,
+              MATER=ACIER,
+              CHAM_MATER=CHMAT,
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
+                           DEFORMATION='PETIT'),
          
-def INTERPOL(xa,xb,fa,fb,xc):
-#
-#  ----------------------------------------------------                                                                                            
-#  FONCTION D'INTERPOLATION LINEAIRE ENTRE DEUX VALEURS 
-#  ----------------------------------------------------                                                                                            
-#   
-    if (xa == xb):
-     fc = fa
-    elif (xc == xa):
-     fc = fa
-    elif (xc == xb):
-     fc = fb
-    else:
-     fc = (fb-fa)/(xb-xa)*xc + (xa*fb-xb*fa)/(xa-xb)
-    
-    return fc
-#
-import os
-
-#  ------------------------------------------------------------                                                                                              
-#  --- CALCUL DE L'ENERGIE ELASTIQUE SUR LE FOND D'ENTAILLE ---                                                             
-#  ------------------------------------------------------------
-
-methode = 'cops'
-#methode = 'defigroup'
-kmin = 1                                                                                              
-ENEE=[None]*(nbcop+1) ;
-COPO = [None]*(nbcop+1)
-for k in range(1,nbcop+1):
-
-     if (methode == 'defigroup'):
-#     
-#      methode 1 : creation du groupe de mailles en      
-#                  prelevant les mailles a l'interieur de la surface totale 
-#                  des copeaux COPS_nbcop
-       kmax = k*8 
-       LIG = 'COPO_%i' %(k)
-       MA   = DEFI_GROUP (  reuse = MA,
-                         MAILLAGE = MA,
-                    CREA_GROUP_MA = _F( NOM = LIG ,
-                        GROUP_MA = 'COPS_40',
-                       NUME_INIT = kmin,
-                       NUME_FIN  = kmax,),
-                            INFO = 2,) 
-     else :               
-#     
-#      methode 2 : on exploite les groupes de mailles COPS_xx      
-#                  construits par la procedure de maillage
-#
-       LIG = 'COPS_%i' %(k)
-
-#     print " pas numero : ",k
-#     print " distance cumulee : ",k*deltal," millimetres"
-
-     ENEE[k] = POST_ELEM (       MODELE=MOD,
-                                 RESULTAT=RESU,
-                                 CHAM_MATER=CHMAT,
-                                 CHARGE   = (CHTEMP,COND_LIM,CHAD),
-                                 TOUT_ORDRE ='OUI',
-                                 ENER_ELAS=_F(GROUP_MA=LIG),
-                                 TITRE='Energie Elastique', 
-                            )
-#     IMPR_TABLE (TABLE=ENEE[k],
-#                 FORMAT_R='1PE18.11')
-                 
-nbord = len(EXTRACT(ENEE[1],'INST','TOTALE'))
-# print " nbe numeros d'ordre : ",nbord
-
-#  ---------------------------------------------                                                                                              
-#  --- CALCUL DES KJ VIA LA FORMULE D'IRWIN ---                                                             
-#  ---------------------------------------------
-
-print '\n+++++++++++++++++++++++++++++++++++++++++'
-print ' EXPRESSION DES KJ SUR CHAQUE COURONNE '
-print '+++++++++++++++++++++++++++++++++++++++++\n'
-for j in range(1,nbcour+1):
-  print ' C%i ( %5.3f - %5.3f)' % (j,Rinf[j],Rsup[j]),        
-print '\n Instant',
-for j in range(1,nbcour+1):
-  print '   G-theta        Kj',       
-print '\n',           
-for i in range(1,nbord+1):
-  print '%9.3f ' % (gtheta[1]['INST',i]),
-  for j in range(1,nbcour+1):
-    kj = (gtheta[j]['G',i]/raxe*young/(1.0 - pow(nu,2)))**0.5
-    print '%9.3f %9.3f ' % (gtheta[j]['G',i]/raxe,kj),
-  print ' '
-#  ------------------------------------------------------------------------------------------                                                                                              
-#  --- CALCUL DU GP ET DU GPMAX SUR LE FOND D'ENTAILLE PAR MAXIMISATION DU FLUX D'ENERGIE ---                                                             
-#  ------------------------------------------------------------------------------------------
-
-gpmax = [None]*(nbord+1)
-kmax  = [None]*(nbord+1)
-#print '\n+++++++++++++++++++++++++++++++++++++++++++++'
-#print 'EVOLUTION DU GP A CHAQUE INSTANT SUIVANT DELTAL'
-#print '+++++++++++++++++++++++++++++++++++++++++++++\n'
-
-for j in range(1,nbord+1):
-   t = ENEE[1]['INST',j]
-#   print '\n Instant : %f' % (t) 
-   gpmax[j] = 0.
-#   print 'Deltal   - Eelas  -  Gp'
-   for k in range(1,nbcop+1):
-     ETOT=ENEE[k]['TOTALE',j]
-     GP = 2.0*(ETOT)/(k*deltal)
-     if GP > gpmax[j]: 
-        gpmax[j] = GP
-        kmax[j] = k*deltal
-#     print '%f %0.11f %3f'  % ((k*deltal),ETOT,GP)
-
-print '\n+++++++++++++++++++++++++++++++++++++++++'
-print 'CRITERE ENERGETIQUE GP EN FONCTION DU TEMPS'
-print '+++++++++++++++++++++++++++++++++++++++++\n'
-print 'Instant  - deltal max - Gpmax'
-
-for j in range(1,nbord+1):
-   t = ENEE[1]['INST',j]
-   print '%f %3f %3f '  % (t,kmax[j],gpmax[j])
-
-#  ---------------------------------------------------------------                                                                                              
-#  --- IDENTIFICATION DES GP CRITIQUE D'APRES LES KJ CRITIQUE 
-#      (PROBABILITE DE RUPTURE DE 5,50 ET 95%)  ---                                                             
-#  ---------------------------------------------------------------
-
-print '\n+++++++++++++++++++++++++++++++++++++++++'
-print 'INSTANTS CRITIQUES IDENTIFIES'
-print '+++++++++++++++++++++++++++++++++++++++++\n'
-gmin = pow(kjmin,2)*(1.0 - pow(nu,2))/young
-gmoy = pow(kjmoy,2)*(1.0 - pow(nu,2))/young
-gmax = pow(kjmax,2)*(1.0 - pow(nu,2))/young
-sgpcour = [0.,0.,0.,0.]
-for i in range(1,4):
-      stcour = 0.
-      if i ==1:
-          gcour = gmin
-          print 'IDENTIFICATION Kj min(5%)'
-          print ' --- Kj = %f  ----- G = %f' % (kjmin,gmin)
-      if i ==2:
-          gcour = gmoy
-          print 'IDENTIFICATION Kj moy(50%)'
-          print ' --- Kj = %f  ----- G = %f' % (kjmoy,gmoy)
-      if i ==3:
-          gcour = gmax
-          print 'IDENTIFICATION Kj max(95%)'
-          print ' --- Kj = %f  ----- G = %f' % (kjmax,gmax)
-
-      for j in range(1,nbcour+1):
-
-        if (gcour > gtheta[j]['G',nbord]/raxe):
-         print ' <STOP> erreur : identification impossible'
-         print ' <STOP> valeur de gtheta a identifier:',gcour
-         print ' <STOP> couronne :',j
-         print ' <STOP> valeur maximale calculee :',gtheta[j]['G',nbord]/raxe
-         FIN();
-
-        for k in range(1,nbord+1):
-          if (gcour < gtheta[j]['G',k]/raxe):
-             if ( k == 1):
-               gp1 = 0.
-               g1 = 0.
-               t1 = 0.
-             else:
-               gp1 = gpmax[k-1]
-               g1 = gtheta[j]['G',k-1]/raxe
-               t1 = gtheta[j]['INST',k-1]
-             gp2 = gpmax[k]
-             g2 = gtheta[j]['G',k]/raxe
-             t2 = gtheta[j]['INST',k]    
-             break
-        gpcour = INTERPOL(g1,g2,gp1,gp2,gcour)
-        sgpcour[i] = sgpcour[i] + gpcour
-        tcour  = INTERPOL(g1,g2,t1,t2,gcour)
-        stcour = stcour + tcour
-        kgpcour = (gpcour*young/(1.0 - pow(nu,2)))**0.5
-        print 'COURONNE No %i ' % (j),
-        print '(R_INF = %f ET R_SUP = %f)' % (Rinf[j],Rsup[j])      
-        print '--- Instant ----  Gp  -----  KGp'
-        print '%f %f %f' % (tcour,gpcour,kgpcour)
-
-      sgpcour[i] = sgpcour[i] / nbcour
-      stcour = stcour / nbcour
-      print 'VALEURS MOYENNES'
-      print '--- Instant moyen ----  Gp moyen  -----  KGp moyen'
-      skgpcour = (sgpcour[i]*young/(1.0 - pow(nu,2)))**0.5
-      print '%f %f %f\n' % (stcour,sgpcour[i],skgpcour)
-      
-#  ---------------------------------------------------------------                                                                                              
-#  --- CREATION D'UNE TABLE CONTENANT LES GP CRITIQUE
-#      ET TEST DES VALEURS  ---                                                             
-#  ---------------------------------------------------------------
-
-TB1 = CREA_TABLE(
-            LISTE = ( 
-                      _F(PARA='PKJ' , LISTE_I=(5,50,95),),
-                      _F(PARA='GPCMOY' , LISTE_R=(sgpcour[1],sgpcour[2],sgpcour[3]),),
-                      ) 
-                 ),
-
-TEST_TABLE(TABLE=TB1,
-           FILTRE=_F(NOM_PARA='PKJ',
-                     VALE_I=5),
-           NOM_PARA='GPCMOY',
-           VERSION= '7.04',
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 1.0E-6,
-           CRITERE = 'RELATIF', 
-           VALE=0.67344798 );
-
-TEST_TABLE(TABLE=TB1,
-           FILTRE=_F(NOM_PARA='PKJ',
-                     VALE_I=50),
-           NOM_PARA='GPCMOY',
-           VERSION= '7.04',
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 1.0E-6,
-           CRITERE = 'RELATIF', 
-           VALE=0.8009530229 );
+              EXCIT=(_F(CHARGE=COND_LIM,),
+                     _F(CHARGE=CHAD,),
+                     _F(CHARGE=CHTEMP,)),
+              SYME_CHAR='SYME',
+         
+              DIRECTION=(1., 0., 0.),
+              THETA_2D=(_F(GROUP_NO='PFON_0',
+                           R_INF=0.25,
+                           R_SUP=0.5),
+                        _F(GROUP_NO='PFON_0',
+                           R_INF=0.5,
+                           R_SUP=1.),
+                        _F(GROUP_NO='PFON_0',
+                           R_INF=1.,
+                           R_SUP=2.),
+                        _F(GROUP_NO='PFON_0',
+                           R_INF=2.,
+                           R_SUP=5.),),
               
-TEST_TABLE(TABLE=TB1,
-           FILTRE=_F(NOM_PARA='PKJ',
-                     VALE_I=95),
-           NOM_PARA='GPCMOY',
-           VERSION= '7.04',
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 1.0E-6,
-           CRITERE = 'RELATIF', 
-           VALE= 0.916241264);
+              GROUP_MA=l_copeaux,
+              PAS_ENTAILLE=0.02,
               
-#  ----------------------------------------------------                                                                                              
-#  --- CONSTITUTION D'UNE LOI DE REPARTITION P(GP)  ---                                                             
-#  LOI EXPONENTIELLE STATISTIQUE : P(KGP)=1 - EXP(- (KGP/KGP0)**PM)
-#  ----------------------------------------------------
+              IDENTIFICATION=_F(KJ_CRIT=(kjc1, kjc2, kjc3),
+                                TEMP   =(tcal, tcal, tcal),),
+#               PREDICTION=_F(GP_CRIT=(1.,),
+#                             TEMP   =(tcal,),),
+              TABL_RESU=CO('tabident'),
+              INFO=2)
 
-for i in range(1,4):
-      for k in range(1,nbord+1):
-          if (sgpcour[i] < gpmax[k]):
-             if (i==1):
-                tmin = gtheta[1]['INST',k]
-                kgpmin = (sgpcour[i]*young/(1-(0.3**2)))**0.5
-                kgp0min = kgpmin / ((-log(0.95))**(1./pm))
-             if (i==2):
-                tmoy = gtheta[1]['INST',k]
-                kgpmoy = (sgpcour[i]*young/(1-(0.3**2)))**0.5
-                kgp0moy = kgpmoy / ((-log(0.5))**(1./pm))
-             if (i==3):
-                tmax = gtheta[1]['INST',k]
-                kgpmax = (sgpcour[i]*young/(1-(0.3**2)))**0.5
-                kgp0max = kgpmax / ((-log(0.05))**(1./pm))
-             break
+IMPR_TABLE(TABLE=tab)
+IMPR_TABLE(TABLE=tabident)
 
-print '\n+++++++++++++++++++++++++++++++++++++++++++'
-print ' PROBABILITE DE RUPTURE EN FONCTION DU TEMPS'
-print '+++++++++++++++++++++++++++++++++++++++++++\n'
-print 'Instant / deltal /   Gpmax /   KGpmax  /    T  /  Proba\n'
+TEST_TABLE(TABLE=tabident,
+           FILTRE=_F(NOM_PARA='KJ_CRIT',
+                     VALE=kjc1),
+           NOM_PARA='GPMAX',
+           VERSION= '8.3.14',
+           REFERENCE='NON_REGRESSION',
+           PRECISION = 1.0E-4,
+           CRITERE = 'RELATIF', 
+           VALE=0.673606)
 
-for i in range(1,nbord+1):
- 
-        if (gtheta[1]['INST',i] <= tmin):
-              kgp0 = kgp0min
-        elif ( (gtheta[1]['INST',i] > tmin) and (gtheta[1]['INST',i] <= tmoy) ):
-              kgp0 = INTERPOL(tmin,tmoy,kgp0min,kgp0moy,gtheta[1]['INST',i])
-        elif ( (gtheta[1]['INST',i] > tmoy) and (gtheta[1]['INST',i] <= tmax) ):
-              kgp0 = INTERPOL(tmoy,tmax,kgp0moy,kgp0max,gtheta[1]['INST',i])
-        else:
-              kgp0 = kgp0max    
-        if (gtheta[1]['INST',i] < tmin):
-          proba = 0.    
-        if (gtheta[1]['INST',i] > tmax):
-          proba = 1.
+TEST_TABLE(TABLE=tabident,
+           FILTRE=_F(NOM_PARA='KJ_CRIT',
+                     VALE=kjc2),
+           NOM_PARA='GPMAX',
+           VERSION= '8.3.14',
+           REFERENCE='NON_REGRESSION',
+           PRECISION = 1.0E-4,
+           CRITERE = 'RELATIF', 
+           VALE=0.801068)
+              
+TEST_TABLE(TABLE=tabident,
+           FILTRE=_F(NOM_PARA='KJ_CRIT',
+                     VALE=kjc3),
+           NOM_PARA='GPMAX',
+           VERSION= '8.3.14',
+           REFERENCE='NON_REGRESSION',
+           PRECISION = 1.0E-4,
+           CRITERE = 'RELATIF', 
+           VALE= 0.916285)
 
-        kgp = (gpmax[i]*young/(1.0 - pow(nu,2)))**0.5
-        proba = 1. - exp( - ((kgp/kgp0)**pm))
-        print '%f %f %f %f %f %f' % (gtheta[1]['INST',i],kmax[i],gpmax[i],kgp,TPCAL,proba) 
+FIN()
 
-FIN();

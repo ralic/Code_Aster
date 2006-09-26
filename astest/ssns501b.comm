@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 12/07/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -147,7 +147,7 @@ RESULTAT=STAT_NON_LINE(reuse=RESULTAT,      MODELE=MODELE,
                ),
                              INCREMENT=_F( LIST_INST = LIS_INST,
                                     NUME_INST_INIT = 3,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.000001,
                                     NUME_INST_FIN = 144),
                               PILOTAGE=_F( TYPE = 'LONG_ARC',

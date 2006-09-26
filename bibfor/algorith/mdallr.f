@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,19 +113,14 @@ C        --- VECTEUR PROPRE ---
            CALL RSADPA(RESU1,'L',1,KPAR(I),IMODE,1,IPAR1,TYP)
            CALL RSADPA(RESU2,'E',1,KPAR(I),IMODE,0,IPAR2,K8B)
            IF (TYP(1:1) .EQ. 'I') THEN
-              WRITE(6,*) 'ZI(',IPAR1,') = ', ZI(IPAR1)
               ZI(IPAR2) = ZI(IPAR1)
            ELSEIF (TYP(1:1) .EQ. 'R') THEN
-              WRITE(6,*) 'ZR(',IPAR1,') = ', ZR(IPAR1)
               ZR(IPAR2) = ZR(IPAR1)
            ELSEIF (TYP(1:2) .EQ. 'K8') THEN
-              WRITE(6,*) 'ZK8(',IPAR1,') = ', ZK8(IPAR1)
               ZK8(IPAR2) = ZK8(IPAR1)
            ELSEIF (TYP(1:3) .EQ. 'K16') THEN
-              WRITE(6,*) 'ZK16(',IPAR1,') = ', ZK16(IPAR1)
               ZK16(IPAR2) = ZK16(IPAR1)
            ELSEIF (TYP(1:3) .EQ. 'K32') THEN
-              WRITE(6,*) 'ZK32(',IPAR1,') = ', ZK32(IPAR1)
               ZK32(IPAR2) = ZK32(IPAR1)
            ENDIF
  200    CONTINUE

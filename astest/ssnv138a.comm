@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT LINEIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                    RESI_GLOB_RELA=1.E-06,),
                     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=0.6,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.000001,),
                     CARA_ELEM=CARA1,
                     NEWTON=_F(REAC_ITER=1,
@@ -105,7 +105,7 @@ NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                    RESI_GLOB_RELA=1.E-06,),
                     INCREMENT=_F(LIST_INST=L_INST,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.000001,),
                     CARA_ELEM=CARA1,
                     NEWTON=_F(REAC_ITER=1,

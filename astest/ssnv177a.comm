@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,7 +128,7 @@ U=STAT_NON_LINE(MODELE=MO,
                            ITER_INTE_MAXI=20,),
               INCREMENT=_F(LIST_INST=L_INST,
                            INST_FIN=1., 
-                           SUBD_PAS=4,
+                           SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                            SUBD_PAS_MINI=1.E-05,),
               NEWTON=_F(MATRICE='TANGENTE',
                         REAC_ITER=1,),
@@ -151,7 +151,7 @@ U=STAT_NON_LINE(reuse=U,
                                       ITER_INTE_MAXI=20,),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=2., 
-                             SUBD_PAS=4,
+                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                              SUBD_PAS_MINI=1.E-07,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),

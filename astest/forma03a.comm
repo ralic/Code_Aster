@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ENONCE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,7 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
                      ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
                      INCREMENT=_F(LIST_INST=L_INST,
                                   INST_FIN=5.4,
-                                  SUBD_PAS=4,
+                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                   SUBD_PAS_MINI=0.0001,),
                      NEWTON=_F(REAC_ITER=1,),
                      ARCHIVAGE=_F(LIST_INST=L_INST,),);

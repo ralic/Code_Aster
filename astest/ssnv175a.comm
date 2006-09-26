@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,7 @@ EVOL1=STAT_NON_LINE(CHAM_MATER=CHMAT,
                     COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',),
                     INCREMENT=_F(LIST_INST=INSTANTS,
                                  INST_FIN=0.,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1.E-6,),
                     NEWTON=_F(PREDICTION='TANGENTE',
                               REAC_ITER=1,
@@ -102,7 +102,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                     COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',),
                        ETAT_INIT=_F(EVOL_NOLI=EVOL1,),
                     INCREMENT=_F(LIST_INST=INSTANTS,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=1.E-6,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=100,

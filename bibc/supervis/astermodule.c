@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -166,6 +166,8 @@
 #define FCALLPSSP(UN,LN,a,b,lb,c,lc,d)    F_FUNC(UN,LN)(a,b,c,d,lb,lc)
 #define DEFSSPSPPSPSS(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,li,j,lj)    STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,la,lb,ld,lg,li,lj)
 #define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                     F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g),strlen(i),strlen(j))
+#define DEFSSSPSPPPP(UN,LN,a,la,b,lb,c,lc,d,e,le,f,g,h,i)    STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,la,lb,lc,le)
+#define CALLSSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h,i)            F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,strlen(a),strlen(b),strlen(c),strlen(e))
 
 #elif defined PPRO_NT
 #define STDCALL(UN,LN)                           __stdcall F_FUNC(UN,LN)
@@ -202,6 +204,8 @@
 
 #define DEFSSSPPPPS(UN,LN,a,la,b,lb,c,lc,d,e,f,g,h,lh)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e,f,g,h,lh)
 #define CALLSSSPPPPS(UN,LN,a,b,c,d,e,f,g,h)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,e,f,g,h,strlen(h))
+#define DEFSSSPSPPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h,i)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e,le,f,g,h,i)
+#define CALLSSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h,i)            F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,e,strlen(e),f,g,h,i)
 
 #define DEFSPPSSSP(UN,LN,a,la,b,c,d,ld,e,le,f,lf,g)    STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f,lf,g)
 #define CALLSPPSSSP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,strlen(a),b,c,d,strlen(d),e,strlen(e),f,strlen(f),g)
@@ -563,26 +567,26 @@ void initExceptions(PyObject *dict)
         /* type d'exception Fatale derivee de AsterError */
         FatalError = PyErr_NewException("aster.FatalError", NULL, NULL);
         if(FatalError != NULL) PyDict_SetItemString(dict, "FatalError", FatalError);
-        
+
         /* Exceptions particularisées */
         NonConvergenceError = PyErr_NewException("aster.NonConvergenceError", AsterError, NULL);
         if(NonConvergenceError != NULL) PyDict_SetItemString(dict, "NonConvergenceError", NonConvergenceError);
 
         EchecComportementError = PyErr_NewException("aster.EchecComportementError", AsterError, NULL);
         if(EchecComportementError != NULL) PyDict_SetItemString(dict, "EchecComportementError", EchecComportementError);
-        
+
         BandeFrequenceVideError = PyErr_NewException("aster.BandeFrequenceVideError", AsterError, NULL);
         if(BandeFrequenceVideError != NULL) PyDict_SetItemString(dict, "BandeFrequenceVideError", BandeFrequenceVideError);
-        
+
         MatriceSinguliereError = PyErr_NewException("aster.MatriceSinguliereError", AsterError, NULL);
         if(MatriceSinguliereError != NULL) PyDict_SetItemString(dict, "MatriceSinguliereError", MatriceSinguliereError);
-        
+
         TraitementContactError = PyErr_NewException("aster.TraitementContactError", AsterError, NULL);
         if(TraitementContactError != NULL) PyDict_SetItemString(dict, "TraitementContactError", TraitementContactError);
-        
+
         MatriceContactSinguliereError = PyErr_NewException("aster.MatriceContactSinguliereError", AsterError, NULL);
         if(MatriceContactSinguliereError != NULL) PyDict_SetItemString(dict, "MatriceContactSinguliereError", MatriceContactSinguliereError);
-        
+
         ArretCPUError = PyErr_NewException("aster.ArretCPUError", AsterError, NULL);
         if(ArretCPUError != NULL) PyDict_SetItemString(dict, "ArretCPUError", ArretCPUError);
 }
@@ -1550,6 +1554,45 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 
 
 /* ------------------------------------------------------------------ */
+void DEFSSSPSPPPP(UTPRIN,utprin,_IN char *typmess,_IN int ltype,_IN char *unite,_IN int lunite,_IN char *idmess,_IN int lidmess,_IN INTEGER *nbk,
+                                _IN char *valk,_IN int lvk,_IN INTEGER *nbi,_IN INTEGER *vali,_IN INTEGER *nbr,_IN double *valr)
+{
+
+        PyObject *tup_valk,*tup_vali,*tup_valr,*res;
+        char *kvar;
+        int i;
+
+        _DEBUT(utprin) ;
+        tup_valk = PyTuple_New( *nbk ) ;
+        for(i=0;i<*nbk;i++){
+           kvar = valk + i*lvk;
+           PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,lvk) ) ;
+        }
+	
+        tup_vali = PyTuple_New( *nbi ) ;	
+        for(i=0;i<*nbi;i++){
+           PyTuple_SetItem( tup_vali, i, PyInt_FromLong(vali[i]) ) ;
+        }
+	
+        tup_valr = PyTuple_New( *nbr ) ;
+        for(i=0;i<*nbr;i++){
+           PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
+        }
+
+        res=PyObject_CallMethod(commande,"utprin","s#s#s#OOO",typmess,ltype,unite,lunite,idmess,lidmess,tup_valk,tup_vali,tup_valr);
+        if (!res) {
+           MYABORT("erreur utprin");
+        }
+
+        Py_DECREF(tup_valk);
+        Py_DECREF(tup_vali);
+        Py_DECREF(tup_valr);
+	
+        _FIN(utprin) ;
+        ;
+}
+
+/* ------------------------------------------------------------------ */
 void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN char *param,_IN int lpara,_IN double *val,
                      _OUT double *resu)
 {
@@ -2027,7 +2070,7 @@ PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval)
          len = lval[0];
       } else {
          len = lkval;
-      }     
+      }
       return PyString_FromStringAndSize(deb, FindLength(deb,len));
    }
    else{
@@ -2196,7 +2239,7 @@ void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
    PyObject *res = (PyObject*)0 ;
    _DEBUT("putvir_") ;
    ISCRUTE(*ival) ;
-   
+
    res = PyObject_CallMethod(commande,"putvir","i",*ival);
    /*
          Si le retour est NULL : une exception a ete levee dans le code Python appele
@@ -2205,7 +2248,7 @@ void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
    */
    if (res == NULL)
       MYABORT("erreur a l appel de putvir dans la partie Python");
-   
+
    Py_DECREF(res);
    _FIN("putvir_") ;
 }
@@ -2238,7 +2281,7 @@ void DEFSSP(GCUCON,gcucon, char *resul, int lresul, char *concep, int lconcep, I
    */
    if (res == NULL)
             MYABORT("erreur a l appel de gcucon dans la partie Python");
-   
+
    *ier = PyInt_AsLong(res);
    Py_DECREF(res);
    _FIN("gcucon_") ;
@@ -2892,11 +2935,11 @@ PyObject *args;
         void *malloc(size_t size);
 	
         _DEBUT(aster_putvectjev) ;
-        
+
         ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
 /*        PyObject_Print(args, stdout, 0);*/
-                
+
         nind = (unsigned int)(nbind);
 
         ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
@@ -2919,7 +2962,7 @@ PyObject *args;
           CALL_PUTCON(nomsd,&nbind,ind,valr,valc,&num,&iret);
                                    ISCRUTE(iret);
           CALL_JEDEMA();
-          
+
           if(iret == 0){
             /* Erreur */
             PyErr_SetString(PyExc_KeyError, "Concept inexistant");
@@ -2927,16 +2970,16 @@ PyObject *args;
             return NULL;
           }
 
-          free((char *)valc);                           
-          free((char *)valr);                           
-          free((char *)ind);                                                   
+          free((char *)valc);
+          free((char *)valr);
+          free((char *)ind);
         }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
           _FIN(aster_putvectjev) ;
           return NULL;
-        }  
+        }
         Py_INCREF( Py_None ) ;
         _FIN(aster_putvectjev) ;
         return Py_None;
@@ -2970,12 +3013,12 @@ PyObject *args;
         void *malloc(size_t size);
 	
         _DEBUT(aster_putcolljev) ;
-        
+
 
         ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
 /*        PyObject_Print(args, stdout, 0);*/
-                
+
         nind = (unsigned int)(nbind);
 
         ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
@@ -2987,7 +3030,7 @@ PyObject *args;
                  convr8(nind,tupr,valr);
                  convr8(nind,tupc,valc);
         }
-        
+
         CALL_JEMARQ();
                                    SSCRUTE(nomsd);
                                    ISCRUTE(*nbind);
@@ -2998,7 +3041,7 @@ PyObject *args;
         CALL_PUTCON(nomsd,&nbind,ind,valr,valc,&num,&iret);
                                    ISCRUTE(iret);
         CALL_JEDEMA();
-        
+
         if(iret == 0){
           /* Erreur */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
@@ -3006,10 +3049,10 @@ PyObject *args;
           return NULL;
           }
 
-        free((char *)valc);                           
-        free((char *)valr);                           
-        free((char *)ind);                                                   
-                                   
+        free((char *)valc);
+        free((char *)valr);
+        free((char *)ind);
+
         Py_INCREF( Py_None ) ;
         _FIN(aster_putcolljev) ;
         return Py_None;
@@ -3073,10 +3116,10 @@ PyObject *args;
    int i, lo, nb;
    PyObject *dico, *liste, *key;
    void *malloc(size_t size);
-   
+
    if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
 
-/* Identifiant de la SD resultat */ 
+/* Identifiant de la SD resultat */
    nbval = 1;
    val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
    nom = (char *)malloc(24*sizeof(char));
@@ -3361,7 +3404,7 @@ static PyObject * aster_onFatalError(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-/* 
+/*
    Cette méthode définie le comportement lors des erreurs Fatales :
 
    aster.onFatalError('ABORT')
@@ -3533,46 +3576,46 @@ PyObject *args;
    int long_nompar = 8;       /* doivent impérativement correspondre aux  */
    int long_nomres = 8;       /* longueurs des chaines de caractères      */
    int long_codret = 2;       /* déclarées dans la routine fortran RCVALE */
-   void *malloc(size_t size); 
-     
+   void *malloc(size_t size);
+
    _DEBUT(aster_rcvale)
-   
+
    if (!PyArg_ParseTuple(args, "ssOOOs", &nommat, &phenom, \
                   &t_nompar, &t_valpar, &t_nomres, &stop)) return NULL;
-      
+
    /* Conversion en tableaux de chaines et réels */
    nbpar = PyTuple_Size(t_nompar);
    nompar = (char *)malloc(long_nompar*nbpar*sizeof(char));
    convertxt(nbpar, t_nompar, nompar, long_nompar);
-   
+
    valpar = (double *)malloc(nbpar*sizeof(double));
    convr8(nbpar, t_valpar, valpar);
-   
+
    nbres = PyTuple_Size(t_nomres);
    nomres = (char *)malloc(long_nomres*nbres*sizeof(char));
    convertxt(nbres, t_nomres, nomres, long_nomres);
-   
+
    /* allocation des variables de sortie */
    valres = (double *)malloc(nbres*sizeof(double));
    codret = (char *)malloc(long_codret*nbres*sizeof(char));
-   
+
    CALL_RCVALE(nommat, phenom, &nbpar, nompar, valpar, &nbres, nomres, valres, codret, stop);
-   
+
    /* création des tuples de sortie */
    t_valres = MakeTupleFloat(nbres, valres);
    t_codret = MakeTupleString(nbres, codret, long_codret, NULL);
-   
+
    /* retour de la fonction */
    t_res = PyTuple_New(2);
    PyTuple_SetItem(t_res, 0, t_valres);
    PyTuple_SetItem(t_res, 1, t_codret);
-   
+
    _FIN(aster_rcvale)
    free(nompar);
    free(valpar);
    free(valres);
    free(codret);
-   
+
    return t_res;
 }
 
@@ -3640,7 +3683,7 @@ PyObject *args;
 	BLANK(n2,16);strncpy(n2,nomsym,lon2);
 	BLANK(n3,8); strncpy(n3,nopase,lon3);
                                                        SSCRUTE(nochmd);
-        CALL_MDNOCH (nochmd,&lnochm,&lresu,n1,n2,n3,&codret);                 
+        CALL_MDNOCH (nochmd,&lnochm,&lresu,n1,n2,n3,&codret);
                                                        ISCRUTE(lnochm);
                                                        FSSCRUTE(nochmd,32);
         temp= PyString_FromStringAndSize(nochmd,FindLength(nochmd,lnochm));
@@ -4162,8 +4205,8 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
         taille = ( *base ) ? strlen( *base ) : 0 ;
 
         ajout = ( supplement ) ? strlen( supplement ) : 0 ;
-   total = taille + ajout + 1 /* caractere de fin de chaine */; 
-   
+   total = taille + ajout + 1 /* caractere de fin de chaine */;
+
         if ( ajout > 0 ){
                 if ( taille > 0 ){
                         resultat = (char*)(malloc(total)) ;

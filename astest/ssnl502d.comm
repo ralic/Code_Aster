@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE POUTRE EN FLAMBEMENT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA='AB',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=0.95,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.0E-6,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
@@ -172,7 +172,7 @@ RESO=STAT_NON_LINE(reuse =RESO,
                    ETAT_INIT=_F(
                    EVOL_NOLI=RESO,),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.0E-6,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

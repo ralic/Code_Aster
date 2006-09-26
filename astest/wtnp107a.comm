@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -325,7 +325,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,
-                              SUBD_PAS=2,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=2,
                               SUBD_PAS_MINI=5,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',

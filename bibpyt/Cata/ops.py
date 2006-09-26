@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#@ MODIF ops Cata  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,6 +144,10 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
      for elem in pickle_context.keys():
          if type(pickle_context[elem])==types.InstanceType :
             pickle_class=pickle_context[elem].__class__
+            # on rattache chaque assd au nouveau jdc courant (en poursuite)
+            if isinstance(pickle_context[elem],ASSD) : 
+               pickle_context[elem].jdc=self.jdc
+               pickle_context[elem].parent=self.jdc
             if elem in self.g_context.keys():
                poursu_class=self.g_context[elem].__class__
                if poursu_class!=pickle_class :

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE HEMISPHERE TROUEEE DOUBLEMENT PINCEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ NONLIN=STAT_NON_LINE(CHAM_MATER=CH_MAT_1,
                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                                     RESI_GLOB_RELA=1.E-06,),
                      INCREMENT=_F( LIST_INST = L_INST,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.000001,),
                      CARA_ELEM=CARAC_1,
                      NEWTON=_F(REAC_ITER=1,

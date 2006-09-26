@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -216,14 +216,26 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
            YN0 = 0.0
            ZN0 = ZA0 + A*CALPHA 
            XN = XN0 * CTHETA 
-           YN = XN0 * STHETA
+           YN = XN0 * STHETA           
            SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
            D0N0 = sqrt( pow((XA0 - XN0),2) + pow((ZA0 - ZN0),2) )
            DN = sqrt( pow((XA - XN),2) + pow((YA - YN),2) + pow((ZA - ZN),2) )       
            RAPP = D0N0 / DN
            ECART = (RAPP - 1.0) * D0N0
+           # Correction necessaire dans le cas theta grand (cf. AL9679)
+           if ( abs(STHETA) > 0.8) :
+              DXY = sqrt(pow(XD,2) + pow(YD,2) ) 
+              XN = XN * DXY/XD0
+              YN = YN * DXY/XD0
+              SGAMN = YN / ZN0
+              ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
+              D0N0 = sqrt( pow((XA0 - XN0),2) + pow((ZA0 - ZN0),2) )
+              DN = sqrt( pow((XA - XN),2) + pow((YA - YN),2) + pow((ZA - ZN),2) )       
+              RAPP = D0N0 / DN
+              ECART = (ECART + (RAPP - 1.0) * D0N0)/2
            A = A + ECART
+
 
   elif (ITYPSO == 2) :
 # PIQUAGE TYPE 2

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE EN FLEXION EN 2D AXI (PLAST VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,9 +103,9 @@ EVOL= STAT_NON_LINE ( MODELE=MO,
                                 RESI_INTE_RELA = 1.E-8),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=60.,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.E-4,
-                                COEF_SUBD_PAS_1=1.0,),
+                                SUBD_COEF_PAS_1=1.0,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

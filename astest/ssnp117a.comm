@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,7 +136,7 @@ RESU=STAT_NON_LINE(CHAM_MATER=CHMAT,
                                     ITER_INTE_PAS=-90,
                                     RELATION='ROUSS_PR',
                                     DEFORMATION='PETIT_REAC',),
-                       INCREMENT=_F(SUBD_PAS=4,
+                       INCREMENT=_F(SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     LIST_INST=LINST,
                                     SUBD_PAS_MINI=1.E-06,),
                        RECH_LINEAIRE=_F(
@@ -156,7 +156,7 @@ RESU_N=STAT_NON_LINE(CHAM_MATER=CHMAT_N,
                                     ITER_INTE_PAS=-90,
                                     RELATION='ROUSS_PR',
                                     DEFORMATION='PETIT_REAC',),
-                       INCREMENT=_F(SUBD_PAS=4,
+                       INCREMENT=_F(SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     LIST_INST=LINST_N,
                                     SUBD_PAS_MINI=1.E-06,),
                        RECH_LINEAIRE=_F(
@@ -177,7 +177,7 @@ RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                                     RELATION='ROUSS_VISC',
                                     DEFORMATION='PETIT_REAC',),
                        PARM_THETA=0.57,
-                       INCREMENT=_F(SUBD_PAS=4,
+                       INCREMENT=_F(SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     LIST_INST=LINST,
                                     SUBD_PAS_MINI=1.E-06,),
                        RECH_LINEAIRE=_F(

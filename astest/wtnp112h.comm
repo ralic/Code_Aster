@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D ,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -224,7 +224,7 @@ RESU0=STAT_NON_LINE(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('ELAS','LIQU_GAZ_ATM','HYDR_UTIL')),
                 INCREMENT=_F(  LIST_INST = LI,
-                               SUBD_PAS=4,
+                               SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                SUBD_PAS_MINI=10.0),
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),

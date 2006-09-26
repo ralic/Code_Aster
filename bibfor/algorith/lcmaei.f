@@ -2,7 +2,7 @@
      &                   VALPAR,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 25/09/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,9 +29,11 @@ C         NMAT   :  DIMENSION  DE MATER
 C         NECRIS :  NOM DE LA LOI D'ECOULEMENT
 C         IFA    :  NUMERO DE LA FAMILLE DE GLISSEMENT
 C         NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
-C         VALPAR :  VALEUR DES PARAMETRES
-C         NOMPAR :  NOM DES PARAMETRES
-C     OUT MATER :  COEFFICIENTS MATERIAU A T
+C         VALPAR :  VALEUR DES PARAMETRES (TEMPERATURE)
+C         NOMPAR :  NOM DES PARAMETRES (TEMPARATURE)
+C     OUT VALRES :  COEFFICIENTS MATERIAU
+C     OUT NBVAL  :  NB DE COEFFICIENTS MATERIAU
+C     OUT HSR    :  MATRICE D'INTERACTION
 C     ----------------------------------------------------------------
       INTEGER         NMAT,NBPAR,NBVAL,IMAT,I,NBSYS,IS,IR,IFA,J
       REAL*8          MATER(NMAT,2),VALH(6)
@@ -43,6 +45,7 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 C
       IF (NECRIS.EQ.'ECRO_ISOT1') THEN
+          NBVAL=3
           NOMRES(1)='R_0'
           NOMRES(2)='Q'
           NOMRES(3)='B'
@@ -51,6 +54,7 @@ C
           NOMRES(1)='H'
           CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,1,
      &                 NOMRES, H,CODRET,' ')
+     
           IF (CODRET(1).EQ.'OK') THEN
 C  DEFINITION DE LA MATRICE D INTERACTION
              DO 507 IS = 1, NBSYS

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -284,7 +284,7 @@ U1=STAT_NON_LINE(reuse=U1,
                          INCREMENT=_F( 
                 LIST_INST = TEMPS3,
                 INST_INIT = 6., 
-                SUBD_PAS=10,
+                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                 SUBD_PAS_MINI=0.001,
                               ),
                             NEWTON=_F( 

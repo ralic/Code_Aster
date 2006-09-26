@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
 # RESPONSABLE KOECHLIN P.KOECHLIN
 #  DATE   : 27/10/03
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
@@ -29,57 +29,9 @@
 DEBUT(CODE=_F(NOM='SSNS104B',
               NIV_PUB_WEB='INTRANET',),);
 EP = 0.12
+EB = 9.6500e+09
+NUB = 0.0
 
-# Membrane
-
-H1111 = 1158.E6
-H1122 = 0.
-H1112 = 0.
-H2222 = 1158.E6
-H2212 = 0.
-H1212 = 1158.E6/2.
-
-# Flexion
-
-A1111 = 1.39E6
-A1122 = 0.
-A1112 = 0.
-A2222 = 1.39E6
-A2212 = 0.
-A1212 = 1.39E6/2.
-
-# Membrane-Flexion
-
-B1111 = 0.
-B1122 = 0.
-B1112 = 0.
-B2222 = 0.
-B2212 = 0.
-B1212 = 0.
-
-# Membrane-Cisaillement
-
-E1113=0.
-E1123=0.
-E2213=0.
-E2223=0.
-E1213=0.
-E1223=0.
-
-# Flexion-Cisaillement
-
-F1113=0.
-F1123=0.
-F2213=0.
-F2223=0.
-F1213=0.
-F1223=0.
-
-# Cisaillement
-
-G1313=0.00001
-G1323=0.
-G2323=0.00001
 
 PRE_GIBI();
 
@@ -121,61 +73,121 @@ CPRAG=DEFI_FONCTION(NOM_PARA='NORM',
                      PROL_DROITE='LINEAIRE',
                      PROL_GAUCHE='LINEAIRE',
                      );
+                     
+MLM1  = 32500
+CPRG  = 73700
+GAM  = 0.
+
+MF     = 1.0E16 
+QP     = 0.15E0 
+
+aq  = 1.0E-10/MLM1/MLM1 
+                  
+                  
+fquad  = FORMULE (
+                  NOM_PARA = 'X ',
+                  VALE = ''' -aq*X*X + MLM1'''
+                  )
+                  
+fquadm  = FORMULE (
+                  NOM_PARA = 'X ',
+                  VALE = '''  aq*X*X - MLM1'''
+                  )
+                  
+pn1  = -100*MLM1
+pn2  =  100*MLM1
+lisn = DEFI_LIST_REEL (
+                       DEBUT = pn1, 
+                       INTERVALLE  = _F(
+                                         JUSQU_A = pn2,
+                                         PAS     = 0.01*(-pn1 + pn2)
+                                       )
+                        
+                       )
+                       
+fonm0 = CALC_FONC_INTERP (
+                          FONCTION   = fquad,
+                          LIST_PARA  = lisn,
+                          PROL_DROITE = 'LINEAIRE',
+                          PROL_GAUCHE = 'LINEAIRE',
+                          )
+ 
+fonm0m = CALC_FONC_INTERP (
+                          FONCTION   = fquadm,
+                          LIST_PARA  = lisn,
+                          PROL_DROITE = 'LINEAIRE',
+                          PROL_GAUCHE = 'LINEAIRE',
+
+                          )
+
+fonm1 = CALC_FONCTION (
+                         DERIVE = _F(
+                                     FONCTION = fonm0 
+                                     ),
+                          PROL_DROITE = 'CONSTANT',
+                          PROL_GAUCHE = 'CONSTANT',
+                       ) 
+                  
+fonm1m = CALC_FONCTION (
+                         DERIVE = _F(
+                                     FONCTION = fonm0m 
+                                     ),
+                          PROL_DROITE = 'CONSTANT',
+                          PROL_GAUCHE = 'CONSTANT',
+                       ) 
+                  
+fonm2 = CALC_FONCTION (
+                         DERIVE = _F(
+                                     FONCTION = fonm1 
+                                     ),
+                          PROL_DROITE = 'CONSTANT',
+                          PROL_GAUCHE = 'CONSTANT',
+                       ) 
+                       
+fonm2m = CALC_FONCTION (
+                         DERIVE = _F(
+                                     FONCTION = fonm1m 
+                                     ),
+                          PROL_DROITE = 'CONSTANT',
+                          PROL_GAUCHE = 'CONSTANT',
+                       ) 
+
+
+
 
 MAT=DEFI_MATERIAU(
-                 GLRC_FO=_F(
-                                MEX1 =  MOMLIM_1,   
-                                MEY1 =  MOMLIM_1,
-                                MEX2 =  MOMLIM_2,
-                                MEY2 =  MOMLIM_2,
-                                CX1  =  CPRAG,
-                                CY1  =  CPRAG,
-                                CXY1 =  CPRAG,
-                                CX2  =  CPRAG,
-                                CY2  =  CPRAG,
-                                CXY2 =  CPRAG,
+            GLRC_DAMAGE=_F(
+                                CX1  =  CPRG, 
+                                CY1  =  CPRG, 
+                                CXY1 =  CPRG, 
+                                CX2  =  CPRG, 
+                                CY2  =  CPRG, 
+                                CXY2 =  CPRG, 
+
+                                FMEX1 =  fonm0,   
+                                FMEY1 =  fonm0,
+                                FMEX2 =  fonm0m,
+                                FMEY2 =  fonm0m,
+                                DFMEX1 =  fonm1,   
+                                DFMEY1 =  fonm1,
+                                DFMEX2 =  fonm1m,
+                                DFMEY2 =  fonm1m,
+                                DDFMEX1 =  fonm2,   
+                                DDFMEY1 =  fonm2,
+                                DDFMEX2 =  fonm2m,
+                                DDFMEY2 =  fonm2m,
+                                MF1  =  MF,
+                                MF2  = -MF,
+                                QP1  =  QP,
+                                QP2  =  QP,
+                                GAMMA=  GAM,
                            ),
-                  ELAS_COQUE=_F(
-#---MEMBRANE
-                                M_LLLL = H1111,
-                                M_LLTT = H1122,
-                                M_LLLT = H1112,
-                                M_TTTT = H2222,
-                                M_TTLT = H2212,
-                                M_LTLT = H1212,
-#---FLEXION
-                                F_LLLL = A1111,
-                                F_LLTT = A1122,
-                                F_LLLT = A1112,
-                                F_TTTT = A2222,
-                                F_TTLT = A2212,
-                                F_LTLT = A1212,
-#---MEMBRANE-FLEXION
-                                MF_LLLL = B1111,
-                                MF_LLTT = B1122,
-                                MF_LLLT = B1112,
-                                MF_TTTT = B2222,
-                                MF_TTLT = B2212,
-                                MF_LTLT = B1212,
-#---MEMBRANE-CISAILLEMENT
-                                MC_LLLZ = E1113,
-                                MC_LLTZ = E1123,
-                                MC_TTLZ = E2213,
-                                MC_TTTZ = E2223,
-                                MC_LTLZ = E1213,
-                                MC_LTTZ = E1223,
-#---FLEXION-CISAILLEMENT
-                                FC_LLLZ = F1113,
-                                FC_LLTZ = F1123,
-                                FC_TTLZ = F2213,
-                                FC_TTTZ = F2223,
-                                FC_LTLZ = F1213,
-                                FC_LTTZ = F1223,
-#---CISAILLEMENT
-                                C_LZLZ = G1313,
-                                C_LZTZ = G1323,
-                                C_TZTZ = G2323,
-                           ),);
+                           
+                           ELAS = _F(
+                                      E    =  EB,   
+                                      NU   =  NUB,              
+                                     ),           
+                           );
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=MAT,),),
@@ -206,18 +218,22 @@ CH_FO=DEFI_FONCTION(NOM_PARA='INST',
                      PROL_GAUCHE='LINEAIRE',
                     );
 
+NN = 10
 INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                           _F(JUSQU_A = .8,NOMBRE = 1),
-                          _F(JUSQU_A = 1.,NOMBRE = 5),
+                          _F(JUSQU_A = 1.,NOMBRE = NN),
                       ),);
+  
 
 RESU=STAT_NON_LINE( MODELE=MOD,
                       CHAM_MATER= CHMAT,
                       CARA_ELEM = CARA_ELE,
-                      COMP_INCR=_F(RELATION = 'GLRC',),
+                      COMP_INCR=_F(
+                               RELATION = 'GLRC_DAMAGE',
+                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=250,),
                       NEWTON=_F(
-                               REAC_ITER=1, # FULL_MECA
+                               REAC_ITER=1, 
                                PAS_MINI_ELAS=0.0,
                                MATRICE='TANGENTE',
                                REAC_INCR=1),
@@ -235,7 +251,7 @@ RESU=CALC_ELEM(reuse=RESU,
                      RESULTAT=RESU,
               );
 
-NORD=6
+NORD = NN + 1  
 TEST_RESU(RESU=(             
            _F( RESULTAT = RESU,
                NUME_ORDRE = NORD,  
@@ -313,7 +329,7 @@ TEST_RESU(RESU=(
                PRECISION = 0.00001,
                GROUP_NO = 'A1',
                MAILLE='M133',    
-               NOM_CMP = 'V1',      
+               NOM_CMP = 'V17',      
                VALE = 32500., 
                REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = RESU,
@@ -323,7 +339,7 @@ TEST_RESU(RESU=(
                PRECISION = 50,
                GROUP_NO = 'A1',
                MAILLE='M133',    
-               NOM_CMP = 'V2',      
+               NOM_CMP = 'V18',      
                VALE = 0., 
                REFERENCE = 'ANALYTIQUE'),
              ),

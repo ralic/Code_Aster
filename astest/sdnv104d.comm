@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,7 +144,7 @@ ULM =  DYNA_NON_LINE(MODELE=MODE,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_PAS=5,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
                                  SUBD_PAS_MINI=0.0000001,
                                  ),
                     HHT=_F(),
@@ -189,7 +189,7 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_PAS=5,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
                                  SUBD_PAS_MINI=0.0000001,),
                     HHT=_F(),
                     NEWTON=_F(MATRICE='TANGENTE',

@@ -2,7 +2,7 @@
      &                   LISTIS,PRECIS,CRIT,EPSI)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
+      CHARACTER*1   PRFNOE
       CHARACTER*6   NOMROU, KAR
       CHARACTER*8   K8BID, LABK8, NOMGD, LICMP(30), MAILLA
       CHARACTER*16  NOMSYM,MOTCLE(1),TYMOCL(1)
@@ -84,6 +85,8 @@ C----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      PRFNOE='N'
+
       REPEM1 (  1 : 50 ) =
      & '    -1                                            '
       REPEM1 ( 51 : 80 ) =
@@ -280,7 +283,12 @@ C LECTURE DU NUMERO DU NOEUD
       CALL DECOD2(REC,IREC,IFIELD,0,LABEL,RBID,TROUVE)
       IF (LABEL .EQ. 0) THEN
         LIGNE = REC(IREC)
-        LABK8 = LIGNE(32:39)
+        LABK8 = LIGNE(32:41)
+        CALL JENONU (JEXNOM (MAILLA//'.NOMNOE', LABK8), LABEL)
+      ELSE
+C PRE_IDEAS RAJOUTE UN 'N' DEVANT LE NUMERO DU NOEUD (VOIR ECRNEU)
+        CALL CODNOP(LABK8,PRFNOE,1,1)
+        CALL CODENT(LABEL,'G',LABK8(2:8))
         CALL JENONU (JEXNOM (MAILLA//'.NOMNOE', LABK8), LABEL)
       END IF
       ZI(LCORR-1 + NBMESU) = LABEL

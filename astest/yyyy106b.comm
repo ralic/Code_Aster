@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -380,9 +380,7 @@ DEP=STAT_NON_LINE(MODELE=MODMECA,
                   INCREMENT=_F(LIST_INST=LR3,
                                EVOLUTION='CHRONOLOGIQUE',
                                INST_FIN=1.0,
-                               PRECISION=1.E-3,
-                               SUBD_PAS=1,
-                               COEF_SUBD_PAS_1=1.0,),
+                               PRECISION=1.E-3,),
                   NEWTON=_F(REAC_INCR=1,
                             MATRICE='TANGENTE',
                             REAC_ITER=1,),);
@@ -417,9 +415,7 @@ DEP=STAT_NON_LINE(reuse =DEP,
                   INCREMENT=_F(LIST_INST=LR3,
                                EVOLUTION='CHRONOLOGIQUE',
                                INST_FIN=180.0,
-                               PRECISION=1.E-3,
-                               SUBD_PAS=1,
-                               COEF_SUBD_PAS_1=1.0,),
+                               PRECISION=1.E-3,),
                   NEWTON=_F(REAC_INCR=1,
                             MATRICE='TANGENTE',
                             REAC_ITER=1,),

@@ -1,6 +1,6 @@
       SUBROUTINE TE0353(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,7 +200,7 @@ C
              TRANS = TRANS + KPT(I)*VALRES(J)*DELTAZ
            END IF
    40      CONTINUE
-           CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,1,
+           CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,5,
      +              NOMRES(17),VALRES(17),CODRET(17),' ')
            TEST='NO'
            DO 41 I=17,21
@@ -340,7 +340,7 @@ C
                IF (CODRET(6).NE.'OK')  VALRES(6)=0.D0
                TRANS = TRANS + KPT(2)*VALRES(6)*DELTAZ
              END IF
-             CALL RCVALA(MATER,' ','META_VISC',3,'TEMP',TPG,1,
+             CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,3,
      +                   NOMRES(14),VALRES(14),CODRET(14),' ')
              TEST='NO'
              DO 46 I=14,16

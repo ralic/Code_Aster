@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,9 +43,43 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
            INST_INIT       =SIMP(statut='f',typ='R'),
            INST_FIN        =SIMP(statut='f',typ='R'),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
-           SUBD_PAS        =SIMP(statut='f',typ='I',defaut=1),
-           SUBD_PAS_MINI   =SIMP(statut='f',typ='R'),
-           COEF_SUBD_PAS_1 =SIMP(statut='f',typ='R',defaut= 1.0E+0),
+           # DEBUT DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
+           SUBD_METHODE    =SIMP( statut='f',typ='TXM',
+              into =("AUCUNE","UNIFORME","EXTRAPOLE"),
+              defaut="AUCUNE",
+              fr="Méthode de subdivision des pas de temps en cas de non-convergence"
+           ),
+           b_subd_unif=BLOC(condition = "SUBD_METHODE == 'UNIFORME'",
+             regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
+             SUBD_COEF_PAS_1=SIMP(statut='f',typ='R',defaut=1.0,val_min=0.0,
+                fr="Coefficient multiplicateur de la 1ère subdivision"),
+             SUBD_PAS       =SIMP(statut='f',typ='I',defaut=4,val_min=2,
+                fr="Nombre de subdivision d'un pas de temps"),
+             SUBD_NIVEAU=SIMP(statut='f',typ='I',val_min=2,
+                fr="Nombre maximum de niveau de subdivision d'un pas de temps"),
+             SUBD_PAS_MINI=SIMP(statut='f',typ='R',val_min=0.0,
+                fr="Pas de temps en dessous duquel on ne subdivise plus"),
+           ),
+           b_subd_extr=BLOC(condition = "SUBD_METHODE == 'EXTRAPOLE'",
+             regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
+             SUBD_OPTION    =SIMP(statut='f',typ='TXM',
+                into =("IGNORE_PREMIERES","GARDE_DERNIERES",), 
+                defaut="IGNORE_PREMIERES",
+                fr="Technique d'extrapolation : les 1ere itérations sont ignorées ou les dernières sont gardées"),
+             SUBD_ITER_IGNO =SIMP(statut='c',typ='I',defaut=3,val_min=0,
+                fr="Les n premières itérations sont ignorées pour l'extrapolation"),
+             SUBD_ITER_FIN  =SIMP(statut='c',typ='I',defaut=8,val_min=3,
+                fr="Seules les n dernières itérations sont prises pour l'extrapolation"),
+             SUBD_PAS       =SIMP(statut='c',typ='I',defaut=4,val_min=2,
+                fr="Nombre de subdivision d'un pas de temps en cas divergence"),
+             SUBD_NIVEAU=SIMP(statut='f',typ='I',val_min=2,
+                fr="Nombre maximum de niveau de subdivision d'un pas de temps"),
+             SUBD_PAS_MINI=SIMP(statut='f',typ='R',val_min=0.0,
+                fr="Pas de temps en dessous duquel on ne subdivise plus"),
+             SUBD_ITER_PLUS =SIMP(statut='c',typ='I',defaut=50,val_min=20,
+                fr="% itération autorisée en plus"),
+           ),
+           # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS 
          ),
 
          NEWTON          =FACT(statut='d',

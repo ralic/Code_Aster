@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -329,7 +329,7 @@ U=STAT_NON_LINE(MODELE=MODEL,
                                   DEFORMATION='SIMO_MIEHE',
                                   GROUP_MA='SOLIDE',),),
                     INCREMENT=_F(LIST_INST=L_INST,INST_FIN=0.75,
-                                 SUBD_PAS=4,
+                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                  SUBD_PAS_MINI=9.9999999999999995E-07,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),

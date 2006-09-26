@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,9 +112,9 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=2.E-05,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.E-30,
-                                COEF_SUBD_PAS_1=1.,
+                                SUBD_COEF_PAS_1=1.,
                                 ),
                   NEWMARK=_F(  ALPHA = 0.49,   # Beta
                                 DELTA = 0.9  ), # Gamma

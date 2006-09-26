@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 25/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,19 +100,22 @@ C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
       IF (MODE.EQ.K8BID) THEN
          CALL JEVEUO(HRANGE//'.REFD','L',IAREFE)
          MATPRO = ZK24(IAREFE)(1:8)
-         CALL GETTCO(MATPRO,TYPBAS)
-         IF ((TYPBAS(1:9).NE.'MODE_MECA').AND.
-     +      (TYPBAS(1:9).NE.'MODE_STAT').AND.
-     +      (TYPBAS(1:11).NE.'BASE_MODALE')) THEN
-           CALL JEVEUO(MATPRO//'           .REFA','L',IAREF2)
-           BASEMO = ZK24(IAREF2)(1:8)
-           CALL JEVEUO(MATPRO//'           .DESC','L',IADESC)
-           NBMODE = ZI(IADESC+1)
-         ELSE
+         IF (MATPRO.EQ.K8BID) THEN
+           MATPRO = ZK24(IAREFE+5)(1:8)
            PROMES = .TRUE.
            BASEMO = MATPRO
            CALL RSORAC(MATPRO,'LONUTI',IBID,RBID,K8BID,CBID,RBID,
      &            'ABSOLU',NBMODE,1,IBID)
+         ELSE
+           CALL GETTCO(MATPRO,TYPBAS)
+           IF ((TYPBAS(1:9).NE.'MODE_MECA').AND.
+     +        (TYPBAS(1:9).NE.'MODE_STAT').AND.
+     +        (TYPBAS(1:11).NE.'BASE_MODALE')) THEN
+             CALL JEVEUO(MATPRO//'           .REFA','L',IAREF2)
+             BASEMO = ZK24(IAREF2)(1:8)
+             CALL JEVEUO(MATPRO//'           .DESC','L',IADESC)
+             NBMODE = ZI(IADESC+1)
+           ENDIF
          ENDIF
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
          CALL GETTCO(BASEMO,TYPBAS)

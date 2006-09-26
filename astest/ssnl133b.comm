@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                                 DEFORMATION='REAC_GEOM',),
                    INCREMENT=_F(LIST_INST=TEMPS,
                                 INST_FIN=tfin,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.0E-6,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

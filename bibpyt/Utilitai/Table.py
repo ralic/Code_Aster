@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,8 @@ import sys
 import re
 from copy  import copy
 
-from types import *
+from types import ListType, TupleType, IntType, LongType, FloatType, ComplexType, \
+                  DictType, StringType, StringTypes, UnicodeType, NoneType
 EnumTypes = (ListType, TupleType)
 NumberTypes = (IntType, LongType, FloatType, ComplexType)
 
@@ -339,6 +340,15 @@ class Table(TableBase):
       self.titr = titr
    
 # ------------------------------------------------------------------------------
+   def copy(self):
+      """Retourne une copie de la table.
+      """
+      rows = []
+      for r in self.rows:
+         rows.append(copy(r))
+      return Table(rows, self.para[:], self.type[:], self.titr)
+
+# ------------------------------------------------------------------------------
    def append(self, obj):
       """Ajoute une ligne (type dict) qui peut éventuellement définir un
       nouveau paramètre."""
@@ -373,10 +383,13 @@ class Table(TableBase):
          self.append({k_para:k_value[j]})
 
 # ------------------------------------------------------------------------------
-   def fromfunction(self, nom_para, funct, l_para=None):
+   def fromfunction(self, nom_para, funct, l_para=None, const=None):
       """Ajoute une colonne `nom_para` en évaluant la fonction `funct` sur
       la valeur des paramètres `l_para` (qui doivent exister dans la table).
       Si `l_para` n'est pas fourni, on prend `funct`.nompar (FORMULE Aster).
+      On peut passer un dictionnaire de constantes dans `const`. Quand on
+      utilise une FORMULE Aster, les constantes sont prises dans le contexte
+      global.
       """
       # vérif préalables
       if not hasattr(funct, '__call__'):
@@ -394,6 +407,10 @@ class Table(TableBase):
       not_found = ', '.join([p for p in l_para if not p in self.para])
       if not_found != '':
          UTMESS('F','Table','Parametre(s) absent(s) de la table : %s' % not_found)
+      if const == None:
+         const = {}
+      if type(const) is not DictType:
+         UTMESS('F', 'Table', "L'argument 'const' doit etre de type 'dict'.")
       # liste des valeurs des paramètres
       tabpar = []
       for para in l_para:
@@ -407,7 +424,7 @@ class Table(TableBase):
          if None in lpar:
             vectval.append(None)
          else:
-            vectval.append(funct(*lpar))
+            vectval.append(funct(*lpar, **const))
       # ajout de la colonne
       self[nom_para] = vectval
 
@@ -842,7 +859,7 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
    return fmt
 
 # ------------------------------------------------------------------------------
-def merge(tb1, tb2, labels=[]):
+def merge(tab1, tab2, labels=[]):
    """Assemble les deux tables tb1 et tb2 selon une liste de labels communs.
       Si labels est vide:
        - les lignes de tb2 sont ajoutés à celles de tb1,
@@ -851,6 +868,8 @@ def merge(tb1, tb2, labels=[]):
          on surcharge tb1 avec les lignes de tb2 ;
        - sinon on ajoute la ligne de tb2 à la fin de tb1.
    """
+   tb1 = tab1.copy()
+   tb2 = tab2.copy()
    if type(labels) not in EnumTypes : labels=(labels,)
    for key in labels :
        if key not in tb1.para : UTMESS('F','Table','Erreur, label non présent %s' %key)
@@ -863,7 +882,7 @@ def merge(tb1, tb2, labels=[]):
          n_para.append(i)
          n_type.append(tb2.type[tb2.para.index(i)])
    # restriction des lignes aux labels communs (peu cher en cpu)
-   rows1 = copy(tb1.rows)
+   rows1 = tb1.rows
    dlab1 = {}
    for i1 in range(len(rows1)):
       tu1 = tuple(map(rows1[i1].__getitem__, labels))
@@ -872,7 +891,7 @@ def merge(tb1, tb2, labels=[]):
       else:
          dlab1[tu1] = None
    # restriction des lignes aux labels communs (peu cher en cpu)
-   rows2 = copy(tb2.rows)
+   rows2 = tb2.rows
    dlab2 = {}
    for i2 in range(len(rows2)):
       tu2 = tuple(map(rows2[i2].__getitem__, labels))
@@ -895,7 +914,7 @@ def merge(tb1, tb2, labels=[]):
    # insertion des valeurs de tb2 dans tb1 quand les labels sont communs
    # (et uniques dans chaque table) OU ajout de la ligne de tb2 dans tb1
    i2 = -1
-   for r2 in tb2.rows:
+   for r2 in rows2:
       i2 += 1
       try:
          rows1[dic1[i2]].update(r2)

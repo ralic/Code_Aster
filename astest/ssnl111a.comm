@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -406,7 +406,7 @@ U=STAT_NON_LINE(
                 LIST_INST = L_INST,
                 NUME_INST_INIT = 0,
                 NUME_INST_FIN = 6,
-                SUBD_PAS = 5,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
                 SUBD_PAS_MINI = 0.001),
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE',

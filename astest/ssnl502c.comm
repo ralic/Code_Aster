@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -192,7 +192,7 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
                                       DEFORMATION = 'GREEN_GR',),
                            INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.000001,
                                       ),
                               NEWTON=_F( REAC_ITER = 1,
@@ -223,7 +223,7 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
                                       DEFORMATION = 'GREEN_GR',),
                            INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_PAS=4,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                      SUBD_PAS_MINI=0.000001,
                                       ),
                              SOLVEUR=_F( STOP_SINGULIER='DECOUPE'),

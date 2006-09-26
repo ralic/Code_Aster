@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 26/09/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -90,7 +90,7 @@ C      CHARACTER*24      COORN,NOMNO
 C
       INTEGER           LNOFF,IADRT1,IADRT2,IADRT3,ITHETA,IADRCO,JMIN
       INTEGER           IERD,IMODU,NBRE,IRET,NUMA,NDIMTE,JGT,JGN,TMP
-      INTEGER           NBNO,IFON,I,IDESC,IREFE,J,JRESU,K
+      INTEGER           NBNO,IFON,I,IDESC,IREFE,J,JRESU,K,JGTL
 C
       REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1
       REAL*8            XIJ,YIJ,ZIJ,EPS,D, GRTX,GRTY,GRTZ
@@ -119,6 +119,7 @@ C     RÉCUPÉRATION DES GRADIENTS DE LST
       CNSGT='&&GCOUR3.CNSGT'
       CALL CNOCNS(GRLT,'V',CNSGT)
       CALL JEVEUO(CNSGT//'.CNSV','L',JGT)
+      CALL JEVEUO(CNSGT//'.CNSL','L',JGTL)
 C
 C ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 C TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
@@ -268,21 +269,23 @@ C               DISTANCE MN
                 ZR(ITHETA+(I-1)*3+2-1) = 0.D0
                 ZR(ITHETA+(I-1)*3+3-1) = 0.D0
               ELSE
-                IMODU = IADRT3+(K-1)*LNOFF+JMIN-1
-                GRTX=ZR(JGT-1+(I-1)*3+1)
-                GRTY=ZR(JGT-1+(I-1)*3+2)
-                GRTZ=ZR(JGT-1+(I-1)*3+3)          
-                VALX = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTX
-                VALY = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTY
-                VALZ = ((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTZ
-                IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
-                  ZR(ITHETA+(I-1)*3+1-1) = VALX
-                  ZR(ITHETA+(I-1)*3+2-1) = VALY
-                  ZR(ITHETA+(I-1)*3+3-1) = VALZ
-                ELSE 
-                  ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
-                  ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
-                  ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                IF (ZL(JGTL-1+(I-1)*3+1)) THEN
+                  IMODU = IADRT3+(K-1)*LNOFF+JMIN-1
+                  GRTX=ZR(JGT-1+(I-1)*3+1)
+                  GRTY=ZR(JGT-1+(I-1)*3+2)
+                  GRTZ=ZR(JGT-1+(I-1)*3+3)          
+                  VALX =((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTX
+                  VALY =((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTY
+                  VALZ =((1-SMIN) * ZR(IMODU) + SMIN * ZR(IMODU+1))*GRTZ
+                  IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
+                    ZR(ITHETA+(I-1)*3+1-1) = VALX
+                    ZR(ITHETA+(I-1)*3+2-1) = VALY
+                    ZR(ITHETA+(I-1)*3+3-1) = VALZ
+                  ELSE 
+                    ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
+                    ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
+                    ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                  ENDIF
                 ENDIF
               ENDIF
  500      CONTINUE

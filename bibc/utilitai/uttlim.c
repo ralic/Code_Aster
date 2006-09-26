@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTLIM UTILITAI  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -69,7 +69,7 @@ void uttlim ( double *t_lim )
     *t_lim= (double)itpm;
   }
   else {
-	*t_lim = (double) LONG_MAX;
+	*t_lim = ((double) LONG_MAX)/2;
   }
 }
 #elif  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
@@ -83,7 +83,7 @@ void uttlim_ ( double *t_lim )
     *t_lim= (double)itpm;
   }
   else {
-	*t_lim = (double) LONG_MAX;
+	*t_lim = ((double) LONG_MAX)/2;
   }
 }
 #elif  defined PPRO_NT

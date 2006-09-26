@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,7 @@ UR = STAT_NON_LINE (
                          ITER_INTE_MAXI=10, 
                          DEFORMATION = 'SIMO_MIEHE',),
           INCREMENT = _F(LIST_INST = L_INST_R,
-                         SUBD_PAS = 3,
+                         SUBD_METHODE='UNIFORME', SUBD_PAS = 3,
                          SUBD_PAS_MINI = 1.E-10,),
           ARCHIVAGE = _F(LIST_INST = L_ARCH_R,),
           NEWTON=_F(REAC_INCR=1,
@@ -172,7 +172,7 @@ UL = STAT_NON_LINE (
                          ITER_INTE_MAXI=10, 
                          DEFORMATION = 'SIMO_MIEHE',),
           INCREMENT = _F(LIST_INST = L_INST_L,
-                         SUBD_PAS = 3,
+                         SUBD_METHODE='UNIFORME', SUBD_PAS = 3,
                          SUBD_PAS_MINI = 1.E-10,),
           ARCHIVAGE = _F(LIST_INST = L_ARCH_L,),
           NEWTON=_F(REAC_INCR=1,

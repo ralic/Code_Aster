@@ -5,7 +5,7 @@
      &                   JREDC,JREDD,METHOD)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2002   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 25/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C ----------------------------------------------------------------------
       IMPLICIT    NONE
       INTEGER NBMODE,JREDC,JREDD,JABS
       INTEGER NBCHOC,NBSAUV,NBREDE,NBREVI,JDEPL,JVITE,JACCE,JORDR
-      CHARACTER*(*) BASEMO,NOMRE0,MASGEN,RIGGEN,AMOGEN
+      CHARACTER*8 BASEMO,NOMRE0,MASGEN,RIGGEN,AMOGEN
       CHARACTER*8 NOMRES,KBID
       CHARACTER*8 FONRED(NBREDE,*),METHOD
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -70,7 +70,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER NBSTOC,IRET,JREFE,JDESC
-      INTEGER I,JREDN
+      INTEGER I,JREDN,J1REFE
+
+      CHARACTER*8 NUMGEN,BLANC
 C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -78,6 +80,10 @@ C     ------------------------------------------------------------------
       NBSTOC = NBMODE * NBSAUV
       NOMRES = NOMRE0
 C
+      JREDC = 1
+      JREDD = 1
+      BLANC =  '        '
+
       CALL JEEXIN(NOMRES//'           .REFE',IRET)
       IF (IRET.EQ.0) THEN
          CALL WKVECT(NOMRES//'           .REFE','G V K24',4,JREFE)
@@ -86,6 +92,29 @@ C
          ZK24(JREFE+2) = RIGGEN(1:8)
          ZK24(JREFE+3) = AMOGEN(1:8)
       ENDIF
+C
+      CALL JEEXIN(NOMRES//'           .REFD',IRET)
+      IF (IRET.EQ.0) THEN
+C On recupere la numerotation generalisee
+         CALL JEEXIN(RIGGEN//'           .REFA',IRET)
+         IF (IRET.NE.0) THEN
+           CALL JEVEUO(RIGGEN//'           .REFA','L',J1REFE)
+           NUMGEN = ZK24(J1REFE+1)(1:8)
+         ELSE
+           NUMGEN = BLANC
+         ENDIF
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',6,JREFE)
+         ZK24(JREFE) = RIGGEN
+         ZK24(JREFE+1) = MASGEN
+         ZK24(JREFE+2) = AMOGEN
+         ZK24(JREFE+3) = NUMGEN
+         ZK24(JREFE+4) = ' '
+         ZK24(JREFE+5) = BASEMO(1:8)
+      ENDIF
+C
+
+
+
 C
       CALL JEEXIN(NOMRES//'           .DESC',IRET)
       IF (IRET.EQ.0) THEN

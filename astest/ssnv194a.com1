@@ -1,0 +1,138 @@
+POURSUITE(CODE=_F(NOM='SSNV194A'));
+
+NB_GRAINS=10
+
+# Calcul des moyennes 
+
+INT_SI=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_SI)
+
+
+INS=[None]*NB_GRAINS
+EPS=[None]*NB_GRAINS
+INSX=[None]*NB_GRAINS
+EPSX=[None]*NB_GRAINS
+COMX=[None]*NB_GRAINS
+INSY=[None]*NB_GRAINS
+EPSY=[None]*NB_GRAINS
+COMY=[None]*NB_GRAINS
+INSZ=[None]*NB_GRAINS
+EPSZ=[None]*NB_GRAINS
+COMZ=[None]*NB_GRAINS
+FSX=[None]*NB_GRAINS
+FSY=[None]*NB_GRAINS
+FSZ=[None]*NB_GRAINS
+FEX=[None]*NB_GRAINS
+FEY=[None]*NB_GRAINS
+FEZ=[None]*NB_GRAINS
+
+for IP in range (NB_GRAINS):
+  print 'GM'+str(IP+1)
+  
+  INS[IP]=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                GROUP_MA = 'GM'+str(IP+1),
+				),)
+  IMPR_TABLE(FORMAT = 'TABLEAU',
+             TABLE=INS[IP],);
+
+  EPS[IP]=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='EPSI_ELGA_DEPL',
+                                NOM_CMP=('EPXX','EPYY','EPZZ'),
+                                GROUP_MA = 'GM'+str(IP+1),
+				),)
+  IMPR_TABLE(FORMAT = 'TABLEAU',
+             TABLE=EPS[IP],);
+
+  INSX[IP]=CALC_TABLE(TABLE=INS[IP], 
+                 ACTION=(_F(OPERATION ='EXTR',
+		            NOM_PARA=('INST','INTE_SIXX'),),),)
+
+  EPSX[IP]=CALC_TABLE(TABLE=EPS[IP], 
+                 ACTION=(_F(OPERATION ='EXTR',
+                            NOM_PARA=('INST','INTE_EPXX'),),),)
+
+  COMX[IP]=CALC_TABLE(TABLE=EPSX[IP], 
+                 ACTION=(_F(OPERATION ='COMB',TABLE=INSX[IP],NOM_PARA='INST',),),)
+
+  IMPR_TABLE (FORMAT = 'TABLEAU',
+              TABLE  = COMX[IP],
+              NOM_PARA = ('INST', 'INTE_EPXX','INTE_SIXX'),
+             ) ;
+
+  INSY[IP]=CALC_TABLE(TABLE=INS[IP], 
+                 ACTION=(_F(OPERATION ='EXTR',
+                            NOM_PARA=('INST','INTE_SIYY'),),),)
+
+  EPSY[IP]=CALC_TABLE(TABLE=EPS[IP], 
+                 ACTION=(_F(OPERATION ='EXTR',
+                           NOM_PARA=('INST','INTE_EPYY'),),),)
+
+  COMY[IP]=CALC_TABLE(TABLE=EPSY[IP], 
+                 ACTION=(_F(OPERATION ='COMB',TABLE = INSY[IP], NOM_PARA='INST',),),)
+
+  IMPR_TABLE (FORMAT = 'TABLEAU',
+              TABLE  = COMY[IP],
+              NOM_PARA = ('INST', 'INTE_EPYY','INTE_SIYY'),
+             ) ;
+
+  INSZ[IP]=CALC_TABLE(TABLE=INS[IP], 
+                 ACTION=(_F(OPERATION ='EXTR',
+                            NOM_PARA=('INST','INTE_SIZZ'),),),)
+
+  EPSZ[IP]=CALC_TABLE(TABLE=EPS[IP], 
+                 ACTION=(_F(OPERATION ='EXTR',
+                            NOM_PARA=('INST','INTE_EPZZ'),),),)
+
+  COMZ[IP]=CALC_TABLE(TABLE=EPS[IP], 
+                 ACTION=(_F(OPERATION ='COMB',TABLE = INS[IP], NOM_PARA='INST',),),)
+
+  IMPR_TABLE (FORMAT = 'TABLEAU',
+              TABLE  = COMZ[IP],
+              NOM_PARA = ('INST', 'INTE_EPZZ','INTE_SIZZ'),
+             ) ;
+
+  FSX[IP]=RECU_FONCTION(TABLE=COMX[IP],
+                           PARA_X='INST',
+                           PARA_Y='INTE_SIXX',);
+
+  FSY[IP]=RECU_FONCTION(TABLE=COMY[IP],
+                           PARA_X='INST',
+                           PARA_Y='INTE_SIYY',);
+
+  FSZ[IP]=RECU_FONCTION(TABLE=COMZ[IP],
+                           PARA_X='INST',
+                           PARA_Y='INTE_SIZZ',);
+
+  FEX[IP]=RECU_FONCTION(TABLE=COMX[IP],
+                           PARA_X='INST',
+                           PARA_Y='INTE_EPXX',);
+		       
+  FEY[IP]=RECU_FONCTION(TABLE=COMY[IP],
+                           PARA_X='INST',
+                           PARA_Y='INTE_EPYY',);
+		       
+  FEZ[IP]=RECU_FONCTION(TABLE=COMZ[IP],
+                           PARA_X='INST',
+                           PARA_Y='INTE_EPZZ',);
+
+
+motcles = {}
+motcles['COURBE'] = []			 
+for IP in range (NB_GRAINS):
+   motcles['COURBE'].append(_F(FONC_X=FEX[IP], FONC_Y=FSX[IP]))
+   motcles['COURBE'].append(_F(FONC_X=FEY[IP], FONC_Y=FSY[IP]))
+   motcles['COURBE'].append(_F(FONC_X=FEZ[IP], FONC_Y=FSZ[IP]))
+
+IMPR_FONCTION(FORMAT ='XMGRACE',PILOTE='POSTSCRIPT', UNITE = 24, **motcles);
+
+FIN () ;
+

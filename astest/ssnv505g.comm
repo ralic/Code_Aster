@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.4,
-                             SUBD_PAS=4,
+                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                              SUBD_PAS_MINI=1E-8,
                              ),
                 NEWTON=_F(REAC_ITER=5,),
@@ -185,7 +185,7 @@ ULAG2=STAT_NON_LINE(MODELE=MODE,
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.4,
-                             SUBD_PAS=4,
+                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                              SUBD_PAS_MINI=1E-8,
                              ),
                 NEWTON=_F(REAC_ITER=5,),

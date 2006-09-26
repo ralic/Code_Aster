@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # ======================================================================
@@ -278,7 +278,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,
                               NUME_INST_FIN=1,
-                              SUBD_PAS=10,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                               SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
@@ -434,7 +434,7 @@ U2=STAT_NON_LINE(MODELE=MODELE2,
                  PARM_THETA=0.57,
                  INCREMENT=_F(LIST_INST=INST2,
                               NUME_INST_FIN=1,
-                              SUBD_PAS=10,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                               SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
@@ -458,7 +458,7 @@ U2=STAT_NON_LINE(reuse=U2,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST2,
                               NUME_INST_FIN=2,
-                              SUBD_PAS=10,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                               SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',

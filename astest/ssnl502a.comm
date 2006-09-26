@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -152,7 +152,7 @@ RESULT=STAT_NON_LINE(MODELE=MO,
                                   DEFORMATION='GREEN_GR',),
                      INCREMENT=_F(LIST_INST=LIS_INST,
                                   NUME_INST_FIN=11,
-                                  SUBD_PAS=4,
+                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                   SUBD_PAS_MINI=1.E-6,),
                      NEWTON=_F(PREDICTION='ELASTIQUE',
                                MATRICE='TANGENTE',
@@ -179,7 +179,7 @@ RESULT=STAT_NON_LINE(reuse =RESULT,
                      INCREMENT=_F(LIST_INST=LIS_INST,
                                   NUME_INST_INIT=11,
                                   NUME_INST_FIN=131,
-                                  SUBD_PAS=4,
+                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                   SUBD_PAS_MINI=1.E-6,),
                      NEWTON=_F(PREDICTION='ELASTIQUE',
                                MATRICE='TANGENTE',

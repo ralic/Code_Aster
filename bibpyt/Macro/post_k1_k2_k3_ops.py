@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 19/06/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,63 +183,67 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
       if LNOFO==None :
          RECOL = True
          LNOFO = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND_INF  .NOEU        ')
-         if LNOFO==None : UTMESS('F', macro, 'PROBLEME A LA RECUPERATION DES NOEUDS DU FOND DE FISSURE')
+         if LNOFO==None : UTMESS('F', macro, 'PROBLEME A LA RECUPERATION DES NOEUDS DU FOND DE FISSURE \n')
       LNOFO = map(string.rstrip,LNOFO)
       Nbfond = len(LNOFO)
 
+      if MODELISATION=='3D' :
 #   ----------Mots cles TOUT, NOEUD, SANS_NOEUD -------------
-      Typ = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND      .TYPE        ')
-      if (Typ[0]=='SEG2    ') or (Typ[0]=='SEG3    ' and TOUT=='OUI') :
-         pas = 1
-      elif (Typ[0]=='SEG3    ') : 
-         pas = 2
-      else :
-         UTMESS('F', macro, 'TYPE DE MAILLES DU FOND DE FISSURE NON DEFINI')
+        Typ = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND      .TYPE        ')
+        if (Typ[0]=='SEG2    ') or (Typ[0]=='SEG3    ' and TOUT=='OUI') :
+           pas = 1
+        elif (Typ[0]=='SEG3    ') : 
+           pas = 2
+        else :
+           UTMESS('F', macro, 'TYPE DE MAILLES DU FOND DE FISSURE NON DEFINI')
 ####
-      NO_SANS = []
-      NO_AVEC = []
-      if GROUP_NO!=None :
-        collgrno=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.GROUPENO')
-        cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
-        if type(GROUP_NO) not in EnumTypes : GROUP_NO = (GROUP_NO,)
-        for m in range(len(GROUP_NO)) :
-          ngrno=GROUP_NO[m].ljust(8).upper()
-          if ngrno not in collgrno.keys() :
-            UTMESS('F', macro, "LE GROUP_NO "+ngrno+" N EST PAS DANS LE MAILLAGE")
-          for i in range(len(collgrno[ngrno])) : NO_AVEC.append(cnom[collgrno[ngrno][i]-1])
-        NO_AVEC= map(string.rstrip,NO_AVEC)
-      if NOEUD!=None : 
-        if type(NOEUD) not in EnumTypes : NO_AVEC = (NOEUD,)
-        else : NO_AVEC = NOEUD
-      if SANS_GROUP_NO!=None :
-        collgrno=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.GROUPENO')
-        cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
-        if type(SANS_GROUP_NO) not in EnumTypes : SANS_GROUP_NO = (SANS_GROUP_NO,)
-        for m in range(len(SANS_GROUP_NO)) :
-          ngrno=SANS_GROUP_NO[m].ljust(8).upper()
-          if ngrno not in collgrno.keys() :
-            UTMESS('F', macro, "LE GROUP_NO "+ngrno+" N EST PAS DANS LE MAILLAGE")
-          for i in range(len(collgrno[ngrno])) : NO_SANS.append(cnom[collgrno[ngrno][i]-1])
-        NO_SANS= map(string.rstrip,NO_SANS)
-      if SANS_NOEUD!=None : 
-        if type(SANS_NOEUD) not in EnumTypes : NO_SANS = (SANS_NOEUD,)
-        else : NO_SANS = SANS_NOEUD
+        NO_SANS = []
+        NO_AVEC = []
+        if GROUP_NO!=None :
+          collgrno=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.GROUPENO')
+          cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
+          if type(GROUP_NO) not in EnumTypes : GROUP_NO = (GROUP_NO,)
+          for m in range(len(GROUP_NO)) :
+            ngrno=GROUP_NO[m].ljust(8).upper()
+            if ngrno not in collgrno.keys() :
+              UTMESS('F', macro, "LE GROUP_NO "+ngrno+" N EST PAS DANS LE MAILLAGE")
+            for i in range(len(collgrno[ngrno])) : NO_AVEC.append(cnom[collgrno[ngrno][i]-1])
+          NO_AVEC= map(string.rstrip,NO_AVEC)
+        if NOEUD!=None : 
+          if type(NOEUD) not in EnumTypes : NO_AVEC = (NOEUD,)
+          else : NO_AVEC = NOEUD
+        if SANS_GROUP_NO!=None :
+          collgrno=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.GROUPENO')
+          cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
+          if type(SANS_GROUP_NO) not in EnumTypes : SANS_GROUP_NO = (SANS_GROUP_NO,)
+          for m in range(len(SANS_GROUP_NO)) :
+            ngrno=SANS_GROUP_NO[m].ljust(8).upper()
+            if ngrno not in collgrno.keys() :
+              UTMESS('F', macro, "LE GROUP_NO "+ngrno+" N EST PAS DANS LE MAILLAGE")
+            for i in range(len(collgrno[ngrno])) : NO_SANS.append(cnom[collgrno[ngrno][i]-1])
+          NO_SANS= map(string.rstrip,NO_SANS)
+        if SANS_NOEUD!=None : 
+          if type(SANS_NOEUD) not in EnumTypes : NO_SANS = (SANS_NOEUD,)
+          else : NO_SANS = SANS_NOEUD
 # Creation de la liste des noeuds du fond a traiter : Lnf1
-      Lnf1 = []
-      Nbf1 = 0
-      if len(NO_AVEC)!=0 :
-        for i in range(len(NO_AVEC)) :
-          if NO_AVEC[i] in LNOFO : 
-            Lnf1.append(NO_AVEC[i])
-            Nbf1 = Nbf1 +1
-          else : 
-            UTMESS('F', macro, 'LE NOEUD %s N APPARTIENT PAS AU FOND DE FISSURE'%NO_AVEC[i])
+        Lnf1 = []
+        Nbf1 = 0
+        if len(NO_AVEC)!=0 :
+          for i in range(len(NO_AVEC)) :
+            if NO_AVEC[i] in LNOFO : 
+              Lnf1.append(NO_AVEC[i])
+              Nbf1 = Nbf1 +1
+            else : 
+              UTMESS('F', macro, 'LE NOEUD %s N APPARTIENT PAS AU FOND DE FISSURE'%NO_AVEC[i])
+        else :
+           for i in range(0,Nbfond,pas) :
+              if not (LNOFO[i] in NO_SANS) :
+                 Lnf1.append(LNOFO[i])
+                 Nbf1 = Nbf1 +1
       else :
-         for i in range(0,Nbfond,pas) :
-            if not (LNOFO[i] in NO_SANS) :
-               Lnf1.append(LNOFO[i])
-               Nbf1 = Nbf1 +1
-
+        Lnf1 = LNOFO
+        Nbf1 = 1
+        
 ##### Cas maillage libre###########
 # creation des directions normales et macr_lign_coup
       if TYPE_MAILLAGE =='LIBRE':
@@ -259,7 +263,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         nbt = len(tcoorf['NOEUD'].values()['NOEUD'])
         xs=array(tcoorf['COOR_X'].values()['COOR_X'][:nbt],Float)
         ys=array(tcoorf['COOR_Y'].values()['COOR_Y'][:nbt],Float)
-        if ndim==2 : zs=Numeric.zeros(nbval,Float)
+        if ndim==2 : zs=Numeric.zeros(nbt,Float)
         elif ndim==3 : zs=array(tcoorf['COOR_Z'].values()['COOR_Z'][:nbt],Float)
         ns = tcoorf['NOEUD'].values()['NOEUD'][:nbt]
         ns = map(string.rstrip,ns)
@@ -290,42 +294,53 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         v1 =  array(VECT_K1)
         VN = [None]*Nbfond
         absfon = [0,]
-        DTANOR = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_ORIGINE')
-        Pfon2 = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
-        VLori = Pfon2 - Plev
-        if DTANOR != None :
-          VN[0] = array(DTANOR)
-        else :
-          Pfon3 = array([d_coorf[LNOFO[1]][0],d_coorf[LNOFO[1]][1],d_coorf[LNOFO[1]][2]])
-          VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-          VN[0] = array(cross_product(VT,v1))
-        for i in range(1,Nbfond-1):
+        if MODELISATION=='3D' :
+          DTANOR = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_ORIGINE')
+          Pfon2 = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
+          VLori = Pfon2 - Plev
+          if DTANOR != None :
+            VN[0] = array(DTANOR)
+          else :
+            Pfon3 = array([d_coorf[LNOFO[1]][0],d_coorf[LNOFO[1]][1],d_coorf[LNOFO[1]][2]])
+            VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+            VN[0] = array(cross_product(VT,v1))
+          for i in range(1,Nbfond-1):
+            Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
+            Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
+            Pfon3 = array([d_coorf[LNOFO[i+1]][0],d_coorf[LNOFO[i+1]][1],d_coorf[LNOFO[i+1]][2]])
+            absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
+            absfon.append(absf)
+            VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+            VT = VT+(Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+            VN[i] = array(cross_product(VT,v1)) 
+            VN[i] = VN[i]/sqrt(dot(transpose(VN[i]),VN[i]))
+          i = Nbfond-1
           Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
           Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
-          Pfon3 = array([d_coorf[LNOFO[i+1]][0],d_coorf[LNOFO[i+1]][1],d_coorf[LNOFO[i+1]][2]])
+          VLextr = Pfon2 - Plev
           absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
           absfon.append(absf)
-          VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-          VT = VT+(Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-          VN[i] = array(cross_product(VT,v1)) 
-          VN[i] = VN[i]/sqrt(dot(transpose(VN[i]),VN[i]))
-        i = Nbfond-1
-        Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
-        Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
-        VLextr = Pfon2 - Plev
-        absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
-        absfon.append(absf)
-        DTANEX = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_EXTREMITE')
-        if DTANEX != None :
-          VN[i] = array(DTANEX)
-        else :
-          VT = (Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-          VN[i] = array(cross_product(VT,v1))
-        dicoF = dict([(LNOFO[i],absfon[i]) for i in range(Nbfond)])  
-        dicVN = dict([(LNOFO[i],VN[i]) for i in range(Nbfond)])
+          DTANEX = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_EXTREMITE')
+          if DTANEX != None :
+            VN[i] = array(DTANEX)
+          else :
+            VT = (Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+            VN[i] = array(cross_product(VT,v1))
+          dicoF = dict([(LNOFO[i],absfon[i]) for i in range(Nbfond)])  
+          dicVN = dict([(LNOFO[i],VN[i]) for i in range(Nbfond)])
 #Sens de la tangente       
-        v = cross_product(VLori,VLextr)
-        sens = sign(dot(transpose(v),v1))
+          v = cross_product(VLori,VLextr)
+          sens = sign(dot(transpose(v),v1))
+#Cas 2D              
+        if MODELISATION!='3D' :
+          DTANOR = False
+          DTANEX = False
+          VT = array([0.,0.,1.])
+          VN = array(cross_product(v1,VT))
+          dicVN = dict([(LNOFO[0],VN)])
+          Pfon = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
+          VLori = Pfon - Plev
+          sens = sign(dot(transpose(VN),VLori))
 #Extraction dep sup/inf sur les normales          
         TlibS = [None]*Nbf1
         TlibI = [None]*Nbf1
@@ -357,14 +372,21 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
       else:
 #   ---------- Dictionnaires des levres  -------------  
         NnormS = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.SUPNORM   .NOEU        ')
-        if NnormS==None : UTMESS('F', macro, 'PROBLEME A LA RECUPERATION DES NOEUDS DES LEVRES')
+        if NnormS==None : 
+          message= 'PROBLEME A LA RECUPERATION DES NOEUDS DE LA LEVRE SUP : VERIFIER '
+          message=message+'QUE LE MOT CLE LEVRE_SUP EST BIEN RENSEIGNE DANS DEFI_FOND_FISS\n'
+          UTMESS('F', macro, message)
         NnormS = map(string.rstrip,NnormS)
-        if LNOFO[0]==LNOFO[-1] : Nbfond=Nbfond-1  # Cas fond de fissure ferme
+        if LNOFO[0]==LNOFO[-1] and MODELISATION=='3D' : Nbfond=Nbfond-1  # Cas fond de fissure ferme
         NnormS = [[LNOFO[i],NnormS[i*20:(i+1)*20]] for i in range(0,Nbfond)]
         NnormS = [(i[0],i[1][0:]) for i in NnormS]
         dicoS = dict(NnormS)
         if SYME_CHAR=='SANS':
            NnormI = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.INFNORM   .NOEU        ')
+           if NnormI==None : 
+             message= 'PROBLEME A LA RECUPERATION DES NOEUDS DE LA LEVRE INF : VERIFIER '
+             message=message+'QUE LE MOT CLE LEVRE_INF EST BIEN RENSEIGNE DANS DEFI_FOND_FISS\n'
+             UTMESS('F', macro, message)
            NnormI = map(string.rstrip,NnormI)
            NnormI = [[LNOFO[i],NnormI[i*20:(i+1)*20]] for i in range(0,Nbfond)]
            NnormI = [(i[0],i[1][0:]) for i in NnormI]
@@ -399,7 +421,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         nbt = len(tcoor['NOEUD'].values()['NOEUD'])
         xs=array(tcoor['COOR_X'].values()['COOR_X'][:nbt],Float)
         ys=array(tcoor['COOR_Y'].values()['COOR_Y'][:nbt],Float)
-        if ndim==2 : zs=Numeric.zeros(nbval,Float)
+        if ndim==2 : zs=Numeric.zeros(nbt,Float)
         elif ndim==3 : zs=array(tcoor['COOR_Z'].values()['COOR_Z'][:nbt],Float)
         ns = tcoor['NOEUD'].values()['NOEUD'][:nbt]
         ns = map(string.rstrip,ns)
@@ -483,10 +505,14 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
               if SYME_CHAR=='SANS' : Lnoinf[Nbnofo] = Tmpinf
               Lnofon.append(Lnf1[i])
               Nbnofo = Nbnofo+1
-              
+        if Nbnofo == 0 :
+          message= 'CALCUL POSSIBLE POUR AUCUN NOEUD DU FOND :'
+          message=message+' VERIFIER LES DONNEES'
+          UTMESS('F',macro, message)
+                 
    else :
      Nbnofo = 1
-  
+ 
 #   ----------Recuperation de la temperature au fond -------------  
    if Tempe3D :
       resuth = map(string.rstrip,resuth)
@@ -888,7 +914,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
         else :
           v = aster.__version__
           titre = 'ASTER %s - CONCEPT CALCULE PAR POST_K1_K2_K3 LE &DATE A &HEURE \n'%v
-        if FOND_FISS : 
+        if FOND_FISS and MODELISATION=='3D': 
           mcfact.append(_F(PARA='NOEUD_FOND',LISTE_K=[Lnofon[ino],]*3))
           mcfact.append(_F(PARA='ABSC_CURV',LISTE_R=[dicoF[Lnofon[ino]]]*3))
         mcfact.append(_F(PARA='METHODE',LISTE_I=(1,2,3)))
@@ -911,12 +937,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
            __tabi=CREA_TABLE(LISTE=mcfact,)
            npara = ['K1_MAX','METHODE']
            if inst!=None : npara.append('INST')
-           if FOND_FISS : npara.append('NOEUD_FOND')
+           if FOND_FISS and MODELISATION=='3D' : npara.append('NOEUD_FOND')
            tabout=CALC_TABLE(reuse=tabout,TABLE=tabout,TITRE = titre,
                               ACTION=_F(OPERATION = 'COMB',NOM_PARA=npara,TABLE=__tabi,))
 
 # Tri pour conserver le meme ordre que operateur initial en fortran
-   if len(l_inst)!=1 and FOND_FISS :
+   if len(l_inst)!=1 and FOND_FISS and MODELISATION=='3D':
       tabout=CALC_TABLE(reuse=tabout,TABLE=tabout,
                       ACTION=_F(OPERATION = 'TRI',NOM_PARA=('INST','ABSC_CURV','METHODE'),ORDRE='CROISSANT'))
 

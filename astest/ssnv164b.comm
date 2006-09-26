@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,7 +200,7 @@ RES1 =  CALC_PRECONT( reuse=RES1,
                             CABLE_BP_INACTIF = ( CAB_BP3, CAB_BP4, CAB_BP5 ,),
                             INCREMENT=_F(LIST_INST = LINST,
                                            INST_FIN  = 300.,
-                                           SUBD_PAS = 4,
+                                           SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                                            SUBD_PAS_MINI = 0.01,
                                            ),) 
 
@@ -222,7 +222,7 @@ RES1 =  CALC_PRECONT( reuse=RES1,
                             CABLE_BP_INACTIF = ( CAB_BP5 ,),
                             INCREMENT=_F(LIST_INST = LINST,
                                          INST_FIN  = 450.,
-                                         SUBD_PAS = 4,
+                                         SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                                          SUBD_PAS_MINI = 0.01,
                                           ),)
 
@@ -245,7 +245,7 @@ RES1 =  CALC_PRECONT(  reuse=RES1,
                              CABLE_BP   =( CAB_BP5 ,),
                              INCREMENT=_F(LIST_INST = LINST,
                                           INST_FIN = 600.,
-                                          SUBD_PAS = 4,
+                                          SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                                           SUBD_PAS_MINI = 0.01,),) 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,7 +199,7 @@ RESU_00=STAT_NON_LINE(MODELE=MODE_00,
                       COMP_INCR=_F(RELATION='KIT_HM',
                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                       INCREMENT=_F(LIST_INST=LISTINST,
-                                   SUBD_PAS=4,
+                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                    SUBD_PAS_MINI=0.0001,),);
 #
 # 3.5. Calcul des indicateurs d'erreur en residu
@@ -356,7 +356,7 @@ RESU_01=STAT_NON_LINE(MODELE=MODE_01,
                       COMP_INCR=_F(RELATION='KIT_HM',
                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                       INCREMENT=_F(LIST_INST=LISTINST,
-                                   SUBD_PAS=4,
+                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                    SUBD_PAS_MINI=0.0001,),);
 #
 # 7.5. Calcul des indicateurs d'erreur en residu

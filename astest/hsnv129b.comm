@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE ESSAI DE COMPRESSION-DILATATION POUR ETUDE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,7 +134,7 @@ U=STAT_NON_LINE(MODELE    = MOMECA,
                                FONC_MULT = FCT),),
                 COMP_INCR =_F(RELATION='MAZARS',),
                 INCREMENT =_F(LIST_INST=L_INST,
-                              SUBD_PAS = 3,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS = 3,
                               SUBD_PAS_MINI = 0.1,
                               ),
                 NEWTON    =_F(MATRICE = 'TANGENTE',

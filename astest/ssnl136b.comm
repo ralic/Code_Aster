@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
                                 DEFORMATION='GREEN_GR',),
                    INCREMENT=_F(LIST_INST=TEMPS,
-                                SUBD_PAS=4,
+                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.0E-6,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

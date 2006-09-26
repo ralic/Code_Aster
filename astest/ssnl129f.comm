@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE : VALIDATION DE LA LOI VISC_ISOT_TRAC SUR ESSAI DE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,7 +100,7 @@ UL=STAT_NON_LINE(MODELE=MO,
                               RESI_INTE_RELA=1e-09,
                               ITER_INTE_MAXI=10,),
                  INCREMENT=_F(LIST_INST=L_INSTL,
-                              SUBD_PAS=3,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                               SUBD_PAS_MINI=1e-10,),
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',
@@ -147,7 +147,7 @@ UM=STAT_NON_LINE(MODELE=MO,
                               RESI_INTE_RELA=1e-09,
                               ITER_INTE_MAXI=10,),
                  INCREMENT=_F(LIST_INST=L_INSTM,
-                              SUBD_PAS=3,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                               SUBD_PAS_MINI=1e-10,),
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',
@@ -195,7 +195,7 @@ UR=STAT_NON_LINE(MODELE=MO,
                               RESI_INTE_RELA=1e-09,
                               ITER_INTE_MAXI=10,),
                  INCREMENT=_F(LIST_INST=L_INSTR,
-                              SUBD_PAS=3,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                               SUBD_PAS_MINI=1e-10,),
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',

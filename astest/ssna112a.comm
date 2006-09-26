@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,7 +153,7 @@ U1=STAT_NON_LINE(MODELE=MODELO,
                                ),
                  INCREMENT=_F(LIST_INST=L_INST1,
                               INST_FIN=60.0,
-                              SUBD_PAS=5,
+                              SUBD_METHODE='UNIFORME', SUBD_PAS=5,
                               SUBD_PAS_MINI =1.0e-6),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),

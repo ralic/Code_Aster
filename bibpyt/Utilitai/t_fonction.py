@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 18/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF t_fonction Utilitai  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,9 @@ import copy
 import types
 from sets import Set
 
+class FonctionError(Exception):
+   pass
+
 def interp(typ_i,val,x1,x2,y1,y2) :
   """Interpolation linéaire/logarithmique entre un couple de valeurs
   """
@@ -32,7 +35,7 @@ def interp(typ_i,val,x1,x2,y1,y2) :
   if typ_i[0]=='NON'     : 
                            if   val==x1 : return y1
                            elif val==x2 : return y2
-                           else         : raise StandardError, 'fonction : interpolation NON'
+                           else         : raise FonctionError, 'fonction : interpolation NON'
 def is_ordo(liste) :
   listb=list(Set(liste))
   listb.sort()
@@ -49,20 +52,20 @@ class t_fonction :
     pk=para.keys()
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
-         raise StandardError, 'fonction : parametres incorrects'
+         raise FonctionError, 'fonction : parametres incorrects'
     if para['INTERPOL'] not in [['NON','NON'],['LIN','LIN'],['LIN','LOG'],['LOG','LOG'],['LOG','LIN'],] :
-         raise StandardError, 'fonction : parametre INTERPOL incorrect'
+         raise FonctionError, 'fonction : parametre INTERPOL incorrect'
     if para['PROL_DROITE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise StandardError, 'fonction : parametre PROL_DROITE incorrect'
+         raise FonctionError, 'fonction : parametre PROL_DROITE incorrect'
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise StandardError, 'fonction : parametre PROL_GAUCHE incorrect'
+         raise FonctionError, 'fonction : parametre PROL_GAUCHE incorrect'
     self.vale_x    = array(vale_x)
     self.vale_y    = array(vale_y)
     self.para      = para
     if len(self.vale_x)!=len(self.vale_y) :
-         raise StandardError, 'fonction : longueur abscisse <> longueur ordonnées'
+         raise FonctionError, 'fonction : longueur abscisse <> longueur ordonnées'
     if not is_ordo(self.vale_x) :
-         raise StandardError, 'fonction : abscisses non strictement croissantes'
+         raise FonctionError, 'fonction : abscisses non strictement croissantes'
 
   def __add__(self,other) :
     """addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
@@ -77,7 +80,7 @@ class t_fonction :
     elif type(other) in [types.FloatType,types.IntType,types.ComplexType] :
       if   isinstance(self,t_fonction_c): return t_fonction_c(self.vale_x,self.vale_y+other,self.para)
       else                              : return t_fonction(self.vale_x,self.vale_y+other,self.para)
-    else:  raise StandardError, 'fonctions : erreur de type dans __add__'
+    else:  raise FonctionError, 'fonctions : erreur de type dans __add__'
 
   def __mul__(self,other) :
     """multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
@@ -93,7 +96,7 @@ class t_fonction :
       return t_fonction(self.vale_x,self.vale_y*other,self.para)
     elif type(other) ==types.ComplexType :
       return t_fonction_c(self.vale_x,self.vale_y*other,self.para)
-    else:  raise StandardError, 'fonctions : erreur de type dans __mul__'
+    else:  raise FonctionError, 'fonctions : erreur de type dans __mul__'
 
   def __repr__(self) :
     """affichage de la fonction en double colonne
@@ -108,7 +111,7 @@ class t_fonction :
     """
     para=copy.copy(self.para)
     if other.para['NOM_RESU']!=self.para['NOM_PARA'] :
-       raise StandardError,'''composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents '''
+       raise FonctionError,'''composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents '''
     para['NOM_PARA']==other.para['NOM_PARA']
     return t_fonction(other.vale_x,map(self,other.vale_y),para)
 
@@ -123,7 +126,7 @@ class t_fonction :
       if self.para['PROL_GAUCHE']=='EXCLU'    :
          eps_g=(val-self.vale_x[0] )/(self.vale_x[1] -self.vale_x[0])
          if abs(eps_g)<=tol  : return self.vale_y[0]
-         else                : raise StandardError, 'fonction évaluée hors du domaine de définition'
+         else                : raise FonctionError, 'fonction évaluée hors du domaine de définition'
       else  : 
          if self.para['PROL_GAUCHE']=='CONSTANT' : return self.vale_y[0]
          if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[0],
@@ -134,7 +137,7 @@ class t_fonction :
       if self.para['PROL_DROITE']=='EXCLU'    :
          eps_d=(val-self.vale_x[-1])/(self.vale_x[-1]-self.vale_x[-2])
          if abs(eps_d)<=tol  : return self.vale_y[-1]
-         else                : raise StandardError, 'fonction évaluée hors du domaine de définition'
+         else                : raise FonctionError, 'fonction évaluée hors du domaine de définition'
       else  : 
          if self.para['PROL_DROITE']=='CONSTANT' : return self.vale_y[-1]
          if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[-1],
@@ -185,10 +188,10 @@ class t_fonction :
     para['PROL_DROITE']='EXCLU'
     if   crit=='ABSOLU' : rinf_tab=greater(abs(self.vale_x-rinf),prec)
     elif crit=='RELATIF': rinf_tab=greater(abs(self.vale_x-rinf),prec*rinf)
-    else : raise StandardError, 'fonction : cut : critère absolu ou relatif'
+    else : raise FonctionError, 'fonction : cut : critère absolu ou relatif'
     if   crit=='ABSOLU' : rsup_tab=greater(abs(self.vale_x-rsup),prec)
     elif crit=='RELATIF': rsup_tab=greater(abs(self.vale_x-rsup),prec*rsup)
-    else : raise StandardError, 'fonction : cut : critère absolu ou relatif'
+    else : raise FonctionError, 'fonction : cut : critère absolu ou relatif'
     if alltrue(rinf_tab) : i=searchsorted(self.vale_x,rinf)
     else                 : i=rinf_tab.tolist().index(0)+1
     if alltrue(rsup_tab) : j=searchsorted(self.vale_x,rsup)
@@ -201,7 +204,7 @@ class t_fonction :
     """renvoie une fonction concaténée avec une autre, avec règles de surcharge
     """
     para=copy.copy(self.para)
-    if self.para['INTERPOL']!=other.para['INTERPOL'] : raise StandardError, 'concaténation de fonctions à interpolations différentes'
+    if self.para['INTERPOL']!=other.para['INTERPOL'] : raise FonctionError, 'concaténation de fonctions à interpolations différentes'
     if min(self.vale_x)<min(other.vale_x) :
             f1=self
             f2=other
@@ -397,12 +400,12 @@ class t_fonction :
     para=copy.copy(self.para)
     para['NOM_PARA']='FREQ'
     if self.para['NOM_PARA']!='INST' :
-       raise StandardError, 'fonction réelle : FFT : NOM_PARA=INST pour une transformée directe'
+       raise FonctionError, 'fonction réelle : FFT : NOM_PARA=INST pour une transformée directe'
     pas = self.vale_x[1]-self.vale_x[0]
     for i in range(1,len(self.vale_x)) :
         ecart = abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
         if ecart>1.e-2 :
-           raise StandardError, 'fonction réelle : FFT : la fonction doit etre à pas constant'
+           raise FonctionError, 'fonction réelle : FFT : la fonction doit etre à pas constant'
     n=int(log(len(self.vale_x))/log(2))
     if   methode=='TRONCATURE' :
        vale_y=self.vale_y[:2**n]
@@ -440,12 +443,12 @@ class t_fonction_c(t_fonction) :
     para=copy.copy(self.para)
     para['NOM_PARA']='INST'
     if self.para['NOM_PARA']!='FREQ' :
-       raise StandardError, 'fonction complexe : FFT : NOM_PARA=FREQ pour une transformée directe'
+       raise FonctionError, 'fonction complexe : FFT : NOM_PARA=FREQ pour une transformée directe'
     pas = self.vale_x[1]-self.vale_x[0]
     for i in range(1,len(self.vale_x)) :
         ecart = abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
         if ecart>1.e-3 :
-           raise StandardError, 'fonction complexe : FFT : la fonction doit etre à pas constant'
+           raise FonctionError, 'fonction complexe : FFT : la fonction doit etre à pas constant'
     n=int(log(len(self.vale_x))/log(2))
     if   syme=='OUI' and len(self.vale_x)==2**n :
        vale_fonc=self.vale_y
@@ -469,7 +472,7 @@ class t_fonction_c(t_fonction) :
        vale_fonc=vale_fonc+vale_fon1
        vale_fonc=array(vale_fonc)
     if   syme=='OUI' and len(self.vale_x)!=2**n :
-       raise StandardError, 'fonction complexe : FFT : syme=OUI et nombre de points<>2**n'
+       raise FonctionError, 'fonction complexe : FFT : syme=OUI et nombre de points<>2**n'
     part1=vale_fonc[:len(vale_fonc)/2+1]
     part2=vale_fonc[1:len(vale_fonc)/2]
     part2=conjugate(part2)
@@ -497,22 +500,22 @@ class t_nappe :
     pk=para.keys()
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_PARA_FONC','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
-         raise StandardError, 'nappe : parametres incorrects'
+         raise FonctionError, 'nappe : parametres incorrects'
     if para['INTERPOL'] not in [['NON','NON'],['LIN','LIN'],
                                 ['LIN','LOG'],['LOG','LOG'],['LOG','LIN'],] :
-         raise StandardError, 'nappe : parametre INTERPOL incorrect'
+         raise FonctionError, 'nappe : parametre INTERPOL incorrect'
     if para['PROL_DROITE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise StandardError, 'nappe : parametre PROL_DROITE incorrect'
+         raise FonctionError, 'nappe : parametre PROL_DROITE incorrect'
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise StandardError, 'nappe : parametre PROL_GAUCHE incorrect'
+         raise FonctionError, 'nappe : parametre PROL_GAUCHE incorrect'
     self.vale_para    = array(vale_para)
     if type(l_fonc) not in (types.ListType,types.TupleType) :
-         raise StandardError, 'nappe : la liste de fonctions fournie n est pas une liste'
+         raise FonctionError, 'nappe : la liste de fonctions fournie n est pas une liste'
     if len(l_fonc)!=len(vale_para) :
-         raise StandardError, 'nappe : nombre de fonctions différent du nombre de valeurs du paramètre'
+         raise FonctionError, 'nappe : nombre de fonctions différent du nombre de valeurs du paramètre'
     for f in l_fonc :
       if not isinstance(f,t_fonction) and not isinstance(f,t_fonction_c) :
-         raise StandardError, 'nappe : les fonctions fournies ne sont pas du bon type'
+         raise FonctionError, 'nappe : les fonctions fournies ne sont pas du bon type'
     self.l_fonc       = l_fonc
     self.para         = para
 
@@ -524,7 +527,7 @@ class t_nappe :
     if i==0 :
       if val1==self.vale_para[0]  : return self.l_fonc[0](val2)
       if val1 <self.vale_para[0]  : 
-         if self.para['PROL_GAUCHE']=='EXCLU'    : raise StandardError, 'nappe évaluée hors du domaine de définition'
+         if self.para['PROL_GAUCHE']=='EXCLU'    : raise FonctionError, 'nappe évaluée hors du domaine de définition'
          if self.para['PROL_GAUCHE']=='CONSTANT' : return self.l_fonc[0](val2)
          if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val1,
                                                                  self.vale_para[0],
@@ -534,7 +537,7 @@ class t_nappe :
     elif i==n :
       if val1==self.vale_para[-1] : return self.l_fonc[-1](val2)
       if val1 >self.vale_para[-1]  : 
-         if self.para['PROL_DROITE']=='EXCLU'    : raise StandardError, 'nappe évaluée hors du domaine de définition'
+         if self.para['PROL_DROITE']=='EXCLU'    : raise FonctionError, 'nappe évaluée hors du domaine de définition'
          if self.para['PROL_DROITE']=='CONSTANT' : return self.l_fonc[-1](val2)
          if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val1,
                                                                  self.vale_para[-1],
@@ -562,11 +565,11 @@ class t_nappe :
     """
     l_fonc=[]
     if   isinstance(other,t_nappe):
-      if self.vale_para!=other.vale_para : raise StandardError, 'nappes à valeurs de paramètres différentes'
+      if self.vale_para!=other.vale_para : raise FonctionError, 'nappes à valeurs de paramètres différentes'
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]+other.l_fonc[i])
     elif type(other) in [types.FloatType,types.IntType] :
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]+other)
-    else:  raise StandardError, 't_nappe : erreur de type dans __add__'
+    else:  raise FonctionError, 't_nappe : erreur de type dans __add__'
     return t_nappe(self.vale_para,l_fonc,self.para)
 
   def __mul__(self,other) :
@@ -574,11 +577,11 @@ class t_nappe :
     """
     l_fonc=[]
     if   isinstance(other,t_nappe):
-      if self.vale_para!=other.vale_para : raise StandardError, 'nappes à valeurs de paramètres différentes'
+      if self.vale_para!=other.vale_para : raise FonctionError, 'nappes à valeurs de paramètres différentes'
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]*other.l_fonc[i])
     elif type(other) in [types.FloatType,types.IntType] :
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]*other)
-    else:  raise StandardError, 't_nappe : erreur de type dans __mul__'
+    else:  raise FonctionError, 't_nappe : erreur de type dans __mul__'
     return t_nappe(self.vale_para,l_fonc,self.para)
 
   def __repr__(self) :
@@ -595,7 +598,7 @@ class t_nappe :
     le support est la discrétisation vale_para et les discrétisations des fonctions
     """
     if self==other : return self
-    if self.para!=other.para : raise StandardError, 'combinaison de nappes à caractéristiques interpolation et prolongement différentes'
+    if self.para!=other.para : raise FonctionError, 'combinaison de nappes à caractéristiques interpolation et prolongement différentes'
     vale_para=self.vale_para.tolist()+other.vale_para.tolist()
     vale_para=dict([(i,0) for i in vale_para]).keys()
     vale_para.sort()
@@ -612,7 +615,7 @@ class t_nappe :
                                                l_fonc.append(t_fonction(new_vale_x,new_vale_y,new_para))
                                       if isinstance(other_fonc,t_fonction_c) :
                                                l_fonc.append(t_fonction_c(new_vale_x,new_vale_y,new_para))
-        else : raise StandardError, 'combinaison de nappes : incohérence'
+        else : raise FonctionError, 'combinaison de nappes : incohérence'
     return t_nappe(vale_para,l_fonc,self.para)
 
   def extreme(self) :

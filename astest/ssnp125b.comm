@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2006   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,7 +148,7 @@ try :
                                 ITER_INTE_MAXI = 100,
                                 ITER_INTE_PAS  = -10,),
                  INCREMENT=_F( LIST_INST = TEMPS,
-                               SUBD_PAS=10,
+                               SUBD_METHODE='UNIFORME', SUBD_PAS=10,
                                SUBD_PAS_MINI=0.000001,),
                  NEWTON=_F( MATRICE = 'TANGENTE',
                             REAC_ITER = 1,),

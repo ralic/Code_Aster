@@ -1,4 +1,4 @@
-# MODIF  DATE 11/12/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,7 @@ NONLIN=STAT_NON_LINE(
            #     STOP_SINGULIER='DECOUPE'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                SUBD_PAS=4,
+                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                 SUBD_PAS_MINI=0.00000001,),
                             NEWTON=_F( 
                 REAC_ITER = 1),

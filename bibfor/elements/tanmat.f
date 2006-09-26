@@ -1,0 +1,178 @@
+      SUBROUTINE TANMAT(ALPHA,BETA,GAMMA,K1,K2,DMAX1,DMAX2,
+     &                DAM1,DAM2,CURV,DCURV,TANMA2)
+
+        IMPLICIT  NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      REAL*8 TANMA2(3,3)
+
+      REAL*8 ALPHA, BETA, GAMMA,K1,K2,DMAX1,DMAX2,
+     &       DAM1, DAM2, CURV(3), DCURV(3),
+     &       KAPPA(2,2), KAPPVP(2), PRP(2,2), THETA,
+     &       TDM1RP(3,3), TDM2RP(3,3), TRKAPP,XVP1,XVP2,
+     &       TANMRP(3,3), AUX, CC, SS, CS, PRP33(3,3),
+     &       KAPPN(2,2), KAPPVN(2), THETN,
+     &       TANMAD(3,3), TANMTN(3,3), TANMTO(3,3)
+
+      REAL*8   ZERDAM
+      INTEGER  I, J
+      REAL*8   CP(3,3),CP2(3,3),CP3(3,3),XIFONC      
+      DATA      ZERDAM  /1.D-10/
+
+      
+      KAPPN(1,1)=CURV(1)+DCURV(1)
+      KAPPN(2,2)=CURV(2)+DCURV(2)
+      KAPPN(1,2)=(CURV(3)+DCURV(3))/2.D0
+      KAPPN(2,1)=KAPPN(1,2)
+      
+      KAPPA(1,1)=CURV(1)
+      KAPPA(2,2)=CURV(2)
+      KAPPA(1,2)=CURV(3)/2.D0
+      KAPPA(2,1)=KAPPA(1,2)
+
+C-----------------------------------------------------------------------
+      ! EIGENVALUES OF STRAINS (PRP IS NOT USED)
+      CALL D2DIAG(KAPPA,KAPPVP,PRP,THETA)
+      CALL D2DIAG(KAPPN,KAPPVN,PRP,THETN)
+
+C       ! DAMAGE EVOLUTION 
+C       ! DAM1 AND DAM2 UPDATED
+C       ! COMPUTATION OF THE TERMS OF THE TANGENT MATRIX COMING FROM
+C       ! A POSSIBLE DAMAGE
+      CALL DAMAGE (KAPPVP,+1,K1,DMAX1,DAM1,TDM1RP,ALPHA,BETA,GAMMA)
+      CALL DAMAGE (KAPPVP,-1,K2,DMAX2,DAM2,TDM2RP,ALPHA,BETA,GAMMA)
+     
+C      ! TANGENT MATRIX IN THE EIGENBASE
+
+      TRKAPP=KAPPA(1,1)+KAPPA(2,2)
+      XVP1 = XIFONC(KAPPVP(1),DAM1,DAM2,GAMMA)
+      XVP2 = XIFONC(KAPPVP(2),DAM1,DAM2,GAMMA)
+
+      TANMRP(1,2)=2*ALPHA*XIFONC(TRKAPP,DAM1,DAM2,GAMMA)
+      TANMRP(2,1)=TANMRP(1,2)
+      TANMRP(1,1)=TANMRP(1,2)+2*BETA*XVP1
+      TANMRP(2,2)=TANMRP(1,2)+2*BETA*XVP2
+      TANMRP(1,3)=0.D0
+      TANMRP(2,3)=0.D0
+      TANMRP(3,1)=0.D0
+      TANMRP(3,2)=0.D0
+      AUX = KAPPVP(2)-KAPPVP(1)
+      
+      IF (ABS(AUX) .LE. (ZERDAM*(ABS(KAPPVP(1))
+     &   + ABS(KAPPVP(2) )))) THEN
+        TANMRP(3,3)=0.D0
+      ELSE
+        TANMRP(3,3)=BETA*(XVP2*KAPPVP(2)-XVP1*KAPPVP(1))/AUX
+      ENDIF
+
+      CC = COS(THETA)**2
+      SS = SIN(THETA)**2
+      CS = COS(THETA)*SIN(THETA)
+
+      PRP33(1,1) = CC
+      PRP33(2,1) = SS
+      PRP33(3,1) = -2.0D0*CS
+      PRP33(1,2) = SS
+      PRP33(2,2) = CC
+      PRP33(3,2) = 2.0D0*CS
+      PRP33(1,3) = CS
+      PRP33(2,3) = -CS
+      PRP33(3,3) = CC - SS
+
+      IF (    (KAPPVP(1)*KAPPVN(1) .LE. 0.D0)
+     &    .OR.(KAPPVP(2)*KAPPVN(2) .LE. 0.D0)  ) THEN
+      DO 20, J = 1,3
+        DO 10, I = 1,3
+          CP(I,J) = TDM1RP(I,J) + TDM2RP(I,J)
+          CP2(I,J) = PRP33(J,I)
+ 10     CONTINUE
+ 20   CONTINUE
+      CALL MATMUL(CP,PRP33,3,3,3,CP3)
+      CALL MATMUL(CP2,CP3,3,3,3,TANMAD)
+
+      CALL MATMUL(TANMRP,PRP33,3,3,3,CP3)
+      CALL MATMUL(CP2,CP3,3,3,3,TANMTO)
+C-----------------------------------------------------------------------
+C      ! TANGENT MATRIX IN THE EIGENBASE (FOR NEW STRAIN)
+        TRKAPP=KAPPN(1,1)+KAPPN(2,2)
+        XVP1 = XIFONC(KAPPVN(1),DAM1,DAM2,GAMMA)
+        XVP2 = XIFONC(KAPPVN(2),DAM1,DAM2,GAMMA)
+
+        TANMRP(1,2)=2*ALPHA*XIFONC(TRKAPP,DAM1,DAM2,GAMMA)
+        TANMRP(2,1)=TANMRP(1,2)
+        TANMRP(1,1)=TANMRP(1,2)+2*BETA*XVP1
+        TANMRP(2,2)=TANMRP(1,2)+2*BETA*XVP2
+        TANMRP(1,3)=0.D0
+        TANMRP(2,3)=0.D0
+        TANMRP(3,1)=0.D0
+        TANMRP(3,2)=0.D0
+        AUX = KAPPVN(2)-KAPPVN(1)
+      
+        IF (ABS(AUX) .LE. ZERDAM*(ABS(KAPPVN(1))+ABS(KAPPVN(2))))
+     &  THEN
+          TANMRP(3,3)=0.D0
+        ELSE
+          TANMRP(3,3)=BETA*( XVP2*KAPPVN(2)-XVP1*KAPPVN(1) )/AUX
+        ENDIF
+        CC = COS(THETN)**2
+        SS = SIN(THETN)**2
+        CS = COS(THETN)*SIN(THETN)
+
+      PRP33(1,1) = CC
+      PRP33(2,1) = SS
+      PRP33(3,1) = -2.0D0*CS
+      PRP33(1,2) = SS
+      PRP33(2,2) = CC
+      PRP33(3,2) = 2.0D0*CS
+      PRP33(1,3) = CS
+      PRP33(2,3) = -CS
+      PRP33(3,3) = CC - SS
+C------------------------------------------------------
+
+      DO 31, J = 1,3
+        DO 30, I = 1,3
+          CP2(I,J) = PRP33(J,I)
+ 30     CONTINUE
+ 31   CONTINUE
+      CALL MATMUL(TANMRP,PRP33,3,3,3,CP3) 
+      CALL MATMUL(CP2,CP3,3,3,3,TANMTN)
+
+      DO 50, J = 1,3
+        DO 40, I = 1,3
+          TANMA2(I,J) = (TANMTO(I,J)+TANMTN(I,J))/2.D0
+     &                   + TANMAD(I,J)
+ 40     CONTINUE
+ 50   CONTINUE
+
+      ELSE   
+
+        DO 70, J = 1,3
+          DO 60, I = 1,3
+            CP(I,J) = TANMRP(I,J) + TDM1RP(I,J)
+     &               + TDM2RP(I,J)
+            CP2(I,J) = PRP33(J,I)
+ 60       CONTINUE
+ 70     CONTINUE
+        CALL MATMUL(CP,PRP33,3,3,3,CP3)
+        CALL MATMUL(CP2,CP3,3,3,3,TANMA2)
+      ENDIF
+
+      END 

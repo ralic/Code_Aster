@@ -1,9 +1,11 @@
-      SUBROUTINE MULSYM(U22,A3,V22,R3)
+      FUNCTION DPOLYH(N,A,X)
+      
+       IMPLICIT  NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
-C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,29 +21,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT NONE
-C
-      REAL*8      U22(2,2),    A3(3),    V22(2,2)
-      REAL*8      X22(2,2),   A22(2,2),    R3(3)
-C
-C CALCUL DU PRODUIT U22.A3.V22 A ETANT DONNEE SOUS FORME DE VECTEUR
-C
-C           A3(1) = A_XX
-C           A3(2) = A_YY
-C           A3(3) = A_XY
-C
-C CONSTRUCTION DE LA MATRICE SYMETRIQUE DE A
-C
-      A22(1,1) = A3(1)
-      A22(2,2) = A3(2)
-      A22(1,2) = A3(3)
-      A22(2,1) = A3(3)
-C
-      CALL PMAT(2,A22,V22,X22)
-      CALL PMAT(2,U22,X22,A22)
-C
-      R3(1) = A22(1,1) 
-      R3(2) = A22(2,2)
-      R3(3) = A22(1,2)
-C
+      REAL*8    DPOLYH
+      REAL*8    A(*),X
+      INTEGER   N
+      INTEGER   I
+      REAL*8    AUX
+
+      IF(N.GT.0) THEN
+         AUX = A(N+1)
+         DO 10, I=N,1,-1
+            AUX = AUX*X + A(I)
+ 10      CONTINUE
+         DPOLYH = AUX
+      ELSEIF(N.EQ.0) THEN
+         DPOLYH = A(1)
+      ELSE
+         CALL UTMESS('A','DPOLYH','N < 0')
+      ENDIF
+
       END 

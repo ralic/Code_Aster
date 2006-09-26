@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,9 +103,9 @@ U=STAT_NON_LINE(
                 RELATION = 'VMIS_CINE_LINE'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
-                SUBD_PAS = 5,
+                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
                 SUBD_PAS_MINI = 0.0001,
-                COEF_SUBD_PAS_1 = 0.001),
+                SUBD_COEF_PAS_1 = 0.001),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
